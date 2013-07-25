@@ -30,6 +30,7 @@
 #define WM_SYSCOLORCHANGE               0x0015
 #define BS_TYPEMASK SS_TYPEMASK
 #define OFS_X 10 // distance from left/right side to beginning/end of text
+#define RT_MANIFEST  24
 
 CLASS HStaticEx INHERIT HStatic
 
@@ -445,6 +446,7 @@ METHOD onLostFocus()  CLASS HButtonX
 
 CLASS HButtonEX INHERIT HButtonX
 
+   CLASS VAR WindowsManifest INIT !EMPTY(hwg_Findresource( , 1 , RT_MANIFEST ) ) SHARED
    DATA hBitmap
    DATA hIcon
    DATA m_dcBk
@@ -559,7 +561,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 METHOD SetBitmap( hBitMap ) CLASS HButtonEX
 
    DEFAULT hBitmap TO ::hBitmap
-   IF ValType( hBitmap ) == "N"
+   IF !Empty( hBitmap )
       ::hBitmap := hBitmap
       hwg_Sendmessage( ::handle, BM_SETIMAGE, IMAGE_BITMAP, ::hBitmap )
       hwg_Redrawwindow( ::Handle, RDW_NOERASE + RDW_INVALIDATE + RDW_INTERNALPAINT )
@@ -570,7 +572,7 @@ METHOD SetBitmap( hBitMap ) CLASS HButtonEX
 METHOD SetIcon( hIcon ) CLASS HButtonEX
 
    DEFAULT hIcon TO ::hIcon
-   IF ValType( ::hIcon ) == "N"
+   IF !Empty( hIcon )
       ::hIcon := hIcon
       hwg_Sendmessage( ::handle, BM_SETIMAGE, IMAGE_ICON, ::hIcon )
       hwg_Redrawwindow( ::Handle, RDW_NOERASE + RDW_INVALIDATE + RDW_INTERNALPAINT )
@@ -589,7 +591,7 @@ METHOD INIT() CLASS HButtonEx
 
    IF ! ::lInit
       ::nHolder := 1
-      IF HB_IsNumeric( ::handle ) .AND. ::handle > 0
+      IF !Empty( ::handle )
          nbs := HWG_GETWINDOWSTYLE( ::handle )
          ::m_nTypeStyle :=  hwg_Getthestyle( nbs , BS_TYPEMASK )
 
@@ -620,9 +622,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
    wParam := hwg_PtrToUlong( wParam )
    IF msg == WM_THEMECHANGED
       IF ::Themed
-         IF ValType( ::hTheme ) == "P"
+         IF !Empty( ::htheme )
             hwg_closethemedata( ::htheme )
-            ::hTheme       := NIL
+            ::hTheme := NIL
          ENDIF
          ::Themed := .F.
       ENDIF
@@ -863,7 +865,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    IF ( ::m_bFirstTime )
       ::m_bFirstTime := .F.
       IF ( hwg_Isthemedload() )
-         IF ValType( ::hTheme ) == "P"
+         IF !Empty( ::hTheme )
             hwg_closethemedata( ::htheme )
          ENDIF
          ::hTheme := NIL
@@ -932,11 +934,11 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
    ENDIF
 
    uAlign := 0 //DT_LEFT
-   IF ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N"
-      uAlign := DT_VCENTER // + DT_CENTER
+   IF !Empty( ::hbitmap ) .OR. !Empty( ::hIcon )
+      uAlign := DT_VCENTER
    ENDIF
 
-   IF uAlign = DT_VCENTER  //!= DT_CENTER + DT_VCENTER
+   IF uAlign = DT_VCENTER
       uAlign := iif( HWG_BITAND( ::Style, BS_TOP ) != 0, DT_TOP, DT_VCENTER )
       uAlign += iif( HWG_BITAND( ::Style, BS_BOTTOM ) != 0, DT_BOTTOM - DT_VCENTER , 0 )
       uAlign += iif( HWG_BITAND( ::Style, BS_LEFT ) != 0, DT_LEFT, DT_CENTER )
@@ -967,7 +969,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 
    captionRect := { drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ] }
    //
-   IF ( ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N" ) .AND. lMultiline
+   IF ( !Empty( ::hbitmap ) .OR. !Empty( ::hicon ) ) .AND. lMultiline
       IF ::iStyle = ST_ALIGN_HORIZ
          captionRect := { drawInfo[ 4 ] + ::PictureMargin , drawInfo[ 5 ], drawInfo[ 6 ] , drawInfo[ 7 ] }
       ELSEIF ::iStyle = ST_ALIGN_HORIZ_RIGHT
@@ -996,8 +998,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
 
    bHasTitle := ValType( ::caption ) == "C" .AND. ! Empty( ::Caption )
 
-   //   hwg_Drawtheicon( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle )
-   IF ValType( ::hbitmap ) == "N" .AND. ::m_bDrawTransparent .AND. ( ! bIsDisabled .OR. ::istyle = ST_ALIGN_HORIZ_RIGHT )
+   IF !Empty( ::hbitmap ) .AND. ::m_bDrawTransparent .AND. ( ! bIsDisabled .OR. ::istyle = ST_ALIGN_HORIZ_RIGHT )
       bmpRect := hwg_Prepareimagerect( ::handle, dc, bHasTitle, @itemRect, @captionRect, bIsPressed, ::hIcon, ::hbitmap, ::iStyle )
       IF ::istyle = ST_ALIGN_HORIZ_RIGHT
          bmpRect[ 1 ]     -= ::PictureMargin
@@ -1008,7 +1009,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       ELSE
          hwg_Drawgraybitmap( dc, ::hbitmap, bmpRect[ 1 ], bmpRect[ 2 ] )
       ENDIF
-   ELSEIF ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N"
+   ELSEIF !Empty( ::hbitmap ) .OR. !Empty( ::hicon )
       IF ::istyle = ST_ALIGN_HORIZ_RIGHT
          captionRect[ 3 ] -= ::PictureMargin
       ENDIF
@@ -1030,7 +1031,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       ENDIF
       // Center text
       centerRect := hwg_Copyrect( captionRect )
-      IF ValType( ::hicon ) == "N" .OR. ValType( ::hbitmap ) == "N"
+      IF !Empty( ::hbitmap ) .OR. !Empty( ::hicon )
          IF ! lmultiline  .AND. ::iStyle != ST_ALIGN_OVERLAP
             // hwg_Drawtext( dc, ::caption, captionRect[ 1 ], captionRect[ 2 ], captionRect[ 3 ], captionRect[ 4 ], uAlign + DT_CALCRECT, @captionRect )
          ELSEIF !Empty( ::caption )
@@ -1052,7 +1053,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       centerRectHeight  := centerRect[ 4 ] - centerRect[ 2 ]
       hwg_Offsetrect( @captionRect, 0, ( centerRectHeight - captionRectHeight ) / 2 )
       IF ::Themed
-         IF ( ValType( ::hicon ) == "N" .OR. ValType( ::hbitmap ) == "N" )
+         IF !Empty( ::hbitmap ) .OR. !Empty( ::hicon )
             IF lMultiLine  .OR. ::iStyle = ST_ALIGN_OVERLAP
                captionRect := AClone( savecaptionRect )
             ENDIF
@@ -1097,12 +1098,12 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
                   hwg_Fillrect( dc, fillRect[ 1 ], fillRect[ 2 ], fillRect[ 3 ], fillRect[ 4 ], ::m_crBrush[ BTNST_COLOR_BK_OUT ]:handle )
                ENDIF
             ENDIF
-            IF ValType( ::hbitmap ) == "N" .AND. ::m_bDrawTransparent
+            IF !Empty( ::hbitmap ) .AND. ::m_bDrawTransparent
                hwg_Drawtransparentbitmap( dc, ::hbitmap, bmpRect[ 1 ], bmpRect[ 2 ] )
-            ELSEIF ValType( ::hbitmap ) == "N" .OR. ValType( ::hicon ) == "N"
+            ELSEIF !Empty( ::hbitmap ) .OR. !Empty( ::hicon )
                hwg_Drawtheicon( ::handle, dc, bHasTitle, @itemRect1, @captionRect1, bIsPressed, bIsDisabled, ::hIcon, ::hbitmap, ::iStyle )
             ENDIF
-            IF ( ValType( ::hicon ) == "N" .OR. ValType( ::hbitmap ) == "N" )
+            IF !Empty( ::hbitmap ) .OR. !Empty( ::hicon )
                IF lmultiline  .OR. ::iStyle = ST_ALIGN_OVERLAP
                   captionRect := AClone( savecaptionRect )
                ENDIF
@@ -1283,7 +1284,6 @@ METHOD PAINT( lpdis ) CLASS HGroupEx
 
 Static FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
 
-
    LOCAL hDC
    LOCAL ASize
    LOCAL hFont
@@ -1302,4 +1302,11 @@ Static FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
       hwg_Selectobject( hDC, hFont )
    ENDIF
    hwg_Releasedc( oWin:handle, hDC )
+
    RETURN ASize
+
+   INIT PROCEDURE starttheme()
+   hwg_Initthemelib()
+
+   EXIT PROCEDURE endtheme()
+   hwg_Endthemelib()

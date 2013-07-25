@@ -986,16 +986,18 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC-1,AL_Y1], ::nClientWidth, ;
-            ::aLines[::nLineC,AL_Y2] )
+         IF Len( ::aLines ) > ::nLineC
+            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
+               ::aLines[::nLineC+1,AL_Y2] )
+         ENDIF
       ENDIF
    ELSEIF nKeyCode == KEY_DOWN
       ::LineDown()
-      IF nCtrl == FSHIFT
+      IF nCtrl == FSHIFT .AND. ::nLineC > 1
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC-2,AL_Y1], ::nClientWidth, ;
-            ::aLines[::nLineC-1,AL_Y2] )
+         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC-1,AL_Y1], ::nClientWidth, ;
+            ::aLines[::nLineC,AL_Y2] )
       ENDIF
    ELSEIF nKeyCode == KEY_PGDN    // Page Down
       IF nCtrl == FCONTROL

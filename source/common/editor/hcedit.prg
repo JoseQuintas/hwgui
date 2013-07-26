@@ -1076,6 +1076,9 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
    IF !Empty( ::aPointM2[P_Y] ) .AND. nKeyCode >= 32 .AND. nKeyCode < 0xFF60 .AND. lUnSel
       nLine := ::aPointM2[P_Y]
       ::Pcopy( , ::aPointM2 )
+      IF ::aPointM1[P_Y] < ::nLineF .OR. nLine - ::nLineF >= ::nLines
+         lInvAll := .T.
+      ENDIF
       IF !lInvAll
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::aPointM1[P_Y] - ::nLineF + 1, AL_Y1], ;
             ::nClientWidth, ::aLines[nLine - ::nLineF + 1, AL_Y2] )

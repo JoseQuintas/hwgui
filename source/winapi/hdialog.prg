@@ -163,7 +163,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
    LOCAL oTab
    LOCAL nPos
 
-   // hwg_writelog( str(msg) + str(wParam) + str(lParam) )
+   //hwg_writelog( str(msg) + str(hwg_PtrToUlong(wParam)) + str(hwg_PtrToUlong(lParam)) )
    IF ( i := Ascan( aMessModalDlg, { |a|a[1] == msg } ) ) != 0
       IF ::lRouteCommand .AND. ( msg == WM_COMMAND .OR. msg == WM_NOTIFY )
 
@@ -531,7 +531,3 @@ STATIC FUNCTION onSysCommand( oDlg, wParam )
 
    RETURN - 1
 
-EXIT PROCEDURE Hwg_ExitProcedure
-   Hwg_ExitProc()
-
-   RETURN

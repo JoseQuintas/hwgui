@@ -302,7 +302,6 @@ STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
    wParam := hwg_PtrToUlong( wParam )
    IF wParam != 0 .AND. ( oCtrl := oWnd:FindControl( wParam ) ) != NIL .AND. ;
          oCtrl:bPaint != NIL
-
       Eval( oCtrl:bPaint, oCtrl, lParam )
       RETURN 1
 
@@ -482,6 +481,12 @@ PROCEDURE HB_GT_DEFAULT_NUL()
 
    INIT PROCEDURE HWGINIT
 
+   Hwg_InitProc()
    hwg_ErrSys()
+
+   RETURN
+
+EXIT PROCEDURE Hwg_ExitProcedure
+   Hwg_ExitProc()
 
    RETURN

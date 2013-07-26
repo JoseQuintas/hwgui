@@ -127,6 +127,7 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWnd )
    METHOD GetMain()
+   METHOD EvalKeyList( nKey, bPressed )
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
    METHOD RESTORE()  INLINE hwg_Sendmessage( ::handle,  WM_SYSCOMMAND, SC_RESTORE, 0 )
    METHOD Maximize() INLINE hwg_Sendmessage( ::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
@@ -209,6 +210,18 @@ METHOD GetMain CLASS HWindow
       iif( ::aWindows[1]:type == WND_MAIN, ;
       ::aWindows[1],                  ;
       iif( Len( ::aWindows ) > 1, ::aWindows[2], Nil ) ), Nil )
+
+METHOD EvalKeyList( nKey, bPressed ) CLASS HWindow
+   LOCAL cKeyb, nctrl, nPos
+
+   IF !Empty( ::KeyList )
+      cKeyb := hwg_Getkeyboardstate()
+      nctrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
+      IF ( nPos := Ascan( ::KeyList,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
+         Eval( ::KeyList[ nPos,3 ], Self )
+      ENDIF
+   ENDIF
+   RETURN .T.
 
 CLASS HMainWindow INHERIT HWindow
 

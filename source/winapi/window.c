@@ -35,12 +35,11 @@ static LRESULT CALLBACK s_MainWndProc( HWND, UINT, WPARAM, LPARAM );
 static LRESULT CALLBACK s_FrameWndProc( HWND, UINT, WPARAM, LPARAM );
 static LRESULT CALLBACK s_MDIChildWndProc( HWND, UINT, WPARAM, LPARAM );
 
-static HWND s_hMytoolMenu = NULL;
-static HHOOK s_OrigDockHookProc;
+static HHOOK s_KeybHook = NULL;
 
 HWND aWindows[2] = { 0, 0 };
 PHB_DYNS pSym_onEvent = NULL;
-PHB_DYNS pSym_onEven_Tool = NULL;
+PHB_DYNS pSym_keylist = NULL;
 
 static LPCTSTR s_szChild = TEXT( "MDICHILD" );
 
@@ -1318,102 +1317,6 @@ HB_FUNC( HWG_GETFONTDIALOGUNITS )
                ( HFONT ) HB_PARHANDLE( 2 ) ) );
 }
 
-LRESULT CALLBACK KbdHook( int code, WPARAM wp, LPARAM lp )
-{
-   int nId, nBtnNo;
-   UINT uId;
-   BOOL bPressed;
-
-   if( code < 0 )
-      return CallNextHookEx( s_OrigDockHookProc, code, wp, lp );
-
-   switch ( code )
-   {
-      case HC_ACTION:
-         nBtnNo = SendMessage( s_hMytoolMenu, TB_BUTTONCOUNT, 0, 0 );
-         nId = SendMessage( s_hMytoolMenu, TB_GETHOTITEM, 0, 0 );
-
-         bPressed = ( HIWORD( lp ) & KF_UP ) ? FALSE : TRUE;
-
-         if( ( wp == VK_F10 || wp == VK_MENU ) && nId == -1 && bPressed )
-         {
-            SendMessage( s_hMytoolMenu, TB_SETHOTITEM, 0, 0 );
-            return -100;
-         }
-
-         if( wp == VK_LEFT && nId != -1 && nId != 0 && bPressed )
-         {
-            SendMessage( s_hMytoolMenu, TB_SETHOTITEM, ( WPARAM ) nId - 1,
-                  0 );
-            break;
-         }
-
-         if( wp == VK_RIGHT && nId != -1 && nId < nBtnNo && bPressed )
-         {
-            SendMessage( s_hMytoolMenu, TB_SETHOTITEM, ( WPARAM ) nId + 1,
-                  0 );
-            break;
-         }
-
-         if( SendMessage( s_hMytoolMenu, TB_MAPACCELERATOR, ( WPARAM ) wp,
-                     ( LPARAM ) & uId ) != 0 && nId != -1 )
-         {
-            LRESULT Res = -200;
-            PHB_ITEM pObject =
-                  ( PHB_ITEM ) GetWindowLongPtr( s_hMytoolMenu,
-                  GWLP_USERDATA );
-
-            if( !pSym_onEven_Tool )
-               pSym_onEven_Tool = hb_dynsymFindName( "EXECUTETOOL" );
-
-            if( pSym_onEven_Tool && pObject )
-            {
-               hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEven_Tool ) );
-               hb_vmPush( pObject );
-               hb_vmPushLong( ( LONG ) uId );
-
-               hb_vmSend( 1 );
-               Res = hb_parnl( -1 );
-               if( Res == 0 )
-               {
-                  SendMessage( s_hMytoolMenu, WM_KEYUP, VK_MENU, 0 );
-                  SendMessage( s_hMytoolMenu, WM_KEYUP, wp, 0 );
-               }
-            }
-            return Res;
-         }
-
-      default:
-         break;
-   }
-   return CallNextHookEx( s_OrigDockHookProc, code, wp, lp );
-}
-
-
-HB_FUNC( HWG_SETTOOLHANDLE )
-{
-   HWND h = ( HWND ) HB_PARHANDLE( 1 );
-
-   s_hMytoolMenu = ( HWND ) h;
-}
-
-HB_FUNC( HWG_SETHOOK )
-{
-   s_OrigDockHookProc =
-         SetWindowsHookEx( WH_KEYBOARD, KbdHook, GetModuleHandle( 0 ), 0 );
-}
-
-
-HB_FUNC( HWG_UNSETHOOK )
-{
-   if( s_OrigDockHookProc )
-   {
-      UnhookWindowsHookEx( s_OrigDockHookProc );
-      s_OrigDockHookProc = 0;
-   }
-}
-
-
 HB_FUNC( HWG_GETTOOLBARID )
 {
    HWND hMytoolMenu = ( HWND ) HB_PARHANDLE( 1 );
@@ -1508,4 +1411,46 @@ HB_FUNC( HWG_PAINTWINDOW )
 HB_FUNC( HWG_GETBACKBRUSH )
 {
    HB_RETHANDLE( GetCurrentObject( GetDC( ( HWND ) HB_PARHANDLE( 1 ) ), OBJ_BRUSH ) );
+}
+
+LRESULT CALLBACK KeybHook( int code, WPARAM wp, LPARAM lp )
+{
+
+   if( (code >= 0) && (lp & 0x80000000) )
+   {
+      HWND h = GetActiveWindow();
+      PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( h, GWLP_USERDATA );
+      PHB_ITEM p1;
+
+      if( !pSym_keylist )
+         pSym_keylist = hb_dynsymFindName( "EVALKEYLIST" );
+
+      if( pObject && pSym_keylist && hb_objHasMessage( pObject, pSym_keylist ) )
+      {
+         hb_vmPushSymbol( hb_dynsymSymbol( pSym_keylist ) );
+         hb_vmPush( pObject );
+         hb_vmPushLong( ( LONG ) wp );
+         hb_vmSend( 1 );
+      }
+   }
+
+   return CallNextHookEx( NULL, code, wp, lp );
+}
+
+HB_FUNC( HWG_INITPROC )
+{
+   s_KeybHook = SetWindowsHookEx( WH_KEYBOARD, KeybHook, GetModuleHandle( 0 ), 0 );
+}
+
+HB_FUNC( HWG_EXITPROC )
+{
+   if( aDialogs )
+      hb_xfree( aDialogs );
+
+   if( s_KeybHook )
+   {
+      UnhookWindowsHookEx( s_KeybHook );
+      s_KeybHook = NULL;
+   }
+
 }

@@ -484,35 +484,3 @@ METHOD onAnchor( x, y, w, h ) CLASS hToolBar
    ENDIF
 
    RETURN .T.
-
-CLASS HToolBarEX INHERIT HToolBar
-
-   METHOD init()
-   METHOD ExecuteTool( nid )
-   DESTRUCTOR MyDestructor
-
-END CLASS
-
-METHOD init() CLASS htoolbarex
-
-   ::Super:init()
-   hwg_Setwindowobject( ::handle, Self )
-   hwg_Settoolhandle( ::handle )
-   hwg_Sethook()
-
-   RETURN Self
-
-METHOD ExecuteTool( nid ) CLASS htoolbarex
-
-   IF nid > 0
-      hwg_Sendmessage( ::oParent:handle, WM_COMMAND, hwg_Makewparam( nid, BN_CLICKED ), ::handle )
-      RETURN 0
-   ENDIF
-
-   RETURN - 200
-
-PROCEDURE MyDestructor CLASS htoolbarex
-
-   hwg_Unsethook()
-
-   RETURN

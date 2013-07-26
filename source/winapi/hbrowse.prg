@@ -345,6 +345,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ::lCtrlPress := .F.
          ENDIF
          // fim bloco sauli
+         /*
          IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
             oParent := ::oParent
             DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
@@ -358,7 +359,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
                ENDIF
             ENDIF
          ENDIF
-
+         */
          RETURN 1
 
       ELSEIF msg == WM_KEYDOWN

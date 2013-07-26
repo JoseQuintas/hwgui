@@ -284,6 +284,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       IF ::bKeyUp != Nil .AND. ( nPos := Eval( ::bKeyUp, Self, msg, wParam, lParam ) ) != -1
          RETURN nPos
       ENDIF
+      /*
       IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
          DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
             oParent := oParent:oParent
@@ -296,6 +297,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
          ENDIF
       ENDIF
+      */
    ELSEIF msg == WM_GETDLGCODE
       IF !::lMultiLine
          RETURN DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS

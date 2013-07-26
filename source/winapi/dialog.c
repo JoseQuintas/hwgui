@@ -735,11 +735,6 @@ static LRESULT CALLBACK s_PSPProc( HWND hDlg, UINT uMsg, WPARAM wParam,
 
 }
 
-HB_FUNC( HWG_EXITPROC )
-{
-   if( aDialogs )
-      hb_xfree( aDialogs );
-}
 static LRESULT CALLBACK s_PSPProcRelease( HWND hwnd, UINT uMsg,
       LPPROPSHEETPAGE ppsp )
 {

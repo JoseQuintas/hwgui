@@ -211,7 +211,7 @@ CLASS HCEdit INHERIT HControl
    METHOD onEvent( msg, wParam, lParam )
    METHOD Paint( lReal )
    METHOD PaintLine( hDC, yPos, nLine )
-   METHOD MarkLine( nLine )
+   METHOD MarkLine( nLine, lReal )
    METHOD End()
    METHOD Convert( cPageIn, cPageOut )
    METHOD SetText( cText, cPageIn, cPageOut )
@@ -532,9 +532,9 @@ METHOD Paint( lReal ) CLASS HCEdit
 
    hced_SetPaint( ::hEdit, hDC, , ::nClientWidth, ::lWrap )
 
-   //IF lReal
-   hced_FillRect( ::hEdit, 0, 0, ::nClientWidth, ::nHeight )
-   //ENDIF
+   IF lReal
+      hced_FillRect( ::hEdit, 0, 0, ::nClientWidth, ::nHeight )
+   ENDIF
 
    IF ::lShowNumbers
       ::n4Number := hwg_GetTextSize( hDC, "55555" )[1]
@@ -563,8 +563,8 @@ METHOD Paint( lReal ) CLASS HCEdit
             NEXT
          ENDIF
 
-         yNew := ::PaintLine( hDC, yPos, nLine )
-         //yNew := ::PaintLine( Iif( lReal, hDC, Nil ), yPos, nLine )
+         //yNew := ::PaintLine( hDC, yPos, nLine )
+         yNew := ::PaintLine( Iif( lReal, hDC, Nil ), yPos, nLine )
 
          IF lReal .AND. ::lShowNumbers
             hwg_Selectobject( hDC, ::oFont:handle )
@@ -613,7 +613,7 @@ METHOD PaintLine( hDC, yPos, nLine ) CLASS HCEdit
       hced_SetColor( ::hEdit, ::tcolor, ::bColorCur )
    ENDIF
 
-   ::MarkLine( nLine )
+   ::MarkLine( nLine, !Empty( hDC ) )
    nPrinted := hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, hced_Len( Self, cLine ), 0, Empty( hDC ) )
    IF ::bPaint != Nil .AND. !Empty( hDC )
       Eval( ::bPaint, Self, hDC, ::nLineF + nLine - 1, aLine[AL_Y1], yPos  )
@@ -630,7 +630,7 @@ METHOD PaintLine( hDC, yPos, nLine ) CLASS HCEdit
 
    RETURN yPos
 
-METHOD MarkLine( nLine ) CLASS HCEdit
+METHOD MarkLine( nLine, lReal ) CLASS HCEdit
    LOCAL x1, x2, bColor, i, aStru, nL := ::nLineF + nLine - 1, P1, P2
 
    hced_ClearAttr( ::hEdit )
@@ -663,11 +663,12 @@ METHOD MarkLine( nLine ) CLASS HCEdit
       ENDIF
    ENDIF
 
-   IF !Empty( ::aPointM2[P_Y] )
+   IF lReal .AND. !Empty( ::aPointM2[P_Y] )
       IF ( ::aPointM1[P_Y] == ::aPointM2[P_Y] )
          IF ::aPointM1[P_Y] == nL
             x1 := Min( ::aPointM1[P_X], ::aPointM2[P_X] ) - ::nPosF
             x2 := Max( ::aPointM1[P_X], ::aPointM2[P_X] ) - ::nPosF
+            //hwg_writelog( ltrim(str(::aPointM2[P_X]))+":"+ltrim(str(len(::aText[nL])))+":"+ltrim(str(x1))+":"+ltrim(str(x2))+":"+::aText[nL] )
          ELSE
             RETURN Nil
          ENDIF
@@ -687,7 +688,12 @@ METHOD MarkLine( nLine ) CLASS HCEdit
             RETURN Nil
          ENDIF
       ENDIF
-      hced_setAttr( ::hEdit, x1, x2 - x1, - 1, ::tColorSel, ::bColorSel )
+      IF x1 <= Len( ::aText[nL] )
+         IF x2 > Len( ::aText[nL] ) .OR. x2 <= 0
+            x2 := Len( ::aText[nL] ) + 1
+         ENDIF
+         hced_setAttr( ::hEdit, x1, x2 - x1, - 1, ::tColorSel, ::bColorSel )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -874,7 +880,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
       ENDIF
    ENDIF
 
-   ::MarkLine( ::nLineC )
+   ::MarkLine( ::nLineC, .F. )
    IF x1 == Nil
       cLine := ::aText[ ::nLineF+y1-1 ]
       IF ::nPosF > 0
@@ -908,7 +914,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
    RETURN Nil
 
 METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
-   LOCAL cKeyb := hwg_Getkeyboardstate( lParam ), cLine, lUnsel := .T.
+   LOCAL cKeyb := hwg_Getkeyboardstate( lParam ), cLine, lUnsel := .T., lInvAll := .F.
    LOCAL nCtrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
    LOCAL nLine
 
@@ -930,12 +936,10 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       ::PCopy( ::aPointC, ::aPointM1 )
    ENDIF
    IF nKeyCode == KEY_RIGHT
-      IF ::nPosC < ::aLines[nLine,AL_NCHARS]
-      ELSE
+      IF ::nPosC >= ::aLines[nLine,AL_NCHARS]
          ::nPosF ++
          ::Paint( .F. )
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
-            ::aLines[nLine,AL_Y2] )
+         lInvAll := .T.
       ENDIF
       ::SetCaretPos( SETC_RIGHT )
       IF nCtrl == FSHIFT
@@ -944,12 +948,14 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
+
    ELSEIF nKeyCode == KEY_LEFT
       IF ::nPosC > 0
          ::SetCaretPos( SETC_LEFT )
       ELSEIF ::nPosF > 0
          ::nPosF --
          ::Paint( .F. )
+         lInvAll := .T.
       ENDIF
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
@@ -961,6 +967,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       IF ::nPosF > 0
          ::nPosF := 0
          ::Paint( .F. )
+         lInvAll := .T.
       ENDIF
       ::SetCaretPos( SETC_XY, X_FIRST )
       IF nCtrl == FSHIFT
@@ -974,6 +981,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          ::nPosF := Int( ( ( hced_Len( Self, ::aText[::nLineF+nLine-1] ) - ;
             ::aLines[nLine,AL_NCHARS] ) ) * 7 / 6 )
          ::Paint( .F. )
+         lInvAll := .T.
       ENDIF
       ::SetCaretPos( SETC_XY, X_LAST )
       IF nCtrl == FSHIFT
@@ -1009,7 +1017,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0 )
+         lInvAll := .T.
       ENDIF
    ELSEIF nKeyCode == KEY_PGUP    // Page Up
       IF nCtrl == FCONTROL
@@ -1020,7 +1028,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0 )
+         lInvAll := .T.
       ENDIF
    ELSEIF nKeyCode == KEY_DELETE
       IF nCtrl == FSHIFT .AND. !Empty( ::aPointM2[P_Y] )
@@ -1058,17 +1066,23 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          ::Pcopy( { 1, 1 }, ::aPointM1 )
          ::Pcopy( { hced_Len( Self, ::aText[::nTextLen] ) + 1, ::nTextLen }, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+         lInvAll := .T.
       ENDIF
 #ifdef __PLATFORM__UNIX
    ELSEIF nKeyCode < 0xFE00 .OR. nKeyCode == KEY_RETURN .OR. nKeyCode == KEY_BACK .OR. nKeyCode == KEY_TAB .OR. nKeyCode == KEY_ESCAPE
       ::putChar( nKeyCode )
 #endif
    ENDIF
-   IF !Empty( ::aPointM2[P_Y] ) .AND. nKeyCode >= 32 .AND. nKeyCode < 0xFE00 .AND. lUnSel
-      hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::aPointM1[P_Y] - ::nLineF + 1, AL_Y1], ;
-         ::nClientWidth, ::aLines[::aPointM2[P_Y] - ::nLineF + 1, AL_Y1] )
+   IF !Empty( ::aPointM2[P_Y] ) .AND. nKeyCode >= 32 .AND. nKeyCode < 0xFF60 .AND. lUnSel
+      nLine := ::aPointM2[P_Y]
       ::Pcopy( , ::aPointM2 )
+      IF !lInvAll
+         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::aPointM1[P_Y] - ::nLineF + 1, AL_Y1], ;
+            ::nClientWidth, ::aLines[nLine - ::nLineF + 1, AL_Y2] )
+      ENDIF
+   ENDIF
+   IF lInvAll
+      hced_Invalidaterect( ::hEdit, 0 )
    ENDIF
    ::lSetFocus := .T.
 
@@ -1087,6 +1101,9 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
       ::AddLine( nLine + 1 )
       ::aText[nLine+1] := hced_Substr( Self, ::aText[nLine], ::nPosF + ::nPosC + 1 )
       ::aText[nLine] := hced_Left( Self, ::aText[nLine], ::nPosF + ::nPosC )
+      IF ::nPosF != 0
+         lInvAll := .T.
+      ENDIF
       ::nPosF := ::nPosC := 0
       IF ::nLineC < ::nHeight/ ( ::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) - 2
          ::nLineC ++
@@ -1096,9 +1113,9 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
       ENDIF
       ::nDopChecked := nLine - 1
       ::Paint( .F. )
+      ::SetCaretPos( SETC_XY )
       hced_Invalidaterect( ::hEdit, 0, 0, iif( lInvAll, 0, ::aLines[::nLineC-1,AL_Y1] ), ;
          ::nClientWidth, ::nHeight )
-      ::SetCaretPos( SETC_XY )
       ::lUpdated := .T.
       RETURN Nil
 

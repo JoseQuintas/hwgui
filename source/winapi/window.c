@@ -1420,7 +1420,6 @@ LRESULT CALLBACK KeybHook( int code, WPARAM wp, LPARAM lp )
    {
       HWND h = GetActiveWindow();
       PHB_ITEM pObject = ( PHB_ITEM ) GetWindowLongPtr( h, GWLP_USERDATA );
-      PHB_ITEM p1;
 
       if( !pSym_keylist )
          pSym_keylist = hb_dynsymFindName( "EVALKEYLIST" );

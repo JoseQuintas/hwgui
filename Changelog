@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-08-16 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/gtkmain.prg
+  * source/gtk/hcwindow.prg
+    * exit and init procedures moved from gtkmain.prg to hcwindow.prg
+  * source/gtk/window.c
+  * source/gtk/hwindow.prg
+    * Added initial code to implement keyboard hook procedure ( as in Winapi version )
+
 2013-08-16 13:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/wprint.c
   * source/winapi/hprinter.prg

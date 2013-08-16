@@ -228,13 +228,3 @@ FUNCTION hwg_FindSelf( hCtrl )
 
    RETURN Nil
 
-   INIT PROCEDURE GTKINIT()
-   hwg_gtk_init()
-
-   RETURN
-
-/*
-EXIT PROCEDURE GTKEXIT()
-   hwg_gtk_exit()
-Return
-*/

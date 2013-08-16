@@ -34,7 +34,7 @@
 #define WM_RBUTTONUP                    517    // 0x0205
 
 
-extern void hwg_writelog( char*s );
+extern void hwg_writelog( const char * sFile, const char * sTraceMsg, ... );
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
@@ -45,6 +45,8 @@ gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data
 void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 
 PHB_DYNS pSym_onEvent = NULL;
+PHB_DYNS pSym_keylist = NULL;
+guint s_KeybHook = 0;
 
 #define HB_IT_DEFAULT   ( ( HB_TYPE ) 0x40000 )
 HB_LONG Prevp2  = -1;
@@ -780,4 +782,39 @@ HB_FUNC( HWG_KEYVAL2UTF8 )
   g_unichar_to_utf8( uchar,tmpbuf );
   hb_retc_buffer( (char*) tmpbuf );
 
+}
+
+static gint snooper ( GtkWidget *grab_widget,
+         GdkEventKey *event, gpointer func_data )
+{
+   GList * pList = gtk_window_list_toplevels();
+
+   //hwg_writelog( NULL, "snoop \r\n" );
+   if( pList && event->type == GDK_KEY_RELEASE )
+   {
+      PHB_ITEM pObject = (PHB_ITEM) g_object_get_data( (GObject*) pList->data, "obj" );
+      if( !pSym_keylist )
+         pSym_keylist = hb_dynsymFindName( "EVALKEYLIST" );
+
+      if( pObject && pSym_keylist && hb_objHasMessage( pObject, pSym_keylist ) )
+      {
+         hb_vmPushSymbol( hb_dynsymSymbol( pSym_keylist ) );
+         hb_vmPush( pObject );
+         hb_vmPushLong( ( LONG ) ((GdkEventKey*)event)->keyval );
+         hb_vmSend( 1 );
+         //hwg_writelog( NULL, "snoop-eval \r\n" );
+      }
+   }
+
+   return FALSE;
+}
+
+HB_FUNC( HWG_INITPROC )
+{
+   //s_KeybHook = gtk_key_snooper_install( &snooper, NULL );
+}
+
+HB_FUNC( HWG_EXITPROC )
+{
+   //gtk_key_snooper_remove( s_KeybHook );
 }

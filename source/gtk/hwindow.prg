@@ -91,6 +91,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWnd )
    METHOD GetMain()
+   METHOD EvalKeyList( nKey )
    METHOD Restore()  INLINE hwg_WindowRestore( ::handle )
    METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
    METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
@@ -161,6 +162,18 @@ Return Iif(Len(::aWindows)>0,            ;
 	   ::aWindows[1],                  ;
 	   Iif(Len(::aWindows)>1,::aWindows[2],Nil)), Nil )
 
+METHOD EvalKeyList( nKey ) CLASS HWindow
+   LOCAL cKeyb, nctrl, nPos
+
+   hwg_writelog( str(nKey) )
+   IF !Empty( ::KeyList )
+      cKeyb := hwg_Getkeyboardstate()
+      nctrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
+      IF ( nPos := Ascan( ::KeyList,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
+         Eval( ::KeyList[ nPos,3 ], Self )
+      ENDIF
+   ENDIF
+   RETURN .T.
 
 
 CLASS HMainWindow INHERIT HWindow

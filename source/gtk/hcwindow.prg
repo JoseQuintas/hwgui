@@ -265,6 +265,13 @@ FUNCTION hwg_onTrackScroll( oWnd, wParam, lParam )
 
    INIT PROCEDURE HWGINIT
 
+   hwg_gtk_init()
+   Hwg_InitProc()
    hwg_ErrSys()
+
+   RETURN
+
+   EXIT PROCEDURE Hwg_ExitProcedure
+   Hwg_ExitProc()
 
    RETURN

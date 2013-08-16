@@ -226,6 +226,11 @@ HB_FUNC( HWG_SETPRINTERMODE )
          pdm->dmOrientation = hb_parni( 3 );
          pdm->dmFields = pdm->dmFields | DM_ORIENTATION;
       }
+      if( !HB_ISNIL( 4 ) )
+      {
+         pdm->dmDuplex = hb_parni( 4 );
+         pdm->dmFields = pdm->dmFields | DM_DUPLEX;
+      }
 
       // Call DocumentProperties() to change the values
       DocumentProperties( NULL, hPrinter, ( LPTSTR ) lpPrinterName,

@@ -48,12 +48,9 @@ CLASS HPrinter INHERIT HObject
    DATA LeftMargin       
    DATA RightMargin      
 
-
-
-
    METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
                                                                                             
-   METHOD SetMode( nOrientation )
+   METHOD SetMode( nOrientation, nDuplex )
    METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline )
    METHOD SetFont( oFont )  INLINE hwg_Selectobject( ::hDC, oFont:handle )
    METHOD Settextcolor( nColor )  INLINE hwg_Settextcolor( ::hDC, nColor )
@@ -152,10 +149,10 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
 
    RETURN Self
 
-METHOD SetMode( nOrientation ) CLASS HPrinter
+METHOD SetMode( nOrientation, nDuplex ) CLASS HPrinter
    LOCAL hPrinter := ::hPrinter, hDC, aPrnCoors
 
-   hDC := hwg_Setprintermode( ::cPrinterName, @hPrinter, nOrientation )
+   hDC := hwg_Setprintermode( ::cPrinterName, @hPrinter, nOrientation, nDuplex )
    IF hDC != Nil
       IF !Empty( ::hDCPrn )
          hwg_Deletedc( ::hDCPrn )
@@ -496,7 +493,6 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
    oTimer:END()
 
    oDlg:brush:Release()
-   // oCanvas:brush:Release()
    oFont:Release()
 
    RETURN Nil
@@ -715,7 +711,6 @@ METHOD PlayMeta( oWnd ) CLASS HPrinter
    pps := hwg_Definepaintstru()
    hDC := hwg_Beginpaint( oWnd:handle, pps )
    aArray = hwg_Getppsrect( pps )
-   // tracelog( "PPS"+str(aArray[1])+str(aArray[2])+str(aArray[3])+str(aArray[4]) )
 
    IF ( aArray[ 1 ] == 0 .AND. aArray[ 2 ] == 0 )  // IF WHOLE AREA
       IF ( ::NeedsRedraw .OR. lRefreshVideo )
@@ -761,16 +756,8 @@ METHOD PlayMeta( oWnd ) CLASS HPrinter
          lRefreshVideo := .T.
       ENDIF
    ELSE
-      // tracelog("no refresh video" )
       lRefreshVideo := .T.   // request a repaint
    ENDIF
-
-
-   #if 0
-      // Draws a line from upper left to bottom right of the PAPER
-      // used to check for PAPER dimension...
-      hwg_Drawline( hDC, ::x1, ::y1, ::x2, ::y2 )
-   #endif
 
    hwg_Endpaint( oWnd:handle, pps )
 

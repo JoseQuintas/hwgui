@@ -31,6 +31,9 @@
 #define	BRW_ARRAY               1
 #define	BRW_DATABASE            2
 
+#define	PAGE_FIRST              1
+#define	PAGE_LAST               2
+
 #define ANCHOR_TOPLEFT         0   // Anchors control to the top and left borders of the container and does not change the distance between the top and left borders. (Default)
 #define ANCHOR_TOPABS          1   // Anchors control to top border of container and does not change the distance between the top border.
 #define ANCHOR_LEFTABS         2   // Anchors control to left border of container and does not change the distance between the left border.

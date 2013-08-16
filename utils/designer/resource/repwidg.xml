@@ -5,6 +5,7 @@
       <property name="Caption" type="C" value="" />
       <property name="Paper Size" type="C" value="A4" />
       <property name="Orientation" type="C" value="Portrait" />
+      <property name="Duplex" type="C" value="No" />
       <property name="Font" type="O" />
       <property name="Variables" type="A" />
       <property name="Left" type="N" value="" hidden="" />
@@ -272,7 +273,7 @@
          <code2><![CDATA[
             Private oDlg := HFormGen():oDlgSelected
             if oDlg != Nil
-              oDlg:oParent:SetPaper( value,oDlg:oParent:Getprop("Orientation") )
+              oDlg:oParent:SetPaper( value,oDlg:oParent:Getprop("Paper Size") )
             endif
           ]]></code2>
       </property>
@@ -280,7 +281,15 @@
          <code2><![CDATA[
             Private oDlg := HFormGen():oDlgSelected
             if oDlg != Nil
-              oDlg:oParent:SetPaper( oDlg:oParent:Getprop("Paper Size"),value )
+              oDlg:oParent:SetPaper( oDlg:oParent:Getprop("Orientation"),value )
+            endif
+          ]]></code2>
+      </property>
+      <property name="Duplex" array="No,Vertical,Horizontal">
+         <code2><![CDATA[
+            Private oDlg := HFormGen():oDlgSelected
+            if oDlg != Nil
+              oDlg:oParent:SetPaper( oDlg:oParent:Getprop("Duplex"),value )
             endif
           ]]></code2>
       </property>

@@ -944,6 +944,7 @@ CLASS HRepTmpl
 
    METHOD Read( fname,cId )
    METHOD Print( printer, lPreview, p1, p2, p3, p4, p5 )
+   METHOD PrintAsPage( printer, nPageType, lPreview, p1, p2, p3, p4, p5 )
    METHOD PrintItem( oItem )
    METHOD ReleaseObj( aControls )
    METHOD Find( cId )
@@ -1023,7 +1024,7 @@ Return Self
 
 METHOD Print( printer, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
-Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1
+Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1, nDuplex
 Memvar oReport
 Private oReport := Self
 
@@ -1049,6 +1050,14 @@ Private oReport := Self
             nPHeight := xTemp
             nOrientation := 2
          ENDIF
+      ELSEIF ::aProp[ i,1 ] == "duplex"
+         IF Lower(::aProp[i,2]) == "no"
+            nDuplex := 1
+         ELSEIF Lower(::aProp[i,2]) == "vertical"
+            nDuplex := 2
+         ELSE
+            nDuplex := 3
+         ENDIF
       ELSEIF ::aProp[ i,1 ] == "font"
          xProperty := ::aProp[i,2]
       ELSEIF ::aProp[ i,1 ] == "variables"
@@ -1063,7 +1072,7 @@ Private oReport := Self
    xTemp := hwg_Getdevicearea( oPrinter:hDCPrn )
 #endif
    ::nKoefPix := ( ( xTemp[1]/xTemp[3] + xTemp[2]/xTemp[4] ) / 2 ) / 3.8
-   oPrinter:SetMode( nOrientation )
+   oPrinter:SetMode( nOrientation, nDuplex )
    ::nKoefX := oPrinter:nWidth / nPWidth
    ::nKoefY := oPrinter:nHeight / nPHeight
    IF ( aMethod := aGetSecond( ::aMethods,"onrepinit" ) ) != Nil
@@ -1085,7 +1094,6 @@ Private oReport := Self
          oPrinter:SetFont( oFont )
       ENDIF
       ::nTOffset := ::nAOffSet := ::ny := 0
-      // Writelog( "Print-1 "+ str(oPrinter:nPage) )
       FOR i := 1 TO Len( ::aControls )
          ::PrintItem( ::aControls[i] )
       NEXT
@@ -1104,6 +1112,99 @@ Private oReport := Self
       oPrinter:Preview()
    ENDIF
    oPrinter:End()
+
+Return Nil
+
+METHOD PrintAsPage( printer, nPageType, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
+Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
+Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1, nDuplex
+Memvar oReport
+Private oReport := Self
+
+   IF oPrinter == Nil
+      Return Nil
+   ENDIF
+   SetDebugInfo( ::lDebug )
+   SetDebugger( ::lDebug )
+
+   FOR i := 1 TO Len( ::aProp )
+      IF ::aProp[ i,1 ] == "paper size"
+         IF Lower(::aProp[i,2]) == "a4"
+            nPWidth  := 210
+            nPHeight := 297
+         ELSEIF Lower(::aProp[i,2]) == "a3"
+            nPWidth  := 297
+            nPHeight := 420
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "orientation"
+         IF Lower(::aProp[i,2]) != "portrait"
+            xTemp    := nPWidth
+            nPWidth  := nPHeight
+            nPHeight := xTemp
+            nOrientation := 2
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "duplex"
+         IF Lower(::aProp[i,2]) == "no"
+            nDuplex := 1
+         ELSEIF Lower(::aProp[i,2]) == "vertical"
+            nDuplex := 2
+         ELSE
+            nDuplex := 3
+         ENDIF
+      ELSEIF ::aProp[ i,1 ] == "font"
+         xProperty := ::aProp[i,2]
+      ELSEIF ::aProp[ i,1 ] == "variables"
+         FOR j := 1 TO Len( ::aProp[i,2] )
+            __mvPrivate( ::aProp[i,2][j] )
+         NEXT
+      ENDIF
+   NEXT
+#ifdef __GTK__
+   xTemp := hwg_gp_GetDeviceArea( oPrinter:hDC )
+#else
+   xTemp := hwg_Getdevicearea( oPrinter:hDCPrn )
+#endif
+   ::nKoefPix := ( ( xTemp[1]/xTemp[3] + xTemp[2]/xTemp[4] ) / 2 ) / 3.8
+   oPrinter:SetMode( nOrientation, nDuplex )
+   ::nKoefX := oPrinter:nWidth / nPWidth
+   ::nKoefY := oPrinter:nHeight / nPHeight
+   IF ( aMethod := aGetSecond( ::aMethods,"onrepinit" ) ) != Nil
+      DoScript( aMethod,{ p1,p2,p3,p4,p5 } )
+   ENDIF
+   IF xProperty != Nil
+      oFont := hrep_FontFromxml( oPrinter,xProperty,aGetSecond(::aProp,"fonth")*::nKoefY )
+   ENDIF
+
+   IF !Empty( nPageType ) .AND. nPageType == PAGE_FIRST
+      oPrinter:StartDoc( lPreview )
+   ENDIF
+   ::lNextPage := .F.
+
+   ::lFinish := .T.
+   ::oPrinter := oPrinter
+   DO WHILE .T.
+
+      oPrinter:StartPage()
+      IF oFont != Nil
+         oPrinter:SetFont( oFont )
+      ENDIF
+      ::nTOffset := ::nAOffSet := ::ny := 0
+      FOR i := 1 TO Len( ::aControls )
+         ::PrintItem( ::aControls[i] )
+      NEXT
+      oPrinter:EndPage()
+      IF ::lFinish
+         EXIT
+      ENDIF
+   ENDDO
+
+   IF !Empty( nPageType ) .AND. nPageType == PAGE_LAST
+      oPrinter:EndDoc()
+   ENDIF
+   ::ReleaseObj( ::aControls )
+   IF ( aMethod := aGetSecond( ::aMethods,"onrepexit" ) ) != Nil
+      DoScript( aMethod )
+   ENDIF
 
 Return Nil
 

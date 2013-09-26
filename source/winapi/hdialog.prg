@@ -339,7 +339,7 @@ STATIC FUNCTION onDlgCommand( oDlg, wParam, lParam )
          oDlg:lResult := .T.
       ENDIF
       //Replaced by Sandro
-      IF oDlg:lExitOnEsc
+      IF oDlg:lExitOnEsc .OR. hwg_Getkeystate( VK_ESCAPE ) >= 0
          hwg_EndDialog( oDlg:handle )
       ENDIF
    ELSEIF __ObjHasMsg( oDlg, "MENU" ) .AND. ValType( oDlg:menu ) == "A" .AND. ;

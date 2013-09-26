@@ -700,6 +700,10 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
          ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
          // writelog( "GetApplyKey "+oEdit:title+str(nPos-1) )
+         IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. nPos == Len( oEdit:cPicMask )
+            hwg_GetSkip( oEdit:oParent, oEdit:handle, 1 )
+            Return 0
+         ENDIF
          KeyRight( oEdit, nPos )
          //Added By Sandro Freire
          IF oEdit:cType == "N"

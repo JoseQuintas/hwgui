@@ -639,30 +639,22 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
       hwg_Sendmessage( oEdit:handle, WM_CLEAR, hwg_Loword( x ), hwg_Hiword( x ) - 1 )
    ENDIF
 
-   // writelog( "GetApplyKey "+str(asc(ckey)) )
    oEdit:title := hwg_Getedittext( oEdit:oParent:handle, oEdit:id )
    IF oEdit:cType == "N" .AND. cKey $ ".," .AND. ;
          ( nPos := At( ".",oEdit:cPicMask ) ) != 0
       IF oEdit:lFirst
          vari := 0
       ELSE
-         vari := Trim( oEdit:title )
-         FOR i := 2 TO Len( vari )
-            IF !IsDigit( SubStr( vari,i,1 ) )
-               vari := Left( vari, i - 1 ) + SubStr( vari, i + 1 )
-            ENDIF
-         NEXT
-         vari := Val( vari )
+         vari := Val( LTrim( UnTransform( oEdit, hwg_Getedittext( oEdit:oParent:handle, oEdit:id ) ) ) )
       ENDIF
       IF !Empty( oEdit:cPicFunc ) .OR. !Empty( oEdit:cPicMask )
          oEdit:title := Transform( vari, oEdit:cPicFunc + iif( Empty(oEdit:cPicFunc ),""," " ) + oEdit:cPicMask )
+         hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
       ENDIF
-      hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
       KeyRight( oEdit, nPos - 1 )
    ELSE
 
       IF oEdit:cType == "N" .AND. oEdit:lFirst
-         // hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, "" )
          nGetLen := Len( oEdit:cPicMask )
          IF ( nPos := At( ".",oEdit:cPicMask ) ) == 0
             oEdit:title := Space( nGetLen )

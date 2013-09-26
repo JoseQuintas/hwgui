@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-09-26 12:52 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/common/editor/hcedit.prg
+    ! Bug fixed in :Bottom()
+
 2013-09-26 09:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hdialog.prg
     * NOEXITESC clause doesn't prevent now closing the dialog by mouse

@@ -1280,7 +1280,7 @@ METHOD Top() CLASS HCEdit
    RETURN Nil
 
 METHOD Bottom() CLASS HCEdit
-   LOCAL nNewF := Max( 1, ::nTextLen - ::nLines ), nNewC := ::nTextLen - ::nLineF + 1
+   LOCAL nNewF := Max( 1, ::nTextLen - ::nLines + 1 ), nNewC := ::nTextLen - ::nLineF + 1
 
    IF ::nLineF != nNewF .OR. ::nLineC != nNewC
       ::nLineF := nNewF

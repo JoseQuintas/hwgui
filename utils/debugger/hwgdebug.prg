@@ -945,13 +945,13 @@ STATIC oPenCurr, oPenBP
    IF nLine == Nil
       oText:n4Separ += 12
    ELSE     
+      IF Empty( oPenCurr )
+         oPenCurr := HPen():Add( , 2, 8388608 )
+         oPenBP := HPen():Add( , 2, 255 )
+      ENDIF
       IF nCurrLine == nLine
          IF !( cPrgName == oText:cargo )
             Return Nil
-         ENDIF
-         IF Empty( oPenCurr )
-            oPenCurr := HPen():Add( , 2, 8388608 )
-            oPenBP := HPen():Add( , 2, 255 )
          ENDIF
          y := y1 + Int( (y2-y1)/2 )
          hwg_Selectobject( hDC, oPenCurr:handle )

@@ -1894,8 +1894,8 @@ Local bRefresh := {||
 Local bChgPos := {||
    Local n1, n2
    IF nMode == MODE_INPUT .AND. !Empty(oBrw:aArray)
-      n1 := oBrw:nCurrent-oBrw:rowPos+1
-      n2 := n1+oBrw:rowCount-1
+      n1 := oBrw:nCurrent - oBrw:rowPos + 1
+      n2 := n1 + Min( oBrw:rowCount, Len(oBrw:aArray) ) - 1
       FOR i := n1 TO n2
          IF oBrw:aArray[i,1] == "-"
             oInspectDlg := oDlg

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-10-29 17:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * samples/demodbf.dbf
+    ! :hwg_setfocus() wrong calls was changed to :setfocus()
+
 2013-10-29 15:28 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/hwgdebug.prg
     * Added possibility to call Inspector( array or object ) from existing

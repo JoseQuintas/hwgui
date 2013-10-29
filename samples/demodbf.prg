@@ -72,7 +72,7 @@ Private oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDe
    CreateGets()
 
 
-    @ 2,3 OWNERBUTTON oBotNew OF Tel_Ferramentas  ON CLICK {|| CreateVariable(), CloseBotons(), Gt_Cod:hwg_Setfocus()  } ;
+    @ 2,3 OWNERBUTTON oBotNew OF Tel_Ferramentas  ON CLICK {|| CreateVariable(), CloseBotons(), Gt_Cod:Setfocus()  } ;
        SIZE 44,38 FLAT ;
        TEXT "New"
 
@@ -171,7 +171,7 @@ Function EditRecord()
 *---------------------------------------------------------------------------------------
 CloseBotons()
 OpenGets()
-Gt_Name:hwg_Setfocus()
+Gt_Name:Setfocus()
 Return Nil
 
 *---------------------------------------------------------------------------------------

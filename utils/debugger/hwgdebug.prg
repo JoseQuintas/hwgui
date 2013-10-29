@@ -1611,12 +1611,19 @@ Local oBrw, i, nLen := Val( arr[n] )
    ENDIF
 Return Nil
 
-Static FUNCTION ViewVar( aLine )
+Static FUNCTION ViewVar( aLine, cObjName, nItem )
+Local cName := aLine[1], cType := aLine[2]
 
-   IF aLine[2] == "O"
-      InspectObject( aLine[1] )
-   ELSEIF aLine[2] == "A"
-      InspectArray( aLine[1] )
+   IF !Empty( nItem )
+      cName := cObjName + "[" + Ltrim(Str(nItem)) + "]"
+      cType := aLine[1]
+   ELSEIF !Empty( cObjName )
+      cName := cObjName + ":" + aLine[1]
+   ENDIF
+   IF cType == "O"
+      InspectObject( cName )
+   ELSEIF cType == "A"
+      InspectArray( cName )
    ENDIF
 Return Nil
 
@@ -1839,6 +1846,7 @@ Local oDlg, oBrw
 
    oBrw:bcolorSel := oBrw:htbcolor := CLR_LGREEN
    oBrw:tcolorSel := oBrw:httcolor := 0
+   oBrw:bEnter:= {||ViewVar( oBrw:aArray[oBrw:nCurrent],cObjName )}
 
    @ 45, 360 BUTTON "Refresh" ON CLICK {|| oInspectDlg:=oDlg,DoCommand(CMD_OBJECT,cObjName) } SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS
    @ 335, 360 BUTTON "Close" ON CLICK {|| oDlg:Close() } SIZE 100, 28 ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
@@ -1925,6 +1933,8 @@ Local bChgPos := {||
 
    oBrw:bcolorSel := oBrw:htbcolor := CLR_LGREEN
    oBrw:tcolorSel := oBrw:httcolor := 0
+
+   oBrw:bEnter:= {||ViewVar( oBrw:aArray[oBrw:nCurrent],cArrName,oBrw:nCurrent )}
 
    @ 12, 366 SAY "" SIZE 16,16 STYLE WS_BORDER BACKCOLOR 255 ON SIZE ANCHOR_BOTTOMABS
    @ 45, 360 BUTTON "Refresh" ON CLICK bRefresh SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS

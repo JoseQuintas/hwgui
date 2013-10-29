@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-10-29 15:28 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/debugger/hwgdebug.prg
+    * Added possibility to call Inspector( array or object ) from existing
+      Inspector by clicking on appropriate line.
+
 2013-10-25 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/hwgdebug.prg
     ! Small bug fixed.

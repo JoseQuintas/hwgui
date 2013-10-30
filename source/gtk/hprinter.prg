@@ -27,6 +27,7 @@ CLASS HPrinter
    DATA lPreview       INIT .F.
    DATA nWidth, nHeight
    DATA nOrient        INIT 1
+   DATA nFormType      INIT 0
    DATA nHRes, nVRes                     // Resolution ( pixels/mm )
    DATA nPage
    DATA oPen, oFont
@@ -36,7 +37,7 @@ CLASS HPrinter
    DATA lmm  INIT .F.
    DATA cMetafile
 
-   METHOD New( cPrinter, lmm )
+   METHOD New( cPrinter, lmm, nFormType )
    METHOD SetMode( nOrientation )
    METHOD Recalc( x1, y1, x2, y2 )
    METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline )
@@ -57,11 +58,14 @@ CLASS HPrinter
 
 ENDCLASS
 
-METHOD New( cPrinter, lmm ) CLASS HPrinter
+METHOD New( cPrinter, lmm, nFormType ) CLASS HPrinter
    LOCAL aPrnCoors
 
    IF lmm != Nil
       ::lmm := lmm
+   ENDIF
+   IF nFormType != Nil
+      ::nFormType := nFormType
    ENDIF
 
    ::cdpIn := iif( Empty( ::cdp ), hb_cdpSelect(), ::cdp )

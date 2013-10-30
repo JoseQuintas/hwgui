@@ -27,6 +27,7 @@ CLASS HWinPrn
    CLASS VAR nStdHeight SHARED  INIT Nil
    CLASS VAR cPrinterName SHARED  INIT Nil
    DATA   oPrinter
+   DATA   nFormType INIT 9
    DATA   oFont
    DATA   nLineHeight, nLined
    DATA   nCharW
@@ -46,7 +47,7 @@ CLASS HWinPrn
    DATA   nRight    INIT 5
 
 
-   METHOD New( cPrinter, cpFrom, cpTo )
+   METHOD New( cPrinter, cpFrom, cpTo, nFormType )
    METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder  )
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder )
    METHOD StartDoc( lPreview, cMetaName )
@@ -56,7 +57,9 @@ CLASS HWinPrn
    METHOD PutCode( cText )
    METHOD EndDoc()
    METHOD End()
+#ifdef __GTK__
    METHOD SetMetaFile( cMetafile )    INLINE ::oPrinter:cMetafile := cMetafile
+#endif
 
    HIDDEN:
    DATA lDocStart   INIT .F.
@@ -65,16 +68,21 @@ CLASS HWinPrn
 
 ENDCLASS
 
-METHOD New( cPrinter, cpFrom, cpTo ) CLASS HWinPrn
+METHOD New( cPrinter, cpFrom, cpTo, nFormType ) CLASS HWinPrn
 
-   ::oPrinter := HPrinter():New( cPrinter, .F. )
+   ::oPrinter := HPrinter():New( cPrinter, .F., nFormType )
    IF ::oPrinter == Nil
       RETURN Nil
    ENDIF
    ::cpFrom := cpFrom
    ::cpTo   := cpTo
+#ifdef __GTK__
    IF !Empty( cpTo )
       ::oPrinter:cdpIn := cpTo
+   ENDIF
+#endif
+   IF nFormType != Nil
+      ::nFormType := nFormType
    ENDIF
 
    RETURN Self
@@ -109,12 +117,16 @@ METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder ) CLASS HWinPrn
          ::nStdHeight := STD_HEIGHT
          ::cPrinterName := ::oPrinter:cPrinterName
          nPWidth := ::oPrinter:nWidth / ::oPrinter:nHRes - 10
-         IF nPWidth > 210 .OR. nPWidth < 190
+
+         IF ::nFormType == 9 .AND. ( nPWidth > 210 .OR. nPWidth < 190 )
             nPWidth := 200
+         ELSEIF ::nFormType == 8 .AND. ( nPWidth > 300 .OR. nPWidth < 280 )
+            nPWidth := 290
          ENDIF
+
          oFont := ::oPrinter:AddFont( cFont, ::nStdHeight * ::oPrinter:nVRes )
 
-         nWidth := ::oPrinter:GetTextWidth( Replicate( 'A',83 ), oFont ) / ::oPrinter:nHRes
+         nWidth := ::oPrinter:GetTextWidth( Replicate( 'A', Iif(::nFormType==8,113,80) ), oFont ) / ::oPrinter:nHRes
          IF nWidth > nPWidth + 2 .OR. nWidth < nPWidth - 15
             ::nStdHeight := ::nStdHeight * ( nPWidth / nWidth )
          ENDIF
@@ -168,7 +180,11 @@ METHOD NextPage() CLASS HWinPrn
       ::oPrinter:SetFont( ::oFont )
    ENDIF
 
+#ifdef __GTK__
    ::y := ::nTop * ::oPrinter:nVRes - ::nLineHeight + ::nLined
+#else
+   ::y := ::nTop * ::oPrinter:nVRes - ::nLineHeight - ::nLined
+#endif
    ::lFirstLine := .T.
 
    RETURN Nil
@@ -180,7 +196,11 @@ METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn
       ::StartDoc()
    ENDIF
 
+#ifdef __GTK__
    IF ::y + 3 * ( ::nLineHeight + ::nLined ) > ::oPrinter:nHeight
+#else
+   IF ::y + 2 * ( ::nLineHeight + ::nLined ) > ::oPrinter:nHeight
+#endif
       ::NextPage()
    ENDIF
    ::x := ::nLeft * ::oPrinter:nHRes

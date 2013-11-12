@@ -800,7 +800,7 @@ static gint snooper ( GtkWidget *grab_widget,
       {
          hb_vmPushSymbol( hb_dynsymSymbol( pSym_keylist ) );
          hb_vmPush( pObject );
-         hb_vmPushLong( ( LONG ) ((GdkEventKey*)event)->keyval );
+         hb_vmPushLong( ( HB_LONG ) ((GdkEventKey*)event)->keyval );
          hb_vmSend( 1 );
          //hwg_writelog( NULL, "snoop-eval \r\n" );
       }

@@ -70,7 +70,7 @@ METHOD New( cPrinter, lmm, nFormType ) CLASS HPrinter
 
    ::cdpIn := iif( Empty( ::cdp ), hb_cdpSelect(), ::cdp )
 
-   ::hDC := Hwg_OpenPrinter( cPrinter )
+   ::hDC := Hwg_OpenPrinter( cPrinter, nFormType )
    ::cPrinterName := cPrinter
 
    IF ::hDC == 0

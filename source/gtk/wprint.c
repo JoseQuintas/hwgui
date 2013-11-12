@@ -60,10 +60,10 @@ typedef struct HWGUI_PRINT_STRU
 
 } HWGUI_PRINT, * PHWGUI_PRINT;
 
-PHWGUI_PRINT hwg_openprinter( void )
+PHWGUI_PRINT hwg_openprinter( int iFormType )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_xgrab( sizeof(HWGUI_PRINT) );
-   GtkPaperSize *A4 = gtk_paper_size_new( GTK_PAPER_NAME_A4 );
+   GtkPaperSize *pSize = gtk_paper_size_new( (iFormType==8)? GTK_PAPER_NAME_A3 : GTK_PAPER_NAME_A4 );
 
 #ifdef G_CONSOLE_MODE
    if( !bGtypeInit )
@@ -75,7 +75,7 @@ PHWGUI_PRINT hwg_openprinter( void )
    memset( print,0,sizeof(HWGUI_PRINT) );
 
    print->page_setup = gtk_page_setup_new();
-   gtk_page_setup_set_paper_size_and_default_margins( print->page_setup, A4 );
+   gtk_page_setup_set_paper_size_and_default_margins( print->page_setup, pSize );
    
    gtk_page_setup_set_top_margin( print->page_setup, 1., GTK_UNIT_MM );
    gtk_page_setup_set_bottom_margin( print->page_setup, 1., GTK_UNIT_MM );
@@ -88,7 +88,7 @@ PHWGUI_PRINT hwg_openprinter( void )
 HB_FUNC( HWG_OPENPRINTER )
 {
 
-   hb_retnl( (HB_LONG) hwg_openprinter() );
+   hb_retnl( (HB_LONG) hwg_openprinter( (HB_ISNIL(2))? 0 : hb_parni(2) ) );
 }
 
 HB_FUNC( HWG_GETPRINTERS )

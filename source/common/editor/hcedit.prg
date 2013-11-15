@@ -321,7 +321,9 @@ METHOD Init() CLASS HCEdit
       ::SetHili( HILIGHT_FUNC, - 1, 8388608, 16777215 )   // Blue on White // 8388608
       ::SetHili( HILIGHT_QUOTE, - 1, 16711680, 16777215 )     // Green on White  // 4227072
       ::SetHili( HILIGHT_COMM, ::oFont:SetFontStyle( ,, .T. ), 32768, 16777215 )    // Green on White //4176740
-      ::SetText()
+      IF Empty( ::aText )
+         ::SetText()
+      ENDIF
       hced_Setcolor( ::hEdit, ::tcolor, ::bcolor )
       ::oPenNum := HPen():Add( , 2, 7135852 )
    ENDIF
@@ -745,7 +747,9 @@ METHOD SetText( cText, cPageIn, cPageOut ) CLASS HCEdit
    ::nPosF := ::nPosC := 0
    ::PCopy( { ::nPosC + 1, ::nLineC }, ::aPointC )
    ::lSetFocus := .T.
-   hced_Invalidaterect( ::hEdit, 0 )
+   IF ::lInit
+      hced_Invalidaterect( ::hEdit, 0 )
+   ENDIF
 
    RETURN Nil
 

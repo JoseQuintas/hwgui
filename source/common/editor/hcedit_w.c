@@ -377,9 +377,10 @@ void ted_ClearAttr( TEDATTR * pattr )
    memset( pattr, 0, sizeof( TEDATTR ) * TEDATTR_MAX );
 }
 
-void ted_init( void )
+TEDIT * ted_init( void )
 {
    static HB_BOOL bRegistered = FALSE;
+   TEDIT *pted;
 
    if( !bRegistered )
    {
@@ -400,20 +401,9 @@ void ted_init( void )
       RegisterClass( &wndclass );
       bRegistered = TRUE;
    }
-}
 
-TEDIT * ted_create( HWND hwndParent, int id, DWORD dwStyle, int x, int y,
-      int iWidth, int iHeight )
-{
-   TEDIT *pted = ( TEDIT * ) hb_xgrab( sizeof( TEDIT ) );
-
+   pted = ( TEDIT * ) hb_xgrab( sizeof( TEDIT ) );
    memset( pted, 0, sizeof( TEDIT ) );
-
-   pted->handle = CreateWindowEx( 
-         ( dwStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0,
-         "tedit", _T( "" ), dwStyle,
-         x, y, iWidth, iHeight, hwndParent, ( HMENU ) id,
-         GetModuleHandle( 0 ), 0 );
 
    pted->pFontsScr =
          ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
@@ -426,21 +416,33 @@ TEDIT * ted_create( HWND hwndParent, int id, DWORD dwStyle, int x, int y,
    return pted;
 }
 
+HWND ted_create( HWND hwndParent, int id, DWORD dwStyle, int x, int y,
+      int iWidth, int iHeight )
+{
+
+   return CreateWindowEx( 
+         ( dwStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0,
+         "TEDIT", _T( "" ), dwStyle,
+         x, y, iWidth, iHeight, hwndParent, ( HMENU ) id,
+         GetModuleHandle( 0 ), 0 );
+}
+
 HB_FUNC( HCED_INITTEXTEDIT )
 {
-   ted_init(  );
+   HB_RETHANDLE( ted_init() );
 }
 
 HB_FUNC( HCED_CREATETEXTEDIT )
 {
-   HB_RETHANDLE( ( void * ) ted_create( ( HWND ) HB_PARHANDLE( 1 ),
-               hb_parni( 2 ), ( DWORD ) hb_parnl( 3 ), hb_parni( 4 ),
-               hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ) ) );
+   HB_RETHANDLE( ted_create( ( HWND ) HB_PARHANDLE( 1 ),
+          hb_parni( 2 ), ( DWORD ) hb_parnl( 3 ), hb_parni( 4 ),
+          hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ) ) );
 }
 
-HB_FUNC( HCED_GETHANDLE )
+HB_FUNC( HCED_SETHANDLE )
 {
-   HB_RETHANDLE( ( void * ) ( ( TEDIT * ) HB_PARHANDLE( 1 ) )->handle );
+   // HB_RETHANDLE( ( void * ) ( ( TEDIT * ) HB_PARHANDLE( 1 ) )->handle );
+   ( ( TEDIT * ) HB_PARHANDLE( 1 ) )->handle = ( HWND ) HB_PARHANDLE( 2 );
 }
 
 HB_FUNC( HCED_RELEASE )

@@ -560,6 +560,10 @@ HB_FUNC( HCED_GETHANDLE )
    HB_RETHANDLE( ( void * ) ( ( TEDIT * ) HB_PARHANDLE( 1 ) )->widget );
 }
 
+HB_FUNC( HCED_SETHANDLE )
+{
+}
+
 HB_FUNC( HCED_RELEASE )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );

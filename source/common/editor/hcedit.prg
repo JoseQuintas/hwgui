@@ -148,7 +148,7 @@ REQUEST  HB_CODEPAGE_UTF8
 
 CLASS HCEdit INHERIT HControl
 
-   CLASS VAR winclass   INIT "STATIC"
+   CLASS VAR winclass  INIT "TEDIT"
    DATA   hEdit
    DATA   cFileName
    DATA   aText, nTextLen
@@ -278,7 +278,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::nTextLen := ::nLines := 0
    ::aHili := Array( HILIGHT_GROUPS, 3 )
 
-   hced_InitTextEdit()
+   ::hEdit := hced_InitTextEdit()
 
    ::Activate()
 
@@ -296,21 +296,13 @@ METHOD Activate() CLASS HCEdit
    IF !Empty( ::oParent:handle )
 #ifdef __PLATFORM__UNIX
       ::hEdit := hced_CreateTextEdit( Self )
+      ::handle := hced_GetHandle( ::hEdit )
 #else
-      ::hEdit := hced_CreateTextEdit( ::oParent:handle, ::id, ;
+      ::handle := hced_CreateTextEdit( ::oParent:handle, ::id, ;
          ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 #endif
-      ::handle := hced_GetHandle( ::hEdit )
       ::Init()
 
-      ::AddFont( ::oFont )
-      ::SetHili( HILIGHT_KEYW, ::oFont:SetFontStyle( .T. ), 8388608, ::bColor )  // 8388608
-      ::SetHili( HILIGHT_FUNC, - 1, 8388608, 16777215 )   // Blue on White // 8388608
-      ::SetHili( HILIGHT_QUOTE, - 1, 16711680, 16777215 )     // Green on White  // 4227072
-      ::SetHili( HILIGHT_COMM, ::oFont:SetFontStyle( ,, .T. ), 32768, 16777215 )    // Green on White //4176740
-      ::SetText()
-      hced_Setcolor( ::hEdit, ::tcolor, ::bcolor )
-      ::oPenNum := HPen():Add( , 2, 7135852 )
    ENDIF
 
    RETURN Nil
@@ -322,7 +314,16 @@ METHOD Init() CLASS HCEdit
 #ifndef __PLATFORM__UNIX
       ::nHolder := 1
 #endif
+      hced_SetHandle( ::hEdit, ::handle )
       hwg_Setwindowobject( ::handle, Self )
+      ::AddFont( ::oFont )
+      ::SetHili( HILIGHT_KEYW, ::oFont:SetFontStyle( .T. ), 8388608, ::bColor )  // 8388608
+      ::SetHili( HILIGHT_FUNC, - 1, 8388608, 16777215 )   // Blue on White // 8388608
+      ::SetHili( HILIGHT_QUOTE, - 1, 16711680, 16777215 )     // Green on White  // 4227072
+      ::SetHili( HILIGHT_COMM, ::oFont:SetFontStyle( ,, .T. ), 32768, 16777215 )    // Green on White //4176740
+      ::SetText()
+      hced_Setcolor( ::hEdit, ::tcolor, ::bcolor )
+      ::oPenNum := HPen():Add( , 2, 7135852 )
    ENDIF
 
    RETURN Nil

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-11-19 15:23 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/common/editor/hcedit.prg
+    ! Fixed a bug with cursor position
+
 2013-11-15 15:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/editor/hcedit.prg
     * Now it is possible to call oEditor:SetText() before the dialog is activated

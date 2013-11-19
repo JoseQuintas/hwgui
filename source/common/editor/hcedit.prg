@@ -495,7 +495,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    RETURN lRes
 
 METHOD Paint( lReal ) CLASS HCEdit
-   LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := 0, yNew, i, lComm
+   LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := 0, yNew, i, lComm, n4Separ := ::n4Separ
 
    IF !Empty( ::oHili ) .AND. ::nLineF > 1 .AND. ::nDopChecked < ::nLineF - 1
       lComm := ( iif( ::nDopChecked > 0, ::aDop[::nDopChecked], 0 ) == 1 )
@@ -600,6 +600,9 @@ METHOD Paint( lReal ) CLASS HCEdit
    IF ::lSetFocus
       hced_SetFocus( ::hEdit )
       ::lSetFocus := .F.
+   ENDIF
+   IF n4Separ != ::n4Separ
+      ::SetCaretPos( SETC_XY )
    ENDIF
 
    RETURN Nil

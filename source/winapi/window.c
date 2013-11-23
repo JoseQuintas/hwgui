@@ -1438,7 +1438,7 @@ LRESULT CALLBACK KeybHook( int code, WPARAM wp, LPARAM lp )
 
 HB_FUNC( HWG_INITPROC )
 {
-   s_KeybHook = SetWindowsHookEx( WH_KEYBOARD, KeybHook, GetModuleHandle( 0 ), 0 );
+   s_KeybHook = SetWindowsHookEx( WH_KEYBOARD, KeybHook, 0, GetCurrentThreadId() );
 }
 
 HB_FUNC( HWG_EXITPROC )

@@ -491,24 +491,29 @@ FUNCTION hwg_EndDialog( handle )
 
    RETURN  iif( oDlg:lModal, Hwg__EndDialog( oDlg:handle ), hwg_Destroywindow( oDlg:handle ) )
 
-FUNCTION hwg_SetDlgKey( oDlg, nctrl, nkey, block )
+FUNCTION hwg_SetDlgKey( oDlg, nctrl, nkey, block, lGlobal )
 
    LOCAL i, aKeys
 
    IF oDlg == Nil ; oDlg := HCustomWindow():oDefaultParent ; ENDIF
    IF nctrl == Nil ; nctrl := 0 ; ENDIF
 
-   IF !__ObjHasMsg( oDlg, "KEYLIST" )
-      RETURN .F.
+   IF Empty( lGlobal )
+      IF !__ObjHasMsg( oDlg, "KEYLIST" )
+         RETURN .F.
+      ENDIF
+      aKeys := oDlg:KeyList
+   ELSE
+      aKeys := HWindow():aKeysGlobal
    ENDIF
-   aKeys := oDlg:KeyList
+
    IF block == Nil
 
       IF ( i := Ascan( aKeys,{ |a|a[1] == nctrl .AND. a[2] == nkey } ) ) == 0
          RETURN .F.
       ELSE
-         ADel( oDlg:KeyList, i )
-         ASize( oDlg:KeyList, Len( oDlg:KeyList ) - 1 )
+         ADel( aKeys, i )
+         ASize( aKeys, Len( oDlg:KeyList ) - 1 )
       ENDIF
    ELSE
       IF ( i := Ascan( aKeys,{ |a|a[1] == nctrl .AND. a[2] == nkey } ) ) == 0

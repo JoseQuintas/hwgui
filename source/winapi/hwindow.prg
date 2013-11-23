@@ -103,8 +103,9 @@ Local i, nHandle := oWnd:handle
 
 CLASS HWindow INHERIT HCustomWindow, HScrollArea
 
-   CLASS VAR aWindows   SHARED INIT {}
-   CLASS VAR szAppName  SHARED INIT "HwGUI_App"
+   CLASS VAR aWindows    SHARED INIT {}
+   CLASS VAR szAppName   SHARED INIT "HwGUI_App"
+   CLASS VAR aKeysGlobal SHARED INIT {}
 
    DATA menu, oPopup, hAccel
    DATA oIcon, oBmp
@@ -214,13 +215,21 @@ METHOD GetMain CLASS HWindow
 METHOD EvalKeyList( nKey, bPressed ) CLASS HWindow
    LOCAL cKeyb, nctrl, nPos
 
+   cKeyb := hwg_Getkeyboardstate()
+   nctrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
+
    IF !Empty( ::KeyList )
-      cKeyb := hwg_Getkeyboardstate()
-      nctrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
       IF ( nPos := Ascan( ::KeyList,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
          Eval( ::KeyList[ nPos,3 ], Self )
+         RETURN .T.
       ENDIF
    ENDIF
+   IF !Empty( ::aKeysGlobal )
+      IF ( nPos := Ascan( ::aKeysGlobal,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
+         Eval( ::aKeysGlobal[ nPos,3 ], Self )
+      ENDIF
+   ENDIF
+
    RETURN .T.
 
 CLASS HMainWindow INHERIT HWindow

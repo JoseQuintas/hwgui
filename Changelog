@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-11-23 11:52 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/window.c
+    ! Bug fixed, related to keyboard hooker
+  * include/guilib.ch
+    * SET KEY command has beem extended: new clause GLOBAL has been added.
+      It forces placing the key handler to a global list ( HWindow():aKeysGlobal ),
+      so this handler works in any place ( any window/dialog ) in application.
+  * source/winapi/hwindow.prg
+  * source/winapi/hdialog.prg
+    * Added CLASS VAR aKeysGlobal to HWindow class, key handlers routines changed to
+      realize the SET KEY GLOBAL functionality.
+
 2013-11-19 15:23 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/common/editor/hcedit.prg
     ! Fixed a bug with cursor position

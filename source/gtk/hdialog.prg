@@ -313,7 +313,7 @@ Local oDlg
    // hwg_WriteLog("EndDialog-10")
 Return  hwg_DestroyWindow( oDlg:handle )
 
-Function hwg_SetDlgKey( oDlg, nctrl, nkey, block )
+Function hwg_SetDlgKey( oDlg, nctrl, nkey, block, lGlobal )
 
 Local i, aKeys
 

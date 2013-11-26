@@ -8,6 +8,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-11-26 14:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/windows.ch
+    * Added key definitions for GTK
+  * source/winapi/hbrowse.prg
+  * source/winapi/hedit.prg
+    * Removed some commented code
+  * source/winapi/hdialog.prg
+    ! Small fix
+  * source/common/editor/hcedit.prg
+    * Some changes, related to keys definitions in GTK
+  * source/gtk/misc.c
+  * source/gtk/windows.c
+  * source/gtk/hbrowse.prg
+  * source/gtk/hdialog.prg
+  * source/gtk/hedit.prg
+  * source/gtk/hwindow.prg
+  * source/gtk/menu.prg
+    * SET KEY implementation changed in GTK version, it uses now keyboard hook procedure.
+      SET KEY GLOBAL implementation added.
+
 2013-11-23 11:52 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/window.c
     ! Bug fixed, related to keyboard hooker

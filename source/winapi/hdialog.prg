@@ -513,7 +513,7 @@ FUNCTION hwg_SetDlgKey( oDlg, nctrl, nkey, block, lGlobal )
          RETURN .F.
       ELSE
          ADel( aKeys, i )
-         ASize( aKeys, Len( oDlg:KeyList ) - 1 )
+         ASize( aKeys, Len( aKeys ) - 1 )
       ENDIF
    ELSE
       IF ( i := Ascan( aKeys,{ |a|a[1] == nctrl .AND. a[2] == nkey } ) ) == 0

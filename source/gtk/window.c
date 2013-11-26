@@ -593,7 +593,18 @@ void all_signal_connect( gpointer hWnd )
 
 GtkWidget * GetActiveWindow( void )
 {
-   GList * pList = gtk_window_list_toplevels();
+   GList * pL = gtk_window_list_toplevels(), * pList;
+
+   pList = pL;
+   while( pList )
+   {
+      if( gtk_window_is_active( pList->data ) )
+        break;
+      pList = g_list_next( pList );
+   }
+   if( !pList )
+      pList = pL;
+
    return ( pList )? pList->data : NULL;
 }
 
@@ -787,22 +798,25 @@ HB_FUNC( HWG_KEYVAL2UTF8 )
 static gint snooper ( GtkWidget *grab_widget,
          GdkEventKey *event, gpointer func_data )
 {
-   GList * pList = gtk_window_list_toplevels();
+   GtkWidget * window = GetActiveWindow();
 
-   //hwg_writelog( NULL, "snoop \r\n" );
-   if( pList && event->type == GDK_KEY_RELEASE )
+   if( window && event->type == GDK_KEY_RELEASE )
    {
-      PHB_ITEM pObject = (PHB_ITEM) g_object_get_data( (GObject*) pList->data, "obj" );
+      PHB_ITEM pObject = (PHB_ITEM) g_object_get_data( (GObject*) window, "obj" );
       if( !pSym_keylist )
          pSym_keylist = hb_dynsymFindName( "EVALKEYLIST" );
 
       if( pObject && pSym_keylist && hb_objHasMessage( pObject, pSym_keylist ) )
       {
+         HB_LONG p2;
          hb_vmPushSymbol( hb_dynsymSymbol( pSym_keylist ) );
          hb_vmPush( pObject );
          hb_vmPushLong( ( HB_LONG ) ((GdkEventKey*)event)->keyval );
-         hb_vmSend( 1 );
-         //hwg_writelog( NULL, "snoop-eval \r\n" );
+         p2 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? 1 : 0 ) |
+              ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? 2 : 0 ) |
+              ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? 4 : 0 );
+         hb_vmPushLong( ( HB_LONG ) p2 );
+         hb_vmSend( 2 );
       }
    }
 
@@ -811,10 +825,10 @@ static gint snooper ( GtkWidget *grab_widget,
 
 HB_FUNC( HWG_INITPROC )
 {
-   //s_KeybHook = gtk_key_snooper_install( &snooper, NULL );
+   s_KeybHook = gtk_key_snooper_install( &snooper, NULL );
 }
 
 HB_FUNC( HWG_EXITPROC )
 {
-   //gtk_key_snooper_remove( s_KeybHook );
+   gtk_key_snooper_remove( s_KeybHook );
 }

@@ -71,6 +71,7 @@ CLASS HWindow INHERIT HCustomWindow
 
    CLASS VAR aWindows   SHARED INIT {}
    CLASS VAR szAppName  SHARED INIT "HwGUI_App"
+   CLASS VAR aKeysGlobal SHARED INIT {}
 
    DATA fbox
    DATA menu, oPopup, hAccel
@@ -162,17 +163,23 @@ Return Iif(Len(::aWindows)>0,            ;
 	   ::aWindows[1],                  ;
 	   Iif(Len(::aWindows)>1,::aWindows[2],Nil)), Nil )
 
-METHOD EvalKeyList( nKey ) CLASS HWindow
-   LOCAL cKeyb, nctrl, nPos
+METHOD EvalKeyList( nKey, nctrl ) CLASS HWindow
+   LOCAL nPos
 
-   hwg_writelog( str(nKey) )
+   nctrl := Iif( nctrl==2, FCONTROL, Iif( nctrl==1, FSHIFT, Iif( nctrl==4,FALT,0 ) ) )
+
+   //hwg_writelog( str(nKey)+"/"+str(nctrl) )
    IF !Empty( ::KeyList )
-      cKeyb := hwg_Getkeyboardstate()
-      nctrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
       IF ( nPos := Ascan( ::KeyList,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
          Eval( ::KeyList[ nPos,3 ], Self )
       ENDIF
    ENDIF
+   IF !Empty( ::aKeysGlobal )
+      IF ( nPos := Ascan( ::aKeysGlobal,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
+         Eval( ::aKeysGlobal[ nPos,3 ], Self )
+      ENDIF
+   ENDIF
+
    RETURN .T.
 
 

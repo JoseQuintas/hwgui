@@ -345,21 +345,6 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ::lCtrlPress := .F.
          ENDIF
          // fim bloco sauli
-         /*
-         IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
-            oParent := ::oParent
-            DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
-               oParent := oParent:oParent
-            ENDDO
-            IF oParent != Nil .AND. !Empty( oParent:KeyList )
-               cKeyb := hwg_Getkeyboardstate()
-               nCtrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
-               IF ( nPos := Ascan( oParent:KeyList,{ |a|a[1] == nCtrl .AND. a[2] == wParam } ) ) > 0
-                  Eval( oParent:KeyList[ nPos,3 ], Self )
-               ENDIF
-            ENDIF
-         ENDIF
-         */
          RETURN 1
 
       ELSEIF msg == WM_KEYDOWN

@@ -18,26 +18,6 @@
 #define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
 #endif
 
-#define GDK_BackSpace       0xFF08
-#define GDK_Tab             0xFF09
-#define GDK_Return          0xFF0D
-#define GDK_Escape          0xFF1B
-#define GDK_Delete          0xFFFF
-#define GDK_Home            0xFF50
-#define GDK_Left            0xFF51
-#define GDK_Up              0xFF52
-#define GDK_Right           0xFF53
-#define GDK_Down            0xFF54
-#define GDK_End             0xFF57
-#define GDK_Insert          0xFF63
-
-#define GDK_Shift_L         0xFFE1
-#define GDK_Shift_R         0xFFE2
-#define GDK_Control_L       0xFFE3
-#define GDK_Control_R       0xFFE4
-#define GDK_Alt_L           0xFFE9
-#define GDK_Alt_R           0xFFEA
-
 CLASS HEdit INHERIT HControl
 
    CLASS VAR winclass   INIT "EDIT"
@@ -132,6 +112,7 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
          DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
             oParent := oParent:oParent
          ENDDO
+         /*
          IF oParent != Nil .AND. !Empty( oParent:KeyList )
             // cKeyb := GetKeyboardState()
             // nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
@@ -141,6 +122,7 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
                Return 0
             ENDIF
          ENDIF
+         */
       ENDIF
    ELSEIF msg == WM_SETFOCUS
       IF ::bSetGet == Nil

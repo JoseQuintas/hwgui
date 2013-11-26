@@ -16,6 +16,7 @@
 #include "hbvm.h"
 #include "item.api"
 #include "gtk/gtk.h"
+#include "gdk/gdkkeysyms.h"
 
 void hwg_writelog( const char * sFile, const char * sTraceMsg, ... )
 {
@@ -64,10 +65,6 @@ HB_FUNC( HWG_GETCLIPBOARDTEXT )
    hb_retc( "" );
 }
 
-#define VK_SHIFT          0x10
-#define VK_CONTROL        0x11
-#define VK_MENU           0x12
-
 HB_FUNC( HWG_GETKEYBOARDSTATE )
 {
    char lpbKeyState[256];
@@ -75,11 +72,11 @@ HB_FUNC( HWG_GETKEYBOARDSTATE )
 
    memset( lpbKeyState, 0, 255 );
    if( ulState & 1 )
-      lpbKeyState[ VK_SHIFT ] = 0x80;
+      lpbKeyState[ 0x10 ] = 0x80;  // Shift
    if( ulState & 2 )
-      lpbKeyState[ VK_CONTROL ] = 0x80;
+      lpbKeyState[ 0x11 ] = 0x80;  // Ctrl
    if( ulState & 4 )
-      lpbKeyState[ VK_MENU ] = 0x80;
+      lpbKeyState[ 0x12 ] = 0x80;  // Alt
 
    hb_retclen( lpbKeyState, 255 );
 }

@@ -320,18 +320,22 @@ Local i, aKeys
    IF oDlg == Nil ; oDlg := HCustomWindow():oDefaultParent ; ENDIF
    IF nctrl == Nil ; nctrl := 0 ; ENDIF
 
-   IF !__ObjHasMsg( oDlg,"KEYLIST" )
-      Return .F.
+   IF Empty( lGlobal )
+      IF !__ObjHasMsg( oDlg, "KEYLIST" )
+         RETURN .F.
+      ENDIF
+      aKeys := oDlg:KeyList
+   ELSE
+      aKeys := HWindow():aKeysGlobal
    ENDIF
-   nKey := hwg_gtk_convertkey( nKey )
-   aKeys := oDlg:KeyList
+
    IF block == Nil
 
       IF ( i := Ascan( aKeys,{|a|a[1]==nctrl.AND.a[2]==nkey} ) ) == 0
          Return .F.
       ELSE
-         Adel( oDlg:KeyList, i )
-         Asize( oDlg:KeyList, Len(oDlg:KeyList)-1 )
+         Adel( aKeys, i )
+         Asize( aKeys, Len( aKeys )-1 )
       ENDIF
    ELSE
       IF ( i := Ascan( aKeys,{|a|a[1]==nctrl.AND.a[2]==nkey} ) ) == 0

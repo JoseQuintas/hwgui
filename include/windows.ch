@@ -759,49 +759,167 @@
 #define FCONTROL  8   // 0x08
 #define FALT     16   // 0x10
 
-#define VK_BACK           0x08
-#define VK_TAB            0x09
-#define VK_RETURN         0x0D
-#define VK_LEFT           0x25
-#define VK_UP             0x26
-#define VK_RIGHT          0x27
-#define VK_DOWN           0x28
-#define VK_SHIFT          0x10
-#define VK_CONTROL        0x11
-#define VK_MENU           0x12
-#define VK_PAUSE          0x13
-#define VK_CAPITAL        0x14
-#define VK_ESCAPE         0x1B
+#ifdef __PLATFORM__UNIX
 
-#define VK_SPACE          0x20
-#define VK_PRIOR          0x21
-#define VK_NEXT           0x22
-#define VK_END            0x23
-#define VK_HOME           0x24
+#define GDK_BackSpace       0xFF08
+#define GDK_Tab             0xFF09
+#define GDK_Return          0xFF0D
+#define GDK_Escape          0xFF1B
+#define GDK_Delete          0xFFFF
+#define GDK_Home            0xFF50
+#define GDK_Left            0xFF51
+#define GDK_Up              0xFF52
+#define GDK_Right           0xFF53
+#define GDK_Down            0xFF54
+#define GDK_Page_Up         0xFF55
+#define GDK_Page_Down       0xFF56
+#define GDK_End             0xFF57
+#define GDK_Insert          0xFF63
+#define GDK_Control_L       0xFFE3
+#define GDK_Control_R       0xFFE4
+#define GDK_Shift_L         0xffe1
+#define GDK_Shift_R         0xffe2
+#define GDK_Alt_L           0xFFE9
+#define GDK_Alt_R           0xFFEA
+#define GDK_Menu            0xff67
+#define GDK_Caps_Lock       0xffe5
+#define GDK_Pause           0xff13
+#define GDK_Help            0xff6a
+#define GDK_Scroll_Lock     0xff14
+#define GDK_Select          0xff60
+#define GDK_Print           0xff61
+#define GDK_Execute         0xff62
+
+#define GDK_F1     0xffbe
+#define GDK_F2     0xffbf
+#define GDK_F3     0xffc0
+#define GDK_F4     0xffc1
+#define GDK_F5     0xffc2
+#define GDK_F6     0xffc3
+#define GDK_F7     0xffc4
+#define GDK_F8     0xffc5
+#define GDK_F9     0xffc6
+#define GDK_F10    0xffc7
+#define GDK_F11    0xffc8
+#define GDK_F12    0xffc9
+
+#define GDK_Num_Lock  0xff7f
+#define GDK_KP_0   0xffb0
+#define GDK_KP_1   0xffb1
+#define GDK_KP_2   0xffb2
+#define GDK_KP_3   0xffb3
+#define GDK_KP_4   0xffb4
+#define GDK_KP_5   0xffb5
+#define GDK_KP_6   0xffb6
+#define GDK_KP_7   0xffb7
+#define GDK_KP_8   0xffb8
+#define GDK_KP_9   0xffb9
+#define GDK_KP_Divide   0xffaf
+#define GDK_KP_Multiply 0xffaa
+#define GDK_KP_Add      0xffab
+#define GDK_KP_Separator 0xffac
+#define GDK_KP_Subtract 0xffad
+#define GDK_KP_Decimal  0xffae
+
+#define  VK_RIGHT   GDK_Right
+#define  VK_LEFT    GDK_Left
+#define  VK_HOME    GDK_Home
+#define  VK_END     GDK_End
+#define  VK_DOWN    GDK_Down
+#define  VK_UP      GDK_Up
+#define  VK_NEXT    GDK_Page_Down
+#define  VK_PRIOR   GDK_Page_Up
+#define  VK_INSERT  GDK_Insert
+#define  VK_RETURN  GDK_Return
+#define  VK_TAB     GDK_Tab
+#define  VK_ESCAPE  GDK_Escape
+#define  VK_BACK    GDK_BackSpace
+#define  VK_DELETE  GDK_Delete
+#define  VK_F1      GDK_F1
+#define  VK_F2      GDK_F2
+#define  VK_F3      GDK_F3
+#define  VK_F4      GDK_F4
+#define  VK_F5      GDK_F5
+#define  VK_F6      GDK_F6
+#define  VK_F7      GDK_F7
+#define  VK_F8      GDK_F8
+#define  VK_F9      GDK_F9
+#define  VK_F10     GDK_F10
+#define  VK_F11     GDK_F11
+#define  VK_F12     GDK_F12
+
+#define  VK_SHIFT   GDK_Shift_L
+#define  VK_CONTROL GDK_Control_L
+#define  VK_MENU    GDK_Menu
+#define  VK_HELP    GDK_Help
+#define  VK_PAUSE   GDK_Pause
+#define  VK_CAPITAL GDK_Caps_Lock
+
+#define VK_SCROLL   GDK_Scroll_Lock
+#define VK_SELECT   GDK_Select
+#define VK_PRINT    GDK_Print
+#define VK_EXECUTE  GDK_Execute
+
+#define VK_NUMLOCK  GDK_Num_Lock
+#define VK_NUMPAD0  GDK_KP_0
+#define VK_NUMPAD1  GDK_KP_1
+#define VK_NUMPAD2  GDK_KP_2
+#define VK_NUMPAD3  GDK_KP_3
+#define VK_NUMPAD4  GDK_KP_4
+#define VK_NUMPAD5  GDK_KP_5
+#define VK_NUMPAD6  GDK_KP_6
+#define VK_NUMPAD7  GDK_KP_7
+#define VK_NUMPAD8  GDK_KP_8
+#define VK_NUMPAD9  GDK_KP_9
+#define VK_MULTIPLY  GDK_KP_Multiply
+#define VK_ADD       GDK_KP_Add
+#define VK_SEPARATOR GDK_KP_Separator
+#define VK_SUBTRACT  GDK_KP_Subtract
+#define VK_DECIMAL   GDK_KP_Decimal
+#define VK_DIVIDE    GDK_KP_Divide
+
+#else
+
+#define  VK_RIGHT         0x27
+#define  VK_LEFT          0x25
+#define  VK_HOME          0x24
+#define  VK_END           0x23
+#define  VK_DOWN          0x28
+#define  VK_UP            0x26
+#define  VK_NEXT          0x22
+#define  VK_PRIOR         0x21
+#define  VK_INSERT        0x2D
+#define  VK_RETURN        0x0D
+#define  VK_TAB           0x09
+#define  VK_ESCAPE        0x1B
+#define  VK_BACK          0x08
+#define  VK_DELETE        0x2E
+#define  VK_F1            0x70
+#define  VK_F2            0x71
+#define  VK_F3            0x72
+#define  VK_F4            0x73
+#define  VK_F5            0x74
+#define  VK_F6            0x75
+#define  VK_F7            0x76
+#define  VK_F8            0x77
+#define  VK_F9            0x78
+#define  VK_F10           0x79
+#define  VK_F11           0x7A
+#define  VK_F12           0x7B
+
+#define  VK_SHIFT          0x10
+#define  VK_CONTROL        0x11
+#define  VK_MENU           0x12
+#define  VK_HELP           0x2F
+#define  VK_PAUSE          0x13
+#define  VK_CAPITAL        0x14
+
+#define VK_SCROLL         0x91
 #define VK_SELECT         0x29
 #define VK_PRINT          0x2A
 #define VK_EXECUTE        0x2B
-#define VK_SNAPSHOT       0x2C
-#define VK_INSERT         0x2D
-#define VK_DELETE         0x2E
-#define VK_HELP           0x2F
 
-/*
- * VK_0 - VK_9 are the same as ASCII '0' - '9' (0x30 - 0x39)
- * 0x40 : unassigned
- * VK_A - VK_Z are the same as ASCII 'A' - 'Z' (0x41 - 0x5A)
- */
-
-#define VK_LWIN           0x5B
-#define VK_RWIN           0x5C
-#define VK_APPS           0x5D
-
-/*
- * 0x5E : reserved
- */
-
-#define VK_SLEEP          0x5F
-
+#define VK_NUMLOCK        0x90
 #define VK_NUMPAD0        0x60
 #define VK_NUMPAD1        0x61
 #define VK_NUMPAD2        0x62
@@ -818,33 +936,27 @@
 #define VK_SUBTRACT       0x6D
 #define VK_DECIMAL        0x6E
 #define VK_DIVIDE         0x6F
-#define VK_F1             0x70
-#define VK_F2             0x71
-#define VK_F3             0x72
-#define VK_F4             0x73
-#define VK_F5             0x74
-#define VK_F6             0x75
-#define VK_F7             0x76
-#define VK_F8             0x77
-#define VK_F9             0x78
-#define VK_F10            0x79
-#define VK_F11            0x7A
-#define VK_F12            0x7B
-#define VK_F13            0x7C
-#define VK_F14            0x7D
-#define VK_F15            0x7E
-#define VK_F16            0x7F
-#define VK_F17            0x80
-#define VK_F18            0x81
-#define VK_F19            0x82
-#define VK_F20            0x83
-#define VK_F21            0x84
-#define VK_F22            0x85
-#define VK_F23            0x86
-#define VK_F24            0x87
 
-#define VK_NUMLOCK        0x90
-#define VK_SCROLL         0x91
+#endif
+
+#define VK_SPACE          0x20
+#define VK_SNAPSHOT       0x2C
+
+/*
+ * VK_0 - VK_9 are the same as ASCII '0' - '9' (0x30 - 0x39)
+ * 0x40 : unassigned
+ * VK_A - VK_Z are the same as ASCII 'A' - 'Z' (0x41 - 0x5A)
+ */
+
+#define VK_LWIN           0x5B
+#define VK_RWIN           0x5C
+#define VK_APPS           0x5D
+
+/*
+ * 0x5E : reserved
+ */
+
+#define VK_SLEEP          0x5F
 
 #define SW_HIDE             0
 #define SW_SHOWNORMAL       1

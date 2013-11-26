@@ -92,57 +92,6 @@
 STATIC cNewLine := e"\r\n"
 
 #ifdef __PLATFORM__UNIX
-
-#define GDK_BackSpace       0xFF08
-#define GDK_Tab             0xFF09
-#define GDK_Return          0xFF0D
-#define GDK_Escape          0xFF1B
-#define GDK_Delete          0xFFFF
-#define GDK_Home            0xFF50
-#define GDK_Left            0xFF51
-#define GDK_Up              0xFF52
-#define GDK_Right           0xFF53
-#define GDK_Down            0xFF54
-#define GDK_Page_Up         0xFF55
-#define GDK_Page_Down       0xFF56
-#define GDK_End             0xFF57
-#define GDK_Insert          0xFF63
-#define GDK_Control_L       0xFFE3
-#define GDK_Control_R       0xFFE4
-
-#define  KEY_RIGHT   GDK_Right
-#define  KEY_LEFT    GDK_Left
-#define  KEY_HOME    GDK_Home
-#define  KEY_END     GDK_End
-#define  KEY_DOWN    GDK_Down
-#define  KEY_UP      GDK_Up
-#define  KEY_PGDN    GDK_Page_Down
-#define  KEY_PGUP    GDK_Page_Up
-#define  KEY_INSERT  GDK_Insert
-#define  KEY_RETURN  GDK_Return
-#define  KEY_TAB     GDK_Tab
-#define  KEY_ESCAPE  GDK_Escape
-#define  KEY_BACK    GDK_BackSpace
-#define  KEY_DELETE  GDK_Delete
-#else
-#define  KEY_RIGHT   VK_RIGHT
-#define  KEY_LEFT    VK_LEFT
-#define  KEY_HOME    VK_HOME
-#define  KEY_END     VK_END
-#define  KEY_DOWN    VK_DOWN
-#define  KEY_UP      VK_UP
-#define  KEY_PGDN    VK_NEXT
-#define  KEY_PGUP    VK_PRIOR
-#define  KEY_INSERT  VK_INSERT
-#define  KEY_RETURN  VK_RETURN
-#define  KEY_TAB     VK_TAB
-#define  KEY_ESCAPE  VK_ESCAPE
-#define  KEY_BACK    VK_BACK
-#define  KEY_DELETE  VK_DELETE
-#endif
-#define  KEY_Y       89
-
-#ifdef __PLATFORM__UNIX
 REQUEST  HB_CODEPAGE_UTF8
 #endif
 
@@ -369,7 +318,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 
    ELSEIF msg == WM_CHAR
       // If not readonly mode and Ctrl key isn't pressed
-      IF !( Asc( SubStr(hwg_GetKeyboardState( lParam ),VK_CONTROL + 1,1 ) ) >= 128 )
+      IF !( Asc( SubStr(hwg_GetKeyboardState( lParam ),0x12,1 ) ) >= 128 )
          ::putChar( hwg_PtrToUlong( wParam ) )
       ENDIF
 
@@ -923,7 +872,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
 
 METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
    LOCAL cKeyb := hwg_Getkeyboardstate( lParam ), cLine, lUnsel := .T., lInvAll := .F.
-   LOCAL nCtrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
+   LOCAL nCtrl := iif( Asc( SubStr(cKeyb,0x12,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,0x11,1 ) ) >= 128,FSHIFT,0 ) )
    LOCAL nLine
 
    //hwg_writelog( "keydown: " + str(nKeyCode) )
@@ -940,10 +889,10 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
       hced_ShowCaret( ::hEdit )
    ENDIF
    IF nCtrl == FSHIFT .AND. Empty( ::aPointM2[P_Y] ) .AND. ;
-         Ascan( { KEY_RIGHT, KEY_LEFT, KEY_HOME, KEY_END, KEY_DOWN, KEY_UP, KEY_PGUP, KEY_PGDN }, nKeyCode ) != 0
+         Ascan( { VK_RIGHT, VK_LEFT, VK_HOME, VK_END, VK_DOWN, VK_UP, VK_PRIOR, VK_NEXT }, nKeyCode ) != 0
       ::PCopy( ::aPointC, ::aPointM1 )
    ENDIF
-   IF nKeyCode == KEY_RIGHT
+   IF nKeyCode == VK_RIGHT
       IF ::nPosC >= ::aLines[nLine,AL_NCHARS]
          ::nPosF ++
          ::Paint( .F. )
@@ -957,7 +906,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
             ::aLines[nLine,AL_Y2] )
       ENDIF
 
-   ELSEIF nKeyCode == KEY_LEFT
+   ELSEIF nKeyCode == VK_LEFT
       IF ::nPosC > 0
          ::SetCaretPos( SETC_LEFT )
       ELSEIF ::nPosF > 0
@@ -971,7 +920,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == KEY_HOME
+   ELSEIF nKeyCode == VK_HOME
       IF ::nPosF > 0
          ::nPosF := 0
          ::Paint( .F. )
@@ -984,7 +933,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == KEY_END
+   ELSEIF nKeyCode == VK_END
       IF ::aLines[nLine,AL_NCHARS] < hced_Len( Self, ::aText[::nLineF+nLine-1] )
          ::nPosF := Int( ( ( hced_Len( Self, ::aText[::nLineF+nLine-1] ) - ;
             ::aLines[nLine,AL_NCHARS] ) ) * 7 / 6 )
@@ -998,7 +947,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == KEY_UP
+   ELSEIF nKeyCode == VK_UP
       ::LineUp()
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
@@ -1008,7 +957,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
                ::aLines[::nLineC+1,AL_Y2] )
          ENDIF
       ENDIF
-   ELSEIF nKeyCode == KEY_DOWN
+   ELSEIF nKeyCode == VK_DOWN
       ::LineDown()
       IF nCtrl == FSHIFT .AND. ::nLineC > 1
          ::PCopy( ::aPointC, ::aPointM2 )
@@ -1016,7 +965,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC-1,AL_Y1], ::nClientWidth, ;
             ::aLines[::nLineC,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == KEY_PGDN    // Page Down
+   ELSEIF nKeyCode == VK_NEXT    // Page Down
       IF nCtrl == FCONTROL
          ::Bottom()
       ELSE
@@ -1027,7 +976,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          lUnSel := .F.
          lInvAll := .T.
       ENDIF
-   ELSEIF nKeyCode == KEY_PGUP    // Page Up
+   ELSEIF nKeyCode == VK_PRIOR    // Page Up
       IF nCtrl == FCONTROL
          ::Top()
       ELSE
@@ -1038,14 +987,14 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          lUnSel := .F.
          lInvAll := .T.
       ENDIF
-   ELSEIF nKeyCode == KEY_DELETE
+   ELSEIF nKeyCode == VK_DELETE
       IF nCtrl == FSHIFT .AND. !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
       ENDIF
       ::putChar( 7 )
 
-   ELSEIF nKeyCode == KEY_INSERT
+   ELSEIF nKeyCode == VK_INSERT
       IF nCtrl == 0
          ::lInsert := !::lInsert
          lUnSel := .F.
@@ -1063,7 +1012,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
                ::nHeight )
          ENDIF
       ENDIF
-   ELSEIF nKeyCode == KEY_Y
+   ELSEIF nKeyCode == 89      // 'Y'
       IF nCtrl == FCONTROL
          ::DelLine( ::nLineF+nLine-1 )
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
@@ -1077,7 +1026,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          lInvAll := .T.
       ENDIF
 #ifdef __PLATFORM__UNIX
-   ELSEIF nKeyCode < 0xFE00 .OR. nKeyCode == KEY_RETURN .OR. nKeyCode == KEY_BACK .OR. nKeyCode == KEY_TAB .OR. nKeyCode == KEY_ESCAPE
+   ELSEIF nKeyCode < 0xFE00 .OR. nKeyCode == VK_RETURN .OR. nKeyCode == VK_BACK .OR. nKeyCode == VK_TAB .OR. nKeyCode == VK_ESCAPE
       ::putChar( nKeyCode )
 #endif
    ENDIF
@@ -1108,7 +1057,7 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
    ENDIF
    nLine := ::nLineC + ::nLineF - 1
 
-   IF nKeyCode == KEY_RETURN
+   IF nKeyCode == VK_RETURN
       ::AddLine( nLine + 1 )
       ::aText[nLine+1] := hced_Substr( Self, ::aText[nLine], ::nPosF + ::nPosC + 1 )
       ::aText[nLine] := hced_Left( Self, ::aText[nLine], ::nPosF + ::nPosC )
@@ -1130,17 +1079,17 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
       ::lUpdated := .T.
       RETURN Nil
 
-   ELSEIF nKeyCode == KEY_TAB
+   ELSEIF nKeyCode == VK_TAB
       IF ::lInsert
          ::aText[nLine] := hced_Stuff( Self, ::aText[nLine], ::nPosF + ::nPosC + 1, 0, Space( ::nTabLen ) )
       ENDIF
       ::nPosC += ::nTabLen
 
-   ELSEIF nKeyCode == KEY_ESCAPE
+   ELSEIF nKeyCode == VK_ESCAPE
       RETURN Nil
 
    ELSE
-      IF nKeyCode == KEY_BACK .OR. nKeyCode == 7
+      IF nKeyCode == VK_BACK .OR. nKeyCode == 7
          IF !Empty( ::aPointM2[P_Y] )
             // there is text selected
             hced_DelText( Self, ::aPointM1, ::aPointM2 )
@@ -1159,7 +1108,7 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
             ::lUpdated := .T.
             RETURN Nil
          ELSE
-            IF nKeyCode == KEY_BACK
+            IF nKeyCode == VK_BACK
                IF ::nPosC == 0
                   // If this is a beginning of a line, merge it with previous
                   IF nLine > 1

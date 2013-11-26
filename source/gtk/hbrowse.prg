@@ -32,23 +32,6 @@ REQUEST BOF
 #endif
 #define HDM_GETITEMCOUNT    4608
 
-#define GDK_BackSpace       0xFF08
-#define GDK_Tab             0xFF09
-#define GDK_Return          0xFF0D
-#define GDK_Escape          0xFF1B
-#define GDK_Delete          0xFFFF
-#define GDK_Home            0xFF50
-#define GDK_Left            0xFF51
-#define GDK_Up              0xFF52
-#define GDK_Right           0xFF53
-#define GDK_Down            0xFF54
-#define GDK_Page_Up         0xFF55
-#define GDK_Page_Down       0xFF56
-#define GDK_End             0xFF57
-#define GDK_Insert          0xFF63
-#define GDK_Control_L       0xFFE3
-#define GDK_Control_R       0xFFE4
-
 STATIC crossCursor := nil
 STATIC arrowCursor := nil
 STATIC vCursor     := nil

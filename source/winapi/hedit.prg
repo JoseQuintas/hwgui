@@ -187,12 +187,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   RETURN 0
                ENDIF
             ELSEIF wParam == VK_TAB     // Tab
-/*               IF Asc( Substr( hwg_Getkeyboardstate(), VK_SHIFT+1, 1 ) ) >= 128
-                  hwg_GetSkip( oParent,::handle,-1 )
-               ELSE
-                  hwg_GetSkip( oParent,::handle,1 )
-               ENDIF
-               Return 0   */
                //****   Paulo Flecha
                IF Asc( SubStr( hwg_Getkeyboardstate(), VK_SHIFT + 1, 1 ) ) >= 128
                   IF !hwg_GetSkip( oParent, ::handle, - 1 ) // First Get
@@ -284,20 +278,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       IF ::bKeyUp != Nil .AND. ( nPos := Eval( ::bKeyUp, Self, msg, wParam, lParam ) ) != -1
          RETURN nPos
       ENDIF
-      /*
-      IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
-         DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
-            oParent := oParent:oParent
-         ENDDO
-         IF oParent != Nil .AND. !Empty( oParent:KeyList )
-            cKeyb := hwg_Getkeyboardstate()
-            nctrl := iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, iif( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128,FSHIFT,0 ) )
-            IF ( nPos := Ascan( oParent:KeyList,{ |a|a[1] == nctrl .AND. a[2] == wParam } ) ) > 0
-               Eval( oParent:KeyList[ nPos,3 ], Self )
-            ENDIF
-         ENDIF
-      ENDIF
-      */
    ELSEIF msg == WM_GETDLGCODE
       IF !::lMultiLine
          RETURN DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS

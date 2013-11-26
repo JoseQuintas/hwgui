@@ -8,45 +8,22 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 #define  MENU_FIRST_ID   32000
 #define  CONTEXTMENU_FIRST_ID   32900
 #define  FLAG_DISABLED   1
 #define  FLAG_CHECK      2
 
-#define GDK_F1 0xffbe
-#define GDK_F2 0xffbf
-#define GDK_F3 0xffc0
-#define GDK_F4 0xffc1
-#define GDK_F5 0xffc2
-#define GDK_F6 0xffc3
-#define GDK_F7 0xffc4
-#define GDK_F8 0xffc5
-#define GDK_F9 0xffc6
-#define GDK_F10 0xffc7
-#define GDK_F11 0xffc8
-#define GDK_F12 0xffc9
-
-#define GDK_Home 0xff50
-#define GDK_Left 0xff51
-#define GDK_Up 0xff52
-#define GDK_Right 0xff53
-#define GDK_Down 0xff54
-#define GDK_Page_Up 0xff55
-#define GDK_Page_Down 0xff56
-#define GDK_End 0xff57
-
-
 STATIC _aMenuDef, _oWnd, _aAccel, _nLevel, _Id, _oMenu, _oBitmap
+/*
 STATIC aKeysTable := { { VK_F1,GDK_F1 }, { VK_F2,GDK_F2 }, { VK_F3,GDK_F3 }, ;
       { VK_F4, GDK_F4 }, { VK_F5, GDK_F5 }, { VK_F6, GDK_F6 }, { VK_F7, GDK_F7 }, ;
       { VK_F8, GDK_F8 }, { VK_F9, GDK_F9 }, { VK_F10, GDK_F10 }, { VK_F11, GDK_F11 }, ;
       { VK_F12, GDK_F12 }, { VK_HOME, GDK_Home }, { VK_LEFT, GDK_Left }, { VK_END, GDK_End }, ;
       { VK_RIGHT, GDK_Right }, { VK_DOWN, GDK_Down }, { VK_UP, GDK_Up } }
-
+*/
 CLASS HMenu INHERIT HObject
 
    DATA handle
@@ -434,10 +411,12 @@ FUNCTION hwg_gtk_convertkey( nKey )
 
    IF nKey >= 65 .AND. nKey <= 90
       nKey += 32
+/*
    ELSEIF ( n := Ascan( aKeysTable, { |a|a[1] == nKey } ) ) > 0
       nKey := aKeysTable[n,2]
    ELSE
       nKey += 0xFF00
+*/
    ENDIF
 
    RETURN nKey

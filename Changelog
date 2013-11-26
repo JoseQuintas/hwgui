@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-11-26 18:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  - source/common/procmisc/Makefile
+  - source/common/xml/Makefile
+    - redundant files removed
+
 2013-11-26 14:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/htree.prg
     * Removed redundant key definitions

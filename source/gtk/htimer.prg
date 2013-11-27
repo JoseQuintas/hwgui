@@ -22,6 +22,9 @@ CLASS HTimer INHERIT HObject
    DATA oParent
    DATA bAction
    DATA name
+   ACCESS Interval     INLINE ::value
+   ASSIGN Interval(x)  INLINE ::value := x, ::End(), ;
+         Iif( x == 0, .T., ::tag := hwg_SetTimer( ::id,x ) )
 
    METHOD New( oParent, id, value, bAction )
    METHOD End()

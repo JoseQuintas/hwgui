@@ -1246,8 +1246,12 @@ Local i, arr := GetTextArr(), cLine, cfirst, cSecond, nSkip, arrfnc := {}, lClas
             cSecond == "procedure" .OR. cSecond == "func" .OR. cSecond == "proc" ) )
          Aadd( arrfnc, { arr[i], i } )
       ENDIF
-      IF cfirst == "class" .or. ( cfirst == "create" .and. ( cSecond := hb_TokenPtr( cLine, @nSkip ) ) == "class" )
-         lClassDef := .T.
+      IF cfirst == "class" .or. ( cfirst == "create" .AND. ( cSecond := hb_TokenPtr( cLine, @nSkip ) ) == "class" )
+         IF cfirst == "create" .OR. ( !( ( cSecond := hb_TokenPtr( cLine, @nSkip ) ) == "var" ) ;
+               .AND. !( cSecond == "data" ) )
+            lClassDef := .T.
+            Aadd( arrfnc, { arr[i], i } )
+         ENDIF
       ELSEIF cfirst == "end" .or. cfirst == "endclass"
          lClassDef := .F.
       ENDIF

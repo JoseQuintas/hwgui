@@ -1231,7 +1231,7 @@ Local i, arr := GetTextArr()
 Return Nil
 
 Static Function Funclist()
-Local i, arr := GetTextArr(), cLine, cfirst, cSecond, nSkip, arrfnc := {}
+Local i, arr := GetTextArr(), cLine, cfirst, cSecond, nSkip, arrfnc := {}, lClassDef := .F.
 
    IF Empty( arr )
       Return Nil
@@ -1241,10 +1241,15 @@ Local i, arr := GetTextArr(), cLine, cfirst, cSecond, nSkip, arrfnc := {}
       nSkip := 0
       cfirst := hb_TokenPtr( cLine, @nSkip )
       IF cfirst == "function" .OR. cfirst == "procedure" .OR. ;
-            cfirst == "method" .OR. cfirst == "func" .OR. cfirst == "proc" .OR. ;
+            ( cfirst == "method" .AND. !lClassDef ) .OR. cfirst == "func" .OR. cfirst == "proc" .OR. ;
             ( cfirst == "static" .AND. ( ( cSecond := hb_TokenPtr( cLine, @nSkip ) ) == "function" .OR. ;
             cSecond == "procedure" .OR. cSecond == "func" .OR. cSecond == "proc" ) )
          Aadd( arrfnc, { arr[i], i } )
+      ENDIF
+      IF cfirst == "class" .or. ( cfirst == "create" .and. ( cSecond := hb_TokenPtr( cLine, @nSkip ) ) == "class" )
+         lClassDef := .T.
+      ELSEIF cfirst == "end" .or. cfirst == "endclass"
+         lClassDef := .F.
       ENDIF
    NEXT
    IF !Empty( arrfnc ) .AND. ( i := hwg_WChoice( arrfnc, "Functions list",,,HWindow():GetMain():oFont ) ) != 0
@@ -2019,7 +2024,7 @@ Local oDlg
         STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + DS_CENTER
 
    @ 20,30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
-   @ 20,60 SAY "Version 2.01" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 20,60 SAY "Version 2.03" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
 #if !defined( __PLATFORM__UNIX )
    @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;

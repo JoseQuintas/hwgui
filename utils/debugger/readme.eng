@@ -127,11 +127,13 @@
 
          Object inspector - view of the variables and methods of a chosen
   object, to open it doubleclick ( or press Enter ) on appropriate line in
-  a Variables dialog window, or input the command :inspect ( see below ).
+  a Variables dialog window, in already opened Inspector, or input the command
+  :inspect ( see below ).
 
          Array inspector - view of the variables and methods of a chosen
   array, to open it doubleclick ( or press Enter ) on appropriate line in
-  a Variables dialog window, or input the command :inspect ( see below ).
+  a Variables dialog window, in already opened Inspector, or input the command
+  :inspect ( see below ).
 
          Evaluation of expressions during debug - enter the expression in the
   input window at the bottom of the main window of the debugger and click OK

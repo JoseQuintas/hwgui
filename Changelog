@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-12-03 11:37 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/windows.c
+    * New function added, hwg_SendMessPtr(), it is the same as
+      hwg_SendMessage(), but returns pointer instead of number
+  * source/winapi/hwindow.prg
+    ! HMainWIndow():GetMdiActive() fixed.
+
 2013-11-28 14:47 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/debugger/hwgdebug.prg
     ! Small fix

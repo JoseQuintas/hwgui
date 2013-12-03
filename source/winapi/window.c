@@ -537,6 +537,19 @@ HB_FUNC( HWG_SENDMESSAGE )
    hb_strfree( hText );
 }
 
+HB_FUNC( HWG_SENDMESSPTR )
+{
+   void *hText;
+   LPCTSTR lpText = HB_PARSTR( 4, &hText, NULL );
+
+   HB_RETHANDLE( SendMessage( ( HWND ) HB_PARHANDLE( 1 ),  // handle of destination window
+               ( UINT ) hb_parni( 2 ),  // message to send
+               HB_ISPOINTER( 3 ) ? ( LPARAM ) HB_PARHANDLE( 3 ) : ( LPARAM ) hb_parnl( 3 ),
+               lpText ? ( LPARAM ) lpText : ( HB_ISPOINTER( 4 ) ? ( LPARAM ) HB_PARHANDLE( 4 ) : ( LPARAM ) hb_parnl( 4 ) )
+          ) );
+   hb_strfree( hText );
+}
+
 HB_FUNC( HWG_POSTMESSAGE )
 {
 

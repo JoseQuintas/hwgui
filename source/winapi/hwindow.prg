@@ -261,7 +261,7 @@ CLASS HMainWindow INHERIT HWindow
    METHOD Activate( lShow, lMaximized, lMinimized, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
-   METHOD GetMdiActive()  INLINE ::FindWindow( hwg_Sendmessage( ::GetMain():handle, WM_MDIGETACTIVE,0,0 ) )
+   METHOD GetMdiActive()  INLINE ::FindWindow( hwg_Sendmessptr( ::GetMain():handle, WM_MDIGETACTIVE,0,0 ) )
 
 ENDCLASS
 

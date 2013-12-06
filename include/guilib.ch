@@ -1362,7 +1362,6 @@ Added by Marcos Antonio Gambeta
             [HEIGHT <h>];
           => ;
    [ <osplash> := ] HSplash():Create(<oBitmap>,<otime>,<.res.>,<w>,<h>);
-   [; hwg_SetCtrlName( <osplash>,<(osplash)> )]
 
 // Nice Buttons by Luiz Rafael
 #xcommand @ <x>,<y> NICEBUTTON [ <oBut> CAPTION ] <caption> ;

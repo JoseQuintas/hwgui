@@ -1,4 +1,26 @@
 
+#xcommand @ <x>,<y> SAY [ <lExt: EXTENDED,EXT> ] [ <oSay> CAPTION ] <caption> ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [<lTransp: TRANSPARENT>]   ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ ON CLICK <bClick> ]      ;
+             [ ON DBLCLICK <bDblClick> ];
+             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
+             [ STYLE <nStyle> ]         ;
+             [ FONT <oFont> ]           ;
+             [ TOOLTIP <ctoolt> ]       ;
+          => ;
+          [<oSay> := ] HStaticEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>, ;
+             <color>,<bcolor>,<.lTransp.>,<bClick>,<bDblClick>,<bOther> );;
+          [; hwg_SetCtrlName( <oSay>,<(oSay)> )]
+
 #xcommand @ <x>,<y> BUTTONEX [ <oBut> CAPTION ] <caption> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;
@@ -57,3 +79,24 @@
                             <{bGfocus}>, <{bLfocus}>, <.lNoScroll.>, <.lNoBord.>,;
                             <{bKeyDown}>, <{bPosChg}>, <{bDispInfo}>, <nItemCount>,;
                              <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> ,<aBit>,<a>)
+
+#xcommand @ <x>, <y>  CONTAINER [<oCnt>] [OF <oWnd>] ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ BACKSTYLE <nbackStyle>]    ;
+             [ COLOR <tcolor> ]         ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ STYLE <ncStyle>]          ;
+             [ <lnoBorder: NOBORDER> ]   ;
+             [ ON LOAD <bLoad> ]        ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;           
+             [ <lTabStop: TABSTOP> ]   ;
+             [ ON REFRESH <bRefresh> ]      ;
+             [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON OTHERMESSAGES <bOther>  ] ;
+          =>  ;
+          [<oCnt> := ] HContainerEx():New(<oWnd>, <nId>,IIF(<.lTabStop.>,WS_TABSTOP,),;
+               <x>, <y>, <width>, <height>, <ncStyle>, <bSize>, <.lnoBorder.>,<bInit>,<nbackStyle>,<tcolor>,<bcolor>,;
+               <bLoad>,<bRefresh>,<bOther>);;
+          [; hwg_SetCtrlName( <oCnt>,<(oCnt)> )]

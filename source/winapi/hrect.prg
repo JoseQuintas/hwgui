@@ -5,7 +5,6 @@
  * C level class HRect (Panel)
  *
  * Copyright 2004 Ricardo de Moura Marques <ricardo.m.marques@caixa.gov.br>
- * www - http://www.kresin.ru
 */
 
 #include "windows.ch"
@@ -21,7 +20,6 @@ CLASS HRect INHERIT HControl
 
    METHOD New( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nStyle )
 
-
 ENDCLASS
 
 //----------------------------------------------------------------
@@ -31,7 +29,7 @@ METHOD New( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nStyle ) CLASS HRe
    IF nStyle = NIL
       nStyle := 3
    ENDIF
-   nCor1 := COLOR_3DHILIGHT
+
    IF lPress
       nCor2 := COLOR_3DHILIGHT
       nCor1 := COLOR_3DSHADOW
@@ -67,7 +65,7 @@ CLASS VAR winclass   INIT "STATIC"
 
    METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, nColor )
    METHOD Activate()
-   METHOD Paint()
+   METHOD Paint( lpdis )
 
 ENDCLASS
 
@@ -94,7 +92,7 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, nColor ) CLASS 
    RETURN Self
 
 //---------------------------------------------------------------------------
-METHOD Activate CLASS HRect_Line
+METHOD Activate() CLASS HRect_Line
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )

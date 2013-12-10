@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2013-12-10 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * contrib/misc/miscfunc.prg
+    * two functions added from 2.17: hwg_TxtRect() and hwg_SetAll()
+
 2013-12-06 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/guilib.ch
     ! Small fix

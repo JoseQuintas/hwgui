@@ -120,7 +120,7 @@ typedef struct
 } TEDIT;
 
 #define  NUMBER_OF_FONTS  16
-#define  TEDATTR_MAX     256
+#define  TEDATTR_MAX    1024
 
 char * szDelimiters = " .,-";
 

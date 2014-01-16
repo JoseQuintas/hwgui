@@ -35,10 +35,10 @@ CLASS HEdit INHERIT HControl
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
       tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bKeyDown, bChange )
    METHOD Activate()
+   METHOD Init()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bDraw, bGfocus, ;
       bLfocus, ctooltip, tcolor, bcolor, cPicture, lMaxLength )
-   METHOD Init()
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, self )
    METHOD Refresh()
    METHOD SetText( c )
@@ -91,9 +91,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
          ::oParent:AddEvent( EN_KILLFOCUS, ::id, bLfocus )
       ENDIF
    ENDIF
-   IF bChange != Nil
-      ::oParent:AddEvent( EN_CHANGE, ::id, bChange  )
-   ENDIF
+   ::bChange := bChange
 
    RETURN Self
 
@@ -103,6 +101,21 @@ METHOD Activate CLASS HEdit
       ::handle := hwg_Createedit( ::oParent:handle, ::id, ;
          ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title )
       ::Init()
+   ENDIF
+
+   RETURN Nil
+
+METHOD Init()  CLASS HEdit
+
+   IF !::lInit
+      ::Super:Init()
+      ::nHolder := 1
+      hwg_Setwindowobject( ::handle, Self )
+      Hwg_InitEditProc( ::handle )
+      ::Refresh()
+      IF ::bChange != Nil
+         ::oParent:AddEvent( EN_CHANGE, ::id, ::bChange  )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -120,9 +133,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
       IF ::bSetGet != Nil
          IF msg == WM_CHAR
-            IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, wParam, lParam ) ) != -1
-               RETURN nPos
-            ENDIF
             IF wParam == VK_BACK
                ::lFirst := .F.
                hwg_SetGetUpdated( Self )
@@ -321,18 +331,6 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    ENDIF
 
    RETURN Self
-
-METHOD Init()  CLASS HEdit
-
-   IF !::lInit
-      ::Super:Init()
-      ::nHolder := 1
-      hwg_Setwindowobject( ::handle, Self )
-      Hwg_InitEditProc( ::handle )
-      ::Refresh()
-   ENDIF
-
-   RETURN Nil
 
 METHOD Refresh()  CLASS HEdit
    LOCAL vari

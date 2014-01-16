@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-01-16 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hedit.prg
+    ! bKeydown handling fixed ( bug, reported by Paulo Flecha )
+  * source/winapi/hfrmtmpl.prg
+    ! problem with duplex printing fixed
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit_w.c
+    * Max line size is increased from 256 to 1024
+
 2013-12-10 14:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * contrib/misc/miscfunc.prg
     * two functions added from 2.17: hwg_TxtRect() and hwg_SetAll()

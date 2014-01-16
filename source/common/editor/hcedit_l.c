@@ -118,7 +118,7 @@ typedef struct
 } TEDIT;
 
 #define  NUMBER_OF_FONTS  16
-#define  TEDATTR_MAX     256
+#define  TEDATTR_MAX    1024
 
 #define WM_PAINT            15
 #define WM_HSCROLL         276

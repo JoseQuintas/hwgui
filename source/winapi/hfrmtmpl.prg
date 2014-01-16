@@ -1165,7 +1165,9 @@ Private oReport := Self
    xTemp := hwg_Getdevicearea( oPrinter:hDCPrn )
 #endif
    ::nKoefPix := ( ( xTemp[1]/xTemp[3] + xTemp[2]/xTemp[4] ) / 2 ) / 3.8
-   oPrinter:SetMode( nOrientation, nDuplex )
+   IF !Empty( nPageType ) .AND. nPageType == PAGE_FIRST
+      oPrinter:SetMode( nOrientation, nDuplex )
+   ENDIF
    ::nKoefX := oPrinter:nWidth / nPWidth
    ::nKoefY := oPrinter:nHeight / nPHeight
    IF ( aMethod := aGetSecond( ::aMethods,"onrepinit" ) ) != Nil

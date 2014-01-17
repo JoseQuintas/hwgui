@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-01-17 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcombo.prg
+    * Combobox control can accept now multidimensional arrays.
+      The :Getvalue() method is changed to be possible to return other array items,
+      for example:
+      Local aItems := { { "First", "Num 1", 1 }, { "Second", "Num 2", 2 } }
+      ...
+      @ 10,10 COMBOBOX oCombo ITEMS aItems ... TEXT
+      ...
+      someVar1 := oCombo:GetValue()   // "First"
+      someVar2 := oCombo:GetValue(2)  // "NUM 1"
+      someVar3 := oCombo:GetValue(3)  // 1
+
 2014-01-16 15:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hprogres.prg
     ! Removed tracing code

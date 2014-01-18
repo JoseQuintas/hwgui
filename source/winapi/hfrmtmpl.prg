@@ -363,7 +363,11 @@ Private oDlg
          block := ::aMethods[ i,2,1 ]
       ENDIF
       IF ::aMethods[ i,1 ] == "ondlginit"
-         ::oDlg:bInit := block
+         IF nMode == 1
+            Eval( block,Self )
+         ELSE
+            ::oDlg:bInit := block
+         ENDIF
       ELSEIF ::aMethods[ i,1 ] == "onforminit"
          Eval( block,Self,p1,p2,p3 )
       ELSEIF ::aMethods[ i,1 ] == "onpaint"

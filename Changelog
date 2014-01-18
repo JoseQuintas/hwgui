@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-01-18 13:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hfrmtmpl.prg
+    * onDlgInit works now for main windows
+  + samples/hwgui_xp.rc
+  * samples/hbmk.bat
+    * WindowsXP.Manifest is now linked, if you use the hbmk
+
 2014-01-17 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcombo.prg
     * Combobox control can accept now multidimensional arrays.

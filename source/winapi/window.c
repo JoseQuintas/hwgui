@@ -76,7 +76,7 @@ HB_FUNC( HWG_DOEVENTS )
 }
 
 /*  Creates main application window
-    InitMainWindow( szAppName, cTitle, cMenu, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )
+    InitMainWindow( pObject, szAppName, cTitle, cMenu, hIcon, nBkColor, nStyle, nExclude, nLeft, nTop, nWidth, nHeight )
 */
 
 HB_FUNC( HWG_INITMAINWINDOW )
@@ -91,10 +91,11 @@ HB_FUNC( HWG_INITMAINWINDOW )
    LPCTSTR lpTitle = HB_PARSTR( 3, &hTitle, NULL );
    LPCTSTR lpMenu = HB_PARSTR( 4, &hMenu, NULL );
    LONG nStyle = hb_parnl( 7 );
-   int x = hb_parnl( 8 );
-   int y = hb_parnl( 9 );
-   int width = hb_parnl( 10 );
-   int height = hb_parnl( 11 );
+   LONG nExcl = hb_parnl( 8 );
+   int x = hb_parnl( 9 );
+   int y = hb_parnl( 10 );
+   int width = hb_parnl( 11 );
+   int height = hb_parnl( 12 );
 
    if( !aWindows[0] )
    {
@@ -117,7 +118,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
       if( RegisterClass( &wndclass ) )
       {
          hWnd = CreateWindowEx( ExStyle, lpAppName, lpTitle,
-               WS_OVERLAPPEDWINDOW | nStyle,
+               ( WS_OVERLAPPEDWINDOW & ~nExcl ) | nStyle,
                x, y,
                ( !width ) ? ( LONG ) CW_USEDEFAULT : width,
                ( !height ) ? ( LONG ) CW_USEDEFAULT : height,

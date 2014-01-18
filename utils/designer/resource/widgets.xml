@@ -16,6 +16,7 @@
       <property name="FromStyle" type="C" value="Popup" />
       <property name="Icon" type="C" value=""/>
       <property name="Bitmap" type="C" />
+      <property name="BackColor" type="N" value="-1" />
       <property name="Modal" type="L" value="False" />
       <property name="SystemMenu" type="L" value="True" />
       <property name="Minimizebox" type="L" value="False" />
@@ -576,7 +577,7 @@
          <code2><![CDATA[ oCtrl:tColor := Val( value ) ]]></code2>
       </property>
       <property name="BackColor" dlg="Color">
-         <code2><![CDATA[ oCtrl:SetColor(,Val(value)) ]]></code2>
+         <code2><![CDATA[ Iif( Val(value)>=0,oCtrl:SetColor(,Val(value)),.T.) ]]></code2>
       </property>
       <property name="Font" dlg="Font">
          <code2><![CDATA[ oCtrl:oFont := value ]]></code2>

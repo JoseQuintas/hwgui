@@ -8,6 +8,30 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-01-18 21:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * build number is increased to 2
+    * INIT WINDOW ... MAIN
+         COLOR clause is renamed to SYSCOLOR ( it is followed by the system 
+         color value, COLOR_3DLIGHT, for example ).
+         New COLOR clause added, it is the integer value, as for colors in controls
+         EXCLUDE clause added, it is followed by the styles, which must be excluded
+            from default. For example, to create a window without the maximize box,
+            specify EXCLUDE WS_MAXIMIZEBOX
+    * INIT WINDOW ... MDICHILD
+    * INIT WINDOW ... CHILD
+         New COLOR clause added, the same as in INIT WINDOW ... MAIN
+  * source/winapi/hdialog.prg
+    * some formatting
+  * source/winapi/hwindow.prg
+  * source/winapi/window.c
+    * some changes due to new clauses
+  * source/winapi/hfrmtmpl.prg
+  * utils/designer/resource/widgets.xml
+    * "backcolor" property added for the form
+  * utils/designer/samples/example.prg
+    * small changes
+
 2014-01-18 13:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hfrmtmpl.prg
     * onDlgInit works now for main windows

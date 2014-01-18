@@ -214,7 +214,7 @@ Return Self
 METHOD Show( nMode,p1,p2,p3 ) CLASS HFormTmpl
 Local i, j, cType
 Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F., lExitOnEnter := .F.
-Local xProperty, block, bFormExit,nstyle
+Local xProperty, block, bFormExit, nStyle, nExclude := 0, bColor := -1
 Local lModal := .f.
 Local lMdi :=.F.
 Local lMdiChild := .f.
@@ -265,11 +265,11 @@ Private oDlg
          endif
       ELSEIF ::aProp[ i,1 ] == "minimizebox"
          IF xProperty 
-            nStyle += WS_MINIMIZEBOX
+            nExclude += WS_MINIMIZEBOX
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "maximizebox"
          IF xProperty 
-            nStyle += WS_MAXIMIZEBOX
+            nExclude += WS_MAXIMIZEBOX
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "absalignent"
          IF !xProperty 
@@ -301,9 +301,10 @@ Private oDlg
          ELSEIF Lower( xProperty ) == "child"
             nStyle += WS_CHILD
          ENDIF
-
       ELSEIF ::aProp[ i,1 ] == "bitmap"
          cBitmap := xProperty
+      ELSEIF ::aProp[ i,1 ] == "backcolor"
+         bColor := xProperty
       ENDIF
    NEXT
 
@@ -320,9 +321,10 @@ Private oDlg
    IF nMode == Nil .OR. nMode == 2
       INIT DIALOG ::oDlg TITLE cTitle         ;
           AT nLeft, nTop SIZE nWidth, nHeight ;
-          STYLE nStyle ;
+          STYLE nStyle + nExclude;
           FONT oFont ;
-          BACKGROUND BITMAP oBmp
+          BACKGROUND BITMAP oBmp ;
+          COLOR Iif( bColor>=0, bColor, Nil )
       ::oDlg:lClipper := lClipper
       ::oDlg:lExitOnEnter := lExitOnEnter
       ::oDlg:oParent  := Self
@@ -333,22 +335,27 @@ Private oDlg
       IF lMdi
          INIT WINDOW ::oDlg MDI TITLE cTitle    ;
          AT nLeft, nTop SIZE nWidth, nHeight ;
-         STYLE IF( nStyle >0 ,nStyle, NIL );
-         FONT oFont;
-         BACKGROUND BITMAP oBmp
+         STYLE IF( nStyle >0 ,nStyle, NIL ) ;
+         FONT oFont ;
+         BACKGROUND BITMAP oBmp ;
+         COLOR Iif( bColor>=0, bColor, Nil )
       ELSEIF lMdiChild
          INIT WINDOW ::oDlg  MDICHILD TITLE cTitle    ;
          AT nLeft, nTop SIZE nWidth, nHeight ;
-         STYLE IF( nStyle >0 ,nStyle, NIL );
+         STYLE IF( nStyle >0 , nStyle, NIL ) ;
          FONT oFont ;
-         BACKGROUND BITMAP oBmp
+         BACKGROUND BITMAP oBmp ;
+         COLOR Iif( bColor>=0, bColor, Nil )
       ELSE
 #endif
-      INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
-          AT nLeft, nTop SIZE nWidth, nHeight ;
-          FONT oFont;
-          BACKGROUND BITMAP oBmp;
-          STYLE IF( nStyle >0 ,nStyle, NIL )
+         nExclude := hwg_BitAndInverse( WS_MAXIMIZEBOX+WS_MINIMIZEBOX, nExclude )
+         INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
+             AT nLeft, nTop SIZE nWidth, nHeight ;
+             FONT oFont ;
+             BACKGROUND BITMAP oBmp ;
+             COLOR Iif( bColor>=0, bColor, Nil ) ;
+             STYLE Iif( nStyle > 0 ,nStyle, NIL ) ;
+             EXCLUDE Iif( nExclude > 0 , nExclude, NIL )
 #ifndef __GTK__
       ENDIF
 #endif

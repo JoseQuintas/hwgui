@@ -2,7 +2,7 @@
  *$Id$
  */
 #define HWG_VERSION         "2.18"
-#define HWG_BUILD               1
+#define HWG_BUILD               2
 #define	WND_MAIN		1
 #define	WND_MDI 		2
 #define WND_MDICHILD            3
@@ -83,9 +83,11 @@
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
-             [ COLOR <clr> ]                ;
+             [ SYSCOLOR <clr> ]             ;
+             [ COLOR <bcolor> ]             ;
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
+             [ EXCLUDE <nExclude> ]         ;
              [ FONT <oFont> ]               ;
              [ MENU <cMenu> ]               ;
              [ MENUPOS <nPos> ]             ;
@@ -103,7 +105,7 @@
    <oWnd> := HMainWindow():New( Iif(<.lMdi.>,WND_MDI,WND_MAIN), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>, <bCloseQuery> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bCloseQuery>,<bcolor>,<nExclude> )
 
 #xcommand INIT WINDOW <oWnd> MDICHILD       ;
              [ APPNAME <appname> ]          ;
@@ -111,7 +113,7 @@
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
-             [ COLOR <clr> ]                ;
+             [ COLOR <bColor> ]             ;
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
@@ -127,9 +129,9 @@
              [ HELPID <nHelpId> ]           ;
           => ;
    <oWnd> := HMdiChildWindow():New( ;
-                   <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
+                   <ico>,,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,<bColor> )
 
 #xcommand INIT WINDOW <oWnd> CHILD          ;
              APPNAME <appname>              ;
@@ -137,7 +139,8 @@
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
-             [ COLOR <clr> ]                ;
+             [ SYSCOLOR <clr> ]             ;
+             [ COLOR <bColor> ]             ;
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
@@ -155,8 +158,7 @@
    <oWnd> := HChildWindow():New( ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId> )
-
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bColor> )
 
 #xcommand INIT DIALOG <oDlg>                ;
              [<res: FROM RESOURCE> <Resid> ]         ;

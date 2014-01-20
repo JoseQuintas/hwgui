@@ -47,7 +47,7 @@ Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
    oFontStandard := HFont():Add( "Arial",0,-13,400,204 )
 
    INIT WINDOW oMainWindow MAIN TITLE "Visual Report Builder"  ;
-       ICON oIcon COLOR COLOR_3DSHADOW                         ;
+       ICON oIcon SYSCOLOR COLOR_3DSHADOW                      ;
        ON PAINT {|o|PaintMain(o)} ON EXIT {||CloseReport()}    ;
        ON OTHER MESSAGES {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
 

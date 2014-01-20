@@ -20,7 +20,7 @@ Private oMainWindow, oFont
    PREPARE FONT oFont NAME "Times New Roman" WIDTH 0 HEIGHT -17 CHARSET 204
 
    INIT WINDOW oMainWindow MAIN TITLE "XML Sample"  ;
-     COLOR COLOR_3DLIGHT+1                       ;
+     SYSCOLOR COLOR_3DLIGHT+1                       ;
      AT 200,0 SIZE 600,300                       ;
      ON EXIT {||SaveOptions()}                   ;
      FONT oFont

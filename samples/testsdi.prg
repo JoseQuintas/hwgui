@@ -13,9 +13,7 @@ Local oFont := HFont():Add( "MS Sans Serif",0,-13 )
 Local oTree, oSplit, oTab
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
-     AT 200,0 SIZE 400,150 ;
-     COLOR COLOR_3DLIGHT+1 ;
-     FONT oFont 
+     AT 200,0 SIZE 400,150 FONT oFont 
 
    MENU OF oMainWindow 
       MENU TITLE "&File"

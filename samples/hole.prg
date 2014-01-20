@@ -11,7 +11,7 @@ Public oAgent, oTimer
    PREPARE FONT oFont NAME "Times New Roman" WIDTH 0 HEIGHT -17 CHARSET 204
 
    INIT WINDOW oMainWindow MAIN TITLE "Example"  ;
-     COLOR COLOR_3DLIGHT+1                       ;
+     SYSCOLOR COLOR_3DLIGHT+1                    ;
      AT 200,0 SIZE 600,380                       ;
      FONT oFont
 

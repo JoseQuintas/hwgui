@@ -6,7 +6,6 @@ FUNCTION main
    LOCAL oMain, i
 
    INIT WINDOW oMain main TITLE "Scrollbar example"  ;
-        COLOR COLOR_3DLIGHT + 1                       ;
         At 200, 100 SIZE 400, 250 ;
         STYLE WS_VSCROLL + WS_HSCROLL
 

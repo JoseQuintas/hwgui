@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-01-24 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hwindow.prg
+  * source/gtk/hwindow.prg
+    * EvalKeyList() method passes the control object to codeblock now,
+      as it was before the changes in key events handling
+
 2014-01-20 10:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * samples/
     * COLOR clause is chenged to SYSCOLOR in sample prgs, where it

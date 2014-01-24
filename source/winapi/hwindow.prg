@@ -222,13 +222,13 @@ METHOD EvalKeyList( nKey, bPressed ) CLASS HWindow
 
    IF !Empty( ::KeyList )
       IF ( nPos := Ascan( ::KeyList,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
-         Eval( ::KeyList[ nPos,3 ], Self )
+         Eval( ::KeyList[ nPos,3 ], ::FindControl( ,hwg_Getfocus() ) )
          RETURN .T.
       ENDIF
    ENDIF
    IF !Empty( ::aKeysGlobal )
       IF ( nPos := Ascan( ::aKeysGlobal,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
-         Eval( ::aKeysGlobal[ nPos,3 ], Self )
+         Eval( ::aKeysGlobal[ nPos,3 ], ::FindControl( ,hwg_Getfocus() ) )
       ENDIF
    ENDIF
 

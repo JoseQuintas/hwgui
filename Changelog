@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-01-30 13:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hedit.prg
+    ! Small fix by Paulo Flecha
+
 2014-01-24 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hwindow.prg
   * source/gtk/hwindow.prg

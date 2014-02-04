@@ -129,7 +129,10 @@ HB_FUNC( HWG_SELECTFILE )
    GtkWidget * file_selector;
    const char * cMask = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2):NULL;
    const char *cTitle = ( hb_pcount()>3 && HB_ISCHAR(4) )? hb_parc(4):"Select a file";
+   char * cDir = ( hb_pcount()>2 && HB_ISCHAR(3) )? hb_parc(3):NULL;
 
+   if( cDir )
+      hb_fsChDir( cDir );
    file_selector = gtk_file_selection_new( cTitle );
 
    g_signal_connect (G_OBJECT (file_selector), "destroy",

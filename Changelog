@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-02-04 15:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/commond.c
+    * GTK version of hwg_selectfile() accepts now a path to opened file
+      ( third parameter )
+
 2014-02-04 11:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * samples/dbview.prg
   * samples/gtk_samples/dbview.prg

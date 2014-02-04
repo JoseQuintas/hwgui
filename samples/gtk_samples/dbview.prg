@@ -515,6 +515,7 @@ Local cName, cType, nLen, nDec
          IF nOperation == 2
             Aadd( oBrowse:aArray, Nil )
             Ains( oBrowse:aArray,oBrowse:nCurrent )
+            oBrowse:aArray[oBrowse:nCurrent] := Array(4)
          ENDIF
          oBrowse:aArray[oBrowse:nCurrent,1] := cName
          oBrowse:aArray[oBrowse:nCurrent,2] := cType

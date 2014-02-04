@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-02-04 11:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * samples/dbview.prg
+  * samples/gtk_samples/dbview.prg
+    ! A bug fixed.
+
 2014-01-30 13:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
     ! Small fix by Paulo Flecha

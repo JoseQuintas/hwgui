@@ -39,6 +39,8 @@ Static aStyles := { { WS_POPUP,"WS_POPUP" }, { WS_CHILD,"WS_CHILD" }, { WS_VISIB
     { ES_AUTOVSCROLL,"ES_AUTOVSCROLL" }, { ES_MULTILINE,"ES_MULTILINE" }, { BS_GROUPBOX,"BS_GROUPBOX" }, ;
     { CBS_DROPDOWNLIST,"CBS_DROPDOWNLIST" }, { SS_OWNERDRAW,"SS_OWNERDRAW" }  }
 
+Memvar oDesigner, cCurDir, crossCursor, vertCursor, horzCursor
+
 CLASS HFormGen INHERIT HObject
 
    CLASS VAR aForms INIT {}
@@ -109,6 +111,7 @@ Return ::Open( fname )
 METHOD Open( fname,cForm )  CLASS HFormGen
 Local aFormats := oDesigner:aFormats
 Local oIni, i
+Memvar oForm, aCtrlTable
 Private oForm := Self, aCtrlTable
 
    IF fname != Nil
@@ -187,6 +190,7 @@ RETURN .T.
 
 METHOD Save( lAs ) CLASS HFormGen
 Local aFormats := oDesigner:aFormats
+Memvar oForm, aCtrlTable
 Private oForm := Self, aCtrlTable
 
    IF lAs == Nil; lAs := .F.; ENDIF
@@ -199,7 +203,7 @@ Private oForm := Self, aCtrlTable
    ( ( Empty( ::filename ) .OR. lAs ) .AND. FileDlg( Self,.F. ) ) .OR. !Empty( ::filename )
       FrmSort( Self,Iif( oDesigner:lReport,::oDlg:aControls[1]:aControls[1]:aControls,::oDlg:aControls ) )
       IF ::type == 1
-         aControls := WriteForm( Self )
+         WriteForm( Self )
       ELSE
          IF Valtype( aFormats[ ::type,5 ] ) == "C"
             aFormats[ ::type,5 ] := OpenScript( cCurDir + aFormats[ ::type,3 ], aFormats[ ::type,5 ] )
@@ -227,6 +231,7 @@ RETURN Nil
 METHOD CreateDialog( aProp ) CLASS HFormGen
 Local i, j, cPropertyName, xProperty, oFormDesc := oDesigner:oFormDesc
 Local hDC, aMetr, oPanel
+Memvar value, oCtrl
 Private value, oCtrl
 
    INIT DIALOG ::oDlg                         ;
@@ -384,6 +389,8 @@ Return .T.
 
 Function CnvCtrlName( cName,l2 )
 Local i
+Memvar aCtrlTable
+
    IF aCtrlTable == Nil
       Return cName
    ENDIF
@@ -493,7 +500,7 @@ Local i, aTree := {}, oNode
 Return Iif( Empty(aTree), Nil, aTree )
 
 Static Function ReadCtrls( oDlg, oCtrlDesc, oContainer, nPage )
-Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cProperty
+Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cProperty, cPropertyName
 
    FOR i := 1 TO Len( aItems )
       IF aItems[i]:title == "style"
@@ -822,7 +829,7 @@ Local x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, i, n1cm, xt, yt
       i := 0
       // hwg_Selectobject( hDC,oPenLine:handle )
       hwg_Selectobject( hDC,oDlg:oFont:handle )
-      oldBkColor := hwg_Setbkcolor( hDC,hwg_Getsyscolor(COLOR_3DLIGHT) )
+      hwg_Setbkcolor( hDC,hwg_Getsyscolor(COLOR_3DLIGHT) )
       DO WHILE i*n1cm < (aCoors[3]-aCoors[1]-LEFT_INDENT)
          xt := x1+i*n1cm
          hwg_Drawline( hDC,xt+Round(n1cm/4,0),0,xt+Round(n1cm/4,0),4 )
@@ -846,9 +853,10 @@ Local x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, i, n1cm, xt, yt
          ENDIF
          i++
       ENDDO
-      // hwg_Fillrect( hDC, LEFT_INDENT-12, y1, x1, y2, COLOR_3DSHADOW+1 )
+#ifndef __LINUX__
       hwg_Setscrollinfo( oDlg:handle, SB_HORZ, 1, oForm:nXOffset/10+1, 1, Round((oForm:nPWidth-(aCoors[3]-LEFT_INDENT)/oForm:nKoeff)/10,0)+1 )
       hwg_Setscrollinfo( oDlg:handle, SB_VERT, 1, oForm:nYOffset/10+1, 1, Round((oForm:nPHeight-(aCoors[4]-TOP_INDENT)/oForm:nKoeff)/10,0)+1 )
+#endif
    ELSE
       IF oCtrl != Nil .AND. oCtrl:nTop >= 0
 
@@ -1067,10 +1075,12 @@ Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
       ENDIF
    ENDIF
    IF oCtrl != Nil .AND. Lower( oCtrl:cClass ) == "page"
+#ifndef __LINUX__
       i := hwg_Tab_hittest( oCtrl:handle,,,@flag )
       IF i >= 0 .AND. flag == 4 .OR. flag == 6
          Page_Select( oCtrl, i+1 )
       ENDIF
+#endif
    ENDIF
 
 Return Nil
@@ -1192,7 +1202,7 @@ Local oCtrl
 Return Nil
 
 Function Container( oDlg,oCtrl )
-Local i, nLeft := oCtrl:nLeft
+Local i, nLeft := oCtrl:nLeft, oContainer
 
    oCtrl:nLeft := 9999
    oContainer := CtrlByRect( oDlg,nLeft,oCtrl:nTop,nLeft+oCtrl:nWidth,oCtrl:nTop+oCtrl:nHeight )

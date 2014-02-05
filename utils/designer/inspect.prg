@@ -10,7 +10,7 @@
 
 #include "fileio.ch"
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 
 #define CBN_KILLFOCUS       4
@@ -45,6 +45,8 @@ Static oCombo, oBrw1, oBrw2
 Static aProp := {}, aMethods := {}
 Static oTab
 
+Memvar oDesigner
+
 CLASS PBrowse INHERIT HBrowse
 
    METHOD New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont, ;
@@ -67,6 +69,7 @@ METHOD Edit( wParam,lParam ) CLASS PBrowse
 Local varbuf, x1, y1, nWidth, j, cName, aCtrlProp
 Local aDataDef := oDesigner:aDataDef
 Local lRes := .F., oModDlg, oColumn, aCoors, nChoic, bInit, oGet, aItems
+Memvar value, oCtrl
 Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
    IF ::SetColumn() == 1 .AND. ::bEnter == Nil
@@ -213,6 +216,7 @@ RETURN Nil
 
 Static Function VldBrwGet( oGet )
 Local vari, j, cName
+Memvar value, oCtrl
 Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
    cName := Lower( aProp[ oBrw1:cargo,1 ] )
@@ -417,7 +421,8 @@ Local i, o
 Return Nil
 
 Function InspUpdBrowse()
-Local i, j, cPropertyName, lChg := .F.
+Local i, j, lChg := .F.
+Memvar value, oCtrl
 Private value, oCtrl
 
    IF oCombo == Nil

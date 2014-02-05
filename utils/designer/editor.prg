@@ -8,7 +8,7 @@
  * www - http://www.kresin.ru
 */
 
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"
 #include "hxml.ch"
@@ -17,6 +17,8 @@
 
 Static oDlg, oEdit, cIniName
 Static nTextLength
+
+Memvar oDesigner, cCurDir
 
 CLASS HDTheme
 
@@ -37,7 +39,7 @@ CLASS HDTheme
 ENDCLASS
 
 Function LoadEdOptions( cFileName )
-Local oIni := HXMLDoc():Read( cFileName )
+Local oIni := HXMLDoc():Read( cFileName ), oOptDesc
 Local i, j, j1, cTheme, oTheme, oThemeXML, arr
 
    cIniName := cFileName
@@ -85,7 +87,7 @@ Local i, j, j1, cTheme, oTheme, oThemeXML, arr
    NEXT
 Return Nil
 
-Function SaveEdOptions( oOptDesc )
+Function SaveEdOptions()
 Local oIni := HXMLDoc():Read( cCurDir+cIniName )
 Local i, j, oNode, nStart, oThemeDesc, aAttr
 
@@ -189,16 +191,6 @@ Local cParamString
        FONT oFont
    oEdit:cargo := .T.
 
-   // oEdit:oParent:AddEvent( EN_SELCHANGE,oEdit:id,{||EnChange(1)},.T. )
-
-   // oEdit:title := cMethod  
-   /*
-   @ 60,265 BUTTON "Ok" SIZE 100, 32     ;
-       ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
-       ON CLICK {||cMethod:=oEdit:GetText(),lRes:=.T.,hwg_EndDialog()}
-   @ 240,265 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ;
-       ON SIZE {|o,x,y|o:Move(,y-35,,)}
-   */
    ACTIVATE DIALOG oDlg
 
    IF lRes
@@ -206,7 +198,7 @@ Local cParamString
    ENDIF
 Return Nil
 
-Function ChangeTheme( nTheme )
+Static Function ChangeTheme( nTheme )
 
    IF HDTheme():nSelected != Nil
       hwg_Checkmenuitem( oDlg:handle,1020+HDTheme():nSelected, .F. )
@@ -223,14 +215,10 @@ Local oFont
        oEdit:oFont := oFont
        hwg_Setwindowfont( oEdit:handle,oFont:handle )
        editShow( ,.T. )
-       // hwg_Redrawwindow( oEdit:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
        HDTheme():oFont := oFont
        HDTheme():lChanged := .T.
    ENDIF
 Return Nil
-
-// hwg_Re_setdefault( hCtrl, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )
-// hwg_Re_setcharformat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline )
 
 Static Function editShow( cText,lRedraw )
 Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
@@ -251,12 +239,6 @@ Local arrHi, oTheme := HDTheme():aThemes[HDTheme():nSelected]
    oEdit:SetText( cText )
    cText := hwg_Re_gettextrange( oEdit:handle,1,nTextLength )
    IF !Empty( arrHi := CreateHiLight( cText ) )
-      /*
-      writelog( "hwg_Re_setcharformat "+Str(Len(arrhi)) )
-      for i := 1 to len( arrhi )
-         writelog( str(arrhi[i,1])+" "+str(arrhi[i,2])+": "+str(arrhi[i,3])+iif(arrhi[i,6]!=Nil.AND.arrhi[i,6]," T","") )
-      next
-      */
       hwg_Re_setcharformat( oEdit:handle,arrHi )
    ENDIF
    hwg_Sendmessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )
@@ -271,27 +253,19 @@ Local cBuffer, nLine, arr := {}, nLinePos
 Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
 
    IF nEvent == 1        // EN_SELCHANGE
-      nEditPos1 := pos1
-      nEditPos2 := pos2
+      //nEditPos1 := pos1
+      //nEditPos2 := pos2
    ELSE                  // EN_CHANGE
       hwg_Sendmessage( oEdit:handle, EM_SETEVENTMASK, 0, 0 )
       nLength := hwg_Sendmessage( oEdit:handle, WM_GETTEXTLENGTH, 0, 0 )
       IF nLength - nTextLength > 2 
-         // writelog( "1: "+str(nLength,5)+" "+str(nTextLength,5) )
       ELSE
          nLine := hwg_Sendmessage( oEdit:handle, EM_LINEFROMCHAR, -1, 0 )
          cBuffer := hwg_Re_getline( oEdit:handle,nLine )
-         // writelog( "pos: "+Ltrim(str(pos1))+" Line: "+Ltrim(str(nline))+" "+Str(Len(cBuffer))+"/"+cBuffer )
          nLinePos := hwg_Sendmessage( oEdit:handle, EM_LINEINDEX, nLine, 0 ) + 1
          Aadd( arr, { nLinePos,nLinePos+Len(cBuffer), ;
             oTheme:normal[1],,,oTheme:normal[3],oTheme:normal[4], } )
          HiLightString( cBuffer, arr, nLinePos )
-         /*
-         writelog( "hwg_Re_setcharformat "+Str(Len(arr)) )
-         for i := 1 to len( arr )
-            writelog( str(arr[i,1])+" "+str(arr[i,2])+": "+str(arr[i,3])+iif(arr[i,6]!=Nil.AND.arr[i,6]," T","") )
-         next
-         */
          IF !Empty( arr )
             hwg_Re_setcharformat( oEdit:handle,arr )
          ENDIF
@@ -302,7 +276,6 @@ Local oTheme := HDTheme():aThemes[HDTheme():nSelected]
       nTextLength := nLength
       hwg_Sendmessage( oEdit:handle, EM_SETEVENTMASK, 0, ENM_CHANGE + ENM_SELCHANGE )     
    ENDIF
-   // writelog( "EnChange "+str(pos1)+" "+str(pos2) ) // +" Length: "+str(nLength) )
 Return Nil
 
 Static Function CreateHilight( cText,oTheme )
@@ -334,7 +307,6 @@ Local nStart, nPos := 1, sLen := Len( stroka ), cWord
    SET EXACT ON
    DO WHILE nPos < sLen
       cWord := NextWord( stroka,@nPos,@nStart )
-      // writelog( "-->"+str(nStart)+" "+str(nPos)+" "+str(len(cword))+" "+ str(asc(cword)))
       IF !Empty( cWord )
          IF Left( cWord,1 ) == '"' .OR. Left( cWord,1 ) == "'"
             Aadd( arr, { nLinePos+nStart-1,nLinePos+nPos-1, ;
@@ -359,6 +331,9 @@ Local cText := "// The code sample" + Chr(10) + ;
                "  if aItems[ nItem ] == 'scheme'"+ Chr(10) + ;
                "    nFactor := 22.5"+ Chr(10) + ;
                "  endif"
+
+Memvar oBrw, oEditC, oSayT, oCheckB, oCheckI, oSayB, aSchemes
+Memvar nScheme, nType, oTheme, cScheme
 Private oBrw, oEditC, oSayT, oCheckB, oCheckI, oSayB, aSchemes := Array( Len( HDTheme():aThemes ) )
 Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
 
@@ -435,6 +410,8 @@ Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
 Return Nil
 
 Static Function UpdSample( nAction )
+Memvar oBrw, oEditC, oSayT, oCheckB, oCheckI, oSayB, aSchemes
+Memvar nScheme, nType, oTheme, cScheme
 
    IF nAction != Nil
       IF nAction == 1

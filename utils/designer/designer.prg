@@ -18,19 +18,27 @@
 
 STATIC lOmmitMenuFile := .F.
 
+#ifndef __LINUX__
 REQUEST hwg_Drawedge
+REQUEST hwg_Setwindowfont
+REQUEST hwg_inittrackbar
+REQUEST BARCODE
+#endif
 REQUEST hwg_Drawicon
 REQUEST hwg_Ellipse
-REQUEST hwg_Setwindowfont
 REQUEST hwg_initmonthcalendar
-REQUEST hwg_inittrackbar
 REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK
-REQUEST BARCODE
 
 ANNOUNCE HB_GTSYS
+#ifdef __LINUX__
+REQUEST HB_GT_CGI_DEFAULT
+#else
 REQUEST HB_GT_GUI_DEFAULT
+#endif
 
 REQUEST HB_CODEPAGE_RU1251
+
+Memvar oDesigner, crossCursor, vertCursor, horzCursor, cCurDir
 
 Function Designer( p0, p1, p2 )
 Local oPanel, oTab, oFont, cResForm, i
@@ -64,7 +72,7 @@ Public crossCursor, vertCursor, horzCursor
       __mvPublic( "cCurDir" )
    ENDIF
    IF Valtype( cCurDir ) != "C"
-      cCurDir := hwg_Getcurrentdir() + "\"
+      cCurDir := "\" + Curdir() + "\"
    ENDIF
    oDesigner:ds_mypath := cCurDir
 
@@ -201,7 +209,9 @@ Public crossCursor, vertCursor, horzCursor
       MENUITEM "Preview" ACTION DoPreview()
    ENDMENU
 
+#ifndef __LINUX__
    HWG_InitCommonControlsEx()
+#endif
 
 #ifdef INTEGRATED
 #ifdef MODAL
@@ -454,7 +464,7 @@ Local oDlg := HFormGen():oDlgSelected, oCtrl, i
       SetCtrlSelected( oDlg )
       oDlg:oParent:lChanged := .T.
    ENDIF
-Return
+Return Nil
 
 Function FindWidget( cClass )
 Local i, aSet := oDesigner:oWidgetsSet:aItems[1]:aItems, oNode

@@ -9,7 +9,7 @@
 */
 
 #include "windows.ch"
-#include "HBClass.ch"
+#include "hbclass.ch"
 #include "guilib.ch"
 #include "hxml.ch"
 
@@ -18,6 +18,8 @@
 
 Static aBDown := { Nil,0,0,.F. }
 Static oPenSel
+
+Memvar oDesigner, nMaxId
 
 //- HControl
 
@@ -46,8 +48,9 @@ ENDCLASS
 
 METHOD New( oWndParent, xClass, aProp ) CLASS HControlGen
 Local oXMLDesc
-Local oPaint, bmp, cPropertyName
+Local oPaint, bmp, cPropertyName, cProperty
 Local i, j, xProperty
+Memvar value, oCtrl
 Private value, oCtrl := Self
 
    IF oPenSel == Nil
@@ -154,6 +157,7 @@ Private value, oCtrl := Self
 Return Self
 
 METHOD Activate() CLASS HControlGen
+Memvar oCtrl
 
    IF ::oParent != Nil .AND. !Empty( ::oParent:handle )
       IF ::cCreate != Nil
@@ -169,6 +173,7 @@ Return Nil
 
 METHOD Paint( lpdis ) CLASS HControlGen
 Local drawInfo := hwg_Getdrawiteminfo( lpdis )
+Memvar hDC, oCtrl
 Private hDC := drawInfo[3], oCtrl := Self
 
    IF ::aPaint != Nil

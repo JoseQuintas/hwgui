@@ -12,38 +12,45 @@
 #include "guilib.ch"
 #include "hbclass.ch"
 #include "hxml.ch"
-// #include "extmodul.ch"
+
+   // #include "extmodul.ch"
 
 #define  MAX_RECENT_FILES  5
 
-STATIC lOmmitMenuFile := .F.
+   STATIC lOmmitMenuFile := .F.
 
-#ifndef __LINUX__
-REQUEST hwg_Drawedge
-REQUEST hwg_Setwindowfont
-REQUEST hwg_inittrackbar
-REQUEST BARCODE
+#ifndef __GTK__
+   REQUEST hwg_Drawedge
+   REQUEST hwg_Setwindowfont
+   REQUEST hwg_inittrackbar
+   REQUEST BARCODE
 #endif
-REQUEST hwg_Drawicon
-REQUEST hwg_Ellipse
-REQUEST hwg_initmonthcalendar
-REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK
+   REQUEST hwg_Drawicon
+   REQUEST hwg_Ellipse
+   REQUEST hwg_initmonthcalendar
+   REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK, HB_ATOKENS
 
-ANNOUNCE HB_GTSYS
-#ifdef __LINUX__
-REQUEST HB_GT_CGI_DEFAULT
+   ANNOUNCE HB_GTSYS
+#ifdef __GTK__
+   REQUEST HB_GT_CGI_DEFAULT
+   #define DIR_SEP  '/'
 #else
-REQUEST HB_GT_GUI_DEFAULT
+   REQUEST HB_GT_GUI_DEFAULT
+   #define DIR_SEP  '\'
 #endif
 
-REQUEST HB_CODEPAGE_RU1251
+   REQUEST HB_CODEPAGE_RU1251
 
-Memvar oDesigner, crossCursor, vertCursor, horzCursor, cCurDir
+   MEMVAR oDesigner, crossCursor, vertCursor, horzCursor, cCurDir
 
-Function Designer( p0, p1, p2 )
-Local oPanel, oTab, oFont, cResForm, i
-Public oDesigner
-Public crossCursor, vertCursor, horzCursor
+#ifdef INTEGRATED
+FUNCTION Designer( p0, p1, p2 )
+#else
+FUNCTION Main( p0, p1, p2 )
+#endif
+   LOCAL oPanel, oTab, oFont, cResForm, i
+   PUBLIC oDesigner
+   PUBLIC crossCursor, vertCursor, horzCursor
 
    hb_cdpSelect( "RU1251" )
    oDesigner := HDesigner():New()
@@ -51,7 +58,7 @@ Public crossCursor, vertCursor, horzCursor
    IF p0 != Nil .AND. ( p0 == "-r" .OR. p0 == "/r" )
       oDesigner:lReport := .T.
       IF p1 != Nil
-         IF Left( p1,1 ) $ "-/"
+         IF Left( p1, 1 ) $ "-/"
             p0 := p1
             p1 := p2
          ELSE
@@ -61,155 +68,155 @@ Public crossCursor, vertCursor, horzCursor
    ENDIF
 
 #ifdef INTEGRATED
-// #ifdef MODAL
+   // #ifdef MODAL
    IF p0 == "-s" .OR. p0 == "/s"
       oDesigner:lSingleForm := .T.
    ENDIF
-// #endif
+   // #endif
 #endif
 
    IF !__mvExist( "cCurDir" )
       __mvPublic( "cCurDir" )
    ENDIF
-   IF Valtype( cCurDir ) != "C"
-      cCurDir := "\" + Curdir() + "\"
+   IF ValType( cCurDir ) != "C"
+      cCurDir := DIR_SEP + CurDir() + DIR_SEP
    ENDIF
    oDesigner:ds_mypath := cCurDir
 
    IF !ReadIniFiles()
-      Return Nil
+      RETURN Nil
    ENDIF
 
-   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
-   IF Valtype( crossCursor ) != "N"
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT - 13
+   IF ValType( crossCursor ) != "N"
       crossCursor := hwg_Loadcursor( IDC_CROSS )
       horzCursor  := hwg_Loadcursor( IDC_SIZEWE )
       vertCursor  := hwg_Loadcursor( IDC_SIZENS )
    ENDIF
 
 #ifdef INTEGRATED
-   INIT DIALOG oDesigner:oMainWnd AT 0,0 SIZE 400,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
+   INIT DIALOG oDesigner:oMainWnd AT 0, 0 SIZE 400, 200 TITLE iif( !oDesigner:lReport, "Form", "Report" ) + " designer" ;
       FONT oFont                          ;
-      ON INIT {|o|StartDes(o,p0,p1)}   ;
-      ON EXIT {||EndIde()}
+      ON INIT { |o|StartDes( o, p0, p1 ) }   ;
+      ON EXIT { ||EndIde() }
 #else
-   INIT WINDOW oDesigner:oMainWnd MAIN AT 0,0 SIZE 400,200 TITLE iif(!oDesigner:lReport,"Form","Report")+" designer" ;
+   INIT WINDOW oDesigner:oMainWnd MAIN AT 0, 0 SIZE 400, 200 TITLE iif( !oDesigner:lReport, "Form", "Report" ) + " designer" ;
       FONT oFont                                                  ;
-      ON EXIT {||EndIde()}
+      ON EXIT { ||EndIde() }
 #endif
 
    MENU OF oDesigner:oMainWnd
-      MENU TITLE "&File"
-         IF !oDesigner:lSingleForm
-            MENUITEM "&New "+iif(!oDesigner:lReport,"Form","Report")  ACTION HFormGen():New()
-            MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():Open()
-            SEPARATOR
-            MENUITEM "&Save "+iif(!oDesigner:lReport,"Form","Report")   ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),hwg_Msgstop("No Form in use!", "Designer"))
-            MENUITEM "&Save as ..." ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(.T.),hwg_Msgstop("No Form in use!"))
-            MENUITEM "&Close "+iif(!oDesigner:lReport,"Form","Report")  ACTION Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:End(),hwg_Msgstop("No Form in use!", "Designer"))
-         ELSE
-            If !lOmmitMenuFile
-               MENUITEM "&Open "+iif(!oDesigner:lReport,"Form","Report") ACTION HFormGen():OpenR()
-               SEPARATOR
-               MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm:=.F.,HFormGen():oDlgSelected:oParent:Save(.T.),oDesigner:lSingleForm:=.T. )
-            EndIf
-         ENDIF
-         If !lOmmitMenuFile
-            SEPARATOR
-            i := 1
-            DO WHILE i <= MAX_RECENT_FILES .AND. oDesigner:aRecent[i] != Nil
-               Hwg_DefineMenuItem( CutPath(oDesigner:aRecent[i]), 1020+i, ;
-                  &( "{||HFormGen():Open('"+oDesigner:aRecent[i]+"')}" ) )
-               i ++
-            ENDDO
-            SEPARATOR
-         EndIf
-         MENUITEM If(!lOmmitMenuFile,"&Exit","&Close Designer") ACTION oDesigner:oMainWnd:Close()
-      ENDMENU
-      MENU TITLE "&Edit"
-         MENUITEM "&Copy control" ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,hwg_Enablemenuitem(,1012,.T.,.T.),.F.))
-         MENUITEM "&Paste" ID 1012 ACTION oDesigner:addItem := oDesigner:oClipbrd
-      ENDMENU
-      MENU TITLE "&View"
-         MENUITEM "&Object Inspector" ID 1010 ACTION Iif( oDesigner:oDlgInsp==Nil,InspOpen(),oDesigner:oDlgInsp:Close() )
+   MENU TITLE "&File"
+   IF !oDesigner:lSingleForm
+      MENUITEM "&New " + iif( !oDesigner:lReport, "Form", "Report" )  ACTION HFormGen():New()
+      MENUITEM "&Open " + iif( !oDesigner:lReport, "Form", "Report" ) ACTION HFormGen():Open()
+      SEPARATOR
+      MENUITEM "&Save " + iif( !oDesigner:lReport, "Form", "Report" )   ACTION iif( HFormGen():oDlgSelected != Nil, HFormGen():oDlgSelected:oParent:Save(), hwg_Msgstop( "No Form in use!", "Designer" ) )
+      MENUITEM "&Save as ..." ACTION iif( HFormGen():oDlgSelected != Nil, HFormGen():oDlgSelected:oParent:Save( .T. ), hwg_Msgstop( "No Form in use!" ) )
+      MENUITEM "&Close " + iif( !oDesigner:lReport, "Form", "Report" )  ACTION iif( HFormGen():oDlgSelected != Nil, HFormGen():oDlgSelected:oParent:End(), hwg_Msgstop( "No Form in use!", "Designer" ) )
+   ELSE
+      IF !lOmmitMenuFile
+         MENUITEM "&Open " + iif( !oDesigner:lReport, "Form", "Report" ) ACTION HFormGen():OpenR()
          SEPARATOR
-         MENUITEM "&Preview"  ACTION DoPreview()
-      ENDMENU
-      MENU TITLE "&Control"
-         MENUITEM "&Delete"  ACTION DeleteCtrl()
-      ENDMENU
-      MENU TITLE "&Options"
-         MENUITEM "&AutoAdjust" ID 1011 ACTION hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1011,!hwg_Ischeckedmenuitem(oDesigner:oMainWnd:handle,1011))
-         MENUITEM "&BmpSelFile" ID 1013 ACTION hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1013,HBitmap():lSelFile:=!hwg_Ischeckedmenuitem(oDesigner:oMainWnd:handle,1013))
-      ENDMENU
-      MENU TITLE "&Help"
-         MENUITEM "&About" ACTION hwg_Msginfo("Visual Designer", "Designer")
-      ENDMENU
+         MENUITEM "&Save as ..." ACTION ( oDesigner:lSingleForm := .F. , HFormGen():oDlgSelected:oParent:Save( .T. ), oDesigner:lSingleForm := .T. )
+      ENDIF
+   ENDIF
+   IF !lOmmitMenuFile
+      SEPARATOR
+      i := 1
+      DO WHILE i <= MAX_RECENT_FILES .AND. oDesigner:aRecent[i] != Nil
+         Hwg_DefineMenuItem( CutPath( oDesigner:aRecent[i] ), 1020 + i, ;
+            &( "{||HFormGen():Open('" + oDesigner:aRecent[i] + "')}" ) )
+         i ++
+      ENDDO
+      SEPARATOR
+   ENDIF
+   MENUITEM IF( !lOmmitMenuFile, "&Exit", "&Close Designer" ) ACTION oDesigner:oMainWnd:Close()
+   ENDMENU
+   MENU TITLE "&Edit"
+   MENUITEM "&Copy control" ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,1012, .T. , .T. ), .F. ) )
+   MENUITEM "&Paste" ID 1012 ACTION oDesigner:addItem := oDesigner:oClipbrd
+   ENDMENU
+   MENU TITLE "&View"
+   MENUITEM "&Object Inspector" ID 1010 ACTION iif( oDesigner:oDlgInsp == Nil, InspOpen(), oDesigner:oDlgInsp:Close() )
+   SEPARATOR
+   MENUITEM "&Preview"  ACTION DoPreview()
+   ENDMENU
+   MENU TITLE "&Control"
+   MENUITEM "&Delete"  ACTION DeleteCtrl()
+   ENDMENU
+   MENU TITLE "&Options"
+   MENUITEM "&AutoAdjust" ID 1011 ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1011, !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1011 ) )
+   MENUITEM "&BmpSelFile" ID 1013 ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1013, HBitmap():lSelFile := !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1013 ) )
+   ENDMENU
+   MENU TITLE "&Help"
+   MENUITEM "&About" ACTION hwg_Msginfo( "Visual Designer", "Designer" )
+   ENDMENU
    ENDMENU
 
-   @ 0,0 PANEL oPanel SIZE 400,200 ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,y)}
+   @ 0, 0 PANEL oPanel SIZE 400, 200 ON SIZE { |o, x, y|hwg_Movewindow( o:handle, 0, 0, x, y ) }
 
    IF !oDesigner:lSingleForm
-      @ 2,3 OWNERBUTTON OF oPanel       ;
-          ON CLICK {||HFormGen():New()} ;
-          SIZE 24,24 FLAT               ;
-          BITMAP "BMP_NEW" FROM RESOURCE COORDINATES 0,4,0,0 TRANSPARENT ;
-          TOOLTIP "New Form"
-      @ 26,3 OWNERBUTTON OF oPanel       ;
-          ON CLICK {||HFormGen():Open()} ;
-          SIZE 24,24 FLAT                ;
-          BITMAP "BMP_OPEN" FROM RESOURCE COORDINATES 0,4,0,0 TRANSPARENT ;
-          TOOLTIP "Open Form"
+      @ 2, 3 OWNERBUTTON OF oPanel       ;
+         ON CLICK { ||HFormGen():New() } ;
+         SIZE 24, 24 FLAT               ;
+         BITMAP "BMP_NEW" FROM RESOURCE COORDINATES 0, 4, 0, 0 TRANSPARENT ;
+         TOOLTIP "New Form"
+      @ 26, 3 OWNERBUTTON OF oPanel       ;
+         ON CLICK { ||HFormGen():Open() } ;
+         SIZE 24, 24 FLAT                ;
+         BITMAP "BMP_OPEN" FROM RESOURCE COORDINATES 0, 4, 0, 0 TRANSPARENT ;
+         TOOLTIP "Open Form"
 
-      @ 55,6 LINE LENGTH 18 VERTICAL
+      @ 55, 6 LINE LENGTH 18 VERTICAL
 
-      @ 60,3 OWNERBUTTON OF oPanel       ;
-          ON CLICK {||Iif(HFormGen():oDlgSelected!=Nil,HFormGen():oDlgSelected:oParent:Save(),hwg_Msgstop("No Form in use!"))} ;
-          SIZE 24,24 FLAT                ;
-          BITMAP "BMP_SAVE" FROM RESOURCE COORDINATES 0,4,0,0 TRANSPARENT ;
-          TOOLTIP "Save Form"
+      @ 60, 3 OWNERBUTTON OF oPanel       ;
+         ON CLICK { ||iif( HFormGen():oDlgSelected != Nil, HFormGen():oDlgSelected:oParent:Save(), hwg_Msgstop( "No Form in use!" ) ) } ;
+         SIZE 24, 24 FLAT                ;
+         BITMAP "BMP_SAVE" FROM RESOURCE COORDINATES 0, 4, 0, 0 TRANSPARENT ;
+         TOOLTIP "Save Form"
    ENDIF
 
-   @ 3,30 TAB oTab ITEMS {} OF oPanel SIZE 400,210 FONT oFont ;
-      ON SIZE {|o,x,y|ArrangeBtn(o,x,y)}
+   @ 3, 30 TAB oTab ITEMS {} OF oPanel SIZE 400, 210 FONT oFont ;
+      ON SIZE { |o, x, y|ArrangeBtn( o, x, y ) }
 
    BuildSet( oTab )
 
    CONTEXT MENU oDesigner:oCtrlMenu
-      MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,hwg_Enablemenuitem(,1012,.T.,.T.),.F.))
+   MENUITEM "Copy"   ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,1012, .T. , .T. ), .F. ) )
+   SEPARATOR
+   MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .T. , .F. , .F. , .F. )
+   MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .T. , .F. , .F. )
+   MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .T. , .F. )
+   MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
+   SEPARATOR
+   IF oDesigner:lReport
+      MENUITEM "Fit into Box" ID 1030 ACTION FitLine( GetCtrlSelected( HFormGen():oDlgSelected ) )
       SEPARATOR
-      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F.,.F.,.F. )
-      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T.,.F.,.F. )
-      MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.T.,.F. )
-      MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.F.,.T. )
-      SEPARATOR
-      IF oDesigner:lReport
-         MENUITEM "Fit into Box" ID 1030 ACTION FitLine( GetCtrlSelected(HFormGen():oDlgSelected) )
-         SEPARATOR
-      ENDIF
-      MENUITEM "Delete" ACTION DeleteCtrl()
+   ENDIF
+   MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
 
    CONTEXT MENU oDesigner:oTabMenu
-      MENUITEM "New Page" ACTION Page_New( GetCtrlSelected(HFormGen():oDlgSelected) )
-      MENUITEM "Next Page" ACTION Page_Next( GetCtrlSelected(HFormGen():oDlgSelected) )
-      MENUITEM "Previous Page" ACTION Page_Prev( GetCtrlSelected(HFormGen():oDlgSelected) )
-      SEPARATOR
-      MENUITEM "Copy"   ACTION (oDesigner:oClipBrd:=GetCtrlSelected(HFormGen():oDlgSelected),Iif(oDesigner:oClipBrd!=Nil,hwg_Enablemenuitem(,1012,.T.,.T.),.F.))
-      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.T.,.F.,.F.,.F. )
-      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.T.,.F.,.F. )
-      MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.T.,.F. )
-      MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected(HFormGen():oDlgSelected),.F.,.F.,.F.,.T. )
-      SEPARATOR
-      MENUITEM "Delete" ACTION DeleteCtrl()
+   MENUITEM "New Page" ACTION Page_New( GetCtrlSelected( HFormGen():oDlgSelected ) )
+   MENUITEM "Next Page" ACTION Page_Next( GetCtrlSelected( HFormGen():oDlgSelected ) )
+   MENUITEM "Previous Page" ACTION Page_Prev( GetCtrlSelected( HFormGen():oDlgSelected ) )
+   SEPARATOR
+   MENUITEM "Copy"   ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,1012, .T. , .T. ), .F. ) )
+   MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .T. , .F. , .F. , .F. )
+   MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .T. , .F. , .F. )
+   MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .T. , .F. )
+   MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
+   SEPARATOR
+   MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
 
    CONTEXT MENU oDesigner:oDlgMenu
-      MENUITEM "Paste" ACTION oDesigner:addItem := oDesigner:oClipbrd
-      MENUITEM "Preview" ACTION DoPreview()
+   MENUITEM "Paste" ACTION oDesigner:addItem := oDesigner:oClipbrd
+   MENUITEM "Preview" ACTION DoPreview()
    ENDMENU
 
-#ifndef __LINUX__
+#ifndef __GTK__
    HWG_InitCommonControlsEx()
 #endif
 
@@ -222,13 +229,14 @@ Public crossCursor, vertCursor, horzCursor
    ACTIVATE DIALOG oDesigner:oMainWnd NOMODAL
 #endif
 #else
-   StartDes( oDesigner:oMainWnd,p0,p1 )
+   StartDes( oDesigner:oMainWnd, p0, p1 )
    ACTIVATE WINDOW oDesigner:oMainWnd
 #endif
 
-Return cResForm
+   RETURN cResForm
 
-// -----------------
+   // -----------------
+
 CLASS HDesigner
 
    DATA oMainWnd, oDlgInsp
@@ -237,7 +245,7 @@ CLASS HDesigner
    DATA lReport      INIT .F.
    DATA ds_mypath
    DATA lChgPath     INIT .F.
-   DATA aRecent      INIT Array(MAX_RECENT_FILES)
+   DATA aRecent      INIT Array( MAX_RECENT_FILES )
    DATA lChgRecent   INIT .F.
    DATA oWidgetsSet, oFormDesc
    DATA oBtnPressed, addItem
@@ -247,16 +255,18 @@ CLASS HDesigner
    DATA lSingleForm  INIT .F.
    DATA cResForm
 
-   METHOD New   INLINE Self
+   METHOD NEW   INLINE Self
+
 ENDCLASS
-// -----------------
 
-Static Function StartDes( oDlg,p1,cForm )
+   // -----------------
 
-   hwg_Movewindow( oDlg:handle,0,0,400,210 )
+STATIC FUNCTION StartDes( oDlg, p1, cForm )
 
-   IF p1 != Nil .AND. Left( p1,1 ) $ "-/"
-      IF ( p1 := Substr( p1,2,1 ) ) == "n"
+   hwg_Movewindow( oDlg:handle, 0, 0, 400, 210 )
+
+   IF p1 != Nil .AND. Left( p1, 1 ) $ "-/"
+      IF ( p1 := SubStr( p1,2,1 ) ) == "n"
          HFormGen():New()
       ELSEIF p1 == "f"
          IF cForm == Nil
@@ -265,25 +275,25 @@ Static Function StartDes( oDlg,p1,cForm )
             HFormGen():Open( cForm )
          ENDIF
 #ifdef INTEGRATED
-// #ifdef MODAL
+         // #ifdef MODAL
       ELSEIF p1 == "s"
          IF cForm == Nil
             HFormGen():New()
          ELSE
-            HFormGen():Open( ,cForm )
+            HFormGen():Open( , cForm )
          ENDIF
          Hwg_SetForegroundWindow( HFormGen():aForms[1]:oDlg:handle )
          hwg_Setfocus( HFormGen():aForms[1]:oDlg:handle )
-// #endif
+         // #endif
 #endif
       ENDIF
    ENDIF
 
-Return Nil
+   RETURN Nil
 
-Static Function ReadIniFiles()
-Local oIni := HXMLDoc():Read( "Designer.iml" )
-Local i, oNode, cWidgetsFileName, cwitem, cfitem, critem, l_ds_mypath, j
+STATIC FUNCTION ReadIniFiles()
+   LOCAL oIni := HXMLDoc():Read( "designer.iml" )
+   LOCAL i, oNode, cWidgetsFileName, cwitem, cfitem, critem, l_ds_mypath, j
 
    IF oDesigner:lReport
       cwItem := "rep_widgetset"
@@ -300,40 +310,40 @@ Local i, oNode, cWidgetsFileName, cwitem, cfitem, critem, l_ds_mypath, j
    FOR i := 1 TO Len( oIni:aItems[1]:aItems )
       oNode := oIni:aItems[1]:aItems[i]
       IF oNode:title == cwitem
-         IF !Empty( oNode:aItems)
+         IF !Empty( oNode:aItems )
             cWidgetsFileName := oNode:aItems[1]
          ENDIF
       ELSEIF oNode:title == cfitem
-         Aadd( oDesigner:aFormats, { oNode:GetAttribute("name"), oNode:GetAttribute("ext"), ;
-             oNode:GetAttribute("file"),oNode:GetAttribute("rdscr"), ;
-             oNode:GetAttribute("wrscr"),oNode:GetAttribute("cnvtable") } )
+         AAdd( oDesigner:aFormats, { oNode:GetAttribute( "name" ), oNode:GetAttribute( "ext" ), ;
+            oNode:GetAttribute( "file" ), oNode:GetAttribute( "rdscr" ), ;
+            oNode:GetAttribute( "wrscr" ), oNode:GetAttribute( "cnvtable" ) } )
       ELSEIF oNode:title == "editor"
          LoadEdOptions( oNode:aItems[1] )
       ELSEIF oNode:title == "dirpath"
-             l_ds_mypath := oNode:GetAttribute("default")
-             IF !Empty( l_ds_mypath )
-                oDesigner:ds_mypath := Lower( l_ds_mypath )
-             ENDIF
+         l_ds_mypath := oNode:GetAttribute( "default" )
+         IF !Empty( l_ds_mypath )
+            oDesigner:ds_mypath := Lower( l_ds_mypath )
+         ENDIF
       ELSEIF oNode:title == critem .AND. !oDesigner:lSingleForm
-         FOR j := 1 TO Min( Len( oNode:aItems ),MAX_RECENT_FILES )
+         FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
             oDesigner:aRecent[j] := Lower( Trim( oNode:aItems[j]:aItems[1] ) )
          NEXT
       ENDIF
    NEXT
 
-   IF Valtype( cWidgetsFileName ) == "C"
+   IF ValType( cWidgetsFileName ) == "C"
       oDesigner:oWidgetsSet := HXMLDoc():Read( cCurDir + cWidgetsFileName )
    ENDIF
    IF oDesigner:oWidgetsSet == Nil .OR. Empty( oDesigner:oWidgetsSet:aItems )
-      hwg_Msgstop( "Widgets file isn't found!","Designer error" )
-      Return .F.
+      hwg_Msgstop( "Widgets file isn't found!", "Designer error" )
+      RETURN .F.
    ENDIF
 
-Return .T.
+   RETURN .T.
 
-Static Function BuildSet( oTab )
-Local i, j, j1, aSet, oWidget, oProperty, b1, b2, b3, cDlg, arr, b4
-Local x1, cText,cBmp, oButton
+STATIC FUNCTION BuildSet( oTab )
+   LOCAL i, j, j1, aSet, oWidget, oProperty, b1, b2, b3, cDlg, arr, b4
+   LOCAL x1, cText, cBmp, oButton
 
    IF !Empty( oDesigner:oWidgetsSet:aItems )
       aSet := oDesigner:oWidgetsSet:aItems[1]:aItems
@@ -347,13 +357,13 @@ Local x1, cText,cBmp, oButton
                   cText := oWidget:GetAttribute( "text" )
                   cBmp := oWidget:GetAttribute( "bmp" )
                   IF cText != Nil .OR. cBmp != Nil
-                    oButton := HOwnButton():New( ,,,x1,28,30,26, ;
-                               ,,,{|o,id|ClickBtn(o,id)},.T.,    ;
-                               cText,,,,,,,                      ;
-                               cBmp,At(".",cBmp)==0,,,,,.F.,,    ;
-                               oWidget:GetAttribute( "name" ) )
-                    oButton:cargo := oWidget
-                    x1 += 30
+                     oButton := HOwnButton():New( , , , x1, 28, 30, 26, ;
+                        , , , { |o, id|ClickBtn( o, id ) }, .T. ,    ;
+                        cText, , , , , , ,                      ;
+                        cBmp, At( ".", cBmp ) == 0, , , , , .F. , ,    ;
+                        oWidget:GetAttribute( "name" ) )
+                     oButton:cargo := oWidget
+                     x1 += 30
                   ENDIF
                ENDIF
             NEXT
@@ -377,41 +387,42 @@ Local x1, cText,cBmp, oButton
                      ENDIF
                   NEXT
 
-                  cDlg := oProperty:GetAttribute("array")
+                  cDlg := oProperty:GetAttribute( "array" )
                   IF cDlg != Nil
                      arr := {}
                      DO WHILE ( j1 := At( ",",cDlg ) ) > 0
-                        Aadd( arr,Left( cDlg,j1-1 ) )
-                        cDlg := LTrim( SubStr( cDlg,j1+1 ) )
+                        AAdd( arr, Left( cDlg,j1 - 1 ) )
+                        cDlg := LTrim( SubStr( cDlg,j1 + 1 ) )
                      ENDDO
-                     Aadd( arr, cDlg )
+                     AAdd( arr, cDlg )
                   ELSE
                      arr := Nil
                   ENDIF
-                  cDlg := oProperty:GetAttribute("dlg")
+                  cDlg := oProperty:GetAttribute( "dlg" )
                   IF cDlg != Nil
                      cDlg := Lower( cDlg )
                   ENDIF
-                  Aadd( oDesigner:aDataDef, { Lower(oProperty:GetAttribute("name")), ;
-                                     b1,b2,b3,cDlg,arr,b4 } )
+                  AAdd( oDesigner:aDataDef, { Lower( oProperty:GetAttribute("name" ) ), ;
+                     b1, b2, b3, cDlg, arr, b4 } )
                ENDIF
             NEXT
          ELSEIF aSet[i]:title == "methods"
             FOR j := 1 TO Len( aSet[i]:aItems )
                IF aSet[i]:aItems[j]:title == "method"
-                  Aadd( oDesigner:aMethDef, { Lower(aSet[i]:aItems[j]:GetAttribute("name")), ;
-                                     aSet[i]:aItems[j]:GetAttribute("params") } )
+                  AAdd( oDesigner:aMethDef, { Lower( aSet[i]:aItems[j]:GetAttribute("name" ) ), ;
+                     aSet[i]:aItems[j]:GetAttribute( "params" ) } )
                ENDIF
             NEXT
          ENDIF
       NEXT
    ENDIF
-Return Nil
 
-Static Function ArrangeBtn( oTab,x,y )
-Local i, x1, y1, oBtn
+   RETURN Nil
 
-   oTab:Move( ,, x-6, y-33 )
+STATIC FUNCTION ArrangeBtn( oTab, x, y )
+   LOCAL i, x1, y1, oBtn
+
+   oTab:Move( , , x - 6, y - 33 )
    FOR i := 1 TO Len( oTab:aControls )
       oBtn := oTab:aControls[i]
       IF oBtn:Classname == "HOWNBUTTON"
@@ -430,10 +441,11 @@ Local i, x1, y1, oBtn
          ENDIF
       ENDIF
    NEXT
-Return Nil
 
-Static Function ClickBtn( oTab,nId, cItem,cText,nWidth,nHeight )
-Local oBtn := oTab:FindControl( nId )
+   RETURN Nil
+
+STATIC FUNCTION ClickBtn( oTab, nId, cItem, cText, nWidth, nHeight )
+   LOCAL oBtn := oTab:FindControl( nId )
 
    IF !Empty( HFormGen():aForms )
       oDesigner:addItem := oBtn:cargo
@@ -443,17 +455,18 @@ Local oBtn := oTab:FindControl( nId )
       oBtn:Press()
       oDesigner:oBtnPressed := oBtn
    ENDIF
-Return Nil
 
-Function DeleteCtrl()
-Local oDlg := HFormGen():oDlgSelected, oCtrl, i
+   RETURN Nil
+
+FUNCTION DeleteCtrl()
+   LOCAL oDlg := HFormGen():oDlgSelected, oCtrl, i
 
    IF oDlg != Nil .AND. ( oCtrl := GetCtrlSelected( oDlg ) ) != Nil
       IF oCtrl:oContainer != Nil
-         i := Ascan( oCtrl:oContainer:aControls,{|o|o:handle==oCtrl:handle} )
+         i := Ascan( oCtrl:oContainer:aControls, { |o|o:handle == oCtrl:handle } )
          IF i != 0
-            Adel( oCtrl:oContainer:aControls,i )
-            Asize( oCtrl:oContainer:aControls,Len(oCtrl:oContainer:aControls)-1 )
+            ADel( oCtrl:oContainer:aControls, i )
+            ASize( oCtrl:oContainer:aControls, Len( oCtrl:oContainer:aControls ) - 1 )
          ENDIF
       ENDIF
       IF oDesigner:lReport
@@ -464,117 +477,122 @@ Local oDlg := HFormGen():oDlgSelected, oCtrl, i
       SetCtrlSelected( oDlg )
       oDlg:oParent:lChanged := .T.
    ENDIF
-Return Nil
 
-Function FindWidget( cClass )
-Local i, aSet := oDesigner:oWidgetsSet:aItems[1]:aItems, oNode
+   RETURN Nil
+
+FUNCTION FindWidget( cClass )
+   LOCAL i, aSet := oDesigner:oWidgetsSet:aItems[1]:aItems, oNode
 
    FOR i := 1 TO Len( aSet )
       IF aSet[i]:title == "set"
-         IF ( oNode := aSet[i]:Find( "widget",1,{|o|o:GetAttribute("class")==cClass} ) ) != Nil
-            Return oNode
+         IF ( oNode := aSet[i]:Find( "widget",1,{ |o|o:GetAttribute("class" ) == cClass } ) ) != Nil
+            RETURN oNode
          ENDIF
       ENDIF
    NEXT
-Return Nil
 
-Function Evalcode( xCode )
-Local nLines
+   RETURN Nil
 
-   IF Valtype( xCode ) == "C"
-      nLines := mlCount( xCode )
+FUNCTION Evalcode( xCode )
+   LOCAL nLines
+
+   IF ValType( xCode ) == "C"
+      nLines := MLCount( xCode )
       IF nLines > 1
-         xCode := RdScript( ,xCode )
+         xCode := RdScript( , xCode )
       ELSE
          xCode := &( "{||" + xCode + "}" )
       ENDIF
    ENDIF
-   IF Valtype( xCode ) == "A"
-      Return DoScript( xCode )
+   IF ValType( xCode ) == "A"
+      RETURN DoScript( xCode )
    ELSE
-      Return Eval( xCode )
+      RETURN Eval( xCode )
    ENDIF
 
-Return Nil
+   RETURN Nil
 
-Static Function CreateIni( oIni )
-Local oNode := oIni:Add( HXMLNode():New( "designer" ) )
+STATIC FUNCTION CreateIni( oIni )
+   LOCAL oNode := oIni:Add( HXMLNode():New( "designer" ) )
 
    oNode:Add( HXMLNode():New( "widgetset",,,"widgets.xml" ) )
 
    oIni:Save( "designer.iml" )
-Return Nil
 
-Function AddRecent( oForm )
-Local i, cItem := Lower( Trim( oForm:path+oForm:filename ) )
+   RETURN Nil
+
+FUNCTION AddRecent( oForm )
+   LOCAL i, cItem := Lower( Trim( oForm:path + oForm:filename ) )
 
    IF oDesigner:aRecent[1] == Nil .OR. !( oDesigner:aRecent[1] == cItem )
       FOR i := 1 TO MAX_RECENT_FILES
          IF oDesigner:aRecent[i] == Nil
             EXIT
          ELSEIF oDesigner:aRecent[i] == cItem
-            Adel( oDesigner:aRecent,i )
+            ADel( oDesigner:aRecent, i )
          ENDIF
       NEXT
-      Ains( oDesigner:aRecent, 1 )
+      AIns( oDesigner:aRecent, 1 )
       oDesigner:aRecent[1] := cItem
       oDesigner:lChgRecent := .T.
    ENDIF
 
-Return Nil
+   RETURN Nil
 
-Static Function EndIde
-Local i, j, alen := Len( HFormGen():aForms ), lRes := .T., oIni, critem, oNode
+STATIC FUNCTION EndIde
+   LOCAL i, j, alen := Len( HFormGen():aForms ), lRes := .T. , oIni, critem, oNode
 
-  IF alen > 0
-     IF hwg_Msgyesno( "Are you really want to quit ?", "Designer" )
-        FOR i := Len( HFormGen():aForms ) TO 1 STEP -1
-           HFormGen():aForms[i]:End( ,.F. )
-        NEXT
-     ELSE
-        lRes := .F.
-     ENDIF
-  ENDIF
-  IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgPath )
-     critem := Iif( oDesigner:lReport, "rep_recent", "recent" )
-     oIni := HXMLDoc():Read( cCurDir+"Designer.iml" )
-     IF oDesigner:lChgPath
-        i := 1
-        oNode := HXMLNode():New( "dirpath",HBXML_TYPE_SINGLE,{{"default",oDesigner:ds_myPath}} )
-        IF oIni:aItems[1]:Find( "dirpath",@i ) == Nil
-           oIni:aItems[1]:Add( oNode )
-        ELSE
-           oIni:aItems[1]:aItems[i] := oNode
-        ENDIF
-     ENDIF
-     IF oDesigner:lChgRecent
-        i := 1
-        IF oIni:aItems[1]:Find( critem,@i ) == Nil
-           oIni:aItems[1]:Add( HXMLNode():New( critem,, ) )
-           i := Len( oIni:aItems[1]:aItems )
-        ENDIF
-        j := 1
-        oIni:aItems[1]:aItems[i]:aItems := {}
-        DO WHILE j <= MAX_RECENT_FILES .AND. oDesigner:aRecent[j] != Nil
-           oIni:aItems[1]:aItems[i]:Add( HXMLNode():New( "file",,,oDesigner:aRecent[j] ) )
-           j ++
-        ENDDO
-     ENDIF
-     oIni:Save( cCurDir+"Designer.iml" )
-  ENDIF
-  IF lRes
-     oDesigner:oCtrlMenu:End()
-     oDesigner:oTabMenu:End()
-     IF HDTheme():lChanged
-        SaveEdOptions()
-     ENDIF
+   IF alen > 0
+      IF hwg_Msgyesno( "Are you really want to quit ?", "Designer" )
+         FOR i := Len( HFormGen():aForms ) TO 1 STEP - 1
+            HFormGen():aForms[i]:End( , .F. )
+         NEXT
+      ELSE
+         lRes := .F.
+      ENDIF
+   ENDIF
+   IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgPath )
+      critem := iif( oDesigner:lReport, "rep_recent", "recent" )
+      oIni := HXMLDoc():Read( cCurDir + "Designer.iml" )
+      IF oDesigner:lChgPath
+         i := 1
+         oNode := HXMLNode():New( "dirpath", HBXML_TYPE_SINGLE, { { "default",oDesigner:ds_myPath } } )
+         IF oIni:aItems[1]:Find( "dirpath", @i ) == Nil
+            oIni:aItems[1]:Add( oNode )
+         ELSE
+            oIni:aItems[1]:aItems[i] := oNode
+         ENDIF
+      ENDIF
+      IF oDesigner:lChgRecent
+         i := 1
+         IF oIni:aItems[1]:Find( critem, @i ) == Nil
+            oIni:aItems[1]:Add( HXMLNode():New( critem,, ) )
+            i := Len( oIni:aItems[1]:aItems )
+         ENDIF
+         j := 1
+         oIni:aItems[1]:aItems[i]:aItems := {}
+         DO WHILE j <= MAX_RECENT_FILES .AND. oDesigner:aRecent[j] != Nil
+            oIni:aItems[1]:aItems[i]:Add( HXMLNode():New( "file",,,oDesigner:aRecent[j] ) )
+            j ++
+         ENDDO
+      ENDIF
+      oIni:Save( cCurDir + "Designer.iml" )
+   ENDIF
+   IF lRes
+      oDesigner:oCtrlMenu:End()
+      oDesigner:oTabMenu:End()
+      IF HDTheme():lChanged
+         SaveEdOptions()
+      ENDIF
 #ifndef MODAL
-     oDesigner := Nil
+      oDesigner := Nil
 #endif
-  ENDIF
+   ENDIF
 
-Return lRes
+   RETURN lRes
 
-Function SetOmmitMenuFile(lom)
-lOmmitMenuFile := lOm
-Return lOm
+FUNCTION SetOmmitMenuFile( lom )
+
+   lOmmitMenuFile := lOm
+
+   RETURN lOm

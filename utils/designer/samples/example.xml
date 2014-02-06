@@ -6,7 +6,7 @@
     <property name="FormType">[Main]</property>
     <property name="lClipper">.F.</property>
     <property name="lExitOnEnter">.F.</property>
-    <property name="Variables">{oForm1,oForm2,oForm3,oRep1,oForm4,oForm5}</property>
+    <property name="Variables">{oForm1,oForm2,oForm3,oRep1,oForm4}</property>
     <property name="FromStyle">[Popup]</property>
     <property name="Icon">[]</property>
     <property name="Modal">.F.</property>
@@ -24,8 +24,7 @@
     <![CDATA[oForm1 := HFormTmpl():Read( "testget1.xml" )
 oForm2 := HFormTmpl():Read( "testget2.xml" )
 oForm3 := HFormTmpl():Read( "testdbf1.xml" )
-oForm4 := HFormTmpl():Read( "test_ctrl.xml" )
-oForm5 := HFormTmpl():Read( "barcode.xml" )
+oForm4 := HFormTmpl():Read( "barcode.xml" )
 orep1 := hreptmpl():Read("testrep1.xml")]]>
   </method>
   <part class="menu">
@@ -105,11 +104,8 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
       <style>
         <property name="Geometry">{278,3,75,42}</property>
         <property name="Name">[oOwnerbutton1]</property>
-        <property name="Caption">[Test report 1]</property>
+        <property name="Caption">[Report]</property>
         <property name="Flat">.T.</property>
-        <property name="font">
-          <font name="" width="0" height="-12" weight="400" charset="204"/>
-        </property>
       </style>
       <method name="onClick">
         <![CDATA[orep1:print(,.t.)]]>
@@ -118,23 +114,12 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
     <part class="ownerbutton">
       <style>
         <property name="Geometry">{354,3,107,42}</property>
-        <property name="Name">[oOwnerbutton2]</property>
-        <property name="Caption">[ProgressBar]</property>
-        <property name="Flat">.T.</property>
-      </style>
-      <method name="onClick">
-        <![CDATA[oForm4:Show()]]>
-      </method>
-    </part>
-    <part class="ownerbutton">
-      <style>
-        <property name="Geometry">{462,3,107,42}</property>
         <property name="Name">[oOwnerbutton3]</property>
         <property name="Caption">[BarCode]</property>
         <property name="Flat">.T.</property>
       </style>
       <method name="onClick">
-        <![CDATA[oForm5:Show()]]>
+        <![CDATA[oForm4:Show()]]>
       </method>
     </part>
   </part>

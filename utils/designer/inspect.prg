@@ -248,9 +248,12 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
    oBrw1:aEvents := {}
    oBrw1:aNotify := {}
    oBrw1:aControls := {}
+#ifdef __GTK__
+   oBrw1:DelControl( oGet )
+#else
    hwg_Postmessage( oGet:handle,WM_CLOSE,0,0 )
-   // oBrw1:DelControl( oGet )
-   // oBrw1:Refresh()
+#endif
+
 Return .T.
 
 Function InspOpen
@@ -322,7 +325,11 @@ Static Function DlgCancel()
    IF !Empty( oBrw1:aControls )
       oBrw1:aEvents := {}
       oBrw1:aNotify := {}
+#ifdef __GTK__
+      oBrw1:DelControl( oBrw1:aControls[1] )
+#else
       hwg_Postmessage( oBrw1:aControls[1]:handle,WM_CLOSE,0,0 )
+#endif
       oBrw1:aControls := {}
       // oBrw1:DelControl( oBrw1:aControls[1] )
       // oBrw1:Refresh()

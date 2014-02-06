@@ -176,6 +176,37 @@ HB_FUNC( HWG_GETNOTIFYCODE )
 {
 }
 
+/*
+ * HORZRES	Width, in pixels, of the screen.
+ * VERTRES	Height, in raster lines, of the screen.
+ * HORZSIZE	Width, in millimeters, of the physical screen.
+ * VERTSIZE	Height, in millimeters, of the physical screen.
+ *
+ */
+HB_FUNC( HWG_GETDEVICEAREA )
+{
+   GdkScreen* screen = gdk_screen_get_default();
+
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
+   PHB_ITEM temp;
+
+   temp = hb_itemPutNL( NULL, (HB_LONG) gdk_screen_get_width( screen ) );
+   hb_itemArrayPut( aMetr, 1, temp );
+
+   hb_itemPutNL( temp, (HB_LONG) gdk_screen_get_height( screen ) );
+   hb_itemArrayPut( aMetr, 2, temp );
+
+   hb_itemPutNL( temp, (HB_LONG) gdk_screen_get_width_mm( screen ) );
+   hb_itemArrayPut( aMetr, 3, temp );
+
+   hb_itemPutNL( temp, (HB_LONG) gdk_screen_get_height_mm( screen ) );
+   hb_itemArrayPut( aMetr, 4, temp );
+
+   hb_itemRelease( temp );
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
+}
+
 #define CHUNK_LEN 1024
 
 HB_FUNC( HWG_RUNCONSOLEAPP ) 

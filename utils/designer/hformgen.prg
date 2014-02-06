@@ -465,7 +465,11 @@ Local fname, s1, s2, l_ds_mypath
    IF lOpen
       fname := hwg_Selectfile( {s1,"All files"}, {s2,"*.*"},oDesigner:ds_mypath )
    ELSE
+#ifdef __GTK__
+      fname := hwg_Selectfile( s1, s2, mypath )
+#else
       fname := hwg_Savefile( s2,s1,s2,oDesigner:ds_mypath )
+#endif
    ENDIF
    IF !Empty( fname )
       l_ds_mypath := Lower( FilePath( fname ) )
@@ -853,7 +857,7 @@ Local x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, i, n1cm, xt, yt
          ENDIF
          i++
       ENDDO
-#ifndef __LINUX__
+#ifndef __GTK__
       hwg_Setscrollinfo( oDlg:handle, SB_HORZ, 1, oForm:nXOffset/10+1, 1, Round((oForm:nPWidth-(aCoors[3]-LEFT_INDENT)/oForm:nKoeff)/10,0)+1 )
       hwg_Setscrollinfo( oDlg:handle, SB_VERT, 1, oForm:nYOffset/10+1, 1, Round((oForm:nPHeight-(aCoors[4]-TOP_INDENT)/oForm:nKoeff)/10,0)+1 )
 #endif
@@ -916,7 +920,7 @@ Local oCtrl, aCoors, nShift
       ENDIF
    ELSEIF msg == WM_KEYUP
       wParam := hwg_PtrToUlong( wParam )
-      nShift := Iif( hwg_Getkeystate(17)<0,10,1 )
+      nShift := Iif( Asc( SubStr(hwg_GetKeyboardState( lParam ),0x12,1 ) ) >= 128,10,1 )
       oCtrl := GetCtrlSelected( Iif(oDlg:oParent:Classname()=="HDIALOG",oDlg:oParent,oDlg) )
       IF wParam == 40        // Down
          IF oCtrl != Nil
@@ -1075,7 +1079,7 @@ Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
       ENDIF
    ENDIF
    IF oCtrl != Nil .AND. Lower( oCtrl:cClass ) == "page"
-#ifndef __LINUX__
+#ifndef __GTK__
       i := hwg_Tab_hittest( oCtrl:handle,,,@flag )
       IF i >= 0 .AND. flag == 4 .OR. flag == 6
          Page_Select( oCtrl, i+1 )

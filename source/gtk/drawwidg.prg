@@ -32,8 +32,8 @@ CLASS HFont INHERIT HObject
    DATA nCounter   INIT 1
 
    METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle, lLinux )
-   METHOD SELECT( oFont )
-   METHOD RELEASE()
+   METHOD Select( oFont )
+   METHOD Release()
    METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight )
 
 ENDCLASS
@@ -91,8 +91,8 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, ;
 
    RETURN Self
 
-METHOD SELECT( oFont ) CLASS HFont
-   LOCAL af := hwg_Selectfont( oFont )
+METHOD Select( oFont, cTitle ) CLASS HFont
+   LOCAL af := hwg_Selectfont( oFont, cTitle )
 
    IF af == Nil
       RETURN Nil
@@ -100,7 +100,7 @@ METHOD SELECT( oFont ) CLASS HFont
 
    Return ::Add( af[2], af[3], af[4], af[5], af[6], af[7], af[8], af[9], af[1], .T. )
 
-METHOD RELEASE() CLASS HFont
+METHOD Release() CLASS HFont
    LOCAL i, nlen := Len( ::aFonts )
 
    ::nCounter --

@@ -85,7 +85,7 @@ HB_FUNC( HWG_SELECTFONT )
 {
    GtkWidget *fontseldlg;
    GtkFontSelection *fontsel;
-   const char *cTitle = ( hb_pcount()>2 && HB_ISCHAR(3) )? hb_parc(3):"Select Font";
+   const char *cTitle = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2):"Select Font";
 
    fontseldlg = gtk_font_selection_dialog_new( cTitle );
    fontsel = GTK_FONT_SELECTION( GTK_FONT_SELECTION_DIALOG (fontseldlg)->fontsel );

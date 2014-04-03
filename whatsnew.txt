@@ -9,6 +9,19 @@
 [*] Changes
 
 
+HWGUI 2.18 build 2 ( 03.04.2014 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] The debugger: array inspector, object inspector, commands support
+    has been added.
+[+] Duplex printing support added.
+[*] The editor and the tutorial are gtk compatible now
+[*] Processing of hot keys is implemented via hook procedures in both
+    winapi and gtk versions and works for any control now.
+    SET KEY GLOBAL command added.
+[*] Combobox control can accept now multidimensional arrays.
+[*] Improved compatibility with 2.17 version.
+[!] Some bug fixes
+
 HWGUI 2.18 ( 19.07.2013 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] There was a lot of changes since last release, I can't now make

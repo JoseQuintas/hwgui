@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-03 11:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/herrsys.prg
+    * Small changes to prevent appearing of multiply error boxes.
+
 2014-02-06 15:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/commond.c
     * hwg_SelectFont() - Title of a dialog is a second parameter now

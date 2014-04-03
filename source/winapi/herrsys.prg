@@ -14,6 +14,7 @@
 #include "guilib.ch"
 
 STATIC LogInitialPath := ""
+STATIC lErrOn := .F.
 
 PROCEDURE hwg_ErrSys
 
@@ -71,10 +72,13 @@ STATIC FUNCTION DefError( oError )
    cMessage += Chr( 13 ) + Chr( 10 ) + "Time:" + Time()
 
 
-   MemoWrit( LogInitialPath + "Error.log", cMessage )
-
    hwg_ReleaseTimers()
-   ErrorPreview( cMessage )
+
+   IF !lErrOn
+      lErrOn := .T.
+      MemoWrit( LogInitialPath + "Error.log", cMessage )
+      ErrorPreview( cMessage )
+   ENDIF
    hwg_EndWindow()
    hwg_Postquitmessage( 0 )
 

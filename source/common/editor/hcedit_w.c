@@ -124,32 +124,6 @@ typedef struct
 
 char * szDelimiters = " .,-";
 
-void wrlog( const char * sFile, const char * sTraceMsg, ... )
-{
-   FILE *hFile;
-
-   if( sFile == NULL )
-   {
-      hFile = hb_fopen( "trace.log", "a" );
-   }
-   else
-   {
-      hFile = hb_fopen( sFile, "a" );
-   }
-
-   if( hFile )
-   {
-      va_list ap;
-
-      va_start( ap, sTraceMsg );
-      vfprintf( hFile, sTraceMsg, ap );
-      va_end( ap );
-
-      fclose( hFile );
-   }
-
-}
-
 TEDFONT * ted_setfont( TEDIT * pted, HFONT hFont, int iNum, HB_BOOL bPrn  )
 {
    TEDFONT * pFont;
@@ -193,6 +167,7 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
    if( iReal > *iRealLen )
       iReal = *iRealLen;
    GetTextExtentPoint32( pted->hDCScr, szText, iReal, &sz );
+   //hwg_writelog( NULL, "iReal: %d iRealLen: %d iWidth: %d sz.cx %d\r\n",iReal,*iRealLen,iWidth,sz.cx );
    if( sz.cx > iWidth )
    {
       for( i = iReal - 1; i > 0; i-- )
@@ -201,7 +176,8 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
          {
             i1 = i;
             while( i > 0 && !strchr( szDelimiters,*(szText+i) ) ) i --;
-            if( !i && bLastInFew )
+            //if( !i && bLastInFew )
+            if( !i )
             {
                i = i1;
                break;
@@ -213,6 +189,7 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
       }
       xpos = sz.cx;
       *iRealLen = i;
+      //hwg_writelog( NULL, "> iRealLen: %d sz.cx %d\r\n",*iRealLen,sz.cx );
    }
    else
    {
@@ -224,7 +201,8 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
          i = i1;
          while( i && !strchr( szDelimiters,*(szText+i) ) &&
                !strchr( szDelimiters,*(szText+i-1) ) ) i --;
-         if( i || bLastInFew )
+         //if( i || bLastInFew )
+         if( i )
             i1 = i;
       }
       for( i = iReal + 1; i <= *iRealLen; i++ )
@@ -241,6 +219,7 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
          i1 = i;
       }
       *iRealLen = i1;
+      //hwg_writelog( NULL, ">> iRealLen: %d sz.cx %d\r\n",*iRealLen,sz.cx );
    }
 
    return xpos;
@@ -279,7 +258,6 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
    SetRect( &rect, xpos, ypos, xpos + sz.cx, ypos + iHeight );
    // draw the text and erase it's background at the same time
    ExtTextOut( hDC, xpos, ypos + yoff, ETO_OPAQUE, &rect, szText, iLen, 0 );
-   //wrlog( NULL, "Out: %s tcol = %u\r\n", szText, fg );
 
    return sz.cx;
 }
@@ -291,7 +269,6 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
    int iHeight = 0, iMaxAscent = 0;
    TEDFONT *font;
 
-   //wrlog( NULL, "Lineout-1\r\n" );
    for( i = 0, lasti = 0, iSegs = 0; i <= iLen; i++, iSegs++ )
    {
       // if the colour or font changes, then need to output 
@@ -309,14 +286,12 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
          iRealLen = i - lasti;
          iRealWidth += ted_CalcSize( pted, szText + lasti, pattr + lasti, &iRealLen,
                x2 - iRealWidth - x1, pted->bWrap, i == iLen && iSegs );
-         // wrlog( NULL, "iLen = %u iRealLen = %u\r\n", i-lasti, iRealLen );
          iPrinted += iRealLen;
          if( iRealLen < i - lasti )
             break;
          lasti = i;
       }
    }
-   //wrlog( NULL, "Lineout-2\r\n" );
 
    if( iAlign )
    {
@@ -346,11 +321,9 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
                iRealLen = i - lasti;
             else
                iRealLen = iPrinted - lasti;
-            // wrlog( NULL, "x1 = %u ypos= %u len = %u \r\n", x1, ypos, iRealLen );
             x1 +=
                   ted_TextOut( pted, x1, ypos, iHeight, iMaxAscent,
                   szText + lasti, pattr + lasti, iRealLen );
-            // wrlog( NULL, "x1 = %u \r\n", x1 );
             if( iRealLen != ( i - lasti ) )
                break;
             lasti = i;
@@ -386,17 +359,17 @@ TEDIT * ted_init( void )
    {
       WNDCLASS wndclass;
 
-      wndclass.style = CS_DBLCLKS | CS_PARENTDC;   // | CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
+      wndclass.style = CS_DBLCLKS; //| CS_PARENTDC;   // | CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
       wndclass.lpfnWndProc = WinCtrlProc;
       wndclass.cbClsExtra = 0;
       wndclass.cbWndExtra = 0;
       wndclass.hInstance = GetModuleHandle( NULL );
       wndclass.hIcon = NULL;
       wndclass.hCursor = LoadCursor( NULL, IDC_IBEAM );
-      wndclass.hbrBackground = ( HBRUSH ) 0;
+      wndclass.hbrBackground = NULL; //( HBRUSH ) 0;
       // wndclass.hbrBackground = (HBRUSH)( COLOR_WINDOW+1 );
       wndclass.lpszMenuName = NULL;
-      wndclass.lpszClassName = "tedit";
+      wndclass.lpszClassName = TEXT( "TEDIT" );
 
       RegisterClass( &wndclass );
       bRegistered = TRUE;
@@ -422,7 +395,7 @@ HWND ted_create( HWND hwndParent, int id, DWORD dwStyle, int x, int y,
 
    return CreateWindowEx( 
          ( dwStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0,
-         "TEDIT", _T( "" ), dwStyle,
+         TEXT( "TEDIT" ), _T( "" ), dwStyle,
          x, y, iWidth, iHeight, hwndParent, ( HMENU ) id,
          GetModuleHandle( 0 ), 0 );
 }
@@ -539,7 +512,6 @@ HB_FUNC( HCED_SETVSCROLL )
    si.nMax  = hb_parni(3) * ( (iPages)? iPages-1:iPages );
         
    SetScrollInfo( pted->handle, SB_VERT, &si, TRUE );
-
 }
 
 HB_FUNC( HCED_SETPAINT )
@@ -562,7 +534,6 @@ HB_FUNC( HCED_SETPAINT )
    if( pted->hDCPrn && !HB_ISNIL(6) )
    {
       pted->dKoeff = ( GetDeviceCaps( pted->hDCPrn,HORZRES ) / hb_parnd(6) ) / GetDeviceCaps( pted->hDCPrn,HORZSIZE );
-      wrlog( NULL, "%f\r\n", pted->dKoeff );
    }
 
 }
@@ -700,7 +671,6 @@ HB_FUNC( HCED_EXACTCARETPOS )
       SetCaretPos( x1, y1 );
       pted->ixCaretPos = x1;
       pted->iyCaretPos = y1;
-      // wrlog( NULL, "x = %u y = %u\r\n", x1, y1 );
    }
 
    hb_retni( iPrinted );
@@ -740,6 +710,7 @@ HB_FUNC( HCED_LINEOUT )
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
    HB_BOOL bCalcOnly = (HB_ISNIL(8))? 0 : hb_parl(8);
 
+   //hwg_writelog( NULL, "-------- Len: %d %d\r\n", hb_parni( 6 ), bCalcOnly );
    hb_retni( ted_LineOut( pted, hb_parni( 2 ), hb_parni( 3 ), hb_parni( 4 ),
          ( char * )hb_parc( 5 ), hb_parni( 6 ), hb_parni(7), bCalcOnly ) );
    if( !bCalcOnly )

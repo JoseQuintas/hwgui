@@ -239,7 +239,8 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
          {
             i1 = i;
             while( i > 0 && !strchr( szDelimiters,*(szText+i) ) ) i --;
-            if( !i && bLastInFew )
+            //if( !i && bLastInFew )
+            if( !i )
             {
                i = i1;
                break;
@@ -264,7 +265,8 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
          i = i1;
          while( i && !strchr( szDelimiters,*(szText+i) ) &&
                !strchr( szDelimiters,*(szText+i-1) ) ) i --;
-         if( i || bLastInFew )
+         //if( i || bLastInFew )
+         if( i )
             i1 = i;
       }
       for( i = iReal + 1; i <= *iRealLen; i++ )
@@ -423,20 +425,17 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
          }
       }
       pted->x2 = x1;
-      /*
       if( !pted->hDCPrn )
       {
-         SetRect( &rect, x1, ypos, pted->iWidth, ypos + iHeight );
-         if( pted->bg != pted->bg_curr )
-         {
-            SetBkColor( pted->hDCScr, pted->bg );
-            pted->bg_curr = pted->bg;
-         }
-         ExtTextOut( pted->hDCScr, 0, 0, ETO_OPAQUE, &rect, 0, 0, 0 );
+         hwg_setcolor( pted->hDCScr->cr, pted->bg );
+         //pted->bg_curr = pted->bg;
+         cairo_rectangle( pted->hDCScr->cr, (gdouble)x1, (gdouble)ypos,
+               (gdouble)(pted->iWidth-x1+1), (gdouble)iHeight );
+         cairo_fill( pted->hDCScr->cr );
       }
-      */
       if( pted->iyCaretPos == ypos )
       {
+         hwg_setcolor( pted->hDCScr->cr, (pted->hDCScr->fcolor != -1)? pted->hDCScr->fcolor : 0 );
          cairo_move_to( pted->hDCScr->cr, (gdouble)pted->ixCaretPos, (gdouble)pted->iyCaretPos );
          cairo_line_to( pted->hDCScr->cr, (gdouble)pted->ixCaretPos, (gdouble)pted->iyCaretPos+iHeight );
          cairo_stroke( pted->hDCScr->cr );

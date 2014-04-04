@@ -64,17 +64,17 @@
 #define HILIGHT_QUOTE   3
 #define HILIGHT_COMM    4
 
-#define MAX_ITEMS      40
+#define MAX_ITEMS    1024
 
 Static cSpaces := e" \t", cQuotes := e"\"\'"
 
 CLASS Hilight
 
-   DATA   lCase      INIT .F.
-   DATA   cCommands
-   DATA   cFuncs
-   DATA   cScomm
-   DATA   cMcomm1, cMcomm2
+   DATA   lCase      INIT .F.      // A flag - are the keywords case sensitive
+   DATA   cCommands                // A list of keywords (commands), divided by space
+   DATA   cFuncs                   // A list of keywords (functions), divided by space
+   DATA   cScomm                   // A string, which starts single line comments
+   DATA   cMcomm1, cMcomm2         // Start and end strings for multiline comments
 
    DATA   aLineStru, nItems
    DATA   lMultiComm
@@ -138,6 +138,10 @@ Local oIni, oMod, oNode, i, nPos
 
 Return Self
 
+/*  Scans the cLine and fills an array :aLineStru with hilighted items
+ *  lComm set it to .T., if a previous line was a part of an unclosed multiline comment
+ *  lCheck - if .T., checks for multiline comments only
+ */
 METHOD Do( cLine, lComm, lCheck ) CLASS Hilight
 Local nLen := Len( cLine ), nLenS, nLenM
 Local cs, cm
@@ -226,8 +230,10 @@ Return Nil
 
 METHOD AddItem( nPos1, nPos2, nType ) CLASS Hilight
 
-   IF ::nItems >= Len( ::aLineStru )
+   IF ::nItems > MAX_ITEMS
       Return Nil
+   ELSEIF ::nItems >= Len( ::aLineStru )
+      Aadd( ::aLineStru, Array(3) )
    ENDIF
    ::nItems ++
    ::aLineStru[::nItems,1] := nPos1

@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-07 16:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hilight.prg
+    * Some code is rewritten to separate highliting from the editor and to
+      place all text manipulations in two methods: :InsText() and :DelText()
+    * Undo is implemented
+  * utils/debugger/hwgdebug.prg
+    * Small fix due to the changes in editor
+
 2014-04-04 15:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/common/editor/hcedit_l.c

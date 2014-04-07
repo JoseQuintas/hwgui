@@ -930,11 +930,11 @@ Local oText
    oText:bPaint := {|o,h,n,y1,y2| onTxtPaint( o,h,n,y1,y2 ) }
    oText:bKeyDown:= {|o,n|Iif(n==120.or.n==13,AddBreakPoint(),.T.)}
    oText:bClickDoub:= {||AddBreakPoint()}
-   IF Empty( oText:oHili )
+   //IF Empty( oText:oHili )
       oText:oHili := Hilight():New( cIniPath+"hilight.xml", "prg" )  
-   ELSE
-      oText:oHili := oTabMain:aControls[1]:oHili
-   ENDIF
+   //ELSE
+   //   oText:oHili := oTabMain:aControls[1]:oHili
+   //ENDIF
 
 Return oText
 

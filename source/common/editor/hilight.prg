@@ -68,19 +68,31 @@
 
 Static cSpaces := e" \t", cQuotes := e"\"\'"
 
-CLASS Hilight
-
+CLASS HilightBase
    DATA   lCase      INIT .F.      // A flag - are the keywords case sensitive
+   DATA   aLineStru, nItems
+
+   METHOD New()   INLINE  Self
+   METHOD Init()  INLINE  Nil
+   METHOD Do()    INLINE  (::nItems := 0,Nil)
+   METHOD UpdSource()    INLINE  Nil
+
+ENDCLASS
+
+CLASS Hilight INHERIT HilightBase
+
    DATA   cCommands                // A list of keywords (commands), divided by space
    DATA   cFuncs                   // A list of keywords (functions), divided by space
    DATA   cScomm                   // A string, which starts single line comments
    DATA   cMcomm1, cMcomm2         // Start and end strings for multiline comments
 
-   DATA   aLineStru, nItems
    DATA   lMultiComm
+   DATA   aDop, nDopChecked
 
    METHOD New( cFile, cSection )
-   METHOD Do( cLine, lComm, lCheck )
+   METHOD Init( aText )
+   METHOD Do( aText, nLine, lCheck )
+   METHOD UpdSource( nLine )  INLINE  ( ::nDopChecked := nLine-1 )
    METHOD AddItem( nPos1, nPos2, nType )
 ENDCLASS
 
@@ -138,12 +150,17 @@ Local oIni, oMod, oNode, i, nPos
 
 Return Self
 
+METHOD Init( aText ) CLASS Hilight
+   ::aDop := Array( Len( aText ) )
+   ::nDopChecked := 0
+Return Nil
+
 /*  Scans the cLine and fills an array :aLineStru with hilighted items
  *  lComm set it to .T., if a previous line was a part of an unclosed multiline comment
  *  lCheck - if .T., checks for multiline comments only
  */
-METHOD Do( cLine, lComm, lCheck ) CLASS Hilight
-Local nLen := Len( cLine ), nLenS, nLenM
+METHOD Do( aText, nLine, lCheck ) CLASS Hilight
+Local cLine, nLen, nLenS, nLenM, i, lComm
 Local cs, cm
 Local nPos, nPos1, cWord, c
 
@@ -156,6 +173,24 @@ Local nPos, nPos1, cWord, c
       Return Nil
    ENDIF
 
+   cLine := aText[nLine]
+   nLen := Len( cLine )
+
+   IF Empty( ::aDop )
+      ::Init( aText )
+   ELSEIF Len( ::aDop ) < Len( aText )
+      ::aDop := ASize( ::aDop, Len( aText ) )
+   ENDIF
+   IF ::nDopChecked < nLine - 1
+      FOR i := ::nDopChecked + 1 TO nLine - 1
+         ::Do( aText, i, .T. )
+         ::aDop[i] := Iif( ::lMultiComm, 1, 0 )
+      NEXT
+   ENDIF
+   lComm := Iif( nLine==1, .F., !Empty( ::aDop[nLine - 1] ) )
+   ::nDopChecked := nLine
+   ::aDop[nLine] := 0
+
    IF Empty( ::cMcomm1 )
       cm := ""
    ELSE
@@ -167,6 +202,7 @@ Local nPos, nPos1, cWord, c
       IF ( nPos := At( ::cMcomm2, cLine ) ) == 0
          IF !lCheck; ::AddItem( 1, Len(cLine), HILIGHT_COMM ); ENDIF
          ::lMultiComm := .T.
+         ::aDop[nLine] := 1
          Return Nil
       ELSE
          IF !lCheck; ::AddItem( 1, nPos, HILIGHT_COMM ); ENDIF
@@ -204,6 +240,7 @@ Local nPos, nPos1, cWord, c
             IF ( nPos := hb_At( ::cMcomm2, cLine, nPos1+1 ) ) == 0
                nPos := Len( cLine )
                ::lMultiComm := .T.
+               ::aDop[nLine] := 1
             ENDIF
             IF !lCheck; ::AddItem( nPos1, nPos, HILIGHT_COMM ); ENDIF
             nPos += nLenM - 1

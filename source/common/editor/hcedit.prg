@@ -253,7 +253,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::PCopy( , ::aPointM2 )
 
    ::nTextLen := ::nLines := 0
-   ::oHili := HilightBase():New()
    ::aHili := Array( HILIGHT_GROUPS, 3 )
 
    ::hEdit := hced_InitTextEdit()
@@ -698,7 +697,7 @@ METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC ) CLASS HCEdit
          RETURN Nil
       ENDIF
       IF ::lWrap
-         nLine := hced_P2Screen( Self, nL, Iif( nPos1==0,1,nPos1 ) )
+         nLine := hced_P2Screen( Self, nL, @nPos1 )
       ENDIF
       IF ( P1[P_Y] == P2[P_Y] )
          IF P1[P_Y] == nLine
@@ -764,7 +763,9 @@ METHOD SetText( cText, cPageIn, cPageOut ) CLASS HCEdit
       ::aText := hb_aTokens( cText, cNewLine )
    ENDIF
    ::nLinesAll := ::nTextLen := Len( ::aText )
-   ::oHili:Init( ::aText )
+   IF !Empty( ::oHili )
+      ::oHili:Init( ::aText )
+   ENDIF
 
    ::SetWrap( ::lWrap, .T. )
 
@@ -1509,7 +1510,7 @@ METHOD DelText( P1, P2 ) CLASS HCEdit
    ELSE
       ::nLineC := i
    ENDIF
-   ::nPosC := nPos
+   ::nPosC := nPos - ::nPosF + 1
 
    hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
       ::nClientWidth, ::nHeight )
@@ -1518,15 +1519,17 @@ METHOD DelText( P1, P2 ) CLASS HCEdit
    ::lUpdated := .T.
 
    ::Undo( Pstart[P_Y], Pstart[P_X], Pend[P_Y], Pend[P_X], 3, cText )
-   ::oHili:UpdSource( Pstart[P_Y], Pend[P_Y] )
+   IF !Empty( ::oHili )
+      ::oHili:UpdSource( Pstart[P_Y], Pend[P_Y] )
+   ENDIF
 
    RETURN Nil
 
 METHOD InsText( aPoint, cText, lOver ) CLASS HCEdit
    LOCAL aText := hb_aTokens( cText, cNewLine ), nLine := aPoint[P_Y], cRest, i, nPos, nSubl
-   LOCAL nLineC := ::nLineC, nLineNew := nLine, nSub, nPos1, nPos2
+   LOCAL nLineC := ::nLineC, nLineNew := nLine, nSub, nPos1, nPos2, lInvAll := .F.
 
-   nPos := nPos1 := ::aLines[::nLineC,AL_FIRSTC] + aPoint[P_X] - 1
+   nPos := nPos1 := aPoint[P_X]
    nSubl := Iif( ::lWrap .AND. ::aWrap[nLine] != Nil, Len(::aWrap[nLine]), 0 )
 
    IF lOver == Nil .OR. !lOver
@@ -1564,23 +1567,29 @@ METHOD InsText( aPoint, cText, lOver ) CLASS HCEdit
    ELSE
       ::nLineC := i
    ENDIF
-   ::nPosC := nPos
 
-   IF ::nLineC != nLineC
-      ::Paint( .F. )
+   ::Paint( .F. )
+   ::nPosC := nPos - ::nPosF + 1
+   ::SetCaretPos( SETC_XY )
+   IF !::lWrap .AND. ::nPosC < nPos - ::nPosF + 1
+      ::nPosF += nPos - ::nPosF + 1 - ::nPosC
+      ::aPointC[P_X] := ::nPosF + ::nPosC - 1
+      lInvAll := .T.
    ENDIF
-   IF Len( aText ) > 1
+
+   IF Len( aText ) > 1 .OR. lInvAll
       hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
    ELSE
-      hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[Min(::nLineC,nLineC),AL_Y1], ;
+      hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[Max(Min(::nLineC,nLineC)-1,1),AL_Y1], ;
          ::nClientWidth, Iif( ::nLineC==nLineC .AND. ;
          nSubl == Iif(::lWrap.AND.::aWrap[nLine]!=Nil,Len(::aWrap[nLine]),0), ;
          ::aLines[nLineC,AL_Y2], ::nHeight ) )
    ENDIF
-   ::SetCaretPos( SETC_XY )
    ::lUpdated := .T.
    ::Undo( nLine, nPos1, nLineNew, nPos2, Iif(lOver==Nil.OR.!lOver,1,2), cText )
-   ::oHili:UpdSource( nLine, nLineNew )
+   IF !Empty( ::oHili )
+      ::oHili:UpdSource( nLine, nLineNew )
+   ENDIF
 
    RETURN Nil
 

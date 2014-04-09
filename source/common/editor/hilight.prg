@@ -69,15 +69,26 @@
 Static cSpaces := e" \t", cQuotes := e"\"\'"
 
 CLASS HilightBase
+   DATA   oEdit   
    DATA   lCase      INIT .F.      // A flag - are the keywords case sensitive
    DATA   aLineStru, nItems
 
    METHOD New()   INLINE  Self
-   METHOD Init()  INLINE  Nil
+   METHOD Init( oEdit )
+   METHOD End()
    METHOD Do()    INLINE  (::nItems := 0,Nil)
    METHOD UpdSource()    INLINE  Nil
 
 ENDCLASS
+
+METHOD Init( oEdit ) CLASS HilightBase
+   ::oEdit := oEdit
+   RETURN Nil
+
+METHOD End() CLASS HilightBase
+   ::oEdit := Nil
+   RETURN Nil
+
 
 CLASS Hilight INHERIT HilightBase
 
@@ -90,8 +101,8 @@ CLASS Hilight INHERIT HilightBase
    DATA   aDop, nDopChecked
 
    METHOD New( cFile, cSection )
-   METHOD Init( aText )
-   METHOD Do( aText, nLine, lCheck )
+   METHOD Init( oEdit )
+   METHOD Do( nLine, lCheck )
    METHOD UpdSource( nLine )  INLINE  ( ::nDopChecked := nLine-1 )
    METHOD AddItem( nPos1, nPos2, nType )
 ENDCLASS
@@ -150,19 +161,23 @@ Local oIni, oMod, oNode, i, nPos
 
 Return Self
 
-METHOD Init( aText ) CLASS Hilight
-   ::aDop := Array( Len( aText ) )
+METHOD Init( oEdit ) CLASS Hilight
+   ::aDop := Array( Len( oEdit:aText ) )
    ::nDopChecked := 0
-Return Nil
+Return ::Super:Init( oEdit )
 
 /*  Scans the cLine and fills an array :aLineStru with hilighted items
  *  lComm set it to .T., if a previous line was a part of an unclosed multiline comment
  *  lCheck - if .T., checks for multiline comments only
  */
-METHOD Do( aText, nLine, lCheck ) CLASS Hilight
-Local cLine, nLen, nLenS, nLenM, i, lComm
+METHOD Do( oEdit, nLine, lCheck ) CLASS Hilight
+Local aText, cLine, nLen, nLenS, nLenM, i, lComm
 Local cs, cm
 Local nPos, nPos1, cWord, c
+
+   IF Empty( ::oEdit )
+      ::Init( oEdit )
+   ENDIF
 
    ::nItems := 0
    ::lMultiComm := .F.
@@ -173,12 +188,11 @@ Local nPos, nPos1, cWord, c
       Return Nil
    ENDIF
 
+   aText := ::oEdit:aText
    cLine := aText[nLine]
    nLen := Len( cLine )
 
-   IF Empty( ::aDop )
-      ::Init( aText )
-   ELSEIF Len( ::aDop ) < Len( aText )
+   IF Len( ::aDop ) < Len( aText )
       ::aDop := ASize( ::aDop, Len( aText ) )
    ENDIF
    IF ::nDopChecked < nLine - 1

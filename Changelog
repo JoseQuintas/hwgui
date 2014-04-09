@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-09 16:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/xml/xmlparse.c
+    * A function added: hbxml_getAttr( cTag, @lSingle ), which converts
+      a tag cTag to an array of tag attributes
+
 2014-04-09 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/common/editor/hilight.prg

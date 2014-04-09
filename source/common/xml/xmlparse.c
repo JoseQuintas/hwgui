@@ -538,6 +538,15 @@ HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
 
 }
 
+HB_FUNC( HBXML_GETATTR )
+{
+   unsigned char *pBuffer = (unsigned char *) hb_parc( 1 );
+   HB_BOOL lSingle;
+
+   hb_itemReturn( hbxml_getattr( &pBuffer, &lSingle ) );
+   hb_storl( lSingle, 2 );
+}
+
 /*
  * hbxml_Getdoc( PHB_ITEM pDoc, char * cData || HB_FHANDLE handle )
  */

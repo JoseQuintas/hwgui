@@ -1454,6 +1454,12 @@ METHOD PCmp( P1, P2 ) CLASS HCEdit
 METHOD GetText( P1, P2 ) CLASS HCEdit
    LOCAL cText := "", Pstart, Pend, i, nPos1
 
+   IF Empty( P1 )
+      P1 := ::PCopy( {1,1}, P1 )
+   ENDIF
+   IF Empty( P2 )
+      P2 := ::PCopy( {Len(::aText[::nTextLen])+1,::nTextLen}, P2 )
+   ENDIF
    IF Empty( P1[P_Y] ) .OR. Empty( P2[P_Y] )
       RETURN ""
    ENDIF
@@ -1667,7 +1673,7 @@ METHOD Scan( nl1, nl2 ) CLASS HCEdit
    LOCAL aCoors, hDC, hDCR, hBitmap, yPos, yNew, nLine, nLines, i, n1, n2
    LOCAL nLinesB := ::nLines, nLineF := ::nLineF, nLineC := ::nLineC, nWCharF := ::nWCharF, nWSublF := ::nWSublF
 
-   IF Empty( ::aText ) .OR. !::lWrap
+   IF Empty( ::aText ) .OR. Empty( ::aWrap ) .OR. !::lWrap
       RETURN Nil
    ENDIF
 

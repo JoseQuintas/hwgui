@@ -12,6 +12,8 @@
 #include "fileio.ch"
 #include "hxml.ch"
 
+STATIC cNewLine := e"\r\n"
+
 /*
  *  CLASS DEFINITION
  *  HXMLNode
@@ -107,10 +109,10 @@ Local i, s := Space(level*2)+'<', lNewLine
       NEXT
    ENDIF
    IF ::type == HBXML_TYPE_PI
-      s += '?>' + Chr(10)
+      s += '?>' + cNewLine
       m->hxml_newline := .T.
    ELSEIF ::type == HBXML_TYPE_SINGLE
-      s += '/>' + Chr(10)
+      s += '/>' + cNewLine
       m->hxml_newline := .T.
    ELSEIF ::type == HBXML_TYPE_TAG
       s += '>'
@@ -118,7 +120,7 @@ Local i, s := Space(level*2)+'<', lNewLine
             Valtype(::aItems[1]) == "C" .AND. Len(::aItems[1]) + Len(s) < 80 )
          lNewLine := m->hxml_newline := .F.
       ELSE
-         s += Chr(10)
+         s += cNewLine
          lNewLine := m->hxml_newline := .T.
       ENDIF
    ENDIF
@@ -134,8 +136,8 @@ Local i, s := Space(level*2)+'<', lNewLine
            ELSE
               FWrite( handle, HBXML_Transform( ::aItems[i] ) )
            ENDIF
-           IF lNewLine
-              FWrite( handle, Chr(10) )
+           IF lNewLine .AND. Right( ::aItems[i],1 ) != Chr(10)
+              FWrite( handle, cNewLine )
            ENDIF
         ELSE
            IF ::type == HBXML_TYPE_CDATA .OR. ::type == HBXML_TYPE_COMMENT
@@ -143,8 +145,8 @@ Local i, s := Space(level*2)+'<', lNewLine
            ELSE
               s += HBXML_Transform( ::aItems[i] )
            ENDIF
-           IF lNewLine
-              s += Chr(10)
+           IF lNewLine .AND. Right( s,1 ) != Chr(10)
+              s += cNewLine
            ENDIF
         ENDIF
         m->hxml_newline := .F.
@@ -155,19 +157,19 @@ Local i, s := Space(level*2)+'<', lNewLine
    m->hxml_newline := .T.
    IF handle >= 0
       IF ::type == HBXML_TYPE_TAG
-         FWrite( handle, Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 ) )
+         FWrite( handle, Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + cNewLine )
       ELSEIF ::type == HBXML_TYPE_CDATA
-         FWrite( handle, ']]>' + Chr(10) )
+         FWrite( handle, ']]>' + cNewLine )
       ELSEIF ::type == HBXML_TYPE_COMMENT
-         FWrite( handle, '-->' + Chr(10) )
+         FWrite( handle, '-->' + cNewLine )
       ENDIF
    ELSE
       IF ::type == HBXML_TYPE_TAG
-         s += Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + Chr(10 )
+         s += Iif(lNewLine,Space(level*2),"") + '</' + ::title + '>' + cNewLine
       ELSEIF ::type == HBXML_TYPE_CDATA
-         s += ']]>' + Chr(10)
+         s += ']]>' + cNewLine
       ELSEIF ::type == HBXML_TYPE_COMMENT
-         s += '-->' + Chr(10)
+         s += '-->' + cNewLine
       ENDIF
       Return s
    ENDIF
@@ -248,7 +250,7 @@ Local cEncod, i, s
          IF ( cEncod := ::GetAttribute( "encoding" ) ) == Nil
             cEncod := "UTF-8"
          ENDIF
-         s := '<?xml version="1.0" encoding="'+cEncod+'"?>'+Chr(10 )
+         s := '<?xml version="1.0" encoding="'+cEncod+'"?>'+cNewLine
          IF fname != Nil
             FWrite( handle, s )
          ENDIF

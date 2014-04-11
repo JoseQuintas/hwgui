@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-11 14:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/designer.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/inspect.prg
+  * utils/designer/designer.rc
+    ! Few fixes for gtk version
+
 2014-04-11 11:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/common/editor/hilight.prg

@@ -381,7 +381,7 @@ Static Function ComboOnChg()
 Local oDlg := HFormGen():oDlgSelected, oCtrl, n
 Local aControls := Iif( oDesigner:lReport,oDlg:aControls[1]:aControls[1]:aControls,oDlg:aControls )
 
-   oCombo:value := hwg_Sendmessage( oCombo:handle,CB_GETCURSEL,0,0 ) + 1
+   oCombo:value := oCombo:GetValue()
    IF oDlg != Nil
       n := oCombo:value - 1
       oCtrl := GetCtrlSelected( oDlg )

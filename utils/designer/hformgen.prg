@@ -318,6 +318,7 @@ Private value, oCtrl
    ENDIF
 
    ::oDlg:Activate(.T.)
+   SetDlgSelected( ::oDlg )
 
    IF oDesigner:oDlgInsp == Nil
       InspOpen()

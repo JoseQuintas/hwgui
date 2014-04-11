@@ -8,6 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-11 11:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hilight.prg
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit_w.c
+    * Method :HighLighter( oHighLighter ) has been added to set the
+      highlight object ( Hilight class or other ) for an editor
+    * :SetHili() calls are removed from :Init() - they should be added
+      in application code.
+    ! Some fixes     
+  * source/common/xml/hxmldoc.prg
+    ! Small fix
+  * utils/debugger/hwgdebug.prg
+  * utils/tutorial/tutor.prg
+    * Some changes due to the changes in editor
+  * utils/designer/editor.prg
+  * utils/designer/editor.iml
+    * The methods editor in the Designer uses HcEdit instead of winapi's richedit
+
 2014-04-10 13:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/xml/hxmldoc.prg
     * :Save() method is changed for to not create extra new line symbols.

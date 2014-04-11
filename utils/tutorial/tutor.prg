@@ -15,9 +15,14 @@ ANNOUNCE HB_GTSYS
 REQUEST HB_GT_CGI_DEFAULT
 #endif
 
+#define HILIGHT_KEYW    1
+#define HILIGHT_FUNC    2
+#define HILIGHT_QUOTE   3
+#define HILIGHT_COMM    4
+
 Static oIni
 Static cIniPath, cTutor
-Static oText, oHilight
+Static oText, oHighLighter
 Static oBtnRun
 Static cHwgrunPath
 Static cHwg_include_dir := "..\..\include"
@@ -58,6 +63,11 @@ Local oTree, oSplit
 
    oText := HCEdit():New( oMain,, WS_BORDER, 274, 32, 526, 568, oFont,, {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth,y-32)} )
 
+   oText:SetHili( HILIGHT_KEYW, oText:oFont:SetFontStyle( .T. ), 8388608, oText:bColor )
+   oText:SetHili( HILIGHT_FUNC, - 1, 8388608, oText:bColor )
+   oText:SetHili( HILIGHT_QUOTE, - 1, 16711680, oText:bColor )
+   oText:SetHili( HILIGHT_COMM, oText:oFont:SetFontStyle( ,, .T. ), 32768, oText:bColor )
+
    @ 270,32 SPLITTER oSplit SIZE 4,568 ;
          DIVIDE {oTree} FROM {oText} ;
          ON SIZE {|o,x,y|o:Move(,,,y-32)}
@@ -91,7 +101,7 @@ Local oInit, i, oNode1, cHwgui_dir
                cHrb_inc_dir := hb_OsPathListSeparator() + cHrb_inc_dir
             ENDIF
          ELSEIF oNode1:title == "hilight"
-            oHilight := Hilight():New( oNode1 )
+            oHighLighter := Hilight():New( oNode1 )
          ENDIF
       NEXT
    ENDIF
@@ -177,10 +187,10 @@ Return Nil
 Static Function NodeOut( oItem )
 
    IF oItem:cargo[1]
-      oText:oHili := oHilight
+      oText:HighLighter( oHighLighter )
       oBtnRun:Enable()
    ELSE
-      oText:oHili := Nil
+      oText:HighLighter()
       oBtnRun:Disable()
    ENDIF
    oText:SetText( oItem:cargo[2] )

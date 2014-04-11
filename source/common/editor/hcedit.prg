@@ -144,7 +144,6 @@ CLASS HCEdit INHERIT HControl
    DATA   nWSublF      INIT 1             // (:lWrap) a subline of ::nLineF - first line
    DATA   aFonts       INIT {}
    DATA   aFontsPrn    INIT {}
-   DATA   nFontH
    DATA   oPenNum
 
    DATA   nCaret       INIT 0
@@ -161,7 +160,6 @@ CLASS HCEdit INHERIT HControl
    DATA   lVScroll
    DATA   nClientWidth
 
-   DATA   oHili, aHili
 #ifdef __PLATFORM__UNIX
    DATA area
    DATA hScrollV  INIT Nil
@@ -174,6 +172,7 @@ CLASS HCEdit INHERIT HControl
    DATA   aUndo
 
    DATA   lWrap   INIT .F.  PROTECTED
+   DATA   oHili, aHili  PROTECTED
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
@@ -213,6 +212,7 @@ CLASS HCEdit INHERIT HControl
    METHOD DelLine( nLine )
    METHOD Refresh()
    METHOD SetWrap( lWrap, lInit )
+   METHOD Highlighter( oHili )
    METHOD Scan()
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
 
@@ -293,11 +293,9 @@ METHOD Init() CLASS HCEdit
 #endif
       hced_SetHandle( ::hEdit, ::handle )
       hwg_Setwindowobject( ::handle, Self )
-      ::AddFont( ::oFont )
-      ::SetHili( HILIGHT_KEYW, ::oFont:SetFontStyle( .T. ), 8388608, ::bColor )  // 8388608
-      ::SetHili( HILIGHT_FUNC, - 1, 8388608, 16777215 )   // Blue on White // 8388608
-      ::SetHili( HILIGHT_QUOTE, - 1, 16711680, 16777215 )     // Green on White  // 4227072
-      ::SetHili( HILIGHT_COMM, ::oFont:SetFontStyle( ,, .T. ), 32768, 16777215 )    // Green on White //4176740
+      IF Empty( ::aFonts )
+         ::AddFont( ::oFont )
+      ENDIF
       IF Empty( ::aText )
          ::SetText()
       ENDIF
@@ -313,6 +311,10 @@ METHOD Init() CLASS HCEdit
 
 METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
    LOCAL arr[3]
+
+   IF Empty( ::aFonts )
+      ::AddFont( ::oFont )
+   ENDIF
 
    IF oFont != Nil
       arr[ 1 ] := Iif( ValType( oFont ) == "O", ::AddFont( oFont ), - 1 )
@@ -757,6 +759,7 @@ METHOD Convert( cPageIn, cPageOut )
    RETURN .F.
 
 METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
+Local nPos
 
    ::CloseText()
    ::nLines := 0
@@ -765,8 +768,13 @@ METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
       ::aText := { "" }
    ELSEIF Valtype( xText ) == "A"
       ::aText := xText
-   ELSE
-      ::aText := hb_aTokens( xText, cNewLine )
+   ELSE     
+      IF ( nPos := At( Chr(10), xText ) ) == 0 .OR. ;
+            ( nPos > 1 .AND. Substr( xText,nPos-1,1 ) == Chr(13) )
+         ::aText := hb_aTokens( xText, cNewLine )
+      ELSE
+         ::aText := hb_aTokens( xText, Chr(10) )
+      ENDIF
    ENDIF
    ::nLinesAll := ::nTextLen := Len( ::aText )
 
@@ -823,27 +831,36 @@ METHOD AddFont( oFont, name, width, height , weight, ;
       CharSet, Italic, Underline, StrikeOut ) CLASS HCEdit
    LOCAL i
 
+   IF oFont != Nil
+      name := oFont:name
+      width := oFont:width
+      height := oFont:height
+      weight := oFont:weight
+      CharSet := oFont:CharSet
+      Italic := oFont:Italic
+      Underline := oFont:Underline
+      StrikeOut := oFont:StrikeOut
+   ENDIF
+
+   IF Charset == Nil .AND. Len( ::aFonts ) > 0; Charset := ::aFonts[1]:CharSet; ENDIF
+   FOR i := 1 TO Len( ::aFonts )
+      IF ::aFonts[i]:name == name .AND.           ;
+            ::aFonts[i]:width == width .AND.         ;
+            ::aFonts[i]:height == height .AND.       ;
+            ( ::aFonts[i]:weight > 500 ) == ( weight > 500 ) .AND.       ;
+            ::aFonts[i]:CharSet == CharSet .AND.     ;
+            ::aFonts[i]:Italic == Italic .AND.       ;
+            ::aFonts[i]:Underline == Underline .AND. ;
+            ::aFonts[i]:StrikeOut == StrikeOut
+         RETURN i
+      ENDIF
+   NEXT
+
    IF oFont == Nil
-      IF Charset == Nil .AND. Len( ::aFonts ) > 0; Charset := ::aFonts[1]:CharSet; ENDIF
-      FOR i := 1 TO Len( ::aFonts )
-         IF ::aFonts[i]:name == name .AND.           ;
-               ::aFonts[i]:width == width .AND.         ;
-               ::aFonts[i]:height == height .AND.       ;
-               ( ::aFonts[i]:weight > 500 ) == ( weight > 500 ) .AND.       ;
-               ::aFonts[i]:CharSet == CharSet .AND.     ;
-               ::aFonts[i]:Italic == Italic .AND.       ;
-               ::aFonts[i]:Underline == Underline .AND. ;
-               ::aFonts[i]:StrikeOut == StrikeOut
-            RETURN i
-         ENDIF
-      NEXT
       oFont := HFont():Add( name, width, height , weight, ;
          CharSet, Italic, Underline, StrikeOut )
    ENDIF
-   i := hced_AddFont( ::hEdit, oFont:handle )
-   IF Empty( ::aFonts )
-      ::nFontH := i
-   ENDIF
+   hced_AddFont( ::hEdit, oFont:handle )
    AAdd( ::aFonts, oFont )
 
    RETURN Len( ::aFonts )
@@ -1668,6 +1685,14 @@ METHOD SetWrap( lWrap, lInit ) CLASS HCEdit
 
    RETURN lWrapOld
 
+METHOD Highlighter( oHili ) CLASS HCEdit
+
+   IF oHili == Nil
+      ::oHili := Nil
+   ELSE
+      ::oHili := oHili:Set( Self )
+   ENDIF
+   RETURN Nil
 
 METHOD Scan( nl1, nl2 ) CLASS HCEdit
    LOCAL aCoors, hDC, hDCR, hBitmap, yPos, yNew, nLine, nLines, i, n1, n2

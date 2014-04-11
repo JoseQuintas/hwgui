@@ -166,6 +166,10 @@ STATIC nExitMode := 1
 STATIC nVerProto := 0
 STATIC cMsgNotSupp := "Command isn't supported"
 
+#ifdef __HCEDIT__
+STATIC oHighLighter
+#endif
+
 Memvar cIniPath, cCurrPath
 
 Function Main( ... )
@@ -360,6 +364,9 @@ Local oInit, i
          ENDIF
       NEXT
    ENDIF
+#ifdef __HCEDIT__
+   oHighLighter := Hilight():New( cIniPath+"hilight.xml", "prg" )
+#endif
 
 Return Nil
 
@@ -913,6 +920,11 @@ Local i, oText
 Return oText
 
 #ifdef __HCEDIT__
+#define HILIGHT_KEYW    1
+#define HILIGHT_FUNC    2
+#define HILIGHT_QUOTE   3
+#define HILIGHT_COMM    4
+
 Static Function CreateTextCtrl()
 Local oText
 
@@ -925,16 +937,18 @@ Local oText
 #endif
    END PAGE of oTabMain
 
+   oText:HighLighter( Hilight():New( cIniPath+"hilight.xml", "prg" ) )
    oText:lReadOnly := !lModeIde
    oText:lShowNumbers := .T.
    oText:bPaint := {|o,h,n,y1,y2| onTxtPaint( o,h,n,y1,y2 ) }
    oText:bKeyDown:= {|o,n|Iif(n==120.or.n==13,AddBreakPoint(),.T.)}
    oText:bClickDoub:= {||AddBreakPoint()}
-   //IF Empty( oText:oHili )
-      oText:oHili := Hilight():New( cIniPath+"hilight.xml", "prg" )  
-   //ELSE
-   //   oText:oHili := oTabMain:aControls[1]:oHili
-   //ENDIF
+   oText:HighLighter( oHighLighter )
+
+   oText:SetHili( HILIGHT_KEYW, oText:oFont:SetFontStyle( .T. ), 8388608, oText:bColor )
+   oText:SetHili( HILIGHT_FUNC, - 1, 8388608, oText:bColor )
+   oText:SetHili( HILIGHT_QUOTE, - 1, 16711680, oText:bColor )
+   oText:SetHili( HILIGHT_COMM, oText:oFont:SetFontStyle( ,, .T. ), 32768, oText:bColor )
 
 Return oText
 

@@ -74,16 +74,10 @@ CLASS HilightBase
    DATA   aLineStru, nItems
 
    METHOD New()   INLINE  Self
-   METHOD Init( oEdit )
    METHOD End()
    METHOD Do()    INLINE  (::nItems := 0,Nil)
-   METHOD UpdSource()    INLINE  Nil
 
 ENDCLASS
-
-METHOD Init( oEdit ) CLASS HilightBase
-   ::oEdit := oEdit
-   RETURN Nil
 
 METHOD End() CLASS HilightBase
    ::oEdit := Nil
@@ -101,7 +95,7 @@ CLASS Hilight INHERIT HilightBase
    DATA   aDop, nDopChecked
 
    METHOD New( cFile, cSection )
-   METHOD Init( oEdit )
+   METHOD Set( oEdit )
    METHOD Do( nLine, lCheck )
    METHOD UpdSource( nLine )  INLINE  ( ::nDopChecked := nLine-1 )
    METHOD AddItem( nPos1, nPos2, nType )
@@ -161,10 +155,17 @@ Local oIni, oMod, oNode, i, nPos
 
 Return Self
 
-METHOD Init( oEdit ) CLASS Hilight
-   ::aDop := Array( Len( oEdit:aText ) )
-   ::nDopChecked := 0
-Return ::Super:Init( oEdit )
+METHOD Set( oEdit ) CLASS Hilight
+Local oHili := Hilight():New()
+
+   oHili:cCommands := ::cCommands
+   oHili:cFuncs    := ::cFuncs
+   oHili:cScomm    := ::cScomm
+   oHili:cMcomm1   := ::cMcomm1
+   oHili:cMcomm2   := ::cMcomm2
+   oHili:oEdit     := oEdit
+
+Return oHili
 
 /*  Scans the cLine and fills an array :aLineStru with hilighted items
  *  lComm set it to .T., if a previous line was a part of an unclosed multiline comment
@@ -174,10 +175,6 @@ METHOD Do( oEdit, nLine, lCheck ) CLASS Hilight
 Local aText, cLine, nLen, nLenS, nLenM, i, lComm
 Local cs, cm
 Local nPos, nPos1, cWord, c
-
-   IF Empty( ::oEdit )
-      ::Init( oEdit )
-   ENDIF
 
    ::nItems := 0
    ::lMultiComm := .F.
@@ -192,7 +189,10 @@ Local nPos, nPos1, cWord, c
    cLine := aText[nLine]
    nLen := Len( cLine )
 
-   IF Len( ::aDop ) < Len( aText )
+   IF Empty( ::aDop )
+      ::aDop := Array( Len( ::oEdit:aText ) )
+      ::nDopChecked := 0
+   ELSEIF Len( ::aDop ) < Len( aText )
       ::aDop := ASize( ::aDop, Len( aText ) )
    ENDIF
    IF ::nDopChecked < nLine - 1

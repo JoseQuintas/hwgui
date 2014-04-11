@@ -437,8 +437,7 @@ HB_FUNC( HCED_CLEARFONTS )
 
 HB_FUNC( HCED_ADDFONT )
 {
-   TEDFONT * pFont = ted_setfont( ( TEDIT * ) HB_PARHANDLE( 1 ), ( HFONT ) HB_PARHANDLE( 2 ), -1, 0 );
-   hb_retni( pFont->tm.tmHeight + pFont->tm.tmExternalLeading );
+   ted_setfont( ( TEDIT * ) HB_PARHANDLE( 1 ), ( HFONT ) HB_PARHANDLE( 2 ), -1, 0 );
 }
 
 HB_FUNC( HCED_SETFONT )

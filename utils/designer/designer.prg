@@ -17,7 +17,20 @@
 
 #define  MAX_RECENT_FILES  5
 
-   STATIC lOmmitMenuFile := .F.
+#ifdef __GTK__
+   #include "gtk.ch"
+   REQUEST HB_GT_CGI_DEFAULT
+   #define DIR_SEP  '/'
+   #define CURS_CROSS GDK_CROSS
+   #define CURS_SIZEV GDK_SIZING
+   #define CURS_SIZEH GDK_HAND1
+#else
+   REQUEST HB_GT_GUI_DEFAULT
+   #define DIR_SEP  '\'
+   #define CURS_CROSS IDC_CROSS
+   #define CURS_SIZEV IDC_SIZEWE
+   #define CURS_SIZEH IDC_SIZENS
+#endif
 
 #ifndef __GTK__
    REQUEST hwg_Drawedge
@@ -31,17 +44,12 @@
    REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK, HB_ATOKENS
 
    ANNOUNCE HB_GTSYS
-#ifdef __GTK__
-   REQUEST HB_GT_CGI_DEFAULT
-   #define DIR_SEP  '/'
-#else
-   REQUEST HB_GT_GUI_DEFAULT
-   #define DIR_SEP  '\'
-#endif
 
    REQUEST HB_CODEPAGE_RU1251
 
-   MEMVAR oDesigner, crossCursor, vertCursor, horzCursor, cCurDir
+MEMVAR oDesigner, crossCursor, vertCursor, horzCursor, cCurDir
+
+STATIC lOmmitMenuFile := .F.
 
 #ifdef INTEGRATED
 FUNCTION Designer( p0, p1, p2 )
@@ -89,9 +97,9 @@ FUNCTION Main( p0, p1, p2 )
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT - 13
    IF ValType( crossCursor ) != "N"
-      crossCursor := hwg_Loadcursor( IDC_CROSS )
-      horzCursor  := hwg_Loadcursor( IDC_SIZEWE )
-      vertCursor  := hwg_Loadcursor( IDC_SIZENS )
+      crossCursor := hwg_Loadcursor( CURS_CROSS )
+      horzCursor  := hwg_Loadcursor( CURS_SIZEV )
+      vertCursor  := hwg_Loadcursor( CURS_SIZEH )
    ENDIF
 
 #ifdef INTEGRATED
@@ -154,7 +162,8 @@ FUNCTION Main( p0, p1, p2 )
       ENDMENU
    ENDMENU
 
-   @ 0, 0 PANEL oPanel SIZE 400, 200 ON SIZE { |o, x, y|hwg_Movewindow( o:handle, 0, 0, x, y ) }
+   //@ 0, 0 PANEL oPanel SIZE 400, 200 ON SIZE { |o, x, y|hwg_Movewindow( o:handle, 0, 0, x, y ) }
+   @ 0, 0 PANEL oPanel SIZE 0, 30
 
    IF !oDesigner:lSingleForm
       @ 2, 3 OWNERBUTTON OF oPanel       ;
@@ -177,7 +186,10 @@ FUNCTION Main( p0, p1, p2 )
          TOOLTIP "Save Form"
    ENDIF
 
-   @ 3, 30 TAB oTab ITEMS {} OF oPanel SIZE 400, 210 FONT oFont ;
+   //@ 3, 30 TAB oTab ITEMS {} OF oPanel SIZE 400, 210 FONT oFont ;
+   //   ON SIZE { |o, x, y|ArrangeBtn( o, x, y ) }
+
+   @ 3, 30 TAB oTab ITEMS {} SIZE 400, 170 FONT oFont ;
       ON SIZE { |o, x, y|ArrangeBtn( o, x, y ) }
 
    BuildSet( oTab )
@@ -427,7 +439,8 @@ STATIC FUNCTION BuildSet( oTab )
 STATIC FUNCTION ArrangeBtn( oTab, x, y )
    LOCAL i, x1, y1, oBtn
 
-   oTab:Move( , , x - 6, y - 33 )
+   //oTab:Move( , , x - 6, y - 33 )
+   oTab:Move( , , x - 6, y - 30 )
    FOR i := 1 TO Len( oTab:aControls )
       oBtn := oTab:aControls[i]
       IF oBtn:Classname == "HOWNBUTTON"

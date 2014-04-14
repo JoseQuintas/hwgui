@@ -12,6 +12,10 @@
 #include "guilib.ch"
 #include "fileio.ch"
 
+#if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0 < 0x030000 )
+#xtranslate Win_Ansitooem([<n,...>]) => hb_Ansitooem(<n>)
+#endif
+
 #define PF_BUFFERS   2048
 
 #define oFORMFEED               "12"
@@ -179,7 +183,7 @@ METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
 
 
    IF ::oAns2Oem
-      ::oText += HB_ANSITOOEM( oStr )
+      ::oText += WIN_ANSITOOEM( oStr )
    ELSE
       ::oText += oStr
    ENDIF
@@ -191,8 +195,8 @@ METHOD gWrite( oText )  CLASS PrintDos
 
    //tracelog(otext)
    IF ::oAns2Oem
-      ::oText += HB_ANSITOOEM( oText )
-      ::nPcol += Len( HB_ANSITOOEM( oText ) )
+      ::oText += WIN_ANSITOOEM( oText )
+      ::nPcol += Len( WIN_ANSITOOEM( oText ) )
    ELSE
       ::oText += oText
       ::nPcol += Len( oText )
@@ -207,8 +211,8 @@ METHOD Eject()   CLASS PrintDos
    FWrite( ::gText, ::oText )
 
    IF ::oAns2Oem
-      FWrite( ::gText, HB_ANSITOOEM( Chr( 13 ) + Chr( 10 ) + Chr( Val( ::cEject ) ) ) )
-      FWrite( ::gText, HB_ANSITOOEM( Chr( 13 ) + Chr( 10 ) ) )
+      FWrite( ::gText, WIN_ANSITOOEM( Chr( 13 ) + Chr( 10 ) + Chr( Val( ::cEject ) ) ) )
+      FWrite( ::gText, WIN_ANSITOOEM( Chr( 13 ) + Chr( 10 ) ) )
    ELSE
       FWrite( ::gText, Chr( 13 ) + Chr( 10 ) + Chr( Val( ::cEject ) ) )
       FWrite( ::gText, Chr( 13 ) + Chr( 10 ) )
@@ -256,7 +260,7 @@ METHOD UnBold() CLASS PrintDos
 METHOD NewLine() CLASS PrintDos
 
    IF ::oAns2Oem
-      ::oText += HB_ANSITOOEM( Chr( 13 ) + Chr( 10 ) )
+      ::oText += WIN_ANSITOOEM( Chr( 13 ) + Chr( 10 ) )
    ELSE
       ::oText += Chr( 13 ) + Chr( 10 )
    ENDIF
@@ -445,7 +449,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
             EXIT
          ENDIF
          IF ::oAns2Oem
-            oText[ oPage ] += HB_ANSITOOEM( stroka ) + Chr( 13 ) + Chr( 10 )
+            oText[ oPage ] += WIN_ANSITOOEM( stroka ) + Chr( 13 ) + Chr( 10 )
          ELSE
             oText[ oPage ] += stroka + Chr( 13 ) + Chr( 10 )
          ENDIF

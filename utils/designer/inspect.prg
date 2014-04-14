@@ -265,9 +265,9 @@ Function InspOpen
       ON INIT {||hwg_Movewindow(oDesigner:oDlgInsp:handle,0,280,230,280)}   ;
       ON EXIT {||oDesigner:oDlgInsp:=Nil,hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1010,.F.),.T.}
 
-   @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,150 ;
+   @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,26 ;
           STYLE WS_VSCROLL                     ;
-          ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,150)} ;
+          ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,)} ;
           ON CHANGE {||ComboOnChg()}
 
    @ 0,28 TAB oTab ITEMS {} SIZE 220,250 ;
@@ -276,9 +276,11 @@ Function InspOpen
    BEGIN PAGE "Properties" OF oTab
       @ 2,30 PBROWSE oBrw1 ARRAY SIZE 214,218 STYLE WS_VSCROLL ;
          ON SIZE {|o,x,y|hwg_Movewindow(o:handle,2,30,x-6,y-32)}
+#ifndef __GTK__
       oBrw1:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
-      oBrw1:tColorSel := 8404992
       oBrw1:bColor := oBrw1:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
+#endif
+      oBrw1:tColorSel := 8404992
       oBrw1:freeze := 1
       oBrw1:lDispHead := .F.
       oBrw1:lSep3d := .T.
@@ -291,9 +293,11 @@ Function InspOpen
    BEGIN PAGE "Events" OF oTab
       @ 2,30 PBROWSE oBrw2 ARRAY SIZE 214,218 STYLE WS_VSCROLL ;
          ON SIZE {|o,x,y|hwg_Movewindow(o:handle,2,30,x-6,y-32)}
+#ifndef __GTK__
       oBrw2:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
-      oBrw2:tColorSel := 8404992
       oBrw2:bColor := oBrw2:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
+#endif
+      oBrw2:tColorSel := 8404992
       oBrw2:freeze := 1
       oBrw2:lDispHead := .F.
       oBrw2:lSep3d := .T.

@@ -546,5 +546,13 @@ HB_FUNC( HWG_GETCLIENTRECT )
 
 HB_FUNC( HWG_GETWINDOWRECT )
 {
+   GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
+
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), 0 );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), 0 );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), widget->allocation.width );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 4 ), widget->allocation.height );
+   hb_itemRelease( hb_itemReturn( aMetr ) );
 }
 

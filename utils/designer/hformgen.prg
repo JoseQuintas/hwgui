@@ -426,7 +426,7 @@ Local i
    INIT DIALOG oDlg TITLE Iif( lOpen,"Open form","Save form" ) ;
        AT 50, 100 SIZE 310,250 FONT oDesigner:oMainWnd:oFont
 
-   @ 10,20 GET COMBOBOX nType ITEMS aCombo SIZE 140, 150 ;
+   @ 10,20 GET COMBOBOX nType ITEMS aCombo SIZE 140, 26 ;
        ON CHANGE {||Iif(lOpen,.F.,(fname:=CutExten(fname)+Iif(!Empty(fname),"."+aFormats[af[nType],2],""),oEdit1:Refresh()))}
 
    @ 10,70 GET oEdit1 VAR fname  ;

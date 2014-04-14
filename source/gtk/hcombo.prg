@@ -44,6 +44,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Init( aCombo, nCurrent )
    METHOD Refresh()
    METHOD Setitem( nPos )
+   METHOD GetValue( nItem )
    METHOD End()
 
 ENDCLASS
@@ -122,11 +123,11 @@ METHOD Init() CLASS HComboBox
 
    IF !::lInit
       ::Super:Init()
-      IF ::aItems != Nil
+      IF !Empty(::aItems)
          hwg_ComboSetArray( ::handle, ::aItems )
-         IF ::value == Nil
+         IF Empty( ::value )
             IF ::lText
-               ::value := ::aItems[1]
+               ::value := Iif( Valtype(::aItems[1]) == "A", ::aItems[1,1], ::aItems[1] )
             ELSE
                ::value := 1
             ENDIF
@@ -134,7 +135,7 @@ METHOD Init() CLASS HComboBox
          IF ::lText
             hwg_edit_Settext( ::hEdit, ::value )
          ELSE
-            hwg_edit_Settext( ::hEdit, ::aItems[::value] )
+            hwg_edit_Settext( ::hEdit, Iif( Valtype(::aItems[1]) == "A", ::aItems[::value,1], ::aItems[::value] ) )
          ENDIF
       ENDIF
    ENDIF
@@ -153,25 +154,27 @@ METHOD Refresh() CLASS HComboBox
       ENDIF
    ENDIF
 
-   hwg_ComboSetArray( ::handle, ::aItems )
+   IF !Empty( ::aItems )
+      hwg_ComboSetArray( ::handle, ::aItems )
 
-   IF ::lText
-      hwg_edit_Settext( ::hEdit, ::value )
-   ELSE
-      hwg_edit_Settext( ::hEdit, ::aItems[::value] )
+      IF ::lText
+         hwg_edit_Settext( ::hEdit, ::value )
+      ELSE
+         hwg_edit_Settext( ::hEdit, Iif( Valtype(::aItems[1]) == "A", ::aItems[::value,1], ::aItems[::value] ) )
+      ENDIF
+
    ENDIF
-
    RETURN Nil
 
 METHOD SetItem( nPos ) CLASS HComboBox
 
    IF ::lText
-      ::value := ::aItems[nPos]
+      ::value := Iif( Valtype(::aItems[nPos]) == "A", ::aItems[nPos,1], ::aItems[nPos] )
    ELSE
       ::value := nPos
    ENDIF
 
-   hwg_edit_Settext( ::hEdit, ::aItems[nPos] )
+   hwg_edit_Settext( ::hEdit, Iif( Valtype(::aItems[nPos]) == "A", ::aItems[nPos,1], ::aItems[nPos] ) )
 
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::value, self )
@@ -183,6 +186,17 @@ METHOD SetItem( nPos ) CLASS HComboBox
 
    RETURN Nil
 
+METHOD GetValue( nItem ) CLASS HComboBox
+   LOCAL vari := hwg_edit_Gettext( ::hEdit )
+   LOCAL nPos := Iif( !Empty(::aItems) .AND. Valtype(::aItems[1]) == "A", Ascan(::aItems,{|a|a[1]==vari}), Ascan(::aItems,vari) )
+   LOCAL l := nPos > 0 .AND. Valtype(::aItems[nPos]) == "A"
+
+   ::value := Iif( ::lText, vari, nPos )
+   IF ::bSetGet != Nil
+      Eval( ::bSetGet, ::value, Self )
+   ENDIF
+   Return Iif( l .AND. nItem!=Nil, Iif( nItem>0 .AND. nItem<=Len(::aItems[nPos]), ::aItems[nPos,nItem], Nil ), ::value )
+
 METHOD End() CLASS HComboBox
 
    hwg_ReleaseObject( ::hEdit )
@@ -191,17 +205,8 @@ METHOD End() CLASS HComboBox
    RETURN Nil
 
 STATIC FUNCTION __Valid( oCtrl )
-   LOCAL vari := hwg_edit_Gettext( oCtrl:hEdit )
 
-   IF oCtrl:lText
-      oCtrl:value := vari
-   ELSE
-      oCtrl:value := Ascan( oCtrl:aItems, vari )
-   ENDIF
-
-   IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
-   ENDIF
+   oCtrl:GetValue()
    IF oCtrl:bChangeSel != Nil
       Eval( oCtrl:bChangeSel, oCtrl:value, oCtrl )
    ENDIF

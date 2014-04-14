@@ -8,6 +8,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-14 15:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/printdos.prg
+    * Small changes due to hb_ansitooem => win_ansitooem renaming in Harbour,
+      thanks to Itamar M. Lins Jr.
+  * source/gtk/control.c
+  * source/gtk/draw.c
+    ! Some fixes
+  * source/gtk/hcombo.c
+    * added sime code for compatibility with winapi version
+  * utils/designer/designer.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/inspect.prg
+  * utils/designer/hctrl.prg
+  * utils/designer/editor.prg
+    * SOme changes for compatibility with winapi version
+
 2014-04-11 14:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/designer.prg
   * utils/designer/hformgen.prg

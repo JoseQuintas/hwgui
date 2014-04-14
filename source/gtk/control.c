@@ -306,9 +306,11 @@ HB_FUNC( HWG_COMBOSETARRAY )
 
       for( ul = 1; ul <= ulLen; ++ul )
       {
-         cItem = hwg_convert_to_utf8( hb_arrayGetCPtr( pArray, ul ) );
+         if( hb_arrayGetType( pArray, ul ) & HB_IT_ARRAY )
+            cItem = hwg_convert_to_utf8( hb_arrayGetCPtr( hb_arrayGetItemPtr( pArray, ul ), 1 ) );
+         else
+            cItem = hwg_convert_to_utf8( hb_arrayGetCPtr( pArray, ul ) );
          glist = g_list_append( glist, cItem );
-         // g_free( cItem );
       }
    }
 

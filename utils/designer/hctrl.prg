@@ -452,14 +452,8 @@ Return 0
 
 Function MoveCtrl( oCtrl )
 
-   // writelog( "MoveCtrl "+str(oCtrl:nWidth) + str(oCtrl:nHeight) )
-   IF oCtrl:ClassName() == "HDIALOG"
-      hwg_Sendmessage( oCtrl:handle, WM_MOVE, 0, oCtrl:nLeft + oCtrl:nTop*65536 )
-      hwg_Sendmessage( oCtrl:handle, WM_SIZE, 0, oCtrl:nWidth + oCtrl:nHeight*65536 )
-   ELSE
-      hwg_Movewindow( oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight )
-      hwg_Redrawwindow( oCtrl:oParent:handle,RDW_ERASE + RDW_INVALIDATE )
-   ENDIF
+   hwg_Movewindow( oCtrl:handle, oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
+   hwg_Redrawwindow( oCtrl:oParent:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
 
 Function AdjustCtrl( oCtrl, lLeft, lTop, lRight, lBottom )

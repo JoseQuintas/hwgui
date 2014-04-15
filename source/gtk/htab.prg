@@ -29,8 +29,6 @@ CLASS HTab INHERIT HControl
    METHOD SetTab( n )
    METHOD StartPage( cname )
    METHOD EndPage()
-   METHOD HidePage( nPage )
-   METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst, nEnd )
    METHOD DeletePage( nPage )
 
@@ -83,10 +81,6 @@ METHOD Init() CLASS HTab
       NEXT
 
       hwg_Setwindowobject( ::handle, Self )
-
-      FOR i := 2 TO Len( ::aPages )
-         ::HidePage( i )
-      NEXT
    ENDIF
 
    RETURN Nil
@@ -95,6 +89,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTab
 
    IF msg == WM_USER
       IF ::bChange2 != Nil
+         ::nActive := wParam
          Eval( ::bChange2, Self, wParam )
       ENDIF
    ENDIF
@@ -108,21 +103,14 @@ METHOD SetTab( n ) CLASS HTab
    RETURN Nil
 
 METHOD StartPage( cname ) CLASS HTab
-   LOCAL i := iif( cName == Nil, Len( ::aPages ) + 1, Ascan( ::aTabs,cname ) )
-   LOCAL lNew := ( i == 0 )
+   LOCAL i
 
    ::oTemp := ::oDefaultParent
    ::oDefaultParent := Self
-   IF lNew
-      AAdd( ::aTabs, cname )
-      i := Len( ::aTabs )
-   ENDIF
-   DO WHILE Len( ::aPages ) < i
-      AAdd( ::aPages, { Len( ::aControls ), 0, lNew, 0 } )
-   ENDDO
-   IF ::nActive > 1 .AND. !Empty( ::handle )
-      ::HidePage( ::nActive )
-   ENDIF
+   AAdd( ::aTabs, cname )
+   i := Len( ::aTabs )
+   AAdd( ::aPages, { Len( ::aControls ), 0, .T., 0 } )
+
    ::nActive := i
    ::aPages[ i,4 ] := hwg_Addtab( ::handle, ::aTabs[i] )
 
@@ -131,48 +119,14 @@ METHOD StartPage( cname ) CLASS HTab
 METHOD EndPage() CLASS HTab
 
    ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
-   IF ::nActive > 1 .AND. !Empty( ::handle )
-      ::HidePage( ::nActive )
-   ENDIF
    ::nActive := 1
 
    ::oDefaultParent := ::oTemp
    ::oTemp := Nil
 
-   ::bChange = { |o, n|o:ChangePage( n ) }
-
-   RETURN Nil
-
-METHOD HidePage( nPage ) CLASS HTab
-   LOCAL i, nFirst, nEnd
-
-   nFirst := ::aPages[ nPage,1 ] + 1
-   nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
-   FOR i := nFirst TO nEnd
-      ::aControls[i]:Hide()
-   NEXT
-
-   RETURN Nil
-
-METHOD ShowPage( nPage ) CLASS HTab
-   LOCAL i, nFirst, nEnd
-
-   nFirst := ::aPages[ nPage,1 ] + 1
-   nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
-   FOR i := nFirst TO nEnd
-      ::aControls[i]:Show()
-   NEXT
-   FOR i := nFirst TO nEnd
-      IF __ObjHasMsg( ::aControls[i], "BSETGET" ) .AND. ::aControls[i]:bSetGet != Nil
-         hwg_Setfocus( ::aControls[i]:handle )
-         EXIT
-      ENDIF
-   NEXT
-
    RETURN Nil
 
 METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
-
    IF !Empty( ::aPages )
       nFirst := ::aPages[ ::nActive,1 ] + 1
       nEnd   := ::aPages[ ::nActive,1 ] + ::aPages[ ::nActive,2 ]

@@ -88,8 +88,8 @@ METHOD Init() CLASS HTab
 METHOD onEvent( msg, wParam, lParam ) CLASS HTab
 
    IF msg == WM_USER
+      ::nActive := wParam
       IF ::bChange2 != Nil
-         ::nActive := wParam
          Eval( ::bChange2, Self, wParam )
       ENDIF
    ENDIF

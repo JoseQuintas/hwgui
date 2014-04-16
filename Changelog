@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-16 13:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htab.prg
+    ! Small fix
+  * utils/designer/inspect.prg
+  * utils/designer/editor.prg
+    * Some changes and fixes for compatibility with winapi version
+
 2014-04-15 13:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htab.prg
     ! Some fixes, redundant methods has been removed
@@ -26,7 +33,7 @@
   * utils/designer/inspect.prg
   * utils/designer/hctrl.prg
   * utils/designer/editor.prg
-    * SOme changes for compatibility with winapi version
+    * Some changes for compatibility with winapi version
 
 2014-04-11 14:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/designer.prg

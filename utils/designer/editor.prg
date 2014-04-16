@@ -168,7 +168,7 @@ Local cParamString
    INIT DIALOG oDlg TITLE "Edit '"+cMethName+"' method"          ;
       AT 100,240  SIZE 600,300  FONT oDesigner:oMainWnd:oFont    ;
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_MAXIMIZEBOX+WS_SIZEBOX ;
-      ON INIT {||hwg_Movewindow(oDlg:handle,100,240,600,310)}        ;
+      ON INIT {||ChangeTheme(HDTheme():nSelected),hwg_Movewindow(oDlg:handle,100,240,600,310)} ;
       ON EXIT {||Iif(lRes:=(oEdit:lUpdated.AND.hwg_Msgyesno("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
 
    MENU OF oDlg
@@ -185,8 +185,7 @@ Local cParamString
       MENUITEM "&Exit" ACTION oDlg:Close()
    ENDMENU
 
-   oEdit := HCEdit():New( ,,, 0, 0, 400, oDlg:nHeight, oFont, ;
-         {||ChangeTheme( HDTheme():nSelected )}, {|o,x,y|o:Move(,,x,y)} )
+   oEdit := HCEdit():New( ,,, 0, 0, 400, oDlg:nHeight, oFont,, {|o,x,y|o:Move(,,x,y)} )
    oEdit:HighLighter( HDTheme():oHili )
    IF !Empty( cMethod )
       oEdit:SetText( cMethod )

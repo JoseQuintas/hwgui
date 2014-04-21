@@ -306,8 +306,8 @@ STATIC FUNCTION onDlgCommand( oDlg, wParam, lParam )
          NEXT
          IF i != 0 .AND. oDlg:GetList[i]:handle == hCtrl
             IF __ObjHasMsg( oDlg:GetList[i], "BVALID" )
-               IF Eval( oDlg:GetList[i]:bValid, oDlg:GetList[i] ) .AND. ;
-                     oDlg:lExitOnEnter
+               IF oDlg:lExitOnEnter .AND. ;
+                     Eval( oDlg:GetList[i]:bValid, oDlg:GetList[i] )
                   oDlg:lResult := .T.
                   hwg_EndDialog( oDlg:handle )
                ENDIF

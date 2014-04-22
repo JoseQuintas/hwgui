@@ -39,45 +39,52 @@ HB_FUNC( HWG_DELETEDC )
 HB_FUNC( HWG_TEXTOUT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   char * cText = hwg_convert_to_utf8( hb_parc(4) );
+   char * cText;
 
-   pango_layout_set_text( hDC->layout, cText, -1 );
+   if( hb_parclen(4) > 0 )
+   {
+      cText = hwg_convert_to_utf8( hb_parc(4) );
+      pango_layout_set_text( hDC->layout, cText, -1 );
 
-   hwg_setcolor( hDC->cr, (hDC->fcolor != -1)? hDC->fcolor : 0 );
+      hwg_setcolor( hDC->cr, (hDC->fcolor != -1)? hDC->fcolor : 0 );
 
-   cairo_move_to( hDC->cr, (gdouble)hb_parni(2), (gdouble)hb_parni(3) );
-   pango_cairo_show_layout( hDC->cr, hDC->layout );
+      cairo_move_to( hDC->cr, (gdouble)hb_parni(2), (gdouble)hb_parni(3) );
+      pango_cairo_show_layout( hDC->cr, hDC->layout );
 
-   g_free( cText );
+      g_free( cText );
+   }
 }
 
 HB_FUNC( HWG_DRAWTEXT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   char * cText = hwg_convert_to_utf8( hb_parc(2) );
+   char * cText;
    PangoRectangle rc;
    int iWidth = hb_parni(5)-hb_parni(3);
 
-   pango_layout_set_text( hDC->layout, cText, -1 );
-
-   pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
-   pango_layout_set_width( hDC->layout, -1 );
-
-   if( !HB_ISNIL(7) && ( hb_parni(7) & ( DT_CENTER | DT_RIGHT ) ) &&
-         ( rc.width < ( iWidth-10 ) ) )
+   if( hb_parclen(2) > 0 )
    {
-      pango_layout_set_width( hDC->layout, iWidth*PANGO_SCALE );
-      pango_layout_set_alignment( hDC->layout, 
-          (hb_parni(7) & DT_CENTER)? PANGO_ALIGN_CENTER : PANGO_ALIGN_RIGHT );
+      cText = hwg_convert_to_utf8( hb_parc(2) );
+      pango_layout_set_text( hDC->layout, cText, -1 );
+
+      pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
+      pango_layout_set_width( hDC->layout, -1 );
+
+      if( !HB_ISNIL(7) && ( hb_parni(7) & ( DT_CENTER | DT_RIGHT ) ) &&
+            ( rc.width < ( iWidth-10 ) ) )
+      {
+         pango_layout_set_width( hDC->layout, iWidth*PANGO_SCALE );
+         pango_layout_set_alignment( hDC->layout, 
+             (hb_parni(7) & DT_CENTER)? PANGO_ALIGN_CENTER : PANGO_ALIGN_RIGHT );
+      }
+      else
+         pango_layout_set_alignment( hDC->layout, PANGO_ALIGN_LEFT );
+
+      hwg_setcolor( hDC->cr, (hDC->fcolor != -1)? hDC->fcolor : 0 );
+      cairo_move_to( hDC->cr, (gdouble)hb_parni(3), (gdouble)hb_parni(4) );
+      pango_cairo_show_layout( hDC->cr, hDC->layout );
+      g_free( cText );
    }
-   else
-      pango_layout_set_alignment( hDC->layout, PANGO_ALIGN_LEFT );
-
-   hwg_setcolor( hDC->cr, (hDC->fcolor != -1)? hDC->fcolor : 0 );
-   cairo_move_to( hDC->cr, (gdouble)hb_parni(3), (gdouble)hb_parni(4) );
-   pango_cairo_show_layout( hDC->cr, hDC->layout );
-   g_free( cText );
-
 }
 
 HB_FUNC( HWG_GETTEXTMETRIC )
@@ -128,7 +135,7 @@ HB_FUNC( HWG_GETTEXTSIZE )
    PangoRectangle rc;
    PHB_ITEM aMetr = hb_itemArrayNew( 2 );
 
-   if( HB_ISCHAR(2) )
+   if( HB_ISCHAR(2) && hb_parclen(2) > 0 )
       pango_layout_set_text( hDC->layout, cText, -1 );
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
 
@@ -144,7 +151,7 @@ HB_FUNC( HWG_GETTEXTWIDTH )
    char * cText = hwg_convert_to_utf8( hb_parc( 2 ) );
    PangoRectangle rc;
 
-   if( HB_ISCHAR(2) )
+   if( HB_ISCHAR(2) && hb_parclen(2) > 0 )
       pango_layout_set_text( hDC->layout, cText, -1 );
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
 

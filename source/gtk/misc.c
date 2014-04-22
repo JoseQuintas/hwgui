@@ -209,7 +209,7 @@ HB_FUNC( HWG_GETDEVICEAREA )
 
 HB_FUNC( HWG_RGB )
 {
-   hb_retnl( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
+   //hb_retnl( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 
 #define CHUNK_LEN 1024

@@ -16,7 +16,7 @@
 #define  FLAG_DISABLED   1
 #define  FLAG_CHECK      2
 
-STATIC _aMenuDef, _oWnd, _aAccel, _nLevel, _Id, _oMenu, _oBitmap
+STATIC _aMenuDef, _oWnd, _aAccel, _nLevel, _Id, _oMenu, _oBitmap, hLast
 /*
 STATIC aKeysTable := { { VK_F1,GDK_F1 }, { VK_F2,GDK_F2 }, { VK_F3,GDK_F3 }, ;
       { VK_F4, GDK_F4 }, { VK_F5, GDK_F5 }, { VK_F6, GDK_F6 }, { VK_F7, GDK_F7 }, ;
@@ -90,7 +90,7 @@ FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos )
       nPos := Len( aMenu[1] ) + 1
    ENDIF
 
-   hSubMenu := aMenu[5]
+   hSubMenu := hLast := aMenu[5]
    hSubMenu := hwg__AddMenuItem( hSubMenu, cItem, nPos - 1, hwg_Getactivewindow(), nMenuId, , lSubMenu )
 
    IF nPos > Len( aMenu[1] )
@@ -286,7 +286,7 @@ FUNCTION Hwg_DefineAccelItem( nId, bItem, accFlag, accKey )
       aMenu := Atail( aMenu )[1]
    NEXT
    nId := iif( nId == Nil, ++ _Id, nId )
-   AAdd( aMenu, { bItem, Nil, nId, .T. } )
+   AAdd( aMenu, { bItem, Nil, nId, .T., 0 } )
    AAdd( _aAccel, { accFlag, accKey, nId } )
 
    RETURN .T.

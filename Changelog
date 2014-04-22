@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-22 15:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/misc.c
+  * source/winapi/nice.c
+    * hwg_rgb() moved from nice.c to misc.c
+  * source/gtk/misc.c
+    * hwg_rgb() added to misc.c
+  * source/gtk/menu.prg
+    ! Small fix
+
 2014-04-21 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hdialog.prg
     ! Small fix

@@ -207,6 +207,11 @@ HB_FUNC( HWG_GETDEVICEAREA )
    hb_itemRelease( aMetr );
 }
 
+HB_FUNC( HWG_RGB )
+{
+   hb_retnl( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
+}
+
 #define CHUNK_LEN 1024
 
 HB_FUNC( HWG_RUNCONSOLEAPP ) 

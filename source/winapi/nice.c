@@ -231,12 +231,6 @@ HB_FUNC( HWG_ISMOUSEOVER )
    hb_retl( PtInRect( &Rect, Pt ) );
 }
 
-
-HB_FUNC( HWG_RGB )
-{
-   hb_retnl( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
-}
-
 HB_FUNC( HWG_DRAW_GRADIENT )
 {
    Draw_Gradient( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ),

@@ -139,7 +139,7 @@ extern void all_signal_connect( gpointer hWnd );
 extern gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data );
 extern GtkFixed *getFixedBox( GObject * handle );
 
-char * szDelimiters = " .,-";
+gchar * szDelimiters = " .,-";
 
 void wrlog( const char * sFile, const char * sTraceMsg, ... )
 {
@@ -201,8 +201,9 @@ TEDFONT * ted_setfont( TEDIT * pted, PHWGUI_FONT hwg_font, int iNum, HB_BOOL bPr
 int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealLen,
       int iWidth, HB_BOOL bWrap, HB_BOOL bLastInFew )
 {
-   int i, i1, iReal, xpos, iTextWidth;
+   int i, i1, iReal, xpos, iTextWidth, iDLen = strlen( szDelimiters );
    PangoRectangle rc;
+   gchar * ptr;
 
    pango_layout_set_font_description( layout, font->hwg_font->hFont );
 
@@ -238,8 +239,12 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
       {
          if( bWrap )
          {
+            ptr = g_utf8_offset_to_pointer( szText, i );
             i1 = i;
-            while( i > 0 && !strchr( szDelimiters,*(szText+i) ) ) i --;
+            while( i > 0 && !g_utf8_strchr( szDelimiters, iDLen, g_utf8_get_char(ptr) ) ) {
+               ptr = g_utf8_prev_char( ptr );
+               i --;
+            }
             //if( !i && bLastInFew )
             if( !i )
             {
@@ -264,8 +269,9 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
       if( bWrap && iReal < *iRealLen )
       {
          i = i1;
-         while( i && !strchr( szDelimiters,*(szText+i) ) &&
-               !strchr( szDelimiters,*(szText+i-1) ) ) i --;
+         ptr = g_utf8_offset_to_pointer( szText, i );
+         while( i && !g_utf8_strchr( szDelimiters, iDLen, g_utf8_get_char(ptr) ) &&
+               !g_utf8_strchr( szDelimiters, iDLen, g_utf8_get_char(ptr = g_utf8_prev_char(ptr)) ) ) i --;
          //if( i || bLastInFew )
          if( i )
             i1 = i;
@@ -274,7 +280,11 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
       {
          if( bWrap )
          {
-            while( i < *iRealLen && !strchr( szDelimiters,*(szText+i) ) ) i ++;
+            ptr = g_utf8_offset_to_pointer( szText, i );
+            while( i < *iRealLen && !g_utf8_strchr( szDelimiters,iDLen,g_utf8_get_char(ptr) ) ) {
+               i ++;
+               ptr = g_utf8_next_char( ptr );
+            }
          }
          pango_layout_set_text( layout, szText, hced_utf8bytes( szText, i ) );
          pango_layout_get_pixel_extents( layout, &rc, NULL );

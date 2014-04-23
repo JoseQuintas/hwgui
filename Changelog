@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-23 16:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit_l.c
+    ! Character calculation for utf8 fixed
+
 2014-04-23 16:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/common/editor/hcedit_l.c

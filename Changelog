@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-23 16:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_l.c
+    ! Few fixes for GTK version
+
 2014-04-22 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/misc.c
   * source/gtk/drawtext.c

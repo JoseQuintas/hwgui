@@ -136,6 +136,7 @@ extern void set_signal( gpointer handle, char *cSignal, long int p1,
             long int p2, long int p3 );
 extern void cb_signal( GtkWidget * widget, gchar * data );
 extern void all_signal_connect( gpointer hWnd );
+extern gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data );
 extern GtkFixed *getFixedBox( GObject * handle );
 
 char * szDelimiters = " .,-";
@@ -527,6 +528,7 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
          GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK );
+   g_signal_connect( area, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    set_event( ( gpointer ) area, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) area, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) area, "motion_notify_event", 0, 0, 0 );

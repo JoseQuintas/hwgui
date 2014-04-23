@@ -173,6 +173,10 @@ CLASS HCEdit INHERIT HControl
 
    DATA   lWrap   INIT .F.  PROTECTED
    DATA   oHili, aHili  PROTECTED
+#ifdef __PLATFORM__UNIX
+   DATA   lPainted INIT .F. PROTECTED
+   DATA   lNeedScan INIT .F. PROTECTED
+#endif
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
@@ -489,6 +493,12 @@ METHOD Paint( lReal ) CLASS HCEdit
    LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := 0, yNew, i, n4Separ := ::n4Separ
 
    IF lReal == Nil .OR. lReal
+#ifdef __PLATFORM__UNIX
+      ::lPainted := .T.
+      IF ::lNeedScan
+         ::Scan()
+      ENDIF
+#endif
       pps := hwg_DefinePaintStru()
 #ifdef __PLATFORM__UNIX
       hDCReal := hwg_BeginPaint( ::area, pps )
@@ -744,8 +754,7 @@ METHOD Convert( cPageIn, cPageOut )
    LOCAL i
 
    IF cPageIn != Nil .AND. !Empty( hb_cdpUniId( cPageIn ) ) .AND. ;
-         cPageOut != Nil .AND. !Empty( hb_cdpUniId( cPageOut ) ) .AND. ;
-         ( Empty( ::cp ) .OR. ::cp == cPageIn )
+         cPageOut != Nil .AND. !Empty( hb_cdpUniId( cPageOut ) )
       FOR i := 1 TO ::nTextLen
          IF !Empty( ::aText[i] )
             ::aText[i] := hb_Translate( ::aText[i], cPageIn, cPageOut )
@@ -769,8 +778,9 @@ Local nPos
    ELSEIF Valtype( xText ) == "A"
       ::aText := xText
    ELSE     
-      IF ( nPos := At( Chr(10), xText ) ) == 0 .OR. ;
-            ( nPos > 1 .AND. Substr( xText,nPos-1,1 ) == Chr(13) )
+      IF ( nPos := At( Chr(10), xText ) ) == 0
+         ::aText := hb_aTokens( xText, Chr(13) )
+      ELSEIF Substr( xText,nPos-1,1 ) == Chr(13)
          ::aText := hb_aTokens( xText, cNewLine )
       ELSE
          ::aText := hb_aTokens( xText, Chr(10) )
@@ -1704,6 +1714,10 @@ METHOD Scan( nl1, nl2 ) CLASS HCEdit
 
 #ifdef __PLATFORM__UNIX
    aCoors := hwg_GetClientRect( ::area )
+   IF !::lPainted
+      ::lNeedScan := .T.
+      RETURN Nil
+   ENDIF
    hDC := hwg_Getdc( ::area )
 #else
    aCoors := hwg_GetClientRect( ::handle )
@@ -1789,7 +1803,9 @@ METHOD Scan( nl1, nl2 ) CLASS HCEdit
    ::nLineC := nLineC
    ::nWCharF:= nWCharF
    ::nWSublF:= nWSublF
-
+#ifdef __PLATFORM__UNIX
+   ::lNeedScan := .F.
+#endif
    RETURN Nil
 
 METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HCEdit

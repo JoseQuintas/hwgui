@@ -1,4 +1,53 @@
 
+/* CONSTANTS TO TRACKMOUSEEVENT */
+#define  TME_CANCEL            0x80000000 
+#define  TME_HOVER             1
+#define  TME_LEAVE             2 
+
+#xcommand @ <x>,<y> BROWSEEX [ <oBrw> ] ;
+             [ <lArr: ARRAY> ]          ;
+             [ <lDb: DATABASE> ]        ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ ON CLICK <bEnter> ]      ;
+             [ ON RIGHTCLICK <bRClick> ];
+             [ ON GETFOCUS <bGfocus> ][WHEN <bGfocus> ]   ;
+             [ ON LOSTFOCUS <bLfocus> ][ VALID <bLfocus> ] ;
+             [ STYLE <nStyle> ]         ;
+             [ <lNoVScr: NO VSCROLL> ]  ;
+             [ <lNoBord: NOBORDER> ]    ;
+             [ FONT <oFont> ]           ;
+             [ <lAppend: APPEND> ]      ;
+             [ <lAutoedit: AUTOEDIT> ]  ;
+             [ ON UPDATE <bUpdate> ]    ;
+             [ ON KEYDOWN <bKeyDown> ]  ;
+             [ ON POSCHANGE <bPosChg> ] ;
+             [ ON CHANGEROWCOL <bChgrowcol> ] ;
+             [ <lMulti: MULTISELECT> ]  ;
+             [ <lDescend: DESCEND> ]    ; // By Marcelo Sturm (marcelo.sturm@gmail.com)
+             [ WHILE <bWhile> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+             [ FIRST <bFirst> ]         ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+             [ LAST <bLast> ]           ; // By Marcelo Sturm (marcelo.sturm@gmail.com)
+             [ FOR <bFor> ]             ; // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
+             [ ON OTHER MESSAGES <bOther> ] ;
+             [ ON OTHERMESSAGES <bOther>  ] ;
+             [ TOOLTIP <ctoolt> ]       ;
+             [ <class: CLASS> <classname> ] ;
+          => ;
+          [<oBrw> :=] HBrowseEx():New( Iif(<.lDb.>,BRW_DATABASE,Iif(<.lArr.>,BRW_ARRAY,0)),;
+             <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>, ;
+             <bDraw>,<bEnter>,<bGfocus>,<bLfocus>,<.lNoVScr.>,<.lNoBord.>, <.lAppend.>,;
+             <.lAutoedit.>, <bUpdate>, <bKeyDown>, <bPosChg>, <.lMulti.>, <.lDescend.>,;
+             <bWhile>, <bFirst>, <bLast>, <bFor>, <bOther>, <color>, <bcolor>, <bRClick>,<bChgrowcol>, <ctoolt>  );;
+          [; hwg_SetCtrlName( <oBrw>,<(oBrw)> )]
+
+
 #xcommand @ <x>,<y> SAY [ <lExt: EXTENDED,EXT> ] [ <oSay> CAPTION ] <caption> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;

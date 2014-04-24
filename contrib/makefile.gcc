@@ -22,8 +22,10 @@ $(LIB_DIR)/libhwg_qhtm.a : \
 	ar rc $@ $^
 
 $(LIB_DIR)/libhwg_extctrl.a : \
-   $(OBJ_DIR)/hqhtm.o \
-   $(OBJ_DIR)/hwg_qhtm.o
+   $(OBJ_DIR)/hbrowsex.o \
+   $(OBJ_DIR)/hctrlex.o \
+   $(OBJ_DIR)/hrectex.o \
+   $(OBJ_DIR)/hgridex.o
 	ar rc $@ $^
 
 .prg.c:

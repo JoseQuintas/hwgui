@@ -460,8 +460,14 @@ METHOD FindBrowse( nId ) CLASS HBrowse
 
 METHOD AddColumn( oColumn ) CLASS HBrowse
 
-   LOCAL n
+   LOCAL n, arr
 
+   IF Valtype( oColumn ) == "A"
+      arr := oColumn
+      n := Len(arr)
+      oColumn := HColumn():New( Iif(n>0,arr[1],Nil), Iif(n>1,arr[2],Nil), ;
+         Iif(n>2,arr[3],Nil), Iif(n>3,arr[4],Nil), Iif(n>4,arr[5],Nil), Iif(n>5,arr[6],Nil) )
+   ENDIF
    AAdd( ::aColumns, oColumn )
    ::lChanged := .T.
    InitColumn( Self, oColumn, Len( ::aColumns ) )
@@ -472,6 +478,14 @@ METHOD AddColumn( oColumn ) CLASS HBrowse
 
 METHOD InsColumn( oColumn, nPos ) CLASS HBrowse
 
+   LOCAL n, arr
+
+   IF Valtype( oColumn ) == "A"
+      arr := oColumn
+      n := Len(arr)
+      oColumn := HColumn():New( Iif(n>0,arr[1],Nil), Iif(n>1,arr[2],Nil), ;
+         Iif(n>2,arr[3],Nil), Iif(n>3,arr[4],Nil), Iif(n>4,arr[5],Nil), Iif(n>5,arr[6],Nil) )
+   ENDIF
    AAdd( ::aColumns, Nil )
    AIns( ::aColumns, nPos )
    ::aColumns[ nPos ] := oColumn
@@ -1989,10 +2003,10 @@ FUNCTION hwg_CREATEARLIST( oBrw, arr )
       // oBrw:aColumns := {}
       IF ValType( arr[1] ) == "A"
          FOR i := 1 TO Len( arr[1] )
-            oBrw:AddColumn( HColumn():New( ,hwg_ColumnArBlock() ) )
+            oBrw:AddColumn( { ,hwg_ColumnArBlock() } )
          NEXT
       ELSE
-         oBrw:AddColumn( HColumn():New( ,{ |value,o| o:aArray[ o:nCurrent ] } ) )
+         oBrw:AddColumn( { ,{ |value,o| o:aArray[ o:nCurrent ] } } )
       ENDIF
    ENDIF
    Eval( oBrw:bGoTop, oBrw )
@@ -2030,12 +2044,12 @@ FUNCTION hwg_CreateList( oBrw, lEditable )
 
    oBrw:aColumns := {}
    FOR i := 1 TO kolf
-      oBrw:AddColumn( HColumn():New( FieldName(i ),                      ;
+      oBrw:AddColumn( { FieldName(i ),         ;
          FieldWBlock( FieldName( i ), nArea ), ;
          dbFieldInfo( DBS_TYPE, i ),         ;
          iif( dbFieldInfo( DBS_TYPE,i ) == "D" .AND. __SetCentury(), 10, dbFieldInfo( DBS_LEN,i ) ), ;
          dbFieldInfo( DBS_DEC, i ),          ;
-         lEditable ) )
+         lEditable } )
    NEXT
 
    oBrw:Refresh()

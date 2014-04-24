@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-24 13:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + contrib/ext_controls/hbrowsex.prg
+    + HBrowse from 2.17 added as hBrowseEx
+  * contrib/makefile.bc
+  * contrib/makefile.gcc
+    * Makefiles for hwg_extctrl.lib modified
+  * include/hwg_extctrl.ch
+    + BROWSEEX command added
+  * source/winapi/hbrowse.prg
+    * :AddColumn() and ::InsColumn() now accepts arrays to create 
+      a column. This is done to make more easy using of HBrowseEx and,
+      possibly, other implementations of a browse.
+
 2014-04-23 16:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit_l.c
     ! Character calculation for utf8 fixed

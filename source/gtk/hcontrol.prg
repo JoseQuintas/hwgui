@@ -52,7 +52,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Disable() INLINE hwg_Enablewindow( ::handle, .F. )
    METHOD Enable() INLINE hwg_Enablewindow( ::handle, .T. )
    METHOD IsEnabled()   INLINE hwg_Iswindowenabled( ::Handle )
-   METHOD Setfocus() INLINE hwg_Enablewindow( ::handle, .T. )
+   METHOD Setfocus() INLINE hwg_SetFocus( ::handle )
    METHOD Move( x1, y1, width, height )
    /*
    METHOD GetText()     INLINE hwg_Getwindowtext(::handle)

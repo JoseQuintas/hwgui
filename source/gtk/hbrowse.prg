@@ -181,6 +181,7 @@ CLASS HBrowse INHERIT HControl
    METHOD APPEND() INLINE ( ::Bottom( .F. ), ::LineDown() )
    METHOD RefreshLine()
    METHOD Refresh( lFull )
+   METHOD Setfocus() INLINE hwg_SetFocus( ::area )
    METHOD End()
 
 ENDCLASS

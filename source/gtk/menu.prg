@@ -316,9 +316,9 @@ STATIC FUNCTION GetMenuByHandle( hWnd )
    ELSE
       IF ( oDlg := HDialog():FindDialog( hWnd ) ) != Nil
          aMenu := oDlg:menu
-      ELSEIF ( i := Ascan( HDialog():aModalDialogs,{ |o|o:handle == hWnd } ) ) != Nil
+      ELSEIF ( i := Ascan( HDialog():aModalDialogs,{ |o|Valtype(o:handle)==Valtype(hwnd) .AND. o:handle == hWnd } ) ) != 0
          aMenu := HDialog():aModalDialogs[i]:menu
-      ELSEIF ( i := Ascan( HWindow():aWindows,{ |o|o:handle == hWnd } ) ) != Nil
+      ELSEIF ( i := Ascan( HWindow():aWindows,{ |o|Valtype(o:handle)==Valtype(hwnd) .AND. o:handle==hWnd } ) ) != 0
          aMenu := HWindow():aWindows[i]:menu
       ENDIF
    ENDIF

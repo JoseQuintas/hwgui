@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-25 14:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/menu.prg
+    ! Small fix
+
 2014-04-25 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     * hwg_SetRangeUpDown() function added

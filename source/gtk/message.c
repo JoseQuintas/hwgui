@@ -75,3 +75,38 @@ HB_FUNC( HWG_MSGEXCLAMATION )
    MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE );
 }
 
+#define IDCANCEL            2
+#define IDYES               6
+#define IDNO                7
+
+HB_FUNC( HWG_MSGYESNOCANCEL )
+{
+   const char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
+   GtkWidget * dialog;
+   int result;
+   gchar * gcptr;
+
+   gcptr = hwg_convert_to_utf8( hb_parc(1) );
+   dialog = gtk_message_dialog_new( GTK_WINDOW( GetActiveWindow() ),
+                                     GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
+                                     GTK_MESSAGE_QUESTION,
+                                     GTK_BUTTONS_NONE,
+                                     gcptr );
+   g_free( gcptr );
+   if( *cTitle )
+   {
+      gcptr = hwg_convert_to_utf8( cTitle );
+      gtk_window_set_title( GTK_WINDOW(dialog), gcptr );
+      g_free( gcptr );
+   }
+   gtk_dialog_add_button( GTK_DIALOG(dialog), "Yes", GTK_RESPONSE_YES );
+   gtk_dialog_add_button( GTK_DIALOG(dialog), "No", GTK_RESPONSE_NO );
+   gtk_dialog_add_button( GTK_DIALOG(dialog), "Cancel", GTK_RESPONSE_CANCEL );
+
+   gtk_window_set_position( GTK_WINDOW(dialog), GTK_WIN_POS_CENTER );
+   gtk_window_set_policy( GTK_WINDOW(dialog), TRUE, TRUE, TRUE );
+
+   result = gtk_dialog_run( GTK_DIALOG(dialog) );
+   gtk_widget_destroy( dialog );
+   hb_retni( (result==GTK_RESPONSE_YES)? IDYES : ( (result==GTK_RESPONSE_NO)? IDNO : IDCANCEL ) );
+}

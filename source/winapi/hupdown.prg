@@ -27,7 +27,9 @@ CLASS HUpDown INHERIT HControl
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, nUpDWidth, nLower, nUpper )
    METHOD Activate()
    METHOD Init()
+   METHOD SetValue(n)  INLINE hwg_SetUpdown( ::hUpDown, n )
    METHOD GetValue()   INLINE Val( LTrim( ::title := hwg_Getedittext( ::oParent:handle, ::id ) ) )
+   METHOD SetRange(n1,n2)  INLINE hwg_SetRangeUpdown( ::hUpDown, n1, n2 )
    METHOD Refresh()
 
 ENDCLASS

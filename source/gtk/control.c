@@ -364,6 +364,13 @@ HB_FUNC( HWG_GETUPDOWN )
                HB_PARHANDLE( 1 ) ) );
 }
 
+HB_FUNC( HWG_SETRANGEUPDOWN )
+{
+   gtk_spin_button_set_range( ( GtkSpinButton * ) HB_PARHANDLE( 1 ),
+         ( gdouble ) hb_parnl( 2 ), ( gdouble ) hb_parnl( 3 ) );
+}
+
+
 #define WS_VSCROLL          2097152     // 0x00200000L
 #define WS_HSCROLL          1048576     // 0x00100000L
 

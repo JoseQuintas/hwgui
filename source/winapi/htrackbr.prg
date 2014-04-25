@@ -146,6 +146,7 @@ RETURN ( ::value )
    #define _WIN32_WINNT   0x0400
 #endif
 
+#include "guilib.h"
 #include <windows.h>
 #include <commctrl.h>
 
@@ -162,17 +163,17 @@ HB_FUNC( HWG_INITTRACKBAR )
                                        hb_parni( 5 ),
                                        hb_parni( 6 ),
                                        hb_parni( 7 ),
-                             ( HWND )  hb_parnl( 1 ),
+                             ( HWND )  HB_PARHANDLE(1),
                              ( HMENU ) hb_parni( 2 ),
                              GetModuleHandle( NULL ),
                              NULL ) ;
 
-    hb_retnl ( (LONG) hTrackBar );
+    HB_RETHANDLE( hTrackBar );
 }
 
 HB_FUNC( HWG_TRACKBARSETRANGE )
 {
-    SendMessage( (HWND) hb_parnl( 1 ), TBM_SETRANGE, TRUE,
+    SendMessage( (HWND) HB_PARHANDLE(1), TBM_SETRANGE, TRUE,
                   MAKELONG( hb_parni( 2 ), hb_parni( 3 ) ) );
 }
 

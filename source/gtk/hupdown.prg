@@ -31,6 +31,9 @@ CLASS HUpDown INHERIT HControl
          oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,nUpDWidth,nLower,nUpper )
    METHOD Activate()
    METHOD Refresh()
+   METHOD SetValue(n)   INLINE hwg_GetUpDown( ::handle, n )
+   METHOD GetValue()   INLINE hwg_GetUpDown( ::handle )
+   METHOD SetRange(n1,n2)  INLINE hwg_SetRangeUpdown( ::handle, n1, n2 )
 
 ENDCLASS
 
@@ -107,7 +110,7 @@ Return .T.
 
 Static Function __Valid( oCtrl )
 
-   oCtrl:value := hwg_SetUpDown( oCtrl:handle )
+   oCtrl:value := hwg_GetUpDown( oCtrl:handle )
    oCtrl:title := Str( oCtrl:value )
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet,oCtrl:value )

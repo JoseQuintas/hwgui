@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-25 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+    * hwg_SetRangeUpDown() function added
+  * source/gtk/message.c
+    * hwg_MsgYesNoCancel() function added
+  * source/gtk/hupdown.prg
+    * :GetValue(), :SetValue() and :SetRange() methods added
+  * source/winapi/htrackbr.prg
+    ! Some fixes
+  * source/winapi/hupdown.prg
+    * :SetValue() and :SetRange() methods added
+
 2014-04-24 16:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/gtk/hcontrol.prg

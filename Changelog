@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-29 13:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcwindow.prg
+  * source/winapi/hcwindow.prg
+    * :cargo variable is moved from the HCustomWindow class to HObject
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit_w.c
+  * source/common/editor/hilight.prg
+    * Some changes, needed for creating child editor classes
+    ! Some fixes
+
 2014-04-25 14:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/menu.prg
     ! Small fix

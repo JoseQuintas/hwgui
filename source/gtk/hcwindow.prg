@@ -25,8 +25,7 @@ STATIC aCustomEvents := { ;
 
 CLASS HObject
 
-   // DATA classname
-
+   DATA cargo
 ENDCLASS
 
 CLASS HCustomWindow INHERIT HObject
@@ -52,7 +51,6 @@ CLASS HCustomWindow INHERIT HObject
    DATA bGetFocus
    DATA bLostFocus
    DATA bOther
-   DATA cargo
    DATA HelpId   INIT 0
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
@@ -158,7 +156,6 @@ METHOD Setcolor( tcolor, bcolor, lRepaint ) CLASS HCustomWindow
 METHOD onEvent( msg, wParam, lParam ) CLASS HCustomWindow
    LOCAL i
 
-   // hwg_WriteLog( "== "+::Classname()+Str(msg)+Iif(wParam!=Nil,Str(wParam),"Nil")+Iif(lParam!=Nil,Str(lParam),"Nil") )
    IF ( i := Ascan( aCustomEvents[1],msg ) ) != 0
       RETURN Eval( aCustomEvents[2,i], Self, wParam, lParam )
    ELSEIF ::bOther != Nil

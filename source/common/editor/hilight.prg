@@ -71,7 +71,7 @@ Static cSpaces := e" \t", cQuotes := e"\"\'"
 CLASS HilightBase
    DATA   oEdit   
    DATA   lCase      INIT .F.      // A flag - are the keywords case sensitive
-   DATA   aLineStru, nItems
+   DATA   aLineStru, nItems, nLine
 
    METHOD New()   INLINE  Self
    METHOD End()
@@ -276,6 +276,9 @@ Local nPos, nPos1, cWord, c
          nPos ++
       ENDDO
    ENDDO
+   IF !lCheck
+      ::nLine := nLine
+   ENDIF
    
 Return Nil
 

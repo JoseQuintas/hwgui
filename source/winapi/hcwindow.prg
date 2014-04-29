@@ -38,8 +38,7 @@ STATIC aCustomEvents := { ;
 
 CLASS HObject
 
-   // DATA classname
-
+   DATA cargo
 ENDCLASS
 
 CLASS HCustomWindow INHERIT HObject
@@ -66,7 +65,6 @@ CLASS HCustomWindow INHERIT HObject
    DATA bGetFocus
    DATA bLostFocus
    DATA bOther
-   DATA cargo
    DATA HelpId        INIT 0
    DATA nHolder       INIT 0
 
@@ -90,7 +88,6 @@ ENDCLASS
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
    LOCAL i := iif( nId != NIL, Ascan( ::aControls, { |o| o:id == nId } ), ;
       Ascan( ::aControls, { |o| hwg_Isptreq( o:handle,nHandle) } ) )
-
    RETURN iif( i == 0, NIL, ::aControls[ i ] )
 
 METHOD DelControl( oCtrl ) CLASS HCustomWindow

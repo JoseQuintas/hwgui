@@ -134,6 +134,9 @@ CLASS HCEdit INHERIT HControl
    DATA   bColorCur    INIT 16449510
    DATA   tcolorSel    INIT 16777215
    DATA   bcolorSel    INIT 16744448
+   DATA   nAlign       INIT 0             // 0 - Left, 1 - Center, 2 - Right
+   DATA   nIndent      INIT 0
+   DATA   nDefFont     INIT 0
 
    DATA   nLineF       INIT 1
    DATA   nPosF        INIT 1
@@ -183,10 +186,10 @@ CLASS HCEdit INHERIT HControl
    METHOD Open( cFileName, cPageIn, cPageOut )
    METHOD Activate()
    METHOD Init()
-   METHOD SetHili( nGroup, oFont, tColor, bColor )
+   METHOD SetHili( xGroup, oFont, tColor, bColor )
    METHOD onEvent( msg, wParam, lParam )
    METHOD Paint( lReal )
-   METHOD PaintLine( hDC, yPos, nLine )
+   METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap )
    METHOD MarkLine( nLine, lReal, nSubLine )
    METHOD End()
    METHOD Convert( cPageIn, cPageOut )
@@ -314,14 +317,19 @@ METHOD Init() CLASS HCEdit
    RETURN Nil
 
 METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
-   LOCAL arr[3]
+   LOCAL arr
 
    IF Empty( ::aFonts )
       ::AddFont( ::oFont )
    ENDIF
 
+   IF !hb_hHaskey( ::aHili, xGroup )
+      ::aHili[xGroup] := Array( 3 )
+   ENDIF
+   arr := ::aHili[xGroup]
+
    IF oFont != Nil
-      arr[ 1 ] := Iif( ValType( oFont ) == "O", ::AddFont( oFont ), - 1 )
+      arr[ 1 ] := Iif( ValType( oFont ) == "O", ::AddFont( oFont ), oFont )
    ENDIF
    IF tColor != Nil
       arr[ 2 ] := tColor
@@ -329,7 +337,6 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
    IF bColor != Nil
       arr[ 3 ] := bColor
    ENDIF
-   ::aHili[xGroup] := arr
 
    RETURN Nil
 
@@ -451,11 +458,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ::nCaret := 0
       lRes := 0
 
-   ELSEIF msg == WM_MOUSEWHEEL
-
    ELSEIF msg == WM_LBUTTONDBLCLK
-      IF ::bClickDoub == Nil .OR. Empty( Eval( ::bClickDoub,Self ) )
-         //::getWord( hwg_LoWord( lParam ), hwg_HiWord( lParam ),,.T. )
+      IF ::bClickDoub != Nil
+         Eval( ::bClickDoub, Self )
       ENDIF
 
    ELSEIF msg == WM_SIZE
@@ -520,14 +525,7 @@ METHOD Paint( lReal ) CLASS HCEdit
    hDC := hDCReal
 
    hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
-
    hced_SetPaint( ::hEdit, hDC, , ::nClientWidth, ::lWrap )
-
-   IF lReal
-      IF ::nMarginL > 0
-         hced_FillRect( ::hEdit, 0, 0, ::nMarginL, ::nHeight )
-      ENDIF
-   ENDIF
 
    IF ::lShowNumbers
       ::n4Number := hwg_GetTextSize( hDC, "55555" )[1]
@@ -538,7 +536,7 @@ METHOD Paint( lReal ) CLASS HCEdit
    IF ::bPaint != Nil
       Eval( ::bPaint, Self, hDC )
    ENDIF
-
+/*
    IF lReal
       IF ::n4Separ > 0
          hced_FillRect( ::hEdit, 0, 0, ::nMarginL + ::n4Separ, ::nHeight )
@@ -546,7 +544,7 @@ METHOD Paint( lReal ) CLASS HCEdit
          hwg_Drawline( hDC, ::nMarginL + ::n4Separ - 4, 4, ::nMarginL + ::n4Separ - 4, ::nHeight - 8 )
       ENDIF
    ENDIF
-
+*/
    ::nLines := 0
    IF !Empty( ::aText )
       DO WHILE ( ++nLine + ::nLineF - 1 ) <= ::nTextLen
@@ -563,6 +561,8 @@ METHOD Paint( lReal ) CLASS HCEdit
    IF lReal
       //hwg_writelog( "Paint: "+str(::nHeight) )
       hced_FillRect( ::hEdit, ::nMarginL + ::n4Separ, yNew, ::nClientWidth, ::nHeight )
+      hwg_Selectobject( hDC, ::oPenNum:handle )
+      hwg_Drawline( hDC, ::nMarginL + ::n4Separ - 4, 4, ::nMarginL + ::n4Separ - 4, ::nHeight - 8 )
    ENDIF
 
    IF lReal
@@ -588,7 +588,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
    DO WHILE .T.
 
       ::nLines ++
-      x1 := ::nMarginL + ::n4Separ
+      x1 := ::nMarginL + ::n4Separ + Iif( nWSublF==1, ::nIndent, 0 )
       x2 := ::nClientWidth - ::nMarginR
 
       IF ::nLines >= Len( ::aLines )
@@ -614,7 +614,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
          ENDIF
          cLine := hced_Substr( Self, ::aText[nTextLine], nWCharF, nPrinted )
          ::MarkLine( nLine, lReal, nWSublF, nWCharF, ::nLines )
-         hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, nPrinted, 0, !lReal )
+         hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, nPrinted, ::nAlign, !lReal )
       ELSE
          IF ::lWrap
             cLine := Iif( nWCharF == 1, ::aText[nTextLine], hced_Substr( Self, ::aText[nTextLine],nWCharF ) )
@@ -623,19 +623,24 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
          ENDIF
 
          ::MarkLine( nLine, lReal, Iif( ::lWrap, nWSublF, Nil), nWCharF, ::nLines )
-         nPrinted := hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, hced_Len( Self, cLine ), 0, !lReal )
+         nPrinted := hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, hced_Len( Self, cLine ), ::nAlign, !lReal )
       ENDIF
       IF lReal .AND. ::bPaint != Nil
          Eval( ::bPaint, Self, hDC, nTextLine, aLine[AL_Y1], yPos  )
-      ENDIF
-      IF lReal .AND. ::nLines == ::nLineC .AND. ::bColorCur != ::bColor
-         hced_SetColor( ::hEdit, ::tcolor, ::bColor )
       ENDIF
 
       aLine[AL_X1] := x1
       aLine[AL_X2] := x2
       aLine[AL_NCHARS] := nPrinted
       aLine[AL_Y2] := yPos
+
+      IF lReal .AND. x1 > 0
+         hced_FillRect( ::hEdit, 0, aLine[AL_Y1], x1, yPos )
+      ENDIF
+
+      IF lReal .AND. ::nLines == ::nLineC .AND. ::bColorCur != ::bColor
+         hced_SetColor( ::hEdit, ::tcolor, ::bColor )
+      ENDIF
 
       IF ::lWrap
          aLine[AL_SUBL] := nWSublF
@@ -675,8 +680,11 @@ METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC ) CLASS HCEdit
    nPos2 := Iif( ::lWrap .AND. !Empty(::aWrap[nL]).AND.nSubLine<Len(::aWrap[nL]),::aWrap[nL,nSubline]-1, Min( hced_Len(Self,::aText[nL]),STRING_MAX_LEN ) )
 
    IF !Empty( ::oHili )
-      IF Empty( nSubLine ) .OR. nSubLine == 1
+      IF Empty( nSubLine ) .OR. nSubLine == 1 .OR. nL != ::oHili:nLine
          ::oHili:Do( Self, nL )
+      ENDIF
+      IF ::nDefFont > 0
+         hced_setAttr( ::hEdit, nPos1, nPos2, ::nDefFont, 0, 0 )
       ENDIF
       IF ::oHili:nItems > 0
          aStru := ::oHili:aLineStru
@@ -686,8 +694,9 @@ METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC ) CLASS HCEdit
                x1 := Max( nPos1, aStru[i,1] ) - nPos1 + 1
                x2 := Min( aStru[i,2],nPos2 ) - nPos1 + 1
                bColor := Iif( nLineC == ::nLineC .AND. ::bColorCur != ::bColor, ;
-                  ::bColorCur, aHili[3] )
-               hced_setAttr( ::hEdit, x1, x2 - x1 + 1, aHili[1], aHili[2], bColor )
+                  ::bColorCur, Iif( aHili[3]==Nil, ::bColor, aHili[3] ) )
+               hced_setAttr( ::hEdit, x1, x2 - x1 + 1, aHili[1], ;
+                  Iif( aHili[2]==Nil, ::tColor, aHili[2] ), bColor )
             ENDIF
          NEXT
       ENDIF
@@ -1521,7 +1530,7 @@ METHOD DelText( P1, P2 ) CLASS HCEdit
 
    ::Undo( Pstart[P_Y], Pstart[P_X], Pend[P_Y], Pend[P_X], 3, cText )
    IF !Empty( ::oHili )
-      ::oHili:UpdSource( Pstart[P_Y], Pend[P_Y], Pstart[P_X], Pend[P_Y], Pend[P_X], 3 )
+      ::oHili:UpdSource( Pstart[P_Y], Pstart[P_X], Pend[P_Y], Pend[P_X], 3 )
    ENDIF
    
    IF Pstart[P_Y] == Pend[P_Y]

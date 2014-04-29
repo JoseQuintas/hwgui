@@ -897,3 +897,24 @@ HB_FUNC( HCED_LINEOUT )
    }
    hb_storni( pted->ypos, 3 );
 }
+
+HB_FUNC( HCED_COLOR2X )
+{
+   char s[8];
+   int i;
+   long int n = hb_parnl(1);
+
+   sprintf(s,"#%2X%2X%2X", n%256, (n/256)%256, (n/65536)%256 );
+   for( i=0; i<7; i++ )
+      if( s[i] == ' ' )
+         s[i] = '0';
+   hb_retclen( s,7 );
+}
+
+HB_FUNC( HCED_X2COLOR )
+{
+   int i1, i2, i3;
+
+   sscanf( hb_parc(1),"#%2X%2X%2X", &i1, &i2, &i3 );
+   hb_retnl( i3*65536 + i2*256 + i1 );
+}

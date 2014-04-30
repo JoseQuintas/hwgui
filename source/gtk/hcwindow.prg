@@ -132,15 +132,16 @@ METHOD Setcolor( tcolor, bcolor, lRepaint ) CLASS HCustomWindow
 
    IF tcolor != Nil
       ::tcolor  := tcolor
-      hwg_Setfgcolor( ::handle, ::tcolor )
-      IF bColor == Nil .AND. ::bColor == Nil
-         // bColor := hwg_Getsyscolor( COLOR_3DFACE )
+      IF !Empty( ::handle )
+         hwg_Setfgcolor( ::handle, ::tcolor )
       ENDIF
    ENDIF
 
    IF bcolor != Nil
       ::bcolor  := bcolor
-      hwg_Setbgcolor( ::handle, ::bcolor )
+      IF !Empty( ::handle )
+         hwg_Setbgcolor( ::handle, ::bcolor )
+      ENDIF
       IF ::brush != Nil
          ::brush:Release()
       ENDIF
@@ -156,6 +157,7 @@ METHOD Setcolor( tcolor, bcolor, lRepaint ) CLASS HCustomWindow
 METHOD onEvent( msg, wParam, lParam ) CLASS HCustomWindow
    LOCAL i
 
+   // hwg_WriteLog( "== "+::Classname()+Str(msg)+Iif(wParam!=Nil,Str(wParam),"Nil")+Iif(lParam!=Nil,Str(lParam),"Nil") )
    IF ( i := Ascan( aCustomEvents[1],msg ) ) != 0
       RETURN Eval( aCustomEvents[2,i], Self, wParam, lParam )
    ELSEIF ::bOther != Nil

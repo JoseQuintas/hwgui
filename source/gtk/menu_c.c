@@ -160,17 +160,8 @@ HB_FUNC( HWG__ISENABLEDMENUITEM )
 
 HB_FUNC( HWG_TRACKMENU )
 {
-/*
-    hb_retl( TrackPopupMenu(
-                  (HMENU) hb_parnl(1),  // handle of shortcut menu
-                  TPM_RIGHTALIGN,       // screen-position and mouse-button flags
-                  hb_parni(2),          // horizontal position, in screen coordinates
-                  hb_parni(3),          // vertical position, in screen coordinates
-                  0,                    // reserved, must be zero
-                  (HWND) hb_parnl(4),   // handle of owner window
-                  NULL
-    ) );
-*/
+   gtk_menu_popup( (GtkMenu *) HB_PARHANDLE(1), NULL, NULL, NULL, NULL, 3,
+      gtk_get_current_event_time() );
 }
 
 HB_FUNC( HWG_DESTROYMENU )

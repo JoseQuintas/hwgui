@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-04-30 13:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/menu.prg
+  * source/gtk/menu_c.c
+    * Implementation of context menus is ready
+  * source/gtk/window.c
+    * Mouse right click signals ( WM_RBUTTONDOWN and WM_RBUTTONUP )
+      are implemented.
+    * Mouse signals on a dialog box are implemented.
+
 2014-04-29 13:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcwindow.prg
   * source/winapi/hcwindow.prg

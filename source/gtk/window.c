@@ -90,9 +90,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    int width = hb_parnl(10);
    int height = hb_parnl(11);
    PHWGUI_PIXBUF szFile = HB_ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;  
-
-
-   PHB_ITEM temp;
+   //PHB_ITEM temp;
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
    if (szFile)
@@ -112,17 +110,25 @@ HB_FUNC( HWG_INITMAINWINDOW )
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_start( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
-   temp = HB_PUTHANDLE( NULL, box );
-   SetObjectVar( pObject, "_FBOX", temp );
-
-   hb_itemRelease( temp );
+   //temp = HB_PUTHANDLE( NULL, box );
+   //SetObjectVar( pObject, "_FBOX", temp );
+   //hb_itemRelease( temp );
    
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "vbox", (gpointer) vbox );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
+
+   gtk_widget_add_events( hWnd, GDK_BUTTON_PRESS_MASK |
+         GDK_BUTTON_RELEASE_MASK |
+         GDK_POINTER_MOTION_MASK );
+   set_event( ( gpointer ) hWnd, "button_press_event", 0, 0, 0 );
+   set_event( ( gpointer ) hWnd, "button_release_event", 0, 0, 0 );
+   set_event( ( gpointer ) hWnd, "motion_notify_event", 0, 0, 0 );
+
    all_signal_connect( G_OBJECT (hWnd) );
-   g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
+
+   g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
    HB_RETHANDLE( hWnd );
 }
@@ -140,7 +146,7 @@ HB_FUNC( HWG_CREATEDLG )
    int height = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
    PHB_ITEM pIcon = GetObjectVar( pObject, "OICON" );
    PHWGUI_PIXBUF szFile = NULL;
-   PHB_ITEM temp;
+   //PHB_ITEM temp;
 
    if (!HB_IS_NIL(pIcon))
    {
@@ -149,7 +155,6 @@ HB_FUNC( HWG_CREATEDLG )
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
    if (szFile)
    {
-
       gtk_window_set_icon(GTK_WINDOW(hWnd), szFile->handle  );
    }
 
@@ -165,16 +170,24 @@ HB_FUNC( HWG_CREATEDLG )
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
-   temp = HB_PUTHANDLE( NULL, box );
-   SetObjectVar( pObject, "_FBOX", temp );
-
-   hb_itemRelease( temp );
+   //temp = HB_PUTHANDLE( NULL, box );
+   //SetObjectVar( pObject, "_FBOX", temp );
+   //hb_itemRelease( temp );
    
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
+
+   gtk_widget_add_events( hWnd, GDK_BUTTON_PRESS_MASK |
+         GDK_BUTTON_RELEASE_MASK |
+         GDK_POINTER_MOTION_MASK );
+   set_event( ( gpointer ) hWnd, "button_press_event", 0, 0, 0 );
+   set_event( ( gpointer ) hWnd, "button_release_event", 0, 0, 0 );
+   set_event( ( gpointer ) hWnd, "motion_notify_event", 0, 0, 0 );
+
    all_signal_connect( G_OBJECT (hWnd) );
-   g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
+
+   g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
    HB_RETHANDLE( hWnd );
 
@@ -500,8 +513,12 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
                event->type == GDK_2BUTTON_PRESS ||
                event->type == GDK_BUTTON_RELEASE )
       {
-         p1 = (event->type==GDK_BUTTON_PRESS)? WM_LBUTTONDOWN : 
-              ( (event->type==GDK_BUTTON_RELEASE)? WM_LBUTTONUP : WM_LBUTTONDBLCLK );
+         if( ((GdkEventButton*)event)->button == 3 )
+            p1 = (event->type==GDK_BUTTON_PRESS)? WM_RBUTTONDOWN : 
+                 ( (event->type==GDK_BUTTON_RELEASE)? WM_RBUTTONUP : WM_LBUTTONDBLCLK );
+         else
+            p1 = (event->type==GDK_BUTTON_PRESS)? WM_LBUTTONDOWN : 
+                 ( (event->type==GDK_BUTTON_RELEASE)? WM_LBUTTONUP : WM_LBUTTONDBLCLK );
          p2 = 0;
          p3 = ( ((HB_ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
       }

@@ -16,7 +16,7 @@
 #define  FLAG_DISABLED   1
 #define  FLAG_CHECK      2
 
-STATIC _aMenuDef, _oWnd, _aAccel, _nLevel, _Id, _oMenu, _oBitmap, hLast
+STATIC _aMenuDef, _oWnd, _aAccel, _nLevel, _Id, _oMenu, _oBitmap, _lContext, hLast
 /*
 STATIC aKeysTable := { { VK_F1,GDK_F1 }, { VK_F2,GDK_F2 }, { VK_F3,GDK_F3 }, ;
       { VK_F4, GDK_F4 }, { VK_F5, GDK_F5 }, { VK_F6, GDK_F6 }, { VK_F7, GDK_F7 }, ;
@@ -34,22 +34,13 @@ CLASS HMenu INHERIT HObject
 
 ENDCLASS
 
-METHOD Show( oWnd, xPos, yPos, lWnd ) CLASS HMenu
-   LOCAL aCoor
-/*
-   oWnd:oPopup := Self
-   IF Pcount() == 1 .OR. lWnd == Nil .OR. !lWnd
-      IF Pcount() == 1
-         aCoor := hwg_GetCursorPos()
-         xPos  := aCoor[1]
-         yPos  := aCoor[2]
-      ENDIF
-      Hwg_trackmenu( ::handle,xPos,yPos,oWnd:handle )
-   ELSE
-      aCoor := ClientToScreen( oWnd:handle,xPos,yPos )
-      Hwg_trackmenu( ::handle,aCoor[1],aCoor[2],oWnd:handle )
+METHOD Show( oWnd ) CLASS HMenu
+
+   IF oWnd == Nil
+      oWnd := HWindow():GetMain()
    ENDIF
-*/
+   oWnd:oPopup := Self
+   Hwg_trackmenu( ::handle )
 
    RETURN Nil
 
@@ -174,7 +165,7 @@ FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
       ENDIF
       nPos ++
    ENDDO
-   IF hWnd != Nil .AND. oWnd != Nil
+   IF !_lContext .AND. hWnd != Nil .AND. oWnd != Nil
       Hwg_SetMenu( oWnd, aMenu )
    ELSEIF _oMenu != Nil
       _oMenu:handle := aMenu[5]
@@ -186,6 +177,7 @@ FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
 FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle )
    LOCAL aMenu, i
 
+   _lContext := .F.
    IF oWnd != Nil
       _aMenuDef := {}
       _aAccel   := {}
@@ -212,9 +204,10 @@ FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle )
 
 FUNCTION Hwg_ContextMenu()
 
+   _lContext := .T.
    _aMenuDef := {}
    _oBitmap  := {}
-   _oWnd := Nil
+   _oWnd := HWindow():GetMain()
    _nLevel := 0
    _Id := CONTEXTMENU_FIRST_ID
    _oMenu := HMenu():New()
@@ -227,7 +220,7 @@ FUNCTION Hwg_EndMenu()
       _nLevel --
    ELSE
       hwg_BuildMenu( AClone( _aMenuDef ), iif( _oWnd != Nil,_oWnd:handle,Nil ), ;
-         _oWnd, , iif( _oWnd != Nil, .F. , .T. ) )
+         _oWnd, , _lContext )
       IF _oWnd != Nil .AND. !Empty( _aAccel )
          _oWnd:hAccel := hwg_Createacceleratortable( _oWnd )
       ENDIF

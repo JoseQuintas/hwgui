@@ -625,9 +625,6 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
          ::MarkLine( nLine, lReal, Iif( ::lWrap, nWSublF, Nil), nWCharF, ::nLines )
          nPrinted := hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, hced_Len( Self, cLine ), ::nAlign, !lReal )
       ENDIF
-      IF lReal .AND. ::bPaint != Nil
-         Eval( ::bPaint, Self, hDC, nTextLine, aLine[AL_Y1], yPos  )
-      ENDIF
 
       aLine[AL_X1] := x1
       aLine[AL_X2] := x2
@@ -636,6 +633,9 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
 
       IF lReal .AND. x1 > 0
          hced_FillRect( ::hEdit, 0, aLine[AL_Y1], x1, yPos )
+      ENDIF
+      IF lReal .AND. ::bPaint != Nil
+         Eval( ::bPaint, Self, hDC, nTextLine, aLine[AL_Y1], yPos  )
       ENDIF
 
       IF lReal .AND. ::nLines == ::nLineC .AND. ::bColorCur != ::bColor

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-05-06 16:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * utils/debugger/hwgdebug.prg
+    ! Some fixes
+
 2014-04-30 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcwindow.prg
     ! Small fix

@@ -1572,15 +1572,18 @@ METHOD DelText( P1, P2 ) CLASS HCEdit
 
 METHOD InsText( aPoint, cText, lOver ) CLASS HCEdit
    LOCAL aText := hb_aTokens( cText, cNewLine ), nLine := aPoint[P_Y], cRest, i, nPos, nSubl
-   LOCAL nLineC := ::nLineC, nLineNew := nLine, nSub, nPos1, nPos2, lInvAll := .F.
+   LOCAL nLineC := ::nLineC, nLineNew, nSub, nPos1, nPos2, lInvAll := .F.
 
    nPos := nPos1 := aPoint[P_X]
    nSubl := Iif( ::lWrap .AND. ::aWrap[nLine] != Nil, Len(::aWrap[nLine]), 0 )
 
+   nLineNew := nLine + Len( aText ) - 1
+   nPos2 := Iif( Len(aText) == 1, nPos + hced_Len( Self, cText ), hced_Len( Self, Atail(aText) ) + 1 )
+   ::Undo( nLine, nPos1, nLineNew, nPos2, Iif(lOver==Nil.OR.!lOver,1,2), cText )
+
    IF lOver == Nil .OR. !lOver
       IF Len( aText ) == 1
          ::aText[nLine] := hced_Stuff( Self, ::aText[nLine], nPos, 0, cText )
-         nPos += hced_Len( Self, cText )
       ELSE
          cRest := hced_Substr( Self, ::aText[nLine], nPos )
          ::aText[nLine] := hced_Left( Self, ::aText[nLine], nPos - 1 ) + aText[1]
@@ -1591,19 +1594,16 @@ METHOD InsText( aPoint, cText, lOver ) CLASS HCEdit
                ::aText[nLine+i-1] += cRest
             ENDIF
          NEXT
-         nPos := hced_Len( Self, Atail(aText) ) + 1
       ENDIF
-      ::Scan( nLine, nLineNew := (nLine + Len( aText ) - 1) )
+      ::Scan( nLine, nLineNew )
    ELSE
       i := hced_Len( Self, cText )
       cRest := hced_Substr( Self, ::aText[nLine], nPos, i )
       ::aText[nLine] := hced_Stuff( Self, ::aText[nLine], nPos, i, cText )
       cText := cRest
-      nPos += i
    ENDIF
-   nPos2 := nPos
+   nPos := nPos2
 
-   ::Undo( nLine, nPos1, nLineNew, nPos2, Iif(lOver==Nil.OR.!lOver,1,2), cText )
    IF !Empty( ::oHili )
       ::oHili:UpdSource( nLine, nPos1, nLineNew, nPos2, Iif(lOver==Nil.OR.!lOver,1,2), cText )
    ENDIF

@@ -18,6 +18,8 @@
 #include "gtk/gtk.h"
 #include "gdk/gdkkeysyms.h"
 
+static GtkClipboard* clipboard = NULL;
+
 void hwg_writelog( const char * sFile, const char * sTraceMsg, ... )
 {
    FILE *hFile;
@@ -58,11 +60,26 @@ HB_FUNC( HWG_RELEASECAPTURE )
 
 HB_FUNC( HWG_COPYSTRINGTOCLIPBOARD )
 {
+   if( !clipboard )
+      clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+
+   gtk_clipboard_set_text( clipboard, hb_parc(1), -1 );
+   gtk_clipboard_store( clipboard );
 }
 
 HB_FUNC( HWG_GETCLIPBOARDTEXT )
 {
-   hb_retc( "" );
+   gchar * sText;
+   if( !clipboard )
+      clipboard = gtk_clipboard_get(GDK_SELECTION_CLIPBOARD);
+
+   if( gtk_clipboard_wait_is_text_available( clipboard ) )
+   {
+      sText = gtk_clipboard_wait_for_text( clipboard );
+      hb_retc( sText );
+   }
+   else
+      hb_retc( "" );
 }
 
 HB_FUNC( HWG_GETKEYBOARDSTATE )

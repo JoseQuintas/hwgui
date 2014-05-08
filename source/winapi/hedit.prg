@@ -130,7 +130,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       RETURN nPos
    ENDIF
    wParam := hwg_PtrToUlong( wParam )
-   // WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF !::lMultiLine
 
       IF ::bSetGet != Nil
@@ -148,12 +147,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ELSEIF wParam == VK_TAB
                RETURN 0
             ENDIF
-            // ------- Change by NightWalker - Check HiBit -------
-            // If (wParam <129).or.!Empty( ::cPicFunc ).OR.!Empty( ::cPicMask )
             IF !hwg_IsCtrlShift( , .F. )
-               RETURN GetApplyKey( Self, Chr( wParam ) )
+               RETURN GetApplyKey( Self, hwg_Chr( wParam ) )
             ENDIF
-            // Endif
 
          ELSEIF msg == WM_KEYDOWN
 
@@ -433,13 +429,13 @@ STATIC FUNCTION ParsePict( oEdit, cPicture, vari )
       NEXT
    ENDIF
 
-   //                                         ------------ added by Maurizio la Cecilia
+   //  ------------ added by Maurizio la Cecilia
 
    IF oEdit:lMaxLength != Nil .AND. !Empty( oEdit:lMaxLength ) .AND. Len( oEdit:cPicMask ) < oEdit:lMaxLength
       oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:lMaxLength, "X" )
    ENDIF
 
-   //                                         ------------- end of added code
+   //  ------------- end of added code
 
    RETURN Nil
 
@@ -493,7 +489,6 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
 
    IF !Empty( oEdit:cPicMask )
       newPos := Len( oEdit:cPicMask )
-      //writelog( "KeyRight-2 "+str(nPos) + " " +str(newPos) )
       IF nPos > newPos .AND. !Empty( Trim( oEdit:Title ) )
          hwg_Sendmessage( oEdit:handle, EM_SETSEL, newPos, newPos )
       ENDIF
@@ -562,7 +557,6 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
          IF nPos != 1
             RETURN Nil
          ENDIF
-         // ::minus := .t.
       ELSEIF !( cChar $ "0123456789" )
          RETURN Nil
       ENDIF
@@ -656,22 +650,20 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
                      EXIT
                   ENDIF
                NEXT
-               oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + ;
-                  SubStr( oEdit:title, nPos, nLen - 1 ) + SubStr( oEdit:title, nPos + nLen )
+               oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + ;
+                  hwg_SubStr( oEdit:title, nPos, nLen - 1 ) + hwg_SubStr( oEdit:title, nPos + nLen )
             ELSE
-               oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + ;
-                  SubStr( oEdit:title, nPos )
+               oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + ;
+                  hwg_SubStr( oEdit:title, nPos )
             ENDIF
 
             IF !Empty( oEdit:cPicMask ) .AND. Len( oEdit:cPicMask ) < Len( oEdit:title )
-               //oEdit:title := Left( oEdit:title,nGetLen ) + cKey //Bug fixed
-               oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + SubStr( oEdit:title, nPos + 1 )
+               oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + hwg_SubStr( oEdit:title, nPos + 1 )
             ENDIF
          ELSE
-            oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + SubStr( oEdit:title, nPos + 1 )
+            oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + hwg_SubStr( oEdit:title, nPos + 1 )
          ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
-         // writelog( "GetApplyKey "+oEdit:title+str(nPos-1) )
          IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. nPos == Len( oEdit:cPicMask )
             hwg_GetSkip( oEdit:oParent, oEdit:handle, 1 )
             Return 0
@@ -974,3 +966,31 @@ FUNCTION hwg_SetColorinFocus( lDef )
    lColorinFocus := lDef
 
    RETURN .T.
+
+FUNCTION hwg_Chr( nCode )
+#ifndef UNICODE
+   RETURN Chr( nCode )
+#else
+   RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Chr( nCode ), Chr( nCode ) )
+#endif
+
+FUNCTION hwg_Substr( cString, nPos, nLen )
+#ifndef UNICODE
+   RETURN Substr( cString, nPos, nLen )
+#else
+   RETURN Iif( hb_cdpSelect()=="UTF8", Iif( nLen==Nil, hb_utf8Substr( cString, nPos ), hb_utf8Substr( cString, nPos, nLen ) ), Substr( cString, nPos, nLen ) )
+#endif
+
+FUNCTION hwg_Left( cString, nLen )
+#ifndef UNICODE
+   RETURN Left( cString, nLen )
+#else
+   RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Left( cString, nLen ), Left( cString, nLen ) )
+#endif
+
+FUNCTION hwg_Len( cString )
+#ifndef UNICODE
+   RETURN Len( cString )
+#else
+   RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Len( cString ), Len( cString ) )
+#endif

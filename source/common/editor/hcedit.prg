@@ -70,7 +70,9 @@
 #define SETC_RIGHT           2
 #define SETC_LEFT            3
 #define SETC_XY              4
-#define SETC_POS             5
+#define SETC_XFIRST          5
+#define SETC_XCURR           6
+#define SETC_XLAST           7
 
 #define AL_LENGTH            8
 #define AL_X1                1
@@ -86,10 +88,6 @@
 #define SB_LINES             2
 #define SB_REST              3
 #define SB_TEXT              4
-
-#define X_FIRST             -1
-#define X_CURR              -2
-#define X_LAST              -3
 
 #define HILIGHT_GROUPS  4
 #define HILIGHT_KEYW    1
@@ -536,15 +534,7 @@ METHOD Paint( lReal ) CLASS HCEdit
    IF ::bPaint != Nil
       Eval( ::bPaint, Self, hDC )
    ENDIF
-/*
-   IF lReal
-      IF ::n4Separ > 0
-         hced_FillRect( ::hEdit, 0, 0, ::nMarginL + ::n4Separ, ::nHeight )
-         hwg_Selectobject( hDC, ::oPenNum:handle )
-         hwg_Drawline( hDC, ::nMarginL + ::n4Separ - 4, 4, ::nMarginL + ::n4Separ - 4, ::nHeight - 8 )
-      ENDIF
-   ENDIF
-*/
+
    ::nLines := 0
    IF !Empty( ::aText )
       DO WHILE ( ++nLine + ::nLineF - 1 ) <= ::nTextLen
@@ -559,10 +549,11 @@ METHOD Paint( lReal ) CLASS HCEdit
    ENDIF
 
    IF lReal
-      //hwg_writelog( "Paint: "+str(::nHeight) )
-      hced_FillRect( ::hEdit, ::nMarginL + ::n4Separ, yNew, ::nClientWidth, ::nHeight )
-      hwg_Selectobject( hDC, ::oPenNum:handle )
-      hwg_Drawline( hDC, ::nMarginL + ::n4Separ - 4, 4, ::nMarginL + ::n4Separ - 4, ::nHeight - 8 )
+      hced_FillRect( ::hEdit, 0, yNew, ::nClientWidth, ::nHeight )
+      IF ::n4Separ > 0
+         hwg_Selectobject( hDC, ::oPenNum:handle )
+         hwg_Drawline( hDC, ::nMarginL + ::n4Separ - 4, 4, ::nMarginL + ::n4Separ - 4, ::nHeight - 8 )
+      ENDIF
    ENDIF
 
    IF lReal
@@ -934,25 +925,18 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
    ELSEIF nType == SETC_LEFT
       x1 := ::nPosC - 2
    ELSEIF nType == SETC_XY
-      IF p1 == Nil
-         x1 := ::nPosC - 1
-      ELSEIF p1 == X_FIRST
-         x1 := 0
-      ELSEIF p1 == X_CURR
-         y1 := ::nLineC
-         xPos := hced_GetXCaretPos( ::hEdit )
-      ELSEIF p1 == X_LAST
-         y1 := ::nLineC
-         xPos := ::nWidth
-      ELSE
-         x1 := p1
-         y1 := p2
-      ENDIF
+      x1 := ::nPosC - 1
+   ELSEIF nType == SETC_XFIRST
+      x1 := 0
+   ELSEIF nType == SETC_XCURR
+      xPos := hced_GetXCaretPos( ::hEdit )
+   ELSEIF nType == SETC_XLAST
+      xPos := ::nWidth
    ENDIF
 
    ::MarkLine( Iif( ::lWrap, ::aLines[::nLineC,AL_LINE]-::nLineF+1, ::nLineC ), .F., Iif( ::lWrap, hced_SubLine( Self, ::nLineC ), Nil ) )
    IF x1 == Nil
-      cLine := hced_SubLine( Self, y1, SB_TEXT )
+      cLine := hced_SubLine( Self, ::nLineC, SB_TEXT )
       IF ::nPosF > 1
          cLine := hced_Substr( Self, cLine, ::nPosF )
       ENDIF
@@ -1043,7 +1027,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          ::Paint( .F. )
          lInvAll := .T.
       ENDIF
-      ::SetCaretPos( SETC_XY, X_FIRST )
+      ::SetCaretPos( SETC_XFIRST )
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
@@ -1057,7 +1041,7 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          ::Paint( .F. )
          lInvAll := .T.
       ENDIF
-      ::SetCaretPos( SETC_XY, X_LAST )
+      ::SetCaretPos( SETC_XLAST )
       IF nCtrl == FSHIFT
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.

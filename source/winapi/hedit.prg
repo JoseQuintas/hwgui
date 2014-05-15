@@ -978,7 +978,9 @@ FUNCTION hwg_Substr( cString, nPos, nLen )
 #ifndef UNICODE
    RETURN Iif( nLen==Nil, Substr( cString, nPos ), Substr( cString, nPos, nLen ) )
 #else
-   RETURN Iif( hb_cdpSelect()=="UTF8", Iif( nLen==Nil, hb_utf8Substr( cString, nPos ), hb_utf8Substr( cString, nPos, nLen ) ), Substr( cString, nPos, nLen ) )
+   RETURN Iif( hb_cdpSelect()=="UTF8", ;
+      Iif( nLen==Nil, hb_utf8Substr( cString, nPos ), hb_utf8Substr( cString, nPos, nLen ) ), ;
+      Iif( nLen==Nil, Substr( cString, nPos ), Substr( cString, nPos, nLen ) ) )
 #endif
 
 FUNCTION hwg_Left( cString, nLen )

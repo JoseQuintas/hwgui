@@ -388,16 +388,29 @@ FUNCTION hwg_SelectMultipleFiles( cDescr, cTip, cIniDir, cTitle )
    RETURN( aFiles )
 
 FUNCTION HWG_Version( n )
+   LOCAL s
 
    IF !Empty( n )
       IF n == 1
          RETURN HWG_VERSION
       ELSEIF n == 2
          RETURN HWG_BUILD
+      ELSEIF n == 3
+#ifdef UNICODE
+      RETURN Iif( hwg__isUnicode(), 1, 0 )
+#else
+      RETURN 0
+#endif
       ENDIF
    ENDIF
+   s := "HWGUI " + HWG_VERSION + " Build " + Ltrim(Str(HWG_BUILD))
+#ifdef UNICODE
+   IF hwg__isUnicode()
+      s += " Unicode"
+   ENDIF
+#endif
 
-   RETURN "HWGUI " + HWG_VERSION + " Build " + Ltrim(Str(HWG_BUILD))
+   RETURN s
 
 FUNCTION hwg_getParentForm( o )
    DO WHILE o:oParent != Nil .AND. !__ObjHasMsg( o, "GETLIST" )

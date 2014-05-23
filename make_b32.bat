@@ -8,14 +8,13 @@ if not exist obj\b32 md obj\b32
 if not exist obj\b32\mt md obj\b32\mt
 :BUILD
 
-rem   make -fmakefile.bc  > make_b32.log
-rem   if errorlevel 1 goto BUILD_ERR
-rem set HB_PATH=c:\harbour_v3
+rem set HARBOURFLAGS=-dUNICODE
+rem CFLAGS=-DHWG_USE_POINTER_ITEM -DUNICODE
+set CFLAGS=-DHWG_USE_POINTER_ITEM
+
 make -l EXE_OBJ_DIR=obj\b32\bin OBJ_DIR=obj\b32 -fmakefile.bc %1 %2 %3 > make_b32.log
 if errorlevel 1 goto BUILD_ERR
 make -l OBJ_DIR=obj\b32\mt -DHB_THREAD_SUPPORT -DHB_MT=mt -fmakefile.bc %2 %3 >> make_b32.log
-rem if errorlevel 1 goto BUILD_ERR
-
 
 :BUILD_OK
 

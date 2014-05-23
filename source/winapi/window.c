@@ -1450,6 +1450,15 @@ LRESULT CALLBACK KeybHook( int code, WPARAM wp, LPARAM lp )
    return CallNextHookEx( NULL, code, wp, lp );
 }
 
+HB_FUNC( HWG__ISUNICODE )
+{
+#ifdef UNICODE
+   hb_retl( 1 );
+#else
+   hb_retl( 0 );
+#endif
+}
+
 HB_FUNC( HWG_INITPROC )
 {
    s_KeybHook = SetWindowsHookEx( WH_KEYBOARD, KeybHook, 0, GetCurrentThreadId() );

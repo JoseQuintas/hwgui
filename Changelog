@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-05-24 14:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  - make_b32pointer.bat
+  * makemngw.bat
+  * make_b32.bat
+    * Added -DHWG_USE_POINTER_ITEM flag, added commented SET commands for Unicode build
+  * source/winapi/guimain.prg
+    * hb_Version(): added "Unicode" if this is an Unicode build, hb_Version(3) returns 1,
+      if it is Unicode build and 0 - if no
+  * source/winapi/window.c
+    * hwg__IsUnicode() function added.
+
 2014-05-23 14:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/common/editor/hcedit_w.c

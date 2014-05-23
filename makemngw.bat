@@ -5,6 +5,10 @@ if "%1" == "CLEAN" goto CLEAN
 :BUILD
 
    rem set path=d:\softools\mingw\bin
+   rem set HARBOURFLAGS=-dUNICODE
+   rem CFLAGS=-DHWG_USE_POINTER_ITEM -DUNICODE
+   set CFLAGS=-DHWG_USE_POINTER_ITEM
+
    mingw32-make.exe -f makefile.gcc
    if errorlevel 1 goto BUILD_ERR
 

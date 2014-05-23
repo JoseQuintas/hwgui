@@ -12,7 +12,8 @@ EDITOR_DIR = source\common\editor
 HBXML_DIR    = source\common\xml
 HWGDEBUG_DIR = source\common\debug
 
-CFLAGS = -Wall -O3 -march=pentium -DHWG_USE_POINTER_ITEM
+HARBOURFLAG = -d__WINDOWS__ $(HARBOURFLAGS)
+CFLAG = -Wall -O3 -march=pentium $(CFLAGS)
 
 all: \
    $(LIB_DIR)/libhwgui.a \
@@ -111,38 +112,38 @@ $(LIB_DIR)/libhwgdebug.a : \
 	ar rc $@ $^
 
 .prg.c:
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 .c.o:
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(SRC_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(PROCMISC_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(PROCMISC_DIR)/%.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(EDITOR_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(EDITOR_DIR)/%.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(HBXML_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(HBXML_DIR)/%.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(HWGDEBUG_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(HWGDEBUG_DIR)/%.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 

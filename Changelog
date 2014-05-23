@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-05-23 14:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_w.c
+  * source/common/editor/hcedit_l.c
+    * Some improvements
+  * makefile.gcc
+    * Makefile for mingw has been changed to use
+      the CFLAGS and HARBOURFLAGS environment variables
+
 2014-05-15 11:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     ! Some fixes

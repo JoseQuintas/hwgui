@@ -245,8 +245,8 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
                ptr = g_utf8_prev_char( ptr );
                i --;
             }
-            //if( !i && bLastInFew )
-            if( !i )
+            if( !i && bLastInFew )
+            //if( !i )
             {
                i = i1;
                break;
@@ -272,8 +272,8 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
          ptr = g_utf8_offset_to_pointer( szText, i );
          while( i && !g_utf8_strchr( szDelimiters, iDLen, g_utf8_get_char(ptr) ) &&
                !g_utf8_strchr( szDelimiters, iDLen, g_utf8_get_char(ptr = g_utf8_prev_char(ptr)) ) ) i --;
-         //if( i || bLastInFew )
-         if( i )
+         if( i || bLastInFew )
+         //if( i )
             i1 = i;
       }
       for( i = iReal + 1; i <= *iRealLen; i++ )
@@ -385,7 +385,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
          iRealLen = iReqLen;
          iRealWidth += ted_CalcSize( pted->hDCScr->layout, ptr,
                pted->pFontsScr + (pattr + lasti)->iFont, &iRealLen,
-               x2 - iRealWidth - x1, pted->bWrap, i == iLen && iSegs );
+               x2 - iRealWidth - x1, pted->bWrap, lasti && iSegs );
          iHeight = ( iHeight > font->iHeight )? iHeight : font->iHeight;
          //iMaxAscent = max( iMaxAscent, font->tm.tmAscent );
 
@@ -688,6 +688,14 @@ HB_FUNC( HCED_SETPAINT )
    */
 }
 
+HB_FUNC( HCED_SETWIDTH )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+
+   if( !HB_ISNIL(2) )
+      pted->iWidth = hb_parni( 2 );
+}
+
 HB_FUNC( HCED_FILLRECT )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
@@ -770,7 +778,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
    int xpos = hb_parni(4);
    int y1 = hb_parni(5);
    HB_BOOL bSet = (HB_ISNIL(6))? 1 : hb_parl(6);
-   int i, j, lasti, iReqLen, iRealLen, iPrinted = 0, iTextWidth;
+   int i, j, lasti, iReqLen, iRealLen, iPrinted = 0, iTextWidth, iSegs;
    int iLen = g_utf8_strlen( szText, hb_parclen(2) );
    TEDATTR *pattr = pted->pattr;
    cairo_t *cr;
@@ -787,10 +795,11 @@ HB_FUNC( HCED_EXACTCARETPOS )
       if( xpos < x1 )
          xpos = x1;
       //wrlog( NULL, "---" );
-      for( i = 0, lasti = 0; i <= iLen; i++ )
+      for( i = 0, lasti = 0, iSegs = 0; i <= iLen; i++ )
       {
          if( i == iLen || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
          {
+            iSegs ++;
             iReqLen = i - lasti;
             ptr = szText + hced_utf8bytes( szText, lasti );
             //wrlog( NULL, "0 lasti = %u diff = %u i = %u iReal = %u ", lasti, ptr-szText, i, iReqLen );
@@ -805,7 +814,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
             // wrlog( NULL, "1 iReal = %u ", iRealLen );
             x1 += ted_CalcSize( layout, ptr, 
                   pted->pFontsScr + (pattr + lasti)->iFont, &iRealLen,
-                  xpos - x1, 0, i == iLen );
+                  xpos - x1, 0, lasti && iSegs );
             //wrlog( NULL, "2 iReal = %u \r\n", iRealLen );
             j = iRealLen - 1;
             while( j >= 0 && *( ptr+hced_utf8bytes(ptr,j) ) == ' ' )

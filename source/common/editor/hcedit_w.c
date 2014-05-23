@@ -176,8 +176,8 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
          {
             i1 = i;
             while( i > 0 && !strchr( szDelimiters,*(szText+i) ) ) i --;
-            //if( !i && bLastInFew )
-            if( !i )
+            if( !i && bLastInFew )
+            //if( !i )
             {
                i = i1;
                break;
@@ -201,8 +201,8 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
          i = i1;
          while( i && !strchr( szDelimiters,*(szText+i) ) &&
                !strchr( szDelimiters,*(szText+i-1) ) ) i --;
-         //if( i || bLastInFew )
-         if( i )
+         if( i || bLastInFew )
+         //if( i )
             i1 = i;
       }
       for( i = iReal + 1; i <= *iRealLen; i++ )
@@ -269,7 +269,8 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
    int iHeight = 0, iMaxAscent = 0;
    TEDFONT *font;
 
-   for( i = 0, lasti = 0, iSegs = 0; i <= iLen; i++, iSegs++ )
+   //hwg_writelog( NULL, "Lineout-1\r\n" );
+   for( i = 0, lasti = 0, iSegs = 0; i <= iLen; i++ )
    {
       // if the colour or font changes, then need to output 
       if( i == iLen ||
@@ -277,21 +278,24 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
             ( pattr + i )->bg != ( pattr + lasti )->bg ||
             ( pattr + i )->iFont != ( pattr + lasti )->iFont )
       {
+         iSegs++;
          font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
                ( pattr + lasti )->iFont;
          iHeight =
-               max( iHeight, font->tm.tmHeight + font->tm.tmExternalLeading );
+               max( iHeight, font->tm.tmHeight + font->tm.tmExternalLeading ) + 1;
          iMaxAscent = max( iMaxAscent, font->tm.tmAscent );
 
          iRealLen = i - lasti;
+         //hwg_writelog( NULL, "Lineout-1a %d %d %d %d\r\n", iRealLen, i, lasti, iSegs );
          iRealWidth += ted_CalcSize( pted, szText + lasti, pattr + lasti, &iRealLen,
-               x2 - iRealWidth - x1, pted->bWrap, i == iLen && iSegs );
+               x2 - iRealWidth - x1, pted->bWrap, lasti && iSegs );  // i == iLen && 
          iPrinted += iRealLen;
          if( iRealLen < i - lasti )
             break;
          lasti = i;
       }
    }
+   //hwg_writelog( NULL, "Lineout-2 %d\r\n", iPrinted );
 
    if( iAlign )
    {
@@ -537,6 +541,14 @@ HB_FUNC( HCED_SETPAINT )
 
 }
 
+HB_FUNC( HCED_SETWIDTH )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+
+   if( !HB_ISNIL(2) )
+      pted->iWidth = hb_parni( 2 );
+}
+
 HB_FUNC( HCED_FILLRECT )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
@@ -617,7 +629,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
    int xpos = hb_parni(4);
    int y1 = hb_parni(5);
    HB_BOOL bSet = (HB_ISNIL(6))? 1 : hb_parl(6);
-   int i, lasti, iRealLen, iPrinted = 0, iLen = hb_parclen(2);
+   int i, lasti, iRealLen, iPrinted = 0, iLen = hb_parclen(2), iSegs;
    TEDATTR *pattr = pted->pattr;
    SIZE sz;
 
@@ -628,13 +640,14 @@ HB_FUNC( HCED_EXACTCARETPOS )
          xpos = pted->iWidth + 1;
       if( xpos < x1 )
          xpos = x1;
-      for( i = 0, lasti = 0; i <= iLen; i++ )
+      for( i = 0, lasti = 0, iSegs = 0; i <= iLen; i++ )
       {
          if( i == iLen || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
          {
+            iSegs ++;
             iRealLen = i - lasti;
             x1 += ted_CalcSize( pted, szText + lasti, pattr + lasti, &iRealLen,
-                  xpos - x1, 0, i == iLen );
+                  xpos - x1, 0, lasti && iSegs );
             iPrinted += iRealLen;
             if( iRealLen < i - lasti )
                break;

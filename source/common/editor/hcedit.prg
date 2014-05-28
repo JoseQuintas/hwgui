@@ -131,6 +131,7 @@ CLASS HCEdit INHERIT HControl
    DATA   lInsert      INIT .T.
 
    DATA   nBoundL      INIT 0
+   DATA   nBoundR
    DATA   nMarginL     INIT 2
    DATA   nMarginR     INIT 2
    DATA   n4Number     INIT 0
@@ -243,7 +244,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       Iif( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, , ;
       Iif( tcolor == Nil, 0, tcolor ), Iif( bcolor == Nil, 16777215, bcolor ) )
 
-   ::nClientWidth := ::nWidth
+   ::nBoundR := ::nClientWidth := ::nWidth
 
    IF ::oFont == Nil
       IF ::oParent:oFont == Nil
@@ -532,7 +533,7 @@ METHOD Paint( lReal ) CLASS HCEdit
       hDCReal := hwg_BeginPaint( ::handle, pps )
       aCoors := hwg_GetClientRect( ::handle )
 #endif
-      ::nClientWidth := aCoors[3] - aCoors[1]
+      ::nBoundR := ::nClientWidth := aCoors[3] - aCoors[1]
       lReal := .T.
    ELSE
 #ifdef __PLATFORM__UNIX
@@ -602,7 +603,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
 
       ::nLines ++
       x1 := ::nBoundL + ::nMarginL + ::n4Separ + Iif( nWSublF==1, ::nIndent, 0 )
-      x2 := ::nClientWidth - ::nMarginR
+      x2 := ::nBoundR - ::nMarginR
 
       IF ::nLines >= Len( ::aLines )
          ::aLines := ASize( ::aLines, Len( ::aLines ) + 16 )
@@ -956,7 +957,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
    ELSEIF nType == SETC_XCURR
       xPos := hced_GetXCaretPos( ::hEdit )
    ELSEIF nType == SETC_XLAST
-      xPos := ::nWidth
+      xPos := ::nClientWidth
    ENDIF
 
    ::MarkLine( Iif( ::lWrap, ::aLines[::nLineC,AL_LINE]-::nLineF+1, ::nLineC ), .F., Iif( ::lWrap, hced_SubLine( Self, ::nLineC ), Nil ) )
@@ -1388,7 +1389,7 @@ METHOD Bottom() CLASS HCEdit
 
       ::Paint( .F. )
 
-      ::SetCaretPos( SETC_COORS, ::nWidth, ::nHeight )
+      ::SetCaretPos( SETC_COORS, ::nClientWidth, ::nHeight )
       hced_Invalidaterect( ::hEdit, 0 )
    ENDIF
 

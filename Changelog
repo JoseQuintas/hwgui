@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-05-28 12:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * Small changes
+  * source/winapi/hedit.prg
+    * Improved UNICODE support - added handling of WM_IME_CHAR message
+      for east asian languages, where IME technology is used
+
 2014-05-24 14:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
   - make_b32pointer.bat
   * makemngw.bat

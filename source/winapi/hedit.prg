@@ -16,6 +16,8 @@ STATIC lColorinFocus := .F.
 #include "hblang.ch"
 #include "guilib.ch"
 
+#define WM_IME_CHAR      646
+
 CLASS HEdit INHERIT HControl
 
    CLASS VAR winclass   INIT "EDIT"
@@ -150,6 +152,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF !hwg_IsCtrlShift( , .F. )
                RETURN GetApplyKey( Self, hwg_Chr( wParam ) )
             ENDIF
+
+         ELSEIF msg == WM_IME_CHAR
+            RETURN GetApplyKey( Self, hwg_Chr( wParam ) )
 
          ELSEIF msg == WM_KEYDOWN
 
@@ -575,33 +580,38 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
 
    ENDIF
 
-   IF !Empty( oEdit:cPicFunc )
-      cChar := Transform( cChar, oEdit:cPicFunc )
-   ENDIF
+   IF Len( cChar ) > 1
+      IF !Empty( oEdit:cPicMask ) .AND. SubStr( oEdit:cPicMask, nPos, 1 ) $ "N9#"
+         cChar := Nil
+      ENDIF
+   ELSE
+      IF !Empty( oEdit:cPicFunc )
+         cChar := Transform( cChar, oEdit:cPicFunc )
+      ENDIF
 
-   IF !Empty( oEdit:cPicMask )
-      cPic  := SubStr( oEdit:cPicMask, nPos, 1 )
+      IF !Empty( oEdit:cPicMask )
+         cPic  := SubStr( oEdit:cPicMask, nPos, 1 )
 
-      cChar := Transform( cChar, cPic )
-      IF cPic == "A"
-         IF ! IsAlpha( cChar )
-            cChar := Nil
-         ENDIF
-      ELSEIF cPic == "N"
-         IF ! IsAlpha( cChar ) .AND. ! IsDigit( cChar )
-            cChar := Nil
-         ENDIF
-      ELSEIF cPic == "9"
-         IF ! IsDigit( cChar ) .AND. cChar != "-"
-            cChar := Nil
-         ENDIF
-      ELSEIF cPic == "#"
-         IF ! IsDigit( cChar ) .AND. !( cChar == " " ) .AND. !( cChar $ "+-" )
-            cChar := Nil
+         cChar := Transform( cChar, cPic )
+         IF cPic == "A"
+            IF ! IsAlpha( cChar )
+               cChar := Nil
+            ENDIF
+         ELSEIF cPic == "N"
+            IF ! IsAlpha( cChar ) .AND. ! IsDigit( cChar )
+               cChar := Nil
+            ENDIF
+         ELSEIF cPic == "9"
+            IF ! IsDigit( cChar ) .AND. cChar != "-"
+               cChar := Nil
+            ENDIF
+         ELSEIF cPic == "#"
+            IF ! IsDigit( cChar ) .AND. !( cChar == " " ) .AND. !( cChar $ "+-" )
+               cChar := Nil
+            ENDIF
          ENDIF
       ENDIF
    ENDIF
-
    RETURN cChar
 
 STATIC FUNCTION GetApplyKey( oEdit, cKey )

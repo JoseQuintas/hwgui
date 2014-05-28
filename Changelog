@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-05-28 12:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * makemngw.bat
+  * make_b32.bat
+    ! Small fix
+
 2014-05-28 12:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * Small changes

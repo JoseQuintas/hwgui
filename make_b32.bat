@@ -9,7 +9,7 @@ if not exist obj\b32\mt md obj\b32\mt
 :BUILD
 
 rem set HARBOURFLAGS=-dUNICODE
-rem CFLAGS=-DHWG_USE_POINTER_ITEM -DUNICODE
+rem set CFLAGS=-DHWG_USE_POINTER_ITEM -DUNICODE
 set CFLAGS=-DHWG_USE_POINTER_ITEM
 
 make -l EXE_OBJ_DIR=obj\b32\bin OBJ_DIR=obj\b32 -fmakefile.bc %1 %2 %3 > make_b32.log

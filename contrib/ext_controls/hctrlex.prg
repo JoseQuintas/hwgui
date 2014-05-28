@@ -36,7 +36,7 @@ CLASS HStaticEx INHERIT HStatic
 
    CLASS VAR winclass   INIT "STATIC"
    DATA AutoSize INIT .F.
-   DATA nStyleHS
+   DATA nStyleHS, BackStyle
    DATA bClick, bDblClick
    DATA hBrushDefault  HIDDEN
 

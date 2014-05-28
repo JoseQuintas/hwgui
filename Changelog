@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-05-28 17:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
+  * contrib/ext_controls/hctrlex.prg
+    ! fixed omitted property BackStyle in HStaticEx class
+
 2014-05-28 12:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * makemngw.bat
   * make_b32.bat

@@ -105,7 +105,7 @@ Local i, s := Space(level*2)+'<', lNewLine
    ENDIF
    IF ::type == HBXML_TYPE_TAG .OR. ::type == HBXML_TYPE_SINGLE
       FOR i := 1 TO Len( ::aAttr )
-         s += ' ' + ::aAttr[i,1] + '="' + HBXML_Transform(::aAttr[i,2]) + '"'
+         s += ' ' + ::aAttr[i,1] + '="' + HBXML_PreSave(::aAttr[i,2]) + '"'
       NEXT
    ENDIF
    IF ::type == HBXML_TYPE_PI
@@ -134,7 +134,7 @@ Local i, s := Space(level*2)+'<', lNewLine
            IF ::type == HBXML_TYPE_CDATA .OR. ::type == HBXML_TYPE_COMMENT
               FWrite( handle, ::aItems[i] )
            ELSE
-              FWrite( handle, HBXML_Transform( ::aItems[i] ) )
+              FWrite( handle, HBXML_PreSave( ::aItems[i] ) )
            ENDIF
            IF lNewLine .AND. Right( ::aItems[i],1 ) != Chr(10)
               FWrite( handle, cNewLine )
@@ -143,7 +143,7 @@ Local i, s := Space(level*2)+'<', lNewLine
            IF ::type == HBXML_TYPE_CDATA .OR. ::type == HBXML_TYPE_COMMENT
               s += ::aItems[i]
            ELSE
-              s += HBXML_Transform( ::aItems[i] )
+              s += HBXML_PreSave( ::aItems[i] )
            ENDIF
            IF lNewLine .AND. Right( s,1 ) != Chr(10)
               s += cNewLine

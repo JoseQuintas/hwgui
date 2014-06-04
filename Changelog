@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-06-04 11:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * Small changes
+  * source/common/xml/hxmldoc.prg
+  * source/common/xml/xmlparse.c
+    * hbxml_Transform() is renamed to hbxml_preSave(), hbxml_preLoad() added,
+      it executes the conversion from "&lt;" to "<", etc.
+
 2014-05-28 17:50 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * contrib/ext_controls/hctrlex.prg
     ! fixed omitted property BackStyle in HStaticEx class

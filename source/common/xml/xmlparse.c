@@ -112,7 +112,7 @@ HB_FUNC( HBXML_SETENTITY )
    }
 }
 
-HB_FUNC( HBXML_TRANSFORM )
+HB_FUNC( HBXML_PRESAVE )
 {
    PHB_ITEM pItem;
    unsigned char *pBuffer = ( unsigned char * ) hb_parc( 1 ), *pNew;
@@ -229,6 +229,64 @@ PHB_ITEM hbxml_pp( unsigned char *ptr, HB_ULONG ulLen )
       ulLen--;
    }
    return hb_itemPutCL( NULL, ( char * ) ptrStart, ulLen );
+}
+
+HB_FUNC( HBXML_PRELOAD )
+{
+   unsigned char *ucSource = (unsigned char *)hb_parc(1);
+   unsigned char *ptr = ucSource;
+   unsigned long ulNew = 0, ulLen = (HB_ISNUM(2))? hb_parnl(2) : hb_parclen(1);
+   unsigned char *ptrnew = (unsigned char *) malloc( ulLen+1 );
+   int i, nlen;
+   int iChar;
+
+   if( !pEntity1 )
+   {
+      pEntity1 = predefinedEntity1;
+      pEntity2 = predefinedEntity2;
+   }
+
+   while( ((unsigned long)(ptr - ucSource)) < ulLen )
+   {
+      if( *ptr == '&' )
+      {
+         if( *( ++ptr ) == '#' )
+         {
+            int iChar;
+            sscanf( ( char * ) ++ptr, "%d", &iChar );
+            *( ptrnew+ulNew ) = iChar;
+            while( *( ++ptr ) >= '0' && *ptr <= '9' );
+            if( *ptr == ';' )
+               ptr++;
+         }
+         else
+         {
+            for( i = 0; i < nPredefsKol; i++ )
+            {
+               nlen = strlen( ( char * ) pEntity1[i] );
+               if( !memcmp( ptr, pEntity1[i], nlen ) )
+               {
+                  *( ptrnew+ulNew ) = pEntity2[i];
+                  ptr += nlen;
+                  break;
+               }
+            }
+            if( i == nPredefsKol )
+               *( ptrnew+ulNew ) = '&';
+         }
+      }
+      else
+      {
+         *( ptrnew+ulNew ) = *ptr;
+         ptr++;
+      }
+
+      ulNew++;
+   }
+   ptrnew[ulNew] = '\0';
+   hb_retclen( ptrnew, ulNew );
+   free( ptrnew );
+
 }
 
 PHB_ITEM hbxml_getattr( unsigned char **pBuffer, HB_BOOL * lSingle )

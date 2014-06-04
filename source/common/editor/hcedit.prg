@@ -132,6 +132,7 @@ CLASS HCEdit INHERIT HControl
 
    DATA   nBoundL      INIT 0
    DATA   nBoundR
+   DATA   nBoundT      INIT 0
    DATA   nMarginL     INIT 2
    DATA   nMarginR     INIT 2
    DATA   n4Number     INIT 0
@@ -160,7 +161,6 @@ CLASS HCEdit INHERIT HControl
    DATA   bChangePos, bKeyDown, bClickDoub
 
    DATA   lMDown       INIT .F.
-   DATA   nXPosM, nYPosM
    DATA   aPointC, aPointM1, aPointM2
 
    DATA   nTabLen      INIT 8
@@ -258,12 +258,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::bLostFocus := bLFocus
 
    ::aLines   := Array( 64, AL_LENGTH )
-   ::aPointC  := Array( P_LENGTH )
-   ::PCopy( , ::aPointC )
-   ::aPointM1 := Array( P_LENGTH )
-   ::PCopy( , ::aPointM1 )
-   ::aPointM2 := Array( P_LENGTH )
-   ::PCopy( , ::aPointM2 )
+   ::aPointC := ::PCopy()
+   ::aPointM1 := ::PCopy()
+   ::aPointM2 := ::PCopy()
 
    ::nTextLen := ::nLines := 0
    ::aHili := hb_Hash()
@@ -349,11 +346,6 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    LOCAL n, nPages, arr, lRes := - 1, x
 
-   //HWG_WriteLog( "tedit: " + Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   IF msg == WM_MOUSEMOVE .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_RBUTTONDOWN
-      ::nXPosM := hwg_LoWord( lParam )
-      ::nYPosM := hwg_HiWord( lParam )
-   ENDIF
    IF ::bOther != Nil
       IF ( n := Eval( ::bOther,Self,msg,wParam,lParam ) ) != - 1
          RETURN n
@@ -516,7 +508,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    RETURN lRes
 
 METHOD Paint( lReal ) CLASS HCEdit
-   LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := 0, yNew, i, n4Separ := ::n4Separ
+   LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := ::nBoundT, yNew, i, n4Separ := ::n4Separ
 
    IF lReal == Nil .OR. lReal
 #ifdef __PLATFORM__UNIX
@@ -783,8 +775,6 @@ METHOD Convert( cPageIn, cPageOut )
             ::aText[i] := hb_Translate( ::aText[i], cPageIn, cPageOut )
          ENDIF
       NEXT
-      ::cpSource := cPageIn
-      ::cp := cPageOut
       RETURN .T.
    ENDIF
 
@@ -815,10 +805,13 @@ Local nPos
 
 #ifdef __PLATFORM__UNIX
    ::lUtf8 := .T.
-   ::Convert( Iif( Empty(cPageIn), "EN",cPageIn ), "UTF8" )
+   ::Convert( cPageIn := Iif( Empty(cPageIn), "EN",cPageIn ), cPageOut := "UTF8" )
 #else
    ::Convert( cPageIn, cPageOut )
 #endif
+   ::cpSource := cPageIn
+   ::cp := cPageOut
+
    ::nLineC := 1
    ::nPosF := ::nPosC := 1
    ::PCopy( { ::nPosC, ::nLineC }, ::aPointC )
@@ -931,15 +924,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
    ENDIF
    IF nType == SETC_COORS
       xPos := p1
-      FOR y1 := 1 TO ::nLines
-         IF p2 < ::aLines[ y1,AL_Y2 ]
-            EXIT
-         ENDIF
-      NEXT
-      IF y1 > ::nLines
-         y1 --
-      ENDIF
-      IF y1 == 0
+      IF ( y1 := hced_Line4Pos( Self, p2 ) ) == 0
          RETURN Nil
       ENDIF
       ::nLineC := y1
@@ -967,7 +952,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
          cLine := hced_Substr( Self, cLine, ::nPosF )
       ENDIF
       x1 := hced_ExactCaretPos( ::hEdit, cLine, ::aLines[::nLineC,AL_X1], ;
-         xPos, ::aLines[::nLineC,AL_Y1], lSet )
+         Iif(Empty(xPos),::nBoundL,xPos), ::aLines[::nLineC,AL_Y1], lSet )
    ELSE
       cLine := Iif( x1 == 0, "", hced_Substr( Self, hced_SubLine( Self, ::nLineC, SB_TEXT ),::nPosF, x1 ) )
       x1 := hced_ExactCaretPos( ::hEdit, ;
@@ -1021,6 +1006,9 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
    ENDIF
    IF nKeyCode == VK_RIGHT
       IF ::nPosC > ::aLines[nLine,AL_NCHARS]
+         IF ::lWrap
+            RETURN 0
+         ENDIF
          ::nPosF ++
          ::Paint( .F. )
          lInvAll := .T.
@@ -1558,7 +1546,7 @@ METHOD DelText( P1, P2 ) CLASS HCEdit
          ENDIF
       NEXT
    ENDIF
-   ::Scan( Pstart[P_Y], Pend[P_Y] )
+   ::Scan( Pstart[P_Y], Min( Pend[P_Y], ::nTextLen ) )
    ::Paint( .F. )
 
    nPos := Pstart[P_X]
@@ -1894,7 +1882,7 @@ METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HCEdit
 
 /*  nL - A row on the screen ( 1 ... ::nLines )
  */
-Static Function hced_LineNum( oEdit, nL )
+Function hced_LineNum( oEdit, nL )
    LOCAL i, n := 0, nLine
 
    IF oEdit:SetWrap()
@@ -2005,6 +1993,18 @@ Static Function hced_P2SubLine( oEdit, y, x )
       RETURN i
    ENDIF
    RETURN 1
+
+Function hced_Line4Pos( oEdit, yPos )
+   LOCAL y1
+   FOR y1 := 1 TO oEdit:nLines
+      IF yPos < oEdit:aLines[ y1,AL_Y2 ]
+         EXIT
+      ENDIF
+   NEXT
+   IF y1 > oEdit:nLines
+      y1 --
+   ENDIF
+   RETURN y1
 
 Function hced_Chr( oEdit, nCode )
 #ifndef __XHARBOUR__

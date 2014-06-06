@@ -1398,7 +1398,7 @@ HB_FUNC( HWG_ANSITOUNICODE )
 #else
    hwg_wstrget( hb_param( 1, HB_IT_ANY ), &hText, NULL );
 #endif
-   HB_RETSTRLEN( hText, 1024 );
+   HB_RETSTRLEN( ( TCHAR * )hText, 1024 );
    hb_strfree( hText );
 }
 

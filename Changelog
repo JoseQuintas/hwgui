@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-06-06 11:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/xml/xmlparse.c
+  * source/common/editor/hcedit_w.c
+  * source/common/editor/hcedit_l.c
+    ! Warnings fixed, reported by Itamar M. Lins Jr.
+  * source/winapi/window.c
+    ! Warning fixed, reported by Lorenzo Fiorini
+  * makefile.vc
+    ! Bugs fixed, reported by Lorenzo Fiorini
+
 2014-06-04 11:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * Small changes

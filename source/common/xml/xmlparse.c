@@ -235,7 +235,8 @@ HB_FUNC( HBXML_PRELOAD )
 {
    unsigned char *ucSource = (unsigned char *)hb_parc(1);
    unsigned char *ptr = ucSource;
-   unsigned long ulNew = 0, ulLen = (HB_ISNUM(2))? hb_parnl(2) : hb_parclen(1);
+   unsigned long ulNew = 0;
+   unsigned long ulLen = (unsigned long)((HB_ISNUM(2))? hb_parnl(2) : hb_parclen(1));
    unsigned char *ptrnew = (unsigned char *) malloc( ulLen+1 );
    int i, nlen;
    int iChar;
@@ -252,7 +253,6 @@ HB_FUNC( HBXML_PRELOAD )
       {
          if( *( ++ptr ) == '#' )
          {
-            int iChar;
             sscanf( ( char * ) ++ptr, "%d", &iChar );
             *( ptrnew+ulNew ) = iChar;
             while( *( ++ptr ) >= '0' && *ptr <= '9' );
@@ -284,7 +284,7 @@ HB_FUNC( HBXML_PRELOAD )
       ulNew++;
    }
    ptrnew[ulNew] = '\0';
-   hb_retclen( ptrnew, ulNew );
+   hb_retclen( (const char*)ptrnew, ulNew );
    free( ptrnew );
 
 }

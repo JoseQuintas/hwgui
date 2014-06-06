@@ -12,8 +12,8 @@ OBJ_DIR = obj/vc
 LIB_DIR = lib/vc
 SRC_DIR = source/winapi
 PROCMISC_DIR = source/common/procmisc
-EDITOR_DIR = source/common/procmisc
-XML_DIR = source/common/hbxml
+EDITOR_DIR = source/common/editor
+XML_DIR = source/common/xml
 DEBUG_DIR = source/common/debug
 CFLAGS = /TP /W3 /nologo
 
@@ -311,6 +311,11 @@ $(OBJ_DIR)\scrdebug.obj : $(OBJ_DIR)\scrdebug.c
 $(OBJ_DIR)\hcedit.obj : $(OBJ_DIR)\hcedit.c
 $(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
 $(OBJ_DIR)\hcedit_w.obj : $(EDITOR_DIR)\hcedit_w.c
+
+$(LIB_DIR)\hbxml.lib : \
+   $(OBJ_DIR)\hxmldoc.obj    \
+   $(OBJ_DIR)\xmlparse.obj
+   lib /out:$@ $**
 
 $(OBJ_DIR)\hxmldoc.c    : $(XML_DIR)\hxmldoc.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@

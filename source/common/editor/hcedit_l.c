@@ -911,9 +911,9 @@ HB_FUNC( HCED_COLOR2X )
 {
    char s[8];
    int i;
-   long int n = hb_parnl(1);
+   unsigned long ul = (unsigned long) hb_parnl(1);
 
-   sprintf(s,"#%2X%2X%2X", n%256, (n/256)%256, (n/65536)%256 );
+   sprintf(s,"#%2X%2X%2X", (unsigned int)(ul%256), (unsigned int)((ul/256)%256), (unsigned int)((ul/65536)%256) );
    for( i=0; i<7; i++ )
       if( s[i] == ' ' )
          s[i] = '0';

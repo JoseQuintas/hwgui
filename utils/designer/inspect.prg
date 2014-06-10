@@ -11,8 +11,6 @@
 #include "fileio.ch"
 #include "hwgui.ch"
 
-#define CBN_KILLFOCUS       4
-
 Static oCombo, oBrw1, oBrw2
 Static aProp := {}, aMethods := {}
 Static oTab

@@ -318,7 +318,8 @@ HB_FUNC( HWG_OPENBITMAP )
 HB_FUNC( HWG_OPENIMAGE )
 {
    PHWGUI_PIXBUF hpix;
-   GdkPixbuf * handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
+   BOOL lString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
+   GdkPixbuf * handle = (lString)? gdk_pixbuf_new_from_inline ( -1, hb_parc(1), FALSE, NULL ) : gdk_pixbuf_new_from_file( hb_parc(1), NULL );
    
    if( handle )
    {

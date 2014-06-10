@@ -201,7 +201,6 @@ CLASS HCEdit INHERIT HControl
    METHOD Convert( cPageIn, cPageOut )
    METHOD SetText( xText, cPageIn, cPageOut )
    METHOD SAVE( cFileName )
-   METHOD CloseText()
    METHOD AddFont( oFont, name, width, height , weight, ;
       CharSet, Italic, Underline, StrikeOut )
    METHOD SetFont( oFont )
@@ -322,7 +321,7 @@ METHOD Init() CLASS HCEdit
 METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
    LOCAL arr
 
-   IF Empty( ::aFonts )
+   IF !Empty( oFont ) .AND. Empty( ::aFonts )
       ::AddFont( ::oFont )
    ENDIF
 
@@ -331,9 +330,7 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
    ENDIF
    arr := ::aHili[xGroup]
 
-   IF oFont != Nil
-      arr[ 1 ] := Iif( ValType( oFont ) == "O", ::AddFont( oFont ), oFont )
-   ENDIF
+   arr[ 1 ] := Iif( ValType( oFont ) == "O", ::AddFont( oFont ), Iif( Empty(oFont), 0, oFont ) )
    IF tColor != Nil
       arr[ 2 ] := tColor
    ENDIF
@@ -783,7 +780,6 @@ METHOD Convert( cPageIn, cPageOut )
 METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
 Local nPos
 
-   ::CloseText()
    ::nLines := 0
 
    IF Empty( xText )
@@ -812,9 +808,10 @@ Local nPos
    ::cpSource := cPageIn
    ::cp := cPageOut
 
-   ::nLineC := 1
-   ::nPosF := ::nPosC := 1
+   ::nLineF := ::nLineC := ::nPosF := ::nPosC := ::nWCharF := ::nWSublF := 1
    ::PCopy( { ::nPosC, ::nLineC }, ::aPointC )
+   ::PCopy( , ::aPointM1 )
+   ::PCopy( , ::aPointM2 )
    ::lSetFocus := .T.
    IF ::lInit
       hced_Invalidaterect( ::hEdit, 0 )
@@ -848,10 +845,6 @@ METHOD Save( cFileName, cpSou ) CLASS HCEdit
 
    RETURN Nil
 
-METHOD CloseText() CLASS HCEdit
-
-   RETURN Nil
-
 METHOD AddFont( oFont, name, width, height , weight, ;
       CharSet, Italic, Underline, StrikeOut ) CLASS HCEdit
    LOCAL i
@@ -869,10 +862,11 @@ METHOD AddFont( oFont, name, width, height , weight, ;
 
    IF Charset == Nil .AND. Len( ::aFonts ) > 0; Charset := ::aFonts[1]:CharSet; ENDIF
    FOR i := 1 TO Len( ::aFonts )
-      IF ::aFonts[i]:name == name .AND.           ;
-            ::aFonts[i]:width == width .AND.         ;
+      IF ::aFonts[i]:name == name .AND.              ;
+            ( ( Empty(::aFonts[i]:width) .AND. Empty(width) ) ;
+            .OR. ::aFonts[i]:width == width ) .AND.  ;
             ::aFonts[i]:height == height .AND.       ;
-            ( ::aFonts[i]:weight > 500 ) == ( weight > 500 ) .AND.       ;
+            ( ::aFonts[i]:weight > 500 ) == ( weight > 500 ) .AND. ;
             ::aFonts[i]:CharSet == CharSet .AND.     ;
             ::aFonts[i]:Italic == Italic .AND.       ;
             ::aFonts[i]:Underline == Underline .AND. ;
@@ -911,12 +905,16 @@ METHOD SetFont( oFont ) CLASS HCEdit
    RETURN Nil
 
 METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
-   LOCAL lSet := .T. , x1, y1, xPos, cLine, nLinePrev := ::nLineC
+   LOCAL lSet := .T. , lInfo := .F., x1, y1, xPos, cLine, nLinePrev := ::nLineC
 
    ::lChgCaret := .T.
    IF Empty( nType ) .OR. Empty( ::nLines )
       hced_SetCaretPos( ::hEdit, ::nBoundL + ::nMarginL + ::n4Separ, 0 )
       RETURN Nil
+   ENDIF
+   IF nType > 200
+      nType -= 100
+      lInfo := .T.
    ENDIF
    IF nType > 100
       nType -= 100
@@ -966,18 +964,20 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
       ::PCopy( { ::nPosF + x1 - 1, ::nLineF + ::nLineC - 1 }, ::aPointC )
    ENDIF
 
-   IF nLinePrev != ::nLineC
-      IF nLinePrev <= ::nLines
+   IF !lInfo
+      IF nLinePrev != ::nLineC
+         IF nLinePrev <= ::nLines
+            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
+               ::aLines[nLinePrev,AL_Y2] )
+         ENDIF
+         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
+            ::aLines[::nLineC,AL_Y2] )
+#ifdef __PLATFORM__UNIX
+      ELSE
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
             ::aLines[nLinePrev,AL_Y2] )
-      ENDIF
-      hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
-         ::aLines[::nLineC,AL_Y2] )
-#ifdef __PLATFORM__UNIX
-   ELSE
-      hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
-         ::aLines[nLinePrev,AL_Y2] )
 #endif
+      ENDIF
    ENDIF
 
    RETURN Nil

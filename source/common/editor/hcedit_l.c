@@ -245,7 +245,7 @@ int ted_CalcSize( PangoLayout * layout, char *szText, TEDFONT *font, int *iRealL
                ptr = g_utf8_prev_char( ptr );
                i --;
             }
-            if( !i && bLastInFew )
+            if( !i && !bLastInFew )
             //if( !i )
             {
                i = i1;

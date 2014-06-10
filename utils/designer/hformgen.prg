@@ -9,13 +9,9 @@
 */
 
 #include "fileio.ch"
-#include "windows.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "hxml.ch"
-
-#define SB_HORZ             0
-#define SB_VERT             1
 
 #define  LEFT_INDENT   40
 #define  TOP_INDENT    30

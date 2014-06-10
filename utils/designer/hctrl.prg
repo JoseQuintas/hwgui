@@ -8,13 +8,9 @@
  * www - http://kresin.belgorod.su
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "hxml.ch"
-
-#define TCM_SETCURSEL           4876
-#define TCM_GETITEMCOUNT        4868
 
 Static aBDown := { Nil,0,0,.F. }
 Static oPenSel

@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-06-10 15:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit_w.c
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit.prg
+    * Some fixes and improvements
+  * source/gtk/draw.c
+    * Added second parameter to hwg_OpenImage() function,
+      as in Winapi version
+  * utils/designer/hformgen.prg
+  * utils/designer/inspect.prg
+  * utils/designer/hctrl.prg
+    ! Few warnings fixed, reported by Alexey Myronenko
+
 2014-06-06 11:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/xml/xmlparse.c
   * source/common/editor/hcedit_w.c

@@ -363,7 +363,8 @@ PHB_ITEM hbxml_getattr( unsigned char **pBuffer, HB_BOOL * lSingle )
             }
             nlen = *pBuffer - ptr;
             // add attribute value to result array
-            pTemp = hbxml_pp( ptr, nlen );
+            //pTemp = hbxml_pp( ptr, nlen );
+            pTemp = hb_itemPutCL( NULL, ( char * ) ptr, (unsigned long)nlen );
             hb_arraySet( pSubArray, 2, pTemp );
             hb_itemRelease( pTemp );
             ( *pBuffer )++;

@@ -167,7 +167,7 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
    if( iReal > *iRealLen )
       iReal = *iRealLen;
    GetTextExtentPoint32( pted->hDCScr, szText, iReal, &sz );
-   //hwg_writelog( NULL, "iReal: %d iRealLen: %d iWidth: %d sz.cx %d\r\n",iReal,*iRealLen,iWidth,sz.cx );
+   //hwg_writelog( NULL, "bLastInFew: %d iReal: %d iRealLen: %d iWidth: %d sz.cx %d\r\n",bLastInFew,iReal,*iRealLen,iWidth,sz.cx );
    if( sz.cx > iWidth )
    {
       for( i = iReal - 1; i > 0; i-- )
@@ -176,7 +176,7 @@ int ted_CalcSize( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLen,
          {
             i1 = i;
             while( i > 0 && !strchr( szDelimiters,*(szText+i) ) ) i --;
-            if( !i && bLastInFew )
+            if( !i && !bLastInFew )
             //if( !i )
             {
                i = i1;
@@ -265,12 +265,12 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
 int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen, int iAlign, HB_BOOL bCalcOnly )
 {
    TEDATTR *pattr = pted->pattr;
-   int i, lasti, iRealLen, iPrinted = 0, iRealWidth = 0, iSegs;
+   int i, lasti, iRealLen, iPrinted = 0, iRealWidth = 0;
    int iHeight = 0, iMaxAscent = 0;
    TEDFONT *font;
 
-   //hwg_writelog( NULL, "Lineout-1\r\n" );
-   for( i = 0, lasti = 0, iSegs = 0; i <= iLen; i++ )
+   //hwg_writelog( NULL, "Lineout-1 x1:%d x2:%d iLen:%d %c\r\n",x1,x2,iLen,*szText );
+   for( i = 0, lasti = 0; i <= iLen; i++ )
    {
       // if the colour or font changes, then need to output 
       if( i == iLen ||
@@ -278,7 +278,6 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
             ( pattr + i )->bg != ( pattr + lasti )->bg ||
             ( pattr + i )->iFont != ( pattr + lasti )->iFont )
       {
-         iSegs++;
          font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
                ( pattr + lasti )->iFont;
          iHeight =
@@ -286,9 +285,9 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, int x2, char *szText, int iLen,
          iMaxAscent = max( iMaxAscent, font->tm.tmAscent );
 
          iRealLen = i - lasti;
-         //hwg_writelog( NULL, "Lineout-1a %d %d %d %d\r\n", iRealLen, i, lasti, iSegs );
+         //hwg_writelog( NULL, "Lineout-1a %d %d %d \r\n", iRealLen, i, lasti );
          iRealWidth += ted_CalcSize( pted, szText + lasti, pattr + lasti, &iRealLen,
-               x2 - iRealWidth - x1, pted->bWrap, lasti && iSegs );  // i == iLen && 
+               x2 - iRealWidth - x1, pted->bWrap, lasti );  // i == iLen && 
          iPrinted += iRealLen;
          if( iRealLen < i - lasti )
             break;
@@ -629,7 +628,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
    int xpos = hb_parni(4);
    int y1 = hb_parni(5);
    HB_BOOL bSet = (HB_ISNIL(6))? 1 : hb_parl(6);
-   int i, lasti, iRealLen, iPrinted = 0, iLen = hb_parclen(2), iSegs;
+   int i, lasti, iRealLen, iPrinted = 0, iLen = hb_parclen(2);
    TEDATTR *pattr = pted->pattr;
    SIZE sz;
 
@@ -640,14 +639,13 @@ HB_FUNC( HCED_EXACTCARETPOS )
          xpos = pted->iWidth + 1;
       if( xpos < x1 )
          xpos = x1;
-      for( i = 0, lasti = 0, iSegs = 0; i <= iLen; i++ )
+      for( i = 0, lasti = 0; i <= iLen; i++ )
       {
          if( i == iLen || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
          {
-            iSegs ++;
             iRealLen = i - lasti;
             x1 += ted_CalcSize( pted, szText + lasti, pattr + lasti, &iRealLen,
-                  xpos - x1, 0, lasti && iSegs );
+                  xpos - x1, 0, lasti );
             iPrinted += iRealLen;
             if( iRealLen < i - lasti )
                break;
@@ -737,9 +735,9 @@ HB_FUNC( HCED_COLOR2X )
 {
    char s[8];
    int i;
-   unsigned long ul = (unsigned long) hb_parnl(1);
+   long int n = hb_parnl(1);
 
-   sprintf(s,"#%2X%2X%2X", (unsigned int)(ul%256), (unsigned int)((ul/256)%256), (unsigned int)((ul/65536)%256) );
+   sprintf(s,"#%2X%2X%2X", n%256, (n/256)%256, (n/65536)%256 );
    for( i=0; i<7; i++ )
       if( s[i] == ' ' )
          s[i] = '0';

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-06-11 12:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/xml/hxmldoc.prg
+  * source/common/xml/xmlparse.c
+    ! Bugs fixed
+
 2014-06-10 15:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit_w.c
   * source/common/editor/hcedit_l.c

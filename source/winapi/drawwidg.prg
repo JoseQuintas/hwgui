@@ -42,14 +42,15 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, ;
    fdwStrikeOut := iif( fdwStrikeOut == Nil, 0, fdwStrikeOut )
 
    FOR i := 1 TO nlen
-      IF ::aFonts[ i ]:name == fontName .AND.          ;
-            ::aFonts[ i ]:width == nWidth .AND.           ;
-            ::aFonts[ i ]:height == nHeight .AND.         ;
-            ::aFonts[ i ]:weight == fnWeight .AND.        ;
-            ::aFonts[ i ]:CharSet == fdwCharSet .AND.     ;
-            ::aFonts[ i ]:Italic == fdwItalic .AND.       ;
-            ::aFonts[ i ]:Underline == fdwUnderline .AND. ;
-            ::aFonts[ i ]:StrikeOut == fdwStrikeOut
+      IF ::aFonts[i]:name == fontName .AND.             ;
+            ( ( Empty(::aFonts[i]:width) .AND. Empty(nWidth) ) ;
+            .OR. ::aFonts[i]:width == nWidth ) .AND.    ;
+            ::aFonts[i]:height == nHeight .AND.         ;
+            ::aFonts[i]:weight == fnWeight .AND.        ;
+            ::aFonts[i]:CharSet == fdwCharSet .AND.     ;
+            ::aFonts[i]:Italic == fdwItalic .AND.       ;
+            ::aFonts[i]:Underline == fdwUnderline .AND. ;
+            ::aFonts[i]:StrikeOut == fdwStrikeOut
 
          ::aFonts[ i ]:nCounter ++
          IF nHandle != Nil
@@ -302,6 +303,7 @@ CLASS HBitmap INHERIT HObject
    METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight )
    METHOD AddStandard( nId )
    METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight )
+   METHOD AddString( name, cVal )
    METHOD AddWindow( oWnd, lFull )
    METHOD Draw( hDC, x1, y1, width, height )  INLINE hwg_Drawbitmap( hDC, ::handle, SRCCOPY, x1, y1, width, height )
    METHOD RELEASE()
@@ -403,6 +405,29 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
    ::nWidth  := aBmpSize[ 1 ]
    ::nHeight := aBmpSize[ 2 ]
    AAdd( ::aBitmaps, Self )
+
+   RETURN Self
+
+METHOD AddString( name, cVal ) CLASS HBitmap
+   LOCAL oBmp, aBmpSize
+
+   For EACH oBmp IN ::aBitmaps
+      IF oBmp:name == name
+         oBmp:nCounter ++
+         RETURN oBmp
+      ENDIF
+   NEXT
+
+   ::handle := hwg_Openimage( cVal, .T. )
+   IF !Empty( ::handle )
+      ::name := name
+      aBmpSize  := hwg_Getbitmapsize( ::handle )
+      ::nWidth  := aBmpSize[1]
+      ::nHeight := aBmpSize[2]
+      AAdd( ::aBitmaps, Self )
+   ELSE
+      RETURN Nil
+   ENDIF
 
    RETURN Self
 

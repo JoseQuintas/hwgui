@@ -319,7 +319,18 @@ HB_FUNC( HWG_OPENIMAGE )
 {
    PHWGUI_PIXBUF hpix;
    BOOL lString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
-   GdkPixbuf * handle = (lString)? gdk_pixbuf_new_from_inline ( -1, hb_parc(1), FALSE, NULL ) : gdk_pixbuf_new_from_file( hb_parc(1), NULL );
+   GdkPixbuf * handle;
+
+   if( lString )
+   {
+      guint8 *buf = (guint8 *) hb_parc(1);
+      GdkPixbufLoader *loader = gdk_pixbuf_loader_new();
+
+      gdk_pixbuf_loader_write( loader, buf, hb_parclen(1), NULL );
+      handle = gdk_pixbuf_loader_get_pixbuf( loader );
+   }
+   else
+      handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
    
    if( handle )
    {

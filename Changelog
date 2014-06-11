@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-06-11 15:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+    ! Fix in hwg_OpenImage()
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    * New method has been added to HBitmap class - AddString( name, cVal )
+      to create the HBitmap object from the string.
+
 2014-06-11 12:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/xml/hxmldoc.prg
   * source/common/xml/xmlparse.c

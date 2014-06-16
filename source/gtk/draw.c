@@ -267,7 +267,7 @@ HB_FUNC( HWG_DRAWBITMAP )
    
    gdk_cairo_set_source_pixbuf( hDC->cr, pixbuf, x, y );
    cairo_paint( hDC->cr );
-   gdk_pixbuf_unref( pixbuf );
+   g_object_unref( (GObject*) pixbuf );
 
 }
 
@@ -318,10 +318,10 @@ HB_FUNC( HWG_OPENBITMAP )
 HB_FUNC( HWG_OPENIMAGE )
 {
    PHWGUI_PIXBUF hpix;
-   BOOL lString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
+   short int iString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
    GdkPixbuf * handle;
 
-   if( lString )
+   if( iString )
    {
       guint8 *buf = (guint8 *) hb_parc(1);
       GdkPixbufLoader *loader = gdk_pixbuf_loader_new();
@@ -363,7 +363,7 @@ HB_FUNC( HWG_ALPHA2PIXBUF )
    if( obj && obj->handle )
    {
       handle = alpha2pixbuf( obj->handle, hb_parnl(2) );
-      gdk_pixbuf_unref( obj->handle );
+      g_object_unref( (GObject*) obj->handle );
       obj->handle = handle;
    }
    
@@ -447,7 +447,7 @@ HB_FUNC( HWG_DELETEOBJECT )
    }
    else if( obj->type == HWGUI_OBJECT_PIXBUF )
    {
-      gdk_pixbuf_unref( ( (PHWGUI_PIXBUF)obj )->handle );
+      g_object_unref( (GObject*) ( (PHWGUI_PIXBUF)obj )->handle );
       hb_xfree( obj );
    }
 

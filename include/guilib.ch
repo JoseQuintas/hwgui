@@ -1235,11 +1235,10 @@
     [; hwg_SetCtrlName( <oGraph>,<(oGraph)> )]
 
 /* open an .dll resource */
-#xcommand SET RESOURCES TO <cName1> ;
-       => ;
-            hwg_LoadResource( <cName1> )
+#xcommand SET RESOURCES TO [<cName1>]  =>  hwg_LoadResource( <cName1> )
 
-#xcommand SET RESOURCES TO => HWG_LOADRESOURCE( NIL )
+/* open a binary container as resource */
+#xcommand SET RESOURCES CONTAINER TO [<cName>]  =>  hwg_SetResContainer( <cName> )
 
 // Addded by jamaj
 #xcommand DEFAULT <uVar1> := <uVal1> ;

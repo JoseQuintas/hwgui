@@ -56,6 +56,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/drawwidg.o \
    $(OBJ_DIR)/herrsys.o \
    $(OBJ_DIR)/gtkmain.o \
+   $(OBJ_DIR)/hbincnt.o \
    $(OBJ_DIR)/hbrowse.o \
    $(OBJ_DIR)/hcwindow.o \
    $(OBJ_DIR)/hcheck.o \

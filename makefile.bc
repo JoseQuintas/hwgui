@@ -124,6 +124,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\drawwidg.obj \
    $(HWGUI_OBJ_DIR)\guimain.obj \
    $(HWGUI_OBJ_DIR)\barcode.obj \
+   $(HWGUI_OBJ_DIR)\hbincnt.obj \
    $(HWGUI_OBJ_DIR)\hbrowse.obj \
    $(HWGUI_OBJ_DIR)\hcheck.obj \
    $(HWGUI_OBJ_DIR)\hcombo.obj \

@@ -37,6 +37,7 @@
 {win}source/winapi/drawwidg.prg
 {win}source/winapi/guimain.prg
 {win}source/winapi/barcode.prg
+{win}source/winapi/hbincnt.prg
 {win}source/winapi/hbrowse.prg
 {win}source/winapi/hcheck.prg
 {win}source/winapi/hcombo.prg
@@ -93,6 +94,7 @@
 {unix}source/gtk/drawwidg.prg
 {unix}source/gtk/herrsys.prg
 {unix}source/gtk/gtkmain.prg
+{unix}source/gtk/hbincnt.prg
 {unix}source/gtk/hbrowse.prg
 {unix}source/gtk/hcwindow.prg
 {unix}source/gtk/hcheck.prg

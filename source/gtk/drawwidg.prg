@@ -12,6 +12,8 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+Static oResCnt
+
 #ifndef HS_HORIZONTAL
 #define HS_HORIZONTAL       0       /* ----- */
 #define HS_VERTICAL         1       /* ||||| */
@@ -326,7 +328,11 @@ METHOD AddResource( name ) CLASS HBitmap
       ENDIF
    NEXT
 
-   ::handle :=  hwg_Loadbitmap( iif( lPreDefined, Val(name ),name ) )
+   IF !Empty( oResCnt )
+      IF !Empty( i := oResCnt:Get( name ) )
+         ::handle := hwg_OpenImage( i, .T. )
+      ENDIF
+   ENDIF
    IF !Empty( ::handle )
       ::name    := name
       aBmpSize  := hwg_Getbitmapsize( ::handle )
@@ -463,7 +469,14 @@ METHOD AddResource( name ) CLASS HIcon
          RETURN i
       ENDIF
    NEXT
-   // ::handle :=   hwg_Loadicon( Iif( lPreDefined, Val(name),name ) )
+   IF !Empty( oResCnt )
+      IF !Empty( i := oResCnt:Get( name ) )
+         ::handle := hwg_OpenImage( i, .T. )
+      ENDIF
+   ENDIF
+   IF Empty( ::handle )
+      RETURN Nil
+   ENDIF
    ::name   := name
    AAdd( ::aIcons, Self )
 
@@ -521,6 +534,20 @@ METHOD RELEASE() CLASS HIcon
 
    RETURN Nil
 
+FUNCTION hwg_SetResContainer( cName )
+
+   IF Empty( cName )
+      IF !Empty( oResCnt )
+         oResCnt:Close()
+         oResCnt := Nil
+      ENDIF
+   ELSE
+      IF Empty( oResCnt := HBinC():Open( cName ) )
+         RETURN .F.
+      ENDIF
+   ENDIF
+   RETURN .T.
+
    EXIT PROCEDURE CleanDrawWidg
    LOCAL i
 
@@ -539,6 +566,9 @@ METHOD RELEASE() CLASS HIcon
    For i := 1 TO Len( HIcon():aIcons )
       // hwg_Deleteobject( HIcon():aIcons[i]:handle )
    NEXT
+   IF !Empty( oResCnt )
+      oResCnt:Close()
+   ENDIF
 
    RETURN
 

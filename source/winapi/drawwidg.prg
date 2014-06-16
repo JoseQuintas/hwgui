@@ -12,6 +12,8 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+Static oResCnt
+
    //- HFont
 
 CLASS HFont INHERIT HObject
@@ -323,7 +325,7 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
       name := LTrim( Str( name ) )
       lPreDefined := .T.
    ENDIF
-   FOR EACH i  IN  ::aBitmaps
+   FOR EACH i IN ::aBitmaps
       IF i:name == name .AND. i:nFlags == nFlags .AND. ;
             ( ( nWidth == nil .OR. nHeight == nil ) .OR. ;
             ( i:nWidth == nWidth .AND. i:nHeight == nHeight ) )
@@ -332,11 +334,17 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
       ENDIF
    NEXT
 
-   IF lOEM
+   IF !Empty( oResCnt )
+      IF !Empty( i := oResCnt:Get( name ) )
+         ::handle := hwg_OpenImage( i, .T. )
+      ENDIF
+   ELSEIF lOEM
       ::handle := hwg_Loadimage( 0, Val( name ), IMAGE_BITMAP, nil, nil, Hwg_bitor( nFlags, LR_SHARED ) )
    ELSE
-      //::handle := hwg_Loadimage( nil, IIf( lPreDefined, Val( name ), name ), IMAGE_BITMAP, nil, nil, nFlags )
       ::handle := hwg_Loadimage( nil, iif( lPreDefined, Val( name ), name ), IMAGE_BITMAP, nWidth, nHeight, nFlags )
+   ENDIF
+   IF Empty( ::handle )
+      RETURN Nil
    ENDIF
    ::name    := name
    aBmpSize  := hwg_Getbitmapsize( ::handle )
@@ -358,6 +366,9 @@ METHOD AddStandard( nId ) CLASS HBitmap
    NEXT
 
    ::handle :=   hwg_Loadbitmap( nId, .T. )
+   IF Empty( ::handle )
+      RETURN Nil
+   ENDIF
    ::name   := name
    aBmpSize  := hwg_Getbitmapsize( ::handle )
    ::nWidth  := aBmpSize[ 1 ]
@@ -515,16 +526,24 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
          RETURN i
       ENDIF
    NEXT
-   // ::classname:= "HICON"
-   IF lOEM // LR_SHARED is required for OEM images
+   IF !Empty( oResCnt )
+      IF !Empty( i := oResCnt:Get( name ) )
+         ::handle := hwg_OpenImage( i, .T., IMAGE_CURSOR )
+         //hwg_writelog( Str(Len(i))+"/"+Iif(Empty(::handle),"Err","Ok") )
+      ENDIF
+   ELSEIF lOEM // LR_SHARED is required for OEM images
       ::handle := hwg_Loadimage( 0, Val( name ), IMAGE_ICON, nWidth, nHeight, Hwg_bitor( nFlags, LR_SHARED ) )
    ELSE
       ::handle := hwg_Loadimage( nil, iif( lPreDefined, Val( name ), name ), IMAGE_ICON, nWidth, nHeight, nFlags )
+   ENDIF
+   IF Empty( ::handle )
+      RETURN Nil
    ENDIF
    ::name   := name
    aIconSize := hwg_Geticonsize( ::handle )
    ::nWidth  := aIconSize[ 1 ]
    ::nHeight := aIconSize[ 2 ]
+   //hwg_writelog( Str(::nWidth)+"/"+str(::nHeight) )
 
    AAdd( ::aIcons, Self )
 
@@ -593,6 +612,20 @@ METHOD RELEASE() CLASS HIcon
 
    RETURN Nil
 
+FUNCTION hwg_SetResContainer( cName )
+
+   IF Empty( cName )
+      IF !Empty( oResCnt )
+         oResCnt:Close()
+         oResCnt := Nil
+      ENDIF
+   ELSE
+      IF Empty( oResCnt := HBinC():Open( cName ) )
+         RETURN .F.
+      ENDIF
+   ENDIF
+   RETURN .T.
+
 EXIT PROCEDURE CleanDrawWidg
    LOCAL i
 
@@ -611,6 +644,9 @@ EXIT PROCEDURE CleanDrawWidg
    FOR i := 1 TO Len( HIcon():aIcons )
       hwg_Deleteobject( HIcon():aIcons[ i ]:handle )
    NEXT
+   IF !Empty( oResCnt )
+      oResCnt:Close()
+   ENDIF
 
    RETURN
 

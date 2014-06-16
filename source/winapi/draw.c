@@ -884,16 +884,15 @@ HB_FUNC( HWG_DRAWGRAYBITMAP )
 HB_FUNC( HWG_OPENIMAGE )
 {
    const char *cFileName = hb_parc( 1 );
-   BOOL lString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
+   BOOL bString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
+   int iType = ( HB_ISNIL( 3 ) ) ? IMAGE_BITMAP : hb_parni( 3 );
    int iFileSize;
    FILE *fp;
-   // IPicture * pPic;
    LPPICTURE pPic;
    IStream *pStream;
    HGLOBAL hG;
-   HBITMAP hBitmap = 0;
 
-   if( lString )
+   if( bString )
    {
       iFileSize = hb_parclen( 1 );
       hG = GlobalAlloc( GPTR, iFileSize );
@@ -953,13 +952,39 @@ HB_FUNC( HWG_OPENIMAGE )
       return;
    }
 
+   if( iType == IMAGE_BITMAP )
+   {
+      HBITMAP hBitmap = 0;
 #if defined(__cplusplus)
-   pPic->get_Handle( ( OLE_HANDLE * ) & hBitmap );
+      pPic->get_Handle( ( OLE_HANDLE * ) & hBitmap );
 #else
-   pPic->lpVtbl->get_Handle( pPic, ( OLE_HANDLE * ) ( void * ) &hBitmap );
+      pPic->lpVtbl->get_Handle( pPic, ( OLE_HANDLE * ) ( void * ) &hBitmap );
 #endif
 
-   HB_RETHANDLE( CopyImage( hBitmap, IMAGE_BITMAP, 0, 0, LR_COPYRETURNORG ) );
+      HB_RETHANDLE( CopyImage( hBitmap, IMAGE_BITMAP, 0, 0, LR_COPYRETURNORG ) );
+   }
+   else if( iType == IMAGE_ICON )
+   {
+      HICON hIcon = 0;
+#if defined(__cplusplus)
+      pPic->get_Handle( ( OLE_HANDLE * ) & hIcon );
+#else
+      pPic->lpVtbl->get_Handle( pPic, ( OLE_HANDLE * ) ( void * ) &hIcon );
+#endif
+
+      HB_RETHANDLE( CopyImage( hIcon, IMAGE_ICON, 0, 0, 0 ) );
+   }
+   else
+   {
+      HCURSOR hCur = 0;
+#if defined(__cplusplus)
+      pPic->get_Handle( ( OLE_HANDLE * ) & hCur );
+#else
+      pPic->lpVtbl->get_Handle( pPic, ( OLE_HANDLE * ) ( void * ) &hCur );
+#endif
+
+      HB_RETHANDLE( CopyImage( hCur, IMAGE_CURSOR, 0, 0, 0 ) );
+   }
 
 #if defined(__cplusplus)
    pPic->Release(  );

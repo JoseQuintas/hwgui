@@ -47,6 +47,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/herrsys.o \
    $(OBJ_DIR)/guimain.o \
    $(OBJ_DIR)/barcode.o \
+   $(OBJ_DIR)/hbincnt.o \
    $(OBJ_DIR)/hbrowse.o \
    $(OBJ_DIR)/hcheck.o \
    $(OBJ_DIR)/hcombo.o \

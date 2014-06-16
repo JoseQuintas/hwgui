@@ -80,6 +80,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\herrsys.obj \
    $(OBJ_DIR)\guimain.obj \
    $(OBJ_DIR)\barcode.obj \
+   $(OBJ_DIR)\hbincnt.obj \
    $(OBJ_DIR)\hbrowse.obj \
    $(OBJ_DIR)\hcheck.obj \
    $(OBJ_DIR)\hcombo.obj \
@@ -154,6 +155,12 @@ $(OBJ_DIR)\guimain.c : $(SRC_DIR)\guimain.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\guimain.obj : $(OBJ_DIR)\guimain.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hbincnt.c : $(SRC_DIR)\hbincnt.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hbincnt.obj : $(OBJ_DIR)\hbincnt.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\hbrowse.c : $(SRC_DIR)\hbrowse.prg

@@ -8,6 +8,42 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-06-16 12:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+    ! Error fixed, reported by Alain Aupeix
+  * source/winapi/draw.c
+    * Added third parameter to hwg_OpenImage() function,
+      which determines, which kind of image should be opened,
+      IMAGE_BITMAP, IMAGE_ICON or IMAGE_CURSOR
+  + source/gtk/hbincnt.prg
+  + source/winapi/hbincnt.prg
+    * New class added - HBinC, it is intended for keeping data
+      in one special file ( HwGUI binary container ) instead of using many different
+      files. It is supposed to use it for images, but it may be used for any kind of data - 
+      screen forms and reports, for example. All data, which goes with your
+      application, may be placed now in one file. To manage it, I'll add a bit later
+      a special utility.
+  * include/guilib.ch
+    * New command added: SET RESOURCES CONTAINER TO [<cName>], which is
+      preprocessed to a new hwg_SetResContainer( cName ) function
+  * source/gtk/drawwidg.prg  
+  * source/winapi/drawwidg.prg
+      hwg_SetResContainer( cName ) function added. You may use it, or appropriate
+      SET RESOURCES CONTAINER TO command to set a pre-prepared binary container
+      as a resource file. If it is set, all images, which are marked as FROM RESOURCE,
+      will be opened from this binary container. It is a crossplatform alternative
+      for resources ( rc files ), which are not supported under GTK version.
+  * source/winapi/Makefile.linux
+  * source/winapi/Makefile.scr
+  * hwgui.hbm
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+    * hbincn.prg added to the makefiles
+
 2014-06-11 15:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
     ! Fix in hwg_OpenImage()

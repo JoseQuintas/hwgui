@@ -796,6 +796,7 @@ Local nPos
       ENDIF
    ENDIF
    ::nLinesAll := ::nTextLen := Len( ::aText )
+   ::aUndo := Nil
 
    ::SetWrap( ::lWrap, .T. )
 
@@ -1538,9 +1539,14 @@ METHOD DelText( P1, P2 ) CLASS HCEdit
       FOR i := Pend[P_Y] TO Pstart[P_Y] STEP - 1
          IF i == Pstart[P_Y]
             ::aText[i] := hced_Left( Self, ::aText[i], Pstart[P_X] - 1 ) + cRest
+            IF Pstart[P_X] == 1
+               ::DelLine( i )
+            ENDIF
          ELSEIF i == Pend[P_Y]
             cRest := hced_Substr( Self, ::aText[i], Pend[P_X] )
-            ::DelLine( i )
+            IF Empty( cRest ) .OR. Pstart[P_X] > 1
+               ::DelLine( i )
+            ENDIF
          ELSE
             ::DelLine( i )
          ENDIF

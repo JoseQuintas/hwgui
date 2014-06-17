@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-06-17 13:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * Some fixes and improvements
+  + utils/bincnt/
+  + utils/bincnt/bincnt.prg
+  + utils/bincnt/bld.bat
+    + Added an utility to manage binary containers.
+
 2014-06-16 12:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
     ! Error fixed, reported by Alain Aupeix

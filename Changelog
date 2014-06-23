@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-06-23 15:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hwgtk.h
+  * source/gtk/draw.c
+    * hwg_compatibleDC(), hwg_BitBlt() and hwg_cairo_translate()
+      functions added, they may be useful for drawing
+  * source/gtk/wprint.c
+  * source/gtk/hprinter.prg
+    * Print to svg format added
+    * Print preview, as in winapi version, added.
+
 2014-06-17 13:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * Some fixes and improvements

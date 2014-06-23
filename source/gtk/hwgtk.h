@@ -7,6 +7,7 @@ typedef struct HWGUI_HDC_STRU
 {
   GtkWidget * widget;
   GdkWindow * window;
+  cairo_surface_t *surface;
   cairo_t *cr;
   PangoFontDescription * hFont;
   PangoLayout * layout;

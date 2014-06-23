@@ -516,8 +516,44 @@ HB_FUNC( HWG_RELEASEDC )
    if( hDC->layout )
       g_object_unref( (GObject*) hDC->layout );
 
+   if( hDC->surface )
+      cairo_surface_destroy( hDC->surface );
    cairo_destroy( hDC->cr );
    hb_xfree( hDC );
+}
+
+HB_FUNC( HWG_CREATECOMPATIBLEDC )
+{
+   PHWGUI_HDC hDCdest = (PHWGUI_HDC) hb_xgrab( sizeof(HWGUI_HDC) );
+   PHWGUI_HDC hDCsource = (PHWGUI_HDC) HB_PARHANDLE(1);
+
+   memset( hDCdest, 0, sizeof(HWGUI_HDC) );
+   hDCdest->widget = hDCsource->widget;
+   hDCdest->window = hDCsource->window;
+
+   hDCdest->surface = cairo_surface_create_similar(cairo_get_target( hDCsource->cr ),
+         CAIRO_CONTENT_COLOR_ALPHA, hb_parni(2), hb_parni(3) );
+   hDCdest->cr = cairo_create( hDCdest->surface );
+
+   hDCdest->layout = pango_cairo_create_layout( hDCdest->cr );
+   hDCdest->fcolor = hDCdest->bcolor = -1;
+
+   HB_RETHANDLE( hDCdest );
+}
+
+HB_FUNC( HWG_BITBLT )
+{
+   PHWGUI_HDC hDCdest = ( PHWGUI_HDC ) HB_PARHANDLE( 1 );
+   PHWGUI_HDC hDCsource = ( PHWGUI_HDC ) HB_PARHANDLE( 6 );
+
+   cairo_set_source_surface( hDCdest->cr, hDCsource->surface, hb_parni( 2 ), hb_parni( 3 ) );
+   cairo_paint( hDCdest->cr );
+}
+
+HB_FUNC( HWG_CAIRO_TRANSLATE )
+{
+   PHWGUI_HDC hDC = ( PHWGUI_HDC ) HB_PARHANDLE( 1 );
+   cairo_translate( hDC->cr, hb_parni(2), hb_parni(3) );
 }
 
 HB_FUNC( HWG_GETDRAWITEMINFO )

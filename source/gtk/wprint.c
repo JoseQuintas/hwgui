@@ -368,7 +368,6 @@ static void print_page( GtkPrintOperation * operation, GtkPrintContext * context
       if( !strncmp( ptr,"page",4 ) )
       {  
          ptr = strchr( ptr+5, ',' ); ptr += 4;
-         //g_debug( "orient: %c", *ptr );
          gtk_page_setup_set_orientation( page_setup,
                (*ptr=='p')? GTK_PAGE_ORIENTATION_PORTRAIT : GTK_PAGE_ORIENTATION_LANDSCAPE );
          gtk_print_operation_set_default_page_setup( operation, page_setup );
@@ -445,21 +444,6 @@ static void print_run( GtkWidget *widget )
 #endif
       gtk_label_set_text( GTK_LABEL(print->label), buf );
 
-/*
-#if defined (__RUSSIAN__)
-      btn = gtk_button_new_with_label( "Закрыть" );
-#else
-      btn = gtk_button_new_with_label( "Close" );
-#endif
-      gtk_widget_set_size_request( btn, 80, 32);
-      gtk_fixed_put( GTK_FIXED(print->label->parent), btn, 80, 130 );
-
-      g_signal_connect( G_OBJECT(btn), "clicked",
-         G_CALLBACK(print_destroy), NULL );
-      gtk_widget_show( btn );
-      gtk_widget_grab_focus( btn );
-*/
-
       g_object_unref( settings );
       g_object_unref( operation );
    }
@@ -504,14 +488,16 @@ static void print_init( GtkPrintOperation * operation, PHWGUI_PRINT print  )
 #endif
 
 /*
- * hwg_gp_print( handle, aPages, nPages, printType, cPrinterName )
- * printType: 0 - printer, 1 - pdf, 2 - ps, 3 - png
+ * hwg_gp_print( handle, aPages, nPages, printType, cPrinterName, nPage )
+ * printType: 0 - printer, 1 - pdf, 2 - ps, 3 - png, 4 - svg
  */
 
 HB_FUNC( HWG_GP_PRINT )
 {
    PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
+   int i, iPages = hb_parni(3);
    int iOper = hb_parni(4);
+   int iPage = HB_ISNIL(6)? 0 : hb_parni(6);
 
    if( print->cName )
       hb_xfree( print->cName );
@@ -554,17 +540,27 @@ HB_FUNC( HWG_GP_PRINT )
       gtk_print_operation_run( operation, GTK_PRINT_OPERATION_ACTION_EXPORT,
             NULL, NULL );
    }
-   else if( iOper == 2 )
+   else if( iOper == 2 || iOper == 4 )
    {
-      int i, iPages = hb_parni(3);
-      cairo_surface_t *surface = cairo_ps_surface_create( print->cName,
-             gtk_page_setup_get_page_width( print->page_setup, GTK_UNIT_POINTS ),
-             gtk_page_setup_get_page_height( print->page_setup, GTK_UNIT_POINTS ) );
+      cairo_surface_t *surface;
+      if( iOper == 2 )
+         surface = cairo_ps_surface_create( print->cName,
+                gtk_page_setup_get_page_width( print->page_setup, GTK_UNIT_POINTS ),
+                gtk_page_setup_get_page_height( print->page_setup, GTK_UNIT_POINTS ) );
+      else
+         surface = cairo_svg_surface_create( print->cName,
+                gtk_page_setup_get_page_width( print->page_setup, GTK_UNIT_POINTS ),
+                gtk_page_setup_get_page_height( print->page_setup, GTK_UNIT_POINTS ) );
+
       cairo_t *cr = cairo_create( surface );
 
-      for( i=1; i<=iPages; i++ )
+      if( iPage > 0 )
+         i = iPages = iPage;
+      else
+         i = 1;
+      for( ; i<=iPages; i++ )
       {
-         draw_page( cr, hb_arrayGetCPtr( hb_param( 2,HB_IT_ARRAY ), i ) );
+         draw_page( cr, (char*)hb_arrayGetCPtr( hb_param( 2,HB_IT_ARRAY ), i ) );
          cairo_show_page( cr );
       }
 
@@ -573,19 +569,23 @@ HB_FUNC( HWG_GP_PRINT )
    }
    else if( iOper == 3 )
    {
-      int i, iPages = hb_parni(3), iLen = hb_parclen(5);
+      int iLen = hb_parclen(5);
       char sfile[256];
 
-      for( i=1; i<=iPages; i++ )
+      if( iPage > 0 )
+         i = iPages = iPage;
+      else
+         i = 1;
+      for( ; i<=iPages; i++ )
       {
          cairo_surface_t *surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32,
              gtk_page_setup_get_page_width( print->page_setup, GTK_UNIT_POINTS ),
              gtk_page_setup_get_page_height( print->page_setup, GTK_UNIT_POINTS ) );
          cairo_t *cr = cairo_create( surface );
-         draw_page( cr, hb_arrayGetCPtr( hb_param( 2,HB_IT_ARRAY ), i ) );
+         draw_page( cr, (char*)hb_arrayGetCPtr( hb_param( 2,HB_IT_ARRAY ), i ) );
          memcpy( sfile, print->cName, iLen );
          sfile[iLen] = '\0';
-         if( i > 1 )
+         if( i > 1 && iPage == 0 )
             sprintf( sfile+iLen-4, "_%d%s", i, ".png" );
          cairo_surface_write_to_png( surface, sfile );
          cairo_destroy( cr );
@@ -593,7 +593,6 @@ HB_FUNC( HWG_GP_PRINT )
       }
 
    }
-
 }
 
 /*
@@ -629,7 +628,6 @@ HB_FUNC( HWG_GP_GETDEVICEAREA )
 
 HB_FUNC( HWG_GP_GETTEXTSIZE )
 {
-   PHWGUI_PRINT print = (PHWGUI_PRINT) hb_parnl(1);
    char * cText;
    cairo_surface_t *surface;
    cairo_t *cr;

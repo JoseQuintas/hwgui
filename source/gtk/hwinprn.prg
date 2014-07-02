@@ -58,7 +58,7 @@ CLASS HWinPrn
    METHOD EndDoc()
    METHOD End()
 #ifdef __GTK__
-   METHOD SetMetaFile( cMetafile )    INLINE ::oPrinter:cMetafile := cMetafile
+   METHOD SetMetaFile( cMetafile )    INLINE ::oPrinter:cScriptFile := cMetafile
 #endif
 
    HIDDEN:

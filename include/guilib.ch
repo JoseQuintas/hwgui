@@ -1215,7 +1215,7 @@
     <oTimer> := HTimer():New( <oWnd>, <id>, <value>, <bAction> )
 
 
-#xcommand SET KEY [<lGlobal: GLOBAL>] <nctrl>,<nkey> [ OF <oDlg> ] [ TO <func> ] ;
+#xcommand SET KEY [<lGlobal: GLOBAL>] <nctrl>,<nkey> [ OF <oDlg> ] TO [ <func> ] ;
           => ;
     hwg_SetDlgKey( <oDlg>, <nctrl>, <nkey>, <{func}>, <.lGlobal.> )
 

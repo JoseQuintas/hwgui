@@ -478,7 +478,6 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
 
    oDlg:Activate()
 
-   SET KEY FCONTROL, ASC("S") TO
    oFont:Release()
    IF !Empty( ::hMeta )
       hwg_Deleteobject( ::hMeta )

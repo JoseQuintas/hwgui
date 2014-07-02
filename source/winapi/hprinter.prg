@@ -635,7 +635,6 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
 
    oDlg:Activate()
 
-   SET KEY FCONTROL, ASC("S") TO
    oDlg:brush:Release()
    oFont:Release()
    IF !::lUseMeta

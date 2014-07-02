@@ -313,7 +313,7 @@ METHOD LoadScript( cScriptFile ) CLASS HPrinter
          ENDIF
          s := arr[i] + crlf
       ELSEIF !Empty( arr[i] ) .AND. !Empty( s )
-         s += arr[i]
+         s += arr[i] + crlf
       ENDIF
    NEXT
    IF !Empty( s )

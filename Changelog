@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-02 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hprinter.prg
+  * source/winapi/hprinter.prg
+    ! Small fix
+
 2014-07-02 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hwinprn.prg
   * source/winapi/hwinprn.prg

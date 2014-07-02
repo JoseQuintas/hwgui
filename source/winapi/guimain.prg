@@ -113,10 +113,13 @@ FUNCTION hwg_VColor( cColor )
 
    RETURN res
 
-FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )
+FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cRes )
 
    LOCAL oDlg, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
-   LOCAL cRes := ""
+
+   IF Empty( cRes )
+      cRes := ""
+   ENDIF
 
    nStyle := iif( nStyle == Nil, 0, nStyle )
    x := iif( x == Nil, 210, x )
@@ -126,8 +129,10 @@ FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )
    INIT DIALOG oDlg TITLE cTitle AT x, y SIZE 300, 140 ;
       FONT oFont CLIPPER STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + nDlgStyle
 
-   @ 20, 10 SAY cText SIZE 260, 22
-   @ 20, 35 GET cres  SIZE 260, 26 STYLE WS_DLGFRAME + WS_TABSTOP + nStyle
+   IF !Empty( cText )
+      @ 20, 10 SAY cText SIZE 260, 22
+   ENDIF
+   @ 20, 35 GET cres  SIZE 260, 26 STYLE WS_TABSTOP + nStyle
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32 ON SIZE ANCHOR_BOTTOMABS

@@ -1040,7 +1040,7 @@ METHOD PRINT( printer, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
    ENDIF
    SetDebugInfo( ::lDebug )
    SetDebugger( ::lDebug )
-   oPrinter:cMetafile := ::cMetafile
+   oPrinter:cScriptfile := ::cMetafile
 
    FOR i := 1 TO Len( ::aProp )
       IF ::aProp[ i,1 ] == "paper size"
@@ -1293,12 +1293,10 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
       ELSEIF oItem:cClass == "hline"
          ::oPrinter:Line( x, y, x2, y, oItem:oPen )
       ELSEIF oItem:cClass == "bitmap"
-/*
-         IF oItem:obj == Nil
+         IF oItem:obj == Nil .AND. !::oPrinter:lPreview
             oItem:obj := hwg_Openbitmap( aGetSecond( oItem:aProp,"bitmap" ), ::oPrinter:hDC )
          ENDIF
-         ::oPrinter:Bitmap( x,y,x2,y2,, oItem:obj )
-*/
+         ::oPrinter:Bitmap( x,y,x2,y2,, oItem:obj, aGetSecond( oItem:aProp,"bitmap" ) )
       ENDIF
       ::ny := Max( ::ny, y2 + ::nAOffSet )
    ENDIF
@@ -1316,18 +1314,16 @@ METHOD ReleaseObj( aControls ) CLASS HRepTmpl
       IF !Empty( aControls[i]:aControls )
          ::ReleaseObj( aControls[i]:aControls )
       ELSE
-         IF aControls[i]:obj != Nil
+         IF !Empty( aControls[i]:obj )
             IF aControls[i]:cClass == "bitmap"
-/*
                hwg_Deleteobject( aControls[i]:obj )
-*/
                aControls[i]:obj := Nil
             ELSEIF aControls[i]:cClass == "label"
                aControls[i]:obj:Release()
                aControls[i]:obj := Nil
             ENDIF
          ENDIF
-         IF aControls[i]:oPen != Nil
+         IF !Empty( aControls[i]:oPen )
             aControls[i]:oPen:Release()
             aControls[i]:oPen := Nil
          ENDIF

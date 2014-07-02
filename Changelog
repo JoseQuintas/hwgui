@@ -8,6 +8,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-02 14:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/window.c
+    * hwg_SetAppLocale() now returns previous value
+  * source/gtk/hprinter.prg
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hprinter.prg
+  * source/winapi/hfrmtmpl.prg
+    * bitmaps printing support restored in GTK version
+    * It is possible now to modify strings in preview dialog - just double click
+      on appropriate string ( for both, GTK and Winapi versions ).
+    * For Winapi version new preview engine is introduced, the same as in GTK version.
+      To use an old windows enhanced metafiles you need to set oPrinter:lUseMeta := .T.
+  * source/gtk/gtkmain.prg
+  * source/winapi/guimain.prg
+    * hwg_msgget(): 7-th parameter added ( an initial string value )
+  * source/common/editor/hcedit_w.c
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit.prg
+    * Some fixes and improvements
+
 2014-06-23 15:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hwgtk.h
   * source/gtk/draw.c

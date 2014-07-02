@@ -797,8 +797,12 @@ gchar * hwg_convert_from_utf8( const char * szText )
 
 HB_FUNC( HWG_SETAPPLOCALE )
 {
-   memcpy( szAppLocale, hb_parc(1), hb_parclen(1) );
-   szAppLocale[hb_parclen(1)] = '\0';
+   char * szLocale = hb_parc(1);
+   int iLen = hb_parclen(1);
+
+   hb_retc( szAppLocale );
+   memcpy( szAppLocale, szLocale, iLen );
+   szAppLocale[iLen] = '\0';
 }
 
 HB_FUNC( HWG_KEYVAL2UTF8 )

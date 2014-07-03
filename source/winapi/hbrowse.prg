@@ -1037,20 +1037,20 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
             IF !lClear
                IF ::aColumns[::nPaintCol]:aBitmaps != Nil .AND. !Empty( ::aColumns[::nPaintCol]:aBitmaps )
                   FOR j := 1 TO Len( ::aColumns[::nPaintCol]:aBitmaps )
-                     IF Eval( ::aColumns[::nPaintCol]:aBitmaps[j,1], Eval( ::aColumns[::nPaintCol]:block,,Self,::nPaintCol ), lSelected )
-                        ob := ::aColumns[::nPaintCol]:aBitmaps[j,2]
-                        IF ob:nHeight > ::height
-                           y1 := 0
-                           bh := ::height
-                           bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
-                           hwg_Drawbitmap( hDC, ob:handle, , x, y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1, bw, bh )
-                        ELSE
-                           y1 := Int( ( ::height - ob:nHeight )/2 )
-                           bh := ob:nHeight
-                           bw := ob:nWidth
-                           hwg_Drawtransparentbitmap( hDC, ob:handle, x, y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 )
+                     IF Eval( ::aColumns[::nPaintCol]:aBitmaps[j,1], Eval( ::aColumns[::nPaintCol]:block,,Self,::nPaintCol ), lSelected )                       
+                        IF !Empty( ob := ::aColumns[::nPaintCol]:aBitmaps[j,2] )
+                           IF ob:nHeight > ::height
+                              y1 := 0
+                              bh := ::height
+                              bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
+                              hwg_Drawbitmap( hDC, ob:handle, , x, y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1, bw, bh )
+                           ELSE
+                              y1 := Int( ( ::height - ob:nHeight )/2 )
+                              bh := ob:nHeight
+                              bw := ob:nWidth
+                              hwg_Drawtransparentbitmap( hDC, ob:handle, x, y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 )
+                           ENDIF
                         ENDIF
-                        // hwg_Drawbitmap( hDC, ob:handle,, x, y1+::y1+(::height+1)*(::nPaintRow-1)+1, bw, bh )
                         EXIT
                      ENDIF
                   NEXT

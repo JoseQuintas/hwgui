@@ -905,20 +905,12 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                IF ::aColumns[fif]:aBitmaps != Nil .AND. !Empty( ::aColumns[fif]:aBitmaps )
                   FOR j := 1 TO Len( ::aColumns[fif]:aBitmaps )
                      IF Eval( ::aColumns[fif]:aBitmaps[j,1], Eval( ::aColumns[fif]:block,,Self,fif ), lSelected )
-                        ob := ::aColumns[fif]:aBitmaps[j,2]
-                        // IF ob:nHeight > ::height
-                        y1 := 0
-                        bh := ::height
-                        bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
-                        hwg_Drawbitmap( hDC, ob:handle, , x, y1 + ::y1 + ( ::height + 1 ) * ( nstroka - 1 ) + 1, bw, bh )
-                        /*
-                        ELSE
-                           y1 := Int( (::height-ob:nHeight)/2 )
-                           bh := ob:nHeight
-                           bw := ob:nWidth
-                           hwg_Drawtransparentbitmap( hDC, ob:handle, x, y1+::y1+(::height+1)*(nstroka-1)+1 )
+                        IF !Empty( ob := ::aColumns[fif]:aBitmaps[j,2] )
+                           y1 := 0
+                           bh := ::height
+                           bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
+                           hwg_Drawbitmap( hDC, ob:handle, , x, y1 + ::y1 + ( ::height + 1 ) * ( nstroka - 1 ) + 1, bw, bh )
                         ENDIF
-                        */
                         EXIT
                      ENDIF
                   NEXT

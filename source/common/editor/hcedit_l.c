@@ -306,7 +306,6 @@ int ted_CalcLineWidth( TEDIT * pted, char *szText, int iLen, int iWidth, int * i
 {
    TEDATTR *pattr = pted->pattr;
    int i, lasti, iReqLen, iRealLen, iPrinted = 0;
-   TEDFONT *font;
    char * ptr;
 
    *iRealWidth = 0;
@@ -314,9 +313,6 @@ int ted_CalcLineWidth( TEDIT * pted, char *szText, int iLen, int iWidth, int * i
    {
       if( i == iLen || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
       {
-         font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
-               ( pattr + lasti )->iFont;
-
          iReqLen = i - lasti;
          ptr = szText + hced_utf8bytes( szText, lasti );
          while( ptr > szText && *(g_utf8_prev_char(ptr)) == ' ' )
@@ -395,9 +391,8 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
 int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int iHeight )
 {
    TEDATTR *pattr = pted->pattr;
-   int i, lasti, iReqLen, iRealLen, iRealWidth = 0;
+   int i, lasti, iReqLen, iRealLen;
    int iMaxAscent = 0;
-   TEDFONT *font;
    char * ptr;
 
    //wrlog( NULL, "Lineout-1\r\n" );
@@ -957,7 +952,7 @@ HB_FUNC( HCED_COLOR2X )
    int i;
    long int n = hb_parnl(1);
 
-   sprintf(s,"#%2X%2X%2X", n%256, (n/256)%256, (n/65536)%256 );
+   sprintf(s,"#%2X%2X%2X", (unsigned int)(n%256), (unsigned int)((n/256)%256), (unsigned int)((n/65536)%256) );
    for( i=0; i<7; i++ )
       if( s[i] == ' ' )
          s[i] = '0';

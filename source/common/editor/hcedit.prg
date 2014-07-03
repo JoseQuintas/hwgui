@@ -208,7 +208,7 @@ CLASS HCEdit INHERIT HControl
       CharSet, Italic, Underline, StrikeOut )
    METHOD SetFont( oFont )
    METHOD SetCaretPos( nType, p1, p2 )
-   METHOD onKeyDown( nKeyCode, lParam )
+   METHOD onKeyDown( nKeyCode, lParam, nCtrl )
    METHOD PutChar( nKeyCode )
    METHOD LineDown()
    METHOD LineUp()
@@ -1016,10 +1016,14 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
 
    RETURN Nil
 
-METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
-   LOCAL cKeyb := hwg_Getkeyboardstate( lParam ), cLine, lUnsel := .T., lInvAll := .F.
-   LOCAL nCtrl := Iif( Asc( SubStr(cKeyb,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(cKeyb,0x11,1 ) ) >= 128,FSHIFT,0 ) )
+METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
+   LOCAL cLine, lUnsel := .T., lInvAll := .F.
    LOCAL nLine, nDocWidth
+
+   IF nCtrl == Nil
+      cLine := hwg_Getkeyboardstate( lParam )
+      nCtrl := Iif( Asc( SubStr(cLine,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(cLine,0x11,1 ) ) >= 128,FSHIFT,0 ) )
+   ENDIF
 
    //hwg_writelog( "keydown: " + str(nKeyCode) )
    IF !Empty( ::nDocFormat )
@@ -1167,8 +1171,10 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          lUnSel := .F.
 
       ELSEIF nCtrl == FCONTROL
-         cLine := ::GetText( ::aPointM1, ::aPointM2 )
-         hwg_Copystringtoclipboard( cLine )
+         IF !Empty( ::aPointM2[P_Y] )
+            cLine := ::GetText( ::aPointM1, ::aPointM2 )
+            hwg_Copystringtoclipboard( cLine )
+         ENDIF
          lUnSel := .F.
 
       ELSEIF nCtrl == FSHIFT
@@ -1193,6 +1199,28 @@ METHOD onKeyDown( nKeyCode, lParam ) CLASS HCEdit
          ::Pcopy( { hced_Len( Self, ::aText[::nTextLen] ) + 1, ::nTextLen }, ::aPointM2 )
          lUnSel := .F.
          lInvAll := .T.
+      ENDIF
+   ELSEIF nKeyCode == 67      // 'C'
+      IF nCtrl == FCONTROL .AND. !Empty( ::aPointM2[P_Y] )
+         cLine := ::GetText( ::aPointM1, ::aPointM2 )
+         hwg_Copystringtoclipboard( cLine )
+         lUnSel := .F.
+      ENDIF
+   ELSEIF nKeyCode == 90      // 'Z'
+      IF nCtrl == FCONTROL
+         ::Undo()
+      ENDIF
+   ELSEIF nKeyCode == 86      // 'V'
+      IF nCtrl == FCONTROL .AND. !::lReadOnly
+         cLine := hwg_Getclipboardtext()
+         ::InsText( ::aPointC, cLine )
+         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ::nHeight )
+      ENDIF
+   ELSEIF nKeyCode == 88      // 'X'
+      IF nCtrl == FCONTROL .AND. !Empty( ::aPointM2[P_Y] )
+         cLine := ::GetText( ::aPointM1, ::aPointM2 )
+         hwg_Copystringtoclipboard( cLine )
+         ::putChar( 7 )   // for to not interfere with '.'
       ENDIF
 #ifdef __PLATFORM__UNIX
    ELSEIF nKeyCode < 0xFE00 .OR. nKeyCode == VK_RETURN .OR. nKeyCode == VK_BACK .OR. nKeyCode == VK_TAB .OR. nKeyCode == VK_ESCAPE

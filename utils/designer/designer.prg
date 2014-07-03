@@ -266,6 +266,7 @@ CLASS HDesigner
    DATA aMethDef     INIT {}
    DATA lSingleForm  INIT .F.
    DATA cResForm
+   DATA nrepzoom     INIT 1
 
    METHOD NEW   INLINE Self
 
@@ -343,6 +344,8 @@ STATIC FUNCTION ReadIniFiles()
          FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
             oDesigner:aRecent[j] := Lower( Trim( oNode:aItems[j]:aItems[1] ) )
          NEXT
+      ELSEIF oNode:title == "rep_zoom"
+         oDesigner:nRepZoom := Val( oNode:GetAttribute( "default" ) )
       ENDIF
    NEXT
 

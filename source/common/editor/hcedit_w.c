@@ -292,7 +292,6 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
 {
    TEDATTR *pattr = pted->pattr;
    int i, lasti, iRealLen;
-   RECT rect;
 
    if( pted->hDCPrn )
       x1 = (int) ( x1 * pted->dKoeff );
@@ -320,6 +319,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
    /*
    if( !pted->hDCPrn )
    {
+      RECT rect;
       SetRect( &rect, x1, ypos, (pted->iDocWidth)? pted->iDocWidth : pted->iWidth, ypos + iHeight );
       if( pted->bg != pted->bg_curr )
       {
@@ -764,7 +764,7 @@ HB_FUNC( HCED_COLOR2X )
    int i;
    long int n = hb_parnl(1);
 
-   sprintf(s,"#%2X%2X%2X", n%256, (n/256)%256, (n/65536)%256 );
+   sprintf(s,"#%2X%2X%2X", (unsigned int)(n%256), (unsigned int)((n/256)%256), (unsigned int)((n/65536)%256) );
    for( i=0; i<7; i++ )
       if( s[i] == ' ' )
          s[i] = '0';

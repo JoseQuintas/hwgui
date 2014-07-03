@@ -181,6 +181,15 @@ Local cParamString
          ENDMENU
          MENUITEM "&Configure" ACTION EditColors()
       ENDMENU
+      MENU TITLE "&Edit"
+         MENUITEM "&Undo"+Chr(9)+"Ctrl+Z" ACTION oEdit:Undo()
+         SEPARATOR
+         MENUITEM "&Cut"+Chr(9)+"Ctrl+X" ACTION oEdit:onKeyDown( Asc('X'),,FCONTROL )
+         MENUITEM "&Copy"+Chr(9)+"Ctrl+C" ACTION oEdit:onKeyDown( Asc('C'),,FCONTROL )
+         MENUITEM "&Paste"+Chr(9)+"Ctrl+V" ACTION oEdit:onKeyDown( Asc('V'),,FCONTROL )
+         SEPARATOR
+         MENUITEM "&Select all"+Chr(9)+"Ctrl+A" ACTION oEdit:onKeyDown( Asc('A'),,FCONTROL )
+      ENDMENU
       MENUITEM "&Parameters" ACTION Iif(!Empty(cParamString).and.Upper(Left(oEdit:Gettext(),10))!="PARAMETERS",oEdit:InsText({1,1},"Parameters "+cParamString+cNewLine),.F.)
       MENUITEM "&Exit" ACTION oDlg:Close()
    ENDMENU

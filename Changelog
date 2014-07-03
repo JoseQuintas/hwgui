@@ -8,6 +8,25 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-03 12:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * Added checking of existing a HBitmap object in HColumn():aBitmaps
+  * source/common/xml/xmlparse.c
+  * source/common/editor/hcedit_w.c
+  * source/common/editor/hcedit_l.c
+    ! Warnings fixed, reported by Alain Aupeix and Maurizio la Cecilia
+  * source/common/editor/hcedit.prg
+    * Added support for Ctrl+C, Ctrl+X, Ctrl+V and Ctrl+Z
+  * utils/designer/designer.prg
+  * utils/designer/hformgen.prg
+    * You can now insert a following item to designer.iml:
+      <rep_zoom default="1.2"/>
+      It cause zooming of a report window ( +20% in above case ), just choose
+      a value, most comfortable for you.
+  * utils/designer/editor.prg
+    * Added "Edit" menu to the editor dialog box
+
 2014-07-02 18:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     ! SET KEY command fixed

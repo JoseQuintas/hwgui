@@ -48,6 +48,46 @@
           [; hwg_SetCtrlName( <oBrw>,<(oBrw)> )]
 
 
+#xcommand ADD COLUMNEX <block> TO <oBrw> ;
+             [ HEADER <cHeader> ]       ;
+             [ TYPE <cType> ]           ;
+             [ LENGTH <nLen> ]          ;
+             [ DEC <nDec>    ]          ;
+             [ <lEdit: EDITABLE> ]      ;
+             [ JUSTIFY HEAD <nJusHead> ];
+             [ JUSTIFY LINE <nJusLine> ];
+             [ PICTURE <cPict> ]        ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [ VALID <bValid> ]         ;
+             [ WHEN <bWhen> ]           ;
+             [ ON CLICK <bClick> ]      ;
+             [ ITEMS <aItem> ]          ;
+             [ [ON] COLORBLOCK <bClrBlck> ]  ;
+             [ [ON] BHEADCLICK <bHeadClick> ]  ;
+          => ;
+          <oBrw>:AddColumn( HColumnEx():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
+             <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}>, <color>, <bcolor>, <bClick> ) )
+
+#xcommand INSERT COLUMNEX <block> TO <oBrw> ;
+             [ HEADER <cHeader> ]       ;
+             [ TYPE <cType> ]           ;
+             [ LENGTH <nLen> ]          ;
+             [ DEC <nDec>    ]          ;
+             [ <lEdit: EDITABLE> ]      ;
+             [ JUSTIFY HEAD <nJusHead> ];
+             [ JUSTIFY LINE <nJusLine> ];
+             [ PICTURE <cPict> ]        ;
+             [ VALID <bValid> ]         ;
+             [ WHEN <bWhen> ]           ;
+             [ ITEMS <aItem> ]          ;
+             [ BITMAP <oBmp> ]          ;
+             [ COLORBLOCK <bClrBlck> ]  ;
+             INTO <nPos>                ;
+          => ;
+          <oBrw>:InsColumn( HColumnEx():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
+             <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp>, <{bClrBlck}> ),<nPos> )
+
 #xcommand @ <x>,<y> SAY [ <lExt: EXTENDED,EXT> ] [ <oSay> CAPTION ] <caption> ;
              [ OF <oWnd> ]              ;
              [ ID <nId> ]               ;

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-04 15:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwg_extctrl.ch
+    * Added ADD COLUMNEX and INSERT COLUMNEX commands for HBrowseEx class
+
 2014-07-04 10:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hprinter.prg
     ! Some fixes

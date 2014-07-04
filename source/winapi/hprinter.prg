@@ -185,7 +185,6 @@ METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset ) CLASS
    oFont := HFont():Add( fontName, , nHeight,          ;
       iif( lBold != Nil .AND. lBold, 700, 400 ), nCharset, ;
       iif( lItalic != Nil .AND. lItalic, 255, 0 ), iif( lUnderline != Nil .AND. lUnderline, 1, 0 ) )
-
    RETURN oFont
 
 METHOD END() CLASS HPrinter
@@ -337,14 +336,14 @@ METHOD Bitmap( x1, y1, x2, y2, nOpt, hBitmap, cImageName ) CLASS HPrinter
 
 METHOD GetTextWidth( cString, oFont ) CLASS HPrinter
 
-   LOCAL arr, hFont
+   LOCAL arr, hFont, hDC := Iif( ::lUseMeta, ::hDC, ::hDCPrn )
 
    IF oFont != Nil
-      hFont := hwg_Selectobject( ::hDC, oFont:handle )
+      hFont := hwg_Selectobject( hDC, oFont:handle )
    ENDIF
-   arr := hwg_Gettextsize( ::hDC, cString )
+   arr := hwg_Gettextsize( hDC, cString )
    IF oFont != Nil
-      hwg_Selectobject( ::hDC, hFont )
+      hwg_Selectobject( hDC, hFont )
    ENDIF
 
    RETURN iif( ::lmm, Int( arr[ 1 ] / ::nHRes ), arr[ 1 ] )
@@ -954,8 +953,8 @@ METHOD PrintScript( hDC, nPage, x1, y1, x2, y2 ) CLASS HPrinter
       xOff := 0
       yOff := 0
    ELSE
-      nHRes := (x2-x1)/::nWidth
-      nVRes := (y2-y1)/::nHeight
+      nHRes := (x2-x1)/Iif( ::lmm, ::nWidth, ::nWidth/::nHres )
+      nVRes := (y2-y1)/Iif( ::lmm, ::nHeight, ::nHeight/::nVres )
       xOff := x1
       yOff := y1
    ENDIF
@@ -1048,8 +1047,8 @@ Static Function MessProc( oPrinter, oPanel, lParam )
    xPos := hwg_Loword( lParam )
    yPos := hwg_Hiword( lParam )
 
-   nHRes := (oPrinter:x2-oPrinter:x1)/oPrinter:nWidth
-   nVRes := (oPrinter:y2-oPrinter:y1)/oPrinter:nHeight
+   nHRes := (oPrinter:x2-oPrinter:x1)/Iif( oPrinter:lmm, oPrinter:nWidth, oPrinter:nWidth/oPrinter:nHRes )
+   nVRes := (oPrinter:y2-oPrinter:y1)/Iif( oPrinter:lmm, oPrinter:nHeight, oPrinter:nHeight/oPrinter:nVRes )
    
    arr := hb_aTokens( oPrinter:aPages[nPage], crlf )
    FOR i := 1 TO Len( arr )

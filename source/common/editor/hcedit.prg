@@ -230,7 +230,7 @@ CLASS HCEdit INHERIT HControl
    METHOD Highlighter( oHili )
    METHOD Scan()
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
-   METHOD Print()
+   METHOD Print( oPrinter, nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB )
 
 ENDCLASS
 
@@ -617,7 +617,7 @@ METHOD Paint( lReal ) CLASS HCEdit
 
 METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
    LOCAL lReal := !Empty( hDC ), i, nPrinted, x1, x2, cLine, aLine, nTextLine := ::nLineF+nLine-1
-   LOCAL nWCharF := Iif( nLine==1, ::nWCharF, ::nPosF ), nWSublF := Iif( nLine==1, ::nWSublF, 1 ), num := ::nLines+1
+   LOCAL nWCharF := Iif( ::lWrap.AND.nLine==1, ::nWCharF, ::nPosF ), nWSublF := Iif( ::lWrap.AND.nLine==1, ::nWSublF, 1 ), num := ::nLines+1
 
    IF lUse_aWrap == Nil; lUse_aWrap := .F.; ENDIF
    DO WHILE .T.
@@ -711,8 +711,10 @@ METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC ) CLASS HCEdit
    hced_ClearAttr( ::hEdit )
 
    IF nLineC == Nil; nLineC := 0; ENDIF
-   nPos1 := Iif( nWCharF!=Nil, nWCharF, Iif( ::lWrap .AND. !Empty(::aWrap[nL]), Iif(nSubLine==1,1,::aWrap[nL,nSubline-1]), ::nPosF ) )
-   nPos2 := Iif( ::lWrap .AND. !Empty(::aWrap[nL]).AND.nSubLine<Len(::aWrap[nL]),::aWrap[nL,nSubline]-1, Min( hced_Len(Self,::aText[nL]),STRING_MAX_LEN ) )
+   nPos1 := Iif( nWCharF!=Nil, nWCharF, Iif( ::lWrap .AND. !Empty(::aWrap[nL]), ;
+         Iif(nSubLine==1,1,::aWrap[nL,nSubline-1]), ::nPosF ) )
+   nPos2 := Iif( ::lWrap .AND. !Empty(::aWrap[nL]).AND.nSubLine<Len(::aWrap[nL]), ;
+         ::aWrap[nL,nSubline]-1, Min( hced_Len(Self,::aText[nL]),STRING_MAX_LEN ) )
 
    IF !Empty( ::oHili )
       IF Empty( nSubLine ) .OR. nSubLine == 1 .OR. nL != ::oHili:nLine
@@ -720,18 +722,24 @@ METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC ) CLASS HCEdit
       ENDIF
       IF ::nDefFont > 0
          hced_setAttr( ::hEdit, nPos1, nPos2, ::nDefFont, 0, 0 )
+         hced_addAttrFont( ::hEdit, ::nDefFont )
       ENDIF
       IF ::oHili:nItems > 0
          aStru := ::oHili:aLineStru
          FOR i := 1 TO ::oHili:nItems
-            IF aStru[i,2] >= nPos1 .AND. aStru[i,1] <= nPos2 .AND. hb_hHaskey( ::aHili,aStru[i,3] )
+            IF aStru[i,2] > 0 .AND. hb_hHaskey( ::aHili,aStru[i,3] )
                aHili := ::aHili[aStru[i,3]]
-               x1 := Max( nPos1, aStru[i,1] ) - nPos1 + 1
-               x2 := Min( aStru[i,2],nPos2 ) - nPos1 + 1
-               bColor := Iif( nLineC == ::nLineC .AND. ::bColorCur != ::bColor, ;
-                  ::bColorCur, Iif( aHili[3]==Nil, ::bColor, aHili[3] ) )
-               hced_setAttr( ::hEdit, x1, x2 - x1 + 1, aHili[1], ;
-                  Iif( aHili[2]==Nil, ::tColor, aHili[2] ), bColor )
+               IF aHili[1] > 0
+                  hced_addAttrFont( ::hEdit, aHili[1] )
+               ENDIF
+               IF aStru[i,2] >= nPos1 .AND. aStru[i,1] <= nPos2
+                  x1 := Max( nPos1, aStru[i,1] ) - nPos1 + 1
+                  x2 := Min( aStru[i,2],nPos2 ) - nPos1 + 1
+                  bColor := Iif( nLineC == ::nLineC .AND. ::bColorCur != ::bColor, ;
+                     ::bColorCur, Iif( aHili[3]==Nil, ::bColor, aHili[3] ) )
+                  hced_setAttr( ::hEdit, x1, x2 - x1 + 1, aHili[1], ;
+                     Iif( aHili[2]==Nil, ::tColor, aHili[2] ), bColor )
+               ENDIF
             ENDIF
          NEXT
       ENDIF
@@ -1055,7 +1063,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          ENDIF
          lInvAll := .T.
       ELSEIF ::nPosC > ::aLines[nLine,AL_NCHARS]
-         IF ::lWrap .AND. ::nDocFormat == 0
+         IF ::lWrap //.AND. ::nDocFormat == 0
             RETURN 0
          ENDIF
          ::nPosF ++
@@ -1972,7 +1980,19 @@ METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HCEdit
    ENDIF
    RETURN Nil
 
-METHOD Print() CLASS HCEdit
+METHOD Print( oPrinter, nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB ) CLASS HCEdit
+   LOCAL nL, nKoeff, xTemp
+
+#ifdef __GTK__
+   xTemp := hwg_gp_GetDeviceArea( oPrinter:hDC )
+#else
+   xTemp := hwg_Getdevicearea( oPrinter:hDCPrn )
+#endif
+   nKoeff := ( xTemp[1] / xTemp[3] )
+
+   FOR nL := 1 TO ::nTextLen
+   NEXT
+
    RETURN Nil
 
 /*  nL - A row on the screen ( 1 ... ::nLines )

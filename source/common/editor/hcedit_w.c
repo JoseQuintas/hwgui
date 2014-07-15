@@ -716,14 +716,13 @@ HB_FUNC( HCED_SETFOCUS )
 HB_FUNC( HCED_LINEOUT )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   //TEDATTR *pattr = pted->pattr;
    TEDFONT *font;
    char *szText = ( char * )hb_parc( 5 );
    short int bCalcOnly = (HB_ISNIL(8))? 0 : hb_parl(8);
    short int bCalc = (HB_ISNIL(9))? 1 : hb_parl(9);
    int x1 = hb_parni( 2 ), ypos = hb_parni( 3 ), x2 = hb_parni( 4 ), iLen = hb_parni( 6 );
    int iPrinted, iCalculated = 0, iAlign = hb_parni( 7 );
-   int iRealWidth, i; //, lasti;
+   int iRealWidth, i, iFont;
    int iHeight = 0, iMaxAscent = 0;
 
    if( iLen )
@@ -758,14 +757,16 @@ HB_FUNC( HCED_LINEOUT )
    i = 0;
    while( i < TEDATTRF_MAX )
    {
+      iFont = *( pted->pattrf + i );
       font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
-            *( pted->pattrf + i );
+            (iFont? iFont-1 : 0) ;
       iHeight = max( iHeight, font->tm.tmHeight + font->tm.tmExternalLeading ) + 1;
       iMaxAscent = max( iMaxAscent, font->tm.tmAscent );
       if( ! *( pted->pattrf+i ) )
          break;
       i ++;
    }
+   iHeight ++;
    /*
    for( i = 0, lasti = 0; i <= iPrinted; i++ )
       if( i == iPrinted || ( pattr + i )->iFont != ( pattr + lasti )->iFont )

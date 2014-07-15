@@ -143,6 +143,7 @@ CLASS HCEdit INHERIT HControl
    DATA   bColorCur    INIT 16449510
    DATA   tcolorSel    INIT 16777215
    DATA   bcolorSel    INIT 16744448
+   DATA   nClrDesk     INIT 8421504
    DATA   nAlign       INIT 0             // 0 - Left, 1 - Center, 2 - Right
    DATA   nIndent      INIT 0
    DATA   nDefFont     INIT 0
@@ -170,6 +171,7 @@ CLASS HCEdit INHERIT HControl
    DATA   lStripSpaces INIT .T.
    DATA   lVScroll
    DATA   nClientWidth
+   DATA   nDocWidth
 
 #ifdef __PLATFORM__UNIX
    DATA area
@@ -513,9 +515,8 @@ METHOD Paint( lReal ) CLASS HCEdit
    LOCAL nDocWidth
    LOCAL hBitmap
 
-   IF !Empty( ::nDocFormat )
-      nDocWidth := Int( ::nKoeffScr * ::aDocFs[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR
-   ENDIF
+   ::nDocWidth := nDocWidth := Iif( Empty(::nDocFormat), 0, ;
+      Int( ::nKoeffScr * ::aDocFs[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR )
 
    IF lReal == Nil .OR. lReal
 #ifdef __PLATFORM__UNIX
@@ -540,7 +541,7 @@ METHOD Paint( lReal ) CLASS HCEdit
 
       hDC := hwg_CreateCompatibleDC( hDCReal )
       hBitmap := hwg_CreateCompatibleBitmap( hDCReal, ;
-            Iif( !Empty(nDocWidth), Max(nDocWidth,aCoors[3]-aCoors[1]), aCoors[3]-aCoors[1] ), aCoors[4]-aCoors[2] )
+            Iif( !Empty(nDocWidth), Max(nDocWidth,aCoors[3]-aCoors[1])+::nShiftL, aCoors[3]-aCoors[1] ), aCoors[4]-aCoors[2] )
       hwg_Selectobject( hDC, hBitmap )     
 
 #endif
@@ -559,6 +560,16 @@ METHOD Paint( lReal ) CLASS HCEdit
    hced_SetPaint( ::hEdit, hDC,, ::nClientWidth, ::lWrap,, nDocWidth )
    IF lReal
       hced_FillRect( ::hEdit, 0, 0, Iif( !Empty(nDocWidth), Max(nDocWidth,::nClientWidth), ::nClientWidth ), ::nHeight )
+      IF !Empty( ::nDocWidth )
+         hced_Setcolor( ::hEdit,, ::nClrDesk )
+         IF ::nBoundL > 0
+            hced_FillRect( ::hEdit, 0, 0, ::nBoundL, ::nHeight )
+         ENDIF
+         IF ::nDocWidth-::nShiftL < ::nClientWidth
+            hced_FillRect( ::hEdit, ::nDocWidth, 0, ::nClientWidth+::nShiftL, ::nHeight )
+         ENDIF
+         hced_Setcolor( ::hEdit,, ::bColor )
+      ENDIF
    ENDIF
 
    IF ::lShowNumbers
@@ -1026,7 +1037,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
 
 METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    LOCAL cLine, lUnsel := .T., lInvAll := .F.
-   LOCAL nLine, nDocWidth
+   LOCAL nLine, nDocWidth := ::nDocWidth
 
    IF nCtrl == Nil
       cLine := hwg_Getkeyboardstate( lParam )
@@ -1034,9 +1045,6 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    ENDIF
 
    //hwg_writelog( "keydown: " + str(nKeyCode) )
-   IF !Empty( ::nDocFormat )
-      nDocWidth := Int( ::nKoeffScr * ::aDocFs[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR
-   ENDIF
 
    ::lSetFocus := .T.
    IF ::bKeyDown != Nil
@@ -1834,9 +1842,8 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
          ::nKoeffScr := ( i[1]/i[3] )
       ENDIF
       nWidth := ::nClientWidth := aCoors[3] - aCoors[1]
-      IF !Empty( ::nDocFormat )
-         nDocWidth := Int( ::nKoeffScr * ::aDocFs[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR
-      ENDIF
+      ::nDocWidth := nDocWidth := Iif( Empty(::nDocFormat), 0, ;
+         Int( ::nKoeffScr * ::aDocFs[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR )
       nHeight := ::nHeight
       hced_SetPaint( ::hEdit, hDC,, nWidth, ::lWrap,, nDocWidth )
    ELSE

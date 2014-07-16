@@ -374,7 +374,7 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
    if( hDC->bcolor != -1 )
    {
       hwg_setcolor( hDC->cr, hDC->bcolor );
-      cairo_rectangle( hDC->cr, (gdouble)xpos, (gdouble)ypos-pted->iInterline/2, 
+      cairo_rectangle( hDC->cr, (gdouble)xpos, (gdouble)ypos, //-pted->iInterline/2, 
             (iLen==1 && *szText==' ')? (gdouble)font->iSpace : (gdouble)iWidth, 
             (gdouble)PANGO_DESCENT(rc)+pted->iInterline );
       cairo_fill( hDC->cr );
@@ -547,7 +547,7 @@ HB_FUNC( HCED_CREATETEXTEDIT )
 
    pted->widget = hbox;
    pted->area = area;
-   pted->iInterline = 2;
+   pted->iInterline = 3;
 
    pted->pFontsScr =
          ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );

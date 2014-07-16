@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-16 14:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/debugger/hwgdebug.prg
+    * version number is changed to 2.04
+  * source/common/editor/hcedit_l.c
+    ! Small fix
+
 2014-07-16 14:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/debugger/hwgdebug.prg
   * utils/debugger/readme.eng

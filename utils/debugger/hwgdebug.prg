@@ -167,6 +167,9 @@ STATIC nVerProto := 0
 STATIC cMsgNotSupp := "Command isn't supported"
 
 #ifdef __HCEDIT__
+#define P_X                  1
+#define P_Y                  2
+
 STATIC oHighLighter
 #endif
 
@@ -243,6 +246,8 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
          MENUITEM "Work&Areas"+Chr(9)+"F6" ACTION InspectAreas() ACCELERATOR 0,VK_F6
          SEPARATOR
          MENUITEMCHECK "&Commands" ID MENU_CMDLINE ACTION ViewCmdLine()
+         SEPARATOR
+         MENUITEMCHECK "Selected &var"+Chr(9)+"F12" ACTION ViewSelVar() ACCELERATOR 0,VK_F12
       ENDMENU
       MENU ID MENU_RUN TITLE "&Run"
          MENUITEM "&Go"+Chr(9)+"F5" ACTION DoCommand( CMD_GO ) ACCELERATOR 0,VK_F5
@@ -586,7 +591,9 @@ Static nLastSec := 0
                            cInspectVar := Nil
                            Return Nil
                         ELSE
-                           oEditExpr:SetText( cInspectVar + " isn't an object" )
+                           nMode := MODE_INPUT
+                           Calc( cInspectVar )
+                           Return Nil
                         ENDIF
                      ELSE
                         SetResult( Hex2Str( arr[3] ) )
@@ -1397,10 +1404,12 @@ Local o
 
 Return Nil
 
-Static Function Calc()
-Local cExp := Trim( oEditExpr:GetText() )
+Static Function Calc( cExp )
 Local arr, cmd
 
+   IF Empty( cExp )
+      cExp := Trim( oEditExpr:GetText() )
+   ENDIF
    IF !Empty( cExp )
       oEditExpr:SetText( "" )
       IF Left( cExp,1 ) == ":" .AND. Substr( cExp,2,1 ) != ":"
@@ -2021,6 +2030,39 @@ Local i := Ascan( aControls, { |o| hwg_isPtrEq( o:handle,oBrwRes:handle) } ), j 
       oMain:Move( ,,,oMain:nHeight+12 )
    ENDIF
 
+Return Nil
+
+Static FUNCTION ViewSelVar()
+#ifdef __HCEDIT__
+Local oText := oTabMain:aControls[ oTabMain:GetActivePage() ]
+Local nL := oText:aPointC[P_Y], nPos := oText:aPointC[P_X], cLine, c, nPos1, nPos2
+
+   IF Empty( nL ) .OR. Empty( nPos1 := nPos2 := nPos ) .OR. Substr( cLine := oText:aText[nL], nPos, 1 ) < '0'
+      Return Nil
+   ENDIF
+   DO WHILE --nPos1 > 0 .AND. ( isDigit( c := Substr( cLine,nPos1,1 ) ) .OR. ;
+         isAlpha( c ) .OR. c == '_' .OR. c == ':' )
+   ENDDO
+   nPos1 ++
+   IF isDigit( Substr( cLine,nPos1,1 ) )
+      Return Nil
+   ENDIF
+   DO WHILE ++nPos2 <= Len( cLine ) .AND. ( isDigit( c := Substr( cLine,nPos2,1 ) ) .OR. ;
+         isAlpha( c ) .OR. c == '_' )
+   ENDDO
+   IF c == '('
+      IF ( nPos := Find_Z( Substr(cLine,nPos2+1), ')' ) ) == 0
+         Return Nil
+      ENDIF
+      nPos2 += nPos + 1
+   ENDIF
+   cLine := Substr( cLine, nPos1, nPos2-nPos1 )
+   IF '(' $ cLine
+      oEditExpr:SetText( cLine )
+   ELSE
+      Calc( ":ins " + cLine )
+   ENDIF
+#endif
 Return Nil
 
 Static FUNCTION SetFont( oFont )

@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-16 14:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/debugger/hwgdebug.prg
+  * utils/debugger/readme.eng
+  * utils/debugger/readme.rus
+    * New feature added:
+      Selecting a menu item "View/Selected var" or pressing F12 allows to
+      calculate the value of a variable, which name is under the cursor in the
+      program source window. If this variable is an array or object, the
+      appropriate Inspector is opened. If this is a function, it is copied into
+      the input window with the parameters for subsequent calculations.
+  * source/common/debugger/debugger.prg
+    ! Calculating of hidden object vars has been fixed
+
 2014-07-15 14:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/common/editor/hcedit_w.c

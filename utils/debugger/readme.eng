@@ -161,6 +161,12 @@
   letter. So, to view a current record of a current workarea, it's enough
   to input :r.
 
+         Selecting a menu item "View/Selected var" or pressing F12 allows to
+   calculate the value of a variable, which name is under the cursor in the
+   program source window. If this variable is an array or object, the
+   appropriate Inspector is opened. If this is a function, it is copied into
+   the input window with the parameters for subsequent calculations.
+
          Hwgdebug.xml is created in the same directory as the
   executable hwgdebug.exe, when you do a menu item Options/Save Settings or
   Options/Save Breakpoints.

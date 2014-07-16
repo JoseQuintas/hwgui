@@ -791,19 +791,24 @@ Local af, nCount, arr, i, j := 3
    RETURN arr
 
 STATIC FUNCTION SendObject( cObjName )
-Local aVars, aMethods, arr, obj, i, j := 1
+Local aVars, aMethods, arr, obj, i, j := 1, xVal
 
    obj := t_oDebugger:GetExprValue( cObjName )
    IF Valtype( obj ) == "O"
-      aVars := __objGetValueList( obj )
+      // aVars := __objGetValueList( obj )
+      aVars := __objGetMsgList( obj )
       aMethods := __objGetMethodList( obj )
       arr := Array( ( Len(aVars)+Len(aMethods) ) * 3 + 1 )
       arr[1] := Ltrim( Str( Len(aVars)+Len(aMethods) ) )
 
       FOR i := 1 TO Len( aVars )
-         arr[++j] := aVars[ i,1 ]
-         arr[++j] := Valtype( aVars[ i,2 ] )
-         arr[++j] := __dbgValToStr( aVars[ i,2 ] )
+         arr[++j] := aVars[i]
+         xVal := __dbgObjGetValue( obj, aVars[i] )
+         arr[++j] := Valtype( xVal )
+         arr[++j] := __dbgValToStr( xVal )
+
+         //arr[++j] := Valtype( aVars[ i,2 ] )
+         //arr[++j] := __dbgValToStr( aVars[ i,2 ] )
          IF Len( arr[j] ) > VAR_MAX_LEN
             arr[j] := Left( arr[j], VAR_MAX_LEN )
          ENDIF
@@ -893,6 +898,28 @@ FUNCTION __dbgValToStr( uVal )
    ENDCASE
 
    RETURN "U"
+
+STATIC FUNCTION __dbgObjGetValue( oObject, cVar, lCanAcc )
+
+   LOCAL nProcLevel := __Dbg():nProcLevel
+   LOCAL xResult
+   LOCAL oErr
+
+   BEGIN SEQUENCE WITH {|| Break() }
+      xResult := __dbgSENDMSG( nProcLevel, oObject, cVar )
+      lCanAcc := .T.
+   RECOVER
+      BEGIN SEQUENCE WITH {| oErr | Break( oErr ) }
+         /* Try to access variables using class code level */
+         xResult := __dbgSENDMSG( 0, oObject, cVar )
+         lCanAcc := .T.
+      RECOVER USING oErr
+         xResult := oErr:description
+         lCanAcc := .F.
+      END SEQUENCE
+   END SEQUENCE
+
+   RETURN xResult
 
 #ifdef __XHARBOUR__
 #define ALTD_DISABLE   0

@@ -335,8 +335,9 @@ METHOD SaveScript( cScriptFile ) CLASS HPrinter
 
    IF !Empty( cScriptFile )
       han := FCreate( cScriptFile )
-      FWrite( han, "job," + Iif(::lmm,"mm,","px,") + ;
-            LTrim( Str(::nWidth ) ) + "," + LTrim( Str(::nHeight ) ) + "," + ;
+      FWrite( han, "job," + ;
+            LTrim( Str(Iif(::lmm,::nWidth*::nHRes,::nWidth) ) ) + "," + ;
+            LTrim( Str(Iif(::lmm,::nHeight*::nVRes,::nHeight) ) ) + "," + ;
             LTrim( Str(::nHRes ) ) + "," + LTrim( Str(::nVRes ) ) + ",utf8" + crlf )
 
       FOR i := 1 TO Len( ::aPages )

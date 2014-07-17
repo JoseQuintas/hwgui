@@ -1392,7 +1392,7 @@ Local o
 
    IF nMode == MODE_INPUT .AND. !Empty( o := HWindow():GetMain():FindControl( ,hwg_Getfocus() ) ) .AND. o:id == EDIT_RES
       IF nKey == VK_RETURN
-         Calc( o )
+         Calc()
       ELSEIF nKey == VK_UP
          PrevExpr( 1 )
          hwg_Setfocus( oEditExpr:handle )
@@ -2084,7 +2084,7 @@ Local oDlg
         STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + DS_CENTER
 
    @ 20,30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
-   @ 20,60 SAY "Version 2.04" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 20,60 SAY "Version 2.03" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
 #if !defined( __PLATFORM__UNIX )
    @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;

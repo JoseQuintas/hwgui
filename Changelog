@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-16 16:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/debugger/hwgdebug.prg
+    ! Bug fixed
+
 2014-07-17 13:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hprinter.prg
     * A structure of a print metafile changed

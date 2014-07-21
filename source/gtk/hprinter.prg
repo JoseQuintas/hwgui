@@ -13,6 +13,7 @@
 #include "guilib.ch"
 
 STATIC crlf := e"\r\n"
+#define SCREEN_PRINTER ".buffer"
 
 CLASS HPrinter
 
@@ -21,10 +22,14 @@ CLASS HPrinter
 #else
    CLASS VAR cdp       SHARED
 #endif
+   CLASS VAR aPaper  INIT { { "A3", 297, 420 }, { "A4", 210, 297 }, { "A5", 148, 210 }, ;
+      { "A6", 105, 148 } }
+
    DATA hDC  INIT 0
    DATA cPrinterName   INIT "DEFAULT"
    DATA cdpIn
    DATA lPreview
+   DATA lBuffPrn       INIT .F.
    DATA nWidth, nHeight
    DATA nOrient        INIT 1
    DATA nFormType      INIT 0
@@ -75,19 +80,37 @@ METHOD New( cPrinter, lmm, nFormType ) CLASS HPrinter
    ENDIF
    IF nFormType != Nil
       ::nFormType := nFormType
+   ELSE
+      nFormType := DMPAPER_A4
    ENDIF
 
    ::cdpIn := iif( Empty( ::cdp ), hb_cdpSelect(), ::cdp )
 
-   ::hDC := Hwg_OpenPrinter( cPrinter, nFormType )
-   ::cPrinterName := cPrinter
+   IF cPrinter != Nil .AND. cPrinter == SCREEN_PRINTER
+      ::lBuffPrn := .T.
+      ::hDC := hwg_Getdc( hwg_Getactivewindow() )
+      ::cPrinterName := ""
+   ELSE
+      ::hDC := Hwg_OpenPrinter( cPrinter, nFormType )
+      ::cPrinterName := cPrinter
+   ENDIF
 
    IF ::hDC == 0
       RETURN Nil
+   ELSEIF ::lBuffPrn
+      aPrnCoors := hwg_Getdevicearea()
+      ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
+      ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
+      ::nWidth  := Iif( nFormType==DMPAPER_A3, 297, 210 )
+      ::nHeight := Iif( nFormType==DMPAPER_A3, 420, 297 )
+      IF !::lmm
+         ::nWidth  := Round( ::nHRes * ::nWidth, 0 )
+         ::nHeight := Round( ::nVRes * ::nHeight, 0 )
+      ENDIF
    ELSE
       aPrnCoors := hwg_gp_GetDeviceArea( ::hDC )
-      ::nWidth  := iif( ::lmm, aPrnCoors[3], aPrnCoors[1] )
-      ::nHeight := iif( ::lmm, aPrnCoors[4], aPrnCoors[2] )
+      ::nWidth  := Iif( ::lmm, aPrnCoors[3], aPrnCoors[1] )
+      ::nHeight := Iif( ::lmm, aPrnCoors[4], aPrnCoors[2] )
       ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
       ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
       // hwg_WriteLog( "Printer:" + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6]) )
@@ -99,7 +122,9 @@ METHOD SetMode( nOrientation ) CLASS HPrinter
    LOCAL x
 
    IF ( nOrientation == 1 .OR. nOrientation == 2 ) .AND. nOrientation != ::nOrient
-      hwg_Setprintermode( ::hDC, nOrientation )
+      IF !::lBuffPrn      
+         hwg_Setprintermode( ::hDC, nOrientation )
+      ENDIF
       ::nOrient := nOrientation
       x := ::nHRes
       ::nHRes := ::nVRes

@@ -18,6 +18,9 @@ STATIC crlf := e"\r\n"
 
 CLASS HPrinter INHERIT HObject
 
+   CLASS VAR aPaper  INIT { { "A3", 297, 420 }, { "A4", 210, 297 }, { "A5", 148, 210 }, ;
+      { "A6", 105, 148 } }
+
    DATA hDCPrn     INIT 0
    DATA hDC
    DATA cPrinterName
@@ -91,10 +94,10 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
    LOCAL aPrnCoors, cPrinterName, nTemp
 
    IF ValType( nFormType ) == "N"
-      // A3 - 8, A4 - 9
+      // A3 - DMPAPER_A3, A4 - DMPAPER_A4
       ::FormType := nFormType
    ELSE
-      nFormType := 9
+      nFormType := DMPAPER_A4
    ENDIF
    IF ValType( nBin ) == "N"
       ::BinNumber := nBin
@@ -149,8 +152,8 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
       ::nHRes   := aPrnCoors[ 1 ] / aPrnCoors[ 3 ]
       ::nVRes   := aPrnCoors[ 2 ] / aPrnCoors[ 4 ]
       IF ::lBuffPrn
-         ::nWidth  := Iif( nFormType==8, 297, 210 )
-         ::nHeight := Iif( nFormType==8, 420, 297 )
+         ::nWidth  := Iif( nFormType==DMPAPER_A3, 297, 210 )
+         ::nHeight := Iif( nFormType==DMPAPER_A3, 420, 297 )
          IF !::lmm
             ::nWidth  := Round( ::nHRes * ::nWidth, 0 )
             ::nHeight := Round( ::nVRes * ::nHeight, 0 )
@@ -706,7 +709,10 @@ METHOD ChangePage( oCanvas, oSayPage, n, nPage ) CLASS hPrinter
       ::nCurrPage := nPage
    ENDIF
    ::NeedsRedraw := .T.
-   hwg_Redrawwindow( oCanvas:handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE )
+   hwg_Setscrollpos( oCanvas:handle, SB_VERT, 1 )
+   hwg_Setscrollpos( oCanvas:handle, SB_HORZ, 1 )
+   ::ResizePreviewDlg( oCanvas,, 0 )
+   //hwg_Redrawwindow( oCanvas:handle, RDW_FRAME + RDW_INTERNALPAINT + RDW_UPDATENOW + RDW_INVALIDATE )
 
    RETURN Nil
 

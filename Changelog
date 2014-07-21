@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-07-21 14:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hprinter.prg
+    * A virtual printer ".buffer" added, as in winapi version
+  * source/winapi/hprinter.prg
+    * aPaper class var added with a paper types
+  * include/windows.ch
+    * few #define added
+  * source/common/editor/hcedit.prg
+    * ::Print() and ::Printline() methods added
+
 2014-07-16 16:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/debugger/hwgdebug.prg
     ! Bug fixed

@@ -114,8 +114,6 @@ REQUEST  HB_CODEPAGE_UTF8
 CLASS HCEdit INHERIT HControl
 
    CLASS VAR winclass  INIT "TEDIT"
-   CLASS VAR aDocFs  INIT { { "A3", 297, 420 }, { "A4", 210, 297 }, { "A5", 148, 210 }, ;
-      { "A6", 105, 148 } }
 
    DATA   hEdit
    DATA   cFileName
@@ -138,6 +136,8 @@ CLASS HCEdit INHERIT HControl
    DATA   nBoundT      INIT 0
    DATA   nMarginL     INIT 2
    DATA   nMarginR     INIT 2
+   DATA   nMarginT     INIT 0
+   DATA   nMarginB     INIT 0
    DATA   n4Number     INIT 0
    DATA   n4Separ      INIT 0
    DATA   bColorCur    INIT 16449510
@@ -232,7 +232,8 @@ CLASS HCEdit INHERIT HControl
    METHOD Highlighter( oHili )
    METHOD Scan()
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
-   METHOD Print( oPrinter, nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB )
+   METHOD Print( nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB )
+   METHOD PrintLine( oPrinter, yPos, nL )
 
 ENDCLASS
 
@@ -516,7 +517,7 @@ METHOD Paint( lReal ) CLASS HCEdit
    LOCAL hBitmap
 
    ::nDocWidth := nDocWidth := Iif( Empty(::nDocFormat), 0, ;
-      Int( ::nKoeffScr * ::aDocFs[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR )
+      Int( ::nKoeffScr * HPrinter():aPaper[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR )
 
    IF lReal == Nil .OR. lReal
 #ifdef __PLATFORM__UNIX
@@ -1843,14 +1844,13 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
       ENDIF
       nWidth := ::nClientWidth := aCoors[3] - aCoors[1]
       ::nDocWidth := nDocWidth := Iif( Empty(::nDocFormat), 0, ;
-         Int( ::nKoeffScr * ::aDocFs[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR )
+         Int( ::nKoeffScr * HPrinter():aPaper[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR )
       nHeight := ::nHeight
       hced_SetPaint( ::hEdit, hDC,, nWidth, ::lWrap,, nDocWidth )
    ELSE
       hced_SetWidth( ::hEdit, nWidth )
    ENDIF
    ::lScan := .T.
-
 
    nl1 := Iif( nl1==Nil, 1, nl1 )
    nl2 := Iif( nl2==Nil, ::nTextLen, nl2 )
@@ -1987,20 +1987,116 @@ METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HCEdit
    ENDIF
    RETURN Nil
 
-METHOD Print( oPrinter, nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB ) CLASS HCEdit
-   LOCAL nL, nKoeff, xTemp
+METHOD Print( nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB ) CLASS HCEdit
+   LOCAL nL, yPos, oPrinter
+   LOCAL aWrapB := ::aWrap
+   LOCAL lWrap := ::lWrap, nMargL := ::nMarginL, nMargR := ::nMarginR, nMargT := ::nMarginT, nMargB := ::nMarginB, nBoundL := ::nBoundL, nDocF := ::nDocFormat
 
-#ifdef __GTK__
-   xTemp := hwg_gp_GetDeviceArea( oPrinter:hDC )
-#else
-   xTemp := hwg_Getdevicearea( oPrinter:hDCPrn )
-#endif
-   nKoeff := ( xTemp[1] / xTemp[3] )
+   INIT PRINTER oPrinter NAME ".buffer" PIXEL
 
+   nMarginT *= oPrinter:nVRes
+   nMarginB := (HPrinter():aPaper[nDocFormat,3] - nMarginB) * oPrinter:nVRes
+   nMarginL *= oPrinter:nHRes
+   nMarginR *= oPrinter:nHRes
+
+   yPos := nMarginT
+   ::nDocFormat := nDocFormat
+   ::nMarginL := nMarginL; ::nMarginR := nMarginR; ::nMarginT := nMarginT; ::nMarginB := nMarginB
+   ::lWrap := .T.
+   ::aWrap := Array( Len(::aText) )
+   ::Scan()
+
+   oPrinter:StartDoc()
+   oPrinter:StartPage()
    FOR nL := 1 TO ::nTextLen
+      yPos := ::PrintLine( oPrinter, yPos, nL )
    NEXT
+   oPrinter:EndPage()
+   oPrinter:EndDoc()
+   oPrinter:Preview()
+   oPrinter:End()
+
+   ::nMarginL := nMargL; ::nMarginR := nMargR; ::nMarginT := nMargT; ::nMarginB := nMargB; ::nBoundL := nBoundL; ::nDocFormat := nDocF
+   ::aWrap := aWrapB
+   ::lWrap := lWrap
 
    RETURN Nil
+
+METHOD PrintLine( oPrinter, yPos, nL ) CLASS HCEdit
+   LOCAL nPrinted, nSubl := 1, nPos1 := 1, cLine, cAttr, aStru, aHili, i, cTemp, nHeight, arrS
+   LOCAL x1, x2, nLenOld, nMarginL
+
+   IF !Empty( ::oHili )
+      ::oHili:Do( Self, nL )
+   ENDIF
+   DO WHILE .T.
+      nLenOld := Len( oPrinter:aPages[oPrinter:nPage] )
+      nMarginL := ::nMarginL
+      nPrinted := hced_Len( Self,::aText[nL] )
+      IF ::aWrap[nL] != Nil
+         nPos1 := Iif( nSubl == 1, 1, ::aWrap[nL,nSubl-1] )
+         nPrinted := Iif( Len(::aWrap[nL])>=nSubl,::aWrap[nL,nSubl],nPrinted+1 ) - nPos1
+      ENDIF
+      IF nPrinted > 0
+         cLine := hced_Substr( Self, ::aText[nL], nPos1, nPrinted )
+         cAttr := Replicate( Chr( Iif(::nDefFont>0,::nDefFont,1) ), nPrinted )
+         IF !Empty( ::oHili )
+            IF ::oHili:nItems > 0
+               aStru := ::oHili:aLineStru
+               FOR i := 1 TO ::oHili:nItems
+                  IF aStru[i,2] >= nPos1 .AND. aStru[i,1] <= nPrinted .AND. hb_hHaskey( ::aHili,aStru[i,3] )
+                     aHili := ::aHili[aStru[i,3]]
+                     IF !Empty(aHili[1]) .AND. aHili[1] > 1
+                        x1 := Max( nPos1, aStru[i,1] ) - nPos1 + 1
+                        x2 := Min( aStru[i,2],nPos1+nPrinted-1 ) - nPos1 + 1
+                        cAttr := Stuff( cAttr, x1, x2-x1+1, Replicate( Chr(aHili[1]), x2-x1+1 ) )
+                     ENDIF
+                  ENDIF
+               NEXT
+            ENDIF
+         ENDIF
+         i := Left( cAttr,1 )
+         x2 := 1
+         nHeight := 0
+         x1 := 2
+         DO WHILE .T.
+            IF x1 > Len(cAttr) .OR. i != Substr( cAttr,x1,1 )
+               cTemp := Substr( cLine, x2, x1-x2 )
+
+               hwg_Selectobject( oPrinter:hDCPrn, ::aFonts[Asc(i)]:handle )
+               arrS := hwg_GetTextSize( oPrinter:hDCPrn, cTemp )
+               nHeight := Max( nHeight, arrS[2] + 1 )
+
+               oPrinter:Say( cTemp, nMarginL,yPos,nMarginL+arrS[1],yPos+nHeight, , ::aFonts[Asc(i)] )
+               nMarginL += arrS[1]
+               IF x1 > Len(cAttr)
+                  EXIT
+               ELSE
+                  i := Substr( cAttr,x1,1 )
+                  x2 := x1
+               ENDIF
+            ENDIF
+            x1 ++
+         ENDDO
+      ELSE
+         hwg_Selectobject( oPrinter:hDCPrn, ::aFonts[1]:handle )
+         nHeight := hwg_GetTextSize( oPrinter:hDCPrn, "A" )[2]
+      ENDIF
+      IF yPos + nHeight > ::nMarginB
+         oPrinter:aPages[oPrinter:nPage] := Left( oPrinter:aPages[oPrinter:nPage], nLenOld )
+         oPrinter:EndPage()
+         oPrinter:StartPage()
+         yPos := ::nMarginT
+      ELSE
+         nSubl ++
+         yPos += nHeight
+         IF Empty( ::aWrap[nL] ) .OR. Len( ::aWrap[nL] ) < nSubl-1
+            EXIT
+         ENDIF
+      ENDIF
+   ENDDO
+
+   RETURN yPos
 
 /*  nL - A row on the screen ( 1 ... ::nLines )
  */

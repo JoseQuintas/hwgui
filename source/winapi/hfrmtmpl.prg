@@ -844,6 +844,7 @@ Local under := oXmlNode:GetAttribute( "underline" )
            nVertSize := aMetr[4]
            hwg_Releasedc( hWnd,hDC )
         ENDIF
+        //hwg_writelog( str(Val( height )) + "/" + Str(Round( Val( Substr(height,i+1) ) * nVertRes / nVertSize, 0 )) )
         height := Round( Val( Substr(height,i+1) ) * nVertRes / nVertSize, 0 )
      ELSE
         height := Val( height )
@@ -1396,7 +1397,7 @@ Memvar lLastCycle, lSkipItem
       ELSEIF oItem:cClass == "hline"
          ::oPrinter:Line( x,y,x2,y,oItem:oPen )
       ELSEIF oItem:cClass == "bitmap"
-         IF oItem:obj == Nil .AND. !::oPrinter:lUseMeta
+         IF oItem:obj == Nil .AND. ( !::oPrinter:lPreview .OR. ::oPrinter:lUseMeta )
             oItem:obj := hwg_Openbitmap( aGetSecond( oItem:aProp,"bitmap" ), ::oPrinter:hDC )
          ENDIF
          ::oPrinter:Bitmap( x,y,x2,y2,, oItem:obj, aGetSecond( oItem:aProp,"bitmap" ) )

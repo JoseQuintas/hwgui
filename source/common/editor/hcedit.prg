@@ -123,6 +123,7 @@ CLASS HCEdit INHERIT HControl
    DATA   aWrap, nLinesAll
    DATA   nDocFormat   INIT 0
    DATA   nDocOrient   INIT 0
+   DATA   aDocMargins  INIT { 10,10,10,10 }
    DATA   nKoeffScr
 
    DATA   lShowNumbers INIT .F.
@@ -134,8 +135,8 @@ CLASS HCEdit INHERIT HControl
    DATA   nBoundL      INIT 0
    DATA   nBoundR
    DATA   nBoundT      INIT 0
-   DATA   nMarginL     INIT 2
-   DATA   nMarginR     INIT 2
+   DATA   nMarginL     INIT 0
+   DATA   nMarginR     INIT 0
    DATA   nMarginT     INIT 0
    DATA   nMarginB     INIT 0
    DATA   n4Number     INIT 0
@@ -516,8 +517,13 @@ METHOD Paint( lReal ) CLASS HCEdit
    LOCAL nDocWidth
    LOCAL hBitmap
 
-   ::nDocWidth := nDocWidth := Iif( Empty(::nDocFormat), 0, ;
-      Int( ::nKoeffScr * HPrinter():aPaper[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR )
+   IF Empty( ::nDocFormat )
+      ::nDocWidth := nDocWidth := 0
+   ELSE
+      ::nMarginL := Round( ::aDocMargins[1] * ::nKoeffScr, 0 )
+      ::nMarginR := Round( ::aDocMargins[2] * ::nKoeffScr, 0 )
+      ::nDocWidth := nDocWidth := Int( ::nKoeffScr * HPrinter():aPaper[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR
+   ENDIF
 
    IF lReal == Nil .OR. lReal
 #ifdef __PLATFORM__UNIX
@@ -546,7 +552,7 @@ METHOD Paint( lReal ) CLASS HCEdit
       hwg_Selectobject( hDC, hBitmap )     
 
 #endif
-      ::nBoundR := Iif( !Empty(nDocWidth), nDocWidth, (::nClientWidth := aCoors[3] - aCoors[1]) )
+      ::nClientWidth := aCoors[3] - aCoors[1]
       lReal := .T.
    ELSE
 #ifdef __PLATFORM__UNIX
@@ -557,17 +563,18 @@ METHOD Paint( lReal ) CLASS HCEdit
       hDC := hDCReal
    ENDIF
 
+   ::nBoundR := Iif( !Empty(nDocWidth), nDocWidth, ::nClientWidth )
    hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
    hced_SetPaint( ::hEdit, hDC,, ::nClientWidth, ::lWrap,, nDocWidth )
    IF lReal
-      hced_FillRect( ::hEdit, 0, 0, Iif( !Empty(nDocWidth), Max(nDocWidth,::nClientWidth), ::nClientWidth ), ::nHeight )
-      IF !Empty( ::nDocWidth )
+      hced_FillRect( ::hEdit, 0, 0, Iif( !Empty(nDocWidth), Max(nDocWidth+::nMarginR,::nClientWidth), ::nClientWidth ), ::nHeight )
+      IF !Empty( nDocWidth )
          hced_Setcolor( ::hEdit,, ::nClrDesk )
          IF ::nBoundL > 0
             hced_FillRect( ::hEdit, 0, 0, ::nBoundL, ::nHeight )
          ENDIF
-         IF ::nDocWidth-::nShiftL < ::nClientWidth
-            hced_FillRect( ::hEdit, ::nDocWidth, 0, ::nClientWidth+::nShiftL, ::nHeight )
+         IF ::nDocWidth+::nMarginR-::nShiftL < ::nClientWidth
+            hced_FillRect( ::hEdit, nDocWidth+::nMarginR, 0, ::nClientWidth+::nShiftL, ::nHeight )
          ENDIF
          hced_Setcolor( ::hEdit,, ::bColor )
       ENDIF
@@ -1843,12 +1850,18 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
          ::nKoeffScr := ( i[1]/i[3] )
       ENDIF
       nWidth := ::nClientWidth := aCoors[3] - aCoors[1]
-      ::nDocWidth := nDocWidth := Iif( Empty(::nDocFormat), 0, ;
-         Int( ::nKoeffScr * HPrinter():aPaper[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR )
+      IF Empty( ::nDocFormat )
+         ::nDocWidth := nDocWidth := 0
+      ELSE
+         ::nMarginL := Round( ::aDocMargins[1] * ::nKoeffScr, 0 )
+         ::nMarginR := Round( ::aDocMargins[2] * ::nKoeffScr, 0 )
+         ::nDocWidth := nDocWidth := Int( ::nKoeffScr * HPrinter():aPaper[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR
+      ENDIF
+      ::nBoundR := Iif( !Empty(nDocWidth), nDocWidth, ::nClientWidth )
       nHeight := ::nHeight
       hced_SetPaint( ::hEdit, hDC,, nWidth, ::lWrap,, nDocWidth )
    ELSE
-      hced_SetWidth( ::hEdit, nWidth )
+      hced_SetWidth( ::hEdit, nWidth, 0 )
    ENDIF
    ::lScan := .T.
 
@@ -1989,23 +2002,37 @@ METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HCEdit
 
 METHOD Print( nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB ) CLASS HCEdit
    LOCAL nL, yPos, oPrinter
-   LOCAL aWrapB := ::aWrap
-   LOCAL lWrap := ::lWrap, nMargL := ::nMarginL, nMargR := ::nMarginR, nMargT := ::nMarginT, nMargB := ::nMarginB, nBoundL := ::nBoundL, nDocF := ::nDocFormat
+   LOCAL aWrapB := ::aWrap, aMargins := ::aDocMargins
+   LOCAL lWrap := ::lWrap, nMargL := ::nMarginL, nMargR := ::nMarginR, nMargT := ::nMarginT, nMargB := ::nMarginB, nBoundL := ::nBoundL, nBoundR := ::nBoundR, nDocF := ::nDocFormat
 
    INIT PRINTER oPrinter NAME ".buffer" PIXEL
 
-   nMarginT *= oPrinter:nVRes
-   nMarginB := (HPrinter():aPaper[nDocFormat,3] - nMarginB) * oPrinter:nVRes
-   nMarginL *= oPrinter:nHRes
-   nMarginR *= oPrinter:nHRes
+   IF nDocFormat == Nil
+      nDocFormat := Iif( ::nDocFormat==0, 2, ::nDocFormat ); nDocOrient := ::nDocOrient
+      nMarginL := ::aDocMargins[1]; nMarginR := ::aDocMargins[2]; nMarginT := ::aDocMargins[3]; nMarginB := ::aDocMargins[4]
+   ENDIF
 
-   yPos := nMarginT
-   ::nDocFormat := nDocFormat
-   ::nMarginL := nMarginL; ::nMarginR := nMarginR; ::nMarginT := nMarginT; ::nMarginB := nMarginB
-   ::lWrap := .T.
-   ::aWrap := Array( Len(::aText) )
-   ::Scan()
+   ::nBoundL := ::nBoundR := 0
+   ::nMarginL := nMarginL *oPrinter:nHRes
+   ::nMarginR := nMarginR * oPrinter:nHRes
+   yPos := ::nMarginT := nMarginT * oPrinter:nVRes
+   ::nMarginB := (HPrinter():aPaper[nDocFormat,3] - nMarginB) * oPrinter:nVRes
 
+   IF ::nDocFormat != nDocFormat .OR. ::nDocOrient != nDocOrient .OR. ;
+         ::aDocMargins[1] != nMarginL .OR. ::aDocMargins[2] != nMarginR .OR. ;
+         ::aDocMargins[3] != nMarginT .OR. ::aDocMargins[4] != nMarginB
+
+      ::aDocMargins[1] := nMarginL; ::aDocMargins[2] := nMarginR; ::aDocMargins[3] := nMarginT; ::aDocMargins[4] := nMarginB
+
+      ::nDocFormat := nDocFormat
+      ::lWrap := .T.
+      ::aWrap := Array( Len(::aText) )
+      ::Scan()
+
+   ENDIF
+   IF ::nDocOrient == 1
+      oPrinter:SetMode( 2 )
+   ENDIF
    oPrinter:StartDoc()
    oPrinter:StartPage()
    FOR nL := 1 TO ::nTextLen
@@ -2016,22 +2043,23 @@ METHOD Print( nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB ) C
    oPrinter:Preview()
    oPrinter:End()
 
-   ::nMarginL := nMargL; ::nMarginR := nMargR; ::nMarginT := nMargT; ::nMarginB := nMargB; ::nBoundL := nBoundL; ::nDocFormat := nDocF
+   ::nMarginL := nMargL; ::nMarginR := nMargR; ::nMarginT := nMargT; ::nMarginB := nMargB; ::nBoundL := nBoundL; ::nBoundR := nBoundR; ::nDocFormat := nDocF
    ::aWrap := aWrapB
    ::lWrap := lWrap
+   ::aDocMargins := aMargins
 
    RETURN Nil
 
 METHOD PrintLine( oPrinter, yPos, nL ) CLASS HCEdit
    LOCAL nPrinted, nSubl := 1, nPos1 := 1, cLine, cAttr, aStru, aHili, i, cTemp, nHeight, arrS
-   LOCAL x1, x2, nLenOld, nMarginL
+   LOCAL x1, x2, nLenOld, nMarginL, aTemp
 
    IF !Empty( ::oHili )
       ::oHili:Do( Self, nL )
    ENDIF
    DO WHILE .T.
       nLenOld := Len( oPrinter:aPages[oPrinter:nPage] )
-      nMarginL := ::nMarginL
+      nMarginL := ::nMarginL + Iif( nSubl==1, ::nIndent, 0 )
       nPrinted := hced_Len( Self,::aText[nL] )
       IF ::aWrap[nL] != Nil
          nPos1 := Iif( nSubl == 1, 1, ::aWrap[nL,nSubl-1] )
@@ -2044,7 +2072,7 @@ METHOD PrintLine( oPrinter, yPos, nL ) CLASS HCEdit
             IF ::oHili:nItems > 0
                aStru := ::oHili:aLineStru
                FOR i := 1 TO ::oHili:nItems
-                  IF aStru[i,2] >= nPos1 .AND. aStru[i,1] <= nPrinted .AND. hb_hHaskey( ::aHili,aStru[i,3] )
+                  IF aStru[i,2] >= nPos1 .AND. aStru[i,1] <= nPos1+nPrinted-1 .AND. hb_hHaskey( ::aHili,aStru[i,3] )
                      aHili := ::aHili[aStru[i,3]]
                      IF !Empty(aHili[1]) .AND. aHili[1] > 1
                         x1 := Max( nPos1, aStru[i,1] ) - nPos1 + 1
@@ -2056,18 +2084,18 @@ METHOD PrintLine( oPrinter, yPos, nL ) CLASS HCEdit
             ENDIF
          ENDIF
          i := Left( cAttr,1 )
-         x2 := 1
-         nHeight := 0
-         x1 := 2
+         x2 := 1; nHeight := 0; x1 := 2; aTemp := {}
          DO WHILE .T.
             IF x1 > Len(cAttr) .OR. i != Substr( cAttr,x1,1 )
-               cTemp := Substr( cLine, x2, x1-x2 )
+               cTemp := hced_Substr( Self, cLine, x2, x1-x2 )
 
                hwg_Selectobject( oPrinter:hDCPrn, ::aFonts[Asc(i)]:handle )
                arrS := hwg_GetTextSize( oPrinter:hDCPrn, cTemp )
                nHeight := Max( nHeight, arrS[2] + 1 )
 
-               oPrinter:Say( cTemp, nMarginL,yPos,nMarginL+arrS[1],yPos+nHeight, , ::aFonts[Asc(i)] )
+               //oPrinter:Say( cTemp, nMarginL, yPos, nMarginL+arrS[1], yPos+nHeight, ::nAlign, ::aFonts[Asc(i)] )
+               //hwg_writelog( cTemp+"//-- "+str(::nMarginR)+" "+str(::nBoundR) )
+               Aadd( aTemp, { cTemp, Asc(i), arrS[1] } )
                nMarginL += arrS[1]
                IF x1 > Len(cAttr)
                   EXIT
@@ -2078,6 +2106,19 @@ METHOD PrintLine( oPrinter, yPos, nL ) CLASS HCEdit
             ENDIF
             x1 ++
          ENDDO
+         x2 := ::nMarginL + Iif( nSubl==1, ::nIndent, 0 )
+         x1 := nMarginL - x2
+         nMarginL := x2
+         x2 := Iif( Empty(::nBoundR), ::nDocWidth, ::nBoundR ) - ::nMarginR - ::nMarginL
+         IF ::nAlign == DT_CENTER
+            nMarginL += Round( ( x2 - x1 ) / 2, 0 )
+         ELSEIF ::nAlign == DT_RIGHT
+            nMarginL += x2 - x1
+         ENDIF
+         FOR i := 1 TO Len( aTemp )
+            oPrinter:Say( aTemp[i,1], nMarginL, yPos, nMarginL+aTemp[i,3], yPos+nHeight,, ::aFonts[aTemp[i,2]] )
+            nMarginL += aTemp[i,3]
+         NEXT
       ELSE
          hwg_Selectobject( oPrinter:hDCPrn, ::aFonts[1]:handle )
          nHeight := hwg_GetTextSize( oPrinter:hDCPrn, "A" )[2]

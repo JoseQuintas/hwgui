@@ -136,6 +136,7 @@ CLASS HSayFImage INHERIT HSayImage
    METHOD Redefine( oWndParent, nId, Image, bInit, bSize, ctooltip )
    METHOD ReplaceImage( Image, cType )
    METHOD Paint( lpdis )
+   METHOD Refresh() INLINE Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )   
 
 ENDCLASS
 
@@ -186,7 +187,7 @@ METHOD Paint( lpdis ) CLASS HSayFImage
 
    IF ::oImage != Nil
       IF ::nZoom == Nil
-         ::oImage:Draw( hDC, ::nOffsetH, ::nOffsetV, ::nWidth, ::nHeight )
+         ::oImage:Draw( hDC, ::nOffsetH, ::nOffsetV, ::oImage:nWidth, ::oImage:nHeight )
       ELSE
          ::oImage:Draw( hDC, ::nOffsetH, ::nOffsetV, ::oImage:nWidth * ::nZoom, ::oImage:nHeight * ::nZoom )
       ENDIF

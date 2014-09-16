@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-09-16 20:13 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * source/hfreeimg.prg
+    + Added refresh method to HSayFImage class
+    * Fixed method Paint when using no zoom on the image  
+  * hwgui.lib.xbp
+    ! updated to reflect new directories  
+  
+
 2014-07-25 15:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hfrmtmpl.prg
   * source/common/editor/hcedit.prg

@@ -111,7 +111,7 @@ Function hwg_dbg_New()
                ELSEIF cCmd == "debugger"
                   cExe := Ltrim( Substr( arr[i], nPos+1 ) )
                ELSEIF cCmd == "runatstart"
-                  __Dbg():lRunAtStartup := ( Ltrim( Substr( arr[i], nPos+1 ) ) == "on" )
+                  __Dbg():lRunAtStartup := ( Lower( Alltrim( Substr( arr[i], nPos+1 ) ) ) == "on" )
                ENDIF
             ENDIF
          NEXT

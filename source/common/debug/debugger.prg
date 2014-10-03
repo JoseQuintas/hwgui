@@ -192,7 +192,7 @@ PROCEDURE __dbgEntry( nMode, uParam1, uParam2, uParam3, uParam4, uParam5 )
       t_oDebugger:aModules := uParam4
       t_oDebugger:aBreakPoints := uParam5
       IF lStartup
-         IF t_oDebugger:lRunAtStartup
+         IF !t_oDebugger:lRunAtStartup
             __dbgSetGo( uParam1 )
             RETURN
          ENDIF
@@ -229,7 +229,7 @@ CLASS HBDebugger
    VAR lGo                          // stores if GO was requested
    VAR lActive           INIT .F.
    VAR lCBTrace          INIT .T.   // stores if codeblock tracing is allowed
-   VAR lRunAtStartup     INIT .F.
+   VAR lRunAtStartup     INIT .T.
 
    METHOD New()
    METHOD Activate()

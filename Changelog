@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-10-03 12:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/gtkmain.prg
+  * source/gtk/hcontrol.prg
+    ! HStatus():Settext() method fixed
+  * source/common/debug/dbgconnect.prg
+  * source/common/debug/debugger.prg
+    ! Now the RunAtStart option in hwgdebug.info works properly.
+
 2014-09-16 20:13 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/hfreeimg.prg
     + Added refresh method to HSayFImage class

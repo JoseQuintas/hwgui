@@ -187,13 +187,13 @@ FUNCTION HWG_Version( n )
 
    RETURN "HWGUI " + HWG_VERSION + " Build " + LTrim( Str( HWG_BUILD ) )
 
-FUNCTION hwg_WriteStatus( oWnd, nPart, cText, lRedraw )
+FUNCTION hwg_WriteStatus( oWnd, nPart, cText )
 
    LOCAL aControls, i
 
    aControls := oWnd:aControls
    IF ( i := Ascan( aControls, { |o|o:ClassName() == "HSTATUS" } ) ) > 0
-      hwg_Writestatuswindow( aControls[i]:handle, nPart - 1, cText )
+      hwg_Writestatuswindow( aControls[i]:handle, 0, cText )
 
    ENDIF
 

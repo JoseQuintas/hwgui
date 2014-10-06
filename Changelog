@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-10-06 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/gtkmain.prg
+  * source/gtk/hcontrol.prg
+    * forgot to update while last uploading...
+
 2014-10-03 12:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/gtkmain.prg
   * source/gtk/hcontrol.prg

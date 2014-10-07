@@ -776,7 +776,12 @@ HB_FUNC( HWG_SET_MODAL )
 
 HB_FUNC( HWG_WINDOWSETRESIZE )
 {
-  gtk_window_set_resizable( (GtkWindow*) HB_PARHANDLE(1) ,hb_parl(2));
+  GtkWindow * handle = (GtkWindow*) HB_PARHANDLE(1);
+  gint width = 0, height = 0;
+  
+  gtk_window_get_size( handle, &width, &height );
+  gtk_widget_set_size_request( (GtkWidget*)handle, width, height );
+  gtk_window_set_resizable( handle ,hb_parl(2));
 }
 
 gchar * hwg_convert_to_utf8( const char * szText )

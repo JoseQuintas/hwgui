@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-10-07 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/window.c
+    * hwg_WindowSetResize() keeps now the window size
+
 2014-10-06 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/gtkmain.prg
   * source/gtk/hcontrol.prg

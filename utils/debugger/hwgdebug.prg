@@ -204,7 +204,11 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
    ReadHrb()
 
    IF Empty( oMainFont )
+#ifdef __PLATFORM__UNIX
+      oMainFont := HFont():Add( "Sans", 0, 12, 400, 4,,,,, .T. )
+#else
       PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT -15 CHARSET 4
+#endif
    ENDIF
 
    INIT WINDOW oMainW MAIN TITLE "Debugger" ;
@@ -361,7 +365,7 @@ Local oInit, i
                cPaths := ";" + cPaths
             ENDIF
          ELSEIF oInit:aItems[i]:title == "font"
-            oMainFont := hwg_hfrm_FontFromXML( oInit:aItems[i] )
+            oMainFont := hwg_hfrm_FontFromXML( oInit:aItems[i], .T. )
          ELSEIF oInit:aItems[i]:title == "maxtabs"
             nTabsMax := Val(oInit:aItems[i]:aItems[1])
          ELSEIF oInit:aItems[i]:title == "hrbpath"
@@ -953,8 +957,8 @@ Local oText
    oText:HighLighter( oHighLighter )
 
    oText:SetHili( HILIGHT_KEYW, oText:oFont:SetFontStyle( .T. ), 8388608, oText:bColor )
-   oText:SetHili( HILIGHT_FUNC, - 1, 8388608, oText:bColor )
-   oText:SetHili( HILIGHT_QUOTE, - 1, 16711680, oText:bColor )
+   oText:SetHili( HILIGHT_FUNC, 0, 8388608, oText:bColor )
+   oText:SetHili( HILIGHT_QUOTE, 0, 16711680, oText:bColor )
    oText:SetHili( HILIGHT_COMM, oText:oFont:SetFontStyle( ,, .T. ), 32768, oText:bColor )
 
 Return oText

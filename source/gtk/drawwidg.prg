@@ -49,6 +49,7 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, ;
    IF lLinux == Nil .OR. !lLinux
       nHeight -= 3
    ENDIF
+   nWidth := iif( nWidth == Nil, 0, nWidth )
    fnWeight := iif( fnWeight == Nil, 0, fnWeight )
    fdwCharSet := iif( fdwCharSet == Nil, 0, fdwCharSet )
    fdwItalic := iif( fdwItalic == Nil, 0, fdwItalic )

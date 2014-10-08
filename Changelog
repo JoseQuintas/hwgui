@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-10-08 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+  * source/gtk/hfrmtmpl.prg
+  * source/common/debug/debugger.prg
+    ! Some fixes for font size in GTK version
+
 2014-10-07 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/window.c
     * hwg_WindowSetResize() keeps now the window size

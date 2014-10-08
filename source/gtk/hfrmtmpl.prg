@@ -818,7 +818,7 @@ FUNCTION hwg_Font2XML( oFont )
 
    RETURN HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
 
-FUNCTION hwg_hfrm_FontFromXML( oXmlNode )
+FUNCTION hwg_hfrm_FontFromXML( oXmlNode, lDecr )
 
    LOCAL width  := oXmlNode:GetAttribute( "width" )
    LOCAL height := oXmlNode:GetAttribute( "height" )
@@ -848,7 +848,7 @@ FUNCTION hwg_hfrm_FontFromXML( oXmlNode )
 
    RETURN HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
       width, height, weight, charset,   ;
-      ita, under )
+      ita, under,,, lDecr )
 
 #endif  // G_CONSOLE_MODE
 

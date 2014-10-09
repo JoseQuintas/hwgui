@@ -309,7 +309,8 @@ METHOD EndDoc() CLASS HPrinter
 METHOD StartPage() CLASS HPrinter
 
    ::nPage ++
-   AAdd( ::aPages, "page," + LTrim( Str( ::nPage ) ) + crlf )
+   AAdd( ::aPages, "page," + LTrim( Str( ::nPage ) ) + "," + ;
+      Iif( ::lmm, "mm,", "px," ) + Iif( ::nOrient == 1, "p", "l" ) + crlf )
 
    RETURN Nil
 

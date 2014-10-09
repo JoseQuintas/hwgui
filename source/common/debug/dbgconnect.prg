@@ -395,15 +395,29 @@ Function hwg_dbg_Alert( cMessage )
 Local bCode := &( Iif( Type( "hwg_msginfo()" ) == "UI", "{|s|hwg_msginfo(s)}", ;
        Iif( Type( "msginfo()" ) == "UI", "{|s|msginfo(s)}", "{|s|alert(s)}" ) ) )
 
-Eval( bCode, cMessage )
+   Eval( bCode, cMessage )
 Return Nil
 
 Function hwg_dbg_Quit()
-Local bCode := &( Iif( Type( "hwg_endwindow()" ) == "UI", "{|s|hwg_endwindow()}", ;
-      Iif( Type( "ReleaseAllWindows()" ) == "UI","{||ReleaseAllWindows()}", "{||__Quit()}" ) )  )
+Local cCode, bCode
 
-Eval( bCode )
-Return Nil
+   IF Type( "hwg_endwindow()" ) == "UI"
+      cCode := "{||hwg_endwindow()"
+      IF Type( "hwg_Postquitmessage()" ) == "UI"
+         cCode += ",hwg_Postquitmessage(),__Quit()}"
+      ELSEIF Type( "hwg_gtk_exit()" ) == "UI"
+         cCode += ",hwg_gtk_exit(),__Quit()}"
+      ELSE
+         cCode += ",__Quit()}"
+      ENDIF
+   ELSEIF Type( "ReleaseAllWindows()" ) == "UI"
+      cCode := "{||ReleaseAllWindows()}"
+   ELSE
+      cCode := "{||__Quit()}"
+   ENDIF
+
+   bCode := &( cCode )
+Return Eval( bCode )
 
 Static Function Hex2Int( stroka )
 Local i := ASC( stroka ), res

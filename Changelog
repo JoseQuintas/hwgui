@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-10-17 14:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hprinter.prg
+  * source/winapi/wprint.c
+    * Now :Startdoc(), :Enddoc(), :Startpage(), :Endpage() methods
+      returns the result of appropriate API call ( needed for debug purposes )
+
 2014-10-17 14:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hwindow.prg
   * source/winapi/hwindow.prg

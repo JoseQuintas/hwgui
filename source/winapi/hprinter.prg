@@ -420,6 +420,8 @@ METHOD GetTextWidth( cString, oFont ) CLASS HPrinter
 
 METHOD StartDoc( lPreview, cScriptFile ) CLASS HPrinter
 
+   LOCAL nRes := 0
+
    IF !Empty( lPreview ) .OR. ::lBuffPrn
       ::lPreview := .T.
       IF ::lUseMeta
@@ -436,29 +438,29 @@ METHOD StartDoc( lPreview, cScriptFile ) CLASS HPrinter
    ELSE
       ::lPreview := .F.
       ::hDC := ::hDCPrn
-      Hwg_StartDoc( ::hDC )
+      nRes := Hwg_StartDoc( ::hDC )
    ENDIF
    ::nPage := 0
 
-   RETURN Nil
+   RETURN nRes
 
 METHOD EndDoc() CLASS HPrinter
 
-   LOCAL han, i
+   LOCAL han, i, nRes := 0
 
    IF !::lUseMeta .AND. ::lPreview .AND. !Empty( ::cScriptFile )
       ::SaveScript()
    ENDIF
 
    IF ! ::lPreview
-      Hwg_EndDoc( ::hDC )
+      nRes := Hwg_EndDoc( ::hDC )
    ENDIF
 
-   RETURN Nil
+   RETURN nRes
 
 METHOD StartPage() CLASS HPrinter
 
-   LOCAL fname
+   LOCAL fname, nRes := 0
 
    ::nPage ++
    IF ::lPreview
@@ -466,17 +468,18 @@ METHOD StartPage() CLASS HPrinter
          AAdd( ::aPages, hwg_Createmetafile( ::hDCPrn, Nil ) )
          ::hDC := ATail( ::aPages )
       ELSE
-         AAdd( ::aPages, "page," + LTrim( Str( ::nPage ) ) + crlf )
+         AAdd( ::aPages, "page," + LTrim( Str( ::nPage ) ) + "," + ;
+            Iif( ::lmm, "mm,", "px," ) + Iif( ::nOrient == 1, "p", "l" ) + crlf )
       ENDIF
    ELSE
-      Hwg_StartPage( ::hDC )
+      nRes := Hwg_StartPage( ::hDC )
    ENDIF
 
-   RETURN Nil
+   RETURN nRes
 
 METHOD EndPage() CLASS HPrinter
 
-   LOCAL nLen
+   LOCAL nLen, nRes := 0
 
    IF ::lPreview
       IF ::lUseMeta
@@ -485,10 +488,10 @@ METHOD EndPage() CLASS HPrinter
          ::hDC := 0
       ENDIF
    ELSE
-      Hwg_EndPage( ::hDC )
+      nRes := Hwg_EndPage( ::hDC )
    ENDIF
 
-   RETURN Nil
+   RETURN nRes
 
 METHOD LoadScript( cScriptFile ) CLASS HPrinter
 

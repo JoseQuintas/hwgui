@@ -268,7 +268,7 @@ HB_FUNC( HWG_STARTDOC )
 
 HB_FUNC( HWG_ENDDOC )
 {
-   EndDoc( ( HDC ) HB_PARHANDLE( 1 ) );
+   hb_retnl( ( LONG ) EndDoc( ( HDC ) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( HWG_ABORTDOC )

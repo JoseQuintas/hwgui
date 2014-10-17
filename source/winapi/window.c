@@ -624,6 +624,11 @@ HB_FUNC( HWG_SETWINDOWFONT )
          MAKELPARAM( ( HB_ISNIL( 3 ) ) ? 0 : hb_parl( 3 ), 0 ) );
 }
 
+HB_FUNC( HWG_GETLASTERROR )
+{
+   hb_retnl( ( LONG ) GetLastError() );
+}
+
 HB_FUNC( HWG_ENABLEWINDOW )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );

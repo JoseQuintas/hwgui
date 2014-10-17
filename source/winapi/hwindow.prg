@@ -130,10 +130,11 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
    METHOD GetMain()
    METHOD EvalKeyList( nKey, bPressed )
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
-   METHOD Restore()  INLINE hwg_Sendmessage( ::handle,  WM_SYSCOMMAND, SC_RESTORE, 0 )
-   METHOD Maximize() INLINE hwg_Sendmessage( ::handle,  WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
-   METHOD Minimize() INLINE hwg_Sendmessage( ::handle,  WM_SYSCOMMAND, SC_MINIMIZE, 0 )
-   METHOD Close()   INLINE hwg_Sendmessage( ::handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
+   METHOD Restore()  INLINE hwg_Sendmessage( ::handle, WM_SYSCOMMAND, SC_RESTORE, 0 )
+   METHOD Maximize() INLINE hwg_Sendmessage( ::handle, WM_SYSCOMMAND, SC_MAXIMIZE, 0 )
+   METHOD Minimize() INLINE hwg_Sendmessage( ::handle, WM_SYSCOMMAND, SC_MINIMIZE, 0 )
+   METHOD Close()    INLINE hwg_Sendmessage( ::handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
+   METHOD SetTitle( cTitle ) INLINE hwg_Setwindowtext( ::handle, ::title := cTitle )
 
 ENDCLASS
 

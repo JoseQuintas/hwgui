@@ -96,7 +96,8 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD Restore()  INLINE hwg_WindowRestore( ::handle )
    METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
    METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
-   METHOD Close()	INLINE hwg_DestroyWindow( ::handle )
+   METHOD Close()    INLINE hwg_DestroyWindow( ::handle )
+   METHOD SetTitle( cTitle ) INLINE hwg_Setwindowtext( ::handle, ::title := cTitle )
 ENDCLASS
 
 METHOD New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;

@@ -12,18 +12,8 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 
-#define CB_ERR              (-1)
 #ifndef CBN_SELCHANGE
 #define CBN_SELCHANGE       1
-#define CBN_DBLCLK          2
-#define CBN_SETFOCUS        3
-#define CBN_KILLFOCUS       4
-#define CBN_EDITCHANGE      5
-#define CBN_EDITUPDATE      6
-#define CBN_DROPDOWN        7
-#define CBN_CLOSEUP         8
-#define CBN_SELENDOK        9
-#define CBN_SELENDCANCEL    10
 #endif
 
 CLASS HComboBox INHERIT HControl
@@ -31,6 +21,7 @@ CLASS HComboBox INHERIT HControl
    CLASS VAR winclass   INIT "COMBOBOX"
    DATA  aItems
    DATA  bSetGet
+   DATA  bValid
    DATA  value    INIT 1
    DATA  bChangeSel
    DATA  lText    INIT .F.
@@ -38,7 +29,7 @@ CLASS HComboBox INHERIT HControl
    DATA  hEdit
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      aItems, oFont, bInit, bSize, bPaint, bChange, cToolt, lEdit, lText, bGFocus, tcolor, bcolor )
+      aItems, oFont, bInit, bSize, bPaint, bChange, cToolt, lEdit, lText, bGFocus, tcolor, bcolor, bValid )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init( aCombo, nCurrent )
@@ -50,7 +41,7 @@ CLASS HComboBox INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, oFont, ;
-      bInit, bSize, bPaint, bChange, cToolt, lEdit, lText, bGFocus, tcolor, bcolor ) CLASS HComboBox
+      bInit, bSize, bPaint, bChange, cToolt, lEdit, lText, bGFocus, tcolor, bcolor, bValid ) CLASS HComboBox
 
    IF lEdit == Nil; lEdit := .F. ; ENDIF
    IF lText == Nil; lText := .F. ; ENDIF
@@ -75,11 +66,13 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::aItems  := aItems
 
    ::Activate()
+   ::bValid := bValid
    ::bGetFocus := bGFocus
-   ::bLostFocus := bChange
+   ::bChangeSel := bChange
 
    hwg_SetEvent( ::hEdit, "focus_in_event", EN_SETFOCUS, 0, 0 )
    hwg_SetEvent( ::hEdit, "focus_out_event", EN_KILLFOCUS, 0, 0 )
+   hwg_SetSignal( ::hEdit, "changed", CBN_SELCHANGE, 0, 0 )
 
    RETURN Self
 
@@ -112,6 +105,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
          ENDIF
       ELSE
          __Valid( Self )
+      ENDIF
+
+   ELSEIF msg == CBN_SELCHANGE
+      IF ::bChangeSel != Nil
+         Eval( ::bChangeSel, hwg_Edit_GetText( ::hEdit ), Self )
       ENDIF
 
    ENDIF
@@ -207,8 +205,11 @@ METHOD End() CLASS HComboBox
 STATIC FUNCTION __Valid( oCtrl )
 
    oCtrl:GetValue()
-   IF oCtrl:bChangeSel != Nil
-      Eval( oCtrl:bChangeSel, oCtrl:value, oCtrl )
+   IF oCtrl:bValid != NIL
+      IF !Eval( oCtrl:bValid, oCtrl )
+         hwg_Setfocus( oCtrl:handle )
+         RETURN .F.
+      ENDIF
    ENDIF
 
    RETURN .T.

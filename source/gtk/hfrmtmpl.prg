@@ -1039,7 +1039,9 @@ METHOD PRINT( printer, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
       RETURN Nil
    ENDIF
    SetDebugInfo( ::lDebug )
+#ifndef G_CONSOLE_MODE
    SetDebugger( ::lDebug )
+#endif
    oPrinter:cScriptfile := ::cMetafile
 
    FOR i := 1 TO Len( ::aProp )

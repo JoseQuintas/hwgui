@@ -289,7 +289,7 @@ Function Test
 
    // Combo box is a well known control, which combines much of the 
    // functionality of a list box and an edit control. 
-   @ 20,150 COMBOBOX oCombo ITEMS aCombo SIZE 100, 150
+   @ 20,150 COMBOBOX oCombo ITEMS aCombo SIZE 100, 28
 
    // An up-down control is an edit control, combined with a pair of
    // arrow buttons that the user can click to increment or decrement
@@ -361,6 +361,57 @@ Local oDlg, oBar
 Return Nil
       ]]>
     </module>
+    <module name="Status window" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+Local oMainWindow, oPanel, oStatus
+
+   INIT WINDOW oMainWindow MAIN TITLE "Example" ;
+     AT 200,0 SIZE 420,240
+     
+   @ 20, 20 SAY "Press button to view current time in status bar" SIZE 380, 26 TRANSPARENT
+
+   @ 160,120 BUTTON "Get Time" ;
+        SIZE 100, 32 ON CLICK {||oStatus:SetText(Time())}
+
+   ADD STATUS oStatus TO oMainWindow
+
+   ACTIVATE WINDOW oMainWindow
+
+return nil
+      ]]>
+    </module>
+    <module name="Combobox and ON CHANGE event" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+Local oDlg, oCombo1, oCombo2
+Local aCombo1 := { "First","Second" }, aCombo2 := { "White","Black" }, ;
+      aCombo3 := { "Yellow","Green" }
+Local bCombo1 := {||
+   IF oCombo1:GetValue() == 1
+      oCombo2:aItems := aCombo2
+   ELSE
+      oCombo2:aItems := aCombo3
+   ENDIF
+   oCombo2:Refresh()
+   Return .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Example" ;
+     AT 200,0 SIZE 400,200
+
+   @ 20,20 COMBOBOX oCombo1 ITEMS aCombo1 SIZE 100, 25 ON CHANGE bCombo1
+
+   @ 150,20 COMBOBOX oCombo2 ITEMS aCombo2 SIZE 100, 25
+     
+   @ 150,120 BUTTON "Close" OF oDlg ;
+        SIZE 100, 32 ON CLICK {||oDlg:Close()}
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
     <module name="Browse" >
       <![CDATA[#include "hwgui.ch"
 Function Test()
@@ -380,6 +431,7 @@ Local aSample := { {"Alex",17,1200}, {"Victor",42,1600}, {"John",31,1000} }
          ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
 
    ACTIVATE DIALOG oDlg
+Return Nil
       ]]>
     </module>
     <module name="TreeView" >

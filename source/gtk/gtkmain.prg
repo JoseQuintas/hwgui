@@ -182,6 +182,8 @@ FUNCTION HWG_Version( n )
          RETURN HWG_VERSION
       ELSEIF n == 2
          RETURN HWG_BUILD
+      ELSEIF n == 3
+         RETURN 1
       ENDIF
    ENDIF
 

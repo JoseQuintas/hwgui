@@ -849,6 +849,11 @@ static gint snooper ( GtkWidget *grab_widget,
    return FALSE;
 }
 
+HB_FUNC( HWG__ISUNICODE )
+{
+   hb_retl( 1 );
+}
+
 HB_FUNC( HWG_INITPROC )
 {
    s_KeybHook = gtk_key_snooper_install( &snooper, NULL );

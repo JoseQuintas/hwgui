@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-10-29 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcombo.prg
+    * The get variable of GET COMBOBOX is now initialized in :Init()
+  * source/gtk/window.c  
+    * hwg__isUnocode() functions has been added for compatibility with
+      winapi version, it always returns .t.
+  * source/gtk/gtkmain.prg
+    * hb_version(3) now returns 1 for compatibility with winapi version
+
 2014-10-23 16:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor_eng.xml
     * Two samples added: Status window, Combobox and ON CHANGE event

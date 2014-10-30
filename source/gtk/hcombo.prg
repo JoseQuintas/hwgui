@@ -108,8 +108,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
       ENDIF
 
    ELSEIF msg == CBN_SELCHANGE
+      ::GetValue()
       IF ::bChangeSel != Nil
-         Eval( ::bChangeSel, hwg_Edit_GetText( ::hEdit ), Self )
+         Eval( ::bChangeSel, ::value, Self )
       ENDIF
 
    ENDIF

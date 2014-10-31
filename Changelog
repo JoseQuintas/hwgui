@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-10-31 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit_w.c
+    * Unicode support has been added to the editor's winapi version
+
 2014-10-30 10:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcombo.prg
     * The get variable of GET COMBOBOX is now updated while "changed" signal

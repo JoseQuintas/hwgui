@@ -211,14 +211,14 @@ METHOD DelItem() CLASS HDialog
 
 METHOD FindDialog( hWnd ) CLASS HDialog
 
-   LOCAL i := Ascan( ::aDialogs, { |o|o:handle == hWnd } )
+   LOCAL i := Ascan( ::aDialogs, { |o|hwg_Isptreq( o:handle, hWnd ) } )
 
    RETURN Iif( i == 0, Nil, ::aDialogs[i] )
 
 METHOD GetActive() CLASS HDialog
 
    LOCAL handle := hwg_Getfocus()
-   LOCAL i := Ascan( ::Getlist, { |o|o:handle == handle } )
+   LOCAL i := Ascan( ::Getlist, { |o|hwg_Isptreq( o:handle,handle ) } )
 
    RETURN Iif( i == 0, Nil, ::Getlist[i] )
 

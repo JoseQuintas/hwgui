@@ -136,7 +136,7 @@ CLASS HSayFImage INHERIT HSayImage
    METHOD Redefine( oWndParent, nId, Image, bInit, bSize, ctooltip )
    METHOD ReplaceImage( Image, cType )
    METHOD Paint( lpdis )
-   METHOD Refresh() INLINE Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )   
+   METHOD Refresh() INLINE hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )   
 
 ENDCLASS
 

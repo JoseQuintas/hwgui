@@ -13,6 +13,9 @@
 #include "guilib.ch"
 #include "error.ch"
 
+ANNOUNCE HB_GTSYS
+REQUEST HB_GT_CGI_DEFAULT
+
 STATIC aCustomEvents := { ;
       { WM_PAINT, WM_COMMAND, WM_SIZE, WM_DESTROY }, ;
       { ;

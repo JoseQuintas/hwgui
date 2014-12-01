@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-01 13:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcwindow.prg
+    * The following two lines have been added:
+      ANNOUNCE HB_GTSYS
+      REQUEST HB_GT_CGI_DEFAULT
+      to eliminate the necessity to insert them in any application.    
+  * source/winapi/hdialog.prg
+    ! Few fixes for HWG_USE_POINTER_ITEM
+  * source/winapi/hfreeimg.prg
+    ! RedrawWindow() -> hwg_RedrawWindow()
+
 2014-10-31 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit_w.c
     * Unicode support has been added to the editor's winapi version

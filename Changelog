@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-01 17:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbincnt.prg
+  * source/winapi/hbincnt.prg
+  * samples/gtk_samples/*
+    * ANNOUNCE HB_GTSYS, REQUEST HB_GT_CGI_DEFAULT removed
+
 2014-12-01 14:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htree.prg
     * :Select( oNode ) executes appropriate codeblock now.

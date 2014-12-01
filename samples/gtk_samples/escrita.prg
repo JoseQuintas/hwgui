@@ -2,9 +2,6 @@
 REQUEST HB_CODEPAGE_PTISO, HB_CODEPAGE_PT850
 #include "hwgui.ch"
 
-   ANNOUNCE HB_GTSYS
-   REQUEST HB_GT_CGI_DEFAULT
-
 FUNCTION Main()
    LOCAL oModDlg, oEditbox, onome, obar
    LOCAL meditbox := "", mnome := Space( 50 )

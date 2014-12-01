@@ -87,6 +87,7 @@ METHOD Create( cName, n ) CLASS HBinC
 METHOD Open( cName, lWr ) CLASS HBinC
    LOCAL cBuf, i, nLen, arr, nAddr := 0
 
+   ::cName := cName
    ::lWriteAble := !Empty( lWr )
    IF ( ::handle := FOpen( cName, Iif( ::lWriteAble, FO_READWRITE, FO_READ ) ) ) == -1
       RETURN Nil
@@ -169,7 +170,7 @@ METHOD Add( cObjName, cType, cVal ) CLASS HBinC
    ::nCntLen += Len(cObjName) + CNT_FIX_LEN
    cAddress := Chr( ::nItems/256 ) + Chr( ::nItems%256 )
    cSize := Chr( ::nCntLen/65536 ) + Chr( (::nCntLen/256)%256 ) + Chr( ::nCntLen%65536 )
-   FSeek( ::handle, 7, FS_SET )
+   FSeek( ::handle, 8, FS_SET )
    FWrite( ::handle, cAddress+cSize )
 
    RETURN .T.

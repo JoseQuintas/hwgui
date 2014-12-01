@@ -10,11 +10,7 @@
  *
 */
 
-#include "windows.ch"
-#include "guilib.ch"
-
-ANNOUNCE HB_GTSYS
-REQUEST HB_GT_CGI_DEFAULT
+#include "hwgui.ch"
 
 Static oMain, oForm, oFont, oBar := Nil
 Static n :=0

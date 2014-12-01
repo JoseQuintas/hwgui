@@ -22,9 +22,6 @@ REQUEST DBFFPT
 REQUEST ORDKEYNO
 REQUEST ORDKEYCOUNT
 
-ANNOUNCE HB_GTSYS
-REQUEST HB_GT_CGI_DEFAULT
-
 Static aFieldTypes := { "C","N","D","L" }
 Static dbv_cLocate, dbv_nRec, dbv_cSeek
 

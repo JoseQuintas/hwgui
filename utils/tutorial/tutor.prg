@@ -10,11 +10,6 @@
 #include "hwgui.ch"
 #include "hwgextern.ch"
 
-#ifdef __PLATFORM__UNIX
-ANNOUNCE HB_GTSYS
-REQUEST HB_GT_CGI_DEFAULT
-#endif
-
 #define HILIGHT_KEYW    1
 #define HILIGHT_FUNC    2
 #define HILIGHT_QUOTE   3

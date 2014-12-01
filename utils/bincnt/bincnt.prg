@@ -9,13 +9,6 @@
 
 #include "hwgui.ch"
 
-ANNOUNCE HB_GTSYS
-#ifdef __GTK__
-REQUEST HB_GT_CGI_DEFAULT
-#else
-REQUEST HB_GT_GUI_DEFAULT
-#endif
-
 #define  CLR_DGREEN   3236352
 #define  CLR_MGREEN   8421440
 #define  CLR_GREEN      32768

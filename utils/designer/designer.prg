@@ -19,13 +19,11 @@
 
 #ifdef __GTK__
    #include "gtk.ch"
-   REQUEST HB_GT_CGI_DEFAULT
    #define DIR_SEP  '/'
    #define CURS_CROSS GDK_CROSS
    #define CURS_SIZEV GDK_SIZING
    #define CURS_SIZEH GDK_HAND1
 #else
-   REQUEST HB_GT_GUI_DEFAULT
    #define DIR_SEP  '\'
    #define CURS_CROSS IDC_CROSS
    #define CURS_SIZEV IDC_SIZEWE

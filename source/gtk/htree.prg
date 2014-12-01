@@ -214,7 +214,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD GetSelected()   INLINE ::oSelected
    //METHOD EditLabel( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
    //METHOD Expand( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ) }
-   METHOD Select( oNode ) BLOCK { |Self,o|::oSelected:=o }
+   METHOD Select( oNode )
    METHOD Clean()
    METHOD END()   INLINE ( ::Super:END(), ReleaseTree( ::aItems ) )
    METHOD Paint()
@@ -352,6 +352,18 @@ METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages ) CLASS HTree
    ::lEmpty := .F.
    RETURN oNode
 
+METHOD Select( oNode ) CLASS HTree
+
+   ::oSelected := oNode
+
+   IF oNode:bAction != Nil
+      Eval( oNode:bAction, oNode )
+   ELSEIF ::bAction != Nil
+      Eval( ::bAction, oNode )
+   ENDIF
+
+   RETURN Nil
+
 METHOD Clean() CLASS HTree
 
    ::lEmpty := .T.
@@ -470,11 +482,6 @@ METHOD ButtonDown( lParam )  CLASS HTree
       ENDIF
       IF xm >= x1 .AND. xm <= x1 + ::nIndent + nWidth
          ::Select( oNode )
-         IF oNode:bAction != Nil
-            Eval( oNode:bAction, oNode )
-         ELSEIF ::bAction != Nil
-            Eval( ::bAction, oNode )
-         ENDIF
          lRedraw := .T.
       ENDIF
       IF lRedraw

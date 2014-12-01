@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-01 14:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htree.prg
+    * :Select( oNode ) executes appropriate codeblock now.
+  * utils/bincnt/bincnt.prg
+  * utils/debugger/hwgdebug.prg
+  * utils/designer/designer.prg
+  * utils/tutorial/hwgrun.prg
+  * utils/tutorial/tutor.prg
+    * ANNOUNCE HB_GTSYS, REQUEST HB_GT_CGI_DEFAULT removed
+
 2014-12-01 13:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcwindow.prg
     * The following two lines have been added:

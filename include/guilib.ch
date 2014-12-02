@@ -979,8 +979,9 @@
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ DIVIDE <aLeft> FROM <aRight> ] ;
+            [ LIMITS [<nFrom>][,<nTo>] ]   ;
           => ;
-    [<oSplit> :=] HSplitter():New( <oWnd>,<nId>,<x>,<y>,<width>,<height>,<bSize>,<bDraw>,<color>,<bcolor>,<aLeft>,<aRight> );
+    [<oSplit> :=] HSplitter():New( <oWnd>,<nId>,<x>,<y>,<width>,<height>,<bSize>,<bDraw>,<color>,<bcolor>,<aLeft>,<aRight>,<nFrom>,<nTo> );
     [; hwg_SetCtrlName( <oSplit>,<(oSplit)> )]
 
 

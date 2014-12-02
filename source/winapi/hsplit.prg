@@ -20,13 +20,14 @@ CLASS VAR winclass INIT "STATIC"
    DATA aLeft
    DATA aRight
    DATA lVertical
+   DATA nFrom, nTo
    DATA hCursor
    DATA lCaptured INIT .F.
    DATA lMoved INIT .F.
    DATA bEndDrag
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-               bSize, bPaint, color, bcolor, aLeft, aRight )
+               bSize, bPaint, color, bcolor, aLeft, aRight, nFrom, nTo )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -37,7 +38,7 @@ CLASS VAR winclass INIT "STATIC"
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-            bSize, bDraw, color, bcolor, aLeft, aRight ) CLASS HSplitter
+            bSize, bDraw, color, bcolor, aLeft, aRight, nFrom, nTo ) CLASS HSplitter
 
    ::Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight,,, ;
               bSize, bDraw,, Iif(color==Nil,0,color), bcolor )
@@ -46,6 +47,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    ::aLeft   := IIf( aLeft == Nil, { }, aLeft )
    ::aRight  := IIf( aRight == Nil, { }, aRight )
    ::lVertical := ( ::nHeight > ::nWidth )
+   ::nFrom := nFrom
+   ::nTo   := nTo
 
    ::Activate()
 
@@ -128,20 +131,26 @@ METHOD Paint() CLASS HSplitter
    RETURN Nil
 
 METHOD Drag( lParam ) CLASS HSplitter
-   LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam )
+   LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam ), nFrom, nTo
 
+   nFrom := Iif( ::nFrom == Nil, 1, ::nFrom )
+   nTo := Iif( ::nTo == Nil, Iif(::lVertical,::oParent:nWidth-1,::oParent:nHeight-1), ::nTo )
    IF ::lVertical
       IF xPos > 32000
          xPos -= 65535
       ENDIF
-      ::nLeft += xPos
+      IF ( xPos := ( ::nLeft + xPos ) ) >= nFrom .AND. xPos <= nTo
+         ::nLeft := xPos
+      ENDIF
    ELSE
       IF yPos > 32000
          yPos -= 65535
       ENDIF
-      ::nTop += yPos
+      IF ( yPos := ( ::nTop + yPos ) ) >= nFrom .AND. yPos <= nTo
+         ::nTop := yPos
+      ENDIF
    ENDIF
-   hwg_Movewindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+   hwg_MoveWindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ::lMoved := .T.
 
    RETURN Nil

@@ -20,33 +20,36 @@ CLASS HSplitter INHERIT HControl
    DATA aLeft
    DATA aRight
    DATA lVertical
+   DATA nFrom, nTo
    DATA hCursor
    DATA lCaptured INIT .F.
    DATA lMoved INIT .F.
    DATA bEndDrag
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      bSize, bPaint, color, bcolor, aLeft, aRight )
+      bSize, bPaint, color, bcolor, aLeft, aRight, nFrom, nTo )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
-   METHOD Paint( lpdis )
-   METHOD Move( x1, y1, width, height )
+   METHOD Paint()
+   METHOD Move( x1,y1,width,height )
    METHOD Drag( lParam )
    METHOD DragAll()
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      bSize, bDraw, color, bcolor, aLeft, aRight ) CLASS HSplitter
+      bSize, bDraw, color, bcolor, aLeft, aRight, nFrom, nTo ) CLASS HSplitter
 
    ::Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, , , ;
-      bSize, bDraw, , color, bcolor )
+              bSize, bDraw,, Iif(color==Nil,0,color), bcolor )
 
-   ::title   := ""
-   ::aLeft   := iif( aLeft == Nil, {}, aLeft )
-   ::aRight  := iif( aRight == Nil, {}, aRight )
+   ::title  := ""
+   ::aLeft  := Iif( aLeft == Nil, {}, aLeft )
+   ::aRight := Iif( aRight == Nil, {}, aRight )
    ::lVertical := ( ::nHeight > ::nWidth )
+   ::nFrom := nFrom
+   ::nTo   := nTo
 
    ::Activate()
 
@@ -64,9 +67,11 @@ METHOD Activate() CLASS HSplitter
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
+   HB_SYMBOL_UNUSED( wParam )
+
    IF msg == WM_MOUSEMOVE
       IF ::hCursor == Nil
-         ::hCursor := hwg_Loadcursor( GDK_HAND1 )
+         ::hCursor := hwg_Loadcursor( GDK_SIZING )
       ENDIF
       Hwg_SetCursor( ::hCursor, ::handle )
       IF ::lCaptured
@@ -98,7 +103,7 @@ METHOD Init CLASS HSplitter
 
    RETURN Nil
 
-METHOD Paint( lpdis ) CLASS HSplitter
+METHOD Paint() CLASS HSplitter
    LOCAL hDC
 
    IF ::bPaint != Nil
@@ -111,51 +116,57 @@ METHOD Paint( lpdis ) CLASS HSplitter
 
    RETURN Nil
 
-METHOD Move( x1, y1, width, height )  CLASS HSplitter
+METHOD Move( x1,y1,width,height )  CLASS HSplitter
 
-   ::Super:Move( x1, y1, width, height, .T. )
-
-   RETURN Nil
+   ::Super:Move( x1,y1,width,height,.T. )
+Return Nil
 
 METHOD Drag( lParam ) CLASS HSplitter
-   LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam )
+   LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam ), nFrom, nTo
 
+   nFrom := Iif( ::nFrom == Nil, 1, ::nFrom )
+   nTo := Iif( ::nTo == Nil, Iif(::lVertical,::oParent:nWidth-1,::oParent:nHeight-1), ::nTo )
    IF ::lVertical
       IF xPos > 32000
          xPos -= 65535
       ENDIF
-      ::Move( ::nLeft + xPos )
+      IF ( xPos := ( ::nLeft + xPos ) ) >= nFrom .AND. xPos <= nTo
+         ::nLeft := xPos
+      ENDIF
    ELSE
       IF yPos > 32000
          yPos -= 65535
       ENDIF
-      ::Move( , ::nTop + yPos )
+      IF ( yPos := ( ::nTop + yPos ) ) >= nFrom .AND. yPos <= nTo
+         ::nTop := yPos
+      ENDIF
    ENDIF
+   hwg_MoveWidget( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight, .T. )
    ::lMoved := .T.
 
    RETURN Nil
 
 METHOD DragAll() CLASS HSplitter
-   LOCAL i, oCtrl, nDiff
+Local i, oCtrl, nDiff
 
    FOR i := 1 TO Len( ::aRight )
       oCtrl := ::aRight[i]
       IF ::lVertical
-         nDiff := ::nLeft + ::nWidth - oCtrl:nLeft
-         oCtrl:Move( oCtrl:nLeft + nDiff, , oCtrl:nWidth - nDiff )
+         nDiff := ::nLeft+::nWidth - oCtrl:nLeft
+         oCtrl:Move( oCtrl:nLeft+nDiff,,oCtrl:nWidth-nDiff )
       ELSE
-         nDiff := ::nTop + ::nHeight - oCtrl:nTop
-         oCtrl:Move( , oCtrl:nTop + nDiff, , oCtrl:nHeight - nDiff )
-      ENDIF
+         nDiff := ::nTop+::nHeight - oCtrl:nTop
+         oCtrl:Move( ,oCtrl:nTop+nDiff,,oCtrl:nHeight-nDiff )
+      ENDIF   
    NEXT
    FOR i := 1 TO Len( ::aLeft )
       oCtrl := ::aLeft[i]
       IF ::lVertical
          nDiff := ::nLeft - ( oCtrl:nLeft + oCtrl:nWidth )
-         oCtrl:Move( , , oCtrl:nWidth + nDiff )
+         oCtrl:Move( ,,oCtrl:nWidth+nDiff )
       ELSE
          nDiff := ::nTop - ( oCtrl:nTop + oCtrl:nHeight )
-         oCtrl:Move( , , , oCtrl:nHeight + nDiff )
+         oCtrl:Move( ,,,oCtrl:nHeight+nDiff )
       ENDIF
    NEXT
    ::lMoved := .F.

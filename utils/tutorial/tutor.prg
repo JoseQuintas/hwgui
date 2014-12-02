@@ -10,6 +10,10 @@
 #include "hwgui.ch"
 #include "hwgextern.ch"
 
+#if defined (__HARBOUR__) && ( __HARBOUR__ - 0 >= 0x030000 )
+REQUEST HB_CODEPAGE_UTF8
+#endif
+
 #define HILIGHT_KEYW    1
 #define HILIGHT_FUNC    2
 #define HILIGHT_QUOTE   3
@@ -28,6 +32,9 @@ Function Main
 Local oMain, oPanel, oFont := HFont():Add( "Georgia",0,-15 )
 Local oTree, oSplit
 
+   IF hwg__isUnicode()
+      hb_cdpSelect( "UTF8" )
+   ENDIF
    cIniPath := FilePath( hb_ArgV( 0 ) )
    cHwgrunPath := isFileInPath()
    ReadIni()
@@ -57,6 +64,9 @@ Local oTree, oSplit
    oTree:bDblClick := {|oTree,oItem|RunSample(oItem)}
 
    oText := HCEdit():New( oMain,, WS_BORDER, 274, 32, 526, 568, oFont,, {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth,y-32)} )
+   IF hwg__isUnicode()
+      oText:lUtf8 := .T.
+   ENDIF
 
    oText:SetHili( HILIGHT_KEYW, oText:oFont:SetFontStyle( .T. ), 8388608, oText:bColor )
    oText:SetHili( HILIGHT_FUNC, - 1, 8388608, oText:bColor )
@@ -188,7 +198,11 @@ Static Function NodeOut( oItem )
       oText:HighLighter()
       oBtnRun:Disable()
    ENDIF
-   oText:SetText( oItem:cargo[2] )
+   IF hwg__isUnicode()
+      oText:SetText( oItem:cargo[2], "UTF8", "UTF8" )
+   ELSE
+      oText:SetText( oItem:cargo[2] )
+   ENDIF
 
 Return Nil
 

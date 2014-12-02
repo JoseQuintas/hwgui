@@ -21,12 +21,12 @@ Local oMainWindow, oFont, oSplitV, oSplitH, oEdit1, oEdit2
 
    @ 163,10 EDITBOX oEdit1 CAPTION "Hello, World!"  SIZE 200,100
 
-   @ 160,10 SPLITTER oSplitV SIZE 3,100 DIVIDE {oTree} FROM {oEdit1}
+   @ 160,10 SPLITTER oSplitV SIZE 3,100 DIVIDE {oTree} FROM {oEdit1} LIMITS 100,300
    oSplitV:hCursor := hwg_Loadcursor( "VSPLIT" )
 
    @ 20,113 EDITBOX oEdit2 CAPTION "Example"  SIZE 344,130
 
-   @ 20,110 SPLITTER oSplitH SIZE 344,3 DIVIDE {oTree,oEdit1,oSplitV} FROM {oEdit2}
+   @ 20,110 SPLITTER oSplitH SIZE 344,3 DIVIDE {oTree,oEdit1,oSplitV} FROM {oEdit2} LIMITS ,220
    oSplitH:hCursor := hwg_Loadcursor( "HSPLIT" )
 
    ACTIVATE WINDOW oMainWindow

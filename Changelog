@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-03 09:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htree.prg
+    * Tree expands now after :Select() call
+
 2014-12-02 10:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor.prg
     * Added utf-8 support

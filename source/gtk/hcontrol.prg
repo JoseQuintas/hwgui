@@ -318,6 +318,7 @@ CLASS HStatic INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD SetValue( value ) INLINE hwg_static_SetText( ::handle, value )
+   METHOD SetText( value ) INLINE hwg_static_SetText( ::handle, value )
 
 ENDCLASS
 

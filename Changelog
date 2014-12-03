@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-03 11:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/tutor.prg
+    * Ctrl+ and Ctrl- changes the font size now.
+  * source/gtk/hcontrol.prg
+    * HStatic():Settext() method added for compatibility with winapi version.
+
 2014-12-03 09:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htree.prg
     * Tree expands now after :Select() call

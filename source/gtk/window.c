@@ -47,6 +47,7 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 PHB_DYNS pSym_onEvent = NULL;
 PHB_DYNS pSym_keylist = NULL;
 guint s_KeybHook = 0;
+GtkWidget * hMainWindow;
 
 #define HB_IT_DEFAULT   ( ( HB_TYPE ) 0x40000 )
 HB_LONG Prevp2  = -1;
@@ -130,6 +131,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
    g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
+   hMainWindow = hWnd;
    HB_RETHANDLE( hWnd );
 }
 
@@ -767,11 +769,17 @@ HB_FUNC( HWG_DESTROYWINDOW )
     gtk_widget_destroy( (GtkWidget *) HB_PARHANDLE(1) );
 }
 
+void hwg_set_modal( GtkWindow * hDlg, GtkWindow * hParent )
+{
+   gtk_window_set_modal( hDlg, 1 );
+   if( hParent )
+      gtk_window_set_transient_for( hDlg, hParent );
+}
+
 HB_FUNC( HWG_SET_MODAL )
 {
-   gtk_window_set_modal( (GtkWindow *) HB_PARHANDLE(1), 1 );
-   if( !HB_ISNIL(2) )
-      gtk_window_set_transient_for( (GtkWindow *) HB_PARHANDLE(1), (GtkWindow *) HB_PARHANDLE(2) );
+   hwg_set_modal( (GtkWindow *) HB_PARHANDLE(1), 
+         (GtkWindow *) ( ( !HB_ISNIL(2) )? HB_PARHANDLE(2) : NULL ) );
 }
 
 HB_FUNC( HWG_WINDOWSETRESIZE )

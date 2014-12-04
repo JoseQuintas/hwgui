@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-04 10:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/commond.c
+  * source/gtk/window.c
+    * common dialogs ( select file, select font ) are modal now
+  * source/gtk/hdialog.prg
+    * Formatting
+
 2014-12-03 11:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor.prg
     * Ctrl+ and Ctrl- changes the font size now.

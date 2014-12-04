@@ -20,7 +20,9 @@
 #endif
 
 extern GtkWidget * GetActiveWindow( void );
+extern void hwg_set_modal( GtkWindow * hDlg, GtkWindow * hParent );
 extern void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
+extern GtkWidget * hMainWindow;
 
 void store_font( gpointer fontseldlg )
 {
@@ -108,6 +110,9 @@ HB_FUNC( HWG_SELECTFONT )
                              (gpointer) fontseldlg );
 
    gtk_widget_show( fontseldlg );
+
+   hwg_set_modal( (GtkWindow *) fontseldlg, (GtkWindow *) GetActiveWindow() );
+
    gtk_main();
 
 }
@@ -152,6 +157,9 @@ HB_FUNC( HWG_SELECTFILE )
       gtk_file_selection_complete( (GtkFileSelection*)file_selector, cMask );
 
    gtk_widget_show( file_selector );
+
+   hwg_set_modal( (GtkWindow *) file_selector, (GtkWindow *) GetActiveWindow() );
+
    gtk_main();
 }
 

@@ -85,6 +85,7 @@ Local nId
             ON GETFOCUS {|o|dbSelectArea(o:alias)}
       hwg_CreateList( oBrw,.T. )
       oBrw:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
+      oBrw:bRClick := {|o,nCol,nRow|hwg_MsgInfo(str(nCol)+"/"+str(nRow))}
       IF oFont != Nil
          oBrw:ofont := oFont
       ENDIF

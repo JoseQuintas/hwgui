@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-05 11:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+    * Support for the mouse right click has been added to gtk version.
+      of HBrowse
+  * samples/gtk_samples/a.prg
+    * Right click test added to a file browse dialog.
+
 2014-12-04 10:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/commond.c
   * source/gtk/window.c

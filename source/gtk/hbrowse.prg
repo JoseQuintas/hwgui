@@ -121,7 +121,7 @@ CLASS HBrowse INHERIT HControl
    DATA bSkip, bGoTo, bGoTop, bGoBot, bEof, bBof
    DATA bRcou, bRecno, bRecnoLog
    DATA bPosChanged, bLineOut, bScrollPos
-   DATA bEnter, bKeyDown, bUpdate
+   DATA bEnter, bKeyDown, bUpdate, bRClick
    DATA internal
    DATA ALIAS                                  // Alias name of browsed database
    DATA x1, y1, x2, y2, width, height
@@ -175,6 +175,7 @@ CLASS HBrowse INHERIT HControl
    METHOD ButtonDown( lParam )
    METHOD ButtonUp( lParam )
    METHOD ButtonDbl( lParam )
+   METHOD ButtonRDown( lParam )
    METHOD MouseMove( wParam, lParam )
    METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos )
    METHOD Edit( wParam, lParam )
@@ -337,6 +338,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
       ELSEIF msg == WM_LBUTTONDBLCLK
          ::ButtonDbl( lParam )
+
+      ELSEIF msg == WM_RBUTTONDOWN
+         ::ButtonRDown( lParam )
 
       ELSEIF msg == WM_MOUSEMOVE
          ::MouseMove( wParam, lParam )
@@ -1410,6 +1414,27 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
    RETURN Nil
 
    //----------------------------------------------------//
+
+METHOD ButtonRDown( lParam ) CLASS HBrowse
+
+   LOCAL nLine := Int( hwg_Hiword( lParam )/ (::height + 1 ) + iif(::lDispHead,1 - ::nHeadRows,1 ) )
+   LOCAL xm := hwg_Loword( lParam ), x1, fif
+
+   IF ::bRClick == NIL
+      Return Nil
+   ENDIF
+
+   x1  := ::x1
+   fif := iif( ::freeze > 0, 1, ::nLeftCol )
+
+   DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm
+      x1 += ::aColumns[ fif ]:width
+      fif := iif( fif == ::freeze, ::nLeftCol, fif + 1 )
+   ENDDO
+
+   Eval( ::bRClick, Self, nLine, fif )
+
+   RETURN Nil
 
 METHOD ButtonUp( lParam ) CLASS HBrowse
 

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-06 11:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * :bKeyDown handling improved
+    ! Bug fixed ( it appeared while pressing Backspace in an empty text )
+
 2014-12-05 11:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
     * Support for the mouse right click has been added to gtk version.

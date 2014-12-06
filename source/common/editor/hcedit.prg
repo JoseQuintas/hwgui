@@ -366,8 +366,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 
    ELSEIF msg == WM_CHAR
       // If not readonly mode and Ctrl key isn't pressed
-      IF !( Asc( SubStr(hwg_GetKeyboardState( lParam ),0x12,1 ) ) >= 128 )
-         ::putChar( hwg_PtrToUlong( wParam ) )
+      x := hwg_GetKeyboardState( lParam )
+      n := Iif( Asc( SubStr(x,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(x,0x11,1 ) ) >= 128,FSHIFT,0 ) )
+      IF n != FCONTROL
+         x := hwg_PtrToUlong( wParam )
+         IF ::bKeyDown != Nil .AND. ( n := Eval( ::bKeyDown, Self, x, n, 1 ) ) != -1
+            RETURN -1
+         ENDIF
+         ::putChar( x )
       ENDIF
 
    ELSEIF msg == WM_KEYDOWN
@@ -1055,8 +1061,8 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    //hwg_writelog( "keydown: " + str(nKeyCode) )
 
    ::lSetFocus := .T.
-   IF ::bKeyDown != Nil
-      Eval( ::bKeyDown, Self, nKeyCode )
+   IF ::bKeyDown != Nil .AND. ( nLine := Eval( ::bKeyDown, Self, nKeyCode, nCtrl, 0 ) ) != -1
+      RETURN nLine
    ENDIF
    IF ::nLines <= 0
       RETURN 0
@@ -1297,7 +1303,9 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
          nPos := ::aLines[::nLineC,AL_FIRSTC] + ::nPosC - 1
          IF nKeyCode == VK_BACK
             IF nPos == 1
-               nLine --
+               IF --nLine <= 0
+                  RETURN Nil
+               ENDIF
                nPos := hced_Len( Self, ::aText[nLine] ) + 1
             ELSE
                nPos --

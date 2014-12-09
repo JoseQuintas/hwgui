@@ -625,7 +625,8 @@ HB_FUNC( HWG_CREATEPANEL )
    GtkFixed *box, *fbox;
 
    fbox = ( GtkFixed * ) gtk_fixed_new(  );
-   hCtrl = gtk_drawing_area_new(  );
+   hCtrl = gtk_toolbar_new();
+   //hCtrl = gtk_drawing_area_new();
    //hCtrl = gtk_layout_new( NULL, NULL );
 
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );

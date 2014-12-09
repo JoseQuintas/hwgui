@@ -1140,8 +1140,7 @@ METHOD DoVScroll( wParam ) CLASS HBrowse
 
 METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
-   LOCAL maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
-   LOCAL nPos
+   LOCAL maxPos, nPos
 
    lMouse := iif( lMouse == Nil, .F. , lMouse )
    Eval( ::bSkip, Self, 1 )
@@ -1171,7 +1170,8 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
    IF !lMouse .AND. ::hScrollV != Nil
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, 1, .F. )
-      ELSE
+      ELSEIF !Empty( ::hScrollV )
+         maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
          nPos := hwg_getAdjValue( ::hScrollV )
          nPos += Int( maxPos/ (::nRecords - 1 ) )
          hwg_SetAdjOptions( ::hScrollV, nPos )
@@ -1187,8 +1187,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
 METHOD LINEUP( lMouse ) CLASS HBrowse
 
-   LOCAL maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
-   LOCAL nPos
+   LOCAL maxPos, nPos
 
    lMouse := iif( lMouse == Nil, .F. , lMouse )
    Eval( ::bSkip, Self, - 1 )
@@ -1208,7 +1207,8 @@ METHOD LINEUP( lMouse ) CLASS HBrowse
       IF !lMouse .AND. ::hScrollV != Nil
          IF ::bScrollPos != Nil
             Eval( ::bScrollPos, Self, - 1, .F. )
-         ELSE
+         ELSEIF !Empty( ::hScrollV )
+            maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
             nPos := hwg_getAdjValue( ::hScrollV )
             nPos -= Int( maxPos/ (::nRecords - 1 ) )
             hwg_SetAdjOptions( ::hScrollV, nPos )
@@ -1225,8 +1225,7 @@ METHOD LINEUP( lMouse ) CLASS HBrowse
 
 METHOD PAGEUP( lMouse ) CLASS HBrowse
 
-   LOCAL maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
-   LOCAL nPos, step, lBof := .F.
+   LOCAL maxPos, nPos, step, lBof := .F.
 
    lMouse := iif( lMouse == Nil, .F. , lMouse )
    IF ::rowPos > 1
@@ -1245,7 +1244,8 @@ METHOD PAGEUP( lMouse ) CLASS HBrowse
    IF !lMouse .AND. ::hScrollV != Nil
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, - step, lBof )
-      ELSE
+      ELSEIF !Empty( ::hScrollV )
+         maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
          nPos := hwg_getAdjValue( ::hScrollV )
          nPos -= Int( maxPos/ (::nRecords - 1 ) )
          nPos := Max( nPos - Int( maxPos * step/(::nRecords - 1 ) ), 0 )
@@ -1263,8 +1263,7 @@ METHOD PAGEUP( lMouse ) CLASS HBrowse
 
 METHOD PAGEDOWN( lMouse ) CLASS HBrowse
 
-   LOCAL maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
-   LOCAL nPos, nRows := ::rowCurrCount
+   LOCAL maxPos, nPos, nRows := ::rowCurrCount
    LOCAL step := iif( nRows > ::rowPos, nRows - ::rowPos + 1, nRows ), lEof
 
    lMouse := iif( lMouse == Nil, .F. , lMouse )
@@ -1279,6 +1278,7 @@ METHOD PAGEDOWN( lMouse ) CLASS HBrowse
       IF ::bScrollPos != Nil
          Eval( ::bScrollPos, Self, step, lEof )
       ELSE
+         maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
          nPos := hwg_getAdjValue( ::hScrollV )
          IF lEof
             nPos := maxPos

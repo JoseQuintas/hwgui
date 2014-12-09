@@ -106,9 +106,9 @@ METHOD INIT CLASS HControl
 
    IF !::lInit
       IF ::oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oFont:handle )
+         hwg_SetCtrlFont( ::handle,, ::oFont:handle )
       ELSEIF ::oParent:oFont != Nil
-         hwg_SetCtrlFont( ::handle, ::oParent:oFont:handle )
+         hwg_SetCtrlFont( ::handle,, ::oParent:oFont:handle )
       ENDIF
       hwg_Addtooltip( ::oParent:handle, ::handle, ::tooltip )
       IF ISBLOCK( ::bInit )

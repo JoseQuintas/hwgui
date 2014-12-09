@@ -256,7 +256,7 @@ HB_FUNC( HWG_SETCTRLFONT )
       
    style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
 
-   style->font_desc = ( (PHWGUI_FONT) HB_PARHANDLE(2) )->hFont;
+   style->font_desc = ( (PHWGUI_FONT) HB_PARHANDLE(3) )->hFont;
    gtk_widget_set_style( hCtrl, style );
 
 }

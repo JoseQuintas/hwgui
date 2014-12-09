@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-09 12:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcontrol.prg
+  * source/gtk/drawtext.c
+    * Third parameter added to hwg_SetCtrlFont() for compatibility
+      with winapi version.
+
 2014-12-09 11:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
     ! Few fixes for the browse without vertical scroll bar

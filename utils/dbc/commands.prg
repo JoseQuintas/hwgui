@@ -198,6 +198,7 @@ FUNCTION C_4( nAct )
 FUNCTION C_APPEND()
    LOCAL oDlg, oMsg, cFile := "", cFields := "", cFor := "", cDelim := ""
    LOCAL r1 := 1, bFor, af, cPath := cServerPath
+   LOCAL i, j, aFie, s, xVal, aLines, arr
 #ifdef RDD_ADS
    LOCAL lRemote := (nServerType == 6)
 #else
@@ -218,7 +219,7 @@ FUNCTION C_APPEND()
 
    INIT DIALOG oDlg TITLE aFiles[improc,AF_ALIAS]+": Append" ;
       AT 0, 0         ;
-      SIZE 400, 320   ;
+      SIZE 400, 340   ;
       FONT oMainFont ON INIT bBtnDis
 
 #if defined( RDD_ADS ) .OR. defined( RDD_LETO )
@@ -237,20 +238,22 @@ FUNCTION C_APPEND()
    @ 90,60 GET cFields SIZE 220,24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
-   @ 10, 92 GROUPBOX "" SIZE 168, 88
+   @ 10, 92 GROUPBOX "" SIZE 168, 112
    GET RADIOGROUP r1
-   @ 20,104 RADIOBUTTON "Dbf" SIZE 90, 20 
-   @ 20,128 RADIOBUTTON "Sdf" SIZE 90, 20 
-   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20 
+   @ 20,104 RADIOBUTTON "Dbf" SIZE 90, 20
+   @ 20,128 RADIOBUTTON "Sdf" SIZE 90, 20
+   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20
+   //@ 20,176 RADIOBUTTON "Csv     quote:" SIZE 112, 20
    END RADIOGROUP
    @ 132,152 GET cDelim SIZE 30, 24 PICTURE "XX"
+   //@ 132,176 GET cQuo SIZE 30, 24 PICTURE "XX"
 
-   @ 10, 200 SAY "For: " SIZE 100, 22
-   @ 10, 222 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   @ 10, 220 SAY "For: " SIZE 100, 22
+   @ 10, 242 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-   @  30, 268  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 190, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+   @  30, 288  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 190, 288 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
 
    oDlg:Activate()
 
@@ -282,8 +285,25 @@ FUNCTION C_APPEND()
 #endif
       ELSEIF r1 == 2
          __dbSdf( .F., cFile, af, bfor,,,, .F. )
-      ELSE
+      ELSEIF r1 == 3
          __dbDelim( .F., cFile, Iif( Empty(cdelim), "blank", Trim(cdelim) ), af, bfor,,,, .F. )
+      ELSE
+         aFie := dbStruct()
+         IF Empty( af )
+            af := Array( Len( aFie ) )
+            FOR i := 1 TO Len( af )
+               af[i] := i
+            NEXT
+         ELSE
+            FOR i := 1 TO Len( af )
+               af[i] := Ascan( aFie, {|a|Upper(a[1])==Upper(af[i])} )
+            NEXT
+         ENDIF
+         aLines := hb_aTokens( MemoRead( cFile ), Chr(13) + Chr(10) )
+         FOR j := 1 TO Len( aLines )
+            FOR i := 1 TO Len( af )
+            NEXT
+         NEXT
       ENDIF
       oMsg:Close()
       UpdBrowse()
@@ -293,7 +313,8 @@ FUNCTION C_APPEND()
 
 FUNCTION C_COPY()
    LOCAL oDlg, oMsg, cFile := "", cFields := "", cFor := "", cDelim := ""
-   LOCAL r1 := 1, r2 := 1, bFor, af, nNext := 0, cPath := cServerPath
+   LOCAL r1 := 1, r2 := 1, bFor, af, nNext := 0, cQuo := '"', cPath := cServerPath
+   LOCAL i, aFie, han, s, xVal
 #ifdef RDD_ADS
    LOCAL lRemote := (nServerType == 6)
 #else
@@ -308,7 +329,7 @@ FUNCTION C_COPY()
 
    INIT DIALOG oDlg TITLE aFiles[improc,AF_ALIAS]+": Copy" ;
       AT 0, 0         ;
-      SIZE 400, 320   ;
+      SIZE 400, 340   ;
       FONT oMainFont ON INIT bBtnDis
 
 #if defined( RDD_ADS ) .OR. defined( RDD_LETO )
@@ -327,13 +348,15 @@ FUNCTION C_COPY()
    @ 90,60 GET cFields SIZE 220,24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
-   @ 10, 92 GROUPBOX "" SIZE 168, 88
+   @ 10, 92 GROUPBOX "" SIZE 168, 112
    GET RADIOGROUP r1
-   @ 20,104 RADIOBUTTON "Dbf" SIZE 90, 20 
-   @ 20,128 RADIOBUTTON "Sdf" SIZE 90, 20 
-   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20 
+   @ 20,104 RADIOBUTTON "Dbf" SIZE 90, 20
+   @ 20,128 RADIOBUTTON "Sdf" SIZE 90, 20
+   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20
+   @ 20,176 RADIOBUTTON "Csv     quote:" SIZE 112, 20
    END RADIOGROUP
    @ 132,152 GET cDelim SIZE 30, 24 PICTURE "XX"
+   @ 132,176 GET cQuo SIZE 30, 24 PICTURE "XX"
 
    @ 200, 92 GROUPBOX "" SIZE 168, 88
    GET RADIOGROUP r2
@@ -343,12 +366,12 @@ FUNCTION C_COPY()
    END RADIOGROUP
    @ 300,128 GET nNext SIZE 40, 24 PICTURE "9999"
 
-   @ 10, 200 SAY "For: " SIZE 100, 22
-   @ 10, 222 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   @ 10, 220 SAY "For: " SIZE 100, 22
+   @ 10, 242 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-   @  30, 268  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 190, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+   @  30, 288  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 190, 288 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
 
    oDlg:Activate()
 
@@ -404,6 +427,39 @@ FUNCTION C_COPY()
          __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,, nrest,, .F. )
       ELSEIF r1 == 3 .AND. r2 == 3
          __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,,,, .T. )
+      ELSEIF r1 == 4
+         han := FCreate( cFile )
+         aFie := dbStruct()
+         IF Empty( af )
+            af := Array( Len( aFie ) )
+            FOR i := 1 TO Len( af )
+               af[i] := i
+            NEXT
+         ELSE
+            FOR i := 1 TO Len( af )
+               af[i] := Ascan( aFie, {|a|Upper(a[1])==Upper(af[i])} )
+            NEXT
+         ENDIF
+         IF r2 == 1
+            GO TOP
+         ENDIF
+         DO WHILE !Eof()
+            IF Empty( bFor ) .OR. Eval( bFor )
+               IF r2 == 2 .AND. --nRest == 0
+                  EXIT
+               ENDIF
+               s := ""
+               FOR i := 1 TO Len( af )
+                  xVal := FieldGet( af[i] )
+                  s += Iif( i>1,',','' ) + cQuo + Iif( aFie[i,2]=="N", ;
+                     Ltrim(Str(xval)), Iif( aFie[i,2]=="D", Dtos(xVal),;
+                     Iif( aFie[i,2]=="L", Iif(xVal,"T","F"), Trim(xVal) ) ) ) + cQuo
+               NEXT
+               FWrite( han, s + Chr(13) + Chr(10) )
+            ENDIF
+            SKIP
+         ENDDO
+         FClose( cFile )
       ENDIF
       oMsg:Close()
       UpdBrowse()

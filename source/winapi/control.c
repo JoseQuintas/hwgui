@@ -456,6 +456,7 @@ HB_FUNC( HWG_ADDTOOLTIP )
       hb_retnl( 0 );
       return;
    }
+   ti.cbSize = sizeof( TOOLINFO );
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
    ti.hwnd = hWnd;
    ti.uId = ( UINT_PTR ) HB_PARHANDLE( 2 );

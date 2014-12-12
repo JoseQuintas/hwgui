@@ -675,7 +675,9 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
          ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
          IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. nPos == Len( oEdit:cPicMask )
-            hwg_GetSkip( oEdit:oParent, oEdit:handle, 1 )
+            IF !hwg_GetSkip( oEdit:oParent, oEdit:handle, 1 )
+               onDlgCommand( oEdit:oParent, hwg_MakeWParam( IDOK, 0 ) )
+            ENDIF
             Return 0
          ENDIF
          KeyRight( oEdit, nPos )

@@ -48,7 +48,7 @@ FUNCTION hwg_FindParent( hCtrl, nLevel )
 
    LOCAL i, oParent, hParent := hwg_Getparent( hCtrl )
 
-   IF hParent > 0
+   IF !Empty( hParent )
       IF ( i := Ascan( HDialog():aModalDialogs,{ |o|o:handle == hParent } ) ) != 0
          RETURN HDialog():aModalDialogs[i]
       ELSEIF ( oParent := HDialog():FindDialog( hParent ) ) != Nil

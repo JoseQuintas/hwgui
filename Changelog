@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-12 11:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/nice.c
+  * source/winapi/guimain.prg
+    ! Fixes for HWG_USE_POINTER_ITEM mode
+  * source/gtk/misc.c
+    * hwg_rgb() implemented, compatible with winapi version
+  + source/gtk/hhyper.prg
+    + HStaticLink from winapi version with some modifications
+  * source/gtk/Makefile.linux
+  * source/gtk/Makefile.scr
+  * hwgui.hbm
+    * Makefiles updated to include the gtk/hhyper.prg
+
 2014-12-10 16:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/control.c
     ! Tooltips creation fixed for UNICODE mode

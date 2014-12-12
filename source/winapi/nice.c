@@ -140,7 +140,8 @@ LRESULT CALLBACK NiceButtProc( HWND hWnd, UINT message, WPARAM wParam,
    {
       hb_vmPushSymbol( hb_dynsymSymbol( pSymTest ) );
       hb_vmPushNil(  );         /* places NIL at self */
-      hb_vmPushLong( ( LONG ) hWnd );   /* pushes parameters on to the hvm stack */
+      //hb_vmPushLong( ( LONG ) hWnd );   /* pushes parameters on to the hvm stack */
+      HB_PUSHITEM( hWnd );
       hb_vmPushLong( ( LONG ) message );
       hb_vmPushLong( ( LONG ) wParam );
       hb_vmPushLong( ( LONG ) lParam );

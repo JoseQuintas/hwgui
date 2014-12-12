@@ -290,7 +290,7 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
 
 #define  FLAG_CHECK      2
 
-STATIC FUNCTION onDlgCommand( oDlg, wParam, lParam )
+FUNCTION onDlgCommand( oDlg, wParam, lParam )
 
    LOCAL iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
    LOCAL aMenu, i, hCtrl

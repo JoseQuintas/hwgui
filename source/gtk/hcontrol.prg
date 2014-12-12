@@ -365,6 +365,7 @@ CLASS HButton INHERIT HControl
       bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
+   METHOD SetText( value ) INLINE hwg_button_SetText( ::handle, value )
 
 ENDCLASS
 

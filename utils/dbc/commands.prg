@@ -195,17 +195,29 @@ FUNCTION C_4( nAct )
 
    /* -----------------------  Append from --------------------- */
 
+#define STR_BUFLEN  4096
+
 FUNCTION C_APPEND()
-   LOCAL oDlg, oMsg, cFile := "", cFields := "", cFor := "", cDelim := ""
+   LOCAL oDlg, oMsg, cFile := "", cFields := "", cFor := ""
+   LOCAL cDelim := " ", cDelim2 := ",", cQuo := '"', nDf := 1, oDelim, oDelim2, oQuo, oDf
    LOCAL r1 := 1, bFor, af, cPath := cServerPath
-   LOCAL i, j, aFie, s, xVal, aLines, arr
+   LOCAL i, j, aFie, xVal, arr, s, nOverf := 0, oldDf
+   LOCAL han, stroka, strbuf := Space(STR_BUFLEN), poz := STR_BUFLEN+1
 #ifdef RDD_ADS
    LOCAL lRemote := (nServerType == 6)
 #else
    LOCAL lRemote := (nServerType == REMOTE_SERVER)
 #endif
    LOCAL oBrw := GetBrwActive()
-   Local oBtnFile, bBtnDis := {||Iif(lRemote,oBtnFile:Disable(),oBtnFile:Enable()),.T.}
+   Local oBtnFile
+   LOCAL bBtnDis := {||
+      Iif(lRemote,oBtnFile:Disable(),oBtnFile:Enable())
+      oDelim:Hide()
+      oDelim2:Hide()
+      oQuo:Hide()
+      oDf:Hide()
+      RETURN .T.
+   }
    LOCAL bFileBtn := {||
    cFile := hwg_Selectfile( "dbf files( *.dbf )", "*.dbf", hb_curDrive()+":\"+Curdir() )
    hwg_RefreshAllGets( oDlg )
@@ -218,8 +230,7 @@ FUNCTION C_APPEND()
    ENDIF
 
    INIT DIALOG oDlg TITLE aFiles[improc,AF_ALIAS]+": Append" ;
-      AT 0, 0         ;
-      SIZE 400, 340   ;
+      AT 0, 0 SIZE 400, 400   ;
       FONT oMainFont ON INIT bBtnDis
 
 #if defined( RDD_ADS ) .OR. defined( RDD_LETO )
@@ -238,24 +249,28 @@ FUNCTION C_APPEND()
    @ 90,60 GET cFields SIZE 220,24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
-   @ 10, 92 GROUPBOX "" SIZE 168, 112
+   @ 10, 92 GROUPBOX "" SIZE 168, 172
    GET RADIOGROUP r1
    @ 20,104 RADIOBUTTON "Dbf" SIZE 90, 20
    @ 20,128 RADIOBUTTON "Sdf" SIZE 90, 20
-   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20
-   //@ 20,176 RADIOBUTTON "Csv     quote:" SIZE 112, 20
+   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20 ON CLICK {||oDelim:Show()}
+   @ 20,176 RADIOBUTTON "Csv" SIZE 50, 20 ON CLICK {||oDelim2:Show(),oQuo:Show(),oDf:Show()}
    END RADIOGROUP
-   @ 132,152 GET cDelim SIZE 30, 24 PICTURE "XX"
-   //@ 132,176 GET cQuo SIZE 30, 24 PICTURE "XX"
+   @ 136,152 GET oDelim VAR cDelim SIZE 28, 24 PICTURE "XX"
+   @ 70, 176 SAY "quote:" SIZE 72,24 STYLE SS_RIGHT
+   @ 142,176 GET oQuo VAR cQuo SIZE 24, 24 PICTURE "X"
+   @ 40, 200 SAY "delimiter:" SIZE 102,24 STYLE SS_RIGHT
+   @ 142,200 GET oDelim2 VAR cDelim2 SIZE 24, 24 PICTURE "X"
+   @ 24,224 GET COMBOBOX oDf VAr nDf ITEMS aDateF SIZE 140,24 DISPLAYCOUNT 5
 
-   @ 10, 220 SAY "For: " SIZE 100, 22
-   @ 10, 242 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   @ 10, 280 SAY "For: " SIZE 100, 22
+   @ 10, 302 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-   @  30, 288  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 190, 288 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+   @  30, 348  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 190, 348 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
 
-   oDlg:Activate()
+   ACTIVATE DIALOG oDlg CENTER
 
    IF oDlg:lResult
 
@@ -299,11 +314,69 @@ FUNCTION C_APPEND()
                af[i] := Ascan( aFie, {|a|Upper(a[1])==Upper(af[i])} )
             NEXT
          ENDIF
-         aLines := hb_aTokens( MemoRead( cFile ), Chr(13) + Chr(10) )
-         FOR j := 1 TO Len( aLines )
-            FOR i := 1 TO Len( af )
-            NEXT
-         NEXT
+         IF ( han := FOpen( cFile, FO_READ + FO_SHARED ) ) != -1
+            j := 0
+            oldDf := Set( _SET_DATEFORMAT, aDatef[nDf] )
+            DO WHILE .T.
+               s := RdStr( han, @strbuf, @poz, STR_BUFLEN )
+               IF Empty( s )
+                  EXIT
+               ELSE
+                  IF j % 2 == 1
+                     stroka += s
+                  ELSE
+                     stroka := s
+                  ENDIF
+                  i := 1; j := 0
+                  DO WHILE ( i := hb_At( cQuo,stroka,i ) ) != 0
+                     i ++; j ++
+                  ENDDO
+                  IF j % 2 == 0
+                     arr := hb_aTokens( stroka, cDelim2, .T. )
+                     APPEND BLANK
+                     FOR i := 1 TO Len(arr)
+                        IF i <= Len( af )
+                           IF Left( arr[i],1 ) == cQuo
+                              arr[i] := Substr( arr[i], 2, Len(arr[i])-2 )
+                           ENDIF
+                           IF cQuo+cQuo $ arr[i]
+                              arr[i] := Strtran( arr[i], cQuo+cQuo, cQuo )
+                           ENDIF
+                           IF aFie[af[i],2] == "N"
+                              IF Len( xVal ) > aFie[af[i],3]
+                                 IF nOverf == 0
+                                    IF hwg_MsgYesNo( "Numeric field overflow! Continue?", "Warning" )
+                                       nOverf := 1
+                                    ELSE
+                                       nOverf := 2
+                                       EXIT
+                                    ENDIF
+                                 ENDIF
+                                 IF nOverf == 0
+                                    xVal := "0"
+                                 ENDIF
+                              ENDIF
+                              FieldPut( af[i], Val(xVal) )
+                           ELSEIF aFie[af[i],2] == "D"
+                              FieldPut( af[i], Stod(xVal) )
+                           ELSEIF aFie[af[i],2] == "L"
+                              FieldPut( af[i], ( xVal="T" ) )
+                           ELSEIF aFie[af[i],2] == "C"
+                              FieldPut( af[i], Left( xVal, aFie[af[i],3] ) )
+                           ELSEIF aFie[af[i],2] == "M"
+                              FieldPut( af[i], xVal )
+                           ENDIF
+                        ENDIF
+                     NEXT
+                     IF nOverf == 2
+                        EXIT
+                     ENDIF
+                  ENDIF
+               ENDIF
+            ENDDO
+            Set( _SET_DATEFORMAT, oldDf )
+            FClose( han )
+         ENDIF
       ENDIF
       oMsg:Close()
       UpdBrowse()
@@ -312,15 +385,25 @@ FUNCTION C_APPEND()
    RETURN Nil
 
 FUNCTION C_COPY()
-   LOCAL oDlg, oMsg, cFile := "", cFields := "", cFor := "", cDelim := ""
-   LOCAL r1 := 1, r2 := 1, bFor, af, nNext := 0, cQuo := '"', cPath := cServerPath
-   LOCAL i, aFie, han, s, xVal
+   LOCAL oDlg, oMsg, cFile := "", cFields := "", cFor := ""
+   LOCAL cDelim := " ", cDelim2 := ",", nNext := 0, cQuo := '"', nDf := 1, oDelim, oDelim2, oNext, oQuo, oDf
+   LOCAL r1 := 1, r2 := 1, bFor, af, cPath := cServerPath
+   LOCAL i, aFie, han, s, xVal, l, oldDf
 #ifdef RDD_ADS
    LOCAL lRemote := (nServerType == 6)
 #else
    LOCAL lRemote := (nServerType == REMOTE_SERVER)
 #endif
-   LOCAL oBtnFile, bBtnDis := {||Iif(lRemote,oBtnFile:Disable(),oBtnFile:Enable()),.T.}
+   LOCAL oBtnFile
+   LOCAL bBtnDis := {||
+      Iif(lRemote,oBtnFile:Disable(),oBtnFile:Enable())
+      oDelim:Hide()
+      oDelim2:Hide()
+      oQuo:Hide()
+      oDf:Hide()
+      oNext:Hide()
+      RETURN .T.
+   }
    LOCAL bFileBtn := {||
    cFile := hwg_Savefile( "*.dbf","xBase files( *.dbf )", "*.dbf", mypath )
    hwg_RefreshAllGets( oDlg )
@@ -328,9 +411,7 @@ FUNCTION C_COPY()
    }
 
    INIT DIALOG oDlg TITLE aFiles[improc,AF_ALIAS]+": Copy" ;
-      AT 0, 0         ;
-      SIZE 400, 340   ;
-      FONT oMainFont ON INIT bBtnDis
+      AT 0, 0 SIZE 400, 400 FONT oMainFont ON INIT bBtnDis
 
 #if defined( RDD_ADS ) .OR. defined( RDD_LETO )
    @ 10,10 SAY "Server " SIZE 60,22 STYLE SS_RIGHT
@@ -348,32 +429,36 @@ FUNCTION C_COPY()
    @ 90,60 GET cFields SIZE 220,24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
-   @ 10, 92 GROUPBOX "" SIZE 168, 112
+   @ 10, 92 GROUPBOX "" SIZE 168, 172
    GET RADIOGROUP r1
    @ 20,104 RADIOBUTTON "Dbf" SIZE 90, 20
    @ 20,128 RADIOBUTTON "Sdf" SIZE 90, 20
-   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20
-   @ 20,176 RADIOBUTTON "Csv     quote:" SIZE 112, 20
+   @ 20,152 RADIOBUTTON "Delimited with" SIZE 112, 20 ON CLICK {||oDelim:Show()}
+   @ 20,176 RADIOBUTTON "Csv" SIZE 50, 20 ON CLICK {||oDelim2:Show(),oQuo:Show(),oDf:Show()}
    END RADIOGROUP
-   @ 132,152 GET cDelim SIZE 30, 24 PICTURE "XX"
-   @ 132,176 GET cQuo SIZE 30, 24 PICTURE "XX"
+   @ 136,152 GET oDelim VAR cDelim SIZE 28, 24 PICTURE "XX"
+   @ 70, 176 SAY "quote:" SIZE 72,24 STYLE SS_RIGHT
+   @ 142,176 GET oQuo VAR cQuo SIZE 24, 24 PICTURE "X"
+   @ 40, 200 SAY "delimiter:" SIZE 102,24 STYLE SS_RIGHT
+   @ 142,200 GET oDelim2 VAR cDelim2 SIZE 24, 24 PICTURE "X"
+   @ 24,224 GET COMBOBOX oDf VAr nDf ITEMS aDateF SIZE 140,24 DISPLAYCOUNT 5
 
    @ 200, 92 GROUPBOX "" SIZE 168, 88
    GET RADIOGROUP r2
    @ 210,104 RADIOBUTTON "All" SIZE 90, 20 
-   @ 210,128 RADIOBUTTON "Next" SIZE 90, 20 
+   @ 210,128 RADIOBUTTON "Next" SIZE 90, 20 ON CLICK {||oNext:Show()}
    @ 210,152 RADIOBUTTON "Rest" SIZE 90, 20 
    END RADIOGROUP
-   @ 300,128 GET nNext SIZE 40, 24 PICTURE "9999"
+   @ 300,128 GET oNext VAR nNext SIZE 40, 24 PICTURE "9999"
 
-   @ 10, 220 SAY "For: " SIZE 100, 22
-   @ 10, 242 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
+   @ 10, 280 SAY "For: " SIZE 100, 22
+   @ 10, 302 GET cFor SIZE 380, 24 PICTURE "@S256" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-   @  30, 288  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 190, 288 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+   @  50, 348  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 250, 348 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
 
-   oDlg:Activate()
+   ACTIVATE DIALOG oDlg CENTER
 
    IF oDlg:lResult
 
@@ -418,13 +503,13 @@ FUNCTION C_COPY()
       ELSEIF r1 == 2 .AND. r2 == 1
          __dbSdf( .T., cFile, af, bFor,,,, .F. )
       ELSEIF r1 == 2 .AND. r2 == 2
-         __dbSdf( .T., cFile, af, bFor,, nrest,, .F. )
+         __dbSdf( .T., cFile, af, bFor,, nNext,, .F. )
       ELSEIF r1 == 2 .AND. r2 == 3
          __dbSdf( .T., cFile, af, bFor,,,, .T. )
       ELSEIF r1 == 3 .AND. r2 == 1
          __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,,,, .F. )
       ELSEIF r1 == 3 .AND. r2 == 2
-         __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,, nrest,, .F. )
+         __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,, nNext,, .F. )
       ELSEIF r1 == 3 .AND. r2 == 3
          __dbDelim( .T., cFile, Iif( Empty(cdelim), "blank", cdelim ), af, bFor,,,, .T. )
       ELSEIF r1 == 4
@@ -443,23 +528,33 @@ FUNCTION C_COPY()
          IF r2 == 1
             GO TOP
          ENDIF
+         oldDf := Set( _SET_DATEFORMAT, aDatef[nDf] )
          DO WHILE !Eof()
             IF Empty( bFor ) .OR. Eval( bFor )
-               IF r2 == 2 .AND. --nRest == 0
+               IF r2 == 2 .AND. --nNext == 0
                   EXIT
                ENDIF
                s := ""
                FOR i := 1 TO Len( af )
                   xVal := FieldGet( af[i] )
-                  s += Iif( i>1,',','' ) + cQuo + Iif( aFie[i,2]=="N", ;
-                     Ltrim(Str(xval)), Iif( aFie[i,2]=="D", Dtos(xVal),;
-                     Iif( aFie[i,2]=="L", Iif(xVal,"T","F"), Trim(xVal) ) ) ) + cQuo
+                  xVal := Iif( aFie[i,2]=="N", Ltrim(Str(xval)), ;
+                     Iif( aFie[i,2]=="D", Dtoc(xVal),;
+                     Iif( aFie[i,2]=="L", Iif(xVal,"T","F"), Trim(xVal) ) ) )
+                  IF ( i==Len(af).AND.Empty(xVal) ) .OR. cDelim2 $ xVal .OR. Chr(13)+Chr(10) $ xVal .OR. ( l := (cQuo $ xVal) )
+                     IF l
+                        xVal := Strtran( xVal, cQuo, cQuo+cQuo )
+                     ENDIF
+                     s += Iif( i>1,cDelim2,'' ) + cQuo + xVal + cQuo
+                  ELSE
+                     s += Iif( i>1,cDelim2,'' ) + xVal
+                  ENDIF
                NEXT
                FWrite( han, s + Chr(13) + Chr(10) )
             ENDIF
             SKIP
          ENDDO
-         FClose( cFile )
+         Set( _SET_DATEFORMAT, oldDf )
+         FClose( han )
       ENDIF
       oMsg:Close()
       UpdBrowse()

@@ -76,7 +76,7 @@ FUNCTION Main( ... )
    PUBLIC aButtons := Array( 5 )
    PUBLIC aFiles[ OPENED_FILES_LIMIT, AF_LEN ], improc := 0
    PUBLIC mypath := "\" + Curdir() + Iif( Empty( Curdir() ), "", "\" )
-   PUBLIC aDateF := { "dd/mm/yy", "mm/dd/yy", "yy/mm/dd", "dd.mm.yy", "dd-mm-yy", "dd/mm/yyyy", "dd.mm.yyyy", "mm/dd/yyyy" }
+   PUBLIC aDateF := { "dd/mm/yy", "mm/dd/yy", "yyyy-mm-dd", "yyyy.mm.dd", "dd.mm.yy", "dd-mm-yy", "yy/mm/dd", "dd/mm/yyyy", "dd.mm.yyyy", "mm/dd/yyyy" }
    PUBLIC dformat := aDateF[1], memownd := .F. , lRdonly := .F., lShared := .F.
    PUBLIC cAppCpage := "RU1251", cDataCpage := "RU866"
    PUBLIC lWinChar := .F.

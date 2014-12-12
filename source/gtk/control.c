@@ -165,6 +165,15 @@ HB_FUNC( HWG_CREATEBUTTON )
    HB_RETHANDLE( hCtrl );
 }
 
+HB_FUNC( HWG_BUTTON_SETTEXT )
+{
+   gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 2 ) );
+   GtkWidget *hBtn = ( GtkWidget * ) HB_PARHANDLE( 1 );
+
+   gtk_button_set_label( (GtkButton *) hBtn, gcTitle );
+   g_free( gcTitle );
+}
+
 HB_FUNC( HWG_CHECKBUTTON )
 {
    gtk_toggle_button_set_active( ( GtkToggleButton * ) HB_PARHANDLE( 1 ),

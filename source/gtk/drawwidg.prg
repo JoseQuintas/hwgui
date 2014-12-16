@@ -310,41 +310,30 @@ CLASS HBitmap INHERIT HObject
    METHOD AddString( name, cVal )
    METHOD Transparent( trColor )
    METHOD AddWindow( oWnd, lFull )
-   METHOD RELEASE()
+   METHOD Release()
 
 ENDCLASS
 
 METHOD AddResource( name ) CLASS HBitmap
-   LOCAL lPreDefined := .F. , i, aBmpSize
+   LOCAL oBmp, cVal
 
-   IF ValType( name ) == "N"
-      name := LTrim( Str( name ) )
-      lPreDefined := .T.
-   ENDIF
-
-   For EACH i  IN  ::aBitmaps
-      IF i:name == name
-         i:nCounter ++
-         RETURN i
+   For EACH oBmp IN ::aBitmaps
+      IF oBmp:name == name
+         oBmp:nCounter ++
+         RETURN oBmp
       ENDIF
    NEXT
 
-   IF !Empty( oResCnt )
-      IF !Empty( i := oResCnt:Get( name ) )
-         ::handle := hwg_OpenImage( i, .T. )
+   IF !Empty( oResCnt ) .AND. !Empty( cVal := oResCnt:Get( name ) )
+      IF !Empty( oBmp := ::AddString( name, cVal ) )
+         RETURN oBmp
+      ELSE
+         hb_memowrit( "/tmp/"+Lower(name), cVal )
+         RETURN ::AddFile( "/tmp/"+Lower(name) )
       ENDIF
    ENDIF
-   IF !Empty( ::handle )
-      ::name    := name
-      aBmpSize  := hwg_Getbitmapsize( ::handle )
-      ::nWidth  := aBmpSize[1]
-      ::nHeight := aBmpSize[2]
-      AAdd( ::aBitmaps, Self )
-   ELSE
-      RETURN Nil
-   ENDIF
 
-   RETURN Self
+   RETURN Nil
 
 METHOD AddFile( name, HDC ) CLASS HBitmap
    LOCAL i, aBmpSize
@@ -411,7 +400,7 @@ METHOD AddWindow( oWnd, lFull ) CLASS HBitmap
 
    RETURN Self
 
-METHOD RELEASE() CLASS HBitmap
+METHOD Release() CLASS HBitmap
    LOCAL i, nlen := Len( ::aBitmaps )
 
    ::nCounter --

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-16 16:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hdialog.prg
+    ! Fixed an old problem, when the VALID codeblock was called
+      twice for a last GET in a dialog.
+
 2014-12-16 13:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hlistbox.prg
     * code copied from 2.17 with some modifications

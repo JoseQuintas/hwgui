@@ -308,6 +308,7 @@ FUNCTION onDlgCommand( oDlg, wParam, lParam )
             IF __ObjHasMsg( oDlg:GetList[i], "BVALID" )
                IF oDlg:lExitOnEnter .AND. ;
                      Eval( oDlg:GetList[i]:bValid, oDlg:GetList[i] )
+                  oDlg:GetList[i]:bLostFocus := Nil
                   oDlg:lResult := .T.
                   hwg_EndDialog( oDlg:handle )
                ENDIF

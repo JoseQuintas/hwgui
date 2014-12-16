@@ -42,6 +42,7 @@
    REQUEST Bof
 
 #define HDM_GETITEMCOUNT    4608
+#define RT_MANIFEST         24
 
    STATIC ColSizeCursor := 0
    STATIC arrowCursor := 0

@@ -790,13 +790,20 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
 
 FUNCTION WriteTableInfo( n, cText )
 
+   LOCAL oBrw
+
    IF lMdi
 #ifndef __GTK__
       hwg_WriteStatus( HMainWindow():GetMdiActive(), n, cText )
 #endif
    ELSE
+      oBrw := GetBrwActive()
+      oBrw:cargo[2,n] := cText
+#ifdef __GTK__
+      hwg_WriteStatus( HWindow():GetMain(), 1, oBrw:cargo[2,1]+", "+oBrw:cargo[2,2]+", "+oBrw:cargo[2,3] )
+#else
       hwg_WriteStatus( HWindow():GetMain(), n, cText )
-      GetBrwActive():cargo[2,n] := cText
+#endif
    ENDIF
 
    RETURN Nil
@@ -897,12 +904,17 @@ FUNCTION ChildGetFocus( xWindow )
       ELSE
          oBrw := oTabMain:aControls[xWindow]
       ENDIF
-      IF !Empty( oBrw ) .AND. ValType( oBrw:cargo[1] ) == "N"
+      IF !Empty( oBrw ) .AND. ValType( oBrw:cargo ) == "A"
          SELECT( improc := oBrw:cargo[1] )
+#ifdef __GTK
+         hwg_WriteStatus( HWindow():GetMain(), 1, oBrw:cargo[2,1]+", "+oBrw:cargo[2,2]+", "+oBrw:cargo[2,3] )
+         hwg_Setfocus( oBrw:area )
+#else
          hwg_WriteStatus( HWindow():GetMain(), 1, oBrw:cargo[2,1] )
          hwg_WriteStatus( HWindow():GetMain(), 2, oBrw:cargo[2,2] )
          hwg_WriteStatus( HWindow():GetMain(), 3, oBrw:cargo[2,3] )
          hwg_Setfocus( oBrw:handle )
+#endif
       ENDIF
    ENDIF
 

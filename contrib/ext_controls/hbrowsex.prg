@@ -218,6 +218,7 @@ METHOD Value( xValue ) CLASS HColumnEx
 
 CLASS HBrowseEx INHERIT HControl
 
+   CLASS VAR WindowsManifest INIT !EMPTY(hwg_Findresource( , 1 , RT_MANIFEST ) ) SHARED
    DATA winclass   INIT "BROWSE"
    DATA active     INIT .T.
    DATA lChanged   INIT .F.

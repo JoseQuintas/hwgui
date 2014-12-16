@@ -219,7 +219,8 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    ::tcolor := 0
    ::bcolor := hwg_VColor( "FFFFFF" )
    ::tcolorSel := ::httColor := hwg_VColor( "FFFFFF" )
-   ::bcolorSel := ::htbColor := hwg_VColor( "808080" )
+   ::bcolorSel := hwg_VColor( "808080" )
+   ::htbColor := 2896388
 
    ::InitBrw()
    ::Activate()
@@ -674,7 +675,9 @@ METHOD Paint()  CLASS HBrowse
       ::LineOut( nRows + 1, 0, hDC, .F. , .T. )
    ENDIF
 
-   ::LineOut( ::rowPos, iif( ::lEditable, ::colpos, 0 ), hDC, .T. )
+   //::LineOut( ::rowPos, iif( ::lEditable, ::colpos, 0 ), hDC, .T. )
+   ::LineOut( ::rowPos, 0, hDC, .T. )
+   ::LineOut( ::rowPos, ::colpos, hDC, .T. )
    IF hwg_Checkbit( ::internal[1], 1 ) .OR. ::lAppMode
       ::HeaderOut( hDC )
       if ::nFootRows > 0

@@ -14,7 +14,7 @@
 #include "ads.ch"
 #endif
 
-Memvar oBrw, currentCP, currFname
+Memvar oBrw, currentCP, currFname, improc, aFiles, nServerType, oMainFont
 
 Static aFieldTypes := { "C","N","D","L" }
 
@@ -31,6 +31,7 @@ Local bChgPos := {|o|
    oGet3:SetGet( Ltrim(Str(o:aArray[o:nCurrent,3])) )
    oGet4:SetGet( Ltrim(Str(o:aArray[o:nCurrent,4])) )
    hwg_RefreshAllGets( oDlg )
+   RETURN Nil
    }
 
    IF lNew

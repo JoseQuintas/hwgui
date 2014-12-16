@@ -8,6 +8,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-16 09:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwg_extctrl.ch
+    * Added command for extended Groupbox control
+  * utils/dbc/commands.prg
+  * utils/dbc/dbchw.prg
+  * utils/dbc/modistru.prg
+  * utils/dbc/move.prg
+  * utils/dbc/query.prg
+  * utils/dbc/view.prg
+    ! Some fixes, related to Csv support
+    ! Warnings fixed
+    * Added support of tabbed interface instead of MDI - it is switched on
+      with the 'Mdi = Off' entry in dbc.ini.
+    * Some other changes for GTK version.
+      Now dbchw can be built under GTK version.
+
 2014-12-12 21:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hdialog.prg
   + source/gtk/hhyper.prg

@@ -14,6 +14,8 @@
 #include "ads.ch"
 #endif
 
+Memvar oMainFont, improc, aFiles
+
 STATIC cLocate := "", cFilter := "", cSeek := ""
 
 FUNCTION Move( nMove )
@@ -25,9 +27,7 @@ FUNCTION Move( nMove )
    ENDIF
 
    INIT DIALOG oDlg TITLE aTitle[nMove] ;
-      AT 0, 0         ;
-      SIZE 400, 140   ;
-      FONT oMainFont
+      AT 0, 0 SIZE 400, 140 FONT oMainFont
 
    IF nMove == 1
       cExpr := cLocate
@@ -81,7 +81,7 @@ FUNCTION Move( nMove )
    RETURN Nil
 
 FUNCTION F_Locate( oBrw, cExpres )
-   LOCAL nrec, i, res
+   LOCAL nrec, i, res, block
 
    cLocate := cExpres
    IF ValType( &cLocate ) == "L"

@@ -3,13 +3,15 @@
  * DBCHW - DBC ( Harbour + HWGUI )
  * Commands ( Replace, delete, ... )
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001-2014 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "fileio.ch"
+#include "hwgui.ch"
 #include "dbchw.h"
+
+Memvar improc, nServerType, cServerPath, cDataCPage, aFiles, oMainFont, aDateF, mypath
 
    /* -----------------------  Replace --------------------- */
 
@@ -20,7 +22,7 @@ FUNCTION C_REPL
    LOCAL oBrw := GetBrwActive()
 
    AFields( af )
-   improc := oBrw:cargo
+   improc := oBrw:cargo[1]
 
    IF aFiles[ improc, AF_RDONLY ]
       hwg_Msgstop( "File is opened in readonly mode" )
@@ -96,7 +98,7 @@ FUNCTION C_REPL
 FUNCTION C_4( nAct )
    LOCAL oDlg, aTitle := { "Delete", "Recall", "Count", "Sum" }
    LOCAL cExpr := "", r1 := 1, nNext := 0, cFor := "", bFor, bSum
-   LOCAL oBrw := GetBrwActive(), nCount := 0
+   LOCAL oBrw := GetBrwActive(), nCount := 0, nRec, oMsg
 
    INIT DIALOG oDlg TITLE aTitle[nAct] ;
       AT 0, 0         ;
@@ -219,7 +221,7 @@ FUNCTION C_APPEND()
       RETURN .T.
    }
    LOCAL bFileBtn := {||
-   cFile := hwg_Selectfile( "dbf files( *.dbf )", "*.dbf", hb_curDrive()+":\"+Curdir() )
+   cFile := hwg_Selectfile( "*.*", "*.*", hb_curDrive()+":\"+Curdir() )
    hwg_RefreshAllGets( oDlg )
    Return .T.
    }
@@ -336,11 +338,12 @@ FUNCTION C_APPEND()
                      APPEND BLANK
                      FOR i := 1 TO Len(arr)
                         IF i <= Len( af )
-                           IF Left( arr[i],1 ) == cQuo
-                              arr[i] := Substr( arr[i], 2, Len(arr[i])-2 )
+                           xVal := arr[i]
+                           IF Left( xVal,1 ) == cQuo
+                              xVal := Substr( xVal, 2, Len(xVal)-2 )
                            ENDIF
                            IF cQuo+cQuo $ arr[i]
-                              arr[i] := Strtran( arr[i], cQuo+cQuo, cQuo )
+                              xVal := Strtran( xVal, cQuo+cQuo, cQuo )
                            ENDIF
                            IF aFie[af[i],2] == "N"
                               IF Len( xVal ) > aFie[af[i],3]
@@ -358,7 +361,7 @@ FUNCTION C_APPEND()
                               ENDIF
                               FieldPut( af[i], Val(xVal) )
                            ELSEIF aFie[af[i],2] == "D"
-                              FieldPut( af[i], Stod(xVal) )
+                              FieldPut( af[i], Ctod(xVal) )
                            ELSEIF aFie[af[i],2] == "L"
                               FieldPut( af[i], ( xVal="T" ) )
                            ELSEIF aFie[af[i],2] == "C"
@@ -405,7 +408,11 @@ FUNCTION C_COPY()
       RETURN .T.
    }
    LOCAL bFileBtn := {||
-   cFile := hwg_Savefile( "*.dbf","xBase files( *.dbf )", "*.dbf", mypath )
+#ifdef __GTK__
+   cFile := hwg_Selectfile( "( *.* )","*.*",mypath )
+#else
+   cFile := hwg_Savefile( "*.*","*.*", "*.dbf", mypath )
+#endif
    hwg_RefreshAllGets( oDlg )
    Return .T.
    }
@@ -531,16 +538,14 @@ FUNCTION C_COPY()
          oldDf := Set( _SET_DATEFORMAT, aDatef[nDf] )
          DO WHILE !Eof()
             IF Empty( bFor ) .OR. Eval( bFor )
-               IF r2 == 2 .AND. --nNext == 0
-                  EXIT
-               ENDIF
                s := ""
                FOR i := 1 TO Len( af )
                   xVal := FieldGet( af[i] )
                   xVal := Iif( aFie[i,2]=="N", Ltrim(Str(xval)), ;
                      Iif( aFie[i,2]=="D", Dtoc(xVal),;
                      Iif( aFie[i,2]=="L", Iif(xVal,"T","F"), Trim(xVal) ) ) )
-                  IF ( i==Len(af).AND.Empty(xVal) ) .OR. cDelim2 $ xVal .OR. Chr(13)+Chr(10) $ xVal .OR. ( l := (cQuo $ xVal) )
+                  IF ( i==Len(af).AND.Empty(xVal) ) .OR. ( l := (cQuo $ xVal) ) ;
+                        .OR. cDelim2 $ xVal .OR. Chr(13)+Chr(10) $ xVal
                      IF l
                         xVal := Strtran( xVal, cQuo, cQuo+cQuo )
                      ENDIF
@@ -550,6 +555,9 @@ FUNCTION C_COPY()
                   ENDIF
                NEXT
                FWrite( han, s + Chr(13) + Chr(10) )
+               IF r2 == 2 .AND. --nNext == 0
+                  EXIT
+               ENDIF
             ENDIF
             SKIP
          ENDDO
@@ -568,7 +576,7 @@ FUNCTION C_RPZ( nAct )
    LOCAL oMsg, aTitle := { "Reindex", "Pack", "Zap" }
    LOCAL oBrw := GetBrwActive()
 
-   improc := oBrw:cargo
+   improc := oBrw:cargo[1]
 
    IF !aFiles[ improc, AF_EXCLU ]
       hwg_Msgstop( "File must be opened in exclusive mode" )
@@ -602,6 +610,7 @@ FUNCTION C_REL
       oBrowse:aArray := arel := {}
       hwg_Invalidaterect( oBrowse:handle, 1 )
       oBrowse:Refresh()
+      RETURN Nil
       }
    LOCAL bAdd := {||
       LOCAL cTmp
@@ -613,6 +622,7 @@ FUNCTION C_REL
       ENDDO
       hwg_Invalidaterect( oBrowse:handle, 1 )
       oBrowse:Refresh()
+      RETURN Nil
       }
 
    DO WHILE !Empty( cExpr := dbRelation( ++i ) )

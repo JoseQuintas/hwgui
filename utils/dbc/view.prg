@@ -7,16 +7,17 @@
  * www - http://www.kresin.ru
 */
 
+#include "hwgui.ch"
 #include "dbchw.h"
 #include "fileio.ch"
 
 STATIC crlf := e"\r\n"
 
-MEMVAR aFiles, numdriv, improc
+MEMVAR aFiles, aDrivers, numdriv, improc, lShared, lRdOnly, mypath, nServerType
 
 FUNCTION RdView( fname )
    LOCAL aLines, nLine, res := .T.
-   LOCAL scom, sword, i, n
+   LOCAL scom, sword, i, n, nPos
    LOCAL aRel := {}, aFlt := {}
 
    IF Empty( fname )
@@ -96,9 +97,14 @@ RETURN Nil
 
 FUNCTION WrView()
 
-LOCAL fname, i, han, j, strlen, obl, cTmp
+   LOCAL i, han, j, strlen, obl, cTmp
+#ifdef __GTK__
+   Local fname := hwg_Selectfile( "View files( *.vew )","*.vew",mypath )
+#else
+   Local fname := hwg_Savefile( "*.vew","View files( *.vew )", "*.vew", mypath )
+#endif
 
-   IF Empty( fname := hwg_Savefile( "*.vew","View files( *.vew )", "*.vew", mypath ) )
+   IF Empty( fname )
       Return Nil
    ENDIF
 

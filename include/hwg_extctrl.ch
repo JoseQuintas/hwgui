@@ -127,7 +127,7 @@
              [ BITMAP <hbit> ]          ;
              [ BSTYLE <nBStyle> ]       ;                     
              [ PICTUREMARGIN <nMargin> ];
-             [ ICON <hIco> ]          ;
+             [ ICON <hIco> ]            ;
              [ <lTransp: TRANSPARENT> ] ;
              [ <lnoTheme: NOTHEMES> ]   ;
              [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
@@ -138,7 +138,7 @@
           [; hwg_SetCtrlName( <oBut>,<(oBut)> )]
 
 
-#xcommand @ <x>,<y> GRIDEX <oGrid>        ;
+#xcommand @ <x>,<y> GRIDEX <oGrid>      ;
             [ OF <oWnd> ]               ;
             [ ID <nId> ]                ;
             [ STYLE <nStyle> ]          ;
@@ -189,3 +189,20 @@
                <x>, <y>, <width>, <height>, <ncStyle>, <bSize>, <.lnoBorder.>,<bInit>,<nbackStyle>,<tcolor>,<bcolor>,;
                <bLoad>,<bRefresh>,<bOther>);;
           [; hwg_SetCtrlName( <oCnt>,<(oCnt)> )]
+
+#xcommand @ <x>,<y> GROUPBOX [ <lExt: EXTENDED,EXT> ] [ <oGroup> CAPTION ] <caption> ;
+             [ OF <oWnd> ]              ;
+             [ ID <nId> ]               ;
+             [ SIZE <width>, <height> ] ;
+             [ COLOR <color> ]          ;
+             [ BACKCOLOR <bcolor> ]     ;
+             [<lTransp: TRANSPARENT>]   ;
+             [ FONT <oFont> ]           ;
+             [ ON INIT <bInit> ]        ;
+             [ ON SIZE <bSize> ]        ;
+             [ ON PAINT <bDraw> ]       ;
+             [ STYLE <nStyle> ]         ;
+          => ;
+          [<oGroup> := ] HGroupEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor>,<.lTransp.>);;
+          [ <oGroup>:name := <(oGroup)> ]

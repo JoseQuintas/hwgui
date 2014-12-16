@@ -7,12 +7,13 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "dbchw.h"
 #ifdef RDD_ADS
 #include "ads.ch"
 #endif
+
+Memvar mypath, numdriv, oMainFont
 
 Static cQuery := ""
 
@@ -30,7 +31,11 @@ Return Nil
 Function Query( lEdit )
 Local oDlg
 Local bBtnSave := {||
+#ifdef __GTK__
+   Local fname := hwg_Selectfile( "Query files( *.que )","*.que",mypath )
+#else
    Local fname := hwg_Savefile( "*.que","Query files( *.que )", "*.que", mypath )
+#endif
    IF !Empty( fname )
       hb_MemoWrit( fname,cQuery )
    ENDIF

@@ -3,7 +3,7 @@
  * DBCHW - DBC ( Harbour + HWGUI )
  * Main file
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001-2014 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
 
@@ -70,6 +70,12 @@ STATIC aCPInfo := { "Bulgarian CP-866","Bulgarian ISO-8859-5","Bulgarian MIK", ;
       "Ukrainian Windows-1251","Ukrainian CP-866","Ukrainian KOI8-U","UTF-16 little endian", ;
       "UTF-8","UTF-8 extended" }
 
+STATIC oTabMain, cExePath
+
+Memvar aBrwFont, oBrwFont, oMainFont, aButtons, aFiles, improc, mypath, aDateF
+Memvar dformat, memownd, lRdonly, lShared, cAppCpage, cDataCpage, lMdi, nQueryWndHandle, aDrivers
+Memvar nServerType, cServerPath, numdriv, aCPId
+
 FUNCTION Main( ... )
    LOCAL oWndMain, oPanel, aParams := hb_aParams()
    PUBLIC aBrwFont := { "MS Sans Serif", "0", "-13" }, oBrwFont, oMainFont
@@ -79,7 +85,11 @@ FUNCTION Main( ... )
    PUBLIC aDateF := { "dd/mm/yy", "mm/dd/yy", "yyyy-mm-dd", "yyyy.mm.dd", "dd.mm.yy", "dd-mm-yy", "yy/mm/dd", "dd/mm/yyyy", "dd.mm.yyyy", "mm/dd/yyyy" }
    PUBLIC dformat := aDateF[1], memownd := .F. , lRdonly := .F., lShared := .F.
    PUBLIC cAppCpage := "RU1251", cDataCpage := "RU866"
-   PUBLIC lWinChar := .F.
+#ifdef __GTK__
+   PUBLIC lMdi := .F.
+#else
+   PUBLIC lMdi := .T.
+#endif
 #ifdef RDD_ADS
    PUBLIC nQueryWndHandle := 0
    PUBLIC aDrivers := { "ADS_CDX", "ADS_NTX", "ADS_ADT" }
@@ -126,12 +136,16 @@ FUNCTION Main( ... )
    SET EPOCH TO 1960
    SET DATE FORMAT dformat
 
+   cExePath := FilePath( hb_ArgV( 0 ) )
    ReadIni( FilePath( hb_ArgV( 0 ) ) )
    ReadIni( "\" + Curdir() + Iif( Empty( Curdir() ), "", "\" ) )
    IF !Empty( cServerPath ) .AND. !( Right( cServerPath, 1 ) $ "/\" )
       cServerPath += "\"
    ENDIF
    hb_cdpSelect( cAppCpage )
+#ifdef __GTK__
+   hwg_SetResContainer(  cExePath + "dbchw.bin" )
+#endif
 
 #ifdef RDD_ADS
    AdsSetServerType( nServerType )
@@ -142,8 +156,19 @@ FUNCTION Main( ... )
 
    PREPARE FONT oMainFont NAME "MS Sans Serif" WIDTH 0 HEIGHT - 13
 
-   INIT WINDOW oWndMain MDI TITLE "Dbc" MENU "APPMENU" MENUPOS 8 ; 
+   IF lMdi
+#ifndef __GTK__
+      INIT WINDOW oWndMain MDI TITLE "Dbc" MENU "APPMENU" MENUPOS 8 ; 
+            ICON HIcon():AddResource("DBC")
+#endif
+   ELSE
+      INIT WINDOW oWndMain MAIN TITLE "Dbc" SIZE 600, 474;
          ICON HIcon():AddResource("DBC")
+      ADD STATUS PARTS 140, 360, 0
+      @ 0, 24 TAB oTabMain ITEMS {} SIZE 600,436 ON SIZE {|o,x,y|ResizeBrwQ( o,x,y ) }
+      oTabMain:bChange2 := {|o,n|Iif(Len(o:aControls)>=n,ChildGetFocus(n),.T.)}
+      //hwg_SetTabSize( oTabMain:handle, 100,28 )
+   ENDIF
 
    MENU OF oWndMain
       MENU TITLE "&File"
@@ -206,12 +231,14 @@ FUNCTION Main( ... )
          MENUITEM "&Calculator" ACTION  Calcul()
          MENUITEM "&Do script" ACTION  Scripts( 2 )
       ENDMENU
-      MENU TITLE  "&Windows"
-         MENUITEM "&Vertically" ACTION hwg_Sendmessage( HWindow():GetMain():handle, WM_MDITILE, MDITILE_VERTICAL, 0 )
-         MENUITEM "&Horizontally" ACTION hwg_Sendmessage( HWindow():GetMain():handle, WM_MDITILE, MDITILE_HORIZONTAL, 0 )
-         MENUITEM "&Cascade" ACTION hwg_Sendmessage( HWindow():GetMain():handle, WM_MDICASCADE, 0, 0 )
-      ENDMENU
-#ifdef RDD_LETO
+#ifndef __GTK__
+      IF lMdi
+         MENU TITLE  "&Windows"
+            MENUITEM "&Vertically" ACTION hwg_Sendmessage( HWindow():GetMain():handle, WM_MDITILE, MDITILE_VERTICAL, 0 )
+            MENUITEM "&Horizontally" ACTION hwg_Sendmessage( HWindow():GetMain():handle, WM_MDITILE, MDITILE_HORIZONTAL, 0 )
+            MENUITEM "&Cascade" ACTION hwg_Sendmessage( HWindow():GetMain():handle, WM_MDICASCADE, 0, 0 )
+         ENDMENU
+      ENDIF
 #endif
 #ifdef RDD_ADS
       MENU TITLE  "&Query"
@@ -223,7 +250,7 @@ FUNCTION Main( ... )
       MENUITEM "&About" ACTION  About()
    ENDMENU
 
-   @ 0,0 PANEL oPanel OF oWndMain SIZE oWndMain:nWidth-2,24
+   @ 0,0 PANEL oPanel OF oWndMain SIZE oWndMain:nWidth-2,24 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    @ 2,0 OWNERBUTTON aButtons[1] OF oPanel ON CLICK {||GetBrwActive():Top()} ;
        SIZE 24,24 FLAT BITMAP "TOP" FROM RESOURCE TRANSPARENT COLOR 12632256 TOOLTIP "Top"
@@ -288,6 +315,10 @@ STATIC FUNCTION ReadIni( cPath )
                cDataCpage := cTmp
             ENDIF
          ENDIF
+         IF hb_hHaskey( aSect, "mdi" ) .AND. ( Empty( cTmp := aSect[ "mdi" ] ) ;
+               .OR. Lower( cTmp ) != "on" )
+            lMdi := .F.
+         ENDIF
       ENDIF
 #ifdef RDD_ADS
       IF hb_hHaskey( hIni, "ADS" ) .AND. !Empty( aSect := hIni[ "ADS" ] )
@@ -335,11 +366,20 @@ STATIC FUNCTION ReadParams( aParams )
    NEXT
    RETURN Nil
 
-FUNCTION ChildClose
-   LOCAL nHandle := hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIGETACTIVE, 0, 0 )
+STATIC FUNCTION ChildClose
+   LOCAL n
 
-   IF nHandle > 0
-      hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIDESTROY, nHandle, 0 )
+   IF lMdi
+#ifndef __GTK__
+      IF !Empty( n := hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIGETACTIVE, 0, 0 ) )
+         hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIDESTROY, n, 0 )
+      ENDIF
+#endif
+   ELSE
+      IF !Empty( n := oTabMain:GetActivePage() )
+         ChildKill( n )
+         oTabMain:DeletePage( n )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -499,10 +539,9 @@ FUNCTION CloseIndex()
    RETURN Nil
 
 Function UpdBrowse()
-   LOCAL oWindow := HMainWindow():GetMdiActive(), i, oBrw, cTmp
+   LOCAL oBrw := GetBrwActive(), i, cTmp
 
-   IF oWindow != Nil .AND. ( i := Ascan( oWindow:aControls, { |o|o:classname() == "HBROWSE" } ) ) > 0
-      oBrw := oWindow:aControls[i]
+   IF !Empty( oBrw )
 
       IF aFiles[ improc,AF_LFLT ]
          oBrw:bRcou := {|o| o:nRecords }
@@ -517,9 +556,9 @@ Function UpdBrowse()
          ENDIF
       ENDIF
 
-      hwg_WriteStatus( oWindow, 2, Iif(aFiles[improc,AF_EXCLU],"Exclusive","Shared") + ;
+      WriteTableInfo( 2, Iif(aFiles[improc,AF_EXCLU],"Exclusive","Shared") + ;
             Iif(aFiles[improc,AF_RDONLY],", Readonly","") + Iif(aFiles[improc,AF_LFLT],", Filtered","") + ", Order: "+Iif(Empty(cTmp:=ordSetFocus()),"None",cTmp) )
-      hwg_WriteStatus( oWindow, 1, LTrim(Str(Eval(oBrw:bRecno,oBrw)))+"/"+LTrim(Str(Eval(oBrw:bRcou,oBrw))) )
+      WriteTableInfo( 1, LTrim(Str(Eval(oBrw:bRecno,oBrw)))+"/"+LTrim(Str(Eval(oBrw:bRcou,oBrw))) )
       hwg_Invalidaterect( oBrw:handle, 1 )
       oBrw:Refresh()
       hwg_SetFocus( oBrw:handle )
@@ -528,11 +567,21 @@ Function UpdBrowse()
 Return Nil
 
 Function GetBrwActive()
-   LOCAL oWindow := HMainWindow():GetMdiActive(), i
-   IF oWindow != Nil 
-      i := Ascan( oWindow:aControls, { |o|o:classname() == "HBROWSE" } )
+
+   LOCAL oWindow, i, oBrw
+
+   IF lMdi
+#ifndef __GTK__
+      IF !Empty( oWindow := HMainWindow():GetMdiActive() ) 
+         i := Ascan( oWindow:aControls, { |o|o:classname() == "HBROWSE" } )
+      ENDIF
+      oBrw := Iif( Empty(i), Nil, oWindow:aControls[i] )
+#endif
+   ELSE
+      oBrw := oTabMain:aControls[ oTabMain:GetActivePage() ]
    ENDIF
-   RETURN Iif( Empty(i), Nil, oWindow:aControls[i] )
+
+   RETURN oBrw
 
 Function DlgWait( cTitle )
 Local oDlg
@@ -638,10 +687,10 @@ Local bFileBtn := {||
 Return Nil
 
 FUNCTION OpenDbf( fname, alsname, hChild, pass )
-   LOCAL oWindow, aControls, oBrowse, i
+   LOCAL oWindow, oBrowse, i
    LOCAL bPosChg := {|o|
       LOCAL j := 0, j1, cAls
-      hwg_WriteStatus( o:oParent,1,LTrim(Str(Eval(o:bRecno,o)))+"/"+LTrim(Str(Eval(o:bRcou,o))) )
+      WriteTableInfo( 1,LTrim(Str(Eval(o:bRecno,o)))+"/"+LTrim(Str(Eval(o:bRcou,o))) )
       DO WHILE !Empty( dbRelation( ++j ) )
          cAls := Lower( Alias( dbRselect(j) ) )
          FOR j1 := 1 TO Len( aFiles )
@@ -652,6 +701,7 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
             ENDIF
          NEXT
       ENDDO
+      RETURN Nil
    }
 
    IF !FiOpen( fname, alsname, pass )
@@ -668,46 +718,88 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
    aButtons[3]:Enable()
    aButtons[4]:Enable()
 
-   IF hChild == Nil .OR. hChild == 0
-      INIT WINDOW oWindow MDICHILD TITLE fname ;
-         AT 0, 0                              ;
-         STYLE WS_VISIBLE + WS_OVERLAPPEDWINDOW ;
-         ON GETFOCUS { |o|ChildGetFocus( o ) }   ;
-         ON EXIT { |o|ChildKill( o ) }
+   IF Empty( hChild )
+      IF lMdi
+#ifndef __GTK__
+         INIT WINDOW oWindow MDICHILD TITLE fname ;
+            AT 0, 0                              ;
+            STYLE WS_VISIBLE + WS_OVERLAPPEDWINDOW ;
+            ON GETFOCUS { |o|ChildGetFocus( o ) }  ;
+            ON EXIT { |o|ChildKill( o ) }
 
-      ADD STATUS PARTS 140, 360, 0
-      @ 0, 0 BROWSE oBrowse DATABASE  ;
-         ON SIZE { |o, x, y|ResizeBrwQ( o, x, y ) } ;
-         ON POSCHANGE bPosChg
+         ADD STATUS PARTS 140, 360, 0
 
+         @ 0, 0 BROWSE oBrowse DATABASE ON SIZE {|o,x,y|ResizeBrwQ( o,x,y ) }
+#endif
+      ELSE
+         BEGIN PAGE Lower(Alias()) of oTabMain
+#ifdef __GTK__
+         @ 4,4 BROWSE oBrowse OF oTabMain DATABASE SIZE 592,426  ;
+             STYLE WS_BORDER+WS_VSCROLL ;
+             ON SIZE {|o,x,y|o:Move(,,x-8,y-32)}
+#else
+         @ 0,30 BROWSE oBrowse OF oTabMain DATABASE SIZE oTabMain:nWidth, oTabMain:nHeight-36  ;
+             NOBORDER ;
+             ON SIZE {|o,x,y|o:Move(,,x,y-36)}
+#endif
+         END PAGE of oTabMain
+      ENDIF
+
+      oBrowse:bPosChanged := bPosChg
       oBrowse:bcolorSel := COLOR_SELE
       oBrowse:ofont := oBrwFont
-      oBrowse:cargo := improc
+      oBrowse:cargo := { improc, {"","",""} }
       hwg_CreateList( oBrowse, .T. )
       oBrowse:lAppable := .T.
       oBrowse:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
       oBrowse:lInFocus := .T.
 
-      oWindow:Activate()
+      IF lMdi
+#ifndef __GTK__
+         oWindow:Activate()
+#endif
+      ELSE
+         oTabMain:SetTab( Len(oTabMain:aPages) )
+      ENDIF
    ELSE
-      oWindow := HWindow():FindWindow( hChild )
-      IF oWindow != Nil
-         aControls := oWindow:aControls
-         IF ( i := Ascan( aControls, { |o|o:classname() == "HBROWSE" } ) ) > 0
-            oBrowse := aControls[ i ]
-            oBrowse:InitBrw()
-            oBrowse:bcolorSel := COLOR_SELE
-            oBrowse:ofont := oBrwFont
-            oBrowse:cargo := improc
+      IF lMdi
+#ifndef __GTK__
+         oWindow := HWindow():FindWindow( hChild )
+         IF oWindow != Nil .AND. ;
+               ( i := Ascan( oWindow:aControls, { |o|o:classname() == "HBROWSE" } ) ) > 0
+            oBrowse := oWindow:aControls[ i ]
             hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIACTIVATE, hChild, 0 )
-            oBrowse:Refresh()
          ENDIF
+#endif
+      ELSE
+         oBrowse := oTabMain:aControls[hChild]
+         oTabMain:SetTab( hChild )
+      ENDIF
+      IF !Empty( oBrowse )
+         oBrowse:InitBrw()
+         oBrowse:bcolorSel := COLOR_SELE
+         oBrowse:ofont := oBrwFont
+         oBrowse:cargo := { improc, {"","",""} }
+         oBrowse:Refresh()
       ENDIF
    ENDIF
    aFiles[ improc, AF_BRW ] := oBrowse
    UpdBrowse()
 
-   RETURN oWindow:handle
+   RETURN Iif( lMdi, oWindow:handle, oTabMain:GetActivePage() )
+
+FUNCTION WriteTableInfo( n, cText )
+
+   IF lMdi
+#ifndef __GTK__
+      hwg_WriteStatus( HMainWindow():GetMdiActive(), n, cText )
+#endif
+   ELSE
+      hwg_WriteStatus( HWindow():GetMain(), n, cText )
+      GetBrwActive():cargo[2,n] := cText
+   ENDIF
+
+   RETURN Nil
 
    /* -----------------------  Calculator  --------------------- */
 
@@ -725,6 +817,7 @@ FUNCTION Calcul()
       IF lRes
          oSayRes:SetText( Iif( xRes==Nil, "Nil", Transform( xRes, "@B" ) ) )
       ENDIF
+      RETURN Nil
    }
 
    INIT DIALOG oDlg TITLE "Calculator" ;
@@ -756,6 +849,7 @@ FUNCTION Scripts( nAct )
       IF !Empty( fname )
          oEdit1:SetText( Memoread(fname) )
       ENDIF
+      RETURN Nil
    }
 
    LOCAL bCalcBtn := {||
@@ -774,6 +868,7 @@ FUNCTION Scripts( nAct )
          ENDIF
          hwg_Msginfo( "Script executed" )
       ENDIF
+      RETURN Nil
    }
 
    INIT DIALOG oDlg TITLE "Script" ;
@@ -791,33 +886,42 @@ FUNCTION Scripts( nAct )
 
    RETURN Nil
 
-FUNCTION ChildGetFocus( oWindow )
-   LOCAL i, aControls, oBrw
+FUNCTION ChildGetFocus( xWindow )
+   LOCAL i, oBrw
 
-   IF oWindow != Nil
-      aControls := oWindow:aControls
-      IF ( i := Ascan( aControls, { |o|o:classname() == "HBROWSE" } ) ) > 0
-         oBrw := aControls[i]
-         IF ValType( oBrw:cargo ) == "N"
-            SELECT( oBrw:cargo )
-            improc := oBrw:cargo
-            hwg_Setfocus( oBrw:handle )
+   IF xWindow != Nil
+      IF lMdi
+         IF ( i := Ascan( xWindow:aControls, { |o|o:classname() == "HBROWSE" } ) ) > 0
+            oBrw := xWindow:aControls[i]
          ENDIF
+      ELSE
+         oBrw := oTabMain:aControls[xWindow]
+      ENDIF
+      IF !Empty( oBrw ) .AND. ValType( oBrw:cargo[1] ) == "N"
+         SELECT( improc := oBrw:cargo[1] )
+         hwg_WriteStatus( HWindow():GetMain(), 1, oBrw:cargo[2,1] )
+         hwg_WriteStatus( HWindow():GetMain(), 2, oBrw:cargo[2,2] )
+         hwg_WriteStatus( HWindow():GetMain(), 3, oBrw:cargo[2,3] )
+         hwg_Setfocus( oBrw:handle )
       ENDIF
    ENDIF
 
    RETURN Nil
 
-FUNCTION ChildKill( oWindow )
-   LOCAL i, aControls, oBrw
+STATIC FUNCTION ChildKill( xWindow )
+   LOCAL i, oBrw
 
-   IF oWindow != Nil
-      aControls := oWindow:aControls
-      IF ( i := Ascan( aControls, { |o|o:classname() == "HBROWSE" } ) ) > 0
-         oBrw := aControls[i]
-         IF ValType( oBrw:cargo ) == "N"
-            SELECT( oBrw:cargo )
-            improc := oBrw:cargo
+   IF xWindow != Nil
+      IF lMdi
+         IF ( i := Ascan( xWindow:aControls, { |o|o:classname() == "HBROWSE" } ) ) > 0
+            oBrw := xWindow:aControls[i]
+         ENDIF
+      ELSE
+         oBrw := oTabMain:aControls[xWindow]
+      ENDIF
+      IF !Empty( oBrw )
+         IF ValType( oBrw:cargo[1] ) == "N"
+            SELECT( improc := oBrw:cargo[1] )
 #ifdef RDD_ADS
             IF Alias() == "ADSSQL"
                nQueryWndHandle := 0
@@ -841,7 +945,7 @@ FUNCTION ChildKill( oWindow )
 
    RETURN Nil
 
-FUNCTION ResizeBrwQ( oBrw, nWidth, nHeight )
+STATIC FUNCTION ResizeBrwQ( oBrw, nWidth, nHeight )
    LOCAL hWndStatus, aControls := oBrw:oParent:aControls
    LOCAL aRect, i, nHbusy := 0
 
@@ -852,7 +956,8 @@ FUNCTION ResizeBrwQ( oBrw, nWidth, nHeight )
          nHbusy += aRect[ 4 ]
       ENDIF
    NEXT
-   hwg_Movewindow( oBrw:handle, 0, 0, nWidth, nHeight - nHBusy )
+   oBrw:Move( ,, nWidth, nHeight - nHBusy - oBrw:nTop )
+   //hwg_Movewindow( oBrw:handle, 0, oBrw:nTop, nWidth, nHeight - nHBusy - oBrw:nTop )
 
    RETURN Nil
 
@@ -878,7 +983,7 @@ STATIC FUNCTION Fiopen( fname, alsname, pass )
 
       alsname := Iif( Empty(alsname), CutExten( CutPath( fname ) ), alsname )
 
-      bOldError := ErrorBlock( { | e | OpenError( e ) } )
+      bOldError := ErrorBlock( { | e | break( e ) } )
       DO WHILE .T.
          BEGIN SEQUENCE
             dbUseArea( ,, fname, alsname,, lRdonly, cDataCpage )
@@ -931,10 +1036,6 @@ STATIC FUNCTION Fiopen( fname, alsname, pass )
    aFiles[ improc, AF_LFLT ] := .F.
 
    RETURN .T.
-
-STATIC FUNCTION OpenError( e )
-
-   BREAK e
 
 FUNCTION FiClose
 
@@ -1066,7 +1167,9 @@ STATIC FUNCTION EditRec()
    oBrowse:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
 
    oBrowse:bcolorSel := COLOR_SELE
+#ifndef __GTK__
    oBrowse:bEnter := {|o,n|EdRec(o,n,nFile)}
+#endif
 
    @  30, 268 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() } ON SIZE ANCHOR_LEFTABS+ANCHOR_BOTTOMABS
    @ 310, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() } ON SIZE ANCHOR_RIGHTABS+ANCHOR_BOTTOMABS
@@ -1102,9 +1205,10 @@ STATIC FUNCTION EditRec()
 
    Return Nil
 
+#ifndef __GTK__
 STATIC FUNCTION EdRec( oBrw, n, nFile )
-LOCAL oDlg, oBrwM, oColumn, nField, aCoors, cBuff, x1, y1, nWidth, lReadExit
-LOCAL cType, nLen, nDec, cPicture
+LOCAL oDlg, oBrwM, oColumn, oGet, nField, aCoors, cBuff, x1, y1, nWidth, lReadExit
+LOCAL cType, nLen, nDec, cPicture, rowPos
 
    IF n != 3 .OR. aFiles[ nFile, AF_RDONLY ]
       Return .T.
@@ -1190,3 +1294,4 @@ LOCAL cType, nLen, nDec, cPicture
    SET( _SET_EXIT, lReadExit )
 
    Return .T.
+#endif

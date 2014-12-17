@@ -1429,22 +1429,23 @@ METHOD PAGEDOWN() CLASS HBrowse
 
 METHOD BOTTOM( lPaint ) CLASS HBrowse
 
-   LOCAL minPos, maxPos, nPos
+   LOCAL minPos, maxPos
 
    hwg_Getscrollrange( ::handle, SB_VERT, @minPos, @maxPos )
 
-   nPos := hwg_Getscrollpos( ::handle, SB_VERT )
-   ::rowPos := LastRec()
    Eval( ::bGoBot, Self )
-   ::rowPos := Min( ::nRecords, ::rowCount )
-   nPos := maxPos
-   hwg_Setscrollpos( ::handle, SB_VERT, nPos )
-   hwg_Invalidaterect( ::handle, 0 )
+   ::rowPos := Iif( ::rowCount == Nil, 9999, Min( ::nRecords, ::rowCount ) )
 
-   ::internal[1] := hwg_Setbit( ::internal[1], 1, 0 )
-   IF lPaint == Nil .OR. lPaint
-      hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
-      hwg_Setfocus( ::handle )
+   hwg_Setscrollpos( ::handle, SB_VERT, maxPos )
+
+   IF ::rowCount != Nil
+      hwg_Invalidaterect( ::handle, 0 )
+
+      ::internal[1] := hwg_Setbit( ::internal[1], 1, 0 )
+      IF lPaint == Nil .OR. lPaint
+         hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
+         hwg_Setfocus( ::handle )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -1456,15 +1457,18 @@ METHOD TOP() CLASS HBrowse
    LOCAL minPos, maxPos, nPos
 
    hwg_Getscrollrange( ::handle, SB_VERT, @minPos, @maxPos )
-   nPos := hwg_Getscrollpos( ::handle, SB_VERT )
+
    ::rowPos := 1
    Eval( ::bGoTop, Self )
-   nPos := minPos
-   hwg_Setscrollpos( ::handle, SB_VERT, nPos )
-   hwg_Invalidaterect( ::handle, 0 )
-   ::internal[1] := hwg_Setbit( ::internal[1], 1, 0 )
-   hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
-   hwg_Setfocus( ::handle )
+
+   hwg_Setscrollpos( ::handle, SB_VERT, minPos )
+
+   IF ::rowCount != Nil
+      hwg_Invalidaterect( ::handle, 0 )
+      ::internal[1] := hwg_Setbit( ::internal[1], 1, 0 )
+      hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
+      hwg_Setfocus( ::handle )
+   ENDIF
 
    RETURN Nil
 

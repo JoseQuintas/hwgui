@@ -36,8 +36,9 @@ CLASS HStaticEx INHERIT HStatic
 
    CLASS VAR winclass   INIT "STATIC"
    DATA AutoSize INIT .F.
-   DATA nStyleHS, BackStyle
+   DATA nStyleHS
    DATA bClick, bDblClick
+   DATA BackStyle       INIT OPAQUE
    DATA hBrushDefault  HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -79,12 +80,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::hBrushDefault := HBrush():Add( hwg_Getsyscolor( COLOR_BTNFACE ) )
    ::bOther := bOther
-   // ::title := cCaption
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
-      bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
-
-   // ::Activate()
+      bSize, bPaint, ctooltip, tcolor, bcolor )
 
    ::bClick := bClick
    IF ::id > 2
@@ -1150,6 +1148,7 @@ CLASS HGroupEx INHERIT HGroup
 
    DATA oRGroup
    DATA oBrush
+   DATA BackStyle       INIT OPAQUE
    DATA lTransparent HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -1281,29 +1280,6 @@ METHOD PAINT( lpdis ) CLASS HGroupEx
    hwg_Selectobject( dc, ppnOldPen )
 
    RETURN NIL
-
-Static FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
-
-   LOCAL hDC
-   LOCAL ASize
-   LOCAL hFont
-
-   oFont := IIF( oFont != Nil, oFont, oWin:oFont )
-
-   hDC       := hwg_Getdc( oWin:handle )
-   IF oFont == Nil .AND. oWin:oParent != Nil
-      oFont := oWin:oParent:oFont
-   ENDIF
-   IF oFont != Nil
-      hFont := hwg_Selectobject( hDC, oFont:handle )
-   ENDIF
-   ASize     := hwg_Gettextsize( hDC, cTxt )
-   IF oFont != Nil
-      hwg_Selectobject( hDC, hFont )
-   ENDIF
-   hwg_Releasedc( oWin:handle, hDC )
-
-   RETURN ASize
 
    INIT PROCEDURE starttheme()
    hwg_Initthemelib()

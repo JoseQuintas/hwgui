@@ -387,25 +387,22 @@ STATIC FUNCTION ChildClose
 STATIC FUNCTION About
    LOCAL oDlg, sv, nPos
 
-   INIT DIALOG oDlg AT 200, 200 SIZE 460, 168 FONT oMainFont
+   INIT DIALOG oDlg AT 200, 200 SIZE 476, 168 FONT oMainFont
 
    @ 0, 0 BITMAP "BMP_ABOUT" FROM RESOURCE
 
    @ 288, 0 GROUPBOX "" SIZE 170, 92
-   @ 290, 12 SAY "xBase files management" SIZE 166, 18 STYLE SS_CENTER
-   @ 290, 30 SAY "utility" SIZE 166, 18 STYLE SS_CENTER
-   @ 290, 48 SAY "version 2.2" SIZE 166, 20 STYLE SS_CENTER
+   @ 290, 12 SAY "xBase files management" SIZE 178, 18 STYLE SS_CENTER
+   @ 290, 30 SAY "utility" SIZE 178, 18 STYLE SS_CENTER
+   @ 290, 48 SAY "version 2.3" SIZE 178, 20 STYLE SS_CENTER
    sv := hb_version()
    nPos := At( "(", sv )
-   @ 290, 68 SAY Left( sv, nPos-1 ) SIZE 166, 20 STYLE SS_CENTER
+   @ 290, 68 SAY Left( sv, nPos-1 ) SIZE 178, 20 STYLE SS_CENTER
 
-   @ 298, 92 GROUPBOX "" SIZE 160, 36
-   @ 300,108 SAY "Alexander Kresin, 2013" SIZE 156, 20 STYLE SS_CENTER
+   @ 298, 92 GROUPBOX "" SIZE 172, 36
+   @ 300,108 SAY "Alexander Kresin, 2014" SIZE 168, 20 STYLE SS_CENTER
 
-   @ 288, 132 OWNERBUTTON ;
-      SIZE 170, 32  ;
-      ON CLICK { || hwg_EndDialog() } ;
-      FLAT TEXT "Close" COLOR hwg_VColor( "0000FF" )
+   @ 288, 132 BUTTON "Close" SIZE 182, 32 ON CLICK { || hwg_EndDialog() } ;
 
    oDlg:Activate()
 

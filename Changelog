@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-17 10:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hbrowsex.prg
+  * contrib/ext_controls/hctrlex.prg
+    ! Bugs fixed
+  * utils/dbc/dbchw.prg
+  * utils/dbc/modistru.prg
+  * utils/dbc/move.prg
+  * utils/dbc/query.prg
+    * Minor changes
+
 2014-12-16 21:25 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * contrib/ext_controls/hbrowsex.prg
     * fixed missed constant #define RT_MANIFEST  24

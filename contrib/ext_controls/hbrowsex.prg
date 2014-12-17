@@ -586,6 +586,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowseEx
       ELSEIF msg == WM_VSCROLL
          ::DoVScroll( wParam )
       ELSEIF msg == WM_CHAR
+         wParam := hwg_PtrToUlong( wParam )
          IF ! hwg_Checkbit( lParam, 32 )
             nShiftAltCtrl := iif( hwg_IsCtrlShift( .F. , .T. ), 1 , 0 )
             nShiftAltCtrl += iif( hwg_IsCtrlShift( .T. , .F. ), 2 , nShiftAltCtrl )

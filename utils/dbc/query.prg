@@ -3,7 +3,7 @@
  * DBCHW - DBC ( Harbour + HWGUI )
  * SQL queries
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
 

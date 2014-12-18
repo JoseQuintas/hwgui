@@ -37,7 +37,7 @@ HB_FUNC( CARR_INIT )
 HB_FUNC( CARR_PUT )
 {
    HB_ULONG ulLen = hb_parclen(1) / sizeof(HB_LONG);
-   HB_LONG * pul = (HB_LONG*) hb_parc(1);
+   HB_ULONG * pul = (HB_ULONG*) hb_parc(1);
    HB_ULONG ulItem = hb_parnl(3);
 
    if( ulItem == 0 )
@@ -49,8 +49,7 @@ HB_FUNC( CARR_PUT )
       *( pul + ulItem ) = hb_parnl(2);
    else if( ulItem == ulLen && HB_ISBYREF(1) )
    {
-      HB_LONG * pul1;
-      pul1 = (HB_LONG*) hb_xgrab( ulLen * sizeof(HB_LONG) * 2 + 1 );
+      HB_ULONG * pul1 = (HB_ULONG*) hb_xgrab( ulLen * sizeof(HB_LONG) * 2 + 1 );
       memcpy( pul1, pul, ulLen * sizeof(HB_LONG) );
       // hb_xfree( pul );
       // memset( pul1 + ulLen * sizeof(HB_LONG), 0, ulLen * sizeof(HB_LONG) + 1 );
@@ -68,7 +67,7 @@ HB_FUNC( CARR_DEL )
    for( ; ulItem < ulLen; ulItem++ )
       *( pul + ulItem - 1 ) = *( pul + ulItem );
 
-   *pul --;
+   (*pul) --;
 }
 
 HB_FUNC( CARR_GET )

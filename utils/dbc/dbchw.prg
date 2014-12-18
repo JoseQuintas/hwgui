@@ -1123,10 +1123,10 @@ Static Function Options()
       FONT oMainFont
 
    @ 10,10 SAY "Main codepage: " SIZE 100,22 STYLE SS_RIGHT
-   @ 110,10 GET COMBOBOX nCp ITEMS aCpInfo SIZE 180,24
+   @ 110,10 GET COMBOBOX nCp ITEMS aCpInfo SIZE 180,24 DISPLAYCOUNT 12
 
    @ 10,40 SAY "Date format: " SIZE 100,22 STYLE SS_RIGHT
-   @ 110,40 GET COMBOBOX nDf ITEMS aDateF SIZE 140,24
+   @ 110,40 GET COMBOBOX nDf ITEMS aDateF SIZE 140,24 DISPLAYCOUNT Len(aDateF)
 
    @  30, 268  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
    @ 170, 268 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }

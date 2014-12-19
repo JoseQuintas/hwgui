@@ -8,6 +8,8 @@
  */
 
 #include "hwgui.ch"
+#include "hbclass.ch"
+#include "fileio.ch"
 
 #define  CLR_DGREEN   3236352
 #define  CLR_MGREEN   8421440
@@ -21,8 +23,9 @@
 #define  CLR_LIGHTG  12507070
 
 Static oBrw, oContainer
+Static  cHead := "hwgbc"
 
-Function Main
+Function Main( cContainer )
 Local oMainW, oMainFont
 
    PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT -17 CHARSET 4
@@ -64,6 +67,10 @@ Local oMainW, oMainFont
 
    hwg_Enablemenuitem( ,1001, .F., .T. )
 
+   IF cContainer != Nil
+      CntOpen( cContainer )
+   ENDIF
+
    ACTIVATE WINDOW oMainW
 
    IF !Empty( oContainer )
@@ -90,9 +97,11 @@ Local fname
    ENDIF
 Return Nil
 
-Static Function CntOpen()
-Local fname := hwg_Selectfile( {"All files"}, {"*.*"}, "" )
+Static Function CntOpen( fname )
 
+   IF Empty( fname )
+      fname := hwg_Selectfile( {"All files"}, {"*.*"}, "" )
+   ENDIF
    IF !Empty( fname )
       IF !Empty( oContainer := HBinC():Open( fname, .T. ) )
          hwg_Enablemenuitem( ,1001, .T., .T. )
@@ -123,6 +132,7 @@ Local bOk := {||
    ENDIF
    oContainer:Add( cObjName, cType, Memoread( cFileName ) )
    hwg_EndDialog()
+   oBrw:Refresh()
    Return .T.
    }
 
@@ -150,6 +160,7 @@ Static Function CntDel()
 
    IF hwg_MsgYesNo( "Really delete " + oContainer:aObjects[n,1] + "?" )
       oContainer:Del( oContainer:aObjects[n,1] )
+      oBrw:Refresh()
    ENDIF
 Return Nil
 
@@ -166,3 +177,4 @@ Local fname
       hb_MemoWrit( fname, oContainer:Get( oContainer:aObjects[n,1] ) )
    ENDIF
 Return Nil
+

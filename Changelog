@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-19 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/bincnt/bincnt.prg
+    * The utility accepts a file name as a parameter now.
+      Browse is refreshed after adding a new item
+  + utils/dbc/bldleto.bat
+    + added bat file to build dbchw for Letodb
+  + utils/dbc/build.sh
+    + added script to build dbchw under GTK version
+  + utils/dbc/dbchw.bin
+    + added binary container for GTK version ( created with bincnt utility )
+
 2014-12-18 12:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/dbc/dbchw.prg
     * DISPLAYCOUNT set for the comboboxes in Options dialog

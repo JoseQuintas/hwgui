@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-20 19:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  ! contrib/ext_controls/hctrlex.prg
+    ! Yet another HWG_USE_POINTER_ITEM related fix
+  * utils/dbc/dbchw.prg
+    * A problem fixed with opening of ntx indexes.
+      It is possible now to set them as default in ini file: 'Index = ntx'
+  * source/winapi/hdialog.prg
+    * Now :bActivate works even if a modal dialog is created without a main window.
+
 2014-12-19 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/bincnt/bincnt.prg
     * The utility accepts a file name as a parameter now.

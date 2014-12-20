@@ -319,6 +319,10 @@ STATIC FUNCTION ReadIni( cPath )
                .OR. Lower( cTmp ) != "on" )
             lMdi := .F.
          ENDIF
+         IF hb_hHaskey( aSect, "index" ) .AND. ( !Empty( cTmp := aSect[ "index" ] ) ;
+               .AND. Lower( cTmp ) == "ntx" )
+            numdriv := 2
+         ENDIF
       ENDIF
 #ifdef RDD_ADS
       IF hb_hHaskey( hIni, "ADS" ) .AND. !Empty( aSect := hIni[ "ADS" ] )
@@ -512,10 +516,10 @@ Local lMulti := .T., lUniq := .F., cTag := "", cExpr := "", cCond := ""
 Return Nil
 
 Static Function OpenIndex()
-Local fname
+Local fname, cExt := Iif( numdriv==1,"*.cdx", "*.ntx" )
 
    IF aFiles[ improc, AF_LOCAL ]
-      fname := hwg_SelectFile( "index files( *.cdx )", "*.cdx", "\" + Curdir() + Iif( Empty( Curdir() ), "", "\" ) )
+      fname := hwg_SelectFile( {"index files( "+cExt+" )","All files(*.*)"}, {cExt,"*.*"}, "\" + Curdir() + Iif( Empty( Curdir() ), "", "\" ) )
    ELSE
       fname := hwg_MsgGet( "Open index", "Input file name:" )
    ENDIF
@@ -605,7 +609,7 @@ Local lRemote := (nServerType == REMOTE_SERVER)
 #endif
 Local oBtnFile, bBtnDis := {||Iif(lRemote,oBtnFile:Disable(),oBtnFile:Enable()),.T.}
 Local bFileBtn := {||
-   cFile := hwg_Selectfile( "dbf files( *.dbf )", "*.dbf", hb_curDrive()+":\"+Curdir() )
+   cFile := hwg_Selectfile( {"dbf files( *.dbf )","All files(*.*)"}, {"*.dbf","*.*"}, hb_curDrive()+":\"+Curdir() )
    hwg_RefreshAllGets( oDlg )
    Return .T.
    }

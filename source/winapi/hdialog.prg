@@ -151,6 +151,7 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       ENDIF
       IF ::bActivate != Nil
          Eval( ::bActivate, Self )
+         ::bActivate := Nil
       ENDIF
    ENDIF
 
@@ -360,8 +361,13 @@ FUNCTION onDlgCommand( oDlg, wParam, lParam )
 
 STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
-   LOCAL iParLow := hwg_Loword( wParam )
+   LOCAL iParLow := hwg_Loword( wParam ), b
 
+   IF oDlg:bActivate != Nil
+      b := oDlg:bActivate
+      oDlg:bActivate := Nil
+      Eval( b, oDlg )
+   ENDIF
    IF iParLow > 0 .AND. oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )
    ELSEIF iParLow == 0 .AND. oDlg:bLostFocus != Nil

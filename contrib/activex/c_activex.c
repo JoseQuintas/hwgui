@@ -78,16 +78,16 @@ HB_FUNC( HWG_CREATEACTIVEX )
    HWND hWndCtrl;
 
    _Ax_Init(  );
-   hWndCtrl = CreateWindowEx( ( DWORD ) ISNIL( 1 ) ? 0 : hb_parni( 1 ), // nExStyle
-         ( LPCTSTR ) ISNIL( 2 ) ? "A3434_CLASS" : hb_parc( 2 ), // cClsName
-         ( LPCTSTR ) ISNIL( 3 ) ? "" : hb_parc( 3 ),    // cProgId
-         ( DWORD ) ISNIL( 4 ) ? WS_OVERLAPPEDWINDOW : hb_parni( 4 ),    // style
-         ISNIL( 5 ) ? CW_USEDEFAULT : hb_parni( 5 ),    // nLeft
-         ISNIL( 6 ) ? CW_USEDEFAULT : hb_parni( 6 ),    // nTop
-         ISNIL( 7 ) ? 544 : hb_parni( 7 ),      // nWidth
-         ISNIL( 8 ) ? 375 : hb_parni( 8 ),      // nHeight
-         ISNIL( 9 ) ? HWND_DESKTOP : ( HWND ) hb_parnl( 9 ),    // oParent:handle
-         // ISNIL( 10 ) ? NULL                : (HMENU) hb_parnl( 10 ),  // Id
+   hWndCtrl = CreateWindowEx( ( DWORD ) HB_ISNIL( 1 ) ? 0 : hb_parni( 1 ), // nExStyle
+         ( LPCTSTR ) HB_ISNIL( 2 ) ? "A3434_CLASS" : hb_parc( 2 ), // cClsName
+         ( LPCTSTR ) HB_ISNIL( 3 ) ? "" : hb_parc( 3 ),    // cProgId
+         ( DWORD ) HB_ISNIL( 4 ) ? WS_OVERLAPPEDWINDOW : hb_parni( 4 ),    // style
+         HB_ISNIL( 5 ) ? CW_USEDEFAULT : hb_parni( 5 ),    // nLeft
+         HB_ISNIL( 6 ) ? CW_USEDEFAULT : hb_parni( 6 ),    // nTop
+         HB_ISNIL( 7 ) ? 544 : hb_parni( 7 ),      // nWidth
+         HB_ISNIL( 8 ) ? 375 : hb_parni( 8 ),      // nHeight
+         HB_ISNIL( 9 ) ? HWND_DESKTOP : ( HWND ) hb_parnl( 9 ),    // oParent:handle
+         // HB_ISNIL( 10 ) ? NULL                : (HMENU) hb_parnl( 10 ),  // Id
          // GetModuleHandle( 0 ),
          0, 0, NULL );
 
@@ -388,125 +388,126 @@ static ULONG STDMETHODCALLTYPE Invoke( IEventHandler * this, DISPID dispid,
       if( pExec )
       {
 
-         hb_vmPushState(  );
-
-         switch ( hb_itemType( pExec ) )
+         if( hb_vmRequestReenter() )
          {
-
-            case HB_IT_BLOCK:
+            switch ( hb_itemType( pExec ) )
             {
-               hb_vmPushSymbol( &hb_symEval );
-               hb_vmPush( pExec );
-               break;
-            }
 
-            case HB_IT_STRING:
-            {
-               PHB_ITEM pObject = hb_arrayGetItemPtr( pArray, 2 );
-               hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFindName
-                           ( hb_itemGetCPtr( pExec ) ) ) );
+               case HB_IT_BLOCK:
+               {
+                  hb_vmPushSymbol( &hb_symEval );
+                  hb_vmPush( pExec );
+                  break;
+               }
 
-               if( HB_IS_OBJECT( pObject ) )
-                  hb_vmPush( pObject );
-               else
+               case HB_IT_STRING:
+               {
+                  PHB_ITEM pObject = hb_arrayGetItemPtr( pArray, 2 );
+                  hb_vmPushSymbol( hb_dynsymSymbol( hb_dynsymFindName
+                              ( hb_itemGetCPtr( pExec ) ) ) );
+
+                  if( HB_IS_OBJECT( pObject ) )
+                     hb_vmPush( pObject );
+                  else
+                     hb_vmPushNil(  );
+                  break;
+
+               }
+
+               case HB_IT_POINTER:
+               {
+                  hb_vmPushSymbol( hb_dynsymSymbol( ( ( PHB_SYMB ) pExec )->
+                              pDynSym ) );
                   hb_vmPushNil(  );
-               break;
+                  break;
+               }
 
             }
 
-            case HB_IT_POINTER:
+            iArg = params->cArgs;
+            for( i = 1; i <= iArg; i++ )
             {
-               hb_vmPushSymbol( hb_dynsymSymbol( ( ( PHB_SYMB ) pExec )->
-                           pDynSym ) );
-               hb_vmPushNil(  );
-               break;
+               pItem = hb_itemNew( NULL );
+               hb_oleVariantToItem( pItem, &( params->rgvarg[iArg - i] ) );
+               pItemArray[i - 1] = pItem;
+               // set bit i
+               ulRefMask |= ( 1L << ( i - 1 ) );
             }
 
-         }
-
-         iArg = params->cArgs;
-         for( i = 1; i <= iArg; i++ )
-         {
-            pItem = hb_itemNew( NULL );
-            hb_oleVariantToItem( pItem, &( params->rgvarg[iArg - i] ) );
-            pItemArray[i - 1] = pItem;
-            // set bit i
-            ulRefMask |= ( 1L << ( i - 1 ) );
-         }
-
-         if( iArg )
-         {
-            pItems = pItemArray;
-            hb_itemPushList( ulRefMask, iArg, &pItems );
-         }
-
-         // execute
-         hb_vmDo( (USHORT) iArg );
-
-         // En caso de que los parametros sean pasados por referencia
-         for( i = iArg; i > 0; i-- )
-         {
-            if( ( ( &( params->rgvarg[iArg - i] ) )->n1.n2.vt & VT_BYREF ) ==
-                  VT_BYREF )
+            if( iArg )
             {
+               pItems = pItemArray;
+               hb_itemPushList( ulRefMask, iArg, &pItems );
+            }
 
-               switch ( ( &( params->rgvarg[iArg - i] ) )->n1.n2.vt )
+            // execute
+            hb_vmDo( (USHORT) iArg );
+
+            // En caso de que los parametros sean pasados por referencia
+            for( i = iArg; i > 0; i-- )
+            {
+               if( ( ( &( params->rgvarg[iArg - i] ) )->n1.n2.vt & VT_BYREF ) ==
+                     VT_BYREF )
                {
 
-                     //case VT_UI1|VT_BYREF:
-                     //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pbVal) = va_arg(argList,unsigned char*);  //pItemArray[i-1]
-                     //   break;
-                  case VT_I2 | VT_BYREF:
-                     *( ( &( params->rgvarg[iArg - i] ) )->n1.n2.n3.piVal ) =
-                           ( short ) hb_itemGetNI( pItemArray[i - 1] );
-                     break;
-                  case VT_I4 | VT_BYREF:
-                     *( ( &( params->rgvarg[iArg - i] ) )->n1.n2.n3.plVal ) =
-                           ( long ) hb_itemGetNL( pItemArray[i - 1] );
-                     break;
-                  case VT_R4 | VT_BYREF:
-                     *( ( &( params->rgvarg[iArg -
-                                             i] ) )->n1.n2.n3.pfltVal ) =
-                           ( float ) hb_itemGetND( pItemArray[i - 1] );
-                     break;
-                  case VT_R8 | VT_BYREF:
-                     *( ( &( params->rgvarg[iArg -
-                                             i] ) )->n1.n2.n3.pdblVal ) =
-                           ( double ) hb_itemGetND( pItemArray[i - 1] );
-                     break;
-                  case VT_BOOL | VT_BYREF:
-                     *( ( &( params->rgvarg[iArg -
-                                             i] ) )->n1.n2.n3.pboolVal ) =
-                           hb_itemGetL( pItemArray[i - 1] ) ? 0xFFFF : 0;
-                     break;
-                     //case VT_ERROR|VT_BYREF:
-                     //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pscode) = va_arg(argList, SCODE*);
-                     //   break;
-                  case VT_DATE | VT_BYREF:
-                     *( ( &( params->rgvarg[iArg - i] ) )->n1.n2.n3.pdate ) =
-                           ( DATE ) ( double ) ( hb_itemGetDL( pItemArray[i -
-                                       1] ) - 2415019 );
-                     break;
-                     //case VT_CY|VT_BYREF:
-                     //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pcyVal) = va_arg(argList, CY*);
-                     //   break;
-                     //case VT_BSTR|VT_BYREF:
-                     //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pbstrVal = va_arg(argList, BSTR*);
-                     //   break;
-                     //case VT_UNKNOWN|VT_BYREF:
-                     //   pArg->ppunkVal = va_arg(argList, LPUNKNOWN*);
-                     //   break;
-                     //case VT_DISPATCH|VT_BYREF:
-                     //   pArg->ppdispVal = va_arg(argList, LPDISPATCH*);
-                     //   break;
+                  switch ( ( &( params->rgvarg[iArg - i] ) )->n1.n2.vt )
+                  {
 
-               }                // EOF switch( (&(params->rgvarg[iArg-i]))->n1.n2.vt )
+                        //case VT_UI1|VT_BYREF:
+                        //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pbVal) = va_arg(argList,unsigned char*);  //pItemArray[i-1]
+                        //   break;
+                     case VT_I2 | VT_BYREF:
+                        *( ( &( params->rgvarg[iArg - i] ) )->n1.n2.n3.piVal ) =
+                              ( short ) hb_itemGetNI( pItemArray[i - 1] );
+                        break;
+                     case VT_I4 | VT_BYREF:
+                        *( ( &( params->rgvarg[iArg - i] ) )->n1.n2.n3.plVal ) =
+                              ( long ) hb_itemGetNL( pItemArray[i - 1] );
+                        break;
+                     case VT_R4 | VT_BYREF:
+                        *( ( &( params->rgvarg[iArg -
+                                                i] ) )->n1.n2.n3.pfltVal ) =
+                              ( float ) hb_itemGetND( pItemArray[i - 1] );
+                        break;
+                     case VT_R8 | VT_BYREF:
+                        *( ( &( params->rgvarg[iArg -
+                                                i] ) )->n1.n2.n3.pdblVal ) =
+                              ( double ) hb_itemGetND( pItemArray[i - 1] );
+                        break;
+                     case VT_BOOL | VT_BYREF:
+                        *( ( &( params->rgvarg[iArg -
+                                                i] ) )->n1.n2.n3.pboolVal ) =
+                              hb_itemGetL( pItemArray[i - 1] ) ? 0xFFFF : 0;
+                        break;
+                        //case VT_ERROR|VT_BYREF:
+                        //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pscode) = va_arg(argList, SCODE*);
+                        //   break;
+                     case VT_DATE | VT_BYREF:
+                        *( ( &( params->rgvarg[iArg - i] ) )->n1.n2.n3.pdate ) =
+                              ( DATE ) ( double ) ( hb_itemGetDL( pItemArray[i -
+                                          1] ) - 2415019 );
+                        break;
+                        //case VT_CY|VT_BYREF:
+                        //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pcyVal) = va_arg(argList, CY*);
+                        //   break;
+                        //case VT_BSTR|VT_BYREF:
+                        //   *((&(params->rgvarg[iArg-i]))->n1.n2.n3.pbstrVal = va_arg(argList, BSTR*);
+                        //   break;
+                        //case VT_UNKNOWN|VT_BYREF:
+                        //   pArg->ppunkVal = va_arg(argList, LPUNKNOWN*);
+                        //   break;
+                        //case VT_DISPATCH|VT_BYREF:
+                        //   pArg->ppdispVal = va_arg(argList, LPDISPATCH*);
+                        //   break;
 
-            }                   // EOF if( (&(params->rgvarg[iArg-i]))->n1.n2.vt & VT_BYREF == VT_BYREF )
+                  }                // EOF switch( (&(params->rgvarg[iArg-i]))->n1.n2.vt )
 
-         }                      // EOF for( i=iArg; i > 0; i-- )
+               }                   // EOF if( (&(params->rgvarg[iArg-i]))->n1.n2.vt & VT_BYREF == VT_BYREF )
 
-         hb_vmPopState(  );
+            }                      // EOF for( i=iArg; i > 0; i-- )
+
+            hb_vmRequestRestore();
+         }
 
       }                         // EOF if ( pExec )
 

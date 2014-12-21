@@ -635,7 +635,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowseEx
          ENDIF
          IF wParam == VK_TAB .AND. hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE
             IF hwg_IsCtrlShift( .T. , .F. )
-               hwg_GetSkip( ::oParent, ::handle, , ;
+               hwg_GetSkip( ::oParent, ::handle, ;
                   iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 ) )
                RETURN 0
             ENDIF
@@ -674,7 +674,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowseEx
          ENDIF
          IF wParam == VK_TAB
             IF ::lCtrlPress
-               hwg_GetSkip( ::oParent, ::handle, , ;
+               hwg_GetSkip( ::oParent, ::handle, ;
                   iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 ) )
                RETURN 0
             ELSE

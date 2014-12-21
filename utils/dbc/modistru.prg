@@ -14,17 +14,16 @@
 #include "ads.ch"
 #endif
 
-Memvar oBrw, currentCP, currFname, improc, aFiles, nServerType, oMainFont
+Memvar currentCP, currFname, improc, aFiles, nServerType, oMainFont
 
 Static aFieldTypes := { "C","N","D","L" }
 
 Function StruMan( lNew )
-Local oDlg, oBrowse, oMsg 
+Local oDlg, oBrowse, oMsg, oBrw
 Local oGet1, oGet2, oGet3, oGet4
 Local af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i
 Local aTypes := { "Character","Numeric","Date","Logical" }
 Local fname, cAlias, nRec, nOrd, lOverFlow := .F., xValue
-LOCAL oBrw := GetBrwActive()
 Local bChgPos := {|o|
    oGet1:SetGet( o:aArray[o:nCurrent,1] )
    oGet2:SetItem( Ascan(aFieldTypes,o:aArray[o:nCurrent,2]) )
@@ -37,6 +36,7 @@ Local bChgPos := {|o|
    IF lNew
       af := { {"","",0,0} }
    ELSE
+      oBrw := GetBrwActive()
       af0 := dbStruct()
       af  := dbStruct()
       FOR i := 1 TO Len(af)
@@ -162,9 +162,9 @@ Local bChgPos := {|o|
          GO nRec
          SET ORDER TO nOrd
          hwg_CreateList( oBrw, .T. )
+         oBrw:Refresh()
       ENDIF
       oMsg:Close()
-      oBrw:Refresh()
 
    ENDIF
 

@@ -150,16 +150,16 @@ METHOD OnEvent( msg, wParam, lParam ) CLASS  HStaticEx
       RETURN 0
    ELSEIF msg = WM_KEYUP
       IF wParam = VK_DOWN
-         hwg_GetSkip( ::oParent, ::handle, , 1 )
+         hwg_GetSkip( ::oParent, ::handle, 1 )
       ELSEIF wParam = VK_UP
-         hwg_GetSkip( ::oParent, ::handle, , - 1 )
+         hwg_GetSkip( ::oParent, ::handle, - 1 )
       ELSEIF wParam = VK_TAB
-         hwg_GetSkip( ::oParent, ::handle, , iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 ) )
+         hwg_GetSkip( ::oParent, ::handle, iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 ) )
       ENDIF
       RETURN 0
    ELSEIF msg == WM_SYSKEYUP
       IF ( pos := At( "&", ::title ) ) > 0 .AND. wParam == Asc( Upper( SubStr( ::title, ++ pos, 1 ) ) )
-         hwg_GetSkip( ::oparent, ::handle, , 1 )
+         hwg_GetSkip( ::oparent, ::handle, 1 )
          RETURN  0
       ENDIF
    ELSEIF msg = WM_GETDLGCODE
@@ -361,13 +361,13 @@ METHOD onevent( msg, wParam, lParam ) CLASS HButtonX
       /*
       IF ! hwg_ProcKeyList( Self, wParam )
          IF wParam = VK_TAB
-            hwg_GetSkip( ::oparent, ::handle, , iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 )  )
+            hwg_GetSkip( ::oparent, ::handle,iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 )  )
             RETURN 0
          ELSEIF wParam = VK_LEFT .OR. wParam = VK_UP
-            hwg_GetSkip( ::oparent, ::handle, , - 1 )
+            hwg_GetSkip( ::oparent, ::handle,- 1 )
             RETURN 0
          ELSEIF wParam = VK_RIGHT .OR. wParam = VK_DOWN
-            hwg_GetSkip( ::oparent, ::handle, , 1 )
+            hwg_GetSkip( ::oparent, ::handle,1 )
             RETURN 0
          ENDIF
       ENDIF
@@ -670,13 +670,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
          RETURN 0
       ENDIF
       IF wParam == VK_LEFT .OR. wParam == VK_UP
-         hwg_GetSkip( ::oParent, ::handle, , - 1 )
+         hwg_GetSkip( ::oParent, ::handle, - 1 )
          RETURN 0
       ELSEIF wParam == VK_RIGHT .OR. wParam == VK_DOWN
-         hwg_GetSkip( ::oParent, ::handle, , 1 )
+         hwg_GetSkip( ::oParent, ::handle, 1 )
          RETURN 0
       ELSEIF  wParam = VK_TAB
-         hwg_GetSkip( ::oparent, ::handle, , iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 )  )
+         hwg_GetSkip( ::oparent, ::handle, iif( hwg_IsCtrlShift( .F. , .T. ), - 1, 1 )  )
       ENDIF
       /*
       hwg_ProcKeyList( Self, wParam )

@@ -91,7 +91,9 @@ HWGQHTM_LIB_OBJS = \
 ACTIVEX_LIB_OBJS = \
    $(OBJ_DIR)\htmlcore.obj \
    $(OBJ_DIR)\htmlfunc.obj \
-   $(OBJ_DIR)\hhtml.obj
+   $(OBJ_DIR)\hhtml.obj \
+   $(OBJ_DIR)\c_activex.obj \
+   $(OBJ_DIR)\h_activex.obj
 
 #
 # HWG_EXTCTRL.LIB rules

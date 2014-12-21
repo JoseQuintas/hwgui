@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-21 20:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  ! contrib/activex/c_activex.c
+    ! Few warnings are fixed, hb_vmPushState()/hb_vmPopState() are replaced with
+      hb_vmRequestReenter()/hb_vmRequestRestore()
+  ! contrib/ext_controls/hbrowsex.prg
+  ! contrib/ext_controls/hctrlex.prg
+  ! contrib/ext_controls/hrectex.prg
+    ! hwg_Getskip() calls fixed
+  ! utils/dbc/build.sh
+  ! utils/dbc/dbchw.prg
+  ! utils/dbc/modistru.prg
+    ! Few fixes.  
+
 2014-12-21 13:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Version number is changed to "2.19", build number to 1

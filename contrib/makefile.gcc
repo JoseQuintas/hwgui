@@ -33,7 +33,9 @@ $(LIB_DIR)/libhwg_extctrl.a : \
 $(LIB_DIR)/libhwg_activex.a : \
    $(OBJ_DIR)/htmlcore.o \
    $(OBJ_DIR)/htmlfunc.o \
-   $(OBJ_DIR)/hhtml.o
+   $(OBJ_DIR)/hhtml.o \
+   $(OBJ_DIR)/c_activex.o \
+   $(OBJ_DIR)/h_activex.o
 	ar rc $@ $^
 
 .prg.c:

@@ -14,6 +14,11 @@
 #include "ads.ch"
 #endif
 
+#define MITEM_INDEX      1901
+#define MITEM_FLDS       1902
+#define MITEM_MOVE       1903
+#define MITEM_CMDS       1904
+
 REQUEST  HB_CODEPAGE_BG866, HB_CODEPAGE_BGISO, HB_CODEPAGE_BGMIK, HB_CODEPAGE_BGWIN
 REQUEST  HB_CODEPAGE_CS852, HB_CODEPAGE_CSISO, HB_CODEPAGE_CSWIN, HB_CODEPAGE_DE850
 REQUEST  HB_CODEPAGE_DE850M,HB_CODEPAGE_DEISO, HB_CODEPAGE_DEWIN, HB_CODEPAGE_DK865
@@ -188,26 +193,26 @@ FUNCTION Main( ... )
          MENUITEM "Zoom &In"+Chr(9)+"Ctrl++" ACTION ChangeFont( , 2 ) ACCELERATOR FCONTROL,VK_ADD
          MENUITEM "Zoom &Out"+Chr(9)+"Ctrl+-" ACTION ChangeFont( , -2 ) ACCELERATOR FCONTROL,VK_SUBTRACT
       ENDMENU
-      MENU TITLE  "&Index"
+      MENU TITLE  "&Index" ID MITEM_INDEX
          MENUITEM "&Select current" ACTION  SelectIndex()
          MENUITEM "&New index" ACTION  NewIndex()
          MENUITEM "&Open index" ACTION  OpenIndex()
          SEPARATOR
          MENUITEM "&Close all" ACTION CloseIndex()
       ENDMENU
-         MENU TITLE "Fie&lds"
+      MENU TITLE "Fie&lds" ID MITEM_FLDS
          MENUITEM "&Modify structure" ACTION StruMan( .F. )
          SEPARATOR
          MENUITEM "&Edit record"+Chr(9)+"Ctrl+E" ACTION EditRec() ACCELERATOR FCONTROL,Asc("E")
       ENDMENU
-      MENU TITLE  "&Move"
+      MENU TITLE  "&Move" ID MITEM_MOVE
          MENUITEM "&Locate" ACTION  Move( 1 )
          MENUITEM "&Continue" ACTION .T.
          MENUITEM "&Seek"+Chr(9)+"Ctrl+S" ACTION  Move( 2 ) ACCELERATOR FCONTROL,Asc("S")
          MENUITEM "&Filter"+Chr(9)+"Ctrl+F" ACTION  Move( 3 ) ACCELERATOR FCONTROL,Asc("F")
          MENUITEM "&Go To"+Chr(9)+"Ctrl+G" ACTION  Move( 4 ) ACCELERATOR FCONTROL,Asc("G")
       ENDMENU
-      MENU TITLE  "&Commands"
+      MENU TITLE  "&Commands" ID MITEM_CMDS
          MENUITEM "&Replace" ACTION  C_Repl()
          MENUITEM "&Delete" ACTION  C_4( 1 )
          MENUITEM "Reca&ll" ACTION  C_4( 2 )
@@ -271,10 +276,11 @@ FUNCTION Main( ... )
 
    oWndMain:bActivate := {|| ReadParams( aParams ) }
 
-   hwg_Enablemenuitem( , 2, .F. , .F. )
-   hwg_Enablemenuitem( , 3, .F. , .F. )
-   hwg_Enablemenuitem( , 4, .F. , .F. )
-   hwg_Enablemenuitem( , 5, .F. , .F. )
+   hwg_Enablemenuitem( , MITEM_INDEX, .F., .T. )
+   hwg_Enablemenuitem( , MITEM_FLDS, .F., .T. )
+   hwg_Enablemenuitem( , MITEM_MOVE, .F., .T. )
+   hwg_Enablemenuitem( , MITEM_CMDS, .F., .T. )
+
    aButtons[1]:Disable()
    aButtons[2]:Disable()
    aButtons[3]:Disable()
@@ -709,10 +715,10 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
       RETURN 0
    ENDIF
 
-   hwg_Enablemenuitem( , 2, .T. , .F. )
-   hwg_Enablemenuitem( , 3, .T. , .F. )
-   hwg_Enablemenuitem( , 4, .T. , .F. )
-   hwg_Enablemenuitem( , 5, .T. , .F. )
+   hwg_Enablemenuitem( , MITEM_INDEX, .T., .T. )
+   hwg_Enablemenuitem( , MITEM_FLDS, .T., .T. )
+   hwg_Enablemenuitem( , MITEM_MOVE, .T., .T. )
+   hwg_Enablemenuitem( , MITEM_CMDS, .T., .T. )
    hwg_Drawmenubar( HWindow():aWindows[1]:handle )
    aButtons[1]:Enable()
    aButtons[2]:Enable()
@@ -942,10 +948,10 @@ STATIC FUNCTION ChildKill( xWindow )
 #endif
             FiClose()
             IF Len( HWindow():aWindows ) == 3
-               hwg_Enablemenuitem( , 2, .F. , .F. )
-               hwg_Enablemenuitem( , 3, .F. , .F. )
-               hwg_Enablemenuitem( , 4, .F. , .F. )
-               hwg_Enablemenuitem( , 5, .F. , .F. )
+               hwg_Enablemenuitem( , MITEM_INDEX, .F., .T. )
+               hwg_Enablemenuitem( , MITEM_FLDS, .F., .T. )
+               hwg_Enablemenuitem( , MITEM_MOVE, .F., .T. )
+               hwg_Enablemenuitem( , MITEM_CMDS, .F., .T. )
                hwg_Drawmenubar( HWindow():GetMain():handle )
                aButtons[1]:Disable()
                aButtons[2]:Disable()

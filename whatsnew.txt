@@ -9,6 +9,18 @@
 [*] Changes
 
 
+HWGUI 2.19 ( 20.12.2014 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Real Unicode (utf-8) support.
+[*] Binary containers added as a crossplatform alternative for resources ( rc files ).
+[*] A virtual printer ".buffer" added. It allows to create a print
+    metafile and preview it if no one printer is installed
+[*] Many improvements in utils ( dbc, debugger, designer, tutorial ).
+[*] GTK version: significantly extended, improved compatibility with winapi version.
+[*] Improved compatibility with 2.17 version.
+[!] Some bug fixes, as usual
+
+
 HWGUI 2.18 build 2 ( 03.04.2014 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [+] The debugger: array inspector, object inspector, commands support

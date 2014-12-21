@@ -1,8 +1,8 @@
 /*
  *$Id$
  */
-#define HWG_VERSION         "2.18"
-#define HWG_BUILD               2
+#define HWG_VERSION         "2.19"
+#define HWG_BUILD               1
 #define	WND_MAIN		1
 #define	WND_MDI 		2
 #define WND_MDICHILD            3

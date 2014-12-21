@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-21 13:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Version number is changed to "2.19", build number to 1
+  * source/gtk/Makefile.linux
+    * Added -g switch for Harbour compiler
+  * whatsnew.txt
+
 2014-12-21 10:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   ! contrib/activex/htmlcore.c
     ! Errors and warnings fixed for Mingw

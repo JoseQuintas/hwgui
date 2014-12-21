@@ -30,7 +30,7 @@ vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC
 vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR)
 
 $(OBJ_DIR)/%.c : %.prg
-	$(HRB_BIN)/harbour -n -w -es2 $(HB_FLAGS) -I$(HRB_INC) -I$(INC_DIR) -o$@ $<
+	$(HRB_BIN)/harbour -n -q -w -es2 $(HB_FLAGS) -I$(HRB_INC) -I$(INC_DIR) -o$@ $<
 
 %.o : %.c
 	gcc $(CFLAGS) -c -I./ -I$(INC_DIR) -I$(HRB_INC) `pkg-config --cflags gtk+-2.0` -o $@ $<

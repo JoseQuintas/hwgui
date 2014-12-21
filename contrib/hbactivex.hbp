@@ -16,4 +16,4 @@
 activex/*.c
 activex/*.prg
 
--stop{allmingw}
+#-stop{allmingw}

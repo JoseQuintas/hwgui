@@ -5,8 +5,8 @@
  * ActiveX container
  *
  * Original author - Jeff Glatt
- * Modifyed for using with HwGUI by Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Modifyed for using with HwGUI by Alexander S.Kresin <alex@kresin.ru>
+ * www - http://kresin.ru
  */
 
 /*
@@ -1383,12 +1383,12 @@ HRESULT STDMETHODCALLTYPE Dispatch_QueryInterface( IDispatch * This,
 
 ULONG STDMETHODCALLTYPE Dispatch_AddRef( IDispatch * This )
 {
-   return ( InterlockedIncrement( &( ( _IDispatchEx * ) This )->refCount ) );
+   return ( InterlockedIncrement( ( LONG *) &( ( _IDispatchEx * ) This )->refCount ) );
 }
 
 ULONG STDMETHODCALLTYPE Dispatch_Release( IDispatch * This )
 {
-   if( InterlockedDecrement( &( ( _IDispatchEx * ) This )->refCount ) == 0 )
+   if( InterlockedDecrement( ( LONG *)&( ( _IDispatchEx * ) This )->refCount ) == 0 )
    {
       /* If you uncomment the following line you should get one message
        * when the document unloads for each successful call to
@@ -1673,29 +1673,10 @@ IDispatch *WINAPI CreateWebEvtHandler( HWND hwnd, IHTMLDocument2 * htmlDoc2,
 
             if( !htmlWindow3->lpVtbl->attachEvent( htmlWindow3,
                         OnBeforeOnLoad, ( LPDISPATCH ) lpDispatchEx,
-                        &varDisp ) )
+                        (VARIANT_BOOL*) &varDisp ) )
             {
                // Does the caller want us to consider the "userdata" arg as a BSTR of some other
                // event to attach this IDispatch to?
-#if 0
-               VARIANT_BOOL varResult;
-
-               if( userdata && id < 0 )
-               {
-                  attachObj->lpVtbl->attachEvent( attachObj,
-                        ( BSTR ) userdata, ( LPDISPATCH ) lpDispatchEx,
-                        &varResult );
-                  if( !varResult )
-                  {
-                     // ERROR: Detach the "beforeunload" event handler we just attached above.
-                     htmlWindow3->lpVtbl->detachEvent( htmlWindow3,
-                           OnBeforeOnLoad, ( LPDISPATCH ) lpDispatchEx );
-
-                     // Fail.
-                     goto bad;
-                  }
-               }
-#endif
                // Release() the IHTMLWindow3 object now that we called its attachEvent().
                htmlWindow3->lpVtbl->Release( htmlWindow3 );
 
@@ -1709,7 +1690,7 @@ IDispatch *WINAPI CreateWebEvtHandler( HWND hwnd, IHTMLDocument2 * htmlDoc2,
             }
 
             // An error. Free all stuff above.
-          bad:htmlWindow3->lpVtbl->Release( htmlWindow3 );
+            htmlWindow3->lpVtbl->Release( htmlWindow3 );
          }
 
          GlobalFree( ( ( char * ) lpDispatchEx - lpDispatchEx->extraSize ) );
@@ -1842,7 +1823,8 @@ HRESULT WINAPI GetWebPtrs( HWND hwnd, IWebBrowser2 ** webBrowser2Result,
          LPDISPATCH lpDispatch;
 
          // Set his handle to 0 initially
-         *htmlDoc2Result = ( struct IHTMLDocument2 * ) lpDispatch = 0;
+         *htmlDoc2Result = 0;
+         lpDispatch = 0;
 
          // First, we need the IDispatch object
          webBrowser2->lpVtbl->get_Document( webBrowser2, &lpDispatch );
@@ -1988,7 +1970,8 @@ IHTMLElement *WINAPI GetWebElement( HWND hwnd, IHTMLDocument2 * htmlDoc2,
    IHTMLElement *htmlElem;
    LPDISPATCH lpDispatch;
 
-   lpDispatch = ( LPDISPATCH ) htmlElem = 0;
+   lpDispatch = 0;
+   htmlElem = 0;
 
    // Get the browser's IHTMLDocument2 object if it wasn't passed
    if( htmlDoc2 || !GetWebPtrs( hwnd, 0, &htmlDoc2 ) )

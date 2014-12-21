@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-21 10:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  ! contrib/activex/htmlcore.c
+    ! Errors and warnings fixed for Mingw
+  * contrib/hbactivex.hbp
+    * Unblocked building of activex library for Mingw
+  * contrib/makefile.gcc
+    * Added instructions to build activex library
+
 2014-12-20 19:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   ! contrib/ext_controls/hctrlex.prg
     ! Yet another HWG_USE_POINTER_ITEM related fix

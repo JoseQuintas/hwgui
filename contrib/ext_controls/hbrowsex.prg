@@ -656,9 +656,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowseEx
          RETURN 1
       ELSEIF msg == WM_KEYDOWN //.AND. ! ::oParent:lSuspendMsgsHandling
          wParam := hwg_PtrToUlong( wParam )
-         IF ( ( hwg_Checkbit( lParam, 25 ) .AND. wParam != 111 ) .OR.  ( wParam > 111 .AND. wParam < 124 ) .OR. ;
-               wParam = VK_TAB .OR. wParam = VK_RETURN )   .AND. ;
-               ::bKeyDown != NIL .AND. ValType( ::bKeyDown ) == 'B'
+         /*IF ( ( hwg_Checkbit( lParam, 25 ) .AND. wParam != 111 ) .OR.  ( wParam > 111 .AND. wParam < 124 ) .OR. ;
+               wParam = VK_TAB .OR. wParam = VK_RETURN )   .AND. ; */
+         IF ::bKeyDown != NIL .AND. ValType( ::bKeyDown ) == 'B'
             nShiftAltCtrl := iif( hwg_IsCtrlShift( .F. , .T. ), 1 , 0 )
             nShiftAltCtrl += iif( hwg_IsCtrlShift( .T. , .F. ), 2 , nShiftAltCtrl )
             nShiftAltCtrl += iif( wParam > 111, 4, nShiftAltCtrl )
@@ -3055,7 +3055,6 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
          x1 := aCoors[ 1 ]
          y1 := aCoors[ 2 ] + 1
          lReadExit := Set( _SET_EXIT, .T. )
-         ::lNoValid := .T.
          IF Type <> "L"
             bInit := iif( wParam == NIL .OR. wParam = 13 .OR. Empty( lParam ), { | o | hwg_Movewindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ) }, ;
                { | o | hwg_Movewindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ), ;
@@ -3118,7 +3117,6 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
                         ON CHANGE { | value, oBtn |  ::onClickColumn( value, oGet, oBtn ) }
                   ENDIF
                ENDIF
-               oGet:lNoValid := .T.
                IF ! Empty( wParam )  .AND. wParam != 13 .AND. !Empty( lParam )
                   hwg_Sendmessage( oGet:handle, WM_CHAR,  wParam, lParam  )
                ENDIF
@@ -3135,7 +3133,6 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
 
          ACTIVATE DIALOG oModDlg
 
-         ::lNoValid := .F.
          IF Type = "L" .AND. wParam != VK_RETURN
             Hwg_SetCursor( arrowCursor )
             IF wParam = VK_SPACE
@@ -3314,7 +3311,6 @@ METHOD WhenColumn( value, oGet ) CLASS HBrowseEx
       //::oparent:lSuspendMsgsHandling := .T.
       res := Eval( oColumn:bWhen, Value, oGet )
       res := iif( ValType( res ) = "L" , res, .T. )
-      oGet:lnovalid := res
       IF ValType( res ) = "L" .AND. ! res
          ::Setfocus()
          oGet:oParent:close()
@@ -3339,7 +3335,6 @@ METHOD ValidColumn( value, oGet, oBtn ) CLASS HBrowseEx
    IF oColumn:bValid != NIL
       //::oparent:lSuspendMsgsHandling := .T.
       res := Eval( oColumn:bValid, value, oGet )
-      oGet:lnovalid := res
       IF ValType( res ) = "L" .AND. ! res
          oGet:Setfocus()
          hwg_Setfocus( Nil )
@@ -3387,17 +3382,8 @@ METHOD When() CLASS HBrowseEx
 
    IF ::bGetFocus != NIL
       nSkip := iif( hwg_Getkeystate( VK_UP ) < 0 .OR. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate(VK_SHIFT ) < 0 ), - 1, 1 )
-      //::oParent:lSuspendMsgsHandling := .T.
-      ::lnoValid := .T.
       res := Eval( ::bGetFocus, ::Colpos, Self )
       res := iif( ValType( res ) = "L", res, .T. )
-      ::lnoValid := ! res
-      /*
-      IF ! res
-         hwg_WhenSetFocus( Self, nSkip )
-      ENDIF
-      */
-      //::oParent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN res
@@ -3405,24 +3391,16 @@ METHOD When() CLASS HBrowseEx
 METHOD Valid() CLASS HBrowseEx
    LOCAL res
 
-   /*
-   IF !hwg_CheckFocus( self, .T. ) .OR. ::lNoValid
-      RETURN .T.
-   ENDIF
-   */
    IF ::HighlightStyle = 0 .OR. ::HighlightStyle = 3
       ::RefreshLine()
    ENDIF
    IF ::bLostFocus != NIL
-      //::oParent:lSuspendMsgsHandling := .T.
       res := Eval( ::bLostFocus, ::ColPos, Self )
       res := iif( ValType( res ) = "L", res, .T. )
       IF ValType( res ) = "L" .AND. ! res
          ::Setfocus( .T. )
-         //::oParent:lSuspendMsgsHandling := .F.
          RETURN .F.
       ENDIF
-      //::oParent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN .T.

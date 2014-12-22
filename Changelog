@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-22 11:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hbrowsex.prg
+    * Lines with unused variable :lNoValid are removed
+    * :bKeyDown handling changed a bit
+  * source/winapi/hipedit.prg
+  * source/winapi/hlistbox.prg
+    * Lines with unused variable :lNoValid are removed
+  * utils/dbc/dbchw.prg
+    ! Fixed possible problem
+    * Version number of Dbchw is changed to 3.0
+
 2014-12-21 20:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   ! contrib/activex/c_activex.c
     ! Few warnings are fixed, hb_vmPushState()/hb_vmPopState() are replaced with

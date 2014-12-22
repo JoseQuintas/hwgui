@@ -23,7 +23,6 @@ CLASS VAR winclass   INIT "SysIPAddress32"
    DATA bChange
    DATA bKillFocus
    DATA bGetFocus
-   DATA lnoValid   INIT .F.
 
    METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bGetFocus, bKillFocus )
@@ -57,9 +56,6 @@ METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeig
    ::Activate()
 
 
-   IF bGetFocus != Nil
-      ::lnoValid := .T.
-   ENDIF
    IF bKillFocus != Nil
       ::oParent:AddEvent( IPN_FIELDCHANGED, ::id, ::bKillFocus, .t., "onChange" )
    ENDIF
@@ -117,16 +113,8 @@ METHOD END() CLASS HIPedit
 STATIC FUNCTION __GetFocus( oCtrl )
    LOCAL xRet
 
-   //IF ! CheckFocus( oCtrl, .f. )
-   //   RETURN .t.
-   //ENDIF
-
    IF ValType( oCtrl:bGetFocus ) == "B"
-      //oCtrl:oparent:lSuspendMsgsHandling := .T.
-      oCtrl:lnoValid := .T.
       xRet := Eval( oCtrl:bGetFocus, oCtrl )
-      //oCtrl:oparent:lSuspendMsgsHandling := .F.
-      oCtrl:lnoValid := xRet
    ENDIF
 
    RETURN xRet
@@ -135,14 +123,8 @@ STATIC FUNCTION __GetFocus( oCtrl )
 STATIC FUNCTION __KillFocus( oCtrl )
    LOCAL xRet
 
-   //IF ! CheckFocus( oCtrl, .t. ) .or. oCtrl:lNoValid
-   //   RETURN .t.
-   //ENDIF
-
    IF ValType( oCtrl:bKillFocus ) == "B"
-      //oCtrl:oparent:lSuspendMsgsHandling := .T.
       xRet := Eval( oCtrl:bKillFocus, oCtrl )
-      //oCtrl:oparent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN xRet

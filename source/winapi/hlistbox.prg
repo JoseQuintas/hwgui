@@ -71,7 +71,6 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    IF bSetGet != Nil
       IF bGFocus != Nil
-         ::lnoValid := .T.
          ::oParent:AddEvent( LBN_SETFOCUS, ::id, { | o, id | ::When( o:FindControl( id ) ) } )
       ENDIF
       ::oParent:AddEvent( LBN_KILLFOCUS, ::id, { | o, id | ::Valid( o:FindControl( id ) ) } )
@@ -260,9 +259,7 @@ METHOD When( oCtrl ) CLASS HListBox
       Eval( ::bSetGet, ::value, Self )
    ENDIF
    IF ::bGetFocus != Nil
-      ::lnoValid := .T.
       res := Eval( ::bGetFocus, ::Value, Self )
-      ::lnoValid := ! res
       ::Setfocus()      
    ENDIF
    RETURN res

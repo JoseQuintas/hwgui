@@ -42,29 +42,6 @@ FUNCTION REMOVEPROPERTY( oObjectName, cPropertyName )
 
    RETURN .F.
 
-FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
-
-   LOCAL hDC
-   LOCAL ASize
-   LOCAL hFont
-
-   oFont := iif( oFont != Nil, oFont, oWin:oFont )
-
-   hDC       := hwg_Getdc( oWin:handle )
-   IF oFont == Nil .AND. oWin:oParent != Nil
-      oFont := oWin:oParent:oFont
-   ENDIF
-   IF oFont != Nil
-      hFont := hwg_Selectobject( hDC, oFont:handle )
-   ENDIF
-   ASize     := hwg_Gettextsize( hDC, cTxt )
-   IF oFont != Nil
-      hwg_Selectobject( hDC, hFont )
-   ENDIF
-   hwg_Releasedc( oWin:handle, hDC )
-
-   RETURN ASize
-
 FUNCTION hwg_SetAll( oWnd, cProperty, Value, aControls, cClass )
 
    // cProperty Specifies the property to be set.

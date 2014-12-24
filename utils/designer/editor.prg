@@ -159,7 +159,7 @@ Local i, j, oNode, nStart, oThemeDesc, aAttr
 Return Nil
 
 Function EditMethod( cMethName, cMethod )
-Local i, lRes := .F.
+Local i
 Local oFont := HDTheme():oFont
 Local cParamString
 
@@ -169,7 +169,7 @@ Local cParamString
       AT 100,240  SIZE 600,300  FONT oDesigner:oMainWnd:oFont    ;
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_MAXIMIZEBOX+WS_SIZEBOX ;
       ON INIT {||ChangeTheme(HDTheme():nSelected),hwg_Movewindow(oDlg:handle,100,240,600,310)} ;
-      ON EXIT {||Iif(lRes:=(oEdit:lUpdated.AND.hwg_Msgyesno("Code was changed! Save it?", "Designer")),cMethod:=oEdit:GetText(),.F.),.T.}
+      ON EXIT {||Iif(oEdit:lUpdated.AND.hwg_Msgyesno("Code was changed! Save it?", "Designer"),(cMethod:=oEdit:GetText(),.T.),.T.)}
 
    MENU OF oDlg
       MENU TITLE "&Options"
@@ -199,13 +199,11 @@ Local cParamString
    IF !Empty( cMethod )
       oEdit:SetText( cMethod )
    ENDIF
+   cMethod := Nil
 
    ACTIVATE DIALOG oDlg
 
-   IF lRes
-      Return cMethod
-   ENDIF
-Return Nil
+Return cMethod
 
 Function ChangeTheme( nTheme )
 Local oTheme, oFont

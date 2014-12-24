@@ -423,6 +423,27 @@ FUNCTION hwg_getParentForm( o )
    ENDDO
    RETURN o
 
+FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
+
+   LOCAL hDC, aSize, hFont
+
+   oFont := iif( oFont != Nil, oFont, oWin:oFont )
+
+   hDC := hwg_Getdc( oWin:handle )
+   IF oFont == Nil .AND. oWin:oParent != Nil
+      oFont := oWin:oParent:oFont
+   ENDIF
+   IF oFont != Nil
+      hFont := hwg_Selectobject( hDC, oFont:handle )
+   ENDIF
+   aSize := hwg_Gettextsize( hDC, cTxt )
+   IF oFont != Nil
+      hwg_Selectobject( hDC, hFont )
+   ENDIF
+   hwg_Releasedc( oWin:handle, hDC )
+
+   RETURN aSize
+
 FUNCTION HWG_ScrollHV( oForm, msg, wParam, lParam )
 
    LOCAL nDelta, nSBCode , nPos, nInc

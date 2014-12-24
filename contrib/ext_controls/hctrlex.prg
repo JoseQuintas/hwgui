@@ -32,6 +32,13 @@
 #define OFS_X 10 // distance from left/right side to beginning/end of text
 #define RT_MANIFEST  24
 
+CLASS HThemed
+   CLASS VAR WindowsManifest INIT !EMPTY(hwg_Findresource( , 1 , RT_MANIFEST ) ) SHARED
+   DATA hTheme
+   DATA Themed INIT .F.
+
+ENDCLASS
+
 CLASS HStaticEx INHERIT HStatic
 
    CLASS VAR winclass   INIT "STATIC"
@@ -443,17 +450,14 @@ METHOD onLostFocus()  CLASS HButtonX
    RETURN NIL
 
 
-CLASS HButtonEX INHERIT HButtonX
+CLASS HButtonEX INHERIT HButtonX, HThemed
 
-   CLASS VAR WindowsManifest INIT !EMPTY(hwg_Findresource( , 1 , RT_MANIFEST ) ) SHARED
    DATA hBitmap
    DATA hIcon
    DATA m_dcBk
    DATA m_bFirstTime INIT .T.
-   DATA Themed INIT .F.
    DATA m_crColors INIT Array( 6 )
    DATA m_crBrush INIT Array( 6 )
-   DATA hTheme
    DATA Caption
    DATA state
    DATA m_bIsDefault INIT .F.

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-24 23:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hbrowsex.prg
+  * contrib/ext_controls/hctrlex.prg
+    * Some changes to improve themes handling
+
 2014-12-24 18:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/dbc/dbchw.prg
   * utils/dbc/commands.prg

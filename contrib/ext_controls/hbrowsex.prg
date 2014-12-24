@@ -217,9 +217,8 @@ METHOD Value( xValue ) CLASS HColumnEx
 
    //----------------------------------------------------//
 
-CLASS HBrowseEx INHERIT HControl
+CLASS HBrowseEx INHERIT HControl, HThemed
 
-   CLASS VAR WindowsManifest INIT !EMPTY(hwg_Findresource( , 1 , RT_MANIFEST ) ) SHARED
    DATA winclass   INIT "BROWSE"
    DATA active     INIT .T.
    DATA lChanged   INIT .F.
@@ -306,8 +305,6 @@ CLASS HBrowseEx INHERIT HControl
    DATA nRecCount INIT 0  HIDDEN
    // ADD THEME IN BROWSE
    DATA m_bFirstTime  INIT .T.
-   DATA hTheme
-   DATA Themed        INIT .T.
    DATA xPosMouseOver INIT  0
    DATA isMouseOver   INIT .F.
    DATA allMouseOver  INIT .F.
@@ -2895,13 +2892,13 @@ METHOD ButtonDbl( lParam ) CLASS HBrowseEx
 METHOD MouseMove( wParam, lParam ) CLASS HBrowseEx
    LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam )
    LOCAL x := ::x1, i, res := .F.
-   LOCAL nLastColumn
+   LOCAL nLastColumn 
    LOCAL currxPos := ::xPosMouseOver
 
    wParam := hwg_PtrToUlong( wParam )
    ::xPosMouseOver := 0
    ::isMouseOver := iif( ::lDispHead .AND. ::hTheme != NIL .AND. currxPos != 0, .T. , .F. )
-   nLastColumn := iif( ::lAdjRight, Len( ::aColumns ) - 1, Len( ::aColumns ) )
+   nLastColumn := Len( ::aColumns ) // iif( ::lAdjRight, Len( ::aColumns ) - 1, Len( ::aColumns ) )
 
    IF ! ::active .OR. Empty( ::aColumns ) .OR. ::x1 == NIL
       RETURN NIL

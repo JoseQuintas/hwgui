@@ -9,6 +9,7 @@
 
 #include "hwgui.ch"
 #include "dbchw.h"
+#include "dbstruct.ch"
 #include "error.ch"
 #ifdef RDD_ADS
 #include "ads.ch"
@@ -697,7 +698,7 @@ Local bFileBtn := {||
 Return Nil
 
 FUNCTION OpenDbf( fname, alsname, hChild, pass )
-   LOCAL oWindow, oBrowse, i
+   LOCAL oWindow, oBrowse, i, nArea, kolf
    LOCAL bPosChg := {|o|
       LOCAL j := 0, j1, cAls
       WriteTableInfo( 1,LTrim(Str(Eval(o:bRecno,o)))+"/"+LTrim(Str(Eval(o:bRcou,o))) )
@@ -759,10 +760,26 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
       oBrowse:bcolorSel := COLOR_SELE
       oBrowse:ofont := oBrwFont
       oBrowse:cargo := { improc, {"","",""} }
-      hwg_CreateList( oBrowse, .T. )
+
+      //hwg_CreateList( oBrowse, .T. )
+      nArea := Select()
+      kolf := FCount()
+
+      oBrowse:alias := Alias()
+      oBrowse:aColumns := {}
+      oBrowse:AddColumn( { "", &( "{||Iif(" + oBrowse:alias + "->(Deleted()),'*',' ')}" ), "C", 1, 0 } )
+      FOR i := 1 TO kolf
+         oBrowse:AddColumn( { FieldName( i ),        ;
+            FieldWBlock( FieldName( i ), nArea ), ;
+            dbFieldInfo( DBS_TYPE, i ),         ;
+            iif( dbFieldInfo( DBS_TYPE,i ) == "D" .AND. __SetCentury(), 10, dbFieldInfo( DBS_LEN,i ) ), ;
+            dbFieldInfo( DBS_DEC, i ), .T. } )
+      NEXT
+
       oBrowse:lAppable := .T.
       oBrowse:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
       oBrowse:lInFocus := .T.
+      oBrowse:Refresh()
 
       IF lMdi
 #ifndef __GTK__

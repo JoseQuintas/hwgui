@@ -97,7 +97,7 @@ FUNCTION C_REPL
 
 FUNCTION C_4( nAct )
    LOCAL oDlg, aTitle := { "Delete", "Recall", "Count", "Sum" }
-   LOCAL cExpr := "", r1 := 1, nNext := 0, cFor := "", bFor, bSum
+   LOCAL cExpr := "", r1 := 1, nNext := 1, cFor := "", bFor, bSum
    LOCAL oBrw := GetBrwActive(), nCount := 0, nRec, oMsg
 
    INIT DIALOG oDlg TITLE aTitle[nAct] ;

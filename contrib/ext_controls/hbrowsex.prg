@@ -590,11 +590,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowseEx
          IF ! hwg_Checkbit( lParam, 32 )
             nShiftAltCtrl := iif( hwg_IsCtrlShift( .F. , .T. ), 1 , 0 )
             nShiftAltCtrl += iif( hwg_IsCtrlShift( .T. , .F. ), 2 , nShiftAltCtrl )
+            /*
             IF ::bKeyDown != NIL .AND. ValType( ::bKeyDown ) == 'B' .AND. wParam != VK_TAB .AND. wParam != VK_RETURN
                IF Empty( nRet := Eval( ::bKeyDown, Self, wParam, nShiftAltCtrl, msg ) ) .AND. nRet != NIL
                   RETURN 0
                ENDIF
             ENDIF
+            */
             IF wParam == VK_RETURN .OR. wParam == VK_ESCAPE
                RETURN - 1
             ENDIF

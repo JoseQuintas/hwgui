@@ -205,4 +205,20 @@
           => ;
           [<oGroup> := ] HGroupEx():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
              <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor>,<.lTransp.>);;
-          [ <oGroup>:name := <(oGroup)> ]
+          [; hwg_SetCtrlName( <oGroup>,<(oGroup)> )]
+
+#xcommand ADD STATUSEX [<oStat>] [ TO <oWnd> ] ;
+             [ ID <nId> ]           ;
+             [ HEIGHT <nHeight> ]   ;             
+             [ ON INIT <bInit> ]    ;
+             [ ON SIZE <bSize> ]    ;
+             [ ON PAINT <bDraw> ]   ;
+             [ ON DBLCLICK <bDblClick> ];
+             [ ON RIGHTCLICK <bRClick> ];
+             [ STYLE <nStyle> ]     ;
+             [ FONT <oFont> ]       ;
+             [ PARTS <aparts,...> ] ;
+          => ;
+          [ <oStat> := ] HStatusEx():New( <oWnd>,<nId>,<nStyle>,<oFont>,\{<aparts>\},<bInit>,;
+             <bSize>,<bDraw>, <bRClick>, <bDblClick>, <nHeight> );;
+          [; hwg_SetCtrlName( <oStat>,<(oStat)> )]

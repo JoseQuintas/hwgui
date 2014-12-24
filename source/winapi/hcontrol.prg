@@ -234,7 +234,8 @@ CLASS HStatus INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )  
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )
+   METHOD SetText( cText,nPart ) INLINE  hwg_WriteStatus( ::oParent, nPart, cText )
 
 ENDCLASS
 

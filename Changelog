@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-25 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+    * :Addcolumn() changed to be compatible with winapi version
+  * utils/dbc/dbchw.prg
+    * Small interface corrections
+
 2014-12-25 11:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/dbc/dbchw.prg
     ! Codepages name corrected

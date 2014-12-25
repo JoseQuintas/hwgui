@@ -374,7 +374,14 @@ METHOD Init CLASS HBrowse
 
 METHOD AddColumn( oColumn ) CLASS HBrowse
 
-   LOCAL n
+   LOCAL n, arr
+
+   IF Valtype( oColumn ) == "A"
+      arr := oColumn
+      n := Len(arr)
+      oColumn := HColumn():New( Iif(n>0,arr[1],Nil), Iif(n>1,arr[2],Nil), ;
+         Iif(n>2,arr[3],Nil), Iif(n>3,arr[4],Nil), Iif(n>4,arr[5],Nil), Iif(n>5,arr[6],Nil) )
+   ENDIF
 
    AAdd( ::aColumns, oColumn )
    ::lChanged := .T.
@@ -1853,7 +1860,7 @@ FUNCTION hwg_CreateList( oBrw, lEditable )
    oBrw:aColumns := {}
 
    FOR i := 1 TO kolf
-      oBrw:AddColumn( HColumn():New( FieldName(i ),                      ;
+      oBrw:AddColumn( HColumn():New( FieldName(i ), ;
          FieldWBlock( FieldName( i ), nArea ), ;
          dbFieldInfo( DBS_TYPE, i ),         ;
          dbFieldInfo( DBS_LEN, i ),          ;

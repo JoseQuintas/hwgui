@@ -47,7 +47,7 @@ Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
    oFontStandard := HFont():Add( "Arial",0,-13,400,204 )
 
    INIT WINDOW oMainWindow MAIN TITLE "Visual Report Builder"  ;
-       ICON oIcon SYSCOLOR COLOR_3DSHADOW                      ;
+       ICON oIcon COLOR COLOR_3DSHADOW                         ;
        ON PAINT {|o|PaintMain(o)} ON EXIT {||CloseReport()}    ;
        ON OTHER MESSAGES {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
 
@@ -307,9 +307,9 @@ Static Function MessagesProc( oWnd, msg, wParam, lParam )
 Local i, aItem, hWnd := oWnd:handle
 
    IF msg == WM_VSCROLL
-      Vscroll( hWnd,hwg_Loword( hwg_PtrToUlong( wParam ) ),hwg_Hiword( hwg_PtrToUlong( wParam ) ) )
+      Vscroll( hWnd,hwg_Loword( wParam ),hwg_Hiword( wParam ) )
    ELSEIF msg == WM_MOUSEMOVE
-      MouseMove( hwg_PtrToUlong( wParam ), hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      MouseMove( wParam, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ELSEIF msg == WM_LBUTTONDOWN
       LButtonDown( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ELSEIF msg == WM_LBUTTONUP
@@ -317,16 +317,15 @@ Local i, aItem, hWnd := oWnd:handle
    ELSEIF msg == WM_LBUTTONDBLCLK
       LButtonDbl( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ELSEIF msg == WM_KEYDOWN
-   
-      IF  hwg_PtrToUlong( wParam ) == 46
+      IF wParam == 46
          DeleteItem()
-      ELSEIF hwg_PtrToUlong( wParam )  == 34    // PageDown
+      ELSEIF wParam == 34    // PageDown
         VScroll( hWnd, SB_LINEDOWN )
-      ELSEIF hwg_PtrToUlong( wParam )  == 33    // PageUp
+      ELSEIF wParam == 33    // PageUp
         VScroll( hWnd, SB_LINEUP )
       ENDIF
    ELSEIF msg == WM_KEYUP
-      IF hwg_PtrToUlong( wParam )  == 40        // Down
+      IF wParam == 40        // Down
          FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
             IF aPaintRep[FORM_ITEMS,i,ITEM_STATE] == STATE_SELECTED
                aItem := aPaintRep[FORM_ITEMS,i]
@@ -348,7 +347,7 @@ Local i, aItem, hWnd := oWnd:handle
                ENDIF
             ENDIF
          NEXT
-      ELSEIF hwg_PtrToUlong( wParam )  == 38    // Up
+      ELSEIF wParam == 38    // Up
          FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
             IF aPaintRep[FORM_ITEMS,i,ITEM_STATE] == STATE_SELECTED
                aItem := aPaintRep[FORM_ITEMS,i]
@@ -370,7 +369,7 @@ Local i, aItem, hWnd := oWnd:handle
                ENDIF
             ENDIF
          NEXT
-      ELSEIF hwg_PtrToUlong( wParam )  == 39    // Right
+      ELSEIF wParam == 39    // Right
          FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
             IF aPaintRep[FORM_ITEMS,i,ITEM_STATE] == STATE_SELECTED
                aItem := aPaintRep[FORM_ITEMS,i]
@@ -387,7 +386,7 @@ Local i, aItem, hWnd := oWnd:handle
                ENDIF
             ENDIF
          NEXT
-      ELSEIF hwg_PtrToUlong( wParam )  == 37    // Left
+      ELSEIF wParam == 37    // Left
          FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
             IF aPaintRep[FORM_ITEMS,i,ITEM_STATE] == STATE_SELECTED
                aItem := aPaintRep[FORM_ITEMS,i]
@@ -465,7 +464,7 @@ Local aItem, i, dx, dy
          Return Nil
       ENDIF
       aItem := aPaintRep[FORM_ITEMS,itemPressed]
-      IF hwg_Checkbit( hwg_PtrToUlong( wParam ), MK_LBUTTON )
+      IF hwg_Checkbit( wParam, MK_LBUTTON )
          hWnd := Hwindow():GetMain():handle
          hwg_Invalidaterect( hWnd, 0, LEFT_INDENT+aItem[ITEM_X1]-3, ;
                   TOP_INDENT+aItem[ITEM_Y1]-aPaintRep[FORM_Y]-3, ;
@@ -500,7 +499,7 @@ Local aItem, i, dx, dy
       ENDIF
    ELSEIF itemSized > 0
       aItem := aPaintRep[FORM_ITEMS,itemSized]
-      IF hwg_Checkbit( hwg_PtrToUlong( wParam ), MK_LBUTTON )
+      IF hwg_Checkbit( wParam, MK_LBUTTON )
          dx := xPos - mPos[1]
          dy := yPos - mPos[2]
          hWnd := Hwindow():GetMain():handle

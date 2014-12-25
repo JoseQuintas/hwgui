@@ -15,6 +15,10 @@
 #include "ads.ch"
 #endif
 
+#ifdef __XHARBOUR__
+#xtranslate HB_HHASKEY(<x,...>) => HHASKEY(<x>)
+#endif
+
 #define MITEM_INDEX      1901
 #define MITEM_FLDS       1902
 #define MITEM_MOVE       1903

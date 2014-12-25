@@ -166,15 +166,15 @@
 
         After you create the report form, you can print it from your application.
 
-        If the report is in *.rpt file, you need open it with the OpenReport()
-   function and then print with PrintReport():
+        If the report is in *.rpt file, you need open it with the hwg_OpenReport()
+   function and then print with hwg_PrintReport():
 
-         IF OpenReport( fileName, reportName ) 
-            PrintReport( printerName )
+         IF hwg_OpenReport( fileName, reportName ) 
+            hwg_PrintReport( printerName )
          ENDIF        
 
    If you omit the printerName parameter, you will get standard dialog box for
-   choosing printer. If you pass empty string ( PrintReport( "" ) ), program
+   choosing printer. If you pass empty string ( hwg_PrintReport( "" ) ), program
    will print to the default printer. And, at least, if you pass real printer
    name, defined in your system, it will be used.
 
@@ -182,7 +182,7 @@
    call the function, where the the report is saved and then PrintReport():
 
         MyReport()
-        PrintReport( printerName )
+        hwg_PrintReport( printerName )
 
  ----------------------------------------------------------------------------
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>

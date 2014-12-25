@@ -43,8 +43,6 @@
 
    ANNOUNCE HB_GTSYS
 
-   REQUEST HB_CODEPAGE_RU1251
-
 MEMVAR oDesigner, crossCursor, vertCursor, horzCursor, cCurDir
 
 STATIC lOmmitMenuFile := .F.
@@ -58,7 +56,14 @@ FUNCTION Main( p0, p1, p2 )
    PUBLIC oDesigner
    PUBLIC crossCursor, vertCursor, horzCursor
 
+#ifdef __XHARBOUR__
+   REQUEST HB_CODEPAGE_RUWIN
+   hb_cdpSelect( "RUWIN" )
+#else
+   REQUEST HB_CODEPAGE_RU1251
    hb_cdpSelect( "RU1251" )
+#endif
+
    oDesigner := HDesigner():New()
 
    IF p0 != Nil .AND. ( p0 == "-r" .OR. p0 == "/r" )

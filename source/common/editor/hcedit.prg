@@ -59,6 +59,11 @@
 #include "hwgui.ch"
 #include "hxml.ch"
 
+#ifdef __XHARBOUR__
+#xtranslate HB_HASH(<x,...>) => HASH(<x>)
+#xtranslate HB_HHASKEY(<x,...>) => HHASKEY(<x>)
+#endif
+
 #define WM_MOUSEACTIVATE    33  // 0x0021
 #define MA_ACTIVATE          1
 

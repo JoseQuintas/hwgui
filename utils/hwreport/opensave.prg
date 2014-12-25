@@ -290,7 +290,7 @@ Local lPrg := ( Upper(FilExten(fname))=="PRG" ), cSource := "", vDummy, nFormWid
 
       aPaintRep[FORM_ITEMS] := Asort( aPaintRep[FORM_ITEMS],,, {|z,y|z[ITEM_Y1]<y[ITEM_Y1].OR.(z[ITEM_Y1]==y[ITEM_Y1].AND.z[ITEM_X1]<y[ITEM_X1]).OR.(z[ITEM_Y1]==y[ITEM_Y1].AND.z[ITEM_X1]==y[ITEM_X1].AND.(z[ITEM_WIDTH]<y[ITEM_WIDTH].OR.z[ITEM_HEIGHT]<y[ITEM_HEIGHT]))} )
       IF !lPrg
-         RecalcForm( aPaintRep,nFormWidth )
+         hwg_RecalcForm( aPaintRep,nFormWidth )
       ENDIF
 
       hwg_WriteStatus( Hwindow():GetMain(),2,Ltrim(Str(aPaintRep[FORM_WIDTH],4))+"x"+ ;
@@ -485,8 +485,8 @@ Local i, aItem, oPen, oFont, hDCwindow, aMetr, cItem, cQuote, cPen, cFont
          WriteScript( han,aItem[ITEM_SCRIPT],.T. )
       ENDIF
    NEXT
-   Fwrite( han, "   RecalcForm( aPaintRep,"+Ltrim(Str(aMetr[1]-XINDENT))+" )"+Chr(10) )
-   Fwrite( han, "RETURN SetPaintRep( aPaintRep )"+Chr(10) )
+   Fwrite( han, "   hwg_RecalcForm( aPaintRep,"+Ltrim(Str(aMetr[1]-XINDENT))+" )"+Chr(10) )
+   Fwrite( han, "RETURN hwg_SetPaintRep( aPaintRep )"+Chr(10) )
 Return Nil
 
 Static Function WriteScript( han,cScript,lPrg )

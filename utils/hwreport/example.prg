@@ -48,13 +48,13 @@ Return Nil
 
 Static Function Print1
    IF OpenReport( "example.rpt", "MyReport" ) 
-      PrintReport()
+      hwg_PrintReport()
    ENDIF
 Return Nil
 
 Static Function Print2
    MyReport()
-   PrintReport()
+   hwg_PrintReport()
 Return Nil
 
 FUNCTION MyReport
@@ -99,6 +99,6 @@ LOCAL aPaintRep
    Aadd( aPaintRep[6], { 6,"DF",-16,899,16,10,0,0,0,0,0,Nil,0 } )
    Aadd( aPaintRep[6], { 2,,459,924,238,6,0,HPen():Add(0,1,0),0,0,0,Nil,0 } )
    Aadd( aPaintRep[6], { 1,"End of report",522,932,160,20,0,0,HFont():Add( "MS Sans Serif",0,-13,0,0,0,0,0 ),0,0,Nil,0 } )
-   RecalcForm( aPaintRep,735 )
-RETURN SetPaintRep( aPaintRep )
+   hwg_RecalcForm( aPaintRep,735 )
+RETURN hwg_SetPaintRep( aPaintRep )
 

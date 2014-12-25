@@ -264,6 +264,7 @@ CLASS HBrowseEx INHERIT HControl, HThemed
    DATA lAppended INIT .F.
    DATA lESC      INIT .F.
    DATA lAdjRight INIT .T.                     // Adjust last column to right
+   DATA oEditDlg
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nHeadHeight INIT 0                     // Pixel height in header for footer (if present) or std font
    DATA nFootHeight INIT 0                     // Pixel height in footer for standard font
@@ -2900,7 +2901,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowseEx
    ::isMouseOver := iif( ::lDispHead .AND. ::hTheme != NIL .AND. currxPos != 0, .T. , .F. )
    nLastColumn := Len( ::aColumns ) // iif( ::lAdjRight, Len( ::aColumns ) - 1, Len( ::aColumns ) )
 
-   IF ! ::active .OR. Empty( ::aColumns ) .OR. ::x1 == NIL
+   IF ! ::active .OR. Empty( ::aColumns ) .OR. ::x1 == NIL .OR. !Empty( ::oEditDlg )
       RETURN NIL
    ENDIF
    IF ::isMouseOver
@@ -2991,7 +2992,7 @@ METHOD onClick( ) CLASS HBrowseEx
 
 METHOD Edit( wParam, lParam ) CLASS HBrowseEx
    LOCAL fipos, x1, y1, fif, nWidth, lReadExit, rowPos
-   LOCAL oModDlg, oColumn, aCoors, nChoic, bInit, oGet, Type
+   LOCAL oColumn, aCoors, nChoic, bInit, oGet, Type
    LOCAL oComboFont, oCombo, oBtn
    LOCAL oGet1, owb1, owb2 , nHget
 
@@ -3062,18 +3063,18 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
             bInit := { || .F. }
          ENDIF
          IF Type <> "M"
-            INIT DIALOG oModDlg ;
+            INIT DIALOG ::oEditDlg ;
                STYLE WS_POPUP + 1 + iif( oColumn:aList == NIL, WS_BORDER, 0 ) + DS_CONTROL ;
                At x1, y1 - iif( oColumn:aList == NIL, 1, 0 ) ;
                SIZE nWidth - 1, ::height + iif( oColumn:aList == NIL, 1, 0 ) ;
                ON INIT bInit ;
                ON OTHER MESSAGES { | o, m, w, l | ::EditEvent( o, m, w, l ) }
          ELSE
-            INIT DIALOG oModDlg title "memo edit" At 0, 0 SIZE 400, 300 ON INIT { | o | o:center() }
+            INIT DIALOG ::oEditDlg title "memo edit" At 0, 0 SIZE 400, 300 ON INIT { | o | o:center() }
          ENDIF
          IF oColumn:aList != NIL  .AND. ( oColumn:bWhen = NIL .OR. Eval( oColumn:bWhen ) )
-            oModDlg:brush := - 1
-            oModDlg:nHeight := ::height + 1 // * 5
+            ::oEditDlg:brush := - 1
+            ::oEditDlg:nHeight := ::height + 1 // * 5
             IF ValType( ::varbuf ) == 'N'
                nChoic := ::varbuf
             ELSE
@@ -3090,10 +3091,10 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
                DISPLAYCOUNT  iif( Len( oColumn:aList ) > ::rowCount , ::rowCount - 1, Len( oColumn:aList ) ) ;
                VALID { | oColumn, oGet | ::ValidColumn( oColumn, oGet ) };
                WHEN { | oColumn, oGet | ::WhenColumn( oColumn, oGet ) }
-            oModDlg:AddEvent( 0, IDOK, { || oModDlg:lResult := .T. , oModDlg:close() } )
+            ::oEditDlg:AddEvent( 0, IDOK, { || ::oEditDlg:lResult := .T. , ::oEditDlg:close() } )
          ELSE
             IF Type == "L"
-               oModDlg:lResult := .T.
+               ::oEditDlg:lResult := .T.
             ELSEIF Type <> "M"
                nHGet := Max( ( ::height - ( hwg_TxtRect( "N", self ) )[ 2 ] ) / 2 , 0 )
                @ 0, nHGet GET oGet VAR ::varbuf       ;
@@ -3121,21 +3122,22 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
                ENDIF
             ELSE
                oGet1 := ::varbuf
-               @ 10, 10 GET oGet1 SIZE oModDlg:nWidth - 20, 240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
-               @ 010, 252 ownerbutton owb2 TEXT "Save" size 80, 24 ON Click { || ::varbuf := oGet1, oModDlg:close(), oModDlg:lResult := .T. }
-               @ 100, 252 ownerbutton owb1 TEXT "Close" size 80, 24 ON CLICK { || oModDlg:close() }
+               @ 10, 10 GET oGet1 SIZE ::oEditDlg:nWidth - 20, 240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
+               @ 010, 252 ownerbutton owb2 TEXT "Save" size 80, 24 ON Click { || ::varbuf := oGet1, ::oEditDlg:close(), ::oEditDlg:lResult := .T. }
+               @ 100, 252 ownerbutton owb1 TEXT "Close" size 80, 24 ON CLICK { || ::oEditDlg:close() }
             ENDIF
          ENDIF
          IF Type != "L" .AND. ::nSetRefresh > 0
             ::oTimer:Interval := 0
          ENDIF
 
-         ACTIVATE DIALOG oModDlg
+         ACTIVATE DIALOG ::oEditDlg
 
          IF Type = "L" .AND. wParam != VK_RETURN
             Hwg_SetCursor( arrowCursor )
             IF wParam = VK_SPACE
-               oModDlg:lResult := ::EditLogical( wParam )
+               ::oEditDlg:lResult := ::EditLogical( wParam )
+               ::oEditDlg := Nil
                RETURN NIL
             ENDIF
          ENDIF
@@ -3144,7 +3146,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
             oComboFont:Release()
          ENDIF
 
-         IF oModDlg:lResult
+         IF ::oEditDlg:lResult
             IF oColumn:aList != NIL
                IF ValType( ::varbuf ) == 'N'
                   ::varbuf := nChoic
@@ -3226,6 +3228,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
          ::DoHScroll( SB_LINERIGHT )
       ENDIF
    ENDIF
+   ::oEditDlg := Nil
 
    RETURN NIL
 

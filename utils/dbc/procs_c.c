@@ -122,7 +122,7 @@ HB_FUNC( CLONG_SET )
       c |= ( 0x80 >> (uiBit%8) );
       *( cptr+(uiBit/8) ) = c;
    }
-   hb_retclen_buffer( cptr, ulLen );
+   hb_retclen_buffer( (char*) cptr, ulLen );
 }
 
 HB_FUNC( CLONG_RESET )
@@ -139,5 +139,5 @@ HB_FUNC( CLONG_RESET )
       c &= ~( 0x80 >> (uiBit%8) );
       *( cptr+(uiBit/8) ) = c;
    }
-   hb_retclen_buffer( cptr, ulLen );
+   hb_retclen_buffer( (char*) cptr, ulLen );
 }

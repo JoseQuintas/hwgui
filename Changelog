@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-25 10:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hbrowsex.prg
+    * Problem solved with focus loosing while edit a cell
+  + utils/dbc/dbchw.hbp
+    + hbp added, provided by Itamar M. Lins Jr.
+  * utils/dbc/dbchw.prg
+    * Buttons rearranged
+  * utils/dbc/procs_c.c
+    ! Warnings fixed.
+
 2014-12-24 23:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/ext_controls/hbrowsex.prg
   * contrib/ext_controls/hctrlex.prg

@@ -258,22 +258,22 @@ FUNCTION Main( ... )
 
    @ 0,0 PANEL oPanel OF oWndMain SIZE oWndMain:nWidth-2,24 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-   @ 2,0 OWNERBUTTON aButtons[1] OF oPanel ON CLICK {||GetBrwActive():Top()} ;
+   @ 2,0 OWNERBUTTON aButtons[5] OF oPanel ON CLICK {||OpenFile()} ;
+       SIZE 24,24 FLAT BITMAP "OPEN" FROM RESOURCE TRANSPARENT COLOR 12632256 TOOLTIP "Open file"
+
+   @ 32,2 LINE OF oPanel LENGTH 22 VERTICAL
+
+   @ 36,0 OWNERBUTTON aButtons[1] OF oPanel ON CLICK {||GetBrwActive():Top()} ;
        SIZE 24,24 FLAT BITMAP "TOP" FROM RESOURCE TRANSPARENT COLOR 12632256 TOOLTIP "Top"
 
-   @ 26,0 OWNERBUTTON aButtons[2] OF oPanel ON CLICK {||GetBrwActive():Pageup()} ;
+   @ 60,0 OWNERBUTTON aButtons[2] OF oPanel ON CLICK {||GetBrwActive():Pageup()} ;
        SIZE 24,24 FLAT BITMAP "PREV" FROM RESOURCE TRANSPARENT COLOR 12632256 TOOLTIP "Page up"
 
-   @ 50,0 OWNERBUTTON aButtons[3] OF oPanel ON CLICK {||GetBrwActive():Pagedown()} ;
+   @ 84,0 OWNERBUTTON aButtons[3] OF oPanel ON CLICK {||GetBrwActive():Pagedown()} ;
        SIZE 24,24 FLAT BITMAP "NEXT" FROM RESOURCE TRANSPARENT COLOR 12632256 TOOLTIP "Page down"
 
-   @ 74,0 OWNERBUTTON aButtons[4] OF oPanel ON CLICK {||GetBrwActive():Bottom()} ;
+   @ 108,0 OWNERBUTTON aButtons[4] OF oPanel ON CLICK {||GetBrwActive():Bottom()} ;
        SIZE 24,24 FLAT BITMAP "BOTTOM" FROM RESOURCE TRANSPARENT COLOR 12632256 TOOLTIP "Bottom"
-
-   @ 104,2 LINE OF oPanel LENGTH 22 VERTICAL
-
-   @ 108,0 OWNERBUTTON aButtons[5] OF oPanel ON CLICK {||OpenFile()} ;
-       SIZE 24,24 FLAT BITMAP "OPEN" FROM RESOURCE TRANSPARENT COLOR 12632256 TOOLTIP "Open file"
 
    oWndMain:bActivate := {|| ReadParams( aParams ) }
 

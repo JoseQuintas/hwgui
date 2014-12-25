@@ -1,0 +1,17 @@
+#
+# $Id$
+#
+
+-n -w
+
+-odbchw
+
+dbchw.prg
+commands.prg
+modistru.prg
+move.prg
+view.prg
+procs_c.c
+{win}dbchw.rc
+
+..\..\hwgui.hbc

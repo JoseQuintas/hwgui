@@ -52,26 +52,26 @@ REQUEST ORDKEYNO
 REQUEST ORDKEYCOUNT
 
 STATIC aCPInfo := { "Bulgarian CP-866","Bulgarian ISO-8859-5","Bulgarian MIK", ;
-      "Bulgarian Windows-1251","Czech CP-852","Czech CP-852", ;
+      "Bulgarian Windows-1251","Czech CP-852","Czech CP-852C", ;
       "Czech ISO-8859-2","Czech Kamenicky","Czech Windows-1250", ;
-      "German CP-850","German CP-850", "German ISO-8859-1","German Windows-1252","Danish CP-865", ;
+      "German CP-850","German CP-850M", "German ISO-8859-1","German Windows-1252","Danish CP-865", ;
       "Greek CP-437","Greek CP-737","Greek ISO-8859-7","Greek ANSI CP-1253","English CP-437", ;
       "Spanish (Modern) CP-850","Spanish CP-850","Spanish CP-850","Spanish (Modern) ISO-8859-1", ;
       "Spanish (Modern) ISO-8859-1","Spanish (Modern) Windows-1252","Finnish CP-850", ;
-      "French CP-850","French CP-850","French ISO-8859-1","French Windows-1252","Hebrew CP-862", ;
+      "French CP-850","French CP-850M","French ISO-8859-1","French Windows-1252","Hebrew CP-862", ;
       "Hebrew Windows-1255","Croatian ISO-646 (CROSCII)","Croatian CP-852","Croatian ISO-8859-2", ;
-      "Croatian Windows-1250","Hungarian CP-852","Hungarian CP-852","Hungarian ISO-8859-2", ;
+      "Croatian Windows-1250","Hungarian CP-852","Hungarian CP-852C","Hungarian ISO-8859-2", ;
       "Hungarian Windows-1250","Icelandic CP-850","Icelandic CP-861","Italian CP-437", ;
-      "Italian CP-850","Italian CP-850","Italian ISO-8859-1b","Italian ISO-8859-1", ;
-      "Italian Windows-1252","Lithuanian CP-775","Lithuanian Windows-1257","Dutch CP-850)", ;
-      "Dutch CP-850","Norwegian CP-865","Polish CP-852","Polish ISO-8859-2","Polish Mazovia", ;
+      "Italian CP-850","Italian CP-850M","Italian ISO-8859-1b","Italian ISO-8859-1", ;
+      "Italian Windows-1252","Lithuanian CP-775","Lithuanian Windows-1257","Dutch CP-850", ;
+      "Dutch CP-850M","Norwegian CP-865","Polish CP-852","Polish ISO-8859-2","Polish Mazovia", ;
       "Polish Windows-1250","Portuguese CP-850","Portuguese CP-860","Portuguese ISO-8859-1", ;
       "Romanian CP-852","Romanian ISO-8859-2","Romanian Windows-1250","Russian Windows-1251", ;
-      "Russian CP-866","Russian ISO-8859-5","Russian KOI-8","Slovak CP-852","Slovak CP-852", ;
+      "Russian CP-866","Russian ISO-8859-5","Russian KOI-8","Slovak CP-852","Slovak CP-852C", ;
       "Slovak ISO-8859-2","Slovak Kamenicky","Slovak Windows-1250","Slovenian ISO-646 (SLOSCII)", ;
       "Slovenian CP-852","Slovenian ISO-8859-2","Slovenian CP-1250","Serbian ISO-646 (YUSCII)", ;
       "Serbian ISO-646C (Cyrillic YUSCII)","Serbian Windows-1251","Swedish CP-437", ;
-      "Swedish CP-850","Swedish CP-850","Swedish ISO-8859-1","Swedish Windows-1252", ;
+      "Swedish CP-850","Swedish CP-850M","Swedish ISO-8859-1","Swedish Windows-1252", ;
       "Turkish CP-857","Turkish ISO-8859-9","Turkish Windows-1254","Ukrainian CP-1125", ;
       "Ukrainian Windows-1251","Ukrainian CP-866","Ukrainian KOI8-U","UTF-16 little endian", ;
       "UTF-8","UTF-8 extended" }
@@ -607,7 +607,7 @@ Return oDlg
    /* -----------------------  Open Database file --------------------- */
 
 FUNCTION OpenFile()
-Local oDlg, cFile := "", alsname := "", pass
+Local oDlg, oGetFile, cFile := "", alsname := "", pass
 Local lExcl := !lShared, lRd := lRdonly, nCp := Ascan( aCpId, cDataCpage ), r1 := numdriv
 #ifdef RDD_ADS
 Local lAxl := AdsLocking(), lRemote := (nServerType == 6)
@@ -620,7 +620,7 @@ Local bFileBtn := {||
    IF Empty( cFile )
       cFile := ""
    ENDIF
-   hwg_RefreshAllGets( oDlg )
+   oGetFile:Refresh()
    Return .T.
    }
 
@@ -638,7 +638,7 @@ Local bFileBtn := {||
 
    @ 10,34 SAY "File name: " SIZE 80,22 STYLE SS_RIGHT
 
-   @ 90,34 GET cFile SIZE 220,24 PICTURE "@S128" STYLE ES_AUTOHSCROLL
+   @ 90,34 GET oGetFile VAR cFile SIZE 220,24 PICTURE "@S128" STYLE ES_AUTOHSCROLL
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
    @ 310,34 BUTTON oBtnFile CAPTION "Browse" SIZE 80, 26 ON CLICK bFileBtn ON SIZE ANCHOR_RIGHTABS
 

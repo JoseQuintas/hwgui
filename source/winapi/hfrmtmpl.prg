@@ -8,6 +8,10 @@
  * www - http://www.kresin.ru
 */
 
+#ifdef __XHARBOUR__
+#xtranslate HB_AT(<x,...>) => AT(<x>)
+#endif
+
 Static nVertRes, nVertSize
 Static aClass := { "label", "button", "checkbox",                   ;
                   "radiobutton", "editbox", "group", "radiogroup",  ;

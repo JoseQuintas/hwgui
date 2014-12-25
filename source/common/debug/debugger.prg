@@ -905,6 +905,20 @@ STATIC FUNCTION __dbgObjGetValue( oObject, cVar, lCanAcc )
    LOCAL xResult
    LOCAL oErr
 
+#ifdef __XHARBOUR__
+   TRY
+      xResult := dbgSENDMSG( nProcLevel, oObject, cVar )
+      lCanAcc := .T.
+   CATCH
+      TRY
+         xResult := dbgSENDMSG( 0, oObject, cVar )
+         lCanAcc := .T.
+      CATCH
+         xResult := oErr:description
+         lCanAcc := .F.
+      END
+   END
+#else
    BEGIN SEQUENCE WITH {|| Break() }
       xResult := __dbgSENDMSG( nProcLevel, oObject, cVar )
       lCanAcc := .T.
@@ -918,7 +932,7 @@ STATIC FUNCTION __dbgObjGetValue( oObject, cVar, lCanAcc )
          lCanAcc := .F.
       END SEQUENCE
    END SEQUENCE
-
+#endif
    RETURN xResult
 
 #ifdef __XHARBOUR__

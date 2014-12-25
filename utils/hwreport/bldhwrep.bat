@@ -7,6 +7,7 @@ set HWGUI_INSTALL=..\..
 %HRB_DIR%\bin\harbour opensave.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 %HRB_DIR%\bin\harbour propert.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 %HRB_DIR%\bin\harbour printrpt.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour repexec.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
 
    bcc32 -c -O2 -tW -M -I%HRB_DIR%\include hwreport.c opensave.c propert.c printrpt.c
 
@@ -16,6 +17,7 @@ echo c0w32.obj + > b32.bc
 echo hwreport.obj + >> b32.bc
 echo opensave.obj + >> b32.bc
 echo propert.obj + >> b32.bc
+echo repexec.obj + >> b32.bc
 echo printrpt.obj, + >> b32.bc
 echo hwreport.exe, + >> b32.bc
 echo hwreport.map, + >> b32.bc

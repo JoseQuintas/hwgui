@@ -1,6 +1,10 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+#ifdef __XHARBOUR__
+#xtranslate HB_AT(<x,...>) => AT(<x>)
+#endif
+
 Function Main
 Local oFont
 Local oEdit

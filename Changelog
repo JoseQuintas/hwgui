@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-25 17:35 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * samples/hole.prg
+    ! changed for xharbour HB_AT -> AT between __XHARBOUR__ defines
+  * utils/hwreport/bldhwrep.bat
+    ! added repexec.prg to dependencies
+        
 2014-12-25 21:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * utils/dbc/dbchw.prg

@@ -671,7 +671,7 @@ Local bFileBtn := {||
 #endif
 #endif
 
-   @ 20,188 GET COMBOBOX nCp ITEMS aCpInfo SIZE 170,24
+   @ 20,188 GET COMBOBOX nCp ITEMS aCpInfo SIZE 170,24 DISPLAYCOUNT 12
 
    @  30,228 BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
    @ 270,228 BUTTON "Cancel" SIZE 100, 32 ON CLICK {||hwg_EndDialog()}

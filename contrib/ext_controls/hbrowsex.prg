@@ -3223,12 +3223,12 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
          IF ::nSetRefresh > 0
             ::oTimer:Interval := ::nSetRefresh
          ENDIF
+         ::oEditDlg := Nil
 
       ELSEIF ::lEditable
          ::DoHScroll( SB_LINERIGHT )
       ENDIF
    ENDIF
-   ::oEditDlg := Nil
 
    RETURN NIL
 

@@ -22,7 +22,7 @@ CLASS HRichEdit INHERIT HControl
    DATA lChanged    INIT .F.
 
    METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor )
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip,tcolor,bcolor,bOther )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -31,13 +31,14 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctooltip, ;
-                  tcolor,bcolor ) CLASS HRichEdit
+                  tcolor,bcolor,bOther ) CLASS HRichEdit
 
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), WS_CHILD+WS_VISIBLE+WS_TABSTOP+WS_BORDER )
    ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,Iif( bcolor==Nil,hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ),bcolor ) )
 
-   ::title   := vari
+   ::title  := vari
+   ::bOther := bOther
 
    hwg_InitRichEdit()
 

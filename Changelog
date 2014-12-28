@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-28 11:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/dbc/dbchw.prg
+    * DISPLAYCOUNT set to the combobox in OpenFile()
+  ! contrib/ext_controls/hbrowsex.prg
+    ! Small fix
+  * include/guilib.ch
+  * source/winapi/hrichedit.prg
+    * ON OTHER MESSAGES clause added to richedit for 2.17 compatibility
+
 2014-12-25 17:35 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * samples/hole.prg
     ! changed for xharbour HB_AT -> AT between __XHARBOUR__ defines

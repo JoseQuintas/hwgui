@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-29 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/debugger/build.sh
+    * CRLF -> LF
+  * source/winapi/hedit.prg
+    * Changes in :Refresh(), suggested by Itamar M. Lins Jr.
+  * source/winapi/hriched.prg
+    * :bOther is executed now for all messages
+
 2014-12-28 11:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/dbc/dbchw.prg
     * DISPLAYCOUNT set to the combobox in OpenFile()

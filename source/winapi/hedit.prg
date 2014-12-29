@@ -338,8 +338,11 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
 METHOD Refresh()  CLASS HEdit
    LOCAL vari
 
-   IF ::bSetGet != Nil
+   IF hb_isBlock( ::bSetGet )
       vari := Eval( ::bSetGet, , self )
+      If hb_IsNil( vari )
+         vari := ""
+      ENDIF
 
       IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
          vari := Transform( vari, ::cPicFunc + iif( Empty(::cPicFunc ),""," " ) + ::cPicMask )

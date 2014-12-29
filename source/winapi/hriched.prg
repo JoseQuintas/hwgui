@@ -64,6 +64,12 @@ Return Nil
 METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
 Local nDelta
 
+   IF ::bOther != Nil
+      nDelta := Eval( ::bOther, Self, msg, wParam, lParam )
+      IF ValType( nDelta ) != "N" .OR. nDelta > - 1
+         RETURN nDelta
+      ENDIF
+   ENDIF
    IF msg == WM_CHAR
       ::lChanged := .T.
    ELSEIF msg == WM_KEYDOWN
@@ -84,8 +90,6 @@ Local nDelta
       hwg_Sendmessage( ::handle,EM_SCROLL, Iif(nDelta>0,SB_LINEUP,SB_LINEDOWN), 0 )
    ELSEIF msg == WM_DESTROY
       ::End()
-   ELSEIF ::bOther != Nil
-      Return Eval( ::bOther, Self, msg, wParam, lParam )
    ENDIF
 
 Return -1

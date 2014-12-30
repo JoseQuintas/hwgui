@@ -382,18 +382,18 @@ STATIC FUNCTION ReadParams( aParams )
    RETURN Nil
 
 STATIC FUNCTION ChildClose
-   LOCAL n
+   LOCAL xWnd
 
    IF lMdi
 #ifndef __GTK__
-      IF !Empty( n := hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIGETACTIVE, 0, 0 ) )
-         hwg_Sendmessage( HWindow():GetMain():handle, WM_MDIDESTROY, n, 0 )
+      IF !Empty( xWnd := HMainWindow():GetMdiActive() )
+         hwg_Sendmessage( xWnd:handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
       ENDIF
 #endif
    ELSE
-      IF !Empty( n := oTabMain:GetActivePage() )
-         ChildKill( n )
-         oTabMain:DeletePage( n )
+      IF !Empty( xWnd := oTabMain:GetActivePage() )
+         ChildKill( xWnd )
+         oTabMain:DeletePage( xWnd )
       ENDIF
    ENDIF
 

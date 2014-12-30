@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-30 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/guimain.prg
+    ! Fixed hwg_writestatus() to work with HStatusEx
+  * utils/dbc/dbchw.prg
+    ! Fixed closing a dbf via menu
+    * Warning added to "Modify structure" dialog if a dbf is opened in exclusive or readonly mode.
+  * utils/dbc/modistru.prg
+
 2014-12-29 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/debugger/build.sh
     * CRLF -> LF

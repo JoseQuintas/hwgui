@@ -21,7 +21,7 @@ Static aFieldTypes := { "C","N","D","L" }
 Function StruMan( lNew )
 Local oDlg, oBrowse, oMsg, oBrw
 Local oGet1, oGet2, oGet3, oGet4
-Local af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i
+Local af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i, lCanModif
 Local aTypes := { "Character","Numeric","Date","Logical" }
 Local fname, cAlias, nRec, nOrd, lOverFlow := .F., xValue
 Local bChgPos := {|o|
@@ -43,16 +43,13 @@ Local bChgPos := {|o|
          Aadd( af[i],i )
       NEXT
    ENDIF
+   lCanModif := ( !lNew .AND. aFiles[improc,AF_EXCLU] .AND. !aFiles[improc,AF_RDONLY] .AND. aFiles[improc,AF_LOCAL] )
 
-   INIT DIALOG oDlg TITLE "Modify structure" ;
-         AT 0,0                  ;
-         SIZE 460,330            ;
-         FONT oMainFont
+   INIT DIALOG oDlg TITLE Iif( lCanModif, "Modify", "View" ) + " structure" ;
+         AT 0,0  SIZE 460,330  FONT oMainFont
 
-   @ 20,20 BROWSE oBrowse ARRAY   ;
-       SIZE 308,190               ;
-       STYLE WS_BORDER+WS_VSCROLL ;
-       ON POSCHANGE bChgPos
+   @ 20,20 BROWSE oBrowse ARRAY SIZE 308,190 ;
+       STYLE WS_BORDER+WS_VSCROLL ON POSCHANGE bChgPos
 
    oBrowse:aArray := af
    oBrowse:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",4,0 ) )
@@ -66,8 +63,7 @@ Local bChgPos := {|o|
    @ 240,230 GET oGet3 VAR cLen SIZE 50,24
    @ 300,230 GET oGet4 VAR cDec SIZE 40,24
 
-   IF ( lNew .AND. nServerType == LOCAL_SERVER ) .OR. ;
-         ( !lNew .AND. aFiles[improc,AF_EXCLU] .AND. !aFiles[improc,AF_RDONLY] .AND. aFiles[improc,AF_LOCAL] )
+   IF ( lNew .AND. nServerType == LOCAL_SERVER ) .OR. lCanModif
 
       @ 28,270 BUTTON "Add" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,1)}
       @ 136,270 BUTTON "Insert" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,2)}
@@ -75,6 +71,8 @@ Local bChgPos := {|o|
       @ 356,270 BUTTON "Remove" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,4)}
 
       @ 344,40 BUTTON Iif( lNew, "Create", "Modify" ) SIZE 100, 40 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
+   ELSEIF !lCanModif
+      @ 28, 270 SAY "Open file in exclusive mode to modify it!" SIZE 360,24
    ENDIF
    @ 344,100 BUTTON "Close" SIZE 100, 40 ON CLICK {||hwg_EndDialog()}
 

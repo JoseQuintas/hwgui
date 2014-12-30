@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2014-12-30 11:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcontrol.prg
+    * HStatic():SetValue() changed a bit
+  * contrib/ext_controls/hctrlex.prg
+    * HStatusEx():SetText() added for compatibility with HStatus()
+
 2014-12-30 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/guimain.prg
     ! Fixed hwg_writestatus() to work with HStatusEx

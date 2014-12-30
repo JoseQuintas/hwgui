@@ -299,8 +299,7 @@ CLASS HStatic INHERIT HControl
    METHOD Redefine( oWndParent, nId, oFont, bInit, ;
                     bSize, bPaint, cTooltip, tcolor, bColor, lTransp )
    METHOD Activate()
-   METHOD SetValue( value ) INLINE hwg_Setdlgitemtext( ::oParent:handle, ::id, ;
-                                                   value )
+   METHOD SetValue( cValue )   INLINE ::SetText( cValue )
    METHOD Init()
    METHOD Paint( lpDis )
 ENDCLASS

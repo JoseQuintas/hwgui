@@ -1307,6 +1307,7 @@ CLASS VAR winclass   INIT "msctls_statusbar32"
    METHOD Notify( lParam )
    METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aParts )
+   METHOD SetText( cText,nPart ) INLINE  hwg_WriteStatus( ::oParent, nPart, cText )
    METHOD SetTextPanel( nPart, cText, lRedraw )
    METHOD GetTextPanel( nPart )
    METHOD SetIconPanel( nPart, cIcon, nWidth, nHeight )

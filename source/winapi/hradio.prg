@@ -88,7 +88,7 @@ CLASS HRadioButton INHERIT HControl
    DATA  oGroup
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
-      bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor )
+      bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, lTransp )
    METHOD Activate()
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, lInit, ctooltip, tcolor, bcolor )
    METHOD GetValue()          INLINE ( hwg_Sendmessage( ::handle,BM_GETCHECK,0,0 ) == 1 )
@@ -96,12 +96,15 @@ CLASS HRadioButton INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
-      bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor ) CLASS HRadioButton
+      bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, lTransp ) CLASS HRadioButton
 
    ::oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    ::id      := iif( nId == Nil, ::NewId(), nId )
    ::title   := cCaption
    ::oGroup  := HRadioGroup():oGroupCurrent
+   IF !Empty( lTransp )
+      ::extStyle := WS_EX_TRANSPARENT
+   ENDIF
    ::style   := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), BS_AUTORADIOBUTTON + ;
       WS_CHILD + WS_VISIBLE + WS_TABSTOP + ;
       iif( ::oGroup != Nil .AND. Empty( ::oGroup:aButtons ), WS_GROUP, 0 ) )

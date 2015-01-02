@@ -627,9 +627,10 @@
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [<lTransp: TRANSPARENT>]   ;
           => ;
     [<oRadio> := ] HRadioButton():New( <oWnd>,<nId>,<nStyle>,<x>,<y>, ;
-         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> );
+         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<.lTransp.> );
     [; hwg_SetCtrlName( <oRadio>,<(oRadio)> )]
 
 #xcommand REDEFINE RADIOBUTTON [ <oRadio> ] ;

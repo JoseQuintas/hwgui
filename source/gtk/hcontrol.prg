@@ -111,7 +111,7 @@ METHOD INIT CLASS HControl
          hwg_SetCtrlFont( ::handle,, ::oParent:oFont:handle )
       ENDIF
       hwg_Addtooltip( ::oParent:handle, ::handle, ::tooltip )
-      IF ISBLOCK( ::bInit )
+      IF HB_ISBLOCK( ::bInit )
          Eval( ::bInit, Self )
       ENDIF
       o := ::oParent

@@ -129,6 +129,9 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
    ELSEIF !Empty( lCentered )
       ::Center()
    ENDIF
+   IF HB_ISBLOCK( bActivate )
+      ::bActivate := bActivate
+   ENDIF
    IF ::bActivate != Nil
       Eval( ::bActivate, Self )
    ENDIF

@@ -32,7 +32,7 @@ Function hwg_onWndSize( oWnd,wParam,lParam )
       oWnd:nHeight := hwg_Hiword(lParam)
    ENDIF
 
-   IF ISBLOCK( oWnd:bSize )
+   IF HB_ISBLOCK( oWnd:bSize )
        Eval( oWnd:bSize, oWnd, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ENDIF
 
@@ -237,6 +237,9 @@ Local oWndClient, handle
    IF ::type == WND_MAIN
 
       ::lActivated := .T.
+      IF HB_ISBLOCK( bActivate )
+         ::bActivate := bActivate
+      ENDIF
       IF ::bActivate != Nil
          Eval( ::bActivate, Self )
       ENDIF

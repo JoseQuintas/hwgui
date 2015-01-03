@@ -251,12 +251,12 @@ FUNCTION hwg_onTrackScroll( oWnd, wParam, lParam )
    IF oCtrl != Nil
       msg := hwg_Loword ( wParam )
       IF msg == TB_ENDTRACK
-         IF ISBLOCK( oCtrl:bChange )
+         IF HB_ISBLOCK( oCtrl:bChange )
             Eval( oCtrl:bChange, oCtrl )
             RETURN 0
          ENDIF
       ELSEIF msg == TB_THUMBTRACK .OR. msg == TB_PAGEUP .OR. msg == TB_PAGEDOWN
-         IF ISBLOCK( oCtrl:bThumbDrag )
+         IF HB_ISBLOCK( oCtrl:bThumbDrag )
             Eval( oCtrl:bThumbDrag, oCtrl )
             RETURN 0
          ENDIF

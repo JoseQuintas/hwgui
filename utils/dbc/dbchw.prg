@@ -679,6 +679,10 @@ Local bFileBtn := {||
    oDlg:Activate()
 
    IF oDlg:lResult
+      IF Empty( cFile )
+         hwg_MsgStop( "File name is absent!" )
+         Return Nil
+      ENDIF
 #ifdef RDD_ADS
       AdsSetServerType( nServerType := Iif( lRemote, 6, ADS_LOCAL_SERVER ) )
       numdriv := r1

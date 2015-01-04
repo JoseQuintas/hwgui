@@ -34,11 +34,11 @@ ENDCLASS
 METHOD New( oParent, nId, value, bAction ) CLASS HTimer
 
    ::oParent := Iif( oParent == Nil, HWindow():GetMain(), oParent )
-   ::id := Iif( nId == Nil, TIMER_FIRST_ID + Len( ::oParent:aControls ), nId )
+   ::id := Iif( nId == Nil, TIMER_FIRST_ID + Len( ::aTimers ), nId )
    ::value   := value
    ::bAction := bAction
 
-   hwg_Settimer( oParent:handle, ::id, ::value )
+   hwg_Settimer( ::oParent:handle, ::id, ::value )
    AAdd( ::aTimers, Self )
 
    RETURN Self

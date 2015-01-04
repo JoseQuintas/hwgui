@@ -306,6 +306,8 @@ Return Nil
 Static Function MessagesProc( oWnd, msg, wParam, lParam )
 Local i, aItem, hWnd := oWnd:handle
 
+   wParam := hwg_PtrToUlong( wParam )
+   lParam := hwg_PtrToUlong( lParam )
    IF msg == WM_VSCROLL
       Vscroll( hWnd,hwg_Loword( wParam ),hwg_Hiword( wParam ) )
    ELSEIF msg == WM_MOUSEMOVE

@@ -1,0 +1,16 @@
+#
+# $Id: $
+#
+
+-n -w
+
+-ohwreport
+
+hwreport.prg
+opensave.prg
+propert.prg
+printrpt.prg
+repexec.prg
+repbuild.rc
+
+..\..\hwgui.hbc

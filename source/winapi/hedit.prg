@@ -618,7 +618,7 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
    RETURN cChar
 
 STATIC FUNCTION GetApplyKey( oEdit, cKey )
-   LOCAL nPos, nGetLen, nLen, vari, i, x, newPos
+   LOCAL nPos, nGetLen, nLen, vari, i, x, newPos, oParent
    LOCAL nDecimals, nTmp
 
    x := hwg_Sendmessage( oEdit:handle, EM_GETSEL, 0, 0 )
@@ -678,8 +678,11 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
          ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
          IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. nPos == Len( oEdit:cPicMask )
-            IF !hwg_GetSkip( oEdit:oParent, oEdit:handle, 1 )
-               onDlgCommand( oEdit:oParent, hwg_MakeWParam( IDOK, 0 ) )
+            IF !hwg_GetSkip( oParent := oEdit:oParent, oEdit:handle, 1 )
+               DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
+                  oParent := oParent:oParent
+               ENDDO
+               onDlgCommand( oParent, hwg_MakeWParam( IDOK, 0 ) )
             ENDIF
             Return 0
          ENDIF

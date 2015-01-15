@@ -3236,6 +3236,7 @@ METHOD EditLogical( wParam, lParam ) CLASS HBrowseEx
 
    HB_SYMBOL_UNUSED( lParam )
 
+   wParam := hwg_PtrToUlong( wParam )
    IF ! ::aColumns[ ::fipos ]:lEditable
       RETURN .F.
    ENDIF
@@ -3278,6 +3279,7 @@ METHOD EditEvent( oCtrl, msg, wParam, lParam )
 
    HB_SYMBOL_UNUSED( lParam )
 
+   wParam := hwg_PtrToUlong( wParam )
    IF ( msg = WM_KEYDOWN .AND. ( wParam = VK_RETURN  .OR. wParam = VK_TAB ) )
       RETURN - 1
    ELSEIF ( msg = WM_KEYDOWN .AND. wParam = VK_ESCAPE )

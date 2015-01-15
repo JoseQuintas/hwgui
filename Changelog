@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-01-15 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hbrowsex.prg
+    ! Bugs fixed in :EditLogical() and :EditEvent() methods
+      ( ptrtoulong() conversion was missed )
+
 2015-01-10 10:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
     ! Small fix

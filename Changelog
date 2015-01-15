@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-01-15 19:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hedit.prg
+    ! Problems fixed with cleaning of the numeric field
+
 2015-01-15 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/ext_controls/hbrowsex.prg
     ! Bugs fixed in :EditLogical() and :EditEvent() methods

@@ -631,6 +631,7 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
          ( nPos := At( ".",oEdit:cPicMask ) ) != 0
       IF oEdit:lFirst
          vari := 0
+         oEdit:lFirst := .F.
       ELSE
          vari := Val( LTrim( UnTransform( oEdit, hwg_Getedittext( oEdit:oParent:handle, oEdit:id ) ) ) )
       ENDIF
@@ -705,10 +706,9 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
             ENDIF
 
          ENDIF
-
+         oEdit:lFirst := .F.
       ENDIF
    ENDIF
-   oEdit:lFirst := .F.
 
    RETURN 0
 
@@ -932,6 +932,9 @@ FUNCTION hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )
       i := 0
    ENDIF
    IF hCtrl == Nil .OR. ( i := Ascan( oParent:Getlist,{ |o|o:handle == hCtrl } ) ) != 0
+      IF i > 0 .AND. __ObjHasMsg( oParent:Getlist[i], "LFIRST" )
+         oParent:Getlist[i]:lFirst := .T.
+      ENDIF
       IF nSkip > 0
          aLen := Len( oParent:Getlist )
          DO WHILE ( i := i + nSkip ) <= aLen

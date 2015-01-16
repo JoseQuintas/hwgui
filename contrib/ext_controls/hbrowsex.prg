@@ -3059,87 +3059,83 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
             bInit := iif( wParam == NIL .OR. wParam = 13 .OR. Empty( lParam ), { | o | hwg_Movewindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ) }, ;
                { | o | hwg_Movewindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ), ;
                o:aControls[ 1 ]:Setfocus(), hwg_Postmessage( o:aControls[ 1 ]:handle, WM_CHAR, wParam, lParam ) } )
-         ELSE
-            bInit := { || .F. }
-         ENDIF
-         IF Type <> "M"
-            INIT DIALOG ::oEditDlg ;
-               STYLE WS_POPUP + 1 + iif( oColumn:aList == NIL, WS_BORDER, 0 ) + DS_CONTROL ;
-               At x1, y1 - iif( oColumn:aList == NIL, 1, 0 ) ;
-               SIZE nWidth - 1, ::height + iif( oColumn:aList == NIL, 1, 0 ) ;
-               ON INIT bInit ;
-               ON OTHER MESSAGES { | o, m, w, l | ::EditEvent( o, m, w, l ) }
-         ELSE
-            INIT DIALOG ::oEditDlg title "memo edit" At 0, 0 SIZE 400, 300 ON INIT { | o | o:center() }
-         ENDIF
-         IF oColumn:aList != NIL  .AND. ( oColumn:bWhen = NIL .OR. Eval( oColumn:bWhen ) )
-            ::oEditDlg:brush := - 1
-            ::oEditDlg:nHeight := ::height + 1 // * 5
-            IF ValType( ::varbuf ) == 'N'
-               nChoic := ::varbuf
+            IF Type <> "M"
+               INIT DIALOG ::oEditDlg ;
+                  STYLE WS_POPUP + 1 + iif( oColumn:aList == NIL, WS_BORDER, 0 ) + DS_CONTROL ;
+                  At x1, y1 - iif( oColumn:aList == NIL, 1, 0 ) ;
+                  SIZE nWidth - 1, ::height + iif( oColumn:aList == NIL, 1, 0 ) ;
+                  ON INIT bInit ;
+                  ON OTHER MESSAGES { | o, m, w, l | ::EditEvent( o, m, w, l ) }
             ELSE
-               ::varbuf := AllTrim( ::varbuf )
-               nChoic := AScan( oColumn:aList, ::varbuf )
+               INIT DIALOG ::oEditDlg title "memo edit" At 0, 0 SIZE 400, 300 ON INIT { | o | o:center() }
             ENDIF
-            oComboFont := iif( ValType( ::oFont ) == "U", ;
-               HFont():Add( "MS Sans Serif", 0, - 8 ), ;
-               HFont():Add( ::oFont:name, ::oFont:width, ::oFont:height + 2 ) )
-            @ 0, 0 GET COMBOBOX oCombo VAR nChoic ;
-               ITEMS oColumn:aList            ;
-               SIZE nWidth, ::height + 1      ;
-               FONT oComboFont  ;
-               DISPLAYCOUNT  iif( Len( oColumn:aList ) > ::rowCount , ::rowCount - 1, Len( oColumn:aList ) ) ;
-               VALID { | oColumn, oGet | ::ValidColumn( oColumn, oGet ) };
-               WHEN { | oColumn, oGet | ::WhenColumn( oColumn, oGet ) }
-            ::oEditDlg:AddEvent( 0, IDOK, { || ::oEditDlg:lResult := .T. , ::oEditDlg:close() } )
-         ELSE
-            IF Type == "L"
-               ::oEditDlg:lResult := .T.
-            ELSEIF Type <> "M"
-               nHGet := Max( ( ::height - ( hwg_TxtRect( "N", self ) )[ 2 ] ) / 2 , 0 )
-               @ 0, nHGet GET oGet VAR ::varbuf       ;
-                  SIZE nWidth - iif( oColumn:bClick != NIL, 16, 1 ) , ::height   ;
-                  NOBORDER                       ;
-                  STYLE ES_AUTOHSCROLL           ;
-                  FONT ::oFont                   ;
-                  PICTURE iif( Empty( oColumn:picture ), NIL, oColumn:picture )   ;
-                  VALID { | oColumn, oGet | ::ValidColumn( oColumn, oGet, oBtn ) };
-                  WHEN { | oColumn, oGet | ::WhenColumn( oColumn, oGet, oBtn ) }
-               IF oColumn:bClick != NIL
-                  IF Type != "D"
-                     @ nWidth - 15, 0  OWNERBUTTON oBtn  SIZE 16, ::height - 0 ;
-                        TEXT '...'  FONT HFont():Add( 'MS Sans Serif', 0, - 10, 400, , , ) ;
-                        COORDINATES 0, 1, 0, 0      ;
-                        ON CLICK { | oColumn, oBtn | HB_SYMBOL_UNUSED( oColumn ), ::onClickColumn( .T. , oGet, oBtn ) }
-                     oBtn:themed :=  ::hTheme != NIL
-                  ELSE
-                     @ nWidth - 16, 0 DATEPICKER oBtn SIZE 16, ::height - 1  ;
-                        ON CHANGE { | value, oBtn |  ::onClickColumn( value, oGet, oBtn ) }
+            IF oColumn:aList != NIL  .AND. ( oColumn:bWhen = NIL .OR. Eval( oColumn:bWhen ) )
+               ::oEditDlg:brush := - 1
+               ::oEditDlg:nHeight := ::height + 1 // * 5
+               IF ValType( ::varbuf ) == 'N'
+                  nChoic := ::varbuf
+               ELSE
+                  ::varbuf := AllTrim( ::varbuf )
+                  nChoic := AScan( oColumn:aList, ::varbuf )
+               ENDIF
+               oComboFont := iif( ValType( ::oFont ) == "U", ;
+                  HFont():Add( "MS Sans Serif", 0, - 8 ), ;
+                  HFont():Add( ::oFont:name, ::oFont:width, ::oFont:height + 2 ) )
+               @ 0, 0 GET COMBOBOX oCombo VAR nChoic ;
+                  ITEMS oColumn:aList            ;
+                  SIZE nWidth, ::height + 1      ;
+                  FONT oComboFont  ;
+                  DISPLAYCOUNT  iif( Len( oColumn:aList ) > ::rowCount , ::rowCount - 1, Len( oColumn:aList ) ) ;
+                  VALID { | oColumn, oGet | ::ValidColumn( oColumn, oGet ) };
+                  WHEN { | oColumn, oGet | ::WhenColumn( oColumn, oGet ) }
+               ::oEditDlg:AddEvent( 0, IDOK, { || ::oEditDlg:lResult := .T. , ::oEditDlg:close() } )
+            ELSE
+               IF Type == "L"
+                  ::oEditDlg:lResult := .T.
+               ELSEIF Type <> "M"
+                  nHGet := Max( ( ::height - ( hwg_TxtRect( "N", self ) )[ 2 ] ) / 2 , 0 )
+                  @ 0, nHGet GET oGet VAR ::varbuf       ;
+                     SIZE nWidth - iif( oColumn:bClick != NIL, 16, 1 ) , ::height   ;
+                     NOBORDER                       ;
+                     STYLE ES_AUTOHSCROLL           ;
+                     FONT ::oFont                   ;
+                     PICTURE iif( Empty( oColumn:picture ), NIL, oColumn:picture )   ;
+                     VALID { | oColumn, oGet | ::ValidColumn( oColumn, oGet, oBtn ) };
+                     WHEN { | oColumn, oGet | ::WhenColumn( oColumn, oGet, oBtn ) }
+                  IF oColumn:bClick != NIL
+                     IF Type != "D"
+                        @ nWidth - 15, 0  OWNERBUTTON oBtn  SIZE 16, ::height - 0 ;
+                           TEXT '...'  FONT HFont():Add( 'MS Sans Serif', 0, - 10, 400, , , ) ;
+                           COORDINATES 0, 1, 0, 0      ;
+                           ON CLICK { | oColumn, oBtn | HB_SYMBOL_UNUSED( oColumn ), ::onClickColumn( .T. , oGet, oBtn ) }
+                        oBtn:themed :=  ::hTheme != NIL
+                     ELSE
+                        @ nWidth - 16, 0 DATEPICKER oBtn SIZE 16, ::height - 1  ;
+                           ON CHANGE { | value, oBtn |  ::onClickColumn( value, oGet, oBtn ) }
+                     ENDIF
                   ENDIF
+                  IF ! Empty( wParam )  .AND. wParam != 13 .AND. !Empty( lParam )
+                     hwg_Sendmessage( oGet:handle, WM_CHAR,  wParam, lParam  )
+                  ENDIF
+               ELSE
+                  oGet1 := ::varbuf
+                  @ 10, 10 GET oGet1 SIZE ::oEditDlg:nWidth - 20, 240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
+                  @ 010, 252 ownerbutton owb2 TEXT "Save" size 80, 24 ON Click { || ::varbuf := oGet1, ::oEditDlg:close(), ::oEditDlg:lResult := .T. }
+                  @ 100, 252 ownerbutton owb1 TEXT "Close" size 80, 24 ON CLICK { || ::oEditDlg:close() }
                ENDIF
-               IF ! Empty( wParam )  .AND. wParam != 13 .AND. !Empty( lParam )
-                  hwg_Sendmessage( oGet:handle, WM_CHAR,  wParam, lParam  )
-               ENDIF
-            ELSE
-               oGet1 := ::varbuf
-               @ 10, 10 GET oGet1 SIZE ::oEditDlg:nWidth - 20, 240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
-               @ 010, 252 ownerbutton owb2 TEXT "Save" size 80, 24 ON Click { || ::varbuf := oGet1, ::oEditDlg:close(), ::oEditDlg:lResult := .T. }
-               @ 100, 252 ownerbutton owb1 TEXT "Close" size 80, 24 ON CLICK { || ::oEditDlg:close() }
             ENDIF
-         ENDIF
-         IF Type != "L" .AND. ::nSetRefresh > 0
-            ::oTimer:Interval := 0
-         ENDIF
+            IF Type != "L" .AND. ::nSetRefresh > 0
+               ::oTimer:Interval := 0
+            ENDIF
 
-         ACTIVATE DIALOG ::oEditDlg
+            ACTIVATE DIALOG ::oEditDlg
 
-         IF Type = "L" .AND. wParam != VK_RETURN
+         ELSE // .AND. wParam != VK_RETURN
             Hwg_SetCursor( arrowCursor )
             IF wParam = VK_SPACE
-               ::oEditDlg:lResult := ::EditLogical( wParam )
-               ::oEditDlg := Nil
-               RETURN NIL
+               ::EditLogical( wParam )
             ENDIF
+            RETURN NIL
          ENDIF
 
          IF oColumn:aList != NIL

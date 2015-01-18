@@ -18,8 +18,11 @@ CLASS HRadioGroup INHERIT HObject
    DATA aButtons
    DATA value  INIT 1
    DATA bSetGet
+   DATA oHGroup
 
    METHOD New( vari,bSetGet )
+   METHOD NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeight, ;
+      cCaption, oFont, bInit, bSize, tcolor, bColor )
    METHOD EndGroup( nSelected )
    METHOD SetValue( nValue )
    METHOD Refresh()   INLINE Iif( ::bSetGet!=Nil,::SetValue(Eval(::bSetGet)),.T. )
@@ -37,6 +40,24 @@ METHOD New( vari,bSetGet ) CLASS HRadioGroup
    ENDIF
 
 Return Self
+
+METHOD NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeight, ;
+      cCaption, oFont, bInit, bSize, tcolor, bColor ) CLASS HRadioGroup
+
+   ::oGroupCurrent := Self
+   ::aButtons := {}
+
+   ::oHGroup := HGroup():New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
+         oFont, bInit, bSize, , tcolor, bColor )
+
+   IF vari != NIL
+      IF Valtype( vari ) == "N"
+         ::value := vari
+      ENDIF
+      ::bSetGet := bSetGet
+   ENDIF
+
+   RETURN Self
 
 METHOD EndGroup( nSelected )  CLASS HRadioGroup
 Local nLen

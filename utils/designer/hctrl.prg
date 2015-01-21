@@ -78,7 +78,8 @@ Private value, oCtrl := Self
             ENDIF
             IF ( bmp := oPaint:GetAttribute( "bmp" ) ) != Nil
                IF Isdigit( Left( bmp,1 ) )
-                  ::oBitmap := HBitmap():AddResource( Val(bmp) )
+                  //::oBitmap := HBitmap():AddResource( Val(bmp) )
+                  ::oBitmap := HBitmap():AddStandard( Val(bmp) )
                ELSEIF "." $ bmp
                   ::oBitmap := HBitmap():AddFile( bmp )
                ELSE

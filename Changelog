@@ -8,6 +8,48 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-01-21 14:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcheck.prg
+  * source/winapi/hcombo.prg
+  * source/winapi/hcontrol.prg
+  * source/winapi/hdatepic.prg
+  * source/winapi/hedit.prg
+  * source/winapi/hipedit.prg
+  * source/winapi/hmonthc.prg
+  * source/winapi/hprogres.prg
+  * source/winapi/hradio.prg
+  * source/winapi/htrackbr.prg
+  * source/winapi/hupdown.prg
+  * source/gtk/hcheck.prg
+  * source/gtk/hcombo.prg
+  * source/gtk/hcontrol.prg
+  * source/gtk/hedit.prg
+  * source/gtk/hmonthc.prg
+  * source/gtk/hradio.prg
+  * source/gtk/hupdown.prg
+    * :GetValue(), :SetValue() methods was removed and new
+      :Value SETGET method is introduced instead for those
+      controls, which may input from the user.
+      Now to get the value of editbox, for example, you need
+         x := oEdit:Value
+      To set it:
+         oEdit:Value := x
+
+  * samples/dbview.prg
+  * samples/testget2.prg
+  * samples/testhmonth.prg
+  * samples/testtree.prg
+  * samples/trackbar.prg
+  * samples/gtk_samples\dbview.prg
+  * samples/gtk_samples\testget2.prg
+  * samples/gtk_samples\testget2.xml
+  * utils/debugger\hwgdebug.prg
+  * utils/designer\editor.prg
+  * utils/designer\inspect.prg
+  * utils/designer\samples\testget2.xml
+  * utils/tutorial\tutor_eng.xml
+    * All occurences of :SetValue(), :GetValue() are changed to use the :Value 
+
 2015-01-18 12:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
   * source/winapi/hradio.prg

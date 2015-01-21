@@ -720,7 +720,7 @@ Local aStates := { { "Input",16711680,CLR_LGREEN }, { "Init",16777215,CLR_DBLUE 
    hwg_Enablemenuitem( ,MENU_BRP, (newmode==MODE_INPUT), .T. )
    hwg_Enablemenuitem( ,MENU_QUIT, (newmode==MODE_INPUT), .T. )
    hwg_Drawmenubar( HWindow():GetMain():handle )
-   oSayState:SetValue( aStates[ newMode,1 ] )
+   oSayState:SetText( aStates[ newMode,1 ] )
    oSayState:SetColor( aStates[ newMode,2 ], aStates[ newMode,3 ], .T. )
    IF newMode == MODE_INPUT
       oBtnExp:Enable()
@@ -1740,9 +1740,9 @@ Static FUNCTION InspectAreas()
 Local oBrw, oSayRdd
 Local bChgPos := {|o|
    IF Empty( o:aArray )
-      oSayRdd:SetValue( "No Workareas in use..." )
+      oSayRdd:SetText( "No Workareas in use..." )
    ELSE
-      oSayRdd:SetValue( o:aArray[o:nCurrent,1] + " rdd: " + o:aArray[o:nCurrent,3] + ;
+      oSayRdd:SetText( o:aArray[o:nCurrent,1] + " rdd: " + o:aArray[o:nCurrent,3] + ;
             "  area N: " + o:aArray[o:nCurrent,2] + Chr(13)+Chr(10) + ;
             "Filter: " + o:aArray[o:nCurrent,10] + Chr(13)+Chr(10) +  ;
             "Order: " + o:aArray[o:nCurrent,11] + ", " + o:aArray[o:nCurrent,12] )

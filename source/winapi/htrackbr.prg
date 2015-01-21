@@ -24,7 +24,7 @@ CLASS HTrackBar INHERIT HControl
 
    CLASS VAR winclass   INIT "msctls_trackbar32"
 
-   DATA value
+   DATA nValue
    DATA bChange
    DATA bThumbDrag
    DATA nLow
@@ -37,8 +37,7 @@ CLASS HTrackBar INHERIT HControl
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
-   METHOD SetValue( nValue )
-   METHOD GetValue()
+   METHOD Value( nValue ) SETGET
    METHOD GetNumTics()  INLINE hwg_Sendmessage( ::handle, TBM_GETNUMTICS, 0, 0 )
 
 ENDCLASS
@@ -60,7 +59,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,,;
               bInit, bSize, bPaint, cTooltip )
 
-   ::value      := IIF( Valtype(vari)=="N", vari, 0 )
+   ::nValue     := IIF( Valtype(vari)=="N", vari, 0 )
    ::bChange    := bChange
    ::bThumbDrag := bDrag
    ::nLow       := IIF( nLow==NIL, 0, nLow )
@@ -113,10 +112,11 @@ LOCAL aCoors
 RETURN -1
 
 METHOD Init() CLASS HTrackBar
+
    IF !::lInit
       ::Super:Init()
       hwg_trackbarsetrange( ::handle, ::nLow, ::nHigh )
-      hwg_Sendmessage( ::handle, TBM_SETPOS, 1, ::value )
+      hwg_Sendmessage( ::handle, TBM_SETPOS, 1, ::nValue )
 
       IF ::bPaint != NIL
          ::nHolder := 1
@@ -124,18 +124,22 @@ METHOD Init() CLASS HTrackBar
          Hwg_InitTrackProc( ::handle )
       ENDIF
    ENDIF
-RETURN NIL
 
-METHOD SetValue( nValue ) CLASS HTrackBar
-   IF Valtype( nValue ) == "N"
-      hwg_Sendmessage( ::handle, TBM_SETPOS, 1, nValue )
-      ::value := nValue
+   RETURN NIL
+
+METHOD Value( nValue ) CLASS HTrackBar
+
+   IF nValue != Nil
+      IF Valtype( nValue ) == "N"
+         hwg_Sendmessage( ::handle, TBM_SETPOS, 1, nValue )
+         ::nValue := nValue
+      ENDIF
+   ELSE
+      ::nValue := hwg_Sendmessage( ::handle, TBM_GETPOS, 0, 0 )
    ENDIF
-RETURN NIL
 
-METHOD GetValue() CLASS HTrackBar
-   ::value := hwg_Sendmessage( ::handle, TBM_GETPOS, 0, 0 )
-RETURN ( ::value )
+   RETURN ::nValue
+
 
 #pragma BEGINDUMP
 

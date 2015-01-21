@@ -16,7 +16,7 @@ CLASS HUpDown INHERIT HControl
 
    CLASS VAR winclass   INIT "EDIT"
    DATA bSetGet
-   DATA value
+   DATA nValue
    DATA hUpDown, idUpDown, styleUpDown
    DATA nLower INIT 0
    DATA nUpper INIT 999
@@ -27,8 +27,7 @@ CLASS HUpDown INHERIT HControl
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, tcolor, bcolor, nUpDWidth, nLower, nUpper )
    METHOD Activate()
    METHOD Init()
-   METHOD SetValue(n)  INLINE hwg_SetUpdown( ::hUpDown, n )
-   METHOD GetValue()   INLINE Val( LTrim( ::title := hwg_Getedittext( ::oParent:handle, ::id ) ) )
+   METHOD Value( nValue ) SETGET
    METHOD SetRange(n1,n2)  INLINE hwg_SetRangeUpdown( ::hUpDown, n1, n2 )
    METHOD Refresh()
 
@@ -96,14 +95,30 @@ METHOD Init()  CLASS HUpDown
 
    RETURN Nil
 
+METHOD Value( nValue ) CLASS HUpDown
+
+   IF nValue != Nil
+      IF Valtype( nValue ) == "N"
+         hwg_SetUpdown( ::hUpDown, nValue )
+         ::nValue := nValue
+         IF ::bSetGet != NIL
+            Eval( ::bSetGet, nValue, Self )
+         ENDIF
+      ENDIF
+   ELSE
+      ::nValue := Val( LTrim( ::title := hwg_Getedittext( ::oParent:handle, ::id ) ) )
+   ENDIF
+
+   RETURN ::nValue
+
 METHOD Refresh()  CLASS HUpDown
    LOCAL vari
 
    IF ::bSetGet != Nil
-      ::value := Eval( ::bSetGet )
-      IF Str( ::value ) != ::title
-         ::title := Str( ::value )
-         hwg_Setupdown( ::hUpDown, ::value )
+      ::nValue := Eval( ::bSetGet )
+      IF Str( ::nValue ) != ::title
+         ::title := Str( ::nValue )
+         hwg_Setupdown( ::hUpDown, ::nValue )
       ENDIF
    ELSE
       hwg_Setupdown( ::hUpDown, Val( ::title ) )
@@ -122,12 +137,12 @@ STATIC FUNCTION __When( oCtrl )
 
 STATIC FUNCTION __Valid( oCtrl )
 
-   oCtrl:value := oCtrl:GetValue()
+   oCtrl:nValue := oCtrl:Value
    IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet, oCtrl:value )
+      Eval( oCtrl:bSetGet, oCtrl:nValue )
    ENDIF
-   IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl ) .OR. ;
-         oCtrl:value > oCtrl:nUpper .OR. oCtrl:value < oCtrl:nLower
+   IF oCtrl:bLostFocus != Nil .AND. !Eval( oCtrl:bLostFocus, oCtrl:nValue, oCtrl ) .OR. ;
+         oCtrl:nValue > oCtrl:nUpper .OR. oCtrl:nValue < oCtrl:nLower
       hwg_Setfocus( oCtrl:handle )
    ENDIF
 

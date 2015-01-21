@@ -62,8 +62,8 @@ Function Dlg1
       FONT oFont ;
       TOOLTIP "MonthCalendar - NoToday - NoTodayCircle - WeekNumbers"
 
-   @ 300,20 BUTTON "Get Date" ON CLICK {||hwg_Msginfo(dtoc(oMC:GetValue()))} SIZE 100,40
-   @ 300,60 BUTTON "Set Date" ON CLICK {||oMC:SetValue(Date())} SIZE 100,40
+   @ 300,20 BUTTON "Get Date" ON CLICK {||hwg_Msginfo(dtoc(oMC:Value))} SIZE 100,40
+   @ 300,60 BUTTON "Set Date" ON CLICK {||oMC:Value := Date()} SIZE 100,40
 
    ACTIVATE DIALOG oDlg
 
@@ -87,8 +87,8 @@ Function Dlg2
       INIT Date() ;
       FONT oFont
 
-   @ 300,20 BUTTON "Get Date" ON CLICK {||hwg_Msginfo(dtoc(oMC:GetValue()))} SIZE 100,40
-   @ 300,60 BUTTON "Set Date" ON CLICK {||oMC:SetValue(Date())} SIZE 100,40
+   @ 300,20 BUTTON "Get Date" ON CLICK {||hwg_Msginfo(dtoc(oMC:Value))} SIZE 100,40
+   @ 300,60 BUTTON "Set Date" ON CLICK {||oMC:Value := Date()} SIZE 100,40
 
    ACTIVATE DIALOG oDlg
 

@@ -18,7 +18,7 @@
 
 CLASS HIPedit INHERIT HControl
 
-CLASS VAR winclass   INIT "SysIPAddress32"
+   CLASS VAR winclass   INIT "SysIPAddress32"
    DATA bSetGet
    DATA bChange
    DATA bKillFocus
@@ -28,9 +28,8 @@ CLASS VAR winclass   INIT "SysIPAddress32"
                oFont, bGetFocus, bKillFocus )
    METHOD Activate()
    METHOD Init()
-   METHOD SetValue( aValue )
-   METHOD GetValue(  )
-   METHOD Clear(  )
+   METHOD Value( aValue ) SETGET
+   METHOD Clear()
    METHOD END()
 
    HIDDEN:
@@ -80,21 +79,23 @@ METHOD Init() CLASS HIPedit
 
    IF ! ::lInit
       ::Super:Init()
-      ::SetValue( ::aValue )
+      hwg_Setipaddress( ::handle , ::aValue[ 1 ], ::aValue[ 2 ], ::aValue[ 3 ], ::aValue[ 4 ] )
       ::lInit := .t.
    ENDIF
 
    RETURN Nil
 
-METHOD SetValue( aValue ) CLASS HIPedit
-   hwg_Setipaddress( ::handle , aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
-   ::aValue := aValue
-   RETURN Nil
+METHOD Value( aValue ) CLASS HIPedit
 
+   IF aValue != Nil
+      hwg_Setipaddress( ::handle , aValue[ 1 ], aValue[ 2 ], aValue[ 3 ], aValue[ 4 ] )
+      ::aValue := aValue
+   ELSE
+      ::aValue := hwg_Getipaddress( ::handle )
+   ENDIF
 
-METHOD GetValue( ) CLASS HIPedit
-   ::aValue := hwg_Getipaddress( ::handle )
-   RETURN ( ::aValue )
+   RETURN ::aValue
+
 
 METHOD Clear( ) CLASS HIPedit
    hwg_Clearipaddress( ::handle )

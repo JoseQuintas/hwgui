@@ -26,7 +26,7 @@ CLASS HMonthCalendar INHERIT HControl
 
 CLASS VAR winclass   INIT "SysMonthCal32"
 
-   DATA value
+   DATA dValue
    DATA bChange
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -34,8 +34,7 @@ CLASS VAR winclass   INIT "SysMonthCal32"
                lWeekNumbers )
    METHOD Activate()
    METHOD Init()
-   METHOD SetValue( dValue )
-   METHOD GetValue()
+   METHOD Value ( dValue ) SETGET
 
 ENDCLASS
 
@@ -52,7 +51,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               ,, cTooltip )
 
-   ::value   := IIf( ValType( vari ) == "D" .And. ! Empty( vari ), vari, Date() )
+   ::dValue   := IIf( ValType( vari ) == "D" .And. ! Empty( vari ), vari, Date() )
 
    ::bChange := bChange
 
@@ -85,8 +84,8 @@ METHOD Init() CLASS HMonthCalendar
 
    IF ! ::lInit
       ::Super:Init()
-      IF ! Empty( ::value )
-         hwg_setmonthcalendardate( ::handle , ::value )
+      IF ! Empty( ::dValue )
+         hwg_setmonthcalendardate( ::handle , ::dValue )
       ENDIF
    ENDIF
 
@@ -94,22 +93,18 @@ METHOD Init() CLASS HMonthCalendar
 
 //--------------------------------------------------------------------------//
 
-METHOD SetValue( dValue ) CLASS HMonthCalendar
+METHOD Value( dValue ) CLASS HMonthCalendar
 
-   IF ValType( dValue ) == "D" .And. ! Empty( dValue )
-      hwg_setmonthcalendardate( ::handle, dValue )
-      ::value := dValue
+   IF dValue != Nil
+      IF ValType( dValue ) == "D" .And. ! Empty( dValue )
+         hwg_setmonthcalendardate( ::handle, dValue )
+         ::dValue := dValue
+      ENDIF
+   ELSE
+      ::dValue := hwg_getmonthcalendardate( ::handle )
    ENDIF
+   RETURN ::dValue
 
-   RETURN Nil
-
-//--------------------------------------------------------------------------//
-
-METHOD GetValue() CLASS HMonthCalendar
-
-   ::value := hwg_getmonthcalendardate( ::handle )
-
-   RETURN ( ::value )
 
 //--------------------------------------------------------------------------//
 

@@ -109,7 +109,7 @@ Return Nil
 
 Static Function TimerFunc()
 
-   oSayT:SetValue( Time() )
+   oSayT:SetText( Time() )
 Return Nil
 
 

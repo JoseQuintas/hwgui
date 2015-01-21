@@ -132,8 +132,8 @@ Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
       oBrw:aColumns[1] := HColumn():New( "*",{|v,o|Iif(Deleted(),'*',' ')},"C",1,0 )
       oBrw:active := .T.
       oBrw:Refresh()
-      oSay1:SetValue( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
-      oSay2:SetValue( "" )
+      oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
+      oSay2:SetText( "" )
       dbv_cLocate := dbv_cSeek := ""
       dbv_nRec := 0
       
@@ -330,8 +330,8 @@ Memvar oBrw, oSay1
       oBrw:bRecnoLog := &( "{||" + oBrw:alias + "->(ORDKEYNO())}" )
    ENDIF
    oBrw:Refresh()
-   oSay1:SetValue( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
-   oSay2:SetValue( "" )
+   oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
+   oSay2:SetText( "" )
 Return Nil
 
 Static Function DlgWait( cTitle )
@@ -565,11 +565,11 @@ Memvar oBrw, oSay2
          dbv_cSeek := cKey
          nRec := Eval( oBrw:bRecNo, oBrw )
          IF dbSeek( cKey )
-            oSay2:SetValue( "Found" )
+            oSay2:SetText( "Found" )
             oBrw:Refresh()
             Eval( oBrw:bScrollPos,oBrw,0 )
          ELSE
-            oSay2:SetValue( "Not Found" )
+            oSay2:SetText( "Not Found" )
             Eval( oBrw:bGoTo, oBrw, nRec )
          ENDIF
       ENDIF
@@ -609,11 +609,11 @@ Memvar oBrw, oSay2
    nRec := Eval( oBrw:bRecNo, oBrw )
    LOCATE FOR &cLocate
    IF Found()
-      oSay2:SetValue( "Found" )
+      oSay2:SetText( "Found" )
       oBrw:Refresh()
       Eval( oBrw:bScrollPos,oBrw,0 )
    ELSE
-      oSay2:SetValue( "Not Found" )
+      oSay2:SetText( "Not Found" )
       Eval( oBrw:bGoTo, oBrw, nRec )
    ENDIF
 
@@ -627,11 +627,11 @@ Memvar oBrw, oSay2
       nRec := Eval( oBrw:bRecNo, oBrw )
       CONTINUE
       IF Found()
-         oSay2:SetValue( "Found" )
+         oSay2:SetText( "Found" )
          oBrw:Refresh()
          Eval( oBrw:bScrollPos,oBrw,0 )
       ELSE
-         oSay2:SetValue( "Not Found" )
+         oSay2:SetText( "Not Found" )
          Eval( oBrw:bGoTo, oBrw, nRec )
       ENDIF
    ENDIF
@@ -672,8 +672,8 @@ Static Function dbv_AppRec()
    APPEND BLANK
    oBrw:Refresh()
    Eval( oBrw:bScrollPos,oBrw,0 )
-   oSay1:SetValue( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
-   oSay2:SetValue( "" )
+   oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
+   oSay2:SetText( "" )
 RETURN .T.
 
 Static Function dbv_Pack()
@@ -686,8 +686,8 @@ Memvar oBrw, oSay1, oSay2
       oMsg:Close()
       oBrw:Refresh()
       Eval( oBrw:bScrollPos,oBrw,0 )
-      oSay1:SetValue( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
-      oSay2:SetValue( "" )
+      oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
+      oSay2:SetText( "" )
    ENDIF
 Return Nil
 
@@ -701,8 +701,8 @@ Memvar oBrw, oSay1, oSay2
       oMsg:Close()
       oBrw:Refresh()
       Eval( oBrw:bScrollPos,oBrw,0 )
-      oSay1:SetValue( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
-      oSay2:SetValue( "" )
+      oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
+      oSay2:SetText( "" )
    ENDIF
 Return Nil
 

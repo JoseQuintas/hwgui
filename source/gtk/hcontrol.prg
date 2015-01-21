@@ -54,10 +54,6 @@ CLASS HControl INHERIT HCustomWindow
    METHOD IsEnabled()   INLINE hwg_Iswindowenabled( ::Handle )
    METHOD Setfocus() INLINE hwg_SetFocus( ::handle )
    METHOD Move( x1, y1, width, height )
-   /*
-   METHOD GetText()     INLINE hwg_Getwindowtext(::handle)
-   METHOD SetText( c )  INLINE hwg_Setwindowtext( ::Handle, c )
-   */
    METHOD onAnchor( x, y, w, h )
    METHOD End()
 
@@ -317,7 +313,6 @@ CLASS HStatic INHERIT HControl
       bSize, bPaint, ctoolt, tcolor, bcolor, lTransp )
    METHOD Activate()
    METHOD Init()
-   METHOD SetValue( value ) INLINE hwg_static_SetText( ::handle, value )
    METHOD SetText( value ) INLINE hwg_static_SetText( ::handle, value )
 
 ENDCLASS

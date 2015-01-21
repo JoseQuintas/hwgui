@@ -8,7 +8,7 @@
  * www - http://www.xharbour.org
 */
 
-//--------------------------------------------------------------------------//
+   //--------------------------------------------------------------------------//
 
 
 #include "hbclass.ch"
@@ -20,84 +20,77 @@
 #define MCS_NOTODAYCIRCLE        8
 #define MCS_NOTODAY             16
 
-//--------------------------------------------------------------------------//
+   //--------------------------------------------------------------------------//
 
 CLASS HMonthCalendar INHERIT HControl
 
    CLASS VAR winclass   INIT "SysMonthCal32"
 
-   DATA value
+   DATA dValue
    DATA bChange
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
-               lWeekNumbers )
+      oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
+      lWeekNumbers )
    METHOD Activate()
    METHOD Init()
-   METHOD SetValue( dValue )
-   METHOD GetValue()
+   METHOD Value( dValue ) SETGET
 
 ENDCLASS
 
-//--------------------------------------------------------------------------//
+   //--------------------------------------------------------------------------//
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
-            oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
-            lWeekNumbers ) CLASS HMonthCalendar
+      oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
+      lWeekNumbers ) CLASS HMonthCalendar
 
-   ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
-                  ,,ctooltip )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+      , , ctooltip )
 
-   ::value   := Iif( Valtype(vari)=="D" .And. !Empty(vari), vari, Date() )
+   ::dValue   := iif( ValType( vari ) == "D" .AND. !Empty( vari ), vari, Date() )
 
    ::bChange := bChange
 
    ::Activate()
-Return Self
 
-//--------------------------------------------------------------------------//
+   RETURN Self
+
+   //--------------------------------------------------------------------------//
 
 METHOD Activate CLASS HMonthCalendar
 
-   If !empty(::oParent:handle )
+   IF !Empty( ::oParent:handle )
       ::handle := hwg_Initmonthcalendar ( ::oParent:handle, , ;
-                  ::nLeft, ::nTop, ::nWidth, ::nHeight )
-      hwg_Setwindowobject( ::handle,Self )		  
-//      MonthCalendarChange(::handle,{||
-        hwg_Monthcalendar_setaction(::handle,{||::value:=hwg_Getmonthcalendardate( ::handle )})
+         ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      hwg_Setwindowobject( ::handle, Self )  
+      hwg_Monthcalendar_setaction( ::handle, { ||::dValue := hwg_Getmonthcalendardate( ::handle ) } )
       ::Init()
-   EndIf
+   ENDIF
 
-Return Nil
+   RETURN Nil
 
-//--------------------------------------------------------------------------//
+   //--------------------------------------------------------------------------//
 
 METHOD Init() CLASS HMonthCalendar
 
-   If !::lInit
+   IF !::lInit
       ::Super:Init()
-      If !Empty( ::value )
-         hwg_Setmonthcalendardate( ::handle , ::value )
-      EndIf
-   EndIf
+      IF !Empty( ::dValue )
+         hwg_Setmonthcalendardate( ::handle , ::dValue )
+      ENDIF
+   ENDIF
 
-Return Nil
+   RETURN Nil
 
-//--------------------------------------------------------------------------//
+   //--------------------------------------------------------------------------//
 
-METHOD SetValue( dValue ) CLASS HMonthCalendar
+METHOD Value( dValue ) CLASS HMonthCalendar
 
-   If Valtype(dValue)=="D" .And. !Empty(dValue)
-      hwg_Setmonthcalendardate( ::handle, dValue )
-      ::value := dValue
-   EndIf
+   IF dValue != Nil
+      IF ValType( dValue ) == "D" .AND. !Empty( dValue )
+         hwg_Setmonthcalendardate( ::handle, dValue )
+         ::dValue := dValue
+      ENDIF
+   ENDIF
 
-Return Nil
-
-//--------------------------------------------------------------------------//
-
-METHOD GetValue() CLASS HMonthCalendar
-
-//   ::value := 
-
-Return (::value)
+   Return ::dValue

@@ -17,7 +17,7 @@ hwg_SetDlgKey(,4,0x72, Codeblock( 'MsgInfo("Shift-F3")' ) )
 ]]>
   </method>
   <method name="onDlgInit">
-    <![CDATA[oTimer := HTimer():New(oDlg,,1000,{||oSayT:SetValue(Time() )} )]]>
+    <![CDATA[oTimer := HTimer():New(oDlg,,1000,{||oSayT:SetText(Time() )} )]]>
   </method>
   <method name="onDlgExit">
     <![CDATA[oTimer:End()

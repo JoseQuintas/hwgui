@@ -34,8 +34,8 @@ Function Main ()
       INIT 5 AUTOTICKS ;
       ON CHANGE {||UpdateSay()}
 
-   @ 300,200 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB:GetValue()))} SIZE 100,40
-   @ 300,300 BUTTON "Set Value" ON CLICK {||oTB:SetValue(5),UpdateSay()} SIZE 100,40
+   @ 300,200 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB:Value))} SIZE 100,40
+   @ 300,300 BUTTON "Set Value" ON CLICK {||oTB:Value := 5,UpdateSay()} SIZE 100,40
 
    @ 100,100 SAY oSay CAPTION "5" SIZE 40,40
 
@@ -47,7 +47,7 @@ Function Main ()
 
 Function UpdateSay ()
 
-   oSay:SetValue( str( oTB:GetValue() ) )
+   oSay:SetText( str( oTB:Value ) )
 
    Return Nil
 
@@ -65,8 +65,8 @@ Function Dlg1 ()
       ON INIT {||hwg_Msginfo("On Init","TrackBar")} ;
       ON CHANGE {||UpdateSayDlg1()} AUTOTICKS TOOLTIP "trackbar control"
 
-   @ 300,100 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB1:GetValue()))} SIZE 100,40
-   @ 300,200 BUTTON "Set Value" ON CLICK {||oTB1:SetValue(25),UpdateSayDlg1()} SIZE 100,40
+   @ 300,100 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB1:Value))} SIZE 100,40
+   @ 300,200 BUTTON "Set Value" ON CLICK {||oTB1:Value := 25,UpdateSayDlg1()} SIZE 100,40
 
    @ 100,100 SAY oSayDlg1 CAPTION "25" SIZE 40,40
 
@@ -78,7 +78,7 @@ Function Dlg1 ()
 
 Function UpdateSayDlg1 ()
 
-   oSayDlg1:SetValue( str( oTB1:GetValue() ) )
+   oSayDlg1:SetText( str( oTB1:Value ) )
 
    Return Nil
 
@@ -97,8 +97,8 @@ Function Dlg2 ()
       VERTICAL AUTOTICKS TOOLTIP "trackbar control" ;
       ON CHANGE {||UpdateSayDlg2()}
 
-   @ 300,060 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB2:GetValue()))} SIZE 100,40
-   @ 300,100 BUTTON "Set Value" ON CLICK {||oTB2:SetValue(50),UpdateSayDlg2()} SIZE 100,40
+   @ 300,060 BUTTON "Get Value" ON CLICK {||hwg_Msginfo(str(oTB2:Value))} SIZE 100,40
+   @ 300,100 BUTTON "Set Value" ON CLICK {||oTB2:Value := 50,UpdateSayDlg2()} SIZE 100,40
 
    @ 200,100 SAY oSayDlg2 CAPTION "50" SIZE 40,40
 
@@ -110,7 +110,7 @@ Function Dlg2 ()
 
 Function UpdateSayDlg2 ()
 
-   oSayDlg2:SetValue( str( oTB2:GetValue() ) )
+   oSayDlg2:SetText( str( oTB2:Value ) )
 
    Return Nil
 

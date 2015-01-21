@@ -16,7 +16,7 @@ CLASS HCheckButton INHERIT HControl
 
    CLASS VAR winclass   INIT "BUTTON"
    DATA bSetGet
-   DATA value
+   DATA lValue
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
       bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor, bGFocus )
@@ -24,8 +24,7 @@ CLASS HCheckButton INHERIT HControl
    METHOD Init()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Refresh()
-   METHOD SetValue( lValue )  INLINE hwg_CheckButton( ::handle, lValue )
-   METHOD GetValue()  INLINE ::value := hwg_IsButtonChecked( ::handle )
+   METHOD Value( lValue ) SETGET
 
 ENDCLASS
 
@@ -37,7 +36,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       bSize, bPaint, ctoolt, tcolor, bcolor )
 
    ::title   := cCaption
-   ::value   := iif( vari == Nil .OR. ValType( vari ) != "L", .F. , vari )
+   ::lValue   := iif( vari == Nil .OR. ValType( vari ) != "L", .F. , vari )
    ::bSetGet := bSetGet
 
    ::Activate()
@@ -67,7 +66,7 @@ METHOD Init() CLASS HCheckButton
 
    IF !::lInit
       ::Super:Init()
-      IF ::value
+      IF ::lValue
          hwg_CheckButton( ::handle, .T. )
       ENDIF
    ENDIF
@@ -89,23 +88,39 @@ METHOD Refresh() CLASS HCheckButton
 
    IF ::bSetGet != Nil
       var := Eval( ::bSetGet, , nil )
-      ::value := iif( var == Nil, .F. , var )
+      ::lValue := iif( var == Nil, .F. , var )
    ENDIF
 
-   hwg_CheckButton( ::handle, ::value )
+   hwg_CheckButton( ::handle, ::lValue )
 
    RETURN Nil
+
+METHOD Value( lValue ) CLASS HCheckButton
+
+   IF lValue != Nil
+      IF ValType( lValue ) != "L"
+         lValue := .F.
+      ENDIF
+      hwg_CheckButton( ::handle, lValue )
+      IF ::bSetGet != NIL
+         Eval( ::bSetGet, lValue, Self )
+      ENDIF
+      RETURN ( ::lValue := lValue )
+   ENDIF
+
+   RETURN ( ::lValue := hwg_IsButtonChecked( ::handle ) )
+
 
 STATIC FUNCTION __Valid( oCtrl )
    LOCAL res
 
-   oCtrl:value := hwg_IsButtonChecked( oCtrl:handle )
+   oCtrl:lValue := hwg_IsButtonChecked( oCtrl:handle )
 
    IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet, oCtrl:value, oCtrl )
+      Eval( oCtrl:bSetGet, oCtrl:lValue, oCtrl )
    ENDIF
    IF oCtrl:bLostFocus != Nil .AND. ;
-         ValType( res := Eval( oCtrl:bLostFocus, oCtrl:value, oCtrl ) ) == "L" ;
+         ValType( res := Eval( oCtrl:bLostFocus, oCtrl:lValue, oCtrl ) ) == "L" ;
          .AND. !res
       hwg_Setfocus( oCtrl:handle )
    ENDIF

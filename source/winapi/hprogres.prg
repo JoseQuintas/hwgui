@@ -144,7 +144,7 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
 METHOD SetLabel( cCaption ) CLASS HProgressBar
 
    IF cCaption != Nil .AND. ::lNewBox
-      ::LabelBox:SetValue( cCaption )
+      ::LabelBox:SetText( cCaption )
    ENDIF
 
    RETURN Nil

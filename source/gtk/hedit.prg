@@ -40,8 +40,7 @@ CLASS HEdit INHERIT HControl
    METHOD Init()
    METHOD SetGet(value) INLINE Eval( ::bSetGet,value,self )
    METHOD Refresh() 
-   METHOD SetText(c)
-   METHOD GetText() INLINE hwg_Edit_GetText( ::handle )
+   METHOD Value ( xValue ) SETGET
 
 ENDCLASS
 
@@ -259,25 +258,32 @@ Local vari
 
 Return Nil
 
-METHOD SetText( c ) CLASS HEdit
+METHOD Value( xValue ) CLASS HEdit
 
-  IF c != Nil
-     if valtype(c)="O"
-        //in run time return object
-        return nil
-     endif
-     IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
-        ::title := Transform( c, ::cPicFunc + Iif(Empty(::cPicFunc),""," ") + ::cPicMask )
-     ELSE
-        ::title := c
-     ENDIF
-     hwg_Edit_SetText( ::handle,::title )
-     IF ::bSetGet != Nil
-       Eval( ::bSetGet, c, self )
-     ENDIF
-  ENDIF
+   LOCAL vari
 
-RETURN NIL
+   IF xValue != Nil
+      IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
+         ::title := Transform( xValue, ::cPicFunc + iif( Empty(::cPicFunc ),""," " ) + ::cPicMask )
+      ELSE
+         ::title := xValue
+      ENDIF
+      hwg_Edit_SetText( ::handle,::title )
+      IF ::bSetGet != Nil
+         Eval( ::bSetGet, xValue, Self )
+      ENDIF
+      RETURN xValue
+   ENDIF
+
+   vari := iif( Empty( ::handle ), ::title, UnTransform( Self,hwg_Edit_GetText( ::handle ) ) )
+   IF ::cType == "D"
+      vari := CToD( vari )
+   ELSEIF ::cType == "N"
+      vari := Val( LTrim( vari ) )
+   ENDIF
+
+   RETURN vari
+
 
 Static Function ParsePict( oEdit,cPicture,vari )
 Local nAt, i, masklen, cChar

@@ -253,11 +253,11 @@ Function Test
    Local nChoic := 1, aCombo := { "First","Second" }, cr := Chr(13)+Chr(10)
    // Retrieve data from controls while closing the dialog box
    Local bExit := {|| hwg_MsgInfo( oEdit1:Gettext() + cr + ;
-      "Check1: " + Iif( oCheck1:GetValue(),"On","Off" ) + ;
-      "  Check2: " + Iif( oCheck2:GetValue(),"On","Off" ) + cr + ;
+      "Check1: " + Iif( oCheck1:Value,"On","Off" ) + ;
+      "  Check2: " + Iif( oCheck2:Value,"On","Off" ) + cr + ;
       "Radio: "  + Str(nChoic,1) + cr + ;
-      "Combo: " + aCombo[oCombo:GetValue()] + cr + ;
-      "UpDown: " + Ltrim(Str(oUpd:GetValue())) ;
+      "Combo: " + aCombo[oCombo:Value] + cr + ;
+      "UpDown: " + Ltrim(Str(oUpd:Value)) ;
       , "Edit value" ), oDlg:Close() }
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
@@ -388,7 +388,7 @@ Local oDlg, oCombo1, oCombo2
 Local aCombo1 := { "First","Second" }, aCombo2 := { "White","Black" }, ;
       aCombo3 := { "Yellow","Green" }
 Local bCombo1 := {||
-   IF oCombo1:GetValue() == 1
+   IF oCombo1:Value == 1
       oCombo2:aItems := aCombo2
    ELSE
       oCombo2:aItems := aCombo3
@@ -455,11 +455,11 @@ Return Nil
 Static Function BuildTree( oTree, oSay )
 Local oItem 
 
-   INSERT NODE "First" TO oTree ON CLICK {||oSay:SetValue("First")}
-   INSERT NODE "Second" TO oTree ON CLICK {||oSay:SetValue("Second")}
-   INSERT NODE oItem CAPTION "Third" TO oTree ON CLICK {||oSay:SetValue("Third")}
-   INSERT NODE "Third-1" TO oItem ON CLICK {||oSay:SetValue("Third-1")}
-   INSERT NODE "Forth" TO oTree ON CLICK {||oSay:SetValue("Forth")}
+   INSERT NODE "First" TO oTree ON CLICK {||oSay:SetText("First")}
+   INSERT NODE "Second" TO oTree ON CLICK {||oSay:SetText("Second")}
+   INSERT NODE oItem CAPTION "Third" TO oTree ON CLICK {||oSay:SetText("Third")}
+   INSERT NODE "Third-1" TO oItem ON CLICK {||oSay:SetText("Third-1")}
+   INSERT NODE "Forth" TO oTree ON CLICK {||oSay:SetText("Forth")}
 Return Nil
       ]]>
     </module>

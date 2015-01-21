@@ -73,9 +73,9 @@ Local aText := { ;
                }
 
    IF n == 0
-      oSay:SetValue("")
+      oSay:SetText("")
    ELSE
-      oSay:SetValue(aText[n])
+      oSay:SetText(aText[n])
    ENDIF
 
 Return Nil

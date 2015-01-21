@@ -291,8 +291,8 @@ Private nScheme, nType := 2, oTheme := HDTheme():New(), cScheme := ""
    @ 180,152 SAY "Background" SIZE 100,24
    @ 280,150 SAY oSayB CAPTION "" SIZE 24,24
    @ 305,152 BUTTON oBtn2 CAPTION "..." SIZE 20,20 ON CLICK {||Iif((temp:=Hwg_ChooseColor(aSchemes[nScheme,nType][2],.F.))!=Nil,(aSchemes[nScheme,nType][2]:=temp,UpdSample()),.F.)}
-   @ 350,125 CHECKBOX oCheckB CAPTION "Bold" SIZE 60,24 ON CLICK {||aSchemes[nScheme,nType][3]:=oCheckB:GetValue(),UpdSample(),.t.}
-   @ 350,150 CHECKBOX oCheckI CAPTION "Italic" SIZE 60,24 ON CLICK {||aSchemes[nScheme,nType][4]:=oCheckI:GetValue(),UpdSample(),.t.}
+   @ 350,125 CHECKBOX oCheckB CAPTION "Bold" SIZE 60,24 ON CLICK {||aSchemes[nScheme,nType][3]:=oCheckB:Value,UpdSample(),.t.}
+   @ 350,150 CHECKBOX oCheckI CAPTION "Italic" SIZE 60,24 ON CLICK {||aSchemes[nScheme,nType][4]:=oCheckI:Value,UpdSample(),.t.}
 
    oEditC := HCEdit():New( ,,, 170, 190, 250, 100 )
    oEditC:HighLighter( HDTheme():oHili )
@@ -368,8 +368,8 @@ Memvar nScheme, nType, oTheme, cScheme
    ENDIF
    oSayT:SetColor( ,aSchemes[nScheme,nType][1],.T. )
    oSayB:SetColor( ,aSchemes[nScheme,nType][2],.T. )
-   oCheckB:SetValue( aSchemes[nScheme,nType][3] )
-   oCheckI:SetValue( aSchemes[nScheme,nType][4] )
+   oCheckB:Value := aSchemes[nScheme,nType][3]
+   oCheckI:Value := aSchemes[nScheme,nType][4]
 
    oTheme:normal  := aSchemes[nScheme,2]
    oTheme:command := aSchemes[nScheme,3]

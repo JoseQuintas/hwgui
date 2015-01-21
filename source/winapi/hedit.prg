@@ -43,7 +43,7 @@ CLASS HEdit INHERIT HControl
       bLfocus, ctooltip, tcolor, bcolor, cPicture, lMaxLength )
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, self )
    METHOD Refresh()
-   METHOD SetText( c )
+   METHOD Value ( xValue ) SETGET
 
 ENDCLASS
 
@@ -357,25 +357,32 @@ METHOD Refresh()  CLASS HEdit
 
    RETURN Nil
 
-METHOD SetText( c ) CLASS HEdit
+METHOD Value( xValue ) CLASS HEdit
 
-   IF c != Nil
-      IF ValType( c ) = "O"
-         //in run time return object
-         RETURN nil
-      ENDIF
+   LOCAL vari
+
+   IF xValue != Nil
       IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
-         ::title := Transform( c, ::cPicFunc + iif( Empty(::cPicFunc ),""," " ) + ::cPicMask )
+         ::title := Transform( xValue, ::cPicFunc + iif( Empty(::cPicFunc ),""," " ) + ::cPicMask )
       ELSE
-         ::title := c
+         ::title := xValue
       ENDIF
-      ::Super:SetText( ::title )
+      hwg_Setwindowtext( ::handle, ::title  )
       IF ::bSetGet != Nil
-         Eval( ::bSetGet, c, self )
+         Eval( ::bSetGet, xValue, Self )
       ENDIF
+      RETURN xValue
    ENDIF
 
-   RETURN NIL
+   vari := iif( Empty( ::handle ), ::title, UnTransform( Self,hwg_Getedittext( ::oParent:handle, ::id ) ) )
+   IF ::cType == "D"
+      vari := CToD( vari )
+   ELSEIF ::cType == "N"
+      vari := Val( LTrim( vari ) )
+   ENDIF
+
+   RETURN vari
+
 
 FUNCTION hwg_IsCtrlShift( lCtrl, lShift )
    LOCAL cKeyb := hwg_Getkeyboardstate()

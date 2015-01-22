@@ -1010,7 +1010,7 @@ STATIC FUNCTION ResizeBrwQ( oBrw, nWidth, nHeight )
 
 STATIC FUNCTION Fiopen( fname, alsname, pass )
 
-   LOCAL i, oldimp := improc, res := .T.
+   LOCAL i, oldimp := improc, newimp, res := .T.
    LOCAL strerr := "Can't open file " + Iif( Empty(fname), alsname, fname )
    LOCAL bOldError, oError
 
@@ -1026,32 +1026,30 @@ STATIC FUNCTION Fiopen( fname, alsname, pass )
          hwg_Msgstop( "Too many opened files!" )
          RETURN .F.
       ENDIF
-      SELECT( improc )
+      newimp := improc
 
       alsname := Iif( Empty(alsname), CutExten( CutPath( fname ) ), alsname )
 
       bOldError := ErrorBlock( { | e | break( e ) } )
       DO WHILE .T.
          BEGIN SEQUENCE
+            SELECT( improc )
             dbUseArea( ,, fname, alsname,, lRdonly, cDataCpage )
          RECOVER USING oError
             IF oError:genCode == EG_BADALIAS .OR. oError:genCode == EG_DUPALIAS
                IF Empty( alsname := hwg_MsgGet( "","Bad alias name, input other:" ) )
                   res := .F.
                ELSE
+                  improc := newimp
                   LOOP
                ENDIF
             ELSE
-               Eval( bOldError, oError )
+               res := .F.
             ENDIF
          END SEQUENCE
          EXIT
       ENDDO
       ErrorBlock( bOldError )
-      IF !res
-         improc := oldimp
-         RETURN .F.
-      ENDIF
       IF NetErr()
          IF SET( _SET_EXCLUSIVE )
             SET( _SET_EXCLUSIVE, .F. )
@@ -1062,10 +1060,14 @@ STATIC FUNCTION Fiopen( fname, alsname, pass )
                RETURN .F.
             ENDIF
          ELSE
-            hwg_Msgstop( strerr )
             improc := oldimp
+            hwg_Msgstop( strerr )
             RETURN .F.
          ENDIF
+      ELSEIF !res
+         improc := oldimp
+         hwg_Msgstop( strerr )
+         RETURN .F.
       ENDIF
    ENDIF
 #ifdef RDD_ADS

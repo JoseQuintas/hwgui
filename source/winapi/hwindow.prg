@@ -261,7 +261,7 @@ CLASS HMainWindow INHERIT HWindow
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor, nExclude )
-   METHOD Activate( lShow, lMaximized, lMinimized, bActivate )
+   METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
    METHOD GetMdiActive()  INLINE ::FindWindow( hwg_Sendmessptr( ::GetMain():handle, WM_MDIGETACTIVE,0,0 ) )
@@ -383,12 +383,12 @@ CLASS HMDIChildWindow INHERIT HWindow
       } ;
       }
 
-   METHOD Activate( lShow, lMaximized, lMinimized, bActivate )
+   METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
 
 ENDCLASS
 
-METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMDIChildWindow
+METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMDIChildWindow
 
    hwg_CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
@@ -403,6 +403,10 @@ METHOD Activate( lShow, lMaximized, lMinimized, bActivate ) CLASS HMDIChildWindo
    hwg_InitControls( Self )
    IF ::bInit != Nil
       Eval( ::bInit, Self )
+   ENDIF
+
+   IF !Empty( lCentered )
+      ::Center()
    ENDIF
 
    RETURN Nil

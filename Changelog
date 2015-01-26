@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-01-26 09:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcontrol.prg
+  * source/gtk/hcontrol.prg
+    * :Enabled() SETGET method is introduced, :isEnabled() has been removed.
+  * contrib/ext_controls/hctrlex.prg
+  * contrib/ext_controls/hbrowsex.prg
+    * :isEnabled() calls are replaced by :Enabled
+    * Checking of a bitmap is added ( provided by Itamar M. Lins Jr. )
+
 2015-01-23 09:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hwindow.prg
     ! lCentered parameter has been added to HMDIChildWindow:Activate() -

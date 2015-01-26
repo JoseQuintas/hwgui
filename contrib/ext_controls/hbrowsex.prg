@@ -606,7 +606,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowseEx
          ::isMouseOver := .F.
          wParam := hwg_PtrToUlong( wParam )
          IF wParam = VK_ESCAPE   .AND. ;          // DIALOG MODAL
-               ( oParent := hwg_GetParentForm( Self ):FindControl( IDCANCEL ) ) != NIL .AND. ! oParent:IsEnabled()
+               ( oParent := hwg_GetParentForm( Self ):FindControl( IDCANCEL ) ) != NIL .AND. ! oParent:Enabled
             RETURN DLGC_WANTMESSAGE
          ELSEIF ( wParam = VK_ESCAPE .AND. hwg_GetParentForm( Self ):handle != ::oParent:Handle .AND. ::lEsc ) .OR. ; //! ::lAutoEdit
             ( wParam = VK_RETURN .AND. hwg_GetParentForm( Self ):FindControl( IDOK ) != NIL )
@@ -1247,8 +1247,10 @@ METHOD Rebuild() CLASS HBrowseEx
             ::minHeight := ::forceHeight
          ELSE
             FOR j := 1 TO Len( oColumn:aBitmaps )
-               xSize := Max( xSize, oColumn:aBitmaps[ j, 2 ]:nWidth + 2 )
-               ::minHeight := Max( ::minHeight, ::aMargin[ 1 ] + oColumn:aBitmaps[ j, 2 ]:nHeight + ::aMargin[ 3 ] )
+               IF hb_IsObject( oColumn:aBitmaps[j,2] )
+                  xSize := Max( xSize, oColumn:aBitmaps[ j, 2 ]:nWidth + 2 )
+                  ::minHeight := Max( ::minHeight, ::aMargin[ 1 ] + oColumn:aBitmaps[ j, 2 ]:nHeight + ::aMargin[ 3 ] )
+               ENDIF
             NEXT
          ENDIF
       ELSE
@@ -2172,14 +2174,16 @@ METHOD LineOut( nRow, nCol, hDC, lSelected, lClear ) CLASS HBrowseEx
                      FOR j := 1 TO Len( ::aColumns[ ::nPaintCol ]:aBitmaps )
                         IF Eval( ::aColumns[ ::nPaintCol ]:aBitmaps[ j, 1 ], Eval( ::aColumns[ ::nPaintCol ]:block,, Self, ::nPaintCol ), lSelected )
                            ob := ::aColumns[ ::nPaintCol ]:aBitmaps[ j, 2 ]
-                           IF ob:nHeight > ::height
-                              y1 := 0
-                              bh := ::height
-                              bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
-                              hwg_Drawbitmap( hDC, ob:handle, , x + ( Int( ::aColumns[ ::nPaintCol ]:width - ob:nWidth ) / 2 ), y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1, bw, bh )
-                           ELSE
-                              y1 := Int( ( ::height - ob:nHeight ) / 2 )
-                              hwg_Drawtransparentbitmap( hDC, ob:handle, x + ( Int( ::aColumns[ ::nPaintCol ]:width - ob:nWidth ) / 2 ), y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 )
+                           IF hb_isObject( ob )
+                              IF ob:nHeight > ::height
+                                 y1 := 0
+                                 bh := ::height
+                                 bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
+                                 hwg_Drawbitmap( hDC, ob:handle, , x + ( Int( ::aColumns[ ::nPaintCol ]:width - ob:nWidth ) / 2 ), y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1, bw, bh )
+                              ELSE
+                                 y1 := Int( ( ::height - ob:nHeight ) / 2 )
+                                 hwg_Drawtransparentbitmap( hDC, ob:handle, x + ( Int( ::aColumns[ ::nPaintCol ]:width - ob:nWidth ) / 2 ), y1 + ::y1 + ( ::height + 1 ) * ( ::nPaintRow - 1 ) + 1 )
+                              ENDIF
                            ENDIF
                            EXIT
                         ENDIF

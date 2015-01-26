@@ -49,9 +49,10 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Init()
    METHOD NewId()
 
-   METHOD Disable() INLINE hwg_Enablewindow( ::handle, .F. )
-   METHOD Enable() INLINE hwg_Enablewindow( ::handle, .T. )
-   METHOD IsEnabled()   INLINE hwg_Iswindowenabled( ::Handle )
+   METHOD Disable()
+   METHOD Enable()
+   METHOD Enabled( lEnabled )
+
    METHOD Setfocus() INLINE hwg_SetFocus( ::handle )
    METHOD Move( x1, y1, width, height )
    METHOD onAnchor( x, y, w, h )
@@ -123,6 +124,30 @@ METHOD INIT CLASS HControl
    ENDIF
 
    RETURN Nil
+
+METHOD Disable() CLASS HControl
+
+   hwg_Enablewindow( ::handle, .F. )
+RETURN NIL
+
+METHOD Enable() CLASS HControl
+
+   hwg_Enablewindow( ::handle, .T. )
+RETURN NIL
+
+METHOD Enabled( lEnabled ) CLASS HControl
+
+   IF lEnabled != Nil
+      IF lEnabled
+         hwg_Enablewindow( ::handle, .T. )
+         RETURN .T.
+      ELSE
+         hwg_Enablewindow( ::handle, .F. )
+         RETURN .F.
+      ENDIF
+   ENDIF
+
+   RETURN hwg_Iswindowenabled( ::handle )
 
 METHOD Move( x1, y1, width, height, lMoveParent )  CLASS HControl
    LOCAL lMove := .F. , lSize := .F.

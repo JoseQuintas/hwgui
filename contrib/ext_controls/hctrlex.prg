@@ -215,9 +215,9 @@ METHOD Paint( lpDis ) CLASS HStaticEx
       hwg_Fillrect( dc, client_rect[ 1 ], client_rect[ 2 ], client_rect[ 3 ], client_rect[ 4 ], brBackground:handle )
    ENDIF
 
-   IF ::tcolor != NIL .AND. ::isEnabled()
+   IF ::tcolor != NIL .AND. ::Enabled
       hwg_Settextcolor( dc, ::tcolor )
-   ELSEIF ! ::isEnabled()
+   ELSEIF ! ::Enabled
       hwg_Settextcolor( dc, 16777215 )
       hwg_Drawtext( dc, szText, { client_rect[ 1 ] + 1, client_rect[ 2 ] + 1, client_rect[ 3 ] + 1, client_rect[ 4 ] + 1 }, dwtext )
       hwg_Setbkmode( dc, TRANSPARENT )
@@ -759,7 +759,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HBUTTONEx
             hwg_Sendmessage( oParent:handle, WM_COMMAND, hwg_Makewparam( IDCANCEL, 0 ), ::handle )
          ELSE
          */
-         IF oParent:FindControl( IDCANCEL ) != NIL .AND. ! oParent:FindControl( IDCANCEL ):IsEnabled() .AND. oParent:lExitOnEsc
+         IF oParent:FindControl( IDCANCEL ) != NIL .AND. ! oParent:FindControl( IDCANCEL ):Enabled .AND. oParent:lExitOnEsc
             hwg_Sendmessage( oParent:handle, WM_COMMAND, hwg_Makewparam( IDCANCEL, 0 ), ::handle )
             RETURN 0
          ENDIF

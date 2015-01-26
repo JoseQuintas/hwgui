@@ -38,15 +38,15 @@ CLASS HControl INHERIT HCustomWindow
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
-   METHOD Init()
-   METHOD NewId()
 
-   METHOD Disable()     INLINE hwg_Enablewindow( ::handle, .F. )
-   METHOD Enable()      INLINE hwg_Enablewindow( ::handle, .T. )
-   METHOD IsEnabled()   INLINE hwg_Iswindowenabled( ::Handle )
+   METHOD NewId()
+   METHOD Init()
+
+   METHOD Disable()
+   METHOD Enable()
+   METHOD Enabled( lEnabled )
    METHOD Setfocus()    INLINE ( hwg_Sendmessage( ::oParent:handle, WM_NEXTDLGCTL, ;
-                                              ::handle, 1 ), ;
-                                 hwg_Setfocus( ::handle  ) )
+                              ::handle, 1 ), hwg_Setfocus( ::handle  ) )
    METHOD GetText()     INLINE hwg_Getwindowtext(::handle)
    METHOD SetText( c )  INLINE hwg_Setwindowtext( ::Handle, ::title := c )
    METHOD Refresh()     VIRTUAL
@@ -110,6 +110,30 @@ METHOD INIT CLASS HControl
       ::lInit := .T.
    ENDIF
 RETURN NIL
+
+METHOD Disable() CLASS HControl
+
+   hwg_Enablewindow( ::handle, .F. )
+RETURN NIL
+
+METHOD Enable() CLASS HControl
+
+   hwg_Enablewindow( ::handle, .T. )
+RETURN NIL
+
+METHOD Enabled( lEnabled ) CLASS HControl
+
+   IF lEnabled != Nil
+      IF lEnabled
+         hwg_Enablewindow( ::handle, .T. )
+         RETURN .T.
+      ELSE
+         hwg_Enablewindow( ::handle, .F. )
+         RETURN .F.
+      ENDIF
+   ENDIF
+
+   RETURN hwg_Iswindowenabled( ::handle )
 
 METHOD End() CLASS HControl
 

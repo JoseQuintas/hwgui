@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-01-26 11:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + contrib/ext_controls/hcomboex.prg
+    + HCheckCombobox from 2.17 added
+  * contrib/ext_controls/makefile.bc
+  * contrib/ext_controls/makefile.gcc
+    * Changed to include the hcomboex.prg
+  * include/hwg_extctrl.ch
+    * GET COMBOBOXEX command added from 2.17
+  * source/winapi/control.c
+    * comboproc related stuff removed
+
 2015-01-26 09:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcontrol.prg
   * source/gtk/hcontrol.prg

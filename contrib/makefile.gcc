@@ -26,6 +26,7 @@ $(LIB_DIR)/libhwg_qhtm.a : \
 $(LIB_DIR)/libhwg_extctrl.a : \
    $(OBJ_DIR)/hbrowsex.o \
    $(OBJ_DIR)/hctrlex.o \
+   $(OBJ_DIR)/hcomboex.o \
    $(OBJ_DIR)/hrectex.o \
    $(OBJ_DIR)/hgridex.o
 	ar rc $@ $^

@@ -78,7 +78,7 @@ static void CALLBACK s_timerProc( HWND, UINT, UINT, DWORD );
 static HWND hWndTT = 0;
 static BOOL lInitCmnCtrl = 0;
 static BOOL lToolTipBalloon = FALSE;    // added by MAG
-static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc, wpOrigComboProc, wpOrigStaticProc, wpOrigListProc, wpOrigUpDownProc, wpOrigDatePickerProc,  wpOrigTreeViewProc;     //wpOrigButtonProc
+static WNDPROC wpOrigEditProc, wpOrigTrackProc, wpOrigTabProc, wpOrigStaticProc, wpOrigListProc, wpOrigUpDownProc, wpOrigDatePickerProc,  wpOrigTreeViewProc;     //wpOrigButtonProc
 static LONG_PTR wpOrigButtonProc;
 
 HB_FUNC( HWG_INITCOMMONCONTROLSEX )
@@ -2122,13 +2122,6 @@ HB_FUNC( HWG_ADDBARCOLORS )
 
    hb_retl( AddBar1( pParent, pBar, clrFore, clrBack, pszText, dwStyle ) );
    hb_strfree( hStr );
-}
-
-//Combo Box Procedure
-
-HB_FUNC( HWG_GETCOMBOWNDPROC )
-{
-   hb_retnl( ( LONG ) wpOrigComboProc );
 }
 
 HB_FUNC( HWG_COMBOGETITEMRECT )

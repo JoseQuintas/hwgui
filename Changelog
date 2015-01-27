@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-01-27 15:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hcomboex.prg
+    ! Lines with nonexistent in 2.19 variables (:lNoValid, :lSuspendMsgsHandling)
+      has been commented
+
 2015-01-27 14:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * HwGUI build number is changed to 2

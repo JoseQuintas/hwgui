@@ -201,7 +201,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    IF bSetGet != Nil
       IF bGFocus != Nil
-         ::lnoValid := .T.
+         // ::lnoValid := .T.
          ::oParent:AddEvent( CBN_SETFOCUS, ::id, { | o, id | ::When( o:FindControl( id ) ) } )
       ENDIF
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 03/06/2006
@@ -209,7 +209,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       //---------------------------------------------------------------------------
    ELSE
       IF bGFocus != Nil
-         ::lnoValid := .T.
+         //::lnoValid := .T.
          ::oParent:AddEvent( CBN_SETFOCUS, ::id, { | o, id | ::When( o:FindControl( id ) ) } )
       ENDIF
       ::oParent:AddEvent( CBN_KILLFOCUS, ::id, { | o, id | ::Valid( o:FindControl( id ) ) } )
@@ -668,11 +668,11 @@ METHOD InteractiveChange( ) CLASS HComboBoxEx
 
    LOCAL npos := hwg_Sendmessage( ::handle, CB_GETEDITSEL, 0, 0 )
 
-   ::SelStart                     := nPos
-   ::cDisplayValue :=   hwg_Getwindowtext( ::handle )
-   ::oparent:lSuspendMsgsHandling := .T.
+   ::SelStart := nPos
+   ::cDisplayValue := hwg_Getwindowtext( ::handle )
+   //::oparent:lSuspendMsgsHandling := .T.
    Eval( ::bChangeInt, ::value, Self )
-   ::oparent:lSuspendMsgsHandling := .F.
+   //::oparent:lSuspendMsgsHandling := .F.
 
    hwg_Sendmessage( ::handle, CB_SETEDITSEL, 0, ::SelStart )
 
@@ -681,9 +681,9 @@ METHOD InteractiveChange( ) CLASS HComboBoxEx
 METHOD onSelect() CLASS HComboBoxEx
 
    IF ::bSelect != Nil
-      ::oparent:lSuspendMsgsHandling := .T.
+      // ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bSelect, ::value, Self )
-      ::oparent:lSuspendMsgsHandling := .F.
+      // ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN .T.
@@ -700,9 +700,9 @@ METHOD onChange( lForce ) CLASS HComboBoxEx
 
    ::SetItem( hwg_Sendmessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1 )
    IF ::bChangeSel != Nil
-      ::oparent:lSuspendMsgsHandling := .T.
+      // ::oparent:lSuspendMsgsHandling := .T.
       Eval( ::bChangeSel, ::Value, Self )
-      ::oparent:lSuspendMsgsHandling := .F.
+      // ::oparent:lSuspendMsgsHandling := .F.
    ENDIF
 
    RETURN Nil
@@ -717,15 +717,15 @@ METHOD When( ) CLASS HComboBoxEx
 
    nSkip := iif( hwg_Getkeystate( VK_UP ) < 0 .OR. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
    IF ::bGetFocus != Nil
-      ::oParent:lSuspendMsgsHandling := .T.
-      ::lnoValid                     := .T.
+      // ::oParent:lSuspendMsgsHandling := .T.
+      // ::lnoValid := .T.
       IF ::bSetGet != Nil
          res := Eval( ::bGetFocus, Eval( ::bSetGet,, Self ), Self )
       ELSE
          res := Eval( ::bGetFocus, ::value, Self )
       ENDIF
-      ::oParent:lSuspendMsgsHandling := .F.
-      ::lnoValid                     := !res
+      // ::oParent:lSuspendMsgsHandling := .F.
+      // ::lnoValid := !res
       IF ValType( res ) = "L" .AND. ! res
          oParent := hwg_GetParentForm( Self )
          IF Self == ATail( oParent:GetList )
@@ -752,14 +752,14 @@ METHOD Valid( ) CLASS HComboBoxEx
    IF ( oDlg := hwg_GetParentForm( Self ) ) == Nil .OR. oDlg:nLastKey != VK_ESCAPE
       ::GetValue()
       IF ::bLostFocus != Nil
-         ::oparent:lSuspendMsgsHandling := .T.
+         // ::oparent:lSuspendMsgsHandling := .T.
          res := Eval( ::bLostFocus, ::value, Self )
          IF ValType( res ) = "L" .AND. ! res
             ::Setfocus( .T. )
             IF oDlg != Nil
                oDlg:nLastKey := 0
             ENDIF
-            ::oparent:lSuspendMsgsHandling := .F.
+            // ::oparent:lSuspendMsgsHandling := .F.
             RETURN .F.
          ENDIF
 
@@ -771,7 +771,7 @@ METHOD Valid( ) CLASS HComboBoxEx
          ::oParent:Setfocus()
          hwg_GetSkip( ::oparent, ::handle, , nSkip )
       ENDIF
-      ::oparent:lSuspendMsgsHandling := .F.
+      // ::oparent:lSuspendMsgsHandling := .F.
       IF Empty( hwg_Getfocus() ) // getfocus return pointer = 0 
          hwg_GetSkip( ::oParent, ::handle, , ::nGetSkip )
       ENDIF

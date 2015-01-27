@@ -46,7 +46,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    nStyle := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), iif( lEdit,CBS_DROPDOWN,CBS_DROPDOWNLIST ) + WS_TABSTOP )
    IF !Empty( nDisplay )
-      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT )
+      nStyle := Hwg_BitOr( nStyle, CBS_NOINTEGRALHEIGHT + WS_VSCROLL )
       ::nDisplay := nDisplay
    ENDIF
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor )

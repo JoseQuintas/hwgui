@@ -9,6 +9,15 @@
 [*] Changes
 
 
+HWGUI 2.19 build 2 ( 27.01.2015 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] :Enabled() SETGET method is introduced for all controls (HControl class),
+    :isEnabled() has been removed.
+[*] :GetValue(), :SetValue() methods was removed and new :Value SETGET method is
+    introduced instead for those controls, which may input from the user.
+[*] Improved compatibility with 2.17 version.
+[!] Some bug fixes
+
 HWGUI 2.19 ( 20.12.2014 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] Real Unicode (utf-8) support.

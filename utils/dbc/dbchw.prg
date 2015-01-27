@@ -409,7 +409,7 @@ STATIC FUNCTION About
    @ 288, 0 GROUPBOX "" SIZE 170, 92
    @ 290, 12 SAY "xBase files management" SIZE 178, 18 STYLE SS_CENTER
    @ 290, 30 SAY "utility" SIZE 178, 18 STYLE SS_CENTER
-   @ 290, 48 SAY "version 3.0" SIZE 178, 20 STYLE SS_CENTER
+   @ 290, 48 SAY "version 3.1" SIZE 178, 20 STYLE SS_CENTER
    sv := hb_version()
    nPos := At( "(", sv )
    @ 290, 68 SAY Left( sv, nPos-1 ) SIZE 178, 20 STYLE SS_CENTER

@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-01-29 13:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * ON LOSTFOCUS clause added to @ .. CHECKBOX command
+  * source/winapi/hcheck.prg
+    * ON LOSTFOCUS implemented for the checkbox control
+  * source/winapi/hedit.prg
+    * hb_isnil() is replaced by Empty()
+  * source/winapi/printdos.prg
+    * win_Ansitooem() calls are replaced with hb_AnsitoOem()
+  * contrib/activex/htmlcore.h
+  * contrib/activex/htmlcore.c
+    ! Fixes, provided by WenSheng
+
 2015-01-27 16:06 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcombo.prg
     * Vertical scroll bar added to the combobox

@@ -2,7 +2,7 @@
  *$Id$
  */
 #define HWG_VERSION         "2.19"
-#define HWG_BUILD               2
+#define HWG_BUILD               1
 #define	WND_MAIN		1
 #define	WND_MDI 		2
 #define WND_MDICHILD            3
@@ -579,12 +579,13 @@
             [ ON PAINT <bDraw> ]       ;
             [ ON CLICK <bClick> ]      ;
             [ ON GETFOCUS <bGfocus> ]  ;
+            [ ON LOSTFOCUS <bLfocus> ] ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<lInit>,,<nStyle>,<x>,<y>, ;
-         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<bGfocus>,<.lTransp.> );
+         <width>,<height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<bGfocus>,<.lTransp.>,<bLfocus> );
     [; hwg_SetCtrlName( <oCheck>,<(oCheck)> )]
 
 #xcommand REDEFINE CHECKBOX [ <oCheck> ] ;
@@ -1080,11 +1081,12 @@
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
             [ WHEN <bWhen> ]           ;
+            [ ON LOSTFOCUS <bLfocus> ] ;
           => ;
     [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<vari>,              ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},                   ;
                     <nStyle>,<x>,<y>,<width>,<height>,<caption>,<oFont>, ;
-                    ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lTransp.> );
+                    ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lTransp.>,<bLfocus> );
     [; hwg_SetCtrlName( <oCheck>,<(oCheck)> )]
 
 #xcommand REDEFINE GET CHECKBOX [ <oCheck> VAR ] <vari>  ;

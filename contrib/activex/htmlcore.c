@@ -1872,7 +1872,7 @@ HRESULT WINAPI GetWebPtrs( HWND hwnd, IWebBrowser2 ** webBrowser2Result,
  * RETURNS: Pointer to the BSTR, or 0 if failure.
  */
 
-#if UNICODE
+#ifdef UNICODE
 BSTR WINAPI TStr2BStr( HWND hwnd, const WCHAR * string )
 #else
 BSTR WINAPI TStr2BStr( HWND hwnd, const char *string )

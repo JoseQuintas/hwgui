@@ -340,7 +340,7 @@ METHOD Refresh()  CLASS HEdit
 
    IF hb_isBlock( ::bSetGet )
       vari := Eval( ::bSetGet, , self )
-      If hb_IsNil( vari )
+      IF Empty( vari )
          vari := ""
       ENDIF
 

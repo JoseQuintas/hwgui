@@ -44,7 +44,7 @@ typedef struct {
 	void			*userdata;		// An extra pointer.
 } _IDispatchEx;
 
-#if UNICODE
+#ifdef UNICODE
 BSTR WINAPI TStr2BStr(HWND, const WCHAR *);
 typedef BSTR WINAPI TStr2BStrPtr(HWND, const WCHAR *);
 #else
@@ -135,7 +135,7 @@ typedef void * WINAPI BStr2TStrPtr(HWND, BSTR);
 #define BSTR2TSTR BStr2TStr
 #define BSTR2TSTRNAME "BStr2TStr"
 
-#if UNICODE
+#ifdef UNICODE
 BSTR WINAPI TStr2BStr(HWND, const WCHAR *);
 typedef BSTR WINAPI TStr2BStrPtr(HWND, const WCHAR *);
 #else

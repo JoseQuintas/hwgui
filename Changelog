@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-01-30 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/debug/dbgconnect.prg
+  * source/common/debug/debugger.prg
+    * Some changes for xHarbour. Could anyone, who use xHarbour, test it ?
+
 2015-01-29 13:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * ON LOSTFOCUS clause added to @ .. CHECKBOX command

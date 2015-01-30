@@ -790,25 +790,21 @@ Local af, nCount, arr, i, j := 3
 
    RETURN arr
 
+#ifdef __XHARBOUR__
 STATIC FUNCTION SendObject( cObjName )
-Local aVars, aMethods, arr, obj, i, j := 1, xVal
+Local aVars, aMethods, arr, obj, i, j := 1
 
    obj := t_oDebugger:GetExprValue( cObjName )
    IF Valtype( obj ) == "O"
-      // aVars := __objGetValueList( obj )
-      aVars := __objGetMsgList( obj )
+      aVars := __objGetValueList( obj )
       aMethods := __objGetMethodList( obj )
       arr := Array( ( Len(aVars)+Len(aMethods) ) * 3 + 1 )
       arr[1] := Ltrim( Str( Len(aVars)+Len(aMethods) ) )
 
       FOR i := 1 TO Len( aVars )
-         arr[++j] := aVars[i]
-         xVal := __dbgObjGetValue( obj, aVars[i] )
-         arr[++j] := Valtype( xVal )
-         arr[++j] := __dbgValToStr( xVal )
-
-         //arr[++j] := Valtype( aVars[ i,2 ] )
-         //arr[++j] := __dbgValToStr( aVars[ i,2 ] )
+         arr[++j] := aVars[ i,1 ]
+         arr[++j] := Valtype( aVars[ i,2 ] )
+         arr[++j] := __dbgValToStr( aVars[ i,2 ] )
          IF Len( arr[j] ) > VAR_MAX_LEN
             arr[j] := Left( arr[j], VAR_MAX_LEN )
          ENDIF
@@ -824,6 +820,39 @@ Local aVars, aMethods, arr, obj, i, j := 1, xVal
    ENDIF
 
    RETURN arr
+#else
+STATIC FUNCTION SendObject( cObjName )
+Local aVars, aMethods, arr, obj, i, j := 1, xVal
+
+   obj := t_oDebugger:GetExprValue( cObjName )
+   IF Valtype( obj ) == "O"
+      aVars := __objGetMsgList( obj )
+      aMethods := __objGetMethodList( obj )
+      arr := Array( ( Len(aVars)+Len(aMethods) ) * 3 + 1 )
+      arr[1] := Ltrim( Str( Len(aVars)+Len(aMethods) ) )
+
+      FOR i := 1 TO Len( aVars )
+         arr[++j] := aVars[i]
+         xVal := __dbgObjGetValue( obj, aVars[i] )
+         arr[++j] := Valtype( xVal )
+         arr[++j] := __dbgValToStr( xVal )
+
+         IF Len( arr[j] ) > VAR_MAX_LEN
+            arr[j] := Left( arr[j], VAR_MAX_LEN )
+         ENDIF
+      NEXT
+      FOR i := 1 TO Len( aMethods )
+         arr[++j] := aMethods[ i ]
+         arr[++j] := ""
+         arr[++j] := "Method"
+      NEXT
+
+   ELSE
+      Return { "0" }
+   ENDIF
+
+   RETURN arr
+#endif
 
 STATIC FUNCTION SendArray( cArrName, nFirst, nCount )
 Local arr, arrFrom, xValue, i, j := 3
@@ -899,26 +928,13 @@ FUNCTION __dbgValToStr( uVal )
 
    RETURN "U"
 
+#ifndef __XHARBOUR__
 STATIC FUNCTION __dbgObjGetValue( oObject, cVar, lCanAcc )
 
    LOCAL nProcLevel := __Dbg():nProcLevel
    LOCAL xResult
    LOCAL oErr
 
-#ifdef __XHARBOUR__
-   TRY
-      xResult := dbgSENDMSG( nProcLevel, oObject, cVar )
-      lCanAcc := .T.
-   CATCH
-      TRY
-         xResult := dbgSENDMSG( 0, oObject, cVar )
-         lCanAcc := .T.
-      CATCH
-         xResult := oErr:description
-         lCanAcc := .F.
-      END
-   END
-#else
    BEGIN SEQUENCE WITH {|| Break() }
       xResult := __dbgSENDMSG( nProcLevel, oObject, cVar )
       lCanAcc := .T.
@@ -932,8 +948,9 @@ STATIC FUNCTION __dbgObjGetValue( oObject, cVar, lCanAcc )
          lCanAcc := .F.
       END SEQUENCE
    END SEQUENCE
-#endif
+
    RETURN xResult
+#endif
 
 #ifdef __XHARBOUR__
 #define ALTD_DISABLE   0

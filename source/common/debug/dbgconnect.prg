@@ -84,7 +84,7 @@
 
 #ifdef __XHARBOUR__
 #xtranslate HB_AT([<n,...>]) =>  AT(<n>)
-#xtranslate HB_PROGNAME([<n,...>]) =>  EXENAME(<n>)
+#xtranslate HB_PROGNAME([<n,...>]) =>  EXENAMEX(<n>)
 #xtranslate HB_PROCESSOPEN([<n,...>]) =>  HB_OPENPROCESS(<n>)
 #xtranslate HB_DIRTEMP([<n,...>]) =>  ""
 #endif
@@ -470,3 +470,26 @@ EXIT PROCEDURE hwg_dbg_exit
    FClose( handl2 )
 Return
 
+#ifdef __XHARBOUR__
+#ifndef __PLATFORM__Windows
+FUNCTION EXENAMEX()
+   RETURN HB_ARGV( 0 )
+#endif
+#ifdef __PLATFORM__Windows
+#pragma BEGINDUMP
+
+#include "hbapi.h"
+#include "windows.h"
+HB_FUNC(EXENAMEX)
+{
+   char szBuffer[ MAX_PATH + 1 ] = {0} ;
+
+   GetModuleFileName( ISNIL(1) ? GetModuleHandle( NULL ) : (HMODULE) hb_parnl( 1 ), szBuffer ,MAX_PATH );
+
+   hb_retc( szBuffer );
+}
+
+
+#pragma enddump
+#endif
+#endif

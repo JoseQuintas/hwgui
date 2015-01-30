@@ -12,12 +12,6 @@
 #include "guilib.ch"
 #include "fileio.ch"
 
-/*
-#if defined( __XHARBOUR__ ) || ( __HARBOUR__ - 0 < 0x030000 )
-#xtranslate Win_Ansitooem([<n,...>]) => hb_Ansitooem(<n>)
-#endif
-*/
-
 #define PF_BUFFERS   2048
 
 #define oFORMFEED               "12"
@@ -185,7 +179,7 @@ METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
 
 
    IF ::oAns2Oem
-      ::oText += hb_ANSITOOEM( oStr )
+      ::oText += hwg_WIN_Ansitooem( oStr )
    ELSE
       ::oText += oStr
    ENDIF
@@ -197,8 +191,8 @@ METHOD gWrite( oText )  CLASS PrintDos
 
    //tracelog(otext)
    IF ::oAns2Oem
-      ::oText += hb_ANSITOOEM( oText )
-      ::nPcol += Len( hb_ANSITOOEM( oText ) )
+      ::oText += hwg_WIN_Ansitooem( oText )
+      ::nPcol += Len( hwg_WIN_Ansitooem( oText ) )
    ELSE
       ::oText += oText
       ::nPcol += Len( oText )
@@ -213,8 +207,8 @@ METHOD Eject()   CLASS PrintDos
    FWrite( ::gText, ::oText )
 
    IF ::oAns2Oem
-      FWrite( ::gText, hb_ANSITOOEM( Chr( 13 ) + Chr( 10 ) + Chr( Val( ::cEject ) ) ) )
-      FWrite( ::gText, hb_ANSITOOEM( Chr( 13 ) + Chr( 10 ) ) )
+      FWrite( ::gText, hwg_WIN_Ansitooem( Chr( 13 ) + Chr( 10 ) + Chr( Val( ::cEject ) ) ) )
+      FWrite( ::gText, hwg_WIN_Ansitooem( Chr( 13 ) + Chr( 10 ) ) )
    ELSE
       FWrite( ::gText, Chr( 13 ) + Chr( 10 ) + Chr( Val( ::cEject ) ) )
       FWrite( ::gText, Chr( 13 ) + Chr( 10 ) )
@@ -262,7 +256,7 @@ METHOD UnBold() CLASS PrintDos
 METHOD NewLine() CLASS PrintDos
 
    IF ::oAns2Oem
-      ::oText += hb_ANSITOOEM( Chr( 13 ) + Chr( 10 ) )
+      ::oText += hwg_WIN_Ansitooem( Chr( 13 ) + Chr( 10 ) )
    ELSE
       ::oText += Chr( 13 ) + Chr( 10 )
    ENDIF
@@ -451,7 +445,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
             EXIT
          ENDIF
          IF ::oAns2Oem
-            oText[ oPage ] += hb_ANSITOOEM( stroka ) + Chr( 13 ) + Chr( 10 )
+            oText[ oPage ] += hwg_WIN_Ansitooem( stroka ) + Chr( 13 ) + Chr( 10 )
          ELSE
             oText[ oPage ] += stroka + Chr( 13 ) + Chr( 10 )
          ENDIF
@@ -564,6 +558,7 @@ FUNCTION hwg_regenfile( o, new )
 
    RETURN Nil
 
+
 #PRAGMA BEGINDUMP
 /*
    txtfile.c
@@ -655,6 +650,36 @@ HB_FUNC( AFILLTEXT )
    hb_itemRelease( pTemp );
    hb_xfree( string );
    fclose( inFile );
+}
+
+#include <windows.h>
+
+HB_FUNC( HWG_WIN_ANSITOOEM )
+{
+   PHB_ITEM pString = hb_param( 1, HB_IT_STRING );
+
+   if( pString )
+   {
+      int nLen = ( int ) hb_itemGetCLen( pString );
+      const char * pszSrc = hb_itemGetCPtr( pString );
+
+      int nWideLen = MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pszSrc, nLen, NULL, 0 );
+      LPWSTR pszWide = ( LPWSTR ) hb_xgrab( ( nWideLen + 1 ) * sizeof( wchar_t ) );
+
+      char * pszDst;
+
+      MultiByteToWideChar( CP_ACP, MB_PRECOMPOSED, pszSrc, nLen, pszWide, nWideLen );
+
+      nLen = WideCharToMultiByte( CP_OEMCP, 0, pszWide, nWideLen, NULL, 0, NULL, NULL );
+      pszDst = ( char * ) hb_xgrab( nLen + 1 );
+
+      WideCharToMultiByte( CP_OEMCP, 0, pszWide, nWideLen, pszDst, nLen, NULL, NULL );
+
+      hb_xfree( pszWide );
+      hb_retclen_buffer( pszDst, nLen );
+   }
+   else
+      hb_retc_null();
 }
 
 #PRAGMA ENDDUMP

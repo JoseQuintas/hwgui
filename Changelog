@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-02-02 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hbrowsex.prg
+    ! Small fix, need to be tested, I don't sure about side effects.
+
 2015-01-30 17:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/printdos.prg
     * hb_Ansitooem() calls are replaced with hwg_win_AnsitoOem(),

@@ -3003,7 +3003,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
    fipos := Min( ::colpos + ::nLeftCol - 1 - ::freeze, Len( ::aColumns ) )
    ::fiPos := fipos
 
-   IF ( ! Eval( ::bEof, Self ) .OR. ::lAppMode ) .AND. ( ! ::onClick( )  )
+   IF ( ! Eval( ::bEof, Self ) .OR. ::lAppMode ) .AND. ( ! ::onClick( )  ) .AND. Empty(::oEditDlg)
       oColumn := ::aColumns[ fipos ]
       IF ::Type == BRW_DATABASE
          ::varbuf := ( ::Alias ) -> ( Eval( oColumn:block,, Self, fipos ) )

@@ -44,6 +44,8 @@ CLASS HEdit INHERIT HControl
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, self )
    METHOD Refresh()
    METHOD Value ( xValue ) SETGET
+   METHOD SelStart( nStart ) SETGET
+   METHOD SelLength( nLength ) SETGET
 
 ENDCLASS
 
@@ -383,6 +385,29 @@ METHOD Value( xValue ) CLASS HEdit
 
    RETURN vari
 
+METHOD SelStart( nStart ) CLASS HEdit
+
+   IF nStart != Nil
+      hwg_Sendmessage( ::handle, EM_SETSEL, nStart , nStart )
+   ELSE
+      nStart := hwg_Loword( hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 ) )
+   ENDIF
+
+   RETURN nStart
+
+METHOD SelLength( nLength ) CLASS HEdit
+
+   LOCAL nStart
+
+   IF nLength != Nil
+      nStart := hwg_Loword( hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 ) )
+      hwg_Sendmessage( ::handle, EM_SETSEL, nStart, nStart + nLength  )
+   ELSE
+      nStart := hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 )
+      nLength := hwg_Hiword( nStart ) - hwg_Loword( nStart )
+   ENDIF
+
+   RETURN nLength
 
 FUNCTION hwg_IsCtrlShift( lCtrl, lShift )
    LOCAL cKeyb := hwg_Getkeyboardstate()

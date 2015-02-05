@@ -310,7 +310,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
       bSize, bPaint, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
    IF vari != Nil
-      ::cType   := ValType( vari )
+      ::cType := ValType( vari )
    ENDIF
    ::bSetGet := bSetGet
 
@@ -342,7 +342,7 @@ METHOD Refresh()  CLASS HEdit
 
    IF hb_isBlock( ::bSetGet )
       vari := Eval( ::bSetGet, , self )
-      IF Empty( vari )
+      IF vari == Nil
          vari := ""
       ENDIF
 

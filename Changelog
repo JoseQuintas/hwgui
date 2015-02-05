@@ -8,9 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-02-05 15:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hedit.prg
+    ! Bug fixed
+  * source/winapi/hcontrol.prg
+    * :Enabled() is marked as SETGET
+  * source/winapi/control.c
+    ! Some fixes
+
 2015-02-04 09:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
-    * :SetSel() and :SetLength() SETGET methods borrowed from 2.17
+    * :SelStart() and :SelLength() SETGET methods borrowed from 2.17
       with some changes
 
 2015-02-02 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>

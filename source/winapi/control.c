@@ -438,13 +438,12 @@ HB_FUNC( HWG_GETNOTIFYSBPARTS )
 HB_FUNC( HWG_ADDTOOLTIP )
 {
    TOOLINFO ti;
-   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   int iStyle = TTS_ALWAYSTIP;
+   int iStyle = 0;
    void * hStr;
 
    if( lToolTipBalloon )
    {
-      iStyle = iStyle | TTS_BALLOON;
+      iStyle = TTS_BALLOON;
    }
 
    if( !hWndTT )
@@ -453,12 +452,13 @@ HB_FUNC( HWG_ADDTOOLTIP )
             NULL, ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
    if( !hWndTT )
    {
-      hb_retnl( 0 );
+      hb_retl( 0 );
       return;
    }
+   memset( &ti, 0, sizeof( TOOLINFO ) );
    ti.cbSize = sizeof( TOOLINFO );
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
-   ti.hwnd = hWnd;
+   ti.hwnd = ( HWND ) HB_PARHANDLE( 1 );
    ti.uId = ( UINT_PTR ) HB_PARHANDLE( 2 );
    ti.hinst = GetModuleHandle( NULL );
    ti.lpszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
@@ -474,10 +474,11 @@ HB_FUNC( HWG_DELTOOLTIP )
 
    if( hWndTT )
    {
+      memset( &ti, 0, sizeof( TOOLINFO ) );
       ti.cbSize = sizeof( TOOLINFO );
       ti.uFlags = TTF_IDISHWND;
       ti.hwnd = ( HWND ) HB_PARHANDLE( 1 );
-      ti.uId = ( UINT_PTR ) HB_PARHANDLE( 1 );
+      ti.uId = ( UINT_PTR ) HB_PARHANDLE( 2 );
       ti.hinst = GetModuleHandle( NULL );
 
       SendMessage( hWndTT, TTM_DELTOOL, 0, ( LPARAM ) ( LPTOOLINFO ) & ti );

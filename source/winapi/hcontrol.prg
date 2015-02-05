@@ -44,7 +44,7 @@ CLASS HControl INHERIT HCustomWindow
 
    METHOD Disable()
    METHOD Enable()
-   METHOD Enabled( lEnabled )
+   METHOD Enabled( lEnabled ) SETGET
    METHOD Setfocus()    INLINE ( hwg_Sendmessage( ::oParent:handle, WM_NEXTDLGCTL, ;
                               ::handle, 1 ), hwg_Setfocus( ::handle  ) )
    METHOD GetText()     INLINE hwg_Getwindowtext(::handle)

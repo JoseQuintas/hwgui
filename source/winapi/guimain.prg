@@ -97,7 +97,7 @@ FUNCTION hwg_VColor( cColor )
 
    cColor := Trim( cColor )
    for i := 1 TO Len( cColor )
-      iValue := Asc( SubStr( cColor,Len(cColor ) - i + 1,1 ) )
+      iValue := Asc( SubStr( cColor,i,1 ) )
       IF iValue < 58 .AND. iValue > 47
          iValue -= 48
       ELSEIF iValue >= 65 .AND. iValue <= 70

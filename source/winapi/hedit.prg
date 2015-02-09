@@ -8,8 +8,9 @@
  * www - http://www.kresin.ru
 */
 
-STATIC bColorOld
 STATIC lColorinFocus := .F.
+STATIC tColorinFocus := 0
+STATIC bColorinFocus := 13434879
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -30,8 +31,8 @@ CLASS HEdit INHERIT HControl
    DATA lFirst       INIT .T.
    DATA lChanged     INIT .F.
    DATA lMaxLength   INIT Nil
-   DATA nColorinFocus INIT hwg_VColor( 'CCFFFF' )
    DATA bkeydown, bkeyup, bchange
+   DATA aColorOld    INIT { 0,0 }
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
@@ -251,10 +252,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
       IF lColorinFocus
          IF msg == WM_SETFOCUS
-            bColorOld := ::bcolor
-            ::Setcolor( ::tcolor , ::nColorinFocus, .T. )
+            ::aColorOld[1] := ::tcolor
+            ::aColorOld[2] := ::bcolor
+            ::Setcolor( tColorinFocus , bColorinFocus, .T. )
          ELSEIF msg == WM_KILLFOCUS
-            ::Setcolor( ::tcolor, bColorOld, .T. )
+            ::tcolor := ::aColorOld[1]
+            ::bcolor := ::aColorOld[2]
+            ::Setcolor( ::tcolor, ::bColor, .T. )
          ENDIF
       ENDIF
 
@@ -1011,12 +1015,18 @@ FUNCTION hwg_ParentGetDialog( o )
 
    RETURN o
 
-FUNCTION hwg_SetColorinFocus( lDef )
+FUNCTION hwg_SetColorinFocus( lDef, tColor, bColor )
 
    IF ValType( lDef ) <> "L"
       RETURN .F.
    ENDIF
    lColorinFocus := lDef
+   IF tColor != Nil
+      tColorinFocus := tColor
+   ENDIF
+   IF bColor != Nil
+      bColorinFocus := bColor
+   ENDIF
 
    RETURN .T.
 

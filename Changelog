@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-02-09 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hedit.prg
+    * hwg_SetColorinFocus( lDef, tColor, bColor ) works properly now
+  * source/winapi/guimain.prg
+  * source/gtk/gtkmain.prg
+    ! hwg_VColor() fixed
+
 2015-02-05 15:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
     ! Bug fixed

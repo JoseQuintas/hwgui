@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-02-12 12:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hedit.prg
+    ! Small fix, provided by Itamar M. Lins Jr.
+    * Default value of bColorinFocus is changed to 16777164
+
 2015-02-09 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
     * hwg_SetColorinFocus( lDef, tColor, bColor ) works properly now

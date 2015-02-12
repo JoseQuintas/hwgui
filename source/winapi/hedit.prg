@@ -10,7 +10,7 @@
 
 STATIC lColorinFocus := .F.
 STATIC tColorinFocus := 0
-STATIC bColorinFocus := 13434879
+STATIC bColorinFocus := 16777164
 
 #include "windows.ch"
 #include "hbclass.ch"
@@ -99,6 +99,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ENDIF
    ENDIF
    ::bChange := bChange
+
+   ::aColorOld[1] := iif( tcolor = Nil, 0, ::tcolor )
+   ::aColorOld[2] := ::bcolor
 
    RETURN Self
 

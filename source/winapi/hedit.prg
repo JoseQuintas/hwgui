@@ -278,6 +278,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          IF ::bKeyDown != Nil .AND. ( nPos := Eval( ::bKeyDown, Self, wParam, lParam ) ) != -1
             RETURN nPos
          ENDIF
+         IF wParam == VK_ESCAPE .AND. !__ObjHasMsg( ::oParent, "GETLIST" )
+            RETURN 0
+         ENDIF
          IF wParam == VK_TAB     // Tab
             IF Asc( SubStr( hwg_Getkeyboardstate(), VK_SHIFT + 1, 1 ) ) >= 128
                IF !hwg_GetSkip( oParent, ::handle, - 1 ) // First Get

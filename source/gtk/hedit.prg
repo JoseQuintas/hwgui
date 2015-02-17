@@ -144,7 +144,7 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
    ENDIF
    
    IF ::bSetGet == Nil
-      ::Title := ::GetText()
+      ::Title := hwg_Edit_GetText( ::handle )
       Return 0
    ENDIF
 

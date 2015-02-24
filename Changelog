@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-02-24 12:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hedit.prg
+    ! Bug with negative numbers <0 fixed.
+  * source/winapi/hcombo.prg
+    * Problem with empty TEXT arrays fixed ( provided by Itamar M. Lins Jr. )
+  * contrib/ext_controls/hctrlex.prg
+    ! Bug fixed in :SetDefaultColor(). The background color setting doesn't work yet, though.
+
 2016-02-17 11:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
     ! Small fix, provided by yury

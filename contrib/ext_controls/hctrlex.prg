@@ -808,6 +808,10 @@ METHOD SetDefaultColor( tColor, bColor, lPaint ) CLASS HBUTTONEx
    ENDIF
    IF !Empty( bColor )
       ::bColor := bColor
+      IF ::brush != NIL
+         ::brush:Release()
+      ENDIF
+      ::brush := HBrush():Add( bColor )
    ENDIF
    ::m_crColors[ BTNST_COLOR_BK_IN ]    := iif( ::bColor = NIL, hwg_Getsyscolor( COLOR_BTNFACE ), ::bColor )
    ::m_crColors[ BTNST_COLOR_FG_IN ]    := iif( ::tColor = NIL, hwg_Getsyscolor( COLOR_BTNTEXT ), ::tColor )

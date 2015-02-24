@@ -141,7 +141,7 @@ METHOD Init() CLASS HComboBox
 
    IF !::lInit
       ::Super:Init()
-      IF ::aItems != Nil
+      IF !Empty( ::aItems )
          IF Empty( ::xValue )
             IF ::lText
                ::xValue := Iif( Valtype(::aItems[1]) == "A", ::aItems[1,1], ::aItems[1] )
@@ -177,31 +177,33 @@ METHOD Init() CLASS HComboBox
 METHOD Refresh() CLASS HComboBox
    LOCAL vari, i
 
-   IF ::bSetGet != Nil
-      vari := Eval( ::bSetGet, , Self )
-      if ::lText
-         ::xValue := iif( vari == Nil .OR. ValType( vari ) != "C", "", Trim( vari ) )
-      ELSE
-         ::xValue := iif( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
+   IF !Empty( ::aItems )
+      IF ::bSetGet != Nil
+         vari := Eval( ::bSetGet, , Self )
+         if ::lText
+            ::xValue := iif( vari == Nil .OR. ValType( vari ) != "C", "", Trim( vari ) )
+         ELSE
+            ::xValue := iif( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
+         ENDIF
       ENDIF
-   ENDIF
 
-   hwg_Sendmessage( ::handle, CB_RESETCONTENT, 0, 0 )
+      hwg_Sendmessage( ::handle, CB_RESETCONTENT, 0, 0 )
 
-   FOR i := 1 TO Len( ::aItems )
-      hwg_Comboaddstring( ::handle, Iif( Valtype(::aItems[i]) == "A", ::aItems[i,1], ::aItems[i] ) )
-   NEXT
+      FOR i := 1 TO Len( ::aItems )
+         hwg_Comboaddstring( ::handle, Iif( Valtype(::aItems[i]) == "A", ::aItems[i,1], ::aItems[i] ) )
+      NEXT
 
-   IF ::lText
-      IF ::lEdit
-         hwg_Setdlgitemtext( hwg_GetModalHandle(), ::id, ::xValue )
+      IF ::lText
+         IF ::lEdit
+            hwg_Setdlgitemtext( hwg_GetModalHandle(), ::id, ::xValue )
+         ELSE
+            i := Iif( Valtype(::aItems[1]) == "A", AScan( ::aItems, {|a|a[1]==::xValue} ), AScan( ::aItems, ::xValue ) )
+            hwg_Combosetstring( ::handle, i )
+         ENDIF
       ELSE
-         i := Iif( Valtype(::aItems[1]) == "A", AScan( ::aItems, {|a|a[1]==::xValue} ), AScan( ::aItems, ::xValue ) )
-         hwg_Combosetstring( ::handle, i )
+         hwg_Combosetstring( ::handle, ::xValue )
+         ::SetItem( ::xValue )
       ENDIF
-   ELSE
-      hwg_Combosetstring( ::handle, ::xValue )
-      ::SetItem( ::xValue )
    ENDIF
 
    RETURN Nil

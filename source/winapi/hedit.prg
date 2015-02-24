@@ -661,7 +661,7 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
 
 STATIC FUNCTION GetApplyKey( oEdit, cKey )
    LOCAL nPos, nGetLen, nLen, vari, i, x, newPos, oParent
-   LOCAL nDecimals, nTmp
+   LOCAL nDecimals, xTmp, lMinus := .F.
 
    x := hwg_Sendmessage( oEdit:handle, EM_GETSEL, 0, 0 )
    IF hwg_Hiword( x ) != hwg_Loword( x )
@@ -675,10 +675,16 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
          vari := 0
          oEdit:lFirst := .F.
       ELSE
-         vari := Val( LTrim( UnTransform( oEdit, hwg_Getedittext( oEdit:oParent:handle, oEdit:id ) ) ) )
+         xTmp := hwg_Getedittext( oEdit:oParent:handle, oEdit:id )
+         vari := Val( LTrim( UnTransform( oEdit, xTmp ) ) )
+         lMinus := Iif( Left( Ltrim(xTmp),1 ) == "-", .T., .F. )
       ENDIF
-      IF !Empty( oEdit:cPicFunc ) .OR. !Empty( oEdit:cPicMask )
+      IF !Empty( oEdit:cPicFunc ) .OR. !Empty( oEdit:cPicMask )        
          oEdit:title := Transform( vari, oEdit:cPicFunc + iif( Empty(oEdit:cPicFunc ),""," " ) + oEdit:cPicMask )
+         IF lMinus .AND. vari == 0
+            nLen := Len( oEdit:title )
+            oEdit:title := Padl( "-" + Ltrim( oEdit:title ), nLen )
+         ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
       ENDIF
       KeyRight( oEdit, nPos - 1 )

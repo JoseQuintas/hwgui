@@ -383,10 +383,25 @@ CLASS HMDIChildWindow INHERIT HWindow
       } ;
       }
 
+   METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
+      bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
+      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor )
    METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
 
 ENDCLASS
+
+METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
+      bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
+      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor ) CLASS HMDIChildWindow
+
+   ::Super:New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
+      bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
+      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor )
+
+   ::type := WND_MDICHILD
+
+   RETURN Self
 
 METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMDIChildWindow
 

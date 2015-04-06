@@ -30,18 +30,18 @@ CLASS HEdit INHERIT HControl
    DATA lPicComplex  INIT .F.
    DATA lFirst       INIT .T.
    DATA lChanged     INIT .F.
-   DATA lMaxLength   INIT Nil
+   DATA nMaxLength   INIT Nil
    DATA bkeydown, bkeyup, bchange
    DATA aColorOld    INIT { 0,0 }
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bKeyDown, bChange )
+      tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword, bKeyDown, bChange )
    METHOD Activate()
    METHOD Init()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bDraw, bGfocus, ;
-      bLfocus, ctooltip, tcolor, bcolor, cPicture, lMaxLength )
+      bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLength )
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, self )
    METHOD Refresh()
    METHOD Value ( xValue ) SETGET
@@ -52,7 +52,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
-      tcolor, bcolor, cPicture, lNoBorder, lMaxLength, lPassword, bKeyDown, bChange ) CLASS HEdit
+      tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword, bKeyDown, bChange ) CLASS HEdit
 
    nStyle := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), ;
       WS_TABSTOP + iif( lNoBorder == Nil .OR. !lNoBorder, WS_BORDER, 0 ) + ;
@@ -75,8 +75,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::lMultiLine := .T.
    ENDIF
 
-   IF !Empty( cPicture ) .OR. cPicture == Nil .AND. lMaxLength != Nil .OR. !Empty( lMaxLength )
-      ::lMaxLength := lMaxLength
+   IF !Empty( cPicture ) .OR. cPicture == Nil .AND. nMaxLength != Nil .OR. !Empty( nMaxLength )
+      ::nMaxLength := nMaxLength
    ENDIF
 
    ParsePict( Self, cPicture, vari )
@@ -314,7 +314,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    Return - 1
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
-      bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, lMaxLength )  CLASS HEdit
+      bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLength )  CLASS HEdit
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
@@ -324,8 +324,8 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    ENDIF
    ::bSetGet := bSetGet
 
-   IF !Empty( cPicture ) .OR. cPicture == Nil .AND. lMaxLength != Nil .OR. !Empty( lMaxLength )
-      ::lMaxLength := lMaxLength
+   IF !Empty( cPicture ) .OR. cPicture == Nil .AND. nMaxLength != Nil .OR. !Empty( nMaxLength )
+      ::nMaxLength := nMaxLength
    ENDIF
 
    ParsePict( Self, cPicture, vari )
@@ -481,8 +481,8 @@ STATIC FUNCTION ParsePict( oEdit, cPicture, vari )
 
    //  ------------ added by Maurizio la Cecilia
 
-   IF oEdit:lMaxLength != Nil .AND. !Empty( oEdit:lMaxLength ) .AND. Len( oEdit:cPicMask ) < oEdit:lMaxLength
-      oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:lMaxLength, "X" )
+   IF oEdit:nMaxLength != Nil .AND. !Empty( oEdit:nMaxLength ) .AND. Len( oEdit:cPicMask ) < oEdit:nMaxLength
+      oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:nMaxLength, "X" )
    ENDIF
 
    //  ------------- end of added code

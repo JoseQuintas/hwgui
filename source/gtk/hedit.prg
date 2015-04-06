@@ -30,11 +30,11 @@ CLASS HEdit INHERIT HControl
    DATA lPicComplex  INIT .F.
    DATA lFirst       INIT .T.
    DATA lChanged     INIT .F.
-   DATA lMaxLength   INIT Nil
+   DATA nMaxLength   INIT Nil
    DATA nLastKey     INIT 0
 
    METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
-         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, lMaxLength )
+         oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder, nMaxLength )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -46,7 +46,7 @@ ENDCLASS
 
 METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt, ;
-                  tcolor,bcolor,cPicture,lNoBorder, lMaxLength, lPassword ) CLASS HEdit
+                  tcolor,bcolor,cPicture,lNoBorder, nMaxLength, lPassword ) CLASS HEdit
  
    nStyle := Hwg_BitOr( Iif( nStyle==Nil,0,nStyle ), ;
                 WS_TABSTOP+Iif(lNoBorder==Nil.OR.!lNoBorder,WS_BORDER,0)+;
@@ -68,12 +68,12 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::lMultiLine := .T.
    ENDIF
 
-   IF !Empty(cPicture) .or. cPicture==Nil .And. lMaxLength !=Nil .or. !Empty(lMaxLength)
-      ::lMaxLength:= lMaxLength
+   IF !Empty(cPicture) .or. cPicture==Nil .And. nMaxLength !=Nil .or. !Empty(nMaxLength)
+      ::nMaxLength:= nMaxLength
    ENDIF
-/*   IF ::lMaxLength != Nil .and. !Empty(::lMaxLength) 
+/*   IF ::nMaxLength != Nil .and. !Empty(::nMaxLength) 
       IF !Empty(cPicture) .or. cPicture==Nil
-         cPicture:=Replicate("X",::lMaxLength)
+         cPicture:=Replicate("X",::nMaxLength)
       ENDIF
    ENDIF                        ----------------- commented out by Maurizio la Cecilia */
  
@@ -338,8 +338,8 @@ Local nAt, i, masklen, cChar
 
 //                                         ------------ added by Maurizio la Cecilia
 
-   IF oEdit:lMaxLength != Nil .and. !Empty( oEdit:lMaxLength ) .and. Len( oEdit:cPicMask ) < oEdit:lMaxLength
-      oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:lMaxLength, "X" )
+   IF oEdit:nMaxLength != Nil .and. !Empty( oEdit:nMaxLength ) .and. Len( oEdit:cPicMask ) < oEdit:nMaxLength
+      oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:nMaxLength, "X" )
    ENDIF
 
 //                                         ------------- end of added code

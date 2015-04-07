@@ -189,11 +189,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   RETURN KeyLeft( Self )
                ENDIF
             ELSEIF wParam == 35     // End
-               ::lFirst := .F.
-               IF ::cType == "C"
-                  nPos := Len( Trim( ::title ) )
-                  hwg_Sendmessage( ::handle, EM_SETSEL, nPos, nPos )
-                  RETURN 0
+               IF !hwg_IsCtrlShift()
+                  ::lFirst := .F.
+                  IF ::cType == "C"
+                     nPos := Len( Trim( ::title ) )
+                     hwg_Sendmessage( ::handle, EM_SETSEL, nPos, nPos )
+                     RETURN 0
+                  ENDIF
                ENDIF
             ELSEIF wParam == 45     // Insert
                IF !hwg_IsCtrlShift()

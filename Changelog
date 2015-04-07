@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-07 13:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcombo.prg
+    ! Small fix
+  * source/gtk/hedit.prg
+    * Ctrl-C, Ctrl-V works now
+  * source/winapi/hedit.prg
+    ! Fixed problems with maxlength and clipboard copying in hedit
+
 2015-04-06 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
   * source/winapi/hedit.prg

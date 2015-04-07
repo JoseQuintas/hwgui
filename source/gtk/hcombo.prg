@@ -137,7 +137,9 @@ METHOD Init() CLASS HComboBox
          ELSE
             hwg_edit_Settext( ::hEdit, Iif( Valtype(::aItems[1]) == "A", ::aItems[::xValue,1], ::aItems[::xValue] ) )
          ENDIF
-         Eval( ::bSetGet, ::xValue, Self )
+         IF ::bSetGet != Nil
+            Eval( ::bSetGet, ::xValue, Self )
+         ENDIF
       ENDIF
    ENDIF
 

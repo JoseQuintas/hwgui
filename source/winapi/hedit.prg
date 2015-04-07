@@ -30,6 +30,7 @@ CLASS HEdit INHERIT HControl
    DATA lPicComplex  INIT .F.
    DATA lFirst       INIT .T.
    DATA lChanged     INIT .F.
+   DATA lNoPaste     INIT .F.
    DATA nMaxLength   INIT Nil
    DATA bkeydown, bkeyup, bchange
    DATA aColorOld    INIT { 0,0 }
@@ -131,7 +132,7 @@ METHOD Init()  CLASS HEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
-   LOCAL oParent := ::oParent, nPos, nctrl, cKeyb
+   LOCAL oParent := ::oParent, nPos, nctrl, cKeyb, cClipboardText
    LOCAL nexthandle
 
    IF ::bOther != Nil .AND. ( nPos := Eval( ::bOther, Self, msg, wParam, lParam ) ) != - 1
@@ -230,6 +231,24 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF Empty( hwg_Getedittext( oParent:handle, ::id ) )
                hwg_Sendmessage( ::handle, EM_SETSEL, 0, 0 )
             ENDIF
+         ELSEIF msg = WM_COPY .OR. msg = WM_CUT
+            hwg_Copystringtoclipboard( UnTransform( Self, hwg_Getedittext( ::oParent:handle, ::id ) ) )
+            RETURN 0
+
+         ELSEIF msg = WM_PASTE .AND. ! ::lNoPaste
+            ::lFirst := iif( ::cType = "N" .AND. "E" $ ::cPicFunc, .T. , .F. )
+            cClipboardText :=  hwg_Getclipboardtext()
+            IF ! Empty( cClipboardText )
+               nPos := hwg_Hiword( hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+               hwg_Sendmessage(  ::handle, EM_SETSEL, nPos - 1 , nPos - 1  )
+               FOR nPos = 1 TO Len( cClipboardText )
+                  GetApplyKey( Self,SubStr( cClipboardText , nPos, 1 ) )
+               NEXT
+               nPos := hwg_Hiword( hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
+               ::title := UnTransform( Self, hwg_Getedittext( ::oParent:handle, ::id ) )
+               hwg_Sendmessage(  ::handle, EM_SETSEL, nPos - 1 , nPos - 1 )
+            ENDIF
+            RETURN 0
 
          ENDIF
          /* Added by Sauli */
@@ -724,6 +743,9 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
             ENDIF
          ELSE
             oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + hwg_SubStr( oEdit:title, nPos + 1 )
+         ENDIF
+         IF !Empty( oEdit:nMaxLength )
+            oEdit:title := PadR( oEdit:title, oEdit:nMaxLength )
          ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
          IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. nPos == Len( oEdit:cPicMask )

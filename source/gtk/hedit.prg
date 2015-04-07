@@ -175,19 +175,25 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
                Return KeyRight( Self )
             ENDIF
          ELSEIF wParam == GDK_Left     // KeyLeft
+            IF lParam == 0
                ::lFirst := .F.
                Return KeyLeft( Self )
+            ENDIF
          ELSEIF wParam == GDK_Home     // Home
+            IF lParam == 0
                ::lFirst := .F.
                hwg_edit_SetPos( ::handle, 0 )
                Return 1
+            ENDIF
          ELSEIF wParam == GDK_End     // End
+            IF lParam == 0
                ::lFirst := .F.
                IF ::cType == "C"
                   nPos := Len( Trim( ::title ) )
 		  hwg_edit_SetPos( ::handle, nPos )
                   Return 1
                ENDIF
+            ENDIF
          ELSEIF wParam == GDK_Insert     // Insert
             IF lParam == 0
                Set( _SET_INSERT, ! Set( _SET_INSERT ) )
@@ -211,10 +217,10 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
 	       __Valid( Self )
 	    ENDIF
             Return 1
-         ELSEIF wParam >= 32 .AND. wParam < 65000
+         ELSEIF wParam >= 32 .AND. wParam < 65000 .AND. !hwg_Checkbit( lParam,2 )
             Return GetApplyKey( Self,Chr(wParam) )
 	 ELSE
-	    Return 1    
+	    Return 0
          ENDIF
       ENDIF
 

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-08 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    * The length of a character variable in a GET doesn't change now
+
 2015-04-07 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
     * Shift-End selects all line in GETs now

@@ -56,7 +56,7 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bSize,bPaint,ctoolt,tcolor,bcolor )
 
    IF vari != Nil
-      ::cType   := Valtype( vari )
+      ::cType := Valtype( vari )
    ENDIF
    IF bSetGet == Nil
       ::title := vari
@@ -68,14 +68,14 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
       ::lMultiLine := .T.
    ENDIF
 
-   IF !Empty(cPicture) .or. cPicture==Nil .And. nMaxLength !=Nil .or. !Empty(nMaxLength)
+   IF !Empty(nMaxLength)
       ::nMaxLength:= nMaxLength
-   ENDIF
-/*   IF ::nMaxLength != Nil .and. !Empty(::nMaxLength) 
-      IF !Empty(cPicture) .or. cPicture==Nil
-         cPicture:=Replicate("X",::nMaxLength)
+   ELSEIF !Empty( ::bSetGet ) .AND. !Empty( ::cType ) .AND. ::cType == "C"
+      ::nMaxLength := Len( vari )
+      IF !Empty( cPicture ) .AND. Len( cPicture ) > ::nMaxLength
+         ::nMaxLength := Len( cPicture )
       ENDIF
-   ENDIF                        ----------------- commented out by Maurizio la Cecilia */
+   ENDIF
  
    ParsePict( Self, cPicture, vari )
    ::Activate()
@@ -286,6 +286,8 @@ METHOD Value( xValue ) CLASS HEdit
       vari := CToD( vari )
    ELSEIF ::cType == "N"
       vari := Val( LTrim( vari ) )
+   ELSEIF ::cType == "C" .AND. !Empty( ::nMaxLength )
+      vari := PadR( vari, ::nMaxLength )
    ENDIF
 
    RETURN vari
@@ -344,7 +346,7 @@ Local nAt, i, masklen, cChar
 
 //                                         ------------ added by Maurizio la Cecilia
 
-   IF oEdit:nMaxLength != Nil .and. !Empty( oEdit:nMaxLength ) .and. Len( oEdit:cPicMask ) < oEdit:nMaxLength
+   IF !Empty( oEdit:nMaxLength ) .and. Len( oEdit:cPicMask ) < oEdit:nMaxLength
       oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:nMaxLength, "X" )
    ENDIF
 
@@ -579,6 +581,9 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
          ELSE
             oEdit:title := Left( oEdit:title,nPos-1 ) + cKey + SubStr( oEdit:title,nPos+1 )
          ENDIF
+         IF !Empty( oEdit:nMaxLength )
+            oEdit:title := PadR( oEdit:title, oEdit:nMaxLength )
+         ENDIF
          hwg_edit_Settext( oEdit:handle, oEdit:title )
          // hwg_WriteLog( "GetApplyKey "+oEdit:title+str(nPos-1) )
          KeyRight( oEdit,nPos )
@@ -631,6 +636,8 @@ Local vari, oDlg
             vari := Val( Ltrim( vari ) )
             oCtrl:title := Transform( vari, oCtrl:cPicFunc + Iif(Empty(oCtrl:cPicFunc),""," ") + oCtrl:cPicMask )
             hwg_edit_Settext( oCtrl:handle, oCtrl:title )
+         ELSEIF oCtrl:cType == "C" .AND. !Empty( oCtrl:nMaxLength )
+            oCtrl:title := vari := PadR( vari, oCtrl:nMaxLength )
          ENDIF
          Eval( oCtrl:bSetGet, vari, oCtrl )
 

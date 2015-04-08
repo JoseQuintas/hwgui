@@ -63,7 +63,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       bSize, bPaint, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
    IF vari != Nil
-      ::cType   := ValType( vari )
+      ::cType := ValType( vari )
    ENDIF
    IF bSetGet == Nil
       ::title := vari
@@ -76,8 +76,13 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::lMultiLine := .T.
    ENDIF
 
-   IF !Empty( cPicture ) .OR. cPicture == Nil .AND. nMaxLength != Nil .OR. !Empty( nMaxLength )
+   IF !Empty( nMaxLength )
       ::nMaxLength := nMaxLength
+   ELSEIF !Empty( ::bSetGet ) .AND. !Empty( ::cType ) .AND. ::cType == "C"
+      ::nMaxLength := Len( vari )
+      IF !Empty( cPicture ) .AND. Len( cPicture ) > ::nMaxLength
+         ::nMaxLength := Len( cPicture )
+      ENDIF
    ENDIF
 
    ParsePict( Self, cPicture, vari )
@@ -345,7 +350,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
    ENDIF
    ::bSetGet := bSetGet
 
-   IF !Empty( cPicture ) .OR. cPicture == Nil .AND. nMaxLength != Nil .OR. !Empty( nMaxLength )
+   IF !Empty( nMaxLength )
       ::nMaxLength := nMaxLength
    ENDIF
 
@@ -412,6 +417,8 @@ METHOD Value( xValue ) CLASS HEdit
       vari := CToD( vari )
    ELSEIF ::cType == "N"
       vari := Val( LTrim( vari ) )
+   ELSEIF ::cType == "C" .AND. !Empty( ::nMaxLength )
+      vari := PadR( vari, ::nMaxLength )
    ENDIF
 
    RETURN vari
@@ -502,7 +509,7 @@ STATIC FUNCTION ParsePict( oEdit, cPicture, vari )
 
    //  ------------ added by Maurizio la Cecilia
 
-   IF oEdit:nMaxLength != Nil .AND. !Empty( oEdit:nMaxLength ) .AND. Len( oEdit:cPicMask ) < oEdit:nMaxLength
+   IF !Empty( oEdit:nMaxLength ) .AND. Len( oEdit:cPicMask ) < oEdit:nMaxLength
       oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:nMaxLength, "X" )
    ENDIF
 
@@ -816,6 +823,8 @@ STATIC FUNCTION __valid( oCtrl )
             vari := Val( LTrim( vari ) )
             oCtrl:title := Transform( vari, oCtrl:cPicFunc + iif( Empty(oCtrl:cPicFunc ),""," " ) + oCtrl:cPicMask )
             hwg_Setdlgitemtext( oCtrl:oParent:handle, oCtrl:id, oCtrl:title )
+         ELSEIF oCtrl:cType == "C" .AND. !Empty( oCtrl:nMaxLength )
+            oCtrl:title := vari := PadR( vari, oCtrl:nMaxLength )
          ENDIF
          Eval( oCtrl:bSetGet, vari, oCtrl )
 

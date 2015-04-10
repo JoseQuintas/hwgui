@@ -31,7 +31,6 @@ METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,lDocked ) CLASS HPanel
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
-   nStyle := SS_OWNERDRAW
    ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
                   nHeight,oParent:oFont,bInit, ;
                   bSize,bPaint )

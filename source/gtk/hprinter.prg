@@ -395,7 +395,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
    @ TOOL_SIDE_WIDTH, 0 PANEL oCanvas ;
       SIZE oDlg:nWidth - TOOL_SIDE_WIDTH, oDlg:nHeight ;
       ON SIZE { | o, x, y | o:Move(,, x - TOOL_SIDE_WIDTH, y ) } ;
-      ON PAINT { || ::PaintDoc( oCanvas ) } STYLE WS_VSCROLL + WS_HSCROLL
+      ON PAINT { || ::PaintDoc( oCanvas ) } STYLE SS_OWNERDRAW
 
    //oCanvas:bScroll := { | oWnd, msg, wParam, lParam | HB_SYMBOL_UNUSED( oWnd ), ::ResizePreviewDlg( oCanvas,, msg, wParam, lParam ) }
    oCanvas:bOther := { |o,m,wp,lp|HB_SYMBOL_UNUSED(wp),Iif(m==WM_LBUTTONDBLCLK,MessProc(Self,o,lp),-1) }

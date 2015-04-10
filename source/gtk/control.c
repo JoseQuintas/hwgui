@@ -632,11 +632,14 @@ HB_FUNC( HWG_CREATEPANEL )
 {
    GtkWidget *hCtrl;
    GtkFixed *box, *fbox;
+   HB_ULONG ulStyle = hb_parnl( 3 );
 
    fbox = ( GtkFixed * ) gtk_fixed_new(  );
-   hCtrl = gtk_toolbar_new();
-   //hCtrl = gtk_drawing_area_new();
-   //hCtrl = gtk_layout_new( NULL, NULL );
+
+   if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
+      hCtrl = gtk_drawing_area_new();
+   else
+      hCtrl = gtk_toolbar_new();
 
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
    if( box )
@@ -650,7 +653,8 @@ HB_FUNC( HWG_CREATEPANEL )
    gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
    g_object_set_data( ( GObject * ) hCtrl, "fbox", ( gpointer ) fbox );
    GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
-   set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
+   if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
+      set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK |
          GDK_LEAVE_NOTIFY_MASK );

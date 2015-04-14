@@ -190,8 +190,9 @@ CLASS HCEdit INHERIT HControl
    DATA   nMaxUndo     INIT 10
    DATA   aUndo
 
+   DATA   oHili
+   DATA   aHili  PROTECTED
    DATA   lWrap   INIT .F.  PROTECTED
-   DATA   oHili, aHili  PROTECTED
 #ifdef __PLATFORM__UNIX
    DATA   lPainted INIT .F. PROTECTED
    DATA   lNeedScan INIT .F. PROTECTED

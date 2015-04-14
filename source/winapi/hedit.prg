@@ -78,14 +78,12 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    IF !Empty( nMaxLength )
       ::nMaxLength := nMaxLength
-   ELSEIF !Empty( ::bSetGet ) .AND. !Empty( ::cType ) .AND. ::cType == "C"
-      ::nMaxLength := Len( vari )
-      IF !Empty( cPicture ) .AND. Len( cPicture ) > ::nMaxLength
-         ::nMaxLength := Len( cPicture )
-      ENDIF
    ENDIF
 
    ParsePict( Self, cPicture, vari )
+   IF Empty( ::nMaxLength ) .AND. !Empty( ::bSetGet ) .AND. !Empty( ::cType ) .AND. ::cType == "C"
+      ::nMaxLength := Len( vari )
+   ENDIF
    ::Activate()
 
    IF bSetGet != Nil
@@ -480,6 +478,9 @@ STATIC FUNCTION ParsePict( oEdit, cPicture, vari )
          oEdit:cPicFunc   := ""
          oEdit:cPicMask   := cPicture
       ENDIF
+      IF Empty( oEdit:nMaxLength ) .AND. !Empty( oEdit:cPicMask )
+         oEdit:nMaxLength := Len( oEdit:cPicMask )
+      ENDIF
    ENDIF
 
    IF Empty( oEdit:cPicMask )
@@ -754,7 +755,8 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
             oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + hwg_SubStr( oEdit:title, nPos + 1 )
          ENDIF
          IF !Empty( oEdit:nMaxLength )
-            oEdit:title := PadR( oEdit:title, oEdit:nMaxLength )
+            i := Len( oEdit:cPicMask )
+            oEdit:title := PadR( oEdit:title, Iif( !Empty(i) .AND. i > oEdit:nMaxLength, i, oEdit:nMaxLength ) )
          ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
          IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. nPos == Len( oEdit:cPicMask )

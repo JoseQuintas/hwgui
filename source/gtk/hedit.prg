@@ -70,14 +70,13 @@ METHOD New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ;
 
    IF !Empty(nMaxLength)
       ::nMaxLength:= nMaxLength
-   ELSEIF !Empty( ::bSetGet ) .AND. !Empty( ::cType ) .AND. ::cType == "C"
-      ::nMaxLength := Len( vari )
-      IF !Empty( cPicture ) .AND. Len( cPicture ) > ::nMaxLength
-         ::nMaxLength := Len( cPicture )
-      ENDIF
    ENDIF
  
    ParsePict( Self, cPicture, vari )
+   IF Empty( ::nMaxLength ) .AND. !Empty( ::bSetGet ) .AND. !Empty( ::cType ) .AND. ::cType == "C"
+      ::nMaxLength := Len( vari )
+   ENDIF
+
    ::Activate()
 
    ::bGetFocus := bGFocus
@@ -316,6 +315,9 @@ Local nAt, i, masklen, cChar
       ELSE
          oEdit:cPicFunc   := ""
          oEdit:cPicMask   := cPicture
+      ENDIF
+      IF Empty( oEdit:nMaxLength ) .AND. !Empty( oEdit:cPicMask )
+         oEdit:nMaxLength := Len( oEdit:cPicMask )
       ENDIF
    ENDIF
 
@@ -582,7 +584,8 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
             oEdit:title := Left( oEdit:title,nPos-1 ) + cKey + SubStr( oEdit:title,nPos+1 )
          ENDIF
          IF !Empty( oEdit:nMaxLength )
-            oEdit:title := PadR( oEdit:title, oEdit:nMaxLength )
+            i := Len( oEdit:cPicMask )
+            oEdit:title := PadR( oEdit:title, Iif( !Empty(i) .AND. i > oEdit:nMaxLength, i, oEdit:nMaxLength ) )
          ENDIF
          hwg_edit_Settext( oEdit:handle, oEdit:title )
          // hwg_WriteLog( "GetApplyKey "+oEdit:title+str(nPos-1) )

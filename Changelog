@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-15 10:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hbrowsex.prg
+    Calls of hwg_VScrollPos() are changed to hwg_VScrollPosEx()
+  * source/common/editor/hcedit.prg
+    * New parameter added to InsText() - lChgPos. If it exists
+      and is set to .F., the cursor position after inserting isn't changed.
+
 2015-04-14 16:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * :oHili is made public

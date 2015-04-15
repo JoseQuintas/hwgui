@@ -466,7 +466,6 @@ METHOD Init() CLASS HBrowseEx
       hwg_Setwindowobject( ::handle, Self )
       ::Super:Init()
       ::InitBrw( , .T. )
-      //hwg_VScrollPos( Self, 0, .F. )
       IF hwg_GetParentForm( Self ):Type < WND_DLG_RESOURCE
          hwg_GetParentForm( Self ):lDisableCtrlTab := .T.
       ENDIF
@@ -1092,7 +1091,7 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowseEx
       ::bRcou   := { | o | Len( o:aArray ) }
       ::bRecnoLog := ::bRecno  := { | o | o:nCurrent }
       ::bGoTo   := { | o, n | o:nCurrent := n }
-      ::bScrollPos := { | o, n, lEof, nPos | hwg_VScrollPos( o, n, lEof, nPos ) }
+      ::bScrollPos := { | o, n, lEof, nPos | hwg_VScrollPosEx( o, n, lEof, nPos ) }
       IF ::lFilter
          ::nLastRecordFilter  := 0
          ::nFirstRecordFilter := 0
@@ -1611,7 +1610,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowseEx
       IF ::bScrollPos != NIL // array
          Eval( ::bScrollPos, Self, 1, .F. )
       ELSE
-         hwg_VScrollPos( Self, 0, .F. )
+         hwg_VScrollPosEx( Self, 0, .F. )
       ENDIF
    ENDIF
 
@@ -2391,7 +2390,7 @@ METHOD DoVScroll( wParam ) CLASS HBrowseEx
          ENDIF
          Eval( ::bSkip, Self, 1 )
          Eval( ::bSkip, Self, - 1 )
-         hwg_VScrollPos( Self, 0, .F. )
+         hwg_VScrollPosEx( Self, 0, .F. )
          ::refresh()
       ENDIF
    ENDIF
@@ -2513,7 +2512,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowseEx
    IF ::bScrollPos != NIL
       Eval( ::bScrollPos, Self, 1, .F. )
    ELSEIF ::nRecords > 1
-      hwg_VScrollPos( Self, 0, .F. )
+      hwg_VScrollPosEx( Self, 0, .F. )
    ENDIF
 
    // ::Setfocus()  ??
@@ -2541,7 +2540,7 @@ METHOD LINEUP() CLASS HBrowseEx
       IF ::bScrollPos != NIL
          Eval( ::bScrollPos, Self, - 1, .F. )
       ELSEIF ::nRecords > 1
-         hwg_VScrollPos( Self, 0, .F. )
+         hwg_VScrollPosEx( Self, 0, .F. )
       ENDIF
       ::internal[ 1 ] := hwg_SetBit( ::internal[ 1 ], 1, 0 )
    ENDIF
@@ -2568,7 +2567,7 @@ METHOD PAGEUP() CLASS HBrowseEx
    IF ::bScrollPos != NIL
       Eval( ::bScrollPos, Self, - STEP, lBof )
    ELSEIF ::nRecords > 1
-      hwg_VScrollPos( Self, 0, .F. )
+      hwg_VScrollPosEx( Self, 0, .F. )
    ENDIF
 
    ::Refresh( ::nFootRows > 0 )
@@ -2597,7 +2596,7 @@ METHOD PAGEDOWN() CLASS HBrowseEx
    IF ::bScrollPos != NIL
       Eval( ::bScrollPos, Self, STEP, .F. )
    ELSE
-      hwg_VScrollPos( Self, 0, .F. )
+      hwg_VScrollPosEx( Self, 0, .F. )
    ENDIF
 
    ::Refresh( ::nFootRows > 0 )
@@ -2616,7 +2615,7 @@ METHOD BOTTOM( lPaint ) CLASS HBrowseEx
       Eval( ::bGoBot, Self )
    ENDIF
 
-   hwg_VScrollPos( Self, 0, iif( ::Type == BRW_ARRAY, .F. , .T. ) )
+   hwg_VScrollPosEx( Self, 0, iif( ::Type == BRW_ARRAY, .F. , .T. ) )
 
    IF lPaint == NIL .OR. lPaint
       ::Refresh( ::nFootRows > 0 )
@@ -2632,7 +2631,7 @@ METHOD TOP() CLASS HBrowseEx
 
    ::rowPos := 1
    Eval( ::bGoTop, Self )
-   hwg_VScrollPos( Self, 0, .F. )
+   hwg_VScrollPosEx( Self, 0, .F. )
 
    ::Refresh( ::nFootRows > 0 )
    ::internal[ 1 ] := hwg_SetBit( ::internal[ 1 ], 1, 0 )
@@ -2709,7 +2708,7 @@ METHOD ButtonDown( lParam, lReturnRowCol ) CLASS HBrowseEx
          IF ::bScrollPos != NIL
             Eval( ::bScrollPos, Self, STEP, .F. )
          ELSEIF ::nRecords > 1
-            hwg_VScrollPos( Self, 0, .F. )
+            hwg_VScrollPosEx( Self, 0, .F. )
          ENDIF
          res := .T.
 
@@ -2718,7 +2717,7 @@ METHOD ButtonDown( lParam, lReturnRowCol ) CLASS HBrowseEx
          IF ::colpos != fif - ::nLeftCol + 1 + ::freeze
             // Colpos should not go beyond last column or I get bound errors on ::Edit()
             ::colpos := Min( ::nColumns + 1, fif - ::nLeftCol + 1 + ::freeze )
-            hwg_VScrollPos( Self, 0, .F. )
+            hwg_VScrollPosEx( Self, 0, .F. )
             res := .T.
          ENDIF
       ENDIF

@@ -1690,10 +1690,11 @@ METHOD DelText( P1, P2 ) CLASS HCEdit
 
    RETURN Nil
 
-METHOD InsText( aPoint, cText, lOver ) CLASS HCEdit
+METHOD InsText( aPoint, cText, lOver, lChgPos ) CLASS HCEdit
    LOCAL aText := hb_aTokens( cText, cNewLine ), nLine := aPoint[P_Y], cRest, i, nPos, nSubl
    LOCAL nLineC := ::nLineC, nLineNew, nSub, nPos1, nPos2, lInvAll := .F.
 
+   IF lChgPos == Nil; lChgPos := .T.; ENDIF
    nPos := nPos1 := aPoint[P_X]
    nSubl := Iif( ::lWrap .AND. ::aWrap[nLine] != Nil, Len(::aWrap[nLine]), 0 )
 
@@ -1728,24 +1729,28 @@ METHOD InsText( aPoint, cText, lOver ) CLASS HCEdit
       ::oHili:UpdSource( nLine, nPos1, nLineNew, nPos2, Iif(lOver==Nil.OR.!lOver,1,2), cText )
    ENDIF
 
-   nSub := ::nLinesAll + 1
-   IF ( i := hced_P2Screen( Self, nLineNew, @nPos, @nSub ) ) > ::nLines .AND. ;
-         i > Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
-      ::nLineF := nLineNew
-      ::nWSublF := nSub
-      ::nWCharF := Iif( nSub==1, 1, ::aWrap[nLineNew,nSub-1] )
-      ::nLineC := 1
-   ELSE
-      ::nLineC := i
+   IF lChgPos
+      nSub := ::nLinesAll + 1
+      IF ( i := hced_P2Screen( Self, nLineNew, @nPos, @nSub ) ) > ::nLines .AND. ;
+            i > Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
+         ::nLineF := nLineNew
+         ::nWSublF := nSub
+         ::nWCharF := Iif( nSub==1, 1, ::aWrap[nLineNew,nSub-1] )
+         ::nLineC := 1
+      ELSE
+         ::nLineC := i
+      ENDIF
    ENDIF
 
    ::Paint( .F. )
-   ::nPosC := nPos - ::nPosF + 1
-   ::SetCaretPos( SETC_XY )
-   IF !::lWrap .AND. ::nPosC < nPos - ::nPosF + 1
-      ::nPosF += nPos - ::nPosF + 1 - ::nPosC
-      ::aPointC[P_X] := ::nPosF + ::nPosC - 1
-      lInvAll := .T.
+   IF lChgPos
+      ::nPosC := nPos - ::nPosF + 1
+      ::SetCaretPos( SETC_XY )
+      IF !::lWrap .AND. ::nPosC < nPos - ::nPosF + 1
+         ::nPosF += nPos - ::nPosF + 1 - ::nPosC
+         ::aPointC[P_X] := ::nPosF + ::nPosC - 1
+         lInvAll := .T.
+      ENDIF
    ENDIF
 
    IF Len( aText ) > 1 .OR. lInvAll

@@ -123,6 +123,7 @@ CLASS HCEdit INHERIT HControl
    DATA   hEdit
    DATA   cFileName
    DATA   aText, nTextLen
+   DATA   nMaxLines    INIT 0
    DATA   cp, cpSource
    DATA   lUtf8        INIT .F.
    DATA   aWrap, nLinesAll
@@ -1094,9 +1095,11 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          IF ::lWrap //.AND. ::nDocFormat == 0
             RETURN 0
          ENDIF
-         ::nPosF ++
-         ::Paint( .F. )
-         lInvAll := .T.
+         IF hced_GetXCaretPos( ::hEdit ) > ( ::nClientWidth-::nMarginR-10 )
+            ::nPosF ++
+            ::Paint( .F. )
+            lInvAll := .T.
+         ENDIF
       ENDIF
       ::SetCaretPos( SETC_RIGHT )
       IF nCtrl == FSHIFT
@@ -1290,8 +1293,10 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
    ENDIF
 
    IF nKeyCode == VK_RETURN
-      ::InsText( ::aPointC, cNewLine )
-      ::nPosF := ::nPosC := 1
+      IF Empty( ::nMaxLines ) .OR. ::nMaxLines > ::nTextLen
+         ::InsText( ::aPointC, cNewLine )
+         ::nPosF := ::nPosC := 1
+      ENDIF
 
    ELSEIF nKeyCode == VK_TAB
       IF ::lInsert

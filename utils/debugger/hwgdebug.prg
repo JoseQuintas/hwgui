@@ -298,6 +298,9 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
    SET KEY 0,VK_UP TO KeyPress( VK_UP )
    SET KEY 0,VK_DOWN TO KeyPress( VK_DOWN )
    @ 84,516 EDITBOX oEditExpr CAPTION "" ID EDIT_RES SIZE 452,26 STYLE ES_AUTOHSCROLL ON SIZE {|o,x,y|o:Move(,y-32,x-148)}
+   //oEditExpr := HCEdit():New( , EDIT_RES,, 84, 516, 452, 26,,, {|o,x,y|o:Move(,y-32,x-148)},,,,,, .T. )
+   //oEditExpr:nMaxLines := 1
+   //oEditExpr:bColorCur := oEditExpr:bColor
 
    @ 536,516 BUTTON "-" SIZE 24, 14 ON CLICK {||PrevExpr(1)} ON SIZE {|o,x,y|o:Move(x-64,y-32)}
    @ 536,530 BUTTON "-" SIZE 24, 14 ON CLICK {||PrevExpr(-1)} ON SIZE {|o,x,y|o:Move(x-64,y-18)}
@@ -949,7 +952,7 @@ Local oText
    oText:lReadOnly := !lModeIde
    oText:lShowNumbers := .T.
    oText:bPaint := {|o,h,n,y1,y2| onTxtPaint( o,h,n,y1,y2 ) }
-   oText:bKeyDown:= {|o,n|Iif(n==120.or.n==13,AddBreakPoint(),.T.)}
+   oText:bKeyDown:= {|o,n|Iif(n==120.or.n==13,AddBreakPoint(),-1)}
    oText:bClickDoub:= {||AddBreakPoint()}
    oText:HighLighter( oHighLighter )
 

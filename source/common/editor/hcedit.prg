@@ -1632,9 +1632,10 @@ METHOD GetText( P1, P2 ) CLASS HCEdit
 
    RETURN cText
 
-METHOD DelText( P1, P2 ) CLASS HCEdit
+METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
    LOCAL i, Pstart, Pend, cRest, nPos, cText := ::GetText( P1, P2 )
 
+   IF lChgPos == Nil; lChgPos := .T.; ENDIF
    IF ::Pcmp( P1, P2 ) < 0
       Pstart := ::PCopy( P1, Pstart )
       Pend := ::PCopy( P2, Pend )
@@ -1671,21 +1672,24 @@ METHOD DelText( P1, P2 ) CLASS HCEdit
    ::Scan( Pstart[P_Y], Min( Pend[P_Y], ::nTextLen ) )
    ::Paint( .F. )
 
-   nPos := Pstart[P_X]
-   IF ( i := hced_P2Screen( Self, Pstart[P_Y], @nPos ) ) <= 0
-      ::nLineF := Pstart[P_Y]
-      ::nWSublF := hced_P2SubLine( Self, Pstart[P_Y], Pstart[P_X] )
-      ::nWCharF := Iif( ::nWSublF==1, 1, ::aWrap[Pstart[P_Y],::nWSublF-1] )
-      ::nLineC := 1
-   ELSE
-      ::nLineC := i
+   IF lChgPos
+      nPos := Pstart[P_X]
+      IF ( i := hced_P2Screen( Self, Pstart[P_Y], @nPos ) ) <= 0
+         ::nLineF := Pstart[P_Y]
+         ::nWSublF := hced_P2SubLine( Self, Pstart[P_Y], Pstart[P_X] )
+         ::nWCharF := Iif( ::nWSublF==1, 1, ::aWrap[Pstart[P_Y],::nWSublF-1] )
+         ::nLineC := 1
+      ELSE
+         ::nLineC := i
+      ENDIF
+      ::nPosC := nPos - ::nPosF + 1
    ENDIF
-   ::nPosC := nPos - ::nPosF + 1
 
    hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
       ::nClientWidth, ::nHeight )
-   ::SetCaretPos( SETC_XY )
-
+   IF lChgPos
+      ::SetCaretPos( SETC_XY )
+   ENDIF
    ::lUpdated := .T.
 
    RETURN Nil

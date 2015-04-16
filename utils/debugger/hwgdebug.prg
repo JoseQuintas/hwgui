@@ -215,7 +215,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
       MENU TITLE "&File"
          MENUITEM "Debug program" ID MENU_INIT ACTION DebugNewExe()
          SEPARATOR
-         MENUITEM "Open source file" ACTION OpenPrg()
+         MENUITEM "Open source file"+Chr(9)+"Ctrl+O" ACTION OpenPrg() ACCELERATOR FCONTROL,Asc("O")
          SEPARATOR
          MENUITEM "Close source file" ACTION oTabMain:DeletePage( oTabMain:GetActivePage() )
          IF lModeIde
@@ -231,7 +231,9 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
       MENU TITLE "&Search"
          MENUITEM "&Find"+Chr(9)+"Ctrl+F" ACTION Locate( 0 ) ACCELERATOR FCONTROL,Asc("F")
          MENUITEM "&Next" +Chr(9)+"F3" ACTION Locate( 1 ) ACCELERATOR 0,VK_F3
-         MENUITEM "&Previous" ACTION Locate( -1 )
+         MENUITEM "&Previous" +Chr(9)+"Shift+F3" ACTION Locate( -1 ) ACCELERATOR FSHIFT,VK_F3
+         SEPARATOR
+         MENUITEM "&Go to line" +Chr(9)+"Ctrl+G" ACTION GoToLine( )ACCELERATOR FCONTROL,Asc("G")
          SEPARATOR
          MENUITEM "&Current position" ACTION Iif( lDebugging, SetCurrLine( nCurrLine,cPrgName ), .T. )
          SEPARATOR
@@ -1205,6 +1207,14 @@ Local oText := oTabMain:aControls[ oTabMain:GetActivePage() ]
 Return Iif( Empty(oText), 0, oText:nCurrent )
 
 #endif
+
+Static Function GoToLine()
+   LOCAL nLine := GetCurrLine()
+   nLine = hu_Get("Go to line","999999",nLine)
+   if !Empty(nLine)
+      SetCurrLine(nLine)
+   endif
+return nil
 
 Static Function Locate( nDir )
 Local i, arr := GetTextArr()

@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-16 13:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * New parameter added to DelText() - lChgPos. If it exists
+      and is set to .F., the cursor position after deleting isn't changed.
+  * utils/debugger\hwgdebug.prg
+    * Few shortcuts added and GoToLine() menu item and function.
+      Code provided by Antonino Perricone
+
 2015-04-15 10:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/ext_controls/hbrowsex.prg
     Calls of hwg_VScrollPos() are changed to hwg_VScrollPosEx()

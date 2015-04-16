@@ -444,6 +444,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
       cairo_move_to( pted->hDCScr->cr, (gdouble)pted->ixCaretPos, (gdouble)pted->iyCaretPos );
       cairo_line_to( pted->hDCScr->cr, (gdouble)pted->ixCaretPos, (gdouble)pted->iyCaretPos+iHeight );
       cairo_stroke( pted->hDCScr->cr );
+      pted->iCaretHeight = iHeight;
    }
 
    return x1;
@@ -772,6 +773,12 @@ HB_FUNC( HCED_GETYCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
    hb_retni( pted->iyCaretPos );
+}
+
+HB_FUNC( HCED_GETCARETHEIGHT )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+   hb_retni( pted->iCaretHeight );
 }
 
 HB_FUNC( HCED_SETCARETPOS )

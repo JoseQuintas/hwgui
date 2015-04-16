@@ -653,6 +653,12 @@ HB_FUNC( HCED_GETYCARETPOS )
    hb_retni( pted->iyCaretPos );
 }
 
+HB_FUNC( HCED_GETCARETHEIGHT )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+   hb_retni( pted->iCaretHeight );
+}
+
 HB_FUNC( HCED_SETCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );

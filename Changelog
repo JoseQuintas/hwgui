@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-16 16:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit_W.c
+    * hced_getCaretHeight() function added
+
 2015-04-16 13:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * New parameter added to DelText() - lChgPos. If it exists

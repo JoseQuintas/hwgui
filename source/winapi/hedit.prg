@@ -89,9 +89,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bSetGet != Nil
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
-      IF bGfocus != Nil
+      //IF bGfocus != Nil
          ::oParent:AddEvent( EN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) }  )
-      ENDIF
+      //ENDIF
       ::oParent:AddEvent( EN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
       ::bValid := { |o|__Valid( o ) }
    ELSE
@@ -794,7 +794,7 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    RETURN 0
 
 STATIC FUNCTION __When( oCtrl )
-   LOCAL res
+   LOCAL res := .T., n := 0
 
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
@@ -803,10 +803,16 @@ STATIC FUNCTION __When( oCtrl )
       IF !res
          hwg_GetSkip( oCtrl:oParent, oCtrl:handle, 1 )
       ENDIF
-      RETURN res
+   ENDIF
+   IF res .AND. !Empty( oCtrl:cPicMask )
+      DO WHILE !( Substr( oCtrl:cPicMask,++n,1 ) $ "ANX9#LY!$*.," )
+      ENDDO
+      IF n > 1
+         hwg_Sendmessage( oCtrl:handle, EM_SETSEL, n-1, n-1 )
+      ENDIF
    ENDIF
 
-   RETURN .T.
+   RETURN res
 
 STATIC FUNCTION __valid( oCtrl )
    LOCAL vari, oDlg

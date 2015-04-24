@@ -170,6 +170,7 @@ CLASS HCEdit INHERIT HControl
    DATA   lChgCaret    INIT .F.
    DATA   lSetFocus    INIT .F.
    DATA   bChangePos, bKeyDown, bClickDoub
+   DATA   bAfter
 
    DATA   lMDown       INIT .F.
    DATA   aPointC, aPointM1, aPointM2
@@ -521,6 +522,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
          Eval( ::bChangePos, Self )
       ENDIF
       ::lChgCaret := .F.
+   ENDIF
+
+   IF ::bAfter != Nil
+      IF ( n := Eval( ::bAfter,Self,msg,wParam,lParam ) ) != - 1
+         RETURN n
+      ENDIF
    ENDIF
 
    RETURN lRes

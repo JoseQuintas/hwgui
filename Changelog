@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-24 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * :bAfter variable added - the codeblock, which executes in onEvent
+      after event handling
+  * source/common/editor/hcedit_l.c
+    * caret height setting corrected
+
 2015-04-23 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
     ! Fix for some kinds of a picture

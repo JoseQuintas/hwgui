@@ -188,7 +188,8 @@ TEDFONT * ted_setfont( TEDIT * pted, PHWGUI_FONT hwg_font, int iNum, HB_BOOL bPr
          ( (iNum>=0)? iNum : pted->iFontsCurr );
 
    pFont->iWidth = 0;
-
+   //if( !pted->iCaretHeight )
+   //   pted->iCaretHeight = pFont->iHeight;
    pFont->hwg_font = hwg_font;
    if( iNum < 0 )
       pted->iFontsCurr++;
@@ -960,6 +961,7 @@ HB_FUNC( HCED_LINEOUT )
          break;
       i ++;
    }
+   pted->iCaretHeight = iHeight;
 
    /*
    for( i = 0, lasti = 0; i <= iPrinted; i++ )

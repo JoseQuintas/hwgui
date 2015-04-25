@@ -7,6 +7,9 @@
  * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
+#ifdef __XHARBOUR__
+#xtranslate HB_AT(<x,...>) => AT(<x>)
+#endif
 
 #ifdef __XHARBOUR__
 #xtranslate HB_AT(<x,...>) => AT(<x>)

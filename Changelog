@@ -7,7 +7,16 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2015-04-25 09:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * samples/a.prg
+  * source/common/promisc/procscri.prg
+  * utils/dbc/dbchw.prg
+    ! changed calls to hb_version() to #ifdef __XHARBOUR)__ VERSION #ELSE#HB_VERSION() #ENDIF
+  * source/common/editor/hcedit.prg
+    ! changed rule for translate hb_hash to hash since parameter is optional
+  ! hwgui.lib.xbp  
+    ! updated
+      
 2015-04-24 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * :bAfter variable added - the codeblock, which executes in onEvent

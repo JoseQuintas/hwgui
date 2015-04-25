@@ -60,7 +60,7 @@
 #include "hxml.ch"
 
 #ifdef __XHARBOUR__
-#xtranslate HB_HASH(<x,...>) => HASH(<x>)
+#xtranslate HB_HASH([<x,...>]) => HASH([<x>])
 #xtranslate HB_HHASKEY(<x,...>) => HHASKEY(<x>)
 #endif
 

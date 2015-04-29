@@ -7,6 +7,13 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2015-04-29 15:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+    * hwg_edit_getselpos() function added, which returns an array with selection positions
+  * source/gtk/hedit.prg
+    * copy/paste for get items now respects the picture
+
 2015-04-25 09:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * samples/a.prg
   * source/common/promisc/procscri.prg

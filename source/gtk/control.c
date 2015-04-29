@@ -285,8 +285,30 @@ HB_FUNC( HWG_EDIT_SETPOS )
 
 HB_FUNC( HWG_EDIT_GETPOS )
 {
-   hb_retni( gtk_editable_get_position( ( GtkEditable * )
-               HB_PARHANDLE( 1 ) ) );
+   hb_retni( gtk_editable_get_position( ( GtkEditable * ) HB_PARHANDLE( 1 ) ) );
+}
+
+HB_FUNC( HWG_EDIT_GETSELPOS )
+{
+   gint start, end;
+   if( gtk_editable_get_selection_bounds( ( (GtkEditable *) HB_PARHANDLE( 1 ) ),
+         &start, &end ) )
+   {
+      PHB_ITEM aSel = hb_itemArrayNew( 2 );
+      PHB_ITEM temp;
+
+      temp = hb_itemPutNL( NULL, start );
+      hb_itemArrayPut( aSel, 1, temp );
+      hb_itemRelease( temp );
+
+      temp = hb_itemPutNL( NULL, end );
+      hb_itemArrayPut( aSel, 2, temp );
+      hb_itemRelease( temp );
+
+      hb_itemReturn( aSel );
+      hb_itemRelease( aSel );
+   }
+
 }
 
 /*

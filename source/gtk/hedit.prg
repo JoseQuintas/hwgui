@@ -98,31 +98,14 @@ METHOD Activate CLASS HEdit
 Return Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
-Local oParent := ::oParent, nPos, nctrl, cKeyb
+Local oParent := ::oParent, nPos, cClipboardText
 
-   // hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   //hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent,Self,msg,wParam,lParam ) != 0
       Return 0
    ENDIF
    
-   IF msg == WM_KEYDOWN
-      IF wParam != 16 .AND. wParam != 17 .AND. wParam != 18
-         DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent,"GETLIST" )
-            oParent := oParent:oParent
-         ENDDO
-         /*
-         IF oParent != Nil .AND. !Empty( oParent:KeyList )
-            // cKeyb := GetKeyboardState()
-            // nctrl := Iif( Asc(Substr(cKeyb,VK_CONTROL+1,1))>=128,FCONTROL,Iif( Asc(Substr(cKeyb,VK_SHIFT+1,1))>=128,FSHIFT,0 ) )
-            nctrl := 0
-            IF ( nPos := Ascan( oParent:KeyList,{|a|a[1]==nctrl.AND.a[2]==wParam} ) ) > 0
-               Eval( oParent:KeyList[ nPos,3 ] )
-               Return 0
-            ENDIF
-         ENDIF
-         */
-      ENDIF
-   ELSEIF msg == WM_SETFOCUS
+   IF msg == WM_SETFOCUS
       IF ::bSetGet == Nil
          IF ::bGetFocus != Nil
             Eval( ::bGetFocus, hwg_Edit_GetText( ::handle ), Self )
@@ -193,10 +176,6 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
                   Return 1
                ENDIF
             ENDIF
-         ELSEIF wParam == GDK_Insert     // Insert
-            IF lParam == 0
-               Set( _SET_INSERT, ! Set( _SET_INSERT ) )
-            ENDIF
          ELSEIF wParam == GDK_Delete     // Del
             ::lFirst := .F.
             hwg_SetGetUpdated( Self )
@@ -216,6 +195,31 @@ Local oParent := ::oParent, nPos, nctrl, cKeyb
 	       __Valid( Self )
 	    ENDIF
             Return 1
+         ELSEIF ( hwg_checkBit( lParam,1 ) .AND. wParam == GDK_Insert ) .OR. ;
+               ( hwg_checkBit( lParam,2 ) .AND. ( wParam == 86 .OR. wParam == 118 ) )
+            // Paste
+            IF ::bSetGet != Nil
+               ::lFirst := iif( ::cType = "N" .AND. "E" $ ::cPicFunc, .T. , .F. )
+               cClipboardText := hwg_Getclipboardtext()
+               IF ! Empty( cClipboardText )
+                  FOR nPos = 1 TO Len( cClipboardText )
+                     GetApplyKey( Self,SubStr( cClipboardText , nPos, 1 ) )
+                  NEXT
+                  ::title := UnTransform( Self, hwg_Edit_GetText( ::handle ) )
+               ENDIF
+               Return 1
+            ENDIF
+         ELSEIF hwg_checkBit( lParam,2 ) .AND. wParam == GDK_Insert .OR. ;
+               ( hwg_checkBit( lParam,2 ) .AND. ( wParam == 67 .OR. wParam == 99 ) )
+            // Copy
+            IF ::bSetGet != Nil
+               hwg_Copystringtoclipboard( UnTransform( Self, hwg_Edit_GetText( ::handle ) ) )
+               Return 1
+            ENDIF
+         ELSEIF wParam == GDK_Insert     // Insert
+            IF lParam == 0
+               Set( _SET_INSERT, ! Set( _SET_INSERT ) )
+            ENDIF
          ELSEIF wParam >= 32 .AND. wParam < 65000 .AND. !hwg_Checkbit( lParam,2 )
             Return GetApplyKey( Self,Chr(wParam) )
 	 ELSE
@@ -607,7 +611,7 @@ Local nPos, nGetLen, nLen, vari, i, x, newPos
 Return 1
 
 Static Function __When( oCtrl )
-Local res
+Local res := .T., n := 0
 
    oCtrl:Refresh()
    oCtrl:lFirst := .T.
@@ -616,10 +620,16 @@ Local res
       IF !res
          hwg_GetSkip( oCtrl:oParent,oCtrl:handle,1 )
       ENDIF
-      Return res
+   ENDIF
+   IF res .AND. !Empty( oCtrl:cPicMask )
+      DO WHILE !( Substr( oCtrl:cPicMask,++n,1 ) $ "ANX9#LY!$*.," )
+      ENDDO
+      IF n > 1
+         hwg_edit_Setpos( oCtrl:handle, n )
+      ENDIF
    ENDIF
 
-Return .T.
+Return res
 
 Static Function __valid( oCtrl )
 Local vari, oDlg
@@ -834,7 +844,7 @@ Local i, aLen
                IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
                   hwg_Setfocus( oParent:Getlist[i]:handle )
                   IF oParent:Getlist[i]:winclass == "EDIT"
-       	         hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
+       	             //hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
                   ENDIF
                   Return .T.
                ENDIF
@@ -844,7 +854,7 @@ Local i, aLen
                IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle )
                   hwg_Setfocus( oParent:Getlist[i]:handle )
                   IF oParent:Getlist[i]:winclass == "EDIT"
-   	               hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
+   	               //hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
                   ENDIF
                   Return .T.
                ENDIF

@@ -763,6 +763,7 @@
 
 #define GDK_BackSpace       0xFF08
 #define GDK_Tab             0xFF09
+#define GDK_ISO_Left_Tab    0xFE20
 #define GDK_Return          0xFF0D
 #define GDK_Escape          0xFF1B
 #define GDK_Delete          0xFFFF

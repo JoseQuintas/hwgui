@@ -1,0 +1,12 @@
+#
+# $Id: $
+#
+
+-n -w
+
+-oeditor
+
+editor.prg
+hcediext.prg
+
+..\..\hwgui.hbc

@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-30 14:03 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + utils/editor
+  + utils/editor/editor.prg
+  + utils/editor/hcediext.prg
+  + utils/editor/hcedit.ch
+  + utils/editor/bld.bat
+  + utils/editor/editor.hbp
+    + Rich syntax text editor has been added.
+
 2015-04-30 11:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/windows.ch
     * '#define GDK_ISO_Left_Tab' added

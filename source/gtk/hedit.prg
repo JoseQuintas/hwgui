@@ -165,7 +165,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ELSEIF wParam == GDK_Home     // Home
             IF lParam == 0
                ::lFirst := .F.
-               hwg_edit_SetPos( ::handle, 0 )
+               __setInitPos( Self )
                RETURN 1
             ENDIF
          ELSEIF wParam == GDK_End     // End
@@ -205,7 +205,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ( hwg_checkBit( lParam,2 ) .AND. ( wParam == 86 .OR. wParam == 118 ) )
             // Paste
             IF ::bSetGet != Nil
-               ::lFirst := iif( ::cType = "N" .AND. "E" $ ::cPicFunc, .T. , .F. )
                cClipboardText := hwg_Getclipboardtext()
                IF ! Empty( cClipboardText )
                   FOR nPos = 1 TO Len( cClipboardText )
@@ -533,11 +532,12 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
    RETURN cChar
 
 STATIC FUNCTION GetApplyKey( oEdit, cKey )
-   LOCAL nPos, nGetLen, nLen, vari, i, x, newPos
-
-   x := hwg_edit_Getpos( oEdit:handle )
+   LOCAL nPos, nGetLen, nLen, vari, i, newPos
 
    // hwg_WriteLog( "GetApplyKey "+str(asc(ckey)) )
+   IF oEdit:lFirst
+      __setInitPos( oEdit )
+   ENDIF
    oEdit:title := hwg_edit_Gettext( oEdit:handle )
    IF oEdit:cType == "N" .AND. cKey $ ".," .AND. ;
          ( nPos := At( ".",oEdit:cPicMask ) ) != 0
@@ -859,7 +859,7 @@ FUNCTION hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )
                   hwg_Setfocus( oParent:Getlist[i]:handle )
                   IF oParent:Getlist[i]:winclass == "EDIT"
                      //hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
-                     __setInitPos( oParent:Getlist[i] )
+                     //__setInitPos( oParent:Getlist[i] )
                   ENDIF
                   RETURN .T.
                ENDIF
@@ -870,7 +870,7 @@ FUNCTION hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )
                   hwg_Setfocus( oParent:Getlist[i]:handle )
                   IF oParent:Getlist[i]:winclass == "EDIT"
                      //hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
-                     __setInitPos( oParent:Getlist[i] )
+                     //__setInitPos( oParent:Getlist[i] )
                   ENDIF
                   RETURN .T.
                ENDIF

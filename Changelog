@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-04-30 11:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hedit.prg
+    ! Few fixes
+
 2015-04-29 16:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
     ! Initial position setting corrected

@@ -1,10 +1,3 @@
-/*
- * $Id$
- * Set of functions
- *
- * Copyright 2013 Alexander S.Kresin <alex@kresin.ru>
- * www - http://www.kresin.ru
-*/
 
 #include "hbapi.h"
 #include "hbapiitm.h"

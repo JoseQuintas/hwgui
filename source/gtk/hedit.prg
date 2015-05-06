@@ -225,7 +225,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF lParam == 0
                SET( _SET_INSERT, ! Set( _SET_INSERT ) )
             ENDIF
-         ELSEIF wParam >= 32 .AND. wParam < 65000 .AND. !hwg_Checkbit( lParam, 2 )
+         ELSEIF ( (wParam >= 32 .AND. wParam < 65000) .OR. (wParam >=  GDK_KP_0 .AND. wParam < GDK_KP_9) ) ;
+               .AND. !hwg_Checkbit( lParam, 2 )
+            IF wParam >=  GDK_KP_0
+               wParam -= ( GDK_KP_0 - 48 )
+            ENDIF
             RETURN GetApplyKey( Self, Chr( wParam ) )
          ELSE
             RETURN 0

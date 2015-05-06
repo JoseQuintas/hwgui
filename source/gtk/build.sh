@@ -7,5 +7,5 @@ if ! [ -e ../../obj ]; then
    mkdir ../../obj
    chmod a+w+r+x ../../obj
 fi
-#export HB_ROOT=../../..
+export HB_ROOT=~/apps/harbour
 make -fMakefile.linux >a1.log 2>a2.log

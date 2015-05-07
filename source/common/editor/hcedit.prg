@@ -1269,7 +1269,11 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          ::putChar( 7 )   // for to not interfere with '.'
       ENDIF
 #ifdef __PLATFORM__UNIX
-   ELSEIF nKeyCode < 0xFE00 .OR. nKeyCode == VK_RETURN .OR. nKeyCode == VK_BACK .OR. nKeyCode == VK_TAB .OR. nKeyCode == VK_ESCAPE
+   ELSEIF nKeyCode < 0xFE00 .OR. ( nKeyCode >= GDK_KP_0 .AND. nKeyCode <= GDK_KP_9 ) ;
+         .OR. nKeyCode == VK_RETURN .OR. nKeyCode == VK_BACK .OR. nKeyCode == VK_TAB .OR. nKeyCode == VK_ESCAPE
+      IF nKeyCode >= GDK_KP_0
+         nKeyCode -= ( GDK_KP_0 - 48 )
+      ENDIF
       ::putChar( nKeyCode )
 #endif
    ENDIF

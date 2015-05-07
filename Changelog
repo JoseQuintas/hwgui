@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-07 11:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * Numpad keys works now under gtk version in hcedit, too
+  * samples/gtk_samples/build.sh
+  * source/gtk/build.sh
+  * utils/dbc/build.sh
+  * utils/dbc/procs_c.c
+    * Files restored
+
 2015-05-06 20:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
     ! Numpad keys works now

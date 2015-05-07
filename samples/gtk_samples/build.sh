@@ -1,5 +1,5 @@
 #!/bin/bash
-export HB_ROOT=/home/alkresin/apps/harbour
+export HB_ROOT=../../..
 
 if [ "x$HB_ROOT" = x ]; then
 export HRB_BIN=/usr/local/bin

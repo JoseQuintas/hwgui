@@ -9,6 +9,12 @@
 [*] Changes
 
 
+HWGUI 2.19 build 3 ( 08.05.2015 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] Rich syntax text editor has been added to utils
+[*] Improved compatibility with 2.17 version.
+[!] Some bug fixes and improvements
+
 HWGUI 2.19 build 2 ( 27.01.2015 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] :Enabled() SETGET method is introduced for all controls (HControl class),

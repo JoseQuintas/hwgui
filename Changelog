@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-08 14:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hsplit.prg
+  * source/winapi/hsplit.prg
+    * :Drag() method parameters changed to make it more suitable to call
+
 2015-05-08 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htimer.prg
   * source/gtk/hcwindow.prg

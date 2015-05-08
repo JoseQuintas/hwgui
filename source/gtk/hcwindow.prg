@@ -192,6 +192,11 @@ METHOD OnError() CLASS HCustomWindow
          RETURN oItem
       ENDIF
    NEXT
+   FOR EACH oItem IN HTimer():aTimers
+      IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg .AND. hwg_Isptreq( ::handle,oItem:oParent:handle )
+         RETURN oItem
+      ENDIF
+   NEXT
 
    oError := ErrorNew()
    oError:severity    := ES_ERROR

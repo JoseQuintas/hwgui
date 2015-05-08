@@ -17,6 +17,7 @@
 CLASS HTimer INHERIT HObject
 
    CLASS VAR aTimers   INIT {}
+   DATA objname
    DATA id, tag
    DATA value
    DATA oParent

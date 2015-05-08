@@ -2,7 +2,7 @@
  *$Id$
  */
 #define HWG_VERSION         "2.19"
-#define HWG_BUILD               1
+#define HWG_BUILD               3
 #define	WND_MAIN		1
 #define	WND_MDI 		2
 #define WND_MDICHILD            3
@@ -1234,7 +1234,8 @@
 #xcommand SET TIMER <oTimer> [ OF <oWnd> ] [ ID <id> ] ;
              VALUE <value> ACTION <bAction> ;
           => ;
-    <oTimer> := HTimer():New( <oWnd>, <id>, <value>, <bAction> )
+    <oTimer> := HTimer():New( <oWnd>, <id>, <value>, <bAction> );
+    [; hwg_SetCtrlName( <oTimer>,<(oTimer)> )]
 
 
 #xcommand SET KEY [<lGlobal: GLOBAL>] <nctrl>,<nkey> [ OF <oDlg> ] TO [ <func> ] ;

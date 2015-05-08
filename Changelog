@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-08 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htimer.prg
+  * source/gtk/hcwindow.prg
+  * source/winapi/htimer.prg
+  * source/winapi/hcwindow.prg
+    * :objname variable added to HTimer. Now timers can be called by name ( oDlg:oTimer )
+  * include/guilib.ch
+    * SET TIMER command changed
+    * build number is changed to 3
+
 2015-05-07 11:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * Numpad keys works now under gtk version in hcedit, too

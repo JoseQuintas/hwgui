@@ -34,7 +34,7 @@ CLASS HSplitter INHERIT HControl
    METHOD Paint()
    METHOD Move( x1,y1,width,height )
    METHOD Drag( xPos, yPos )
-   METHOD DragAll()
+   METHOD DragAll( xPos, yPos )
 
 ENDCLASS
 
@@ -146,9 +146,12 @@ METHOD Drag( xPos, yPos ) CLASS HSplitter
 
    RETURN Nil
 
-METHOD DragAll() CLASS HSplitter
+METHOD DragAll( xPos, yPos ) CLASS HSplitter
 Local i, oCtrl, nDiff
 
+   IF xPos != Nil .OR. yPos != Nil
+      ::Drag( xPos, yPos )
+   ENDIF
    FOR i := 1 TO Len( ::aRight )
       oCtrl := ::aRight[i]
       IF ::lVertical

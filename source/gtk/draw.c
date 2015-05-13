@@ -22,6 +22,8 @@
 #include "hbfast.h"
 #endif
 
+#include <math.h>
+
 void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor )
 {
    char color[10]={0};
@@ -604,3 +606,102 @@ HB_FUNC( HWG_GETWINDOWRECT )
    hb_itemRelease( hb_itemReturn( aMetr ) );
 }
 
+void hwg_prepare_cairo_colors( long int nColor, gdouble *r, gdouble *g, gdouble *b )
+{
+   short int int_r, int_g, int_b;
+  
+   nColor %= ( 65536 * 256 );
+   int_r = nColor % 256;
+   int_g = ( ( nColor - int_r ) % 65536 ) / 256;
+   int_b = ( nColor - int_r - int_g ) / 65536;
+
+   *r = (gdouble)int_r / 255.;
+   *g = (gdouble)int_g / 255.;
+   *b = (gdouble)int_b / 255.;
+}
+
+/*
+ * hwg_draw_Gradient( hDC, x1, y1, x2, y2, int type, array colors, array stops )
+ */
+HB_FUNC( HWG_DRAW_GRADIENT )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
+   gint type = hb_parni( 6 );
+   PHB_ITEM pArrColor = hb_param( 7, HB_IT_ARRAY );
+   PHB_ITEM pArrStop = hb_param( 8, HB_IT_ARRAY );
+   gdouble stop[] = { 0, 0.5, 1 };
+   gint colors_num, i;
+   cairo_pattern_t *pat;
+   gdouble x_center, y_center, radius;
+   gdouble r, g, b;
+
+   // type of gradient
+   switch( type ) 
+   {
+      case 1:
+         // vertical and down
+         pat = cairo_pattern_create_linear( x1, y1, x1, y2 );
+         break;
+      case 2:
+         // vertical and up
+         pat = cairo_pattern_create_linear( x1, y2, x1, y1 );
+         break;
+      case 3:
+         // horizontal and to the right
+         pat = cairo_pattern_create_linear( x1, y1, x2, y1 );
+         break;
+      case 4:
+         // horizontal and to the left
+         pat = cairo_pattern_create_linear( x2, y1, x1, y1 );
+         break;
+      case 5:
+         // diagonal right-up
+         pat = cairo_pattern_create_linear( x1, y2, x2, y1 );
+         break;
+      case 6:
+         // diagonal left-down
+         pat = cairo_pattern_create_linear( x2, y1, x1, y2 );
+         break;
+      case 7:
+         // diagonal right-down
+         pat = cairo_pattern_create_linear( x1, y1, x2, y2 );
+         break;
+      case 8:
+         // diagonal left-up
+         pat = cairo_pattern_create_linear( x2, y2, x1, y1 );
+         break;
+      default:
+         // radial gradient
+         x_center = (x2 - x1) / 2 + x1;
+         y_center = (y2 - y1) / 2 + y1;
+         radius = sqrt( pow(x2-x1,2) + pow(y2-y1,2) ) / 2;
+         pat = cairo_pattern_create_radial(x_center, y_center, 0, x_center, y_center, radius);
+         break;
+   }
+  
+   colors_num = hb_arrayLen( pArrColor );
+   if( pArrStop )
+   {
+      for ( i = 0; i < colors_num; i++ )
+      {
+         stop[i] = hb_arrayGetND( pArrStop, i+1 );
+      }
+   }   
+   else if ( colors_num == 2 )
+   {
+      stop[1] = 1;
+   }
+  
+   for ( i = 0; i < colors_num; i++ )
+   {
+      hwg_prepare_cairo_colors( hb_arrayGetNL( pArrColor, i+1 ), &r, &g, &b );
+      cairo_pattern_add_color_stop_rgb(pat, stop[i], r, g, b);
+   }
+
+   cairo_rectangle( hDC->cr, x1, y1, x2-x1+1, y2-y1+1 );
+   cairo_set_source( hDC->cr, pat );
+   cairo_fill( hDC->cr );
+  
+   cairo_pattern_destroy( pat );
+}

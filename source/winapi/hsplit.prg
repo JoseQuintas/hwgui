@@ -33,7 +33,7 @@ CLASS VAR winclass INIT "STATIC"
    METHOD Init()
    METHOD Paint()
    METHOD Drag( xPos, yPos )
-   METHOD DragAll()
+   METHOD DragAll( xPos, yPos )
 
 ENDCLASS
 
@@ -155,9 +155,12 @@ METHOD Drag( xPos, yPos ) CLASS HSplitter
 
    RETURN Nil
 
-METHOD DragAll() CLASS HSplitter
+METHOD DragAll( xPos, yPos ) CLASS HSplitter
    LOCAL i, oCtrl, nDiff
 
+   IF xPos != Nil .OR. yPos != Nil
+      ::Drag( xPos, yPos )
+   ENDIF
    FOR i := 1 TO Len( ::aRight )
       oCtrl := ::aRight[ i ]
       IF ::lVertical

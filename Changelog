@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-13 13:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hsplit.prg
+  * source/winapi/hsplit.prg
+    * :DragAll( xPos,yPos ) - parameters added. Now this method may be called to
+      set the position of a splitter and all related controls from the program.
+  * source/gtk/gtkmain.prg
+  * source/winapi/guimain.prg
+    ! hwg_vcolor() fixed.
+  * source/gtk/menu.prg
+    ! Fixes, related to context menus
+  * source/gtk/draw.c
+    * hwg_draw_gradient() function added.
+      Code is provided by Eduard Gilman
+
 2015-05-08 17:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * whatsnew.txt
     * Information about build 3 added

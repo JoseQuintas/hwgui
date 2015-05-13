@@ -22,8 +22,11 @@ FUNCTION hwg_VColor( cColor )
 
    LOCAL i, res := 0, n := 1, iValue
 
+   IF Left( cColor,1 ) == "#"
+      cColor := Substr( cColor,2 )
+   ENDIF
    cColor := Trim( cColor )
-   for i := 1 TO Len( cColor )
+   FOR i := 1 TO Len( cColor )
       iValue := Asc( SubStr( cColor,i,1 ) )
       IF iValue < 58 .AND. iValue > 47
          iValue -= 48
@@ -34,9 +37,14 @@ FUNCTION hwg_VColor( cColor )
       ELSE
          RETURN 0
       ENDIF
-      res += iValue * n
-      n *= 16
-   next
+      iValue *= n
+      IF i % 2 == 1
+         iValue *= 16
+      ELSE
+         n *= 256
+      ENDIF
+      res += iValue
+   NEXT
 
    RETURN res
 

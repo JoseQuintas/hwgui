@@ -207,7 +207,7 @@ FUNCTION Hwg_ContextMenu()
    _lContext := .T.
    _aMenuDef := {}
    _oBitmap  := {}
-   _oWnd := HWindow():GetMain()
+   _oWnd := Nil //HWindow():GetMain()
    _nLevel := 0
    _Id := CONTEXTMENU_FIRST_ID
    _oMenu := HMenu():New()
@@ -219,7 +219,7 @@ FUNCTION Hwg_EndMenu()
    IF _nLevel > 0
       _nLevel --
    ELSE
-      hwg_BuildMenu( AClone( _aMenuDef ), iif( _oWnd != Nil,_oWnd:handle,Nil ), ;
+      hwg_BuildMenu( AClone( _aMenuDef ), iif( _oWnd != Nil,_oWnd:handle,HWindow():Getmain():handle ), ;
          _oWnd, , _lContext )
       IF _oWnd != Nil .AND. !Empty( _aAccel )
          _oWnd:hAccel := hwg_Createacceleratortable( _oWnd )

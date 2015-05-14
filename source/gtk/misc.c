@@ -15,6 +15,7 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "item.api"
+#include <unistd.h>
 #include "gtk/gtk.h"
 #include "gdk/gdkkeysyms.h"
 
@@ -227,6 +228,12 @@ HB_FUNC( HWG_GETDEVICEAREA )
 HB_FUNC( HWG_RGB )
 {
    hb_retnl( hb_parni( 1 ) + hb_parni( 2 ) * 256 + hb_parni( 3 ) * 65536 );
+}
+
+HB_FUNC( HWG_SLEEP )
+{
+   if( hb_parinfo( 1 ) )
+      sleep( hb_parnl( 1 ) );
 }
 
 #define CHUNK_LEN 1024

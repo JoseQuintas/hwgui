@@ -629,9 +629,10 @@ HB_FUNC( HWG_DRAW_GRADIENT )
    gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
    gint type = hb_parni( 6 );
    PHB_ITEM pArrColor = hb_param( 7, HB_IT_ARRAY );
+   long int color;
    PHB_ITEM pArrStop = hb_param( 8, HB_IT_ARRAY );
-   gdouble stop[] = { 0, 0.5, 1 };
-   gint colors_num, i;
+   gdouble stop;
+   gint user_colors_num, colors_num, user_stops_num, i;
    cairo_pattern_t *pat;
    gdouble x_center, y_center, radius;
    gdouble r, g, b;
@@ -679,24 +680,17 @@ HB_FUNC( HWG_DRAW_GRADIENT )
          pat = cairo_pattern_create_radial(x_center, y_center, 0, x_center, y_center, radius);
          break;
    }
-  
-   colors_num = hb_arrayLen( pArrColor );
-   if( pArrStop )
-   {
-      for ( i = 0; i < colors_num; i++ )
-      {
-         stop[i] = hb_arrayGetND( pArrStop, i+1 );
-      }
-   }   
-   else if ( colors_num == 2 )
-   {
-      stop[1] = 1;
-   }
-  
+
+   user_colors_num = ( pArrColor ) ? hb_arrayLen( pArrColor ) : 0;
+   colors_num = ( user_colors_num >= 2 ) ? user_colors_num : 2; // gradient needs minimum two colors
+   user_stops_num = ( pArrStop ) ? hb_arrayLen( pArrStop ) : 0;
+
    for ( i = 0; i < colors_num; i++ )
    {
-      hwg_prepare_cairo_colors( hb_arrayGetNL( pArrColor, i+1 ), &r, &g, &b );
-      cairo_pattern_add_color_stop_rgb(pat, stop[i], r, g, b);
+      color = ( i < user_colors_num ) ? hb_arrayGetNL( pArrColor, i+1 ) : 0xFFFFFF * i;
+      hwg_prepare_cairo_colors( color, &r, &g, &b );
+      stop = ( i < user_stops_num ) ? hb_arrayGetND( pArrStop, i+1 ) : 1. / (gdouble)(colors_num-1) * (gdouble)i;
+      cairo_pattern_add_color_stop_rgb( pat, stop, r, g, b );
    }
 
    cairo_rectangle( hDC->cr, x1, y1, x2-x1+1, y2-y1+1 );

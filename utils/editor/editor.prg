@@ -10,7 +10,8 @@
 #include "hwgui.ch"
 #include "hcedit.ch"
 
-#ifdef __GTK__
+
+#ifdef __PLATFORM__UNIX
 #include "gtk.ch"
 #define DIR_SEP  '/'
 #define CURS_HAND GDK_HAND1
@@ -19,8 +20,12 @@
 #define CURS_HAND IDC_HAND
 #endif
 
-   REQUEST HB_CODEPAGE_RU1251
-   REQUEST HB_CODEPAGE_RU866
+#if defined (__HARBOUR__) // ( __HARBOUR__ - 0 >= 0x030000 )
+REQUEST HB_CODEPAGE_UTF8
+#endif
+
+REQUEST HB_CODEPAGE_RU1251
+REQUEST HB_CODEPAGE_RU866
 
 #define MENU_RULER       1901
 #define BOUNDL           12
@@ -44,6 +49,10 @@ FUNCTION Main ( fName )
    LOCAL oMainWindow, oFont
    PRIVATE oMenuC1, handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
 
+   IF hwg__isUnicode()
+      hb_cdpSelect( "UTF8" )
+   ENDIF
+
    PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 20 CHARSET 204
    PREPARE FONT oFontP NAME "Courier New" WIDTH 0 HEIGHT - 15
    oBrush1 := HBrush():Add( 16777215 )
@@ -57,6 +66,9 @@ FUNCTION Main ( fName )
 
    @ 0, 4 HCEDITEXT oEdit SIZE 600, 270 ON SIZE { |o, x, y|o:Move( , oPanel:nHeight, x, y - oPanel:nHeight ) }
    oEdit:nIndent := 20
+   IF hwg__isUnicode()
+      oEdit:lUtf8 := .T.
+   ENDIF
 
    oEdit:bColorCur := oEdit:bColor
    oEdit:SetHili( "url", - 1, 255 )

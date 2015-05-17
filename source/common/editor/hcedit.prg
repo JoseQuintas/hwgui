@@ -60,7 +60,7 @@
 #include "hxml.ch"
 
 #ifdef __XHARBOUR__
-#xtranslate HB_HASH([<x,...>]) => HASH([<x>])
+#xtranslate HB_HASH(<x,...>) => HASH(<x>)
 #xtranslate HB_HHASKEY(<x,...>) => HHASKEY(<x>)
 #endif
 
@@ -1269,11 +1269,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          ::putChar( 7 )   // for to not interfere with '.'
       ENDIF
 #ifdef __PLATFORM__UNIX
-   ELSEIF nKeyCode < 0xFE00 .OR. ( nKeyCode >= GDK_KP_0 .AND. nKeyCode <= GDK_KP_9 ) ;
-         .OR. nKeyCode == VK_RETURN .OR. nKeyCode == VK_BACK .OR. nKeyCode == VK_TAB .OR. nKeyCode == VK_ESCAPE
-      IF nKeyCode >= GDK_KP_0
-         nKeyCode -= ( GDK_KP_0 - 48 )
-      ENDIF
+   ELSEIF nKeyCode < 0xFE00 .OR. nKeyCode == VK_RETURN .OR. nKeyCode == VK_BACK .OR. nKeyCode == VK_TAB .OR. nKeyCode == VK_ESCAPE
       ::putChar( nKeyCode )
 #endif
    ENDIF
@@ -2337,3 +2333,9 @@ Function hced_Len( oEdit, cLine )
    IF oEdit:lUtf8; RETURN hb_utf8Len( cLine ); ENDIF
 #endif
    RETURN Len( cLine )
+
+Function hced_At( oEdit, cFind, cLine, nStart, nEnd )
+#ifndef __XHARBOUR__
+   IF oEdit:lUtf8; RETURN hb_utf8At( cFind, cLine, nStart, nEnd ); ENDIF
+#endif
+   RETURN hb_At( cFind, cLine, nStart, nEnd )

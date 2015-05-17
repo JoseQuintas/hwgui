@@ -231,7 +231,7 @@ METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdiExt
                lSpan := .F.
                nPosA := nPos2 + 1
                cVal := hbxml_preLoad( Substr( xText, nPosS, nPos1 - nPosS ) )
-               Aadd( ::aStru[n], { Len(aText[n])+1, Len(aText[n])+Len(cVal), cClsName } )
+               Aadd( ::aStru[n], { hced_Len(Self,aText[n])+1, hced_Len(Self,aText[n])+hced_Len(Self,cVal), cClsName } )
                aText[n] += cVal
 
             ELSEIF cTagName == "/a"
@@ -1141,7 +1141,7 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
 
       hced_Stru4Pos( aStru, Pstart[P_X], @n1 )
       IF n1 > Len( aStru )
-         ::StyleSpan( i, Pstart[P_X], Iif( i==Pend[P_Y], Pend[P_X], hced_Len( Self,::aText[i]) ), xAttr )
+         ::StyleSpan( i, Pstart[P_X], Iif( i==Pend[P_Y], Pend[P_X]-1, hced_Len( Self,::aText[i]) ), xAttr )
       ELSE
          IF Pstart[P_X] < aStru[n1,1]
             ::StyleSpan( i, Pstart[P_X], Iif( i==Pend[P_Y], ;
@@ -1177,7 +1177,7 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
       FOR i := Pstart[P_Y]+1 TO Pend[P_Y]
          aStru := AClone( ::aStru[i] )
          IF i < Pend[P_Y]
-            ::StyleSpan( i, 1, aStru[2,1]-1, xAttr )
+            ::StyleSpan( i, 1, Iif(Len(aStru)>1,aStru[2,1]-1,hced_Len(Self,::aText[i])), xAttr )
             FOR n1 := 2 TO Len( aStru )
                ::StyleSpan( i, aStru[n1,1], aStru[n1,2], xAttr )
                IF n1 < Len( aStru )
@@ -1187,7 +1187,7 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
                ENDIF
             NEXT
          ELSE
-            ::StyleSpan( i, 1, Min( Pend[P_X],aStru[2,1]-1 ), xAttr )
+            ::StyleSpan( i, 1, Min( Pend[P_X], Iif(Len(aStru)>1,aStru[2,1]-1,hced_Len(Self,::aText[i])) ), xAttr )
             FOR n1 := 2 TO Len( aStru )
                IF Pend[P_X] < aStru[n1,1]
                   EXIT

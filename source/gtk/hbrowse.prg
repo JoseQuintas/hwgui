@@ -1369,7 +1369,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
-         nrec := RecNo()
+         nrec := Eval( ::bRecno, Self )
          Eval( ::bSkip, Self, step )
          IF !Eval( ::bEof, Self )
             ::rowPos := nLine
@@ -1385,7 +1385,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
             ENDIF
             res := .T.
          ELSE
-            GO nrec
+            Eval( ::bGoTo, Self, nrec )
          ENDIF
       ENDIF
       IF ::lEditable

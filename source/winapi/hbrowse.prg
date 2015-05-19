@@ -592,7 +592,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
          ::bBof      :=  { || ( ::alias ) -> ( Bof() ) }
          ::bRcou     :=  { || ( ::alias ) -> ( RecCount() ) }
          ::bRecnoLog := ::bRecno  := { ||( ::alias ) -> ( RecNo() ) }
-         ::bGoTo     := { |a, n|( ::alias ) -> ( dbGoto( n ) ) }
+         ::bGoTo     := { |o, n|( ::alias ) -> ( dbGoto( n ) ) }
       ENDIF
    ELSEIF ::type == BRW_ARRAY
       ::bSkip      := { | o, n | ARSKIP( o, n ) }
@@ -1492,7 +1492,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
-         nrec := RecNo()
+         nrec := Eval( ::bRecno, Self )
          Eval( ::bSkip, Self, step )
          IF !Eval( ::bEof, Self )
             ::rowPos := nLine
@@ -1506,7 +1506,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
             ENDIF
             res := .T.
          ELSE
-            GO nrec
+            Eval( ::bGoTo, Self, nrec )
          ENDIF
       ENDIF
       IF ::lEditable

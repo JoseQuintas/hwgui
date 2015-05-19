@@ -53,12 +53,17 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
 
 Static Function onDestroy( oWnd )
 
+   LOCAL i
    IF oWnd:bDestroy != Nil
       Eval( oWnd:bDestroy, oWnd )
       oWnd:bDestroy := Nil
    ENDIF
    IF __ObjHasMsg( oWnd, "HACCEL" ) .AND. oWnd:hAccel != Nil
       hwg_Destroyacceleratortable( oWnd:hAccel )
+   ENDIF
+
+   IF ( i := Ascan( HTimer():aTimers,{|o|hwg_Isptreq( o:oParent:handle,oWnd:handle )} ) ) != 0
+      HTimer():aTimers[i]:End()
    ENDIF
 
    oWnd:Super:onEvent( WM_DESTROY )

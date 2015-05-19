@@ -612,6 +612,133 @@ Return Nil
     </module>
   </chapter>
   <chapter name="Drawing" >
+    <module name="Draw panel and set colors" >
+      <![CDATA[#include "hwgui.ch"
+
+Function Colors
+
+   LOCAL oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN
+   LOCAL cColor := "000000", nColor := 0
+
+   INIT DIALOG oDlg TITLE "Colors"     ;
+        AT 190,10  SIZE 480,310 CLIPPER ON INIT {|| hwg_Settimer(oDlg,oPanel,oEditC,oUpR,oUpG,oUpB,oEditN)}
+       
+   @ 60, 20 PANEL oPanel SIZE 360, 120 STYLE SS_OWNERDRAW ON SIZE {||.t.}
+   oPanel:bPaint := {|o|ppaint(o,oEditN)}
+
+   @ 20, 180 SAY "html" SIZE 80,26
+   @ 20, 210 GET oEditC VAR cColor SIZE 80,26 PICTURE "XXXXXX"
+
+   @ 120,180 GROUPBOX "RGB" SIZE 210, 70
+
+   @ 140, 210 UPDOWN oUpR INIT 0 RANGE 0,255 SIZE 50,30
+   @ 200, 210 UPDOWN oUpG INIT 0 RANGE 0,255 SIZE 50,30
+   @ 260, 210 UPDOWN oUpB INIT 0 RANGE 0,255 SIZE 50,30
+
+   @ 350, 180 SAY "number" SIZE 80,26
+   @ 350, 210 GET oEditN VAR nColor SIZE 90,26 PICTURE "99999999"
+
+   @ 170, 260  BUTTON "Close" SIZE 140, 32 ON CLICK {||hwg_EndDialog()}
+
+   ACTIVATE DIALOG oDlg
+
+   Return Nil
+
+STATIC Function hwg_Settimer( oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN )
+
+   LOCAL oTimer
+   LOCAL cClr := "000000", nr1 := 0, ng1 := 0, nb1 := 0, nClr := 0
+   LOCAL bTimer := {||
+
+      LOCAL lRes := .F., cColor := Trim(oEditC:value), nColor := oEditN:value
+      LOCAL nr := oUpR:value, ng := oUpG:value, nb := oUpB:value
+
+      IF Len(cColor) == 6 .AND. !( cClr == cColor )
+         nColor := hwg_VColor( cColor )
+         tt_ColorN2RGB( nColor, @nr, @ng, @nb )
+
+         cClr := cColor
+         oUpR:value := nr1 := nr
+         oUpG:value := ng1 := ng
+         oUpB:value := nb1 := nb
+         oEditN:value := nClr := nColor
+         lRes := .T.
+      ELSEIF nr1 != nr .OR. ng1 != ng .OR. nb1 != nb
+         nColor := hwg_RGB( nr, ng, nb )
+         cColor := tt_ColorN2C( nColor )
+
+         oEditC:value := cClr := cColor
+         nr1 := nr
+         ng1 := ng
+         nb1 := nb
+         oEditN:value := nClr := nColor
+
+         lRes := .T.
+      ELSEIF nClr != nColor
+         cColor := tt_ColorN2C( nColor )
+         tt_ColorN2RGB( nColor, @nr, @ng, @nb )
+
+         oEditC:value := cClr := cColor
+         oUpR:value := nr1 := nr
+         oUpG:value := ng1 := ng
+         oUpB:value := nb1 := nb
+         nClr := nColor
+         lRes := .T.
+      ENDIF
+      IF lRes
+         hwg_Invalidaterect( oPanel:handle, 1 )
+      ENDIF
+      RETURN Nil
+   }
+
+   SET TIMER oTimer OF oDlg VALUE 500 ACTION bTimer
+Return Nil
+
+FUNCTION tt_ColorN2C( nColor )
+
+   LOCAL s := "", n1, n2, i
+
+   FOR i := 0 to 2
+      n1 := hb_BitAnd( hb_BitShift( nColor,-i*8-4 ), 15 )
+      n2 := hb_BitAnd( hb_BitShift( nColor,-i*8 ), 15 )
+      s += Chr( Iif(n1<10,n1+48,n1+55) ) + Chr( Iif(n2<10,n2+48,n2+55) )
+   NEXT
+
+   RETURN s
+
+FUNCTION tt_ColorN2RGB( nColor, nr, ng, nb )
+
+   nr := nColor % 256
+   ng := Int( nColor/256 ) % 256
+   nb := Int( nColor/65536 )
+
+   RETURN { nr, ng, nb }
+
+Function PPaint( oPanel, oEditN )
+
+   LOCAL pps, hDC, aCoors, obrush
+
+   pps    := hwg_Definepaintstru()
+   hDC    := hwg_Beginpaint( oPanel:handle, pps )
+   aCoors := hwg_Getclientrect( oPanel:handle )
+
+   obrush := HBrush():Add( oEditN:value )
+   hwg_Fillrect( hDC, 0, 0, aCoors[3], aCoors[4], obrush:handle )
+
+   hwg_Settransparentmode( hDC, .T. )
+   hwg_Settextcolor( hDC, 0 )
+   hwg_Drawtext( hDC, "Black", 10, 10, 80, 36 )
+
+   hwg_Settextcolor( hDC, 16777215 )
+   hwg_Drawtext( hDC, "White", 270, 10, 340, 36 )
+   hwg_Settransparentmode( hDC, .F. )
+
+   hwg_Endpaint( oPanel:handle, pps )
+   obrush:Release()
+
+   Return Nil
+      ]]>
+    </module>
   </chapter>
 </init>
 

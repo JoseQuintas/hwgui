@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-19 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/tutor.prg
+  * utils/tutorial/hwgrun.prg
+    * REQUEST's added
+  * utils/tutorial/tutor_eng.xml
+    * New test module added ( panel drawing )
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    ! Bug fixed
+  * source/gtk/hdialog.prg
+  * source/gtk/hwindow.prg
+    * Timers are closed automatically now while appropriate window closing -
+      synched with winapi version.
+
 2015-05-18 17:51 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/editor/editor.prg
   * utils/editor/hcediext.prg

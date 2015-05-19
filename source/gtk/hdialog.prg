@@ -24,10 +24,16 @@ STATIC aMessModalDlg := { ;
 
 STATIC FUNCTION onDestroy( oDlg )
 
+   LOCAL i
    IF oDlg:bDestroy != Nil
       Eval( oDlg:bDestroy, oDlg )
       oDlg:bDestroy := Nil
    ENDIF
+
+   IF ( i := Ascan( HTimer():aTimers,{|o|hwg_Isptreq( o:oParent:handle,oDlg:handle )} ) ) != 0
+      HTimer():aTimers[i]:End()
+   ENDIF
+
    oDlg:Super:onEvent( WM_DESTROY )
    HDialog():DelItem( oDlg, .T. )
    IF oDlg:lModal

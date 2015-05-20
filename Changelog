@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-20 12:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/ext_controls/hbrowsex.prg
+    ! Fix, provided by Itamar M. Lins Jr.
+  * source/common/editor/hcedit.prg
+    ! Reverted code, which was lost accidentally while one of last commits
+
 2015-05-20 09:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/gtkmain.prg
   * source/winapi/guimain.prg

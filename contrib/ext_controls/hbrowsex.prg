@@ -3089,8 +3089,9 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
                   SIZE nWidth, ::height + 1      ;
                   FONT oComboFont  ;
                   DISPLAYCOUNT  iif( Len( oColumn:aList ) > ::rowCount , ::rowCount - 1, Len( oColumn:aList ) ) ;
-                  VALID { | oColumn, oGet | ::ValidColumn( oColumn, oGet ) };
-                  WHEN { | oColumn, oGet | ::WhenColumn( oColumn, oGet ) }
+                  VALID { || ::ValidColumn( nChoic, oCombo ) };
+                  WHEN { || ::WhenColumn( nChoic, oCombo ) }
+
                ::oEditDlg:AddEvent( 0, IDOK, { || ::oEditDlg:lResult := .T. , ::oEditDlg:close() } )
             ELSE
                IF Type == "L"

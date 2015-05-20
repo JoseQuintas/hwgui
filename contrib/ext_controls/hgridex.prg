@@ -233,10 +233,10 @@ METHOD AddRow( a , bupdate ) CLASS HGRIDEX
       AAdd( aTmp1, a[ n ] )
       AAdd( aTmp,  IIF( ValType( a[ n + 1 ] ) == "N", a[ n + 1 ], - 1 ) )
 
-      AAdd( aTmp2,  IIF( ValType( a[ n + 2  ] ) == "N", a[ n + 2 ], hwg_Rgb( 12, 15, 46 ) ) )
+      AAdd( aTmp2,  IIF( ValType( a[ n + 2  ] ) == "N", a[ n + 2 ], hwg_ColorRgb2N( 12, 15, 46 ) ) )
 
 
-      AAdd( aTmp2,  IIF( ValType( a[ n + 3  ] ) == "N", a[ n + 3 ], hwg_Rgb( 192, 192, 192 ) ) )
+      AAdd( aTmp2,  IIF( ValType( a[ n + 3  ] ) == "N", a[ n + 3 ], hwg_ColorRgb2N( 192, 192, 192 ) ) )
 
       AAdd( ::aColors, aTmp2 )
       aTmp2 := { }

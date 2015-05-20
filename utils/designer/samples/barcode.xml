@@ -35,7 +35,7 @@
  nPinxWidth := 1
  nColText :=0
  cData:="1234567890123"
- nColPane:=hwg_Rgb( 255, 255, 255 )
+ nColPane:=hwg_ColorRgb2N( 255, 255, 255 )
 ]]>
   </method>
   <method name="onDlgInit">

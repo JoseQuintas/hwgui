@@ -1072,7 +1072,7 @@ METHOD InitBrw( nType, lInit )  CLASS HBrowseEx
             arrowCursor := hwg_Loadcursor( IDC_ARROW )
             downCursor := hwg_Loadcursor( IDC_HAND )
          ENDIF
-         oPen64 :=  HPen():Add( PS_SOLID, 1, hwg_Rgb( 156, 156, 156 ) )
+         oPen64 :=  HPen():Add( PS_SOLID, 1, hwg_ColorRgb2N( 156, 156, 156 ) )
       ENDIF
    ENDIF
 
@@ -1351,13 +1351,13 @@ METHOD Paint( lLostFocus )  CLASS HBrowseEx
    // Validate some variables
 
    IF ::tcolor == NIL ; ::tcolor := 0 ; ENDIF
-   IF ::bcolor == NIL ; ::bcolor := hwg_VColor( "FFFFFF" ) ; ENDIF
+   IF ::bcolor == NIL ; ::bcolor := hwg_ColorC2N( "FFFFFF" ) ; ENDIF
 
    IF ::httcolor == NIL ; ::httcolor := hwg_Getsyscolor( COLOR_HIGHLIGHTTEXT ) ; ENDIF
    IF ::htbcolor == NIL ; ::htbcolor := hwg_Getsyscolor( COLOR_HIGHLIGHT )  ; ENDIF
 
-   IF ::tcolorSel == NIL ; ::tcolorSel := hwg_VColor( "FFFFFF" ) ; ENDIF
-   IF ::bcolorSel == NIL ; ::bcolorSel := hwg_VColor( "808080" ) ; ENDIF
+   IF ::tcolorSel == NIL ; ::tcolorSel := hwg_ColorC2N( "FFFFFF" ) ; ENDIF
+   IF ::bcolorSel == NIL ; ::bcolorSel := hwg_ColorC2N( "808080" ) ; ENDIF
 
    // Open Paint procedure
 

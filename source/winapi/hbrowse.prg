@@ -695,13 +695,13 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    ENDIF
 
    IF ::tcolor    == Nil ; ::tcolor    := 0 ; ENDIF
-   IF ::bcolor    == Nil ; ::bcolor    := hwg_VColor( "FFFFFF" ) ; ENDIF
+   IF ::bcolor    == Nil ; ::bcolor    := hwg_ColorC2N( "FFFFFF" ) ; ENDIF
 
-   IF ::httcolor  == Nil ; ::httcolor  := hwg_VColor( "FFFFFF" ) ; ENDIF
+   IF ::httcolor  == Nil ; ::httcolor  := hwg_ColorC2N( "FFFFFF" ) ; ENDIF
    IF ::htbcolor  == Nil ; ::htbcolor  := 2896388  ; ENDIF
 
-   IF ::tcolorSel == Nil ; ::tcolorSel := hwg_VColor( "FFFFFF" ) ; ENDIF
-   IF ::bcolorSel == Nil ; ::bcolorSel := hwg_VColor( "808080" ) ; ENDIF
+   IF ::tcolorSel == Nil ; ::tcolorSel := hwg_ColorC2N( "FFFFFF" ) ; ENDIF
+   IF ::bcolorSel == Nil ; ::bcolorSel := hwg_ColorC2N( "808080" ) ; ENDIF
 
    pps := hwg_Definepaintstru()
    hDC := hwg_Beginpaint( ::handle, pps )

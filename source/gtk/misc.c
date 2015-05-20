@@ -225,7 +225,7 @@ HB_FUNC( HWG_GETDEVICEAREA )
    hb_itemRelease( aMetr );
 }
 
-HB_FUNC( HWG_RGB )
+HB_FUNC( HWG_COLORRGB2N )
 {
    hb_retnl( hb_parni( 1 ) + hb_parni( 2 ) * 256 + hb_parni( 3 ) * 65536 );
 }

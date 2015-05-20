@@ -41,7 +41,7 @@ METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, , ;
       bSize, { |o, lpdis|o:Paint( lpdis ) }, ctoolt, ;
-      iif( tcolor == Nil, hwg_VColor( "FFFFFF" ), tcolor ), iif( bcolor == Nil, 0, bcolor ) )
+      iif( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), iif( bcolor == Nil, 0, bcolor ) )
 
    ::aValues := aValues
    ::nType   := 1

@@ -68,6 +68,9 @@
   #endif
 #endif
 
+#xtranslate hwg_Rgb([<n,...>])                    => hwg_ColorRGB2N(<n>)
+#xtranslate hwg_VColor([<n,...>])                 => hwg_ColorC2N(<n>)
+
 // Allow the definition of different classes without defining a new command
 
 #xtranslate __IIF(.T., [<true>], [<false>]) => <true>

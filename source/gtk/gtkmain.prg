@@ -18,7 +18,7 @@ FUNCTION hwg_EndWindow()
 
    RETURN Nil
 
-FUNCTION hwg_VColor( cColor )
+FUNCTION hwg_ColorC2N( cColor )
 
    LOCAL i, res := 0, n := 1, iValue
 
@@ -47,6 +47,26 @@ FUNCTION hwg_VColor( cColor )
    NEXT
 
    RETURN res
+
+FUNCTION hwg_ColorN2C( nColor )
+
+   LOCAL s := "", n1, n2, i
+
+   FOR i := 0 to 2
+      n1 := hb_BitAnd( hb_BitShift( nColor,-i*8-4 ), 15 )
+      n2 := hb_BitAnd( hb_BitShift( nColor,-i*8 ), 15 )
+      s += Chr( Iif(n1<10,n1+48,n1+55) ) + Chr( Iif(n2<10,n2+48,n2+55) )
+   NEXT
+
+   RETURN s
+
+FUNCTION hwg_ColorN2RGB( nColor, nr, ng, nb )
+
+   nr := nColor % 256
+   ng := Int( nColor/256 ) % 256
+   nb := Int( nColor/65536 )
+
+   RETURN { nr, ng, nb }
 
 FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cRes )
 

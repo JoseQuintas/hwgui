@@ -913,7 +913,7 @@ METHOD Paint( lpDis ) CLASS HBUTTONEx
       ENDIF
    ELSE
       IF bIsFocused .OR. ::id = IDOK
-         br := HBRUSH():Add( hwg_Rgb( 1, 1, 1 ) )
+         br := HBRUSH():Add( hwg_ColorRgb2N( 1, 1, 1 ) )
          hwg_Framerect( dc, itemRect, br:handle )
          hwg_Inflaterect( @itemRect, - 1, - 1 )
       ENDIF
@@ -1236,7 +1236,7 @@ METHOD PAINT( lpdis ) CLASS HGroupEx
    hwg_Setbkmode( dc, TRANSPARENT )
 
    IF Hwg_BitAND( dwStyle, BS_FLAT ) != 0  // "flat" frame
-      pnFrmDark  := HPen():Add( PS_SOLID, 1,  hwg_Rgb( 64, 64, 64 ) )
+      pnFrmDark  := HPen():Add( PS_SOLID, 1,  hwg_ColorRgb2N( 64, 64, 64 ) )
       pnFrmLight := HPen():Add( PS_SOLID, 1, hwg_Getsyscolor( COLOR_3DHILIGHT ) )
       ppnOldPen := hwg_Selectobject( dc, pnFrmDark:Handle )
       hwg_Moveto( dc, rcText[ 1 ] - 2, rcText[ 2 ]  )

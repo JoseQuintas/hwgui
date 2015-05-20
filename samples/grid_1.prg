@@ -43,8 +43,8 @@ Function Test()
                      ON POSCHANGE {|oCtrl, nRow| OnPoschange(oCtrl, nRow) } ;
                      ON CLICK {|oCtrl| OnClick(oCtrl) } ;
                      ON DISPINFO {|oCtrl, nRow, nCol| OnDispInfo( oCtrl, nRow, nCol ) } ;
-                     COLOR hwg_VColor('D3D3D3');
-                     BACKCOLOR hwg_VColor('BEBEBE') 
+                     COLOR hwg_ColorC2N('D3D3D3');
+                     BACKCOLOR hwg_ColorC2N('BEBEBE') 
 
              ADD COLUMN TO GRID oGrid HEADER "Column 1" WIDTH 150
              ADD COLUMN TO GRID oGrid HEADER "Column 2" WIDTH 150

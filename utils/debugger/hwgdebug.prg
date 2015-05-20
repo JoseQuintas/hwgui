@@ -2102,7 +2102,7 @@ Local oDlg
    @ 20,90 SAY "http://www.kresin.ru/debugger.html" ;
            LINK "http://www.kresin.ru/debugger.html" ;
            SIZE 300, 24 STYLE SS_CENTER  ;
-           COLOR hwg_VColor("0000FF") ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+           COLOR hwg_ColorC2N("0000FF") ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 #endif
    @ 120, 130 BUTTON "Ok" ID IDOK SIZE 100, 28 ON SIZE ANCHOR_BOTTOMABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 

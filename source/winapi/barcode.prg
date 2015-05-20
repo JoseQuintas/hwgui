@@ -171,7 +171,7 @@ METHOD New( hDC, cText, nTop, nLeft, nWidth, nHeight, nBCodeType, ;
    DEFAULT nHeight      := 20
 
    DEFAULT nColText     := 0
-   DEFAULT nColPane     := hwg_Rgb( 255, 255, 255 )
+   DEFAULT nColPane     := hwg_ColorRgb2N( 255, 255, 255 )
    DEFAULT lHorz        := .T.
    DEFAULT lTransparent := .F.
    DEFAULT nPinWidth    := 1
@@ -267,7 +267,7 @@ METHOD CreateBarcode( cCode ) CLASS BarCode
    //nX    := ::nLeft
    //nY    := ::nTop
 
-   IF ::lTransparent = .F. .AND. ::nColPane <> hwg_Rgb( 255, 255, 255 )
+   IF ::lTransparent = .F. .AND. ::nColPane != hwg_ColorRgb2N( 255, 255, 255 )
 
       IF ::lHorizontal = .F.
          RICH_Rectangle( ::hDC, nX, nY, nX + ::nHeight, nY + Min( Len( cCode ) * ::nPinWidth, ::nWidth ) )

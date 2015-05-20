@@ -32,18 +32,18 @@ Local upd := 12, d1 := Date()+1
    @ 20,10 SAY "Input something:" SIZE 260, 22
    @ 20,35 GET oGet VAR e1  ;
         STYLE WS_DLGFRAME   ;
-        SIZE 260, 26 COLOR hwg_VColor("FF0000")
+        SIZE 260, 26 COLOR hwg_ColorC2N("FF0000")
 
    @ 20,70 GET CHECKBOX c1 CAPTION "Check 1" SIZE 90, 20
-   @ 20,95 GET CHECKBOX c2 CAPTION "Check 2" SIZE 90, 20 COLOR hwg_VColor("0000FF")
+   @ 20,95 GET CHECKBOX c2 CAPTION "Check 2" SIZE 90, 20 COLOR hwg_ColorC2N("0000FF")
 
    @ 160,70 GROUPBOX "RadioGroup" SIZE 130, 75
 
    GET RADIOGROUP r1
    @ 180,90 RADIOBUTTON "Radio 1"  ;
-        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_VColor("0000FF"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_ColorC2N("0000FF"),,.T.)}
    @ 180,115 RADIOBUTTON "Radio 2" ;
-        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_VColor("FF0000"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_ColorC2N("FF0000"),,.T.)}
    END RADIOGROUP
 
    @ 20,120 GET COMBOBOX oCombo VAR cm ITEMS aCombo SIZE 100, 150

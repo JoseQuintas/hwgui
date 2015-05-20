@@ -40,9 +40,9 @@ Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
    crossCursor := hwg_Loadcursor( IDC_CROSS )
    horzCursor := hwg_Loadcursor( IDC_SIZEWE )
    vertCursor := hwg_Loadcursor( IDC_SIZENS )
-   oPenBorder := HPen():Add( PS_SOLID,1,hwg_VColor("800080") )
-   oPenLine   := HPen():Add( PS_SOLID,1,hwg_VColor("000000") )
-   oPenDivider := HPen():Add( PS_DOT,1,hwg_VColor("C0C0C0") )
+   oPenBorder := HPen():Add( PS_SOLID,1,hwg_ColorC2N("800080") )
+   oPenLine   := HPen():Add( PS_SOLID,1,hwg_ColorC2N("000000") )
+   oPenDivider := HPen():Add( PS_DOT,1,hwg_ColorC2N("C0C0C0") )
    oFontSmall := HFont():Add( "Small fonts",0,-8 )
    oFontStandard := HFont():Add( "Arial",0,-13,400,204 )
 
@@ -113,9 +113,9 @@ Local aModDlg, oFont
    INIT DIALOG aModDlg FROM RESOURCE "ABOUTDLG"
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 ITALIC UNDERLINE
 
-   REDEFINE SAY "HWREPORT" OF aModDlg ID 101 COLOR hwg_VColor("0000FF")
+   REDEFINE SAY "HWREPORT" OF aModDlg ID 101 COLOR hwg_ColorC2N("0000FF")
    REDEFINE OWNERBUTTON OF aModDlg ID IDC_OWNB1 ON CLICK {|| hwg_EndDialog( hwg_GetModalHandle() )} ;
-       FLAT TEXT "Close" COLOR hwg_VColor("0000FF") FONT oFont
+       FLAT TEXT "Close" COLOR hwg_ColorC2N("0000FF") FONT oFont
 
    aModDlg:Activate()
 Return Nil

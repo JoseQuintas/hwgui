@@ -31,7 +31,7 @@ Local aSample2 := { {.t.,"Line 1",10}, {.t.,"Line 2",22}, {.f.,"Line 3",40} }
 
    @ 80,180 OWNERBUTTON ON CLICK {|| hwg_EndDialog()} ;
        SIZE 180,35 FLAT                                  ;
-       TEXT "Close" COLOR hwg_VColor("0000FF")
+       TEXT "Close" COLOR hwg_ColorC2N("0000FF")
 
    hwg_CREATEARLIST( oBrw1,aSample1 )
 

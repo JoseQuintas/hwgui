@@ -217,9 +217,9 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    ENDIF
 
    ::tcolor := 0
-   ::bcolor := hwg_VColor( "FFFFFF" )
-   ::tcolorSel := ::httColor := hwg_VColor( "FFFFFF" )
-   ::bcolorSel := hwg_VColor( "808080" )
+   ::bcolor := hwg_ColorC2N( "FFFFFF" )
+   ::tcolorSel := ::httColor := hwg_ColorC2N( "FFFFFF" )
+   ::bcolorSel := hwg_ColorC2N( "808080" )
    ::htbColor := 2896388
 
    ::InitBrw()

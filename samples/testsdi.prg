@@ -31,7 +31,7 @@ Local oTree, oSplit, oTab
         BITMAP { "..\image\cl_fl.bmp","..\image\op_fl.bmp" } ;
         ON SIZE {|o,x,y|o:Move(,,,y-20)}
 
-   @ 214,10 EDITBOX oGet CAPTION "Command" SIZE 106, 20 COLOR hwg_VColor("FF0000") ;
+   @ 214,10 EDITBOX oGet CAPTION "Command" SIZE 106, 20 COLOR hwg_ColorC2N("FF0000") ;
         ON SIZE {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth-50)}
 
    @ 214,35 TAB oTab ITEMS {} SIZE 206, 280 ;

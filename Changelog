@@ -8,6 +8,41 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-20 09:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/gtkmain.prg
+  * source/winapi/guimain.prg
+    * hwg_VColor() renamed to hwg_ColorC2N()
+    * hwg_ColorN2C() and hwg_ColorN2RGB() functions added
+  * source/gtk/misc.c
+  * source/winapi/misc.c
+    * hwg_RGB() renamed to hwg_ColorRGB2N()
+  * include/guilib.ch
+    * #xtranslate added to keep hwg_RGB() and hwg_VColor()
+  * include/hwgextern.ch
+    * REQUEST for new functions added
+  * contrib/ext_controls/hbrowsex.prg
+  * contrib/ext_controls/hctrlex.prg
+  * contrib/ext_controls/hgridex.prg
+  * contrib/hwmake/hwmake.prg
+  * source/gtk/drawwidg.prg
+  * source/gtk/hbrowse.prg
+  * source/gtk/hgraph.prg
+  * source/gtk/hhyper.prg
+  * source/winapi/barcode.prg
+  * source/winapi/hbrowse.prg
+  * source/winapi/hgraph.prg
+  * source/winapi/hgrid.prg
+  * source/winapi/hhyper.prg
+  * source/winapi/hnice.prg
+  * source/winapi/hownbtn.prg
+  * source/winapi/hprinter.prg
+  * utils/debugger/hwgdebug.prg
+  * utils/designer/inspect.prg
+  * utils/hwreport/example.prg
+  * utils/hwreport/hwreport.prg
+  * utils/tutorial/tutor_eng.xml
+    * Calls of hwg_VColor() and hwg_RGB() changed to hwg_ColorC2N() and hwg_ColorRGB2N()
+
 2015-05-19 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor.prg
   * utils/tutorial/hwgrun.prg

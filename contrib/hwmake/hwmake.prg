@@ -124,7 +124,7 @@ Private oIcon := HIcon():AddResource("PIM")
       hwg_CREATEARLIST(oBrowse1,aFiles1)
       obrowse1:acolumns[1]:heading := "File Names"
       obrowse1:acolumns[1]:length := 50
-      oBrowse1:bcolorSel := hwg_VColor( "800080" )
+      oBrowse1:bcolorSel := hwg_ColorC2N( "800080" )
       oBrowse1:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse1, "*.prg")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse1)}
@@ -136,7 +136,7 @@ Private oIcon := HIcon():AddResource("PIM")
       hwg_CREATEARLIST(oBrowse2,aFiles2)
       obrowse2:acolumns[1]:heading := "File Names"
       obrowse2:acolumns[1]:length := 50
-      oBrowse2:bcolorSel := hwg_VColor( "800080" )
+      oBrowse2:bcolorSel := hwg_ColorC2N( "800080" )
       oBrowse2:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse2, "*.c")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse2)}
@@ -147,7 +147,7 @@ Private oIcon := HIcon():AddResource("PIM")
       hwg_CREATEARLIST(oBrowse3,aFiles3)
       obrowse3:acolumns[1]:heading := "File Names"
       obrowse3:acolumns[1]:length := 50
-      oBrowse3:bcolorSel := hwg_VColor( "800080" )
+      oBrowse3:bcolorSel := hwg_ColorC2N( "800080" )
       oBrowse3:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse3, "*.lib")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse3)}
@@ -158,7 +158,7 @@ Private oIcon := HIcon():AddResource("PIM")
       hwg_CREATEARLIST(oBrowse4,aFiles4)
       obrowse4:acolumns[1]:heading := "File Names"
       obrowse4:acolumns[1]:length := 50
-      oBrowse4:bcolorSel := hwg_VColor( "800080" )
+      oBrowse4:bcolorSel := hwg_ColorC2N( "800080" )
       oBrowse4:ofont := HFont():Add( 'Arial',0,-12 )
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse4, "*.rc")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse4)}
@@ -617,21 +617,21 @@ Local oSay
    @ 20,40 SAY "Hwgui Internacional Page"        ;
    LINK "http://www.hwgui.net" ;
        SIZE 230, 22 STYLE SS_CENTER  ;
-        COLOR hwg_VColor("0000FF") ;
-        VISITCOLOR hwg_Rgb(241,249,91)
+        COLOR hwg_ColorC2N("0000FF") ;
+        VISITCOLOR hwg_ColorRgb2N(241,249,91)
 
 
    @ 20,60 SAY "Hwgui Kresin Page"        ;
    LINK "http://kresin.belgorod.su/hwgui.html" ;
        SIZE 230, 22 STYLE SS_CENTER  ;
-        COLOR hwg_VColor("0000FF") ;
-        VISITCOLOR hwg_Rgb(241,249,91)
+        COLOR hwg_ColorC2N("0000FF") ;
+        VISITCOLOR hwg_ColorRgb2N(241,249,91)
 
    @ 20,80 SAY "Hwgui international Forum"        ;
    LINK "http://br.groups.yahoo.com/group/hwguibr" ;
        SIZE 230, 22 STYLE SS_CENTER  ;
-        COLOR hwg_VColor("0000FF") ;
-        VISITCOLOR hwg_Rgb(241,249,91)
+        COLOR hwg_ColorC2N("0000FF") ;
+        VISITCOLOR hwg_ColorRgb2N(241,249,91)
                              
    @ 40, 120 BUTTONex oBtExit  CAPTION "Close"  BITMAP oImgExit:Handle  on Click {||hwg_EndDialog()}    SIZE 180,35  
   

@@ -57,7 +57,7 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
          MENUITEM "Info" ACTION hwg_Msgtemp("")
       ENDMENU
       MENU TITLE "Third"
-         MENUITEM "Wchoice" ACTION hwg_WChoice( acho,"Select",,,,,15132390,,hwg_VColor( "008000" ) )
+         MENUITEM "Wchoice" ACTION hwg_WChoice( acho,"Select",,,,,15132390,,hwg_ColorC2N( "008000" ) )
          MENUITEM "hwg_Selectfolder" ACTION hwg_Msginfo( hwg_Selectfolder("!!!") )
          MENU TITLE "Submenu"
             MENUITEM "hwg_Shellexecute" ACTION (hwg_Shellexecute("d:\temp\podst.doc"),hwg_Msginfo(str(oMainWindow:handle)))

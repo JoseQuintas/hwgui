@@ -16,7 +16,7 @@
 #include "guilib.ch"
 #include "common.ch"
 
-#translate hwg_Rgb( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
+#translate hwg_ColorRgb2N( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
 
 Static oMain, oForm, oFont, oGrid
 Static nCount := 50, conn, leof := .F.
@@ -61,8 +61,8 @@ Function Test()
                      ON POSCHANGE {|oCtrl, nRow| OnPoschange(oCtrl, nRow) } ;
                      ON CLICK {|oCtrl| OnClick(oCtrl) } ;
                      ON DISPINFO {|oCtrl, nRow, nCol| OnDispInfo( oCtrl, nRow, nCol ) } ;
-                     COLOR hwg_VColor('D3D3D3');
-                     BACKCOLOR hwg_VColor('BEBEBE') 
+                     COLOR hwg_ColorC2N('D3D3D3');
+                     BACKCOLOR hwg_ColorC2N('BEBEBE') 
                      
                      /*
                      ON LOSTFOCUS {|| hwg_Msginfo('lost focus') } ;

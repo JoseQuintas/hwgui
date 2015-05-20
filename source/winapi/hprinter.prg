@@ -943,12 +943,12 @@ METHOD PaintDoc( oWnd ) CLASS HPrinter
       ::memBitmap := hwg_Createcompatiblebitmap( hDC, Rect[ 3 ] - Rect[ 1 ], Rect[ 4 ] - Rect[ 2 ] )
       ::memDC:Selectobject( ::memBitmap )
       Brush           := HBrush():Add( hwg_Getsyscolor( COLOR_3DHILIGHT + 1 ) ):handle
-      BrushWhite      := HBrush():Add( hwg_Rgb( 255, 255, 255 ) ):handle
-      BrushBlack      := HBrush():Add( hwg_Rgb( 0, 0, 0 ) ):handle
-      BrushLine       := HBrush():Add( hwg_Rgb( 102, 100, 92 ) ):handle
-      BrushBackground := HBrush():Add( hwg_Rgb( 204, 200, 184 ) ):handle
-      BrushShadow     := HBrush():Add( hwg_Rgb( 178, 175, 161 ) ):handle
-      BrushBorder     := HBrush():Add( hwg_Rgb( 129, 126, 115 ) ):handle
+      BrushWhite      := HBrush():Add( hwg_ColorRgb2N( 255, 255, 255 ) ):handle
+      BrushBlack      := HBrush():Add( hwg_ColorRgb2N( 0, 0, 0 ) ):handle
+      BrushLine       := HBrush():Add( hwg_ColorRgb2N( 102, 100, 92 ) ):handle
+      BrushBackground := HBrush():Add( hwg_ColorRgb2N( 204, 200, 184 ) ):handle
+      BrushShadow     := HBrush():Add( hwg_ColorRgb2N( 178, 175, 161 ) ):handle
+      BrushBorder     := HBrush():Add( hwg_ColorRgb2N( 129, 126, 115 ) ):handle
    ENDIF
 
    IF ::NeedsRedraw

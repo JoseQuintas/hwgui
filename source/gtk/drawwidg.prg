@@ -169,7 +169,7 @@ METHOD Add( nStyle, nWidth, nColor ) CLASS HPen
 
    nStyle := iif( nStyle == Nil, BS_SOLID, nStyle )
    nWidth := iif( nWidth == Nil, 1, nWidth )
-   nColor := iif( nColor == Nil, hwg_VColor( "000000" ), nColor )
+   nColor := iif( nColor == Nil, 0, nColor )
 
    For EACH i in ::aPens
       IF i:style == nStyle .AND. ;
@@ -194,7 +194,7 @@ METHOD Get( nStyle, nWidth, nColor ) CLASS HPen
 
    nStyle := iif( nStyle == Nil, PS_SOLID, nStyle )
    nWidth := iif( nWidth == Nil, 1, nWidth )
-   nColor := iif( nColor == Nil, hwg_VColor( "000000" ), nColor )
+   nColor := iif( nColor == Nil, 0, nColor )
 
    For EACH i in ::aPens
       IF i:style == nStyle .AND. ;

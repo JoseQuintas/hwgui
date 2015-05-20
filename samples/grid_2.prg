@@ -16,7 +16,7 @@
 #include "guilib.ch"
 #include "common.ch"
 
-#translate hwg_Rgb( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
+#translate hwg_ColorRgb2N( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
 
 Static oMain, oForm, oFont, oGrid, oServer, oQuery
 
@@ -49,8 +49,8 @@ Function Test()
                 
              @ 10,10 GRID oGrid OF oForm SIZE 680,375;
                      ITEMCOUNT oQuery:Lastrec() ;
-                     COLOR hwg_VColor('D3D3D3');
-                     BACKCOLOR hwg_Rgb(220,220,220) ;
+                     COLOR hwg_ColorC2N('D3D3D3');
+                     BACKCOLOR hwg_ColorRgb2N(220,220,220) ;
                      ON DISPINFO {|oCtrl, nRow, nCol| valtoprg(oQuery:FieldGet( nRow, nCol )) } 
 
              ADD COLUMN TO GRID oGrid HEADER "Column 1" WIDTH  50

@@ -807,9 +807,9 @@ HB_FUNC( HWG_ISWIN7 )
    hb_retl( ovi.dwMajorVersion >= 6 && ovi.dwMinorVersion == 1 );
 }
 
-HB_FUNC( HWG_RGB )
+HB_FUNC( HWG_COLORRGB2N )
 {
-   hb_retnl( RGB( hb_parni( 1 ), hb_parni( 2 ), hb_parni( 3 ) ) );
+   hb_retnl( hb_parni( 1 ) + hb_parni( 2 ) * 256 + hb_parni( 3 ) * 65536 );
 }
 
 /*

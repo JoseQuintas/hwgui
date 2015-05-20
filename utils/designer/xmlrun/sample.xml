@@ -103,8 +103,8 @@ oB1:AddColumn(oC)
 oC:=HColumn():New('RP.SLSH',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_slsh,"@EZ 99,999,999"), album->RP_SLSH:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
 oC:cargo:={.F.,,'album->RP_SLSH','N','@EZ 99,999,999'}
 oB1:AddColumn(oC)
-oB1:bColorSel:= hwg_Rgb(3,23,133)
-oB1:tColorSel:= hwg_Rgb(255,255,255)
+oB1:bColorSel:= hwg_ColorRgb2N(3,23,133)
+oB1:tColorSel:= hwg_ColorRgb2N(255,255,255)
 //oB1:bOther:={|o,m,wp,lp| messagesBrowse(o,m,wp,lp)}
 //  {lDELETE, lAPPEND, bTEH ,lSEARCH, lEDIT}
 //oB1:cargo:={.T.,.T.,{|modus| aFTEH[1]:Show(modus)},.T.,.T.}

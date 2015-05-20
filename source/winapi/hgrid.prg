@@ -142,7 +142,6 @@ METHOD Init() CLASS HGrid
             aBmpSize := hwg_Getbitmapsize( aButton[ nPos ] )
 
             IF aBmpSize[ 3 ] == 24
-//             hwg_Imagelist_addmasked( ::hIm,aButton[nPos],hwg_Rgb(236,223,216) )
                hwg_Imagelist_add( ::hIm, aButton[ nPos ] )
             ELSE
                hwg_Imagelist_add( ::hIm, aButton[ nPos ] )

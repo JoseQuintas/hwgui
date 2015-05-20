@@ -514,18 +514,18 @@ Local upd := 12, d1 := Date()+1
    @ 20,10 SAY "Input something:" SIZE 260, 22
    @ 20,35 GET oGet VAR e1  ;
         STYLE WS_DLGFRAME   ;
-        SIZE 260, 26 COLOR hwg_VColor("FF0000")
+        SIZE 260, 26 COLOR hwg_ColorC2N("FF0000")
 
    @ 20,70 GET CHECKBOX c1 CAPTION "Check 1" SIZE 90, 20
-   @ 20,95 GET CHECKBOX c2 CAPTION "Check 2" SIZE 90, 20 COLOR hwg_VColor("0000FF")
+   @ 20,95 GET CHECKBOX c2 CAPTION "Check 2" SIZE 90, 20 COLOR hwg_ColorC2N("0000FF")
 
    @ 160,70 GROUPBOX "RadioGroup" SIZE 130, 75
 
    GET RADIOGROUP r1
    @ 180,90 RADIOBUTTON "Radio 1"  ;
-        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_VColor("0000FF"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_ColorC2N("0000FF"),,.T.)}
    @ 180,115 RADIOBUTTON "Radio 2" ;
-        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_VColor("FF0000"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_ColorC2N("FF0000"),,.T.)}
    END RADIOGROUP
 
    @ 20,120 GET COMBOBOX oCombo VAR cm ITEMS aCombo SIZE 100, 150
@@ -654,8 +654,8 @@ STATIC Function hwg_Settimer( oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN )
       LOCAL nr := oUpR:value, ng := oUpG:value, nb := oUpB:value
 
       IF Len(cColor) == 6 .AND. !( cClr == cColor )
-         nColor := hwg_VColor( cColor )
-         tt_ColorN2RGB( nColor, @nr, @ng, @nb )
+         nColor := hwg_ColorC2N( cColor )
+         hwg_ColorN2RGB( nColor, @nr, @ng, @nb )
 
          cClr := cColor
          oUpR:value := nr1 := nr
@@ -664,8 +664,8 @@ STATIC Function hwg_Settimer( oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN )
          oEditN:value := nClr := nColor
          lRes := .T.
       ELSEIF nr1 != nr .OR. ng1 != ng .OR. nb1 != nb
-         nColor := hwg_RGB( nr, ng, nb )
-         cColor := tt_ColorN2C( nColor )
+         nColor := hwg_ColorRgb2N( nr, ng, nb )
+         cColor := hwg_ColorN2C( nColor )
 
          oEditC:value := cClr := cColor
          nr1 := nr
@@ -675,8 +675,8 @@ STATIC Function hwg_Settimer( oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN )
 
          lRes := .T.
       ELSEIF nClr != nColor
-         cColor := tt_ColorN2C( nColor )
-         tt_ColorN2RGB( nColor, @nr, @ng, @nb )
+         cColor := hwg_ColorN2C( nColor )
+         hwg_ColorN2RGB( nColor, @nr, @ng, @nb )
 
          oEditC:value := cClr := cColor
          oUpR:value := nr1 := nr
@@ -693,26 +693,6 @@ STATIC Function hwg_Settimer( oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN )
 
    SET TIMER oTimer OF oDlg VALUE 500 ACTION bTimer
 Return Nil
-
-FUNCTION tt_ColorN2C( nColor )
-
-   LOCAL s := "", n1, n2, i
-
-   FOR i := 0 to 2
-      n1 := hb_BitAnd( hb_BitShift( nColor,-i*8-4 ), 15 )
-      n2 := hb_BitAnd( hb_BitShift( nColor,-i*8 ), 15 )
-      s += Chr( Iif(n1<10,n1+48,n1+55) ) + Chr( Iif(n2<10,n2+48,n2+55) )
-   NEXT
-
-   RETURN s
-
-FUNCTION tt_ColorN2RGB( nColor, nr, ng, nb )
-
-   nr := nColor % 256
-   ng := Int( nColor/256 ) % 256
-   nb := Int( nColor/65536 )
-
-   RETURN { nr, ng, nb }
 
 Function PPaint( oPanel, oEditN )
 

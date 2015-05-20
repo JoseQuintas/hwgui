@@ -67,9 +67,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
 
-   DEFAULT vColor TO hwg_Rgb( 5, 34, 143 )
-   DEFAULT lColor TO hwg_Rgb( 0, 0, 255 )
-   DEFAULT hColor TO hwg_Rgb( 255, 0, 0 )
+   DEFAULT vColor TO hwg_ColorRgb2N( 5, 34, 143 )
+   DEFAULT lColor TO hwg_ColorRgb2N( 0, 0, 255 )
+   DEFAULT hColor TO hwg_ColorRgb2N( 255, 0, 0 )
    ::m_csUrl := cLink
    ::m_sHoverColor   := hColor
    ::m_sLinkColor    := lColor
@@ -123,9 +123,9 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor )
 
-   DEFAULT vColor TO hwg_Rgb( 5, 34, 143 )
-   DEFAULT lColor TO hwg_Rgb( 0, 0, 255 )
-   DEFAULT hColor TO hwg_Rgb( 255, 0, 0 )
+   DEFAULT vColor TO hwg_ColorRgb2N( 5, 34, 143 )
+   DEFAULT lColor TO hwg_ColorRgb2N( 0, 0, 255 )
+   DEFAULT hColor TO hwg_ColorRgb2N( 255, 0, 0 )
    ::state := LBL_INIT
    ::m_csUrl := cLink
    ::m_sHoverColor   := hColor

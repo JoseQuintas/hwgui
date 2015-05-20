@@ -389,7 +389,7 @@ Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
        ON SIZE {|o,x,y|o:Move(,,x,y-45)}      
 
    oBrw:bcolor := 15132390
-   oBrw:bcolorSel := hwg_VColor( "008000" )
+   oBrw:bcolorSel := hwg_ColorC2N( "008000" )
    oBrw:lAppable := .T.
    oBrw:aArray := arr
    oBrw:AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},"C",100,0,.T. ) )

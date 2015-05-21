@@ -94,7 +94,7 @@ CLASS HCEdiExt INHERIT HCEdit
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
    METHOD End()
    METHOD Close()
-   METHOD SetText( xText, cPageIn, cPageOut )
+   METHOD SetText( xText, cPageIn, cPageOut, lCompact )
    METHOD ReadTag( cTagName, aAttr )      INLINE .T.
    METHOD onEvent( msg, wParam, lParam )
    METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap )
@@ -112,7 +112,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD InsImage( cName, nAlign, xAttr, xBin )
    METHOD InsSpan( cText, xAttr, cHref )
    METHOD DelObject( cType, nL, nCol )
-   METHOD Save( cFileName, cpSou, lHtml )
+   METHOD Save( cFileName, cpSou, lHtml, lCompact )
    METHOD SaveTag( cTagName, nL, nItem )  INLINE ""
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
    METHOD LoadEnv( nL, iTd )
@@ -161,7 +161,7 @@ METHOD Close() CLASS HCEdiExt
 
    RETURN Nil
 
-METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdiExt
+METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
    LOCAL aText, i, j, n := 0, nBack
    LOCAL nPos1, nPos2 := 0, nPosS, nPosA, cTagName, cVal, xVal, nAlign, aAttr, lSingle
    LOCAL lDiv := .F., lSpan := .F., lA := .F., lStyle := .F., lTable := .F., lTr := .F., lTd := .F., lBin := .F.
@@ -188,9 +188,12 @@ METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdiExt
       IF ( cTagName := Substr( xText, nPos2++, 5 ) ) == "<html"
          ::lHtml := .T.
       ELSEIF cTagName != "<hwge"
-         ::lError := .T.
-         ::aStru := { { {0,0,Nil} } }
-         RETURN ::Super:SetText( , cPageIn, cPageOut )
+         IF Empty( lCompact )
+            ::lError := .T.
+            ::aStru := { { {0,0,Nil} } }
+            RETURN ::Super:SetText( , cPageIn, cPageOut )
+         ENDIF
+         nPos2 := 1
       ELSE
          nPos1 := hb_At( ">", xText, nPos2 )
          aAttr := hbxml_GetAttr( Substr( xText, nPos2-1, nPos1-nPos2+2 ) )
@@ -1496,11 +1499,12 @@ METHOD DelObject( cType, nL, nCol ) CLASS HCEdiExt
    ENDIF
    RETURN Nil
 
-METHOD Save( cFileName, cpSou, lHtml ) CLASS HCEdiExt
+METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
    LOCAL nHand := -1, s := "", i, j, nPos, cLine, aClasses := {}, aHili, oFont, cPart
    LOCAL lNested := ( Valtype(cFileName) == "L"), aStruTbl, xTemp
    LOCAL aText, nTextLen, aStru
 
+   cNewL := Iif( Empty( lCompact ), cNewLine, "" )
    IF !lNested
       IF !Empty( cFileName )
          ::cFileName := cFileName
@@ -1526,15 +1530,15 @@ METHOD Save( cFileName, cpSou, lHtml ) CLASS HCEdiExt
 
       IF lHtml
          s += "<html><head>"
-      ELSE
+      ELSEIF Empty( lCompact )
          s += "<hwge" + Iif(Empty(::cpSource),"",' cp="' + ::cpSource + '"' ) + ;
                Iif(Empty(::nDocFormat),"",' page="' + HPrinter():aPaper[ ::nDocFormat,1] ;
                + ',' + Ltrim(Str(::nDocOrient)) + ',' + Ltrim(Str(::aDocMargins[1])) + ',' + ;
                Ltrim(Str(::aDocMargins[2])) + ',' + Ltrim(Str(::aDocMargins[3])) + ',' + Ltrim(Str(::aDocMargins[4])) + '"' ) + ;
-               + ::SaveTag( "hwge" ) + '>' + cNewLine
+               + ::SaveTag( "hwge" ) + '>' + cNewL
       ENDIF
       IF !Empty( aClasses )         
-         s += "<style>" + cNewLine
+         s += "<style>" + cNewL
          FOR i := 1 TO Len( aClasses )
             s += "." + aClasses[i] + " { "
             IF hb_hHaskey( ::aHili, aClasses[i] )
@@ -1581,12 +1585,12 @@ METHOD Save( cFileName, cpSou, lHtml ) CLASS HCEdiExt
                   s += "border: " + Ltrim(Str(aHili[8]:width))+"px " + "solid " + hced_Color2X(aHili[8]:color) + "; "
                ENDIF              
             ENDIF
-            s += "}" + cNewLine
+            s += "}" + cNewL
          NEXT
-         s += "</style>" + cNewLine
+         s += "</style>" + cNewL
       ENDIF
       IF lHtml
-         s += "</head><body>" + cNewLine
+         s += "</head><body>" + cNewL
       ENDIF
       hbxml_SetEntity( { { "lt;","<" }, { "gt;",">" },{ "amp;","&" } } )   
    ENDIF
@@ -1595,7 +1599,7 @@ METHOD Save( cFileName, cpSou, lHtml ) CLASS HCEdiExt
       IF Valtype(::aStru[i,1,OB_TYPE]) == "N"
          IF !Empty( aStruTbl )
             aStruTbl := Nil
-            s += "</table>" + cNewLine
+            s += "</table>" + cNewL
          ENDIF
          s += "<div" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', '' ) + ;
                ::SaveTag( "div", i ) + '>'
@@ -1617,16 +1621,16 @@ METHOD Save( cFileName, cpSou, lHtml ) CLASS HCEdiExt
             cPart := hced_Substr( Self, cLine, nPos, hced_Len( Self, cLine ) - nPos + 1 )
             s += hbxml_preSave( Iif( !Empty(cpSou), hb_Translate( cPart, ::cp, cpSou ), cPart ) )
          ENDIF
-         s += "</div>" + cNewLine
+         s += "</div>" + cNewL
       ELSEIF ::aStru[i,1,OB_TYPE] == "img"
          IF !Empty( aStruTbl )
             aStruTbl := Nil
-            s += "</table>" + cNewLine
+            s += "</table>" + cNewL
          ENDIF
          s += "<img" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', "" ) ;
             + ' src="' + ::aStru[i,1,OB_HREF] + '"' + ;
             Iif( !Empty(xTemp:=::aStru[i,1,OB_TALIGN]), ' align="' + Iif( xTemp==2, 'right"','center"' ), "" ) + ;
-            ::SaveTag( "img", i ) + '/>' + cNewLine
+            ::SaveTag( "img", i ) + '/>' + cNewL
       ELSEIF ::aStru[i,1,OB_TYPE] == "tr"
          IF ::aStru[i,1,OB_TRNUM] == 1
             aStruTbl := ::aStru[i,1,OB_TBL]
@@ -1639,23 +1643,23 @@ METHOD Save( cFileName, cpSou, lHtml ) CLASS HCEdiExt
                   Iif( (xTemp:=aStruTbl[OB_OB,j,OB_CWIDTH])>0,Ltrim(Str(xTemp)),Ltrim(Str(-xTemp))+'%' ) + ;
                   '"/>'
             NEXT
-            s += cNewLine
+            s += cNewL
          ENDIF
-         s += "<tr" + ::SaveTag( "tr", i ) + ">" + cNewLine
+         s += "<tr" + ::SaveTag( "tr", i ) + ">" + cNewL
          FOR j := 1 TO Len( ::aStru[i,1,OB_OB] )
             s += "<td" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', "" ) ;
                + Iif( !Empty(::aStru[i,1,OB_OB,j,OB_COLSPAN]), ' colspan="' + Ltrim(Str(::aStru[i,1,OB_OB,j,OB_COLSPAN])) + '"', "" ) ;
                + Iif( !Empty(::aStru[i,1,OB_OB,j,OB_ROWSPAN]), ' rowspan="' + Ltrim(Str(::aStru[i,1,OB_OB,j,OB_ROWSPAN])) + '"', "" ) ;
-               + ::SaveTag( "td", i, j ) + '>' + cNewLine
+               + ::SaveTag( "td", i, j ) + '>' + cNewL
             nTextLen := ::nTextLen; aText := ::aText; aStru := ::aStru
             ::aStru := aStru[ i,1,OB_OB,j,2 ]
             ::aText := aStru[ i,1,OB_OB,j,OB_ATEXT ]
             ::nTextLen := aStru[ i,1,OB_OB,j,OB_NTLEN ]
-            s += ::Save( .F., cpSou, lHtml )
+            s += ::Save( .F., cpSou, lHtml, lCompact )
             ::nTextLen := nTextLen; ::aText := aText; ::aStru := aStru
-            s += "</td>" + cNewLine
+            s += "</td>" + cNewL
          NEXT
-         s += "</tr>" + cNewLine
+         s += "</tr>" + cNewL
       ELSE
          s += ::SaveTag( ::aStru[i,1,OB_TYPE], i )
       ENDIF
@@ -1667,9 +1671,11 @@ METHOD Save( cFileName, cpSou, lHtml ) CLASS HCEdiExt
          s += "</body></html>"
       ELSE
          FOR i := 1 TO Len( ::aBin )
-            s += '<binary id="' + ::aBin[i,1] + '">' + hb_Base64Encode( ::aBin[i,2] ) + '</binary>' + cNewLine
+            s += '<binary id="' + ::aBin[i,1] + '">' + hb_Base64Encode( ::aBin[i,2] ) + '</binary>' + cNewL
          NEXT
-         s += "</hwge>"
+         IF Empty( lCompact )
+            s += "</hwge>"
+         ENDIF
       ENDIF
       IF nHand != -1
          FWrite( nHand, s )

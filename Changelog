@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-21 10:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/hcediext.prg
+    * Added "compact" mode ( forth parameter in :SetText() and :Save() ) -
+      without headers and \r\n symbols.
+  * source/gtk/hsplit.prg
+  * source/winapi/hsplit.prg
+    * Added :lRepaint variable ( default value is .F. ). If .T., it repaints
+      all controls imedeately while moving the splitter.
+
 2015-05-20 12:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/ext_controls/hbrowsex.prg
     ! Fix, provided by Itamar M. Lins Jr.

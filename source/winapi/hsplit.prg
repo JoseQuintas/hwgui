@@ -20,10 +20,11 @@ CLASS VAR winclass INIT "STATIC"
    DATA aLeft
    DATA aRight
    DATA lVertical
+   DATA lRepaint    INIT .F.
    DATA nFrom, nTo
    DATA hCursor
-   DATA lCaptured INIT .F.
-   DATA lMoved INIT .F.
+   DATA lCaptured   INIT .F.
+   DATA lMoved      INIT .F.
    DATA bEndDrag
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
@@ -72,7 +73,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
       ENDIF
       Hwg_SetCursor( ::hCursor )
       IF ::lCaptured
-         ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+         IF ::lRepaint
+            ::DragAll( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+         ELSE
+            ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+         ENDIF
       ENDIF
    ELSEIF msg == WM_PAINT
       ::Paint()

@@ -1502,9 +1502,8 @@ METHOD DelObject( cType, nL, nCol ) CLASS HCEdiExt
 METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
    LOCAL nHand := -1, s := "", i, j, nPos, cLine, aClasses := {}, aHili, oFont, cPart
    LOCAL lNested := ( Valtype(cFileName) == "L"), aStruTbl, xTemp
-   LOCAL aText, nTextLen, aStru
+   LOCAL aText, nTextLen, aStru, cNewL := Iif( Empty( lCompact ), cNewLine, "" )
 
-   cNewL := Iif( Empty( lCompact ), cNewLine, "" )
    IF !lNested
       IF !Empty( cFileName )
          ::cFileName := cFileName

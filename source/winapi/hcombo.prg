@@ -64,7 +64,11 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::xValue := Iif( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
    ENDIF
 
-   ::bSetGet := bSetGet
+   IF bSetGet != Nil
+      ::bSetGet := bSetGet
+      Eval( ::bSetGet, ::xValue, self )
+   ENDIF
+
    ::aItems  := aItems
 
    ::Activate()

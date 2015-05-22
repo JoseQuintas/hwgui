@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-22 09:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+    * hwg_draw_Gradient() renamed to hwg_drawGradient(), because there
+      is already hwg_draw_Gradient() in winapi/nice.c
+  * source/winapi/draw.c
+    * hwg_drawGradient() added
+      The code is provided by Eduard Gilman.
+  * include/hwgextern.ch  
+    * hwg_drawGradient() added to the list
+
 2015-05-21 10:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/editor/hcediext.prg
     ! Warnings fixed.

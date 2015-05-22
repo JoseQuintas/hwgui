@@ -621,9 +621,9 @@ void hwg_prepare_cairo_colors( long int nColor, gdouble *r, gdouble *g, gdouble 
 }
 
 /*
- * hwg_draw_Gradient( hDC, x1, y1, x2, y2, int type, array colors, array stops )
+ * hwg_drawGradient( hDC, x1, y1, x2, y2, int type, array colors, array stops )
  */
-HB_FUNC( HWG_DRAW_GRADIENT )
+HB_FUNC( HWG_DRAWGRADIENT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );

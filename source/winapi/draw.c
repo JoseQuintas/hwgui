@@ -18,6 +18,8 @@
 #include "hbstack.h"
 #include "missing.h"
 
+#include "math.h"
+
 #if defined( __BORLANDC__ ) && __BORLANDC__ == 0x0550
 #ifdef __cplusplus
 extern "C"
@@ -39,6 +41,39 @@ typedef int ( _stdcall * TRANSPARENTBLT ) ( HDC, int, int, int, int, HDC, int,
       int, int, int, int );
 
 static TRANSPARENTBLT s_pTransparentBlt = NULL;
+
+#define GRADIENT_MAX_COLORS 16
+
+#ifndef GRADIENT_FILL_RECT_H
+
+#define GRADIENT_FILL_RECT_H 0
+#define GRADIENT_FILL_RECT_V 1
+
+#if !defined(__WATCOMC__) && !defined(__MINGW32__)
+typedef struct _GRADIENT_RECT
+{
+   ULONG UpperLeft;
+   ULONG LowerRight;
+} GRADIENT_RECT;
+#endif
+
+#if defined(__DMC__)
+typedef struct _TRIVERTEX
+{
+   LONG x;
+   LONG y;
+   USHORT Red;
+   USHORT Green;
+   USHORT Blue;
+   USHORT Alpha;
+} TRIVERTEX, *PTRIVERTEX;
+#endif
+
+#endif
+
+typedef int ( _stdcall * GRADIENTFILL ) ( HDC, PTRIVERTEX, int, PVOID, int, int );
+
+static GRADIENTFILL FuncGradientFill = NULL;
 
 void TransparentBmp( HDC hDC, int x, int y, int nWidthDest, int nHeightDest,
       HDC dcImage, int bmWidth, int bmHeight, int trColor )
@@ -1228,4 +1263,127 @@ HB_FUNC( HWG_MODIFYSTYLE )
    DWORD b = hb_parnl( 3 );
    DWORD dwNewStyle = ( dwStyle & ~a ) | b;
    SetWindowLongPtr( hWnd, GWL_STYLE, dwNewStyle );
+}
+
+/*
+ * hwg_drawGradient( hDC, x1, y1, x2, y2, int type, array colors, array stops )
+ */
+HB_FUNC( HWG_DRAWGRADIENT )
+{
+   HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
+   int type = hb_parni( 6 );
+   PHB_ITEM pArrColor = hb_param( 7, HB_IT_ARRAY );
+   long int color;
+   int red[GRADIENT_MAX_COLORS], green[GRADIENT_MAX_COLORS], blue[GRADIENT_MAX_COLORS], index;
+   PHB_ITEM pArrStop = hb_param( 8, HB_IT_ARRAY );
+   double stop;
+   int stop_x[GRADIENT_MAX_COLORS], stop_y[GRADIENT_MAX_COLORS], isH = 0, isV = 0, coord_stop; 
+   int user_colors_num, colors_num, user_stops_num, i;
+   TRIVERTEX vertex[(GRADIENT_MAX_COLORS-1)*2];
+   GRADIENT_RECT gRect[GRADIENT_MAX_COLORS-1];
+   int fill_type;
+   HPEN hPen_1, hPen_2;
+   HBRUSH hBrush_1, hBrush_2;
+
+   user_colors_num = ( pArrColor ) ? hb_arrayLen( pArrColor ) : 0;
+   colors_num = ( user_colors_num >= 2 ) ? user_colors_num : 2; // gradient needs minimum two colors
+   colors_num = ( colors_num <= GRADIENT_MAX_COLORS ) ? colors_num : GRADIENT_MAX_COLORS;
+   user_stops_num = ( pArrStop ) ? hb_arrayLen( pArrStop ) : 0;
+
+   if ( type == 1 || type == 2 ) isV = 1;
+   if ( type == 3 || type == 4 ) isH = 1;
+
+   for ( i = 0; i < colors_num; i++ )
+   {
+      stop = ( i < user_stops_num ) ? hb_arrayGetND( pArrStop, i+1 ) : 1. / (double)(colors_num-1) * (double)i;
+      if ( isV )
+      {
+         coord_stop = (int)( floor( stop * (double)(y2-y1+1) + 0.5 ) );
+         if ( type == 1 )
+            stop_y[i] = y1 + coord_stop;
+         else
+            stop_y[colors_num-1-i] = y2 - coord_stop + 1;
+      }
+      if ( isH )
+      {
+         coord_stop = (int)( floor( stop * (double)(x2-x1+1) + 0.5 ) );
+         if ( type == 3 )
+            stop_x[i] = x1 + coord_stop;
+         else
+            stop_x[colors_num-1-i] = x2 - coord_stop + 1;
+      }
+      color = ( i < user_colors_num ) ? hb_arrayGetNL( pArrColor, i+1 ) : 0xFFFFFF * i;
+      index = ( type == 2 || type == 4 ) ? colors_num-1-i : i;
+      red[ index ]   = color % 256;
+      green[ index ] = color / 256 % 256;
+      blue[ index ]  = color / 256 / 256 % 256;
+   }
+
+   if ( type >= 1 && type <= 4 )
+   {
+      // 1. array of TRIVERTEX structures that describe
+      // positional and color values for each vertex
+      // (for a rectangle two vertices need to be defined: upper-left and lower-right);
+      // 2. array of GRADIENT_RECT structures that
+      // reference the TRIVERTEX vertices;
+      for ( i = 1; i < colors_num; i++ )
+      {
+         vertex[(i-1)*2].x     = ( isH ) ? stop_x[i-1] : x1;
+         vertex[(i-1)*2].y     = ( isV ) ? stop_y[i-1] : y1;
+         vertex[(i-1)*2].Red   = red[i-1] * 256;
+         vertex[(i-1)*2].Green = green[i-1] * 256;
+         vertex[(i-1)*2].Blue  = blue[i-1] * 256;
+         vertex[(i-1)*2].Alpha = 0x0000;
+         
+         vertex[(i-1)*2+1].x     = ( isH ) ? stop_x[i] : x2 + 1;
+         vertex[(i-1)*2+1].y     = ( isV ) ? stop_y[i] : y2 + 1;
+         vertex[(i-1)*2+1].Red   = red[i] * 256;
+         vertex[(i-1)*2+1].Green = green[i] * 256;
+         vertex[(i-1)*2+1].Blue  = blue[i] * 256;
+         vertex[(i-1)*2+1].Alpha = 0x0000;
+         
+         gRect[i-1].UpperLeft  = (i-1)*2;
+         gRect[i-1].LowerRight = (i-1)*2+1;
+      }
+
+      if( FuncGradientFill == NULL )
+          FuncGradientFill = ( GRADIENTFILL )
+             GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
+             "GradientFill" );
+      
+      fill_type = ( type == 1 || type == 2 ) ? GRADIENT_FILL_RECT_V : GRADIENT_FILL_RECT_H;
+      FuncGradientFill(hDC, vertex, (colors_num-1)*2, gRect, (colors_num-1), fill_type);
+
+      // shifts of edges
+      if( isV && stop_y[0] > y1 || isH && stop_x[0] > x1 )
+      {
+         hPen_1 = CreatePen( PS_SOLID, 1, RGB(red[0], green[0], blue[0]) );
+         SelectObject( hDC, hPen_1 );
+         hBrush_1 = CreateSolidBrush( RGB(red[0], green[0], blue[0]) );
+         SelectObject( hDC, hBrush_1 );
+         if ( isV )
+            Rectangle( hDC, x1, y1, x2 + 1, stop_y[0] );
+         else
+            Rectangle( hDC, x1, y1, stop_x[0], y2 + 1 );
+      }
+      if ( isV && stop_y[colors_num-1] < y2 + 1 || isH && stop_x[colors_num-1] < x2 + 1 )
+      {
+         hPen_2 = CreatePen( PS_SOLID, 1, RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
+         SelectObject( hDC, hPen_2 );
+         hBrush_2 = CreateSolidBrush( RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
+         SelectObject( hDC, hBrush_2 );
+         if ( isV )
+            Rectangle( hDC, x1, stop_y[colors_num-1], x2 + 1, y2 + 1 );
+         else
+            Rectangle( hDC, stop_x[colors_num-1], y1, x2 + 1, y2 + 1 );
+      }
+      
+      DeleteObject( hPen_1 );
+      DeleteObject( hPen_2 );
+      DeleteObject( hBrush_1 );
+      DeleteObject( hBrush_2 );
+
+   } // if ( type >= 1 && type <= 4 )
+
 }

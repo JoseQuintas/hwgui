@@ -627,7 +627,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
-   gint type = hb_parni( 6 );
+   gint type = (HB_ISNUM(6))? hb_parni( 6 ) : 1;
    PHB_ITEM pArrColor = hb_param( 7, HB_IT_ARRAY );
    long int color;
    PHB_ITEM pArrStop = hb_param( 8, HB_IT_ARRAY );
@@ -636,6 +636,9 @@ HB_FUNC( HWG_DRAWGRADIENT )
    cairo_pattern_t *pat;
    gdouble x_center, y_center, radius;
    gdouble r, g, b;
+
+   if( type == 0 || type > 9 )
+      type = 1;
 
    // type of gradient
    switch( type ) 
@@ -672,7 +675,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
          // diagonal left-up
          pat = cairo_pattern_create_linear( x2, y2, x1, y1 );
          break;
-      default:
+      case 9:
          // radial gradient
          x_center = (x2 - x1) / 2 + x1;
          y_center = (y2 - y1) / 2 + y1;

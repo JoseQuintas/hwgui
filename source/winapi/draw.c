@@ -1272,7 +1272,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
-   int type = hb_parni( 6 );
+   int type = (HB_ISNUM(6))? hb_parni( 6 ) : 1;
    PHB_ITEM pArrColor = hb_param( 7, HB_IT_ARRAY );
    long int color;
    int red[GRADIENT_MAX_COLORS], green[GRADIENT_MAX_COLORS], blue[GRADIENT_MAX_COLORS], index;
@@ -1285,6 +1285,9 @@ HB_FUNC( HWG_DRAWGRADIENT )
    int fill_type;
    HPEN hPen_1, hPen_2;
    HBRUSH hBrush_1, hBrush_2;
+
+   if( type == 0 || type > 4 )
+      type = 1;
 
    user_colors_num = ( pArrColor ) ? hb_arrayLen( pArrColor ) : 0;
    colors_num = ( user_colors_num >= 2 ) ? user_colors_num : 2; // gradient needs minimum two colors
@@ -1320,8 +1323,8 @@ HB_FUNC( HWG_DRAWGRADIENT )
       blue[ index ]  = color / 256 / 256 % 256;
    }
 
-   if ( type >= 1 && type <= 4 )
-   {
+   //if ( type >= 1 && type <= 4 )
+   //{
       // 1. array of TRIVERTEX structures that describe
       // positional and color values for each vertex
       // (for a rectangle two vertices need to be defined: upper-left and lower-right);
@@ -1384,6 +1387,6 @@ HB_FUNC( HWG_DRAWGRADIENT )
       DeleteObject( hBrush_1 );
       DeleteObject( hBrush_2 );
 
-   } // if ( type >= 1 && type <= 4 )
+   //} // if ( type >= 1 && type <= 4 )
 
 }

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-22 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+  * source/winapi/draw.c
+    * Small corrections in hwg_drawGradient()
+  * utils/tutorial/tutor_eng.xml
+    * New test module added ( drawing gradients )
+
 2015-05-22 09:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
     * hwg_draw_Gradient() renamed to hwg_drawGradient(), because there

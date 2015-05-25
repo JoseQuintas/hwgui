@@ -1369,8 +1369,11 @@ HB_FUNC( HWG_DRAWGRADIENT )
             Rectangle( hDC, x1, y1, x2 + 1, stop_y[0] );
          else
             Rectangle( hDC, x1, y1, stop_x[0], y2 + 1 );
+
+         DeleteObject( hPen_1 );
+         DeleteObject( hBrush_1 );
       }
-      if ( isV && stop_y[colors_num-1] < y2 + 1 || isH && stop_x[colors_num-1] < x2 + 1 )
+      if ( ( isV && stop_y[colors_num-1] < y2 + 1 ) || ( isH && stop_x[colors_num-1] < x2 + 1 ) )
       {
          hPen_2 = CreatePen( PS_SOLID, 1, RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
          SelectObject( hDC, hPen_2 );
@@ -1380,12 +1383,10 @@ HB_FUNC( HWG_DRAWGRADIENT )
             Rectangle( hDC, x1, stop_y[colors_num-1], x2 + 1, y2 + 1 );
          else
             Rectangle( hDC, stop_x[colors_num-1], y1, x2 + 1, y2 + 1 );
-      }
-      
-      DeleteObject( hPen_1 );
-      DeleteObject( hPen_2 );
-      DeleteObject( hBrush_1 );
-      DeleteObject( hBrush_2 );
+
+         DeleteObject( hPen_2 );
+         DeleteObject( hBrush_2 );
+      }   
 
    //} // if ( type >= 1 && type <= 4 )
 

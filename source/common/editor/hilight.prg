@@ -178,7 +178,7 @@ Return oHili
 METHOD Do( oEdit, nLine, lCheck ) CLASS Hilight
 Local aText, cLine, nLen, nLenS, nLenM, i, lComm
 Local cs, cm
-Local nPos, nPos1, cWord, c
+Local nPos, nPos1, nPrev, cWord, c
 
    ::nItems := 0
    ::lMultiComm := .F.
@@ -191,7 +191,7 @@ Local nPos, nPos1, cWord, c
 
    aText := ::oEdit:aText
    cLine := aText[nLine]
-   nLen := Len( cLine )
+   nLen := hced_Len( ::oEdit,cLine )
 
    IF Empty( ::aDop )
       ::aDop := Array( Len( ::oEdit:aText ) )
@@ -218,7 +218,7 @@ Local nPos, nPos1, cWord, c
 
    IF lComm != Nil .AND. lComm
       IF ( nPos := At( ::cMcomm2, cLine ) ) == 0
-         IF !lCheck; ::AddItem( 1, Len(cLine), HILIGHT_COMM ); ENDIF
+         IF !lCheck; ::AddItem( 1, hced_Len(::oEdit,cLine), HILIGHT_COMM ); ENDIF
          ::lMultiComm := .T.
          ::aDop[nLine] := 1
          Return Nil
@@ -239,24 +239,24 @@ Local nPos, nPos1, cWord, c
 
 
    DO WHILE nPos <= nLen
-      DO WHILE nPos <= nLen .AND. Substr( cLine,nPos,1 ) $ cSpaces; nPos++; ENDDO
+      DO WHILE nPos <= nLen .AND. hced_Substr( ::oEdit,cLine,nPos,1 ) $ cSpaces; nPos++; ENDDO
       DO WHILE nPos <= nLen
-         IF ( c := Substr( cLine,nPos,1 ) ) $ cQuotes
+         IF ( c := hced_Substr( ::oEdit,cLine,nPos,1 ) ) $ cQuotes
             nPos1 := nPos
-            IF ( nPos := hb_At( c, cLine, nPos1+1 ) ) == 0
-               nPos := Len( cLine )
+            IF ( nPos := hced_At( ::oEdit, c, cLine, nPos1+1 ) ) == 0
+               nPos := hced_Len( ::oEdit,cLine )
             ENDIF
             IF !lCheck; ::AddItem( nPos1, nPos, HILIGHT_QUOTE ); ENDIF
 
-         ELSEIF c == cs .AND. Substr( cLine, nPos, nLenS ) == ::cScomm
-            IF !lCheck; ::AddItem( nPos, Len( cLine ), HILIGHT_COMM ); ENDIF
-            nPos := Len( cLine ) + 1
+         ELSEIF c == cs .AND. hced_Substr( ::oEdit, cLine, nPos, nLenS ) == ::cScomm
+            IF !lCheck; ::AddItem( nPos, hced_Len( ::oEdit, cLine ), HILIGHT_COMM ); ENDIF
+            nPos := hced_Len( ::oEdit, cLine ) + 1
             EXIT
 
-         ELSEIF c == cm .AND. Substr( cLine, nPos, nLenM ) == ::cMcomm1
+         ELSEIF c == cm .AND. hced_Substr( ::oEdit, cLine, nPos, nLenM ) == ::cMcomm1
             nPos1 := nPos
-            IF ( nPos := hb_At( ::cMcomm2, cLine, nPos1+1 ) ) == 0
-               nPos := Len( cLine )
+            IF ( nPos := hced_At( ::oEdit, ::cMcomm2, cLine, nPos1+1 ) ) == 0
+               nPos := hced_Len( ::oEdit, cLine )
                ::lMultiComm := .T.
                ::aDop[nLine] := 1
             ENDIF
@@ -265,11 +265,18 @@ Local nPos, nPos1, cWord, c
 
          ELSEIF !lCheck .AND. IsLetter( c )
             nPos1 := nPos
-            nPos ++
-            DO WHILE IsLetter( Substr( cLine,nPos,1 ) ); nPos++; ENDDO
-            cWord := " " + Iif( ::lCase, Substr( cLine, nPos1, nPos-nPos1 ), ;
-                  Lower( Substr( cLine, nPos1, nPos-nPos1 ) ) ) + " "
-            nPos --
+            //nPos ++
+            nPrev := nPos
+            nPos := hced_NextPos( ::oEdit, cLine, nPos )
+            DO WHILE IsLetter( hced_Substr( ::oEdit, cLine,nPos,1 ) )
+                //nPos++
+                nPrev := nPos
+                nPos := hced_NextPos( ::oEdit, cLine, nPos )
+            ENDDO
+            cWord := " " + Iif( ::lCase, hced_Substr( ::oEdit, cLine, nPos1, nPos-nPos1 ), ;
+                  Lower( hced_Substr( ::oEdit, cLine, nPos1, nPos-nPos1 ) ) ) + " "
+            //nPos --
+            nPos := nPrev
             IF !Empty(::cCommands ) .AND. cWord $ ::cCommands
                ::AddItem( nPos1, nPos, HILIGHT_KEYW )
             ELSEIF !Empty(::cFuncs ) .AND. cWord $ ::cFuncs
@@ -277,7 +284,8 @@ Local nPos, nPos1, cWord, c
             ENDIF
 
          ENDIF
-         nPos ++
+         //nPos ++
+         nPos := hced_NextPos( ::oEdit, cLine, nPos )
       ENDDO
    ENDDO
    IF !lCheck
@@ -301,6 +309,6 @@ METHOD AddItem( nPos1, nPos2, nType ) CLASS Hilight
 Return Nil
 
 Static Function IsLetter( c )
-Return ( c >= "A" .AND. c <= "Z" ) .OR. ( c >= "a" .AND. c <= "z" ) .OR. ;
+Return Len(c) > 1 .OR. ( c >= "A" .AND. c <= "Z" ) .OR. ( c >= "a" .AND. c <= "z" ) .OR. ;
       c == "_" .OR. Asc(c) >= 128
 

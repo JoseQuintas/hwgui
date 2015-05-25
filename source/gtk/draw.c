@@ -621,26 +621,27 @@ void hwg_prepare_cairo_colors( long int nColor, gdouble *r, gdouble *g, gdouble 
 }
 
 /*
- * hwg_drawGradient( hDC, x1, y1, x2, y2, int type, array colors, array stops )
+ * hwg_drawGradient( hDC, x1, y1, x2, y2, int type, array colors, array stops, array radiuses )
  */
 HB_FUNC( HWG_DRAWGRADIENT )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
-   gint type = (HB_ISNUM(6))? hb_parni( 6 ) : 1;
+   gint type = ( HB_ISNUM(6) ) ? hb_parni( 6 ) : 1;
    PHB_ITEM pArrColor = hb_param( 7, HB_IT_ARRAY );
    long int color;
    PHB_ITEM pArrStop = hb_param( 8, HB_IT_ARRAY );
    gdouble stop;
    gint user_colors_num, colors_num, user_stops_num, i;
    cairo_pattern_t *pat;
-   gdouble x_center, y_center, radius;
+   gdouble x_center, y_center, gr_radius;
    gdouble r, g, b;
-
-   if( type == 0 || type > 9 )
-      type = 1;
+   PHB_ITEM pArrRadius = hb_param( 9, HB_IT_ARRAY );
+   gint radius[4], max_r;
+   gint user_radiuses_num;
 
    // type of gradient
+   type = ( type >= 1 && type <= 9 ) ? type : 1;
    switch( type ) 
    {
       case 1:
@@ -679,8 +680,8 @@ HB_FUNC( HWG_DRAWGRADIENT )
          // radial gradient
          x_center = (x2 - x1) / 2 + x1;
          y_center = (y2 - y1) / 2 + y1;
-         radius = sqrt( pow(x2-x1,2) + pow(y2-y1,2) ) / 2;
-         pat = cairo_pattern_create_radial(x_center, y_center, 0, x_center, y_center, radius);
+         gr_radius = sqrt( pow(x2-x1,2) + pow(y2-y1,2) ) / 2;
+         pat = cairo_pattern_create_radial(x_center, y_center, 0, x_center, y_center, gr_radius);
          break;
    }
 
@@ -696,9 +697,25 @@ HB_FUNC( HWG_DRAWGRADIENT )
       cairo_pattern_add_color_stop_rgb( pat, stop, r, g, b );
    }
 
-   cairo_rectangle( hDC->cr, x1, y1, x2-x1+1, y2-y1+1 );
+   user_radiuses_num = ( pArrRadius ) ? hb_arrayLen( pArrRadius ) : 0;
+   max_r = ( x2-x1+1 > y2-y1+1 ) ? y2-y1+1 : x2-x1+1;
+   max_r /= 2;
+
+   for ( i = 0; i < 4; i++ )
+   {
+      radius[i] = ( i < user_radiuses_num ) ? hb_arrayGetNI( pArrRadius, i+1 ) : 0;
+      radius[i] = ( radius[i] >= 0 ) ? radius[i] : 0;
+      radius[i] = ( radius[i] <= max_r ) ? radius[i] : max_r;
+   }
+
+   cairo_arc( hDC->cr, x1+radius[0], y1+radius[0], radius[0], M_PI, 3*M_PI/2 );
+   cairo_arc( hDC->cr, x2-radius[1], y1+radius[1], radius[1], 3*M_PI/2, 0 );
+   cairo_arc( hDC->cr, x2-radius[2], y2-radius[2], radius[2], 0, M_PI/2 );
+   cairo_arc( hDC->cr, x1+radius[3], y2-radius[3], radius[3], M_PI/2, M_PI );
+   cairo_close_path(hDC->cr);
+
    cairo_set_source( hDC->cr, pat );
    cairo_fill( hDC->cr );
-  
+
    cairo_pattern_destroy( pat );
 }

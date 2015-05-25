@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-24 10:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+    * hwg_drawGradient() now can draw rounded corners,
+      the code is provided by Eduard Gilman.
+  * source/winapi/draw.c
+    ! Warnings fixed.
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hilight.prg
+    * Some changes for proper highliting of utf8 strings
+
 2015-05-22 11:23 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcombo.prg
   * source/winapi/hcombo.prg

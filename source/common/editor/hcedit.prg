@@ -2343,3 +2343,9 @@ Function hced_At( oEdit, cFind, cLine, nStart, nEnd )
    IF oEdit:lUtf8; RETURN hb_utf8At( cFind, cLine, nStart, nEnd ); ENDIF
 #endif
    RETURN hb_At( cFind, cLine, nStart, nEnd )
+
+Function hced_NextPos( oEdit, cLine, nPos )
+#ifndef __XHARBOUR__
+   IF oEdit:lUtf8; RETURN nPos + Len( hced_Substr( oEdit, cLine, nPos, 1 ) ); ENDIF
+#endif
+   RETURN nPos + 1

@@ -48,6 +48,7 @@ CLASS HEdit INHERIT HControl
    METHOD Value ( xValue ) SETGET
    METHOD SelStart( nStart ) SETGET
    METHOD SelLength( nLength ) SETGET
+   METHOD ParsePict( cPicture, vari )
 
 ENDCLASS
 
@@ -80,7 +81,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::nMaxLength := nMaxLength
    ENDIF
 
-   ParsePict( Self, cPicture, vari )
+   ::ParsePict( cPicture, vari )
    IF Empty( ::nMaxLength ) .AND. !Empty( ::bSetGet ) .AND. !Empty( ::cType ) .AND. ::cType == "C"
       ::nMaxLength := Len( vari )
    ENDIF
@@ -352,7 +353,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
       ::nMaxLength := nMaxLength
    ENDIF
 
-   ParsePict( Self, cPicture, vari )
+   ::ParsePict( cPicture, vari )
 
    IF bSetGet != Nil
       ::bGetFocus := bGFocus
@@ -445,6 +446,71 @@ METHOD SelLength( nLength ) CLASS HEdit
 
    RETURN nLength
 
+METHOD ParsePict( cPicture, vari ) CLASS HEdit
+   LOCAL nAt, i, masklen, cChar
+
+   IF ::bSetGet == Nil
+      RETURN Nil
+   ENDIF
+   ::cPicFunc := ::cPicMask := ""
+   IF cPicture != Nil
+      IF Left( cPicture, 1 ) == "@"
+         nAt := At( " ", cPicture )
+         IF nAt == 0
+            ::cPicFunc := Upper( cPicture )
+            ::cPicMask := ""
+         ELSE
+            ::cPicFunc := Upper( SubStr( cPicture, 1, nAt - 1 ) )
+            ::cPicMask := SubStr( cPicture, nAt + 1 )
+         ENDIF
+         IF ::cPicFunc == "@"
+            ::cPicFunc := ""
+         ENDIF
+      ELSE
+         ::cPicFunc   := ""
+         ::cPicMask   := cPicture
+      ENDIF
+      IF Empty( ::nMaxLength ) .AND. !Empty( ::cPicMask )
+         ::nMaxLength := Len( ::cPicMask )
+      ENDIF
+   ENDIF
+
+   IF Empty( ::cPicMask )
+      IF ::cType == "D"
+         ::cPicMask := StrTran( Dtoc( CToD( Space(8 ) ) ), ' ', '9' )
+      ELSEIF ::cType == "N"
+         vari := Str( vari )
+         IF ( nAt := At( ".", vari ) ) > 0
+            ::cPicMask := Replicate( '9', nAt - 1 ) + "." + ;
+               Replicate( '9', Len( vari ) - nAt )
+         ELSE
+            ::cPicMask := Replicate( '9', Len( vari ) )
+         ENDIF
+      ENDIF
+   ENDIF
+
+   IF !Empty( ::cPicMask )
+      masklen := Len( ::cPicMask )
+      FOR i := 1 TO masklen
+         cChar := SubStr( ::cPicMask, i, 1 )
+         IF !cChar $ "!ANX9#"
+            ::lPicComplex := .T.
+            EXIT
+         ENDIF
+      NEXT
+   ENDIF
+
+   //  ------------ added by Maurizio la Cecilia
+
+   IF !Empty( ::nMaxLength ) .AND. Len( ::cPicMask ) < ::nMaxLength
+      ::cPicMask := PadR( ::cPicMask, ::nMaxLength, "X" )
+   ENDIF
+
+   //  ------------- end of added code
+
+   RETURN Nil
+
+
 FUNCTION hwg_IsCtrlShift( lCtrl, lShift )
    LOCAL cKeyb := hwg_Getkeyboardstate()
 
@@ -453,70 +519,6 @@ FUNCTION hwg_IsCtrlShift( lCtrl, lShift )
 
    RETURN ( lCtrl .AND. ( Asc(SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128 ) ) .OR. ;
       ( lShift .AND. ( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128 ) )
-
-STATIC FUNCTION ParsePict( oEdit, cPicture, vari )
-   LOCAL nAt, i, masklen, cChar
-
-   IF oEdit:bSetGet == Nil
-      RETURN Nil
-   ENDIF
-   oEdit:cPicFunc := oEdit:cPicMask := ""
-   IF cPicture != Nil
-      IF Left( cPicture, 1 ) == "@"
-         nAt := At( " ", cPicture )
-         IF nAt == 0
-            oEdit:cPicFunc := Upper( cPicture )
-            oEdit:cPicMask := ""
-         ELSE
-            oEdit:cPicFunc := Upper( SubStr( cPicture, 1, nAt - 1 ) )
-            oEdit:cPicMask := SubStr( cPicture, nAt + 1 )
-         ENDIF
-         IF oEdit:cPicFunc == "@"
-            oEdit:cPicFunc := ""
-         ENDIF
-      ELSE
-         oEdit:cPicFunc   := ""
-         oEdit:cPicMask   := cPicture
-      ENDIF
-      IF Empty( oEdit:nMaxLength ) .AND. !Empty( oEdit:cPicMask )
-         oEdit:nMaxLength := Len( oEdit:cPicMask )
-      ENDIF
-   ENDIF
-
-   IF Empty( oEdit:cPicMask )
-      IF oEdit:cType == "D"
-         oEdit:cPicMask := StrTran( Dtoc( CToD( Space(8 ) ) ), ' ', '9' )
-      ELSEIF oEdit:cType == "N"
-         vari := Str( vari )
-         IF ( nAt := At( ".", vari ) ) > 0
-            oEdit:cPicMask := Replicate( '9', nAt - 1 ) + "." + ;
-               Replicate( '9', Len( vari ) - nAt )
-         ELSE
-            oEdit:cPicMask := Replicate( '9', Len( vari ) )
-         ENDIF
-      ENDIF
-   ENDIF
-
-   IF !Empty( oEdit:cPicMask )
-      masklen := Len( oEdit:cPicMask )
-      FOR i := 1 TO masklen
-         cChar := SubStr( oEdit:cPicMask, i, 1 )
-         IF !cChar $ "!ANX9#"
-            oEdit:lPicComplex := .T.
-            EXIT
-         ENDIF
-      NEXT
-   ENDIF
-
-   //  ------------ added by Maurizio la Cecilia
-
-   IF !Empty( oEdit:nMaxLength ) .AND. Len( oEdit:cPicMask ) < oEdit:nMaxLength
-      oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:nMaxLength, "X" )
-   ENDIF
-
-   //  ------------- end of added code
-
-   RETURN Nil
 
 STATIC FUNCTION IsEditable( oEdit, nPos )
    LOCAL cChar

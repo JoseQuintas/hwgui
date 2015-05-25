@@ -41,6 +41,7 @@ CLASS HEdit INHERIT HControl
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, self )
    METHOD Refresh()
    METHOD Value ( xValue ) SETGET
+   METHOD ParsePict( cPicture, vari )
 
 ENDCLASS
 
@@ -72,7 +73,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::nMaxLength := nMaxLength
    ENDIF
 
-   ParsePict( Self, cPicture, vari )
+   ::ParsePict( cPicture, vari )
    IF Empty( ::nMaxLength ) .AND. !Empty( ::bSetGet ) .AND. !Empty( ::cType ) .AND. ::cType == "C"
       ::nMaxLength := Len( vari )
    ENDIF
@@ -304,55 +305,55 @@ METHOD Value( xValue ) CLASS HEdit
 
    RETURN vari
 
-STATIC FUNCTION ParsePict( oEdit, cPicture, vari )
+METHOD ParsePict( cPicture, vari ) CLASS HEdit
    LOCAL nAt, i, masklen, cChar
 
-   IF oEdit:bSetGet == Nil
+   IF ::bSetGet == Nil
       RETURN Nil
    ENDIF
-   oEdit:cPicFunc := oEdit:cPicMask := ""
+   ::cPicFunc := ::cPicMask := ""
    IF cPicture != Nil
       IF Left( cPicture, 1 ) == "@"
          nAt := At( " ", cPicture )
          IF nAt == 0
-            oEdit:cPicFunc := Upper( cPicture )
-            oEdit:cPicMask := ""
+            ::cPicFunc := Upper( cPicture )
+            ::cPicMask := ""
          ELSE
-            oEdit:cPicFunc := Upper( SubStr( cPicture, 1, nAt - 1 ) )
-            oEdit:cPicMask := SubStr( cPicture, nAt + 1 )
+            ::cPicFunc := Upper( SubStr( cPicture, 1, nAt - 1 ) )
+            ::cPicMask := SubStr( cPicture, nAt + 1 )
          ENDIF
-         IF oEdit:cPicFunc == "@"
-            oEdit:cPicFunc := ""
+         IF ::cPicFunc == "@"
+            ::cPicFunc := ""
          ENDIF
       ELSE
-         oEdit:cPicFunc   := ""
-         oEdit:cPicMask   := cPicture
+         ::cPicFunc   := ""
+         ::cPicMask   := cPicture
       ENDIF
-      IF Empty( oEdit:nMaxLength ) .AND. !Empty( oEdit:cPicMask )
-         oEdit:nMaxLength := Len( oEdit:cPicMask )
+      IF Empty( ::nMaxLength ) .AND. !Empty( ::cPicMask )
+         ::nMaxLength := Len( ::cPicMask )
       ENDIF
    ENDIF
 
-   IF Empty( oEdit:cPicMask )
-      IF oEdit:cType == "D"
-         oEdit:cPicMask := StrTran( Dtoc( CToD( Space(8 ) ) ), ' ', '9' )
-      ELSEIF oEdit:cType == "N"
+   IF Empty( ::cPicMask )
+      IF ::cType == "D"
+         ::cPicMask := StrTran( Dtoc( CToD( Space(8 ) ) ), ' ', '9' )
+      ELSEIF ::cType == "N"
          vari := Str( vari )
          IF ( nAt := At( ".", vari ) ) > 0
-            oEdit:cPicMask := Replicate( '9', nAt - 1 ) + "." + ;
+            ::cPicMask := Replicate( '9', nAt - 1 ) + "." + ;
                Replicate( '9', Len( vari ) - nAt )
          ELSE
-            oEdit:cPicMask := Replicate( '9', Len( vari ) )
+            ::cPicMask := Replicate( '9', Len( vari ) )
          ENDIF
       ENDIF
    ENDIF
 
-   IF !Empty( oEdit:cPicMask )
-      masklen := Len( oEdit:cPicMask )
+   IF !Empty( ::cPicMask )
+      masklen := Len( ::cPicMask )
       FOR i := 1 TO masklen
-         cChar := SubStr( oEdit:cPicMask, i, 1 )
+         cChar := SubStr( ::cPicMask, i, 1 )
          IF !cChar $ "!ANX9#"
-            oEdit:lPicComplex := .T.
+            ::lPicComplex := .T.
             EXIT
          ENDIF
       NEXT
@@ -360,8 +361,8 @@ STATIC FUNCTION ParsePict( oEdit, cPicture, vari )
 
    //                                         ------------ added by Maurizio la Cecilia
 
-   IF !Empty( oEdit:nMaxLength ) .AND. Len( oEdit:cPicMask ) < oEdit:nMaxLength
-      oEdit:cPicMask := PadR( oEdit:cPicMask, oEdit:nMaxLength, "X" )
+   IF !Empty( ::nMaxLength ) .AND. Len( ::cPicMask ) < ::nMaxLength
+      ::cPicMask := PadR( ::cPicMask, ::nMaxLength, "X" )
    ENDIF
 
    //                                         ------------- end of added code

@@ -747,9 +747,8 @@ Function PPanel( oPanel )
 
    hwg_drawGradient( hDC, 450, 20, 700, 160, 3, {0xFFFFFF, 0x3300, 0xFFFFFF}, {0, 0.8, 1} )
 
-   hwg_drawGradient( hDC, 730, 20, 900, 56, 1,  { hwg_ColorC2N("7FA40E"), hwg_ColorC2N("B7EF8E")} )
-   hwg_drawGradient( hDC, 730, 72, 900, 108, 1, { hwg_ColorC2N("255779"), hwg_ColorC2N("3E7492"), hwg_ColorC2N("A6C0CD")} )
-   hwg_drawGradient( hDC, 730, 124, 900,160, 1, { hwg_ColorC2N("787878"), hwg_ColorC2N("A6A6A6")} )
+   hwg_drawGradient( hDC, 730, 20, 900, 76, 1,  { hwg_ColorC2N("7FA40E"), hwg_ColorC2N("B7EF8E")},, {16,16,16,16} )
+   hwg_drawGradient( hDC, 730, 92, 900, 148, 1, { hwg_ColorC2N("255779"), hwg_ColorC2N("3E7492"), hwg_ColorC2N("A6C0CD")},, {16,16,16,16} )
    
    hwg_drawGradient( hDC, 50, 180, 149, 450, 1, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )   
    hwg_drawGradient( hDC, 200,180, 299, 450, 2, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )   

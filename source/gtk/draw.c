@@ -697,22 +697,26 @@ HB_FUNC( HWG_DRAWGRADIENT )
       cairo_pattern_add_color_stop_rgb( pat, stop, r, g, b );
    }
 
-   user_radiuses_num = ( pArrRadius ) ? hb_arrayLen( pArrRadius ) : 0;
-   max_r = ( x2-x1+1 > y2-y1+1 ) ? y2-y1+1 : x2-x1+1;
-   max_r /= 2;
+   if( pArrRadius ) {
+      user_radiuses_num =  hb_arrayLen( pArrRadius );
+      max_r = ( x2-x1+1 > y2-y1+1 ) ? y2-y1+1 : x2-x1+1;
+      max_r /= 2;
 
-   for ( i = 0; i < 4; i++ )
-   {
-      radius[i] = ( i < user_radiuses_num ) ? hb_arrayGetNI( pArrRadius, i+1 ) : 0;
-      radius[i] = ( radius[i] >= 0 ) ? radius[i] : 0;
-      radius[i] = ( radius[i] <= max_r ) ? radius[i] : max_r;
+      for ( i = 0; i < 4; i++ )
+      {
+         radius[i] = ( i < user_radiuses_num ) ? hb_arrayGetNI( pArrRadius, i+1 ) : 0;
+         radius[i] = ( radius[i] >= 0 ) ? radius[i] : 0;
+         radius[i] = ( radius[i] <= max_r ) ? radius[i] : max_r;
+      }
+
+      cairo_arc( hDC->cr, x1+radius[0], y1+radius[0], radius[0], M_PI, 3*M_PI/2 );
+      cairo_arc( hDC->cr, x2-radius[1], y1+radius[1], radius[1], 3*M_PI/2, 0 );
+      cairo_arc( hDC->cr, x2-radius[2], y2-radius[2], radius[2], 0, M_PI/2 );
+      cairo_arc( hDC->cr, x1+radius[3], y2-radius[3], radius[3], M_PI/2, M_PI );
+      cairo_close_path(hDC->cr);
    }
-
-   cairo_arc( hDC->cr, x1+radius[0], y1+radius[0], radius[0], M_PI, 3*M_PI/2 );
-   cairo_arc( hDC->cr, x2-radius[1], y1+radius[1], radius[1], 3*M_PI/2, 0 );
-   cairo_arc( hDC->cr, x2-radius[2], y2-radius[2], radius[2], 0, M_PI/2 );
-   cairo_arc( hDC->cr, x1+radius[3], y2-radius[3], radius[3], M_PI/2, M_PI );
-   cairo_close_path(hDC->cr);
+   else
+      cairo_rectangle( hDC->cr, x1, y1, x2-x1+1, y2-y1+1 );
 
    cairo_set_source( hDC->cr, pat );
    cairo_fill( hDC->cr );

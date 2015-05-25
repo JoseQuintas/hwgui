@@ -83,7 +83,7 @@ FUNCTION hwg_WriteStatus( oWnd, nPart, cText, lRedraw )
 
    aControls := oWnd:aControls
    IF ( i := Ascan( aControls, { |o|o:ClassName() = "HSTATUS" } ) ) > 0
-      hwg_SendMessage( aControls[i]:handle, SB_SETTEXT, nPart - 1, cText )
+      hwg_SendMessage( aControls[i]:handle, SB_SETTEXT, Iif(nPart==Nil,0,nPart-1), cText )
       IF lRedraw != Nil .AND. lRedraw
          hwg_Redrawwindow( aControls[i]:handle, RDW_ERASE + RDW_INVALIDATE )
       ENDIF

@@ -101,6 +101,7 @@ DEBUG_LIB    =   $(LIB_DIR)\hwgdebug.lib
 
 HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hipedit.obj \
+   $(HWGUI_OBJ_DIR)\animat.obj \
    $(HWGUI_OBJ_DIR)\commond.obj \
    $(HWGUI_OBJ_DIR)\control.obj \
    $(HWGUI_OBJ_DIR)\cxshade.obj \
@@ -124,6 +125,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\drawwidg.obj \
    $(HWGUI_OBJ_DIR)\guimain.obj \
    $(HWGUI_OBJ_DIR)\barcode.obj \
+   $(HWGUI_OBJ_DIR)\hanimat.obj \
    $(HWGUI_OBJ_DIR)\hbincnt.obj \
    $(HWGUI_OBJ_DIR)\hbrowse.obj \
    $(HWGUI_OBJ_DIR)\hcheck.obj \

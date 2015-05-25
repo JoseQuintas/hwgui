@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-25 11:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * makefile.bc
+    * animat.c and hanimat.prg added to the script
+  * source/winapi/guimain.prg
+    * hwg_WriteStatus() now set default value of a part number to 1
+
 2015-05-24 10:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
     * hwg_drawGradient() now can draw rounded corners,

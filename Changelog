@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-25 21:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/drawwidg.prg
+    * New class HStyle added
+  * source/winapi/hownbtn.prg
+    * :aStyles variable added to HOwnButton
+
 2015-05-25 16:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
     ! Bug fixed.

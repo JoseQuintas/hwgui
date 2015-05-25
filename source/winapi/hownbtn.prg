@@ -19,6 +19,7 @@ CLASS HOwnButton INHERIT HControl
 CLASS VAR cPath SHARED
    DATA winclass   INIT "OWNBTN"
    DATA lFlat
+   DATA aStyle
    DATA state
    DATA bClick
    DATA lPress  INIT .F.
@@ -214,7 +215,7 @@ METHOD Redefine( oWndParent, nId, bInit, bSize, bPaint, bClick, lflat, ;
 
 METHOD Paint() CLASS HOwnButton
    LOCAL pps, hDC
-   LOCAL aCoors
+   LOCAL aCoors, n
 
    pps := hwg_Definepaintstru()
 
@@ -230,7 +231,12 @@ METHOD Paint() CLASS HOwnButton
       ::nHeight := aCoors[ 4 ]
    ENDIF
 
-   IF ::lFlat
+   IF !Empty( ::aStyle )
+      n := Len( ::aStyle )
+      n := Iif( ::state == OBTN_MOUSOVER, Iif( n > 2, 3, 1 ), ;
+            Iif( ::state == OBTN_PRESSED, Iif( n > 1, 2, 1 ), 1 ) )
+      hwg_drawGradient( hDC, 0, 0, aCoors[ 3 ], aCoors[ 4 ], ::aStyle[n]:nOrient, ::aStyle[n]:aColors )
+   ELSEIF ::lFlat
       IF ::state == OBTN_NORMAL
          IF ::handle != hwg_Getfocus()
             // NORM
@@ -260,9 +266,9 @@ METHOD DrawItems( hDC ) CLASS HOwnButton
    LOCAL x1, y1, x2, y2,  aCoors
 
    aCoors := hwg_Getclientrect( ::handle )
-   IF ! EMPTY( ::brush )
-      hwg_Fillrect( hDC, aCoors[ 1 ] + 2, aCoors[ 2 ] + 2, aCoors[ 3 ] - 2, aCoors[ 4 ] - 2, ::Brush:handle )
-   ENDIF   
+   //IF !Empty( ::brush )
+   //   hwg_Fillrect( hDC, aCoors[ 1 ] + 2, aCoors[ 2 ] + 2, aCoors[ 3 ] - 2, aCoors[ 4 ] - 2, ::Brush:handle )
+   //ENDIF   
 
    IF ::oBitmap != Nil
       IF ::widthb == 0

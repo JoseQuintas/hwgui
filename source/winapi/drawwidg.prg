@@ -621,9 +621,10 @@ CLASS HStyle INHERIT HObject
    DATA aColors
    DATA nBorder
    DATA tColor
+   DATA oPen
    DATA aCorners
 
-   METHOD New( aColors, nOrient, aCorners, tColor )
+   METHOD New( aColors, nOrient, aCorners, nBorder, tColor )
 ENDCLASS
 
 METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
@@ -631,7 +632,7 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
    LOCAL i, nlen := Len( ::aStyles )
 
    nBorder := Iif( nBorder == Nil, 0, nBorder )
-   tColor := Iif( tColor == Nil, -1, tColor )
+   tColor := Iif( tColor == Nil, 0, tColor )
    nOrient := Iif( nOrient == Nil .OR. nOrient > 9, 1, nOrient )
 
    FOR i := 1 TO nlen
@@ -651,6 +652,9 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
    ::nBorder  := nBorder
    ::tColor   := tColor
    ::aCorners := aCorners
+   IF nBorder > 0
+      ::oPen := HPen():Add( BS_SOLID, nBorder, tColor )
+   ENDIF
 
    AAdd( ::aStyles, Self )
    ::id := Len( ::aStyles )
@@ -707,6 +711,11 @@ EXIT PROCEDURE CleanDrawWidg
    NEXT
    FOR i := 1 TO Len( HIcon():aIcons )
       hwg_Deleteobject( HIcon():aIcons[ i ]:handle )
+   NEXT
+   FOR i := 1 TO Len( HStyle():aStyles )
+      IF !Empty( HStyle():aStyles[i]:oPen )
+         hwg_Deleteobject( HStyle():aStyles[i]:oPen:handle )
+      ENDIF
    NEXT
    IF !Empty( oResCnt )
       oResCnt:Close()

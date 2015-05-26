@@ -139,7 +139,7 @@ METHOD Init CLASS HOwnButton
 
 METHOD Paint() CLASS HOwnButton
    LOCAL hDC := hwg_Getdc( ::handle )
-   LOCAL aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2, n
+   LOCAL aCoors, aMetr, x1, y1, x2, y2, n
 
    aCoors := hwg_Getclientrect( ::handle )
 
@@ -153,6 +153,10 @@ METHOD Paint() CLASS HOwnButton
             Iif( ::state == OBTN_PRESSED, Iif( n > 1, 2, 1 ), 1 ) )
       hwg_drawGradient( hDC, aCoors[1], aCoors[2], aCoors[ 3 ], aCoors[ 4 ], ;
             ::aStyle[n]:nOrient, ::aStyle[n]:aColors )
+      IF !Empty( ::aStyle[n]:oPen )
+         hwg_Selectobject( hDC, ::aStyle[n]:oPen:handle )
+         hwg_Rectangle( hDC, 0, 0, aCoors[3]-1, aCoors[4]-1 )
+      ENDIF
    ELSEIF ::lFlat
       IF ::state == OBTN_NORMAL
          hwg_Drawbutton( hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4], 0 )
@@ -208,7 +212,6 @@ METHOD Paint() CLASS HOwnButton
       hwg_Drawtext( hDC, ::title, x1, y1, x2, y2, Iif( ::xt != Nil .AND. ::xt != 0,DT_LEFT,DT_CENTER ) )
       // hwg_Settransparentmode( hDC,.F. )
    ENDIF
-   // hwg_Setbkcolor( hDC,oldBkColor )
    hwg_Releasedc( ::handle, hDC )
 
    RETURN Nil

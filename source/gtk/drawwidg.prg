@@ -533,9 +533,10 @@ CLASS HStyle INHERIT HObject
    DATA aColors
    DATA nBorder
    DATA tColor
+   DATA oPen
    DATA aCorners
 
-   METHOD New( aColors, nOrient, aCorners, tColor )
+   METHOD New( aColors, nOrient, aCorners, nBorder, tColor )
 ENDCLASS
 
 METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
@@ -563,6 +564,9 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
    ::nBorder  := nBorder
    ::tColor   := tColor
    ::aCorners := aCorners
+   IF nBorder > 0
+      ::oPen := HPen():Add( BS_SOLID, nBorder, tColor )
+   ENDIF
 
    AAdd( ::aStyles, Self )
    ::id := Len( ::aStyles )
@@ -618,6 +622,11 @@ FUNCTION hwg_SetResContainer( cName )
    NEXT
    For i := 1 TO Len( HIcon():aIcons )
       // hwg_Deleteobject( HIcon():aIcons[i]:handle )
+   NEXT
+   FOR i := 1 TO Len( HStyle():aStyles )
+      IF !Empty( HStyle():aStyles[i]:oPen )
+         hwg_Deleteobject( HStyle():aStyles[i]:oPen:handle )
+      ENDIF
    NEXT
    IF !Empty( oResCnt )
       oResCnt:Close()

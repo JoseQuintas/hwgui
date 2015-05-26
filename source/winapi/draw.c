@@ -1286,45 +1286,60 @@ HB_FUNC( HWG_DRAWGRADIENT )
    HPEN hPen_1, hPen_2;
    HBRUSH hBrush_1, hBrush_2;
 
+   if( !pArrColor || ( user_colors_num = hb_arrayLen( pArrColor ) ) == 0 )
+      return;
    if( type == 0 || type > 4 )
       type = 1;
 
-   user_colors_num = ( pArrColor ) ? hb_arrayLen( pArrColor ) : 0;
-   colors_num = ( user_colors_num >= 2 ) ? user_colors_num : 2; // gradient needs minimum two colors
-   colors_num = ( colors_num <= GRADIENT_MAX_COLORS ) ? colors_num : GRADIENT_MAX_COLORS;
-   user_stops_num = ( pArrStop ) ? hb_arrayLen( pArrStop ) : 0;
-
-   if ( type == 1 || type == 2 ) isV = 1;
-   if ( type == 3 || type == 4 ) isH = 1;
-
-   for ( i = 0; i < colors_num; i++ )
+   if( user_colors_num == 1 )
    {
-      stop = ( i < user_stops_num ) ? hb_arrayGetND( pArrStop, i+1 ) : 1. / (double)(colors_num-1) * (double)i;
-      if ( isV )
-      {
-         coord_stop = (int)( floor( stop * (double)(y2-y1+1) + 0.5 ) );
-         if ( type == 1 )
-            stop_y[i] = y1 + coord_stop;
-         else
-            stop_y[colors_num-1-i] = y2 - coord_stop + 1;
-      }
-      if ( isH )
-      {
-         coord_stop = (int)( floor( stop * (double)(x2-x1+1) + 0.5 ) );
-         if ( type == 3 )
-            stop_x[i] = x1 + coord_stop;
-         else
-            stop_x[colors_num-1-i] = x2 - coord_stop + 1;
-      }
-      color = ( i < user_colors_num ) ? hb_arrayGetNL( pArrColor, i+1 ) : 0xFFFFFF * i;
-      index = ( type == 2 || type == 4 ) ? colors_num-1-i : i;
-      red[ index ]   = color % 256;
-      green[ index ] = color / 256 % 256;
-      blue[ index ]  = color / 256 / 256 % 256;
-   }
+      RECT rc;
 
-   //if ( type >= 1 && type <= 4 )
-   //{
+      rc.left = x1;
+      rc.top = y1;
+      rc.right = x2 + 1;
+      rc.bottom = y2 + 1;
+
+      hBrush_1 = CreateSolidBrush( hb_arrayGetNL( pArrColor, 1 ) );
+      SelectObject( hDC, hBrush_1 );
+      FillRect( hDC, &rc, hBrush_1 );
+      DeleteObject( hBrush_1 );
+   }
+   else
+   {
+      colors_num = ( user_colors_num >= 2 ) ? user_colors_num : 2; // gradient needs minimum two colors
+      colors_num = ( colors_num <= GRADIENT_MAX_COLORS ) ? colors_num : GRADIENT_MAX_COLORS;
+      user_stops_num = ( pArrStop ) ? hb_arrayLen( pArrStop ) : 0;
+
+      if ( type == 1 || type == 2 ) isV = 1;
+      if ( type == 3 || type == 4 ) isH = 1;
+
+      for ( i = 0; i < colors_num; i++ )
+      {
+         stop = ( i < user_stops_num ) ? hb_arrayGetND( pArrStop, i+1 ) : 1. / (double)(colors_num-1) * (double)i;
+         if ( isV )
+         {
+            coord_stop = (int)( floor( stop * (double)(y2-y1+1) + 0.5 ) );
+            if ( type == 1 )
+               stop_y[i] = y1 + coord_stop;
+            else
+               stop_y[colors_num-1-i] = y2 - coord_stop + 1;
+         }
+         if ( isH )
+         {
+            coord_stop = (int)( floor( stop * (double)(x2-x1+1) + 0.5 ) );
+            if ( type == 3 )
+               stop_x[i] = x1 + coord_stop;
+            else
+               stop_x[colors_num-1-i] = x2 - coord_stop + 1;
+         }
+         color = ( i < user_colors_num ) ? hb_arrayGetNL( pArrColor, i+1 ) : 0xFFFFFF * i;
+         index = ( type == 2 || type == 4 ) ? colors_num-1-i : i;
+         red[ index ]   = color % 256;
+         green[ index ] = color / 256 % 256;
+         blue[ index ]  = color / 256 / 256 % 256;
+      }
+
       // 1. array of TRIVERTEX structures that describe
       // positional and color values for each vertex
       // (for a rectangle two vertices need to be defined: upper-left and lower-right);
@@ -1387,7 +1402,6 @@ HB_FUNC( HWG_DRAWGRADIENT )
          DeleteObject( hPen_2 );
          DeleteObject( hBrush_2 );
       }   
-
-   //} // if ( type >= 1 && type <= 4 )
+   }
 
 }

@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-26 10:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+    * New class HStyle added
+  * source/gtk/hownbtn.prg
+    * :aStyles variable added to HOwnButton
+  * source/gtk/draw.c
+  * source/winapi/draw.c
+    * If one color is passed, the function hwg_drawGradient() simply
+      fills the area with this color.
+
 2015-05-25 21:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/drawwidg.prg
     * New class HStyle added

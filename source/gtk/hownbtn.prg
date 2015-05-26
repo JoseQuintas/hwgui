@@ -17,6 +17,7 @@ CLASS HOwnButton INHERIT HControl
    CLASS VAR cPath SHARED
    DATA winclass   INIT "OWNBTN"
    DATA lFlat
+   DATA aStyle
    DATA state
    DATA bClick
    DATA lPress   INIT .F.
@@ -138,7 +139,7 @@ METHOD Init CLASS HOwnButton
 
 METHOD Paint() CLASS HOwnButton
    LOCAL hDC := hwg_Getdc( ::handle )
-   LOCAL aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2
+   LOCAL aCoors, aMetr, oPen, oldBkColor, x1, y1, x2, y2, n
 
    aCoors := hwg_Getclientrect( ::handle )
 
@@ -146,7 +147,13 @@ METHOD Paint() CLASS HOwnButton
       ::state := OBTN_NORMAL
    ENDIF
 
-   IF ::lFlat
+   IF !Empty( ::aStyle )
+      n := Len( ::aStyle )
+      n := Iif( ::state == OBTN_MOUSOVER, Iif( n > 2, 3, 1 ), ;
+            Iif( ::state == OBTN_PRESSED, Iif( n > 1, 2, 1 ), 1 ) )
+      hwg_drawGradient( hDC, aCoors[1], aCoors[2], aCoors[ 3 ], aCoors[ 4 ], ;
+            ::aStyle[n]:nOrient, ::aStyle[n]:aColors )
+   ELSEIF ::lFlat
       IF ::state == OBTN_NORMAL
          hwg_Drawbutton( hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4], 0 )
       ELSEIF ::state == OBTN_MOUSOVER

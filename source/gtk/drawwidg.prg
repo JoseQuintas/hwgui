@@ -524,6 +524,69 @@ METHOD RELEASE() CLASS HIcon
 
    RETURN Nil
 
+CLASS HStyle INHERIT HObject
+
+   CLASS VAR aStyles   INIT { }
+
+   DATA id
+   DATA nOrient
+   DATA aColors
+   DATA nBorder
+   DATA tColor
+   DATA aCorners
+
+   METHOD New( aColors, nOrient, aCorners, tColor )
+ENDCLASS
+
+METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
+
+   LOCAL i, nlen := Len( ::aStyles )
+
+   nBorder := Iif( nBorder == Nil, 0, nBorder )
+   tColor := Iif( tColor == Nil, -1, tColor )
+   nOrient := Iif( nOrient == Nil .OR. nOrient > 9, 1, nOrient )
+
+   FOR i := 1 TO nlen
+      IF hwg_aCompare( ::aStyles[i]:aColors, aColors ) .AND. ;
+         hwg_aCompare( ::aStyles[i]:aCorners, aCorners ) .AND. ;
+         Valtype(::aStyles[i]:tColor) == Valtype(tColor) .AND. ;
+         ::aStyles[i]:nBorder == nBorder .AND. ;
+         ::aStyles[i]:tColor == tColor .AND. ;
+         ::aStyles[i]:nOrient == nOrient
+
+         RETURN ::aStyles[ i ]
+      ENDIF
+   NEXT
+
+   ::aColors  := aColors
+   ::nOrient  := nOrient
+   ::nBorder  := nBorder
+   ::tColor   := tColor
+   ::aCorners := aCorners
+
+   AAdd( ::aStyles, Self )
+   ::id := Len( ::aStyles )
+
+   RETURN Self
+
+FUNCTION hwg_aCompare( arr1, arr2 )
+
+   LOCAL i, nLen
+
+   IF arr1 == Nil .AND. arr2 == Nil
+      RETURN .T.
+   ELSEIF Valtype( arr1 ) == Valtype( arr2 ) .AND. Valtype( arr1 ) == "A" ;
+         .AND. ( nLen := Len( arr1 ) ) == Len( arr2 )
+      FOR i := 1 TO nLen
+         IF !( Valtype(arr1[i]) == Valtype(arr2[i]) ) .OR. !( arr1[i] == arr2[i] )
+            RETURN .F.
+         ENDIF
+      NEXT
+      RETURN .T.
+   ENDIF
+
+   RETURN .F.
+
 FUNCTION hwg_SetResContainer( cName )
 
    IF Empty( cName )

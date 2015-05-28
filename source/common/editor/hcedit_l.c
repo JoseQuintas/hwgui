@@ -116,6 +116,8 @@ typedef struct
    int       ixCaretPos;
    int       iyCaretPos;
    int     iCaretHeight;
+   int          xBorder;
+   int          yBorder;
 
 } TEDIT;
 
@@ -128,6 +130,7 @@ typedef struct
 #define WM_VSCROLL         277
 #define WS_VSCROLL          2097152     // 0x00200000L
 #define WS_HSCROLL          1048576     // 0x00100000L
+#define WS_BORDER           8388608
 
 extern void hwg_setcolor( cairo_t * cr, long int nColor );
 extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
@@ -180,7 +183,7 @@ int hced_utf8bytes( char * szText, int iLen )
    return ( ptr - szText );
 }
 
-TEDFONT * ted_setfont( TEDIT * pted, PHWGUI_FONT hwg_font, int iNum, HB_BOOL bPrn  )
+TEDFONT * ted_setfont( TEDIT * pted, PHWGUI_FONT hwg_font, int iNum, HB_BOOL bPrn )
 {
    TEDFONT * pFont;
 
@@ -550,6 +553,10 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    pted->widget = hbox;
    pted->area = area;
    pted->iInterline = 3;
+   if( ulStyle & WS_BORDER )
+   {
+      pted->xBorder = pted->yBorder = 1;
+   }
 
    pted->pFontsScr =
          ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
@@ -717,7 +724,7 @@ HB_FUNC( HCED_SETWIDTH )
 HB_FUNC( HCED_FILLRECT )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   int x1 = (HB_ISNIL(2))? 0:hb_parni(2);
+   int x1 = (HB_ISNIL(2))? 0:hb_parni(2) + pted->xBorder;
    int y1 = hb_parni(3);
    int x2 = (HB_ISNIL(4))? pted->iWidth:hb_parni(4);
 
@@ -915,7 +922,8 @@ HB_FUNC( HCED_LINEOUT )
    char *szText = ( char * )hb_parc( 5 );
    HB_BOOL bCalcOnly = (HB_ISNIL(8))? 0 : hb_parl(8);
    short int bCalc = (HB_ISNIL(9))? 1 : hb_parl(9);
-   int x1 = hb_parni( 2 ), ypos = hb_parni( 3 ), x2 = hb_parni( 4 ), iLen = hb_parni( 6 );
+   int x1 = hb_parni( 2 ) + pted->xBorder, ypos = hb_parni( 3 ) + pted->yBorder;
+   int x2 = hb_parni( 4 ), iLen = hb_parni( 6 );
    int iPrinted, iCalculated = 0, iAlign = hb_parni( 7 );
    int iRealWidth, i, iFont;
    int iHeight = 0;
@@ -984,6 +992,28 @@ HB_FUNC( HCED_LINEOUT )
    pted->ypos = ypos + iHeight + pted->iInterline;
    hb_storni( pted->ypos, 3 );
    hb_retni( (iCalculated)? iCalculated : iPrinted );
+}
+
+HB_FUNC( HCED_DRAWBORDER )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+   int nWidth = hb_parni( 2 ), nHeight = hb_parni( 3 );
+
+   if( !pted->xBorder )
+      return;
+
+   hwg_setcolor( pted->hDCScr->cr, 0 );
+   cairo_move_to( pted->hDCScr->cr, 0, 0 );
+   cairo_line_to( pted->hDCScr->cr, nWidth, 0 );  // to right
+   cairo_move_to( pted->hDCScr->cr, 0, 0 );
+   cairo_line_to( pted->hDCScr->cr, 0, nHeight );  // to bottom
+   cairo_move_to( pted->hDCScr->cr, nWidth, 0 );
+   cairo_line_to( pted->hDCScr->cr, nWidth, nHeight );
+   cairo_move_to( pted->hDCScr->cr, 0, nHeight );
+   cairo_line_to( pted->hDCScr->cr, nWidth, nHeight );
+
+   cairo_stroke( pted->hDCScr->cr );
+
 }
 
 HB_FUNC( HCED_COLOR2X )

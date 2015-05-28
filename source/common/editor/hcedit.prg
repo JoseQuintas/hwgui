@@ -633,6 +633,7 @@ METHOD Paint( lReal ) CLASS HCEdit
 
    IF lReal
 #ifdef __PLATFORM__UNIX
+      hced_drawBorder( ::hEdit, ::nWidth, ::nHeight )
       //hwg_BitBlt( hDCReal, 0, 0, aCoors[3] - aCoors[1], aCoors[4] - aCoors[2], hDC )
       //hwg_ReleaseDC( , hDC )
 #else
@@ -845,7 +846,8 @@ METHOD Convert( cPageIn, cPageOut )
    LOCAL i
 
    IF cPageIn != Nil .AND. !Empty( hb_cdpUniId( cPageIn ) ) .AND. ;
-         cPageOut != Nil .AND. !Empty( hb_cdpUniId( cPageOut ) )
+         cPageOut != Nil .AND. !Empty( hb_cdpUniId( cPageOut ) ) .AND. ;
+         !( cPageIn == cPageOut )
       FOR i := 1 TO ::nTextLen
          IF !Empty( ::aText[i] )
             ::aText[i] := hb_Translate( ::aText[i], cPageIn, cPageOut )

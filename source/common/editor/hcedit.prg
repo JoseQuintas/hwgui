@@ -1065,16 +1065,20 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
 
    RETURN Nil
 
+#define FBITCTRL   4
+#define FBITSHIFT  3
+
 METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
-   LOCAL cLine, lUnsel := .T., lInvAll := .F.
+   LOCAL cLine, lUnsel := .T., lInvAll := .F., n, l, ntmp1, ntmp2
    LOCAL nLine, nDocWidth := ::nDocWidth
 
    IF nCtrl == Nil
       cLine := hwg_Getkeyboardstate( lParam )
-      nCtrl := Iif( Asc( SubStr(cLine,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(cLine,0x11,1 ) ) >= 128,FSHIFT,0 ) )
+      nCtrl := Iif( Asc( SubStr(cLine,0x12,1 ) ) >= 128, FCONTROL, 0 ) + ;
+            Iif( Asc(SubStr(cLine,0x11,1 ) ) >= 128,FSHIFT,0 )
    ENDIF
 
-   //hwg_writelog( "keydown: " + str(nKeyCode) )
+   //hwg_writelog( "keydown: " + str(nKeyCode) + " / " + str(nctrl) +" "+Iif(hwg_checkBit( nctrl,FBITSHIFT ),"T","F")+Iif(hwg_checkBit( nctrl,FBITCTRL ),"T","F") )
 
    ::lSetFocus := .T.
    IF ::bKeyDown != Nil .AND. ( nLine := Eval( ::bKeyDown, Self, nKeyCode, nCtrl, 0 ) ) != -1
@@ -1088,30 +1092,39 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       ::nCaret := 1
       hced_ShowCaret( ::hEdit )
    ENDIF
-   IF nCtrl == FSHIFT .AND. Empty( ::aPointM2[P_Y] ) .AND. ;
+   IF hwg_checkBit( nctrl,FBITSHIFT ) .AND. Empty( ::aPointM2[P_Y] ) .AND. ;
          Ascan( { VK_RIGHT, VK_LEFT, VK_HOME, VK_END, VK_DOWN, VK_UP, VK_PRIOR, VK_NEXT }, nKeyCode ) != 0
       ::PCopy( ::aPointC, ::aPointM1 )
    ENDIF
    IF nKeyCode == VK_RIGHT
-      IF ::lWrap .AND. ::nDocFormat > 0 .AND. ::nShiftL+::nClientWidth < nDocWidth .AND. ;
-            hced_GetXCaretPos( ::hEdit ) > ( ::nClientWidth-::nMarginR-10 )
-         ::nShiftL += Int(::nClientWidth/4)
-         IF ::nShiftL+::nClientWidth > nDocWidth
-            ::nShiftL := nDocWidth - ::nClientWidth
-         ENDIF
-         lInvAll := .T.
-      ELSEIF ::nPosC > ::aLines[nLine,AL_NCHARS]
-         IF ::lWrap //.AND. ::nDocFormat == 0
-            RETURN 0
-         ENDIF
-         IF hced_GetXCaretPos( ::hEdit ) > ( ::nClientWidth-::nMarginR-10 )
-            ::nPosF ++
-            ::Paint( .F. )
+      n := Iif( hwg_checkBit( nctrl,FBITCTRL ), ::aLines[nLine,AL_NCHARS] - ::nPosC, 1 )
+      l := .F.
+      DO WHILE --n >= 0
+         IF ::lWrap .AND. ::nDocFormat > 0 .AND. ::nShiftL+::nClientWidth < nDocWidth .AND. ;
+               hced_GetXCaretPos( ::hEdit ) > ( ::nClientWidth-::nMarginR-10 )
+            ::nShiftL += Int(::nClientWidth/4)
+            IF ::nShiftL+::nClientWidth > nDocWidth
+               ::nShiftL := nDocWidth - ::nClientWidth
+            ENDIF
             lInvAll := .T.
+         ELSEIF ::nPosC > ::aLines[nLine,AL_NCHARS]
+            IF ::lWrap //.AND. ::nDocFormat == 0
+               RETURN 0
+            ENDIF
+            IF hced_GetXCaretPos( ::hEdit ) > ( ::nClientWidth-::nMarginR-10 )
+               ::nPosF ++
+               ::Paint( .F. )
+               lInvAll := .T.
+            ENDIF
          ENDIF
-      ENDIF
-      ::SetCaretPos( SETC_RIGHT )
-      IF nCtrl == FSHIFT
+         ::SetCaretPos( SETC_RIGHT )
+         IF hced_SubStr( Self, ::aText[::aPointC[P_Y]], ::nPosF + ::nPosC -1, 1 ) == ' '
+            l := .T.
+         ELSEIF l
+            EXIT
+         ENDIF
+      ENDDO
+      IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
@@ -1119,17 +1132,36 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       ENDIF
 
    ELSEIF nKeyCode == VK_LEFT
-      IF ::lWrap .AND. ::nDocFormat > 0 .AND. ::nShiftL > 0 .AND. hced_GetXCaretPos( ::hEdit ) < ( ::nMarginL+6 )
-         ::nShiftL -= Min( Int(::nClientWidth/4), ::nShiftL )
-         lInvAll := .T.
-      ELSEIF ::nPosC > 1
-         ::SetCaretPos( SETC_LEFT )
-      ELSEIF ::nPosF > 1
-         ::nPosF --
-         ::Paint( .F. )
-         lInvAll := .T.
-      ENDIF
-      IF nCtrl == FSHIFT
+      n := Iif( hwg_checkBit( nctrl,FBITCTRL ), ::nPosC, 1 )
+      ntmp1 := ntmp2 := ::nPosC
+      l := .F.
+      DO WHILE --n >= 0
+         IF ::lWrap .AND. ::nDocFormat > 0 .AND. ::nShiftL > 0 .AND. hced_GetXCaretPos( ::hEdit ) < ( ::nMarginL+6 )
+            ::nShiftL -= Min( Int(::nClientWidth/4), ::nShiftL )
+            lInvAll := .T.
+         ELSEIF ::nPosC > 1
+            ::SetCaretPos( SETC_LEFT )
+         ELSEIF ::nPosF > 1
+            ::nPosF --
+            ::Paint( .F. )
+            lInvAll := .T.
+         ENDIF
+         IF hced_SubStr( Self, ::aText[::aPointC[P_Y]], ::nPosF + ::nPosC -1, 1 ) == ' '
+            l := .T.
+         ELSEIF l
+            IF ntmp2 < ntmp1
+               ::nPosC := ntmp2 - 1
+               ::SetCaretPos( SETC_RIGHT )
+               EXIT
+            ELSE
+               l := .F.
+               ntmp2 := ::nPosC
+            ENDIF
+         ELSE
+            ntmp2 := ::nPosC
+         ENDIF
+      ENDDO
+      IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
@@ -1143,7 +1175,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          lInvAll := .T.
       ENDIF
       ::SetCaretPos( SETC_XFIRST )
-      IF nCtrl == FSHIFT
+      IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
@@ -1160,7 +1192,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          lInvAll := .T.
       ENDIF
       ::SetCaretPos( SETC_XLAST )
-      IF nCtrl == FSHIFT
+      IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
@@ -1168,7 +1200,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       ENDIF
    ELSEIF nKeyCode == VK_UP
       ::LineUp()
-      IF nCtrl == FSHIFT
+      IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          IF Len( ::aLines ) > ::nLineC
@@ -1178,36 +1210,36 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       ENDIF
    ELSEIF nKeyCode == VK_DOWN
       ::LineDown()
-      IF nCtrl == FSHIFT .AND. ::nLineC > 1
+      IF hwg_checkBit( nctrl,FBITSHIFT ) .AND. ::nLineC > 1
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC-1,AL_Y1], ::nClientWidth, ;
             ::aLines[::nLineC,AL_Y2] )
       ENDIF
    ELSEIF nKeyCode == VK_NEXT    // Page Down
-      IF nCtrl == FCONTROL
+      IF hwg_checkBit( nctrl,FBITCTRL )
          ::Bottom()
       ELSE
          ::PageDown()
       ENDIF
-      IF nCtrl == FSHIFT
+      IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          lInvAll := .T.
       ENDIF
    ELSEIF nKeyCode == VK_PRIOR    // Page Up
-      IF nCtrl == FCONTROL
+      IF hwg_checkBit( nctrl,FBITCTRL )
          ::Top()
       ELSE
          ::PageUp()
       ENDIF
-      IF nCtrl == FSHIFT
+      IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          lInvAll := .T.
       ENDIF
    ELSEIF nKeyCode == VK_DELETE
-      IF nCtrl == FSHIFT .AND. !Empty( ::aPointM2[P_Y] )
+      IF hwg_checkBit( nctrl,FBITSHIFT ) .AND. !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
       ENDIF
@@ -1218,14 +1250,14 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          ::lInsert := !::lInsert
          lUnSel := .F.
 
-      ELSEIF nCtrl == FCONTROL
+      ELSEIF hwg_checkBit( nctrl,FBITCTRL )
          IF !Empty( ::aPointM2[P_Y] )
             cLine := ::GetText( ::aPointM1, ::aPointM2 )
             hwg_Copystringtoclipboard( cLine )
          ENDIF
          lUnSel := .F.
 
-      ELSEIF nCtrl == FSHIFT
+      ELSEIF hwg_checkBit( nctrl,FBITSHIFT )
          IF !::lReadOnly
             cLine := hwg_Getclipboardtext()
             ::InsText( ::aPointC, cLine )
@@ -1234,7 +1266,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          ENDIF
       ENDIF
    ELSEIF nKeyCode == 89      // 'Y'
-      IF nCtrl == FCONTROL
+      IF hwg_checkBit( nctrl,FBITCTRL )
          IF ::lWrap .AND. ::aWrap[::nLineF+nLine-1] != Nil
             //::DelText( {::aWrap[nLine-1],::nLineF+nLine-1}, {1,::nLineF+nLine-1} )
          ELSE
@@ -1242,30 +1274,30 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          ENDIF
       ENDIF
    ELSEIF nKeyCode == 65      // 'A'
-      IF nCtrl == FCONTROL
+      IF hwg_checkBit( nctrl,FBITCTRL )
          ::Pcopy( { 1, 1 }, ::aPointM1 )
          ::Pcopy( { hced_Len( Self, ::aText[::nTextLen] ) + 1, ::nTextLen }, ::aPointM2 )
          lUnSel := .F.
          lInvAll := .T.
       ENDIF
    ELSEIF nKeyCode == 67      // 'C'
-      IF nCtrl == FCONTROL .AND. !Empty( ::aPointM2[P_Y] )
+      IF hwg_checkBit( nctrl,FBITCTRL ) .AND. !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
          lUnSel := .F.
       ENDIF
    ELSEIF nKeyCode == 90      // 'Z'
-      IF nCtrl == FCONTROL
+      IF hwg_checkBit( nctrl,FBITCTRL )
          ::Undo()
       ENDIF
    ELSEIF nKeyCode == 86      // 'V'
-      IF nCtrl == FCONTROL .AND. !::lReadOnly
+      IF hwg_checkBit( nctrl,FBITCTRL ) .AND. !::lReadOnly
          cLine := hwg_Getclipboardtext()
          ::InsText( ::aPointC, cLine )
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ::nHeight )
       ENDIF
    ELSEIF nKeyCode == 88      // 'X'
-      IF nCtrl == FCONTROL .AND. !Empty( ::aPointM2[P_Y] )
+      IF hwg_checkBit( nctrl,FBITCTRL ) .AND. !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
          ::putChar( 7 )   // for to not interfere with '.'

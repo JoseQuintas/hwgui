@@ -21,6 +21,7 @@ CLASS HOwnButton INHERIT HControl
    DATA state
    DATA bClick
    DATA lPress   INIT .F.
+   DATA lCheck  INIT .F.
    DATA oFont, xt, yt, widtht, heightt
    DATA oBitmap, xb, yb, widthb, heightb
    DATA lTransp  INIT .F.
@@ -32,7 +33,7 @@ CLASS HOwnButton INHERIT HControl
       bInit, bSize, bPaint, bClick, lflat,              ;
       cText, color, font, xt, yt, widtht, heightt,        ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
-      cTooltip, lEnabled )
+      cTooltip, lEnabled, lCheck )
 
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
@@ -53,7 +54,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
       bInit, bSize, bPaint, bClick, lflat,             ;
       cText, color, font, xt, yt, widtht, heightt,       ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
-      cTooltip, lEnabled  ) CLASS HOwnButton
+      cTooltip, lEnabled, lCheck  ) CLASS HOwnButton
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, font, bInit, ;
       bSize, bPaint, ctooltip )
@@ -72,6 +73,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
 
    IF lEnabled != Nil
       ::lEnabled := lEnabled
+   ENDIF
+   IF lCheck != Nil
+      ::lCheck := lCheck
    ENDIF
    IF bmp != Nil
       IF ValType( bmp ) == "O"
@@ -248,11 +252,18 @@ METHOD MUp() CLASS HOwnButton
    IF ::state == OBTN_PRESSED
       IF !::lPress
          ::state := OBTN_NORMAL
-         hwg_Redrawwindow( ::handle )
+      ENDIF
+      IF ::lCheck
+         IF ::lPress
+            ::Release()
+         ELSE
+            ::Press()
+         ENDIF
       ENDIF
       IF ::bClick != Nil
          Eval( ::bClick, ::oParent, ::id )
       ENDIF
+      hwg_Redrawwindow( ::handle )
    ENDIF
 
    RETURN Nil

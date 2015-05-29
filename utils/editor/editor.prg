@@ -10,13 +10,12 @@
 #include "hwgui.ch"
 #include "hcedit.ch"
 
+#define APP_VERSION  "0.8"
 
 #ifdef __PLATFORM__UNIX
 #include "gtk.ch"
-#define DIR_SEP  '/'
 #define CURS_HAND GDK_HAND1
 #else
-#define DIR_SEP  '\'
 #define CURS_HAND IDC_HAND
 #endif
 
@@ -37,34 +36,64 @@ REQUEST HB_CODEPAGE_RU866
 #define OB_TYPE         1
 #define OB_HREF         4
 
-   STATIC cNewLine := e"\r\n"
-   STATIC cWebBrow
-   STATIC lRuler := .F.
-   STATIC oFontP, oBrush1
-   STATIC oPanel, oEdit
+#define  CLR_BLACK          0
+#define  CLR_GRAY1    5592405  // #555555
+#define  CLR_GRAY2   11184810  // #AAAAAA
 
-   MEMVAR handcursor, cIniPath
+#define  CLR_VDBLUE  10485760
+#define  CLR_LBLUE   16759929  // #79BCFF
+#define  CLR_LBLUE0  12164479  // #7F9DB9
+#define  CLR_LBLUE1  16773866  // #EAF2FF
+#define  CLR_LBLUE2  16770002  // #D2E3FF
+#define  CLR_LBLUE3  16772062  // #DEEBFF
+
+
+STATIC cNewLine := e"\r\n"
+STATIC cWebBrow
+STATIC oFontP, oBrush1
+STATIC oToolbar, oRuler, oEdit
+
+MEMVAR handcursor, cIniPath
 
 FUNCTION Main ( fName )
-   LOCAL oMainWindow, oFont
+   LOCAL oMainWindow, oFont, oBtn1, oBtn2, oBtn3
+   LOCAL oStyle1, oStyle2, oStyle3
+
    PRIVATE oMenuC1, handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
 
    IF hwg__isUnicode()
       hb_cdpSelect( "UTF8" )
    ENDIF
 
-   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 20 CHARSET 204
+   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 204
    PREPARE FONT oFontP NAME "Courier New" WIDTH 0 HEIGHT - 15
    oBrush1 := HBrush():Add( 16777215 )
 
-   INIT WINDOW oMainWindow MAIN TITLE "Editor"  ;
-      AT 200, 0 SIZE 600, 300                                ;
-      ON GETFOCUS { || iif( oEdit != Nil, hwg_Setfocus( oEdit:handle ), .T. ) } ;
-      FONT oFont SYSCOLOR - 1
+   oStyle1 := HStyle():New( {CLR_LBLUE,CLR_LBLUE3}, 1 )
+   oStyle2 := HStyle():New( {CLR_LBLUE}, 1,, 3, CLR_BLACK )
+   oStyle3 := HStyle():New( {CLR_LBLUE1}, 1,, 2, CLR_LBLUE0 )
 
-   @ 0, 0 PANEL oPanel SIZE 0, 4
+   INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
+      AT 200, 0 SIZE 600, 300 FONT oFont       ;
+      ON GETFOCUS { || iif( oEdit != Nil, hwg_Setfocus( oEdit:handle ), .T. ) }
 
-   @ 0, 4 HCEDITEXT oEdit SIZE 600, 270 ON SIZE { |o, x, y|o:Move( , oPanel:nHeight, x, y - oPanel:nHeight ) }
+   @ 0, 0 PANEL oToolBar SIZE oMainWindow:nWidth, 30 ;
+         ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
+   oToolBar:brush := 0
+
+   @ 2,0 OWNERBUTTON oBtn1 OF oToolBar ON CLICK {|| .T. } ;
+       SIZE 30,30 TEXT "B" FONT oMainWindow:oFont:SetFontStyle( .T. )
+   oBtn1:aStyle := { oStyle1,oStyle2,oStyle3 }
+   @ 32,0 OWNERBUTTON oBtn2 OF oToolBar ON CLICK {||.t.} ;
+       SIZE 30,30 TEXT "I" FONT oMainWindow:oFont:SetFontStyle( .F.,,.T. )
+   oBtn2:aStyle := { oStyle1,oStyle2,oStyle3 }
+   @ 62,0 OWNERBUTTON oBtn3 OF oToolBar ON CLICK {||.t.} ;
+       SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. )
+   oBtn3:aStyle := { oStyle1,oStyle2,oStyle3 }
+
+   @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 ON SIZE {|o,x|o:Move(,,x) }
+
+   @ 0, 30 HCEDITEXT oEdit SIZE 600, 270 ON SIZE { |o, x, y|o:Move( , oRuler:nHeight+oToolBar:nHeight, x, y-oRuler:nHeight-oToolBar:nHeight ) }
    oEdit:nIndent := 20
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
@@ -93,13 +122,11 @@ FUNCTION Main ( fName )
          MENUITEM "Edit &URL" ACTION EditUrl( .F. )
          ENDMENU
          MENU TITLE "&View"
-         MENUITEMCHECK "&Ruler" ACTION SetRuler()
+         MENUITEMCHECK "&Ruler" ID MENU_RULER ACTION SetRuler()
       ENDMENU
       MENU TITLE "&Document"
          MENUITEM "Properties" ACTION ChangeDoc()
          MENUITEM "Font" ACTION ChangeFont()
-         SEPARATOR
-         MENUITEM "RU866 -> RU1251" ACTION oEdit:Convert( "RU866", "RU1251" )
       ENDMENU
       MENU TITLE "&Paragraph"
          MENUITEM "Properties" ACTION ChangePara()
@@ -128,7 +155,7 @@ FUNCTION Main ( fName )
          MENUITEM "&Rows" ACTION InsRows()
       ENDMENU
       MENU TITLE "&Help"
-         MENUITEM "&About" ACTION hwg_MsgInfo( oMainWindow:Title, "About" )
+         MENUITEM "&About" ACTION About()
       ENDMENU
    ENDMENU
 
@@ -171,7 +198,7 @@ STATIC FUNCTION SaveFile( lAs, lHtml )
    LOCAL fname
 
    IF lAs .OR. Empty( oEdit:cFileName )
-#ifdef __GTK__
+#ifdef __PLATFORM__UNIX
       fname := hwg_Selectfile( "( *.* )", "*.*", CurDir() )
 #else
       fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() )
@@ -201,19 +228,61 @@ STATIC FUNCTION PrintFile()
 
 STATIC FUNCTION SetRuler()
 
-   IF ( lRuler := !lRuler )
-      oPanel:bPaint := { || PaintPanel() }
-      oPanel:nHeight := 32
-      oEdit:Move( , 32, , oEdit:nHeight - 28 )
-      oPanel:Move( , , , 32 )
+   IF Empty( oRuler:bPaint )
+      oRuler:bPaint := { |o| PaintRuler(o) }
+      oRuler:nHeight := 32
+      oEdit:Move( , oRuler:nHeight+oToolBar:nHeight,, oEdit:nHeight - 28 )
+      hwg_Checkmenuitem( ,MENU_RULER, .T. )
    ELSE
-      oPanel:bPaint := Nil
-      oPanel:nHeight := 4
-      oEdit:Move( , 4, , oEdit:nHeight + 28 )
-      oPanel:Move( , , , 4 )
+      oRuler:bPaint := Nil
+      oRuler:nHeight := 0
+      oEdit:Move( , oRuler:nHeight+oToolBar:nHeight,, oEdit:nHeight + 28 )
+      hwg_Checkmenuitem( ,MENU_RULER, .F. )
    ENDIF
+   oRuler:Move( ,,, oRuler:nHeight )
 
    RETURN Nil
+
+STATIC FUNCTION PaintRuler( o )
+   LOCAL pps, hDC, aCoors, n1cm, x := oEdit:nBoundL - oEdit:nShiftL, i := 0, nBoundR
+
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( o:handle, pps )
+
+   n1cm := Round( oEdit:nKoeffScr * 10, 0 )
+   aCoors := hwg_Getclientrect( o:handle )
+
+   nBoundR := iif( !Empty( oEdit:nDocWidth ), Min( aCoors[3], oEdit:nDocWidth + oEdit:nMarginR - oEdit:nShiftL ), aCoors[3] - 10 )
+   hwg_Fillrect( hDC, If( x < 0,0,x ), 4, nBoundR, 28, oBrush1 )
+   DO WHILE x <= ( nBoundR - n1cm )
+      i ++
+      x += n1cm
+      IF x > 0
+         hwg_Drawline( hDC, x, 8, x, iif( i % 10 == 0, 26, 16 ) )
+         IF i % 2 == 0
+            hwg_Selectobject( hDC, oFontP:handle )
+            hwg_Settransparentmode( hDC, .T. )
+            hwg_Drawtext( hDC, LTrim( Str(i,2 ) ), x - 12, 12, x + 12, 30, DT_CENTER )
+            hwg_Settransparentmode( hDC, .F. )
+         ENDIF
+      ENDIF
+   ENDDO
+
+   hwg_Endpaint( o:handle, pps )
+
+   RETURN Nil
+
+STATIC FUNCTION PaintTB( o )
+   LOCAL pps, hDC, aCoors
+
+   pps    := hwg_Definepaintstru()
+   hDC    := hwg_Beginpaint( o:handle, pps )
+   aCoors := hwg_Getclientrect( o:handle )
+   hwg_drawGradient( hDC, 0, 0, aCoors[3], aCoors[4], 1, { CLR_GRAY1, CLR_GRAY2 } )
+   hwg_Endpaint( o:handle, pps )
+
+   RETURN Nil
+
 
 STATIC FUNCTION ChangeFont()
    LOCAL oFont
@@ -645,97 +714,49 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
 
    IF nShiftL != o:nShiftL
       nShiftL := o:nShiftL
-      hwg_Redrawwindow( oPanel:handle, RDW_ERASE + RDW_INVALIDATE )
+      hwg_Redrawwindow( oRuler:handle, RDW_ERASE + RDW_INVALIDATE )
    ENDIF
 
    RETURN - 1
 
-STATIC FUNCTION PaintPanel()
-   LOCAL pps, hDC, aCoors, n1cm, x := oEdit:nBoundL - oEdit:nShiftL, i := 0, nBoundR
-
-   pps := hwg_Definepaintstru()
-   hDC := hwg_Beginpaint( oPanel:handle, pps )
-
-   n1cm := Round( oEdit:nKoeffScr * 10, 0 )
-   aCoors := hwg_Getclientrect( oPanel:handle )
-
-   nBoundR := iif( !Empty( oEdit:nDocWidth ), Min( aCoors[3], oEdit:nDocWidth + oEdit:nMarginR - oEdit:nShiftL ), aCoors[3] - 10 )
-   hwg_Fillrect( hDC, If( x < 0,0,x ), 4, nBoundR, 28, oBrush1 )
-   DO WHILE x <= ( nBoundR - n1cm )
-      i ++
-      x += n1cm
-      IF x > 0
-         hwg_Drawline( hDC, x, 8, x, iif( i % 10 == 0, 26, 16 ) )
-         IF i % 2 == 0
-            hwg_Selectobject( hDC, oFontP:handle )
-            hwg_Settransparentmode( hDC, .T. )
-            hwg_Drawtext( hDC, LTrim( Str(i,2 ) ), x - 12, 12, x + 12, 30, DT_CENTER )
-            hwg_Settransparentmode( hDC, .F. )
-         ENDIF
-      ENDIF
-   ENDDO
-
-   hwg_Endpaint( oPanel:handle, pps )
-
-   RETURN Nil
-
 FUNCTION WebLaunch( cAddr )
 
    IF !Empty( cWebBrow )
-#ifdef __GTK__
+#ifdef __PLATFORM__UNIX
       hwg_RunApp( cWebBrow, cAddr )
 #else
       hwg_RunApp( cWebBrow + " " + cAddr )
 #endif
    ELSE
-#ifndef __GTK__
+#ifndef __PLATFORM__UNIX
       hwg_Shellexecute( cAddr )
 #endif
    ENDIF
 
    RETURN Nil
 
-   // Временно - из procmisc.lib
+STATIC FUNCTION About()
 
-FUNCTION CutExten( fname )
+   LOCAL oDlg, oStyle1, oStyle2
 
-   LOCAL i
+   oStyle1 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 1,, 2 )
+   oStyle2 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 2,, 2 )
 
-   RETURN iif( ( i := RAt( '.', fname ) ) = 0, fname, SubStr( fname, 1, i - 1 ) )
+   INIT DIALOG oDlg TITLE "About" ;
+      AT 0, 0 SIZE 400, 330 FONT HWindow():GetMain():oFont COLOR hwg_colorC2N("CCCCCC")
 
-FUNCTION FilExten( fname )
+   @ 20, 40 SAY "Editor" SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 20, 64 SAY "Version "+APP_VERSION SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 10, 100 SAY "Copyright 2015 Alexander S.Kresin" SIZE 380,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 20, 124 SAY "http://www.kresin.ru" LINK "http://www.kresin.ru" SIZE 360,26 STYLE SS_CENTER
+   @ 20, 160 LINE LENGTH 360
+   @ 20, 180 SAY hwg_version() SIZE 360,26 STYLE SS_CENTER COLOR CLR_LBLUE0 TRANSPARENT
 
-   LOCAL i
+   @ 120, 246 OWNERBUTTON ON CLICK {|| hwg_EndDialog()} SIZE 160,36 ;
+          TEXT "Close" COLOR hwg_colorC2N("0000FF")
 
-   RETURN iif( ( i := RAt( '.', fname ) ) = 0, "", SubStr( fname, i + 1 ) )
+   Atail(oDlg:aControls):aStyle := { oStyle1, oStyle2 }
 
-FUNCTION FilePath( fname )
+   ACTIVATE DIALOG oDlg CENTER
 
-   LOCAL i
-
-   RETURN iif( ( i := RAt( '\', fname ) ) = 0, ;
-      iif( ( i := RAt( '/', fname ) ) = 0, "", Left( fname, i ) ), ;
-      Left( fname, i ) )
-
-FUNCTION CutPath( fname )
-
-   LOCAL i
-
-   RETURN iif( ( i := RAt( '\', fname ) ) = 0, ;
-      iif( ( i := RAt( '/', fname ) ) = 0, fname, SubStr( fname, i + 1 ) ), ;
-      SubStr( fname, i + 1 ) )
-
-FUNCTION AddPath( fname, cPath )
-
-   IF Empty( FilePath( fname ) ) .AND. !Empty( cPath )
-      IF !( Right( cPath,1 ) $ "\/" )
-#ifdef __PLATFORM__UNIX
-         cPath += "/"
-#else
-         cPath += "\"
-#endif
-      ENDIF
-      fname := cPath + fname
-   ENDIF
-
-   RETURN fname
+   RETURN Nil

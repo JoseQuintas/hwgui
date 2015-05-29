@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-29 15:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/editor.prg
+    * Added a toolbar with gradient background and ownerbuttons with styles
+
 2015-05-29 12:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/misc.c
     ! Bug fixed in hwg_copystringtoclipboard() for UNICODE mode.

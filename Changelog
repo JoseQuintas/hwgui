@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-05-29 12:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/misc.c
+    ! Bug fixed in hwg_copystringtoclipboard() for UNICODE mode.
+
 2015-05-27 16:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Added CHECK clause to OWNERBUTTON command

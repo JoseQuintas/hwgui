@@ -81,7 +81,7 @@ HB_FUNC( HWG_COPYSTRINGTOCLIPBOARD )
          // Lock the handle and copy the text to the buffer.
          lptstrCopy = ( char * ) GlobalLock( hglbCopy );
          memcpy( lptstrCopy, lpStr, nLen * sizeof( TCHAR ) );
-         lptstrCopy[nLen] = 0;  // null character
+         lptstrCopy[nLen * sizeof( TCHAR )] = 0;
          GlobalUnlock( hglbCopy );
          hb_strfree( hStr );
 

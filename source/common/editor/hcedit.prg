@@ -2366,6 +2366,12 @@ Function hced_Left( oEdit, cLine, nPos )
 #endif
    RETURN Left( cLine, nPos  )
 
+Function hced_Right( oEdit, cLine, nPos )
+#ifndef __XHARBOUR__
+   IF oEdit:lUtf8; RETURN hb_utf8Right( cLine, nPos ); ENDIF
+#endif
+   RETURN Right( cLine, nPos  )
+
 Function hced_Len( oEdit, cLine )
 #ifndef __XHARBOUR__
    IF oEdit:lUtf8; RETURN hb_utf8Len( cLine ); ENDIF
@@ -2377,6 +2383,12 @@ Function hced_At( oEdit, cFind, cLine, nStart, nEnd )
    IF oEdit:lUtf8; RETURN hb_utf8At( cFind, cLine, nStart, nEnd ); ENDIF
 #endif
    RETURN hb_At( cFind, cLine, nStart, nEnd )
+
+Function hced_RAt( oEdit, cFind, cLine, nStart, nEnd )
+#ifndef __XHARBOUR__
+   IF oEdit:lUtf8; RETURN hb_utf8RAt( cFind, cLine, nStart, nEnd ); ENDIF
+#endif
+   RETURN hb_RAt( cFind, cLine, nStart, nEnd )
 
 Function hced_NextPos( oEdit, cLine, nPos )
 #ifndef __XHARBOUR__

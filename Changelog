@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-01 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * hced_Right(), hced_Rat() functions added
+  * utils/editor/hcediext.prg
+    * Fifth parameter, cHRef, added to :StyleSpan() method for creating url's
+
 2015-06-01 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     ! Bug fixed, which appered while deleting few lines.

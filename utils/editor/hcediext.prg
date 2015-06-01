@@ -105,7 +105,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD FindClass( xBase, xAttr, cNewClass )
    METHOD SetHili( nGroup, oFont, tColor, bColor, nMargL, nMargR, nIndent, nAlign )
    METHOD ChgStyle( P1, P2, xAttr, lDiv )
-   METHOD StyleSpan( nLine, nPos1, nPos2, xAttr )
+   METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref )
    METHOD StyleDiv( nLine, xAttr )
    METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr )
    METHOD InsRows( nL, nRows, nCols, lNoAddline )
@@ -1222,7 +1222,7 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
 
    RETURN Nil
 
-METHOD StyleSpan( nLine, nPos1, nPos2, xAttr ) CLASS HCEdiExt
+METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref ) CLASS HCEdiExt
 
    LOCAL aStru := ::aStru[nLine], n1, nPosTmp, xCls
 
@@ -1232,6 +1232,7 @@ METHOD StyleSpan( nLine, nPos1, nPos2, xAttr ) CLASS HCEdiExt
    hced_Stru4Pos( aStru, nPos1, @n1 )
    IF n1 > Len( aStru )
       AAdd( aStru, { nPos1, nPos2, ::FindClass( aStru[1,3], xAttr, .T. ) } )
+      n1 := Len( aStru )
    ELSE
       IF nPos1 < aStru[n1,1]
          AAdd( aStru, Nil )
@@ -1260,6 +1261,9 @@ METHOD StyleSpan( nLine, nPos1, nPos2, xAttr ) CLASS HCEdiExt
             ENDIF
          ENDIF
       ENDIF
+   ENDIF
+   IF cHref != Nil
+      Aadd( aStru[n1], cHRef )
    ENDIF
    IF !::lChgStyle
       hced_CleanStru( Self, nLine, nLine )
@@ -1470,11 +1474,7 @@ METHOD InsSpan( cText, xAttr, cHref ) CLASS HCEdiExt
    x1 := ::aPointC[P_X]
    IF ( aStru := hced_Stru4Pos( ::aStru[nL], x1 ) ) == Nil .OR. Len( aStru ) == 3
       ::InsText( ::aPointC, cText )
-      ::StyleSpan( nL, x1, x1+hced_Len(Self,cText)-1, xAttr )
-      IF cHRef != Nil
-         aStru := hced_Stru4Pos( ::aStru[nL], x1+1 )
-         Aadd( aStru, cHRef )
-      ENDIF
+      ::StyleSpan( nL, x1, x1+hced_Len(Self,cText)-1, xAttr, cHRef )
       hced_CleanStru( Self, nL, nL )
    ENDIF
 

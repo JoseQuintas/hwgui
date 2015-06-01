@@ -1706,9 +1706,9 @@ METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
       FOR i := Pend[P_Y] TO Pstart[P_Y] STEP - 1
          IF i == Pstart[P_Y]
             ::aText[i] := hced_Left( Self, ::aText[i], Pstart[P_X] - 1 ) + cRest
-            IF Pstart[P_X] == 1
-               ::DelLine( i )
-            ENDIF
+            //IF Pstart[P_X] == 1
+            //   ::DelLine( i )
+            //ENDIF
          ELSEIF i == Pend[P_Y]
             cRest := hced_Substr( Self, ::aText[i], Pend[P_X] )
             IF Empty( cRest ) .OR. Pstart[P_X] > 1

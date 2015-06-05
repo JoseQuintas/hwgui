@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-05 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    ! Small fix
+  * source/gtk/hwindow.prg
+    * :Center() method added to HMainWindow
+  * source/gtk/window.c
+    * hwg_CenterWindow() function added
+  * utils/tutorial/tutor_eng.xml
+    ! Small fixes
+
 2015-06-01 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * hced_Right(), hced_Rat() functions added

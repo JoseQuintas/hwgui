@@ -238,7 +238,7 @@ Function Test
          ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    @ 100,100 BUTTON "Close" SIZE 100,30 ;
-         ON CLICK {|| hwg_MsgInfo( oEdit1:Gettext(), "Edit value" ), oDlg:Close() }
+         ON CLICK {|| hwg_MsgInfo( oEdit1:value, "Edit value" ), oDlg:Close() }
 
    // You see, we add here a magic word NOMODAL
    ACTIVATE DIALOG oDlg NOMODAL
@@ -252,7 +252,7 @@ Function Test
    Local oDlg, oFont, oEdit1, oCheck1, oCheck2, oCombo, oUpd
    Local nChoic := 1, aCombo := { "First","Second" }, cr := Chr(13)+Chr(10)
    // Retrieve data from controls while closing the dialog box
-   Local bExit := {|| hwg_MsgInfo( oEdit1:Gettext() + cr + ;
+   Local bExit := {|| hwg_MsgInfo( oEdit1:value + cr + ;
       "Check1: " + Iif( oCheck1:Value,"On","Off" ) + ;
       "  Check2: " + Iif( oCheck2:Value,"On","Off" ) + cr + ;
       "Radio: "  + Str(nChoic,1) + cr + ;

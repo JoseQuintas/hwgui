@@ -98,6 +98,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD FindWindow( hWnd )
    METHOD GetMain()
    METHOD EvalKeyList( nKey )
+   METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
    METHOD Restore()  INLINE hwg_WindowRestore( ::handle )
    METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
    METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
@@ -309,12 +310,4 @@ Static Function onMove( oWnd, wParam, lParam )
    oWnd:nTop  := hwg_Hiword(lParam)
 
 Return 0
-
-Function Hwg_CenterWindow( oWnd )
-
-   oWnd:nLeft := Int( ( hwg_Getdesktopwidth() - oWnd:nWidth ) / 2 )
-   oWnd:nTop  := Int( ( hwg_Getdesktopheight() - oWnd:nHeight ) / 2 )
-   hwg_Movewindow( oWnd:handle, oWnd:nLeft, oWnd:nTop )
-
-Return Nil
 

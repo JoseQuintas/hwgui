@@ -411,7 +411,10 @@ METHOD Value( xValue ) CLASS HEdit
       RETURN xValue
    ENDIF
 
-   vari := iif( Empty( ::handle ), ::title, UnTransform( Self,hwg_Getedittext( ::oParent:handle, ::id ) ) )
+   vari := iif( Empty( ::handle ), ::title, hwg_Getedittext( ::oParent:handle, ::id ) )
+   IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
+      vari := UnTransform( Self, vari )
+   ENDIF
    IF ::cType == "D"
       vari := CToD( vari )
    ELSEIF ::cType == "N"

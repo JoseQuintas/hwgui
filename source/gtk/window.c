@@ -705,6 +705,17 @@ HB_FUNC( HWG_MOVEWINDOW )
       gtk_window_resize( GTK_WINDOW(hWnd), hb_parni(4), hb_parni(5) );
 }
 
+HB_FUNC( HWG_CENTERWINDOW )
+{
+   GtkWindow *  hWnd = (GtkWindow*)HB_PARHANDLE(1);
+    
+   gint width = 0, height = 0;
+  
+   gtk_window_get_size( hWnd, &width, &height );
+   gtk_window_move( hWnd, (gdk_screen_width()-width)/2, (gdk_screen_height()-height)/2 );
+   
+}
+
 HB_FUNC( HWG_WINDOWMAXIMIZE )
 {
 

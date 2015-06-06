@@ -959,7 +959,7 @@ METHOD AddFont( oFont, name, width, height , weight, ;
 
    IF oFont == Nil
       oFont := HFont():Add( name, width, height , weight, ;
-         CharSet, Italic, Underline, StrikeOut )
+         CharSet, Italic, Underline, StrikeOut,, .T. )
    ENDIF
    hced_AddFont( ::hEdit, oFont:handle )
    AAdd( ::aFonts, oFont )

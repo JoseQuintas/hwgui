@@ -360,7 +360,7 @@ METHOD AddFile( name, HDC ) CLASS HBitmap
    RETURN Self
 
 METHOD AddString( name, cVal ) CLASS HBitmap
-   LOCAL oBmp, aBmpSize
+   LOCAL oBmp, aBmpSize, cTmp
 
    For EACH oBmp IN ::aBitmaps
       IF oBmp:name == name
@@ -370,6 +370,11 @@ METHOD AddString( name, cVal ) CLASS HBitmap
    NEXT
 
    ::handle := hwg_Openimage( cVal, .T. )
+   IF Empty( ::handle )
+      hb_memowrit( cTmp := "/tmp/e"+Ltrim(Str(Int(Seconds()*100))), cVal )
+      ::handle := hwg_Openimage( cTmp )
+      FErase( cTmp )
+   ENDIF
    IF !Empty( ::handle )
       ::name := name
       aBmpSize  := hwg_Getbitmapsize( ::handle )

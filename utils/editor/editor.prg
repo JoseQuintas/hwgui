@@ -77,7 +77,7 @@ FUNCTION Main ( fName )
       AT 200, 0 SIZE 600, 300 FONT oFont       ;
       ON GETFOCUS { || iif( oEdit != Nil, hwg_Setfocus( oEdit:handle ), .T. ) }
 
-   @ 0, 0 PANEL oToolBar SIZE oMainWindow:nWidth, 30 ;
+   @ 0, 0 PANEL oToolBar SIZE oMainWindow:nWidth, 30 STYLE SS_OWNERDRAW ;
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
    oToolBar:brush := 0
 
@@ -91,7 +91,7 @@ FUNCTION Main ( fName )
        SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. )
    oBtn3:aStyle := { oStyle1,oStyle2,oStyle3 }
 
-   @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 ON SIZE {|o,x|o:Move(,,x) }
+   @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW  ON SIZE {|o,x|o:Move(,,x) }
 
    @ 0, 30 HCEDITEXT oEdit SIZE 600, 270 ON SIZE { |o, x, y|o:Move( , oRuler:nHeight+oToolBar:nHeight, x, y-oRuler:nHeight-oToolBar:nHeight ) }
    oEdit:nIndent := 20
@@ -181,7 +181,7 @@ STATIC FUNCTION OpenFile( fname )
       fname := hwg_Selectfile( { "All files" }, { "*.*" }, "" )
    ENDIF
    IF !Empty( fname )
-      IF !( Lower( FilExten( fname ) ) $ "html;xml;hwge;" )
+      IF !( Lower( hb_FNameExt( fname ) ) $ "html;xml;hwge;" )
          oEdit:bImport := { |o, cText| SetText( o, cText ) }
       ENDIF
       oEdit:Open( fname )
@@ -204,7 +204,7 @@ STATIC FUNCTION SaveFile( lAs, lHtml )
       fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() )
 #endif
       IF !Empty( fname )
-         IF Empty( FilExten( fname ) )
+         IF Empty( hb_FnameExt( fname ) )
             fname += iif( Empty( lHtml ), ".hwge", ".html" )
          ENDIF
          oEdit:Save( fname, , lHtml )
@@ -253,7 +253,7 @@ STATIC FUNCTION PaintRuler( o )
    aCoors := hwg_Getclientrect( o:handle )
 
    nBoundR := iif( !Empty( oEdit:nDocWidth ), Min( aCoors[3], oEdit:nDocWidth + oEdit:nMarginR - oEdit:nShiftL ), aCoors[3] - 10 )
-   hwg_Fillrect( hDC, If( x < 0,0,x ), 4, nBoundR, 28, oBrush1 )
+   hwg_Fillrect( hDC, If( x < 0,0,x ), 4, nBoundR, 28, oBrush1:handle )
    DO WHILE x <= ( nBoundR - n1cm )
       i ++
       x += n1cm
@@ -525,7 +525,7 @@ STATIC FUNCTION ChangeDoc()
 
    RETURN .F.
 
-STATIC FUNCTION SetText( cText, cPageIn, cPageOut )
+STATIC FUNCTION SetText( oEd, cText )
    LOCAL aText, i, nLen
    LOCAL nPos1, nPos2
 
@@ -536,10 +536,10 @@ STATIC FUNCTION SetText( cText, cPageIn, cPageOut )
    ELSE
       aText := hb_aTokens( cText, Chr( 10 ) )
    ENDIF
-   oEdit:aStru := Array( Len( aText ) )
+   oEd:aStru := Array( Len( aText ) )
 
    FOR i := 1 TO Len( aText )
-      oEdit:aStru[i] := { { 0,0,Nil } }
+      oEd:aStru[i] := { { 0,0,Nil } }
       nLen := Len( aText[i] )
       nPos2 := 1
       DO WHILE ( nPos1 := hb_At( "://", aText[i], nPos2 ) ) != 0
@@ -551,7 +551,7 @@ STATIC FUNCTION SetText( cText, cPageIn, cPageOut )
          IF SubStr( aText[i], nPos2 - 1, 1 ) $ ",.;"
             nPos2 --
          ENDIF
-         AAdd( oEdit:aStru[i], { nPos1, nPos2, "url", SubStr( aText[i],nPos1,nPos2 - nPos1 + 1 ) } )
+         AAdd( oEd:aStru[i], { nPos1, nPos2, "url", SubStr( aText[i],nPos1,nPos2 - nPos1 + 1 ) } )
       ENDDO
    NEXT
 
@@ -610,7 +610,7 @@ STATIC FUNCTION InsImage()
    fname := hwg_Selectfile( "Graphic files( *.jpg;*.gif;*.bmp )", "*.jpg;*.gif;*.bmp", "" )
    IF !Empty( fname )
       IF hwg_MsgYesNo( "Keep the image inside the document ?" )
-         oEdit:InsImage( , , MemoRead( fname ) )
+         oEdit:InsImage( ,,, MemoRead( fname ) )
       ELSE
          oEdit:InsImage( fname )
       ENDIF

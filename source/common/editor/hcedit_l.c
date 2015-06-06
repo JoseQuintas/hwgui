@@ -444,6 +444,8 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
    }
    if( pted->iyCaretPos == ypos )
    {
+      if( !iPrinted )
+         pted->ixCaretPos = x1;
       hwg_setcolor( pted->hDCScr->cr, (pted->hDCScr->fcolor != -1)? pted->hDCScr->fcolor : 0 );
       cairo_move_to( pted->hDCScr->cr, (gdouble)pted->ixCaretPos, (gdouble)pted->iyCaretPos );
       cairo_line_to( pted->hDCScr->cr, (gdouble)pted->ixCaretPos, (gdouble)pted->iyCaretPos+iHeight );
@@ -774,13 +776,13 @@ HB_FUNC( HCED_KILLCARET )
 HB_FUNC( HCED_GETXCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   hb_retni( pted->ixCaretPos );
+   hb_retni( pted->ixCaretPos - pted->xBorder );
 }
 
 HB_FUNC( HCED_GETYCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   hb_retni( pted->iyCaretPos );
+   hb_retni( pted->iyCaretPos - pted->yBorder );
 }
 
 HB_FUNC( HCED_GETCARETHEIGHT )
@@ -793,9 +795,8 @@ HB_FUNC( HCED_SETCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
 
-   pted->ixCaretPos = hb_parni(2);
-   pted->iyCaretPos = hb_parni(3);
-   //SetCaretPos( pted->ixCaretPos, pted->iyCaretPos );
+   pted->ixCaretPos = hb_parni(2) + pted->xBorder;
+   pted->iyCaretPos = hb_parni(3) + pted->yBorder;
 }
 
 /*
@@ -871,8 +872,8 @@ HB_FUNC( HCED_EXACTCARETPOS )
    if( bSet )
    {
       x1 -= ( HB_ISNIL(7)? 0 : hb_parni(7) );
-      pted->ixCaretPos = x1;
-      pted->iyCaretPos = y1;
+      pted->ixCaretPos = x1 + pted->xBorder;
+      pted->iyCaretPos = y1 + pted->yBorder;
       // wrlog( NULL, "x = %u y = %u\r\n", x1, y1 );
    }
    
@@ -929,7 +930,7 @@ HB_FUNC( HCED_LINEOUT )
    int iHeight = 0;
 
    pango_layout_set_alignment( pted->hDCScr->layout, PANGO_ALIGN_LEFT );
-   if( iLen )
+   //if( iLen )
    {
       if( bCalc )
       {
@@ -945,8 +946,8 @@ HB_FUNC( HCED_LINEOUT )
       else
          iPrinted = ted_CalcLineWidth( pted, szText, iLen, 30000, &iRealWidth, 0 );
    }
-   else
-      iPrinted = iRealWidth = 0;
+   //else
+   //   iPrinted = iRealWidth = 0;
 
    if( iAlign )
    {

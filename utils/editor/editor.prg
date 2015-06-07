@@ -33,7 +33,9 @@ REQUEST HB_CODEPAGE_RU866
 #define P_Y             2
 
 #define SETC_XY         4
+
 #define OB_TYPE         1
+#define OB_CLS          3
 #define OB_HREF         4
 
 #define  CLR_BLACK          0
@@ -81,13 +83,13 @@ FUNCTION Main ( fName )
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
    oToolBar:brush := 0
 
-   @ 2,0 OWNERBUTTON oBtn1 OF oToolBar ON CLICK {|| .T. } ;
+   @ 2,0 OWNERBUTTON oBtn1 OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
        SIZE 30,30 TEXT "B" FONT oMainWindow:oFont:SetFontStyle( .T. )
    oBtn1:aStyle := { oStyle1,oStyle2,oStyle3 }
-   @ 32,0 OWNERBUTTON oBtn2 OF oToolBar ON CLICK {||.t.} ;
+   @ 32,0 OWNERBUTTON oBtn2 OF oToolBar ON CLICK {|| onBtnStyle(2) } ;
        SIZE 30,30 TEXT "I" FONT oMainWindow:oFont:SetFontStyle( .F.,,.T. )
    oBtn2:aStyle := { oStyle1,oStyle2,oStyle3 }
-   @ 62,0 OWNERBUTTON oBtn3 OF oToolBar ON CLICK {||.t.} ;
+   @ 62,0 OWNERBUTTON oBtn3 OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
        SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. )
    oBtn3:aStyle := { oStyle1,oStyle2,oStyle3 }
 
@@ -102,6 +104,7 @@ FUNCTION Main ( fName )
    oEdit:bColorCur := oEdit:bColor
    oEdit:SetHili( "url", - 1, 255 )
    oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
+   oEdit:bChangePos := { || onChangePos() }
 
    MENU OF oMainWindow
       MENU TITLE "&File"
@@ -135,15 +138,15 @@ FUNCTION Main ( fName )
       ENDMENU
       MENU TITLE "&Selected"
          MENU TITLE "Style"
-            MENUITEM "Set Bold" ACTION oEdit:ChgStyle( , , "fb" )
-            MENUITEM "Set Italic" ACTION oEdit:ChgStyle( , , "fi" )
-            MENUITEM "Set Underline" ACTION oEdit:ChgStyle( , , "fu" )
-            MENUITEM "Set StrikeOut" ACTION oEdit:ChgStyle( , , "fs" )
+            MENUITEM "Set Bold" ACTION oEdit:ChgStyle( ,, "fb" )
+            MENUITEM "Set Italic" ACTION oEdit:ChgStyle( ,, "fi" )
+            MENUITEM "Set Underline" ACTION oEdit:ChgStyle( ,, "fu" )
+            MENUITEM "Set StrikeOut" ACTION oEdit:ChgStyle( ,, "fs" )
             SEPARATOR
-            MENUITEM "ReSet Bold" ACTION oEdit:ChgStyle( , , "fb-" )
-            MENUITEM "ReSet Italic" ACTION oEdit:ChgStyle( , , "fi-" )
-            MENUITEM "ReSet Underline" ACTION oEdit:ChgStyle( , , "fu-" )
-            MENUITEM "ReSet StrikeOut" ACTION oEdit:ChgStyle( , , "fs-" )
+            MENUITEM "ReSet Bold" ACTION oEdit:ChgStyle( ,, "fb-" )
+            MENUITEM "ReSet Italic" ACTION oEdit:ChgStyle( ,, "fi-" )
+            MENUITEM "ReSet Underline" ACTION oEdit:ChgStyle( ,, "fu-" )
+            MENUITEM "ReSet StrikeOut" ACTION oEdit:ChgStyle( ,, "fs-" )
          ENDMENU
          MENUITEM "Font" ACTION ChgFont( .F. )
          MENUITEM "Color" ACTION ChangeColor( .F. )
@@ -283,6 +286,29 @@ STATIC FUNCTION PaintTB( o )
 
    RETURN Nil
 
+STATIC FUNCTION onBtnStyle( nBtn )
+
+   LOCAL cAttr, aAttrs := { "fb", "fi", "fu" }
+
+   IF !Empty( oEdit:aPointM2[2] )
+
+      cAttr := aAttrs[nBtn]   
+      oEdit:ChgStyle( ,, cAttr )
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION onChangePos()
+
+   LOCAL aAttr
+   IF !Empty( arr := oEdit:SetCaretPos( SETC_XY + 200 ) ) .AND. !Empty( arr[3] )
+      IF !Empty( arr[3][OB_CLS] )
+         aAttr := oEdit:getClassAttr( arr[3][OB_CLS] )
+         hwg_writelog( hb_jsonEncode(aAttr) )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
 
 STATIC FUNCTION ChangeFont()
    LOCAL oFont
@@ -302,7 +328,7 @@ STATIC FUNCTION ChgFont( lDiv )
       IF lDiv
          oEdit:StyleDiv( , "ff" + LTrim( Str(nFont ) ) )
       ELSE
-         oEdit:ChgStyle( , , "ff" + LTrim( Str(nFont ) ) )
+         oEdit:ChgStyle( ,, "ff" + LTrim( Str(nFont ) ) )
       ENDIF
    ENDIF
 
@@ -694,18 +720,16 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
    STATIC nShiftL := 0
 
    IF msg == WM_LBUTTONDBLCLK
-      IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) )
-         IF !Empty( arr[3] ) .AND. Len( arr[3] ) > 3
-            WebLaunch( arr[3,OB_HREF] )
-         ENDIF
+      IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) ) .AND. ;
+            !Empty( arr[3] ) .AND. Len( arr[3] ) > 3
+         WebLaunch( arr[3,OB_HREF] )
       ENDIF
       RETURN 0
 
    ELSEIF msg == WM_MOUSEMOVE
-      IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) )
-         IF !Empty( arr[3] ) .AND. Len( arr[3] ) > 3
-            hwg_SetCursor( handCursor )
-         ENDIF
+      IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) ) .AND. ;
+            !Empty( arr[3] ) .AND. Len( arr[3] ) > 3
+         hwg_SetCursor( handCursor )
       ENDIF
 
    ELSEIF msg == WM_RBUTTONDOWN

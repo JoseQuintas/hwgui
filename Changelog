@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-07 21:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * :bChangePos handling improved
+  * utils/editor/editor.prg
+
 2015-06-06 18:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawwidg.prg
     * Added temporary solution to open images from strings.

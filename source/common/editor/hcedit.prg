@@ -357,8 +357,9 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
-   LOCAL n, nPages, arr, lRes := - 1, x
+   LOCAL n, nPages, arr, lRes := - 1, x, aPointC[P_LENGTH]
 
+   ::PCopy( ::aPointC, aPointC )
    IF ::bOther != Nil
       IF ( n := Eval( ::bOther,Self,msg,wParam,lParam ) ) != - 1
          RETURN n
@@ -507,7 +508,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 
    ENDIF
 
-   IF ::lChgCaret
+   //IF ::lChgCaret
+   IF aPointC[P_X] != ::aPointC[P_X] .OR. aPointC[P_Y] != ::aPointC[P_Y]
       IF ::lVScroll
          n := Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
          IF n > 0 .AND. ( nPages := ( Int( ::nLinesAll/n ) + 1 ) ) > 1          
@@ -521,7 +523,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       IF ::bChangePos != Nil
          Eval( ::bChangePos, Self )
       ENDIF
-      ::lChgCaret := .F.
+      //::lChgCaret := .F.
    ENDIF
 
    IF ::bAfter != Nil
@@ -989,7 +991,7 @@ METHOD SetFont( oFont ) CLASS HCEdit
 METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
    LOCAL lSet := .T. , lInfo := .F., x1, y1, xPos, cLine, nLinePrev := ::nLineC
 
-   ::lChgCaret := .T.
+   //::lChgCaret := .T.
    IF Empty( nType ) .OR. Empty( ::nLines )
       hced_SetCaretPos( ::hEdit, ::nBoundL + ::nMarginL + ::n4Separ, 0 )
       RETURN Nil

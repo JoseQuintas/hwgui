@@ -53,12 +53,12 @@ REQUEST HB_CODEPAGE_RU866
 STATIC cNewLine := e"\r\n"
 STATIC cWebBrow
 STATIC oFontP, oBrush1
-STATIC oToolbar, oRuler, oEdit
+STATIC oToolbar, oRuler, oEdit, aButtons[4]
 
 MEMVAR handcursor, cIniPath
 
 FUNCTION Main ( fName )
-   LOCAL oMainWindow, oFont, oBtn1, oBtn2, oBtn3
+   LOCAL oMainWindow, oFont
    LOCAL oStyle1, oStyle2, oStyle3
 
    PRIVATE oMenuC1, handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
@@ -83,15 +83,18 @@ FUNCTION Main ( fName )
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
    oToolBar:brush := 0
 
-   @ 2,0 OWNERBUTTON oBtn1 OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
+   @ 2,0 OWNERBUTTON aButtons[1] OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
        SIZE 30,30 TEXT "B" FONT oMainWindow:oFont:SetFontStyle( .T. )
-   oBtn1:aStyle := { oStyle1,oStyle2,oStyle3 }
-   @ 32,0 OWNERBUTTON oBtn2 OF oToolBar ON CLICK {|| onBtnStyle(2) } ;
+   aButtons[1]:aStyle := { oStyle1,oStyle2,oStyle3 }
+   aButtons[1]:cargo := "fb"
+   @ 32,0 OWNERBUTTON aButtons[2] OF oToolBar ON CLICK {|| onBtnStyle(2) } ;
        SIZE 30,30 TEXT "I" FONT oMainWindow:oFont:SetFontStyle( .F.,,.T. )
-   oBtn2:aStyle := { oStyle1,oStyle2,oStyle3 }
-   @ 62,0 OWNERBUTTON oBtn3 OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
+   aButtons[2]:aStyle := { oStyle1,oStyle2,oStyle3 }
+   aButtons[2]:cargo := "fi"
+   @ 62,0 OWNERBUTTON aButtons[3] OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
        SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. )
-   oBtn3:aStyle := { oStyle1,oStyle2,oStyle3 }
+   aButtons[3]:aStyle := { oStyle1,oStyle2,oStyle3 }
+   aButtons[3]:cargo := "fu"
 
    @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW  ON SIZE {|o,x|o:Move(,,x) }
 
@@ -184,7 +187,7 @@ STATIC FUNCTION OpenFile( fname )
       fname := hwg_Selectfile( { "All files" }, { "*.*" }, "" )
    ENDIF
    IF !Empty( fname )
-      IF !( Lower( hb_FNameExt( fname ) ) $ "html;xml;hwge;" )
+      IF !( Lower( hb_FNameExt( fname ) ) $ ".html;.hwge;" )
          oEdit:bImport := { |o, cText| SetText( o, cText ) }
       ENDIF
       oEdit:Open( fname )
@@ -288,11 +291,11 @@ STATIC FUNCTION PaintTB( o )
 
 STATIC FUNCTION onBtnStyle( nBtn )
 
-   LOCAL cAttr, aAttrs := { "fb", "fi", "fu" }
+   LOCAL cAttr
 
    IF !Empty( oEdit:aPointM2[2] )
 
-      cAttr := aAttrs[nBtn]   
+      cAttr := aButtons[nBtn]:cargo
       oEdit:ChgStyle( ,, cAttr )
    ENDIF
 
@@ -300,12 +303,26 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
 STATIC FUNCTION onChangePos()
 
-   LOCAL aAttr
-   IF !Empty( arr := oEdit:SetCaretPos( SETC_XY + 200 ) ) .AND. !Empty( arr[3] )
-      IF !Empty( arr[3][OB_CLS] )
-         aAttr := oEdit:getClassAttr( arr[3][OB_CLS] )
-         hwg_writelog( hb_jsonEncode(aAttr) )
-      ENDIF
+   LOCAL aAttr, i
+   IF !Empty( arr := oEdit:SetCaretPos( SETC_XY + 200 ) ) .AND. !Empty( arr[3] ) .AND. ;
+         !Empty( arr[3][OB_CLS] )
+      aAttr := oEdit:getClassAttr( arr[3][OB_CLS] )
+      FOR i := 1 TO 3
+         IF Ascan( aAttr, aButtons[i]:cargo ) > 0
+            aButtons[i]:lCheck := .T.
+            aButtons[i]:Press()
+         ELSEIF aButtons[i]:lPress
+            aButtons[i]:lCheck := .F.
+            aButtons[i]:Release()
+         ENDIF
+      NEXT
+   ELSE
+      FOR i := 1 TO 3
+         IF aButtons[i]:lPress
+            aButtons[i]:lCheck := .F.
+            aButtons[i]:Release()
+         ENDIF
+      NEXT
    ENDIF
 
    RETURN Nil

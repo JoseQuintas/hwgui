@@ -1124,7 +1124,7 @@ Local oFont, nHeight, i, nOld
       nHeight := oCtrl:oFont:height
       nOld := nHeight
       nHeight := Iif( nHeight<0, nHeight-n, nHeight+n )
-      oFont := HFont():Add( oCtrl:oFont:name, oCtrl:oFont:Width,nHeight,,oCtrl:oFont:Charset, )
+      oFont := HFont():Add( oCtrl:oFont:name, oCtrl:oFont:Width,nHeight,,oCtrl:oFont:Charset,,,,,.T. )
       hwg_Setctrlfont( oCtrl:oParent:handle, oCtrl:id, ( oCtrl:oFont := oFont ):handle )
       IF __ObjHasMsg( oCtrl, "ACOLUMNS" )
          FOR i := 1 TO Len( oCtrl:aColumns )

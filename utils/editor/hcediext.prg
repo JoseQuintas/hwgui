@@ -450,13 +450,18 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
                   ::nPosC := iTd
                   ::PCopy( { ::nPosC, ::aLines[::nLineC,AL_LINE] }, ::aPointC )
                ENDIF
+#ifdef __PLATFORM__UNIX
+            ELSEIF msg == WM_KEYDOWN .AND. nKey == VK_TAB
+#else
             ELSEIF msg == WM_CHAR .AND. nKey == VK_TAB
+#endif
                IF iTd < Len( ::aStru[nL,1,OB_OB] )
                   ::SetCaretPos( SETC_COORS, aStruTbl[OB_OB,++itd,OB_CLEFT]+2, ::aLines[::nLineC,AL_Y1]+2 )
                ELSEIF nL < ::nTextLen
                   hced_SetCaretPos( ::hEdit, ::nMarginL, ::aLines[::nLineC,AL_Y1]+2 )
                   ::LineDown()
                ENDIF
+               ::lSetFocus := .T.
                RETURN 0
             ENDIF
             nBoundL := ::nBoundL; nBoundR := ::nBoundR; nBoundT := ::nBoundT

@@ -77,7 +77,7 @@ FUNCTION Main ( fName )
 
    INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
       AT 200, 0 SIZE 600, 300 FONT oFont       ;
-      ON GETFOCUS { || iif( oEdit != Nil, hwg_Setfocus( oEdit:handle ), .T. ) }
+      ON GETFOCUS { || iif( oEdit != Nil, hced_Setfocus( oEdit:hEdit ), .T. ) }
 
    @ 0, 0 PANEL oToolBar SIZE oMainWindow:nWidth, 30 STYLE SS_OWNERDRAW ;
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
@@ -650,7 +650,7 @@ STATIC FUNCTION EditUrl( lNew )
 STATIC FUNCTION InsImage()
    LOCAL fname
 
-   fname := hwg_Selectfile( "Graphic files( *.jpg;*.gif;*.bmp )", "*.jpg;*.gif;*.bmp", "" )
+   fname := hwg_Selectfile( "Graphic files( *.jpg;*.png;*.gif;*.bmp )", "*.jpg;*.png;*.gif;*.bmp", "" )
    IF !Empty( fname )
       IF hwg_MsgYesNo( "Keep the image inside the document ?" )
          oEdit:InsImage( ,,, MemoRead( fname ) )

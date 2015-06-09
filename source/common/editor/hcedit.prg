@@ -110,6 +110,8 @@
 
 #define STRING_MAX_LEN  1024
 
+#define BOTTOM_HEIGHT   8
+
 STATIC cNewLine := e"\r\n"
 
 #ifdef __PLATFORM__UNIX
@@ -618,7 +620,8 @@ METHOD Paint( lReal ) CLASS HCEdit
 
          yNew := ::PaintLine( Iif( lReal, hDC, Nil ), yPos, nLine, .T. )
 
-         IF yNew + ( ::aLines[nLine,AL_Y2] - ::aLines[nLine,AL_Y1] ) > ::nHeight
+         //IF yNew + ( ::aLines[nLine,AL_Y2] - ::aLines[nLine,AL_Y1] ) > ::nHeight
+         IF yNew + BOTTOM_HEIGHT > ::nHeight
             EXIT
          ENDIF
          yPos := yNew
@@ -727,7 +730,8 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
             nWCharF += nPrinted
             nWSublF ++
          ENDIF
-         IF ::nLines > 1 .AND. yPos + ( yPos - aLine[AL_Y1] ) > ::nHeight
+         //IF ::nLines > 1 .AND. yPos + ( yPos - aLine[AL_Y1] ) > ::nHeight
+         IF ::nLines > 1 .AND. yPos + BOTTOM_HEIGHT > ::nHeight
             EXIT
          ENDIF
       ELSE
@@ -1026,7 +1030,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
    ELSEIF nType == SETC_XLAST
       xPos := ::nClientWidth
    ENDIF
-
+   //hwg_writelog( str(::nLineC)+" "+str(::nLineF)+ " "+valtype(::aLines[::nLineC,AL_LINE]) )
    ::MarkLine( Iif( ::lWrap, ::aLines[::nLineC,AL_LINE]-::nLineF+1, ::nLineC ), .F., Iif( ::lWrap, hced_SubLine( Self, ::nLineC ), Nil ) )
    IF x1 == Nil
       xPos += ::nShiftL
@@ -1788,7 +1792,8 @@ METHOD InsText( aPoint, cText, lOver, lChgPos ) CLASS HCEdit
    IF lChgPos
       nSub := ::nLinesAll + 1
       IF ( i := hced_P2Screen( Self, nLineNew, @nPos, @nSub ) ) > ::nLines .AND. ;
-            i > Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
+            Iif( ::nLines > 0, ::nHeight-::aLines[::nLines,AL_Y2]<=BOTTOM_HEIGHT, .T. )
+            //i > Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
          ::nLineF := nLineNew
          ::nWSublF := nSub
          ::nWCharF := Iif( nSub==1, 1, ::aWrap[nLineNew,nSub-1] )

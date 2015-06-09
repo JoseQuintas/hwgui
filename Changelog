@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-09 10:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hupdown.prg
+    ! get variable of updown control wasn't updated - fixed.
+  * utils/debugger/hwgdebug.prg
+    ! :Settext(), :Gettext() calls replaced to :value for an edit control oEditExpr
+
 2015-06-09 09:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/editor/hcediext.prg
     ! Some fixes, related to tables

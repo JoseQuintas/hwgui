@@ -30,6 +30,7 @@ CLASS HUpDown INHERIT HControl
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctoolt, tcolor, bcolor, nUpDWidth, nLower, nUpper )
    METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
    METHOD Refresh()
    METHOD Value( nValue ) SETGET
    METHOD SetRange( n1, n2 )  INLINE hwg_SetRangeUpdown( ::handle, n1, n2 )
@@ -59,19 +60,10 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    ::Activate()
 
-   IF bSetGet != Nil
-      ::bGetFocus := bGFocus
-      ::bLostFocus := bLFocus
-      ::oParent:AddEvent( EN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) } )
-      ::oParent:AddEvent( EN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
-   ELSE
-      IF bGfocus != Nil
-         ::oParent:AddEvent( EN_SETFOCUS, ::id, bGfocus )
-      ENDIF
-      IF bLfocus != Nil
-         ::oParent:AddEvent( EN_KILLFOCUS, ::id, bLfocus )
-      ENDIF
-   ENDIF
+   ::bGetFocus := bGFocus
+   ::bLostFocus := bLFocus
+   hwg_SetEvent( ::handle, "focus_in_event", WM_SETFOCUS, 0, 0 )
+   hwg_SetEvent( ::handle, "focus_out_event", WM_KILLFOCUS, 0, 0 )
 
    RETURN Self
 
@@ -80,10 +72,28 @@ METHOD Activate CLASS HUpDown
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createupdowncontrol( ::oParent:handle, ;
          ::nLeft, ::nTop, ::nWidth, ::nHeight, Val( ::title ), ::nLower, ::nUpper )
+      hwg_Setwindowobject( ::handle, Self )
       ::Init()
    ENDIF
 
    RETURN Nil
+
+METHOD onEvent( msg, wParam, lParam ) CLASS HUpDown
+   LOCAL oParent := ::oParent, nPos
+
+   //hwg_WriteLog( "UpDown: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   IF msg == WM_SETFOCUS
+      IF ::bSetGet == Nil
+         IF ::bGetFocus != Nil
+            Eval( ::bGetFocus, ::nValue := hwg_GetUpDown( ::handle ), Self )
+         ENDIF
+      ELSE
+         __When( Self )
+      ENDIF
+   ELSEIF msg == WM_KILLFOCUS
+      __Valid( Self )
+   ENDIF
+   RETURN 0
 
 METHOD Refresh()  CLASS HUpDown
    LOCAL vari
@@ -128,7 +138,6 @@ STATIC FUNCTION __When( oCtrl )
 STATIC FUNCTION __Valid( oCtrl )
 
    oCtrl:nValue := hwg_GetUpDown( oCtrl:handle )
-   oCtrl:title := Str( oCtrl:nValue )
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet, oCtrl:nValue )
    ENDIF

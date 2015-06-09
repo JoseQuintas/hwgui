@@ -291,7 +291,7 @@ Public cIniPath := FilePath( hb_ArgV( 0 ) ), cCurrPath := ""
    oBrwRes:bcolor := CLR_LIGHT1
    oBrwRes:bcolorSel := oBrwRes:htbcolor := CLR_LGREEN
    oBrwRes:tcolorSel := oBrwRes:httcolor := 0
-   oBrwRes:bEnter := {|o| Iif( o:nCurrent>0.AND.o:nCurrent<=o:nRecords,oEditExpr:SetText(o:aArray[o:nCurrent,2]),.T. ) }
+   oBrwRes:bEnter := {|o| Iif( o:nCurrent>0.AND.o:nCurrent<=o:nRecords,oEditExpr:value:=o:aArray[o:nCurrent,2],.T. ) }
 
    @ 4,516 SAY oSayState CAPTION "" SIZE 80,28 STYLE WS_BORDER+SS_CENTER ON SIZE {|o,x,y|o:Move(,y-32)}
    SET KEY 0,VK_RETURN TO KeyPress( VK_RETURN )
@@ -603,11 +603,11 @@ Static nLastSec := 0
                         SetResult( Hex2Str( arr[3] ) )
                      ENDIF
                   ELSE
-                     oEditExpr:SetText( "-- BAD ANSWER --" )
+                     oEditExpr:value := "-- BAD ANSWER --"
                   ENDIF                 
                ELSEIF nAnsType == ANS_BRP
                   IF arr[2] == "err"
-                     oEditExpr:SetText( "-- BAD LINE --" )
+                     oEditExpr:value := "-- BAD LINE --"
                   ELSE
                      ToggleBreakPoint( arr[2], arr[3] )
                   ENDIF
@@ -660,7 +660,7 @@ Static nLastSec := 0
             IF Left(arr[1],1) == "a" .AND. ( n := Val( Substr(arr[1],2) ) ) > nId2
                nId2 := n
                IF arr[2] == "."
-                  oEditExpr:SetText( "-- BAD LINE --" )
+                  oEditExpr:value := "-- BAD LINE --"
                ELSE
                   IF !( cPrgName == arr[2] )
                      cPrgName := arr[2]
@@ -1376,7 +1376,7 @@ Static iPos := 0
 
       iPos += nDirection
       i := Len(oBrwRes:aArray) - iPos + 1
-      oEditExpr:SetText( oBrwRes:aArray[ i,2] )
+      oEditExpr:value := oBrwRes:aArray[ i,2]
 
       oBrwRes:nCurrent := i
       oBrwRes:rowPos := Min( 2, i )
@@ -1386,7 +1386,7 @@ Static iPos := 0
 
    ELSEIF nDirection < 0
 
-      oEditExpr:SetText( "" )     
+      oEditExpr:value := ""
       iPos := 0
    ENDIF
    
@@ -1420,10 +1420,10 @@ Static Function Calc( cExp )
 Local arr, cmd
 
    IF Empty( cExp )
-      cExp := Trim( oEditExpr:GetText() )
+      cExp := Trim( oEditExpr:value )
    ENDIF
    IF !Empty( cExp )
-      oEditExpr:SetText( "" )
+      oEditExpr:value := ""
       IF Left( cExp,1 ) == ":" .AND. Substr( cExp,2,1 ) != ":"
          arr := hb_aTokens( Substr( cExp,2 ), " " )
          cmd := Lower( arr[1] )
@@ -2070,7 +2070,7 @@ Local nL := oText:aPointC[P_Y], nPos := oText:aPointC[P_X], cLine, c, nPos1, nPo
    ENDIF
    cLine := Substr( cLine, nPos1, nPos2-nPos1 )
    IF '(' $ cLine
-      oEditExpr:SetText( cLine )
+      oEditExpr:value := cLine
    ELSE
       Calc( ":ins " + cLine )
    ENDIF

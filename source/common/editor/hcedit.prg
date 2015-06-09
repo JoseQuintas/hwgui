@@ -1715,11 +1715,15 @@ METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
             //IF Pstart[P_X] == 1
             //   ::DelLine( i )
             //ENDIF
-         ELSEIF i == Pend[P_Y]
-            cRest := hced_Substr( Self, ::aText[i], Pend[P_X] )
-            IF Empty( cRest ) .OR. Pstart[P_X] > 1
+            IF Empty( ::aText[i] )
                ::DelLine( i )
             ENDIF
+         ELSEIF i == Pend[P_Y]
+            cRest := hced_Substr( Self, ::aText[i], Pend[P_X] )
+            ::aText[i] := ""
+            //IF Empty( cRest ) .OR. Pstart[P_X] > 1
+            //   ::DelLine( i )
+            //ENDIF
          ELSE
             ::DelLine( i )
          ENDIF

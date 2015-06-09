@@ -409,6 +409,11 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
    
    RETURN ::Super:SetText( aText, cPageIn, cPageOut )
 
+#ifdef __PLATFORM__UNIX
+   #define MESS_CHAR  WM_KEYDOWN
+#else
+   #define MESS_CHAR  WM_CHAR
+#endif
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
    LOCAL nRes := -1, nL, aStruTbl, iTd := 0, j, nIndent, nBoundL, nBoundR, nBoundT, nKey, nLine := 0, lInv := .F.
 
@@ -418,8 +423,21 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
          IF ::aStru[nL,1,1] == "tr"
             aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
          ELSEIF ::aStru[nL,1,1] == "img"
-            IF msg == WM_CHAR
-               RETURN 0
+            IF msg == MESS_CHAR 
+               IF ( nKey := hwg_PtrToUlong( wParam ) ) == VK_RETURN
+                  IF nL == 1
+                    ::AddLine( nL )
+                    ::aText[nL] := ""
+                  ELSE
+                    ::AddLine( nL+1 )
+                    ::aText[nL+1] := ""
+                  ENDIF
+                  ::Paint( .F. )
+                  msg := WM_KEYDOWN
+                  wParam := VK_DOWN
+               ELSE
+                  RETURN 0
+               ENDIF
             ENDIF
          ENDIF
       ENDIF
@@ -450,11 +468,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
                   ::nPosC := iTd
                   ::PCopy( { ::nPosC, ::aLines[::nLineC,AL_LINE] }, ::aPointC )
                ENDIF
-#ifdef __PLATFORM__UNIX
-            ELSEIF msg == WM_KEYDOWN .AND. nKey == VK_TAB
-#else
-            ELSEIF msg == WM_CHAR .AND. nKey == VK_TAB
-#endif
+            ELSEIF msg == MESS_CHAR  .AND. nKey == VK_TAB
                IF iTd < Len( ::aStru[nL,1,OB_OB] )
                   ::SetCaretPos( SETC_COORS, aStruTbl[OB_OB,++itd,OB_CLEFT]+2, ::aLines[::nLineC,AL_Y1]+2 )
                ELSEIF nL < ::nTextLen
@@ -913,7 +927,15 @@ METHOD AddLine( nLine ) CLASS HCEdiExt
    RETURN Nil
 
 METHOD DelLine( nLine ) CLASS HCEdiExt
-  
+
+   LOCAL aStru := ::aStru[nLine,1]
+
+   IF Valtype(aStru[OB_TYPE]) == "C" .AND. aStru[OB_TYPE] == "img"
+      IF !Empty( aStru[OB_OB] )
+        aStru[OB_OB]:Release()
+        aStru[OB_OB] := Nil
+      ENDIF
+   ENDIF
    ADel( ::aStru, nLine )
 
    RETURN ::Super:DelLine( nLine )
@@ -1530,8 +1552,12 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
 
       FOR i := 1 TO ::nTextLen
          FOR j := 1 TO Len( ::aStru[i] )
-            IF !Empty(::aStru[i,j,OB_CLS]) .AND. Ascan( aClasses, ::aStru[i,j,OB_CLS] ) == 0
-               AAdd( aClasses, ::aStru[i,j,OB_CLS] )
+            IF !Empty(xTemp := ::aStru[i,j,OB_CLS]) .AND. Ascan( aClasses, xTemp ) == 0
+               AAdd( aClasses, xTemp )
+            ELSEIF Valtype(::aStru[i,j,OB_TYPE]) == "C" .AND. ::aStru[i,j,OB_TYPE] == "tr" .AND. ;
+                  ::aStru[i,j,OB_TRNUM] == 1 .AND. ;
+                  !Empty(xTemp := ::aStru[i,j,OB_TBL,OB_CLS] ) .AND. Ascan( aClasses, xTemp ) == 0
+               AAdd( aClasses, xTemp )
             ENDIF
          NEXT
       NEXT

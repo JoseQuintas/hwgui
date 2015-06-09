@@ -33,6 +33,7 @@ REQUEST HB_CODEPAGE_RU866
 #define P_Y             2
 
 #define SETC_XY         4
+#define SETC_XFIRST     5
 
 #define OB_TYPE         1
 #define OB_CLS          3
@@ -76,8 +77,7 @@ FUNCTION Main ( fName )
    oStyle3 := HStyle():New( {CLR_LBLUE1}, 1,, 2, CLR_LBLUE0 )
 
    INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
-      AT 200, 0 SIZE 600, 300 FONT oFont       ;
-      ON GETFOCUS { || iif( oEdit != Nil, hced_Setfocus( oEdit:hEdit ), .T. ) }
+      AT 200, 0 SIZE 600, 300 FONT oFont
 
    @ 0, 0 PANEL oToolBar SIZE oMainWindow:nWidth, 30 STYLE SS_OWNERDRAW ;
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
@@ -658,6 +658,7 @@ STATIC FUNCTION InsImage()
          oEdit:InsImage( fname )
       ENDIF
    ENDIF
+   hced_Setfocus( oEdit:hEdit )
 
    RETURN Nil
 
@@ -698,6 +699,7 @@ STATIC FUNCTION InsTable( lNew )
    ACTIVATE DIALOG oDlg
 
    IF oDlg:lResult
+      oEdit:lSetFocus := .T.
       IF lNew
          oEdit:InsTable( nCols, nRows, iif( nWidth == 100, Nil, - nWidth ), ;
             nAlign-1, Iif( nBorder > 0, "bw" + LTrim( Str(nBorder ) ), Nil ) )
@@ -799,5 +801,7 @@ STATIC FUNCTION About()
    Atail(oDlg:aControls):aStyle := { oStyle1, oStyle2 }
 
    ACTIVATE DIALOG oDlg CENTER
+
+   hced_Setfocus( oEdit:hEdit )
 
    RETURN Nil

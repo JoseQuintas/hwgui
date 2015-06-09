@@ -848,16 +848,21 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
       nIndent := ::nIndent
       ::nIndent := 0
 
-      ::LoadEnv( nL, iTd )
       IF lInfo
          nLinePrev := ::nLineC; nPosPrev := ::nPosC; aPointC := ::PCopy( ::aPointC )
       ENDIF
+      ::LoadEnv( nL, iTd )
       IF nType == SETC_XYPOS
          p1 := p2 := 1
       ENDIF
 
       ::Super:SetCaretPos( nt, p1, p2 )
 
+      ::RestoreEnv( nL, iTd )
+      ::nBoundL := nBoundL
+      ::nBoundT := 0
+      ::nBoundR := nBoundR
+      ::nIndent := nIndent
       IF lInfo
          aStru := Nil
          IF !Empty( nL2 := ::aLines[::nLineC,AL_LINE] )
@@ -867,13 +872,7 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
          ::nLineC := nLinePrev; ::nPosC := nPosPrev; ::PCopy( aPointC, ::aPointC )
 
          RETURN { nL, iTd, aStru, nL2, x1, ::aText }
-      ENDIF
-      ::RestoreEnv( nL, iTd )
-      ::nBoundL := nBoundL
-      ::nBoundT := 0
-      ::nBoundR := nBoundR
-      ::nIndent := nIndent
-      IF !lInfo
+      ELSE
          ::nLineC := y1
          ::nPosC := iTd
          ::PCopy( { iTd, nL }, ::aPointC )
@@ -1356,6 +1355,7 @@ METHOD InsRows( nL, nRows, nCols, lNoAddline ) CLASS HCEdiExt
    ENDIF
    FOR n := 1 TO nRows
       ::aStru[nL,1] :=  { "tr", {},, nRow }
+      ::aText[nL] := ""
       FOR i := 1 TO nCols
          Aadd( ::aStru[nL,1,OB_OB], { "td", { { { 0,0,Nil } } }, Nil, {""}, 0, 0, {Nil}, Array(4,AL_LENGTH), 0, 1, 1, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0} } )
       NEXT
@@ -1366,6 +1366,10 @@ METHOD InsRows( nL, nRows, nCols, lNoAddline ) CLASS HCEdiExt
       ENDIF
    NEXT
 
+   IF nL == ::nTextLen
+      ::AddLine( nL+1 )
+      ::aText[nL+1] := ""
+   ENDIF
    DO WHILE ++nL <= ::nTextLen
       IF Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr"
          ::aStru[nL,1,OB_TRNUM] := ++nRow

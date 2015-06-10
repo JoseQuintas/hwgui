@@ -796,7 +796,7 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
 
    LOCAL nType, y1, x1, nL, nL2, nDefFont, aHili, xPos, lInfo := .F.
    LOCAL nLinePrev := ::nLineC, nPosPrev, aPointC
-   LOCAL iTd, aStru, i, j, aStruTbl, nIndent, nBoundL, nBoundR
+   LOCAL iTd, aStru, i, j, aStruTbl, nIndent, nBoundL, nBoundR, aRes
 
    nType := nt
    IF Valtype(nt) == "N"
@@ -883,20 +883,22 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
 
       ::Super:SetCaretPos( nt, p1, p2 )
 
-      ::RestoreEnv( nL, iTd )
-      ::nBoundL := nBoundL
-      ::nBoundT := 0
-      ::nBoundR := nBoundR
-      ::nIndent := nIndent
       IF lInfo
          aStru := Nil
          IF !Empty( nL2 := ::aLines[::nLineC,AL_LINE] )
             x1 := ::aPointC[P_X]
             aStru := hced_Stru4Pos( ::aStru[nL2], x1 )
          ENDIF
+         aRes := { nL, iTd, aStru, nL2, x1, ::aText, ::aStru[nL2] }
+      ENDIF
+      ::RestoreEnv( nL, iTd )
+      ::nBoundL := nBoundL
+      ::nBoundT := 0
+      ::nBoundR := nBoundR
+      ::nIndent := nIndent
+      IF lInfo
          ::nLineC := nLinePrev; ::nPosC := nPosPrev; ::PCopy( aPointC, ::aPointC )
-
-         RETURN { nL, iTd, aStru, nL2, x1, ::aText }
+         RETURN aRes
       ELSE
          ::nLineC := y1
          ::nPosC := iTd

@@ -84,15 +84,15 @@ FUNCTION Main ( fName )
    oToolBar:brush := 0
 
    @ 2,0 OWNERBUTTON aButtons[1] OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
-       SIZE 30,30 TEXT "B" FONT oMainWindow:oFont:SetFontStyle( .T. )
+       SIZE 30,30 TEXT "B" FONT oMainWindow:oFont:SetFontStyle( .T. ) CHECK
    aButtons[1]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[1]:cargo := "fb"
    @ 32,0 OWNERBUTTON aButtons[2] OF oToolBar ON CLICK {|| onBtnStyle(2) } ;
-       SIZE 30,30 TEXT "I" FONT oMainWindow:oFont:SetFontStyle( .F.,,.T. )
+       SIZE 30,30 TEXT "I" FONT oMainWindow:oFont:SetFontStyle( .F.,,.T. ) CHECK
    aButtons[2]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[2]:cargo := "fi"
    @ 62,0 OWNERBUTTON aButtons[3] OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
-       SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. )
+       SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. ) CHECK
    aButtons[3]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[3]:cargo := "fu"
 
@@ -309,17 +309,17 @@ STATIC FUNCTION onChangePos()
       aAttr := oEdit:getClassAttr( arr[3][OB_CLS] )
       FOR i := 1 TO 3
          IF Ascan( aAttr, aButtons[i]:cargo ) > 0
-            aButtons[i]:lCheck := .T.
+            //aButtons[i]:lCheck := .T.
             aButtons[i]:Press()
          ELSEIF aButtons[i]:lPress
-            aButtons[i]:lCheck := .F.
+            //aButtons[i]:lCheck := .F.
             aButtons[i]:Release()
          ENDIF
       NEXT
    ELSE
       FOR i := 1 TO 3
          IF aButtons[i]:lPress
-            aButtons[i]:lCheck := .F.
+            //aButtons[i]:lCheck := .F.
             aButtons[i]:Release()
          ENDIF
       NEXT
@@ -404,12 +404,17 @@ STATIC FUNCTION ChangePara()
    LOCAL oDlg, nMarginL := oEdit:nMarginL, nMarginR := oEdit:nMarginR, nIndent := oEdit:nIndent
    LOCAL nBWidth := 0, nBColor := 0
    LOCAL lml := .F. , lmr := .F. , lti := .F. , nAlign := 1, aCombo := { "Left", "Center", "Right" }
-   LOCAL nL := oEdit:aPointC[2], cClsName := oEdit:aStru[nl,1,3], aAttr, i, arr[6]
+   LOCAL nL := oEdit:aPointC[2], arr1, cClsName, aAttr, i, arr[6]
    LOCAL bColor := { ||
 
-   RETURN .T.
-
+     RETURN .T.
    }
+
+   IF Len( arr1 := oEdit:SetCaretPos( SETC_XY + 200 ) ) >= 7
+      cClsName := arr1[7,1,3]
+   ELSE
+      cClsName := oEdit:aStru[nl,1,3]
+   ENDIF
 
    IF !Empty( cClsName )
       aAttr := oEdit:getClassAttr( cClsName )
@@ -489,7 +494,13 @@ STATIC FUNCTION ChangePara()
       IF arr[6] != nBColor
          AAdd( aAttr, "bc" + LTrim( Str( nBColor ) ) )
       ENDIF
-      oEdit:StyleDiv( nL, aAttr )
+      IF Len( arr1 ) >= 7
+         oEdit:LoadEnv( arr1[1], arr1[2] )
+         oEdit:StyleDiv( arr1[4], aAttr )
+         oEdit:RestoreEnv( arr1[1], arr1[2] )
+      ELSE
+         oEdit:StyleDiv( nL, aAttr )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -648,17 +659,40 @@ STATIC FUNCTION EditUrl( lNew )
    RETURN Nil
 
 STATIC FUNCTION InsImage()
-   LOCAL fname
+
+   LOCAL fname, lEmbed := .T., nBorder := 0
+   LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1
 
    fname := hwg_Selectfile( "Graphic files( *.jpg;*.png;*.gif;*.bmp )", "*.jpg;*.png;*.gif;*.bmp", "" )
-   IF !Empty( fname )
-      IF hwg_MsgYesNo( "Keep the image inside the document ?" )
-         oEdit:InsImage( ,,, MemoRead( fname ) )
+
+   IF Empty( fname )
+      RETURN Nil
+   ENDIF
+
+   INIT DIALOG oDlg TITLE "Insert Image - " + hb_FnameNameExt( fname )  ;
+      AT 20, 30 SIZE 440, 220 FONT HWindow():GetMain():oFont
+
+   @ 20, 10 GET CHECKBOX lEmbed CAPTION "Keep the image inside the document ?" SIZE 400, 24
+
+   @ 20, 50 SAY "Align:" SIZE 96, 22
+   @ 116, 50 GET COMBOBOX nAlign ITEMS arr SIZE 100, 26 DISPLAYCOUNT 3
+
+   @ 20, 90 SAY "Border:" SIZE 96, 22
+   @ 116, 90 GET UPDOWN nBorder RANGE 0, 4 SIZE 50, 30 STYLE WS_BORDER
+
+   @ 80, 162 BUTTON "Ok" ID IDOK  SIZE 100, 32
+   @ 260, 162 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      IF lEmbed
+         oEdit:InsImage( , nAlign-1,, MemoRead( fname ) )
       ELSE
-         oEdit:InsImage( fname )
+         oEdit:InsImage( fname, nAlign-1 )
       ENDIF
    ENDIF
-   //hced_Setfocus( oEdit:hEdit )
+   hced_Setfocus( oEdit:hEdit )
 
    RETURN Nil
 
@@ -688,7 +722,7 @@ STATIC FUNCTION InsTable( lNew )
    @ 106, 50 GET UPDOWN nWidth RANGE 10, 100 SIZE 80, 30 STYLE WS_BORDER
 
    @ 210, 50 SAY "Align:" SIZE 96, 22
-   @ 306, 50 GET COMBOBOX nAlign ITEMS arr SIZE 100, 150
+   @ 306, 50 GET COMBOBOX nAlign ITEMS arr SIZE 100, 26 DISPLAYCOUNT 3
 
    @ 10, 90 SAY "Border:" SIZE 96, 22
    @ 106, 90 GET UPDOWN nBorder RANGE 0, 4 SIZE 50, 30 STYLE WS_BORDER

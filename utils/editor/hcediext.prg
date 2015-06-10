@@ -85,6 +85,7 @@ CLASS HCEdiExt INHERIT HCEdit
    DATA lHtml   INIT .F.
    DATA bImport, bImgLoad
    DATA lError
+   DATA aTdSel     INIT { 0,0 }
 
    DATA lPrinting  INIT .F.  PROTECTED
    DATA lChgStyle  INIT .F.  PROTECTED
@@ -306,7 +307,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
                IF ( !lDiv .AND. !lTd ) .OR. lSpan .OR. lA ; ::lError := .T. ; EXIT ; ENDIF
                lSpan := .T.
                nPosS := nPos2 + 1
-               IF nPos1 > nPosA + 1
+               IF nPos1 > nPosA // + 1
                   aText[n] += hbxml_preLoad( Substr( xText, nPosA, nPos1 - nPosA ) )
                ENDIF
 
@@ -314,7 +315,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
                IF ( !lDiv .AND. !lTd ) .OR. lSpan .OR. lA ; ::lError := .T. ; EXIT ; ENDIF
                lA := .T.
                nPosS := nPos2 + 1
-               IF nPos1 > nPosA + 1
+               IF nPos1 > nPosA // + 1
                   aText[n] += hbxml_preLoad( Substr( xText, nPosA, nPos1 - nPosA ) )
                ENDIF
 
@@ -462,6 +463,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
                IF msg == WM_LBUTTONDOWN
                   IF !Empty( ::aPointM2[P_Y] )
                      ::PCopy( , ::aPointM2 )
+                     ::aTdSel[2] := 0
                      lInv := .T.
                   ENDIF
                   ::nLineC := hced_Line4Pos( Self, hwg_HiWord( lParam ) )
@@ -495,6 +497,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
       IF iTd > 0
          IF msg == WM_KEYDOWN .AND. nLine != hced_LineNum( Self, ::nLineC )
             nLine := -1
+         ENDIF
+         IF !Empty( ::aPointM2[P_Y] )
+            ::aTdSel[1] := iTd
+            ::aTdSel[2] := nL
          ENDIF
          ::RestoreEnv( nL, iTd )
          ::nBoundL := nBoundL; ::nBoundT := nBoundT
@@ -928,13 +934,24 @@ METHOD AddLine( nLine ) CLASS HCEdiExt
 
 METHOD DelLine( nLine ) CLASS HCEdiExt
 
-   LOCAL aStru := ::aStru[nLine,1]
+   LOCAL aStru := ::aStru[nLine,1], cName, i
 
    IF Valtype(aStru[OB_TYPE]) == "C" .AND. aStru[OB_TYPE] == "img"
+      /*
       IF !Empty( aStru[OB_OB] )
         aStru[OB_OB]:Release()
         aStru[OB_OB] := Nil
       ENDIF
+      cName := Substr( aStru[OB_HREF], 2 )
+      IF ( i := Ascan( ::aBin, {|a|a[1]==cName} ) ) != 0
+         ADel( ::aBin,i )
+         IF ( i := Len( ::aBin ) ) > 1
+            ::aBin := ASize( ::aBin, i - 1 )
+         ELSE
+            ::aBin := {}
+         ENDIF
+      ENDIF
+      */
    ENDIF
    ADel( ::aStru, nLine )
 
@@ -1141,11 +1158,17 @@ METHOD SetHili( xGroup, xFont, tColor, bColor, nMargL, nMargR, nIndent, nAlign, 
 METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
 
    LOCAL i, n1, n2, cClass
-   LOCAL Pstart, Pend, aStru
+   LOCAL Pstart, Pend, aStru, nLTr, iTd
 
    IF P1 == Nil
       IF !Empty( ::aPointM2[P_Y] )
          P1 := ::aPointM1; P2 := ::aPointM2
+      ELSEIF !Empty( nLTr := ::aTdSel[2] )
+         aStru := ::aStru[nLTr,1,OB_OB, iTd := ::aTdSel[1]]
+         IF !Empty( aStru[OB_APM2,P_Y] )
+            ::LoadEnv( nLTr, iTd )
+            P1 := aStru[OB_APM1]; P2 := aStru[OB_APM2]
+         ENDIF
       ELSE
          RETURN Nil
       ENDIF
@@ -1239,6 +1262,9 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
    hced_CleanStru( Self, Pstart[P_Y], Pend[P_Y] )
 
    ::Scan( Pstart[P_Y], Pend[P_Y] )
+   IF !Empty( iTd )
+      ::RestoreEnv( nLTr, iTd )
+   ENDIF
    ::Paint( .F. )
    ::SetCaretPos( SETC_XY )
    ::Refresh()
@@ -1531,9 +1557,9 @@ METHOD DelObject( cType, nL, nCol ) CLASS HCEdiExt
    RETURN Nil
 
 METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
-   LOCAL nHand := -1, s := "", i, j, nPos, cLine, aClasses := {}, aHili, oFont, cPart
+   LOCAL nHand := -1, s := "", i, j, nPos, cLine, aClasses, aImages, aHili, oFont, cPart
    LOCAL lNested := ( Valtype(cFileName) == "L"), aStruTbl, xTemp
-   LOCAL aText, nTextLen, aStru, cNewL := Iif( Empty( lCompact ), cNewLine, "" )
+   LOCAL aText, nTextLen, aStru, n, i1, j1, cNewL := Iif( Empty( lCompact ), cNewLine, "" )
 
    IF !lNested
       IF !Empty( cFileName )
@@ -1550,14 +1576,38 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
          lHtml := ::lHtml
       ENDIF
 
+      aClasses := {}
+      aImages := {}
       FOR i := 1 TO ::nTextLen
          FOR j := 1 TO Len( ::aStru[i] )
             IF !Empty(xTemp := ::aStru[i,j,OB_CLS]) .AND. Ascan( aClasses, xTemp ) == 0
                AAdd( aClasses, xTemp )
-            ELSEIF Valtype(::aStru[i,j,OB_TYPE]) == "C" .AND. ::aStru[i,j,OB_TYPE] == "tr" .AND. ;
-                  ::aStru[i,j,OB_TRNUM] == 1 .AND. ;
-                  !Empty(xTemp := ::aStru[i,j,OB_TBL,OB_CLS] ) .AND. Ascan( aClasses, xTemp ) == 0
-               AAdd( aClasses, xTemp )
+            ENDIF
+            IF Valtype(::aStru[i,j,OB_TYPE]) == "C"
+               IF ::aStru[i,j,OB_TYPE] == "img"
+                  Aadd( aImages, Substr( ::aStru[i,j,OB_HREF], 2 ) )
+               ELSEIF ::aStru[i,j,OB_TYPE] == "tr"
+                  IF ::aStru[i,j,OB_TRNUM] == 1 .AND. !Empty(xTemp := ::aStru[i,j,OB_TBL,OB_CLS] ) ;
+                        .AND. Ascan( aClasses, xTemp ) == 0
+                     AAdd( aClasses, xTemp )
+                  ENDIF
+                  FOR n := 1 TO Len( ::aStru[i,1,OB_OB] )
+                     aStru := ::aStru[ i,1,OB_OB,n,2 ]
+                     aText := ::aStru[ i,1,OB_OB,n,OB_ATEXT ]
+                     nTextLen := ::aStru[ i,1,OB_OB,n,OB_NTLEN ]
+                     FOR i1 := 1 TO nTextLen
+                        FOR j1 := 1 TO Len( aStru[i1] )
+                           IF !Empty(xTemp := aStru[i1,j1,OB_CLS]) .AND. Ascan( aClasses, xTemp ) == 0
+                              AAdd( aClasses, xTemp )
+                           ENDIF
+                           IF Valtype(aStru[i1,j1,OB_TYPE]) == "C" .AND. ;
+                                 aStru[i1,j1,OB_TYPE] == "img"
+                              Aadd( aImages, Substr( aStru[i1,j1,OB_HREF], 2 ) )
+                           ENDIF
+                        NEXT
+                     NEXT
+                  NEXT
+               ENDIF
             ENDIF
          NEXT
       NEXT
@@ -1705,7 +1755,9 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
          s += "</body></html>"
       ELSE
          FOR i := 1 TO Len( ::aBin )
-            s += '<binary id="' + ::aBin[i,1] + '">' + hb_Base64Encode( ::aBin[i,2] ) + '</binary>' + cNewL
+            IF Ascan( aImages, ::aBin[i,1] ) != 0
+               s += '<binary id="' + ::aBin[i,1] + '">' + hb_Base64Encode( ::aBin[i,2] ) + '</binary>' + cNewL
+            ENDIF
          NEXT
          IF Empty( lCompact )
             s += "</hwge>"
@@ -1945,10 +1997,13 @@ Local oHili := HiliExt():New()
 
 METHOD Do( oEdit, nLine ) CLASS HiliExt
 
-   ::aLineStru := ::oEdit:aStru[nLine]
-   ::nItems := Len( ::aLineStru )
-   ::nLine := nLine
-
+   IF Valtype( ::oEdit:aStru[nLine,1,OB_TYPE] ) == "N"
+      ::aLineStru := ::oEdit:aStru[nLine]
+      ::nItems := Len( ::aLineStru )
+      ::nLine := nLine
+   ELSE
+      ::nItems := 0
+   ENDIF
    RETURN Nil
 
 /*  nOper: 1 - insert, 2 - over, 3 - delete

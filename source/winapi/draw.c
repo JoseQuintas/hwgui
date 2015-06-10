@@ -1365,16 +1365,16 @@ HB_FUNC( HWG_DRAWGRADIENT )
          gRect[i-1].LowerRight = (i-1)*2+1;
       }
 
+      fill_type = ( type == 1 || type == 2 ) ? GRADIENT_FILL_RECT_V : GRADIENT_FILL_RECT_H;
+
       if( FuncGradientFill == NULL )
           FuncGradientFill = ( GRADIENTFILL )
              GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
-             "GradientFill" );
-      
-      fill_type = ( type == 1 || type == 2 ) ? GRADIENT_FILL_RECT_V : GRADIENT_FILL_RECT_H;
+             "GradientFill" );    
       FuncGradientFill(hDC, vertex, (colors_num-1)*2, gRect, (colors_num-1), fill_type);
 
       // shifts of edges
-      if( isV && stop_y[0] > y1 || isH && stop_x[0] > x1 )
+      if( ( isV && stop_y[0] > y1 ) || ( isH && stop_x[0] > x1 ) )
       {
          hPen_1 = CreatePen( PS_SOLID, 1, RGB(red[0], green[0], blue[0]) );
          SelectObject( hDC, hPen_1 );

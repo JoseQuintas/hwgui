@@ -293,7 +293,7 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
    LOCAL cAttr
 
-   IF !Empty( oEdit:aPointM2[2] )
+   IF !Empty( oEdit:aPointM2[2] ) .OR. !Empty( oEdit:aTdSel[2] )
 
       cAttr := aButtons[nBtn]:cargo
       oEdit:ChgStyle( ,, cAttr )
@@ -658,7 +658,7 @@ STATIC FUNCTION InsImage()
          oEdit:InsImage( fname )
       ENDIF
    ENDIF
-   hced_Setfocus( oEdit:hEdit )
+   //hced_Setfocus( oEdit:hEdit )
 
    RETURN Nil
 

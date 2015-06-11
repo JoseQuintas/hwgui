@@ -153,19 +153,20 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
          varbuf := AllTrim(varbuf)
          nChoic := Ascan( aItems,varbuf )
 
-         @ x1,y1-2 COMBOBOX oGet           ;
-            ITEMS aItems                   ;
-            INIT nChoic                    ;
-            OF oBrw1                       ;
-            SIZE nWidth, oBrw1:height*5        ;
+         @ x1,y1-2 COMBOBOX oGet         ;
+            ITEMS aItems                 ;
+            INIT nChoic                  ;
+            OF oBrw1                     ;
+            SIZE nWidth, oBrw1:height*5  ;
             FONT oBrw1:oFont
          oBrw1:AddEvent( CBN_KILLFOCUS,oGet:id,{||VldBrwGet(oGet)} )
       ELSE
          @ x1,y1-2 GET oGet VAR varbuf OF oBrw1  ;
             SIZE nWidth, oBrw1:height+6        ;
-            STYLE ES_AUTOHSCROLL           ;
+            STYLE ES_AUTOHSCROLL               ;
             FONT oBrw1:oFont                   ;
             VALID {||VldBrwGet(oGet)}
+         oGet:nMaxLength := 0
       ENDIF
       hwg_Setfocus( oGet:handle )
    ENDIF

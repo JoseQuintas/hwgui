@@ -58,6 +58,7 @@
          </paint>
          <property name="Caption" type="C" value="Label" />
          <property name="Multiline" type="L" value="False"/>
+         <property name="InRect" type="L" value="False"/>
          <property name="Left" type="N" value="0" />
          <property name="Top" type="N" value="0" />
          <property name="Right" type="N" value="0" />
@@ -65,6 +66,8 @@
          <property name="Font" type="O" />
          <property name="Border" type="L" value="False"/>
          <property name="Justify" type="C" value="Left"/>
+         <property name="PenType" type="C" value="SOLID" />
+         <property name="PenWidth" type="N" value="1" />
          <property name="Width" type="N" value="20" hidden=""/>
          <property name="Height" type="N" value="10" hidden=""/>
          <property name="FontH" type="N" value="0" hidden="" />
@@ -237,14 +240,15 @@
       </property>
       <property name="Font" dlg="Font">
          <code2><![CDATA[ 
-           Private hDC := hwg_Getdc( hwg_Getactivewindow() ), aMetr, aTMetr, o
+           Private hDC := hwg_Getdc( 0 ), aMetr, aTMetr, o
+           //Private hDC := hwg_Getdc( hwg_Getactivewindow() ), aMetr, aTMetr, o
            oCtrl:oFont := value
            hwg_Selectobject( hDC,value:handle )
            aMetr := hwg_Getdevicearea( hDC )
            aTMetr:= hwg_Gettextmetric( hDC )
            o := Iif( oCtrl:Classname()=="HDIALOG",oCtrl:oParent,oCtrl )
            o:SetProp( "FontH",Ltrim(Str(aTMetr[1]*aMetr[4]/aMetr[2])) )
-           hwg_Releasedc( hwg_Getactivewindow(),hDC )
+           hwg_Releasedc( 0,hDC )
           ]]></code2>
          <code3><![CDATA[ hwg_Setwindowfont( oCtrl:handle,oCtrl:oFont:handle,.T. ) ]]></code3>
       </property>

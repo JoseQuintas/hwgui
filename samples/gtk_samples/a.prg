@@ -128,19 +128,19 @@ Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
    @ 20,10 SAY cText SIZE 260, 22
    @ 20,35 EDITBOX oEdit CAPTION ""    ;
         STYLE WS_DLGFRAME              ;
-        SIZE 260, 26 COLOR hwg_VColor("FF0000")
+        SIZE 260, 26 COLOR hwg_ColorC2N("FF0000")
 
    @ 20,70 CHECKBOX "Check 1" SIZE 90, 20
    @ 20,95 CHECKBOX "Check 2"  ;
-        SIZE 90, 20 COLOR Iif( nColor==Nil,hwg_VColor("0000FF"),nColor )
+        SIZE 90, 20 COLOR Iif( nColor==Nil,hwg_ColorC2N("0000FF"),nColor )
 
    @ 160,70 GROUPBOX "RadioGroup"  SIZE 130, 75
 
    RADIOGROUP
    @ 180,90 RADIOBUTTON "Radio 1"  ;
-        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_VColor("0000FF"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_ColorC2N("0000FF"),,.T.)}
    @ 180,115 RADIOBUTTON "Radio 2" ;
-        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_VColor("FF0000"),,.T.)}
+        SIZE 90, 20 ON CLICK {||oEdit:SetColor(hwg_ColorC2N("FF0000"),,.T.)}
    END RADIOGROUP SELECTED 2
 
    @ 20,120 COMBOBOX aCombo STYLE WS_TABSTOP ;
@@ -159,7 +159,7 @@ Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
    @ 100,220 LINE LENGTH 100
 
    @ 20,240 BUTTON "Ok" OF oModDlg ID IDOK  ;
-        SIZE 100, 32 COLOR hwg_VColor("FF0000")
+        SIZE 100, 32 COLOR hwg_ColorC2N("FF0000")
    @ 180,240 BUTTON "Cancel" OF oModDlg ID IDCANCEL  ;
         SIZE 100, 32
 

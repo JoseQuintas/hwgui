@@ -1122,7 +1122,7 @@ METHOD PRINT( printer, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
 
 METHOD PrintItem( oItem ) CLASS HRepTmpl
    LOCAL aMethod, lRes := .T. , i, nPenType, nPenWidth
-   LOCAL x, y, x2, y2, cText, nJustify, xProperty, nLines, dy, nFirst, ny
+   LOCAL x, y, x2, y2, cText, nJustify, xProperty, nLen, dy, nFirst, ny, nw, x1
    MEMVAR lLastCycle, lSkipItem
 
    IF oItem:cClass == "area"
@@ -1250,7 +1250,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
          IF ValType( cText ) == "C"
             IF ( xProperty := aGetSecond( oItem:aProp,"border" ) ) != Nil ;
                   .AND. xProperty
-               ::oPrinter:Box( x, y, x2, y2 )
+               ::oPrinter:Box( x, y, x2, y2, oItem:oPen )
                x += 0.5
                y += 0.5
             ENDIF
@@ -1267,12 +1267,12 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
             // hwg_Settransparentmode( ::oPrinter:hDC,.T. )
             IF ( xProperty := aGetSecond( oItem:aProp,"multiline" ) ) != Nil ;
                   .AND. xProperty
-               nLines := i := 1
+               nLen := i := 1
                DO WHILE ( i := hb_At( ";",cText,i ) ) > 0
                   i ++
-                  nLines ++
+                  nLen ++
                ENDDO
-               dy := ( y2 - y ) / nLines
+               dy := ( y2 - y ) / nLen
                nFirst := i := 1
                ny := y
                DO WHILE ( i := hb_At( ";",cText,i ) ) > 0
@@ -1282,6 +1282,15 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
                   ny += dy
                ENDDO
                ::oPrinter:Say( SubStr( cText,nFirst,Len(cText ) - nFirst + 1 ), x, ny, x2, ny + dy, nJustify, oItem:obj )
+            ELSEIF ( xProperty := aGetSecond( oItem:aProp,"inrect" ) ) != Nil .AND. xProperty
+               nLen := Len( cText )
+               nw := Int( ( x2-x )/nLen ) - 1
+               x1 := x
+               FOR i := 1 TO nLen
+                  ::oPrinter:Box( x1,y,x1+nw,y2,oItem:oPen )
+                  ::oPrinter:Say( Substr(cText,i,1),x1+0.5,y+0.5,x1+nw,y2,1,oItem:obj )
+                  x1 += nw + 1
+               NEXT
             ELSE
                ::oPrinter:Say( cText, x, y, x2, y2, nJustify, oItem:obj )
             ENDIF
@@ -1372,8 +1381,9 @@ STATIC FUNCTION ReadRepItem( oCtrlDesc, oContainer )
          ReadRepItem( aItems[i], iif( oCtrl:cClass == "area",oCtrl,oContainer ) )
       ENDIF
    NEXT
-   IF oCtrl:cClass $ "box.vline.hline" .OR. ( oCtrl:cClass == "label" .AND. ;
-         ( xProperty := aGetSecond( oCtrl:aProp,"border" ) ) != Nil .AND. xProperty )
+   IF oCtrl:cClass $ "box.vline.hline" .OR. ( oCtrl:cClass == "label" .AND. ( ;
+      ( ( xProperty := aGetSecond( oCtrl:aProp,"border" ) ) != Nil .AND. xProperty ) ;
+      .OR. ( ( xProperty := aGetSecond( oCtrl:aProp,"inrect" ) ) != Nil .AND. xProperty ) ) )
       oCtrl:lPen := .T.
    ENDIF
 

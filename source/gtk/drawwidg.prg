@@ -169,6 +169,9 @@ METHOD Add( nStyle, nWidth, nColor ) CLASS HPen
 
    nStyle := iif( nStyle == Nil, BS_SOLID, nStyle )
    nWidth := iif( nWidth == Nil, 1, nWidth )
+   IF nStyle != BS_SOLID
+      nWidth := 1
+   ENDIF
    nColor := iif( nColor == Nil, 0, nColor )
 
    For EACH i in ::aPens
@@ -194,6 +197,9 @@ METHOD Get( nStyle, nWidth, nColor ) CLASS HPen
 
    nStyle := iif( nStyle == Nil, PS_SOLID, nStyle )
    nWidth := iif( nWidth == Nil, 1, nWidth )
+   IF nStyle != BS_SOLID
+      nWidth := 1
+   ENDIF
    nColor := iif( nColor == Nil, 0, nColor )
 
    For EACH i in ::aPens

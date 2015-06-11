@@ -282,13 +282,11 @@ METHOD Box( x1, y1, x2, y2, oPen, oBrush ) CLASS HPrinter
 
    IF !::lUseMeta .AND. ::lPreview
       IF oPen != Nil
-         IF ::lUseMeta .AND. ::lPreview
-            IF Empty( ::lastPen ) .OR. oPen:width != ::lastPen:width .OR. ;
-                  oPen:style != ::lastPen:style .OR. oPen:color != ::lastPen:color
-               ::lastPen := oPen
-               ::aPages[::nPage] += "pen," + LTrim( Str( oPen:width ) ) + "," + ;
-                  LTrim( Str( oPen:style ) ) + "," + LTrim( Str( oPen:color ) ) + "," + crlf
-            ENDIF
+         IF Empty( ::lastPen ) .OR. oPen:width != ::lastPen:width .OR. ;
+               oPen:style != ::lastPen:style .OR. oPen:color != ::lastPen:color
+            ::lastPen := oPen
+            ::aPages[::nPage] += "pen," + LTrim( Str( oPen:width ) ) + "," + ;
+               LTrim( Str( oPen:style ) ) + "," + LTrim( Str( oPen:color ) ) + "," + crlf
          ENDIF
       ENDIF
 
@@ -1196,7 +1194,6 @@ METHOD PrintScript( hDC, nPage, x1, y1, x2, y2 ) CLASS HPrinter
             oPen := ::aPens[j]
          ENDIF
          hwg_Selectobject( hDC, oPen:handle )
-
       ENDIF
    NEXT
 

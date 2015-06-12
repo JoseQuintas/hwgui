@@ -348,7 +348,7 @@ METHOD MDown()  CLASS HOwnButton
    IF ::state != OBTN_PRESSED
       ::state := OBTN_PRESSED
       hwg_Invalidaterect( ::handle, 0 )
-      hwg_Setfocus( ::handle )
+      // hwg_Setfocus( ::handle )
       // hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
    ENDIF
 

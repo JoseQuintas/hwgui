@@ -37,6 +37,7 @@ REQUEST HB_CODEPAGE_RU866
 
 #define OB_TYPE         1
 #define OB_CLS          3
+#define OB_ID           4
 #define OB_HREF         4
 
 #define  CLR_BLACK          0
@@ -105,7 +106,7 @@ FUNCTION Main ( fName )
    ENDIF
 
    oEdit:bColorCur := oEdit:bColor
-   oEdit:SetHili( "url", - 1, 255 )
+   oEdit:SetHili( "url", -1, hwg_colorC2N( "#000080") )
    oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
    oEdit:bChangePos := { || onChangePos() }
 
@@ -402,7 +403,7 @@ STATIC FUNCTION ChangeColor( lDiv )
 
 STATIC FUNCTION ChangePara()
    LOCAL oDlg, nMarginL := oEdit:nMarginL, nMarginR := oEdit:nMarginR, nIndent := oEdit:nIndent
-   LOCAL nBWidth := 0, nBColor := 0
+   LOCAL nBWidth := 0, nBColor := 0, cId := "", oGetId
    LOCAL lml := .F. , lmr := .F. , lti := .F. , nAlign := 1, aCombo := { "Left", "Center", "Right" }
    LOCAL nL := oEdit:aPointC[2], arr1, cClsName, aAttr, i, arr[6]
    LOCAL bColor := { ||
@@ -414,6 +415,9 @@ STATIC FUNCTION ChangePara()
       cClsName := arr1[7,1,3]
    ELSE
       cClsName := oEdit:aStru[nl,1,3]
+      IF Len( oEdit:aStru[nl,1] ) >= OB_ID
+         cId := oEdit:aStru[nl,1,OB_ID]
+      ENDIF
    ENDIF
 
    IF !Empty( cClsName )
@@ -444,7 +448,7 @@ STATIC FUNCTION ChangePara()
    arr[1] := nMarginL; arr[2] := nMarginR; arr[3] := nIndent; arr[4] := nAlign; arr[5] := nBWidth; arr[6] := nBColor
 
    INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set paragraph properties"  ;
-      AT 210, 10  SIZE 340, 370 FONT HWindow():GetMain():oFont
+      AT 210, 10  SIZE 340, 400 FONT HWindow():GetMain():oFont ON INIT {||Iif(Len(arr1)>=7,oGetId:Disable(),.T.)}
 
    @ 10, 10 GROUPBOX "Margins" SIZE 320, 130
    @ 20, 40 SAY "Left:" SIZE 120, 24
@@ -467,39 +471,51 @@ STATIC FUNCTION ChangePara()
    @ 140, 240 GET UPDOWN nBWidth RANGE 0, 8 SIZE 60, 30
    @ 220, 240  BUTTON "Color" SIZE 80, 30 ON CLICK bColor
 
+   @ 10, 300 SAY "Anchor:" SIZE 100, 24
+   @ 110,300 GET oGetId VAR cId SIZE 100, 24
+   oGetId:nMaxLength := 0
 
-   @  20, 320  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 220, 320 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+   @  20, 350  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 220, 350 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
 
    ACTIVATE DIALOG oDlg
 
-   IF oDlg:lResult .AND. ( arr[1] != nMarginL .OR. arr[2] != nMarginR .OR. ;
+   IF oDlg:lResult 
+      IF ( arr[1] != nMarginL .OR. arr[2] != nMarginR .OR. ;
          arr[3] != nIndent .OR. arr[4] != nAlign .OR. arr[5] != nBWidth .OR. arr[6] != nBColor )
-      aAttr := { }
-      IF arr[1] != nMarginL
-         AAdd( aAttr, "ml" + LTrim( Str( nMarginL ) ) + iif( lml, '%', '' ) )
+         aAttr := { }
+         IF arr[1] != nMarginL
+            AAdd( aAttr, "ml" + LTrim( Str( nMarginL ) ) + iif( lml, '%', '' ) )
+         ENDIF
+         IF arr[2] != nMarginR
+            AAdd( aAttr, "mr" + LTrim( Str( nMarginR ) ) + iif( lmr, '%', '' ) )
+         ENDIF
+         IF arr[3] != nIndent
+            AAdd( aAttr, "ti" + LTrim( Str( nIndent ) ) + iif( lti, '%', '' ) )
+         ENDIF
+         IF arr[4] != nAlign
+            AAdd( aAttr, "ta" + LTrim( Str( nAlign - 1 ) ) )
+         ENDIF
+         IF arr[5] != nBWidth
+            AAdd( aAttr, "bw" + LTrim( Str( nBWidth ) ) )
+         ENDIF
+         IF arr[6] != nBColor
+            AAdd( aAttr, "bc" + LTrim( Str( nBColor ) ) )
+         ENDIF
+         IF Len( arr1 ) >= 7
+            oEdit:LoadEnv( arr1[1], arr1[2] )
+            oEdit:StyleDiv( arr1[4], aAttr )
+            oEdit:RestoreEnv( arr1[1], arr1[2] )
+         ELSE
+            oEdit:StyleDiv( nL, aAttr )
+         ENDIF
       ENDIF
-      IF arr[2] != nMarginR
-         AAdd( aAttr, "mr" + LTrim( Str( nMarginR ) ) + iif( lmr, '%', '' ) )
-      ENDIF
-      IF arr[3] != nIndent
-         AAdd( aAttr, "ti" + LTrim( Str( nIndent ) ) + iif( lti, '%', '' ) )
-      ENDIF
-      IF arr[4] != nAlign
-         AAdd( aAttr, "ta" + LTrim( Str( nAlign - 1 ) ) )
-      ENDIF
-      IF arr[5] != nBWidth
-         AAdd( aAttr, "bw" + LTrim( Str( nBWidth ) ) )
-      ENDIF
-      IF arr[6] != nBColor
-         AAdd( aAttr, "bc" + LTrim( Str( nBColor ) ) )
-      ENDIF
-      IF Len( arr1 ) >= 7
-         oEdit:LoadEnv( arr1[1], arr1[2] )
-         oEdit:StyleDiv( arr1[4], aAttr )
-         oEdit:RestoreEnv( arr1[1], arr1[2] )
-      ELSE
-         oEdit:StyleDiv( nL, aAttr )
+      IF !Empty( cId )
+         IF Len( oEdit:aStru[nl,1] ) >= OB_ID
+            oEdit:aStru[nl,1,OB_ID] := cId
+         ELSE
+            Aadd( oEdit:aStru[nl,1], cId )
+         ENDIF
       ENDIF
    ENDIF
 
@@ -775,7 +791,7 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
    IF msg == WM_LBUTTONDBLCLK
       IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) ) .AND. ;
             !Empty( arr[3] ) .AND. Len( arr[3] ) > 3
-         WebLaunch( arr[3,OB_HREF] )
+         UrlLaunch( arr[3,OB_HREF] )
       ENDIF
       RETURN 0
 
@@ -796,18 +812,25 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
 
    RETURN - 1
 
-FUNCTION WebLaunch( cAddr )
+STATIC FUNCTION UrlLaunch( cAddr )
 
-   IF !Empty( cWebBrow )
+   LOCAL n
+   IF Lower( Left( cAddr, 4 ) ) == "http"
+      IF !Empty( cWebBrow )
 #ifdef __PLATFORM__UNIX
-      hwg_RunApp( cWebBrow, cAddr )
+         hwg_RunApp( cWebBrow, cAddr )
 #else
-      hwg_RunApp( cWebBrow + " " + cAddr )
+         hwg_RunApp( cWebBrow + " " + cAddr )
 #endif
-   ELSE
+      ELSE
 #ifndef __PLATFORM__UNIX
-      hwg_Shellexecute( cAddr )
+         hwg_Shellexecute( cAddr )
 #endif
+      ENDIF
+   ELSEIF Lower( Left( cAddr, 8 ) ) == "goto://#"
+      IF !Empty( n := oEdit:Find( ,Substr( cAddr,9 ) ) )
+         oEdit:Goto( n )
+      ENDIF
    ENDIF
 
    RETURN Nil

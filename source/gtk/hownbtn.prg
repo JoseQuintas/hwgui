@@ -242,7 +242,7 @@ METHOD MDown()  CLASS HOwnButton
    IF ::state != OBTN_PRESSED
       ::state := OBTN_PRESSED
       hwg_Redrawwindow( ::handle )
-      hwg_Setfocus( ::handle )
+      //hwg_Setfocus( ::handle )
    ENDIF
 
    RETURN Nil

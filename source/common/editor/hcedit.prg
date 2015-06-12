@@ -1575,7 +1575,7 @@ METHOD GOTO( nLine ) CLASS HCEdit
          ::nLineF := nLine - ::nLineC + 1
          hced_Invalidaterect( ::hEdit, 0 )
       ENDIF
-      ::SetCaretPos( SETC_XY )
+      ::SetCaretPos( SETC_XFIRST )
    ENDIF
 
    RETURN Nil
@@ -1756,7 +1756,7 @@ METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
 
 METHOD InsText( aPoint, cText, lOver, lChgPos ) CLASS HCEdit
    LOCAL aText := hb_aTokens( cText, cNewLine ), nLine := aPoint[P_Y], cRest, i, nPos, nSubl
-   LOCAL nLineC := ::nLineC, nLineNew, nSub, nPos1, nPos2, lInvAll := .F.
+   LOCAL nLineC := ::nLineC, nLineNew, nSub, nPos1, nPos2, lInvAll := .F., l := .F.
 
    IF lChgPos == Nil; lChgPos := .T.; ENDIF
    nPos := nPos1 := aPoint[P_X]
@@ -1772,8 +1772,16 @@ METHOD InsText( aPoint, cText, lOver, lChgPos ) CLASS HCEdit
       ELSE
          cRest := hced_Substr( Self, ::aText[nLine], nPos )
          ::aText[nLine] := hced_Left( Self, ::aText[nLine], nPos - 1 ) + aText[1]
+         IF Empty( ::aText[nLine] )
+            // For properties of this paragraph (aStru) remained with it
+            ::AddLine( nLine)
+            ::aText[nLine] := ""
+            l := .T.
+         ENDIF
          FOR i := 2 TO Len( aText )
-            ::AddLine( nLine + i - 1 )
+            IF !l .OR. i < Len( aText )
+               ::AddLine( nLine + i - 1 )
+            ENDIF
             ::aText[nLine+i-1] := aText[i]
             IF i == Len( aText )
                ::aText[nLine+i-1] += cRest

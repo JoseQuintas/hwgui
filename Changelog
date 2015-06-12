@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-12 11:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hownbtn.prg
+  * source/winapi/hownbtn.prg
+    * Small correction
+  * source/common/editor/hcedit.prg
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Anchors implemented ( via 'id' property in <div> )
+    * :Find( cText, cId, cHRef ) method is added to HCEdiExt, search for id only for now.
+    ! Fixes
+
 2015-06-11 11:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/resource/repwidg.xml
     * New properties added to a 'label' item ( InRect, penWidth, penStyle )

@@ -43,6 +43,7 @@
 #define OB_OB           2
 #define OB_ASTRU        2
 #define OB_CLS          3
+#define OB_ID           4
 #define OB_HREF         4
 #define OB_ATEXT        4
 #define OB_TWIDTH       4
@@ -122,6 +123,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD getClassAttr( cClsName )
    METHOD PrintLine( oPrinter, yPos, nL )
    METHOD Scan( nl1, nl2, hDC, nWidth, nHeight )
+   METHOD Find( cText, cId, cHRef )
 
 ENDCLASS
 
@@ -243,7 +245,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
                lA := .F.
                nPosA := nPos2 + 1
                cVal := hbxml_preLoad( Substr( xText, nPosS, nPos1 - nPosS ) )
-               Aadd( ::aStru[n], { Len(aText[n])+1, Len(aText[n])+Len(cVal), Iif( Empty(cClsName),"url",cClsName ), ;
+               Aadd( ::aStru[n], { hced_Len(Self,aText[n])+1, hced_Len(Self,aText[n])+hced_Len(Self,cVal), Iif( Empty(cClsName),"url",cClsName ), ;
                      Iif( (i:=Ascan(aAttr,{|a|a[1]=="href"}))==0, "", aAttr[i,2] ) } )
                aText[n] += cVal
 
@@ -300,6 +302,9 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
                Aadd( aText, "" )
                Aadd( ::aStru, { { 0,0,cClsName } } )
                n ++
+               IF ( i := Ascan( aAttr,{|a|a[1]=="id"} ) ) != 0
+                  Aadd( ::aStru[n,1], aAttr[i,2] )
+               ENDIF
                lDiv := .T.
                nPosA := nPos2 + 1
 
@@ -1585,33 +1590,33 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
             IF !Empty(xTemp := ::aStru[i,j,OB_CLS]) .AND. Ascan( aClasses, xTemp ) == 0
                AAdd( aClasses, xTemp )
             ENDIF
-            IF Valtype(::aStru[i,j,OB_TYPE]) == "C"
-               IF ::aStru[i,j,OB_TYPE] == "img"
-                  Aadd( aImages, Substr( ::aStru[i,j,OB_HREF], 2 ) )
-               ELSEIF ::aStru[i,j,OB_TYPE] == "tr"
-                  IF ::aStru[i,j,OB_TRNUM] == 1 .AND. !Empty(xTemp := ::aStru[i,j,OB_TBL,OB_CLS] ) ;
-                        .AND. Ascan( aClasses, xTemp ) == 0
-                     AAdd( aClasses, xTemp )
-                  ENDIF
-                  FOR n := 1 TO Len( ::aStru[i,1,OB_OB] )
-                     aStru := ::aStru[ i,1,OB_OB,n,2 ]
-                     aText := ::aStru[ i,1,OB_OB,n,OB_ATEXT ]
-                     nTextLen := ::aStru[ i,1,OB_OB,n,OB_NTLEN ]
-                     FOR i1 := 1 TO nTextLen
-                        FOR j1 := 1 TO Len( aStru[i1] )
-                           IF !Empty(xTemp := aStru[i1,j1,OB_CLS]) .AND. Ascan( aClasses, xTemp ) == 0
-                              AAdd( aClasses, xTemp )
-                           ENDIF
-                           IF Valtype(aStru[i1,j1,OB_TYPE]) == "C" .AND. ;
-                                 aStru[i1,j1,OB_TYPE] == "img"
-                              Aadd( aImages, Substr( aStru[i1,j1,OB_HREF], 2 ) )
-                           ENDIF
-                        NEXT
-                     NEXT
-                  NEXT
-               ENDIF
-            ENDIF
          NEXT
+         IF Valtype(::aStru[i,1,OB_TYPE]) == "C"
+            IF ::aStru[i,1,OB_TYPE] == "img"
+               Aadd( aImages, Substr( ::aStru[i,1,OB_HREF], 2 ) )
+            ELSEIF ::aStru[i,1,OB_TYPE] == "tr"
+               IF ::aStru[i,1,OB_TRNUM] == 1 .AND. !Empty(xTemp := ::aStru[i,1,OB_TBL,OB_CLS] ) ;
+                     .AND. Ascan( aClasses, xTemp ) == 0
+                  AAdd( aClasses, xTemp )
+               ENDIF
+               FOR n := 1 TO Len( ::aStru[i,1,OB_OB] )
+                  aStru := ::aStru[ i,1,OB_OB,n,2 ]
+                  aText := ::aStru[ i,1,OB_OB,n,OB_ATEXT ]
+                  nTextLen := ::aStru[ i,1,OB_OB,n,OB_NTLEN ]
+                  FOR i1 := 1 TO nTextLen
+                     FOR j1 := 1 TO Len( aStru[i1] )
+                        IF !Empty(xTemp := aStru[i1,j1,OB_CLS]) .AND. Ascan( aClasses, xTemp ) == 0
+                           AAdd( aClasses, xTemp )
+                        ENDIF
+                     NEXT
+                     IF Valtype(aStru[i1,1,OB_TYPE]) == "C" .AND. ;
+                           aStru[i1,1,OB_TYPE] == "img"
+                        Aadd( aImages, Substr( aStru[i1,1,OB_HREF], 2 ) )
+                     ENDIF
+                  NEXT
+               NEXT
+            ENDIF
+         ENDIF
       NEXT
 
       IF lHtml
@@ -1688,7 +1693,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
             s += "</table>" + cNewL
          ENDIF
          s += "<div" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', '' ) + ;
-               ::SaveTag( "div", i ) + '>'
+               Iif( Len(::aStru[i,1])>=OB_ID,'id="'+::aStru[i,1,OB_ID]+'"','' ) + ::SaveTag( "div", i ) + '>'
          cLine := Trim(::aText[i] )
          nPos := 1
          FOR j := 2 TO Len( ::aStru[i] )
@@ -1980,6 +1985,44 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdiExt
    ENDIF
 
    RETURN ::Super:Scan( nl1, nl2, hDC, nWidth, nHeight )
+
+METHOD Find( cText, cId, cHRef ) CLASS HCEdiExt
+
+   LOCAL i, j, i1, j1, n, aStru, aText, nTextLen
+   LOCAL lId := !Empty( cId ), lText := !Empty( cText ), lHref := !Empty( cHRef )
+
+   FOR i := 1 TO ::nTextLen
+      IF lId .AND. Len( ::aStru[i,1] ) >= OB_ID .AND. ::aStru[i,1,OB_ID] == cId
+         RETURN i
+      ELSEIF lText
+      ENDIF
+      IF lHref
+         FOR j := 2 TO Len( ::aStru[i] )
+         NEXT
+      ENDIF
+      IF Valtype(::aStru[i,1,OB_TYPE]) == "C"
+         IF ::aStru[i,1,OB_TYPE] == "tr"
+            FOR n := 1 TO Len( ::aStru[i,1,OB_OB] )
+               aStru := ::aStru[ i,1,OB_OB,n,2 ]
+               aText := ::aStru[ i,1,OB_OB,n,OB_ATEXT ]
+               nTextLen := ::aStru[ i,1,OB_OB,n,OB_NTLEN ]
+               FOR i1 := 1 TO nTextLen
+                  IF Valtype(aStru[i1,j1,OB_TYPE]) == "N"
+                     IF lText
+                     ENDIF
+                     IF lHref
+                        FOR j1 := 2 TO Len( aStru[i1] )
+                        NEXT
+                     ENDIF
+                  ENDIF
+               NEXT
+            NEXT
+         ENDIF
+      ELSE
+      ENDIF
+   NEXT
+
+   RETURN Nil
 
 CLASS HiliExt  INHERIT HilightBase
 

@@ -325,9 +325,9 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
 }
 
 #ifdef UNICODE
-int ted_LineOut( TEDIT * pted, int x1, int ypos, LPCTSTR szText, int iPrinted, int iHeight, int iMaxAscent )
+int ted_LineOut( TEDIT * pted, int x1, int ypos, LPCTSTR szText, int iPrinted, int iHeight, int iMaxAscent, int iRight )
 #else
-int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int iHeight, int iMaxAscent )
+int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int iHeight, int iMaxAscent, int iRight )
 #endif
 {
    TEDATTR *pattr = pted->pattr;
@@ -356,11 +356,12 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
             lasti = i;
          }
       }
-   /*
+   
    if( !pted->hDCPrn )
    {
       RECT rect;
-      SetRect( &rect, x1, ypos, (pted->iDocWidth)? pted->iDocWidth : pted->iWidth, ypos + iHeight );
+      //SetRect( &rect, x1, ypos, (pted->iDocWidth)? pted->iDocWidth : pted->iWidth, ypos + iHeight );
+      SetRect( &rect, x1, ypos, iRight, ypos + iHeight );
       if( pted->bg != pted->bg_curr )
       {
          SetBkColor( pted->hDCScr, pted->bg );
@@ -368,7 +369,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
       }
       ExtTextOut( pted->hDCScr, 0, 0, ETO_OPAQUE, &rect, 0, 0, 0 );
    }
-   */
+   
    return x1;
 }
 
@@ -776,7 +777,7 @@ HB_FUNC( HCED_LINEOUT )
 #else
    char *szText = ( char * )hb_parc( 5 );
 #endif
-   short int bCalcOnly = (HB_ISNIL(8))? 0 : hb_parl(8);
+   int iRight = (HB_ISNIL(8))? 0 : hb_parni(8);
    short int bCalc = (HB_ISNIL(9))? 1 : hb_parl(9);
    int x1 = hb_parni( 2 ), ypos = hb_parni( 3 ), x2 = hb_parni( 4 ), iLen = hb_parni( 6 );
    int iPrinted, iCalculated = 0, iAlign = hb_parni( 7 );
@@ -837,9 +838,9 @@ HB_FUNC( HCED_LINEOUT )
       }
    */
    //hwg_writelog( NULL, "ypos: %d iHeight: %d iLen %d iPrinted %d bCalc %d\r\n", ypos, iHeight, iLen, iPrinted, bCalc );
-   if( !bCalcOnly )
+   if( iRight )
    {
-      pted->x2 = ted_LineOut( pted, x1, ypos, szText, iPrinted, iHeight, iMaxAscent );
+      pted->x2 = ted_LineOut( pted, x1, ypos, szText, iPrinted, iHeight, iMaxAscent, iRight );
    }
 #ifdef UNICODE
    hb_strfree( hText );

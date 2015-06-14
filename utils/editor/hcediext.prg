@@ -21,6 +21,7 @@
 #define UNDO_EX         7
 #define UNDO_NTRTD      8
 
+#define P_LENGTH        2
 #define P_X             1
 #define P_Y             2
 
@@ -119,6 +120,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
    METHOD LoadEnv( nL, iTd )
    METHOD RestoreEnv( nL, iTd )
+   METHOD getEnv()
    METHOD GetPosInfo( xPos, yPos )
    METHOD getClassAttr( cClsName )
    METHOD PrintLine( oPrinter, yPos, nL )
@@ -422,40 +424,40 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
 #endif
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
    LOCAL nRes := -1, nL, aStruTbl, iTd := 0, j, nIndent, nBoundL, nBoundR, nBoundT, nKey, nLine := 0, lInv := .F.
+   LOCAL aPointC := {0,0}, aTbl1, aTbl2, lTab := .F., aPC, lChg := .F.
 
    IF Ascan( aMsgs, msg ) > 0
-      IF !Empty(::nLineC) .AND. !Empty( nL := ::aLines[::nLineC,AL_LINE] ) .AND. ;
-         Valtype( ::aStru[nL,1,OB_TYPE] ) != "N" 
-         IF ::aStru[nL,1,1] == "tr"
-            aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
-         ELSEIF ::aStru[nL,1,1] == "img"
-            IF msg == MESS_CHAR 
-               IF ( nKey := hwg_PtrToUlong( wParam ) ) == VK_RETURN
-                  IF nL == 1
-                    ::AddLine( nL )
-                    ::aText[nL] := ""
+      IF !Empty(::nLineC)
+         aPointC[P_Y] := nl := ::aPointC[P_Y]
+         aPointC[P_X] := ::aPointC[P_X]
+         IF !Empty( nL ) .AND. Valtype( ::aStru[nL,1,OB_TYPE] ) != "N" 
+            IF ::aStru[nL,1,1] == "tr"
+               aTbl1 := aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
+            ELSEIF ::aStru[nL,1,1] == "img"
+               IF msg == MESS_CHAR 
+                  IF ( nKey := hwg_PtrToUlong( wParam ) ) == VK_RETURN
+                     IF nL == 1
+                       ::AddLine( nL )
+                       ::aText[nL] := ""
+                     ELSE
+                       ::AddLine( nL+1 )
+                       ::aText[nL+1] := ""
+                     ENDIF
+                     ::Paint( .F. )
+                     msg := WM_KEYDOWN
+                     wParam := VK_DOWN
                   ELSE
-                    ::AddLine( nL+1 )
-                    ::aText[nL+1] := ""
+                     RETURN 0
                   ENDIF
-                  ::Paint( .F. )
-                  msg := WM_KEYDOWN
-                  wParam := VK_DOWN
-               ELSE
-                  RETURN 0
                ENDIF
             ENDIF
          ENDIF
       ENDIF
       IF msg == WM_MOUSEMOVE.OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP
-         IF msg == WM_LBUTTONDOWN .AND. !Empty(aStruTbl) .AND. !Empty( ::aStru[nL,1,OB_OB,::nPosC,OB_APM2,P_Y] )
-            ::PCopy( , ::aStru[nL,1,OB_OB,::nPosC,OB_APM2] )
-            lInv := .T.
-         ENDIF
          aStruTbl := Nil
          nL := Iif( ( nL := hced_Line4Pos( Self, hwg_HiWord( lParam ) ) ) > 0, ::aLines[nL,AL_LINE], 0 )
          IF nL > 0 .AND. Valtype( ::aStru[nL,1,OB_TYPE] ) != "N" .AND. ::aStru[nL,1,1] == "tr"
-            aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
+            aTbl2 := aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
          ENDIF
       ENDIF
       IF !Empty( aStruTbl )
@@ -466,71 +468,91 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
             IF msg == WM_MOUSEMOVE.OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP
                iTd := hced_td4Pos( Self, nL, hwg_LoWord( lParam ) )
                IF msg == WM_LBUTTONDOWN
-                  IF !Empty( ::aPointM2[P_Y] )
-                     ::PCopy( , ::aPointM2 )
-                     ::aTdSel[2] := 0
-                     lInv := .T.
-                  ENDIF
                   ::nLineC := hced_Line4Pos( Self, hwg_HiWord( lParam ) )
                   ::nPosC := iTd
                   ::PCopy( { ::nPosC, ::aLines[::nLineC,AL_LINE] }, ::aPointC )
                ENDIF
-            ELSEIF msg == MESS_CHAR  .AND. nKey == VK_TAB
-               IF iTd < Len( ::aStru[nL,1,OB_OB] )
-                  ::SetCaretPos( SETC_COORS, aStruTbl[OB_OB,++itd,OB_CLEFT]+2, ::aLines[::nLineC,AL_Y1]+2 )
-               ELSEIF nL < ::nTextLen
-                  hced_SetCaretPos( ::hEdit, ::nMarginL, ::aLines[::nLineC,AL_Y1]+2 )
-                  ::LineDown()
-               ENDIF
-               ::lSetFocus := .T.
-               RETURN 0
             ENDIF
-            nBoundL := ::nBoundL; nBoundR := ::nBoundR; nBoundT := ::nBoundT
-            ::nBoundL := aStruTbl[OB_OB,itd,OB_CLEFT]
-            j := Iif( ::aStru[nL,1,OB_OB,iTd,OB_COLSPAN] > 1, ::aStru[nL,1,OB_OB,iTd,OB_COLSPAN]-1, 0 )
-            ::nBoundR := aStruTbl[OB_OB,itd+j,OB_CRIGHT]
-            ::nBoundT := ::aLines[::nLineC,AL_Y1]
-            nIndent := ::nIndent
-            ::nIndent := 0
-            ::LoadEnv( nL, iTd )
-            IF msg == WM_KEYDOWN
-               nLine := hced_LineNum( Self, ::nLineC )
+            IF msg == MESS_CHAR  .AND. nKey == VK_TAB
+               lTab := .T.
+            ELSE
+               nBoundL := ::nBoundL; nBoundR := ::nBoundR; nBoundT := ::nBoundT
+               ::nBoundL := aStruTbl[OB_OB,itd,OB_CLEFT]
+               j := Iif( ::aStru[nL,1,OB_OB,iTd,OB_COLSPAN] > 1, ::aStru[nL,1,OB_OB,iTd,OB_COLSPAN]-1, 0 )
+               ::nBoundR := aStruTbl[OB_OB,itd+j,OB_CRIGHT]
+               ::nBoundT := ::aLines[::nLineC,AL_Y1]
+               nIndent := ::nIndent
+               ::nIndent := 0
+               ::LoadEnv( nL, iTd )
+               IF msg == WM_KEYDOWN
+                  nLine := hced_LineNum( Self, ::nLineC )
+               ENDIF
             ENDIF
          ENDIF
       ENDIF
-      nRes := ::Super:onEvent( msg, wParam, lParam )
-      IF iTd > 0
-         IF msg == WM_KEYDOWN .AND. nLine != hced_LineNum( Self, ::nLineC )
-            nLine := -1
-         ENDIF
-         IF !Empty( ::aPointM2[P_Y] )
-            ::aTdSel[1] := iTd
-            ::aTdSel[2] := nL
-         ENDIF
-         ::RestoreEnv( nL, iTd )
-         ::nBoundL := nBoundL; ::nBoundT := nBoundT
-         ::nBoundR := nBoundR
-         ::nIndent := nIndent
-         IF msg == WM_KEYDOWN .AND. nLine > 0
-            IF nKey == VK_DOWN
-               ::LineDown()
-            ELSEIF nKey == VK_UP
-               ::LineUp()
+      IF !lTab
+         aPC := ::PCopy( ::aPointC )
+         nRes := ::Super:onEvent( msg, wParam, lParam )
+         lChg := ( ::aPointC[P_X] != aPC[P_X] .OR. ::aPointC[P_Y] != aPC[P_Y] )
+         IF iTd > 0
+            IF msg == WM_KEYDOWN .AND. nLine != hced_LineNum( Self, ::nLineC )
+               nLine := -1
             ENDIF
+            IF !Empty( ::aPointM2[P_Y] )
+               ::aTdSel[1] := iTd
+               ::aTdSel[2] := nL
+            ENDIF
+            ::RestoreEnv( nL, iTd )
+            ::nBoundL := nBoundL; ::nBoundT := nBoundT
+            ::nBoundR := nBoundR
+            ::nIndent := nIndent
+            IF msg == WM_KEYDOWN .AND. nLine > 0
+               IF nKey == VK_DOWN
+                  ::LineDown()
+               ELSEIF nKey == VK_UP
+                  ::LineUp()
+               ENDIF
+            ENDIF
+         ENDIF
+      ELSE
+         IF iTd < Len( ::aStru[nL,1,OB_OB] )
+            ::SetCaretPos( SETC_COORS, aStruTbl[OB_OB,iTd+1,OB_CLEFT]+2, ::aLines[::nLineC,AL_Y1]+2 )
+         ELSEIF nL < ::nTextLen
+            hced_SetCaretPos( ::hEdit, ::nMarginL, ::aLines[::nLineC,AL_Y1]+2 )
+            ::LineDown()
+         ENDIF
+         ::lSetFocus := .T.
+      ENDIF
+      IF aPointC[P_Y] != 0 .AND. ( aPointC[P_X] != ::aPointC[P_X] .OR. aPointC[P_Y] != ::aPointC[P_Y] )
+         IF !Empty( aTbl1 )
+            IF !Empty( ::aStru[aPointC[P_Y],1,OB_OB,aPointC[P_X],OB_APM2] )
+               ::PCopy( , ::aStru[aPointC[P_Y],1,OB_OB,aPointC[P_X],OB_APM2] )
+               lInv := .T.
+            ENDIF
+         ELSEIF !Empty( aTbl2 )
+            IF !Empty( ::aPointM2[P_Y] )
+               ::PCopy( , ::aPointM2 )
+               lInv := .T.
+            ENDIF
+         ENDIF
+         IF Empty( aTbl2 ) .OR. Empty( ::aStru[::aPointC[P_Y],1,OB_OB,::aPointC[P_X],OB_APM2,P_Y] )
+            ::aTdSel[2] := 0
+         ENDIF
+         IF !lChg .AND. ::bChangePos != Nil
+            Eval( ::bChangePos, Self )
          ENDIF
       ENDIF
       IF lInv
          hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
       ENDIF
-
    ENDIF
 
    RETURN nRes
 
-METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdiExt
+METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
 
-   LOCAL nL := ::nLineF+nLine-1, aHili, aLine, aStru := ::aStru[nL,1], i, j, aStruTbl
-   LOCAL nMargL, nMargR, nIndent, nAlign, nBoundL, nBoundR, nBoundT, tColor, bColor, nDefFont
+   LOCAL nL := ::nLineF+nLine-1, aHili, aHiliTD, aLine, aStru := ::aStru[nL,1], i, j, aStruTbl
+   LOCAL nMargL, nMargR, nIndent, nAlign, nBoundL, nBoundR, nBoundT, tColor, bColor, bColorCur, nDefFont
    LOCAL iCol, iTd, yPosMax := 0, yPosB := yPos, nBorder := 0, nTWidth, nWidth
    LOCAL oPrinter, lFormat := !Empty( ::nDocFormat ), x1, x2
 
@@ -566,12 +588,15 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdiExt
             ::nDefFont := aHili[1]
          ENDIF
          IF !Empty( hDC ) .AND. ( aHili[2] != Nil .OR. aHili[3] != Nil )
-            tColor := ::tColor; bColor := ::bColor
+            tColor := ::tColor; bColor := ::bColor; bColorCur := ::bColorCur
             IF aHili[2] != Nil
                ::tColor := aHili[2]
             ENDIF
             IF aHili[3] != Nil
                ::bColor := aHili[3]
+               IF ::bColorCur == bColor
+                  ::bColorCur := ::bColor
+               ENDIF
             ENDIF
             hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
          ENDIF
@@ -582,7 +607,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdiExt
       IF ::lPrinting
          yPos := ::Super:PrintLine( oPrinter, yPos, nLine )
       ELSE
-         yPos := ::Super:PaintLine( hDC, yPos, nLine, lUse_aWrap )
+         yPos := ::Super:PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight )
       ENDIF
 
       IF !Empty( aHili )
@@ -605,7 +630,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdiExt
          ENDIF
          IF !Empty( hDC )
             IF ( aHili[2] != Nil .OR. aHili[3] != Nil )
-               ::tColor := tColor; ::bColor := bColor
+               ::tColor := tColor; ::bColor := bColor; ::bColorCur := bColorCur
                hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
             ENDIF
          ENDIF
@@ -686,10 +711,23 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdiExt
       ::nIndent := 0
 
       iCol := 0
+      // Draw cells of a table row
       FOR iTd := 1 TO Len( aStru[OB_OB] )
          iCol ++
          ::LoadEnv( nL, iTd )
-
+         aHiliTD := Nil
+         bColor := -1
+         IF !Empty( hDC ) .AND. !Empty( aStru[OB_OB,iTd,OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStru[OB_OB,iTd,OB_CLS] )
+            aHiliTD := ::aHili[aStru[OB_OB,iTd,OB_CLS]]
+            IF aHiliTD[3] != Nil .AND. aHiliTD[3] >= 0
+               bColor := ::bColor; bColorCur := ::bColorCur
+               ::bColor := aHiliTD[3]
+               IF ::bColorCur == bColor
+                  ::bColorCur := ::bColor
+               ENDIF
+               hced_Setcolor( ::hEdit,, ::bColor )
+            ENDIF
+         ENDIF
          ::nBoundL += nBorder
          IF iCol > 1
            i := aStruTbl[ OB_OB,iCol-1,OB_CWIDTH ]
@@ -724,13 +762,18 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdiExt
                   IF ::lPrinting
                      yPos := ::PaintLine( oPrinter, yPos, nLine )
                   ELSE
-                     yPos := ::PaintLine( hDC, yPos, nLine, lUse_aWrap )
+                     //hwg_writelog( Iif(lUse_aWrap,"T ","F ") + str(aStruTbl[OB_OB,iCol,OB_CLEFT]) + " " + str(aStruTbl[OB_OB,iCol,OB_CWIDTH]) + " " + str(aStruTbl[OB_OB,iCol,OB_CRIGHT]) )
+                     yPos := ::PaintLine( hDC, yPos, nLine, lUse_aWrap, aStruTbl[OB_OB,iCol,OB_CRIGHT] )
                   ENDIF
                   IF yPos + ( ::aLines[nLine,AL_Y2] - ::aLines[nLine,AL_Y1] ) > ::nHeight
                      EXIT
                   ENDIF
                ENDDO
             ENDIF
+         ENDIF
+         IF bColor >= 0
+            ::bColor := bColor; ::bColorCur := bColorCur
+            hced_Setcolor( ::hEdit,, ::bColor )
          ENDIF
 
          ::RestoreEnv( nL, iTd )
@@ -1337,19 +1380,29 @@ METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref ) CLASS HCEdiExt
 
 METHOD StyleDiv( nLine, xAttr ) CLASS HCEdiExt
 
-   LOCAL cBase
+   LOCAL cBase, lCell := .F.
 
    IF nLine == Nil; nLine := ::aPointC[P_Y]; ENDIF
-   cBase := ::aStru[nLine,1,3]
-
+   IF Valtype( ::aStru[nLine,1,OB_TYPE] ) == "C" .AND. ::aStru[nLine,1,OB_TYPE] == "tr"
+      lCell := .T.
+   ENDIF
    IF xAttr == Nil
+      IF lCell
+         cBase := ::aStru[nLine,1,OB_OB,::aPointc[P_X],OB_CLS]
+      ELSE
+         cBase := ::aStru[nLine,1,OB_CLS]
+      ENDIF
       RETURN Iif( Empty( cBase ), Nil, AClone( ::aHili[cBase] ) )
    ELSE
       IF !::lChgStyle
          ::Undo( nLine, 1, nLine, 1, 4, Nil )
       ENDIF
 
-      ::aStru[nLine,1,OB_CLS] := ::FindClass( cBase, xAttr, .T. )
+      IF lCell
+         ::aStru[nLine,1,OB_OB,::aPointc[P_X],OB_CLS] := ::FindClass( cBase, xAttr, .T. )
+      ELSE
+         ::aStru[nLine,1,OB_CLS] := ::FindClass( cBase, xAttr, .T. )
+      ENDIF
       IF !::lChgStyle
          hced_CleanStru( Self, nLine, nLine )
          ::Scan( nLine, nLine )
@@ -1600,7 +1653,10 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
                   AAdd( aClasses, xTemp )
                ENDIF
                FOR n := 1 TO Len( ::aStru[i,1,OB_OB] )
-                  aStru := ::aStru[ i,1,OB_OB,n,2 ]
+                  IF !Empty(xTemp := ::aStru[i,1,OB_OB,n,OB_CLS]) .AND. Ascan( aClasses, xTemp ) == 0
+                     AAdd( aClasses, xTemp )
+                  ENDIF
+                  aStru := ::aStru[ i,1,OB_OB,n,OB_ASTRU ]
                   aText := ::aStru[ i,1,OB_OB,n,OB_ATEXT ]
                   nTextLen := ::aStru[ i,1,OB_OB,n,OB_NTLEN ]
                   FOR i1 := 1 TO nTextLen
@@ -1738,7 +1794,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
          ENDIF
          s += "<tr" + ::SaveTag( "tr", i ) + ">" + cNewL
          FOR j := 1 TO Len( ::aStru[i,1,OB_OB] )
-            s += "<td" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', "" ) ;
+            s += "<td" + Iif( !Empty(::aStru[i,1,OB_OB,j,OB_CLS]), ' class="' + ::aStru[i,1,OB_OB,j,OB_CLS] + '"', "" ) ;
                + Iif( !Empty(::aStru[i,1,OB_OB,j,OB_COLSPAN]), ' colspan="' + Ltrim(Str(::aStru[i,1,OB_OB,j,OB_COLSPAN])) + '"', "" ) ;
                + Iif( !Empty(::aStru[i,1,OB_OB,j,OB_ROWSPAN]), ' rowspan="' + Ltrim(Str(::aStru[i,1,OB_OB,j,OB_ROWSPAN])) + '"', "" ) ;
                + ::SaveTag( "td", i, j ) + '>' + cNewL
@@ -1757,6 +1813,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
    NEXT
    
    IF !lNested
+      ::lUpdated := .F.
       hbxml_SetEntity()
       IF lHtml
          s += "</body></html>"
@@ -1775,7 +1832,6 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
          FClose( nHand )
          RETURN .T.
       ENDIF
-      ::lUpdated := .F.
    ENDIF
 
    RETURN s
@@ -1910,8 +1966,16 @@ METHOD RestoreEnv( nL, iTd ) CLASS HCEdiExt
 
    RETURN Nil
 
+METHOD getEnv() CLASS HCEdiExt
+   RETURN ::aEnv[OB_TYPE]
+
 METHOD GetPosInfo( xPos, yPos ) CLASS HCEdiExt
 
+   IF xPos == Nil
+      RETURN ::SetCaretPos( SETC_XY + 200 )
+   ELSEIF Valtype( xPos ) == "A"
+      RETURN ::SetCaretPos( SETC_XYPOS + 200, xPos[P_X], xPos[P_Y] )
+   ENDIF
    RETURN ::SetCaretPos( SETC_COORS + 200, xPos, yPos )
 
 METHOD getClassAttr( cClsName ) CLASS HCEdiExt

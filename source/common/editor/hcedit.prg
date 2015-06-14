@@ -590,8 +590,7 @@ METHOD Paint( lReal ) CLASS HCEdit
    ::nBoundR := Iif( !Empty(nDocWidth), nDocWidth, ::nClientWidth )
    hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
    hced_SetPaint( ::hEdit, hDC,, ::nClientWidth, ::lWrap,, nDocWidth )
-   IF lReal
-      hced_FillRect( ::hEdit, 0, 0, Iif( !Empty(nDocWidth), Max(nDocWidth+::nMarginR,::nClientWidth), ::nClientWidth ), ::nHeight )
+   IF lReal     
       IF !Empty( nDocWidth )
          hced_Setcolor( ::hEdit,, ::nClrDesk )
          IF ::nBoundL > 0
@@ -601,6 +600,10 @@ METHOD Paint( lReal ) CLASS HCEdit
             hced_FillRect( ::hEdit, nDocWidth+::nMarginR, 0, ::nClientWidth+::nShiftL, ::nHeight )
          ENDIF
          hced_Setcolor( ::hEdit,, ::bColor )
+         hced_FillRect( ::hEdit, ::nBoundL, 0, Iif( ::nDocWidth+::nMarginR-::nShiftL < ::nClientWidth, ;
+               nDocWidth+::nMarginR,::nClientWidth ), ::nHeight )
+      ELSE
+         hced_FillRect( ::hEdit, 0, 0, ::nClientWidth, ::nHeight )
       ENDIF
    ENDIF
 
@@ -618,7 +621,7 @@ METHOD Paint( lReal ) CLASS HCEdit
    IF !Empty( ::aText )
       DO WHILE ( ++nLine + ::nLineF - 1 ) <= ::nTextLen
 
-         yNew := ::PaintLine( Iif( lReal, hDC, Nil ), yPos, nLine, .T. )
+         yNew := ::PaintLine( Iif( lReal, hDC, Nil ), yPos, nLine, .T., ::nBoundR )
 
          //IF yNew + ( ::aLines[nLine,AL_Y2] - ::aLines[nLine,AL_Y1] ) > ::nHeight
          IF yNew + BOTTOM_HEIGHT > ::nHeight
@@ -660,11 +663,12 @@ METHOD Paint( lReal ) CLASS HCEdit
 
    RETURN Nil
 
-METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
+METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdit
    LOCAL lReal := !Empty( hDC ), i, nPrinted, x1, x2, cLine, aLine, nTextLine := ::nLineF+nLine-1
    LOCAL nWCharF := Iif( ::lWrap.AND.nLine==1, ::nWCharF, ::nPosF ), nWSublF := Iif( ::lWrap.AND.nLine==1, ::nWSublF, 1 ), num := ::nLines+1
 
    IF lUse_aWrap == Nil; lUse_aWrap := .F.; ENDIF
+   IF nRight == Nil; nRight := ::nClientWidth; ENDIF
    DO WHILE .T.
 
       ::nLines ++
@@ -694,7 +698,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
          ENDIF
          cLine := hced_Substr( Self, ::aText[nTextLine], nWCharF, nPrinted )
          ::MarkLine( nLine, lReal, nWSublF, nWCharF, ::nLines )
-         hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, nPrinted, ::nAlign, !lReal, .F. )
+         hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, nPrinted, ::nAlign, Iif(lReal,nRight,0), .F. )
       ELSE
          IF ::lWrap
             cLine := Iif( nWCharF == 1, ::aText[nTextLine], hced_Substr( Self, ::aText[nTextLine],nWCharF ) )
@@ -703,7 +707,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap ) CLASS HCEdit
          ENDIF
 
          ::MarkLine( nLine, lReal, Iif( ::lWrap, nWSublF, Nil), nWCharF, ::nLines )
-         nPrinted := hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, hced_Len( Self, cLine ), ::nAlign, !lReal )
+         nPrinted := hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, hced_Len( Self, cLine ), ::nAlign, Iif(lReal,nRight,0) )
       ENDIF
 
       aLine[AL_X1] := x1

@@ -394,7 +394,7 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
    return iWidth; //rc.width;
 }
 
-int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int iHeight )
+int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int iHeight, iRight )
 {
    TEDATTR *pattr = pted->pattr;
    int i, lasti, iReqLen, iRealLen;
@@ -439,7 +439,8 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
    {
       hwg_setcolor( pted->hDCScr->cr, pted->bg );
       cairo_rectangle( pted->hDCScr->cr, (gdouble)x1, (gdouble)ypos,
-            (gdouble)(pted->iWidth-x1+1), (gdouble)iHeight );
+            (gdouble)(iRight), (gdouble)iHeight );
+            //(gdouble)(pted->iWidth-x1+1), (gdouble)iHeight );
       cairo_fill( pted->hDCScr->cr );
    }
    if( pted->iyCaretPos == ypos )
@@ -921,7 +922,7 @@ HB_FUNC( HCED_LINEOUT )
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
    TEDFONT *font;
    char *szText = ( char * )hb_parc( 5 );
-   HB_BOOL bCalcOnly = (HB_ISNIL(8))? 0 : hb_parl(8);
+   int iRight = (HB_ISNIL(8))? 0 : hb_parni(8);
    short int bCalc = (HB_ISNIL(9))? 1 : hb_parl(9);
    int x1 = hb_parni( 2 ) + pted->xBorder, ypos = hb_parni( 3 ) + pted->yBorder;
    int x2 = hb_parni( 4 ), iLen = hb_parni( 6 );
@@ -983,9 +984,9 @@ HB_FUNC( HCED_LINEOUT )
       }
    */
    //hwg_writelog( NULL, "ypos: %d iHeight: %d iLen %d iPrinted %d bCalc %d\r\n", ypos, iHeight, iLen, iPrinted, bCalc );
-   if( !bCalcOnly )
+   if( iRight )
    {
-      pted->x2 = ted_LineOut( pted, x1, ypos, szText, iPrinted, iHeight );
+      pted->x2 = ted_LineOut( pted, x1, ypos, szText, iPrinted, iHeight, iRight );
    }
 
    hb_storni( pted->x1, 2 );

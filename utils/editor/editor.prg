@@ -27,6 +27,10 @@ REQUEST HB_CODEPAGE_RU1251
 REQUEST HB_CODEPAGE_RU866
 
 #define MENU_RULER       1901
+#define MENU_INSROW      1902
+#define MENU_TABLE       1903
+#define MENU_CELL        1904
+
 #define BOUNDL           12
 
 #define P_X             1
@@ -36,6 +40,7 @@ REQUEST HB_CODEPAGE_RU866
 #define SETC_XFIRST     5
 
 #define OB_TYPE         1
+#define OB_OB           2
 #define OB_CLS          3
 #define OB_ID           4
 #define OB_HREF         4
@@ -96,6 +101,10 @@ FUNCTION Main ( fName )
        SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. ) CHECK
    aButtons[3]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[3]:cargo := "fu"
+   @ 92,0 OWNERBUTTON aButtons[4] OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
+       SIZE 30,30 TEXT "S" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.F.,.T. ) CHECK
+   aButtons[4]:aStyle := { oStyle1,oStyle2,oStyle3 }
+   aButtons[4]:cargo := "fs"
 
    @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW  ON SIZE {|o,x|o:Move(,,x) }
 
@@ -123,25 +132,22 @@ FUNCTION Main ( fName )
          SEPARATOR
          MENUITEM "E&xit" ACTION hwg_EndWindow()
       ENDMENU
-         MENU TITLE "&Edit"
+      MENU TITLE "&Edit"
          MENUITEM "Undo" ACTION oEdit:Undo()
          SEPARATOR
          MENUITEM "Edit &URL" ACTION EditUrl( .F. )
-         ENDMENU
-         MENU TITLE "&View"
+      ENDMENU
+      MENU TITLE "&View"
          MENUITEMCHECK "&Ruler" ID MENU_RULER ACTION SetRuler()
       ENDMENU
-      MENU TITLE "&Document"
-         MENUITEM "Properties" ACTION ChangeDoc()
-         MENUITEM "Font" ACTION ChangeFont()
+      MENU TITLE "&Insert"
+         MENUITEM "&URL" ACTION EditUrl( .T. )
+         MENUITEM "&Image" ACTION InsImage()
+         MENUITEM "&Table" ACTION InsTable( .T. )
+         MENUITEM "&Rows" ID MENU_INSROW ACTION InsRows()
       ENDMENU
-      MENU TITLE "&Paragraph"
-         MENUITEM "Properties" ACTION ChangePara()
-         MENUITEM "Font" ACTION ChgFont( .T. )
-         MENUITEM "Color" ACTION ChangeColor( .T. )
-      ENDMENU
-      MENU TITLE "&Selected"
-         MENU TITLE "Style"
+      MENU TITLE "&Format"
+         MENU TITLE "&Style"
             MENUITEM "Set Bold" ACTION oEdit:ChgStyle( ,, "fb" )
             MENUITEM "Set Italic" ACTION oEdit:ChgStyle( ,, "fi" )
             MENUITEM "Set Underline" ACTION oEdit:ChgStyle( ,, "fu" )
@@ -152,14 +158,18 @@ FUNCTION Main ( fName )
             MENUITEM "ReSet Underline" ACTION oEdit:ChgStyle( ,, "fu-" )
             MENUITEM "ReSet StrikeOut" ACTION oEdit:ChgStyle( ,, "fs-" )
          ENDMENU
-         MENUITEM "Font" ACTION ChgFont( .F. )
-         MENUITEM "Color" ACTION ChangeColor( .F. )
-      ENDMENU
-      MENU TITLE "&Insert"
-         MENUITEM "&URL" ACTION EditUrl( .T. )
-         MENUITEM "&Image" ACTION InsImage()
-         MENUITEM "&Table" ACTION InsTable( .T. )
-         MENUITEM "&Rows" ACTION InsRows()
+         MENUITEM "&Font" ACTION ChgFont( .F. )
+         MENUITEM "Colo&r" ACTION ChangeColor( .F. )
+         SEPARATOR
+         MENUITEM "&Document" ACTION ChangeDoc()
+         MENU TITLE "&Paragraph"
+            MENUITEM "Properties" ACTION ChangePara()
+            MENUITEM "Font" ACTION ChgFont( .T. )
+            MENUITEM "Color" ACTION ChangeColor( .T. )
+         ENDMENU
+         SEPARATOR
+         MENUITEM "&Table" ID MENU_TABLE ACTION (.T.)
+         MENUITEM "&Cell" ID MENU_CELL ACTION ChangeColor( .T., .T. )
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION About()
@@ -173,17 +183,20 @@ FUNCTION Main ( fName )
    ENDIF
 
    ACTIVATE WINDOW oMainWindow
+   CloseFile()
 
    RETURN Nil
 
 STATIC FUNCTION NewFile()
 
+   CloseFile()
    oEdit:SetText()
 
    RETURN Nil
 
 STATIC FUNCTION OpenFile( fname )
 
+   CloseFile()
    IF Empty( fname )
       fname := hwg_Selectfile( { "All files" }, { "*.*" }, "" )
    ENDIF
@@ -218,6 +231,14 @@ STATIC FUNCTION SaveFile( lAs, lHtml )
       ENDIF
    ELSE
       oEdit:Save( oEdit:cFileName )
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION CloseFile()
+
+   IF oEdit:lUpdated .AND. hwg_MsgYesNo( "Save changes ?" )
+      SaveFile( .F. )
    ENDIF
 
    RETURN Nil
@@ -304,8 +325,10 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
 STATIC FUNCTION onChangePos()
 
-   LOCAL aAttr, i
-   IF !Empty( arr := oEdit:SetCaretPos( SETC_XY + 200 ) ) .AND. !Empty( arr[3] ) .AND. ;
+   LOCAL aAttr, i, l
+   STATIC lInTable := .F.
+
+   IF !Empty( arr := oEdit:GetPosInfo() ) .AND. !Empty( arr[3] ) .AND. ;
          !Empty( arr[3][OB_CLS] )
       aAttr := oEdit:getClassAttr( arr[3][OB_CLS] )
       FOR i := 1 TO 3
@@ -318,21 +341,18 @@ STATIC FUNCTION onChangePos()
          ENDIF
       NEXT
    ELSE
-      FOR i := 1 TO 3
+      FOR i := 1 TO 4
          IF aButtons[i]:lPress
             //aButtons[i]:lCheck := .F.
             aButtons[i]:Release()
          ENDIF
       NEXT
    ENDIF
-
-   RETURN Nil
-
-STATIC FUNCTION ChangeFont()
-   LOCAL oFont
-
-   IF !Empty( oFont := HFont():Select( oEdit:oFont ) )
-      oEdit:SetFont( oFont )
+   IF ( l := ( oEdit:getEnv() > 0 ) ) != lInTable
+      lInTable := l
+      hwg_Enablemenuitem( , MENU_INSROW, lInTable, .T. )
+      hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )
+      hwg_Enablemenuitem( , MENU_CELL, lInTable, .T. )
    ENDIF
 
    RETURN Nil
@@ -352,11 +372,24 @@ STATIC FUNCTION ChgFont( lDiv )
 
    RETURN Nil
 
-STATIC FUNCTION ChangeColor( lDiv )
+STATIC FUNCTION ChangeColor( lDiv, lCell )
    LOCAL oDlg, oSay
-   LOCAL aHili, tColor, bColor, nColor, tc, tb, arr := {}
+   LOCAL aHili, tColor, bColor, nColor, tc, tb, arr := {}, arr1
 
-   aHili := oEdit:StyleDiv()
+   IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
+      IF Empty( lCell )
+         oEdit:LoadEnv( arr1[1], arr1[2] )
+         aHili := oEdit:StyleDiv()
+         oEdit:RestoreEnv( arr1[1], arr1[2] )
+      ELSE
+         aHili := oEdit:StyleDiv()
+      ENDIF
+   ELSEIF !Empty( lCell )
+      RETURN Nil
+   ELSE
+      aHili := oEdit:StyleDiv()
+   ENDIF
+
    IF aHili == Nil
       tColor := oEdit:tColor
       bColor := oEdit:bColor
@@ -367,7 +400,7 @@ STATIC FUNCTION ChangeColor( lDiv )
    tc := tColor
    tb := bColor
 
-   INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set Colors"  ;
+   INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set " + Iif( Empty(lCell),"","cell " ) + "color"  ;
       AT 210, 10  SIZE 300, 190 FONT HWindow():GetMain():oFont
 
    @ 20, 20 SAY "Text:" SIZE 120, 22
@@ -393,9 +426,15 @@ STATIC FUNCTION ChangeColor( lDiv )
       ENDIF
 
       IF lDiv
-         oEdit:StyleDiv( , arr )
+         IF Len( arr1 ) >= 7 .AND. Empty( lCell )
+            oEdit:LoadEnv( arr1[1], arr1[2] )
+            oEdit:StyleDiv( arr1[4], arr )
+            oEdit:RestoreEnv( arr1[1], arr1[2] )
+         ELSE
+            oEdit:StyleDiv( , arr )
+         ENDIF
       ELSE
-         oEdit:ChgStyle( , , arr )
+         oEdit:ChgStyle( ,, arr )
       ENDIF
    ENDIF
 
@@ -411,7 +450,7 @@ STATIC FUNCTION ChangePara()
      RETURN .T.
    }
 
-   IF Len( arr1 := oEdit:SetCaretPos( SETC_XY + 200 ) ) >= 7
+   IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
       cClsName := arr1[7,1,3]
    ELSE
       cClsName := oEdit:aStru[nl,1,3]
@@ -630,7 +669,7 @@ STATIC FUNCTION SetText( oEd, cText )
 STATIC FUNCTION EditUrl( lNew )
    LOCAL oDlg, cHref := "", cName := "", cTemp, aPos, xAttr
 
-   aPos := oEdit:SetCaretPos( SETC_XY + 200 )
+   aPos := oEdit:GetPosInfo()
    IF aPos != Nil .AND. aPos[3] != Nil .AND. Len( aPos[3] ) >= OB_HREF
       IF lNew
          hwg_msgStop( "Can't insert URL into existing one" )

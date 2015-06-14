@@ -394,7 +394,7 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
    return iWidth; //rc.width;
 }
 
-int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int iHeight, iRight )
+int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int iHeight, int iRight )
 {
    TEDATTR *pattr = pted->pattr;
    int i, lasti, iReqLen, iRealLen;

@@ -552,7 +552,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
 METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
 
    LOCAL nL := ::nLineF+nLine-1, aHili, aHiliTD, aLine, aStru := ::aStru[nL,1], i, j, aStruTbl
-   LOCAL nMargL, nMargR, nIndent, nAlign, nBoundL, nBoundR, nBoundT, tColor, bColor, bColorCur, nDefFont
+   LOCAL nMargL, nMargR, nIndent, nAlign, nBoundL, nBoundR, tColor, bColor, bColorCur, nDefFont
    LOCAL iCol, iTd, yPosMax := 0, yPosB := yPos, nBorder := 0, nTWidth, nWidth
    LOCAL oPrinter, lFormat := !Empty( ::nDocFormat ), x1, x2
 
@@ -763,7 +763,20 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
                      yPos := ::PaintLine( oPrinter, yPos, nLine )
                   ELSE
                      //hwg_writelog( Iif(lUse_aWrap,"T ","F ") + str(aStruTbl[OB_OB,iCol,OB_CLEFT]) + " " + str(aStruTbl[OB_OB,iCol,OB_CWIDTH]) + " " + str(aStruTbl[OB_OB,iCol,OB_CRIGHT]) )
+#ifdef __PLATFORM__UNIX
+                     x1 := -1
+                     IF !Empty( hDC ) .AND. ( nl != ::aEnv[OB_APC,P_Y] .OR. iTd != ::aEnv[OB_APC,P_X] )
+                        x1 := hced_getXCaretPos( ::hEdit )
+                        x2 := hced_getYCaretPos( ::hEdit )
+                        hced_setCaretPos( ::hEdit, -10, -10 )
+                     ENDIF
+#endif
                      yPos := ::PaintLine( hDC, yPos, nLine, lUse_aWrap, aStruTbl[OB_OB,iCol,OB_CRIGHT] )
+#ifdef __PLATFORM__UNIX
+                     IF x1 >= 0
+                        hced_setCaretPos( ::hEdit, x1, x2 )
+                     ENDIF
+#endif
                   ENDIF
                   IF yPos + ( ::aLines[nLine,AL_Y2] - ::aLines[nLine,AL_Y1] ) > ::nHeight
                      EXIT
@@ -844,7 +857,7 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
 
    LOCAL nType, y1, x1, nL, nL2, nDefFont, aHili, xPos, lInfo := .F.
    LOCAL nLinePrev := ::nLineC, nPosPrev, aPointC
-   LOCAL iTd, aStru, i, j, aStruTbl, nIndent, nBoundL, nBoundR, aRes
+   LOCAL iTd, aStru, j, aStruTbl, nIndent, nBoundL, nBoundR, aRes
 
    nType := nt
    IF Valtype(nt) == "N"
@@ -984,25 +997,10 @@ METHOD AddLine( nLine ) CLASS HCEdiExt
 
 METHOD DelLine( nLine ) CLASS HCEdiExt
 
-   LOCAL aStru := ::aStru[nLine,1], cName, i
+   LOCAL aStru := ::aStru[nLine,1]
 
-   IF Valtype(aStru[OB_TYPE]) == "C" .AND. aStru[OB_TYPE] == "img"
-      /*
-      IF !Empty( aStru[OB_OB] )
-        aStru[OB_OB]:Release()
-        aStru[OB_OB] := Nil
-      ENDIF
-      cName := Substr( aStru[OB_HREF], 2 )
-      IF ( i := Ascan( ::aBin, {|a|a[1]==cName} ) ) != 0
-         ADel( ::aBin,i )
-         IF ( i := Len( ::aBin ) ) > 1
-            ::aBin := ASize( ::aBin, i - 1 )
-         ELSE
-            ::aBin := {}
-         ENDIF
-      ENDIF
-      */
-   ENDIF
+   //IF Valtype(aStru[OB_TYPE]) == "C" .AND. aStru[OB_TYPE] == "img"
+   //ENDIF
    ADel( ::aStru, nLine )
 
    RETURN ::Super:DelLine( nLine )
@@ -1207,7 +1205,7 @@ METHOD SetHili( xGroup, xFont, tColor, bColor, nMargL, nMargR, nIndent, nAlign, 
 
 METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
 
-   LOCAL i, n1, n2, cClass
+   LOCAL i, n1, n2
    LOCAL Pstart, Pend, aStru, nLTr, iTd
 
    IF P1 == Nil
@@ -1385,13 +1383,12 @@ METHOD StyleDiv( nLine, xAttr ) CLASS HCEdiExt
    IF nLine == Nil; nLine := ::aPointC[P_Y]; ENDIF
    IF Valtype( ::aStru[nLine,1,OB_TYPE] ) == "C" .AND. ::aStru[nLine,1,OB_TYPE] == "tr"
       lCell := .T.
+      cBase := ::aStru[nLine,1,OB_OB,::aPointc[P_X],OB_CLS]
+   ELSE
+      cBase := ::aStru[nLine,1,OB_CLS]
    ENDIF
+
    IF xAttr == Nil
-      IF lCell
-         cBase := ::aStru[nLine,1,OB_OB,::aPointc[P_X],OB_CLS]
-      ELSE
-         cBase := ::aStru[nLine,1,OB_CLS]
-      ENDIF
       RETURN Iif( Empty( cBase ), Nil, AClone( ::aHili[cBase] ) )
    ELSE
       IF !::lChgStyle
@@ -1417,7 +1414,7 @@ METHOD StyleDiv( nLine, xAttr ) CLASS HCEdiExt
    RETURN Nil
 
 METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr ) CLASS HCEdiExt
-   LOCAL nL, i, j, cClsName
+   LOCAL nL, i, cClsName
 
    IF !Empty( xAttr )
       cClsName := ::FindClass( , xAttr, .T. )

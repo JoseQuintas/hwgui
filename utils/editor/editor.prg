@@ -60,13 +60,14 @@ REQUEST HB_CODEPAGE_RU866
 STATIC cNewLine := e"\r\n"
 STATIC cWebBrow
 STATIC oFontP, oBrush1
-STATIC oToolbar, oRuler, oEdit, aButtons[4]
+STATIC oToolbar, oRuler, oEdit, aButtons[4], oComboSiz
 
 MEMVAR handcursor, cIniPath
 
 FUNCTION Main ( fName )
    LOCAL oMainWindow, oFont
    LOCAL oStyle1, oStyle2, oStyle3
+   LOCAL aComboSiz := { "40%", "60%", "80%", "100%", "120%", "140%", "160%" }
 
    PRIVATE oMenuC1, handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
 
@@ -105,6 +106,8 @@ FUNCTION Main ( fName )
        SIZE 30,30 TEXT "S" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.F.,.T. ) CHECK
    aButtons[4]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[4]:cargo := "fs"
+
+   @ 130,2 COMBOBOX oComboSiz ITEMS aComboSiz OF oToolBar SIZE 80, 24 DISPLAYCOUNT 6 TOOLTIP "׀אחלונ רנטפעא ג %"
 
    @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW  ON SIZE {|o,x|o:Move(,,x) }
 
@@ -319,6 +322,7 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
       cAttr := aButtons[nBtn]:cargo
       oEdit:ChgStyle( ,, cAttr )
+   ELSE
    ENDIF
 
    RETURN Nil
@@ -404,10 +408,10 @@ STATIC FUNCTION ChangeColor( lDiv, lCell )
       AT 210, 10  SIZE 300, 190 FONT HWindow():GetMain():oFont
 
    @ 20, 20 SAY "Text:" SIZE 120, 22
-   @ 160, 20 BUTTON "Select" SIZE 100, 32 ON CLICK { ||iif( ( nColor := Hwg_ChooseColor(tColor ) ) == Nil, .T. , ( tColor := nColor,oSay:Setcolor(tColor,, .T. ) ) ) }
+   @ 160, 20 BUTTON "Select" SIZE 100, 32 ON CLICK {||Iif((nColor:=Hwg_ChooseColor(tColor))==Nil,.T.,(tColor:=nColor,oSay:Setcolor(tColor,,.T.))) }
 
    @ 20, 60 SAY "Background:" SIZE 120, 22
-   @ 160, 60 BUTTON "Select" SIZE 100, 32 ON CLICK { ||iif( ( nColor := Hwg_ChooseColor(bColor ) ) == Nil, .T. , ( bColor := nColor,oSay:Setcolor(,bColor, .T. ) ) ) }
+   @ 160, 60 BUTTON "Select" SIZE 100, 32 ON CLICK {||Iif((nColor:=Hwg_ChooseColor(bColor))==Nil,.T.,(bColor:=nColor,oSay:Setcolor(,bColor,.T.))) }
 
    @ 20, 100 SAY oSay CAPTION "This is a sample" SIZE 260, 26 ;
       STYLE WS_BORDER + SS_CENTER COLOR tColor BACKCOLOR bcolor
@@ -446,7 +450,10 @@ STATIC FUNCTION ChangePara()
    LOCAL lml := .F. , lmr := .F. , lti := .F. , nAlign := 1, aCombo := { "Left", "Center", "Right" }
    LOCAL nL := oEdit:aPointC[2], arr1, cClsName, aAttr, i, arr[6]
    LOCAL bColor := { ||
-
+     LOCAL nColor
+     IF ( nColor := Hwg_ChooseColor( nBColor ) ) != Nil
+        nBColor := nColor
+     ENDIF
      RETURN .T.
    }
 
@@ -752,8 +759,16 @@ STATIC FUNCTION InsImage()
    RETURN Nil
 
 STATIC FUNCTION InsTable( lNew )
-   LOCAL oDlg, nRows := 3, nCols := 2, nBorder := 0, nWidth := 100
-   LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1
+   LOCAL oDlg, nRows := 3, nCols := 2, nBorder := 0, nBColor := 0, nWidth := 100
+   LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, aAttr
+   LOCAL bColor := { ||
+     LOCAL nColor
+     IF ( nColor := Hwg_ChooseColor( nBColor ) ) != Nil
+        nBColor := nColor
+     ENDIF
+     RETURN .T.
+   }
+
    /*
    IF !lNew
       nRows := Len( oNodeTblC:aItems )
@@ -765,7 +780,7 @@ STATIC FUNCTION InsTable( lNew )
    */
 
    INIT DIALOG oDlg TITLE "Insert Table"  ;
-      AT 20, 30 SIZE 440, 220 FONT HWindow():GetMain():oFont
+      AT 20, 30 SIZE 440, 250 FONT HWindow():GetMain():oFont
 
    @ 10, 10 SAY "Rows:" SIZE 96, 22
    @ 106, 10 GET UPDOWN nRows RANGE 1, 100 SIZE 50, 30 STYLE WS_BORDER
@@ -779,19 +794,30 @@ STATIC FUNCTION InsTable( lNew )
    @ 210, 50 SAY "Align:" SIZE 96, 22
    @ 306, 50 GET COMBOBOX nAlign ITEMS arr SIZE 100, 26 DISPLAYCOUNT 3
 
-   @ 10, 90 SAY "Border:" SIZE 96, 22
-   @ 106, 90 GET UPDOWN nBorder RANGE 0, 4 SIZE 50, 30 STYLE WS_BORDER
+   @ 10, 90 GROUPBOX "Border" SIZE 320, 80
+   @ 20, 116 SAY "Width:" SIZE 100, 24
+   @ 140,110 GET UPDOWN nBorder RANGE 0, 8 SIZE 60, 30
+   @ 220,110  BUTTON "Color" SIZE 80, 30 ON CLICK bColor
 
-   @ 80, 152 BUTTON "Ok" ID IDOK  SIZE 100, 32
-   @ 260, 152 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+   @ 80, 200 BUTTON "Ok" ID IDOK  SIZE 100, 32
+   @ 260,200 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
 
    ACTIVATE DIALOG oDlg
 
    IF oDlg:lResult
       oEdit:lSetFocus := .T.
       IF lNew
+         IF nBorder > 0 .OR. nBColor > 0
+            aAttr := {}
+            IF nBorder > 0
+               AAdd( aAttr, "bw" + LTrim( Str( nBorder ) ) )
+            ENDIF
+            IF nBColor > 0
+               AAdd( aAttr, "bc" + LTrim( Str( nBColor ) ) )
+            ENDIF
+         ENDIF
          oEdit:InsTable( nCols, nRows, iif( nWidth == 100, Nil, - nWidth ), ;
-            nAlign-1, Iif( nBorder > 0, "bw" + LTrim( Str(nBorder ) ), Nil ) )
+            nAlign-1, aAttr )
       ELSE
       ENDIF
    ENDIF

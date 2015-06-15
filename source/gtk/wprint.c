@@ -303,6 +303,11 @@ static void draw_page( cairo_t *cr, char * cpage )
          }
 
          cairo_set_line_width( cr, (gdouble)x1 );
+         if( i1 > 0 )
+         {
+            static const double dashed[] = {2.0, 2.0};
+            cairo_set_dash( cr, dashed, 2, 0 );
+         }
          long2rgb( li, &y1, &x2, &y2 );
          cairo_set_source_rgb( cr, y1, x2, y2 );
       }

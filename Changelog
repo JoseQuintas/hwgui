@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-15 15:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawtext.c
+    * hwg_getFontsList() function added
+  * source/gtk/draw.c
+  * source/gtk/wprint.c
+    * 'dotted' pen is drawing now
+
 2015-06-14 19:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit_l.c
     ! Small fix

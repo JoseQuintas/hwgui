@@ -387,7 +387,7 @@ HB_FUNC( HWG_CREATEPEN )
    PHWGUI_PEN hpen = (PHWGUI_PEN) hb_xgrab( sizeof(HWGUI_PEN) );
 
    hpen->type = HWGUI_OBJECT_PEN;
-   hpen->style = ( hb_parni(1) == PS_SOLID )? GDK_LINE_SOLID : GDK_LINE_ON_OFF_DASH;
+   hpen->style = hb_parni(1);
    hpen->width = hb_parnd(2);
    hpen->color = hb_parnl(3);
 
@@ -416,6 +416,11 @@ HB_FUNC( HWG_SELECTOBJECT )
       {
          hwg_setcolor( hDC->cr, ((PHWGUI_PEN)obj)->color );
          cairo_set_line_width( hDC->cr, ((PHWGUI_PEN)obj)->width );
+         if( ((PHWGUI_PEN)obj)->style != PS_SOLID )
+         {
+            static const double dashed[] = {2.0, 2.0};
+            cairo_set_dash( hDC->cr, dashed, 2, 0 );
+         }
       }
       else if( obj->type == HWGUI_OBJECT_BRUSH )
       {

@@ -28,6 +28,7 @@
 
 extern void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 extern void hwg_setcolor( cairo_t * cr, long int nColor );
+extern GtkWidget * GetActiveWindow( void );
 
 HB_FUNC( HWG_DELETEDC )
 {
@@ -157,6 +158,33 @@ HB_FUNC( HWG_GETTEXTWIDTH )
 
    hb_retnl( rc.width );
    g_free( cText );
+}
+
+HB_FUNC( HWG_GETFONTSLIST )
+{
+   GtkWidget * widget = GetActiveWindow();
+   cairo_t *cr;
+   PangoLayout * layout;
+   PangoContext *context;
+   PangoFontFamily **families;
+   int n_families, i;
+   PHB_ITEM aFonts;
+
+   cr = gdk_cairo_create( widget->window );
+   layout = pango_cairo_create_layout( cr );
+   context = pango_layout_get_context( layout );
+   pango_context_list_families( context, &families, &n_families );
+   if( n_families <= 0 )
+      return;
+
+   aFonts = hb_itemArrayNew( n_families );
+   for( i=0; i<n_families; i++ )
+      hb_arraySetC( aFonts, i+1, pango_font_family_get_name( families[i] ) );
+
+   g_object_unref( (GObject*) layout );
+   cairo_destroy( cr );
+   g_free( families );
+   hb_itemReturnRelease( aFonts );
 }
 
 HB_FUNC( HWG_SETTEXTCOLOR )

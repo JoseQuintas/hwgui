@@ -20,6 +20,7 @@
 #define DT_CENTER                   1
 #define DT_RIGHT                    2
 #define DT_VCENTER                  4
+#define DT_BOTTOM                   8
 
 #ifdef G_CONSOLE_MODE
 static BOOL bGtypeInit = 0;
@@ -218,7 +219,7 @@ static void draw_page( cairo_t *cr, char * cpage )
          {
             if( iOpt & DT_VCENTER )
                y2 = y2 - ( y2-y1-exten.height ) / 2;
-            else
+            else if( !(iOpt & DT_BOTTOM) )
                y2 = y1 + 1 + exten.height;
          }
          if( exten.width < ( x2-x1 ) )

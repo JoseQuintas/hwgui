@@ -1235,7 +1235,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
             nPenWidth := Round( ::nKoefPix, 0 )
          ENDIF
 #ifdef __GTK__
-         oItem:oPen := HGP_Pen():Add( nPenWidth )
+         oItem:oPen := HGP_Pen():Add( nPenWidth, nPenWidth )
 #else
          oItem:oPen := HPen():Add( nPenType, nPenWidth )
 #endif
@@ -1288,7 +1288,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
                x1 := x
                FOR i := 1 TO nLen
                   ::oPrinter:Box( x1,y,x1+nw,y2,oItem:oPen )
-                  ::oPrinter:Say( Substr(cText,i,1),x1+0.5,y+0.5,x1+nw,y2,1,oItem:obj )
+                  ::oPrinter:Say( Substr(cText,i,1),x1+0.5,y+0.5,x1+nw,y2,DT_CENTER+DT_BOTTOM,oItem:obj )
                   x1 += nw + 1
                NEXT
             ELSE

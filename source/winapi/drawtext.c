@@ -11,9 +11,12 @@
 #define OEMRESOURCE
 #include "hwingui.h"
 #include <commctrl.h>
-#include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbstack.h"
+#include "hbapiitm.h"
+
+static PHB_ITEM aFontsList;
+static PHB_ITEM pFontsItemLast, pFontsItem;
 
 HB_FUNC( HWG_DEFINEPAINTSTRU )
 {
@@ -447,4 +450,35 @@ HB_FUNC( HWG_CREATEFONTINDIRECT )
 
    f = CreateFontIndirect( &lf );
    HB_RETHANDLE( f );
+}
+
+int CALLBACK GetFontsCallback( ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme,
+      DWORD FontType, LPARAM lParam )
+{
+   hb_itemPutC( pFontsItem, lpelfe->elfFullName );
+   if( !hb_itemEqual( pFontsItem, pFontsItemLast ) )
+   {
+      hb_itemPutC( pFontsItemLast, lpelfe->elfFullName );
+      hb_arrayAdd( aFontsList, pFontsItem );
+   }
+   return 1;
+}
+
+HB_FUNC( HWG_GETFONTSLIST )
+{
+   LOGFONT lf;
+   HWND hwnd=GetDesktopWindow();
+   HDC hDC = GetDC( hwnd );
+
+   memset(&lf, 0, sizeof(lf));
+   lf.lfCharSet = DEFAULT_CHARSET;
+   aFontsList = hb_itemArrayNew( 0 );
+   pFontsItem = hb_itemPutC( NULL, "" );
+   pFontsItemLast = hb_itemPutC( NULL, "" );
+
+   EnumFontFamiliesEx( hDC, &lf, (FONTENUMPROC)GetFontsCallback, NULL, 0 );
+
+   hb_itemRelease( pFontsItem );
+   hb_itemRelease( pFontsItemLast );
+   hb_itemReturnRelease( aFontsList );
 }

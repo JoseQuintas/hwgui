@@ -249,6 +249,8 @@ HB_FUNC( HWG_CREATEFONT )
 {
    PangoFontDescription *  hFont;
    PHWGUI_FONT h = (PHWGUI_FONT) hb_xgrab( sizeof(HWGUI_FONT) );
+   int iUnder = ( !HB_ISNIL(7) && hb_parni(7) > 0 )? 1 : 0;
+   int iStrike = ( !HB_ISNIL(8) && hb_parni(8) > 0 )? 1 : 0;
 
    hFont = pango_font_description_new();
    pango_font_description_set_family( hFont, hb_parc(1) );
@@ -261,7 +263,16 @@ HB_FUNC( HWG_CREATEFONT )
 
    h->type = HWGUI_OBJECT_FONT;
    h->hFont = hFont;
-
+   if( iUnder || iStrike )
+   {
+      h->attrs = pango_attr_list_new();
+      if( iUnder )
+         pango_attr_list_insert( h->attrs, pango_attr_underline_new( PANGO_UNDERLINE_SINGLE) );
+      if( iStrike )
+         pango_attr_list_insert( h->attrs, pango_attr_strikethrough_new( 1 ) );
+   }
+   else
+      h->attrs = NULL;
    HB_RETHANDLE( h );
    
 }

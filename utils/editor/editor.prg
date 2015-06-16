@@ -60,14 +60,15 @@ REQUEST HB_CODEPAGE_RU866
 STATIC cNewLine := e"\r\n"
 STATIC cWebBrow
 STATIC oFontP, oBrush1
-STATIC oToolbar, oRuler, oEdit, aButtons[4], oComboSiz
+STATIC oToolbar, oRuler, oEdit, aButtons[4]
+STATIC oComboSiz, cComboSizDef := "100%", lComboSet := .F.
 
 MEMVAR handcursor, cIniPath
 
 FUNCTION Main ( fName )
    LOCAL oMainWindow, oFont
    LOCAL oStyle1, oStyle2, oStyle3
-   LOCAL aComboSiz := { "40%", "60%", "80%", "100%", "120%", "140%", "160%" }
+   LOCAL aComboSiz := { "40%", "60%", "80%", cComboSizDef, "120%", "140%", "160%" }
 
    PRIVATE oMenuC1, handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
 
@@ -90,24 +91,25 @@ FUNCTION Main ( fName )
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
    oToolBar:brush := 0
 
-   @ 2,0 OWNERBUTTON aButtons[1] OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
+   @ 0,2 COMBOBOX oComboSiz ITEMS aComboSiz OF oToolBar INIT Ascan( aComboSiz,cComboSizDef ) ;
+         SIZE 80, 26 DISPLAYCOUNT 6 ON CHANGE {||onBtnSize()} TOOLTIP "Font size in %"
+
+   @ 82,0 OWNERBUTTON aButtons[1] OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
        SIZE 30,30 TEXT "B" FONT oMainWindow:oFont:SetFontStyle( .T. ) CHECK
    aButtons[1]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[1]:cargo := "fb"
-   @ 32,0 OWNERBUTTON aButtons[2] OF oToolBar ON CLICK {|| onBtnStyle(2) } ;
+   @ 112,0 OWNERBUTTON aButtons[2] OF oToolBar ON CLICK {|| onBtnStyle(2) } ;
        SIZE 30,30 TEXT "I" FONT oMainWindow:oFont:SetFontStyle( .F.,,.T. ) CHECK
    aButtons[2]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[2]:cargo := "fi"
-   @ 62,0 OWNERBUTTON aButtons[3] OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
+   @ 142,0 OWNERBUTTON aButtons[3] OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
        SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. ) CHECK
    aButtons[3]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[3]:cargo := "fu"
-   @ 92,0 OWNERBUTTON aButtons[4] OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
+   @ 172,0 OWNERBUTTON aButtons[4] OF oToolBar ON CLICK {|| onBtnStyle(4) } ;
        SIZE 30,30 TEXT "S" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.F.,.T. ) CHECK
    aButtons[4]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[4]:cargo := "fs"
-
-   @ 130,2 COMBOBOX oComboSiz ITEMS aComboSiz OF oToolBar SIZE 80, 24 DISPLAYCOUNT 6 TOOLTIP "׀אחלונ רנטפעא ג %"
 
    @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW  ON SIZE {|o,x|o:Move(,,x) }
 
@@ -314,6 +316,20 @@ STATIC FUNCTION PaintTB( o )
 
    RETURN Nil
 
+STATIC FUNCTION onBtnSize()
+
+   LOCAL cAttr
+
+   IF !lComboSet
+      IF !Empty( oEdit:aPointM2[2] ) .OR. !Empty( oEdit:aTdSel[2] )
+
+         cAttr := "fh" + oComboSiz:aItems[oComboSiz:Value]
+         oEdit:ChgStyle( ,, cAttr )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
 STATIC FUNCTION onBtnStyle( nBtn )
 
    LOCAL cAttr
@@ -329,28 +345,33 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
 STATIC FUNCTION onChangePos()
 
-   LOCAL aAttr, i, l
+   LOCAL aAttr, i, l, cTmp
    STATIC lInTable := .F.
 
+   lComboSet := .T.
    IF !Empty( arr := oEdit:GetPosInfo() ) .AND. !Empty( arr[3] ) .AND. ;
          !Empty( arr[3][OB_CLS] )
       aAttr := oEdit:getClassAttr( arr[3][OB_CLS] )
-      FOR i := 1 TO 3
+      FOR i := 1 TO 4
          IF Ascan( aAttr, aButtons[i]:cargo ) > 0
-            //aButtons[i]:lCheck := .T.
             aButtons[i]:Press()
          ELSEIF aButtons[i]:lPress
-            //aButtons[i]:lCheck := .F.
             aButtons[i]:Release()
          ENDIF
       NEXT
+      cTmp := Iif( ( i := Ascan(aAttr,"fh") ) == 0, cComboSizDef, Substr(aAttr[i],3) )
+      IF ( i := Ascan( oComboSiz:aItems,cTmp ) ) != 0 .AND. oComboSiz:Value != i
+         oComboSiz:Value := i
+      ENDIF
    ELSE
       FOR i := 1 TO 4
          IF aButtons[i]:lPress
-            //aButtons[i]:lCheck := .F.
             aButtons[i]:Release()
          ENDIF
       NEXT
+      IF oComboSiz:aItems[oComboSiz:Value] != cComboSizDef        
+         oComboSiz:Value := Ascan( oComboSiz:aItems,cComboSizDef )
+      ENDIF
    ENDIF
    IF ( l := ( oEdit:getEnv() > 0 ) ) != lInTable
       lInTable := l
@@ -358,6 +379,7 @@ STATIC FUNCTION onChangePos()
       hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )
       hwg_Enablemenuitem( , MENU_CELL, lInTable, .T. )
    ENDIF
+   lComboSet := .F.
 
    RETURN Nil
 

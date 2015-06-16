@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-16 14:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/commond.c
+  * source/gtk/draw.c
+  * source/gtk/drawtext.c
+  * source/gtk/hwgtk.h
+  * source/common/editor/hcedit_l.c
+    * Underline and StrikeOut text attributes works properly now in gtk version
+  * source/gtk/drawwidg.prg
+    ! Small fix
+  * utils/editor/editor.prg
+
 2015-06-15 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/editor/editor.prg
   * utils/editor/hcediext.prg

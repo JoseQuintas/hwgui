@@ -47,6 +47,7 @@ typedef struct HWGUI_FONT_STRU
 {
    short int type;
    PangoFontDescription * hFont;
+   PangoAttrList * attrs;
 } HWGUI_FONT, * PHWGUI_FONT;
 
 typedef struct HWGUI_PIXBUF_STRU

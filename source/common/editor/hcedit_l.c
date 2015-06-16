@@ -352,6 +352,10 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
 
    hDC->hFont = font->hwg_font->hFont;
    pango_layout_set_font_description( hDC->layout, hDC->hFont );
+   if( font->hwg_font->attrs )
+      pango_layout_set_attributes( hDC->layout, font->hwg_font->attrs );
+   else
+      pango_layout_set_attributes( hDC->layout, NULL );
 
    fg = ( pattr->fg == pattr->bg )? pted->fg : pattr->fg;
    bg = ( pattr->fg == pattr->bg )? pted->bg : pattr->bg;

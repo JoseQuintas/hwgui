@@ -430,6 +430,10 @@ HB_FUNC( HWG_SELECTOBJECT )
       {
          hDC->hFont = ((PHWGUI_FONT)obj)->hFont;
          pango_layout_set_font_description( hDC->layout, hDC->hFont );
+         if( ((PHWGUI_FONT)obj)->attrs )
+         {
+            pango_layout_set_attributes( hDC->layout, ((PHWGUI_FONT)obj)->attrs );
+         }
       }
    }
    HB_RETHANDLE( NULL );
@@ -450,6 +454,7 @@ HB_FUNC( HWG_DELETEOBJECT )
    else if( obj->type == HWGUI_OBJECT_FONT )
    {
       pango_font_description_free( ( (PHWGUI_FONT)obj )->hFont );
+      pango_attr_list_unref( ( (PHWGUI_FONT)obj )->attrs );
       hb_xfree( obj );
    }
    else if( obj->type == HWGUI_OBJECT_PIXBUF )

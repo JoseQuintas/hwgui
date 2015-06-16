@@ -98,7 +98,7 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, ;
 METHOD Select( oFont, cTitle ) CLASS HFont
    LOCAL af := hwg_Selectfont( oFont, cTitle )
 
-   IF af == Nil
+   IF Valtype( af ) != "A"
       RETURN Nil
    ENDIF
 

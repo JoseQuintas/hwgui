@@ -34,6 +34,7 @@ void store_font( gpointer fontseldlg )
 
    h->type = HWGUI_OBJECT_FONT;
    h->hFont = hFont;
+   h->attrs = NULL;
 
    temp = HB_PUTHANDLE( NULL, h );
    hb_itemArrayPut( aMetr, 1, temp );
@@ -214,4 +215,3 @@ HB_FUNC( HWG_CHOOSECOLOR )
    gtk_widget_show( colorseldlg );
    gtk_main();
 }
-

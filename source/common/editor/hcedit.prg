@@ -1275,39 +1275,33 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
                ::nHeight )
          ENDIF
       ENDIF
-   ELSEIF nKeyCode == 89      // 'Y'
-      IF hwg_checkBit( nctrl,FBITCTRL )
-         IF ::lWrap .AND. ::aWrap[::nLineF+nLine-1] != Nil
-            //::DelText( {::aWrap[nLine-1],::nLineF+nLine-1}, {1,::nLineF+nLine-1} )
-         ELSE
-            ::DelText( {1,::nLineF+nLine-1}, {1,::nLineF+nLine} )
-         ENDIF
+   ELSEIF nKeyCode == 89 .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'Y'
+      IF ::lWrap .AND. ::aWrap[::nLineF+nLine-1] != Nil
+         //::DelText( {::aWrap[nLine-1],::nLineF+nLine-1}, {1,::nLineF+nLine-1} )
+      ELSE
+         ::DelText( {1,::nLineF+nLine-1}, {1,::nLineF+nLine} )
       ENDIF
-   ELSEIF nKeyCode == 65      // 'A'
-      IF hwg_checkBit( nctrl,FBITCTRL )
-         ::Pcopy( { 1, 1 }, ::aPointM1 )
-         ::Pcopy( { hced_Len( Self, ::aText[::nTextLen] ) + 1, ::nTextLen }, ::aPointM2 )
-         lUnSel := .F.
-         lInvAll := .T.
-      ENDIF
-   ELSEIF nKeyCode == 67      // 'C'
-      IF hwg_checkBit( nctrl,FBITCTRL ) .AND. !Empty( ::aPointM2[P_Y] )
+   ELSEIF nKeyCode == 65 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'A'
+      ::Pcopy( { 1, 1 }, ::aPointM1 )
+      ::Pcopy( { hced_Len( Self, ::aText[::nTextLen] ) + 1, ::nTextLen }, ::aPointM2 )
+      lUnSel := .F.
+      lInvAll := .T.
+   ELSEIF nKeyCode == 67 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'C'
+      IF !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
          lUnSel := .F.
       ENDIF
-   ELSEIF nKeyCode == 90      // 'Z'
-      IF hwg_checkBit( nctrl,FBITCTRL )
-         ::Undo()
-      ENDIF
-   ELSEIF nKeyCode == 86      // 'V'
-      IF hwg_checkBit( nctrl,FBITCTRL ) .AND. !::lReadOnly
+   ELSEIF nKeyCode == 90 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'Z'
+      ::Undo()
+   ELSEIF nKeyCode == 86 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'V'
+      IF !::lReadOnly
          cLine := hwg_Getclipboardtext()
          ::InsText( ::aPointC, cLine )
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ::nHeight )
       ENDIF
-   ELSEIF nKeyCode == 88      // 'X'
-      IF hwg_checkBit( nctrl,FBITCTRL ) .AND. !Empty( ::aPointM2[P_Y] )
+   ELSEIF nKeyCode == 88 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'X'
+      IF !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
          ::putChar( 7 )   // for to not interfere with '.'

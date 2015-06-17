@@ -455,10 +455,14 @@ HB_FUNC( HWG_CREATEFONTINDIRECT )
 int CALLBACK GetFontsCallback( ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme,
       DWORD FontType, LPARAM lParam )
 {
-   hb_itemPutC( pFontsItem, lpelfe->elfFullName );
+   HB_SYMBOL_UNUSED( lpntme );
+   HB_SYMBOL_UNUSED( FontType );
+   HB_SYMBOL_UNUSED( lParam );
+
+   hb_itemPutC( pFontsItem, (const char *) lpelfe->elfFullName );
    if( !hb_itemEqual( pFontsItem, pFontsItemLast ) )
    {
-      hb_itemPutC( pFontsItemLast, lpelfe->elfFullName );
+      hb_itemPutC( pFontsItemLast, (const char *) lpelfe->elfFullName );
       hb_arrayAdd( aFontsList, pFontsItem );
    }
    return 1;

@@ -1885,7 +1885,12 @@ METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HCEdiExt
             aStru := ::aStru[nL,1,OB_OB,nTrTd%256,OB_ASTRU]
          ENDIF
          FOR i := nLine1 TO nLine2
-            aStru[i] := arr[i-nLine1+1]
+            IF i-nLine1+1 <= Len( arr )
+               aStru[i] := arr[i-nLine1+1]
+            ENDIF
+            IF Empty( aStru[i] )
+               aStru[i] := { { 0, 0, Nil } }
+            ENDIF
          NEXT
       ENDIF
    ENDIF

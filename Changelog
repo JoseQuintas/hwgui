@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-18 10:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/commond.c
+    * New function added hwg_SelectFileEx( cTitle, cInitDir, aFilters )
+      Code provided by Marcelo Anelli.
+  * utils/editor/editor.prg
+
 2015-06-17 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/drawtext.c
     ! Warnings fixed.

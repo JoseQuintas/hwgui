@@ -133,9 +133,9 @@ void cancel_filedlg( gpointer file_selector )
 HB_FUNC( HWG_SELECTFILE )
 {
    GtkWidget * file_selector;
-   const char * cMask = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2):NULL;
-   const char *cTitle = ( hb_pcount()>3 && HB_ISCHAR(4) )? hb_parc(4):"Select a file";
-   char * cDir = ( hb_pcount()>2 && HB_ISCHAR(3) )? hb_parc(3):NULL;
+   const char * cMask = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2) : NULL;
+   const char *cTitle = ( hb_pcount()>3 && HB_ISCHAR(4) )? hb_parc(4) : "Select a file";
+   char * cDir = ( hb_pcount()>2 && HB_ISCHAR(3) )? (char*)hb_parc(3) : NULL;
 
    if( cDir )
       hb_fsChDir( cDir );
@@ -214,4 +214,103 @@ HB_FUNC( HWG_CHOOSECOLOR )
 
    gtk_widget_show( colorseldlg );
    gtk_main();
+}
+
+static void actualiza_preview( GtkFileChooser *file_chooser, gpointer data )
+{
+  GtkWidget *preview;
+  char *filename;
+  GdkPixbuf *pixbuf;
+  gboolean have_preview;
+
+  preview = GTK_WIDGET (data);
+  filename = gtk_file_chooser_get_preview_filename (file_chooser);
+
+  pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+  have_preview = (pixbuf != NULL);
+  g_free (filename);
+
+  gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
+  if (pixbuf)
+    g_object_unref (pixbuf);
+
+  gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+}
+
+HB_FUNC( HWG_SELECTFILEEX )
+{
+   GtkWidget * selector_archivo;
+   gint resultado;
+   const char *cTitle = ( HB_ISCHAR(1) )? hb_parc(1):"Select a file";
+   const char * cDir = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2) : "";
+   GtkImage *preview;
+   PHB_ITEM pArray = ( ( hb_pcount()>2 && HB_ISARRAY(3) )? hb_param( 3,HB_IT_ARRAY ) : NULL ), pArr1;
+   char *filename;
+   int i, j, iLen, iLen1;
+   //
+   // ----------------------------------
+   // Creacion del selector de archivos.
+   // ----------------------------------
+   //
+   selector_archivo = gtk_file_chooser_dialog_new ( cTitle,
+             (GtkWindow *) GetActiveWindow(),
+             GTK_FILE_CHOOSER_ACTION_OPEN,
+             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL );
+   //
+   // -----------------------
+   // Opciones de los filtros
+   // -----------------------
+   //
+   if( pArray )
+   {
+      iLen = hb_arrayLen( pArray );
+      for( i=1; i<=iLen; i++ )
+      {
+          GtkFileFilter *filtro = gtk_file_filter_new();
+          pArr1 = hb_arrayGetItemPtr( pArray, i );
+          iLen1 = hb_arrayLen( pArr1 );
+          for( j=1; j<=iLen1; j++ )
+          {
+             if( j == 1 )
+                gtk_file_filter_set_name( filtro, hb_arrayGetC( pArr1,j ) );
+             else
+                gtk_file_filter_add_pattern (filtro, hb_arrayGetC( pArr1,j ));
+          }
+          gtk_file_chooser_add_filter( (GtkFileChooser*)selector_archivo, filtro);
+      }
+   }
+   //
+   // ---------------------
+   // Opciones del selector
+   // ---------------------
+   //
+   gtk_file_chooser_set_current_folder ( (GtkFileChooser*)selector_archivo, cDir );
+   //
+   // ------------------------------
+   // Definicion del previsualizador
+   // ------------------------------
+   //
+   preview = (GtkImage *)gtk_image_new();
+   gtk_file_chooser_set_preview_widget( (GtkFileChooser*)selector_archivo, (GtkWidget*)preview );
+   g_signal_connect(selector_archivo, "update-preview",
+               G_CALLBACK(actualiza_preview), preview);
+   //
+   // ----------------------
+   // Ejecucion del selector
+   // ----------------------
+   //
+   resultado = gtk_dialog_run (GTK_DIALOG (selector_archivo));
+   switch (resultado)
+     {
+       case GTK_RESPONSE_ACCEPT:
+         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (selector_archivo));
+         hb_retc( filename );
+         g_free( filename );
+         break;
+       default:
+         // do_nothing_since_dialog_was_cancelled ();
+       break;
+     }
+    gtk_widget_destroy (selector_archivo);
 }

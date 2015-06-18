@@ -68,7 +68,7 @@ MEMVAR handcursor, cIniPath
 FUNCTION Main ( fName )
    LOCAL oMainWindow, oFont
    LOCAL oStyle1, oStyle2, oStyle3
-   LOCAL aComboSiz := { "40%", "60%", "80%", cComboSizDef, "120%", "140%", "160%" }
+   LOCAL aComboSiz := { "40%", "60%", "80%", "90%", cComboSizDef, "110%", "120%", "130%", "140%", "150%", "160%", "180%", "200%" }
 
    PRIVATE oMenuC1, handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
 
@@ -110,6 +110,11 @@ FUNCTION Main ( fName )
        SIZE 30,30 TEXT "S" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.F.,.T. ) CHECK
    aButtons[4]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[4]:cargo := "fs"
+
+   @ 208,0 OWNERBUTTON OF oToolBar ON CLICK {|| onBtnColor() } ;
+       SIZE 30,30 TEXT "A" FONT oMainWindow:oFont:SetFontStyle( .T.,,.F.,.T. )
+   Atail(oToolBar:aControls):aStyle := { oStyle1,oStyle2,oStyle3 }
+
 
    @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW  ON SIZE {|o,x|o:Move(,,x) }
 
@@ -185,6 +190,8 @@ FUNCTION Main ( fName )
 
    IF fname != Nil
       OpenFile( fname )
+   ELSE
+      onChangePos( .T. )
    ENDIF
 
    ACTIVATE WINDOW oMainWindow
@@ -196,6 +203,7 @@ STATIC FUNCTION NewFile()
 
    CloseFile()
    oEdit:SetText()
+   onChangePos( .T. )
 
    RETURN Nil
 
@@ -211,7 +219,8 @@ STATIC FUNCTION OpenFile( fname )
       ENDIF
       oEdit:Open( fname )
       oEdit:bImport := Nil
-      oEdit:nBoundL := iif( oEdit:nDocFormat > 0, BOUNDL, 0 )
+      oEdit:nBoundL := Iif( oEdit:nDocFormat > 0, BOUNDL, 0 )
+      onChangePos( .T. )
       IF oEdit:lError
          hwg_MsgStop( "Wrong file format!" )
       ENDIF
@@ -330,6 +339,20 @@ STATIC FUNCTION onBtnSize()
 
    RETURN Nil
 
+STATIC FUNCTION onBtnColor()
+
+   LOCAL nColor, cAttr
+
+   IF !Empty( oEdit:aPointM2[2] ) .OR. !Empty( oEdit:aTdSel[2] )
+
+      IF ( nColor := Hwg_ChooseColor( 0 ) ) != Nil
+         cAttr := "ct" + Ltrim(Str( nColor ))
+         oEdit:ChgStyle( ,, cAttr )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
 STATIC FUNCTION onBtnStyle( nBtn )
 
    LOCAL cAttr
@@ -343,10 +366,12 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
    RETURN Nil
 
-STATIC FUNCTION onChangePos()
+STATIC FUNCTION onChangePos( lInit )
 
    LOCAL aAttr, i, l, cTmp
    STATIC lInTable := .F.
+
+   IF lInit == Nil; lInit := .F.; ENDIF
 
    lComboSet := .T.
    IF !Empty( arr := oEdit:GetPosInfo() ) .AND. !Empty( arr[3] ) .AND. ;
@@ -373,7 +398,7 @@ STATIC FUNCTION onChangePos()
          oComboSiz:Value := Ascan( oComboSiz:aItems,cComboSizDef )
       ENDIF
    ENDIF
-   IF ( l := ( oEdit:getEnv() > 0 ) ) != lInTable
+   IF ( l := ( oEdit:getEnv() > 0 ) ) != lInTable .OR. lInit
       lInTable := l
       hwg_Enablemenuitem( , MENU_INSROW, lInTable, .T. )
       hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )

@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-18 13:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hfrmtmpl.prg
+  * source/gtk/hprinter.prg
+  * source/gtk/wprint.c
+    * Printing duplex mode support added
+  * samples/gtk_samples/a.prg
+  * samples/gtk_samples/dbview.prg
+    * hwg_SelectFile() is replaced by hwg_SelectFileEx() with appropriate
+      files filter set.
+
 2015-06-18 10:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/commond.c
     * New function added hwg_SelectFileEx( cTitle, cInitDir, aFilters )

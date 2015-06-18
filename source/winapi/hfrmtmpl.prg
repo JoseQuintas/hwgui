@@ -1344,9 +1344,9 @@ Memvar lLastCycle, lSkipItem
             nPenWidth := Round( ::nKoefPix, 0 )
          ENDIF
 #ifdef __GTK__
-         oItem:oPen := HGP_Pen():Add( nPenWidth )
+         oItem:oPen := HGP_Pen():Add( nPenWidth, nPenType )
 #else
-         oItem:oPen := HPen():Add( nPenType,nPenWidth )
+         oItem:oPen := HPen():Add( nPenType, nPenWidth )
 #endif
       ENDIF
       IF oItem:cClass == "label"

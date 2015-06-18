@@ -55,9 +55,10 @@ HB_FUNC( HWG_SETAPPLOCALE )
 typedef struct HWGUI_PRINT_STRU
 {
   GtkPageSetup *page_setup;
-  char * cName;
+  char *      cName;
+  GtkPrintDuplex duplex;
   GtkWidget * label;
-  int count;
+  int         count;
 
 } HWGUI_PRINT, * PHWGUI_PRINT;
 
@@ -154,6 +155,10 @@ HB_FUNC( HWG_SETPRINTERMODE )
 
    gtk_page_setup_set_orientation( print->page_setup, 
          (hb_parni(2)==1)? GTK_PAGE_ORIENTATION_PORTRAIT : GTK_PAGE_ORIENTATION_LANDSCAPE );
+   if( HB_ISNUM(3) ) {
+      int iDuplex = hb_parni(3);
+      print->duplex = (iDuplex < 2)? 0 : ( (iDuplex < 2)? GTK_PRINT_DUPLEX_VERTICAL : GTK_PRINT_DUPLEX_HORIZONTAL );
+   }
 }
 
 HB_FUNC( HWG_CLOSEPRINTER )
@@ -429,9 +434,12 @@ static void print_run( GtkWidget *widget )
 
       g_object_set_data( (GObject*) widget, "flag", (gpointer) 1 );
 
-      if( print->cName && *(print->cName) )
+      if( ( print->cName && *(print->cName) ) || print->duplex )
       {
-         gtk_print_settings_set_printer( settings, (gchar *) print->cName );
+         if( print->cName && *(print->cName) )
+            gtk_print_settings_set_printer( settings, (gchar *) print->cName );
+         if( print->duplex )
+            gtk_print_settings_set_duplex( settings, print->duplex );
          gtk_print_operation_set_print_settings( operation, settings );
       }
 
@@ -520,6 +528,7 @@ HB_FUNC( HWG_GP_PRINT )
    if( !iOper )
    {
       GtkPrintOperation * operation = gtk_print_operation_new();
+      GtkPrintSettings * settings = NULL;
 
       gtk_print_operation_set_default_page_setup( operation, print->page_setup );
       gtk_print_operation_set_n_pages( operation, hb_parni(3) );
@@ -528,9 +537,17 @@ HB_FUNC( HWG_GP_PRINT )
 #ifdef G_CONSOLE_MODE
       print_init( operation, print );
 #else
+      if( print->duplex )
+      {
+         settings = gtk_print_settings_new();
+         gtk_print_settings_set_duplex( settings, print->duplex );
+         gtk_print_operation_set_print_settings( operation, settings );
+      }     
       gtk_print_operation_run( operation, 
             (print->cName)? GTK_PRINT_OPERATION_ACTION_PRINT : GTK_PRINT_OPERATION_ACTION_PRINT_DIALOG,
             NULL, NULL );
+      if( settings )
+         g_object_unref( settings );
 #endif
 
    }

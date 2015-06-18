@@ -47,7 +47,7 @@ CLASS HPrinter
    DATA oBrush1, oBrush2
 
    METHOD New( cPrinter, lmm, nFormType )
-   METHOD SetMode( nOrientation )
+   METHOD SetMode( nOrientation, nDuplex )
    METHOD Recalc( x1, y1, x2, y2 )
    METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline )
    METHOD SetFont( oFont )
@@ -118,12 +118,12 @@ METHOD New( cPrinter, lmm, nFormType ) CLASS HPrinter
 
    RETURN Self
 
-METHOD SetMode( nOrientation ) CLASS HPrinter
+METHOD SetMode( nOrientation, nDuplex ) CLASS HPrinter
    LOCAL x
 
    IF ( nOrientation == 1 .OR. nOrientation == 2 ) .AND. nOrientation != ::nOrient
-      IF !::lBuffPrn      
-         hwg_Setprintermode( ::hDC, nOrientation )
+      IF !::lBuffPrn
+         hwg_Setprintermode( ::hDC, nOrientation, Iif( Empty(nDuplex), 0, nDuplex ) )
       ENDIF
       ::nOrient := nOrientation
       x := ::nHRes

@@ -480,7 +480,7 @@ HB_FUNC( HWG_GETFONTSLIST )
    pFontsItem = hb_itemPutC( NULL, "" );
    pFontsItemLast = hb_itemPutC( NULL, "" );
 
-   EnumFontFamiliesEx( hDC, &lf, (FONTENUMPROC)GetFontsCallback, NULL, 0 );
+   EnumFontFamiliesEx( hDC, &lf, (FONTENUMPROC)GetFontsCallback, 0, 0 );
 
    hb_itemRelease( pFontsItem );
    hb_itemRelease( pFontsItemLast );

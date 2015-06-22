@@ -62,6 +62,7 @@ STATIC cWebBrow
 STATIC oFontP, oBrush1
 STATIC oToolbar, oRuler, oEdit, aButtons[4]
 STATIC oComboSiz, cComboSizDef := "100%", lComboSet := .F.
+STATIC aSetStyle, nLastMsg, nLastWpar, aPointLast[2], nCharsLast
 
 MEMVAR handcursor, cIniPath
 
@@ -114,7 +115,6 @@ FUNCTION Main ( fName )
    @ 208,0 OWNERBUTTON OF oToolBar ON CLICK {|| onBtnColor() } ;
        SIZE 30,30 TEXT "A" FONT oMainWindow:oFont:SetFontStyle( .T.,,.F.,.T. )
    Atail(oToolBar:aControls):aStyle := { oStyle1,oStyle2,oStyle3 }
-
 
    @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW  ON SIZE {|o,x|o:Move(,,x) }
 
@@ -211,7 +211,11 @@ STATIC FUNCTION OpenFile( fname )
 
    CloseFile()
    IF Empty( fname )
-      fname := hwg_Selectfile( { "All files" }, { "*.*" }, "" )
+#ifdef __PLATFORM__UNIX
+      fname := hwg_SelectfileEx( ,, { { "HwGUI Editor files", "*.hwge" }, { "All files", "*" } } )
+#else
+      fname := hwg_Selectfile( { "HwGUI Editor files","All files" }, { "*.hwge","*.*" }, "" )
+#endif
    ENDIF
    IF !Empty( fname )
       IF !( Lower( hb_FNameExt( fname ) ) $ ".html;.hwge;" )
@@ -233,13 +237,13 @@ STATIC FUNCTION SaveFile( lAs, lHtml )
 
    IF lAs .OR. Empty( oEdit:cFileName )
 #ifdef __PLATFORM__UNIX
-      fname := hwg_Selectfile( "( *.* )", "*.*", CurDir() )
+      fname := hwg_SelectfileEx( ,, { Iif(Empty(lHtml),{"HwGUI Editor files","*.hwge"},{"Html files","*.html"}), { "All files", "*" } } )
 #else
       fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() )
 #endif
       IF !Empty( fname )
          IF Empty( hb_FnameExt( fname ) )
-            fname += iif( Empty( lHtml ), ".hwge", ".html" )
+            fname += Iif( Empty( lHtml ), ".hwge", ".html" )
          ENDIF
          oEdit:Save( fname, , lHtml )
       ENDIF
@@ -359,43 +363,61 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
    IF !Empty( oEdit:aPointM2[2] ) .OR. !Empty( oEdit:aTdSel[2] )
 
-      cAttr := aButtons[nBtn]:cargo
+      cAttr := aButtons[nBtn]:cargo + Iif( aButtons[nBtn]:lPress, "", "-" )
       oEdit:ChgStyle( ,, cAttr )
    ELSE
+      oEdit:PCopy( oEdit:aPointC, aPointLast )
+      nCharsLast := hced_Len( oEdit, oEdit:aText[oEdit:aPointC[P_Y]] )
+      IF Empty( aSetStyle )
+         aSetStyle := { -1, -1, -1, -1, -1 }
+      ENDIF
+      aSetStyle[nBtn] := Iif( aButtons[nBtn]:lPress, 1, 0 )
    ENDIF
 
    RETURN Nil
 
 STATIC FUNCTION onChangePos( lInit )
 
-   LOCAL aAttr, i, l, cTmp
+   LOCAL arr, aAttr, i, l, cTmp
    STATIC lInTable := .F.
 
    IF lInit == Nil; lInit := .F.; ENDIF
 
    lComboSet := .T.
-   IF !Empty( arr := oEdit:GetPosInfo() ) .AND. !Empty( arr[3] ) .AND. ;
-         !Empty( arr[3][OB_CLS] )
-      aAttr := oEdit:getClassAttr( arr[3][OB_CLS] )
+   IF !Empty(aSetStyle) .AND. ( nLastMsg == WM_CHAR .OR. nLastMsg == WM_KEYDOWN ) .AND. ;
+         oEdit:aPointC[P_Y] == aPointLast[P_Y] .AND. ;
+         ( i := hced_Len( oEdit, oEdit:aText[oEdit:aPointC[P_Y]] ) ) > nCharsLast
+      aAttr := {}
       FOR i := 1 TO 4
-         IF Ascan( aAttr, aButtons[i]:cargo ) > 0
-            aButtons[i]:Press()
-         ELSEIF aButtons[i]:lPress
-            aButtons[i]:Release()
+         IF aSetStyle[i] >= 0
+            AAdd( aAttr, aButtons[i]:cargo + Iif( aSetStyle[i]==0,"-","" ) )
          ENDIF
       NEXT
-      cTmp := Iif( ( i := Ascan(aAttr,"fh") ) == 0, cComboSizDef, Substr(aAttr[i],3) )
-      IF ( i := Ascan( oComboSiz:aItems,cTmp ) ) != 0 .AND. oComboSiz:Value != i
-         oComboSiz:Value := i
-      ENDIF
+      oEdit:ChgStyle( aPointLast, oEdit:aPointC, aAttr )
    ELSE
-      FOR i := 1 TO 4
-         IF aButtons[i]:lPress
-            aButtons[i]:Release()
+      IF !Empty( arr := oEdit:GetPosInfo() ) .AND. !Empty( arr[3] ) .AND. ;
+            !Empty( arr[3][OB_CLS] )
+         aAttr := oEdit:getClassAttr( arr[3][OB_CLS] )
+         FOR i := 1 TO 4
+            IF Ascan( aAttr, aButtons[i]:cargo ) > 0
+               aButtons[i]:Press()
+            ELSEIF aButtons[i]:lPress
+               aButtons[i]:Release()
+            ENDIF
+         NEXT
+         cTmp := Iif( ( i := Ascan(aAttr,"fh") ) == 0, cComboSizDef, Substr(aAttr[i],3) )
+         IF ( i := Ascan( oComboSiz:aItems,cTmp ) ) != 0 .AND. oComboSiz:Value != i
+            oComboSiz:Value := i
          ENDIF
-      NEXT
-      IF oComboSiz:aItems[oComboSiz:Value] != cComboSizDef        
-         oComboSiz:Value := Ascan( oComboSiz:aItems,cComboSizDef )
+      ELSE
+         FOR i := 1 TO 4
+            IF aButtons[i]:lPress
+               aButtons[i]:Release()
+            ENDIF
+         NEXT
+         IF oComboSiz:aItems[oComboSiz:Value] != cComboSizDef        
+            oComboSiz:Value := Ascan( oComboSiz:aItems,cComboSizDef )
+         ENDIF
       ENDIF
    ENDIF
    IF ( l := ( oEdit:getEnv() > 0 ) ) != lInTable .OR. lInit
@@ -404,6 +426,7 @@ STATIC FUNCTION onChangePos( lInit )
       hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )
       hwg_Enablemenuitem( , MENU_CELL, lInTable, .T. )
    ENDIF
+   aSetStyle := Nil
    lComboSet := .F.
 
    RETURN Nil
@@ -769,7 +792,7 @@ STATIC FUNCTION EditUrl( lNew )
 
 STATIC FUNCTION InsImage()
 
-   LOCAL fname, lEmbed := .T., nBorder := 0
+   LOCAL oDlg, fname, lEmbed := .T., nBorder := 0
    LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1
 
    fname := hwg_Selectfile( "Graphic files( *.jpg;*.png;*.gif;*.bmp )", "*.jpg;*.png;*.gif;*.bmp", "" )
@@ -900,6 +923,8 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
    LOCAL i, cLine, oNode, arr
    STATIC nShiftL := 0
 
+   nLastMsg  := msg
+   nLastWpar := hwg_PtrToUlong( wParam )
    IF msg == WM_LBUTTONDBLCLK
       IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) ) .AND. ;
             !Empty( arr[3] ) .AND. Len( arr[3] ) > 3

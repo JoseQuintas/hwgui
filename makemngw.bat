@@ -2,6 +2,9 @@
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
 
+if not exist lib md lib
+if not exist obj md obj
+
 :BUILD
 
    rem set path=d:\softools\mingw\bin

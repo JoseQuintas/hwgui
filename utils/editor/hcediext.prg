@@ -1245,10 +1245,14 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
       ELSE
          IF Pstart[P_X] < aStru[n1,1]
             ::StyleSpan( i, Pstart[P_X], Iif( i==Pend[P_Y], ;
-               Min( Pend[P_X],aStru[n1,1]-1 ), aStru[n1,1]-1 ), xAttr )
-         ELSEIF Pstart[P_X] < aStru[n1,2]
+               Min( Pend[P_X]-1,aStru[n1,1]-1 ), aStru[n1,1]-1 ), xAttr )
+         ELSEIF Pstart[P_X] <= aStru[n1,2]
             ::StyleSpan( i, Pstart[P_X], Iif( i==Pend[P_Y], ;
-               Min( Pend[P_X],aStru[n1,2] ), aStru[n1,2] ), xAttr )
+               Min( Pend[P_X]-1,aStru[n1,2] ), aStru[n1,2] ), xAttr )
+            IF Pend[P_X]-1 > aStru[n1,2]
+               ::StyleSpan( i, aStru[n1,2]+1, Min( Pend[P_X]-1, ;
+                     Iif(n1+1<=Len(aStru),aStru[n1+1,1]-1,Pend[P_X]-1) ), xAttr )
+            ENDIF
             n1 ++
          ENDIF
 
@@ -1257,16 +1261,16 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
                IF Pend[P_X] < aStru[n1,1]
                   EXIT
                ENDIF
-               ::StyleSpan( i, aStru[n1,1], Min( Pend[P_X],aStru[n1,2] ), xAttr )
+               ::StyleSpan( i, aStru[n1,1], Min( Pend[P_X]-1,aStru[n1,2] ), xAttr )
                IF n1 < Len( aStru )
-                  ::StyleSpan( i, aStru[n1,2]+1, Min( Pend[P_X],aStru[n1+1,1] ), xAttr )
+                  ::StyleSpan( i, aStru[n1,2]+1, Min( Pend[P_X]-1,aStru[n1+1,1]-1 ), xAttr )
                ELSEIF aStru[n1,2] < Pend[P_X]
-                  ::StyleSpan( i, aStru[n1,2]+1, Pend[P_X], xAttr )
+                  ::StyleSpan( i, aStru[n1,2]+1, Pend[P_X]-1, xAttr )
                ENDIF
             ELSE
                ::StyleSpan( i, aStru[n1,1], aStru[n1,2], xAttr )
                IF n1 < Len( aStru )
-                  ::StyleSpan( i, aStru[n1,2]+1, aStru[n1+1,1], xAttr )
+                  ::StyleSpan( i, aStru[n1,2]+1, aStru[n1+1,1]-1, xAttr )
                ELSEIF aStru[n1,2] < ( n2 := hced_Len( Self,::aText[i] ) )
                   ::StyleSpan( i, aStru[n1,2]+1, n2, xAttr )
                ENDIF
@@ -1329,7 +1333,7 @@ METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref ) CLASS HCEdiExt
    IF !::lChgStyle
       ::Undo( nLine, nPos1, nLine, nPos2, 4, Nil )
    ENDIF
-   hced_Stru4Pos( aStru, nPos1, @n1 )
+   hced_Stru4Pos( aStru, nPos1, @n1, .T. )
    IF n1 > Len( aStru )
       AAdd( aStru, { nPos1, nPos2, ::FindClass( aStru[1,3], xAttr, .T. ) } )
       n1 := Len( aStru )
@@ -2124,8 +2128,8 @@ METHOD UpdSource( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HiliExt
    LOCAL i, n1, n2, nDel := 0, aText, aRest
    LOCAL aStru1 := ::oEdit:aStru[nLine1], aStru2 := ::oEdit:aStru[nLine2]
 
-   hced_Stru4Pos( aStru1, nPos1, @n1 )
    IF nOper == 1            // Text inserted
+      hced_Stru4Pos( aStru1, nPos1, @n1 )
       IF nLine1 == nLine2   // within the same paragraph
          FOR i := n1 TO Len( aStru1 )
             IF i > n1 .OR. nPos1 < aStru1[i,1]
@@ -2156,52 +2160,58 @@ METHOD UpdSource( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HiliExt
       ENDIF
 
    ELSEIF nOper == 3        // Text deleted
-      hced_Stru4Pos( aStru2, nPos2, @n2 )
+      IF nPos2 > 1
+         nPos2 --
+      ENDIF
       IF nLine2 > nLine1    // consisting of several paragraphs
-         IF n1 <= Len( aStru1 )
-            aStru1 := Asize( aStru1, Iif( nPos1 < aStru1[n1,1], n1-1, n1 ) )
+         FOR i := Len(aStru1) TO 2 STEP -1
+            IF nPos1 > aStru1[i,2]
+               EXIT
+            ELSEIF nPos1 >= aStru1[i,1]
+               aStru1[i,2] := nPos1
+            ELSE
+               ADel( aStru1, i )
+               nDel ++
+            ENDIF
+         NEXT
+         IF nDel > 0
+            aStru1 := ASize( aStru1, Len(aStru1)-nDel )
          ENDIF
-         FOR i := n2 TO Len( aStru2 )
-            aStru2[i,1] := nPos1 + 1 + Iif( i > n2 .OR. nPos2 < aStru2[n2,1], aStru2[i,1] - nPos2, 0 )
-            aStru2[i,2] := nPos1 + 1 + aStru2[i,2] - nPos2
-            Aadd( aStru1, aStru2[i] )
+         FOR i := 2 TO Len( aStru2 )
+            IF nPos2 <= aStru2[i,2]
+               IF nPos2 < aStru2[i,1]
+                  aStru2[i,1] := nPos1 + aStru2[i,1] - nPos2 - 1
+               ELSE
+                  aStru2[i,1] := nPos1
+               ENDIF
+               aStru2[i,2] := nPos1 + aStru2[i,2] - nPos2 - 1
+               Aadd( aStru1, aStru2[i] )
+            ENDIF
          NEXT
       ELSE                  // within the same paragraph
-         IF n1 != n2
-            FOR i := n1 TO Len(aStru1) - nDel
-               IF i == n1
-                  IF nPos1 <= aStru1[i,1]
-                     ADel( aStru1, i )
-                     nDel ++
-                  ELSE
-                     aStru1[i,2] := nPos1-1
-                  ENDIF
-               ELSEIF i < n2
+         FOR i := Len(aStru1) TO 2 STEP -1
+            IF nPos2 >= aStru1[i,2]
+               IF nPos1 <= aStru1[i,1]
                   ADel( aStru1, i )
                   nDel ++
-               ELSEIF i == n2
-                  IF nPos1 < aStru1[i,1]
-                     aStru1[i,1] -= ( nPos2 - nPos1 )
-                  ELSE
-                     aStru1[i,1] := nPos1 + 1
-                  ENDIF
-                  aStru1[i,2] -= ( nPos2 - nPos1 )
                ELSE
-                  aStru1[i,1] -= ( nPos2 - nPos1 )
-                  aStru1[i,2] -= ( nPos2 - nPos1 )
+                  IF nPos1 <= aStru1[i,2]
+                     aStru1[i,2] := nPos1 - 1
+                  ENDIF
+                  EXIT
                ENDIF
-            NEXT
-            IF nDel > 0
-               aStru1 := ASize( aStru1, Len(aStru1)-nDel )
+            ELSE
+               IF nPos2 >= aStru1[i,1]
+                  IF nPos1 < aStru1[i,1]
+                     aStru1[i,1] := nPos1
+                  ENDIF
+               ELSE
+                  aStru1[i,1] -= ( nPos2 - nPos1 + 1 )
+               ENDIF
+               aStru1[i,2] -= ( nPos2 - nPos1 + 1 )
             ENDIF
-         ELSE
-            FOR i := n2 TO Len( aStru1 )
-               IF i > n2 .OR. nPos1 < aStru1[n1,1]
-                  aStru1[i,1] -= ( nPos2 - nPos1 )
-               ENDIF
-               aStru1[i,2] -= ( nPos2 - nPos1 )
-            NEXT
-         ENDIF
+         NEXT
+         aStru1 := ASize( aStru1, Len(aStru1)-nDel )
       ENDIF
       ::oEdit:aStru[nLine1] := aStru1
    ENDIF
@@ -2223,13 +2233,25 @@ Static Function hced_td4Pos( oEdit, nL, xPos )
    NEXT
    RETURN Iif( iTd > Len( aStru[OB_OB] ), --iTd, iTd )
 
-Function hced_Stru4Pos( aStru, xPos, i )
+Function hced_Stru4Pos( aStru, xPos, i, lExact )
 
+   IF Empty(lExact) .AND. xPos > 1
+      xPos --
+   ENDIF
    FOR i := 2 TO Len( aStru )
       IF xPos < aStru[i,1]
          RETURN Nil
       ELSEIF xPos <= aStru[i,2]
-         RETURN aStru[i]
+     
+         IF Empty(lExact) .AND. Len( aStru[i] ) >= OB_HREF
+            IF xPos + 1 <= aStru[i,2]
+               RETURN aStru[i]
+            ELSE
+               LOOP
+            ENDIF
+         ELSE
+            RETURN aStru[i]
+         ENDIF
       ENDIF
    NEXT
    RETURN Nil

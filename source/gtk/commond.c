@@ -314,3 +314,40 @@ HB_FUNC( HWG_SELECTFILEEX )
      }
     gtk_widget_destroy (selector_archivo);
 }
+
+HB_FUNC( HWG_SELECTFOLDER )
+{
+   GtkWidget * selector_archivo;
+   gint resultado;
+   const char *cTitle = ( HB_ISCHAR(1) )? hb_parc(1):"Select a folder";
+   char *filename;
+   //
+   // ----------------------------------
+   // Creacion del selector de archivos.
+   // ----------------------------------
+   //
+   selector_archivo = gtk_file_chooser_dialog_new ( cTitle,
+                      (GtkWindow *) GetActiveWindow(),
+                         GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
+                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                         NULL);
+   //
+   // ----------------------
+   // Ejecucion del selector
+   // ----------------------
+   //
+   resultado = gtk_dialog_run (GTK_DIALOG (selector_archivo));
+   switch (resultado)
+     {
+       case GTK_RESPONSE_ACCEPT:
+         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (selector_archivo));
+         hb_retc( filename );
+         g_free( filename );
+         break;
+       default:
+         // do_nothing_since_dialog_was_cancelled ();
+         break;
+     }
+    gtk_widget_destroy (selector_archivo);
+}

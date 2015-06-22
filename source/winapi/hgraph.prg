@@ -37,8 +37,6 @@ CLASS VAR winclass   INIT "STATIC"
    METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
                bSize, ctooltip, tcolor, bcolor )
    METHOD Activate()
-   METHOD Redefine( oWndParent, nId, aValues, oFont, ;
-                    bSize, ctooltip, tcolor, bcolor )
    METHOD Init()
    METHOD CalcMinMax()
    METHOD Paint()
@@ -58,17 +56,6 @@ METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::nGraphs := 1
 
    ::Activate()
-
-   RETURN Self
-
-METHOD Redefine( oWndParent, nId, aValues, oFont, ;
-                 bSize, ctooltip, tcolor, bcolor )  CLASS HGraph
-
-   ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, 0, 0, 0, oFont,, ;
-              bSize, { | o, lpdis | o:Paint( lpdis ) }, ctooltip, ;
-              IIf( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), IIf( bcolor == Nil, 0, bcolor ) )
-
-   ::aValues := aValues
 
    RETURN Self
 
@@ -141,6 +128,8 @@ METHOD Paint( lpdis ) CLASS HGraph
    IF ::nType < 3
       ::scaleX := ( ::xmax - ::xmin ) / ( x2 - x1 )
       ::scaleY := ( ::ymax - ::ymin ) / ( y2 - y1 )
+   ELSE
+      ::scaleX := ::scaleY := 1
    ENDIF
 
    IF ::oPenCoor == Nil

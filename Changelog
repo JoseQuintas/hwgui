@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-22 14:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hgraph.prg
+    ! Small fix
+  * source/gtk/hgraph.prg
+    * Synhronized with winapi version
+
 2015-06-22 14:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/wprint.c
     ! Small bug fixed

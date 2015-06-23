@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-23 10:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Fixes and enhancements
+
 2015-06-22 14:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hgraph.prg
     ! Small fix

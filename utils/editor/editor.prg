@@ -144,14 +144,15 @@ FUNCTION Main ( fName )
       ENDMENU
       MENU TITLE "&Edit"
          MENUITEM "Undo" ACTION oEdit:Undo()
-         SEPARATOR
-         MENUITEM "Edit &URL" ACTION EditUrl( .F. )
       ENDMENU
       MENU TITLE "&View"
          MENUITEMCHECK "&Ruler" ID MENU_RULER ACTION SetRuler()
       ENDMENU
       MENU TITLE "&Insert"
-         MENUITEM "&URL" ACTION EditUrl( .T. )
+         MENU TITLE "&Url"
+            MENUITEM "&External" ACTION EditUrl( .T., 1 )
+            MENUITEM "&Internal" ACTION EditUrl( .T., 2 )
+         ENDMENU
          MENUITEM "&Image" ACTION InsImage()
          MENUITEM "&Table" ACTION InsTable( .T. )
          MENUITEM "&Rows" ID MENU_INSROW ACTION InsRows()
@@ -177,6 +178,7 @@ FUNCTION Main ( fName )
             MENUITEM "Font" ACTION ChgFont( .T. )
             MENUITEM "Color" ACTION ChangeColor( .T. )
          ENDMENU
+         MENUITEM "&URL" ACTION EditUrl( .F. )
          SEPARATOR
          MENUITEM "&Table" ID MENU_TABLE ACTION (.T.)
          MENUITEM "&Cell" ID MENU_CELL ACTION ChangeColor( .T., .T. )
@@ -743,8 +745,9 @@ STATIC FUNCTION SetText( oEd, cText )
 
    RETURN aText
 
-STATIC FUNCTION EditUrl( lNew )
+STATIC FUNCTION EditUrl( lNew, nType )
    LOCAL oDlg, cHref := "", cName := "", cTemp, aPos, xAttr
+   LOCAL aRefs, nref
 
    aPos := oEdit:GetPosInfo()
    IF aPos != Nil .AND. aPos[3] != Nil .AND. Len( aPos[3] ) >= OB_HREF
@@ -754,6 +757,7 @@ STATIC FUNCTION EditUrl( lNew )
       ENDIF
       cHref := aPos[3,OB_HREF]
       cName := SubStr( oEdit:aText[aPos[1]], aPos[3,1], aPos[3,2] - aPos[3,1] + 1 )
+      nType := Iif( Left(cHRef,5)=="goto:", 2, 1 )
    ELSEIF !lNew
       hwg_msgStop( "Set cursor to existing URL" )
       RETURN Nil
@@ -763,7 +767,18 @@ STATIC FUNCTION EditUrl( lNew )
       AT 210, 10  SIZE 360, 190 FONT HWindow():GetMain():oFont
 
    @ 20, 10 SAY "Href:" SIZE 120, 22
-   @ 20, 32 GET cHref SIZE 320, 26 STYLE ES_AUTOHSCROLL
+   IF nType == 1
+      @ 20, 32 GET cHref SIZE 320, 26 STYLE ES_AUTOHSCROLL
+   ELSE
+      aRefs := oEdit:Find( ,"",, .T. )
+      IF lNew
+         nref := 1
+      ELSE
+         cHRef := Substr( cHRef, 9 )
+         nref := Ascan( aRefs, {|a|a[1] == cHRef} )
+      ENDIF
+      @ 20, 32 GET COMBOBOX nref ITEMS aRefs SIZE 150, 26
+   ENDIF
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    IF lNew
@@ -777,7 +792,10 @@ STATIC FUNCTION EditUrl( lNew )
    ACTIVATE DIALOG oDlg
 
    IF oDlg:lResult
-      IF !Empty( cHref ) .OR. !Empty( cName )
+      IF ( ( nType == 1 .AND. !Empty( cHref ) ) .OR. ( nType == 2 .AND. !Empty(aRefs) ) ) .AND. !Empty( cName )
+         IF !Empty( aRefs )
+            cHref := "goto://#" + aRefs[nref,1]
+         ENDIF
          IF lNew
             xAttr := oEdit:getClassAttr( "url" )
             oEdit:InsSpan( cName, xAttr, cHref )

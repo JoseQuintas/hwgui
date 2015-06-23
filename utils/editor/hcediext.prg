@@ -125,7 +125,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD getClassAttr( cClsName )
    METHOD PrintLine( oPrinter, yPos, nL )
    METHOD Scan( nl1, nl2, hDC, nWidth, nHeight )
-   METHOD Find( cText, cId, cHRef )
+   METHOD Find( cText, cId, cHRef, lAll )
 
 ENDCLASS
 
@@ -1750,7 +1750,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
             s += "</table>" + cNewL
          ENDIF
          s += "<div" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', '' ) + ;
-               Iif( Len(::aStru[i,1])>=OB_ID,'id="'+::aStru[i,1,OB_ID]+'"','' ) + ::SaveTag( "div", i ) + '>'
+               Iif( Len(::aStru[i,1])>=OB_ID,' id="'+::aStru[i,1,OB_ID]+'"','' ) + ::SaveTag( "div", i ) + '>'
          cLine := Trim(::aText[i] )
          nPos := 1
          FOR j := 2 TO Len( ::aStru[i] )
@@ -2056,15 +2056,26 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdiExt
 
    RETURN ::Super:Scan( nl1, nl2, hDC, nWidth, nHeight )
 
-METHOD Find( cText, cId, cHRef ) CLASS HCEdiExt
+METHOD Find( cText, cId, cHRef, lAll ) CLASS HCEdiExt
 
    LOCAL i, j, i1, j1, n, aStru, aText, nTextLen
-   LOCAL lId := !Empty( cId ), lText := !Empty( cText ), lHref := !Empty( cHRef )
+   LOCAL lId := ( cId != Nil ), lText := ( cText != Nil ), lHref := ( cHRef != Nil )
+   LOCAL arr
+
+   IF lAll == Nil; lAll := .F.; ENDIF
+   IF lAll
+      arr := {}
+   ENDIF
 
    FOR i := 1 TO ::nTextLen
-      IF lId .AND. Len( ::aStru[i,1] ) >= OB_ID .AND. ::aStru[i,1,OB_ID] == cId
+      IF lId .AND. Len( ::aStru[i,1] ) >= OB_ID
+         IF !lAll .AND. ::aStru[i,1,OB_ID] == cId
+            RETURN i
+         ELSEIF lAll .AND. ::aStru[i,1,OB_ID] = cId
+            Aadd( arr, { ::aStru[i,1,OB_ID], i } )
+         ENDIF
+      ELSEIF lText .AND. cText $ ::aText[i]
          RETURN i
-      ELSEIF lText
       ENDIF
       IF lHref
          FOR j := 2 TO Len( ::aStru[i] )
@@ -2078,7 +2089,8 @@ METHOD Find( cText, cId, cHRef ) CLASS HCEdiExt
                nTextLen := ::aStru[ i,1,OB_OB,n,OB_NTLEN ]
                FOR i1 := 1 TO nTextLen
                   IF Valtype(aStru[i1,j1,OB_TYPE]) == "N"
-                     IF lText
+                     IF lText .AND. cText $ aText[i1]
+                        RETURN i
                      ENDIF
                      IF lHref
                         FOR j1 := 2 TO Len( aStru[i1] )
@@ -2092,7 +2104,7 @@ METHOD Find( cText, cId, cHRef ) CLASS HCEdiExt
       ENDIF
    NEXT
 
-   RETURN Nil
+   RETURN arr
 
 CLASS HiliExt  INHERIT HilightBase
 
@@ -2141,7 +2153,7 @@ METHOD UpdSource( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HiliExt
          aText := hb_aTokens( cText, cNewLine )
          IF n1 <= Len( aStru1 )
             nDel := nPos1 - 1  //aStru1[n1,1] - 1
-            IF nPos1 > aStru1[n1,1] .AND. nPos1 < aStru1[n1,2]
+            IF nPos1 > aStru1[n1,1] //.AND. nPos1 <= aStru1[n1,2]
                n2 := hced_Len( ::oEdit, Atail(aText) ) + 1
                aRest := { n2, n2 + aStru1[n1,2] - nPos1, aStru1[n1,3] }
                aStru1[n1,2] := nPos1 + hced_Len( ::oEdit, ::oEdit:aText[nLine1] )

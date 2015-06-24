@@ -125,7 +125,13 @@ FUNCTION Main ( fName )
    ENDIF
 
    oEdit:bColorCur := oEdit:bColor
-   oEdit:SetHili( "url", -1, hwg_colorC2N( "#000080") )
+   oEdit:AddClass( "url", "color: #000080;" )
+   oEdit:AddClass( "h1", "font-size: 140%; font-weight: bold;" )
+   oEdit:AddClass( "h2", "font-size: 130%; font-weight: bold;" )
+   oEdit:AddClass( "h3", "font-size: 120%; font-weight: bold;" )
+   oEdit:AddClass( "h4", "font-size: 110%; font-weight: bold;" )
+   oEdit:AddClass( "h5", "font-weight: bold;" )
+   oEdit:aDefClasses := { "url","h1","h2","h3","h4" }
    oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
    oEdit:bChangePos := { || onChangePos() }
 
@@ -520,7 +526,8 @@ STATIC FUNCTION ChangePara()
    LOCAL oDlg, nMarginL := oEdit:nMarginL, nMarginR := oEdit:nMarginR, nIndent := oEdit:nIndent
    LOCAL nBWidth := 0, nBColor := 0, cId := "", oGetId
    LOCAL lml := .F. , lmr := .F. , lti := .F. , nAlign := 1, aCombo := { "Left", "Center", "Right" }
-   LOCAL nL := oEdit:aPointC[2], arr1, cClsName, aAttr, i, arr[6]
+   LOCAL nL := oEdit:aPointC[P_Y], arr1, cClsName, aAttr, i, arr[6]
+   //LOCAL nTempl := 1, aTempl := { " ", "Header 1", "Header 2", "Header 3", "Header 4", "Header 5" }
    LOCAL bColor := { ||
      LOCAL nColor
      IF ( nColor := Hwg_ChooseColor( nBColor ) ) != Nil
@@ -566,35 +573,38 @@ STATIC FUNCTION ChangePara()
    arr[1] := nMarginL; arr[2] := nMarginR; arr[3] := nIndent; arr[4] := nAlign; arr[5] := nBWidth; arr[6] := nBColor
 
    INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set paragraph properties"  ;
-      AT 210, 10  SIZE 340, 400 FONT HWindow():GetMain():oFont ON INIT {||Iif(Len(arr1)>=7,oGetId:Disable(),.T.)}
+      AT 210, 10  SIZE 340, 460 FONT HWindow():GetMain():oFont ON INIT {||Iif(Len(arr1)>=7,oGetId:Disable(),.T.)}
 
-   @ 10, 10 GROUPBOX "Margins" SIZE 320, 130
-   @ 20, 40 SAY "Left:" SIZE 120, 24
-   @ 140, 40 GET nMarginL SIZE 80, 24
-   @ 232, 40 GET CHECKBOX lml CAPTION "in %" SIZE 80, 22
+   //@ 20, 10 SAY "Template:" SIZE 140, 24
+   //@ 160, 10 GET COMBOBOX nTempl ITEMS aTempl SIZE 120, 24 DISPLAYCOUNT 6
 
-   @ 20, 68 SAY "Right:" SIZE 120, 24
-   @ 140, 68 GET nMarginR SIZE 80, 24
-   @ 232, 68 GET CHECKBOX lmr CAPTION "in %" SIZE 80, 22
+   @ 10, 30 GROUPBOX "Margins" SIZE 320, 130
+   @ 20, 60 SAY "Left:" SIZE 120, 24
+   @ 140, 60 GET nMarginL SIZE 80, 24
+   @ 232, 60 GET CHECKBOX lml CAPTION "in %" SIZE 80, 22
 
-   @ 20, 96 SAY "First line:" SIZE 120, 24
-   @ 140, 96 GET nIndent SIZE 80, 24
-   @ 232, 96 GET CHECKBOX lti CAPTION "in %" SIZE 80, 22
+   @ 20, 88 SAY "Right:" SIZE 120, 24
+   @ 140, 88 GET nMarginR SIZE 80, 24
+   @ 232, 88 GET CHECKBOX lmr CAPTION "in %" SIZE 80, 22
 
-   @ 20, 160 SAY "Alignment:" SIZE 140, 24
-   @ 160, 160 GET COMBOBOX nAlign ITEMS aCombo SIZE 120, 24 DISPLAYCOUNT 3
+   @ 20, 116 SAY "First line:" SIZE 120, 24
+   @ 140, 116 GET nIndent SIZE 80, 24
+   @ 232, 116 GET CHECKBOX lti CAPTION "in %" SIZE 80, 22
 
-   @ 10, 210 GROUPBOX "Border" SIZE 320, 80
-   @ 20, 246 SAY "Width:" SIZE 100, 24
-   @ 140, 240 GET UPDOWN nBWidth RANGE 0, 8 SIZE 60, 30
-   @ 220, 240  BUTTON "Color" SIZE 80, 30 ON CLICK bColor
+   @ 20, 180 SAY "Alignment:" SIZE 140, 24
+   @ 160, 180 GET COMBOBOX nAlign ITEMS aCombo SIZE 120, 24 DISPLAYCOUNT 3
 
-   @ 10, 300 SAY "Anchor:" SIZE 100, 24
-   @ 110,300 GET oGetId VAR cId SIZE 100, 24
+   @ 10, 230 GROUPBOX "Border" SIZE 320, 80
+   @ 20, 266 SAY "Width:" SIZE 100, 24
+   @ 140, 260 GET UPDOWN nBWidth RANGE 0, 8 SIZE 60, 30
+   @ 220, 260  BUTTON "Color" SIZE 80, 30 ON CLICK bColor
+
+   @ 20, 330 SAY "Anchor:" SIZE 100, 24
+   @ 160,330 GET oGetId VAR cId SIZE 100, 24
    oGetId:nMaxLength := 0
 
-   @  20, 350  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 220, 350 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+   @  20, 400  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 220, 400 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
 
    ACTIVATE DIALOG oDlg
 
@@ -849,6 +859,7 @@ STATIC FUNCTION InsImage()
 STATIC FUNCTION InsTable( lNew )
    LOCAL oDlg, nRows := 3, nCols := 2, nBorder := 0, nBColor := 0, nWidth := 100
    LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, aAttr
+   LOCAL nL := oEdit:aPointC[P_Y]
    LOCAL bColor := { ||
      LOCAL nColor
      IF ( nColor := Hwg_ChooseColor( nBColor ) ) != Nil
@@ -856,6 +867,10 @@ STATIC FUNCTION InsTable( lNew )
      ENDIF
      RETURN .T.
    }
+
+   IF Valtype(oEdit:aStru[nL,1,1]) != "C" .OR. oEdit:aStru[nL,1,1] != "tr"
+      RETURN Nil
+   ENDIF
 
    /*
    IF !lNew

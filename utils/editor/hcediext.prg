@@ -88,6 +88,7 @@ CLASS HCEdiExt INHERIT HCEdit
    DATA bImport, bImgLoad
    DATA lError
    DATA aTdSel     INIT { 0,0 }
+   DATA aDefClasses
 
    DATA lPrinting  INIT .F.  PROTECTED
    DATA lChgStyle  INIT .F.  PROTECTED
@@ -1618,9 +1619,10 @@ METHOD DelObject( cType, nL, nCol ) CLASS HCEdiExt
    RETURN Nil
 
 METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
-   LOCAL nHand := -1, s := "", i, j, nPos, cLine, aClasses, aImages, aHili, oFont, cPart
+   LOCAL nHand := -1, s := "", s1, i, j, nPos, cLine, aClasses, aImages, aHili, oFont, cPart, cHref
    LOCAL lNested := ( Valtype(cFileName) == "L"), aStruTbl, xTemp
    LOCAL aText, nTextLen, aStru, n, i1, j1, cNewL := Iif( Empty( lCompact ), cNewLine, "" )
+   LOCAL aDefClasses := Iif( Empty(::aDefClasses), {}, ::aDefClasses )
 
    IF !lNested
       IF !Empty( cFileName )
@@ -1685,57 +1687,61 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
                Ltrim(Str(::aDocMargins[2])) + ',' + Ltrim(Str(::aDocMargins[3])) + ',' + Ltrim(Str(::aDocMargins[4])) + '"' ) + ;
                + ::SaveTag( "hwge" ) + '>' + cNewL
       ENDIF
-      IF !Empty( aClasses )         
-         s += "<style>" + cNewL
+      IF !Empty( aClasses )
+         s1 := ""
          FOR i := 1 TO Len( aClasses )
-            s += "." + aClasses[i] + " { "
-            IF hb_hHaskey( ::aHili, aClasses[i] )
-               aHili := ::aHili[aClasses[i]]
-               IF !Empty( aHili[1] ) .AND. aHili[1] > 0
-                  oFont := ::aFonts[aHili[1]]
-                  IF oFont:name != ::oFont:name
-                     s += "font-family: " + oFont:name + "; "
+            IF lHtml .OR. hb_Ascan( aDefClasses, aClasses[i],,, .T. ) == 0
+               s1 += "." + aClasses[i] + " { "
+               IF hb_hHaskey( ::aHili, aClasses[i] )
+                  aHili := ::aHili[aClasses[i]]
+                  IF !Empty( aHili[1] ) .AND. aHili[1] > 0
+                     oFont := ::aFonts[aHili[1]]
+                     IF oFont:name != ::oFont:name
+                        s1 += "font-family: " + oFont:name + "; "
+                     ENDIF
+                     IF oFont:cargo != Nil
+                        s1 += "font-size: " + oFont:cargo + "; "
+                     ENDIF
+                     IF oFont:weight == 700
+                        s1 += "font-weight: bold; "
+                     ENDIF
+                     IF oFont:italic == 255
+                        s1 += "font-style: italic; "
+                     ENDIF
+                     IF oFont:Underline == 255
+                        s1 += "text-decoration: underline; "
+                     ELSEIF oFont:StrikeOut == 255
+                        s1 += "text-decoration: line-through; "
+                     ENDIF
                   ENDIF
-                  IF oFont:cargo != Nil
-                     s += "font-size: " + oFont:cargo + "; "
+                  IF aHili[2] != Nil
+                     s1 += "color: " + hced_color2x(aHili[2]) + "; "
                   ENDIF
-                  IF oFont:weight == 700
-                     s += "font-weight: bold; "
+                  IF aHili[3] != Nil
+                     s1 += "background-color: " + hced_color2x(aHili[3]) + "; "
                   ENDIF
-                  IF oFont:italic == 255
-                     s += "font-style: italic; "
+                  IF aHili[4] != Nil
+                     s1 += "margin-left: " + Iif( aHili[4]>=0, Ltrim(Str(aHili[4])), Ltrim(Str(-aHili[4]))+"%" ) + "; "
                   ENDIF
-                  IF oFont:Underline == 255
-                     s += "text-decoration: underline; "
-                  ELSEIF oFont:StrikeOut == 255
-                     s += "text-decoration: line-through; "
+                  IF aHili[5] != Nil
+                     s1 += "margin-right: " + Iif( aHili[5]>=0, Ltrim(Str(aHili[5])), Ltrim(Str(-aHili[5]))+"%" ) + "; "
                   ENDIF
+                  IF aHili[6] != Nil
+                     s1 += "text-indent: " + Iif( aHili[6]>=0, Ltrim(Str(aHili[6])), Ltrim(Str(-aHili[6]))+"%" ) + "; "
+                  ENDIF
+                  IF aHili[7] != Nil
+                     s1 += "text-align: " + Iif( aHili[7]==1, "center", Iif( aHili[7]==2, "right", 0 ) ) + "; "
+                  ENDIF              
+                  IF aHili[8] != Nil
+                     s1 += "border: " + Ltrim(Str(aHili[8]:width))+"px " + "solid " + hced_Color2X(aHili[8]:color) + "; "
+                  ENDIF              
                ENDIF
-               IF aHili[2] != Nil
-                  s += "color: " + hced_color2x(aHili[2]) + "; "
-               ENDIF
-               IF aHili[3] != Nil
-                  s += "background-color: " + hced_color2x(aHili[3]) + "; "
-               ENDIF
-               IF aHili[4] != Nil
-                  s += "margin-left: " + Iif( aHili[4]>=0, Ltrim(Str(aHili[4])), Ltrim(Str(-aHili[4]))+"%" ) + "; "
-               ENDIF
-               IF aHili[5] != Nil
-                  s += "margin-right: " + Iif( aHili[5]>=0, Ltrim(Str(aHili[5])), Ltrim(Str(-aHili[5]))+"%" ) + "; "
-               ENDIF
-               IF aHili[6] != Nil
-                  s += "text-indent: " + Iif( aHili[6]>=0, Ltrim(Str(aHili[6])), Ltrim(Str(-aHili[6]))+"%" ) + "; "
-               ENDIF
-               IF aHili[7] != Nil
-                  s += "text-align: " + Iif( aHili[7]==1, "center", Iif( aHili[7]==2, "right", 0 ) ) + "; "
-               ENDIF              
-               IF aHili[8] != Nil
-                  s += "border: " + Ltrim(Str(aHili[8]:width))+"px " + "solid " + hced_Color2X(aHili[8]:color) + "; "
-               ENDIF              
+               s1 += "}" + cNewL
             ENDIF
-            s += "}" + cNewL
          NEXT
-         s += "</style>" + cNewL
+         IF !Empty( s1 )
+            s += "<style>" + cNewL + s1 + "</style>" + cNewL
+         ENDIF
       ENDIF
       IF lHtml
          s += "</head><body>" + cNewL
@@ -1760,10 +1766,18 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
             ENDIF
             nPos := ::aStru[i,j,2] + 1
             cPart := hced_Substr( Self, cLine, ::aStru[i,j,1], nPos - ::aStru[i,j,1] )
-            s += Iif( Len(::aStru[i,j])>3, '<a href="'+::aStru[i,j,OB_HREF]+'"', '<span' ) + ' class="'+::aStru[i,j,OB_CLS] + ;
+            IF Len(::aStru[i,j]) > 3
+               cHref := ::aStru[i,j,OB_HREF]
+               IF lHtml .AND. Left( cHref, 5 ) == "goto:"
+                  cHref := Substr( cHref, 8 )
+               ENDIF
+            ELSE
+               cHref := ""
+            ENDIF
+            s += Iif( !Empty(cHref), '<a href="'+cHref+'"', '<span' ) + ' class="'+::aStru[i,j,OB_CLS] + ;
                   ::SaveTag( "span", i, j ) + '">' + ;
                   hbxml_preSave( Iif( !Empty(cpSou), hb_Translate( cPart, ::cp, cpSou ), cPart ) ) + ;
-                  Iif( Len(::aStru[i,j])>3, '</a>', '</span>' )
+                  Iif( !Empty(cHref), '</a>', '</span>' )
          NEXT
          IF nPos <= hced_Len( Self, cLine )
             cPart := hced_Substr( Self, cLine, nPos, hced_Len( Self, cLine ) - nPos + 1 )

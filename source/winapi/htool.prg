@@ -278,7 +278,7 @@ METHOD CREATETOOL() CLASS hToolBar
          hwg_Destroywindow( ::Handle )
          ::Activate()
          //IF !EMPTY( ::oFont )
-         ::SetFont( ::oFont )
+         //::SetFont( ::oFont )
          //ENDIF
       ENDIF
    ELSE

@@ -70,6 +70,7 @@ FUNCTION Main ( fName )
    LOCAL oMainWindow, oFont
    LOCAL oStyle1, oStyle2, oStyle3
    LOCAL aComboSiz := { "40%", "60%", "80%", "90%", cComboSizDef, "110%", "120%", "130%", "140%", "150%", "160%", "180%", "200%" }
+   LOCAL x1
 
    PRIVATE oMenuC1, handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
 
@@ -88,31 +89,39 @@ FUNCTION Main ( fName )
    INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
       AT 200, 0 SIZE 600, 300 FONT oFont
 
+#ifdef __PLATFORM__UNIX
+   @ 80, 0 PANEL oToolBar SIZE oMainWindow:nWidth-80, 30 STYLE SS_OWNERDRAW ;
+         ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
+   @ 0,2 COMBOBOX oComboSiz ITEMS aComboSiz INIT Ascan( aComboSiz,cComboSizDef ) ;
+         SIZE 80, 26 DISPLAYCOUNT 6 ON CHANGE {||onBtnSize()} TOOLTIP "Font size in %"
+   x1 := 2
+#else
    @ 0, 0 PANEL oToolBar SIZE oMainWindow:nWidth, 30 STYLE SS_OWNERDRAW ;
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
-   oToolBar:brush := 0
-
    @ 0,2 COMBOBOX oComboSiz ITEMS aComboSiz OF oToolBar INIT Ascan( aComboSiz,cComboSizDef ) ;
          SIZE 80, 26 DISPLAYCOUNT 6 ON CHANGE {||onBtnSize()} TOOLTIP "Font size in %"
+   x1 := 82
+#endif
+   oToolBar:brush := 0
 
-   @ 82,0 OWNERBUTTON aButtons[1] OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
+   @ x1,0 OWNERBUTTON aButtons[1] OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
        SIZE 30,30 TEXT "B" FONT oMainWindow:oFont:SetFontStyle( .T. ) CHECK
    aButtons[1]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[1]:cargo := "fb"
-   @ 112,0 OWNERBUTTON aButtons[2] OF oToolBar ON CLICK {|| onBtnStyle(2) } ;
+   @ x1+30,0 OWNERBUTTON aButtons[2] OF oToolBar ON CLICK {|| onBtnStyle(2) } ;
        SIZE 30,30 TEXT "I" FONT oMainWindow:oFont:SetFontStyle( .F.,,.T. ) CHECK
    aButtons[2]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[2]:cargo := "fi"
-   @ 142,0 OWNERBUTTON aButtons[3] OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
+   @ x1+60,0 OWNERBUTTON aButtons[3] OF oToolBar ON CLICK {|| onBtnStyle(3) } ;
        SIZE 30,30 TEXT "U" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.T. ) CHECK
    aButtons[3]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[3]:cargo := "fu"
-   @ 172,0 OWNERBUTTON aButtons[4] OF oToolBar ON CLICK {|| onBtnStyle(4) } ;
+   @ x1+90,0 OWNERBUTTON aButtons[4] OF oToolBar ON CLICK {|| onBtnStyle(4) } ;
        SIZE 30,30 TEXT "S" FONT oMainWindow:oFont:SetFontStyle( .F.,,.F.,.F.,.T. ) CHECK
    aButtons[4]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[4]:cargo := "fs"
 
-   @ 208,0 OWNERBUTTON OF oToolBar ON CLICK {|| onBtnColor() } ;
+   @ x1+124,0 OWNERBUTTON OF oToolBar ON CLICK {|| onBtnColor() } ;
        SIZE 30,30 TEXT "A" FONT oMainWindow:oFont:SetFontStyle( .T.,,.F.,.T. )
    Atail(oToolBar:aControls):aStyle := { oStyle1,oStyle2,oStyle3 }
 

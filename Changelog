@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-25 14:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit_w.c
+    * Space for fonts is increased
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Fixes and enhancements
+
 2015-06-24 12:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/htool.prg
     ! Small fix

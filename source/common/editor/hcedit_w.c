@@ -123,7 +123,7 @@ typedef struct
 
 } TEDIT;
 
-#define  NUMBER_OF_FONTS  16
+#define  NUMBER_OF_FONTS  32
 #define  TEDATTR_MAX    1024
 #define  TEDATTRF_MAX     32
 

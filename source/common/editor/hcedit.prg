@@ -390,18 +390,18 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    ELSEIF msg == WM_KEYDOWN
       lRes := ::onKeyDown( hwg_PtrToUlong( wParam ), lParam )
 
-   ELSEIF msg == WM_LBUTTONDOWN
+   ELSEIF msg == WM_LBUTTONDOWN .OR. msg == WM_RBUTTONDOWN
 #ifdef __PLATFORM__UNIX
       hced_SetFocus( ::hEdit )
 #endif
-      IF !Empty( ::aPointM2[P_Y] )
+      IF msg == WM_LBUTTONDOWN .AND. !Empty( ::aPointM2[P_Y] )
          ::PCopy( , ::aPointM2 )
          hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
       ENDIF
       hced_ShowCaret( ::hEdit )
-      IF ::nCaret > 0
-         IF ::nLines > 0
-            ::SetCaretPos( SETC_COORS, hwg_LoWord( lParam ), hwg_HiWord( lParam ) )
+      IF ::nCaret > 0 .AND. ::nLines > 0
+         ::SetCaretPos( SETC_COORS, hwg_LoWord( lParam ), hwg_HiWord( lParam ) )
+         IF msg == WM_LBUTTONDOWN
             ::lMDown := .T.
             ::PCopy( ::aPointC, ::aPointM1 )
          ENDIF

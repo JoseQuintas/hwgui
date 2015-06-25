@@ -1115,7 +1115,7 @@ METHOD FindClass( xBase, xAttr, xNewClass ) CLASS HCEdiExt
       CASE "fs" ; lFont := .T. ; Strike := Iif( Substr(xAttr[i],3,1)=='-', 0, 255 )
          EXIT
       CASE "fh" ; lFont := .T. ; cHeight := Substr( xAttr[i],3 )
-         height := Iif( Right(cHeight,1) == '%', Int( Val(cHeight) * oFont:height / 100 ), Val(cHeight) )
+         height := Iif( Right(cHeight,1) == '%', Int( Val(cHeight) * ::oFont:height / 100 ), Val(cHeight) )
          EXIT
       CASE "fn" ; lFont := .T. ; name := Substr( xAttr[i],3 )
          EXIT

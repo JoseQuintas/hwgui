@@ -8,6 +8,19 @@
 [-] Fixed error
 [*] Changes
 
+HWGUI 2.19 build 4 ( 25.06.2015 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Rich syntax text editor significantly extended
+[*] New modules added to the tutorial
+[+] HStyle class added, :aStyle variable added to HOwnButton class to draw
+    3-state gradient buttons
+[*] HSplitter class enhanced
+[+] hwg_getFontsList() function added
+[+] hwg_ColorN2C() and hwg_ColorN2RGB() functions added
+[*] hwg_VColor() renamed to hwg_ColorC2N(), hwg_RGB() - to hwg_ColorRGB2N(),
+[+] hwg_drawGradient() function added for both gtk and winapi versions
+[!] Some bug fixes and many improvements
+
 
 HWGUI 2.19 build 3 ( 08.05.2015 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

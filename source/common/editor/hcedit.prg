@@ -849,6 +849,10 @@ METHOD End() CLASS HCEdit
    IF !Empty( ::oHili )
       ::oHili:End()
    ENDIF
+   IF !Empty( ::hEdit )
+      hced_Release( ::hEdit )
+      ::hEdit := Nil
+   ENDIF
 
    RETURN Nil
 
@@ -1414,11 +1418,16 @@ METHOD LineDown() CLASS HCEdit
 
    RETURN Nil
 
-METHOD LineUp() CLASS HCEdit
+METHOD LineUp( lChgPos ) CLASS HCEdit
    LOCAL y, i
 
+   IF lChgPos == Nil; lChgPos := .T.; ENDIF
+
    IF ::nLineC > 1
-      RETURN ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), ::aLines[::nLineC,AL_Y1] - 4 )
+      IF lChgPos
+         ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), ::aLines[::nLineC,AL_Y1] - 4 )
+      ENDIF
+      RETURN Nil
    ELSEIF !::lWrap .AND. ::nLineF > 1
       ::nLineF --
    ELSEIF ::lWrap .AND. ( ::nLineF > 1 .OR. ::aLines[1,AL_SUBL] > 1 )
@@ -1438,10 +1447,12 @@ METHOD LineUp() CLASS HCEdit
       RETURN Nil
    ENDIF
 
-   y := ::aLines[::nLineC,AL_Y2] - 4
-   ::Paint( .F. )
-   ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), y )
-   hced_Invalidaterect( ::hEdit, 0 )
+   IF lChgPos
+      y := ::aLines[::nLineC,AL_Y2] - 4
+      ::Paint( .F. )
+      ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), y )
+      hced_Invalidaterect( ::hEdit, 0 )
+   ENDIF
 
    RETURN Nil
 
@@ -1799,21 +1810,22 @@ METHOD InsText( aPoint, cText, lOver, lChgPos ) CLASS HCEdit
       ::oHili:UpdSource( nLine, nPos1, nLineNew, nPos2, Iif(lOver==Nil.OR.!lOver,1,2), cText )
    ENDIF
 
+   ::Paint( .F. )
    IF lChgPos
       nSub := ::nLinesAll + 1
       IF ( i := hced_P2Screen( Self, nLineNew, @nPos, @nSub ) ) > ::nLines .AND. ;
             Iif( ::nLines > 0, ::nHeight-::aLines[::nLines,AL_Y2]<=BOTTOM_HEIGHT, .T. )
-            //i > Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
          ::nLineF := nLineNew
          ::nWSublF := nSub
          ::nWCharF := Iif( nSub==1, 1, ::aWrap[nLineNew,nSub-1] )
-         ::nLineC := 1
+         ::LineUp( .F. )
+         ::nLineC := 2
+         ::Paint( .F. )
       ELSE
          ::nLineC := i
       ENDIF
    ENDIF
 
-   ::Paint( .F. )
    IF lChgPos
       ::nPosC := nPos - ::nPosF + 1
       ::SetCaretPos( SETC_XY )

@@ -101,6 +101,7 @@ typedef struct
    HWND          handle;
    TEDFONT *  pFontsScr;
    TEDFONT *  pFontsPrn;
+   int           iFonts;
    int       iFontsCurr;
    TEDATTR *      pattr;
    int     *     pattrf;
@@ -150,14 +151,25 @@ int hced_utf8bytes( char * szText, int iLen )
 TEDFONT * ted_setfont( TEDIT * pted, HFONT hFont, int iNum, short int bPrn  )
 {
    TEDFONT * pFont;
-   HDC hDC = GetDC( 0 );
+   HDC hDC;
    HANDLE hold;
    SIZE sz;
 
-   pFont = ( (bPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
-         ( (iNum>=0)? iNum : pted->iFontsCurr );
+   if( iNum < 0 ) {
+      iNum = pted->iFontsCurr;
+      pted->iFontsCurr++;
+   }
+   if( iNum >= pted->iFonts )
+   {
+      pted->iFonts += NUMBER_OF_FONTS;
+      pted->pFontsScr = hb_xrealloc( pted->pFontsScr, sizeof( TEDFONT ) * pted->iFonts );
+      pted->pFontsPrn = hb_xrealloc( pted->pFontsPrn, sizeof( TEDFONT ) * pted->iFonts );
+   }
+
+   pFont = ( (bPrn)? pted->pFontsPrn : pted->pFontsScr ) + iNum;
    hold = SelectObject( hDC, hFont );
 
+   hDC = GetDC( 0 );
    GetTextMetrics( hDC, &pFont->tm );
    GetTextExtentPoint32( hDC, TEXT("aA"), 2, &sz );
    pFont->iWidth = sz.cx / 2;
@@ -166,8 +178,6 @@ TEDFONT * ted_setfont( TEDIT * pted, HFONT hFont, int iNum, short int bPrn  )
    ReleaseDC( 0, hDC );
 
    pFont->hFont = hFont;
-   if( iNum < 0 )
-      pted->iFontsCurr++;
 
    return pFont;
 }
@@ -271,7 +281,7 @@ int ted_CalcLineWidth( TEDIT * pted, char *szText, int iLen, int iWidth, int * i
          iRealLen = i - lasti;
          //hwg_writelog( NULL, "Lineout-1a %d %d %d \r\n", iRealLen, i, lasti );
          *iRealWidth += ted_CalcItemWidth( pted, szText + lasti, pattr + lasti, &iRealLen,
-               iWidth - *iRealWidth, bWrap, lasti );
+               iWidth - *iRealWidth, bWrap, (short int)lasti );
          iPrinted += iRealLen;
          if( iRealLen < i - lasti )
             break;
@@ -407,6 +417,7 @@ TEDIT * ted_init( void )
    pted = ( TEDIT * ) hb_xgrab( sizeof( TEDIT ) );
    memset( pted, 0, sizeof( TEDIT ) );
 
+   pted->iFonts = NUMBER_OF_FONTS;
    pted->pFontsScr =
          ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
    pted->pFontsPrn =
@@ -477,7 +488,7 @@ HB_FUNC( HCED_SETFONT )
 
    if( iFont > 0 ) iFont --;
    ted_setfont( ( TEDIT * ) HB_PARHANDLE( 1 ), ( HFONT ) HB_PARHANDLE( 2 ), 
-         iFont, (HB_ISNIL(4))? 0 : hb_parl(4) );
+         iFont, (short int)((HB_ISNIL(4))? 0 : hb_parl(4)) );
 }
 
 HB_FUNC( HCED_SETCOLOR )
@@ -568,7 +579,7 @@ HB_FUNC( HCED_SETPAINT )
    if( !HB_ISNIL(4) )
       pted->iWidth = hb_parni( 4 );
    if( !HB_ISNIL(5) )
-      pted->bWrap = hb_parl( 5 );
+      pted->bWrap = (short int)hb_parl( 5 );
    if( !HB_ISNIL(7) )
       pted->iDocWidth = hb_parni( 7 );
 
@@ -685,7 +696,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
    int iLen = hb_parclen(2);
 #endif
    int x1 = hb_parni(3), xpos = hb_parni(4), y1 = hb_parni(5);
-   short int bSet = (HB_ISNIL(6))? 1 : hb_parl(6);
+   short int bSet = (short int)((HB_ISNIL(6))? 1 : hb_parl(6));
    int iShiftL = ( HB_ISNIL(7)? 0 : hb_parni(7) );
    int iPrinted = 0, iRealWidth;
    SIZE sz;
@@ -778,7 +789,7 @@ HB_FUNC( HCED_LINEOUT )
    char *szText = ( char * )hb_parc( 5 );
 #endif
    int iRight = (HB_ISNIL(8))? 0 : hb_parni(8);
-   short int bCalc = (HB_ISNIL(9))? 1 : hb_parl(9);
+   short int bCalc = (short int) ( (HB_ISNIL(9))? 1 : hb_parl(9) );
    int x1 = hb_parni( 2 ), ypos = hb_parni( 3 ), x2 = hb_parni( 4 ), iLen = hb_parni( 6 );
    int iPrinted, iCalculated = 0, iAlign = hb_parni( 7 );
    int iRealWidth, i, iFont;

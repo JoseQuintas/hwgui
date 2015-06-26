@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-06-26 14:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_l.c
+  * source/common/editor/hcedit_w.c
+    ! Fixes
+
 2015-06-25 16:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * whatsnew.txt
     * Information about build 4 added

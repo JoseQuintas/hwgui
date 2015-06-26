@@ -96,11 +96,12 @@ typedef struct
    GtkWidget *     area;
    TEDFONT *  pFontsScr;
    TEDFONT *  pFontsPrn;
+   int           iFonts;
    int       iFontsCurr;
    TEDATTR *      pattr;
    int     *     pattrf;
-   PHWGUI_HDC           hDCScr;
-   PHWGUI_HDC           hDCPrn;
+   PHWGUI_HDC    hDCScr;
+   PHWGUI_HDC    hDCPrn;
    double        dKoeff;
    int           iWidth;
    int       iInterline;
@@ -187,15 +188,21 @@ TEDFONT * ted_setfont( TEDIT * pted, PHWGUI_FONT hwg_font, int iNum, HB_BOOL bPr
 {
    TEDFONT * pFont;
 
-   pFont = ( (bPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
-         ( (iNum>=0)? iNum : pted->iFontsCurr );
+   if( iNum < 0 ) {
+      iNum = pted->iFontsCurr;
+      pted->iFontsCurr++;
+   }
+   if( iNum >= pted->iFonts )
+   {
+      pted->iFonts += NUMBER_OF_FONTS;
+      pted->pFontsScr = hb_xrealloc( pted->pFontsScr, sizeof( TEDFONT ) * pted->iFonts );
+      pted->pFontsPrn = hb_xrealloc( pted->pFontsPrn, sizeof( TEDFONT ) * pted->iFonts );
+   }
+
+   pFont = ( (bPrn)? pted->pFontsPrn : pted->pFontsScr ) + iNum;
 
    pFont->iWidth = 0;
-   //if( !pted->iCaretHeight )
-   //   pted->iCaretHeight = pFont->iHeight;
    pFont->hwg_font = hwg_font;
-   if( iNum < 0 )
-      pted->iFontsCurr++;
 
    return pFont;
 }
@@ -565,10 +572,9 @@ HB_FUNC( HCED_CREATETEXTEDIT )
       pted->xBorder = pted->yBorder = 1;
    }
 
-   pted->pFontsScr =
-         ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
-   pted->pFontsPrn =
-         ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
+   pted->iFonts = NUMBER_OF_FONTS;
+   pted->pFontsScr = ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
+   pted->pFontsPrn = ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
 
    pted->pattr = ( TEDATTR * ) hb_xgrab( sizeof( TEDATTR ) * TEDATTR_MAX );
    pted->pattrf = ( int * ) hb_xgrab( sizeof( int ) * TEDATTRF_MAX );

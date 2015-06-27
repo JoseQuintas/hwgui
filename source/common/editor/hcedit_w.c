@@ -167,10 +167,10 @@ TEDFONT * ted_setfont( TEDIT * pted, HFONT hFont, int iNum, short int bPrn  )
    }
 
    pFont = ( (bPrn)? pted->pFontsPrn : pted->pFontsScr ) + iNum;
-   hold = SelectObject( hDC, hFont );
 
    hDC = GetDC( 0 );
-   GetTextMetrics( hDC, &pFont->tm );
+   hold = SelectObject( hDC, hFont );
+   GetTextMetrics( hDC, &(pFont->tm) );
    GetTextExtentPoint32( hDC, TEXT("aA"), 2, &sz );
    pFont->iWidth = sz.cx / 2;
 

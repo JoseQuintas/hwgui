@@ -556,6 +556,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
    LOCAL nMargL, nMargR, nIndent, nAlign, nBoundL, nBoundR, tColor, bColor, bColorCur, nDefFont
    LOCAL iCol, iTd, yPosMax := 0, yPosB := yPos, nBorder := 0, nTWidth, nWidth
    LOCAL oPrinter, lFormat := !Empty( ::nDocFormat ), x1, x2
+   LOCAL nsec := seconds()
 
    IF ::lPrinting
       oPrinter := hDC
@@ -1256,7 +1257,6 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
             ENDIF
             n1 ++
          ENDIF
-
          DO WHILE n1 <= Len( aStru )
             IF i == Pend[P_Y]
                IF Pend[P_X] < aStru[n1,1]
@@ -1331,6 +1331,9 @@ METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref ) CLASS HCEdiExt
 
    LOCAL aStru := ::aStru[nLine], n1, nPosTmp, xCls
 
+   IF nPos2 < nPos1
+      RETURN Nil
+   ENDIF
    IF !::lChgStyle
       ::Undo( nLine, nPos1, nLine, nPos2, 4, Nil )
    ENDIF
@@ -2155,8 +2158,8 @@ METHOD UpdSource( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HiliExt
    LOCAL aStru1 := ::oEdit:aStru[nLine1], aStru2 := ::oEdit:aStru[nLine2]
 
    IF nOper == 1            // Text inserted
-      hced_Stru4Pos( aStru1, nPos1, @n1 )
       IF nLine1 == nLine2   // within the same paragraph
+         hced_Stru4Pos( aStru1, nPos1, @n1 )
          FOR i := n1 TO Len( aStru1 )
             IF i > n1 .OR. nPos1 < aStru1[i,1]
                aStru1[i,1] += ( nPos2-nPos1 )
@@ -2164,6 +2167,7 @@ METHOD UpdSource( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HiliExt
             aStru1[i,2] += ( nPos2-nPos1 )
          NEXT
       ELSE                  // consisting of several paragraphs
+         hced_Stru4Pos( aStru1, nPos1, @n1, .T. )
          aText := hb_aTokens( cText, cNewLine )
          IF n1 <= Len( aStru1 )
             nDel := nPos1 - 1  //aStru1[n1,1] - 1
@@ -2289,7 +2293,7 @@ Function hced_CleanStru( oEdit, nLine1, nLine2 )
       aStru := oEdit:aStru[nL]
       nDel := 0
       FOR i := 2 TO Len( aStru ) - nDel
-         IF aStru[i,3] == aStru[1,3] .OR. aStru[i,3] == "def"
+         IF aStru[i,3] == aStru[1,3] .OR. aStru[i,3] == "def" .OR. aStru[i,1] > aStru[i,2]
             Adel( aStru, i )
             nDel ++
          ENDIF

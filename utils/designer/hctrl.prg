@@ -725,3 +725,21 @@ Local nPos, aSubarr
    ENDIF
 
 Return Nil
+
+Function GetMenu()
+Local oDlg, i, aMenu
+Memvar nMaxID, oDesigner
+Private nMaxId := 0
+
+   oDlg := HFormGen():oDlgSelected
+   FOR i := 1 TO Len( oDlg:aControls )
+      IF oDlg:aControls[i]:cClass == "menu"
+         aMenu := oDlg:aControls[i]:GetProp( "aTree" )
+         IF aMenu == Nil
+            aMenu := oDlg:aControls[i]:SetProp( "aTree", { { ,"Menu",32000,Nil } } )
+         ENDIF
+         aMenu := aClone( aMenu )
+         EXIT
+      ENDIF
+   NEXT
+ RETURN aMenu

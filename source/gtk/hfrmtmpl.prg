@@ -1388,7 +1388,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
                ::oPrinter:Say( SubStr( cText,nFirst,Len(cText ) - nFirst + 1 ), x, ny, x2, ny + dy, nJustify, oItem:obj )
             ELSEIF ( xProperty := aGetSecond( oItem:aProp,"inrect" ) ) != Nil .AND. xProperty
                nLen := Len( cText )
-               nw := Int( ( x2-x )/nLen ) - 1
+               nw := ( x2-x )/nLen - 1
                x1 := x
                FOR i := 1 TO nLen
                   ::oPrinter:Box( x1,y,x1+nw,y2,oItem:oPen )

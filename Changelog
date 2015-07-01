@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-01 09:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/hctrl.prg
+    * GetMenu() function added ( from 2.17 )
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+    ! Fixed a calculating of a box width for 'inrect' labels
+  * source/gtk/wprint.c
+    ! Fixed handling od a pen dash
+
 2015-06-27 09:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit_w.c
   * utils/editor/hcediext.prg

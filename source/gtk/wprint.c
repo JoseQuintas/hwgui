@@ -308,12 +308,15 @@ static void draw_page( cairo_t *cr, char * cpage )
             iPathExist = 0;
          }
 
-         cairo_set_line_width( cr, (gdouble)x1 );
+         cairo_set_line_width( cr, (gdouble)( (i1 > 0)? 0.5 : x1 ) );
          if( i1 > 0 )
          {
             static const double dashed[] = {2.0, 2.0};
             cairo_set_dash( cr, dashed, 2, 0 );
          }
+         else
+            cairo_set_dash( cr, NULL, 0, 0 );
+
          long2rgb( li, &y1, &x2, &y2 );
          cairo_set_source_rgb( cr, y1, x2, y2 );
       }

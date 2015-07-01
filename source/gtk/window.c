@@ -50,8 +50,7 @@ guint s_KeybHook = 0;
 GtkWidget * hMainWindow;
 
 #define HB_IT_DEFAULT   ( ( HB_TYPE ) 0x40000 )
-HB_LONG Prevp2  = -1;
-HB_LONG prevp2=-1;
+HB_LONG prevp2 = -1;
 
 typedef struct
 {
@@ -464,7 +463,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 {
    gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
    HB_LONG lRes;
-   //gunichar uchar;   
+   //gunichar uchar;
    //gchar* tmpbuf;
    //gchar *res = NULL;
 
@@ -479,9 +478,18 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 
       if( event->type == GDK_KEY_PRESS || event->type == GDK_KEY_RELEASE )
       {
+         /*
+         char utf8string[10];
+         gunichar uchar;
+         int ll;
+         uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
+         ll = g_unichar_to_utf8( uchar, utf8string );
+         utf8string[ll] = '\0';
+         g_debug( "keyval: %lu %s", ((GdkEventKey*)event)->keyval, utf8string );
+         */
          p1 = (event->type==GDK_KEY_PRESS)? WM_KEYDOWN : WM_KEYUP;
          p2 = ((GdkEventKey*)event)->keyval;
-         //uchar= gdk_keyval_to_unicode(((GdkEventKey*)event)->keyval);
+
          if ( p2 == GDK_asciitilde  ||  p2 == GDK_asciicircum  ||  p2 == GDK_grave ||  p2 == GDK_acute ||  p2 == GDK_diaeresis || p2 == GDK_dead_acute ||	 p2 ==GDK_dead_tilde || p2==GDK_dead_circumflex || p2==GDK_dead_grave || p2 == GDK_dead_diaeresis)	
          {
             prevp2 = p2 ;
@@ -829,15 +837,14 @@ HB_FUNC( HWG_SETAPPLOCALE )
    szAppLocale[iLen] = '\0';
 }
 
-HB_FUNC( HWG_KEYVAL2UTF8 )
+HB_FUNC( HWG_KEYTOUTF8 )
 {
-  gunichar uchar = gdk_keyval_to_unicode( (guint) hb_parnl(1) );
-  gchar* tmpbuf = (gchar*) hb_xgrab( 7 );
+   char utf8string[10];
+   int iLen;
 
-  memset( tmpbuf, 0, 7 );
-  g_unichar_to_utf8( uchar,tmpbuf );
-  hb_retc_buffer( (char*) tmpbuf );
-
+   iLen = g_unichar_to_utf8( gdk_keyval_to_unicode( hb_parnl(1) ), utf8string );
+   utf8string[iLen] = '\0';
+   hb_retc( utf8string );
 }
 
 static gint snooper ( GtkWidget *grab_widget,

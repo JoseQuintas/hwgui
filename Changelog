@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-01 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hedit.prg
+  * source/gtk/window.c
+    ! Fixed problem with utf8 charset and get objects
+
 2015-07-01 11:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
   * source/winapi/hedit.prg

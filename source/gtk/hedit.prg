@@ -231,7 +231,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF wParam >=  GDK_KP_0
                wParam -= ( GDK_KP_0 - 48 )
             ENDIF
-            RETURN GetApplyKey( Self, Chr( wParam ) )
+            RETURN GetApplyKey( Self, hwg_Chr(wParam) )
          ELSE
             RETURN 0
          ENDIF
@@ -589,22 +589,25 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
                      EXIT
                   ENDIF
                NEXT
-               oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + ;
-                  SubStr( oEdit:title, nPos, nLen - 1 ) + SubStr( oEdit:title, nPos + nLen )
+               oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + ;
+                  hwg_SubStr( oEdit:title, nPos, nLen - 1 ) + hwg_SubStr( oEdit:title, nPos + nLen )
             ELSE
-               oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + ;
-                  SubStr( oEdit:title, nPos )
+               oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + ;
+                  hwg_SubStr( oEdit:title, nPos )
             ENDIF
 
-            IF !Empty( oEdit:cPicMask ) .AND. Len( oEdit:cPicMask ) < Len( oEdit:title )
-               oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + SubStr( oEdit:title, nPos + 1 )
+            IF !Empty( oEdit:cPicMask ) .AND. Len( oEdit:cPicMask ) < hwg_Len( oEdit:title )
+               oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + hwg_SubStr( oEdit:title, nPos + 1 )
             ENDIF
          ELSE
-            oEdit:title := Left( oEdit:title, nPos - 1 ) + cKey + SubStr( oEdit:title, nPos + 1 )
+            oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + hwg_SubStr( oEdit:title, nPos + 1 )
          ENDIF
          IF !Empty( oEdit:nMaxLength )
             i := Len( oEdit:cPicMask )
-            oEdit:title := PadR( oEdit:title, iif( !Empty(i ) .AND. i > oEdit:nMaxLength, i, oEdit:nMaxLength ) )
+            i := Iif( !Empty(i) .AND. i > oEdit:nMaxLength, i, oEdit:nMaxLength )
+            IF i > ( nLen := hwg_Len( oEdit:title ) )
+               oEdit:title += Space( i - nLen )
+            ENDIF
          ENDIF
          hwg_edit_Settext( oEdit:handle, oEdit:title )
          // hwg_WriteLog( "GetApplyKey "+oEdit:title+str(nPos-1) )
@@ -913,3 +916,16 @@ FUNCTION hwg_ParentGetDialog( o )
 
    RETURN o
 
+FUNCTION hwg_Chr( nCode )
+   RETURN Iif( hb_cdpSelect()=="UTF8", hwg_keyToUtf8( nCode ), Chr( nCode ) )
+
+FUNCTION hwg_Substr( cString, nPos, nLen )
+   RETURN Iif( hb_cdpSelect()=="UTF8", ;
+      Iif( nLen==Nil, hb_utf8Substr( cString, nPos ), hb_utf8Substr( cString, nPos, nLen ) ), ;
+      Iif( nLen==Nil, Substr( cString, nPos ), Substr( cString, nPos, nLen ) ) )
+
+FUNCTION hwg_Left( cString, nLen )
+   RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Left( cString, nLen ), Left( cString, nLen ) )
+
+FUNCTION hwg_Len( cString )
+   RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Len( cString ), Len( cString ) )

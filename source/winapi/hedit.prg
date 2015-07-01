@@ -473,7 +473,7 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
          ::cPicFunc   := ""
          ::cPicMask   := cPicture
       ENDIF
-      IF Empty( ::nMaxLength ) .AND. !Empty( ::cPicMask )
+      IF Empty( ::nMaxLength ) .AND. !Empty( ::cPicMask ) .AND. !( ::cPicFunc == "@R")
          ::nMaxLength := Len( ::cPicMask )
       ENDIF
    ENDIF

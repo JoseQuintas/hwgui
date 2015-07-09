@@ -18,4 +18,4 @@ export HWGUI_INC=../../include
 export HWGUI_LIB=../../lib
 
 $HRB_BIN/harbour $1 -n -i$HRB_INC -i$HWGUI_INC -w2 -d__LINUX__ $2
-gcc $1.c -o$1 -I $HRB_INC -L $HRB_LIB -L $HWGUI_LIB $SYSTEM_LIBS -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS -Wl,--end-group `pkg-config --cflags gtk+-2.0` `pkg-config gtk+-2.0 --libs`
+gcc $1.c -o$1 -I $HRB_INC -L $HRB_LIB -L $HWGUI_LIB -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS -Wl,--end-group `pkg-config --cflags gtk+-2.0` `pkg-config gtk+-2.0 --libs` $SYSTEM_LIBS

@@ -15,6 +15,9 @@
 #
 # ---------------------------------------------------------------
 
+# configure the path of the Harbour compiler to your own needs
+export HB_ROOT=../
+
 case "$1" in
     -hb|-xhb)
         export HB_PREF=${1#-}
@@ -40,6 +43,19 @@ then
     fi
 fi
 
-cd `dirname $0`/gtk
-mkdir -p obj lib
-make -fMakefile.scr $*
+cd `dirname $0`/source/gtk
+if [ $? -ne 0 ]
+then
+  echo "error: no chdir to `dirname $0`/source/gtk possible"
+  exit 1
+fi
+if ! [ -e ../../lib ]; then
+   mkdir ../../lib
+   chmod a+w+r+x ../../lib
+fi
+if ! [ -e ../../obj ]; then
+   mkdir ../../obj
+   chmod a+w+r+x ../../obj
+fi
+make -fMakefile.linux $*
+#

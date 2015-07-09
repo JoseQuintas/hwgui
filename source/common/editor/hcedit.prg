@@ -2370,7 +2370,7 @@ Function hced_Line4Pos( oEdit, yPos )
 Function hced_Chr( oEdit, nCode )
 #ifndef __XHARBOUR__
 #ifdef __PLATFORM__UNIX
-   IF oEdit:lUtf8; RETURN hwg_Keyval2Utf8( nCode ); ENDIF
+   IF oEdit:lUtf8; RETURN hwg_KeyToUtf8( nCode ); ENDIF
 #else
    IF oEdit:lUtf8; RETURN hb_utf8Chr( nCode ); ENDIF
 #endif

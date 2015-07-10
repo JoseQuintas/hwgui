@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-10 15:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Paragraps's templates added ( menu Format/Paragraph )
+
 2015-07-09 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     ! Small fix

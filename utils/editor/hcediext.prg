@@ -110,7 +110,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD SetHili( nGroup, oFont, tColor, bColor, nMargL, nMargR, nIndent, nAlign )
    METHOD ChgStyle( P1, P2, xAttr, lDiv )
    METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref )
-   METHOD StyleDiv( nLine, xAttr )
+   METHOD StyleDiv( nLine, xAttr, cClass )
    METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr )
    METHOD InsRows( nL, nRows, nCols, lNoAddline )
    METHOD InsImage( cName, nAlign, xAttr, xBin )
@@ -1384,7 +1384,7 @@ METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref ) CLASS HCEdiExt
 
    RETURN Nil
 
-METHOD StyleDiv( nLine, xAttr ) CLASS HCEdiExt
+METHOD StyleDiv( nLine, xAttr, cClass ) CLASS HCEdiExt
 
    LOCAL cBase, lCell := .F.
 
@@ -1396,17 +1396,20 @@ METHOD StyleDiv( nLine, xAttr ) CLASS HCEdiExt
       cBase := ::aStru[nLine,1,OB_CLS]
    ENDIF
 
-   IF xAttr == Nil
+   IF xAttr == Nil .AND. cClass == Nil
       RETURN Iif( Empty( cBase ), Nil, AClone( ::aHili[cBase] ) )
    ELSE
       IF !::lChgStyle
          ::Undo( nLine, 1, nLine, 1, 4, Nil )
       ENDIF
 
+      IF cClass == Nil
+         cClass := ::FindClass( cBase, xAttr, .T. )
+      ENDIF
       IF lCell
-         ::aStru[nLine,1,OB_OB,::aPointc[P_X],OB_CLS] := ::FindClass( cBase, xAttr, .T. )
+         ::aStru[nLine,1,OB_OB,::aPointc[P_X],OB_CLS] := cClass
       ELSE
-         ::aStru[nLine,1,OB_CLS] := ::FindClass( cBase, xAttr, .T. )
+         ::aStru[nLine,1,OB_CLS] := cClass
       ENDIF
       IF !::lChgStyle
          hced_CleanStru( Self, nLine, nLine )

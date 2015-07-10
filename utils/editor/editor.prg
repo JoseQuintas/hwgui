@@ -140,6 +140,7 @@ FUNCTION Main ( fName )
    oEdit:AddClass( "h3", "font-size: 120%; font-weight: bold;" )
    oEdit:AddClass( "h4", "font-size: 110%; font-weight: bold;" )
    oEdit:AddClass( "h5", "font-weight: bold;" )
+   oEdit:AddClass( "cite", "color: #007800; margin-left: 3%; margin-right: 3%;" )
    oEdit:aDefClasses := { "url","h1","h2","h3","h4" }
    oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
    oEdit:bChangePos := { || onChangePos() }
@@ -190,6 +191,15 @@ FUNCTION Main ( fName )
          MENUITEM "&Document" ACTION ChangeDoc()
          MENU TITLE "&Paragraph"
             MENUITEM "Properties" ACTION ChangePara()
+            SEPARATOR
+            MENU TITLE "Templates"
+               MENUITEM "h1" ACTION oEdit:StyleDiv( ,, "h1" )
+               MENUITEM "h2" ACTION oEdit:StyleDiv( ,, "h2" )
+               MENUITEM "h3" ACTION oEdit:StyleDiv( ,, "h3" )
+               MENUITEM "h4" ACTION oEdit:StyleDiv( ,, "h4" )
+               MENUITEM "h5" ACTION oEdit:StyleDiv( ,, "h5" )
+               MENUITEM "cite" ACTION oEdit:StyleDiv( ,, "cite" )
+            ENDMENU
             MENUITEM "Font" ACTION ChgFont( .T. )
             MENUITEM "Color" ACTION ChangeColor( .T. )
          ENDMENU

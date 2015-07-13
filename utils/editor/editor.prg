@@ -43,7 +43,7 @@ REQUEST HB_CODEPAGE_RU866
 #define OB_OB           2
 #define OB_CLS          3
 #define OB_ID           4
-#define OB_HREF         4
+#define OB_HREF         6
 
 #define  CLR_BLACK          0
 #define  CLR_GRAY1    5592405  // #555555
@@ -149,6 +149,7 @@ FUNCTION Main ( fName )
       MENU TITLE "&File"
          MENUITEM "&New" ACTION NewFile()
          MENUITEM "&Open" ACTION OpenFile()
+         MENUITEM "&Add" ACTION OpenFile( ,.T. )
          SEPARATOR
          MENUITEM "&Save" ACTION SaveFile( .F. )
          MENUITEM "Save &as" ACTION SaveFile( .T. , .F. )
@@ -234,7 +235,7 @@ STATIC FUNCTION NewFile()
 
    RETURN Nil
 
-STATIC FUNCTION OpenFile( fname )
+STATIC FUNCTION OpenFile( fname, lAdd )
 
    CloseFile()
    IF Empty( fname )
@@ -248,7 +249,9 @@ STATIC FUNCTION OpenFile( fname )
       IF !( Lower( hb_FNameExt( fname ) ) $ ".html;.hwge;" )
          oEdit:bImport := { |o, cText| SetText( o, cText ) }
       ENDIF
-      oEdit:Open( fname )
+      oEdit:SetText( MemoRead(fname),,,, lAdd )
+      oEdit:cFileName := fname
+
       oEdit:bImport := Nil
       oEdit:nBoundL := Iif( oEdit:nDocFormat > 0, BOUNDL, 0 )
       onChangePos( .T. )

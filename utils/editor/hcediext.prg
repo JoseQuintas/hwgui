@@ -39,18 +39,39 @@
 #define AL_FIRSTC       7
 #define AL_SUBL         8
 
+/*
+ * Internal dada structures ( ::aStru )
+ *    ::aStru[n] - a structure for paragraph number n, the first item ( ::aStru[n,1] ) is <div>, <img> or <tr>
+ * <div>:     0, 0, OB_CLS, OB_ID, OB_ACCESS
+ *   Next items may be <span> or <a>
+ * <span>:    nStart, nEnd, OB_CLS, OB_ID, OB_ACCESS
+ * <a>:       nStart, nEnd, OB_CLS, OB_ID, OB_ACCESS, OB_HREF
+ *
+ * <img>:     "img", OB_OB(HBitmap), OB_CLS, OB_ID, OB_ACCESS, OB_HREF, OB_IALIGN
+ *
+ * <tr>(1):   "tr", OB_OB(td), cClsName, 1(nRow), OB_TBL
+ *    The first <tr> of a table includes the table data (OB_TBL) 
+ *    OB_TBL:  "tbl", OB_OB(aCols), cClsName, OB_TWIDTH, OB_TALIGN }
+ *    aCols:   OB_CWIDTH, OB_CLEFT, OB_CRIGHT
+ * <tr>(2...):"tr", OB_OB(td), cClsName, nRow
+ * <td>:      "td", OB_ASTRU, cClsName, OB_ATEXT, OB_COLSPAN, OB_ROWSPAN, OB_AWRAP,
+       OB_ALIN, OB_NLINES, OB_NLINEF, OB_NTLEN, OB_NWCF, OB_NWSF, OB_NLINEC, OB_NPOSC,
+       OB_NLALL, OB_APC, OB_APM1, OB_APM2
+ */
 #define OB_ARRLEN      19
 #define OB_TYPE         1
 #define OB_OB           2
 #define OB_ASTRU        2
 #define OB_CLS          3
 #define OB_ID           4
-#define OB_HREF         4
+#define OB_ACCESS       5
 #define OB_ATEXT        4
 #define OB_TWIDTH       4
 #define OB_TRNUM        4
 #define OB_TALIGN       5
 #define OB_TBL          5
+#define OB_HREF         6
+#define OB_IALIGN       7
 
 #define OB_CWIDTH       1
 #define OB_CLEFT        2
@@ -98,7 +119,7 @@ CLASS HCEdiExt INHERIT HCEdit
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
    METHOD End()
    METHOD Close()
-   METHOD SetText( xText, cPageIn, cPageOut, lCompact )
+   METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd )
    METHOD ReadTag( cTagName, aAttr )      INLINE .T.
    METHOD onEvent( msg, wParam, lParam )
    METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap )
@@ -167,22 +188,40 @@ METHOD Close() CLASS HCEdiExt
 
    RETURN Nil
 
-METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
+METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
    LOCAL aText, i, j, n := 0, nBack
    LOCAL nPos1, nPos2 := 0, nPosS, nPosA, cTagName, cVal, xVal, nAlign, aAttr, lSingle
    LOCAL lDiv := .F., lSpan := .F., lA := .F., lStyle := .F., lTable := .F., lTr := .F., lTd := .F., lBin := .F.
-   LOCAL cStyles, cClsName, aStruBack, aTextBack, iTd, nLTable, aStruTbl
+   LOCAL cStyles, cClsName, aStru, nAccess, aStruBack, aTextBack, iTd, nLTable, aStruTbl
    LOCAL aImg := {}
 
-   ::Close()
    ::lError := .F.
-   ::aBin := {}
-   ::aImages := {}
-   IF Empty( xText )
-      ::aStru := { { { 0,0,Nil } } }
-      RETURN ::Super:SetText()
-   ELSEIF Valtype( xText ) == "A"
-      RETURN ::Super:SetText( xText, cPageIn, cPageOut )
+   IF Empty( lAdd )
+      ::Close()
+      aText := {}
+      ::aStru := {}
+      ::aBin := {}
+      ::aImages := {}
+      IF Empty( xText )
+         ::aStru := { { { 0,0,Nil } } }
+         RETURN ::Super:SetText()
+      ELSEIF Valtype( xText ) == "A"
+         RETURN ::Super:SetText( xText, cPageIn, cPageOut )
+      ENDIF
+   ELSE
+      IF Empty( xText )
+         RETURN Nil
+      ENDIF
+      aText := AClone( ::aText )
+      ::lUpdated := .T.
+      IF Valtype( xText ) == "A"
+         aText := ASize( aText, Len(aText) + Len(xText) )
+         FOR i := 1 TO Len(xText)
+            aText[i+::nTextLen] := xText[i]
+         NEXT
+         RETURN ::Super:SetText( aText, cPageIn, cPageOut )
+      ENDIF
+      n := Len( aText )
    ENDIF
 
    ::lHtml := .F.
@@ -196,7 +235,9 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
       ELSEIF cTagName != "<hwge"
          IF Empty( lCompact )
             ::lError := .T.
-            ::aStru := { { {0,0,Nil} } }
+            IF Empty( lAdd )
+               ::aStru := { { {0,0,Nil} } }
+            ENDIF
             RETURN ::Super:SetText( , cPageIn, cPageOut )
          ENDIF
          nPos2 := 1
@@ -219,8 +260,6 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
          ::ReadTag( cTagName, aAttr )
       ENDIF
 
-      ::aStru := {}
-      aText := {}
       hbxml_SetEntity( { { "lt;","<" }, { "gt;",">" },{ "amp;","&" } } )
 
       DO WHILE ( nPos1 := hb_At( "<", xText, nPos2 ) ) != 0
@@ -248,7 +287,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
                lA := .F.
                nPosA := nPos2 + 1
                cVal := hbxml_preLoad( Substr( xText, nPosS, nPos1 - nPosS ) )
-               Aadd( ::aStru[n], { hced_Len(Self,aText[n])+1, hced_Len(Self,aText[n])+hced_Len(Self,cVal), Iif( Empty(cClsName),"url",cClsName ), ;
+               Aadd( ::aStru[n], { hced_Len(Self,aText[n])+1, hced_Len(Self,aText[n])+hced_Len(Self,cVal), Iif( Empty(cClsName),"url",cClsName ),,, ;
                      Iif( (i:=Ascan(aAttr,{|a|a[1]=="href"}))==0, "", aAttr[i,2] ) } )
                aText[n] += cVal
 
@@ -303,11 +342,15 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
             IF cTagName == "div" .OR. cTagName == "p"
                IF lDiv ; ::lError := .T. ; EXIT ; ENDIF
                Aadd( aText, "" )
-               Aadd( ::aStru, { { 0,0,cClsName } } )
-               n ++
-               IF ( i := Ascan( aAttr,{|a|a[1]=="id"} ) ) != 0
-                  Aadd( ::aStru[n,1], aAttr[i,2] )
+               nAccess := 0
+               i := Ascan( aAttr,{|a|a[1]=="id"} )
+               aStru := Iif( nAccess!=0, { 0,0,cClsName,,nAccess }, ;
+                     Iif( i != 0, { 0,0,cClsName, }, { 0,0,cClsName } ) )
+               IF i != 0
+                  aStru[OB_ID] := aAttr[i,2]
                ENDIF
+               Aadd( ::aStru, { aStru } )
+               n ++
                lDiv := .T.
                nPosA := nPos2 + 1
 
@@ -342,7 +385,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
                IF !Empty( xVal )
                   Aadd( ::aImages, xVal )
                ENDIF
-               Aadd( ::aStru, { { "img", xVal, cClsName, cVal, nAlign } } )
+               Aadd( ::aStru, { { "img", xVal, cClsName,,, cVal, nAlign } } )
                IF Left(cVal,1) == "#"
                   Aadd( aImg, Atail(::aStru)[1] )
                ENDIF
@@ -410,7 +453,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact ) CLASS HCEdiExt
       RETURN ::Super:SetText( , cPageIn, cPageOut )
    ENDIF
    FOR i := 1 TO Len( aImg )
-      cVal := Substr( aImg[i,4], 2 )
+      cVal := Substr( aImg[i,OB_HREF], 2 )
       IF ( n := Ascan( ::aBin, {|a|a[1]==cVal} ) ) > 0
          aImg[i,2] := ::aBin[n,3]
       ENDIF
@@ -656,7 +699,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
       aLine[AL_NCHARS] := 1
       IF !Empty( aStru[OB_OB] )
          nTWidth := aStru[OB_OB]:nWidth
-         aLine[AL_X1] += Iif( Empty(aStru[OB_TALIGN]), 0, Iif( aStru[OB_TALIGN]==2, nWidth - nTWidth, Round( (nWidth - nTWidth) / 2, 0 ) ) )
+         aLine[AL_X1] += Iif( Empty(aStru[OB_IALIGN]), 0, Iif( aStru[OB_IALIGN]==2, nWidth - nTWidth, Round( (nWidth - nTWidth) / 2, 0 ) ) )
          aLine[AL_X2] := aLine[AL_X1] + nTWidth
          aLine[AL_Y2] := yPos + aStru[OB_OB]:nHeight
          IF !Empty( aStru[OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStru[OB_CLS] )
@@ -1371,6 +1414,8 @@ METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref ) CLASS HCEdiExt
       ENDIF
    ENDIF
    IF cHref != Nil
+      Aadd( aStru[n1], Nil )   // Id
+      Aadd( aStru[n1], Nil )   // nOpt
       Aadd( aStru[n1], cHRef )
    ENDIF
    IF !::lChgStyle
@@ -1554,7 +1599,7 @@ METHOD InsImage( cName, nAlign, xAttr, xBin ) CLASS HCEdiExt
       Aadd( ::aBin, { cName, xBin, xVal } )
       cName := "#" + cName
    ENDIF
-   ::aStru[nL,1] :=  { "img", xVal, cClsName, cName, nAlign }
+   ::aStru[nL,1] :=  { "img", xVal, cClsName,,, cName, nAlign }
    IF ::aImages == Nil
       ::aImages := {}
    ENDIF
@@ -1772,7 +1817,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
             ENDIF
             nPos := ::aStru[i,j,2] + 1
             cPart := hced_Substr( Self, cLine, ::aStru[i,j,1], nPos - ::aStru[i,j,1] )
-            IF Len(::aStru[i,j]) > 3
+            IF Len(::aStru[i,j]) >= OB_HREF
                cHref := ::aStru[i,j,OB_HREF]
                IF lHtml .AND. Left( cHref, 5 ) == "goto:"
                   cHref := Substr( cHref, 8 )
@@ -1797,7 +1842,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
          ENDIF
          s += "<img" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', "" ) ;
             + ' src="' + ::aStru[i,1,OB_HREF] + '"' + ;
-            Iif( !Empty(xTemp:=::aStru[i,1,OB_TALIGN]), ' align="' + Iif( xTemp==2, 'right"','center"' ), "" ) + ;
+            Iif( !Empty(xTemp:=::aStru[i,1,OB_IALIGN]), ' align="' + Iif( xTemp==2, 'right"','center"' ), "" ) + ;
             ::SaveTag( "img", i ) + '/>' + cNewL
       ELSEIF ::aStru[i,1,OB_TYPE] == "tr"
          IF ::aStru[i,1,OB_TRNUM] == 1

@@ -138,6 +138,7 @@ CLASS HCEdit INHERIT HControl
    DATA   lReadOnly    INIT .F.
    DATA   lUpdated     INIT .F.
    DATA   lInsert      INIT .T.
+   DATA   lNoPaste     INIT .F.
 
    DATA   nShiftL      INIT 0
    DATA   nBoundL      INIT 0
@@ -1272,7 +1273,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          lUnSel := .F.
 
       ELSEIF hwg_checkBit( nctrl,FBITSHIFT )
-         IF !::lReadOnly
+         IF !::lReadOnly .AND. !::lNoPaste
             cLine := hwg_Getclipboardtext()
             ::InsText( ::aPointC, cLine )
             hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
@@ -1299,7 +1300,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    ELSEIF nKeyCode == 90 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'Z'
       ::Undo()
    ELSEIF nKeyCode == 86 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'V'
-      IF !::lReadOnly
+      IF !::lReadOnly .AND. !::lNoPaste
          cLine := hwg_Getclipboardtext()
          ::InsText( ::aPointC, cLine )
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ::nHeight )

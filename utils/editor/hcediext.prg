@@ -107,6 +107,7 @@ CLASS HCEdiExt INHERIT HCEdit
    DATA aImages
    DATA lHtml   INIT .F.
    DATA bImport, bImgLoad
+   DATA lSupervise INIT .F.
    DATA lError
    DATA aTdSel     INIT { 0,0 }
    DATA aDefClasses
@@ -189,7 +190,7 @@ METHOD Close() CLASS HCEdiExt
    RETURN Nil
 
 METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
-   LOCAL aText, i, j, n := 0, nBack
+   LOCAL aText, i, j, n := 0, nBack, n1, n2
    LOCAL nPos1, nPos2 := 0, nPosS, nPosA, cTagName, cVal, xVal, nAlign, aAttr, lSingle
    LOCAL lDiv := .F., lSpan := .F., lA := .F., lStyle := .F., lTable := .F., lTr := .F., lTd := .F., lBin := .F.
    LOCAL cStyles, cClsName, aStru, nAccess, aStruBack, aTextBack, iTd, nLTable, aStruTbl
@@ -279,7 +280,16 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
                lSpan := .F.
                nPosA := nPos2 + 1
                cVal := hbxml_preLoad( Substr( xText, nPosS, nPos1 - nPosS ) )
-               Aadd( ::aStru[n], { hced_Len(Self,aText[n])+1, hced_Len(Self,aText[n])+hced_Len(Self,cVal), cClsName } )
+               nAccess := hced_ReadAccInfo( Iif( (i:=Ascan(aAttr,{|a|a[1]=="access"}))==0, "", aAttr[i,2] ) )
+               i := Ascan( aAttr,{|a|a[1]=="id"} )
+               n1 := hced_Len(Self,aText[n])+1
+               n2 := hced_Len(Self,aText[n])+hced_Len(Self,cVal)
+               aStru := Iif( nAccess!=0, { n1,n2,cClsName,,nAccess }, ;
+                     Iif( i != 0, { n1,n2,cClsName, }, { n1,n2,cClsName } ) )
+               IF i != 0
+                  aStru[OB_ID] := aAttr[i,2]
+               ENDIF
+               Aadd( ::aStru[n], aStru )
                aText[n] += cVal
 
             ELSEIF cTagName == "/a"
@@ -287,8 +297,15 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
                lA := .F.
                nPosA := nPos2 + 1
                cVal := hbxml_preLoad( Substr( xText, nPosS, nPos1 - nPosS ) )
-               Aadd( ::aStru[n], { hced_Len(Self,aText[n])+1, hced_Len(Self,aText[n])+hced_Len(Self,cVal), Iif( Empty(cClsName),"url",cClsName ),,, ;
-                     Iif( (i:=Ascan(aAttr,{|a|a[1]=="href"}))==0, "", aAttr[i,2] ) } )
+               aStru := { hced_Len(Self,aText[n])+1, ;
+                     hced_Len(Self,aText[n])+hced_Len(Self,cVal), ;
+                     Iif( Empty(cClsName),"url",cClsName ),,, }
+               aStru[OB_ACCESS] := hced_ReadAccInfo( Iif( (i:=Ascan(aAttr,{|a|a[1]=="access"}))==0, "", aAttr[i,2] ) )
+               IF (i := Ascan( aAttr,{|a|a[1]=="id"} )) != 0
+                  aStru[OB_ID] := aAttr[i,2]
+               ENDIF
+               aStru[OB_HREF] := Iif( (i:=Ascan(aAttr,{|a|a[1]=="href"}))==0, "", aAttr[i,2] )
+               Aadd( ::aStru[n], aStru )
                aText[n] += cVal
 
             ELSEIF cTagName == "/style"
@@ -342,7 +359,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
             IF cTagName == "div" .OR. cTagName == "p"
                IF lDiv ; ::lError := .T. ; EXIT ; ENDIF
                Aadd( aText, "" )
-               nAccess := 0
+               nAccess := hced_ReadAccInfo( Iif( (i:=Ascan(aAttr,{|a|a[1]=="access"}))==0, "", aAttr[i,2] ) )
                i := Ascan( aAttr,{|a|a[1]=="id"} )
                aStru := Iif( nAccess!=0, { 0,0,cClsName,,nAccess }, ;
                      Iif( i != 0, { 0,0,cClsName, }, { 0,0,cClsName } ) )
@@ -385,7 +402,12 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
                IF !Empty( xVal )
                   Aadd( ::aImages, xVal )
                ENDIF
-               Aadd( ::aStru, { { "img", xVal, cClsName,,, cVal, nAlign } } )
+               aStru := { "img", xVal, cClsName,,, cVal, nAlign }
+               aStru[OB_ACCESS] := hced_ReadAccInfo( Iif( (i:=Ascan(aAttr,{|a|a[1]=="access"}))==0, "", aAttr[i,2] ) )
+               IF (i := Ascan( aAttr,{|a|a[1]=="id"} )) != 0
+                  aStru[OB_ID] := aAttr[i,2]
+               ENDIF
+               Aadd( ::aStru, { aStru } )
                IF Left(cVal,1) == "#"
                   Aadd( aImg, Atail(::aStru)[1] )
                ENDIF
@@ -469,6 +491,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
    LOCAL nRes := -1, nL, aStruTbl, iTd := 0, j, nIndent, nBoundL, nBoundR, nBoundT, nKey, nLine := 0, lInv := .F.
    LOCAL aPointC := {0,0}, aTbl1, aTbl2, lTab := .F., aPC, lChg := .F.
+   LOCAL lReadOnly := ::lReadOnly, lInsert := ::lInsert, lNoPaste := ::lNoPaste
 
    IF Ascan( aMsgs, msg ) > 0
       IF !Empty(::nLineC)
@@ -536,7 +559,26 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
       ENDIF
       IF !lTab
          aPC := ::PCopy( ::aPointC )
+         IF !::lSupervise .AND. !Empty( j := hced_getAccInfo( Self, ::aPointC ) )
+            IF hwg_checkBit( j, 2 )
+               ::lReadOnly := .T.
+            ENDIF
+            IF hwg_checkBit( j, 3 )
+               IF ( msg == MESS_CHAR .OR. msg == WM_KEYDOWN ) .AND. ;
+                     ( ( nKey := hwg_PtrToUlong( wParam ) ) == VK_BACK .OR. nKey == VK_DELETE )
+                  msg := 0
+               ENDIF
+               ::lInsert := .F.
+               ::lNoPaste := .T.
+            ENDIF
+            IF hwg_checkBit( j, 4 ) .AND. msg == MESS_CHAR .AND. hwg_PtrToUlong( wParam ) == VK_RETURN
+               msg := 0
+            ENDIF
+         ENDIF
          nRes := ::Super:onEvent( msg, wParam, lParam )
+         ::lReadOnly := lReadOnly
+         ::lInsert := lInsert
+         ::lNoPaste := lNoPaste
          lChg := ( ::aPointC[P_X] != aPC[P_X] .OR. ::aPointC[P_Y] != aPC[P_Y] )
          IF iTd > 0
             IF msg == WM_KEYDOWN .AND. nLine != hced_LineNum( Self, ::nLineC )
@@ -1807,7 +1849,9 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
             s += "</table>" + cNewL
          ENDIF
          s += "<div" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', '' ) + ;
-               Iif( Len(::aStru[i,1])>=OB_ID,' id="'+::aStru[i,1,OB_ID]+'"','' ) + ::SaveTag( "div", i ) + '>'
+               Iif( Len(::aStru[i,1])>=OB_ID.AND.!Empty(::aStru[i,1,OB_ID]),' id="'+::aStru[i,1,OB_ID]+'"','' ) + ;
+               Iif( !lHtml.AND.Len(::aStru[i,1])>=OB_ACCESS.AND.!Empty(::aStru[i,1,OB_ACCESS]),' access="'+hced_SaveAccInfo(::aStru[i,1,OB_ACCESS])+'"','' ) + ;
+               ::SaveTag( "div", i ) + '>'
          cLine := Trim(::aText[i] )
          nPos := 1
          FOR j := 2 TO Len( ::aStru[i] )
@@ -1825,8 +1869,10 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
             ELSE
                cHref := ""
             ENDIF
-            s += Iif( !Empty(cHref), '<a href="'+cHref+'"', '<span' ) + ' class="'+::aStru[i,j,OB_CLS] + ;
-                  ::SaveTag( "span", i, j ) + '">' + ;
+            s += Iif( !Empty(cHref), '<a href="'+cHref+'"', '<span' ) + ' class="'+::aStru[i,j,OB_CLS] + '"' + ;
+                  Iif( Len(::aStru[i,j])>=OB_ID.and.!Empty(::aStru[i,j,OB_ID]),' id="'+::aStru[i,j,OB_ID]+'"','' ) + ;
+                  Iif( !lHtml.AND.Len(::aStru[i,j])>=OB_ACCESS.and.!Empty(::aStru[i,j,OB_ACCESS]),' access="'+hced_SaveAccInfo(::aStru[i,j,OB_ACCESS])+'"','' ) + ;
+                  ::SaveTag( "span", i, j ) + '>' + ;
                   hbxml_preSave( Iif( !Empty(cpSou), hb_Translate( cPart, ::cp, cpSou ), cPart ) ) + ;
                   Iif( !Empty(cHref), '</a>', '</span>' )
          NEXT
@@ -1843,6 +1889,8 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
          s += "<img" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', "" ) ;
             + ' src="' + ::aStru[i,1,OB_HREF] + '"' + ;
             Iif( !Empty(xTemp:=::aStru[i,1,OB_IALIGN]), ' align="' + Iif( xTemp==2, 'right"','center"' ), "" ) + ;
+            Iif( Len(::aStru[i,1])>=OB_ID.and.!Empty(::aStru[i,1,OB_ID]),' id="'+::aStru[i,1,OB_ID]+'"','' ) + ;
+            Iif( !lHtml.AND.Len(::aStru[i,1])>=OB_ACCESS.and.!Empty(::aStru[i,1,OB_ACCESS]),' access="'+hced_SaveAccInfo(::aStru[i,1,OB_ACCESS])+'"','' ) + ;
             ::SaveTag( "img", i ) + '/>' + cNewL
       ELSEIF ::aStru[i,1,OB_TYPE] == "tr"
          IF ::aStru[i,1,OB_TRNUM] == 1
@@ -2363,3 +2411,89 @@ Function hced_CleanStru( oEdit, nLine1, nLine2 )
       ENDIF
    NEXT
    RETURN Nil
+
+Function hced_getAccInfo( oEdit, aPoint, nType )
+
+   LOCAL nOpt := 0, nOpt1, aLineStru := oEdit:aStru[aPoint[P_Y]], aStru
+
+   IF (nType == Nil .OR. nType == 0) .AND. Len( aLineStru[1] ) >= OB_ACCESS
+      nOpt := aLineStru[1,OB_ACCESS]
+   ENDIF
+   IF (nType == Nil .OR. nType > 0)
+      IF ( aStru := hced_Stru4Pos( aLineStru, aPoint[P_X],, .T. ) ) != Nil
+         IF Len( aStru ) >= OB_ACCESS
+            nOpt1 := aStru[OB_ACCESS]
+            IF nType == Nil
+               IF hwg_checkBit( nOpt1, 1 )
+                  nOpt := Iif( nOpt == 0, 0, 8 )
+               ELSEIF nOpt1 != 0
+                  nOpt := nOpt1
+               ENDIF
+            ELSE
+               nOpt := nOpt1
+            ENDIF
+         ENDIF
+      ELSEIF nType != Nil
+         RETURN Nil
+      ENDIF
+   ENDIF
+
+   RETURN nOpt
+
+Function hced_setAccInfo( oEdit, aPoint, nType, nOpt )
+
+   LOCAL aLineStru := oEdit:aStru[aPoint[P_Y]], aStru
+
+   IF nType == 0
+      aStru := aLineStru[1]
+   ELSE
+      aStru := hced_Stru4Pos( aLineStru, aPoint[P_X],, .T. )
+   ENDIF
+   IF aStru == Nil
+      RETURN .F.
+   ENDIF
+   IF Len( aStru ) < OB_ID
+      Aadd( aStru, Nil )
+   ENDIF
+   IF Len( aStru ) < OB_ACCESS
+      Aadd( aStru, Nil )
+   ENDIF
+   aStru[OB_ACCESS] := nOpt
+
+   RETURN .T.
+
+STATIC Function hced_ReadAccInfo( s )
+
+   LOCAL nOpt := 0
+
+   IF "allow" $ s
+      RETURN 1
+   ENDIF
+   IF "nowr" $ s
+      nOpt += 2
+   ENDIF
+   IF "noins" $ s
+      nOpt += 12
+   ELSEIF "nocr" $ s
+      nOpt += 8
+   ENDIF
+
+   RETURN nOpt
+
+STATIC Function hced_SaveAccInfo( nOpt )
+
+   LOCAL s := ""
+
+   IF hwg_checkBit( nOpt, 1 )
+      RETURN "allow"
+   ENDIF
+   IF hwg_checkBit( nOpt, 2 )
+      s += "nowr"
+   ENDIF
+   IF hwg_checkBit( nOpt, 3 )
+      s += Iif( Empty(s), "","," ) + "noins"
+   ELSEIF hwg_checkBit( nOpt, 4 )
+      s += Iif( Empty(s), "","," ) + "nocr"
+   ENDIF
+
+   RETURN s

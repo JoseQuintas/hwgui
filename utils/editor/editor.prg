@@ -30,6 +30,14 @@ REQUEST HB_CODEPAGE_RU866
 #define MENU_INSROW      1902
 #define MENU_TABLE       1903
 #define MENU_CELL        1904
+#define MENU_PNOWR       1911
+#define MENU_PNOINS      1912
+#define MENU_PNOCR       1913
+#define MENU_SALLOW      1914
+#define MENU_SNOWR       1915
+#define MENU_SNOINS      1916
+#define MENU_SNOCR       1917
+
 
 #define BOUNDL           12
 
@@ -43,6 +51,7 @@ REQUEST HB_CODEPAGE_RU866
 #define OB_OB           2
 #define OB_CLS          3
 #define OB_ID           4
+#define OB_ACCESS       5
 #define OB_HREF         6
 
 #define  CLR_BLACK          0
@@ -63,6 +72,7 @@ STATIC oFontP, oBrush1
 STATIC oToolbar, oRuler, oEdit, aButtons[4]
 STATIC oComboSiz, cComboSizDef := "100%", lComboSet := .F.
 STATIC aSetStyle, nLastMsg, nLastWpar, aPointLast[2], nCharsLast
+STATIC alAcc := { .F.,.F.,.F.,.F.,.F.,.F.,.F. }
 
 MEMVAR handcursor, cIniPath
 
@@ -161,6 +171,18 @@ FUNCTION Main ( fName )
       ENDMENU
       MENU TITLE "&Edit"
          MENUITEM "Undo" ACTION oEdit:Undo()
+         SEPARATOR
+         MENU TITLE "&Access to paragraph"
+            MENUITEMCHECK "&Read only" ID MENU_PNOWR ACTION setAccess( 1 )
+            MENUITEMCHECK "&OverWrite only" ID MENU_PNOINS ACTION setAccess( 2 )
+            MENUITEMCHECK "&No line break" ID MENU_PNOCR ACTION setAccess( 3 )
+         ENDMENU
+         MENU TITLE "&Access to span"
+            MENUITEMCHECK "&Read only" ID MENU_SNOWR ACTION setAccess( 1,.T. )
+            MENUITEMCHECK "&OverWrite only" ID MENU_SNOINS ACTION setAccess( 2,.T. )
+            MENUITEMCHECK "&No line break" ID MENU_SNOCR ACTION setAccess( 3,.T. )
+            MENUITEMCHECK "&No restrictions" ID MENU_SALLOW ACTION setAccess( 0,.T. )
+         ENDMENU
       ENDMENU
       MENU TITLE "&View"
          MENUITEMCHECK "&Ruler" ID MENU_RULER ACTION SetRuler()
@@ -408,7 +430,7 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
 STATIC FUNCTION onChangePos( lInit )
 
-   LOCAL arr, aAttr, i, l, cTmp
+   LOCAL arr, aAttr, i, l, cTmp, nOptP, nOptS
    STATIC lInTable := .F.
 
    IF lInit == Nil; lInit := .F.; ENDIF
@@ -456,6 +478,25 @@ STATIC FUNCTION onChangePos( lInit )
       hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )
       hwg_Enablemenuitem( , MENU_CELL, lInTable, .T. )
    ENDIF
+   nOptP := hced_getAccInfo( oEdit, oEdit:aPointC, 0 )
+   IF ( nOptS := hced_getAccInfo( oEdit, oEdit:aPointC, 1 ) ) == Nil
+      nOptS := 0
+   ENDIF
+   FOR i := 1 TO 3
+      IF hwg_CheckBit( nOptP, i+1 ) != alAcc[i]
+         alAcc[i] := !alAcc[i]
+         hwg_Checkmenuitem( ,MENU_PNOWR+i-1, alAcc[i] )
+      ENDIF
+      IF hwg_CheckBit( nOptS, i+1 ) != alAcc[i+3]
+         alAcc[i+3] := !alAcc[i+3]
+         hwg_Checkmenuitem( ,MENU_SNOWR+i-1, alAcc[i+3] )
+      ENDIF
+   NEXT
+   IF hwg_CheckBit( nOptS, 1 ) != alAcc[7]
+      alAcc[7] := !alAcc[7]
+      hwg_Checkmenuitem( ,MENU_SALLOW, alAcc[7] )
+   ENDIF
+
    aSetStyle := Nil
    lComboSet := .F.
 
@@ -560,6 +601,9 @@ STATIC FUNCTION ChangePara()
 
    IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
       cClsName := arr1[7,1,3]
+      IF Len( arr1[7,1] ) >= OB_ID
+         cId := arr1[7,1,OB_ID]
+      ENDIF
    ELSE
       cClsName := oEdit:aStru[nl,1,3]
       IF Len( oEdit:aStru[nl,1] ) >= OB_ID
@@ -595,7 +639,7 @@ STATIC FUNCTION ChangePara()
    arr[1] := nMarginL; arr[2] := nMarginR; arr[3] := nIndent; arr[4] := nAlign; arr[5] := nBWidth; arr[6] := nBColor
 
    INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set paragraph properties"  ;
-      AT 210, 10  SIZE 340, 460 FONT HWindow():GetMain():oFont ON INIT {||Iif(Len(arr1)>=7,oGetId:Disable(),.T.)}
+      AT 210, 10  SIZE 340, 460 FONT HWindow():GetMain():oFont
 
    //@ 20, 10 SAY "Template:" SIZE 140, 24
    //@ 160, 10 GET COMBOBOX nTempl ITEMS aTempl SIZE 120, 24 DISPLAYCOUNT 6
@@ -661,10 +705,17 @@ STATIC FUNCTION ChangePara()
          ENDIF
       ENDIF
       IF !Empty( cId )
+         IF Len( arr1 ) >= 7
+            oEdit:LoadEnv( arr1[1], arr1[2] )
+            nl := arr1[4]
+         ENDIF
          IF Len( oEdit:aStru[nl,1] ) >= OB_ID
             oEdit:aStru[nl,1,OB_ID] := cId
          ELSE
             Aadd( oEdit:aStru[nl,1], cId )
+         ENDIF
+         IF Len( arr1 ) >= 7
+            oEdit:RestoreEnv( arr1[1], arr1[2] )
          ENDIF
       ENDIF
    ENDIF
@@ -744,6 +795,53 @@ STATIC FUNCTION ChangeDoc()
    ENDIF
 
    RETURN .F.
+
+STATIC FUNCTION setAccess( n, lSpan )
+
+   LOCAL nL, aStru, arr1, nOpt := 0, l
+
+   IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
+      oEdit:LoadEnv( arr1[1], arr1[2] )
+      nl := arr1[4]
+   ELSE
+      nL := oEdit:aPointC[P_Y]
+   ENDIF
+   aStru := oEdit:aStru[nL]
+
+   nOpt := hced_getAccInfo( oEdit, oEdit:aPointC, Iif( Empty(lSpan), 0, 1 ) )
+   IF nOpt == Nil
+      nOpt := 0
+   ENDIF
+
+   IF Empty( lSpan )
+      l := !hwg_CheckBit( nOpt, n+1 )
+      hwg_Checkmenuitem( , MENU_PNOWR+n-1, l )
+      alAcc[n] := l
+      IF l
+         nOpt := hb_BitSet( nOpt, n )
+      ELSE
+         nOpt := hb_BitReset( nOpt, n )
+      ENDIF
+   ELSE
+      IF n == 0
+      ENDIF
+      l := !hwg_CheckBit( nOpt, n+1 )
+      hwg_Checkmenuitem( , MENU_SNOWR+n-1, l )
+      alAcc[Iif(n==0,7,n+3)] := l
+      IF l
+         nOpt := hb_BitSet( nOpt, n )
+      ELSE
+         nOpt := hb_BitReset( nOpt, n )
+      ENDIF
+   ENDIF
+
+   hced_setAccInfo( oEdit, oEdit:aPointC, Iif( Empty(lSpan), 0, 1 ), nOpt )
+
+   IF Len( arr1 ) >= 7
+      oEdit:RestoreEnv( arr1[1], arr1[2] )
+   ENDIF
+
+   RETURN Nil
 
 STATIC FUNCTION SetText( oEd, cText )
    LOCAL aText, i, nLen
@@ -890,7 +988,7 @@ STATIC FUNCTION InsTable( lNew )
      RETURN .T.
    }
 
-   IF Valtype(oEdit:aStru[nL,1,1]) != "C" .OR. oEdit:aStru[nL,1,1] != "tr"
+   IF Valtype(oEdit:aStru[nL,1,1]) == "C" .AND. oEdit:aStru[nL,1,1] == "tr"
       RETURN Nil
    ENDIF
 
@@ -982,14 +1080,14 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
    nLastWpar := hwg_PtrToUlong( wParam )
    IF msg == WM_LBUTTONDBLCLK
       IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) ) .AND. ;
-            !Empty( arr[3] ) .AND. Len( arr[3] ) > 3
+            !Empty( arr[3] ) .AND. Len( arr[3] ) >= OB_HREF
          UrlLaunch( arr[3,OB_HREF] )
       ENDIF
       RETURN 0
 
    ELSEIF msg == WM_MOUSEMOVE
       IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) ) .AND. ;
-            !Empty( arr[3] ) .AND. Len( arr[3] ) > 3
+            !Empty( arr[3] ) .AND. Len( arr[3] ) >= OB_HREF
          hwg_SetCursor( handCursor )
       ENDIF
 

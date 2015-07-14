@@ -118,7 +118,7 @@ HB_FUNC( HWG_GETCLIPBOARDTEXT )
             {
                lpText = ( LPTSTR ) hb_xgrab( nSize + 1 );
                memcpy( lpText, lpMem, nSize );
-               lpText[nSize] = 0;
+               ((char*)lpText)[nSize] = 0;
             }
             ( void ) GlobalUnlock( hglb );
          }

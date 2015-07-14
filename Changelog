@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-14 11:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    ! Small fix in :InsText()
+
 2015-07-14 11:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/misc.c
     ! hwg_GetClipboardText() fixed for UNICODE mode

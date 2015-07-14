@@ -1819,7 +1819,7 @@ METHOD InsText( aPoint, cText, lOver, lChgPos ) CLASS HCEdit
          ::nWSublF := nSub
          ::nWCharF := Iif( nSub==1, 1, ::aWrap[nLineNew,nSub-1] )
          ::LineUp( .F. )
-         ::nLineC := 2
+         ::nLineC := Min( 2, ::nTextLen - ::nLineF + 1 )
          ::Paint( .F. )
       ELSE
          ::nLineC := i

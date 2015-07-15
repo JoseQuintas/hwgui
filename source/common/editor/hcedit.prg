@@ -1863,6 +1863,7 @@ METHOD AddLine( nLine ) CLASS HCEdit
    IF ::lWrap
       AIns( ::aWrap, nLine )
    ENDIF
+   ::lUpdated := .T.
 
    RETURN Nil
 
@@ -1874,6 +1875,7 @@ METHOD DelLine( nLine ) CLASS HCEdit
    ENDIF
    ::nTextLen --
    ::nLinesAll --
+   ::lUpdated := .T.
 
    RETURN Nil
 

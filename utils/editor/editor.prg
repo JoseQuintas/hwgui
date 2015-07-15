@@ -29,7 +29,8 @@ REQUEST HB_CODEPAGE_RU866
 #define MENU_RULER       1901
 #define MENU_INSROW      1902
 #define MENU_TABLE       1903
-#define MENU_CELL        1904
+#define MENU_ROW         1904
+#define MENU_CELL        1905
 #define MENU_PNOWR       1911
 #define MENU_PNOINS      1912
 #define MENU_PNOCR       1913
@@ -53,6 +54,11 @@ REQUEST HB_CODEPAGE_RU866
 #define OB_ID           4
 #define OB_ACCESS       5
 #define OB_HREF         6
+
+#define OB_TRNUM        4
+#define OB_TWIDTH       4
+#define OB_TALIGN       5
+#define OB_TBL          5
 
 #define  CLR_BLACK          0
 #define  CLR_GRAY1    5592405  // #555555
@@ -189,11 +195,11 @@ FUNCTION Main ( fName )
       ENDMENU
       MENU TITLE "&Insert"
          MENU TITLE "&Url"
-            MENUITEM "&External" ACTION EditUrl( .T., 1 )
-            MENUITEM "&Internal" ACTION EditUrl( .T., 2 )
+            MENUITEM "&External" ACTION setUrl( .T., 1 )
+            MENUITEM "&Internal" ACTION setUrl( .T., 2 )
          ENDMENU
          MENUITEM "&Image" ACTION InsImage()
-         MENUITEM "&Table" ACTION InsTable( .T. )
+         MENUITEM "&Table" ACTION setTable( .T. )
          MENUITEM "&Rows" ID MENU_INSROW ACTION InsRows()
       ENDMENU
       MENU TITLE "&Format"
@@ -226,9 +232,12 @@ FUNCTION Main ( fName )
             MENUITEM "Font" ACTION ChgFont( .T. )
             MENUITEM "Color" ACTION ChangeColor( .T. )
          ENDMENU
-         MENUITEM "&URL" ACTION EditUrl( .F. )
+         MENUITEM "&URL" ACTION setUrl( .F. )
          SEPARATOR
-         MENUITEM "&Table" ID MENU_TABLE ACTION (.T.)
+         MENUITEM "&Table" ID MENU_TABLE ACTION setTable( .F. )
+         MENU TITLE "&Row" ID MENU_ROW 
+            MENUITEM "&Delete" ACTION DelRow()
+         ENDMENU
          MENUITEM "&Cell" ID MENU_CELL ACTION ChangeColor( .T., .T. )
       ENDMENU
       MENU TITLE "&Help"
@@ -471,12 +480,13 @@ STATIC FUNCTION onChangePos( lInit )
             oComboSiz:Value := Ascan( oComboSiz:aItems,cComboSizDef )
          ENDIF
       ENDIF
-   ENDIF
-   IF ( l := ( oEdit:getEnv() > 0 ) ) != lInTable .OR. lInit
-      lInTable := l
-      hwg_Enablemenuitem( , MENU_INSROW, lInTable, .T. )
-      hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )
-      hwg_Enablemenuitem( , MENU_CELL, lInTable, .T. )
+      IF ( l := ( ( oEdit:getEnv() > 0 ) .OR. ( !Empty(arr).AND.Len(arr)>= 7 ) ) ) != lInTable .OR. lInit
+         lInTable := l
+         hwg_Enablemenuitem( , MENU_INSROW, lInTable, .T. )
+         hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )
+         hwg_Enablemenuitem( , MENU_ROW, lInTable, .T. )
+         hwg_Enablemenuitem( , MENU_CELL, lInTable, .T. )
+      ENDIF
    ENDIF
    nOptP := hced_getAccInfo( oEdit, oEdit:aPointC, 0 )
    IF ( nOptS := hced_getAccInfo( oEdit, oEdit:aPointC, 1 ) ) == Nil
@@ -875,8 +885,8 @@ STATIC FUNCTION SetText( oEd, cText )
 
    RETURN aText
 
-STATIC FUNCTION EditUrl( lNew, nType )
-   LOCAL oDlg, cHref := "", cName := "", cTemp, aPos, xAttr
+STATIC FUNCTION setUrl( lNew, nType )
+   LOCAL oDlg, nL, cHref := "", cName := "", cName0, aPos, xAttr
    LOCAL aRefs, nref
 
    aPos := oEdit:GetPosInfo()
@@ -885,8 +895,9 @@ STATIC FUNCTION EditUrl( lNew, nType )
          hwg_msgStop( "Can't insert URL into existing one" )
          RETURN Nil
       ENDIF
+      nL := aPos[1]
       cHref := aPos[3,OB_HREF]
-      cName := SubStr( oEdit:aText[aPos[1]], aPos[3,1], aPos[3,2] - aPos[3,1] + 1 )
+      cName := cName0 := SubStr( oEdit:aText[aPos[1]], aPos[3,1], aPos[3,2] - aPos[3,1] + 1 )
       nType := Iif( Left(cHRef,5)=="goto:", 2, 1 )
    ELSEIF !lNew
       hwg_msgStop( "Set cursor to existing URL" )
@@ -898,7 +909,7 @@ STATIC FUNCTION EditUrl( lNew, nType )
 
    @ 20, 10 SAY "Href:" SIZE 120, 22
    IF nType == 1
-      @ 20, 32 GET cHref SIZE 320, 26 STYLE ES_AUTOHSCROLL
+      @ 20, 32 GET cHref SIZE 320, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0
    ELSE
       aRefs := oEdit:Find( ,"",, .T. )
       IF lNew
@@ -911,11 +922,10 @@ STATIC FUNCTION EditUrl( lNew, nType )
    ENDIF
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-   IF lNew
-      @ 20, 70 SAY "Name:" SIZE 120, 22
-      @ 20, 92 GET cName SIZE 320, 26 STYLE ES_AUTOHSCROLL
-      Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
-   ENDIF
+   @ 20, 70 SAY "Name:" SIZE 120, 22
+   @ 20, 92 GET cName SIZE 320, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0
+   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
    @  20, 140 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
    @ 240, 140 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
 
@@ -931,6 +941,11 @@ STATIC FUNCTION EditUrl( lNew, nType )
             oEdit:InsSpan( cName, xAttr, cHref )
          ELSE
             aPos[3,OB_HREF] := cHref
+            IF cName != cName0
+               oEdit:InsText( { aPos[3,1],aPos[1] }, cName,, .F. )
+               oEdit:DelText( { aPos[3,1]+Len(cName),aPos[1] }, ;
+                     { aPos[3,1]+Len(cName)+Len(cName0),aPos[1] }, .F. )
+            ENDIF
             oEdit:lUpdated := .T.
          ENDIF
       ENDIF
@@ -976,10 +991,12 @@ STATIC FUNCTION InsImage()
 
    RETURN Nil
 
-STATIC FUNCTION InsTable( lNew )
+STATIC FUNCTION setTable( lNew )
    LOCAL oDlg, nRows := 3, nCols := 2, nBorder := 0, nBColor := 0, nWidth := 100
-   LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, aAttr
-   LOCAL nL := oEdit:aPointC[P_Y]
+   LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, cClsName, aAttr, lNeedScan := .F.
+   LOCAL nRows0, nBorder0 := 0, nBColor0 := 0
+   LOCAL nL := oEdit:aPointC[P_Y], nLast
+   LOCAL aStruTbl, i
    LOCAL bColor := { ||
      LOCAL nColor
      IF ( nColor := Hwg_ChooseColor( nBColor ) ) != Nil
@@ -988,19 +1005,33 @@ STATIC FUNCTION InsTable( lNew )
      RETURN .T.
    }
 
-   IF Valtype(oEdit:aStru[nL,1,1]) == "C" .AND. oEdit:aStru[nL,1,1] == "tr"
+   IF lNew == ( Valtype(oEdit:aStru[nL,1,1]) == "C" .AND. oEdit:aStru[nL,1,1] == "tr" )
       RETURN Nil
    ENDIF
 
-   /*
    IF !lNew
-      nRows := Len( oNodeTblC:aItems )
-      nCols := Len( oNodeTblC:cargo[CG_TABLE,TBL_COLS] )
-      nBorder := oNodeTblC:cargo[CG_TABLE,TBL_BORDER]
-      nWidth := - oNodeTblC:cargo[CG_TABLE,TBL_WIDTH]
-      nAlign := oNodeTblC:cargo[CG_TABLE,TBL_ALIGN] + 1
+      nRows := oEdit:aStru[nL,1,OB_TRNUM]
+      aStruTbl := oEdit:aStru[nL-nRows+1,1,OB_TBL]
+      IF !Empty( cClsName := aStruTbl[OB_CLS] )
+         aAttr := oEdit:getClassAttr( cClsName )
+         IF ( i := Ascan( aAttr, "bw" ) ) != 0
+            nBorder := nBorder0 := Val( SubStr( aAttr[i],3 ) )
+         ENDIF
+         IF ( i := Ascan( aAttr, "bc" ) ) != 0
+            nBColor := nBColor0 := Val( SubStr( aAttr[i],3 ) )
+         ENDIF
+      ENDIF
+
+      i := 1
+      DO WHILE nL+i <= oEdit:nTextLen .AND. Valtype(oEdit:aStru[nL+i,1,1]) == "C" .AND. oEdit:aStru[nL+i,1,1] == "tr"
+         i ++
+         nRows ++
+      ENDDO
+      nRows0 := nRows
+      nCols := Len( aStruTbl[OB_OB] )
+      nWidth := Iif( Empty(aStruTbl[OB_TWIDTH]), 100, Abs(aStruTbl[OB_TWIDTH]) )
+      nAlign := aStruTbl[OB_TALIGN] + 1
    ENDIF
-   */
 
    INIT DIALOG oDlg TITLE "Insert Table"  ;
       AT 20, 30 SIZE 440, 250 FONT HWindow():GetMain():oFont
@@ -1042,6 +1073,51 @@ STATIC FUNCTION InsTable( lNew )
          oEdit:InsTable( nCols, nRows, iif( nWidth == 100, Nil, - nWidth ), ;
             nAlign-1, aAttr )
       ELSE
+         aStruTbl[OB_TWIDTH] := - nWidth
+         aStruTbl[OB_TALIGN] := nAlign - 1
+         IF nCols != Len( aStruTbl[OB_OB] )
+         ENDIF
+         nLast := nL - oEdit:aStru[nL,1,OB_TRNUM] + nRows0
+         IF nRows < nRows0
+            IF nL > nLast - (nRows0-nRows)
+               oEdit:aPointC[P_Y] := nLast - (nRows0-nRows)
+            ENDIF
+            FOR i := nLast TO nLast - (nRows0-nRows) + 1 STEP - 1
+               oEdit:DelLine( i )
+            NEXT
+            lNeedScan := .T.
+         ELSEIF nRows > nRows0
+            oEdit:InsRows( nLast, nRows-nRows0 )
+            lNeedScan := .T.
+         ENDIF
+         IF nBorder != nBorder0 .OR. nBColor != nBColor0
+            IF Empty( aAttr )
+               aAttr := {}
+               IF nBorder > 0
+                  AAdd( aAttr, "bw" + LTrim(Str(nBorder)) )
+               ENDIF
+               IF nBColor > 0
+                  AAdd( aAttr, "bc" + LTrim(Str(nBColor)) )
+               ENDIF
+            ELSE
+               IF ( i := Ascan( aAttr, "bw" ) ) != 0
+                  aAttr[i] := "bw" + Ltrim(Str(nBorder))
+               ELSE
+                  AAdd( aAttr, "bw" + LTrim(Str(nBorder)) )
+               ENDIF
+               IF ( i := Ascan( aAttr, "bc" ) ) != 0
+                  aAttr[i] := "bc" + Ltrim(Str(nBColor))
+               ELSE
+                  AAdd( aAttr, "bc" + LTrim(Str(nBColor)) )
+               ENDIF
+            ENDIF
+            aStruTbl[OB_CLS] := oEdit:FindClass( , aAttr, .T. )
+         ENDIF
+         IF lNeedScan
+            oEdit:Scan( oEdit:aPointC[P_Y] )
+            oEdit:Paint( .F. )
+            hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
+         ENDIF
       ENDIF
    ENDIF
 
@@ -1069,6 +1145,31 @@ STATIC FUNCTION InsRows()
       oEdit:InsRows( nL, nRows )
       hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
    ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION DelRow()
+
+   LOCAL nL := oEdit:aPointC[P_Y], i
+
+   IF Valtype(oEdit:aStru[nL,1,1]) != "C" .OR. oEdit:aStru[nL,1,1] != "tr"
+      RETURN Nil
+   ENDIF
+
+   IF nL == oEdit:nTextLen .OR. ;
+         !(Valtype(oEdit:aStru[nL+1,1,1]) == "C" .AND. oEdit:aStru[nL+1,1,1] == "tr")
+      oEdit:aPointC[P_Y] := nL - 1
+   ENDIF
+
+   i := nL
+   DO WHILE ++i <= oEdit:nTextLen .AND. ;
+         Valtype(oEdit:aStru[i,1,1]) == "C" .AND. oEdit:aStru[i,1,1] == "tr"
+      oEdit:aStru[i,1,OB_TRNUM] --
+   ENDDO
+   oEdit:DelLine( nL )
+   oEdit:Scan( nL )
+   oEdit:Paint( .F. )
+   hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
 
    RETURN Nil
 

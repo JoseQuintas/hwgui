@@ -69,13 +69,12 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::lMultiLine := .T.
    ENDIF
 
-   IF !Empty( nMaxLength )
-      ::nMaxLength := nMaxLength
-   ENDIF
-
    ::ParsePict( cPicture, vari )
    IF Empty( ::nMaxLength ) .AND. !Empty( ::bSetGet ) .AND. Valtype( vari ) == "C"
       ::nMaxLength := Len( vari )
+   ENDIF
+   IF nMaxLength != Nil
+      ::nMaxLength := nMaxLength
    ENDIF
 
    ::Activate()

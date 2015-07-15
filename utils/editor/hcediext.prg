@@ -49,11 +49,11 @@
  *
  * <img>:     "img", OB_OB(HBitmap), OB_CLS, OB_ID, OB_ACCESS, OB_HREF, OB_IALIGN
  *
- * <tr>(1):   "tr", OB_OB(td), cClsName, 1(nRow), OB_TBL
+ * <tr>(1):   "tr", OB_OB(td), cClsName, OB_TRNUM(1), OB_TBL
  *    The first <tr> of a table includes the table data (OB_TBL) 
  *    OB_TBL:  "tbl", OB_OB(aCols), cClsName, OB_TWIDTH, OB_TALIGN }
  *    aCols:   OB_CWIDTH, OB_CLEFT, OB_CRIGHT
- * <tr>(2...):"tr", OB_OB(td), cClsName, nRow
+ * <tr>(2...):"tr", OB_OB(td), cClsName, OB_TRNUM
  * <td>:      "td", OB_ASTRU, cClsName, OB_ATEXT, OB_COLSPAN, OB_ROWSPAN, OB_AWRAP,
        OB_ALIN, OB_NLINES, OB_NLINEF, OB_NTLEN, OB_NWCF, OB_NWSF, OB_NLINEC, OB_NPOSC,
        OB_NLALL, OB_APC, OB_APM1, OB_APM2
@@ -491,13 +491,13 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
    LOCAL nRes := -1, nL, aStruTbl, iTd := 0, j, nIndent, nBoundL, nBoundR, nBoundT, nKey, nLine := 0, lInv := .F.
    LOCAL aPointC := {0,0}, aTbl1, aTbl2, lTab := .F., aPC, lChg := .F.
-   LOCAL lReadOnly := ::lReadOnly, lInsert := ::lInsert, lNoPaste := ::lNoPaste
+   LOCAL lReadOnly := ::lReadOnly, lInsert := ::lInsert, lNoPaste := ::lNoPaste, lProtected := .F.
 
    IF Ascan( aMsgs, msg ) > 0
       IF !Empty(::nLineC)
          aPointC[P_Y] := nl := ::aPointC[P_Y]
          aPointC[P_X] := ::aPointC[P_X]
-         IF !Empty( nL ) .AND. Valtype( ::aStru[nL,1,OB_TYPE] ) != "N" 
+         IF !Empty( nL ) .AND. Valtype( ::aStru[nL,1,OB_TYPE] ) != "N"
             IF ::aStru[nL,1,1] == "tr"
                aTbl1 := aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
             ELSEIF ::aStru[nL,1,1] == "img"
@@ -560,6 +560,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
       IF !lTab
          aPC := ::PCopy( ::aPointC )
          IF !::lSupervise .AND. !Empty( j := hced_getAccInfo( Self, ::aPointC ) )
+            lProtected := .T.
             IF hwg_checkBit( j, 2 )
                ::lReadOnly := .T.
             ENDIF
@@ -576,9 +577,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
             ENDIF
          ENDIF
          nRes := ::Super:onEvent( msg, wParam, lParam )
-         ::lReadOnly := lReadOnly
-         ::lInsert := lInsert
-         ::lNoPaste := lNoPaste
+         IF lProtected
+            ::lReadOnly := lReadOnly
+            ::lInsert := lInsert
+            ::lNoPaste := lNoPaste
+         ENDIF
          lChg := ( ::aPointC[P_X] != aPC[P_X] .OR. ::aPointC[P_Y] != aPC[P_Y] )
          IF iTd > 0
             IF msg == WM_KEYDOWN .AND. nLine != hced_LineNum( Self, ::nLineC )

@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-15 15:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    * MAXLENGTH now overrides values, calculated from the variable and picture length.
+  * source/common/editor/hcedit.prg
+  * utils/editor/hcediext.prg
+    ! Few fixes
+  * utils/editor/editor.prg
+    * Editing of a table properties added
+    * Deleting of table rows added
+
 2015-07-14 15:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * :lNoPaste variable added

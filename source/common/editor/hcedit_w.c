@@ -66,7 +66,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapicdp.h"
-#include "guilib.h"
+//#include "guilib.h"
 
 LRESULT CALLBACK WinCtrlProc( HWND, UINT, WPARAM, LPARAM );
 

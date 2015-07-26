@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-25 21:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * include/guilib.h
+    ! added declaration for hb_itemEqual for xharbour
+  * source/winapi/misc
+    ! added hb_itemEqual for xharbour
+  * source/common/editor/hcedit_w.c
+    ! removed #include "guilib.h" 
+        
 2015-07-15 15:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
   * source/winapi/hedit.prg

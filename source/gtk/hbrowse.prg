@@ -1631,7 +1631,7 @@ STATIC FUNCTION GetEventHandler( oBrw, msg, cod )
    IF msg == WM_KEYDOWN .AND. cod == GDK_Escape
       oBrw:oGet:nLastKey := GDK_Escape
       hwg_Setfocus( oBrw:area )
-      ::lEditing := .F.
+      oBrw:lEditing := .F.
       RETURN 1
    ENDIF
 

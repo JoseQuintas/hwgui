@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-27 10:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+    ! Small fix
+
 2015-07-27 09:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawtext.c
     * hwg_setCtrlFont() function modified:

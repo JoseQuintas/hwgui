@@ -5,6 +5,7 @@
 -n -w
 
 -oeditor
+-lhbct
 
 editor.prg
 hcediext.prg

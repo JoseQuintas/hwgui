@@ -459,10 +459,10 @@ int CALLBACK GetFontsCallback( ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme,
    HB_SYMBOL_UNUSED( FontType );
    HB_SYMBOL_UNUSED( lParam );
 
-   hb_itemPutC( pFontsItem, (const char *) lpelfe->elfFullName );
+   HB_ITEMPUTSTR( pFontsItem, (LPCTSTR)lpelfe->elfFullName );
    if( !hb_itemEqual( pFontsItem, pFontsItemLast ) )
    {
-      hb_itemPutC( pFontsItemLast, (const char *) lpelfe->elfFullName );
+      HB_ITEMPUTSTR( pFontsItemLast, (LPCTSTR)lpelfe->elfFullName );
       hb_arrayAdd( aFontsList, pFontsItem );
    }
    return 1;

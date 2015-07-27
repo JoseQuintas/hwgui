@@ -132,6 +132,7 @@ CLASS HBrowse INHERIT HControl
    DATA lAutoEdit INIT .F.
    DATA lUpdated  INIT .F.
    DATA lAppended INIT .F.
+   DATA lEditing  INIT .F.                     // .T., if a field is edited now
    DATA lAdjRight INIT .T.                     // Adjust last column to right
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
@@ -1607,6 +1608,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          y1 := ::y1 + ( ::height + 1 ) * rowPos
 
          ::nGetRec := Eval( ::bRecno, Self )
+         ::lEditing := .T.
          @ x1, y1 GET ::oGet VAR ::varbuf      ;
             OF ::oParent                   ;
             SIZE nWidth, ::height + 1        ;
@@ -1629,6 +1631,7 @@ STATIC FUNCTION GetEventHandler( oBrw, msg, cod )
    IF msg == WM_KEYDOWN .AND. cod == GDK_Escape
       oBrw:oGet:nLastKey := GDK_Escape
       hwg_Setfocus( oBrw:area )
+      ::lEditing := .F.
       RETURN 1
    ENDIF
 

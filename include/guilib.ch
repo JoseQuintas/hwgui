@@ -1041,6 +1041,7 @@
             [ VALID <bLfocus> ]        ;
             [ ON KEYDOWN <bKeyDown>]   ;
             [ ON CHANGE <bChange> ]    ;
+            [ ON SIZE <bSize> ]        ;
             [<lPassword: PASSWORD>]    ;
             [ MAXLENGTH <nMaxLength> ] ;
             [ STYLE <nStyle> ]         ;
@@ -1050,7 +1051,7 @@
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
-                   <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
+                   <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,<bSize>,,  ;
                    <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>,<bChange> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 

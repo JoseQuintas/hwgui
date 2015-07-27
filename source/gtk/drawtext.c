@@ -284,7 +284,7 @@ HB_FUNC( HWG_SETCTRLFONT )
 {
    GtkWidget * hCtrl = (GtkWidget*) HB_PARHANDLE(1);
    GtkWidget * hLabel = (GtkWidget*) g_object_get_data( (GObject*) hCtrl,"label" );   
-   GtkStyle * style;
+   //GtkStyle * style;
 
    if( GTK_IS_BUTTON( hCtrl ) )
       hCtrl = gtk_bin_get_child( GTK_BIN( hCtrl ) );
@@ -293,10 +293,11 @@ HB_FUNC( HWG_SETCTRLFONT )
    else if( hLabel )
       hCtrl = (GtkWidget*) hLabel;
       
-   style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
+   //style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
+   //style->font_desc = ( (PHWGUI_FONT) HB_PARHANDLE(3) )->hFont;
+   //gtk_widget_set_style( hCtrl, style );
 
-   style->font_desc = ( (PHWGUI_FONT) HB_PARHANDLE(3) )->hFont;
-   gtk_widget_set_style( hCtrl, style );
+   gtk_widget_modify_font( hCtrl, ( (PHWGUI_FONT) HB_PARHANDLE(3) )->hFont );
 
 }
 

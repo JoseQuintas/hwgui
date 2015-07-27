@@ -156,6 +156,7 @@ CLASS HBrowse INHERIT HControl
    DATA lAutoEdit INIT .F.
    DATA lUpdated  INIT .F.
    DATA lAppended INIT .F.
+   DATA lEditing  INIT .F.                     // .T., if a field is edited now
    DATA lAdjRight INIT .T.                     // Adjust last column to right
    DATA nHeadRows INIT 1                       // Rows in header
    DATA nFootRows INIT 0                       // Rows in footer
@@ -1761,6 +1762,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          ELSE
             INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT { |o|o:center() }
          ENDIF
+         ::lEditing := .T.
 
          IF oColumn:aList != Nil
             oModDlg:brush := - 1
@@ -1809,6 +1811,8 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          ENDIF
 
          ACTIVATE DIALOG oModDlg
+
+         ::lEditing := .F.
 
          IF oColumn:aList != Nil
             oComboFont:Release()

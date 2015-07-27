@@ -66,7 +66,7 @@
 #include "hbvm.h"
 #include "hbstack.h"
 #include "hbapicdp.h"
-//#include "guilib.h"
+#include "guilib.h"
 
 LRESULT CALLBACK WinCtrlProc( HWND, UINT, WPARAM, LPARAM );
 
@@ -121,7 +121,7 @@ typedef struct
    int       ixCaretPos;
    int       iyCaretPos;
    int     iCaretHeight;
-
+   COLORREF  lBorderClr;
 } TEDIT;
 
 #define  NUMBER_OF_FONTS  32
@@ -861,6 +861,16 @@ HB_FUNC( HCED_LINEOUT )
    pted->ypos = ypos + iHeight;
    hb_storni( pted->ypos, 3 );
    hb_retni( (iCalculated)? iCalculated : iPrinted );
+}
+
+HB_FUNC( HCED_SETBORDERCOLOR )
+{
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+   pted->lBorderClr = (COLORREF) hb_parnl(2);
+}
+
+HB_FUNC( HCED_DRAWBORDER )
+{
 }
 
 HB_FUNC( HCED_COLOR2X )

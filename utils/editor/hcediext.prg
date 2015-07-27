@@ -93,6 +93,12 @@
 #define OB_APM1        18
 #define OB_APM2        19
 
+#define BIT_ALLOW       1
+#define BIT_RDONLY      2
+#define BIT_NOINS       3
+#define BIT_NOCR        4
+#define BIT_CLCSCR      5
+
 #define WM_MOUSEACTIVATE    33
 
 STATIC cNewLine := e"\r\n"
@@ -130,7 +136,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD AddClass( cName, cSource )
    METHOD FindClass( xBase, xAttr, cNewClass )
    METHOD SetHili( nGroup, oFont, tColor, bColor, nMargL, nMargR, nIndent, nAlign )
-   METHOD ChgStyle( P1, P2, xAttr, lDiv )
+   METHOD ChgStyle( P1, P2, xAttr, lDiv, PCell )
    METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref )
    METHOD StyleDiv( nLine, xAttr, cClass )
    METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr )
@@ -375,6 +381,35 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd ) CLASS HCEdiExt
                IF ( !lDiv .AND. !lTd ) .OR. lSpan .OR. lA ; ::lError := .T. ; EXIT ; ENDIF
                lSpan := .T.
                nPosS := nPos2 + 1
+               IF ( i := Ascan(aAttr,{|a|a[1]=="value"}) ) != 0
+                  DO WHILE Substr( xText, nPosS, 1 ) $ e" \t\r\n"; nPosS ++; ENDDO
+                  IF Substr( xText, nPosS, 9 ) == "<![CDATA["
+                     nPosS += 9
+                     IF ( nPos2 := hb_At( "]]>", xText, nPosS ) ) == 0
+                        ::lError := .T. ; EXIT
+                     ENDIF
+                     cVal := aAttr[i,2]
+                     aStru := { hced_Len(Self,aText[n])+1, ;
+                           hced_Len(Self,aText[n])+hced_Len(Self,cVal), cClsName,,, }
+                     aStru[OB_ACCESS] := hced_ReadAccInfo( Iif( (i:=Ascan(aAttr,{|a|a[1]=="access"}))==0, "", aAttr[i,2] ) ) + BIT_CLCSCR
+                     IF (i := Ascan( aAttr,{|a|a[1]=="id"} )) != 0
+                        aStru[OB_ID] := aAttr[i,2]
+                     ENDIF
+                     aStru[OB_HREF] := Substr( xText, nPosS, nPos2 -nPosS )
+                     Aadd( ::aStru[n], aStru )
+                     aText[n] += cVal
+                     nPosS := nPos2 + 3
+                     DO WHILE Substr( xText, nPosS, 1 ) $ e" \t\r\n"; nPosS ++; ENDDO
+                     IF Substr( xText, nPosS, 7 ) == "</span>"
+                        nPosA := nPosS := nPos2 := nPosS + 7
+                     ELSE
+                        ::lError := .T. ; EXIT
+                     ENDIF
+                  ELSE
+                     ::lError := .T. ; EXIT
+                  ENDIF
+               ENDIF
+
                IF nPos1 > nPosA // + 1
                   aText[n] += hbxml_preLoad( Substr( xText, nPosA, nPos1 - nPosA ) )
                ENDIF
@@ -590,6 +625,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
             IF !Empty( ::aPointM2[P_Y] )
                ::aTdSel[1] := iTd
                ::aTdSel[2] := nL
+            ELSEIF msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP .OR. msg == WM_KEYDOWN
+               ::aTdSel[2] := 0
             ENDIF
             ::RestoreEnv( nL, iTd )
             ::nBoundL := nBoundL; ::nBoundT := nBoundT
@@ -1293,7 +1330,7 @@ METHOD SetHili( xGroup, xFont, tColor, bColor, nMargL, nMargR, nIndent, nAlign, 
 
    RETURN ::Super:SetHili( xGroup, xFont, tColor, bColor )
 
-METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
+METHOD ChgStyle( P1, P2, xAttr, lDiv, PCell ) CLASS HCEdiExt
 
    LOCAL i, n1, n2
    LOCAL Pstart, Pend, aStru, nLTr, iTd
@@ -1310,6 +1347,8 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv ) CLASS HCEdiExt
       ELSE
          RETURN Nil
       ENDIF
+   ELSEIF PCell != Nil
+      ::LoadEnv( nLTr := PCell[P_Y], iTd := PCell[P_X] )
    ENDIF
    IF ::Pcmp( P1, P2 ) < 0
       Pstart := ::PCopy( P1, Pstart )
@@ -1860,7 +1899,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
          FOR j := 2 TO Len( ::aStru[i] )
             IF ::aStru[i,j,1] > nPos
                cPart := hced_Substr( Self, cLine, nPos, ::aStru[i,j,1] - nPos )
-               s += hbxml_preSave( Iif( !Empty(cpSou), hb_Translate( cPart, ::cp, cpSou ), cPart ) )
+               s += hbxml_preSave( Iif( !Empty(cpSou).AND.!(cpSou==::cp), hb_Translate( cPart, ::cp, cpSou ), cPart ) )
             ENDIF
             nPos := ::aStru[i,j,2] + 1
             cPart := hced_Substr( Self, cLine, ::aStru[i,j,1], nPos - ::aStru[i,j,1] )
@@ -1876,12 +1915,12 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact ) CLASS HCEdiExt
                   Iif( Len(::aStru[i,j])>=OB_ID.and.!Empty(::aStru[i,j,OB_ID]),' id="'+::aStru[i,j,OB_ID]+'"','' ) + ;
                   Iif( !lHtml.AND.Len(::aStru[i,j])>=OB_ACCESS.and.!Empty(::aStru[i,j,OB_ACCESS]),' access="'+hced_SaveAccInfo(::aStru[i,j,OB_ACCESS])+'"','' ) + ;
                   ::SaveTag( "span", i, j ) + '>' + ;
-                  hbxml_preSave( Iif( !Empty(cpSou), hb_Translate( cPart, ::cp, cpSou ), cPart ) ) + ;
+                  hbxml_preSave( Iif( !Empty(cpSou).AND.!(cpSou==::cp), hb_Translate( cPart, ::cp, cpSou ), cPart ) ) + ;
                   Iif( !Empty(cHref), '</a>', '</span>' )
          NEXT
          IF nPos <= hced_Len( Self, cLine )
             cPart := hced_Substr( Self, cLine, nPos, hced_Len( Self, cLine ) - nPos + 1 )
-            s += hbxml_preSave( Iif( !Empty(cpSou), hb_Translate( cPart, ::cp, cpSou ), cPart ) )
+            s += hbxml_preSave( Iif( !Empty(cpSou).AND.!(cpSou==::cp), hb_Translate( cPart, ::cp, cpSou ), cPart ) )
          ENDIF
          s += "</div>" + cNewL
       ELSEIF ::aStru[i,1,OB_TYPE] == "img"
@@ -2487,15 +2526,15 @@ STATIC Function hced_SaveAccInfo( nOpt )
 
    LOCAL s := ""
 
-   IF hwg_checkBit( nOpt, 1 )
+   IF hwg_checkBit( nOpt, BIT_ALLOW )
       RETURN "allow"
    ENDIF
-   IF hwg_checkBit( nOpt, 2 )
+   IF hwg_checkBit( nOpt, BIT_RDONLY )
       s += "nowr"
    ENDIF
-   IF hwg_checkBit( nOpt, 3 )
+   IF hwg_checkBit( nOpt, BIT_NOINS )
       s += Iif( Empty(s), "","," ) + "noins"
-   ELSEIF hwg_checkBit( nOpt, 4 )
+   ELSEIF hwg_checkBit( nOpt, BIT_NOCR )
       s += Iif( Empty(s), "","," ) + "nocr"
    ENDIF
 

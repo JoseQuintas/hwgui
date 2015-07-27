@@ -8,6 +8,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-27 09:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawtext.c
+    * hwg_setCtrlFont() function modified:
+         gtk_widget_modify_font() is used now instead of gtk_widget_get_style()/
+         gtk_widget_set_style() for to not reset the current theme.
+  * source/winapi/drawtext.c
+    ! GetFontsCallback() fixed for Unicode mode
+  * source/winapi/hupdown.prg
+    * :Hide(), :Show() methods added to Hide/Show the  pair of arrow buttons.
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * :lEditing variable added, which is set to .T. when a field is edited
+  * include/guilib.ch
+    * added clause ON SIZE to the @ ... GET command
+  * source/gtk/control.c
+    ! Fixed combobox behaviour - now it allows to edit content manually
+      only if EDIT clause is set.
+  * source/common/editor/hcedit.prg
+    * The default source codepage for Linux is set to utf8
+  * source/common/editor/hcedit_l.prg
+  * source/common/editor/hcedit_w.prg
+    * hced_setBorderColor() function added
+  * utils/editor/hcediext.prg
+  * utils/editor/editor.prg   
+  + utils/editor/editor.hwge
+
 2015-07-25 21:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * include/guilib.h
     ! added declaration for hb_itemEqual for xharbour

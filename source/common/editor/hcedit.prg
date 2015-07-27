@@ -235,8 +235,8 @@ CLASS HCEdit INHERIT HControl
    METHOD PCopy( Psource, Pdest )
    METHOD PCmp( P1, P2 )
    METHOD GetText( P1, P2 )
-   METHOD InsText( aPoint, cText, lOver )
-   METHOD DelText( P1, P2 )
+   METHOD InsText( aPoint, cText, lOver, lChgPos )
+   METHOD DelText( P1, P2, lChgPos )
    METHOD AddLine( nLine )
    METHOD DelLine( nLine )
    METHOD Refresh()
@@ -898,7 +898,7 @@ Local nPos
 
 #ifdef __PLATFORM__UNIX
    ::lUtf8 := .T.
-   ::Convert( cPageIn := Iif( Empty(cPageIn), "EN",cPageIn ), cPageOut := "UTF8" )
+   ::Convert( cPageIn := Iif( Empty(cPageIn), "UTF8",cPageIn ), cPageOut := "UTF8" )
 #else
    ::Convert( cPageIn, cPageOut )
 #endif
@@ -1699,7 +1699,7 @@ METHOD GetText( P1, P2 ) CLASS HCEdit
    RETURN cText
 
 METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
-   LOCAL i, Pstart, Pend, cRest, nPos, cText := ::GetText( P1, P2 )
+   LOCAL i, Pstart, Pend, cRest, nPos
 
    IF lChgPos == Nil; lChgPos := .T.; ENDIF
    IF ::Pcmp( P1, P2 ) < 0
@@ -1710,7 +1710,7 @@ METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
       Pend := ::PCopy( P1, Pend )
    ENDIF
 
-   ::Undo( Pstart[P_Y], Pstart[P_X], Pend[P_Y], Pend[P_X], 3, cText )
+   ::Undo( Pstart[P_Y], Pstart[P_X], Pend[P_Y], Pend[P_X], 3, ::GetText( P1, P2 ) )
    IF !Empty( ::oHili )
       ::oHili:UpdSource( Pstart[P_Y], Pstart[P_X], Pend[P_Y], Pend[P_X], 3 )
    ENDIF

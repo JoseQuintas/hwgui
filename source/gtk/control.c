@@ -322,6 +322,9 @@ HB_FUNC( HWG_CREATECOMBO )
       gtk_fixed_put( box, hCtrl, hb_parni( 4 ), hb_parni( 5 ) );
    gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
 
+   if( hb_parni(3) & 1 )
+      gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (hCtrl)->entry), FALSE);
+
    HB_RETHANDLE( hCtrl );
 }
 

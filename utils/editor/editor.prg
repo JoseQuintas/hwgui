@@ -31,6 +31,7 @@ REQUEST HB_CODEPAGE_RU866
 #define MENU_TABLE       1903
 #define MENU_ROW         1904
 #define MENU_CELL        1905
+#define MENU_SPAN        1906
 #define MENU_PNOWR       1911
 #define MENU_PNOINS      1912
 #define MENU_PNOCR       1913
@@ -71,6 +72,7 @@ REQUEST HB_CODEPAGE_RU866
 #define  CLR_LBLUE2  16770002  // #D2E3FF
 #define  CLR_LBLUE3  16772062  // #DEEBFF
 
+REQUEST PI, COS, SIN, TAN, COT, ACOS, ASIN, ATAN, DTOR, RTOD
 
 STATIC cNewLine := e"\r\n"
 STATIC cWebBrow
@@ -85,7 +87,7 @@ MEMVAR handcursor, cIniPath
 FUNCTION Main ( fName )
    LOCAL oMainWindow, oFont
    LOCAL oStyle1, oStyle2, oStyle3
-   LOCAL aComboSiz := { "40%", "60%", "80%", "90%", cComboSizDef, "110%", "120%", "130%", "140%", "150%", "160%", "180%", "200%" }
+   LOCAL aComboSiz := { "50%", "60%", "80%", "90%", cComboSizDef, "110%", "120%", "130%", "140%", "150%", "160%", "180%", "200%", "240%", "280%" }
    LOCAL x1
 
    PRIVATE oMenuC1, handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
@@ -94,8 +96,13 @@ FUNCTION Main ( fName )
       hb_cdpSelect( "UTF8" )
    ENDIF
 
+#ifdef __PLATFORM__UNIX
+   PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 13
+   PREPARE FONT oFontP NAME "Sans" WIDTH 0 HEIGHT 12
+#else
    PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 204
    PREPARE FONT oFontP NAME "Courier New" WIDTH 0 HEIGHT - 15
+#endif
    oBrush1 := HBrush():Add( 16777215 )
 
    oStyle1 := HStyle():New( {CLR_LBLUE,CLR_LBLUE3}, 1 )
@@ -163,20 +170,22 @@ FUNCTION Main ( fName )
 
    MENU OF oMainWindow
       MENU TITLE "&File"
-         MENUITEM "&New" ACTION NewFile()
-         MENUITEM "&Open" ACTION OpenFile()
+         MENUITEM "&New"+Chr(9)+"Ctrl+N" ACTION NewFile() ACCELERATOR FCONTROL,Asc("N")
+         MENUITEM "&Open"+Chr(9)+"Ctrl+O" ACTION OpenFile() ACCELERATOR FCONTROL,Asc("O")
          MENUITEM "&Add" ACTION OpenFile( ,.T. )
          SEPARATOR
-         MENUITEM "&Save" ACTION SaveFile( .F. )
+         MENUITEM "&Save"+Chr(9)+"Ctrl+S" ACTION SaveFile( .F. ) ACCELERATOR FCONTROL,Asc("S")
          MENUITEM "Save &as" ACTION SaveFile( .T. , .F. )
          MENUITEM "Save as &html" ACTION SaveFile( .T. , .T. )
          SEPARATOR
-         MENUITEM "&Print" ACTION PrintFile()
+         MENUITEM "&Print"+Chr(9)+"Ctrl+P" ACTION PrintFile() ACCELERATOR FCONTROL,Asc("P")
          SEPARATOR
          MENUITEM "E&xit" ACTION hwg_EndWindow()
       ENDMENU
       MENU TITLE "&Edit"
-         MENUITEM "Undo" ACTION oEdit:Undo()
+         MENUITEM "Undo"+Chr(9)+"Ctrl+Z" ACTION oEdit:Undo()
+         SEPARATOR
+         MENUITEM "Calculate"+Chr(9)+"F9" ACTION Calc() ACCELERATOR 0,VK_F9
          SEPARATOR
          MENU TITLE "&Access to paragraph"
             MENUITEMCHECK "&Read only" ID MENU_PNOWR ACTION setAccess( 1 )
@@ -195,52 +204,36 @@ FUNCTION Main ( fName )
       ENDMENU
       MENU TITLE "&Insert"
          MENU TITLE "&Url"
-            MENUITEM "&External" ACTION setUrl( .T., 1 )
-            MENUITEM "&Internal" ACTION setUrl( .T., 2 )
+            MENUITEM "&External"+Chr(9)+"Ctrl+I" ACTION (InsUrl( 1 ),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("I")
+            MENUITEM "&Internal" ACTION (InsUrl( 2 ),hced_Setfocus(oEdit:hEdit))
          ENDMENU
-         MENUITEM "&Image" ACTION InsImage()
-         MENUITEM "&Table" ACTION setTable( .T. )
-         MENUITEM "&Rows" ID MENU_INSROW ACTION InsRows()
+         MENUITEM "&Image" ACTION (InsImage(),hced_Setfocus(oEdit:hEdit))
+         MENUITEM "&Table" ACTION (setTable( .T. ),hced_Setfocus(oEdit:hEdit))
+         MENUITEM "&Rows" ID MENU_INSROW ACTION (InsRows(),hced_Setfocus(oEdit:hEdit))
       ENDMENU
       MENU TITLE "&Format"
-         MENU TITLE "&Style"
-            MENUITEM "Set Bold" ACTION oEdit:ChgStyle( ,, "fb" )
-            MENUITEM "Set Italic" ACTION oEdit:ChgStyle( ,, "fi" )
-            MENUITEM "Set Underline" ACTION oEdit:ChgStyle( ,, "fu" )
-            MENUITEM "Set StrikeOut" ACTION oEdit:ChgStyle( ,, "fs" )
-            SEPARATOR
-            MENUITEM "ReSet Bold" ACTION oEdit:ChgStyle( ,, "fb-" )
-            MENUITEM "ReSet Italic" ACTION oEdit:ChgStyle( ,, "fi-" )
-            MENUITEM "ReSet Underline" ACTION oEdit:ChgStyle( ,, "fu-" )
-            MENUITEM "ReSet StrikeOut" ACTION oEdit:ChgStyle( ,, "fs-" )
-         ENDMENU
-         MENUITEM "&Font" ACTION ChgFont( .F. )
-         MENUITEM "Colo&r" ACTION ChangeColor( .F. )
+         MENUITEM "Span"+Chr(9)+"Ctrl+E" ID MENU_SPAN ACTION (setSpan(),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("E")
          SEPARATOR
-         MENUITEM "&Document" ACTION ChangeDoc()
+         MENUITEM "&Document" ACTION (setDoc(),hced_Setfocus(oEdit:hEdit))
          MENU TITLE "&Paragraph"
-            MENUITEM "Properties" ACTION ChangePara()
+            MENUITEM "Properties"+Chr(9)+"Ctrl+H" ACTION (setPara(),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("H")
             SEPARATOR
-            MENU TITLE "Templates"
-               MENUITEM "h1" ACTION oEdit:StyleDiv( ,, "h1" )
-               MENUITEM "h2" ACTION oEdit:StyleDiv( ,, "h2" )
-               MENUITEM "h3" ACTION oEdit:StyleDiv( ,, "h3" )
-               MENUITEM "h4" ACTION oEdit:StyleDiv( ,, "h4" )
-               MENUITEM "h5" ACTION oEdit:StyleDiv( ,, "h5" )
-               MENUITEM "cite" ACTION oEdit:StyleDiv( ,, "cite" )
-            ENDMENU
-            MENUITEM "Font" ACTION ChgFont( .T. )
-            MENUITEM "Color" ACTION ChangeColor( .T. )
+            MENUITEM "h1" ACTION oEdit:StyleDiv( ,, "h1" )
+            MENUITEM "h2" ACTION oEdit:StyleDiv( ,, "h2" )
+            MENUITEM "h3" ACTION oEdit:StyleDiv( ,, "h3" )
+            MENUITEM "h4" ACTION oEdit:StyleDiv( ,, "h4" )
+            MENUITEM "h5" ACTION oEdit:StyleDiv( ,, "h5" )
+            MENUITEM "cite" ACTION oEdit:StyleDiv( ,, "cite" )
          ENDMENU
-         MENUITEM "&URL" ACTION setUrl( .F. )
          SEPARATOR
-         MENUITEM "&Table" ID MENU_TABLE ACTION setTable( .F. )
+         MENUITEM "&Table" ID MENU_TABLE ACTION (setTable( .F. ),hced_Setfocus(oEdit:hEdit))
          MENU TITLE "&Row" ID MENU_ROW 
             MENUITEM "&Delete" ACTION DelRow()
          ENDMENU
-         MENUITEM "&Cell" ID MENU_CELL ACTION ChangeColor( .T., .T. )
+         MENUITEM "&Cell" ID MENU_CELL ACTION (setCellColor(),hced_Setfocus(oEdit:hEdit))
       ENDMENU
       MENU TITLE "&Help"
+         MENUITEM "&Help" ACTION Help()
          MENUITEM "&About" ACTION About()
       ENDMENU
    ENDMENU
@@ -325,7 +318,7 @@ STATIC FUNCTION CloseFile()
 STATIC FUNCTION PrintFile()
 
    IF Empty( oEdit:nDocFormat )
-      ChangeDoc()
+      setDoc()
    ENDIF
    IF !Empty( oEdit:nDocFormat )
       oEdit:Print()
@@ -395,7 +388,7 @@ STATIC FUNCTION onBtnSize()
    LOCAL cAttr
 
    IF !lComboSet
-      IF !Empty( oEdit:aPointM2[2] ) .OR. !Empty( oEdit:aTdSel[2] )
+      IF !Empty( oEdit:aPointM2[P_Y] ) .OR. !Empty( oEdit:aTdSel[2] )
 
          cAttr := "fh" + oComboSiz:aItems[oComboSiz:Value]
          oEdit:ChgStyle( ,, cAttr )
@@ -408,7 +401,7 @@ STATIC FUNCTION onBtnColor()
 
    LOCAL nColor, cAttr
 
-   IF !Empty( oEdit:aPointM2[2] ) .OR. !Empty( oEdit:aTdSel[2] )
+   IF !Empty( oEdit:aPointM2[P_Y] ) .OR. !Empty( oEdit:aTdSel[2] )
 
       IF ( nColor := Hwg_ChooseColor( 0 ) ) != Nil
          cAttr := "ct" + Ltrim(Str( nColor ))
@@ -422,7 +415,7 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
    LOCAL cAttr
 
-   IF !Empty( oEdit:aPointM2[2] ) .OR. !Empty( oEdit:aTdSel[2] )
+   IF !Empty( oEdit:aPointM2[P_Y] ) .OR. !Empty( oEdit:aTdSel[2] )
 
       cAttr := aButtons[nBtn]:cargo + Iif( aButtons[nBtn]:lPress, "", "-" )
       oEdit:ChgStyle( ,, cAttr )
@@ -480,6 +473,7 @@ STATIC FUNCTION onChangePos( lInit )
             oComboSiz:Value := Ascan( oComboSiz:aItems,cComboSizDef )
          ENDIF
       ENDIF
+      hwg_Enablemenuitem( , MENU_SPAN, (!Empty(arr).AND.!Empty(arr[3])).OR.!Empty(oEdit:aPointM2[P_Y]), .T. )
       IF ( l := ( ( oEdit:getEnv() > 0 ) .OR. ( !Empty(arr).AND.Len(arr)>= 7 ) ) ) != lInTable .OR. lInit
          lInTable := l
          hwg_Enablemenuitem( , MENU_INSROW, lInTable, .T. )
@@ -512,38 +506,15 @@ STATIC FUNCTION onChangePos( lInit )
 
    RETURN Nil
 
-STATIC FUNCTION ChgFont( lDiv )
-   LOCAL oFont := HFont():Select( oEdit:oFont ), nFont
-
-   IF oFont != Nil
-      nFont := oEdit:AddFont( , oFont:name, oFont:width, oFont:height, oFont:weight, ;
-         oFont:charset, oFont:italic, oFont:underline, oFont:strikeout )
-      IF lDiv
-         oEdit:StyleDiv( , "ff" + LTrim( Str(nFont ) ) )
-      ELSE
-         oEdit:ChgStyle( ,, "ff" + LTrim( Str(nFont ) ) )
-      ENDIF
-   ENDIF
-
-   RETURN Nil
-
-STATIC FUNCTION ChangeColor( lDiv, lCell )
+STATIC FUNCTION setCellColor()
    LOCAL oDlg, oSay
    LOCAL aHili, tColor, bColor, nColor, tc, tb, arr := {}, arr1
 
-   IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
-      IF Empty( lCell )
-         oEdit:LoadEnv( arr1[1], arr1[2] )
-         aHili := oEdit:StyleDiv()
-         oEdit:RestoreEnv( arr1[1], arr1[2] )
-      ELSE
-         aHili := oEdit:StyleDiv()
-      ENDIF
-   ELSEIF !Empty( lCell )
+   IF Len( arr1 := oEdit:GetPosInfo() ) < 7
       RETURN Nil
-   ELSE
-      aHili := oEdit:StyleDiv()
    ENDIF
+
+   aHili := oEdit:StyleDiv()
 
    IF aHili == Nil
       tColor := oEdit:tColor
@@ -555,7 +526,7 @@ STATIC FUNCTION ChangeColor( lDiv, lCell )
    tc := tColor
    tb := bColor
 
-   INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set " + Iif( Empty(lCell),"","cell " ) + "color"  ;
+   INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set cell color"  ;
       AT 210, 10  SIZE 300, 190 FONT HWindow():GetMain():oFont
 
    @ 20, 20 SAY "Text:" SIZE 120, 22
@@ -580,34 +551,129 @@ STATIC FUNCTION ChangeColor( lDiv, lCell )
          AAdd( arr, "cb" + LTrim( Str(bColor ) ) )
       ENDIF
 
-      IF lDiv
-         IF Len( arr1 ) >= 7 .AND. Empty( lCell )
-            oEdit:LoadEnv( arr1[1], arr1[2] )
-            oEdit:StyleDiv( arr1[4], arr )
-            oEdit:RestoreEnv( arr1[1], arr1[2] )
-         ELSE
-            oEdit:StyleDiv( , arr )
-         ENDIF
-      ELSE
-         oEdit:ChgStyle( ,, arr )
-      ENDIF
+      oEdit:StyleDiv( , arr )
    ENDIF
 
    RETURN Nil
 
-STATIC FUNCTION ChangePara()
+STATIC FUNCTION textTab( oTab, aAttr )
+
+   LOCAL i, nTop, oSayTest, nColor, oSayTClr, oSayBClr
+   LOCAL bColorT, bColorB
+   MEMVAR tColor, bColor, tc, tb, aComboFam, cFamily, nFamily
+   MEMVAR nSize, nsb, nfb
+   MEMVAR lb, li, lu, ls, lbb, lib, lub, lsb
+
+   bColorT := {||
+      IF ( nColor := Hwg_ChooseColor( tColor ) ) != Nil
+         tColor := nColor
+         oSayTest:Setcolor( tColor,,.T. )
+         oSayTClr:SetText( Iif( tColor==0,"Default","#"+hwg_ColorN2C(tColor) ) )
+         hwg_Redrawwindow( oSayTClr:handle, RDW_ERASE + RDW_INVALIDATE + + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      ENDIF
+      RETURN .T.
+   }
+   bColorB := {||
+      IF ( nColor := Hwg_ChooseColor( bColor ) ) != Nil
+         bColor := nColor
+         oSayTest:Setcolor( ,bColor,.T. )
+         oSayBClr:SetText( Iif( bColor==16777215,"Default","#"+hwg_ColorN2C(bColor) ) )
+         hwg_Redrawwindow( oSayBClr:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      ENDIF
+      RETURN .T.
+   }
+
+#ifdef __PLATFORM__UNIX
+   nTop := 10
+#else
+   nTop := 40
+#endif
+
+   IF !Empty( aAttr )
+      IF ( i := Ascan( aAttr, "ct" ) ) != 0
+         tColor := Val( SubStr( aAttr[i],3 ) )
+      ENDIF
+      IF ( i := Ascan( aAttr, "cb" ) ) != 0
+         bColor := Val( SubStr( aAttr[i],3 ) )
+      ENDIF
+      IF ( i := Ascan( aAttr, "fn" ) ) != 0
+         cFamily := SubStr( aAttr[i],3 )
+      ENDIF
+      IF ( i := Ascan( aAttr, "fh" ) ) != 0
+         IF ( i := Ascan( oComboSiz:aItems,Substr(aAttr[i],3) ) ) > 0
+            nSize := i
+         ENDIF
+      ENDIF
+      IF ( i := Ascan( aAttr, "fb" ) ) != 0
+         lb := ( Substr(aAttr[i],3,1) != '-' )
+      ENDIF
+      IF ( i := Ascan( aAttr, "fi" ) ) != 0
+         li := ( Substr(aAttr[i],3,1) != '-' )
+      ENDIF
+      IF ( i := Ascan( aAttr, "fu" ) ) != 0
+         lu := ( Substr(aAttr[i],3,1) != '-' )
+      ENDIF
+      IF ( i := Ascan( aAttr, "fs" ) ) != 0
+         ls := ( Substr(aAttr[i],3,1) != '-' )
+      ENDIF
+   ENDIF
+   tc := tColor; tb := bColor; nsb := nSize; nfb := nFamily
+   lbb := lb; lib := li; lub := lu; lsb := ls
+
+   BEGIN PAGE "Text" of oTab
+
+      @ 10, nTop GROUPBOX "Font" SIZE 360, 160
+
+      @ 20,nTop+20 SAY "Family:" SIZE 90, 22 TRANSPARENT
+      IF ( i := Ascan( aComboFam, cFamily ) ) > 0
+         nFamily := i
+      ENDIF
+      @ 110,nTop+20 GET COMBOBOX nFamily ITEMS aComboFam SIZE 240, 28 DISPLAYCOUNT 8
+
+      @ 20,nTop+60 SAY "Size:" SIZE 90, 22 TRANSPARENT
+      @ 110,nTop+60 GET COMBOBOX nSIze ITEMS oComboSiz:aItems SIZE 90, 26 DISPLAYCOUNT 6
+
+      @ 20, nTop+100 GET CHECKBOX lb CAPTION "Bold" SIZE 140, 22 TRANSPARENT
+      @ 190,nTop+100 GET CHECKBOX li CAPTION "Italic" SIZE 140, 22 TRANSPARENT
+      @ 20, nTop+124 GET CHECKBOX lu CAPTION "Underline" SIZE 140, 22 TRANSPARENT
+      @ 190,nTop+124 GET CHECKBOX ls CAPTION "Strikeout" SIZE 140, 22 TRANSPARENT
+
+      @ 10, nTop+188 GROUPBOX "Color" SIZE 360, 140
+      @ 20, nTop+214 SAY "Text:" SIZE 120, 22 TRANSPARENT
+      @ 150,nTop+210  BUTTON "Select" SIZE 100, 32 ON CLICK bColorT
+      @ 260,nTop+214 SAY oSayTClr CAPTION Iif( tColor==0,"Default","#"+hwg_ColorN2C(tColor) ) SIZE 90, 22 STYLE WS_BORDER BACKCOLOR 16777215
+
+      @ 20, nTop+254 SAY "Background:" SIZE 120, 22 TRANSPARENT
+      @ 150,nTop+250 BUTTON "Select" SIZE 100, 32 ON CLICK bColorB
+      @ 260,nTop+254 SAY oSayBClr CAPTION Iif( bColor==16777215,"Default","#"+hwg_ColorN2C(bColor) ) SIZE 90, 22 STYLE WS_BORDER BACKCOLOR 16777215
+
+      @ 20, nTop+290 SAY oSayTest CAPTION "This is a sample" SIZE 340, 26 ;
+         STYLE WS_BORDER + SS_CENTER COLOR tColor BACKCOLOR bcolor
+
+   END PAGE of oTab
+
+   RETURN Nil
+
+STATIC FUNCTION setPara()
    LOCAL oDlg, nMarginL := oEdit:nMarginL, nMarginR := oEdit:nMarginR, nIndent := oEdit:nIndent
-   LOCAL nBWidth := 0, nBColor := 0, cId := "", oGetId
+   LOCAL oTab, nTop, nColor
+   LOCAL nBWidth := 0, nBColor := 0, cId := ""
    LOCAL lml := .F. , lmr := .F. , lti := .F. , nAlign := 1, aCombo := { "Left", "Center", "Right" }
    LOCAL nL := oEdit:aPointC[P_Y], arr1, cClsName, aAttr, i, arr[6]
-   //LOCAL nTempl := 1, aTempl := { " ", "Header 1", "Header 2", "Header 3", "Header 4", "Header 5" }
-   LOCAL bColor := { ||
-     LOCAL nColor
-     IF ( nColor := Hwg_ChooseColor( nBColor ) ) != Nil
-        nBColor := nColor
-     ENDIF
-     RETURN .T.
-   }
+
+   MEMVAR tColor, bColor, tc, tb, aComboFam, cFamily, nFamily
+   MEMVAR nSize, nsb, nfb
+   MEMVAR lb, li, lu, ls, lbb, lib, lub, lsb
+   PRIVATE tColor := oEdit:tColor, bColor := oEdit:bColor, tc, tb
+   PRIVATE aComboFam := Asort( hwg_getFontsList() ), cFamily := "", nFamily := 1
+   PRIVATE nSize := Ascan( oComboSiz:aItems,cComboSizDef ), nsb, nfb
+   PRIVATE lb := .F., li := .F., lu := .F., ls := .F., lbb, lib, lub, lsb
+
+#ifdef __PLATFORM__UNIX
+   nTop := 10
+#else
+   nTop := 40
+#endif
 
    IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
       cClsName := arr1[7,1,3]
@@ -647,46 +713,55 @@ STATIC FUNCTION ChangePara()
    ENDIF
 
    arr[1] := nMarginL; arr[2] := nMarginR; arr[3] := nIndent; arr[4] := nAlign; arr[5] := nBWidth; arr[6] := nBColor
+   tc := tColor; tb := bColor; nsb := nSize; nfb := nFamily
+   lbb := lb; lib := li; lub := lu; lsb := ls
 
    INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set paragraph properties"  ;
-      AT 210, 10  SIZE 340, 460 FONT HWindow():GetMain():oFont
+      AT 210, 10  SIZE 400, 460 FONT HWindow():GetMain():oFont
 
-   //@ 20, 10 SAY "Template:" SIZE 140, 24
-   //@ 160, 10 GET COMBOBOX nTempl ITEMS aTempl SIZE 120, 24 DISPLAYCOUNT 6
+   @ 10, 10 TAB oTab ITEMS {} SIZE 380,380 ON SIZE ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
 
-   @ 10, 30 GROUPBOX "Margins" SIZE 320, 130
-   @ 20, 60 SAY "Left:" SIZE 120, 24
-   @ 140, 60 GET nMarginL SIZE 80, 24
-   @ 232, 60 GET CHECKBOX lml CAPTION "in %" SIZE 80, 22
+   BEGIN PAGE "Layout" of oTab
 
-   @ 20, 88 SAY "Right:" SIZE 120, 24
-   @ 140, 88 GET nMarginR SIZE 80, 24
-   @ 232, 88 GET CHECKBOX lmr CAPTION "in %" SIZE 80, 22
+      @ 10, nTop GROUPBOX "Margins" SIZE 360, 130
+      @ 30, nTop+20 SAY "Left:" SIZE 120, 24 TRANSPARENT
+      @ 150, nTop+20 GET nMarginL SIZE 80, 24 PICTURE "999"
+      @ 242, nTop+20 GET CHECKBOX lml CAPTION "in %" SIZE 80, 22 TRANSPARENT
 
-   @ 20, 116 SAY "First line:" SIZE 120, 24
-   @ 140, 116 GET nIndent SIZE 80, 24
-   @ 232, 116 GET CHECKBOX lti CAPTION "in %" SIZE 80, 22
+      @ 30, nTop+48 SAY "Right:" SIZE 120, 24 TRANSPARENT
+      @ 150,nTop+48 GET nMarginR SIZE 80, 24 PICTURE "999"
+      @ 242,nTop+48 GET CHECKBOX lmr CAPTION "in %" SIZE 80, 22 TRANSPARENT
 
-   @ 20, 180 SAY "Alignment:" SIZE 140, 24
-   @ 160, 180 GET COMBOBOX nAlign ITEMS aCombo SIZE 120, 24 DISPLAYCOUNT 3
+      @ 30, nTop+76 SAY "First line:" SIZE 120, 24 TRANSPARENT
+      @ 150,nTop+76 GET nIndent SIZE 80, 24 PICTURE "999"
+      @ 242,nTop+76 GET CHECKBOX lti CAPTION "in %" SIZE 80, 22 TRANSPARENT
 
-   @ 10, 230 GROUPBOX "Border" SIZE 320, 80
-   @ 20, 266 SAY "Width:" SIZE 100, 24
-   @ 140, 260 GET UPDOWN nBWidth RANGE 0, 8 SIZE 60, 30
-   @ 220, 260  BUTTON "Color" SIZE 80, 30 ON CLICK bColor
+      @ 30, nTop+140 SAY "Alignment:" SIZE 140, 24 TRANSPARENT
+      @ 150,nTop+140 GET COMBOBOX nAlign ITEMS aCombo SIZE 120, 24 DISPLAYCOUNT 4
 
-   @ 20, 330 SAY "Anchor:" SIZE 100, 24
-   @ 160,330 GET oGetId VAR cId SIZE 100, 24
-   oGetId:nMaxLength := 0
+      @ 10, nTop+190 GROUPBOX "Border" SIZE 360, 80
+      @ 30, nTop+226 SAY "Width:" SIZE 100, 24 TRANSPARENT
+      @ 150,nTop+220 GET nBWidth SIZE 60, 24 PICTURE "9"
+      @ 240,nTop+220  BUTTON "Color" SIZE 80, 30 ;
+            ON CLICK {||Iif((nColor:=Hwg_ChooseColor(nBColor))==Nil,.T.,(bColor:=nColor)) }
 
-   @  20, 400  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 220, 400 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+      @ 30, nTop+290 SAY "Anchor:" SIZE 100, 24 TRANSPARENT
+      @ 170,nTop+290 GET cId SIZE 100, 24 MAXLENGTH 0
+
+   END PAGE of oTab
+
+   textTab( oTab, aAttr )
+
+   @  20, 410  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 220, 410 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
 
    ACTIVATE DIALOG oDlg
 
-   IF oDlg:lResult 
+   IF oDlg:lResult
       IF ( arr[1] != nMarginL .OR. arr[2] != nMarginR .OR. ;
-         arr[3] != nIndent .OR. arr[4] != nAlign .OR. arr[5] != nBWidth .OR. arr[6] != nBColor )
+         arr[3] != nIndent .OR. arr[4] != nAlign .OR. arr[5] != nBWidth .OR. ;
+         arr[6] != nBColor .OR. tColor != tc .OR. bColor != tb ) .OR. ;
+         nFamily != nfb .OR. nSize != nsb .OR. lbb != lb .OR. lib != li .OR. lub != lu .OR. lsb != ls
          aAttr := { }
          IF arr[1] != nMarginL
             AAdd( aAttr, "ml" + LTrim( Str( nMarginL ) ) + iif( lml, '%', '' ) )
@@ -705,6 +780,30 @@ STATIC FUNCTION ChangePara()
          ENDIF
          IF arr[6] != nBColor
             AAdd( aAttr, "bc" + LTrim( Str( nBColor ) ) )
+         ENDIF
+         IF tColor != tc
+            AAdd( aAttr, "ct" + LTrim( Str(tColor ) ) )
+         ENDIF
+         IF bColor != tb
+            AAdd( aAttr, "cb" + LTrim( Str(bColor ) ) )
+         ENDIF
+         IF nFamily != nfb
+            AAdd( aAttr, "fn" + aComboFam[nFamily] )
+         ENDIF
+         IF nSize != nsb
+            AAdd( aAttr, "fh" + oComboSiz:aItems[nSize] )
+         ENDIF
+         IF lb != lbb
+            AAdd( aAttr, "fb" + Iif( lb, "","-" ) )
+         ENDIF
+         IF li != lib
+            AAdd( aAttr, "fi" + Iif( li, "","-" ) )
+         ENDIF
+         IF lu != lub
+            AAdd( aAttr, "fu" + Iif( lu, "","-" ) )
+         ENDIF
+         IF ls != lsb
+            AAdd( aAttr, "fs" + Iif( ls, "","-" ) )
          ENDIF
          IF Len( arr1 ) >= 7
             oEdit:LoadEnv( arr1[1], arr1[2] )
@@ -732,7 +831,128 @@ STATIC FUNCTION ChangePara()
 
    RETURN Nil
 
-STATIC FUNCTION ChangeDoc()
+STATIC FUNCTION setSpan()
+   LOCAL oDlg, oTab, i, nTop
+   LOCAL nL := oEdit:aPointC[P_Y], aStru, cClsName, aAttr, arr1
+   LOCAL cId := "", cHref := "", cHrefB := "", cBody := "", cBodyB := ""
+
+   MEMVAR tColor, bColor, tc, tb, aComboFam, cFamily, nFamily
+   MEMVAR nSize, nsb, nfb
+   MEMVAR lb, li, lu, ls, lbb, lib, lub, lsb
+   PRIVATE tColor := oEdit:tColor, bColor := oEdit:bColor, tc, tb
+   PRIVATE aComboFam := Asort( hwg_getFontsList() ), cFamily := "", nFamily := 1
+   PRIVATE nSize := Ascan( oComboSiz:aItems,cComboSizDef ), nsb, nfb
+   PRIVATE lb := .F., li := .F., lu := .F., ls := .F., lbb, lib, lub, lsb
+
+#ifdef __PLATFORM__UNIX
+   nTop := 10
+#else
+   nTop := 40
+#endif
+
+   IF !Empty( oEdit:aPointM2[P_Y] ) .OR. !Empty( oEdit:aTdSel[2] )
+   ELSE
+      arr1 := oEdit:GetPosInfo()
+      IF !Empty( aStru := arr1[3] )
+         cClsName := aStru[OB_CLS]
+         IF Len( aStru ) >= OB_ID
+            cId := aStru[OB_ID]
+         ENDIF
+         IF Len( aStru ) >= OB_HREF
+            cHref := cHrefB := aStru[OB_HREF]
+         ENDIF
+         cBody := cBodyB := hced_SubStr( oEdit, oEdit:aText[arr1[1]], aStru[1], aStru[2] - aStru[1] + 1 )
+      ELSE
+         RETURN Nil
+      ENDIF
+
+      IF !Empty( cClsName )
+         aAttr := oEdit:getClassAttr( cClsName )
+      ENDIF
+   ENDIF
+
+   INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Set span properties"  ;
+      AT 210, 10  SIZE 400, 460 FONT HWindow():GetMain():oFont
+
+   @ 10, 10 TAB oTab ITEMS {} SIZE 380,380 ON SIZE ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
+
+   textTab( oTab, aAttr )
+
+   BEGIN PAGE "Attributes" of oTab
+
+   @ 10,nTop SAY "Id:" SIZE 50, 22 TRANSPARENT
+   @ 60,nTop GET cId SIZE 100, 24 MAXLENGTH 0
+
+   IF !Empty( cHRef )
+      @ 10,nTop+40 SAY "Href:" SIZE 60, 22 TRANSPARENT
+      @ 10,nTop+64 GET cHref SIZE 360, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0 ;
+            ON SIZE {|o,x,y|o:Move( ,,x-30)}
+
+      @ 10,nTop+100 SAY "Text:" SIZE 60, 22 TRANSPARENT
+      @ 10,nTop+124 GET cBody SIZE 360, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0 ;
+            ON SIZE {|o,x,y|o:Move( ,,x-30)}
+   ENDIF
+
+   END PAGE of oTab
+
+   @  20, 410  BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 220, 410 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      IF tColor != tc .OR. bColor != tb .OR. ;
+            nFamily != nfb .OR. nSize != nsb .OR. lbb != lb .OR. lib != li .OR. lub != lu .OR. lsb != ls
+         aAttr := { }
+         IF tColor != tc
+            AAdd( aAttr, "ct" + LTrim( Str(tColor ) ) )
+         ENDIF
+         IF bColor != tb
+            AAdd( aAttr, "cb" + LTrim( Str(bColor ) ) )
+         ENDIF
+         IF nFamily != nfb
+            AAdd( aAttr, "fn" + aComboFam[nFamily] )
+         ENDIF
+         IF nSize != nsb
+            AAdd( aAttr, "fh" + oComboSiz:aItems[nSize] )
+         ENDIF
+         IF lb != lbb
+            AAdd( aAttr, "fb" + Iif( lb, "","-" ) )
+         ENDIF
+         IF li != lib
+            AAdd( aAttr, "fi" + Iif( li, "","-" ) )
+         ENDIF
+         IF lu != lub
+            AAdd( aAttr, "fu" + Iif( lu, "","-" ) )
+         ENDIF
+         IF ls != lsb
+            AAdd( aAttr, "fs" + Iif( ls, "","-" ) )
+         ENDIF
+
+         IF !Empty( oEdit:aPointM2[P_Y] ) .OR. !Empty( oEdit:aTdSel[2] )
+            oEdit:ChgStyle( ,, aAttr )
+         ELSEIF Len(arr1) >= 7
+            oEdit:ChgStyle( {aStru[1],arr1[4]}, {aStru[2]+1,arr1[4]}, aAttr,, ;
+                  {arr1[2],arr1[1]} )
+         ELSE
+            oEdit:ChgStyle( {aStru[1],arr1[1]}, {aStru[2]+1,arr1[1]}, aAttr )
+         ENDIF
+      ENDIF
+      IF !( cHref == cHrefB )
+         aStru[OB_HREF] := cHref
+         oEdit:lUpdated := .T.
+      ENDIF
+      IF cBody != cBodyB
+         oEdit:InsText( { aStru[1],arr1[1] }, cBody,, .F. )
+         oEdit:DelText( { aStru[1]+hced_Len(oEdit,cBody),arr1[1] }, ;
+               { aStru[1]+hced_Len(oEdit,cBody)+hced_Len(oEdit,cBodyB),arr1[1] }, .F. )
+         oEdit:lUpdated := .T.
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION setDoc()
    LOCAL oDlg, arr[6]
    LOCAL nFormat := oEdit:nDocFormat + 1, aCombo := { "Free", "A3", "A4", "A5", "A6" }
    LOCAL nOrient := oEdit:nDocOrient+1, nMargL, nMargR, nMargT, nMargB
@@ -885,46 +1105,42 @@ STATIC FUNCTION SetText( oEd, cText )
 
    RETURN aText
 
-STATIC FUNCTION setUrl( lNew, nType )
+STATIC FUNCTION InsUrl( nType )
    LOCAL oDlg, nL, cHref := "", cName := "", cName0, aPos, xAttr
    LOCAL aRefs, nref
+   LOCAL oProto, aProto := { "http", "https", "ftp", "goto" }, cProto := aProto[1]
 
    aPos := oEdit:GetPosInfo()
    IF aPos != Nil .AND. aPos[3] != Nil .AND. Len( aPos[3] ) >= OB_HREF
-      IF lNew
-         hwg_msgStop( "Can't insert URL into existing one" )
-         RETURN Nil
-      ENDIF
-      nL := aPos[1]
-      cHref := aPos[3,OB_HREF]
-      cName := cName0 := SubStr( oEdit:aText[aPos[1]], aPos[3,1], aPos[3,2] - aPos[3,1] + 1 )
-      nType := Iif( Left(cHRef,5)=="goto:", 2, 1 )
-   ELSEIF !lNew
-      hwg_msgStop( "Set cursor to existing URL" )
+      hwg_msgStop( "Can't insert URL into existing one" )
       RETURN Nil
    ENDIF
 
-   INIT DIALOG oDlg CLIPPER NOEXIT TITLE iif( lNew, "Insert URL", "Edit URL" )  ;
-      AT 210, 10  SIZE 360, 190 FONT HWindow():GetMain():oFont
+   INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Insert URL"  ;
+      AT 210, 10  SIZE 400, 190 FONT HWindow():GetMain():oFont ;
+      ON INIT {||Iif(nType==2,oProto:Disable(),.t.)}
+
+   IF nType == 2
+      nref := Ascan( aProto, "goto" )
+      cProto := aProto[nref]
+   ENDIF
 
    @ 20, 10 SAY "Href:" SIZE 120, 22
+   @ 10, 32 GET COMBOBOX oProto VAR cProto ITEMS aProto SIZE 90, 26 EDIT
+   @ 100,34 SAY "://" SIZE 40, 22
+
    IF nType == 1
-      @ 20, 32 GET cHref SIZE 320, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0
+      @ 140, 32 GET cHref SIZE 250, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0
    ELSE
       aRefs := oEdit:Find( ,"",, .T. )
-      IF lNew
-         nref := 1
-      ELSE
-         cHRef := Substr( cHRef, 9 )
-         nref := Ascan( aRefs, {|a|a[1] == cHRef} )
-      ENDIF
-      @ 20, 32 GET COMBOBOX nref ITEMS aRefs SIZE 150, 26
+      nref := 1
+      @ 140, 32 GET COMBOBOX nref ITEMS aRefs SIZE 150, 26
    ENDIF
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    @ 20, 70 SAY "Name:" SIZE 120, 22
-   @ 20, 92 GET cName SIZE 320, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0
-   Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 10, 92 GET cName SIZE 380, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0 ;
+        ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    @  20, 140 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
    @ 240, 140 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
@@ -935,19 +1151,11 @@ STATIC FUNCTION setUrl( lNew, nType )
       IF ( ( nType == 1 .AND. !Empty( cHref ) ) .OR. ( nType == 2 .AND. !Empty(aRefs) ) ) .AND. !Empty( cName )
          IF !Empty( aRefs )
             cHref := "goto://#" + aRefs[nref,1]
+         ELSEIF !Empty( cHref )
+            cHRef := cProto + "://" + Iif( cProto=="goto".AND.Left(cHRef,1)!="#", "#", "" ) + cHref
          ENDIF
-         IF lNew
-            xAttr := oEdit:getClassAttr( "url" )
-            oEdit:InsSpan( cName, xAttr, cHref )
-         ELSE
-            aPos[3,OB_HREF] := cHref
-            IF cName != cName0
-               oEdit:InsText( { aPos[3,1],aPos[1] }, cName,, .F. )
-               oEdit:DelText( { aPos[3,1]+Len(cName),aPos[1] }, ;
-                     { aPos[3,1]+Len(cName)+Len(cName0),aPos[1] }, .F. )
-            ENDIF
-            oEdit:lUpdated := .T.
-         ENDIF
+         xAttr := oEdit:getClassAttr( "url" )
+         oEdit:InsSpan( cName, xAttr, cHref )
       ENDIF
    ENDIF
 
@@ -1182,11 +1390,12 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
    IF msg == WM_LBUTTONDBLCLK
       IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) ) .AND. ;
             !Empty( arr[3] ) .AND. Len( arr[3] ) >= OB_HREF
-         UrlLaunch( arr[3,OB_HREF] )
+         hwg_SetCursor( handCursor )
+         UrlLaunch( o, arr[3,OB_HREF] )
       ENDIF
       RETURN 0
 
-   ELSEIF msg == WM_MOUSEMOVE
+   ELSEIF msg == WM_MOUSEMOVE .OR. msg == WM_LBUTTONDOWN
       IF !Empty( arr := o:GetPosInfo( hwg_LoWord(lParam ), hwg_HiWord(lParam ) ) ) .AND. ;
             !Empty( arr[3] ) .AND. Len( arr[3] ) >= OB_HREF
          hwg_SetCursor( handCursor )
@@ -1203,7 +1412,7 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
 
    RETURN - 1
 
-STATIC FUNCTION UrlLaunch( cAddr )
+STATIC FUNCTION UrlLaunch( oEdi, cAddr )
 
    LOCAL n
    IF Lower( Left( cAddr, 4 ) ) == "http"
@@ -1219,10 +1428,133 @@ STATIC FUNCTION UrlLaunch( cAddr )
 #endif
       ENDIF
    ELSEIF Lower( Left( cAddr, 8 ) ) == "goto://#"
-      IF !Empty( n := oEdit:Find( ,Substr( cAddr,9 ) ) )
-         oEdit:Goto( n )
+      IF !Empty( n := oEdi:Find( ,Substr( cAddr,9 ) ) )
+         oEdi:Goto( n )
       ENDIF
    ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION Calc()
+
+   LOCAL nL := oEdit:aPointC[P_Y], aStru := oEdit:aStru[nL]
+   LOCAL i, cIdExp := "clcexp", cIdRes := "clcres", nStruExp, nStruRes
+   LOCAL xRes, cRes, cExp, lEqExi := .F., lNewExp := .F., nPos1, nPos2
+   LOCAL bOldError := ErrorBlock( { |e|break( e ) } )
+
+   FOR i := 2 TO Len( aStru )
+      IF Len( aStru[i] ) >= OB_ID .AND. !Empty( aStru[i,OB_ID] )
+         IF aStru[i,OB_ID] == cIdExp
+            nStruExp := i
+         ELSEIF aStru[i,OB_ID] == cIdRes
+            nStruRes := i
+         ENDIF
+      ENDIF
+   NEXT
+
+   IF Empty( nStruExp )
+      IF Empty( oEdit:aPointM2[P_Y] )
+         cExp := Trim( Iif( Empty(nStruRes), oEdit:aText[nL], ;
+               Left(oEdit:aText[nL],aStru[nStruRes,1]-1) ) )
+      ELSE
+         cExp := Trim( oEdit:GetText( oEdit:aPointM1, oEdit:aPointM2 ) )
+         lNewExp := .T.
+      ENDIF
+   ELSE
+      cExp := Trim( Substr(oEdit:aText[nL],aStru[nStruExp,1],aStru[nStruExp,2]-aStru[nStruExp,1]+1) )
+   ENDIF
+
+   IF !lNewExp .AND. Right( cExp, 1 ) == '='
+      cExp := Trim( Left( cExp, Len( cExp ) - 1 ) )
+      lEqExi := .T.
+   ENDIF
+
+   SET DECIMALS TO 8
+   BEGIN SEQUENCE
+      xRes := Eval( &( "{||"+cExp+"}" ) )
+   RECOVER
+      xRes := Nil
+   END SEQUENCE
+   ErrorBlock( bOldError )
+
+   IF xRes == Nil
+      hwg_MsgStop( "Expression error", "Calculator" )
+   ELSE
+      cRes := Trim( Transform( xReS, "@B" ) )
+      IF Valtype( xRes ) == "N" .AND. Rat( ".", cRes ) > 0
+        nPos2 := Len( cRes )
+        DO WHILE Substr( cRes, nPos2, 1 ) == '0'; nPos2 --; ENDDO
+        cRes := Left( cRes, nPos2 )
+      ENDIF
+      IF Empty( nStruRes )
+         nPos2 := Len(oEdit:aText[nL]) + 1
+         IF lNewExp
+            nPos1 := oEdit:aPointM1[P_X]; nPos2 := oEdit:aPointM2[P_X]
+         ENDIF
+         IF !lEqExi
+            oEdit:InsText( { nPos2,nL }, ' = ',, .F. )
+            nPos2 += 3
+         ENDIF
+         IF lNewExp
+            oEdit:ChgStyle( { nPos1,nL }, { nPos2-3,nL }, "fi" )
+            aStru := oEdit:GetPosInfo( { nPos1+1,nL } )[3]
+            IF Len( aStru ) >= OB_ID
+               aStru[OB_ID] := cIdExp
+            ELSE
+               Aadd( aStru, cIdExp )
+            ENDIF
+         ENDIF
+         oEdit:aPointC[P_X] := nPos2
+         oEdit:InsSpan( cRes, "fb" )
+         aStru := oEdit:GetPosInfo( { nPos2+1,nL } )[3]
+         IF Len( aStru ) >= OB_ID
+            aStru[OB_ID] := cIdRes
+         ELSE
+            Aadd( aStru, cIdRes )
+         ENDIF
+      ELSE
+         oEdit:InsText( { aStru[nStruRes,1],nL }, cRes,, .F. )
+         oEdit:DelText( { aStru[nStruRes,1]+hced_Len(oEdit,cRes),nL }, ;
+               { aStru[nStruRes,1]+hced_Len(oEdit,cRes)+(aStru[nStruRes,2]-aStru[nStruRes,1]+1),nL } )
+      ENDIF
+      oEdit:lUpdated := .T.
+   ENDIF
+   SET DECIMALS TO 2
+   hced_Setfocus( oEdit:hEdit )
+   
+   RETURN Nil
+
+STATIC FUNCTION Help()
+
+   LOCAL oDlg, oEdit
+
+   IF !File( cIniPath + "editor.hwge" )
+      hwg_msgStop( "Help file editor.hwge not found" )
+      RETURN Nil
+   ENDIF
+
+   INIT DIALOG oDlg TITLE "Help" AT 100, 50 ;
+         SIZE 400,400 FONT HWindow():GetMain():oFont
+   oDlg:brush := 0 
+
+   oEdit := HCEdiExt():New( ,,, 0, 0, oDlg:nWidth, oDlg:nHeight, ;
+         HWindow():GetMain():oFont,, {|o,x,y|o:Move( ,,x,y ) } )
+
+   oEdit:bColorCur := oEdit:bColor
+   oEdit:AddClass( "url", "color: #000080;" )
+   oEdit:AddClass( "h1", "font-size: 140%; font-weight: bold;" )
+   oEdit:AddClass( "h2", "font-size: 130%; font-weight: bold;" )
+   oEdit:AddClass( "h3", "font-size: 120%; font-weight: bold;" )
+   oEdit:AddClass( "h4", "font-size: 110%; font-weight: bold;" )
+   oEdit:AddClass( "h5", "font-weight: bold;" )
+   oEdit:AddClass( "cite", "color: #007800; margin-left: 3%; margin-right: 3%;" )
+   oEdit:aDefClasses := { "url","h1","h2","h3","h4" }
+   oEdit:lReadOnly := .T.
+   oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
+
+   ACTIVATE DIALOG oDlg NOMODAL
+
+   oEdit:Open( cIniPath + "editor.hwge" )
 
    RETURN Nil
 

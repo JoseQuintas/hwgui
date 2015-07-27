@@ -1,0 +1,16 @@
+<hwge>
+<style>
+.c3 { text-align: center; font-size: 130%; font-weight: bold; }
+</style>
+<div></div>
+<div class="c3">HwGUI rich text Editor</div>
+<div></div>
+<div class="h5">1. <a href="goto://#sect1" class="url">Introduction</a></div>
+<div class="h5">2.</div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div id="sect1"><span class="h5">1. Introduction</span></div>
+<div></div>
+</hwge>

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-27 10:27 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/editor.prg
+    ! Few warnings fixed
+  * utils/editor/bld.bat
+    * hbct lib added to the build script
+  + utils/editor/build.sh
+
 2015-07-27 10:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
     ! Small fix

@@ -40,7 +40,7 @@ echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
 if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
 if exist %HRB_DIR%\lib\hbole.lib echo %HRB_DIR%\lib\hbole.lib + >> b32.bc
-rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
+echo %HRB_DIR%\lib\ct.lib + >> b32.bc
 goto common
 
 :hrb
@@ -62,6 +62,7 @@ echo %HRB_DIR%\lib\hbpp.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbhsx.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbpcre.lib + >> b32.bc
+echo %HRB_DIR%\lib\hbct.lib + >> b32.bc
 
 :common
 

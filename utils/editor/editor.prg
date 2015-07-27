@@ -832,7 +832,7 @@ STATIC FUNCTION setPara()
    RETURN Nil
 
 STATIC FUNCTION setSpan()
-   LOCAL oDlg, oTab, i, nTop
+   LOCAL oDlg, oTab, nTop
    LOCAL nL := oEdit:aPointC[P_Y], aStru, cClsName, aAttr, arr1
    LOCAL cId := "", cHref := "", cHrefB := "", cBody := "", cBodyB := ""
 
@@ -1106,7 +1106,7 @@ STATIC FUNCTION SetText( oEd, cText )
    RETURN aText
 
 STATIC FUNCTION InsUrl( nType )
-   LOCAL oDlg, nL, cHref := "", cName := "", cName0, aPos, xAttr
+   LOCAL oDlg, cHref := "", cName := "", aPos, xAttr
    LOCAL aRefs, nref
    LOCAL oProto, aProto := { "http", "https", "ftp", "goto" }, cProto := aProto[1]
 
@@ -1382,7 +1382,7 @@ STATIC FUNCTION DelRow()
    RETURN Nil
 
 STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
-   LOCAL i, cLine, oNode, arr
+   LOCAL arr
    STATIC nShiftL := 0
 
    nLastMsg  := msg

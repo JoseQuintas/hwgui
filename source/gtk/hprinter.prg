@@ -95,7 +95,7 @@ METHOD New( cPrinter, lmm, nFormType ) CLASS HPrinter
       ::cPrinterName := cPrinter
    ENDIF
 
-   IF ::hDC == 0
+   IF Empty( ::hDC )
       RETURN Nil
    ELSEIF ::lBuffPrn
       aPrnCoors := hwg_Getdevicearea()
@@ -113,7 +113,7 @@ METHOD New( cPrinter, lmm, nFormType ) CLASS HPrinter
       ::nHeight := Iif( ::lmm, aPrnCoors[4], aPrnCoors[2] )
       ::nHRes   := aPrnCoors[1] / aPrnCoors[3]
       ::nVRes   := aPrnCoors[2] / aPrnCoors[4]
-      // hwg_WriteLog( "Printer:" + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+str(aPrnCoors[5])+str(aPrnCoors[6]) )
+      //hwg_WriteLog( "Printer:" + str(aPrnCoors[1])+str(aPrnCoors[2])+str(aPrnCoors[3])+str(aPrnCoors[4])+'/'+str(::nWidth)+'/'+str(::nHeight) )
    ENDIF
 
    RETURN Self
@@ -185,8 +185,12 @@ METHOD SetPen( nWidth, style, color )  CLASS HPrinter
 
 METHOD End() CLASS HPrinter
 
-   IF ::hDC != 0
-      hwg_ClosePrinter( ::hDC )
+   IF !Empty( ::hDC )
+      IF ::lBuffPrn
+         hwg_Releasedc( hwg_Getactivewindow(), ::hDC )
+      ELSE
+         hwg_ClosePrinter( ::hDC )
+      ENDIF
       ::hDC := 0
    ENDIF
 
@@ -301,7 +305,7 @@ METHOD EndDoc() CLASS HPrinter
       ::SaveScript()
    ENDIF
 
-   IF Empty( ::lPreview )
+   IF Empty( ::lPreview ) .AND. !::lBuffPrn
       ::PrintDoc()
    ENDIF
    RETURN Nil

@@ -826,7 +826,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowseEx
             ::allMouseOver := .F.
          ENDIF
       ELSEIF msg == WM_MBUTTONUP
-         ::nWheelPress := iif( ::nWheelPress > 0, 0, lParam )
+         ::nWheelPress := iif( ::nWheelPress > 0, 0, hwg_PtrToUlong( lParam ) )
          IF ::nWheelPress > 0
             Hwg_SetCursor( hwg_Loadcursor( 32652 ) )
          ELSE

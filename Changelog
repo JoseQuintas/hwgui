@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-30 11:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * Ctrl-Y is forbidden now when :lWrap is set
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Scripts ( or macros ) support is added.
+      It is possible now to use tables for calculations as simplified electronic tables
+
 2015-07-29 16:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hprinter.prg
     ! Few fixes

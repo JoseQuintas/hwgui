@@ -1281,7 +1281,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          ENDIF
       ENDIF
    ELSEIF nKeyCode == 89 .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'Y'
-      IF ::lWrap .AND. ::aWrap[::nLineF+nLine-1] != Nil
+      IF ::lWrap //.AND. ::aWrap[::nLineF+nLine-1] != Nil
          //::DelText( {::aWrap[nLine-1],::nLineF+nLine-1}, {1,::nLineF+nLine-1} )
       ELSE
          ::DelText( {1,::nLineF+nLine-1}, {1,::nLineF+nLine} )

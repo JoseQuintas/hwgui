@@ -39,6 +39,8 @@ REQUEST HB_CODEPAGE_RU866
 #define MENU_SNOWR       1915
 #define MENU_SNOINS      1916
 #define MENU_SNOCR       1917
+#define MENU_COPYF       1918
+#define MENU_PASTEF      1919
 
 
 #define BOUNDL           12
@@ -49,6 +51,7 @@ REQUEST HB_CODEPAGE_RU866
 #define SETC_LEFT       3
 #define SETC_XY         4
 #define SETC_XFIRST     5
+#define SETC_XYPOS      8
 
 #define OB_TYPE         1
 #define OB_OB           2
@@ -112,6 +115,7 @@ STATIC oComboSiz, cComboSizDef := "100%", lComboSet := .F.
 STATIC aSetStyle, nLastMsg, nLastWpar, aPointLast[2], nCharsLast
 STATIC alAcc := { .F.,.F.,.F.,.F.,.F.,.F.,.F. }
 STATIC cIdExp := "clcexp", cIdRes := "clcres"
+STATIC cCBformatted
 
 MEMVAR handcursor, cIniPath, aCurrTD
 
@@ -217,6 +221,9 @@ FUNCTION Main ( fName )
       MENU TITLE "&Edit"
          MENUITEM "Undo"+Chr(9)+"Ctrl+Z" ACTION oEdit:Undo()
          SEPARATOR
+         MENUITEM "Copy formatted"+Chr(9)+"F5" ID MENU_COPYF ACTION CopyFormatted() ACCELERATOR 0,VK_F5
+         MENUITEM "Paste formatted"+Chr(9)+"Ctrl+F5" ID MENU_PASTEF ACTION PasteFormatted() ACCELERATOR FCONTROL,VK_F5
+         SEPARATOR
          MENUITEM "Calculate"+Chr(9)+"F9" ACTION Calc() ACCELERATOR 0,VK_F9
          MENUITEM "Calculate all"+Chr(9)+"Ctrl+F9" ACTION CalcAll() ACCELERATOR FCONTROL,VK_F9
          SEPARATOR
@@ -295,7 +302,9 @@ STATIC FUNCTION NewFile()
 
 STATIC FUNCTION OpenFile( fname, lAdd )
 
-   CloseFile()
+   IF Empty( lAdd )
+      CloseFile()
+   ENDIF
    IF Empty( fname )
 #ifdef __PLATFORM__UNIX
       fname := hwg_SelectfileEx( ,, { { "HwGUI Editor files", "*.hwge" }, { "All files", "*" } } )
@@ -307,7 +316,7 @@ STATIC FUNCTION OpenFile( fname, lAdd )
       IF !( Lower( hb_FNameExt( fname ) ) $ ".html;.hwge;" )
          oEdit:bImport := { |o, cText| SetText( o, cText ) }
       ENDIF
-      oEdit:SetText( MemoRead(fname),,,, lAdd )
+      oEdit:SetText( MemoRead(fname),,,, lAdd, Iif( !Empty(lAdd),oEdit:aPointC[P_Y],Nil ) )
       oEdit:cFileName := fname
 
       oEdit:bImport := Nil
@@ -467,7 +476,7 @@ STATIC FUNCTION onBtnStyle( nBtn )
 STATIC FUNCTION onChangePos( lInit )
 
    LOCAL arr, aAttr, i, l, cTmp, nOptP, nOptS
-   STATIC lInTable := .F.
+   STATIC lInTable := .F., lSelection := .T., lPasteF := .T.
 
    IF lInit == Nil; lInit := .F.; ENDIF
 
@@ -507,7 +516,15 @@ STATIC FUNCTION onChangePos( lInit )
             oComboSiz:Value := Ascan( oComboSiz:aItems,cComboSizDef )
          ENDIF
       ENDIF
-      hwg_Enablemenuitem( , MENU_SPAN, (!Empty(arr).AND.!Empty(arr[3])).OR.!Empty(oEdit:aPointM2[P_Y]), .T. )
+      IF lSelection != ( !Empty(oEdit:aPointM2[P_Y]) )
+         lSelection := ( !Empty(oEdit:aPointM2[P_Y]) )
+         hwg_Enablemenuitem( , MENU_COPYF, lSelection, .T. )
+      ENDIF
+      IF lPasteF != ( !Empty(cCBformatted) )
+         lPasteF := ( !Empty(cCBformatted) )
+         hwg_Enablemenuitem( , MENU_PASTEF, lPasteF, .T. )
+      ENDIF
+      hwg_Enablemenuitem( , MENU_SPAN, (!Empty(arr).AND.!Empty(arr[3])).OR.lSelection, .T. )
       IF ( l := ( ( oEdit:getEnv() > 0 ) .OR. ( !Empty(arr).AND.Len(arr)>= 7 ) ) ) != lInTable .OR. lInit
          lInTable := l
          hwg_Enablemenuitem( , MENU_INSROW, lInTable, .T. )
@@ -1828,6 +1845,25 @@ FUNCTION Sum( aCells )
    ENDIF
 
    RETURN nSum
+
+STATIC FUNCTION CopyFormatted()
+
+   IF !Empty( oEdit:aPointM2[P_Y] )
+      cCBformatted := oEdit:Save( ,,, .T., oEdit:aPointM1, oEdit:aPointM2 )
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION PasteFormatted()
+
+   LOCAL x := oEdit:aPointC[P_X], y := oEdit:aPointC[P_Y]
+   IF !Empty( cCBformatted )
+      oEdit:SetText( cCBformatted,,, .T., .T., oEdit:aPointC[P_Y] )
+      oEdit:SetCaretPos( SETC_XYPOS, x, y )
+      oEdit:lUpdated := .T.
+   ENDIF
+
+   RETURN Nil
 
 STATIC FUNCTION Help()
 

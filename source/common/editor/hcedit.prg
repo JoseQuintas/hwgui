@@ -891,7 +891,9 @@ Local nPos
          ::aText := hb_aTokens( xText, Chr(10) )
       ENDIF
    ENDIF
-   ::nLinesAll := ::nTextLen := Len( ::aText )
+   ::nTextLen := Len( ::aText )
+   DO WHILE ::aText[::nTextLen] == Nil; ::nTextLen--; ENDDO
+   ::nLinesAll := ::nTextLen
    ::aUndo := Nil
 
    ::SetWrap( ::lWrap, .T. )

@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-07-31 15:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    ! Small fix
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Added support for copy/paste the text with formatting info
+    ! Some fixes
+
 2015-07-30 11:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * Ctrl-Y is forbidden now when :lWrap is set

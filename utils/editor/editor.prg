@@ -28,10 +28,11 @@ REQUEST HB_CODEPAGE_RU866
 
 #define MENU_RULER       1901
 #define MENU_INSROW      1902
-#define MENU_TABLE       1903
-#define MENU_ROW         1904
-#define MENU_CELL        1905
-#define MENU_SPAN        1906
+#define MENU_IMAGE       1903
+#define MENU_TABLE       1904
+#define MENU_ROW         1905
+#define MENU_CELL        1906
+#define MENU_SPAN        1907
 #define MENU_PNOWR       1911
 #define MENU_PNOINS      1912
 #define MENU_PNOCR       1913
@@ -247,7 +248,7 @@ FUNCTION Main ( fName )
             MENUITEM "&External"+Chr(9)+"Ctrl+I" ACTION (InsUrl( 1 ),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("I")
             MENUITEM "&Internal" ACTION (InsUrl( 2 ),hced_Setfocus(oEdit:hEdit))
          ENDMENU
-         MENUITEM "&Image" ACTION (InsImage(),hced_Setfocus(oEdit:hEdit))
+         MENUITEM "&Image" ACTION (setImage( .T. ),hced_Setfocus(oEdit:hEdit))
          MENUITEM "&Table" ACTION (setTable( .T. ),hced_Setfocus(oEdit:hEdit))
          MENUITEM "&Rows" ID MENU_INSROW ACTION (InsRows(),hced_Setfocus(oEdit:hEdit))
          MENUITEM "&Script" ACTION EditScr()
@@ -267,6 +268,7 @@ FUNCTION Main ( fName )
             MENUITEM "cite" ACTION oEdit:StyleDiv( ,, "cite" )
          ENDMENU
          SEPARATOR
+         MENUITEM "&Image" ID MENU_IMAGE ACTION (setImage( .F. ),hced_Setfocus(oEdit:hEdit))
          MENUITEM "&Table" ID MENU_TABLE ACTION (setTable( .F. ),hced_Setfocus(oEdit:hEdit))
          MENU TITLE "&Row" ID MENU_ROW 
             MENUITEM "&Delete" ACTION DelRow()
@@ -692,11 +694,11 @@ STATIC FUNCTION textTab( oTab, aAttr )
       @ 10, nTop+188 GROUPBOX "Color" SIZE 360, 140
       @ 20, nTop+214 SAY "Text:" SIZE 120, 22 TRANSPARENT
       @ 150,nTop+210  BUTTON "Select" SIZE 100, 32 ON CLICK bColorT
-      @ 260,nTop+214 SAY oSayTClr CAPTION Iif( tColor==0,"Default","#"+hwg_ColorN2C(tColor) ) SIZE 90, 22 STYLE WS_BORDER BACKCOLOR 16777215
+      @ 260,nTop+214 SAY oSayTClr CAPTION Iif( tColor==0,"Default","#"+hwg_ColorN2C(tColor) ) SIZE 90, 24 STYLE WS_BORDER BACKCOLOR 16777215
 
       @ 20, nTop+254 SAY "Background:" SIZE 120, 22 TRANSPARENT
       @ 150,nTop+250 BUTTON "Select" SIZE 100, 32 ON CLICK bColorB
-      @ 260,nTop+254 SAY oSayBClr CAPTION Iif( bColor==16777215,"Default","#"+hwg_ColorN2C(bColor) ) SIZE 90, 22 STYLE WS_BORDER BACKCOLOR 16777215
+      @ 260,nTop+254 SAY oSayBClr CAPTION Iif( bColor==16777215,"Default","#"+hwg_ColorN2C(bColor) ) SIZE 90, 24 STYLE WS_BORDER BACKCOLOR 16777215
 
       @ 20, nTop+290 SAY oSayTest CAPTION "This is a sample" SIZE 340, 26 ;
          STYLE WS_BORDER + SS_CENTER COLOR tColor BACKCOLOR bcolor
@@ -727,12 +729,12 @@ STATIC FUNCTION setPara()
 #endif
 
    IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
-      cClsName := arr1[7,1,3]
+      cClsName := arr1[7,1,OB_CLS]
       IF Len( arr1[7,1] ) >= OB_ID
          cId := arr1[7,1,OB_ID]
       ENDIF
    ELSE
-      cClsName := oEdit:aStru[nl,1,3]
+      cClsName := oEdit:aStru[nl,1,OB_CLS]
       IF Len( oEdit:aStru[nl,1] ) >= OB_ID
          cId := oEdit:aStru[nl,1,OB_ID]
       ENDIF
@@ -1233,18 +1235,40 @@ STATIC FUNCTION InsUrl( nType )
 
    RETURN Nil
 
-STATIC FUNCTION InsImage()
+STATIC FUNCTION setImage( lNew )
 
-   LOCAL oDlg, fname, lEmbed := .T., nBorder := 0
-   LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1
+   LOCAL oDlg, arr1, nL, aStru, cClsName, aAttr, fname, nb0, i
+   LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, lEmbed := .T., nBorder := 0
 
-   fname := hwg_Selectfile( "Graphic files( *.jpg;*.png;*.gif;*.bmp )", "*.jpg;*.png;*.gif;*.bmp", "" )
+   IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
+      nL := arr1[4]
+      aStru := arr1[7]
+   ELSE
+      nL := arr1[1]
+      aStru := oEdit:aStru[nL]
+   ENDIF
 
-   IF Empty( fname )
+   IF lNew == ( Valtype(aStru[1,OB_TYPE]) == "C" .AND. aStru[1,OB_TYPE] == "img" )
       RETURN Nil
    ENDIF
 
-   INIT DIALOG oDlg TITLE "Insert Image - " + hb_FnameNameExt( fname )  ;
+   IF lNew
+      IF Empty( fname := hwg_Selectfile( "Graphic files( *.jpg;*.png;*.gif;*.bmp )", "*.jpg;*.png;*.gif;*.bmp", "" ) )
+         RETURN Nil
+      ENDIF
+   ELSE
+      lEmbed := ( Left( aStru[1,OB_HREF], 1 ) == "#" )
+      nAlign := aStru[1,OB_IALIGN] + 1
+      IF !Empty( cClsName := aStru[1,OB_CLS] )
+         aAttr := oEdit:getClassAttr( cClsName )
+         IF ( i := Ascan( aAttr, "bw" ) ) != 0
+            nBorder := Val( SubStr( aAttr[i],3 ) )
+         ENDIF
+      ENDIF
+   ENDIF
+   nb0 := nBorder
+
+   INIT DIALOG oDlg TITLE Iif( lNew, "Insert Image - " + hb_FnameNameExt(fname), "Set image properties" )  ;
       AT 20, 30 SIZE 440, 220 FONT HWindow():GetMain():oFont
 
    @ 20, 10 GET CHECKBOX lEmbed CAPTION "Keep the image inside the document ?" SIZE 400, 24
@@ -1261,10 +1285,24 @@ STATIC FUNCTION InsImage()
    ACTIVATE DIALOG oDlg
 
    IF oDlg:lResult
-      IF lEmbed
-         oEdit:InsImage( , nAlign-1,, MemoRead( fname ) )
-      ELSE
-         oEdit:InsImage( fname, nAlign-1 )
+      IF lNew
+         IF lEmbed
+            oEdit:InsImage( , nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ), MemoRead( fname ) )
+         ELSE
+            oEdit:InsImage( fname, nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ) )
+         ENDIF
+      ELSEIF lEmbed != ( Left( aStru[1,OB_HREF], 1 ) == "#" ) .OR. ;
+            nAlign != (aStru[1,OB_IALIGN] + 1) .OR. nBorder != nb0
+         aStru[1,OB_IALIGN] := nAlign - 1
+         IF nBorder != nb0
+            aStru[1,OB_CLS] := oEdit:FindClass( cClsName, { "bw" + LTrim(Str(nBorder)) }, .T. )
+         ENDIF
+         IF lEmbed != ( Left( aStru[1,OB_HREF], 1 ) == "#" )
+            IF lEmbed
+            ELSE
+            ENDIF
+         ENDIF
+         oEdit:lUpdated := .T.
       ENDIF
    ENDIF
    hced_Setfocus( oEdit:hEdit )
@@ -1272,7 +1310,7 @@ STATIC FUNCTION InsImage()
    RETURN Nil
 
 STATIC FUNCTION setTable( lNew )
-   LOCAL oDlg, nRows := 3, nCols := 2, nBorder := 0, nBColor := 0, nWidth := 100
+   LOCAL oDlg, oSayClr, nRows := 3, nCols := 2, nBorder := 0, nBColor := 0, nWidth := 100
    LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, cClsName, aAttr, lNeedScan := .F.
    LOCAL nRows0, nBorder0 := 0, nBColor0 := 0
    LOCAL nL := oEdit:aPointC[P_Y], nLast
@@ -1281,6 +1319,7 @@ STATIC FUNCTION setTable( lNew )
      LOCAL nColor
      IF ( nColor := Hwg_ChooseColor( nBColor ) ) != Nil
         nBColor := nColor
+        oSayClr:SetText( Iif( nBColor==0,"Default","#"+hwg_ColorN2C(nBColor) ) )
      ENDIF
      RETURN .T.
    }
@@ -1328,10 +1367,11 @@ STATIC FUNCTION setTable( lNew )
    @ 210, 50 SAY "Align:" SIZE 96, 22
    @ 306, 50 GET COMBOBOX nAlign ITEMS arr SIZE 100, 26 DISPLAYCOUNT 3
 
-   @ 10, 90 GROUPBOX "Border" SIZE 320, 80
+   @ 10, 90 GROUPBOX "Border" SIZE 420, 80
    @ 20, 116 SAY "Width:" SIZE 100, 24
    @ 140,110 GET UPDOWN nBorder RANGE 0, 8 SIZE 60, 30
    @ 220,110  BUTTON "Color" SIZE 80, 30 ON CLICK bColor
+   @ 320,114 SAY oSayClr CAPTION Iif( nBColor==0,"Default","#"+hwg_ColorN2C(nBColor) ) SIZE 90, 24 STYLE WS_BORDER BACKCOLOR 16777215
 
    @ 80, 200 BUTTON "Ok" ID IDOK  SIZE 100, 32
    @ 260,200 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
@@ -1850,17 +1890,21 @@ STATIC FUNCTION CopyFormatted()
 
    IF !Empty( oEdit:aPointM2[P_Y] )
       cCBformatted := oEdit:Save( ,,, .T., oEdit:aPointM1, oEdit:aPointM2 )
+      hwg_Copystringtoclipboard( cCBformatted )
    ENDIF
 
    RETURN Nil
 
 STATIC FUNCTION PasteFormatted()
 
-   LOCAL x := oEdit:aPointC[P_X], y := oEdit:aPointC[P_Y]
+   LOCAL nLines := oEdit:nLines, nLineF := oEdit:nLineF, nLineC := oEdit:nLineC, nPosF := oEdit:nPosF, nPosC := oEdit:nPosC, nWCharF := oEdit:nWCharF, nWSublF := oEdit:nWSublF
+
    IF !Empty( cCBformatted )
       oEdit:SetText( cCBformatted,,, .T., .T., oEdit:aPointC[P_Y] )
-      oEdit:SetCaretPos( SETC_XYPOS, x, y )
-      oEdit:lUpdated := .T.
+      oEdit:nLines := nLines; oEdit:nLineF := nLineF; oEdit:nLineC := nLineC; oEdit:nPosF := nPosF; oEdit:nPosC := nPosC; oEdit:nWCharF := nWCharF; oEdit:nWSublF := nWSublF
+      oEdit:PCopy( { nPosC, nLineC }, oEdit:aPointC )
+      oEdit:SetCaretPos( SETC_XY )
+      hced_Setfocus( oEdit:hEdit )
    ENDIF
 
    RETURN Nil

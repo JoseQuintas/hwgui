@@ -760,6 +760,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
          yPos += nBorder
       ENDIF
    ELSEIF aStru[OB_TYPE] == "img"
+      IF nRight == Nil; nRight := nWidth; ENDIF
       IF ::lPrinting
          aLine := Array( AL_LENGTH )
       ELSE
@@ -773,7 +774,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
       aLine[AL_NCHARS] := 1
       IF !Empty( aStru[OB_OB] )
          nTWidth := aStru[OB_OB]:nWidth
-         aLine[AL_X1] += Iif( Empty(aStru[OB_IALIGN]), 0, Iif( aStru[OB_IALIGN]==2, nWidth - nTWidth, Round( (nWidth - nTWidth) / 2, 0 ) ) )
+         aLine[AL_X1] += Iif( Empty(aStru[OB_IALIGN]), 0, Iif( aStru[OB_IALIGN]==2, nRight-aLine[AL_X1]-nTWidth, Round( (nRight-aLine[AL_X1]-nTWidth) / 2, 0 ) ) )
          aLine[AL_X2] := aLine[AL_X1] + nTWidth
          aLine[AL_Y2] := yPos + aStru[OB_OB]:nHeight
          IF !Empty( aStru[OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStru[OB_CLS] )
@@ -811,9 +812,9 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
       ENDIF
       IF ( i := aStruTbl[OB_TWIDTH] ) == 0 .OR. i == -100
          //::nBoundL := 0
-         nTWidth := nWidth
+         nTWidth := nWidth - nBorder * ( Len(aStruTbl[OB_OB])+1 )
       ELSE
-         nTWidth := Iif( i>0,i,Round(nWidth*(-i)/100,0) )
+         nTWidth := Iif( i>0,i,Round(nWidth*(-i)/100,0) ) - nBorder * ( Len(aStruTbl[OB_OB])+1 )
          ::nBoundL += Iif( Empty(aStruTbl[OB_TALIGN]), 0, Iif( aStruTbl[OB_TALIGN]==2, nWidth - nTWidth, Round( (nWidth - nTWidth) / 2, 0 ) ) )
       ENDIF
 
@@ -2497,7 +2498,8 @@ Function hced_CleanStru( oEdit, nLine1, nLine2 )
       aStru := oEdit:aStru[nL]
       nDel := 0
       FOR i := 2 TO Len( aStru ) - nDel
-         IF aStru[i,3] == aStru[1,3] .OR. aStru[i,3] == "def" .OR. aStru[i,1] > aStru[i,2]
+         IF ( ( aStru[i,OB_CLS] == aStru[1,OB_CLS] .OR. aStru[i,OB_CLS] == "def" ) .AND. ;
+               Len(aStru[i]) <= OB_CLS ) .OR. aStru[i,1] > aStru[i,2]
             Adel( aStru, i )
             nDel ++
          ENDIF
@@ -2507,8 +2509,10 @@ Function hced_CleanStru( oEdit, nLine1, nLine2 )
       ENDIF
       nDel := 0
       FOR i := 3 TO Len( aStru ) - nDel
-         IF aStru[i,1] == aStru[i-1,2] + 1 .AND. aStru[i,3] == aStru[i-1,3] ;
-               .AND. Len(aStru[i]) == Len(aStru[i-1])
+         IF aStru[i,1] == aStru[i-1,2] + 1 .AND. aStru[i,OB_CLS] == aStru[i-1,OB_CLS] ;
+               .AND. Len(aStru[i]) == Len(aStru[i-1]) .AND. ;
+               ( Len(aStru[i]) < OB_ID .OR. !(aStru[i,OB_ID]==aStru[i-1,OB_ID]) ) .AND. ;
+               ( Len(aStru[i]) < OB_ACCESS .OR. !(aStru[i,OB_ACCESS]==aStru[i-1,OB_ACCESS]) )
             aStru[i-1,2] := aStru[i,2]
             Adel( aStru, i )
             nDel ++

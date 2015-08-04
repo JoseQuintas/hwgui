@@ -20,6 +20,7 @@ CLASS HOwnButton INHERIT HControl
    DATA winclass   INIT "OWNBTN"
    DATA lFlat
    DATA aStyle
+   DATA aRadius
    DATA state
    DATA bClick
    DATA lPress  INIT .F.
@@ -232,7 +233,7 @@ METHOD Paint() CLASS HOwnButton
       n := Len( ::aStyle )
       n := iif( ::state == OBTN_MOUSOVER, iif( n > 2, 3, 1 ), ;
          iif( ::state == OBTN_PRESSED, iif( n > 1, 2, 1 ), 1 ) )
-      hwg_drawGradient( hDC, 0, 0, aCoors[3], aCoors[4], ::aStyle[n]:nOrient, ::aStyle[n]:aColors )
+      hwg_drawGradient( hDC, 0, 0, aCoors[3], aCoors[4], ::aStyle[n]:nOrient, ::aStyle[n]:aColors,, ::aRadius )
       IF !Empty( ::aStyle[n]:oPen )
          hwg_Selectobject( hDC, ::aStyle[n]:oPen:handle )
          hwg_Rectangle( hDC, 0, 0, aCoors[3]-1, aCoors[4]-1 )

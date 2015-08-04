@@ -260,7 +260,7 @@ int ted_CalcItemWidth( PangoLayout * layout, char *szText, TEDFONT *font, int *i
                ptr = g_utf8_prev_char( ptr );
                i --;
             }
-            if( !i && bLastInFew )
+            if( !i && !bLastInFew )
             //if( !i )
             {
                i = i1;

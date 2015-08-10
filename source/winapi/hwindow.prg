@@ -70,15 +70,16 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
    RETURN Nil
 
 STATIC FUNCTION hwg_onEnterIdle( oDlg, wParam, lParam )
-   LOCAL oItem
+   LOCAL oItem, b
    IF ( Empty( wParam ) .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
          .AND. oItem:handle == lParam )
       oDlg := oItem
    ENDIF
    IF __ObjHasMsg( oDlg, "BACTIVATE" )
       IF oDlg:bActivate != Nil
-         Eval( oDlg:bActivate, oDlg )
+         b := oDlg:bActivate
          oDlg:bActivate := Nil
+         Eval( b, oDlg )
       ENDIF
    ENDIF
 

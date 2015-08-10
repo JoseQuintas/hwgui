@@ -142,7 +142,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD StyleDiv( nLine, xAttr, cClass )
    METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr )
    METHOD InsRows( nL, nRows, nCols, lNoAddline )
-   METHOD InsImage( cName, nAlign, xAttr, xBin )
+   METHOD InsImage( cName, nAlign, xAttr, xBin, cExt )
    METHOD InsSpan( cText, xAttr, cHref )
    METHOD DelObject( cType, nL, nCol )
    METHOD Save( cFileName, cpSou, lHtml, lCompact, nFrom, nTo )
@@ -342,7 +342,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd, nFrom ) CLASS HCEdiExt
                cVal := hb_Base64Decode( Substr( xText, nPosS, nPos1 - nPosS ) )
                xVal := HBitmap():AddString( cClsName, cVal )
                Aadd( ::aImages, xVal )
-               Aadd( ::aBin, { cClsName, cVal, xVal } )
+               Aadd( ::aBin, { cClsName, cVal, xVal, Iif( (i:=Ascan(aAttr,{|a|a[1]=="ext"}))==0, Nil, aAttr[i,2] )} )
 
             ENDIF
          ELSE
@@ -1190,6 +1190,9 @@ METHOD AddClass( cName, cSource ) CLASS HCEdiExt
       ENDIF
    ENDDO
    IF lFont
+      IF Empty( ::aFonts )
+         ::AddFont( ::oFont )
+      ENDIF
       nFont := ::AddFont( , Iif( name==Nil,::oFont:name,name ),, ;
            Iif( height==Nil,::oFont:height,height ), ;
            Iif( weight==Nil,::oFont:weight,weight ),,;
@@ -1625,12 +1628,15 @@ METHOD InsRows( nL, nRows, nCols, lNoAddline ) CLASS HCEdiExt
 
    RETURN .T.
 
-METHOD InsImage( cName, nAlign, xAttr, xBin ) CLASS HCEdiExt
+METHOD InsImage( cName, nAlign, xAttr, xBin, cExt ) CLASS HCEdiExt
 
    LOCAL nL, xVal, aStruTbl, iTd, nIndent, nBoundL, nBoundR, nLTr, cClsName, i, j
 
    IF !Empty( xAttr )
       cClsName := ::FindClass( , xAttr, .T. )
+   ENDIF
+   IF Empty( cExt ) .AND. !Empty( cName )
+      cExt := hb_FNameExt( cName )
    ENDIF
 
    nL := ::aPointC[P_Y]
@@ -1668,15 +1674,20 @@ METHOD InsImage( cName, nAlign, xAttr, xBin ) CLASS HCEdiExt
    IF Empty( xBin )
       xVal := Iif( ::bImgLoad==Nil, HBitmap():AddFile(cName), Eval(::bImgLoad,cName) )
    ELSE
-      IF Empty( cName )
-         i := 1
-         DO WHILE !Empty( cName := "img_"+Ltrim(Str(i)) ) .AND. Ascan( ::aBin, {|a|a[1]==cName} ) != 0
-            i ++
-         ENDDO
+      IF ( i := Ascan( ::aBin, {|a|a[2]==xBin} ) ) > 0
+         xVal := ::aBin[i,3]
+         cName := "#" + ::aBin[i,1]
+      ELSE
+         IF Empty( cName )
+            i := 1
+            DO WHILE !Empty( cName := "img_"+Ltrim(Str(i)) ) .AND. Ascan( ::aBin, {|a|a[1]==cName} ) != 0
+               i ++
+            ENDDO
+         ENDIF
+         xVal := HBitmap():AddString( cName, xBin )
+         Aadd( ::aBin, { cName, xBin, xVal, cExt } )
+         cName := "#" + cName
       ENDIF
-      xVal := HBitmap():AddString( cName, xBin )
-      Aadd( ::aBin, { cName, xBin, xVal } )
-      cName := "#" + cName
    ENDIF
    ::aStru[nL,1] :=  { "img", xVal, cClsName,,, cName, nAlign }
    IF ::aImages == Nil
@@ -1957,6 +1968,14 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
             aStruTbl := Nil
             s += "</table>" + cNewL
          ENDIF
+         cHref := ::aStru[i,1,OB_HREF]
+         IF lHtml .AND. Left( cHref,1 ) == "#"
+            cHref := Substr( cHref, 2 )
+            IF Empty( hb_FNameExt(cHRef) ) .AND. ( j := Ascan( ::aBin, {|a|a[1]==cHref} ) ) > 0 ;
+                  .AND. !Empty( ::aBin[j,4] )
+               cHref += ::aBin[j,4]
+            ENDIF
+         ENDIF
          s += "<img" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', "" ) ;
             + ' src="' + ::aStru[i,1,OB_HREF] + '"' + ;
             Iif( !Empty(xTemp:=::aStru[i,1,OB_IALIGN]), ' align="' + Iif( xTemp==2, 'right"','center"' ), "" ) + ;
@@ -2000,17 +2019,22 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
    IF !lNested
       ::lUpdated := .F.
       hbxml_SetEntity()
+      FOR i := 1 TO Len( ::aBin )
+         IF Ascan( aImages, ::aBin[i,1] ) != 0
+            IF lHtml
+               cHref := Iif( Empty(hb_FNameExt(::aBin[i,1])) .AND. !Empty(::aBin[i,4]), ::aBin[i,1]+::aBin[i,4], ::aBin[i,1] )
+               hb_Memowrit( , ::aBin[i,2] )
+            ELSE
+               s += '<binary id="' + ::aBin[i,1] + '"' + ;
+                     Iif( !Empty(::aBin[i,4]), 'ext="'+::aBin[i,4]+'"', '' ) + '>' + ;
+                     hb_Base64Encode( ::aBin[i,2] ) + '</binary>' + cNewL
+            ENDIF
+         ENDIF
+      NEXT
       IF lHtml
          s += "</body></html>"
-      ELSE
-         FOR i := 1 TO Len( ::aBin )
-            IF Ascan( aImages, ::aBin[i,1] ) != 0
-               s += '<binary id="' + ::aBin[i,1] + '">' + hb_Base64Encode( ::aBin[i,2] ) + '</binary>' + cNewL
-            ENDIF
-         NEXT
-         IF Empty( lCompact )
-            s += "</hwge>"
-         ENDIF
+      ELSEIF Empty( lCompact )
+         s += "</hwge>"
       ENDIF
       IF nHand != -1
          FWrite( nHand, s )

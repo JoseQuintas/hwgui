@@ -275,7 +275,5 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
 
 HB_FUNC( HWG_RUNAPP )
 {
-   char * argv[] = { (char *) hb_parc(1), (char *) hb_parc(2), NULL };
-   hb_retl( g_spawn_async( NULL, argv,
-         NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL, NULL ) );
+   hb_retl( g_spawn_command_line_async( hb_parc(1), NULL ) );
 }

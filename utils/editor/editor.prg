@@ -27,12 +27,9 @@ REQUEST HB_CODEPAGE_RU1251
 REQUEST HB_CODEPAGE_RU866
 
 #define MENU_RULER       1901
-#define MENU_INSROW      1902
-#define MENU_IMAGE       1903
-#define MENU_TABLE       1904
-#define MENU_ROW         1905
-#define MENU_CELL        1906
-#define MENU_SPAN        1907
+#define MENU_IMAGE       1902
+#define MENU_TABLE       1903
+#define MENU_SPAN        1904
 #define MENU_PNOWR       1911
 #define MENU_PNOINS      1912
 #define MENU_PNOCR       1913
@@ -250,7 +247,6 @@ FUNCTION Main ( fName )
          ENDMENU
          MENUITEM "&Image" ACTION (setImage( .T. ),hced_Setfocus(oEdit:hEdit))
          MENUITEM "&Table" ACTION (setTable( .T. ),hced_Setfocus(oEdit:hEdit))
-         MENUITEM "&Rows" ID MENU_INSROW ACTION (InsRows(),hced_Setfocus(oEdit:hEdit))
          MENUITEM "&Script" ACTION EditScr()
       ENDMENU
       MENU TITLE "&Format"
@@ -269,11 +265,14 @@ FUNCTION Main ( fName )
          ENDMENU
          SEPARATOR
          MENUITEM "&Image" ID MENU_IMAGE ACTION (setImage( .F. ),hced_Setfocus(oEdit:hEdit))
-         MENUITEM "&Table" ID MENU_TABLE ACTION (setTable( .F. ),hced_Setfocus(oEdit:hEdit))
-         MENU TITLE "&Row" ID MENU_ROW 
-            MENUITEM "&Delete" ACTION DelRow()
+         MENU TITLE "&Table" ID MENU_TABLE
+            MENUITEM "&Properties" ACTION (setTable( .F. ),hced_Setfocus(oEdit:hEdit))
+            MENUITEM "&Insert row" ACTION (InsRows(),hced_Setfocus(oEdit:hEdit))
+            MENUITEM "&Delete row" ACTION DelRow()
+            MENUITEM "Insert column" ACTION (InsCols(),hced_Setfocus(oEdit:hEdit))
+            MENUITEM "Delete column" ACTION (DelCol(),hced_Setfocus(oEdit:hEdit))
+            MENUITEM "&Cell color" ACTION (setCellColor(),hced_Setfocus(oEdit:hEdit))
          ENDMENU
-         MENUITEM "&Cell" ID MENU_CELL ACTION (setCellColor(),hced_Setfocus(oEdit:hEdit))
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&Help" ACTION Help()
@@ -477,8 +476,8 @@ STATIC FUNCTION onBtnStyle( nBtn )
 
 STATIC FUNCTION onChangePos( lInit )
 
-   LOCAL arr, aAttr, i, l, cTmp, nOptP, nOptS
-   STATIC lInTable := .F., lSelection := .T., lPasteF := .T.
+   LOCAL arr, aStru, aAttr, i, l, cTmp, nOptP, nOptS
+   STATIC lInTable := .F., lSelection := .T., lPasteF := .T., lImage := .T.
 
    IF lInit == Nil; lInit := .F.; ENDIF
 
@@ -527,12 +526,16 @@ STATIC FUNCTION onChangePos( lInit )
          hwg_Enablemenuitem( , MENU_PASTEF, lPasteF, .T. )
       ENDIF
       hwg_Enablemenuitem( , MENU_SPAN, (!Empty(arr).AND.!Empty(arr[3])).OR.lSelection, .T. )
+
+      aStru := Iif( Len( arr ) >= 7, arr[7], oEdit:aStru[arr[1]] )
+      IF ( l := ( Valtype(aStru[1,OB_TYPE]) == "C" .AND. aStru[1,OB_TYPE] == "img" ) ) != lImage
+         lImage := l
+         hwg_Enablemenuitem( , MENU_IMAGE, l, .T. )
+      ENDIF
+
       IF ( l := ( ( oEdit:getEnv() > 0 ) .OR. ( !Empty(arr).AND.Len(arr)>= 7 ) ) ) != lInTable .OR. lInit
          lInTable := l
-         hwg_Enablemenuitem( , MENU_INSROW, lInTable, .T. )
          hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )
-         hwg_Enablemenuitem( , MENU_ROW, lInTable, .T. )
-         hwg_Enablemenuitem( , MENU_CELL, lInTable, .T. )
       ENDIF
    ENDIF
    nOptP := hced_getAccInfo( oEdit, oEdit:aPointC, 0 )
@@ -1237,8 +1240,20 @@ STATIC FUNCTION InsUrl( nType )
 
 STATIC FUNCTION setImage( lNew )
 
-   LOCAL oDlg, arr1, nL, aStru, cClsName, aAttr, fname, nb0, i
+   LOCAL oDlg, oGet1, arr1, nL, aStru, cClsName, aAttr, fname, nb0, i, cName, cBin
    LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, lEmbed := .T., nBorder := 0
+   LOCAL bClick1 := {||
+      LOCAL cfname
+      IF Empty( cfname := hwg_Selectfile( "Graphic files( *.jpg;*.png;*.gif;*.bmp )", "*.jpg;*.png;*.gif;*.bmp", "" ) )
+         RETURN .F.
+      ELSE
+         oGet1:value := fname := cfname
+      ENDIF
+      RETURN .T.
+   }
+   LOCAL bClick2 := {||
+      RETURN .T.
+   }
 
    IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
       nL := arr1[4]
@@ -1252,11 +1267,7 @@ STATIC FUNCTION setImage( lNew )
       RETURN Nil
    ENDIF
 
-   IF lNew
-      IF Empty( fname := hwg_Selectfile( "Graphic files( *.jpg;*.png;*.gif;*.bmp )", "*.jpg;*.png;*.gif;*.bmp", "" ) )
-         RETURN Nil
-      ENDIF
-   ELSE
+   IF !lNew
       lEmbed := ( Left( aStru[1,OB_HREF], 1 ) == "#" )
       nAlign := aStru[1,OB_IALIGN] + 1
       IF !Empty( cClsName := aStru[1,OB_CLS] )
@@ -1268,28 +1279,37 @@ STATIC FUNCTION setImage( lNew )
    ENDIF
    nb0 := nBorder
 
-   INIT DIALOG oDlg TITLE Iif( lNew, "Insert Image - " + hb_FnameNameExt(fname), "Set image properties" )  ;
-      AT 20, 30 SIZE 440, 220 FONT HWindow():GetMain():oFont
+   INIT DIALOG oDlg TITLE Iif( lNew, "Insert image", "Set image properties" )  ;
+      AT 20, 30 SIZE 480, 260 FONT HWindow():GetMain():oFont
 
-   @ 20, 10 GET CHECKBOX lEmbed CAPTION "Keep the image inside the document ?" SIZE 400, 24
+   IF lNew
+      @ 20, 10 GET oGet1 VAR fname SIZE 280, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0 ;
+           ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+      @ 300,10 BUTTON "File" SIZE 60, 32 ON CLICK bClick1 ON SIZE ANCHOR_TOPABS + ANCHOR_RIGHTABS
+      @ 360,10 BUTTON "Embedded" SIZE 100, 32 ON CLICK bClick2 ON SIZE ANCHOR_TOPABS + ANCHOR_RIGHTABS
+   ENDIF
 
-   @ 20, 50 SAY "Align:" SIZE 96, 22
-   @ 116, 50 GET COMBOBOX nAlign ITEMS arr SIZE 100, 26 DISPLAYCOUNT 3
+   @ 20, 50 GET CHECKBOX lEmbed CAPTION "Keep an image embedded in the document ?" SIZE 440, 24
 
-   @ 20, 90 SAY "Border:" SIZE 96, 22
-   @ 116, 90 GET UPDOWN nBorder RANGE 0, 4 SIZE 50, 30 STYLE WS_BORDER
+   @ 20, 90 SAY "Align:" SIZE 96, 22
+   @ 116, 90 GET COMBOBOX nAlign ITEMS arr SIZE 100, 26 DISPLAYCOUNT 3
 
-   @ 80, 162 BUTTON "Ok" ID IDOK  SIZE 100, 32
-   @ 260, 162 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+   @ 20, 130 SAY "Border:" SIZE 96, 22
+   @ 116, 130 GET UPDOWN nBorder RANGE 0, 4 SIZE 50, 30 STYLE WS_BORDER
+
+   @ 80, 202 BUTTON "Ok" ID IDOK  SIZE 100, 32 ON SIZE ANCHOR_BOTTOMABS
+   @ 300, 202 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32 ON SIZE ANCHOR_BOTTOMABS + ANCHOR_RIGHTABS
 
    ACTIVATE DIALOG oDlg
 
    IF oDlg:lResult
       IF lNew
-         IF lEmbed
-            oEdit:InsImage( , nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ), MemoRead( fname ) )
-         ELSE
-            oEdit:InsImage( fname, nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ) )
+         IF !Empty( fname )
+            IF lEmbed
+               oEdit:InsImage( , nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ), MemoRead(fname), Lower(hb_FNameExt(fname)) )
+            ELSE
+               oEdit:InsImage( fname, nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ) )
+            ENDIF
          ENDIF
       ELSEIF lEmbed != ( Left( aStru[1,OB_HREF], 1 ) == "#" ) .OR. ;
             nAlign != (aStru[1,OB_IALIGN] + 1) .OR. nBorder != nb0
@@ -1299,7 +1319,24 @@ STATIC FUNCTION setImage( lNew )
          ENDIF
          IF lEmbed != ( Left( aStru[1,OB_HREF], 1 ) == "#" )
             IF lEmbed
+               cName := aStru[1,OB_HREF]
+               IF !Empty( cBin := MemoRead( cName ) )
+                  IF ( i := Ascan( oEdit:aBin, {|a|a[2]==cBin} ) ) > 0
+                     aStru[1,OB_HREF] := "#" + oEdit:aBin[i,1]
+                  ELSE
+                     i := 1
+                     DO WHILE !Empty( cName := "img_"+Ltrim(Str(i)) ) .AND. Ascan( oEdit:aBin, {|a|a[1]==cName} ) != 0
+                        i ++
+                     ENDDO
+                     Aadd( oEdit:aBin, { cName, cBin, aStru[1,OB_OB] } )
+                  ENDIF
+               ENDIF
             ELSE
+               cName := Substr( aStru[1,OB_HREF], 2 )
+               IF ( i := Ascan( oEdit:aBin, {|a|a[1]==cName} ) ) > 0
+                  hb_MemoWrit( cName, oEdit:aBin[i,2] )
+                  aStru[1,OB_HREF] := cName
+               ENDIF
             ENDIF
          ENDIF
          oEdit:lUpdated := .T.
@@ -1310,7 +1347,7 @@ STATIC FUNCTION setImage( lNew )
    RETURN Nil
 
 STATIC FUNCTION setTable( lNew )
-   LOCAL oDlg, oSayClr, nRows := 3, nCols := 2, nBorder := 0, nBColor := 0, nWidth := 100
+   LOCAL oDlg, oTab, nTop, oSayClr, nRows := 3, nCols := 2, nBorder := 1, nBColor := 0, nWidth := 100
    LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, cClsName, aAttr, lNeedScan := .F.
    LOCAL nRows0, nBorder0 := 0, nBColor0 := 0
    LOCAL nL := oEdit:aPointC[P_Y], nLast
@@ -1323,6 +1360,12 @@ STATIC FUNCTION setTable( lNew )
      ENDIF
      RETURN .T.
    }
+
+#ifdef __PLATFORM__UNIX
+   nTop := 10
+#else
+   nTop := 40
+#endif
 
    IF lNew == ( Valtype(oEdit:aStru[nL,1,1]) == "C" .AND. oEdit:aStru[nL,1,1] == "tr" )
       RETURN Nil
@@ -1352,29 +1395,39 @@ STATIC FUNCTION setTable( lNew )
       nAlign := aStruTbl[OB_TALIGN] + 1
    ENDIF
 
-   INIT DIALOG oDlg TITLE "Insert Table"  ;
-      AT 20, 30 SIZE 440, 250 FONT HWindow():GetMain():oFont
+   INIT DIALOG oDlg TITLE Iif( lNew, "Insert", "Set" ) + " table"  ;
+      AT 20, 30 SIZE 460, 290 FONT HWindow():GetMain():oFont
 
-   @ 10, 10 SAY "Rows:" SIZE 96, 22
-   @ 106, 10 GET UPDOWN nRows RANGE 1, 100 SIZE 50, 30 STYLE WS_BORDER
+   @ 10, 10 TAB oTab ITEMS {} SIZE 440,220 ON SIZE ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
 
-   @ 210, 10 SAY "Columns:" SIZE 96, 22
-   @ 306, 10 GET UPDOWN nCols RANGE 1, 24 SIZE 50, 30 STYLE WS_BORDER
+   BEGIN PAGE "Main" of oTab
 
-   @ 10, 50 SAY "Width,%" SIZE 96, 22
-   @ 106, 50 GET UPDOWN nWidth RANGE 10, 100 SIZE 80, 30 STYLE WS_BORDER
+   @ 10, nTop SAY "Rows:" SIZE 96, 22 TRANSPARENT
+   @ 106, nTop GET UPDOWN nRows RANGE 1, 100 SIZE 50, 30 STYLE WS_BORDER
 
-   @ 210, 50 SAY "Align:" SIZE 96, 22
-   @ 306, 50 GET COMBOBOX nAlign ITEMS arr SIZE 100, 26 DISPLAYCOUNT 3
+   @ 210, nTop SAY "Columns:" SIZE 96, 22 TRANSPARENT
+   @ 306, nTop GET UPDOWN nCols RANGE 1, 24 SIZE 50, 30 STYLE WS_BORDER
 
-   @ 10, 90 GROUPBOX "Border" SIZE 420, 80
-   @ 20, 116 SAY "Width:" SIZE 100, 24
-   @ 140,110 GET UPDOWN nBorder RANGE 0, 8 SIZE 60, 30
-   @ 220,110  BUTTON "Color" SIZE 80, 30 ON CLICK bColor
-   @ 320,114 SAY oSayClr CAPTION Iif( nBColor==0,"Default","#"+hwg_ColorN2C(nBColor) ) SIZE 90, 24 STYLE WS_BORDER BACKCOLOR 16777215
+   @ 10, nTop+40 SAY "Width,%" SIZE 96, 22 TRANSPARENT
+   @ 106,nTop+40 GET UPDOWN nWidth RANGE 10, 100 SIZE 80, 30 STYLE WS_BORDER
 
-   @ 80, 200 BUTTON "Ok" ID IDOK  SIZE 100, 32
-   @ 260,200 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+   @ 210,nTop+40 SAY "Align:" SIZE 96, 22 TRANSPARENT
+   @ 306,nTop+40 GET COMBOBOX nAlign ITEMS arr SIZE 100, 26 DISPLAYCOUNT 3
+
+   @ 10,nTop+80 GROUPBOX "Border" SIZE 420, 80
+   @ 20,nTop+106 SAY "Width:" SIZE 100, 24 TRANSPARENT
+   @ 140,nTop+100 GET UPDOWN nBorder RANGE 0, 8 SIZE 60, 30
+   @ 220,nTop+100  BUTTON "Color" SIZE 80, 30 ON CLICK bColor
+   @ 320,nTop+104 SAY oSayClr CAPTION Iif( nBColor==0,"Default","#"+hwg_ColorN2C(nBColor) ) SIZE 90, 24 STYLE WS_BORDER BACKCOLOR 16777215
+
+   END PAGE of oTab
+
+   BEGIN PAGE "Columns" of oTab
+
+   END PAGE of oTab
+
+   @ 80, 240 BUTTON "Ok" ID IDOK  SIZE 100, 32
+   @ 260,240 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
 
    ACTIVATE DIALOG oDlg
 
@@ -1493,6 +1546,12 @@ STATIC FUNCTION DelRow()
 
    RETURN Nil
 
+STATIC FUNCTION InsCols()
+   RETURN Nil
+
+STATIC FUNCTION DelCol()
+   RETURN Nil
+
 STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
    LOCAL arr
    STATIC nShiftL := 0
@@ -1533,11 +1592,7 @@ STATIC FUNCTION UrlLaunch( oEdi, cAddr )
    LOCAL n
    IF Lower( Left( cAddr, 4 ) ) == "http"
       IF !Empty( cWebBrow )
-#ifdef __PLATFORM__UNIX
-         hwg_RunApp( cWebBrow, cAddr )
-#else
          hwg_RunApp( cWebBrow + " " + cAddr )
-#endif
       ELSE
 #ifndef __PLATFORM__UNIX
          hwg_Shellexecute( cAddr )

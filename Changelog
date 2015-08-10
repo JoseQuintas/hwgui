@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-08-10 10:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/misc.c
+    * hwg_runapp() function is now compatible with winapi version - 
+      it accepts the whole command line as one parameter
+  * source/winapi/hwindow.prg
+    ! Bug fixed
+  * utils/tutorial/tutor.prg
+    * hwg_runapp() calls changed
+  * utils/editor/editor.prg
+    * hwg_runapp() call changed
+  * utils/editor/hcediext.prg
+    * Some fixes and improvements
+
 2015-08-04 16:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hownbtn.prg
   * source/winapi/hownbtn.prg

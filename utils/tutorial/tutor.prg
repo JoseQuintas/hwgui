@@ -244,11 +244,7 @@ STATIC FUNCTION RunSample( oItem )
    oText:Save( "__tmp.prg" )
    IF hwg_RunConsoleApp( cHrb_bin_dir + "harbour " + "__tmp.prg -n -gh -I" + cHwg_include_dir + cHrb_inc_dir ) .AND. File( "__tmp.hrb" )
       IF !Empty( cHwgrunPath )
-#ifdef __PLATFORM__UNIX
-         hwg_RunApp( cHwgrunPath + "hwgrun", "__tmp.hrb" )
-#else
          hwg_RunApp( cHwgrunPath + "hwgrun __tmp.hrb" )
-#endif
       ELSE
          hwg_MsgStop( "HwgRun is absent, you need to compile it at first." )
       ENDIF
@@ -260,11 +256,7 @@ STATIC FUNCTION RunSample( oItem )
       IF lWnd
          IF !Empty( cHwgrunPath )
             hb_Memowrit( "__tmp.hrb", cHrb )
-#ifdef __PLATFORM__UNIX
-            hwg_RunApp( cHwgrunPath + "hwgrun", "__tmp.hrb" )
-#else
             hwg_RunApp( cHwgrunPath + "hwgrun __tmp.hrb" )
-#endif
          ELSE
             hwg_MsgStop( "HwgRun is absent, you need to compile it at first." )
          ENDIF

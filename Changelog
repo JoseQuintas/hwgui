@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-08-12 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/draw.c
+    ! Warning fixed
+  * source/common/editor/hcedit.prg
+    * Pressing of F1..F12 doesn't affect current selecttion now.
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Some fixes and improvements    
+
 2015-08-10 10:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/misc.c
     * hwg_runapp() function is now compatible with winapi version - 

@@ -61,7 +61,8 @@ REQUEST HB_CODEPAGE_RU866
 #define OB_TWIDTH       4
 #define OB_TRNUM        4
 #define OB_TALIGN       5
-#define OB_TBL          5
+#define OB_OPT          5
+#define OB_TBL          6
 #define OB_HREF         6
 #define OB_IALIGN       7
 #define OB_EXEC         7
@@ -91,6 +92,8 @@ REQUEST HB_CODEPAGE_RU866
 #define BIT_NOINS       3
 #define BIT_NOCR        4
 #define BIT_CLCSCR      5
+
+#define TROPT_SEL       1
 
 #define  CLR_BLACK          0
 #define  CLR_GRAY1    5592405  // #555555
@@ -198,8 +201,9 @@ FUNCTION Main ( fName )
    oEdit:AddClass( "h4", "font-size: 110%; font-weight: bold;" )
    oEdit:AddClass( "h5", "font-weight: bold;" )
    oEdit:AddClass( "cite", "color: #007800; margin-left: 3%; margin-right: 3%;" )
-   oEdit:aDefClasses := { "url","h1","h2","h3","h4" }
-   oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
+   oEdit:aDefClasses := { "url","h1","h2","h3","h4","h5","cite" }
+   oEdit:bOther := {|o,m,wp,lp|EditMessProc( o,m,wp,lp )}
+   oEdit:bAfter := {|o,m,wp,lp|EdMsgAfter( o,m,wp,lp )}
    oEdit:bChangePos := { || onChangePos() }
 
    MENU OF oMainWindow
@@ -239,6 +243,9 @@ FUNCTION Main ( fName )
       ENDMENU
       MENU TITLE "&View"
          MENUITEMCHECK "&Ruler" ID MENU_RULER ACTION SetRuler()
+         SEPARATOR
+         MENUITEMCHECK "Zoom &In"+Chr(9)+"Ctrl+ +" ACTION Zoom( 2 ) ACCELERATOR FCONTROL,VK_ADD
+         MENUITEMCHECK "&Zoom &Out"+Chr(9)+"Ctrl+ -" ACTION Zoom( -2 ) ACCELERATOR FCONTROL,VK_SUBTRACT
       ENDMENU
       MENU TITLE "&Insert"
          MENU TITLE "&Url"
@@ -287,6 +294,8 @@ FUNCTION Main ( fName )
    ELSE
       onChangePos( .T. )
    ENDIF
+
+   SET KEY GLOBAL 0, VK_F3 TO MarkRow()
 
    ACTIVATE WINDOW oMainWindow
    CloseFile()
@@ -527,12 +536,13 @@ STATIC FUNCTION onChangePos( lInit )
       ENDIF
       hwg_Enablemenuitem( , MENU_SPAN, (!Empty(arr).AND.!Empty(arr[3])).OR.lSelection, .T. )
 
-      aStru := Iif( Len( arr ) >= 7, arr[7], oEdit:aStru[arr[1]] )
-      IF ( l := ( Valtype(aStru[1,OB_TYPE]) == "C" .AND. aStru[1,OB_TYPE] == "img" ) ) != lImage
-         lImage := l
-         hwg_Enablemenuitem( , MENU_IMAGE, l, .T. )
+      IF !Empty( arr )
+         aStru := Iif( Len( arr ) >= 7, arr[7], oEdit:aStru[arr[1]] )
+         IF ( l := ( Valtype(aStru[1,OB_TYPE]) == "C" .AND. aStru[1,OB_TYPE] == "img" ) ) != lImage
+            lImage := l
+            hwg_Enablemenuitem( , MENU_IMAGE, l, .T. )
+         ENDIF
       ENDIF
-
       IF ( l := ( ( oEdit:getEnv() > 0 ) .OR. ( !Empty(arr).AND.Len(arr)>= 7 ) ) ) != lInTable .OR. lInit
          lInTable := l
          hwg_Enablemenuitem( , MENU_TABLE, lInTable, .T. )
@@ -1587,6 +1597,26 @@ STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
 
    RETURN - 1
 
+STATIC FUNCTION EdMsgAfter( o, msg, wParam, lParam )
+
+   LOCAL nKey, cLine, nPos, nPos1, arr, l1 := .F., l2 := .F., nLen
+   LOCAL lUrl := .F., lSpan, lInTable
+
+   IF msg == WM_KEYDOWN
+
+      nKey := hwg_PtrToUlong( wParam )
+      IF nKey == VK_UP .OR. nKey == VK_DOWN .OR. nKey == VK_NEXT .OR. nKey == VK_PRIOR
+         MarkRow( 1 )
+      ENDIF
+
+   ELSEIF msg == WM_RBUTTONDOWN .OR. msg == WM_LBUTTONDOWN
+
+      MarkRow( 0 )
+
+   ENDIF
+
+   RETURN -1
+
 STATIC FUNCTION UrlLaunch( oEdi, cAddr )
 
    LOCAL n
@@ -1651,7 +1681,7 @@ STATIC FUNCTION CalcScr( aStru, nL, iTD, nL1 )
    IF aStru[OB_EXEC] == Nil
       cRes := ""
       DO WHILE Substr( aStru[OB_HREF],nPos1,1 ) <= ' '; nPos1 ++; ENDDO
-      DO WHILE ( nPos2 := hb_At( "$", aStru[OB_HREF], nPos1 ) ) > 0        
+      DO WHILE ( nPos2 := hb_At( "$", aStru[OB_HREF], nPos1 ) ) > 0
          IF ( c := Substr( aStru[OB_HREF], nPos2+1, 1 ) ) $ "CR"
             cRes += Substr( aStru[OB_HREF], nPos1, nPos2 - nPos1 )
             nPos1 := nPos2 := nPos2 + 3
@@ -1752,7 +1782,7 @@ STATIC FUNCTION CalcAll()
 
 STATIC FUNCTION Calc( nL, iTD, nL1 )
 
-   LOCAL arr, aStru, i, nStruExp, nStruRes
+   LOCAL arr, aStru, i, j, n, nStruExp, nStruRes
    LOCAL xRes, cRes, cExp, lEqExi := .F., lNewExp := .F., nPos1, nPos2
    LOCAL bOldError
 
@@ -1807,6 +1837,33 @@ STATIC FUNCTION Calc( nL, iTD, nL1 )
       cExp := Trim( Left( cExp, Len( cExp ) - 1 ) )
       lEqExi := .T.
    ENDIF
+
+   nPos1 := 1
+   DO WHILE ( nPos2 := hb_At( "$-", cExp, nPos1 ) ) > 0
+      nPos1 := nPos2 + 3
+      IF IsDigit( n := Substr( cExp, nPos2+2, 1 ) ) .AND. !IsDigit( Substr( cExp, nPos2+3, 1 ) )
+         n := Val(n)
+         j := nL1
+         DO WHILE --j > 0 .AND. n > 0
+            aStru := oEdit:aStru[j]
+            FOR i := 2 TO Len( aStru )
+               IF Len( aStru[i] ) >= OB_ID .AND. !Empty( aStru[i,OB_ID] )
+                  IF Left(aStru[i,OB_ID],6) == cIdRes
+                     IF --n == 0
+                        cExp := Left( cExp,nPos2-1 ) + ;
+                           Substr( oEdit:aText[j],aStru[i,1],aStru[i,2]-aStru[i,1]+1 ) + ;
+                           Substr( cExp, nPos2+3 )
+                        nPos1 := nPos2 + aStru[i,2] - aStru[i,1]
+                     ENDIF
+                     EXIT
+                  ENDIF
+               ENDIF
+            NEXT
+         ENDDO
+      ENDIF
+   ENDDO
+
+   aStru := oEdit:aStru[nL1]
 
    IF iTD != Nil
       oEdit:RestoreEnv( nL, iTD )
@@ -1960,6 +2017,57 @@ STATIC FUNCTION PasteFormatted()
       oEdit:PCopy( { nPosC, nLineC }, oEdit:aPointC )
       oEdit:SetCaretPos( SETC_XY )
       hced_Setfocus( oEdit:hEdit )
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION Zoom( n )
+
+   LOCAL nHeight := oEdit:oFont:height
+
+   nHeight := Iif( nHeight<0, nHeight-n, nHeight+n )
+   oEdit:SetFont( HFont():Add( oEdit:oFont:name, oEdit:oFont:Width,nHeight,,oEdit:oFont:Charset,,,,,.T. ) )
+
+   RETURN Nil
+
+STATIC FUNCTION MarkRow( n )
+
+   LOCAL nEnv := oEdit:getEnv(), nL, i, aStru, aPointM1, aPointM2, aText
+   STATIC nRow1 := 0, nRow2 := 0
+
+   IF nEnv > 0
+      nL := Int( (nEnv - nEnv%256)/256 )
+      aStru := oEdit:getEnv( OB_ASTRU ); aPointM1 := oEdit:getEnv( OB_APM1 ); aPointM2 := oEdit:getEnv( OB_APM2 )
+   ELSE
+      nL := oEdit:aPointC[P_Y]
+      aStru := oEdit:aStru; aPointM1 := oEdit:aPointM1; aPointM2 := oEdit:aPointM2
+   ENDIF
+   IF n == Nil
+      IF nRow1 == 0 .OR. ( nRow1 > 0 .AND. nRow2 > 0 )
+         nRow1 := nL; nRow2 := 0
+         aPointM1[P_Y] := nL; aPointM1[P_X] := 1
+      ELSEIF nRow1 > 0 .AND. nRow2 == 0
+         nRow2 := nL
+         aPointM2[P_Y] := nL; aPointM2[P_X] := hced_Len( oEdit,oEdit:aText[nL] ) + 1
+         IF Valtype( aStru[nL,1,OB_TYPE] ) != "N" .AND. aStru[nL,1,OB_TYPE] == "tr"
+            aStru[nL,1,OB_OPT] := TROPT_SEL
+         ENDIF
+         oEdit:Refresh()
+      ENDIF
+   ELSEIF n == 0
+      nRow1 := nRow2 := 0
+   ELSEIF nRow1 > 0 .AND. nRow2 == 0
+      IF nEnv > 0
+         aPointM2[P_Y] := nL; aPointM2[P_X] := 2
+         FOR i := nRow1 TO nL
+            IF Valtype( aStru[i,1,OB_TYPE] ) != "N" .AND. aStru[i,1,OB_TYPE] == "tr"
+               aStru[i,1,OB_OPT] := TROPT_SEL
+            ENDIF
+         NEXT
+      ELSE
+         aPointM2[P_Y] := nL; aPointM2[P_X] := hced_Len( oEdit,oEdit:aText[nL] ) + 1
+         oEdit:Refresh()
+      ENDIF
    ENDIF
 
    RETURN Nil

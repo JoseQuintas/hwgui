@@ -49,11 +49,11 @@
  *
  * <img>:     "img", OB_OB(HBitmap), OB_CLS, OB_ID, OB_ACCESS, OB_HREF, OB_IALIGN
  *
- * <tr>(1):   "tr", OB_OB(td), cClsName, OB_TRNUM(1), OB_TBL
+ * <tr>(1):   "tr", OB_OB(td), cClsName, OB_TRNUM(1), OB_OPT, OB_TBL
  *    The first <tr> of a table includes the table data (OB_TBL) 
  *    OB_TBL:  "tbl", OB_OB(aCols), cClsName, OB_TWIDTH, OB_TALIGN }
  *    aCols:   OB_CWIDTH, OB_CLEFT, OB_CRIGHT
- * <tr>(2...):"tr", OB_OB(td), cClsName, OB_TRNUM
+ * <tr>(2...):"tr", OB_OB(td), cClsName, OB_TRNUM, OB_OPT
  * <td>:      "td", OB_ASTRU, cClsName, OB_ATEXT, OB_COLSPAN, OB_ROWSPAN, OB_AWRAP,
        OB_ALIN, OB_NLINES, OB_NLINEF, OB_NTLEN, OB_NWCF, OB_NWSF, OB_NLINEC, OB_NPOSC,
        OB_NLALL, OB_APC, OB_APM1, OB_APM2
@@ -69,7 +69,8 @@
 #define OB_TWIDTH       4
 #define OB_TRNUM        4
 #define OB_TALIGN       5
-#define OB_TBL          5
+#define OB_OPT          5
+#define OB_TBL          6
 #define OB_HREF         6
 #define OB_IALIGN       7
 #define OB_EXEC         7
@@ -99,6 +100,8 @@
 #define BIT_NOINS       3
 #define BIT_NOCR        4
 #define BIT_CLCSCR      5
+
+#define TROPT_SEL       1
 
 #define WM_MOUSEACTIVATE    33
 
@@ -150,7 +153,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
    METHOD LoadEnv( nL, iTd )
    METHOD RestoreEnv( nL, iTd )
-   METHOD getEnv()
+   METHOD getEnv( n )
    METHOD GetPosInfo( xPos, yPos )
    METHOD getClassAttr( cClsName )
    METHOD PrintLine( oPrinter, yPos, nL )
@@ -206,6 +209,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd, nFrom ) CLASS HCEdiExt
    ::lError := .F.
    IF Empty( lAdd )
       ::Close()
+      ::aHili := hb_HMerge( hb_Hash(), ::aHili, {|k|hb_Ascan(::aDefClasses,k)>0} )
       aText := {}
       ::aStru := {}
       ::aBin := {}
@@ -456,8 +460,8 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd, nFrom ) CLASS HCEdiExt
                IF !lTable .OR. lTr ; ::lError := .T. ; EXIT ; ENDIF
                lTr := .T.
                n ++
-               aStru := Iif( n-nLTable==1, {"tr",{},cClsName,1,aStruTbl}, ;
-                     {"tr",{},cClsName,n-nLTable} )
+               aStru := Iif( n-nLTable==1, {"tr",{},cClsName,1,0,aStruTbl}, ;
+                     {"tr",{},cClsName,n-nLTable,0} )
                IF Empty( nFrom )
                   Aadd( aText, "" )
                   Aadd( ::aStru, { aStru } )
@@ -519,6 +523,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
    LOCAL nRes := -1, nL, aStruTbl, iTd := 0, j, nIndent, nBoundL, nBoundR, nBoundT, nKey, nLine := 0, lInv := .F.
    LOCAL aPointC := {0,0}, aTbl1, aTbl2, lTab := .F., aPC, lChg := .F.
    LOCAL lReadOnly := ::lReadOnly, lInsert := ::lInsert, lNoPaste := ::lNoPaste, lProtected := .F.
+   LOCAL nlM1 := ::aPointM1[P_Y], nlM2 := ::aPointM2[P_Y]
 
    IF Ascan( aMsgs, msg ) > 0
       IF !Empty(::nLineC)
@@ -547,11 +552,25 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
             ENDIF
          ENDIF
       ENDIF
-      IF msg == WM_MOUSEMOVE.OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP
+      IF msg == WM_MOUSEMOVE .OR. msg == WM_LBUTTONDOWN .OR. msg == WM_LBUTTONUP
          aStruTbl := Nil
          nL := Iif( ( nL := hced_Line4Pos( Self, hwg_HiWord( lParam ) ) ) > 0, ::aLines[nL,AL_LINE], 0 )
-         IF nL > 0 .AND. Valtype( ::aStru[nL,1,OB_TYPE] ) != "N" .AND. ::aStru[nL,1,1] == "tr"
+         IF nL > 0 .AND. Valtype( ::aStru[nL,1,OB_TYPE] ) != "N" .AND. ::aStru[nL,1,OB_TYPE] == "tr"
             aTbl2 := aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
+            IF msg == WM_MOUSEMOVE .AND. ::lMDown
+               IF nlM1 != 0 .AND. nlM2 != 0 .AND. nL != nlM1                 
+                  ::aStru[nL,1,OB_OPT] := TROPT_SEL
+                  ::aPointM2[P_Y] := nL; ::aPointM2[P_X] := 1
+                  hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+                  RETURN nRes
+               ELSEIF ::aTdSel[2] != 0 .AND. ( ::aTdSel[2] != nL .OR. ::aTdSel[1] != ::nPosC )
+                  ::aStru[nL,1,OB_OPT] := ::aStru[::aTdSel[2],1,OB_OPT] := TROPT_SEL
+                  ::aPointM1[P_Y] := ::aTdSel[2]; ::aPointM1[P_X] := 1
+                  ::aPointM2[P_Y] := nL; ::aPointM2[P_X] := 1
+                  hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+                  RETURN nRes
+               ENDIF
+            ENDIF
          ENDIF
       ENDIF
       IF !Empty( aStruTbl )
@@ -659,6 +678,17 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
          IF !lChg .AND. ::bChangePos != Nil
             Eval( ::bChangePos, Self )
          ENDIF
+      ENDIF
+      IF !Empty(nlM2) .AND. ( Empty(::aPointM2[P_Y]) .OR. msg == WM_LBUTTONDOWN )
+         IF nlM1 > nlM2
+            nL := nlM1; nlM1 := nlM2; nlM2 := nlM1
+         ENDIF
+         FOR nL := nlM1 TO nlM2
+            IF Valtype( ::aStru[nL,1,OB_TYPE] ) != "N" .AND. ::aStru[nL,1,OB_TYPE] == "tr"
+               ::aStru[nL,1,OB_OPT] := 0
+               lInv := .T.
+            ENDIF
+         NEXT
       ENDIF
       IF lInv
          hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
@@ -837,7 +867,14 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
          ::LoadEnv( nL, iTd )
          aHiliTD := Nil
          bColor := -1
-         IF !Empty( hDC ) .AND. !Empty( aStru[OB_OB,iTd,OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStru[OB_OB,iTd,OB_CLS] )
+         IF hwg_BitAnd( aStru[OB_OPT], TROPT_SEL ) > 0
+            bColor := ::bColor; bColorCur := ::bColorCur
+            ::bColor := ::bcolorSel
+            IF ::bColorCur == bColor
+               ::bColorCur := ::bColor
+            ENDIF
+            hced_Setcolor( ::hEdit,, ::bColor )
+         ELSEIF !Empty( hDC ) .AND. !Empty( aStru[OB_OB,iTd,OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStru[OB_OB,iTd,OB_CLS] )
             aHiliTD := ::aHili[aStru[OB_OB,iTd,OB_CLS]]
             IF aHiliTD[3] != Nil .AND. aHiliTD[3] >= 0
                bColor := ::bColor; bColorCur := ::bColorCur
@@ -1602,7 +1639,7 @@ METHOD InsRows( nL, nRows, nCols, lNoAddline ) CLASS HCEdiExt
       nCols := Len( ::aStru[nL-nRow+1,1,OB_TBL,OB_OB] )
    ENDIF
    FOR n := 1 TO nRows
-      ::aStru[nL,1] :=  { "tr", {},, nRow }
+      ::aStru[nL,1] :=  { "tr", {},, nRow, 0 }
       ::aText[nL] := ""
       FOR i := 1 TO nCols
          Aadd( ::aStru[nL,1,OB_OB], { "td", { { { 0,0,Nil } } }, Nil, {""}, 0, 0, {Nil}, Array(4,AL_LENGTH), 0, 1, 1, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0} } )
@@ -2180,8 +2217,8 @@ METHOD RestoreEnv( nL, iTd ) CLASS HCEdiExt
 
    RETURN Nil
 
-METHOD getEnv() CLASS HCEdiExt
-   RETURN ::aEnv[OB_TYPE]
+METHOD getEnv( n ) CLASS HCEdiExt
+   RETURN ::aEnv[Iif(Empty(n),OB_TYPE,n)]
 
 METHOD GetPosInfo( xPos, yPos ) CLASS HCEdiExt
 

@@ -1319,7 +1319,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
    GRADIENT_RECT gRect[GRADIENT_MAX_COLORS-1];
    int fill_type;
    POINT polygon[(SECTORS_NUM+1)*4], coords[SECTORS_NUM+1], candidates[4], center[4], edge[4];
-   int polygon_len = 0, nearest_coord, cycle_start, cycle_stop, cycle_step;
+   int polygon_len = 0, nearest_coord = 0, cycle_start, cycle_stop, cycle_step;
    int convert[4][2] = { {-1,1}, {1,1}, {1,-1}, {-1,-1} };
    long x, y;
    

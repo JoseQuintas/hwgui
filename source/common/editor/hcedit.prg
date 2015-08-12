@@ -1322,7 +1322,8 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       ::putChar( nKeyCode )
 #endif
    ENDIF
-   IF !Empty( ::aPointM2[P_Y] ) .AND. nKeyCode >= 32 .AND. nKeyCode < 0xFF60 .AND. lUnSel
+   IF !Empty( ::aPointM2[P_Y] ) .AND. nKeyCode >= 32 .AND. nKeyCode < 0xFF60 .AND. ;
+         !( nKeyCode>=VK_F1 .AND. nKeyCode<=VK_F12 ) .AND. lUnSel
       nLine := ::aPointM2[P_Y]
       ::Pcopy( , ::aPointM2 )
       IF ::aPointM1[P_Y] < ::nLineF .OR. nLine - ::nLineF >= ::nLines

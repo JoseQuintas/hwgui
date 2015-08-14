@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-08-14 10:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdialog.prg
+    ! :Center() method removed - the parent HWindow():Center() will be used instead.
+
 2015-08-14 10:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     ! :Goto() method fixed.

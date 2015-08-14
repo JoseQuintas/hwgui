@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-08-14 10:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    ! :Goto() method fixed.
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Some fixes and improvements
+  * utils/editor/editor.hwge
+
 2015-08-12 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/draw.c
     ! Warning fixed

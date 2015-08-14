@@ -295,7 +295,7 @@ FUNCTION Main ( fName )
       onChangePos( .T. )
    ENDIF
 
-   SET KEY GLOBAL 0, VK_F3 TO MarkRow()
+   SET KEY GLOBAL 0, VK_F2 TO MarkRow()
 
    ACTIVATE WINDOW oMainWindow
    CloseFile()
@@ -2096,7 +2096,7 @@ STATIC FUNCTION Help()
    oEdit:AddClass( "h4", "font-size: 110%; font-weight: bold;" )
    oEdit:AddClass( "h5", "font-weight: bold;" )
    oEdit:AddClass( "cite", "color: #007800; margin-left: 3%; margin-right: 3%;" )
-   oEdit:aDefClasses := { "url","h1","h2","h3","h4" }
+   oEdit:aDefClasses := { "url","h1","h2","h3","h4","h5","cite" }
    oEdit:lReadOnly := .T.
    oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
 

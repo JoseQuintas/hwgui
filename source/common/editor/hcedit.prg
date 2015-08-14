@@ -1577,16 +1577,22 @@ METHOD GOTO( nLine ) CLASS HCEdit
    ENDIF
    IF ( n := Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 ) ) > 0
       ::nWCharF := ::nWSublF := 1
-      IF nLine > ::nLineF .AND. nLine - ::nLineF + 1 < n
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
-            ::nClientWidth, ::aLines[::nLineC,AL_Y2] )
-         ::nLineC := nLine - ::nLineF + 1
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
-            ::nClientWidth, ::aLines[::nLineC,AL_Y2] )
-      ELSE
-         ::nLineC := Min( Int( n/2 ), nLine )
-         ::nLineF := nLine - ::nLineC + 1
+      IF ::lWrap
+         ::nLineF := nLine
+         ::nLineC := 1
          hced_Invalidaterect( ::hEdit, 0 )
+      ELSE
+         IF nLine > ::nLineF .AND. nLine - ::nLineF + 1 < n
+            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
+               ::nClientWidth, ::aLines[::nLineC,AL_Y2] )
+            ::nLineC := nLine - ::nLineF + 1
+            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
+               ::nClientWidth, ::aLines[::nLineC,AL_Y2] )
+         ELSE
+            ::nLineC := Min( Int( n/2 ), nLine )
+            ::nLineF := nLine - ::nLineC + 1
+            hced_Invalidaterect( ::hEdit, 0 )
+         ENDIF
       ENDIF
       ::SetCaretPos( SETC_XFIRST )
    ENDIF

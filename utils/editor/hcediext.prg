@@ -1803,7 +1803,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
    LOCAL aText, nTextLen, aStru, n, i1, j1, cNewL := Iif( Empty( lCompact ), cNewLine, "" )
    LOCAL aDefClasses := Iif( Empty(::aDefClasses), {}, ::aDefClasses )
    LOCAL nFrom := Iif( xFrom==Nil, 1, Iif( Valtype(xFrom)=="A",xFrom[P_Y],xFrom ) ), nXFrom := -1
-   LOCAL nTo := Iif( xTo==Nil, ::nTextLen, Iif( Valtype(xTo)=="A",xTo[P_Y],xTo ) ), nXTo := -1
+   LOCAL nTo := Iif( xTo==Nil, ::nTextLen, Iif( Valtype(xTo)=="A",xTo[P_Y],xTo ) ), nXTo := 999999999
 
    IF !lNested
       IF Valtype( xFrom ) == "A"; nXFrom := xFrom[P_X]; ENDIF

@@ -1,16 +1,27 @@
 <hwge>
 <style>
-.c3 { text-align: center; font-size: 130%; font-weight: bold; }
+.c3 { font-size: 130%; font-weight: bold; text-align: center; }
 </style>
 <div></div>
 <div class="c3">HwGUI rich text Editor</div>
 <div></div>
 <div class="h5">1. <a href="goto://#sect1" class="url">Introduction</a></div>
-<div class="h5">2.</div>
+<div class="h5">2. <a href="goto://#sect2" class="url">File format</a></div>
+<div class="h5">3. <a href="goto://#sect3" class="url">Embedded calculator</a></div>
 <div></div>
 <div></div>
 <div></div>
 <div></div>
 <div id="sect1"><span class="h5">1. Introduction</span></div>
+<div>The main goal of this project is testing of a class HCEdiExt, which is intended to be used for an embedded rich text editor in applications, written on Harbour + HwGUI.</div>
+<div>I need an editor with a limited set of features, which are really needed to create a well-formatted content, an editor without excess stuff, redundant possibilities, which are rarely used, but makes the application large and slow. Besides, I want the file format was similar to html to make it easy to view and edit it in any plain text editor and to convert it to html. And, finally, I want to have few special features, such as embedded calculator, which I find useful.</div>
+<div></div>
+<div></div>
+<div id="sect2"><span class="h5">2. File format</span></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div id="sect3"><span class="h5">3. Embedded calculator</span></div>
 <div></div>
 </hwge>

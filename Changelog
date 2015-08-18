@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-08-18 11:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * The search works now, embedded images may be reused.
+  * utils/editor/editor.hwge
+    * A few additional info
+
 2015-08-14 10:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hdialog.prg
     ! :Center() method removed - the parent HWindow():Center() will be used instead.

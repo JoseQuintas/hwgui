@@ -158,7 +158,7 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD getClassAttr( cClsName )
    METHOD PrintLine( oPrinter, yPos, nL )
    METHOD Scan( nl1, nl2, hDC, nWidth, nHeight )
-   METHOD Find( cText, cId, cHRef, lAll )
+   METHOD Find( cText, cId, cHRef, aStart, lCase, lRegex )
 
 ENDCLASS
 
@@ -2301,75 +2301,121 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdiExt
 
    RETURN ::Super:Scan( nl1, nl2, hDC, nWidth, nHeight )
 
-METHOD Find( cText, cId, cHRef, lAll ) CLASS HCEdiExt
+METHOD Find( cText, cId, cHRef, aStart, lCase, lRegex ) CLASS HCEdiExt
 
-   LOCAL i, j, i1, j1, n, aStru, aText, nTextLen
-   LOCAL lId := ( cId != Nil ), lText := ( cText != Nil ), lHref := ( cHRef != Nil )
+   LOCAL i, j, i1, j1, n, nPos, aStru, aText, nTextLen, cLine, cRes
+   LOCAL nLStart := Iif( Valtype(aStart)=="A",aStart[P_Y],1 ), nPosStart := Iif( Valtype(aStart)=="A",aStart[P_X],1 ), nL1Start
+   LOCAL lId := (cId != Nil), lText := (cText != Nil), lHref := (cHRef != Nil), lAll
    LOCAL arr
 
-   IF lAll == Nil; lAll := .F.; ENDIF
+   IF lCase == Nil; lCase := .T.; ENDIF
+   IF !lCase
+      cText := Lower( cText )
+   ENDIF
+   lAll := Iif( aStart==Nil.OR.Valtype(aStart)!="L", .F., aStart )
    IF lAll
       arr := {}
    ENDIF
 
-   FOR i := 1 TO ::nTextLen
-      IF lId .AND. Len( ::aStru[i,1] ) >= OB_ID
+   FOR i := nLStart TO ::nTextLen
+      IF lId .AND. Len( ::aStru[i,1] ) >= OB_ID .AND. !Empty( ::aStru[i,1,OB_ID] )
          IF !lAll .AND. ::aStru[i,1,OB_ID] == cId
-            RETURN i
+            RETURN { 1, i }
          ELSEIF lAll .AND. ::aStru[i,1,OB_ID] = cId
-            Aadd( arr, { ::aStru[i,1,OB_ID], i } )
+            Aadd( arr, { 1, i } )
          ENDIF
-      ELSEIF lText .AND. cText $ ::aText[i]
-         IF lAll
-            Aadd( arr, { i } )
-         ELSE
-            RETURN i
-         ENDIF
+      ELSEIF lText
+         nPos := Iif( i==nLStart,nPosStart,1 )
+         cLine := Iif( lCase, ::aText[i], Lower( ::aText[i] ) )
+         DO WHILE nPos > 0
+            IF Empty( lRegex )
+               nPos := hb_At( cText, cLine, nPos )
+            ELSEIF ( cRes := hb_Atx( cText, cLine, lCase, @nPos ) ) != Nil
+               IF lAll
+                  Aadd( arr, { nPos, i, hced_Len( Self,cRes ) } )
+               ELSE
+                  RETURN { nPos, i, hced_Len( Self,cRes ) }
+               ENDIF
+            ELSE
+               nPos := 0
+            ENDIF
+            IF nPos > 0 .AND. Empty( lRegex )
+               IF lAll
+                  Aadd( arr, { nPos, i } )
+               ELSE
+                  RETURN { nPos, i }
+               ENDIF
+            ENDIF
+            IF !lAll
+               EXIT
+            ENDIF
+         ENDDO
       ENDIF
       IF lHref .OR. lId
          FOR j := 2 TO Len( ::aStru[i] )
             IF lHref .AND. Len(::aStru[i,j]) >= OB_HREF .AND. ::aStru[i,j,OB_HREF] == cHRef
                IF lAll
-                  Aadd( arr, { i } )
+                  Aadd( arr, { j, i } )
                ELSE
-                  RETURN i
+                  RETURN { j, i }
                ENDIF
-            ELSEIF lId .AND. Len(::aStru[i,j]) >= OB_ID
+            ELSEIF lId .AND. Len(::aStru[i,j]) >= OB_ID .AND. !Empty( ::aStru[i,j,OB_ID] )
                IF !lAll .AND. ::aStru[i,j,OB_ID] == cId
-                  RETURN i
+                  RETURN { j, i }
                ELSEIF lAll .AND. ::aStru[i,j,OB_ID] = cId
-                  Aadd( arr, { ::aStru[i,j,OB_ID], i, j } )
+                  Aadd( arr, { j, i } )
                ENDIF
             ENDIF
          NEXT
       ENDIF
       IF Valtype(::aStru[i,1,OB_TYPE]) == "C"
          IF ::aStru[i,1,OB_TYPE] == "tr"
-            FOR n := 1 TO Len( ::aStru[i,1,OB_OB] )
+            FOR n := Iif( i==nLStart,nPosStart,1 ) TO Len( ::aStru[i,1,OB_OB] )
                aStru := ::aStru[ i,1,OB_OB,n,2 ]
                aText := ::aStru[ i,1,OB_OB,n,OB_ATEXT ]
                nTextLen := ::aStru[ i,1,OB_OB,n,OB_NTLEN ]
-               FOR i1 := 1 TO nTextLen
-                  IF lId .AND. Len( aStru[i1,1] ) >= OB_ID
+               nL1Start := Iif( Valtype(aStart)=="A".AND.Len(aStart)>3,aStart[4],1 )
+               FOR i1 := nL1Start TO nTextLen
+                  IF lId .AND. Len( aStru[i1,1] ) >= OB_ID .AND. !Empty( aStru[i1,1,OB_ID] )
                      IF !lAll .AND. aStru[i1,1,OB_ID] == cId
-                        RETURN { i,n,i1 }
+                        RETURN { n, i, 1, i1 }
                      ELSEIF lAll .AND. aStru[i1,1,OB_ID] = cId
-                        Aadd( arr, { aStru[i1,1,OB_ID],i,n,i1 } )
+                        Aadd( arr, { n , i, 1, i1 } )
                      ENDIF
-                  ELSEIF lText .AND. cText $ aText[i1]
-                     IF lAll
-                        Aadd( arr, { i,n,i1 } )
-                     ELSE
-                        RETURN { i,n,i1 }
-                     ENDIF
+                  ELSEIF lText
+                     nPos := Iif( i1==nL1Start, Iif( Valtype(aStart)=="A".AND.Len(aStart)>3,aStart[3],1 ), 1 )
+                     cLine := Iif( lCase, aText[i1], Lower( ::aText[i] ) )
+                     DO WHILE nPos > 0
+                        IF Empty( lRegex )
+                           nPos := hb_At( cText, cLine, nPos )
+                        ELSEIF ( cRes := hb_Atx( cText, cLine, lCase, @nPos ) ) != Nil
+                           IF lAll
+                              Aadd( arr, { n, i, nPos, i1, hced_Len( Self,cRes ) } )
+                           ELSE
+                              RETURN { n, i, nPos, i1, hced_Len( Self,cRes ) }
+                           ENDIF
+                        ELSE
+                           nPos := 0
+                        ENDIF
+                        IF nPos > 0 .AND. Empty( lRegex )
+                           IF lAll
+                              Aadd( arr, { n, i, nPos, i1 } )
+                           ELSE
+                              RETURN { n, i, nPos, i1 }
+                           ENDIF
+                        ENDIF
+                        IF !lAll
+                           EXIT
+                        ENDIF
+                     ENDDO
                   ENDIF
                   IF lHref
                      FOR j1 := 2 TO Len( aStru[i1] )
                         IF Len(aStru[i1,j1]) >= OB_HREF .AND. aStru[i1,j1,OB_HREF] == cHRef
                            IF lAll
-                              Aadd( arr, { i,n,i1 } )
+                              Aadd( arr, { n, i, j1, i1 } )
                            ELSE
-                              RETURN { i,n,i1 }
+                              RETURN { n, i, j1, i1 }
                            ENDIF
                         ENDIF
                      NEXT
@@ -2378,9 +2424,9 @@ METHOD Find( cText, cId, cHRef, lAll ) CLASS HCEdiExt
             NEXT
          ELSEIF ::aStru[i,1,OB_TYPE] == "img" .AND. lId
             IF !lAll .AND. ::aStru[i,1,OB_ID] == cId
-               RETURN i
+               RETURN { 1, i }
             ELSEIF lAll .AND. ::aStru[i,1,OB_ID] = cId
-               Aadd( arr, { ::aStru[i,1,OB_ID], i } )
+               Aadd( arr, { 1, i } )
             ENDIF
          ENDIF
       ENDIF

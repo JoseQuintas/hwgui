@@ -30,6 +30,7 @@ REQUEST HB_CODEPAGE_RU866
 #define MENU_IMAGE       1902
 #define MENU_TABLE       1903
 #define MENU_SPAN        1904
+#define MENU_FINDNEXT    1905
 #define MENU_PNOWR       1911
 #define MENU_PNOINS      1912
 #define MENU_PNOCR       1913
@@ -105,6 +106,7 @@ REQUEST HB_CODEPAGE_RU866
 #define  CLR_LBLUE1  16773866  // #EAF2FF
 #define  CLR_LBLUE2  16770002  // #D2E3FF
 #define  CLR_LBLUE3  16772062  // #DEEBFF
+#define  CLR_LIGHT1  15132390
 
 REQUEST PI, COS, SIN, TAN, COT, ACOS, ASIN, ATAN, DTOR, RTOD
 
@@ -117,6 +119,7 @@ STATIC aSetStyle, nLastMsg, nLastWpar, aPointLast[2], nCharsLast
 STATIC alAcc := { .F.,.F.,.F.,.F.,.F.,.F.,.F. }
 STATIC cIdExp := "clcexp", cIdRes := "clcres"
 STATIC cCBformatted
+STATIC cSearch := "", aPointFound, lSeaCase := .T., lSeaRegex := .F.
 
 MEMVAR handcursor, cIniPath, aCurrTD
 
@@ -226,6 +229,9 @@ FUNCTION Main ( fName )
          MENUITEM "Copy formatted"+Chr(9)+"F5" ID MENU_COPYF ACTION CopyFormatted() ACCELERATOR 0,VK_F5
          MENUITEM "Paste formatted"+Chr(9)+"Ctrl+F5" ID MENU_PASTEF ACTION PasteFormatted() ACCELERATOR FCONTROL,VK_F5
          SEPARATOR
+         MENUITEM "&Find"+Chr(9)+"Ctrl+F" ACTION Find() ACCELERATOR FCONTROL,ASC("F")
+         MENUITEM "Find &Next"+Chr(9)+"F3" ID MENU_FINDNEXT ACTION FindNext() ACCELERATOR 0,VK_F3
+         SEPARATOR
          MENUITEM "Calculate"+Chr(9)+"F9" ACTION Calc() ACCELERATOR 0,VK_F9
          MENUITEM "Calculate all"+Chr(9)+"Ctrl+F9" ACTION CalcAll() ACCELERATOR FCONTROL,VK_F9
          SEPARATOR
@@ -296,6 +302,7 @@ FUNCTION Main ( fName )
    ENDIF
 
    SET KEY GLOBAL 0, VK_F2 TO MarkRow()
+   hwg_Enablemenuitem( , MENU_FINDNEXT, .F., .T. )
 
    ACTIVATE WINDOW oMainWindow
    CloseFile()
@@ -1219,7 +1226,15 @@ STATIC FUNCTION InsUrl( nType )
    IF nType == 1
       @ 140, 32 GET cHref SIZE 250, 26 STYLE ES_AUTOHSCROLL MAXLENGTH 0
    ELSE
-      aRefs := oEdit:Find( ,"",, .T. )
+      IF !Empty( aRefs := oEdit:Find( ,"",, .T. ) )
+         FOR nref := 1 TO Len( aRefs )
+            IF Len( aRefs[nref] ) == 2
+               aRefs[nref,1] := oEdit:aStru[aRefs[nref,2],aRefs[nref,1],OB_ID]
+            ELSE
+               aRefs[nref,1] := ""
+            ENDIF
+         NEXT
+      ENDIF
       nref := 1
       @ 140, 32 GET COMBOBOX nref ITEMS aRefs SIZE 150, 26
    ENDIF
@@ -1250,7 +1265,7 @@ STATIC FUNCTION InsUrl( nType )
 
 STATIC FUNCTION setImage( lNew )
 
-   LOCAL oDlg, oGet1, arr1, nL, aStru, cClsName, aAttr, fname, nb0, i, cName, cBin
+   LOCAL oDlg, oGet1, arr1, nL, aStru, cClsName, aAttr, fname, nb0, i, cName, cBin, nImage
    LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, lEmbed := .T., nBorder := 0
    LOCAL bClick1 := {||
       LOCAL cfname
@@ -1262,6 +1277,9 @@ STATIC FUNCTION setImage( lNew )
       RETURN .T.
    }
    LOCAL bClick2 := {||
+      IF !Empty( nImage := selectImage() )
+         oGet1:value := fname := "#" + oEdit:aBin[nImage,1]
+      ENDIF
       RETURN .T.
    }
 
@@ -1315,7 +1333,9 @@ STATIC FUNCTION setImage( lNew )
    IF oDlg:lResult
       IF lNew
          IF !Empty( fname )
-            IF lEmbed
+            IF nImage > 0 .AND. Left( fname,1 ) == "#"
+               oEdit:InsImage( , nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ), oEdit:aBin[nImage,2] )
+            ELSEIF lEmbed
                oEdit:InsImage( , nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ), MemoRead(fname), Lower(hb_FNameExt(fname)) )
             ELSE
                oEdit:InsImage( fname, nAlign-1, Iif( nBorder>0,"bw" + LTrim(Str(nBorder)),Nil ) )
@@ -1353,6 +1373,54 @@ STATIC FUNCTION setImage( lNew )
       ENDIF
    ENDIF
    hced_Setfocus( oEdit:hEdit )
+
+   RETURN Nil
+
+STATIC FUNCTION selectImage()
+
+   LOCAL oDlg, oBrw, oPanel
+   LOCAL bPaint := {|o|
+      LOCAL pps := hwg_Definepaintstru(), hDC := hwg_Beginpaint( o:handle, pps ), aCoors := hwg_Getclientrect( o:handle )
+      LOCAL oImg := oBrw:aArray[oBrw:nCurrent,3], nWidth, nHeight
+
+      nWidth := Iif( oImg:nWidth > oPanel:nWidth-8, oPanel:nWidth-8, oImg:nWidth )
+      nHeight := Int( oImg:nHeight * ( nWidth/oImg:nWidth ) )
+      IF  nHeight > oPanel:nHeight-8
+         nHeight := oPanel:nHeight-8
+         nWidth := Int( oImg:nWidth * ( nHeight/oImg:nHeight ) )
+      ENDIF
+      hwg_drawGradient( hDC, 0, 0, aCoors[3], aCoors[4], 1, { CLR_GRAY1, CLR_GRAY2 } )
+      hwg_Drawbitmap( hDC, oImg:handle,, (oPanel:nWidth-nWidth)/2, (oPanel:nHeight-nHeight)/2, nWidth, nHeight )
+      hwg_Endpaint( o:handle, pps )
+      RETURN Nil
+   }
+
+   IF Empty( oEdit:aBin )
+      RETURN Nil
+   ENDIF
+
+   INIT DIALOG oDlg TITLE "Select image"  ;
+      AT 20, 30 SIZE 400, 260 FONT HWindow():GetMain():oFont
+
+   @ 0, 0 BROWSE oBrw ARRAY SIZE 200, oDlg:nHeight - 60 ON SIZE {|o,x,y|o:Move( ,,, y-60)}
+   @ 200, 0 PANEL oPanel SIZE 200, oDlg:nHeight - 60 STYLE SS_OWNERDRAW ;
+      ON PAINT bPaint ON SIZE {|o,x,y|o:Move( ,, x-o:nLeft, y-60)}
+   oBrw:aArray := oEdit:aBin
+   oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent,1] },"C",32 ) )
+   oBrw:bcolorSel := oBrw:htbColor := CLR_LBLUE
+   oBrw:bColor := CLR_LIGHT1
+   oBrw:tcolorSel := oBrw:httColor := CLR_BLACK
+   oBrw:tcolor := CLR_BLACK
+   oBrw:bPosChanged := {||hwg_Invalidaterect(oPanel:handle,0,0,0,oPanel:nWidth,oPanel:nHeight)}
+
+   @ 32, 210 BUTTON "Ok" ID IDOK  SIZE 90, 32 ON SIZE ANCHOR_BOTTOMABS
+   @ 276, 210 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32 ON SIZE ANCHOR_BOTTOMABS + ANCHOR_RIGHTABS
+
+   ACTIVATE DIALOG oDlg CENTER
+
+   IF oDlg:lResult
+      RETURN oBrw:nCurrent
+   ENDIF
 
    RETURN Nil
 
@@ -1619,7 +1687,7 @@ STATIC FUNCTION EdMsgAfter( o, msg, wParam, lParam )
 
 STATIC FUNCTION UrlLaunch( oEdi, cAddr )
 
-   LOCAL n
+   LOCAL arrf
    IF Lower( Left( cAddr, 4 ) ) == "http"
       IF !Empty( cWebBrow )
          hwg_RunApp( cWebBrow + " " + cAddr )
@@ -1629,8 +1697,8 @@ STATIC FUNCTION UrlLaunch( oEdi, cAddr )
 #endif
       ENDIF
    ELSEIF Lower( Left( cAddr, 8 ) ) == "goto://#"
-      IF !Empty( n := oEdi:Find( ,Substr( cAddr,9 ) ) )
-         oEdi:Goto( n )
+      IF !Empty( arrf := oEdi:Find( ,Substr( cAddr,9 ) ) )
+         oEdi:Goto( arrf[2] )
       ENDIF
    ENDIF
 
@@ -1997,6 +2065,60 @@ FUNCTION Sum( aCells )
    ENDIF
 
    RETURN nSum
+
+STATIC FUNCTION Find()
+
+   LOCAL oDlg, oGet
+
+   INIT DIALOG oDlg TITLE "Find" AT 0, 0 SIZE 400, 260 ;
+      FONT HWindow():GetMain():oFont
+
+   @ 10, 20 SAY "String:" SIZE 80, 24 STYLE SS_RIGHT
+
+   @ 90, 20 GET oGet VAR cSearch SIZE 300, 24 STYLE ES_AUTOHSCROLL MAXLENGTH 0 ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 20, 56 GET CHECKBOX lSeaCase CAPTION "Case sensitive" SIZE 180, 24
+   @ 20, 80 GET CHECKBOX lSeaRegex CAPTION "Regular expression" SIZE 180, 24
+
+   @  30, 220 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 270, 220 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   ACTIVATE DIALOG oDlg CENTER
+
+   IF oDlg:lResult
+      IF !Empty( aPointFound := oEdit:Find( cSearch,,,, lSeaCase, lSeaRegex ) )
+         hwg_Enablemenuitem( , MENU_FINDNEXT, .T., .T. )
+         IF Len( aPointFound ) <= 3
+            oEdit:PCopy( {aPointFound[1],aPointFound[2]}, oEdit:aPointM1 )
+            oEdit:PCopy( {aPointFound[1]+Iif(lSeaRegex,aPointFound[3],hced_Len(oEdit,cSearch)),aPointFound[2]}, oEdit:aPointM2 )
+            oEdit:PCopy( oEdit:aPointM1, oEdit:aPointC )
+            oEdit:Goto( aPointFound[2] )
+         ELSE
+         ENDIF
+      ENDIF
+   ENDIF
+   hced_Setfocus( oEdit:hEdit )
+
+   RETURN Nil
+
+STATIC FUNCTION FindNext()
+
+   IF !Empty( aPointFound )
+      aPointFound[1] += hced_Len( oEdit,cSearch )
+      IF !Empty( aPointFound := oEdit:Find( cSearch,,,aPointFound, lSeaCase, lSeaRegex ) )
+         IF Len( aPointFound ) == 2
+            oEdit:PCopy( {aPointFound[1],aPointFound[2]}, oEdit:aPointM1 )
+            oEdit:PCopy( {aPointFound[1]+Iif(lSeaRegex,aPointFound[3],hced_Len(oEdit,cSearch)),aPointFound[2]}, oEdit:aPointM2 )
+            oEdit:Goto( aPointFound[2] )
+         ELSE
+         ENDIF
+      ELSE
+         hwg_Enablemenuitem( , MENU_FINDNEXT, .F., .T. )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
 
 STATIC FUNCTION CopyFormatted()
 

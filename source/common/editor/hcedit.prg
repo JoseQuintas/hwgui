@@ -2329,7 +2329,7 @@ Static Function hced_P2Screen( oEdit, y, x, nSub )
          ENDIF
       ENDIF
       IF y == nL
-         y := n
+         y := nSub := n
          RETURN n
       ENDIF
       DO WHILE ++nL < y .AND. n <= nSub

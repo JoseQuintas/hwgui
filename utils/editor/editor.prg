@@ -493,7 +493,7 @@ STATIC FUNCTION onBtnStyle( nBtn )
 STATIC FUNCTION onChangePos( lInit )
 
    LOCAL arr, aStru, aAttr, i, l, cTmp, nOptP, nOptS
-   STATIC lInTable := .F., lSelection := .T., lPasteF := .T., lImage := .T.
+   STATIC lInTable := .F., lSelection := .T., lImage := .T.
 
    IF lInit == Nil; lInit := .F.; ENDIF
 
@@ -537,9 +537,8 @@ STATIC FUNCTION onChangePos( lInit )
          lSelection := ( !Empty(oEdit:aPointM2[P_Y]) )
          hwg_Enablemenuitem( , MENU_COPYF, lSelection, .T. )
       ENDIF
-      IF lPasteF != ( !Empty(cCBformatted) )
-         lPasteF := ( !Empty(cCBformatted) )
-         hwg_Enablemenuitem( , MENU_PASTEF, lPasteF, .T. )
+      IF lInit
+         hwg_Enablemenuitem( , MENU_PASTEF, .F., .T. )
       ENDIF
       hwg_Enablemenuitem( , MENU_SPAN, (!Empty(arr).AND.!Empty(arr[3])).OR.lSelection, .T. )
 
@@ -2124,7 +2123,10 @@ STATIC FUNCTION CopyFormatted()
 
    IF !Empty( oEdit:aPointM2[P_Y] )
       cCBformatted := oEdit:Save( ,,, .T., oEdit:aPointM1, oEdit:aPointM2 )
-      hwg_Copystringtoclipboard( cCBformatted )
+      IF !Empty( cCBformatted )
+         hwg_Copystringtoclipboard( cCBformatted )
+         hwg_Enablemenuitem( , MENU_PASTEF, .T., .T. )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -2134,10 +2136,12 @@ STATIC FUNCTION PasteFormatted()
    LOCAL nLines := oEdit:nLines, nLineF := oEdit:nLineF, nLineC := oEdit:nLineC, nPosF := oEdit:nPosF, nPosC := oEdit:nPosC, nWCharF := oEdit:nWCharF, nWSublF := oEdit:nWSublF
 
    IF !Empty( cCBformatted )
+      hwg_writelog( "1> "+Str(Len(oedit:astru)) )
       oEdit:SetText( cCBformatted,,, .T., .T., oEdit:aPointC[P_Y] )
+      hwg_writelog( "2> "+Str(Len(oedit:astru)) )
       oEdit:nLines := nLines; oEdit:nLineF := nLineF; oEdit:nLineC := nLineC; oEdit:nPosF := nPosF; oEdit:nPosC := nPosC; oEdit:nWCharF := nWCharF; oEdit:nWSublF := nWSublF
       oEdit:PCopy( { nPosC, nLineC }, oEdit:aPointC )
-      oEdit:SetCaretPos( SETC_XY )
+      //oEdit:SetCaretPos( SETC_XY )
       hced_Setfocus( oEdit:hEdit )
    ENDIF
 
@@ -2174,6 +2178,7 @@ STATIC FUNCTION MarkRow( n )
          IF Valtype( aStru[nL,1,OB_TYPE] ) != "N" .AND. aStru[nL,1,OB_TYPE] == "tr"
             aStru[nL,1,OB_OPT] := TROPT_SEL
          ENDIF
+         hwg_Enablemenuitem( , MENU_COPYF, .T., .T. )
          oEdit:Refresh()
       ENDIF
    ELSEIF n == 0

@@ -502,8 +502,12 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd, nFrom ) CLASS HCEdiExt
       hbxml_SetEntity()
    ENDIF
    IF ::lError
-      ::aStru := { { {0,0,Nil} } }
-      RETURN ::Super:SetText( , cPageIn, cPageOut )
+      IF Empty( lAdd )
+         ::aStru := { { {0,0,Nil} } }
+         RETURN ::Super:SetText( , cPageIn, cPageOut )
+      ELSE
+         RETURN Nil
+      ENDIF
    ENDIF
    FOR i := 1 TO Len( aImg )
       cVal := Substr( aImg[i,OB_HREF], 2 )
@@ -814,6 +818,11 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
             ENDIF
          ENDIF
          IF !Empty( hDC )
+            IF !Empty( ::aPointM2[P_Y] ) .AND. ::aPointM2[P_Y] >= nL .AND. ::aPointM1[P_Y] <= nL
+               hced_Setcolor( ::hEdit,, ::bColorSel )
+               hced_FillRect( ::hEdit, aLine[AL_X1], aLine[AL_Y1], ::nBoundR, aLine[AL_Y2] )
+               hced_Setcolor( ::hEdit,, ::bColor )
+            ENDIF
             hwg_Drawbitmap( hDC, aStru[OB_OB]:handle,, aLine[AL_X1]+nBorder, yPos+nBorder, nTWidth, aStru[OB_OB]:nHeight )
             IF nBorder > 0
                i := hwg_Selectobject( hDC, aHili[8]:handle )
@@ -2052,6 +2061,10 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
          s += ::SaveTag( ::aStru[i,1,OB_TYPE], i )
       ENDIF
    NEXT
+   IF !Empty( aStruTbl )
+      aStruTbl := Nil
+      s += "</table>" + cNewL
+   ENDIF
    
    IF !lNested
       ::lUpdated := .F.

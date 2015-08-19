@@ -12,6 +12,7 @@
 -iinclude
 
 -cflag=-DHWG_USE_POINTER_ITEM
+"{unix}-cflag=`pkg-config --cflags gtk+-2.0`"
 
 source/common/procmisc/*.c
 source/common/procmisc/*.prg

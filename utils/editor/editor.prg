@@ -2136,12 +2136,10 @@ STATIC FUNCTION PasteFormatted()
    LOCAL nLines := oEdit:nLines, nLineF := oEdit:nLineF, nLineC := oEdit:nLineC, nPosF := oEdit:nPosF, nPosC := oEdit:nPosC, nWCharF := oEdit:nWCharF, nWSublF := oEdit:nWSublF
 
    IF !Empty( cCBformatted )
-      hwg_writelog( "1> "+Str(Len(oedit:astru)) )
       oEdit:SetText( cCBformatted,,, .T., .T., oEdit:aPointC[P_Y] )
-      hwg_writelog( "2> "+Str(Len(oedit:astru)) )
       oEdit:nLines := nLines; oEdit:nLineF := nLineF; oEdit:nLineC := nLineC; oEdit:nPosF := nPosF; oEdit:nPosC := nPosC; oEdit:nWCharF := nWCharF; oEdit:nWSublF := nWSublF
       oEdit:PCopy( { nPosC, nLineC }, oEdit:aPointC )
-      //oEdit:SetCaretPos( SETC_XY )
+      oEdit:SetCaretPos( SETC_XY )
       hced_Setfocus( oEdit:hEdit )
    ENDIF
 

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-08-26 16:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/misc.c
+    ! Bug fixed for UNICODE mode in hwg_RunConsoleApp() and hwg_ProcessRun()
+
 2015-08-19 13:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/editor/editor.prg
   * procmisc.hbp

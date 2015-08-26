@@ -858,51 +858,55 @@ HB_FUNC( HWG_PROCESSRUN )
 
 HB_FUNC( HWG_PROCESSRUN )
 {
-    STARTUPINFO si;
-    PROCESS_INFORMATION pi;
-    SECURITY_ATTRIBUTES sa;
-    HANDLE hOut;
+   STARTUPINFO si;
+   PROCESS_INFORMATION pi;
+   SECURITY_ATTRIBUTES sa;
+   HANDLE hOut;
+   void * hStr;
 
-    sa.nLength = sizeof(SECURITY_ATTRIBUTES);
-    sa.lpSecurityDescriptor = NULL;
-    sa.bInheritHandle = TRUE;
+   sa.nLength = sizeof(SECURITY_ATTRIBUTES);
+   sa.lpSecurityDescriptor = NULL;
+   sa.bInheritHandle = TRUE;
 
-    hOut = CreateFile( hb_parc(2), GENERIC_WRITE, 0, &sa,
-       CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
+   hOut = CreateFile( HB_PARSTR( 1, &hStr, NULL ), GENERIC_WRITE, 0, &sa,
+      CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
 
-    ZeroMemory( &si, sizeof(si) );
-    si.cb = sizeof(si);
-    si.wShowWindow = SW_HIDE;
-    si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-    si.hStdOutput = si.hStdError = hOut;
+   hb_strfree( hStr );
+   ZeroMemory( &si, sizeof(si) );
+   si.cb = sizeof(si);
+   si.wShowWindow = SW_HIDE;
+   si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
+   si.hStdOutput = si.hStdError = hOut;
 
-    ZeroMemory( &pi, sizeof(pi) );
+   ZeroMemory( &pi, sizeof(pi) );
 
-    // Start the child process. 
-    if( !CreateProcess( NULL,   // No module name (use command line)
-        (LPTSTR)hb_parc(1),        // Command line
-        NULL,           // Process handle not inheritable
-        NULL,           // Thread handle not inheritable
-        TRUE,          // Set handle inheritance to FALSE
-        CREATE_NEW_CONSOLE,   // No creation flags
-        NULL,           // Use parent's environment block
-        NULL,           // Use parent's starting directory 
-        &si,            // Pointer to STARTUPINFO structure
-        &pi )           // Pointer to PROCESS_INFORMATION structure
-    ) 
-    {
-        hb_ret();
-        return;
-    }
+   // Start the child process. 
+   if( !CreateProcess( NULL,   // No module name (use command line)
+       (LPTSTR)HB_PARSTR( 1, &hStr, NULL ),  // Command line
+       NULL,           // Process handle not inheritable
+       NULL,           // Thread handle not inheritable
+       TRUE,          // Set handle inheritance to FALSE
+       CREATE_NEW_CONSOLE,   // No creation flags
+       NULL,           // Use parent's environment block
+       NULL,           // Use parent's starting directory 
+       &si,            // Pointer to STARTUPINFO structure
+       &pi )           // Pointer to PROCESS_INFORMATION structure
+   )
+   {
+       hb_strfree( hStr );
+       hb_ret();
+       return;
+   }
 
-    // Wait until child process exits.
-    WaitForSingleObject( pi.hProcess, INFINITE );
+   hb_strfree( hStr );
+   // Wait until child process exits.
+   WaitForSingleObject( pi.hProcess, INFINITE );
 
-    // Close process and thread handles. 
-    CloseHandle( pi.hProcess );
-    CloseHandle( pi.hThread );
-    CloseHandle( hOut );
-    hb_retc( "Ok" );
+   // Close process and thread handles. 
+   CloseHandle( pi.hProcess );
+   CloseHandle( pi.hThread );
+   CloseHandle( hOut );
+   hb_retc( "Ok" );
 }
 
 #define BUFSIZE  1024
@@ -919,6 +923,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    DWORD dwRead, dwWritten; 
    CHAR chBuf[BUFSIZE]; 
    HANDLE hOut = NULL;
+   void * hStr;
 
    sa.nLength = sizeof(SECURITY_ATTRIBUTES); 
    sa.bInheritHandle = TRUE; 
@@ -927,14 +932,14 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    // Create a pipe for the child process's STDOUT. 
    if( ! CreatePipe( &g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &sa, 0 ) )
    {
-      hb_retl(0);
+      hb_retni(1);
       return;
    }
 
    // Ensure the read handle to the pipe for STDOUT is not inherited.
    if( ! SetHandleInformation( g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0 ) )
    {
-      hb_retl(0);
+      hb_retni(2);
       return;
    }
 
@@ -950,12 +955,13 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    si.hStdOutput = g_hChildStd_OUT_Wr;
    si.hStdError = g_hChildStd_OUT_Wr;
 
-   bSuccess = CreateProcess( NULL, (LPTSTR)hb_parc(1), NULL, NULL,
+   bSuccess = CreateProcess( NULL, (LPTSTR)HB_PARSTR( 1, &hStr, NULL ), NULL, NULL,
       TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi);
+   hb_strfree( hStr );
    
    if ( ! bSuccess ) 
    {
-      hb_retl(0);
+      hb_retni(3);
       return;
    }
 
@@ -965,8 +971,11 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    CloseHandle( g_hChildStd_OUT_Wr );
 
    if( !HB_ISNIL(2) )
-      hOut = CreateFile( hb_parc(2), GENERIC_WRITE, 0, 0,
+   {
+      hOut = CreateFile( HB_PARSTR( 2, &hStr, NULL ), GENERIC_WRITE, 0, 0,
              CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
+      hb_strfree( hStr );
+   }
    while( 1 ) 
    { 
       bSuccess = ReadFile( g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL );
@@ -983,7 +992,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
       CloseHandle( hOut );
    CloseHandle( g_hChildStd_OUT_Rd );
 
-   hb_retl(1);
+   hb_retni(0);
 }
 
 HB_FUNC( HWG_RUNAPP )

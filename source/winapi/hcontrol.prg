@@ -99,9 +99,10 @@ METHOD INIT CLASS HControl
       IF ::tooltip != Nil
          hwg_Addtooltip( ::oParent:handle, ::handle, ::tooltip )
       ENDIF
-      IF ::oFont != NIL
+      IF ::oFont != Nil
          hwg_Setctrlfont( ::oParent:handle, ::id, ::oFont:handle )
-      ELSEIF ::oParent:oFont != NIL
+      ELSEIF ::oParent:oFont != Nil
+         ::oFont := ::oParent:oFont
          hwg_Setctrlfont( ::oParent:handle, ::id, ::oParent:oFont:handle )
       ENDIF
       IF HB_ISBLOCK( ::bInit )
@@ -398,6 +399,9 @@ METHOD Paint( lpDis ) CLASS HStatic
    LOCAL drawInfo := hwg_Getdrawiteminfo( lpDis )
    LOCAL hDC := drawInfo[ 3 ], x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ], x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
+   IF ::oFont != Nil
+      hwg_Selectobject( hDC, ::oFont:handle )
+   ENDIF
    IF ::tcolor != NIL
       hwg_Settextcolor( hDC, ::tcolor )
    ENDIF

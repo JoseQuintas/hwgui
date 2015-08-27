@@ -350,12 +350,8 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
    arr := ::aHili[xGroup]
 
    arr[ 1 ] := Iif( ValType( oFont ) == "O", ::AddFont( oFont ), Iif( Empty(oFont), 0, oFont ) )
-   IF tColor != Nil
-      arr[ 2 ] := tColor
-   ENDIF
-   IF bColor != Nil
-      arr[ 3 ] := bColor
-   ENDIF
+   arr[ 2 ] := tColor
+   arr[ 3 ] := bColor
 
    RETURN Nil
 

@@ -203,8 +203,9 @@ FUNCTION Main ( fName )
    oEdit:AddClass( "h3", "font-size: 120%; font-weight: bold;" )
    oEdit:AddClass( "h4", "font-size: 110%; font-weight: bold;" )
    oEdit:AddClass( "h5", "font-weight: bold;" )
+   oEdit:AddClass( "i", "font-style: italic;" )
    oEdit:AddClass( "cite", "color: #007800; margin-left: 3%; margin-right: 3%;" )
-   oEdit:aDefClasses := { "url","h1","h2","h3","h4","h5","cite" }
+   oEdit:aDefClasses := { "url","h1","h2","h3","h4","h5","i","cite" }
    oEdit:bOther := {|o,m,wp,lp|EditMessProc( o,m,wp,lp )}
    oEdit:bAfter := {|o,m,wp,lp|EdMsgAfter( o,m,wp,lp )}
    oEdit:bChangePos := { || onChangePos() }
@@ -231,9 +232,6 @@ FUNCTION Main ( fName )
          SEPARATOR
          MENUITEM "&Find"+Chr(9)+"Ctrl+F" ACTION Find() ACCELERATOR FCONTROL,ASC("F")
          MENUITEM "Find &Next"+Chr(9)+"F3" ID MENU_FINDNEXT ACTION FindNext() ACCELERATOR 0,VK_F3
-         SEPARATOR
-         MENUITEM "Calculate"+Chr(9)+"F9" ACTION Calc() ACCELERATOR 0,VK_F9
-         MENUITEM "Calculate all"+Chr(9)+"Ctrl+F9" ACTION CalcAll() ACCELERATOR FCONTROL,VK_F9
          SEPARATOR
          MENU TITLE "&Access to paragraph"
             MENUITEMCHECK "&Read only" ID MENU_PNOWR ACTION setAccess( 1 )
@@ -285,6 +283,16 @@ FUNCTION Main ( fName )
             MENUITEM "Insert column" ACTION (InsCols(),hced_Setfocus(oEdit:hEdit))
             MENUITEM "Delete column" ACTION (DelCol(),hced_Setfocus(oEdit:hEdit))
             MENUITEM "&Cell color" ACTION (setCellColor(),hced_Setfocus(oEdit:hEdit))
+         ENDMENU
+      ENDMENU
+      MENU TITLE "&Tools"
+         MENUITEM "Calculate"+Chr(9)+"F9" ACTION Calc() ACCELERATOR 0,VK_F9
+         MENUITEM "Calculate all"+Chr(9)+"Ctrl+F9" ACTION CalcAll() ACCELERATOR FCONTROL,VK_F9
+         SEPARATOR
+         MENU TITLE "&Convert case"
+            MENUITEM "to &UPPER" ACTION CnvCase( 1 )
+            MENUITEM "to &lower" ACTION CnvCase( 2 )
+            MENUITEM "to &Title" ACTION CnvCase( 3 )
          ENDMENU
       ENDMENU
       MENU TITLE "&Help"
@@ -1444,7 +1452,7 @@ STATIC FUNCTION setTable( lNew )
    nTop := 40
 #endif
 
-   IF lNew == ( Valtype(oEdit:aStru[nL,1,1]) == "C" .AND. oEdit:aStru[nL,1,1] == "tr" )
+   IF lNew == ( Valtype(oEdit:aStru[nL,1,OB_TYPE]) == "C" .AND. oEdit:aStru[nL,1,OB_TYPE] == "tr" )
       RETURN Nil
    ENDIF
 
@@ -2124,6 +2132,9 @@ STATIC FUNCTION CopyFormatted()
    IF !Empty( oEdit:aPointM2[P_Y] )
       cCBformatted := oEdit:Save( ,,, .T., oEdit:aPointM1, oEdit:aPointM2 )
       IF !Empty( cCBformatted )
+         IF Asc( cCBformatted ) == 32
+            cCBformatted := Ltrim( cCBformatted )
+         ENDIF
          hwg_Copystringtoclipboard( cCBformatted )
          hwg_Enablemenuitem( , MENU_PASTEF, .T., .T. )
       ENDIF
@@ -2134,6 +2145,7 @@ STATIC FUNCTION CopyFormatted()
 STATIC FUNCTION PasteFormatted()
 
    LOCAL nLines := oEdit:nLines, nLineF := oEdit:nLineF, nLineC := oEdit:nLineC, nPosF := oEdit:nPosF, nPosC := oEdit:nPosC, nWCharF := oEdit:nWCharF, nWSublF := oEdit:nWSublF
+   LOCAL nPosTR := 1, nPos, cTemp, nTr := 0
 
    IF !Empty( cCBformatted )
       oEdit:SetText( cCBformatted,,, .T., .T., oEdit:aPointC[P_Y] )
@@ -2197,6 +2209,33 @@ STATIC FUNCTION MarkRow( n )
 
    RETURN Nil
 
+STATIC FUNCTION CnvCase( nType )
+
+   LOCAL nL1, nL2, i, nPos1, nPos2, nLen, cTemp
+
+   IF !Empty( nL2 := oEdit:aPointM2[P_Y] )
+      nL1 := oEdit:aPointM1[P_Y]
+      FOR i := nL1 TO nL2
+         nPos1 := Iif( i==nL1, oEdit:aPointM1[P_X], 1 )
+         nLen := hced_Len( oEdit, oEdit:aText[i] )
+         nPos2 := Iif( i==nL2, oEdit:aPointM2[P_X]-1, nLen )
+         cTemp := hced_Substr( oEdit, oEdit:aText[i], nPos1, nPos2-nPos1+1 )
+         IF nType == 1
+            cTemp := Upper( cTemp )
+         ELSEIF nType == 2
+            cTemp := Lower( cTemp )
+         ELSEIF nType == 3
+            cTemp := Upper( hced_Left( oEdit, cTemp, 1 ) ) + Lower( hced_Substr( oEdit, cTemp, 2 ) )
+         ENDIF
+         oEdit:aText[i] := Iif( nPos1==1,"", hced_Left(oEdit,oEdit:aText[i],nPos1-1) ) + ;
+            cTemp + Iif( nPos2==nLen, "", hced_Substr(oEdit,oEdit:aText[i],nPos2+1) )
+      NEXT
+      oEdit:lUpdated := .T.
+      oEdit:Refresh()
+   ENDIF
+
+   RETURN Nil
+
 STATIC FUNCTION Help()
 
    LOCAL oDlg, oEdit
@@ -2220,8 +2259,9 @@ STATIC FUNCTION Help()
    oEdit:AddClass( "h3", "font-size: 120%; font-weight: bold;" )
    oEdit:AddClass( "h4", "font-size: 110%; font-weight: bold;" )
    oEdit:AddClass( "h5", "font-weight: bold;" )
+   oEdit:AddClass( "i", "font-style: italic;" )
    oEdit:AddClass( "cite", "color: #007800; margin-left: 3%; margin-right: 3%;" )
-   oEdit:aDefClasses := { "url","h1","h2","h3","h4","h5","cite" }
+   oEdit:aDefClasses := { "url","h1","h2","h3","h4","h5","i","cite" }
    oEdit:lReadOnly := .T.
    oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
 

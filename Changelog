@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-08-27 14:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcontrol.prg
+    * Added initialization of a widget font from it parent
+  * source/winapi/hcontrol.prg
+    * Added initialization of a widget font from it parent
+    ! Fixed drawing of a transparent static control
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+  * source/common/editor/hcedit.prg
+    * Some enhancements
+
 2015-08-26 16:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/misc.c
     ! Bug fixed for UNICODE mode in hwg_RunConsoleApp() and hwg_ProcessRun()

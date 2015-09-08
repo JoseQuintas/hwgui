@@ -1406,6 +1406,9 @@ METHOD LineDown() CLASS HCEdit
             ::nWCharF := ::aLines[2,AL_FIRSTC]
             ::nWSublF := hced_SubLine( Self, 2 )
          ENDIF
+      ELSE
+         ::nLineF ++
+         ::nWCharF := ::nWSublF := 1
       ENDIF
    ELSE
       RETURN Nil
@@ -1460,9 +1463,14 @@ METHOD PageDown() CLASS HCEdit
    LOCAL y
 
    IF ::lWrap
-      ::nLineF := ::aLines[::nLines,AL_LINE]
-      ::nWCharF := ::aLines[::nLines,AL_FIRSTC]
-      ::nWSublF := ::aLines[::nLines,AL_SUBL]
+      IF ::nLines == 1 .AND. ::nLineF + 1 <= ::nTextLen
+         ::nLineF ++
+         ::nWCharF := ::nWSublF := 1
+      ELSE
+         ::nLineF := ::aLines[::nLines,AL_LINE]
+         ::nWCharF := ::aLines[::nLines,AL_FIRSTC]
+         ::nWSublF := ::aLines[::nLines,AL_SUBL]
+      ENDIF
    ELSE
       IF ::aLines[::nLines,AL_LINE] < ::nTextLen
          ::nLineF += ::nLines - 1
@@ -1531,7 +1539,7 @@ METHOD Top() CLASS HCEdit
 METHOD Bottom() CLASS HCEdit
    LOCAL nNewF, nNewC, nWSublF, n, i
 
-   n := Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
+   n := Iif( ::nLines > 0, Max( 1, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ) ), 0 )
    IF n > ::nLinesAll
       nNewF := 1
       nNewC := ::nLinesAll

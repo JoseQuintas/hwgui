@@ -24,6 +24,8 @@
 #include "hwgtk.h"
 #define WM_MOVE                           3
 #define WM_SIZE                           5
+#define WM_SETFOCUS                       7
+#define WM_KILLFOCUS                      8
 #define WM_KEYDOWN                      256    // 0x0100
 #define WM_KEYUP                        257    // 0x0101
 #define WM_MOUSEMOVE                    512    // 0x0200
@@ -559,6 +561,11 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          p2 = ( ((GdkEventCrossing*)event)->state & GDK_BUTTON1_MASK )? 1:0 | 
               ( event->type == GDK_ENTER_NOTIFY )? 0x10:0;
          p3 = ( ((HB_ULONG)(((GdkEventCrossing*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
+      }
+      else if( event->type == GDK_FOCUS_CHANGE )
+      {
+         p1 = ( ((GdkEventFocus*)event)->in )? WM_SETFOCUS : WM_KILLFOCUS;
+         p2 = p3 = 0;
       }
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );

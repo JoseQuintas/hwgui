@@ -442,11 +442,13 @@
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
+            [<lallowtabs: ALLOWTABS>]  ; 
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
+            [ ON CHANGE <bChange>]     ;
             [[ON OTHER MESSAGES <bOther>][ON OTHERMESSAGES <bOther>]] ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
@@ -454,7 +456,7 @@
           => ;
     [<oEdit> := ] HRichEdit():New( <oWnd>,<nId>,<vari>,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther> );
+                    <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther>,<.lallowtabs.>,<bChange> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
 
@@ -1237,9 +1239,9 @@
 #xcommand SEPARATOR         => Hwg_DefineMenuItem()
 
 #xcommand SET TIMER <oTimer> [ OF <oWnd> ] [ ID <id> ] ;
-             VALUE <value> ACTION <bAction> ;
+             VALUE <value> ACTION <bAction> [<lOnce: ONCE>];
           => ;
-    <oTimer> := HTimer():New( <oWnd>, <id>, <value>, <bAction> );
+    <oTimer> := HTimer():New( <oWnd>, <id>, <value>, <bAction>, <.lOnce.> );
     [; hwg_SetCtrlName( <oTimer>,<(oTimer)> )]
 
 

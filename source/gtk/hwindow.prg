@@ -38,6 +38,14 @@ Function hwg_onWndSize( oWnd,wParam,lParam )
 
 Return 0
 
+Function hwg_onMove( oWnd, wParam, lParam )
+
+   // hwg_WriteLog( "onMove: "+str(oWnd:nLeft)+" "+str(oWnd:nTop)+" -> "+str(hwg_Loword(lParam))+str(hwg_Hiword(lParam)) )
+   oWnd:nLeft := hwg_Loword(lParam)
+   oWnd:nTop  := hwg_Hiword(lParam)
+
+Return 0
+
 STATIC FUNCTION onAnchor( oWnd, wold, hold, wnew, hnew )
 LOCAL aControls := oWnd:aControls, oItem, w, h
 
@@ -196,7 +204,7 @@ CLASS HMainWindow INHERIT HWindow
       { WM_COMMAND,WM_MOVE,WM_SIZE,WM_CLOSE,WM_DESTROY }, ;
       { ;
          {|o,w,l|onCommand(o,w,l)},        ;
-         {|o,w,l|onMove(o,w,l)},           ;
+         {|o,w,l|hwg_onMove(o,w,l)},       ;
          {|o,w,l|hwg_onWndSize(o,w,l)},    ;
          {|o|hwg_ReleaseAllWindows(o:handle)}, ;
          {|o|onDestroy(o)}                 ;
@@ -303,11 +311,4 @@ Local iItem, iCont, aMenu, iParHigh, iParLow, nHandle
 
 Return 0
 
-Static Function onMove( oWnd, wParam, lParam )
-
-   // hwg_WriteLog( "onMove: "+str(oWnd:nLeft)+" "+str(oWnd:nTop)+" -> "+str(hwg_Loword(lParam))+str(hwg_Hiword(lParam)) )
-   oWnd:nLeft := hwg_Loword(lParam)
-   oWnd:nTop  := hwg_Hiword(lParam)
-
-Return 0
 

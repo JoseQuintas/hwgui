@@ -177,8 +177,8 @@ FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
 FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle )
    LOCAL aMenu, i
 
-   _lContext := .F.
    IF oWnd != Nil
+      _lContext := .F.
       _aMenuDef := {}
       _aAccel   := {}
       _oBitmap  := {}

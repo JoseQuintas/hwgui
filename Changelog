@@ -8,6 +8,26 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-09-08 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * ON CHANGE clause added to the RICHEDIT command
+    * ONCE clause added to SET TIMER function - use it when you need to
+      run the timer procedure one time only
+  * source/gtk/htimer.prg
+    * Added support for ONCE clause
+  * source/gtk/hdialog.prg
+  * source/gtk/hdialog.prg
+  * source/gtk/menu.prg
+  * source/gtk/window.c
+    ! Some fixes
+  * source/winapi/htimer.prg
+    * Added support for ONCE clause
+  * source/winapi/hriched.prg
+    * added some code from 2.17 version
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_l.c
+    ! Some fixes
+
 2015-08-27 14:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
     * Added initialization of a widget font from it parent

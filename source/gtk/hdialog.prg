@@ -17,6 +17,7 @@ REQUEST HWG_ENDWINDOW
 STATIC aMessModalDlg := { ;
       { WM_COMMAND, { |o,w,l|hwg_DlgCommand( o,w,l ) } },     ;
       { WM_SIZE, { |o,w,l|hwg_onWndSize( o,w,l ) } },         ;
+      { WM_MOVE, { |o,w,l|hwg_onMove( o,w,l ) } },         ;
       { WM_INITDIALOG, { |o,w,l|InitModalDlg( o,w,l ) } },    ;
       { WM_DESTROY, { |o|onDestroy( o ) } },                  ;
       { WM_ACTIVATE, { |o,w,l|onActivate( o,w,l ) } }         ;
@@ -133,6 +134,8 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       ::Maximize()
    ELSEIF !Empty( lCentered )
       ::Center()
+   ELSEIF ::oParent != Nil
+      hwg_MoveWindow( ::handle, ::oParent:nLeft+::nLeft, ::oParent:nTop+::nTop )
    ENDIF
    IF HB_ISBLOCK( bActivate )
       ::bActivate := bActivate

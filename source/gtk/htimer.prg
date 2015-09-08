@@ -22,17 +22,18 @@ CLASS HTimer INHERIT HObject
    DATA value
    DATA oParent
    DATA bAction
+   DATA lOnce          INIT .F.
    DATA name
    ACCESS Interval     INLINE ::value
    ASSIGN Interval(x)  INLINE ::value := x, ::End(), ;
          Iif( x == 0, .T., ::tag := hwg_SetTimer( ::id,x ) )
 
-   METHOD New( oParent, id, value, bAction )
+   METHOD New( oParent, id, value, bAction, lOnce )
    METHOD End()
 
 ENDCLASS
 
-METHOD New( oParent, nId, value, bAction ) CLASS HTimer
+METHOD New( oParent, nId, value, bAction, lOnce ) CLASS HTimer
 
    ::oParent := iif( oParent == Nil, HWindow():GetMain(), oParent )
    IF nId == Nil
@@ -45,6 +46,7 @@ METHOD New( oParent, nId, value, bAction ) CLASS HTimer
 
    ::value   := iif( ValType( value ) == "N", value, 1000 )
    ::bAction := bAction
+   ::lOnce := !Empty( lOnce )
 
    ::tag := hwg_SetTimer( ::id, ::value )
    AAdd( ::aTimers, Self )
@@ -65,10 +67,14 @@ METHOD End() CLASS HTimer
 
 FUNCTION hwg_TimerProc( idTimer )
 
-   LOCAL i := Ascan( HTimer():aTimers, { |o|o:id == idTimer } )
+   LOCAL i := Ascan( HTimer():aTimers, { |o|o:id == idTimer } ), b
 
    IF i != 0 .AND. ValType( HTimer():aTimers[i]:bAction ) == "B"
-      Eval( HTimer():aTimers[i]:bAction )
+      b := HTimer():aTimers[i]:bAction
+      IF HTimer():aTimers[i]:lOnce
+         HTimer():aTimers[i]:End()
+      ENDIF
+      Eval( b )
    ENDIF
 
    RETURN Nil

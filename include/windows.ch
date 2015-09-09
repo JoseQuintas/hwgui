@@ -1670,3 +1670,8 @@ ComboBox
 #define DMPAPER_A4                   9  /* A4 210 x 297 mm  */
 #define DMPAPER_A5                  11  /* A5 148 x 210 mm  */
 #define DMPAPER_A6                  70  /* A6 105 x 148 mm  */
+
+/* CONSTANTS TO TRACKMOUSEEVENT */
+#DEFINE  TME_CANCEL            0x80000000 
+#DEFINE  TME_HOVER             1
+#DEFINE  TME_LEAVE             2 

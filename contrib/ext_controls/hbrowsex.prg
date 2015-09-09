@@ -803,7 +803,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowseEx
          ::ButtonRDown( lParam )
       ELSEIF msg == WM_MOUSEMOVE //.AND. ! ::oParent:lSuspendMsgsHandling
          IF ::nWheelPress > 0
-            ::MouseWheel( hwg_Loword( wParam ), ::nWheelPress - lParam )
+            ::MouseWheel( hwg_Loword( wParam ), ::nWheelPress - hwg_PtrToUlong( lParam ) )
          ELSE
             ::MouseMove( wParam, lParam )
             IF ::lHeadClick

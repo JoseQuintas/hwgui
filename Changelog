@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-09-09 14:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/windows.ch
+  * contrib/ext_controls/hbrowsex.prg
+    ! Fix, provided by Itamar M. Lins Jr.
+  * source/winapi/hcombo.prg
+    ! Fixes for combobox with EDIT clause
+
 2015-09-08 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * ON CHANGE clause added to the RICHEDIT command

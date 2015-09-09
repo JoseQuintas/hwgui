@@ -59,14 +59,14 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ENDIF
 
    IF ::lText
-      ::xValue := Iif( vari == Nil .OR. ValType( vari ) != "C", "", Trim( vari ) )
+      ::xValue := iif( vari == Nil .OR. ValType( vari ) != "C", "", Trim( vari ) )
    ELSE
-      ::xValue := Iif( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
+      ::xValue := iif( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
    ENDIF
 
    IF bSetGet != Nil
       ::bSetGet := bSetGet
-      Eval( ::bSetGet, ::xValue, self )
+      Eval( ::bSetGet, ::xValue, Self )
    ENDIF
 
    ::aItems  := aItems
@@ -78,14 +78,12 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::bGetFocus := bGFocus
       ::oParent:AddEvent( CBN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) } )
 
-      // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 03/06/2006
-      if ::bSetGet <> nil
-         ::oParent:AddEvent( CBN_SELCHANGE, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
-      elseif ::bChangeSel != NIL
+      ::oParent:AddEvent( CBN_SELCHANGE, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
+      IF ::bChangeSel != Nil
          ::oParent:AddEvent( CBN_SELCHANGE, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
       ENDIF
 
-      IF bValid != NIL
+      IF bValid != Nil
          ::bValid := bValid
          ::oParent:AddEvent( CBN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
       ENDIF
@@ -130,7 +128,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    IF bSetGet != Nil
       ::bChangeSel := bChange
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
-      IF ::bChangeSel != NIL
+      IF ::bChangeSel != Nil
          ::oParent:AddEvent( CBN_SELCHANGE, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
       ENDIF
    ELSEIF bChange != Nil
@@ -148,20 +146,20 @@ METHOD Init() CLASS HComboBox
       IF !Empty( ::aItems )
          IF Empty( ::xValue )
             IF ::lText
-               ::xValue := Iif( Valtype(::aItems[1]) == "A", ::aItems[1,1], ::aItems[1] )
+               ::xValue := iif( ValType( ::aItems[1] ) == "A", ::aItems[1,1], ::aItems[1] )
             ELSE
                ::xValue := 1
             ENDIF
          ENDIF
          hwg_Sendmessage( ::handle, CB_RESETCONTENT, 0, 0 )
          FOR i := 1 TO Len( ::aItems )
-            hwg_Comboaddstring( ::handle, Iif( Valtype(::aItems[i]) == "A", ::aItems[i,1], ::aItems[i] ) )
+            hwg_Comboaddstring( ::handle, iif( ValType(::aItems[i] ) == "A", ::aItems[i,1], ::aItems[i] ) )
          NEXT
          IF ::lText
             IF ::lEdit
                hwg_Setdlgitemtext( hwg_GetModalHandle(), ::id, ::xValue )
             ELSE
-               i := Iif( Valtype(::aItems[1]) == "A", AScan( ::aItems, {|a|a[1]==::xValue} ), AScan( ::aItems, ::xValue ) )
+               i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
                hwg_Combosetstring( ::handle, i )
             ENDIF
          ELSE
@@ -194,14 +192,14 @@ METHOD Refresh() CLASS HComboBox
       hwg_Sendmessage( ::handle, CB_RESETCONTENT, 0, 0 )
 
       FOR i := 1 TO Len( ::aItems )
-         hwg_Comboaddstring( ::handle, Iif( Valtype(::aItems[i]) == "A", ::aItems[i,1], ::aItems[i] ) )
+         hwg_Comboaddstring( ::handle, iif( ValType(::aItems[i] ) == "A", ::aItems[i,1], ::aItems[i] ) )
       NEXT
 
       IF ::lText
          IF ::lEdit
             hwg_Setdlgitemtext( hwg_GetModalHandle(), ::id, ::xValue )
          ELSE
-            i := Iif( Valtype(::aItems[1]) == "A", AScan( ::aItems, {|a|a[1]==::xValue} ), AScan( ::aItems, ::xValue ) )
+            i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
             hwg_Combosetstring( ::handle, i )
          ENDIF
       ELSE
@@ -215,7 +213,7 @@ METHOD Refresh() CLASS HComboBox
 METHOD SetItem( nPos ) CLASS HComboBox
 
    IF ::lText
-      ::xValue := Iif( Valtype(::aItems[nPos]) == "A", ::aItems[nPos,1], ::aItems[nPos] )
+      ::xValue := iif( ValType( ::aItems[nPos] ) == "A", ::aItems[nPos,1], ::aItems[nPos] )
    ELSE
       ::xValue := nPos
    ENDIF
@@ -233,21 +231,26 @@ METHOD SetItem( nPos ) CLASS HComboBox
    RETURN Nil
 
 METHOD GetValue( nItem ) CLASS HComboBox
-   LOCAL nPos := hwg_Sendmessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
-   LOCAL l := nPos > 0 .AND. Valtype(::aItems[nPos]) == "A"
+   LOCAL nPos, l := .F.
 
-   ::xValue := Iif( ::lText, Iif( l, ::aItems[nPos,1], ::aItems[nPos] ), nPos )
+   IF ::lEdit
+      ::xValue := ::GetText()
+   ELSE
+      nPos := hwg_Sendmessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
+      l := nPos > 0 .AND. ValType( ::aItems[nPos] ) == "A"
+      ::xValue := iif( ::lText, iif( l, ::aItems[nPos,1], ::aItems[nPos] ), nPos )
+   ENDIF
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::xValue, Self )
    ENDIF
 
-   Return Iif( l .AND. nItem!=Nil, Iif( nItem>0 .AND. nItem<=Len(::aItems[nPos]), ::aItems[nPos,nItem], Nil ), ::xValue )
+   RETURN iif( l .AND. nItem != Nil, iif( nItem > 0 .AND. nItem <= Len(::aItems[nPos] ), ::aItems[nPos,nItem], Nil ), ::xValue )
 
 METHOD Value ( xValue ) CLASS HComboBox
- 
+
    IF xValue != Nil
-      IF Valtype( xValue ) == "C"
-         xValue := Iif( Valtype(::aItems[1]) == "A", AScan( ::aItems, {|a|a[1]==xValue} ), AScan( ::aItems, xValue ) )
+      IF ValType( xValue ) == "C"
+         xValue := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == xValue } ), AScan( ::aItems, xValue ) )
       ENDIF
       ::SetItem( xValue )
 
@@ -272,8 +275,11 @@ STATIC FUNCTION __Valid( oCtrl )
    IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
       nPos := hwg_Sendmessage( oCtrl:handle, CB_GETCURSEL, 0, 0 ) + 1
 
-      oCtrl:xValue := Iif( oCtrl:lText, Iif( Valtype(oCtrl:aItems[nPos]) == "A", oCtrl:aItems[nPos,1], oCtrl:aItems[nPos] ), nPos )
-
+      IF oCtrl:lEdit
+         oCtrl:xValue := oCtrl:GetText()
+      ELSE
+         oCtrl:xValue := iif( oCtrl:lText, iif( ValType(oCtrl:aItems[nPos] ) == "A", oCtrl:aItems[nPos,1], oCtrl:aItems[nPos] ), nPos )
+      ENDIF
       IF oCtrl:bSetGet != Nil
          Eval( oCtrl:bSetGet, oCtrl:xValue, oCtrl )
       ENDIF
@@ -282,7 +288,7 @@ STATIC FUNCTION __Valid( oCtrl )
       ENDIF
 
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
-      IF oCtrl:bValid != NIL
+      IF oCtrl:bValid != Nil
          IF ! Eval( oCtrl:bValid, oCtrl )
             hwg_Setfocus( oCtrl:handle )
             RETURN .F.

@@ -141,12 +141,14 @@ CLASS HCEdiExt INHERIT HCEdit
    METHOD FindClass( xBase, xAttr, cNewClass )
    METHOD SetHili( nGroup, oFont, tColor, bColor, nMargL, nMargR, nIndent, nAlign )
    METHOD ChgStyle( P1, P2, xAttr, lDiv, PCell )
-   METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref )
+   METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref, cId, nOpt )
    METHOD StyleDiv( nLine, xAttr, cClass )
    METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr )
    METHOD InsRows( nL, nRows, nCols, lNoAddline )
+   METHOD InsCol( nL, iTd )
+   METHOD DelCol( nL, iTd )
    METHOD InsImage( cName, nAlign, xAttr, xBin, cExt )
-   METHOD InsSpan( cText, xAttr, cHref )
+   METHOD InsSpan( cText, xAttr, cHref, cId, nOpt )
    METHOD DelObject( cType, nL, nCol )
    METHOD Save( cFileName, cpSou, lHtml, lCompact, nFrom, nTo )
    METHOD SaveTag( cTagName, nL, nItem )  INLINE ""
@@ -1520,7 +1522,7 @@ METHOD ChgStyle( P1, P2, xAttr, lDiv, PCell ) CLASS HCEdiExt
 
    RETURN Nil
 
-METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref ) CLASS HCEdiExt
+METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref, cId, nOpt ) CLASS HCEdiExt
 
    LOCAL aStru := ::aStru[nLine], n1, nPosTmp, xCls
 
@@ -1564,9 +1566,14 @@ METHOD StyleSpan( nLine, nPos1, nPos2, xAttr, cHref ) CLASS HCEdiExt
       ENDIF
    ENDIF
    IF cHref != Nil
-      Aadd( aStru[n1], Nil )   // Id
-      Aadd( aStru[n1], Nil )   // nOpt
+      Aadd( aStru[n1], cId )
+      Aadd( aStru[n1], nOpt )
       Aadd( aStru[n1], cHRef )
+   ELSEIF nOpt != Nil
+      Aadd( aStru[n1], cId )
+      Aadd( aStru[n1], nOpt )
+   ELSEIF cId != Nil
+      Aadd( aStru[n1], cId )
    ENDIF
    IF !::lChgStyle
       hced_CleanStru( Self, nLine, nLine )
@@ -1619,8 +1626,8 @@ METHOD StyleDiv( nLine, xAttr, cClass ) CLASS HCEdiExt
 
    RETURN Nil
 
-METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr ) CLASS HCEdiExt
-   LOCAL nL, i, cClsName
+METHOD InsTable( xCols, nRows, nWidth, nAlign, xAttr ) CLASS HCEdiExt
+   LOCAL nL, i, cClsName, nCols, aStruOB
 
    IF !Empty( xAttr )
       cClsName := ::FindClass( , xAttr, .T. )
@@ -1629,6 +1636,20 @@ METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr ) CLASS HCEdiExt
 
    IF Valtype( ::aStru[nL,1,OB_TYPE] ) == "C"
       RETURN .F.
+   ENDIF
+
+   IF Valtype( xCols ) == "N"
+      nCols := xCols
+      aStruOB := Array( nCols )
+      FOR i := 1 TO nCols
+         aStruOB[i] := { - 100/nCols, 0, 0 }
+      NEXT
+   ELSE
+      nCols := Len( xCols )
+      aStruOB := Array( nCols )
+      FOR i := 1 TO nCols
+         aStruOB[i] := { xCols[i], 0, 0 }
+      NEXT
    ENDIF
 
    IF !Empty( ::aText[nl] )
@@ -1643,10 +1664,7 @@ METHOD InsTable( nCols, nRows, nWidth, nAlign, xAttr ) CLASS HCEdiExt
 
    // Add table description to the first row
    Aadd( ::aStru[nL,1], { "tbl", {}, cClsName, Iif(Empty(nWidth),-100,nWidth), nAlign } )
-   nWidth := - 100/nCols
-   FOR i := 1 TO nCols
-      Aadd( ::aStru[nL,1,OB_TBL,OB_OB], { nWidth, 0, 0 } )
-   NEXT
+   ::aStru[nL,1,OB_TBL,OB_OB] := aStruOB
 
    hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
 
@@ -1690,6 +1708,90 @@ METHOD InsRows( nL, nRows, nCols, lNoAddline ) CLASS HCEdiExt
       IF Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr"
          ::aStru[nL,1,OB_TRNUM] := ++nRow
       ENDIF
+   ENDDO
+
+   ::lUpdated := .T.
+
+   RETURN .T.
+
+METHOD InsCol( nL, iTd ) CLASS HCEdiExt
+
+   LOCAL aStruCols, nCols, nWidth, i, n
+
+   IF Empty( nL ) .OR. Valtype( ::aStru[nL,1,1] ) != "C" .OR. ::aStru[nL,1,1] != "tr"
+      RETURN .F.
+   ENDIF
+
+   nL := nL - ::aStru[nL,1,OB_TRNUM] + 1
+   aStruCols := ::aStru[nL,1,OB_TBL,OB_OB]
+   nCols := Len( aStruCols ) + 1
+   IF iTd == Nil
+      iTd := nCols
+   ENDIF
+   Aadd( aStruCols, Nil )
+   AIns( aStruCols, iTd )
+   nWidth := Int( 100/nCols ) 
+   aStruCols[iTd] := { -nWidth, 0, 0 }
+   n := Int( nWidth/(nCols-1) )
+   FOR i := 1 TO nCols
+      IF i != iTd .AND. Abs(aStruCols[i,1]) > n
+         aStruCols[i,1] := - (Abs(aStruCols[i,1])-n)
+         nWidth -= n
+      ENDIF
+   NEXT
+   IF nWidth > 0
+      FOR i := 1 TO nCols
+         IF i != iTd .AND. Abs(aStruCols[i,1]) > nWidth
+            aStruCols[i,1] := - (Abs(aStruCols[i,1])-nWidth)
+         ENDIF
+      NEXT
+   ENDIF
+
+   DO WHILE Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr"
+      aStruCols := ::aStru[nL,1,OB_OB]
+      Aadd( aStruCols, Nil )
+      AIns( aStruCols, iTd )
+      aStruCols[iTd] := { "td", { { { 0,0,Nil } } }, Nil, {""}, 0, 0, {Nil}, Array(4,AL_LENGTH), 0, 1, 1, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0} }
+      nL++
+   ENDDO
+
+   ::lUpdated := .T.
+
+   RETURN .T.
+
+METHOD DelCol( nL, iTd ) CLASS HCEdiExt
+
+   LOCAL aStruCols, nCols, nWidth, i, n
+
+   IF Empty( nL ) .OR. Empty( iTd ) .OR. Valtype( ::aStru[nL,1,1] ) != "C" .OR. ::aStru[nL,1,1] != "tr"
+      RETURN .F.
+   ENDIF
+
+   nL := nL - ::aStru[nL,1,OB_TRNUM] + 1
+   aStruCols := ::aStru[nL,1,OB_TBL,OB_OB]
+   nCols := Len( aStruCols )
+   IF iTd > nCols
+      RETURN .F.
+   ENDIF
+
+   nCols --
+   n := Int( Abs(aStruCols[iTd,1]) / nCols )
+   ADel( aStruCols, iTd )
+   ASize( aStruCols, nCols )
+   nWidth := 0
+   FOR i := 1 TO nCols
+      aStruCols[i,1] := - (Abs(aStruCols[i,1])+n)
+      nWidth += n
+   NEXT
+   IF nWidth > 100
+      aStruCols[1,1] := - (Abs(aStruCols[1,1])-(nWidth-100))
+   ENDIF
+
+   DO WHILE Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr"
+      aStruCols := ::aStru[nL,1,OB_OB]
+      ADel( aStruCols, iTd )
+      ASize( aStruCols, nCols )
+      nL++
    ENDDO
 
    ::lUpdated := .T.
@@ -1776,7 +1878,7 @@ METHOD InsImage( cName, nAlign, xAttr, xBin, cExt ) CLASS HCEdiExt
 
    RETURN .T.
 
-METHOD InsSpan( cText, xAttr, cHref ) CLASS HCEdiExt
+METHOD InsSpan( cText, xAttr, cHref, cId, nOpt ) CLASS HCEdiExt
    LOCAL nL, x1, aStruTbl, iTd, nIndent, nBoundL, nBoundR, nLTr, aStru, j
 
    nL := ::aPointC[P_Y]
@@ -1802,7 +1904,7 @@ METHOD InsSpan( cText, xAttr, cHref ) CLASS HCEdiExt
    x1 := ::aPointC[P_X]
    IF ( aStru := hced_Stru4Pos( ::aStru[nL], x1 ) ) == Nil .OR. Len( aStru ) == 3
       ::InsText( ::aPointC, cText )
-      ::StyleSpan( nL, x1, x1+hced_Len(Self,cText)-1, xAttr, cHRef )
+      ::StyleSpan( nL, x1, x1+hced_Len(Self,cText)-1, xAttr, cHRef, cId, nOpt )
       hced_CleanStru( Self, nL, nL )
    ENDIF
 
@@ -2450,13 +2552,19 @@ METHOD Find( cText, cId, cHRef, aStart, lCase, lRegex ) CLASS HCEdiExt
                         ENDIF
                      ENDDO
                   ENDIF
-                  IF lHref
+                  IF lHref .OR. lId
                      FOR j1 := 2 TO Len( aStru[i1] )
-                        IF Len(aStru[i1,j1]) >= OB_HREF .AND. aStru[i1,j1,OB_HREF] == cHRef
+                        IF lHref .AND. Len(aStru[i1,j1]) >= OB_HREF .AND. aStru[i1,j1,OB_HREF] == cHRef
                            IF lAll
                               Aadd( arr, { n, i, j1, i1 } )
                            ELSE
                               RETURN { n, i, j1, i1 }
+                           ENDIF
+                        ELSEIF lId .AND. Len(aStru[i1,j1]) >= OB_ID .AND. !Empty( aStru[i1,j1,OB_ID] )
+                           IF !lAll .AND. aStru[i1,j1,OB_ID] == cId
+                              RETURN { n, i, j1, i1 }
+                           ELSEIF lAll .AND. aStru[i1,j1,OB_ID] = cId
+                              Aadd( arr, { n, i, j1, i1 } )
                            ENDIF
                         ENDIF
                      NEXT

@@ -29,6 +29,7 @@ CLASS HTab INHERIT HControl
       bClick, bGetFocus, bLostFocus )
    METHOD Activate()
    METHOD Init()
+   //METHOD onEvent( msg, wParam, lParam )
    METHOD SetTab( n )
    METHOD StartPage( cName, oDlg )
    METHOD EndPage()
@@ -112,7 +113,23 @@ METHOD Init() CLASS HTab
    ENDIF
 
    RETURN Nil
+/*
+METHOD onEvent( msg, wParam, lParam ) CLASS HTab
 
+   LOCAL iParHigh, iParLow, nPos
+
+   IF msg == WM_COMMAND
+      IF ::aEvents != Nil
+         iParHigh := hwg_Hiword( wParam )
+         iParLow  := hwg_Loword( wParam )
+         IF ( nPos := Ascan( ::aEvents, { |a|a[1] == iParHigh .AND. a[2] == iParLow } ) ) > 0
+            Eval( ::aEvents[ nPos,3 ], Self, iParLow )
+         ENDIF
+      ENDIF
+   ENDIF
+
+   Return - 1
+*/
 METHOD SetTab( n ) CLASS HTab
 
    hwg_Sendmessage( ::handle, TCM_SETCURFOCUS, n - 1, 0 )
@@ -278,6 +295,7 @@ Local nFirst, nEnd, i
 METHOD Notify( lParam ) CLASS HTab
    LOCAL nCode := hwg_Getnotifycode( lParam )
 
+   //hwg_writelog( str(ncode) )
    DO CASE
    CASE nCode == TCN_SELCHANGE
       IF ::bChange != Nil

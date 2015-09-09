@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-09-09 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwg_extctrl.ch
+  * source/winapi/hcombo.prg
+    ! Some fixes
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Some enhancements
+  * source/winapi/htab.prg
+
 2015-09-09 14:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/windows.ch
   * contrib/ext_controls/hbrowsex.prg

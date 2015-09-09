@@ -69,34 +69,20 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       Eval( ::bSetGet, ::xValue, Self )
    ENDIF
 
+
    ::aItems  := aItems
 
    ::Activate()
 
-   IF bSetGet != Nil
-      ::bChangeSel := bChange
-      ::bGetFocus := bGFocus
-      ::oParent:AddEvent( CBN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) } )
-
+   ::bValid := bValid
+   ::bChangeSel := bChange
+   ::oParent:AddEvent( CBN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
+   IF ::bChangeSel != Nil
       ::oParent:AddEvent( CBN_SELCHANGE, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
-      IF ::bChangeSel != Nil
-         ::oParent:AddEvent( CBN_SELCHANGE, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
-      ENDIF
-
-      IF bValid != Nil
-         ::bValid := bValid
-         ::oParent:AddEvent( CBN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
-      ENDIF
-      //---------------------------------------------------------------------------
-   ELSEIF bChange != Nil
-      ::oParent:AddEvent( CBN_SELCHANGE, ::id, bChange )
    ENDIF
 
-   IF ::lEdit
-      ::oParent:AddEvent( CBN_KILLFOCUS, ::id, { |o, id|__KillFocus( o:FindControl(id ) ) } )
-   ENDIF
-
-   IF bGFocus != Nil .AND. bSetGet == Nil
+   IF bGFocus != Nil
+      ::bGetFocus := bGFocus
       ::oParent:AddEvent( CBN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) } )
    ENDIF
 
@@ -157,7 +143,7 @@ METHOD Init() CLASS HComboBox
          NEXT
          IF ::lText
             IF ::lEdit
-               hwg_Setdlgitemtext( hwg_GetModalHandle(), ::id, ::xValue )
+               hwg_Setwindowtext( ::handle,::xValue )
             ELSE
                i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
                hwg_Combosetstring( ::handle, i )
@@ -182,7 +168,7 @@ METHOD Refresh() CLASS HComboBox
    IF !Empty( ::aItems )
       IF ::bSetGet != Nil
          vari := Eval( ::bSetGet, , Self )
-         if ::lText
+         IF ::lText
             ::xValue := iif( vari == Nil .OR. ValType( vari ) != "C", "", Trim( vari ) )
          ELSE
             ::xValue := iif( vari == Nil .OR. ValType( vari ) != "N", 1, vari )
@@ -298,24 +284,19 @@ STATIC FUNCTION __Valid( oCtrl )
 
    RETURN .T.
 
-STATIC FUNCTION __KillFocus( oCtrl )
-
-   oCtrl:xValue := hwg_Getedittext( hwg_GetModalHandle(), oCtrl:id )
-   IF oCtrl:bSetGet != Nil
-      Eval( oCtrl:bSetGet, oCtrl:xValue, oCtrl )
-   ENDIF
-
-   RETURN .T.
-
 STATIC FUNCTION __When( oCtrl )
    LOCAL res
 
-   oCtrl:Refresh()
+   //oCtrl:Refresh()
 
    IF oCtrl:bGetFocus != Nil
-      res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
-      IF !res
-         hwg_GetSkip( oCtrl:oParent, oCtrl:handle, 1 )
+      IF oCtrl:bSetGet == Nil
+         res := Eval( oCtrl:bGetFocus, oCtrl:xValue, oCtrl )
+      ELSE
+         res := Eval( oCtrl:bGetFocus, Eval( oCtrl:bSetGet,, oCtrl ), oCtrl )
+         IF !res
+            hwg_GetSkip( oCtrl:oParent, oCtrl:handle, 1 )
+         ENDIF
       ENDIF
       RETURN res
    ENDIF

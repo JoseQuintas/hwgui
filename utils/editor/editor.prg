@@ -120,8 +120,9 @@ STATIC alAcc := { .F.,.F.,.F.,.F.,.F.,.F.,.F. }
 STATIC cIdExp := "clcexp", cIdRes := "clcres"
 STATIC cCBformatted
 STATIC cSearch := "", aPointFound, lSeaCase := .T., lSeaRegex := .F.
+STATIC aCurrTD := { 0,0,0 }
 
-MEMVAR handcursor, cIniPath, aCurrTD
+MEMVAR handcursor, cIniPath
 
 FUNCTION Main ( fName )
    LOCAL oMainWindow, oFont
@@ -130,7 +131,6 @@ FUNCTION Main ( fName )
    LOCAL x1
 
    PRIVATE handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
-   PRIVATE aCurrTD := { 0,0,0 }
 
    IF hwg__isUnicode()
       hb_cdpSelect( "UTF8" )
@@ -204,8 +204,9 @@ FUNCTION Main ( fName )
    oEdit:AddClass( "h4", "font-size: 110%; font-weight: bold;" )
    oEdit:AddClass( "h5", "font-weight: bold;" )
    oEdit:AddClass( "i", "font-style: italic;" )
+   oEdit:AddClass( "u", "text-decoration: underline;" )
    oEdit:AddClass( "cite", "color: #007800; margin-left: 3%; margin-right: 3%;" )
-   oEdit:aDefClasses := { "url","h1","h2","h3","h4","h5","i","cite" }
+   oEdit:aDefClasses := { "url","h1","h2","h3","h4","h5","i","u","cite" }
    oEdit:bOther := {|o,m,wp,lp|EditMessProc( o,m,wp,lp )}
    oEdit:bAfter := {|o,m,wp,lp|EdMsgAfter( o,m,wp,lp )}
    oEdit:bChangePos := { || onChangePos() }
@@ -278,10 +279,14 @@ FUNCTION Main ( fName )
          MENUITEM "&Image" ID MENU_IMAGE ACTION (setImage( .F. ),hced_Setfocus(oEdit:hEdit))
          MENU TITLE "&Table" ID MENU_TABLE
             MENUITEM "&Properties" ACTION (setTable( .F. ),hced_Setfocus(oEdit:hEdit))
+            SEPARATOR
             MENUITEM "&Insert row" ACTION (InsRows(),hced_Setfocus(oEdit:hEdit))
             MENUITEM "&Delete row" ACTION DelRow()
-            MENUITEM "Insert column" ACTION (InsCols(),hced_Setfocus(oEdit:hEdit))
-            MENUITEM "Delete column" ACTION (DelCol(),hced_Setfocus(oEdit:hEdit))
+            SEPARATOR
+            MENUITEM "Insert column" ACTION InsCols( .F. )
+            MENUITEM "Add column" ACTION InsCols( .T. )
+            MENUITEM "Delete column" ACTION DelCol()
+            SEPARATOR
             MENUITEM "&Cell color" ACTION (setCellColor(),hced_Setfocus(oEdit:hEdit))
          ENDMENU
       ENDMENU
@@ -1435,6 +1440,7 @@ STATIC FUNCTION setTable( lNew )
    LOCAL oDlg, oTab, nTop, oSayClr, nRows := 3, nCols := 2, nBorder := 1, nBColor := 0, nWidth := 100
    LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, cClsName, aAttr, lNeedScan := .F.
    LOCAL nRows0, nBorder0 := 0, nBColor0 := 0
+   LOCAL oBrw, aCols, nAll
    LOCAL nL := oEdit:aPointC[P_Y], nLast
    LOCAL aStruTbl, i
    LOCAL bColor := { ||
@@ -1444,6 +1450,41 @@ STATIC FUNCTION setTable( lNew )
         oSayClr:SetText( Iif( nBColor==0,"Default","#"+hwg_ColorN2C(nBColor) ) )
      ENDIF
      RETURN .T.
+   }
+   LOCAL bChgTab := {|o,n|
+      IF n == 2 .AND. Len( aCols ) != nCols
+         IF lNew
+            aCols := Array( nCols )
+            nAll := 0
+            FOR i := 1 TO Len( aCols )
+               aCols[i] := Int( 100/Len(aCols) )
+               nAll += aCols[i]
+            NEXT
+            aCols[1] += ( 100 - nAll )
+            oBrw:aArray := aCols
+         ENDIF
+      ENDIF
+      RETURN .T.
+   }
+   LOCAL bValid := {|n|
+      LOCAL nOld := aCols[oBrw:nCurrent]
+      IF n != nOld
+         aCols[oBrw:nCurrent] := n
+         n -= nOld
+         FOR i := 1 TO Len(aCols)
+            IF i != oBrw:nCurrent
+               aCols[i] -= n
+               IF aCols[i] <= 0
+                  n := 1 + aCols[i]
+                  aCols[i] := 1
+               ELSE
+                  EXIT
+               ENDIF
+            ENDIF
+         NEXT
+         HTimer():New( oDlg,, 150, {||oBrw:Refresh()}, .T. )
+      ENDIF
+      RETURN .T.
    }
 
 #ifdef __PLATFORM__UNIX
@@ -1456,7 +1497,15 @@ STATIC FUNCTION setTable( lNew )
       RETURN Nil
    ENDIF
 
-   IF !lNew
+   IF lNew
+      aCols := Array( nCols )
+      nAll := 0
+      FOR i := 1 TO Len( aCols )
+         aCols[i] := Int( 100/Len(aCols) )
+         nAll += aCols[i]
+      NEXT
+      aCols[1] += ( 100 - nAll )
+   ELSE
       nRows := oEdit:aStru[nL,1,OB_TRNUM]
       aStruTbl := oEdit:aStru[nL-nRows+1,1,OB_TBL]
       IF !Empty( cClsName := aStruTbl[OB_CLS] )
@@ -1478,12 +1527,17 @@ STATIC FUNCTION setTable( lNew )
       nCols := Len( aStruTbl[OB_OB] )
       nWidth := Iif( Empty(aStruTbl[OB_TWIDTH]), 100, Abs(aStruTbl[OB_TWIDTH]) )
       nAlign := aStruTbl[OB_TALIGN] + 1
+      aCols := Array( nCols )
+      FOR i := 1 TO Len( aCols )
+         aCols[i] := Abs( aStruTbl[OB_OB,i,1] )
+      NEXT
    ENDIF
 
    INIT DIALOG oDlg TITLE Iif( lNew, "Insert", "Set" ) + " table"  ;
       AT 20, 30 SIZE 460, 290 FONT HWindow():GetMain():oFont
 
-   @ 10, 10 TAB oTab ITEMS {} SIZE 440,220 ON SIZE ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
+   @ 10, 10 TAB oTab ITEMS {} SIZE 440,220 ON CHANGE bChgTab ;
+         ON SIZE ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
 
    BEGIN PAGE "Main" of oTab
 
@@ -1509,15 +1563,29 @@ STATIC FUNCTION setTable( lNew )
 
    BEGIN PAGE "Columns" of oTab
 
+   @ 10, nTop BROWSE oBrw ARRAY SIZE 260, 160 ON SIZE {|o,x,y|o:Move(,,,y-70)}
+   oBrw:aArray := aCols
+   oBrw:AddColumn( HColumn():New( " Column N  ",{ |value,o|o:nCurrent },"N",2 ) )
+   oBrw:AddColumn( HColumn():New( "  Width, %",{ |value,o|o:aArray[o:nCurrent] },"N",2 ) )
+   oBrw:aColumns[2]:lEditable := .T.
+   oBrw:aColumns[2]:bValid := bValid
+   oBrw:aColumns[2]:picture := "99"
+
    END PAGE of oTab
 
-   @ 80, 240 BUTTON "Ok" ID IDOK  SIZE 100, 32
-   @ 260,240 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+   @ 80, 240 BUTTON "Ok" ID IDOK SIZE 100, 32 ON SIZE ANCHOR_LEFTABS+ANCHOR_BOTTOMABS
+   @ 260,240 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ON SIZE ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
 
    ACTIVATE DIALOG oDlg
 
    IF oDlg:lResult
       oEdit:lSetFocus := .T.
+      IF Len( aCols ) != nCols
+         Eval( bChgTab, Nil, 2 )
+      ENDIF
+      FOR i := 1 TO Len( aCols )
+         aCols[i] := - aCols[i]
+      NEXT
       IF lNew
          IF nBorder > 0 .OR. nBColor > 0
             aAttr := {}
@@ -1528,7 +1596,7 @@ STATIC FUNCTION setTable( lNew )
                AAdd( aAttr, "bc" + LTrim( Str( nBColor ) ) )
             ENDIF
          ENDIF
-         oEdit:InsTable( nCols, nRows, iif( nWidth == 100, Nil, - nWidth ), ;
+         oEdit:InsTable( aCols, nRows, iif( nWidth == 100, Nil, - nWidth ), ;
             nAlign-1, aAttr )
       ELSE
          aStruTbl[OB_TWIDTH] := - nWidth
@@ -1631,10 +1699,36 @@ STATIC FUNCTION DelRow()
 
    RETURN Nil
 
-STATIC FUNCTION InsCols()
+STATIC FUNCTION InsCols( l2End )
+
+   LOCAL nL := oEdit:aPointC[P_Y]
+
+   IF Valtype(oEdit:aStru[nL,1,1]) != "C" .OR. oEdit:aStru[nL,1,1] != "tr"
+      RETURN Nil
+   ENDIF
+
+   oEdit:InsCol( nL, Iif( l2End, Nil, oEdit:aPointC[P_X] ) )
+   oEdit:Scan()
+   oEdit:Paint( .F. )
+   hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
+   hced_Setfocus( oEdit:hEdit )
+
    RETURN Nil
 
 STATIC FUNCTION DelCol()
+
+   LOCAL nL := oEdit:aPointC[P_Y]
+
+   IF Valtype(oEdit:aStru[nL,1,1]) != "C" .OR. oEdit:aStru[nL,1,1] != "tr"
+      RETURN Nil
+   ENDIF
+
+   oEdit:DelCol( nL, oEdit:aPointC[P_X] )
+   oEdit:Scan()
+   oEdit:Paint( .F. )
+   hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
+   hced_Setfocus( oEdit:hEdit )
+
    RETURN Nil
 
 STATIC FUNCTION EditMessProc( o, msg, wParam, lParam )
@@ -2028,7 +2122,7 @@ FUNCTION Z( nCol, nRow )
       RETURN Nil
    ENDIF
 
-   nL := aCurrTD[2] - oEdit:aStru[aCurrTD[2],1,OB_TRNUM] + nRow
+   nL := aCurrTD[3] - oEdit:aStru[aCurrTD[3],1,OB_TRNUM] + nRow
    cText := Ltrim( oEdit:aStru[ nL,1,OB_OB,nCol,OB_ATEXT ][1] )
 
    RETURN Iif( (c := Left(cText,1))=="(", Val(Substr(cText,2)), ;
@@ -2057,14 +2151,14 @@ FUNCTION Sum( aCells )
    ENDIF
 
    IF aCells[1] == aCells[3]
-      nL := aCurrTD[2] - oEdit:aStru[aCurrTD[2],1,OB_TRNUM] + aCells[2]
+      nL := aCurrTD[3] - oEdit:aStru[aCurrTD[3],1,OB_TRNUM] + aCells[2]
       FOR i := aCells[2] TO aCells[4]
          cText := Ltrim( oEdit:aStru[ nL,1,OB_OB,aCells[1],OB_ATEXT ][1] )
          nSum += Iif( Left(cText,1)=="(", Val(Substr(cText,2)), Val(cText) )
          nL ++
       NEXT
    ELSE
-      nL := aCurrTD[2] - oEdit:aStru[aCurrTD[2],1,OB_TRNUM] + aCells[2]
+      nL := aCurrTD[3] - oEdit:aStru[aCurrTD[3],1,OB_TRNUM] + aCells[2]
       FOR i := aCells[1] TO aCells[3]
          cText := Ltrim( oEdit:aStru[ nL,1,OB_OB,i,OB_ATEXT ][1] )
          nSum += Iif( Left(cText,1)=="(", Val(Substr(cText,2)), Val(cText) )

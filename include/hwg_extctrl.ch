@@ -1,9 +1,4 @@
 
-/* CONSTANTS TO TRACKMOUSEEVENT */
-#define  TME_CANCEL            0x80000000 
-#define  TME_HOVER             1
-#define  TME_LEAVE             2 
-
 #xcommand @ <x>,<y> BROWSEEX [ <oBrw> ] ;
              [ <lArr: ARRAY> ]          ;
              [ <lDb: DATABASE> ]        ;

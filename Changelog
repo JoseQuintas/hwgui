@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-09-26 22:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
+  * source/winapi/control.c
+    ! fix HWG_TOOLBAR_LOADIMAGE to correct load image if image handle is an pointer reported by Pere
+  * hwgui.lib.xbp
+    ! minor adjusts  
+    
 2015-09-09 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwg_extctrl.ch
   * source/winapi/hcombo.prg

@@ -1825,10 +1825,13 @@ HB_FUNC( HWG_TOOLBAR_LOADIMAGE )
 {
    TBADDBITMAP tbab;
    HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 );
-   int iIDB = hb_parni( 2 );
+   
 
    tbab.hInst = NULL;
-   tbab.nID = iIDB;
+   if ( ISPOINTER( 2 ) )
+      tbab.nID = ( UINT_PTR ) hb_parptr( 2 );
+   else
+      tbab.nID = ( UINT_PTR ) hb_parni( 2 );
 
    SendMessage( hWndCtrl, TB_ADDBITMAP, 0, ( LPARAM ) & tbab );
 }

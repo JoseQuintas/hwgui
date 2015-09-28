@@ -70,6 +70,19 @@ typedef struct _TRIVERTEX
 #endif
 
 #endif
+#ifndef M_PI
+#define M_PI             3.14159265358979323846
+#endif
+#ifndef M_TWOPI
+#define M_TWOPI         (M_PI * 2.0)
+#endif
+#ifndef M_PI_2
+#define M_PI_2           1.57079632679489661923
+#endif
+#ifndef M_PI_4
+#define M_PI_4           0.78539816339744830962
+#endif
+
 
 typedef int ( _stdcall * GRADIENTFILL ) ( HDC, PTRIVERTEX, int, PVOID, int, int );
 

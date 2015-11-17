@@ -22,6 +22,7 @@
 #define SB_BOTH             3
 #endif
 #define HDM_GETITEMCOUNT    4608
+#define  CLR_MGREEN      8421440
 
 static crossCursor := nil
 static arrowCursor := nil
@@ -199,6 +200,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    DATA rowCurrCount  INIT 0
    DATA oPenLine, oPenPlus
    DATA nIndent   INIT 20
+   DATA tcolorSel INIT CLR_MGREEN
 
    DATA hScrollV, hScrollH
    DATA nScrollV  INIT 0
@@ -234,6 +236,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
             bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bAction, nBC ) CLASS HTree
    LOCAL i, aBmpSize
 
+   IF color == Nil; color := 0; ENDIF
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize,,, color, bcolor )
 
@@ -460,7 +463,11 @@ Local i, hBmp, aBmpSize
       hwg_Drawbitmap( hDC, hBmp,, x1+::nIndent, y1, aBmpSize[1], aBmpSize[2] )
    ENDIF
 
+   IF ::oSelected == oNode
+      hwg_Settextcolor( hDC, ::tcolorSel )
+   ENDIF
    hwg_Drawtext( hDC, oNode:title, x1+::nIndent+Iif(!Empty(aBmpSize),aBmpSize[1]+4,0), y1, ::nWidth, y1 + ( ::height + 1 ) )
+   hwg_Settextcolor( hDC, ::tcolor )
 
    FOR i := oNode:nLevel-1 TO 1 STEP -1
       oNode := oNode:oParent

@@ -160,7 +160,7 @@ FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cRes )
    IF !Empty( cText )
       @ 20, 10 SAY cText SIZE 260, 22
    ENDIF
-   @ 20, 35 GET cres  SIZE 260, 26 STYLE WS_TABSTOP + nStyle
+   @ 20, 35 GET cres  SIZE 260, 26 STYLE WS_TABSTOP + nStyle MAXLENGTH 0
    Atail( oDlg:aControls ):Anchor := ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    @ 20, 95 BUTTON "Ok" ID IDOK SIZE 100, 32 ON SIZE ANCHOR_BOTTOMABS

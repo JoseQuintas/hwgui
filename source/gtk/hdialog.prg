@@ -134,7 +134,7 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       ::Maximize()
    ELSEIF !Empty( lCentered )
       ::Center()
-   ELSEIF ::oParent != Nil
+   ELSEIF ::oParent != Nil .AND. __ObjHasMsg( ::oParent, "nLeft" )
       hwg_MoveWindow( ::handle, ::oParent:nLeft+::nLeft, ::oParent:nTop+::nTop )
    ENDIF
    IF HB_ISBLOCK( bActivate )

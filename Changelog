@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-11-17 16:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/guimain.prg
+  * source/gtk/hdialog.prg
+    ! Small fixes
+  * source/gtk/htree.prg
+    * Selected tree item has other color (:tColorSel) now
+
 2015-09-28 18:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/winapi/draw.c
     ! added defined to M_PI,M_PI_2,M_PI_4,M_TWOPI 

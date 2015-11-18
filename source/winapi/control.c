@@ -1097,6 +1097,13 @@ HB_FUNC( HWG_IMAGELIST_ADDMASKED )
                ( HBITMAP ) HB_PARHANDLE( 2 ), ( COLORREF ) hb_parnl( 3 ) ) );
 }
 
+HB_FUNC( HWG_DESTROYIMAGELIST )
+{
+   HIMAGELIST h = ( HIMAGELIST ) HB_PARHANDLE( 1 );
+   ImageList_Destroy( h );
+}
+
+
 /*
  *  SetTimer( hWnd, idTimer, i_MilliSeconds )
  */
@@ -1901,14 +1908,12 @@ HB_FUNC( HWG_TOOLBAR_GETINFOTIPID )
    hb_retnl( idButton );
 }
 
-
 HB_FUNC( HWG_TOOLBAR_IDCLICK )
 {
    LPNMMOUSE pDispInfo = ( LPNMMOUSE ) HB_PARHANDLE( 1 );
    DWORD idButton = pDispInfo->dwItemSpec;
    hb_retnl( idButton );
 }
-
 
 HB_FUNC( HWG_TOOLBAR_SUBMENU )
 {
@@ -1979,7 +1984,6 @@ HB_FUNC( HWG_TOOLBAR_SUBMENUEXGETID )
    hb_retnl( ( LONG ) lpnmTB->iItem );
 }
 
-
 HB_FUNC( HWG_CREATEPAGER )
 {
    HWND hWndPanel;
@@ -1996,9 +2000,6 @@ HB_FUNC( HWG_CREATEPAGER )
    HB_RETHANDLE( hWndPanel );
 
 }
-
-
-
 
 HB_FUNC( HWG_CREATEREBAR )
 {
@@ -2022,7 +2023,6 @@ HB_FUNC( HWG_CREATEREBAR )
 
 }
 
-
 HB_FUNC( HWG_REBARSETIMAGELIST )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
@@ -2037,7 +2037,6 @@ HB_FUNC( HWG_REBARSETIMAGELIST )
          HB_ISPOINTER( 2 ) ) ? ( HIMAGELIST ) p : ( HIMAGELIST ) NULL;
    SendMessage( hWnd, RB_SETBARINFO, 0, ( LPARAM ) & rbi );
 }
-
 
 static BOOL _AddBar( HWND pParent, HWND pBar, REBARBANDINFO * pRBBI )
 {

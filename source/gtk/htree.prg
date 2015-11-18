@@ -22,7 +22,10 @@
 #define SB_BOTH             3
 #endif
 #define HDM_GETITEMCOUNT    4608
+
+#define  CLR_WHITE      16777215
 #define  CLR_MGREEN      8421440
+#define  CLR_VDBLUE     10485760
 
 static crossCursor := nil
 static arrowCursor := nil
@@ -63,7 +66,7 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages ) CLASS HTree
    IF aImages != Nil .AND. !Empty( aImages )
       ::aImages := {}
       FOR i := 1 TO Len( aImages )
-         AAdd( ::aImages, hwg_Openimage( AddPath( aImages[i],HBitmap():cPath ) ) )
+         AAdd( ::aImages, Iif( oTree:Type, hwg_BmpFromRes( aImages[i] ), hwg_Openimage( AddPath( aImages[i],HBitmap():cPath ) ) ) )
       NEXT
    ENDIF
 
@@ -200,7 +203,9 @@ CLASS VAR winclass   INIT "SysTreeView32"
    DATA rowCurrCount  INIT 0
    DATA oPenLine, oPenPlus
    DATA nIndent   INIT 20
-   DATA tcolorSel INIT CLR_MGREEN
+   DATA tcolorSel INIT CLR_WHITE
+   DATA bcolorSel INIT CLR_VDBLUE
+   DATA brushSel
 
    DATA hScrollV, hScrollH
    DATA nScrollV  INIT 0
@@ -218,7 +223,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    //METHOD Expand( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ) }
    METHOD Select( oNode, lNoRedraw )
    METHOD Clean()
-   METHOD END()   INLINE ( ::Super:END(), ReleaseTree( ::aItems ) )
+   METHOD END()
    METHOD Paint()
    METHOD PaintNode( hDC, oNode, nLine )
    METHOD ButtonDown( lParam )
@@ -237,6 +242,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    LOCAL i, aBmpSize
 
    IF color == Nil; color := 0; ENDIF
+   IF bcolor == Nil; bcolor := CLR_WHITE; ENDIF
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
               bSize,,, color, bcolor )
 
@@ -247,7 +253,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    IF aImages != Nil .AND. !Empty( aImages )
       ::aImages := {}
       FOR i := 1 TO Len( aImages )
-         AAdd( ::aImages, hwg_Openimage( AddPath( aImages[i],HBitmap():cPath ) ) )
+         AAdd( ::aImages, Iif( ::Type, hwg_BmpFromRes( aImages[i] ), hwg_Openimage( AddPath( aImages[i],HBitmap():cPath ) ) ) )
       NEXT
    ENDIF
 
@@ -285,14 +291,6 @@ Local aCoors, retValue := -1
    IF msg == WM_PAINT
       ::Paint()
       retValue := 1
-
-   ELSEIF msg == WM_ERASEBKGND
-      IF ::brush != Nil
-         
-         aCoors := hwg_Getclientrect( ::handle )
-         hwg_Fillrect( wParam, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
-         retValue := 1
-      ENDIF
 
    ELSEIF msg == WM_SETFOCUS
       IF ::bGetFocus != Nil
@@ -379,7 +377,7 @@ METHOD Select( oNode, lNoRedraw ) CLASS HTree
 METHOD Clean() CLASS HTree
 
    ::lEmpty := .T.
-   ReleaseTree( ::aItems )
+   ReleaseTree( ::aItems, .T. )
    ::aItems := { }
 
    RETURN Nil
@@ -393,8 +391,12 @@ METHOD Paint() CLASS HTree
    IF ::oFont != Nil
       hwg_Selectobject( hDC, ::oFont:handle )
    ENDIF
+   IF ::brushSel == Nil
+      ::brushSel := HBrush():Add( ::bcolorSel )
+   ENDIF
 
    aCoors := hwg_Getclientrect( ::handle )
+   hwg_Fillrect( hDC, aCoors[1], aCoors[2], aCoors[3]+1, aCoors[4]+1, ::brush:handle )
    hwg_gtk_drawedge( hDC, aCoors[1], aCoors[2], aCoors[3] - 1, aCoors[4] - 1, 6 )
    aMetr := hwg_Gettextmetric( hDC )
 
@@ -433,7 +435,7 @@ METHOD Paint() CLASS HTree
 
 METHOD PaintNode( hDC, oNode, nNode, nLine ) CLASS HTree
 Local y1 := (::height+1) * (nLine-1) + 1, x1 := 10 + oNode:nLevel * ::nIndent
-Local i, hBmp, aBmpSize
+Local i, hBmp, aBmpSize, nTextWidth
 
    hwg_Selectobject( hDC, ::oPenLine:handle )
    hwg_Drawline( hDC, Iif( Empty(oNode:aItems),x1+5,x1+1 ), y1+9, x1+::nIndent-4, y1+9 )
@@ -463,10 +465,15 @@ Local i, hBmp, aBmpSize
       hwg_Drawbitmap( hDC, hBmp,, x1+::nIndent, y1, aBmpSize[1], aBmpSize[2] )
    ENDIF
 
+   nTextWidth := hwg_GetTextWidth( hDC, oNode:title )
+   x1 += ::nIndent + Iif( !Empty(aBmpSize),aBmpSize[1]+4,0 )
    IF ::oSelected == oNode
       hwg_Settextcolor( hDC, ::tcolorSel )
+      hwg_Fillrect( hDC, x1, y1, x1 + nTextWidth, y1 + ( ::height + 1 ), ::brushSel:handle )
+   ELSE
+      hwg_Fillrect( hDC, x1, y1, x1 + nTextWidth, y1 + ( ::height + 1 ), ::brush:handle )
    ENDIF
-   hwg_Drawtext( hDC, oNode:title, x1+::nIndent+Iif(!Empty(aBmpSize),aBmpSize[1]+4,0), y1, ::nWidth, y1 + ( ::height + 1 ) )
+   hwg_Drawtext( hDC, oNode:title, x1, y1, ::nWidth, y1 + ( ::height + 1 ) )
    hwg_Settextcolor( hDC, ::tcolor )
 
    FOR i := oNode:nLevel-1 TO 1 STEP -1
@@ -608,12 +615,34 @@ METHOD DoVScroll() CLASS HTree
 
    RETURN 0
 
+METHOD End() CLASS HTree
 
-STATIC PROCEDURE ReleaseTree( aItems )
-   LOCAL i, iLen := Len( aItems )
+   LOCAL j
+
+   ::Super:END()
+   FOR j := 1 TO Len( ::aImages )
+      hwg_Deleteobject( ::aImages[j] )
+   NEXT
+   ReleaseTree( ::aItems, .T. )
+   IF ::brush != Nil
+      ::brush:Release()
+   ENDIF
+   IF ::brushSel != Nil
+      ::brushSel:Release()
+   ENDIF
+
+   RETURN Nil
+
+STATIC PROCEDURE ReleaseTree( aItems, lDelImages )
+   LOCAL i, j, iLen := Len( aItems )
 
    FOR i := 1 TO iLen
-      ReleaseTree( aItems[ i ]:aItems )
+      IF lDelImages .AND. !Empty( aItems[i]:aImages )
+         FOR j := 1 TO Len( aItems[i]:aImages )
+            hwg_Deleteobject( aItems[i]:aImages[j] )
+         NEXT
+      ENDIF
+      ReleaseTree( aItems[i]:aItems, lDelImages )
    NEXT
 
    RETURN

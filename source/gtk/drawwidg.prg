@@ -333,9 +333,6 @@ METHOD AddResource( name ) CLASS HBitmap
    IF !Empty( oResCnt ) .AND. !Empty( cVal := oResCnt:Get( name ) )
       IF !Empty( oBmp := ::AddString( name, cVal ) )
          RETURN oBmp
-      ELSE
-         hb_memowrit( "/tmp/"+Lower(name), cVal )
-         RETURN ::AddFile( "/tmp/"+Lower(name) )
       ENDIF
    ENDIF
 
@@ -601,6 +598,23 @@ FUNCTION hwg_aCompare( arr1, arr2 )
    ENDIF
 
    RETURN .F.
+
+FUNCTION hwg_BmpFromRes( cBmp )
+
+   LOCAL handle, cBuff, cTmp
+
+   IF !Empty( oResCnt )
+      IF !Empty( cBuff := oResCnt:Get( cBmp ) )
+         handle := hwg_OpenImage( cBuff, .T. )
+         IF Empty( handle )
+            hb_memowrit( cTmp := "/tmp/e"+Ltrim(Str(Int(Seconds()*100))), cBuff )
+            handle := hwg_Openimage( cTmp )
+            FErase( cTmp )
+         ENDIF
+     ENDIF
+   ENDIF
+
+   RETURN handle
 
 FUNCTION hwg_SetResContainer( cName )
 

@@ -685,6 +685,19 @@ FUNCTION hwg_aCompare( arr1, arr2 )
 
    RETURN .F.
 
+FUNCTION hwg_BmpFromRes( cBmp )
+
+   LOCAL handle, cBuff
+
+   IF !Empty( oResCnt )
+      IF !Empty( cBuff := oResCnt:Get( cBmp ) )
+         handle := hwg_OpenImage( cBuff, .T. )
+      ENDIF
+   ELSE
+      handle := hwg_Loadbitmap( cBmp )
+   ENDIF
+
+   RETURN handle
 
 FUNCTION hwg_SetResContainer( cName )
 

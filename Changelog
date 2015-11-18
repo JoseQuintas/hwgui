@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-11-18 10:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+  * source/gtk/htree.prg
+    * Background ( :bColorSel ) for a selected item
+  * source/winapi/drawwidg.prg
+  * source/winapi/htree.prg
+    * bitmaps in a tree may be used from a binary container
+  * source/winapi/control.c
+    ! Fix: ISPOINTER -> HB_ISPOINTER
+
 2015-11-17 16:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/guimain.prg
   * source/gtk/hdialog.prg

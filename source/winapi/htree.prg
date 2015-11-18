@@ -110,7 +110,7 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages ) CLASS HTree
          cImage := Upper( aImages[ i ] )
          IF ( h := AScan( oTree:aImages, cImage ) ) == 0
             AAdd( oTree:aImages, cImage )
-            aImages[ i ] := IIf( oTree:Type, hwg_Loadbitmap( aImages[ i ] ), hwg_Openbitmap( AddPath( aImages[i],HBitmap():cPath ) ) )
+            aImages[ i ] := IIf( oTree:Type, hwg_BmpFromRes( aImages[ i ] ), hwg_Openbitmap( AddPath( aImages[i],HBitmap():cPath ) ) )
             hwg_Imagelist_add( oTree:himl, aImages[ i ] )
             h := Len( oTree:aImages )
          ENDIF
@@ -229,7 +229,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD Select( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_SELECTITEM, TVGN_CARET, o:handle ) }
    METHOD Clean()
    METHOD Notify( lParam )
-   METHOD END()   INLINE ( ::Super:END(), ReleaseTree( ::aItems ) )
+   METHOD END()
 
 ENDCLASS
 
@@ -251,7 +251,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       ::aImages := { }
       FOR i := 1 TO Len( aImages )
          AAdd( ::aImages, Upper( aImages[ i ] ) )
-         aImages[ i ] := IIf( lResour <> NIL.and.lResour, hwg_Loadbitmap( aImages[ i ] ), hwg_Openbitmap( AddPath( aImages[i],HBitmap():cPath ) ) )
+         aImages[ i ] := IIf( lResour <> NIL.and.lResour, hwg_BmpFromRes( aImages[ i ] ), hwg_Openbitmap( AddPath( aImages[i],HBitmap():cPath ) ) )
       NEXT
       aBmpSize := hwg_Getbitmapsize( aImages[ 1 ] )
       ::himl := hwg_Createimagelist( aImages, aBmpSize[ 1 ], aBmpSize[ 2 ], 12, nBC )
@@ -362,13 +362,21 @@ METHOD Notify( lParam )  CLASS HTree
    ENDIF
    RETURN 0
 
+METHOD End() CLASS HTree
+
+   ::Super:End()
+
+   ReleaseTree( ::aItems )
+   hwg_DestroyImagelist( ::himl )
+
+   RETURN Nil
+
 STATIC PROCEDURE ReleaseTree( aItems )
    LOCAL i, iLen := Len( aItems )
 
    FOR i := 1 TO iLen
       hwg_Treereleasenode( aItems[ i ]:oTree:handle, aItems[ i ]:handle )
       ReleaseTree( aItems[ i ]:aItems )
-      // hwg_DecreaseHolders( aItems[i]:handle )
    NEXT
 
    RETURN

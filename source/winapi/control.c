@@ -146,7 +146,7 @@ HB_FUNC( HWG_CREATEPROGRESSBAR )
          hParentWindow,         /* parent window    */
          ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
-   SendMessage( hPBar, PBM_SETRANGE, 0, MAKELPARAM( 0, hb_parni( 2 ) ) );
+   SendMessage( hPBar, PBM_SETRANGE, 0, MAKELPARAM( 0, hb_parni(2) ) );
    SendMessage( hPBar, PBM_SETSTEP, ( WPARAM ) 1, 0 );
 
    HB_RETHANDLE( hPBar );
@@ -610,7 +610,7 @@ HB_FUNC( HWG_SETDATEPICKER )
       sysTime.wDayOfWeek = 0;
       sysTime.wHour = ( unsigned short ) lHour;
       sysTime.wMinute = ( unsigned short ) lMinute;
-      sysTime.wSecond = lSecond;
+      sysTime.wSecond = (WORD)lSecond;
       sysTime.wMilliseconds = ( unsigned short ) lMilliseconds;
 
       SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_SETSYSTEMTIME, GDT_VALID,
@@ -1789,8 +1789,8 @@ HB_FUNC( HWG_TOOLBARADDBUTTONS )
       else
          tb[ulCount].iBitmap = ulID - 1;   //ulID > 0 ? ( int ) ulCount : -1 ;
       tb[ulCount].idCommand = hb_arrayGetNI( pTemp, 2 );
-      tb[ulCount].fsState = hb_arrayGetNI( pTemp, 3 );
-      tb[ulCount].fsStyle = hb_arrayGetNI( pTemp, 4 );
+      tb[ulCount].fsState = (BYTE)hb_arrayGetNI( pTemp, 3 );
+      tb[ulCount].fsStyle = (BYTE)hb_arrayGetNI( pTemp, 4 );
       tb[ulCount].dwData = hb_arrayGetNI( pTemp, 5 );
       tb[ulCount].iString =
             hb_arrayGetCLen( pTemp, 6 ) > 0 ? ( int ) hb_arrayGetCPtr( pTemp,
@@ -1828,7 +1828,7 @@ HB_FUNC( HWG_TOOLBAR_LOADIMAGE )
    
 
    tbab.hInst = NULL;
-   if ( ISPOINTER( 2 ) )
+   if ( HB_ISPOINTER( 2 ) )
       tbab.nID = ( UINT_PTR ) hb_parptr( 2 );
    else
       tbab.nID = ( UINT_PTR ) hb_parni( 2 );

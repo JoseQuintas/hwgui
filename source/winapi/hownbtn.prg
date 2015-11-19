@@ -123,6 +123,8 @@ METHOD Activate CLASS HOwnButton
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
 
+   STATIC h
+
    IF msg == WM_PAINT
       IF ::bPaint != Nil
          Eval( ::bPaint, Self )
@@ -132,11 +134,15 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
    ELSEIF msg == WM_ERASEBKGND
       RETURN 1
    ELSEIF msg == WM_MOUSEMOVE
-      ::MouseMove( wParam, lParam )
+      IF ::MouseMove( wParam, lParam )
+         hwg_Setfocus( h )
+      ENDIF
    ELSEIF msg == WM_LBUTTONDOWN
+      h := hwg_Setfocus( ::handle )
       ::MDown()
    ELSEIF msg == WM_LBUTTONUP
       ::MUp()
+      hwg_Setfocus( h )
    ELSEIF msg == WM_DESTROY
       ::END()
    ELSEIF msg == WM_SETFOCUS
@@ -342,7 +348,7 @@ METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN res
 
 METHOD MDown()  CLASS HOwnButton
 

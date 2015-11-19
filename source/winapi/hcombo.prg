@@ -142,12 +142,8 @@ METHOD Init() CLASS HComboBox
             hwg_Comboaddstring( ::handle, iif( ValType(::aItems[i] ) == "A", ::aItems[i,1], ::aItems[i] ) )
          NEXT
          IF ::lText
-            IF ::lEdit
-               hwg_Setwindowtext( ::handle,::xValue )
-            ELSE
-               i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
-               hwg_Combosetstring( ::handle, i )
-            ENDIF
+            i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
+            hwg_Combosetstring( ::handle, i )
          ELSE
             hwg_Combosetstring( ::handle, ::xValue )
          ENDIF
@@ -182,12 +178,8 @@ METHOD Refresh() CLASS HComboBox
       NEXT
 
       IF ::lText
-         IF ::lEdit
-            hwg_Setdlgitemtext( hwg_GetModalHandle(), ::id, ::xValue )
-         ELSE
-            i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
-            hwg_Combosetstring( ::handle, i )
-         ENDIF
+         i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
+         hwg_Combosetstring( ::handle, i )
       ELSE
          hwg_Combosetstring( ::handle, ::xValue )
          ::SetItem( ::xValue )

@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-11-19 17:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hsayimg.prg
+    ! Small fix
+  * source/winapi/hcombo.prg
+    ! Fixed initialization of a combobox with EDIT clause
+  * source/winapi/hownbtn.prg
+    ! Fixed focus handling
+
 2015-11-18 18:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/menu.prg
     ! hwg_EnableMenuItem() fixed

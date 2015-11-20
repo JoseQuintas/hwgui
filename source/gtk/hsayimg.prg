@@ -53,9 +53,10 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nOffsetV  INIT 0
    DATA nOffsetH  INIT 0
    DATA nZoom
+   DATA lTransp, trcolor
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-      bSize, ctoolt )
+      bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor )
    METHOD INIT
    METHOD onEvent( msg, wParam, lParam )
    METHOD Paint()
@@ -64,9 +65,12 @@ CLASS HSayBmp INHERIT HSayImage
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-      bSize, ctoolt ) CLASS HSayBmp
+      bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor ) CLASS HSayBmp
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctoolt )
+
+   ::lTransp := Iif( lTransp = Nil, .F. , lTransp )
+   ::trcolor := Iif( trcolor = Nil, 16777215, trcolor )
 
    IF Image != Nil
       IF lRes == Nil ; lRes := .F. ; ENDIF
@@ -78,6 +82,9 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
          IF nWidth == Nil .OR. nHeight == Nil
             ::nWidth  := ::oImage:nWidth
             ::nHeight := ::oImage:nHeight
+         ENDIF
+         IF ::lTransp
+            ::oImage:Transparent( ::trcolor )
          ENDIF
       ELSE
          RETURN Nil

@@ -119,9 +119,9 @@ Local oDlg, oEdit1, oEdit2, oEdit3, cFileName := "", cObjName := "", cType := ""
 Local bFile := {||
    Local cFile := hwg_Selectfile("All files( *.* )", "*.*" )
    IF !Empty(cFile)
-      oEdit1:SetText(cFile)
-      oEdit2:SetText( Left( CutExten(CutPath(cFile)), 32 ) )
-      oEdit3:SetText( Left( FilExten(cFile), 4 ) )
+      oEdit1:value := cFile
+      oEdit2:value := Left( CutExten(CutPath(cFile)), 32 )
+      oEdit3:value := Left( FilExten(cFile), 4 )
    ENDIF
    Return .T.
    }
@@ -139,14 +139,14 @@ Local bOk := {||
    INIT DIALOG oDlg TITLE "Add binary object" ;
        AT 50, 100 SIZE 310,250 FONT HWindow():GetMain():oFont
 
-   @ 10,20 GET oEdit1 VAR cFileName STYLE ES_AUTOHSCROLL SIZE 200, 26
+   @ 10,20 GET oEdit1 VAR cFileName STYLE ES_AUTOHSCROLL SIZE 200, 26 MAXLENGTH 0
    @ 210,20 BUTTON "Browse" SIZE 80, 26 ON CLICK bFile
 
    @ 10,70 SAY "Object name:" SIZE 120,22
-   @ 130,70 GET oEdit2 VAR cObjName SIZE 160, 26 PICTURE Replicate( 'X',32 )
+   @ 130,70 GET oEdit2 VAR cObjName SIZE 160, 26 PICTURE Replicate( 'X',32 ) MAXLENGTH 0
 
    @ 10,100 SAY "Type:" SIZE 120,22
-   @ 10,100 GET oEdit3 VAR cType SIZE 80, 26 PICTURE "XXXX"
+   @ 10,100 GET oEdit3 VAR cType SIZE 80, 26 PICTURE "XXXX" MAXLENGTH 0
 
    @ 20,200 BUTTON "Ok" SIZE 100, 32 ON CLICK bOk
    @ 180,200 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32

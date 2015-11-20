@@ -93,11 +93,11 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nOffsetV  INIT 0
    DATA nOffsetH  INIT 0
    DATA nZoom
-   DATA lTransp
+   DATA lTransp, trcolor
    DATA nStretch
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-      bSize, ctooltip, bClick, bDblClick, lTransp, nStretch )
+      bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, trcolor )
    METHOD Redefine( oWndParent, nId, Image, lRes, bInit, bSize, ctooltip, lTransp )
    METHOD Init()
    METHOD Paint( lpdis )
@@ -108,17 +108,18 @@ CLASS HSayBmp INHERIT HSayImage
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-      bSize, ctooltip, bClick, bDblClick, lTransp, nStretch ) CLASS HSayBmp
+      bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, trcolor ) CLASS HSayBmp
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
 
    ::bPaint := { | o, lpdis | o:Paint( lpdis ) }
-   ::lTransp := iif( lTransp = Nil, .F. , lTransp )
-   ::nStretch := iif( nStretch = Nil, 0, nStretch )
+   ::lTransp := Iif( lTransp = Nil, .F. , lTransp )
+   ::nStretch := Iif( nStretch = Nil, 0, nStretch )
+   ::trcolor := Iif( trcolor = Nil, Nil, trcolor )
 
    IF Image != Nil .AND. ! Empty( Image )
       IF lRes == Nil ; lRes := .F. ; ENDIF
-      ::oImage := iif( lRes .OR. ValType( Image ) == "N",     ;
+      ::oImage := Iif( lRes .OR. ValType( Image ) == "N",     ;
          HBitmap():AddResource( Image ), ;
          iif( ValType( Image ) == "C",     ;
          HBitmap():AddFile( Image ), Image ) )
@@ -164,13 +165,13 @@ METHOD Paint( lpdis ) CLASS HSayBmp
          IF ::lTransp
             IF ::nStretch = 1  // isometric
                hwg_Drawtransparentbitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
-                  drawInfo[ 5 ] + ::nOffsetV, , ) // ::nWidth+1, ::nHeight+1 )
+                  drawInfo[ 5 ] + ::nOffsetV, ::trcolor )
             ELSEIF ::nStretch = 2  // CLIP
                hwg_Drawtransparentbitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
-                  drawInfo[ 5 ] + ::nOffsetV, , ::nWidth + 1, ::nHeight + 1 )
+                  drawInfo[ 5 ] + ::nOffsetV, ::trcolor, ::nWidth + 1, ::nHeight + 1 )
             ELSE // stretch (DEFAULT)
                hwg_Drawtransparentbitmap( drawInfo[ 3 ], ::oImage:handle, drawInfo[ 4 ] + ::nOffsetH, ;
-                  drawInfo[ 5 ] + ::nOffsetV, , drawInfo[ 6 ] - drawInfo[ 4 ] + 1, drawInfo[ 7 ] - drawInfo[ 5 ] + 1  )
+                  drawInfo[ 5 ] + ::nOffsetV, ::trcolor, drawInfo[ 6 ] - drawInfo[ 4 ] + 1, drawInfo[ 7 ] - drawInfo[ 5 ] + 1  )
             ENDIF
          ELSE
             IF ::nStretch = 1  // isometric

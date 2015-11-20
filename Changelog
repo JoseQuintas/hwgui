@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-11-20 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * COLOR clause added to the @ ... BITMAP command to set the transparency color
+  * source/winapi/hsayimg.prg
+    * Support for a COLOR clause added
+
 2015-11-19 17:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hsayimg.prg
     ! Small fix

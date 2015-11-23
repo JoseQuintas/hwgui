@@ -30,6 +30,7 @@
       <method name="common" />
       <method name="onFormInit" />
       <method name="onDlgInit" />
+      <method name="onDlgActivate" />
       <method name="onPaint" />
       <method name="onDlgExit" />
       <method name="onFormExit" />
@@ -198,7 +199,9 @@
             <![CDATA[
             hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,10 )
             hwg_Fillrect( hDC,2,2,oCtrl:nWidth-2,oCtrl:nHeight-2,21 )
-            hwg_Drawbitmap( hDC,oCtrl:oBitmap:handle,,oCtrl:nWidth-oCtrl:oBitmap:nWidth-2,2 )
+            if !Empty(oCtrl:oBitmap)
+              hwg_Drawbitmap( hDC,oCtrl:oBitmap:handle,,oCtrl:nWidth-oCtrl:oBitmap:nWidth-2,2 )
+            endif
             ]]>
          </paint>
          <property name="Name" type="C" />
@@ -305,7 +308,9 @@
             <![CDATA[
             hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,10 )
             hwg_Fillrect( hDC,2,2,oCtrl:nWidth-2,oCtrl:nHeight-2,21 )
-            hwg_Drawbitmap( hDC,oCtrl:oBitmap:handle,,oCtrl:nWidth-oCtrl:oBitmap:nWidth-2,2 )
+            if !Empty(oCtrl:oBitmap)
+              hwg_Drawbitmap( hDC,oCtrl:oBitmap:handle,,oCtrl:nWidth-oCtrl:oBitmap:nWidth-2,2 )
+            endif
             ]]>
          </paint>
          <property name="Name" type="C" />
@@ -329,7 +334,9 @@
             hwg_Fillrect( hDC,2,2,oCtrl:nWidth-2,oCtrl:nHeight-2,21 )
             hwg_Setbkcolor( hDC,16777215 )
             hwg_Drawtext( hDC,Dtoc(Date()),2,3,oCtrl:nWidth,oCtrl:nHeight )
-            hwg_Drawbitmap( hDC,oCtrl:oBitmap:handle,,oCtrl:nWidth-oCtrl:oBitmap:nWidth-2,2 )
+            if !Empty(oCtrl:oBitmap)
+              hwg_Drawbitmap( hDC,oCtrl:oBitmap:handle,,oCtrl:nWidth-oCtrl:oBitmap:nWidth-2,2 )
+            endif
             ]]>
          </paint>
          <property name="Name" type="C" />
@@ -663,6 +670,7 @@
    </data>
    <methods>
       <method name="onDlgInit" params="oDlg" />
+      <method name="onDlgActivate" params="oDlg" />
       <method name="onInit" params="oCtrl" />
       <method name="onSize" params="oCtrl,x,y" />
       <method name="onPaint" params="oCtrl,hDC" />

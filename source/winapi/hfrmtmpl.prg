@@ -382,6 +382,8 @@ Private oDlg
          ELSE
             ::oDlg:bInit := block
          ENDIF
+      ELSEIF ::aMethods[ i,1 ] == "ondlgactivate"
+         ::oDlg:bActivate := block
       ELSEIF ::aMethods[ i,1 ] == "onforminit"
          Eval( block,Self,p1,p2,p3 )
       ELSEIF ::aMethods[ i,1 ] == "onpaint"
@@ -791,7 +793,7 @@ Return Nil
 Function hwg_RadioNew( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor,nInitValue,bSetGet )
 
 Local oCtrl := HGroup():New( oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor )
-   HRadioGroup():New( nInitValue,bSetGet )
+   oCtrl:cargo := HRadioGroup():New( nInitValue,bSetGet )
 Return oCtrl
 
 

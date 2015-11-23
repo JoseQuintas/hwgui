@@ -28,7 +28,7 @@ STATIC aCtrls := { ;
       "HRadioButton():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,onClick,ctooltip,TextColor,BackColor)", ;
       "HEdit():New(oPrnt,nId,cInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor,cPicture,lNoBorder,nMaxLength,lPassword)", ;
       "HGroup():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor)", ;
-      "RadioNew(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor,nInitValue,bSetGet)", ;
+      "hwg_RadioNew(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,TextColor,BackColor,nInitValue,bSetGet)", ;
       "HSayBmp():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Bitmap,lResource,onInit,onSize,ctooltip)", ;
       "HSayIcon():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,Icon,lResource,onInit,onSize,ctooltip)", ;
       "HRichEdit():New(oPrnt,nId,cInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onGetFocus,onLostFocus,ctooltip,TextColor,BackColor)", ;
@@ -372,6 +372,8 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
       ENDIF
       IF ::aMethods[ i,1 ] == "ondlginit"
          ::oDlg:bInit := block
+      ELSEIF ::aMethods[ i,1 ] == "ondlgactivate"
+         ::oDlg:bActivate := block
       ELSEIF ::aMethods[ i,1 ] == "onforminit"
          Eval( block, Self, p1, p2, p3 )
       ELSEIF ::aMethods[ i,1 ] == "onpaint"
@@ -792,7 +794,7 @@ FUNCTION hwg_RadioNew( oPrnt, nId, nStyle, nLeft, nTop, nWidth, nHeight, caption
 
    LOCAL oCtrl := HGroup():New( oPrnt, nId, nStyle, nLeft, nTop, nWidth, nHeight, caption, oFont, onInit, onSize, onPaint, TextColor, BackColor )
 
-   HRadioGroup():New( nInitValue, bSetGet )
+   oCtrl:cargo := HRadioGroup():New( nInitValue, bSetGet )
 
    RETURN oCtrl
 

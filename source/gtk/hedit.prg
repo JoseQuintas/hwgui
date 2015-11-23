@@ -207,8 +207,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF ::bSetGet != Nil
                cClipboardText := hwg_Getclipboardtext()
                IF ! Empty( cClipboardText )
-                  FOR nPos = 1 TO Len( cClipboardText )
-                     GetApplyKey( Self, SubStr( cClipboardText , nPos, 1 ) )
+                  FOR nPos = 1 TO hwg_Len( cClipboardText )
+                     GetApplyKey( Self, hwg_SubStr( cClipboardText , nPos, 1 ) )
                   NEXT
                   ::title := UnTransform( Self, hwg_Edit_GetText( ::handle ) )
                ENDIF

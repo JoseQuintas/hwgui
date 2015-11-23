@@ -247,8 +247,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF ! Empty( cClipboardText )
                nPos := hwg_Hiword( hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
                hwg_Sendmessage(  ::handle, EM_SETSEL, nPos - 1 , nPos - 1  )
-               FOR nPos = 1 TO Len( cClipboardText )
-                  GetApplyKey( Self,SubStr( cClipboardText , nPos, 1 ) )
+               FOR nPos = 1 TO hwg_Len( cClipboardText )
+                  GetApplyKey( Self, hwg_SubStr( cClipboardText , nPos, 1 ) )
                NEXT
                nPos := hwg_Hiword( hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
                ::title := UnTransform( Self, hwg_Getedittext( ::oParent:handle, ::id ) )

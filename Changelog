@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-12-08 11:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    ! Numpad keys (/*+-.) should work now in gtk version.
+
 2015-12-08 11:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htree.prg
     * :bRClick ( right click codeblock ) works for a tree now

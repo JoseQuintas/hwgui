@@ -1529,7 +1529,7 @@ STATIC FUNCTION setTable( lNew )
       nAlign := aStruTbl[OB_TALIGN] + 1
       aCols := Array( nCols )
       FOR i := 1 TO Len( aCols )
-         aCols[i] := Abs( aStruTbl[OB_OB,i,1] )
+         aCols[i] := Int( Abs( aStruTbl[OB_OB,i,1] ) )
       NEXT
    ENDIF
 
@@ -1599,10 +1599,22 @@ STATIC FUNCTION setTable( lNew )
          oEdit:InsTable( aCols, nRows, iif( nWidth == 100, Nil, - nWidth ), ;
             nAlign-1, aAttr )
       ELSE
-         aStruTbl[OB_TWIDTH] := - nWidth
-         aStruTbl[OB_TALIGN] := nAlign - 1
+         IF aStruTbl[OB_TWIDTH] != - nWidth
+            aStruTbl[OB_TWIDTH] := - nWidth
+            oEdit:lUpdated := .T.
+         ENDIF
+         IF aStruTbl[OB_TALIGN] != nAlign - 1
+            aStruTbl[OB_TALIGN] := nAlign - 1
+            oEdit:lUpdated := .T.
+         ENDIF
          IF nCols != Len( aStruTbl[OB_OB] )
          ENDIF
+         FOR i := 1 TO Len( aCols )
+            IF aCols[i] != aStruTbl[OB_OB,i,1]
+               aStruTbl[OB_OB,i,1] := aCols[i]
+               oEdit:lUpdated := .T.
+            ENDIF
+         NEXT
          nLast := nL - oEdit:aStru[nL,1,OB_TRNUM] + nRows0
          IF nRows < nRows0
             IF nL > nLast - (nRows0-nRows)
@@ -1638,6 +1650,7 @@ STATIC FUNCTION setTable( lNew )
                ENDIF
             ENDIF
             aStruTbl[OB_CLS] := oEdit:FindClass( , aAttr, .T. )
+            oEdit:lUpdated := .T.
          ENDIF
          IF lNeedScan
             oEdit:Scan( oEdit:aPointC[P_Y] )
@@ -2065,7 +2078,8 @@ STATIC FUNCTION Calc( nL, iTD, nL1 )
       IF Empty( nStruRes )
          nPos2 := Len(oEdit:aText[nL1]) + 1
          IF lNewExp
-            nPos1 := oEdit:aPointM1[P_X]; nPos2 := oEdit:aPointM2[P_X]
+            nPos1 := Min( oEdit:aPointM1[P_X], oEdit:aPointM2[P_X] )
+            nPos2 := Max( oEdit:aPointM1[P_X], oEdit:aPointM2[P_X] )
          ENDIF
          IF !lEqExi
             oEdit:InsText( { nPos2,nL1 }, ' = ',, .F. )
@@ -2369,8 +2383,8 @@ STATIC FUNCTION About()
 
    LOCAL oDlg, oStyle1, oStyle2
 
-   oStyle1 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 1,, 2 )
-   oStyle2 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 2,, 2 )
+   oStyle1 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 1,, )
+   oStyle2 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 2,, )
 
    INIT DIALOG oDlg TITLE "About" ;
       AT 0, 0 SIZE 400, 330 FONT HWindow():GetMain():oFont COLOR hwg_colorC2N("CCCCCC")
@@ -2386,6 +2400,7 @@ STATIC FUNCTION About()
           TEXT "Close" COLOR hwg_colorC2N("0000FF")
 
    Atail(oDlg:aControls):aStyle := { oStyle1, oStyle2 }
+   Atail(oDlg:aControls):aRadius := { 8,8,8,8 }
 
    ACTIVATE DIALOG oDlg CENTER
 

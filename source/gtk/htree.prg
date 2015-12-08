@@ -229,6 +229,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    METHOD ButtonDown( lParam )
    METHOD ButtonUp( lParam )
    METHOD ButtonDbl( lParam )
+   METHOD ButtonRDown( lParam )
    METHOD GoDown( n )
    METHOD GoUp( n )
    METHOD MouseWheel( nKeys, nDelta )
@@ -335,6 +336,9 @@ Local aCoors, retValue := -1
 
    ELSEIF msg == WM_LBUTTONDBLCLK
       ::ButtonDbl( lParam )
+
+   ELSEIF msg == WM_RBUTTONDOWN
+      ::ButtonRDown( lParam )
 
    ELSEIF msg == WM_MOUSEWHEEL
       ::MouseWheel( hwg_Loword( wParam ),      ;
@@ -533,6 +537,29 @@ METHOD ButtonDbl( lParam ) CLASS HTree
          ::Select( oNode, .T. )
          IF ::bDblClick != Nil
             Eval( ::bDblClick, Self, oNode )
+         ENDIF
+         hwg_Redrawwindow( ::area )
+      ENDIF
+   ENDIF
+
+   RETURN 0
+
+METHOD ButtonRDown( lParam ) CLASS HTree
+   LOCAL nLine := Int( hwg_Hiword( lParam ) / (::height + 1 ) ) + 1
+   LOCAL xm := hwg_Loword( lParam ), x1, hDC, oNode, nWidth
+
+   IF nLine <= Len( ::aScreen ) .AND. !Empty( oNode := ::aScreen[ nLine ] )
+      x1 := 10 + oNode:nLevel * ::nIndent
+      hDC := hwg_Getdc( ::handle )
+      IF !Empty( ::oFont )
+         hwg_Selectobject( hDC, ::oFont:handle )
+      ENDIF
+      nWidth := hwg_GetTextWidth( hDC, oNode:title )
+      hwg_Releasedc( ::handle, hDC )
+      IF xm >= x1 .AND. xm <= x1 + ::nIndent + nWidth
+         ::Select( oNode, .T. )
+         IF ::bRClick != Nil
+            Eval( ::bRClick, Self, oNode )
          ENDIF
          hwg_Redrawwindow( ::area )
       ENDIF

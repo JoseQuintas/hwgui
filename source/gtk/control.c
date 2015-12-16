@@ -228,6 +228,9 @@ HB_FUNC( HWG_CREATEEDIT )
       g_free( gcTitle );
    }
 
+   gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK );
+   set_event( ( gpointer ) hCtrl, "button_press_event", 0, 0, 0 );
+
    all_signal_connect( ( gpointer ) hCtrl );
    HB_RETHANDLE( hCtrl );
 

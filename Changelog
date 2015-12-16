@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-12-16 12:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/hedit.prg
+    ! Fixed problem with get's, selected with the mouse
+
 2015-12-16 10:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
   * source/gtk/hownbtn.prg

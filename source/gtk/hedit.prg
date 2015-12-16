@@ -32,6 +32,7 @@ CLASS HEdit INHERIT HControl
    DATA lChanged     INIT .F.
    DATA nMaxLength   INIT Nil
    DATA nLastKey     INIT 0
+   DATA lMouse       INIT .F.
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctoolt, tcolor, bcolor, cPicture, lNoBorder, nMaxLength )
@@ -107,6 +108,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    ENDIF
 
    IF msg == WM_SETFOCUS
+      IF ::lMouse
+         ::lFirst := .F.
+         ::lMouse := .F.
+      ENDIF
       IF ::bSetGet == Nil
          IF ::bGetFocus != Nil
             Eval( ::bGetFocus, hwg_Edit_GetText( ::handle ), Self )
@@ -122,6 +127,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ELSE
          __Valid( Self )
       ENDIF
+   ELSEIF msg == WM_LBUTTONDOWN
+      ::lMouse := .T.
    ELSEIF msg == WM_DESTROY
       ::End()
    ENDIF
@@ -643,7 +650,7 @@ STATIC FUNCTION __When( oCtrl )
    LOCAL res := .T.
 
    oCtrl:Refresh()
-   oCtrl:lFirst := .T.
+   //oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
       IF !res
@@ -866,22 +873,20 @@ FUNCTION hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )
          IF nSkip > 0
             DO WHILE ( i := i + nSkip ) <= aLen
                IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
-                  hwg_Setfocus( oParent:Getlist[i]:handle )
                   IF oParent:Getlist[i]:winclass == "EDIT"
-                     //hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
-                     //__setInitPos( oParent:Getlist[i] )
+                     oParent:Getlist[i]:lFirst := .T.
                   ENDIF
+                  hwg_Setfocus( oParent:Getlist[i]:handle )
                   RETURN .T.
                ENDIF
             ENDDO
          ELSE
             DO WHILE ( i := i + nSkip ) > 0
                IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle )
-                  hwg_Setfocus( oParent:Getlist[i]:handle )
                   IF oParent:Getlist[i]:winclass == "EDIT"
-                     //hwg_edit_SetPos( oParent:Getlist[i]:handle,0 )
-                     //__setInitPos( oParent:Getlist[i] )
+                     oParent:Getlist[i]:lFirst := .T.
                   ENDIF
+                  hwg_Setfocus( oParent:Getlist[i]:handle )
                   RETURN .T.
                ENDIF
             ENDDO

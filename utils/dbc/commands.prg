@@ -292,7 +292,7 @@ FUNCTION C_APPEND()
       ENDIF
 
       oMsg := DlgWait( "Append" )
-      cFile := Iif( lRemote, Trim( cPath ), "" ) + Trim( cFile )
+      cFile := Iif( lRemote.AND.r1==1, Trim( cPath ), "" ) + Trim( cFile )
       IF r1 == 1
 #ifdef RDD_ADS
          AdsSetServerType( nServerType := Iif( lRemote, 6, ADS_LOCAL_SERVER ) )
@@ -485,7 +485,7 @@ FUNCTION C_COPY()
       ENDIF
 
       oMsg := DlgWait( "Append" )
-      cFile := Iif( lRemote, Trim( cPath ), "" ) + Trim( cFile )
+      cFile := Iif( lRemote.AND.r1==1, Trim( cPath ), "" ) + Trim( cFile )
       IF r1 == 1 .AND. r2 == 1
 #ifdef RDD_ADS
           AdsSetServerType( nServerType := Iif( lRemote, 6, ADS_LOCAL_SERVER ) )

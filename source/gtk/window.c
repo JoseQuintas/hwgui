@@ -782,7 +782,10 @@ HB_FUNC( HWG_RELEASEOBJECT )
 
 HB_FUNC( HWG_SETFOCUS )
 {
+   GtkWidget * handle = gtk_window_get_focus( gtk_window_list_toplevels()->data );
+
    gtk_widget_grab_focus( (GtkWidget*) HB_PARHANDLE( 1 ) );
+   HB_RETHANDLE( handle );
 }
 
 HB_FUNC( HWG_GETFOCUS )

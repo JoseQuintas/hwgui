@@ -717,6 +717,7 @@ HB_FUNC( HWG_CREATEOWNBTN )
       gtk_widget_set_size_request( hCtrl, hb_parni( 5 ), hb_parni( 6 ) );
    }
    set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
+   GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK |
          GDK_LEAVE_NOTIFY_MASK );

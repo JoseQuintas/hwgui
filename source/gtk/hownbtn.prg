@@ -119,12 +119,16 @@ METHOD Activate CLASS HOwnButton
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
 
+   STATIC h
+
    IF msg == WM_PAINT
       ::Paint()
    ELSEIF msg == WM_LBUTTONDOWN
       ::MDown()
+      h := hwg_Setfocus( ::handle )
    ELSEIF msg == WM_LBUTTONUP
       ::MUp()
+      hwg_Setfocus( h )
    ELSEIF msg == WM_MOUSEMOVE
       ::MouseMove( wParam, lParam )
    ELSEIF msg == WM_DESTROY
@@ -243,7 +247,7 @@ METHOD MDown()  CLASS HOwnButton
    IF ::state != OBTN_PRESSED
       ::state := OBTN_PRESSED
       hwg_Redrawwindow( ::handle )
-      //hwg_Setfocus( ::handle )
+      
    ENDIF
 
    RETURN Nil

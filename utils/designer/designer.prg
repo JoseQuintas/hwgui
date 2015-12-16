@@ -60,8 +60,13 @@ FUNCTION Main( p0, p1, p2 )
    REQUEST HB_CODEPAGE_RUWIN
    hb_cdpSelect( "RUWIN" )
 #else
+   REQUEST HB_CODEPAGE_UTF8
    REQUEST HB_CODEPAGE_RU1251
-   hb_cdpSelect( "RU1251" )
+   IF hwg__isUnicode()
+      hb_cdpSelect( "UTF8" )
+   ELSE
+      hb_cdpSelect( "RU1251" )
+   ENDIF
 #endif
 
    oDesigner := HDesigner():New()

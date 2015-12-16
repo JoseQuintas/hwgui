@@ -195,6 +195,9 @@ Local cParamString
    ENDMENU
 
    oEdit := HCEdit():New( ,,, 0, 0, 400, oDlg:nHeight, oFont,, {|o,x,y|o:Move(,,x,y)} )
+   IF hwg__isUnicode()
+      oEdit:lUtf8 := .T.
+   ENDIF
    oEdit:HighLighter( HDTheme():oHili )
    IF !Empty( cMethod )
       oEdit:SetText( cMethod )

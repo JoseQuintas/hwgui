@@ -194,7 +194,7 @@ METHOD Del( cObjName ) CLASS HBinC
 
 METHOD Pack() CLASS HBinC
    LOCAL i, nItems := 0, nCntLen := 0
-   LOCAL cAddr, cSize, a
+   LOCAL nAddr, cAddr, cSize, a
    Local s := cHead + Chr(::nVerHigh) + Chr(::nVerLow) + Chr(0), handle, cTempName
 
    IF !::lWriteAble
@@ -218,11 +218,13 @@ METHOD Pack() CLASS HBinC
    cSize := Chr( nCntLen/65536 ) + Chr( (nCntLen/256)%256 ) + Chr( nCntLen%65536 )
    s += cAddr + cSize + Chr(::nCntBlocks) + Chr(::nPassLen)
 
+   nAddr := ::aObjects[1,OBJ_VAL]
    FOR i := 1 TO Len( ::aObjects )
       a := ::aObjects[i]
       IF !Empty( a[OBJ_NAME] )
-         cAddr := Chr( a[OBJ_VAL]/16777216 ) + Chr( (a[OBJ_VAL]/65536)%256 ) + Chr( (a[OBJ_VAL]/256)%65536 ) + Chr( a[OBJ_VAL]%16777216 )
+         cAddr := Chr( nAddr/16777216 ) + Chr( (nAddr/65536)%256 ) + Chr( (nAddr/256)%65536 ) + Chr( nAddr%16777216 )
          cSize := Chr( a[OBJ_SIZE]/16777216 ) + Chr( (a[OBJ_SIZE]/65536)%256 ) + Chr( (a[OBJ_SIZE]/256)%65536 ) + Chr( a[OBJ_SIZE]%16777216 )
+         nAddr += a[OBJ_SIZE]
          s += Chr(Len(a[OBJ_NAME]))+a[OBJ_NAME]+a[OBJ_TYPE]+cAddr+cSize+Chr(0)+Chr(0)
       ENDIF
    NEXT
@@ -231,26 +233,20 @@ METHOD Pack() CLASS HBinC
    FWrite( handle, Replicate( Chr(0), ::nCntBlocks*2048 - Len(s) ) )
 
    FOR i := 1 TO Len( ::aObjects )
-      IF !Empty( a[OBJ_NAME] )
+      IF !Empty( ::aObjects[i,OBJ_NAME] )
          s := Space( ::aObjects[i,OBJ_SIZE] )
          FSeek( ::handle, ::aObjects[i,OBJ_VAL], FS_SET )
          FRead( ::handle, @s, ::aObjects[i,OBJ_SIZE] )
          FWrite( handle, s, ::aObjects[i,OBJ_SIZE] )
       ENDIF
    NEXT
-   FOR i := Len( ::aObjects ) TO 1 STEP -1
-      IF Empty( a[OBJ_NAME] )
-         Adel( ::aObjects[i] )
-      ENDIF
-   NEXT
-   ::aObjects := Asize( ::aObjects, nItems )
 
    FClose( handle )
    FClose( ::handle )
    FErase( ::cName )
    FRename( cTempName, ::cName )
 
-   IF ( ::handle := FOpen( ::cName, FO_READWRITE ) ) == -1
+   IF ::Open( ::cName, ::lWriteAble ) == Nil
       ::nItems := 0
       ::aObjects := Nil
    ENDIF

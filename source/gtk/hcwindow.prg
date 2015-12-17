@@ -275,6 +275,7 @@ FUNCTION hwg_onTrackScroll( oWnd, wParam, lParam )
    hwg_gtk_init()
    Hwg_InitProc()
    hwg_ErrSys()
+   SET( _SET_INSERT, .T. )
 
    RETURN
 

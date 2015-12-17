@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-12-17 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+    Added function hwg_edit_set_OverMode( handle[, lOverWrite] )
+  * source/gtk/hedit.prg
+    ! Fixed problems with toggle of insert/overwrite modes
+    ! Copy/paste fixed
+  * source/gtk/hcwindow.prg
+    * Insert mode is set as default at application start
+  * source/winapi/hedit.prg
+    ! Copy/paste fixed
+
 2015-12-16 15:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbincnt.prg
   * source/winapi/hbincnt.prg

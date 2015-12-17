@@ -237,13 +237,19 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF Empty( hwg_Getedittext( oParent:handle, ::id ) )
                hwg_Sendmessage( ::handle, EM_SETSEL, 0, 0 )
             ENDIF
-         ELSEIF msg = WM_COPY .OR. msg = WM_CUT
-            hwg_Copystringtoclipboard( UnTransform( Self, hwg_Getedittext( ::oParent:handle, ::id ) ) )
+         ELSEIF msg = WM_COPY .OR. msg = WM_CUT           
+            nPos := hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 )
+            cClipboardText := hwg_Getedittext( ::oParent:handle, ::id )
+            IF hwg_Hiword( nPos ) > hwg_Loword( nPos ) .AND. hwg_Hiword( nPos ) - hwg_Loword( nPos ) < hwg_Len( cClipboardText )
+               hwg_Copystringtoclipboard( hwg_SubStr( cClipboardText, hwg_Loword(nPos)+1, hwg_Hiword(nPos)-hwg_Loword(nPos) ) )
+            ELSE
+               hwg_Copystringtoclipboard( UnTransform( Self, cClipboardText ) )
+            ENDIF
             RETURN 0
 
          ELSEIF msg = WM_PASTE .AND. ! ::lNoPaste
             ::lFirst := iif( ::cType = "N" .AND. "E" $ ::cPicFunc, .T. , .F. )
-            cClipboardText :=  hwg_Getclipboardtext()
+            cClipboardText := hwg_Getclipboardtext()
             IF ! Empty( cClipboardText )
                nPos := hwg_Hiword( hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 ) ) + 1
                hwg_Sendmessage(  ::handle, EM_SETSEL, nPos - 1 , nPos - 1  )

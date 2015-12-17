@@ -311,7 +311,15 @@ HB_FUNC( HWG_EDIT_GETSELPOS )
       hb_itemReturn( aSel );
       hb_itemRelease( aSel );
    }
+}
 
+HB_FUNC( HWG_EDIT_SET_OVERMODE )
+{
+   gboolean bOver = gtk_entry_get_overwrite_mode( ( (GtkEntry *) HB_PARHANDLE(1) ) );
+   if( !( HB_ISNIL(2) ) )
+      gtk_entry_set_overwrite_mode( ( (GtkEntry *) HB_PARHANDLE(1) ),
+         hb_parl(2) );
+   hb_retl( bOver );
 }
 
 /*

@@ -85,6 +85,10 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    hwg_SetEvent( ::handle, "focus_in_event", WM_SETFOCUS, 0, 0 )
    hwg_SetEvent( ::handle, "focus_out_event", WM_KILLFOCUS, 0, 0 )
    hwg_SetEvent( ::handle, "key_press_event", 0, 0, 0 )
+   IF ::bSetGet != Nil
+      hwg_SetSignal( ::handle, "paste-clipboard", WM_PASTE, 0, 0 )
+      hwg_SetSignal( ::handle, "copy-clipboard", WM_COPY, 0, 0 )
+   ENDIF
 
    RETURN Self
 
@@ -100,7 +104,7 @@ METHOD Activate CLASS HEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
-   LOCAL oParent := ::oParent, nPos, cClipboardText
+   LOCAL oParent := ::oParent, nPos
 
    //hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent, Self, msg, wParam, lParam ) != 0
@@ -112,6 +116,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ::lFirst := .F.
          ::lMouse := .F.
       ENDIF
+      hwg_edit_set_Overmode( ::handle, !Set( _SET_INSERT ) )
       IF ::bSetGet == Nil
          IF ::bGetFocus != Nil
             Eval( ::bGetFocus, hwg_Edit_GetText( ::handle ), Self )
@@ -127,10 +132,17 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ELSE
          __Valid( Self )
       ENDIF
-   ELSEIF msg == WM_LBUTTONDOWN
+   ELSEIF msg == WM_LBUTTONDOWN .OR. msg == WM_RBUTTONDOWN
       ::lMouse := .T.
    ELSEIF msg == WM_DESTROY
       ::End()
+   ELSEIF msg == WM_PASTE
+      DoPaste( Self )
+      Eval( ::bSetGet, ::title, Self )
+      RETURN 1
+   ELSEIF msg == WM_COPY
+      DoCopy( Self )
+      RETURN 1
    ENDIF
 
    IF ::bSetGet == Nil
@@ -212,20 +224,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ( hwg_checkBit( lParam,2 ) .AND. ( wParam == 86 .OR. wParam == 118 ) )
             // Paste
             IF ::bSetGet != Nil
-               cClipboardText := hwg_Getclipboardtext()
-               IF ! Empty( cClipboardText )
-                  FOR nPos = 1 TO hwg_Len( cClipboardText )
-                     GetApplyKey( Self, hwg_SubStr( cClipboardText , nPos, 1 ) )
-                  NEXT
-                  ::title := UnTransform( Self, hwg_Edit_GetText( ::handle ) )
-               ENDIF
+               DoPaste( Self )
                RETURN 1
             ENDIF
          ELSEIF hwg_checkBit( lParam, 2 ) .AND. wParam == GDK_Insert .OR. ;
                ( hwg_checkBit( lParam,2 ) .AND. ( wParam == 67 .OR. wParam == 99 ) )
             // Copy
             IF ::bSetGet != Nil
-               hwg_Copystringtoclipboard( UnTransform( Self, hwg_Edit_GetText( ::handle ) ) )
+               DoCopy( Self )
+               //hwg_Copystringtoclipboard( UnTransform( Self, hwg_Edit_GetText( ::handle ) ) )
                RETURN 1
             ENDIF
          ELSEIF wParam == GDK_Insert     // Insert
@@ -835,6 +842,30 @@ STATIC FUNCTION IsBadDate( cBuffer )
    NEXT
 
    RETURN .F.
+
+STATIC FUNCTION DoCopy( oEdit )
+
+   LOCAL cClipboardText := hwg_Edit_GetText( oEdit:handle )
+   LOCAL aPos := hwg_Edit_GetSelPos( oEdit:handle )
+   IF aPos != Nil .AND. aPos[2] > aPos[1] .AND.aPos[2] - aPos[1] < hwg_Len( cClipboardText )
+      hwg_Copystringtoclipboard( hwg_SubStr( cClipboardText, aPos[1]+1, aPos[2]-aPos[1] ) )
+   ELSE
+      hwg_Copystringtoclipboard( UnTransform( oEdit, cClipboardText ) )
+   ENDIF
+   RETURN Nil
+
+STATIC FUNCTION DoPaste( oEdit )
+
+   LOCAL cClipboardText := hwg_Getclipboardtext(), nPos
+
+   IF ! Empty( cClipboardText )
+      FOR nPos = 1 TO hwg_Len( cClipboardText )
+         GetApplyKey( oEdit, hwg_SubStr( cClipboardText , nPos, 1 ) )
+      NEXT
+      oEdit:title := UnTransform( oEdit, hwg_Edit_GetText( oEdit:handle ) )
+   ENDIF
+
+   RETURN Nil
 
 FUNCTION hwg_CreateGetList( oDlg )
 

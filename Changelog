@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-12-18 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/window.c
+    * hwg_Setfocus() now works for windows, too.
+  * utils/editor/editor.prg
+    * menu/help doesn't open multiple windows now.
+
 2015-12-17 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     Added function hwg_edit_set_OverMode( handle[, lOverWrite] )

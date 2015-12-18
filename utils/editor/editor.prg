@@ -2346,18 +2346,24 @@ STATIC FUNCTION CnvCase( nType )
 
 STATIC FUNCTION Help()
 
-   LOCAL oDlg, oEdit
+   LOCAL oEdit
+   STATIC oDlgHelp
+
+   IF !Empty( oDlgHelp )
+      hwg_SetFocus( oDlgHelp:handle )
+      RETURN Nil
+   ENDIF
 
    IF !File( cIniPath + "editor.hwge" )
       hwg_msgStop( "Help file editor.hwge not found" )
       RETURN Nil
    ENDIF
 
-   INIT DIALOG oDlg TITLE "Help" AT 100, 50 ;
-         SIZE 400,400 FONT HWindow():GetMain():oFont
-   oDlg:brush := 0 
+   INIT DIALOG oDlgHelp TITLE "Help" AT 100, 50 ;
+         SIZE 400,400 FONT HWindow():GetMain():oFont ON EXIT {||oDlgHelp := Nil, .T.}
+   oDlgHelp:brush := 0 
 
-   oEdit := HCEdiExt():New( ,,, 0, 0, oDlg:nWidth, oDlg:nHeight, ;
+   oEdit := HCEdiExt():New( ,,, 0, 0, oDlgHelp:nWidth, oDlgHelp:nHeight, ;
          HWindow():GetMain():oFont,, {|o,x,y|o:Move( ,,x,y ) } )
 
    oEdit:bColorCur := oEdit:bColor
@@ -2373,7 +2379,7 @@ STATIC FUNCTION Help()
    oEdit:lReadOnly := .T.
    oEdit:bOther := { |o, m, wp, lp|EditMessProc( o, m, wp, lp ) }
 
-   ACTIVATE DIALOG oDlg NOMODAL
+   ACTIVATE DIALOG oDlgHelp NOMODAL
 
    oEdit:Open( cIniPath + "editor.hwge" )
 

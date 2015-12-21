@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2015-12-21 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/misc.c
+    * hwg_ShellExecute( cUrl ) added - similar to appropriate from winapi version
+  * source/gtk/hhyper.prg
+    * Method :GoToLinkUrl() implemented, using the hwg_ShellExecute()
+
 2015-12-18 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/window.c
     * hwg_Setfocus() now works for windows, too.

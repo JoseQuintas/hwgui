@@ -141,14 +141,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
    RETURN - 1
 
 METHOD GoToLinkUrl( csLink ) CLASS HStaticLink
-/*
-   LOCAL hInstance := hwg_Shellexecute( csLink, "open", NIL, NIL, 2 )
 
-   IF hInstance < 33
-      RETURN .F.
-   ENDIF
-*/
-   RETURN .T.
+   RETURN hwg_Shellexecute( csLink )
 
 METHOD SetLinkUrl( csUrl ) CLASS HStaticLink
 

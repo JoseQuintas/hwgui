@@ -277,3 +277,9 @@ HB_FUNC( HWG_RUNAPP )
 {
    hb_retl( g_spawn_command_line_async( hb_parc(1), NULL ) );
 }
+
+HB_FUNC( HWG_SHELLEXECUTE )
+{
+   const gchar * uri = hb_parc(1);
+   hb_retl( gtk_show_uri( NULL, uri, GDK_CURRENT_TIME, NULL ) );
+}

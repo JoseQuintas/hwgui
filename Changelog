@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-15 13:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hownbtn.prg
+    ! Focus handling fixed.
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    ! Minor fixes
+
 2015-12-21 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/misc.c
     * hwg_ShellExecute( cUrl ) added - similar to appropriate from winapi version

@@ -134,15 +134,19 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
    ELSEIF msg == WM_ERASEBKGND
       RETURN 1
    ELSEIF msg == WM_MOUSEMOVE
-      IF ::MouseMove( wParam, lParam )
+      IF ::MouseMove( wParam, lParam ) .AND. !Empty( h )
          hwg_Setfocus( h )
+         h := Nil
       ENDIF
    ELSEIF msg == WM_LBUTTONDOWN
       h := hwg_Setfocus( ::handle )
       ::MDown()
    ELSEIF msg == WM_LBUTTONUP
       ::MUp()
-      hwg_Setfocus( h )
+      IF hwg_Isptreq( ::handle, hwg_Getfocus() ) .AND. !Empty( h )
+         hwg_Setfocus( h )
+      ENDIF
+      h := Nil
    ELSEIF msg == WM_DESTROY
       ::END()
    ELSEIF msg == WM_SETFOCUS

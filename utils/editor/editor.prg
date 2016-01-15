@@ -1277,7 +1277,7 @@ STATIC FUNCTION InsUrl( nType )
 
 STATIC FUNCTION setImage( lNew )
 
-   LOCAL oDlg, oGet1, arr1, nL, aStru, cClsName, aAttr, fname, nb0, i, cName, cBin, nImage
+   LOCAL oDlg, oGet1, arr1, nL, aStru, cClsName, aAttr, fname, nb0, i, cName, cBin, nImage := 0
    LOCAL arr := { "Left", "Center", "Right" }, nAlign := 1, lEmbed := .T., nBorder := 0
    LOCAL bClick1 := {||
       LOCAL cfname

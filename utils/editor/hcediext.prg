@@ -2212,7 +2212,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
                hb_Memowrit( , ::aBin[i,2] )
             ELSE
                s += '<binary id="' + ::aBin[i,1] + '"' + ;
-                     Iif( !Empty(::aBin[i,4]), 'ext="'+::aBin[i,4]+'"', '' ) + '>' + ;
+                     Iif( !Empty(::aBin[i,4]), ' ext="'+::aBin[i,4]+'"', '' ) + '>' + ;
                      hb_Base64Encode( ::aBin[i,2] ) + '</binary>' + cNewL
             ENDIF
          ENDIF

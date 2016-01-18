@@ -8,9 +8,12 @@
  */
 
 #include "hwgui.ch"
+#include "hxml.ch"
 #include "hcedit.ch"
 
-#define APP_VERSION  "0.8"
+#define APP_VERSION  "0.9"
+
+#define MAX_RECENT_FILES    6
 
 #ifdef __PLATFORM__UNIX
 #include "gtk.ch"
@@ -121,16 +124,19 @@ STATIC cIdExp := "clcexp", cIdRes := "clcres"
 STATIC cCBformatted
 STATIC cSearch := "", aPointFound, lSeaCase := .T., lSeaRegex := .F.
 STATIC aCurrTD := { 0,0,0 }
+STATIC aFilesRecent := {}, lOptChg := .F.
 
 MEMVAR handcursor, cIniPath
 
 FUNCTION Main ( fName )
-   LOCAL oMainWindow, oFont
+   LOCAL oMainWindow, oFont, i
    LOCAL oStyle1, oStyle2, oStyle3
    LOCAL aComboSiz := { "50%", "60%", "80%", "90%", cComboSizDef, "110%", "120%", "130%", "140%", "150%", "160%", "180%", "200%", "240%", "280%" }
    LOCAL x1
 
    PRIVATE handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
+
+   ReadIni( cIniPath )
 
    IF hwg__isUnicode()
       hb_cdpSelect( "UTF8" )
@@ -216,6 +222,12 @@ FUNCTION Main ( fName )
          MENUITEM "&New"+Chr(9)+"Ctrl+N" ACTION NewFile() ACCELERATOR FCONTROL,Asc("N")
          MENUITEM "&Open"+Chr(9)+"Ctrl+O" ACTION OpenFile() ACCELERATOR FCONTROL,Asc("O")
          MENUITEM "&Add" ACTION OpenFile( ,.T. )
+         MENU TITLE "&Recent files"
+         FOR i := 1 TO Len( aFilesRecent )
+            Hwg_DefineMenuItem( aFilesRecent[i], 1020 + i, ;
+               &( "{||OpenFile('" + aFilesRecent[i] + "')}" ) )
+         NEXT
+         ENDMENU
          SEPARATOR
          MENUITEM "&Save"+Chr(9)+"Ctrl+S" ACTION SaveFile( .F. ) ACCELERATOR FCONTROL,Asc("S")
          MENUITEM "Save &as" ACTION SaveFile( .T. , .F. )
@@ -320,6 +332,10 @@ FUNCTION Main ( fName )
    ACTIVATE WINDOW oMainWindow
    CloseFile()
 
+   IF lOptChg
+      WriteIni( cIniPath )
+   ENDIF
+
    RETURN Nil
 
 STATIC FUNCTION NewFile()
@@ -330,7 +346,7 @@ STATIC FUNCTION NewFile()
 
    RETURN Nil
 
-STATIC FUNCTION OpenFile( fname, lAdd )
+FUNCTION OpenFile( fname, lAdd )
 
    IF Empty( lAdd )
       CloseFile()
@@ -375,7 +391,10 @@ STATIC FUNCTION SaveFile( lAs, lHtml )
          oEdit:Save( fname, , lHtml )
       ENDIF
    ELSE
-      oEdit:Save( oEdit:cFileName )
+      oEdit:Save( fname := oEdit:cFileName )
+   ENDIF
+   IF Empty( lHtml )
+      Add2Recent( fname )
    ENDIF
 
    RETURN Nil
@@ -2343,6 +2362,62 @@ STATIC FUNCTION CnvCase( nType )
    ENDIF
 
    RETURN Nil
+
+FUNCTION Add2Recent( cFile )
+
+   LOCAL i, j
+
+   IF ( i := Ascan( aFilesRecent, cFile ) ) == 0
+      IF Len( aFilesRecent ) < MAX_RECENT_FILES
+         Aadd( aFilesRecent, Nil )
+      ENDIF
+      AIns( aFilesRecent, 1 )
+      aFilesRecent[1] := cFile
+      lOptChg := .T.
+   ELSEIF i > 1
+      FOR j := i TO 2 STEP -1
+         aFilesRecent[j] := aFilesRecent[j-1]
+      NEXT
+      aFilesRecent[1] := cFile
+      lOptChg := .T.
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION ReadIni( cPath )
+
+   LOCAL oIni := HXMLDoc():Read( cPath + "editor.ini" )
+   LOCAL oNode, i, j
+
+   IF !Empty( oIni:aItems )
+      FOR i := 1 TO Len( oIni:aItems[1]:aItems )
+         oNode := oIni:aItems[1]:aItems[i]
+         IF oNode:title == "recent"
+            FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
+               Aadd( aFilesRecent, Trim( oNode:aItems[j]:GetAttribute("name") ) )
+            NEXT
+         ENDIF
+      NEXT
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION WriteIni( cPath )
+
+   LOCAL oIni := HXMLDoc():New()
+   LOCAL oNode, oNodeR, i
+
+   oIni:Add( oNode := HXMLNode():New( "init" ) )
+
+   oNodeR := oNode:Add( HXMLNode():New( "recent" ) )
+   FOR i := 1 TO Len( aFilesRecent )
+      oNodeR:Add( HXMLNode():New( "db", HBXML_TYPE_SINGLE, { { "name", aFilesRecent[i] } } ) )
+   NEXT
+
+   oIni:Save( cPath + "editor.ini" )
+
+   RETURN Nil
+
 
 STATIC FUNCTION Help()
 

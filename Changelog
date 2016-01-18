@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-18 15:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/editor.prg
+    * "Recent files" support added.
+
 2016-01-15 13:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hownbtn.prg
     ! Focus handling fixed.

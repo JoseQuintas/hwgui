@@ -284,10 +284,7 @@ METHOD RELEASE()  CLASS HOwnButton
 METHOD End()  CLASS HOwnButton
 
    ::Super:End()
-   IF ::oFont != Nil
-      ::oFont:Release()
-      ::oFont := Nil
-   ENDIF
+   ::oFont := Nil
    IF ::oBitmap != Nil
       ::oBitmap:Release()
       ::oBitmap := Nil

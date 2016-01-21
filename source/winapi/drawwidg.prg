@@ -731,11 +731,6 @@ EXIT PROCEDURE CleanDrawWidg
    FOR i := 1 TO Len( HIcon():aIcons )
       hwg_Deleteobject( HIcon():aIcons[ i ]:handle )
    NEXT
-   FOR i := 1 TO Len( HStyle():aStyles )
-      IF !Empty( HStyle():aStyles[i]:oPen )
-         hwg_Deleteobject( HStyle():aStyles[i]:oPen:handle )
-      ENDIF
-   NEXT
    IF !Empty( oResCnt )
       oResCnt:Close()
    ENDIF

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-21 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    ! Bug fixed: HPen object of HStyle was destroyed twice
+
 2016-01-21 12:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * whatsnew.txt
     * Information about build 5 added

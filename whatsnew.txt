@@ -8,6 +8,19 @@
 [-] Fixed error
 [*] Changes
 
+HWGUI 2.19 build 5 ( 21.01.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Rich syntax text editor extended ( access control to paragraphs and spans,
+    copy/paste the text with formatting info, search, etc. )
+[*] COLOR clause added to the @ ... BITMAP command to set the transparency color
+[*] ONCE clause added to SET TIMER function - use it when you need to
+    run the timer procedure one time only
+[*] HWonButton: new variable added - :aRadius - an array ( empty by default ) of 4
+    values - radiuses of corners, if you need rounded button.
+[*] hwg_DrawGradient(): added support for rounded corners and other types of
+    gragient ( diagonal, radial )
+[!] Many bug fixes and improvements
+
 HWGUI 2.19 build 4 ( 25.06.2015 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] Rich syntax text editor significantly extended

@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-21 12:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * whatsnew.txt
+    * Information about build 5 added
+  * include/guilib.ch
+    * build number is changed to 5
+
 2016-01-20 15:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hownbtn.prg
     ! Bug fixed.

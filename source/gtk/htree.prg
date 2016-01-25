@@ -648,7 +648,10 @@ METHOD End() CLASS HTree
 
    ::Super:END()
    FOR j := 1 TO Len( ::aImages )
-      hwg_Deleteobject( ::aImages[j] )
+      IF !Empty(::aImages[j])
+         hwg_Deleteobject( ::aImages[j] )
+         ::aImages[j] := Nil
+      ENDIF
    NEXT
    ReleaseTree( ::aItems, .T. )
    IF ::brush != Nil
@@ -667,6 +670,7 @@ STATIC PROCEDURE ReleaseTree( aItems, lDelImages )
       IF lDelImages .AND. !Empty( aItems[i]:aImages )
          FOR j := 1 TO Len( aItems[i]:aImages )
             hwg_Deleteobject( aItems[i]:aImages[j] )
+            aItems[i]:aImages[j] := Nil
          NEXT
       ENDIF
       ReleaseTree( aItems[i]:aItems, lDelImages )

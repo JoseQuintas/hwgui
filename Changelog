@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-25 13:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htree.prg
+    ! Fixes in :End() method and ReleaseTree() function
+
 2016-01-21 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawwidg.prg
   * source/winapi/drawwidg.prg

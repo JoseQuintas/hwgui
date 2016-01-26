@@ -2000,7 +2000,8 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
    nLine := 0
    DO WHILE ( nLine + ::nLineF - 1 ) < nl2
 
-      ::nLines := yPos := 0
+      ::nLines := 0
+      yPos := ::nBoundT
       DO WHILE ( nLine + ::nLineF - 1 ) < nl2
          nLine ++
          nLines := ::nLines

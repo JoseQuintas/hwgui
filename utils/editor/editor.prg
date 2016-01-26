@@ -45,7 +45,8 @@ REQUEST HB_CODEPAGE_RU866
 #define MENU_PASTEF      1919
 
 
-#define BOUNDL           12
+#define FREE_BOUNDL      12
+#define DOC_BOUNDL       12
 
 #define P_X             1
 #define P_Y             2
@@ -201,6 +202,8 @@ FUNCTION Main ( fName )
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
    ENDIF
+   oEdit:nBoundL := FREE_BOUNDL
+   oEdit:nBoundT := 12
 
    oEdit:bColorCur := oEdit:bColor
    oEdit:AddClass( "url", "color: #000080;" )
@@ -366,7 +369,7 @@ FUNCTION OpenFile( fname, lAdd )
       oEdit:cFileName := fname
 
       oEdit:bImport := Nil
-      oEdit:nBoundL := Iif( oEdit:nDocFormat > 0, BOUNDL, 0 )
+      oEdit:nBoundL := Iif( oEdit:nDocFormat > 0, DOC_BOUNDL, FREE_BOUNDL )
       onChangePos( .T. )
       IF oEdit:lError
          hwg_MsgStop( "Wrong file format!" )
@@ -1127,7 +1130,7 @@ STATIC FUNCTION setDoc()
    IF oDlg:lResult .AND. ( arr[1] != nFormat .OR. arr[2] != nOrient .OR. ;
          arr[3] != nMargL .OR. arr[4] != nMargR .OR.arr[5] != nMargT .OR.arr[6] != nMargB )
       IF ( oEdit:nDocFormat := nFormat - 1 ) > 0
-         oEdit:nBoundL := BOUNDL
+         oEdit:nBoundL := DOC_BOUNDL
          oEdit:nDocOrient := nOrient - 1
          oEdit:aDocMargins[1] := nMargL
          oEdit:aDocMargins[2] := nMargR
@@ -1138,7 +1141,8 @@ STATIC FUNCTION setDoc()
          oEdit:nMarginT := Round( nMargT*oEdit:nKoeffScr,0 )
          oEdit:nMarginB := Round( nMargB*oEdit:nKoeffScr,0 )
       ELSE
-         oEdit:nBoundL := oEdit:nDocOrient := oEdit:nMarginL := oEdit:nMarginR := oEdit:nMarginT := oEdit:nMarginB := 0
+         oEdit:nBoundL := FREE_BOUNDL
+         oEdit:nDocOrient := oEdit:nMarginL := oEdit:nMarginR := oEdit:nMarginT := oEdit:nMarginB := 0
       ENDIF
 
       oEdit:Scan()

@@ -687,8 +687,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
                ::aTdSel[2] := 0
             ENDIF
             ::RestoreEnv( nL, iTd )
-            ::nBoundL := nBoundL; ::nBoundT := nBoundT
-            ::nBoundR := nBoundR
+            ::nBoundL := nBoundL; ::nBoundT := nBoundT; ::nBoundR := nBoundR
             ::nIndent := nIndent
             IF msg == WM_KEYDOWN .AND. nLine > 0
                IF nKey == VK_DOWN
@@ -757,7 +756,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
       oPrinter := hDC
       hDC := Nil
    ENDIF
-   nWidth := Iif( lFormat, ::nDocWidth, ::nClientWidth )
+   nWidth := Iif( lFormat, ::nDocWidth, ::nClientWidth - :: nBoundL )
    IF Valtype( aStru[OB_TYPE] ) == "N"
       IF !Empty( aStru[OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStru[OB_CLS] )
          aHili := ::aHili[aStru[OB_CLS]]
@@ -1067,7 +1066,7 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
 
    LOCAL nType, y1, x1, nL, nL2, nDefFont, aHili, xPos, lInfo := .F.
    LOCAL nLinePrev := ::nLineC, nPosPrev, aPointC
-   LOCAL iTd, aStru, j, aStruTbl, nIndent, nBoundL, nBoundR, aRes
+   LOCAL iTd, aStru, j, aStruTbl, nIndent, nBoundL, nBoundR, nBoundT, aRes
 
    nType := nt
    IF Valtype(nt) == "N"
@@ -1136,7 +1135,7 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
 
       iTd := hced_td4Pos( Self, nL, xPos )
 
-      nBoundL := ::nBoundL; nBoundR := ::nBoundR
+      nBoundL := ::nBoundL; nBoundR := ::nBoundR; nBoundT := ::nBoundT
       ::nBoundL := aStruTbl[OB_OB,itd,OB_CLEFT]
       j := Iif( aStru[OB_OB,iTd,OB_COLSPAN] > 1, aStru[OB_OB,iTd,OB_COLSPAN]-1, 0 )
       ::nBoundR := aStruTbl[OB_OB,itd+j,OB_CRIGHT]
@@ -1165,9 +1164,7 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
          ENDIF
       ENDIF
       ::RestoreEnv( nL, iTd )
-      ::nBoundL := nBoundL
-      ::nBoundT := 0
-      ::nBoundR := nBoundR
+      ::nBoundL := nBoundL; ::nBoundT := nBoundT; ::nBoundR := nBoundR
       ::nIndent := nIndent
       IF lInfo
          ::nLineC := nLinePrev; ::nPosC := nPosPrev; ::PCopy( aPointC, ::aPointC )
@@ -1806,7 +1803,7 @@ METHOD DelCol( nL, iTd ) CLASS HCEdiExt
 
 METHOD InsImage( cName, nAlign, xAttr, xBin, cExt ) CLASS HCEdiExt
 
-   LOCAL nL, xVal, aStruTbl, iTd, nIndent, nBoundL, nBoundR, nLTr, cClsName, i, j
+   LOCAL nL, xVal, aStruTbl, iTd, nIndent, nBoundL, nBoundR, nBoundT, nLTr, cClsName, i, j
 
    IF !Empty( xAttr )
       cClsName := ::FindClass( , xAttr, .T. )
@@ -1822,7 +1819,7 @@ METHOD InsImage( cName, nAlign, xAttr, xBin, cExt ) CLASS HCEdiExt
 
       iTd := ::nPosC
 
-      nBoundL := ::nBoundL; nBoundR := ::nBoundR
+      nBoundL := ::nBoundL; nBoundR := ::nBoundR; nBoundT := ::nBoundT
       ::nBoundL := aStruTbl[OB_OB,itd,OB_CLEFT]
       j := Iif( ::aStru[nL,1,OB_OB,iTd,OB_COLSPAN] > 1, ::aStru[nL,1,OB_OB,iTd,OB_COLSPAN]-1, 0 )
       ::nBoundR := aStruTbl[OB_OB,itd+j,OB_CRIGHT]
@@ -1873,9 +1870,7 @@ METHOD InsImage( cName, nAlign, xAttr, xBin, cExt ) CLASS HCEdiExt
 
    IF !Empty( nLTr )
       ::RestoreEnv( nLTr, iTd )
-      ::nBoundL := nBoundL
-      ::nBoundT := 0
-      ::nBoundR := nBoundR
+      ::nBoundL := nBoundL; ::nBoundT := nBoundT; ::nBoundR := nBoundR
       ::nIndent := nIndent
    ENDIF
 
@@ -1885,7 +1880,7 @@ METHOD InsImage( cName, nAlign, xAttr, xBin, cExt ) CLASS HCEdiExt
    RETURN .T.
 
 METHOD InsSpan( cText, xAttr, cHref, cId, nOpt ) CLASS HCEdiExt
-   LOCAL nL, x1, aStruTbl, iTd, nIndent, nBoundL, nBoundR, nLTr, aStru, j
+   LOCAL nL, x1, aStruTbl, iTd, nIndent, nBoundL, nBoundR, nBoundT, nLTr, aStru, j
 
    nL := ::aPointC[P_Y]
 
@@ -1894,7 +1889,7 @@ METHOD InsSpan( cText, xAttr, cHref, cId, nOpt ) CLASS HCEdiExt
 
       iTd := ::nPosC
 
-      nBoundL := ::nBoundL; nBoundR := ::nBoundR
+      nBoundL := ::nBoundL; nBoundR := ::nBoundR; nBoundT := ::nBoundT
       ::nBoundL := aStruTbl[OB_OB,itd,OB_CLEFT]
       j := Iif( ::aStru[nL,1,OB_OB,iTd,OB_COLSPAN] > 1, ::aStru[nL,1,OB_OB,iTd,OB_COLSPAN]-1, 0 )
       ::nBoundR := aStruTbl[OB_OB,itd+j,OB_CRIGHT]
@@ -1916,9 +1911,7 @@ METHOD InsSpan( cText, xAttr, cHref, cId, nOpt ) CLASS HCEdiExt
 
    IF !Empty( nLTr )
       ::RestoreEnv( nLTr, iTd )
-      ::nBoundL := nBoundL
-      ::nBoundT := 0
-      ::nBoundR := nBoundR
+      ::nBoundL := nBoundL; ::nBoundT := nBoundT; ::nBoundR := nBoundR
       ::nIndent := nIndent
    ENDIF
 

@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-26 15:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    ! Small corrections
+
 2016-01-25 13:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htree.prg
     ! Fixes in :End() method and ReleaseTree() function

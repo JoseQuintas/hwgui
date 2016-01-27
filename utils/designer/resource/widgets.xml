@@ -39,8 +39,11 @@
       <widget class="label" name="Static text" bmp="BMP_STATIC">
          <paint>
             <![CDATA[
+            Private pArray, nJust
             hwg_Fillrect( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,oCtrl:brush:handle )
-            hwg_Drawtext( hDC,oCtrl:title,2,2,oCtrl:nWidth,oCtrl:nHeight )
+            pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="justify"}),6]
+            nJust := Ascan(pArray,oCtrl:GetProp("Justify"))-1
+            hwg_Drawtext( hDC,oCtrl:title,2,2,oCtrl:nWidth,oCtrl:nHeight,nJust )
             ]]>
          </paint>
          <property name="Name" type="C" />

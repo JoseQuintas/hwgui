@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-27 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/hctrl.prg
+  * utils/designer/inspect.prg
+    ! Fixes, which resolves problems, which had appeared after changes in HCOMBOBOX
+  * utils/designer/resource/widgets.xml
+    ! Labels are drawn respecting the Justify option now.
+
 2016-01-26 15:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * utils/editor/editor.prg

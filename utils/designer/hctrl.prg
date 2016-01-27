@@ -407,7 +407,7 @@ Local oFrm := Iif( oDlg:oParent:Classname()=="HPANEL",oDlg:oParent:oParent:oPare
             IF n != Nil
                i := n
             ELSE
-               i := Ascan( oDlg:aControls,{|o|o:handle==oCtrl:handle} )
+               i := Ascan( oDlg:aControls,{|o|hwg_Isptreq(o:handle,oCtrl:handle)} )
             ENDIF
             InspUpdCombo( i )
          ENDIF

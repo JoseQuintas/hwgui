@@ -159,7 +159,13 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
             OF oBrw1                     ;
             SIZE nWidth, oBrw1:height*5  ;
             FONT oBrw1:oFont
-         oBrw1:AddEvent( CBN_KILLFOCUS,oGet:id,{||VldBrwGet(oGet)} )
+
+         IF ( j := Ascan( oBrw1:aEvents, {|a|a[1] == CBN_KILLFOCUS .AND. ;
+               a[2] == oGet:id } ) ) > 0
+            oBrw1:aEvents[j,3] := {||VldBrwGet(oGet)}
+         ELSE
+            oBrw1:AddEvent( CBN_KILLFOCUS,oGet:id,{||VldBrwGet(oGet)} )
+         ENDIF
       ELSE
          @ x1,y1-2 GET oGet VAR varbuf OF oBrw1  ;
             SIZE nWidth, oBrw1:height+6        ;
@@ -264,8 +270,8 @@ Local i, aControls, oCtrl, n := -1, oDlg := HFormGen():oDlgSelected
          ENDIF
       NEXT
    ENDIF
-   oCombo:value := n + 1
    oCombo:Refresh()
+   oCombo:value := n + 1
    InspSetBrowse()
 Return Nil
 
@@ -283,8 +289,8 @@ Local aControls, i
          Return InspSetCombo()
       ENDIF
    ENDIF
-   oCombo:value := n + 1
    oCombo:Refresh()
+   oCombo:value := n + 1
    InspSetBrowse()
 Return Nil
 

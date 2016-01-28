@@ -1100,7 +1100,7 @@ Private oReport := Self
       DoScript( aMethod,{ p1,p2,p3,p4,p5 } )
    ENDIF
    IF xProperty != Nil
-      oFont := hrep_FontFromxml( oPrinter,xProperty,aGetSecond(::aProp,"fonth")*::nKoefY )
+      oFont := hrep_FontFromxml( oPrinter,xProperty,::nKoefY,aGetSecond(::aProp,"fonth") )
    ENDIF
 
    oPrinter:StartDoc( lPreview )
@@ -1195,7 +1195,7 @@ Private oReport := Self
       DoScript( aMethod,{ p1,p2,p3,p4,p5 } )
    ENDIF
    IF xProperty != Nil
-      oFont := hrep_FontFromxml( oPrinter,xProperty,aGetSecond(::aProp,"fonth")*::nKoefY )
+      oFont := hrep_FontFromxml( oPrinter,xProperty,::nKoefY,aGetSecond(::aProp,"fonth") )
    ENDIF
 
    IF !Empty( nPageType ) .AND. nPageType == PAGE_FIRST
@@ -1370,7 +1370,7 @@ Memvar lLastCycle, lSkipItem
             ENDIF
             IF oItem:obj == Nil
                IF ( xProperty := aGetSecond( oItem:aProp,"font" ) ) != Nil
-                  oItem:obj := hrep_FontFromxml( ::oPrinter,xProperty,aGetSecond(oItem:aProp,"fonth")*::nKoefY )
+                  oItem:obj := hrep_FontFromxml( ::oPrinter,xProperty,::nKoefY,aGetSecond(::aProp,"fonth") )
                ENDIF
             ENDIF
             hwg_Settransparentmode( ::oPrinter:hDC,.T. )
@@ -1513,25 +1513,33 @@ Local i := Ascan( arr,{|a|a[1]==xFirst} ), xRet
    ENDIF
 Return xRet
 
-Static Function hrep_FontFromXML( oPrinter,oXmlNode,height )
+Static Function hrep_FontFromXML( oPrinter, oXmlNode, nKoeff, nFontH )
+Local height := oXmlNode:GetAttribute( "height" ), nPos
 Local weight := oXmlNode:GetAttribute( "weight" )
 Local charset := oXmlNode:GetAttribute( "charset" )
 Local ita   := oXmlNode:GetAttribute( "italic" )
 Local under := oXmlNode:GetAttribute( "underline" )
 Local name  := oXmlNode:GetAttribute( "name" ), i
 
-  IF Valtype( HRepTmpl():aFontTable ) == "A"
-     IF ( i := Ascan(HRepTmpl():aFontTable,{|a|Lower(a[1])==Lower(name)}) ) != 0
-        name := HRepTmpl():aFontTable[ i,2 ]
-     ENDIF
-  ENDIF
-  weight := Iif( weight != Nil, Val( weight ), 400 )
-  IF charset != Nil
-     charset := Val( charset )
-  ENDIF
-  ita    := Iif( ita != Nil, Val( ita ), 0 )
-  under  := Iif( under != Nil, Val( under ), 0 )
+   IF Valtype( HRepTmpl():aFontTable ) == "A"
+      IF ( i := Ascan(HRepTmpl():aFontTable,{|a|Lower(a[1])==Lower(name)}) ) != 0
+         name := HRepTmpl():aFontTable[ i,2 ]
+      ENDIF
+   ENDIF
+
+   IF !Empty( nFontH )
+      height := nFontH * nKoeff
+   ELSEIF ( nPos := At( 'M',height ) ) != 0
+      height := - Round( Val( Substr(height,nPos+1) ) * nKoeff, 0 )
+   ELSE
+      height := Val( height ) * nKoeff
+   ENDIF
+
+   weight := Iif( weight != Nil, Val( weight ), 400 )
+   IF charset != Nil
+      charset := Val( charset )
+   ENDIF
+   ita    := Iif( ita != Nil, Val( ita ), 0 )
+   under  := Iif( under != Nil, Val( under ), 0 )
 
 Return oPrinter:AddFont( name, height, (weight>400), (ita>0), (under>0), charset )
-
-

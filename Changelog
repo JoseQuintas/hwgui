@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-27 16:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcombo.prg
+  * source/winapi/hcombo.prg
+    * New parameter added to HComboBox:Refresh( xVal ) - new value
+  * utils/designer/inspect.prg
+    ! Fixed a deleting of an item
+
 2016-01-27 15:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
   * source/winapi/hfrmtmpl.prg

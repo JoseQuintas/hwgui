@@ -30,7 +30,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Activate()
    METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, ctooltip, bGFocus )
    METHOD Init( aCombo, nCurrent )
-   METHOD Refresh()
+   METHOD Refresh( xVal )
    METHOD Setitem( nPos )
    METHOD GetValue( nItem )
    METHOD Value ( xValue ) SETGET
@@ -158,11 +158,13 @@ METHOD Init() CLASS HComboBox
 
    RETURN Nil
 
-METHOD Refresh() CLASS HComboBox
+METHOD Refresh( xVal ) CLASS HComboBox
    LOCAL vari, i
 
    IF !Empty( ::aItems )
-      IF ::bSetGet != Nil
+      IF xVal != Nil
+         ::xValue := xVal
+      ELSEIF ::bSetGet != Nil
          vari := Eval( ::bSetGet, , Self )
          IF ::lText
             ::xValue := iif( vari == Nil .OR. ValType( vari ) != "C", "", Trim( vari ) )

@@ -33,7 +33,7 @@ CLASS HComboBox INHERIT HControl
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init( aCombo, nCurrent )
-   METHOD Refresh()
+   METHOD Refresh( xVal )
    METHOD Setitem( nPos )
    METHOD GetValue( nItem )
    METHOD Value ( xValue ) SETGET
@@ -149,10 +149,12 @@ METHOD Init() CLASS HComboBox
 
    RETURN Nil
 
-METHOD Refresh() CLASS HComboBox
+METHOD Refresh( xVal ) CLASS HComboBox
    LOCAL vari, i
 
-   IF ::bSetGet != Nil
+   IF xVal != Nil
+      ::xValue := xVal
+   ELSEIF ::bSetGet != Nil
       vari := Eval( ::bSetGet, , Self )
       IF ::lText
          ::xValue := Iif( vari == Nil .OR. ValType( vari ) != "C", "", vari )

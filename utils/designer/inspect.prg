@@ -270,8 +270,8 @@ Local i, aControls, oCtrl, n := -1, oDlg := HFormGen():oDlgSelected
          ENDIF
       NEXT
    ENDIF
-   oCombo:Refresh()
-   oCombo:value := n + 1
+   oCombo:Refresh( n+1 )
+   //oCombo:value := n + 1
    InspSetBrowse()
 Return Nil
 
@@ -289,8 +289,8 @@ Local aControls, i
          Return InspSetCombo()
       ENDIF
    ENDIF
-   oCombo:Refresh()
-   oCombo:value := n + 1
+   oCombo:Refresh( n+1 )
+   //oCombo:value := n + 1
    InspSetBrowse()
 Return Nil
 

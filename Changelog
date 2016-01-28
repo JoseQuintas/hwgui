@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-27 10:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/window.c
+    ! Small fixes
+  * source/winapi/hfrmtmpl.prg
+  * utils/designer/hctrl.prg
+  * utils/designer/resource/widgets.xml
+    ! Handling of font sizes in Designer has been fixed.
+
 2016-01-27 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/hctrl.prg
   * utils/designer/inspect.prg

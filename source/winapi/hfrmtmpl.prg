@@ -815,7 +815,7 @@ Local hWnd, hDC, aMetr, aTMetr
 
    Aadd( aAttr, { "name",oFont:name } )
    Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
-   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5))+"M"+Ltrim(Str(Round(aTMetr[1]*nVertSize/nVertRes,2),5,2)) } )
+   Aadd( aAttr, { "height",Ltrim(Str(oFont:height,5))+"M"+Ltrim(Str(Round((aTMetr[1]-aTMetr[5])*nVertSize/nVertRes,2),5,2)) } )
    IF oFont:weight != 0
       Aadd( aAttr, { "weight",Ltrim(Str(oFont:weight,5)) } )
    ENDIF
@@ -854,7 +854,7 @@ Local under := oXmlNode:GetAttribute( "underline" )
            hwg_Releasedc( hWnd,hDC )
         ENDIF
         //hwg_writelog( str(Val( height )) + "/" + Str(Round( Val( Substr(height,i+1) ) * nVertRes / nVertSize, 0 )) )
-        height := Round( Val( Substr(height,i+1) ) * nVertRes / nVertSize, 0 )
+        height := - Round( Val( Substr(height,i+1) ) * nVertRes / nVertSize, 0 )
      ELSE
         height := Val( height )
      ENDIF

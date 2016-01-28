@@ -247,10 +247,10 @@
            aMetr := hwg_Getdevicearea( hDC )
            aTMetr:= hwg_Gettextmetric( hDC )
            o := Iif( oCtrl:Classname()=="HDIALOG",oCtrl:oParent,oCtrl )
-           o:SetProp( "FontH",Ltrim(Str(aTMetr[1]*aMetr[4]/aMetr[2])) )
+           o:SetProp( "FontH",Ltrim(Str((aTMetr[1]-aTMetr[5])*aMetr[4]/aMetr[2])) )
            hwg_Releasedc( 0,hDC )
           ]]></code2>
-         <code3><![CDATA[ hwg_Setwindowfont( oCtrl:handle,oCtrl:oFont:handle,.T. ) ]]></code3>
+         <code3><![CDATA[hwg_Setwindowfont( oCtrl:handle,oCtrl:oFont:handle,.T. ) ]]></code3>
       </property>
       <property name="Justify" array="Left,Center,Right">
       </property>

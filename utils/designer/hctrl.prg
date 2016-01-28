@@ -154,6 +154,7 @@ Private value, oCtrl := Self
 Return Self
 
 METHOD Activate() CLASS HControlGen
+Local oFont
 Memvar oCtrl
 
    IF ::oParent != Nil .AND. !Empty( ::oParent:handle )
@@ -164,7 +165,9 @@ Memvar oCtrl
          ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                ::style, ::nLeft, ::nTop, ::nWidth,::nHeight )
       ENDIF
+      oFont := ::oFont
       ::Init()
+      ::oFont := oFont
    ENDIF
 Return Nil
 

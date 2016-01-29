@@ -152,7 +152,7 @@ FUNCTION Main( p0, p1, p2 )
          MENUITEM "&Paste" ID 1012 ACTION oDesigner:addItem := oDesigner:oClipbrd
       ENDMENU
       MENU TITLE "&View"
-         MENUITEM "&Object Inspector" ID 1010 ACTION iif( oDesigner:oDlgInsp == Nil, InspOpen(), oDesigner:oDlgInsp:Close() )
+         MENUITEMCHECK "&Object Inspector" ID 1010 ACTION iif( oDesigner:oDlgInsp == Nil, InspOpen(), oDesigner:oDlgInsp:Close() )
          SEPARATOR
          MENUITEM "&Preview"  ACTION DoPreview()
       ENDMENU
@@ -160,8 +160,8 @@ FUNCTION Main( p0, p1, p2 )
          MENUITEM "&Delete"  ACTION DeleteCtrl()
       ENDMENU
       MENU TITLE "&Options"
-         MENUITEM "&AutoAdjust" ID 1011 ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1011, !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1011 ) )
-         MENUITEM "&BmpSelFile" ID 1013 ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1013, HBitmap():lSelFile := !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1013 ) )
+         MENUITEMCHECK "&AutoAdjust" ID 1011 ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1011, !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1011 ) )
+         MENUITEMCHECK "&BmpSelFile" ID 1013 ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1013, HBitmap():lSelFile := !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1013 ) )
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION hwg_Msginfo( "Visual Designer", "Designer" )
@@ -209,7 +209,7 @@ FUNCTION Main( p0, p1, p2 )
       MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
       SEPARATOR
       IF oDesigner:lReport
-         MENUITEM "Fit into Box" ID 1030 ACTION FitLine( GetCtrlSelected( HFormGen():oDlgSelected ) )
+         MENUITEMCHECK "Fit into Box" ID 1030 ACTION FitLine( GetCtrlSelected( HFormGen():oDlgSelected ) )
          SEPARATOR
       ENDIF
       MENUITEM "Delete" ACTION DeleteCtrl()

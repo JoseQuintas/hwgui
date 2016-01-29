@@ -43,6 +43,8 @@ CLASS HFormGen INHERIT HObject
    CLASS VAR oDlgSelected
    DATA cEncoding
    DATA oDlg
+   DATA nLeft  INIT 0
+   DATA nTop   INIT 0
    DATA name
    DATA handle
    DATA filename, path
@@ -270,14 +272,12 @@ Private value, oCtrl
             IF !Empty( aProp[i,2] )
                ::aProp[j,2] := aProp[i,2]
             ENDIF
-         ELSE
-            // Aadd( ::aProp, { aProp[i,1], aProp[i,2] } )
          ENDIF
       NEXT
    ENDIF
    FOR i := 1 TO Len( ::aProp )
       value := ::aProp[ i,2 ]
-      IF value != Nil // .AND. !Empty( value )
+      IF value != Nil
          cPropertyName := Lower( ::aProp[ i,1 ] )
          j := Ascan( oDesigner:aDataDef, {|a|a[1]==cPropertyName} )
          IF j != 0 .AND. oDesigner:aDataDef[ j,3 ] != Nil
@@ -289,9 +289,7 @@ Private value, oCtrl
    IF oDesigner:lReport
       hDC := hwg_Getdc( hwg_Getactivewindow() )
       aMetr := hwg_Getdevicearea( hDC )
-      // writelog( str(aMetr[1])+str(aMetr[2])+str(aMetr[3])+str(aMetr[4])+str(aMetr[5])+str(aMetr[6])+str(aMetr[7])+str(aMetr[8])+str(aMetr[9]) )
       ::nKoeff := ( aMetr[1]/aMetr[3] + aMetr[2]/aMetr[4] ) / 2 * Iif( !Empty(oDesigner:nRepZoom), oDesigner:nRepZoom, 1 )
-      // writelog( str(::nKoeff) )
       hwg_Releasedc( hwg_Getactivewindow(),hDC )
       ::SetPaper( ::GetProp("Paper Size"),::GetProp("Orientation") )
       IF ::oDlg:oFont == Nil
@@ -314,6 +312,11 @@ Private value, oCtrl
    ENDIF
 
    ::oDlg:Activate(.T.)
+#ifdef __GTK__
+   IF aProp != Nil
+      ::oDlg:Move( ,, Val(hwg_aSetSecond(aProp,"Width")), Val(hwg_aSetSecond(aProp,"Height")))
+   ENDIF
+#endif
    SetDlgSelected( ::oDlg )
 
    IF oDesigner:oDlgInsp == Nil

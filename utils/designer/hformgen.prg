@@ -12,6 +12,7 @@
 #include "hbclass.ch"
 #include "hwgui.ch"
 #include "hxml.ch"
+#include "designer.ch"
 
 #define  LEFT_INDENT   40
 #define  TOP_INDENT    30
@@ -1169,7 +1170,7 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
          oDesigner:oBtnPressed:Release()
       ENDIF
       oDesigner:addItem := Nil
-      IF hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1011 )
+      IF hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,MENU_AADJ )
          AdjustCtrl( oCtrl )
       ENDIF
    ENDIF
@@ -1187,15 +1188,16 @@ Local oCtrl
          ELSE
             IF oDesigner:lReport .AND. Lower( oCtrl:cClass ) $ "hline.vline" ;
                .AND. oCtrl:oContainer != Nil .AND. Lower( oCtrl:oContainer:cClass ) == "box"
-               hwg_Enablemenuitem( oDesigner:oCtrlMenu,1030,.T. )
+               hwg_Enablemenuitem( oDesigner:oCtrlMenu,MENU_FIT,.T. )
                IF oCtrl:lEmbed
-                  hwg_Checkmenuitem( oDesigner:oCtrlMenu,1030,.T. )
+                  hwg_Checkmenuitem( oDesigner:oCtrlMenu,MENU_FIT,.T. )
                ELSE
-                  hwg_Checkmenuitem( oDesigner:oCtrlMenu,1030,.F. )
+                  hwg_Checkmenuitem( oDesigner:oCtrlMenu,MENU_FIT,.F. )
                ENDIF
             ELSE
-               hwg_Enablemenuitem( oDesigner:oCtrlMenu,1030,.F. )
+               hwg_Enablemenuitem( oDesigner:oCtrlMenu,MENU_FIT,.F. )
             ENDIF
+            hwg_Enablemenuitem( oDesigner:oCtrlMenu,MENU_PASTE2,(oDesigner:oClipBrd!=Nil) )
             oDesigner:oCtrlMenu:Show( Iif(oDesigner:lReport,oDlg:oParent:oParent,oDlg),xPos,yPos,.T. )
          ENDIF
       ELSE

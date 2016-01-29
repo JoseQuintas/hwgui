@@ -12,6 +12,7 @@
 #include "guilib.ch"
 #include "hbclass.ch"
 #include "hxml.ch"
+#include "designer.ch"
 
    // #include "extmodul.ch"
 
@@ -148,11 +149,11 @@ FUNCTION Main( p0, p1, p2 )
          MENUITEM IF( !lOmmitMenuFile, "&Exit", "&Close Designer" ) ACTION oDesigner:oMainWnd:Close()
       ENDMENU
       MENU TITLE "&Edit"
-         MENUITEM "&Copy control" ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,1012, .T. , .T. ), .F. ) )
-         MENUITEM "&Paste" ID 1012 ACTION oDesigner:addItem := oDesigner:oClipbrd
+         MENUITEM "&Copy control" ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,MENU_PASTE1, .T. , .T. ), .F. ) )
+         MENUITEM "&Paste" ID MENU_PASTE1 ACTION oDesigner:addItem := oDesigner:oClipbrd
       ENDMENU
       MENU TITLE "&View"
-         MENUITEMCHECK "&Object Inspector" ID 1010 ACTION iif( oDesigner:oDlgInsp == Nil, InspOpen(), oDesigner:oDlgInsp:Close() )
+         MENUITEMCHECK "&Object Inspector" ID MENU_OINSP ACTION iif( oDesigner:oDlgInsp == Nil, InspOpen(), oDesigner:oDlgInsp:Close() )
          SEPARATOR
          MENUITEM "&Preview"  ACTION DoPreview()
       ENDMENU
@@ -160,8 +161,8 @@ FUNCTION Main( p0, p1, p2 )
          MENUITEM "&Delete"  ACTION DeleteCtrl()
       ENDMENU
       MENU TITLE "&Options"
-         MENUITEMCHECK "&AutoAdjust" ID 1011 ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1011, !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1011 ) )
-         MENUITEMCHECK "&BmpSelFile" ID 1013 ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, 1013, HBitmap():lSelFile := !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,1013 ) )
+         MENUITEMCHECK "&AutoAdjust" ID MENU_AADJ ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, MENU_AADJ, !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,MENU_AADJ ) )
+         MENUITEMCHECK "&BmpSelFile" ID MENU_BMPSEL ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, MENU_BMPSEL, HBitmap():lSelFile := !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,MENU_BMPSEL ) )
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION hwg_Msginfo( "Visual Designer", "Designer" )
@@ -201,7 +202,8 @@ FUNCTION Main( p0, p1, p2 )
    BuildSet( oTab )
 
    CONTEXT MENU oDesigner:oCtrlMenu
-      MENUITEM "Copy"   ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,1012, .T. , .T. ), .F. ) )
+      MENUITEM "Copy"   ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,MENU_PASTE1, .T. , .T. ), .F. ) )
+      MENUITEM "Paste"  ID MENU_PASTE2 ACTION oDesigner:addItem := oDesigner:oClipbrd
       SEPARATOR
       MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .T. , .F. , .F. , .F. )
       MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .T. , .F. , .F. )
@@ -209,7 +211,7 @@ FUNCTION Main( p0, p1, p2 )
       MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
       SEPARATOR
       IF oDesigner:lReport
-         MENUITEMCHECK "Fit into Box" ID 1030 ACTION FitLine( GetCtrlSelected( HFormGen():oDlgSelected ) )
+         MENUITEMCHECK "Fit into Box" ID MENU_FIT ACTION FitLine( GetCtrlSelected( HFormGen():oDlgSelected ) )
          SEPARATOR
       ENDIF
       MENUITEM "Delete" ACTION DeleteCtrl()
@@ -220,7 +222,7 @@ FUNCTION Main( p0, p1, p2 )
       MENUITEM "Next Page" ACTION Page_Next( GetCtrlSelected( HFormGen():oDlgSelected ) )
       MENUITEM "Previous Page" ACTION Page_Prev( GetCtrlSelected( HFormGen():oDlgSelected ) )
       SEPARATOR
-      MENUITEM "Copy"   ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,1012, .T. , .T. ), .F. ) )
+      MENUITEM "Copy"   ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,MENU_PASTE1, .T. , .T. ), .F. ) )
       MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .T. , .F. , .F. , .F. )
       MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .T. , .F. , .F. )
       MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .T. , .F. )

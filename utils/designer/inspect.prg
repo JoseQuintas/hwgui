@@ -10,6 +10,7 @@
 
 #include "fileio.ch"
 #include "hwgui.ch"
+#include "designer.ch"
 
 Static oCombo, oBrw1, oBrw2
 Static aProp := {}, aMethods := {}
@@ -24,7 +25,7 @@ Function InspOpen
       STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SIZEBOX ;
       FONT oDesigner:oMainWnd:oFont                   ;
       ON INIT {||hwg_Movewindow(oDesigner:oDlgInsp:handle,0,280,230,280)}   ;
-      ON EXIT {||oDesigner:oDlgInsp:=Nil,hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1010,.F.),.T.}
+      ON EXIT {||oDesigner:oDlgInsp:=Nil,hwg_Checkmenuitem(oDesigner:oMainWnd:handle,MENU_OINSP,.F.),.T.}
 
    @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,26 ;
           STYLE WS_VSCROLL                     ;
@@ -69,7 +70,7 @@ Function InspOpen
    END PAGE OF oTab
 
    ACTIVATE DIALOG oDesigner:oDlgInsp NOMODAL
-   hwg_Checkmenuitem(oDesigner:oMainWnd:handle,1010,.T.)
+   hwg_Checkmenuitem(oDesigner:oMainWnd:handle,MENU_OINSP,.T.)
 
    InspSetCombo()
 

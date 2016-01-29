@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-01-29 14:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/designer.ch
+  * utils/designer/designer.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/inspect.prg
+    * Context menu changed a bit.
+
 2016-01-29 10:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/designer.prg
   * utils/designer/hformgen.prg

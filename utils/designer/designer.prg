@@ -41,8 +41,6 @@
    REQUEST hwg_initmonthcalendar
    REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK, HB_ATOKENS
 
-   ANNOUNCE HB_GTSYS
-
 MEMVAR oDesigner, crossCursor, vertCursor, horzCursor, cCurDir
 
 STATIC lOmmitMenuFile := .F.

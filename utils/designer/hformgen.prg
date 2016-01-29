@@ -463,7 +463,7 @@ Local fname, s1, s2, l_ds_mypath
       fname := hwg_Selectfile( {s1,"All files"}, {s2,"*.*"},oDesigner:ds_mypath )
    ELSE
 #ifdef __GTK__
-      fname := hwg_Selectfile( s1, s2, mypath )
+      fname := hwg_Selectfile( s1, s2, oDesigner:ds_mypath )
 #else
       fname := hwg_Savefile( s2,s1,s2,oDesigner:ds_mypath )
 #endif

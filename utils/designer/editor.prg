@@ -162,6 +162,14 @@ Function EditMethod( cMethName, cMethod )
 Local i
 Local oFont := HDTheme():oFont
 Local cParamString
+Local bKeyDown := {|o,nKey|
+   IF nKey == VK_ESCAPE .AND. oDlg != Nil
+      oDlg := Nil
+      o:oParent:Close()
+      Return -1
+   ENDIF
+   Return -1
+   }
 
    i := Ascan( oDesigner:aMethDef, {|a|a[1]==Lower(cMethName)} )
    cParamString := Iif( i == 0, "", oDesigner:aMethDef[i,2] )
@@ -198,6 +206,7 @@ Local cParamString
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
    ENDIF
+   oEdit:bKeyDown := bKeyDown
    oEdit:HighLighter( HDTheme():oHili )
    IF !Empty( cMethod )
       oEdit:SetText( cMethod )

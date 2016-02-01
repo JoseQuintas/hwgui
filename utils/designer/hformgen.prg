@@ -1178,11 +1178,16 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
 Return -1
 
 Static Function RButtonUp( oDlg, xPos, yPos )
-Local oCtrl
+Local oCtrl, oForm
 
    IF oDesigner:addItem == Nil
       IF ( oCtrl := CtrlByPos( oDlg,xPos,yPos ) ) != Nil
          SetCtrlSelected( oDlg,oCtrl )
+         IF oDesigner:lReport
+            oForm := oDlg:oParent:oParent:oParent
+            xPos -= Round( oForm:nXOffset * oForm:nKoeff, 0 )
+            yPos -= Round( oForm:nYOffset * oForm:nKoeff, 0 )
+         ENDIF
          IF Lower( oCtrl:cClass ) == "page"
             oDesigner:oTabMenu:Show( oDlg,xPos,yPos,.T. )
          ELSE
@@ -1201,6 +1206,7 @@ Local oCtrl
             oDesigner:oCtrlMenu:Show( Iif(oDesigner:lReport,oDlg:oParent:oParent,oDlg),xPos,yPos,.T. )
          ENDIF
       ELSE
+         hwg_Enablemenuitem( oDesigner:oDlgMenu,MENU_PASTE2,(oDesigner:oClipBrd!=Nil) )
          oDesigner:oDlgMenu:Show( Iif(oDesigner:lReport,oDlg:oParent:oParent,oDlg),xPos,yPos,.T. )
       ENDIF
    ENDIF
@@ -1296,7 +1302,6 @@ Local oCtrl
            yPos >= aControls[i]:nTop .AND.                         ;
            yPos < ( aControls[i]:nTop+aControls[i]:nHeight )
         oCtrl := aControls[i]
-        // writelog( "> "+aControls[i]:cclass+" "+str(aControls[i]:nLeft)+" "+str(aControls[i]:nTop)+str(aControls[i]:nWidth)+str(aControls[i]:nHeight) )
         IF j == 0
            j := i
         ENDIF

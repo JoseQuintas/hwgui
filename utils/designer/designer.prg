@@ -205,10 +205,12 @@ FUNCTION Main( p0, p1, p2 )
       MENUITEM "Copy"   ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,MENU_PASTE1, .T. , .T. ), .F. ) )
       MENUITEM "Paste"  ID MENU_PASTE2 ACTION oDesigner:addItem := oDesigner:oClipbrd
       SEPARATOR
-      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .T. , .F. , .F. , .F. )
-      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .T. , .F. , .F. )
-      MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .T. , .F. )
-      MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
+      MENU TITLE "Adjust to..."
+         MENUITEM "left"  ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .T. , .F. , .F. , .F. )
+         MENUITEM "top"   ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .T. , .F. , .F. )
+         MENUITEM "right" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .T. , .F. )
+         MENUITEM "bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
+      ENDMENU
       SEPARATOR
       IF oDesigner:lReport
          MENUITEMCHECK "Fit into Box" ID MENU_FIT ACTION FitLine( GetCtrlSelected( HFormGen():oDlgSelected ) )
@@ -223,16 +225,18 @@ FUNCTION Main( p0, p1, p2 )
       MENUITEM "Previous Page" ACTION Page_Prev( GetCtrlSelected( HFormGen():oDlgSelected ) )
       SEPARATOR
       MENUITEM "Copy"   ACTION ( oDesigner:oClipBrd := GetCtrlSelected( HFormGen():oDlgSelected ), iif( oDesigner:oClipBrd != Nil,hwg_Enablemenuitem(,MENU_PASTE1, .T. , .T. ), .F. ) )
-      MENUITEM "Adjust to left"  ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .T. , .F. , .F. , .F. )
-      MENUITEM "Adjust to top"   ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .T. , .F. , .F. )
-      MENUITEM "Adjust to right" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .T. , .F. )
-      MENUITEM "Adjust to bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
+      MENU TITLE "Adjust to..."
+         MENUITEM "left"  ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .T. , .F. , .F. , .F. )
+         MENUITEM "top"   ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .T. , .F. , .F. )
+         MENUITEM "right" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .T. , .F. )
+         MENUITEM "bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
+      ENDMENU
       SEPARATOR
       MENUITEM "Delete" ACTION DeleteCtrl()
    ENDMENU
 
    CONTEXT MENU oDesigner:oDlgMenu
-      MENUITEM "Paste" ACTION oDesigner:addItem := oDesigner:oClipbrd
+      MENUITEM "Paste" ID MENU_PASTE2 ACTION oDesigner:addItem := oDesigner:oClipbrd
       MENUITEM "Preview" ACTION DoPreview()
    ENDMENU
 

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-02-01 14:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/designer.prg
+  * utils/designer/hformgen.prg
+    ! Fixed calculation of the position of a context menu
+  * utils/designer/editor.prg
+    * ESC closes the editor now.
+
 2016-01-29 14:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/designer.ch
   * utils/designer/designer.prg

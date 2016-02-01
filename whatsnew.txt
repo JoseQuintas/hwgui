@@ -8,6 +8,13 @@
 [-] Fixed error
 [*] Changes
 
+HWGUI 2.19 build 6 ( 01.02.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    This is a bug fix release - The Designer was partially broken, because
+    of some changes in release 5 core code.
+[*] Small Designer improvements
+[!] Bug fixes.
+
 HWGUI 2.19 build 5 ( 21.01.2016 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] Rich syntax text editor extended ( access control to paragraphs and spans,

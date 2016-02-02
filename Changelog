@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-02-02 14:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    ! Ctrl+C, Ctrl+V, Ctrl+A, ... works now for gtk version
+  * source/gtk/hpribter.prg
+    ! Small fix for :Preview()
+
 2016-02-01 16:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * whatsnew.txt
     * Information about build 6 added

@@ -1278,32 +1278,32 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
                ::nHeight )
          ENDIF
       ENDIF
-   ELSEIF nKeyCode == 89 .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'Y'
+   ELSEIF ( nKeyCode == 89 .OR. nKeyCode == 121 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'Y'
       IF ::lWrap //.AND. ::aWrap[::nLineF+nLine-1] != Nil
          //::DelText( {::aWrap[nLine-1],::nLineF+nLine-1}, {1,::nLineF+nLine-1} )
       ELSE
          ::DelText( {1,::nLineF+nLine-1}, {1,::nLineF+nLine} )
       ENDIF
-   ELSEIF nKeyCode == 65 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'A'
+   ELSEIF ( nKeyCode == 65 .OR. nKeyCode == 97 ) .AND. hwg_checkBit( nctrl,FBITCTRL )   // 'A'
       ::Pcopy( { 1, 1 }, ::aPointM1 )
       ::Pcopy( { hced_Len( Self, ::aText[::nTextLen] ) + 1, ::nTextLen }, ::aPointM2 )
       lUnSel := .F.
       lInvAll := .T.
-   ELSEIF nKeyCode == 67 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'C'
+   ELSEIF ( nKeyCode == 67 .OR. nKeyCode == 99 ) .AND. hwg_checkBit( nctrl,FBITCTRL )   // 'C'
       IF !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
          lUnSel := .F.
       ENDIF
-   ELSEIF nKeyCode == 90 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'Z'
+   ELSEIF ( nKeyCode == 90 .OR. nKeyCode == 122 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'Z'
       ::Undo()
-   ELSEIF nKeyCode == 86 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'V'
+   ELSEIF ( nKeyCode == 86 .OR. nKeyCode == 118 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'V'
       IF !::lReadOnly .AND. !::lNoPaste
          cLine := hwg_Getclipboardtext()
          ::InsText( ::aPointC, cLine )
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ::nHeight )
       ENDIF
-   ELSEIF nKeyCode == 88 .AND. hwg_checkBit( nctrl,FBITCTRL )     // 'X'
+   ELSEIF ( nKeyCode == 88 .OR. nKeyCode == 120 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'X'
       IF !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )

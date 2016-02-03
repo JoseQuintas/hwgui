@@ -14,6 +14,7 @@
 
 Static aBDown := { Nil,0,0,.F. }
 Static oPenSel
+Static nAlignV := -1, nAlignH := -1
 
 Memvar oDesigner, nMaxId
 
@@ -505,6 +506,28 @@ Local lRes := .F., xPos, yPos, delta := 15
       CtrlMove( oCtrl,xPos-oCtrl:nLeft,yPos-oCtrl:nTop,.F.,.T. )
       Container( oCtrl:oParent,oCtrl,oCtrl:nLeft,oCtrl:nTop )
       InspUpdBrowse()
+   ENDIF
+Return Nil
+
+Function AlignCtrl( oCtrl, nAlignType )
+
+   IF nAlignType == 1 .AND. nAlignV >= 0
+      CtrlMove( oCtrl, nAlignV-oCtrl:nLeft, 0, .F., .T. )
+      Container( oCtrl:oParent, oCtrl, oCtrl:nLeft, oCtrl:nTop )
+      InspUpdBrowse()
+   ELSEIF nAlignType == 2 .AND. nAlignH >= 0
+      CtrlMove( oCtrl, 0, nAlignH-oCtrl:nTop, .F., .T. )
+      Container( oCtrl:oParent, oCtrl, oCtrl:nLeft, oCtrl:nTop )
+      InspUpdBrowse()
+   ENDIF
+Return Nil
+
+Function SetAsPattern( oCtrl, nAlignType )
+
+   IF nAlignType == 1
+      nAlignV := oCtrl:nLeft
+   ELSEIF nAlignType == 2
+      nAlignH := oCtrl:nTop
    ENDIF
 Return Nil
 

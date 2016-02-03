@@ -199,7 +199,7 @@ Private oForm := Self, aCtrlTable
    ENDIF
 
    IF ( oDesigner:lSingleForm .AND. !lAs ) .OR. ;
-   ( ( Empty( ::filename ) .OR. lAs ) .AND. FileDlg( Self,.F. ) ) .OR. !Empty( ::filename )
+      ( ( Empty( ::filename ) .OR. lAs ) .AND. FileDlg( Self,.F. ) ) .OR. !Empty( ::filename )
       FrmSort( Self,Iif( oDesigner:lReport,::oDlg:aControls[1]:aControls[1]:aControls,::oDlg:aControls ) )
       IF ::type == 1
          WriteForm( Self )
@@ -220,9 +220,10 @@ Private oForm := Self, aCtrlTable
       IF !oDesigner:lSingleForm .AND. !( ::filename == "__tmp.xml" )
          AddRecent( Self )
       ENDIF
-   ENDIF
-   IF !lAs
-      ::lChanged := .F.
+      IF !lAs
+         ::lChanged := .F.
+      ENDIF
+
    ENDIF
 
 RETURN Nil
@@ -431,14 +432,14 @@ Local i
 
    @ 10,70 GET oEdit1 VAR fname  ;
         STYLE ES_AUTOHSCROLL      ;
-        SIZE 200, 26
+        SIZE 200, 26 MAXLENGTH 0
  
    @ 210,70 BUTTON "Browse" SIZE 80, 26   ;
         ON CLICK {||BrowFile(lOpen,af[nType],oEdit1,oEdit2)}
 
    @ 10,110 SAY "Form name:" SIZE 80,22
 
-   @ 10,135 GET oEdit2 VAR formname SIZE 140, 26
+   @ 10,135 GET oEdit2 VAR formname SIZE 140, 26 MAXLENGTH 0
 
    @ 20,200 BUTTON "Ok" ID IDOK  SIZE 100, 32
    @ 180,200 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32

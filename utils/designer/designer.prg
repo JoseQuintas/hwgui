@@ -211,6 +211,14 @@ FUNCTION Main( p0, p1, p2 )
          MENUITEM "right" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .T. , .F. )
          MENUITEM "bottom" ACTION AdjustCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), .F. , .F. , .F. , .T. )
       ENDMENU
+      MENU TITLE "Align..."
+         MENUITEM "vertically"  ACTION AlignCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), 1 )
+         MENUITEM "horizontally"  ACTION AlignCtrl( GetCtrlSelected( HFormGen():oDlgSelected ), 2 )
+      ENDMENU
+      MENU TITLE "Set as pattern for..."
+         MENUITEM "vertical alignment"  ACTION SetAsPattern( GetCtrlSelected( HFormGen():oDlgSelected ), 1 )
+         MENUITEM "horizontal alignment"  ACTION SetAsPattern( GetCtrlSelected( HFormGen():oDlgSelected ), 2 )
+      ENDMENU
       SEPARATOR
       IF oDesigner:lReport
          MENUITEMCHECK "Fit into Box" ID MENU_FIT ACTION FitLine( GetCtrlSelected( HFormGen():oDlgSelected ) )

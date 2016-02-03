@@ -121,6 +121,7 @@ typedef struct
    int       ixCaretPos;
    int       iyCaretPos;
    int     iCaretHeight;
+   int          nBorder;
    COLORREF  lBorderClr;
 } TEDIT;
 
@@ -863,10 +864,13 @@ HB_FUNC( HCED_LINEOUT )
    hb_retni( (iCalculated)? iCalculated : iPrinted );
 }
 
-HB_FUNC( HCED_SETBORDERCOLOR )
+HB_FUNC( HCED_SETBORDER )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   pted->lBorderClr = (COLORREF) hb_parnl(2);
+   if( HB_ISNUM(2) )
+      pted->nBorder = hb_parnl(2);
+   if( HB_ISNUM(3) )
+      pted->lBorderClr = (COLORREF) hb_parnl(3);
 }
 
 HB_FUNC( HCED_DRAWBORDER )

@@ -148,6 +148,7 @@ CLASS HCEdit INHERIT HControl
    DATA   nMarginR     INIT 0
    DATA   nMarginT     INIT 0
    DATA   nMarginB     INIT 0
+
    DATA   n4Number     INIT 0
    DATA   n4Separ      INIT 0
    DATA   bColorCur    INIT 16449510
@@ -196,13 +197,14 @@ CLASS HCEdit INHERIT HControl
    DATA   aUndo
 
    DATA   oHili
-   DATA   aHili  PROTECTED
-   DATA   lWrap   INIT .F.  PROTECTED
+   DATA   aHili     PROTECTED
+   DATA   lWrap     INIT .F. PROTECTED
+   DATA   nPadding  INIT 0   PROTECTED
 #ifdef __PLATFORM__UNIX
-   DATA   lPainted INIT .F. PROTECTED
+   DATA   lPainted  INIT .F. PROTECTED
    DATA   lNeedScan INIT .F. PROTECTED
 #endif
-   DATA   lScan INIT .F. PROTECTED
+   DATA   lScan     INIT .F. PROTECTED
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
@@ -241,6 +243,8 @@ CLASS HCEdit INHERIT HControl
    METHOD DelLine( nLine )
    METHOD Refresh()
    METHOD SetWrap( lWrap, lInit )
+   METHOD SetPadding( nValue )
+   METHOD SetBorder( nThick, nColor )
    METHOD Highlighter( oHili )
    METHOD Scan()
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
@@ -253,7 +257,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )  CLASS HCEdit
 
    ::lVScroll := ( lNoVScroll == Nil .OR. !lNoVScroll )
-   //lNoBorder := .T.
    nStyle := Hwg_BitOr( Iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE +  ;
       Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) +          ;
       Iif( ::lVScroll, WS_VSCROLL, 0 ) )
@@ -302,6 +305,9 @@ METHOD Activate() CLASS HCEdit
 #ifdef __PLATFORM__UNIX
       ::hEdit := hced_CreateTextEdit( Self )
       ::handle := hced_GetHandle( ::hEdit )
+      IF hwg_bitand( ::style, WS_BORDER ) != 0
+         ::SetBorder( 2 )
+      ENDIF
 #else
       ::handle := hced_CreateTextEdit( ::oParent:handle, ::id, ;
          ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -584,7 +590,7 @@ METHOD Paint( lReal ) CLASS HCEdit
       hDC := hDCReal
    ENDIF
 
-   ::nBoundR := Iif( !Empty(nDocWidth), nDocWidth, ::nClientWidth )
+   ::nBoundR := Iif( !Empty(nDocWidth), nDocWidth, ::nClientWidth ) - ::nPadding
    hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
    hced_SetPaint( ::hEdit, hDC,, ::nClientWidth, ::lWrap,, nDocWidth )
    IF lReal     
@@ -1928,6 +1934,28 @@ METHOD SetWrap( lWrap, lInit ) CLASS HCEdit
 
    RETURN lWrapOld
 
+METHOD SetPadding( nValue ) CLASS HCEdit
+
+   LOCAL nPadding := ::nPadding
+
+   IF nValue != Nil
+      ::nBoundL := ::nBoundT := ::nPadding := nValue
+   ENDIF
+   
+   RETURN nPadding
+
+METHOD SetBorder( nThick, nColor ) CLASS HCEdit
+
+#ifdef __PLATFORM__UNIX
+   IF nThick > 0
+      IF ::nPadding <= 2
+         ::SetPadding( nThick )
+      ENDIF
+   ENDIF
+#endif
+   hced_SetBorder( ::hEdit, nThick, nColor )
+   RETURN Nil
+
 METHOD Highlighter( oHili ) CLASS HCEdit
 
    IF oHili == Nil
@@ -1975,7 +2003,7 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
          ::nMarginR := Round( ::aDocMargins[2] * ::nKoeffScr, 0 )
          ::nDocWidth := nDocWidth := Int( ::nKoeffScr * HPrinter():aPaper[ ::nDocFormat, Iif(::nDocOrient==0,2,3) ] ) - ::nMarginR
       ENDIF
-      ::nBoundR := Iif( !Empty(nDocWidth), nDocWidth, ::nClientWidth )
+      ::nBoundR := Iif( !Empty(nDocWidth), nDocWidth, ::nClientWidth ) - ::nPadding
       nHeight := ::nHeight
       hced_SetPaint( ::hEdit, hDC,, nWidth, ::lWrap,, nDocWidth )
    ELSE

@@ -117,8 +117,7 @@ typedef struct
    int       ixCaretPos;
    int       iyCaretPos;
    int     iCaretHeight;
-   int          xBorder;
-   int          yBorder;
+   int          nBorder;
    long      lBorderClr;
 
 } TEDIT;
@@ -146,6 +145,7 @@ extern void cb_signal( GtkWidget * widget, gchar * data );
 extern void all_signal_connect( gpointer hWnd );
 extern gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data );
 extern GtkFixed *getFixedBox( GObject * handle );
+extern void hwg_gtk_drawedge( PHWGUI_HDC hDC, int left, int top, int right, int bottom, unsigned int iType );
 
 gchar * szDelimiters = " .,-";
 
@@ -351,7 +351,6 @@ int ted_CalcLineWidth( TEDIT * pted, char *szText, int iLen, int iWidth, int * i
 int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
       int iMaxAscent, char *szText, TEDATTR * pattr, int iLen )
 {
-   //int i, yoff;
    PangoRectangle rc;
    long fg, bg;
    PHWGUI_HDC hDC = (pted->hDCPrn)? pted->hDCPrn : pted->hDCScr;
@@ -378,11 +377,9 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
       pted->bg_curr = bg;
    }
 
-   //yoff = iMaxAscent - font->tm.tmAscent;
-
-   // get size of text
+   /* get size of text */
    pango_layout_set_text( hDC->layout, szText, hced_utf8bytes( szText, iLen ) );
-   // Wrap mode off
+   /* Wrap mode off */
    pango_layout_set_width( hDC->layout, -1 );
    pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
    iWidth = PANGO_RBEARING(rc) + font->ixAdd;
@@ -390,7 +387,7 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
    if( hDC->bcolor != -1 )
    {
       hwg_setcolor( hDC->cr, hDC->bcolor );
-      cairo_rectangle( hDC->cr, (gdouble)xpos, (gdouble)ypos, //-pted->iInterline/2, 
+      cairo_rectangle( hDC->cr, (gdouble)xpos, (gdouble)ypos,
             (iLen==1 && *szText==' ')? (gdouble)font->iSpace : (gdouble)iWidth, 
             (gdouble)PANGO_DESCENT(rc)+pted->iInterline );
       cairo_fill( hDC->cr );
@@ -400,10 +397,7 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
    cairo_move_to( hDC->cr, (gdouble)xpos, (gdouble)ypos );
    pango_cairo_show_layout( hDC->cr, hDC->layout );
 
-   //SetRect( &rect, xpos, ypos, xpos + sz.cx, ypos + iHeight );
-   //ExtTextOut( hDC, xpos, ypos + yoff, ETO_OPAQUE, &rect, szText, iLen, 0 );
-
-   return iWidth; //rc.width;
+   return iWidth;
 }
 
 int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int iHeight, int iRight )
@@ -421,7 +415,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
    if( iPrinted )
       for( i = 0, lasti = 0; i <= iPrinted; i++ )
       {
-         // if the colour or font changes, then need to output 
+         /* if the colour or font changes, then need to output */
          if( i == iPrinted ||
                ( pattr + i )->fg != ( pattr + lasti )->fg ||
                ( pattr + i )->bg != ( pattr + lasti )->bg ||
@@ -452,11 +446,11 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
       hwg_setcolor( pted->hDCScr->cr, pted->bg );
       cairo_rectangle( pted->hDCScr->cr, (gdouble)x1, (gdouble)ypos,
             (gdouble)(iRight), (gdouble)iHeight );
-            //(gdouble)(pted->iWidth-x1+1), (gdouble)iHeight );
       cairo_fill( pted->hDCScr->cr );
    }
-   if( pted->iyCaretPos == ypos )
+   if( pted->iyCaretPos - pted->nBorder == ypos )
    {
+      /* Draw the caret */
       if( !iPrinted )
          pted->ixCaretPos = x1;
       hwg_setcolor( pted->hDCScr->cr, (pted->hDCScr->fcolor != -1)? pted->hDCScr->fcolor : 0 );
@@ -562,7 +556,6 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    set_event( ( gpointer ) area, "key_release_event", 0, 0, 0 );
    set_event( ( gpointer ) area, "scroll_event", 0, 0, 0 );
 
-   // gtk_widget_show_all( hbox );
    all_signal_connect( ( gpointer ) area );
 
    memset( pted, 0, sizeof( TEDIT ) );
@@ -570,11 +563,6 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    pted->widget = hbox;
    pted->area = area;
    pted->iInterline = 3;
-   if( ulStyle & WS_BORDER )
-   {
-      pted->xBorder = pted->yBorder = 1;
-   }
-
    pted->iFonts = NUMBER_OF_FONTS;
    pted->pFontsScr = ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
    pted->pFontsPrn = ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
@@ -682,20 +670,6 @@ HB_FUNC( HCED_ADDATTRFONT )
  */
 HB_FUNC( HCED_SETVSCROLL )
 {
-   /*
-   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   SCROLLINFO si = { sizeof(si) };
-   int iPages = hb_parni(4);
-
-   si.fMask = SIF_PAGE | SIF_POS | SIF_RANGE | SIF_DISABLENOSCROLL;
-
-   si.nPos  = hb_parni(2);
-   si.nPage = hb_parni(3);
-   si.nMin  = 0;
-   si.nMax  = hb_parni(3) * ( (iPages)? iPages-1:iPages );
-        
-   SetScrollInfo( pted->handle, SB_VERT, &si, TRUE );
-   */
 }
 
 HB_FUNC( HCED_SETPAINT )
@@ -716,13 +690,6 @@ HB_FUNC( HCED_SETPAINT )
    pted->hDCScr->bcolor = pted->bg;
    pted->fg_curr = pted->fg;
    pted->bg_curr = pted->bg;
-   /*
-   if( pted->hDCPrn && !HB_ISNIL(6) )
-   {
-      pted->dKoeff = ( GetDeviceCaps( pted->hDCPrn,HORZRES ) / hb_parnd(6) ) / GetDeviceCaps( pted->hDCPrn,HORZSIZE );
-      wrlog( NULL, "%f\r\n", pted->dKoeff );
-   }
-   */
 
 }
 
@@ -740,7 +707,7 @@ HB_FUNC( HCED_SETWIDTH )
 HB_FUNC( HCED_FILLRECT )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   int x1 = (HB_ISNIL(2))? 0:hb_parni(2) + pted->xBorder;
+   int x1 = (HB_ISNIL(2))? 0:hb_parni(2); // + pted->xBorder;
    int y1 = hb_parni(3);
    int x2 = (HB_ISNIL(4))? pted->iWidth:hb_parni(4);
 
@@ -757,46 +724,30 @@ HB_FUNC( HCED_FILLRECT )
 
 HB_FUNC( HCED_SHOWCARET )
 {
-   //ShowCaret( ( ( TEDIT * ) HB_PARHANDLE( 1 ) )->handle );
 }
 
 HB_FUNC( HCED_HIDECARET )
 {
-   //HideCaret( ( ( TEDIT * ) HB_PARHANDLE( 1 ) )->handle );
 }
 
 HB_FUNC( HCED_INITCARET )
 {
-   /*
-   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   CreateCaret( pted->handle, (HBITMAP)NULL, 2, pted->pFontsScr->tm.tmHeight );
-   ShowCaret( pted->handle );
-   SetCaretPos( 0,0 );
-   pted->iCaretHeight = pted->pFontsScr->tm.tmHeight;
-   InvalidateRect( pted->handle, NULL, 0 );
-   */
 }
 
 HB_FUNC( HCED_KILLCARET )
 {
-   /*
-   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   HideCaret( pted->handle );
-   DestroyCaret();
-   InvalidateRect( pted->handle, NULL, 0 );
-   */
 }
 
 HB_FUNC( HCED_GETXCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   hb_retni( pted->ixCaretPos - pted->xBorder );
+   hb_retni( pted->ixCaretPos - pted->nBorder );
 }
 
 HB_FUNC( HCED_GETYCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   hb_retni( pted->iyCaretPos - pted->yBorder );
+   hb_retni( pted->iyCaretPos - pted->nBorder );
 }
 
 HB_FUNC( HCED_GETCARETHEIGHT )
@@ -809,8 +760,8 @@ HB_FUNC( HCED_SETCARETPOS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
 
-   pted->ixCaretPos = hb_parni(2) + pted->xBorder;
-   pted->iyCaretPos = hb_parni(3) + pted->yBorder;
+   pted->ixCaretPos = hb_parni(2) + pted->nBorder;
+   pted->iyCaretPos = hb_parni(3) + pted->nBorder;
 }
 
 /*
@@ -840,7 +791,6 @@ HB_FUNC( HCED_EXACTCARETPOS )
          xpos = pted->iWidth + 1;
       if( xpos < x1 )
          xpos = x1;
-      //wrlog( NULL, "---" );
       for( i = 0, lasti = 0; i <= iLen; i++ )
       {
          if( i == iLen || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
@@ -875,7 +825,6 @@ HB_FUNC( HCED_EXACTCARETPOS )
             {
                x1 += iTextWidth;
                iPrinted ++;
-               //wrlog( NULL, "3 \r\n" );
             }
          }
       g_object_unref( (GObject*) layout );
@@ -886,12 +835,10 @@ HB_FUNC( HCED_EXACTCARETPOS )
    if( bSet )
    {
       x1 -= ( HB_ISNIL(7)? 0 : hb_parni(7) );
-      pted->ixCaretPos = x1 + pted->xBorder;
-      pted->iyCaretPos = y1 + pted->yBorder;
-      // wrlog( NULL, "x = %u y = %u\r\n", x1, y1 );
+      pted->ixCaretPos = x1 + pted->nBorder;
+      pted->iyCaretPos = y1 + pted->nBorder;
    }
    
-   //wrlog( NULL, "End iPrinted = %u \r\n", iPrinted );
    hb_retni( iPrinted );
 
 }
@@ -937,31 +884,23 @@ HB_FUNC( HCED_LINEOUT )
    char *szText = ( char * )hb_parc( 5 );
    int iRight = (HB_ISNIL(8))? 0 : hb_parni(8);
    short int bCalc = (HB_ISNIL(9))? 1 : hb_parl(9);
-   int x1 = hb_parni( 2 ) + pted->xBorder, ypos = hb_parni( 3 ) + pted->yBorder;
+   int x1 = hb_parni( 2 ), ypos = hb_parni( 3 );
+   //int x1 = hb_parni( 2 ) + pted->xBorder, ypos = hb_parni( 3 ) + pted->yBorder;
    int x2 = hb_parni( 4 ), iLen = hb_parni( 6 );
    int iPrinted, iCalculated = 0, iAlign = hb_parni( 7 );
    int iRealWidth, i, iFont;
    int iHeight = 0;
 
    pango_layout_set_alignment( pted->hDCScr->layout, PANGO_ALIGN_LEFT );
-   //if( iLen )
+   if( bCalc )
    {
-      if( bCalc )
-      {
-         if( pted->iDocWidth )
-         {
-            iPrinted = ted_CalcLineWidth( pted, szText, iLen, pted->iDocWidth-x1, &iRealWidth, pted->bWrap );
-            //hwg_writelog( NULL, "iWidth: %d iDocWidth: %d iRealWidth %d iPrinted %d \r\n", x2, pted->iDocWidth, iRealWidth, iPrinted );
-            //iPrinted = ted_CalcLineWidth( pted, szText, iCalculated, x2-x1, &iRealWidth, 0 );
-         }
-         else
-            iPrinted = ted_CalcLineWidth( pted, szText, iLen, x2-x1, &iRealWidth, pted->bWrap );
-      }
+      if( pted->iDocWidth )
+         iPrinted = ted_CalcLineWidth( pted, szText, iLen, pted->iDocWidth-x1, &iRealWidth, pted->bWrap );
       else
-         iPrinted = ted_CalcLineWidth( pted, szText, iLen, 30000, &iRealWidth, 0 );
+         iPrinted = ted_CalcLineWidth( pted, szText, iLen, x2-x1, &iRealWidth, pted->bWrap );
    }
-   //else
-   //   iPrinted = iRealWidth = 0;
+   else
+      iPrinted = ted_CalcLineWidth( pted, szText, iLen, 30000, &iRealWidth, 0 );
 
    if( iAlign )
    {
@@ -986,17 +925,6 @@ HB_FUNC( HCED_LINEOUT )
    }
    pted->iCaretHeight = iHeight;
 
-   /*
-   for( i = 0, lasti = 0; i <= iPrinted; i++ )
-      if( i == iPrinted || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
-      {
-         font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
-               ( pattr + lasti )->iFont;
-         iHeight = ( iHeight > font->iHeight )? iHeight : font->iHeight;
-         lasti = i;
-      }
-   */
-   //hwg_writelog( NULL, "ypos: %d iHeight: %d iLen %d iPrinted %d bCalc %d\r\n", ypos, iHeight, iLen, iPrinted, bCalc );
    if( iRight )
    {
       pted->x2 = ted_LineOut( pted, x1, ypos, szText, iPrinted, iHeight, iRight );
@@ -1009,10 +937,13 @@ HB_FUNC( HCED_LINEOUT )
    hb_retni( (iCalculated)? iCalculated : iPrinted );
 }
 
-HB_FUNC( HCED_SETBORDERCOLOR )
+HB_FUNC( HCED_SETBORDER )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   pted->lBorderClr = hb_parnl(2);
+   if( HB_ISNUM(2) )
+      pted->nBorder = hb_parnl(2);
+   if( HB_ISNUM(3) )
+      pted->lBorderClr = hb_parnl(3);
 }
 
 HB_FUNC( HCED_DRAWBORDER )
@@ -1020,21 +951,25 @@ HB_FUNC( HCED_DRAWBORDER )
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
    int nWidth = hb_parni( 2 ), nHeight = hb_parni( 3 );
 
-   if( !pted->xBorder )
+   if( !pted->nBorder )
       return;
 
-   hwg_setcolor( pted->hDCScr->cr, pted->lBorderClr );
-   cairo_move_to( pted->hDCScr->cr, 0, 0 );
-   cairo_line_to( pted->hDCScr->cr, nWidth, 0 );  // to right
-   cairo_move_to( pted->hDCScr->cr, 0, 0 );
-   cairo_line_to( pted->hDCScr->cr, 0, nHeight );  // to bottom
-   cairo_move_to( pted->hDCScr->cr, nWidth, 0 );
-   cairo_line_to( pted->hDCScr->cr, nWidth, nHeight );
-   cairo_move_to( pted->hDCScr->cr, 0, nHeight );
-   cairo_line_to( pted->hDCScr->cr, nWidth, nHeight );
+   if( pted->nBorder == 1 )
+   {
+      hwg_setcolor( pted->hDCScr->cr, pted->lBorderClr );
+      cairo_move_to( pted->hDCScr->cr, 0, 0 );
+      cairo_line_to( pted->hDCScr->cr, nWidth, 0 );  // to right
+      cairo_move_to( pted->hDCScr->cr, 0, 0 );
+      cairo_line_to( pted->hDCScr->cr, 0, nHeight );  // to bottom
+      cairo_move_to( pted->hDCScr->cr, nWidth, 0 );
+      cairo_line_to( pted->hDCScr->cr, nWidth, nHeight );
+      cairo_move_to( pted->hDCScr->cr, 0, nHeight );
+      cairo_line_to( pted->hDCScr->cr, nWidth, nHeight );
 
-   cairo_stroke( pted->hDCScr->cr );
-
+      cairo_stroke( pted->hDCScr->cr );
+   }
+   else
+      hwg_gtk_drawedge( pted->hDCScr, 0, 0, nWidth, nHeight, 6 );
 }
 
 HB_FUNC( HCED_COLOR2X )

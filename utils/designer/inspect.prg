@@ -382,7 +382,7 @@ Local i
 Return Nil
 
 Static Function EditArray( arr )
-Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
+Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 ), i
 
    IF arr == Nil
       arr := {}
@@ -400,7 +400,7 @@ Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
    oBrw:bcolorSel := hwg_ColorC2N( "008000" )
    oBrw:lAppable := .T.
    oBrw:aArray := arr
-   oBrw:AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},"C",100,0,.T. ) )
+   oBrw:AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},"C",100,0,.T.,,,Replicate("X",100) ) )
 
    @ 30,265 BUTTON "Ok" SIZE 100, 32     ;
        ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
@@ -414,6 +414,9 @@ Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 )
       IF Len( arr ) == 1 .AND. arr[1] == "....."
          arr := {}
       ENDIF
+      FOR i := 1 TO Len( arr )
+         arr[i] := Trim( arr[i] )
+      NEXT
       Return arr
    ENDIF
 

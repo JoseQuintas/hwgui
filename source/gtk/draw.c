@@ -188,18 +188,10 @@ HB_FUNC( HWG_DRAWBUTTON )
    }
 }
 
-/*
- * DrawEdge( hDC,x1,y1,x2,y2,nFlag,nBorder )
- */
-HB_FUNC( HWG_GTK_DRAWEDGE )
+void hwg_gtk_drawedge( PHWGUI_HDC hDC, int left, int top, int right, int bottom, unsigned int iType )
 {
-PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-int left = hb_parni( 2 );
-int top = hb_parni( 3 );
-int right = hb_parni( 4 );
-int bottom = hb_parni( 5 );
-unsigned int iType = hb_parni( 6 );
-GtkStyle * style = hDC->widget->style;
+
+   GtkStyle * style = hDC->widget->style;
 
    hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->mid : style->light ) );
    cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
@@ -233,6 +225,16 @@ GtkStyle * style = hDC->widget->style;
    cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
         (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
    cairo_stroke( hDC->cr );
+
+}
+/*
+ * DrawEdge( hDC,x1,y1,x2,y2,nFlag )
+ */
+HB_FUNC( HWG_GTK_DRAWEDGE )
+{
+
+   hwg_gtk_drawedge( (PHWGUI_HDC) HB_PARHANDLE(1), hb_parni( 2 ), hb_parni( 3 ),
+         hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ) );
 }
 
 HB_FUNC( HWG_LOADICON )

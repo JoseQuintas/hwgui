@@ -16,6 +16,13 @@ CLASS HPanel INHERIT HControl
 
    DATA winclass   INIT "PANEL"
 
+   DATA hBox
+   DATA hScrollV  INIT Nil
+   DATA hScrollH  INIT Nil
+   DATA nScrollV  INIT 0
+   DATA nScrollH  INIT 0
+   DATA bVScroll, bHScroll
+
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,lDocked )
    METHOD Activate()
@@ -25,7 +32,6 @@ CLASS HPanel INHERIT HControl
    METHOD Move( x1,y1,width,height )
 
 ENDCLASS
-
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
                   bInit,bSize,bPaint,lDocked ) CLASS HPanel
@@ -44,7 +50,7 @@ Return Self
 METHOD Activate CLASS HPanel
 
    IF !Empty( ::oParent:handle )
-      ::handle := hwg_Createpanel( ::oParent:handle, ::id, ;
+      ::handle := hwg_Createpanel( Self, ::id, ;
                    ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -54,6 +60,17 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
 
    IF msg == WM_PAINT
       ::Paint()
+
+   ELSEIF msg == WM_HSCROLL
+      IF ::bHScroll != Nil
+         Eval( ::bHScroll, Self )
+      ENDIF
+
+   ELSEIF msg == WM_VSCROLL
+      IF ::bVScroll != Nil
+         Eval( ::bVScroll, Self )
+      ENDIF
+
    ELSE
       Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
@@ -92,6 +109,31 @@ Return Nil
 
 METHOD Move( x1,y1,width,height )  CLASS HPanel
 
-   ::Super:Move( x1,y1,width,height,.T. )
+   LOCAL lMove := .F. , lSize := .F.
+
+   IF x1 != Nil .AND. x1 != ::nLeft
+      ::nLeft := x1
+      lMove := .T.
+   ENDIF
+   IF y1 != Nil .AND. y1 != ::nTop
+      ::nTop := y1
+      lMove := .T.
+   ENDIF
+   IF width != Nil .AND. width != ::nWidth
+      ::nWidth := width
+      lSize := .T.
+   ENDIF
+   IF height != Nil .AND. height != ::nHeight
+      ::nHeight := height
+      lSize := .T.
+   ENDIF
+   IF lMove .OR. lSize
+      hwg_MoveWidget( ::hbox, iif( lMove,::nLeft,Nil ), iif( lMove,::nTop,Nil ), ;
+         iif( lSize, ::nWidth, Nil ), iif( lSize, ::nHeight, Nil ), .F. )
+      hwg_MoveWidget( ::handle, Nil, ::nTop, ;
+         iif( lSize, ::nWidth, Nil ), iif( lSize, ::nHeight, Nil ), .F. )
+   ENDIF
+
+   //::Super:Move( x1,y1,width,height,.T. )
 Return Nil
 

@@ -666,28 +666,79 @@ HB_FUNC( HWG_CREATESEP )
 */
 HB_FUNC( HWG_CREATEPANEL )
 {
+   GtkWidget *vbox, *hbox;
+   GtkWidget *vscroll = NULL, *hscroll = NULL;
    GtkWidget *hCtrl;
    GtkFixed *box, *fbox;
+   GObject *handle;
+   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
    HB_ULONG ulStyle = hb_parnl( 3 );
+   gint nWidth = hb_parnl( 6 ), nHeight = hb_parnl( 7 );
+
+   temp = GetObjectVar( pObject, "OPARENT" );
+   handle = ( GObject * ) HB_GETHANDLE( GetObjectVar( temp, "HANDLE" ) );
 
    fbox = ( GtkFixed * ) gtk_fixed_new(  );
+
+   hbox = gtk_hbox_new( FALSE, 0 );
+   vbox = gtk_vbox_new( FALSE, 0 );
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
       hCtrl = gtk_drawing_area_new();
    else
       hCtrl = gtk_toolbar_new();
 
-   box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
+   gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
+   if( ulStyle & WS_VSCROLL )
+   {
+      GtkObject *adjV;
+      adjV = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
+      vscroll = gtk_vscrollbar_new( GTK_ADJUSTMENT( adjV ) );
+      gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
+
+      temp = HB_PUTHANDLE( NULL, adjV );
+      SetObjectVar( pObject, "_HSCROLLV", temp );
+      hb_itemRelease( temp );
+
+      SetWindowObject( ( GtkWidget * ) adjV, pObject );
+      set_signal( ( gpointer ) adjV, "value_changed", WM_VSCROLL, 0, 0 );
+   }
+
+   gtk_box_pack_start( GTK_BOX( vbox ), (GtkWidget*)fbox, TRUE, TRUE, 0 );
+   gtk_fixed_put( fbox, hCtrl, 0, 0 );
+   if( ulStyle & WS_HSCROLL )
+   {
+      GtkObject *adjH;
+      adjH = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
+      hscroll = gtk_hscrollbar_new( GTK_ADJUSTMENT( adjH ) );
+      gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
+
+      temp = HB_PUTHANDLE( NULL, adjH );
+      SetObjectVar( pObject, "_HSCROLLH", temp );
+      hb_itemRelease( temp );
+
+      SetWindowObject( ( GtkWidget * ) adjH, pObject );
+      set_signal( ( gpointer ) adjH, "value_changed", WM_HSCROLL, 0, 0 );
+   }
+
+   box = getFixedBox( handle );
    if( box )
    {
-      gtk_fixed_put( box, ( GtkWidget * ) fbox, hb_parni( 4 ),
-            hb_parni( 5 ) );
-      gtk_widget_set_size_request( ( GtkWidget * ) fbox, hb_parni( 6 ),
-            hb_parni( 7 ) );
+      gtk_fixed_put( box, ( GtkWidget * ) hbox, hb_parni( 4 ), hb_parni( 5 ) );
+      gtk_widget_set_size_request( ( GtkWidget * ) hbox, nWidth, nHeight );
+      if( vscroll )
+         nWidth -= 12;
+      if( hscroll )
+         nHeight -= 12;
+      gtk_widget_set_size_request( hCtrl, nWidth, nHeight );
    }
-   gtk_fixed_put( fbox, hCtrl, 0, 0 );
-   gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
+   
    g_object_set_data( ( GObject * ) hCtrl, "fbox", ( gpointer ) fbox );
+
+   temp = HB_PUTHANDLE( NULL, hbox );
+   SetObjectVar( pObject, "_HBOX", temp );
+   hb_itemRelease( temp );
+
    GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
       set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
@@ -837,6 +888,10 @@ HB_FUNC( HWG_MOVEWIDGET )
       gtk_widget_get_size_request( widget, &w, &h );
       w1 = ( HB_ISNIL( 4 ) ) ? w : hb_parni( 4 );
       h1 = ( HB_ISNIL( 5 ) ) ? h : hb_parni( 5 );
+      if( w1 > widget->parent->allocation.width )
+         w1 = widget->parent->allocation.width;
+      if( h1 > widget->parent->allocation.height )
+         h1 = widget->parent->allocation.height;
       if( w != w1 || h != h1 )
       {
          gtk_widget_set_size_request( widget, w1, h1 );

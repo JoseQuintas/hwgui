@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-06-08 12:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/activex/c_activex.c
+  * contrib/activex/h_activex.prg
+  * contrib/activex/hhtml.prg
+    ! Some fixes. The HActiveX class should work now.
+
 2016-02-05 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
   * source/gtk/panel.prg

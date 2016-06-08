@@ -29,11 +29,12 @@
 
 //-----------------------------------------------------------------------------------------------//
 CLASS HActiveX FROM HControl
-  CLASS VAR winclass	INIT "ACTIVEX"
-   DATA oOle      INIT nil
-   DATA hSink     INIT nil
-   DATA hAtl      INIT nil
-   DATA hObj      INIT nil
+
+   CLASS VAR winclass	INIT "ACTIVEX"
+   DATA oOle      INIT Nil
+   DATA hSink     INIT Nil
+   DATA hAtl      INIT Nil
+   DATA hObj      INIT Nil
 
    METHOD Release
    METHOD New
@@ -53,37 +54,41 @@ METHOD New( oWnd, cProgId, nTop, nLeft, nWidth, nHeight, bSize ) CLASS HActiveX
    LOCAL i,a,h,n
    LOCAL oError, bErrorBlock
 
-   nStyle   := WS_CHILD + WS_VISIBLE + WS_CLIPCHILDREN
+   nStyle   := WS_CHILD + WS_VISIBLE //+ WS_CLIPCHILDREN
    nExStyle := 0
    cClsName := "AtlAxWin"
 
    ::Super:New( oWnd, , nStyle, nLeft, nTop, nWidth, nHeight )   // ,,,,bSize)
    ::title = cProgId
 
-   ::handle = hwg_Createactivex(  nExStyle, cClsName, cProgId, ::style, ;
+   ::handle := hwg_Createactivex(  nExStyle, cClsName, cProgId, ::style, ;
                               ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                               ::oParent:handle, ::Id     ;
                             )
 
    ::Init()
 
-   ::hObj   := hwg_Atlaxgetdisp( ::handle )
+   ::hObj := hwg_Atlaxgetdisp( ::handle )
 
-   bErrorBlock := ErrorBlock( { |x| break( x ) } )
-   #ifdef __XHARBOUR__
+#ifdef __XHARBOUR__
+      bErrorBlock := ErrorBlock( { |x| break( x ) } )
       TRY
          ::oOle := ToleAuto():New( ::hObj )
       CATCH oError
          hwg_Msginfo( oError:Description )
       END
-   #else
-      BEGIN SEQUENCE
-         ::oOle := ToleAuto():New( ::hObj )
-      RECOVER USING oError
-         hwg_Msginfo( oError:Description )
-      END
-   #endif
-   ErrorBlock( bErrorBlock )
+      ErrorBlock( bErrorBlock )
+#else
+      //hwg_writelog( Valtype(::hObj) + Iif(__oleIsDisp( ::hObj ), " T"," F") )
+      ::oOle := win_oleAuto()
+      IF __oleIsDisp( ::hObj )
+         ::oOle:__hObj := ::hObj
+      ENDIF
+      IF Empty( ::oOle:__hObj )
+         hwg_MsgStop( "Invalid argument to contructor!" )
+         RETURN Nil
+      ENDIF
+#endif
 
    hwg_Setupconnectionpoint( ::hObj, @hSink, ::aAxEv , ::aAxExec )
    ::hSink := hSink
@@ -95,7 +100,8 @@ METHOD Release() CLASS HActiveX
 *-----------------------------------------------------------------------------*
    hwg_Shutdownconnectionpoint( ::hSink )
    hwg_Releasedispatch( ::hObj )
-Return ::Super:Release()
+
+Return Nil
 
 *-----------------------------------------------------------------------------* 
 METHOD __Error( ... ) CLASS HActiveX 
@@ -107,6 +113,7 @@ cMessage := __GetMessage()
       cMessage := SubStr( cMessage, 2 )
    ENDIF
 
+   //hwg_writelog( Valtype(::oOle)+Valtype(cMessage)+Valtype(HB_aParams()) )
    RETURN HB_ExecFromArray( ::oOle, cMessage, HB_aParams() )
 
 //-----------------------------------------------------------------------------------------------//

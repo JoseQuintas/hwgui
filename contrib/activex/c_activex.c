@@ -40,6 +40,9 @@
 #include <hbstack.h>
 #include <ocidl.h>
 #include <hbapiitm.h>
+#if !defined( __XHARBOUR__ )
+   #include <hbwinole.h>
+#endif
 #include "guilib.h"
 #ifdef HB_ITEM_NIL
 #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
@@ -53,9 +56,9 @@ typedef HRESULT( WINAPI * LPAtlAxCreateControl ) ( LPCOLESTR, HWND, IStream *,
       IUnknown ** );
 
 HMODULE hAtl = NULL;
-LPAtlAxWinInit AtlAxWinInit;
-LPAtlAxGetControl AtlAxGetControl;
-LPAtlAxCreateControl AtlAxCreateControl;
+LPAtlAxWinInit AtlAxWinInit = NULL;
+LPAtlAxGetControl AtlAxGetControl = NULL;
+LPAtlAxCreateControl AtlAxCreateControl = NULL;
 
 static void _Ax_Init( void )
 {
@@ -86,7 +89,7 @@ HB_FUNC( HWG_CREATEACTIVEX )
          HB_ISNIL( 6 ) ? CW_USEDEFAULT : hb_parni( 6 ),    // nTop
          HB_ISNIL( 7 ) ? 544 : hb_parni( 7 ),      // nWidth
          HB_ISNIL( 8 ) ? 375 : hb_parni( 8 ),      // nHeight
-         HB_ISNIL( 9 ) ? HWND_DESKTOP : ( HWND ) hb_parnl( 9 ),    // oParent:handle
+         HB_ISNIL( 9 ) ? HWND_DESKTOP : ( HWND ) HB_PARHANDLE( 9 ),    // oParent:handle
          // HB_ISNIL( 10 ) ? NULL                : (HMENU) hb_parnl( 10 ),  // Id
          // GetModuleHandle( 0 ),
          0, 0, NULL );
@@ -95,16 +98,22 @@ HB_FUNC( HWG_CREATEACTIVEX )
 
 }
 
-
 HB_FUNC( HWG_ATLAXGETDISP )
 {
-   IUnknown *pUnk;
+   IUnknown *pUnk = NULL;
    IDispatch *pDisp;
+   HWND hCtrl = ( HWND ) HB_PARHANDLE( 1 );
+
    _Ax_Init(  );
-   AtlAxGetControl( ( HWND ) HB_PARHANDLE( 1 ), &pUnk );
+   AtlAxGetControl( hCtrl, &pUnk );
    pUnk->lpVtbl->QueryInterface( pUnk, &IID_IDispatch, ( void ** ) &pDisp );
    pUnk->lpVtbl->Release( pUnk );
+
+#if defined( __XHARBOUR__ )
    HB_RETHANDLE( pDisp );
+#else
+   hb_oleItemPut( hb_stackReturnItem(), pDisp );
+#endif
 }
 
 /*
@@ -118,9 +127,6 @@ HB_FUNC( HWG_ATLAXGETDISP )
 #ifdef __USEHASHEVENTS
 #include <hashapi.h>
 #endif
-
-   //------------------------------------------------------------------------------
-HRESULT hb_oleVariantToItem( PHB_ITEM pItem, VARIANT * pVariant );
 
    //------------------------------------------------------------------------------
 static void HB_EXPORT hb_itemPushList( ULONG ulRefMask, ULONG ulPCount,
@@ -556,7 +562,11 @@ HB_FUNC( HWG_SETUPCONNECTIONPOINT )
    register IEventHandler *thisobj;
    DWORD dwCookie = 0;
 
-   device_interface *pdevice_interface = ( device_interface * ) hb_parnl( 1 );
+#if defined( __XHARBOUR__ )
+   device_interface *pdevice_interface = ( device_interface * ) HB_PARHANDLE( 1 );
+#else
+   device_interface *pdevice_interface = ( device_interface * ) hb_oleItemGet( hb_param( 1, HB_IT_ANY ) );
+#endif
    MyRealIEventHandler *pThis;
 
    // Allocate our IEventHandler object (actually a MyRealIEventHandler)
@@ -671,7 +681,7 @@ HB_FUNC( HWG_SETUPCONNECTIONPOINT )
 #endif
 
       pThis->pEvents = hb_itemNew( hb_param( 3, HB_IT_ANY ) );
-      hb_stornl( ( LONG ) pThis, 2 );
+      HB_STOREHANDLE( pThis, 2 );
 
    }
 
@@ -696,8 +706,11 @@ HB_FUNC( HWG_SHUTDOWNCONNECTIONPOINT )
 //------------------------------------------------------------------------------
 HB_FUNC( HWG_RELEASEDISPATCH )
 {
-   IDispatch *pObj;
-   pObj = ( IDispatch * ) HB_PARHANDLE( 1 );
+#if defined( __XHARBOUR__ )
+   IDispatch *pObj = ( IDispatch * ) HB_PARHANDLE( 1 );
+#else
+   IDispatch *pObj = ( IDispatch * ) hb_oleItemGet( hb_param( 1, HB_IT_ANY ) );
+#endif
    pObj->lpVtbl->Release( pObj );
 }
 

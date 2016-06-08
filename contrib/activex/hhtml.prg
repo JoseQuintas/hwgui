@@ -52,7 +52,7 @@ Return Self
 
 METHOD Activate CLASS HHtml
 
-   IF ::oParent:handle != 0
+   IF !Empty( ::oParent:handle )
      ::oParent:oEmbedded := Self
       IF !hwgax_EmbedBrowserObject( ::oParent:handle )
          hwg_Msgstop( "Can't embed IE object!","HHtml():New()" )

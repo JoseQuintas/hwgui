@@ -41,7 +41,10 @@
 #include <ocidl.h>
 #include <hbapiitm.h>
 #if !defined( __XHARBOUR__ )
-   #include <hbwinole.h>
+   //#include <hbwinole.h>
+   extern HB_EXPORT void        hb_oleVariantToItem( PHB_ITEM pItem, VARIANT * pVariant );
+   extern HB_EXPORT IDispatch * hb_oleItemGet( PHB_ITEM pItem );
+   extern HB_EXPORT PHB_ITEM    hb_oleItemPut( PHB_ITEM pItem, IDispatch * pDisp );
 #endif
 #include "guilib.h"
 #ifdef HB_ITEM_NIL

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-06-10 10:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/activex/c_activex.c
+    * Added declarations of few hb_ole... functions to avoid using of hbwinole.h
+
 2016-06-08 12:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/activex/c_activex.c
   * contrib/activex/h_activex.prg

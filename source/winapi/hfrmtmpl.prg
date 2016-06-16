@@ -1370,7 +1370,7 @@ Memvar lLastCycle, lSkipItem
             ENDIF
             IF oItem:obj == Nil
                IF ( xProperty := aGetSecond( oItem:aProp,"font" ) ) != Nil
-                  oItem:obj := hrep_FontFromxml( ::oPrinter,xProperty,::nKoefY,aGetSecond(::aProp,"fonth") )
+                  oItem:obj := hrep_FontFromxml( ::oPrinter,xProperty,::nKoefY,aGetSecond(oItem:aProp,"fonth") )
                ENDIF
             ENDIF
             hwg_Settransparentmode( ::oPrinter:hDC,.T. )

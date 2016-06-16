@@ -35,7 +35,8 @@ CLASS HPrinter INHERIT HObject
    DATA lUseMeta   INIT .F.
    DATA lastPen, lastFont
    DATA aPages, aJob
-   DATA aFonts, aPens, aBitmaps
+   DATA aFonts INIT {}
+   DATA aPens, aBitmaps
    DATA oFont, oPen
    DATA cScriptFile
 

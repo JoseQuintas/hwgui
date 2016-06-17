@@ -104,6 +104,7 @@ typedef struct
    int           iFonts;
    int       iFontsCurr;
    TEDATTR *      pattr;
+   int         iAttrLen;
    int     *     pattrf;
    HDC           hDCScr;
    HDC           hDCPrn;
@@ -386,7 +387,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
 
 void ted_ClearAttr( TEDIT *pted )
 {
-   memset( pted->pattr, 0, sizeof( TEDATTR ) * TEDATTR_MAX );
+   memset( pted->pattr, 0, sizeof( TEDATTR ) * pted->iAttrLen );
    memset( pted->pattrf, 0, sizeof( int ) * TEDATTRF_MAX );
 }
 
@@ -424,6 +425,7 @@ TEDIT * ted_init( void )
    pted->pFontsPrn =
          ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
 
+   pted->iAttrLen = TEDATTR_MAX;
    pted->pattr = ( TEDATTR * ) hb_xgrab( sizeof( TEDATTR ) * TEDATTR_MAX );
    pted->pattrf = ( int * ) hb_xgrab( sizeof( int ) * TEDATTRF_MAX );
    ted_ClearAttr( pted );
@@ -521,12 +523,26 @@ HB_FUNC( HCED_CLEARATTR )
 HB_FUNC( HCED_SETATTR )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-   int i = hb_parni(3);
+   int iPos = hb_parni(2), i = hb_parni(3), iLen;
    int iFont = hb_parni(4)-1;
    COLORREF fg = (COLORREF) hb_parnl(5);
    COLORREF bg = (COLORREF) hb_parnl(6);
-   TEDATTR * pattr = pted->pattr + hb_parni(2) - 1;
+   TEDATTR * pattr;
 
+   //hwg_writelog( NULL, "%lu %lu\r\n", hb_parni(2),i );
+
+   if( iPos + i >= pted->iAttrLen )
+   {     
+      iLen = pted->iAttrLen;
+      pted->iAttrLen = iPos + i + 128;
+      //hwg_writelog( NULL, "realloc %lu %lu\r\n", iLen,pted->iAttrLen );
+      pted->pattr = ( TEDATTR * ) hb_xrealloc( pted->pattr,
+            sizeof(TEDATTR) * pted->iAttrLen );
+      memset( pted->pattr + iLen, 0, sizeof( TEDATTR ) * ( pted->iAttrLen-iLen ) );
+      //hwg_writelog( NULL, "realloc - Ok\r\n" );
+   }
+
+   pattr = pted->pattr + iPos - 1;
    for( ; i; i--,pattr++ )
    {
       pattr->fg = fg;
@@ -534,6 +550,7 @@ HB_FUNC( HCED_SETATTR )
       if( iFont >= 0 )
          pattr->iFont = iFont;
    }
+   //hwg_writelog( NULL, "SetAttr - end\r\n" );
 }
 
 HB_FUNC( HCED_ADDATTRFONT )

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-06-17 09:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hpanel.prg
+  * source/gtk/hprinter.prg
+    * Print preview dialog extended
+  * source/gtk/hwinprn.prg
+    * Synhronized with winapi version
+
 2016-06-16 15:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hwinprn.prg
     * It is possible now to set the width of a print report in characters and thus

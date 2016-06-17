@@ -130,8 +130,10 @@ METHOD Move( x1,y1,width,height )  CLASS HPanel
    IF lMove .OR. lSize
       hwg_MoveWidget( ::hbox, iif( lMove,::nLeft,Nil ), iif( lMove,::nTop,Nil ), ;
          iif( lSize, ::nWidth, Nil ), iif( lSize, ::nHeight, Nil ), .F. )
-      hwg_MoveWidget( ::handle, Nil, ::nTop, ;
-         iif( lSize, ::nWidth, Nil ), iif( lSize, ::nHeight, Nil ), .F. )
+      IF lSize
+         hwg_MoveWidget( ::handle, Nil, Nil, ::nWidth, ::nHeight, .F. )
+         hwg_Redrawwindow( ::handle )
+      ENDIF
    ENDIF
 
    //::Super:Move( x1,y1,width,height,.T. )

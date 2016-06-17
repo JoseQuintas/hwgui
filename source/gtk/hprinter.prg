@@ -67,7 +67,7 @@ CLASS HPrinter
    METHOD SaveScript( cScriptFile )
    METHOD Preview()
    METHOD PaintDoc( oCanvas )
-   METHOD PrintDoc( lCurr )
+   METHOD PrintDoc()
    METHOD ChangePage( oCanvas, oSayPage, n, nPage )
    METHOD GetTextWidth( cString, oFont )  INLINE hwg_gp_GetTextSize( ::hDC, cString, oFont:name, oFont:height )
 
@@ -423,28 +423,20 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
 
    @ 1, 31 LINE LENGTH TOOL_SIDE_WIDTH - 1
 
-   @ 3, 36 OWNERBUTTON oBtn  ON CLICK { || ::PrintDoc( .F. ) } ;
-      SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT "Print all" FONT oFont     ;
-      TOOLTIP iif( aTooltips != Nil, aTooltips[ 2 ], "Print all pages" )
-   IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[ 3 ] != Nil
-      oBtn:oBitmap := iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 3 ] ), HBitmap():AddFile( aBitmaps[ 3 ] ) )
-      oBtn:title   := Nil
-      oBtn:lTransp := lTransp
-   ENDIF
-   @ 3, 62 OWNERBUTTON oBtn  ON CLICK { || ::PrintDoc( .T. ) } ;
+   @ 3, 36 OWNERBUTTON oBtn  ON CLICK { || ::PrintDoc() } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT "Print" FONT oFont         ;
-      TOOLTIP iif( aTooltips != Nil, aTooltips[ 2 ], "Print current page" )
+      TOOLTIP iif( aTooltips != Nil, aTooltips[ 2 ], "Print file" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[ 3 ] != Nil
       oBtn:oBitmap := iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 3 ] ), HBitmap():AddFile( aBitmaps[ 3 ] ) )
       oBtn:title   := Nil
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3, 86 COMBOBOX oSayPage ITEMS aPage ;
+   @ 3, 62 COMBOBOX oSayPage ITEMS aPage ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 COLOR "fff000" backcolor 12507070 ;
       ON CHANGE { || ::ChangePage( oCanvas, oSayPage, , oSayPage:GetValue() ) } STYLE WS_VSCROLL
 
-   @ 3, 110 OWNERBUTTON oBtn ON CLICK { || ::ChangePage( oCanvas, oSayPage, 0 ) } ;
+   @ 3, 86 OWNERBUTTON oBtn ON CLICK { || ::ChangePage( oCanvas, oSayPage, 0 ) } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT "|<<" FONT oFont                 ;
       TOOLTIP iif( aTooltips != Nil, aTooltips[ 3 ], "First page" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 3 .AND. aBitmaps[ 4 ] != Nil
@@ -453,7 +445,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3, 134 OWNERBUTTON oBtn ON CLICK { || ::ChangePage( oCanvas, oSayPage, 1 ) } ;
+   @ 3, 110 OWNERBUTTON oBtn ON CLICK { || ::ChangePage( oCanvas, oSayPage, 1 ) } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT ">>" FONT oFont                  ;
       TOOLTIP iif( aTooltips != Nil, aTooltips[ 4 ], "Next page" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4 .AND. aBitmaps[ 5 ] != Nil
@@ -462,7 +454,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3, 158 OWNERBUTTON oBtn ON CLICK { || ::ChangePage( oCanvas, oSayPage, - 1 ) } ;
+   @ 3, 134 OWNERBUTTON oBtn ON CLICK { || ::ChangePage( oCanvas, oSayPage, - 1 ) } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT "<<" FONT oFont    ;
       TOOLTIP iif( aTooltips != Nil, aTooltips[ 5 ], "Previous page" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5 .AND. aBitmaps[ 6 ] != Nil
@@ -471,7 +463,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3, 182 OWNERBUTTON oBtn ON CLICK { || ::ChangePage( oCanvas, oSayPage, 2 ) } ;
+   @ 3, 158 OWNERBUTTON oBtn ON CLICK { || ::ChangePage( oCanvas, oSayPage, 2 ) } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT ">>|" FONT oFont   ;
       TOOLTIP iif( aTooltips != Nil, aTooltips[ 6 ], "Last page" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 6 .AND. aBitmaps[ 7 ] != Nil
@@ -480,9 +472,9 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 1, 213 LINE LENGTH TOOL_SIDE_WIDTH - 1
+   @ 1, 189 LINE LENGTH TOOL_SIDE_WIDTH - 1
 
-   @ 3, 216 OWNERBUTTON oBtn ON CLICK { || iif( ::nZoom > 0, ( ::nZoom -- ,hwg_Redrawwindow(oCanvas:handle) ), .T. ) } ;
+   @ 3, 192 OWNERBUTTON oBtn ON CLICK { || iif( ::nZoom > 0, ( ::nZoom -- ,hwg_Redrawwindow(oCanvas:handle) ), .T. ) } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT "(-)" FONT oFont   ;
       TOOLTIP iif( aTooltips != Nil, aTooltips[ 7 ], "Zoom out" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 7 .AND. aBitmaps[ 8 ] != Nil
@@ -491,7 +483,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3, 240 OWNERBUTTON oBtn ON CLICK { || ::nZoom ++ , hwg_Redrawwindow(oCanvas:handle) } ;
+   @ 3, 216 OWNERBUTTON oBtn ON CLICK { || ::nZoom ++ , hwg_Redrawwindow(oCanvas:handle) } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT "(+)" FONT oFont   ;
       TOOLTIP iif( aTooltips != Nil, aTooltips[ 8 ], "Zoom in" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8 .AND. aBitmaps[ 9 ] != Nil
@@ -500,7 +492,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 1, 267 LINE LENGTH TOOL_SIDE_WIDTH - 1
+   @ 1, 243 LINE LENGTH TOOL_SIDE_WIDTH - 1
 
    IF aBootUser != Nil
 
@@ -582,21 +574,13 @@ METHOD PaintDoc( oCanvas ) CLASS HPrinter
 
    RETURN Nil
 
-METHOD PrintDoc( lCurr )
-   LOCAL nOper := 0, cExt, aPages
+METHOD PrintDoc()
+   LOCAL nOper := 0, cExt
 
-   IF lCurr == Nil .OR. !lCurr
-      IF !Empty( ::cPrinterName ) .AND. ( cExt := Lower( FilExten( ::cPrinterName ) ) ) $ "pdf;ps;png;svg;"
-         nOper := iif( cExt == "pdf", 1, iif( cExt == "ps",2,iif( cExt == "png",3,4 ) ) )
-      ENDIF
-      hwg_gp_Print( ::hDC, ::aPages, Len( ::aPages ), nOper, ::cPrinterName )
-   ELSE
-      aPages := { "page,1,px," + Iif( ::nOrient == 1, "p", "l" ) + crlf + ;
-            "img,10,10," + ;
-            LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
-            iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + cImageName + crlf
-            }
+   IF !Empty( ::cPrinterName ) .AND. ( cExt := Lower( FilExten( ::cPrinterName ) ) ) $ "pdf;ps;png;svg;"
+      nOper := iif( cExt == "pdf", 1, iif( cExt == "ps",2,iif( cExt == "png",3,4 ) ) )
    ENDIF
+   hwg_gp_Print( ::hDC, ::aPages, Len( ::aPages ), nOper, ::cPrinterName )
 
    RETURN Nil
 

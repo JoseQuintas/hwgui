@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-06-17 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hprinter.prg
+    * correct version uploaded (there was an incomplete experimental one)
+
 2016-06-17 09:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
   * source/gtk/hprinter.prg

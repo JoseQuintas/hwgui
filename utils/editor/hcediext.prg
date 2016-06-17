@@ -841,8 +841,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
       IF ::lPrinting
          aLine := Array( AL_LENGTH )
       ELSE
-         ::nLines ++
-         aLine := ::aLines[::nLines]
+         aLine := hced_Aline( Self )
       ENDIF
       aLine[AL_Y1] := aLine[AL_Y2] := yPos
       aLine[AL_LINE] := nL
@@ -900,8 +899,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
          ::nBoundL += Iif( Empty(aStruTbl[OB_TALIGN]), 0, Iif( aStruTbl[OB_TALIGN]==2, nWidth - nTWidth, Round( (nWidth - nTWidth) / 2, 0 ) ) )
       ENDIF
 
-      ::nLines ++
-      aLine := ::aLines[::nLines]
+      aLine := hced_Aline( Self )
       aLine[AL_Y1] := yPos
       aLine[AL_LINE] := nL
       aLine[AL_FIRSTC] := aLine[AL_SUBL] := 1
@@ -2474,7 +2472,7 @@ METHOD Find( cText, cId, cHRef, aStart, lCase, lRegex ) CLASS HCEdiExt
             cLine := Iif( lCase, ::aText[i], Lower( ::aText[i] ) )
             DO WHILE nPos > 0
                IF Empty( lRegex )
-                  nPos := hb_At( cText, cLine, nPos )
+                  nPos := hced_At( Self, cText, cLine, nPos )
                ELSEIF ( cRes := hb_Atx( cText, cLine, lCase, @nPos ) ) != Nil
                   IF lAll
                      Aadd( arr, { nPos, i, hced_Len( Self,cRes ) } )
@@ -2531,7 +2529,7 @@ METHOD Find( cText, cId, cHRef, aStart, lCase, lRegex ) CLASS HCEdiExt
                   cLine := Iif( lCase, aText[i1], Lower( ::aText[i] ) )
                   DO WHILE nPos > 0
                      IF Empty( lRegex )
-                        nPos := hb_At( cText, cLine, nPos )
+                        nPos := hced_At( Self, cText, cLine, nPos )
                      ELSEIF ( cRes := hb_Atx( cText, cLine, lCase, @nPos ) ) != Nil
                         IF lAll
                            Aadd( arr, { n, i, nPos, i1, hced_Len( Self,cRes ) } )
@@ -2708,7 +2706,21 @@ METHOD UpdSource( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HiliExt
    ENDIF
    RETURN Nil
 
-Static Function hced_td4Pos( oEdit, nL, xPos )
+STATIC FUNCTION hced_Aline( oEdit )
+
+   LOCAL i
+
+   oEdit:nLines ++
+   IF oEdit:nLines >= Len( oEdit:aLines )
+      oEdit:aLines := ASize( oEdit:aLines, Len( oEdit:aLines ) + 16 )
+      FOR i := 0 TO 15
+         oEdit:aLines[Len(oEdit:aLines)-i] := Array( AL_LENGTH )
+      NEXT
+   ENDIF
+
+   RETURN oEdit:aLines[oEdit:nLines]
+
+STATIC FUNCTION hced_td4Pos( oEdit, nL, xPos )
    LOCAL iTd, iCol := 0, aStru := oEdit:aStru[nL,1], aStruTbl
 
    xPos += oEdit:nShiftL
@@ -2724,7 +2736,7 @@ Static Function hced_td4Pos( oEdit, nL, xPos )
    NEXT
    RETURN Iif( iTd > Len( aStru[OB_OB] ), --iTd, iTd )
 
-Function hced_Stru4Pos( aStru, xPos, i, lExact )
+FUNCTION hced_Stru4Pos( aStru, xPos, i, lExact )
 
    IF Empty(lExact) .AND. xPos > 1
       xPos --
@@ -2747,7 +2759,7 @@ Function hced_Stru4Pos( aStru, xPos, i, lExact )
    NEXT
    RETURN Nil
 
-Function hced_CleanStru( oEdit, nLine1, nLine2 )
+FUNCTION hced_CleanStru( oEdit, nLine1, nLine2 )
    LOCAL nL, i, aStru, nDel
 
    FOR nL := nLine1 TO nLine2
@@ -2780,7 +2792,7 @@ Function hced_CleanStru( oEdit, nLine1, nLine2 )
    NEXT
    RETURN Nil
 
-Function hced_getAccInfo( oEdit, aPoint, nType )
+FUNCTION hced_getAccInfo( oEdit, aPoint, nType )
 
    LOCAL nOpt := 0, nOpt1, aLineStru := oEdit:aStru[aPoint[P_Y]], aStru
 
@@ -2808,7 +2820,7 @@ Function hced_getAccInfo( oEdit, aPoint, nType )
 
    RETURN nOpt
 
-Function hced_setAccInfo( oEdit, aPoint, nType, nOpt )
+FUNCTION hced_setAccInfo( oEdit, aPoint, nType, nOpt )
 
    LOCAL aLineStru := oEdit:aStru[aPoint[P_Y]], aStru
 

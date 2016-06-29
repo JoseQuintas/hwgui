@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-06-29 13:53 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hfrmtmpl.prg
+    ! Small fixes
+  * source/winapi/hradio.prg
+  * source/gtk/hradio.prg
+    * Value() SETGET method added for radiobutton
+  * utils/designer/hformgen.prg
+    ! Small fixes
+
 2016-06-17 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit_l.c
   * source/common/editor/hcedit_w.c

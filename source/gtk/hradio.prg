@@ -101,6 +101,7 @@ CLASS HRadioButton INHERIT HControl
       bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
+   METHOD Value( lValue )
 
 ENDCLASS
 
@@ -168,6 +169,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
    ENDIF
 
    RETURN Nil
+
+METHOD Value( lValue ) CLASS HRadioButton
+   IF lValue != Nil
+      hwg_CheckButton( ::handle, .T. )
+   ENDIF
+   RETURN hwg_isButtonChecked( ::handle )
 
 STATIC FUNCTION __Valid( oCtrl )
 

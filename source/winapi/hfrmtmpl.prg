@@ -831,7 +831,7 @@ Local hWnd, hDC, aMetr, aTMetr
 
 Return HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
 
-Function hwg_hfrm_FontFromXML( oXmlNode )
+Function hwg_hfrm_FontFromXML( oXmlNode, lReport )
 
 Local i, hWnd, hDC, aMetr
 Local width  := oXmlNode:GetAttribute( "width" )
@@ -845,7 +845,7 @@ Local under := oXmlNode:GetAttribute( "underline" )
      width := Val( width )
   ENDIF
   IF height != Nil
-     IF ( i := At( 'M',height ) ) != 0
+     IF !Empty(lReport) .AND. ( i := At( 'M',height ) ) != 0
         IF Empty( nVertRes )
            hDC := hwg_Getdc( hWnd := hwg_Getactivewindow() )
            aMetr  := hwg_Getdevicearea( hDC )

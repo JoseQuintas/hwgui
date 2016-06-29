@@ -525,7 +525,7 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
                      Aadd( aProp, { "Bottom", aRect[6] } )
                   ENDIF
                ELSEIF Lower( cPropertyName ) == "font"
-                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1] ) } )
+                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1],oDesigner:lReport ) } )
                ELSEIF Lower( cPropertyName ) == "atree"
                   Aadd( aProp, { cPropertyName,ReadTree( ,o ) } )
                ELSEIF !Empty(o:aItems)
@@ -609,7 +609,7 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
                   Aadd( aProp, { "Width", aRect[3] } )
                   Aadd( aProp, { "Height", aRect[4] } )
                ELSEIF Lower( cPropertyName ) == "font"
-                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1] ) } )
+                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1],oDesigner:lReport ) } )
                ELSEIF !Empty(o:aItems)
                   cProperty := Left( o:aItems[1],1 )
                   IF cProperty == '['

@@ -12,8 +12,6 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 
-   // #define BM_GETCHECK        0x00F0
-
 CLASS HRadioGroup INHERIT HObject
 
    CLASS VAR oGroupCurrent
@@ -116,7 +114,7 @@ CLASS HRadioButton INHERIT HControl
       bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, lTransp )
    METHOD Activate()
    METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, lInit, ctooltip, tcolor, bcolor )
-   METHOD Value( nValue ) SETGET
+   METHOD Value( lValue ) SETGET
 
 ENDCLASS
 
@@ -214,7 +212,10 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
 
    RETURN Self
 
-METHOD Value( nValue ) CLASS HRadioButton
+METHOD Value( lValue ) CLASS HRadioButton
+   IF lValue != Nil
+      hwg_Sendmessage( ::handle, BM_SETCHECK, Iif(lValue,BST_CHECKED,BST_UNCHECKED), 0 )
+   ENDIF
    RETURN ( hwg_Sendmessage( ::handle,BM_GETCHECK,0,0 ) == 1 )
 
 STATIC FUNCTION __Valid( oCtrl )

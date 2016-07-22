@@ -133,6 +133,14 @@ METHOD Move( x1,y1,width,height )  CLASS HPanel
       IF lSize
          hwg_MoveWidget( ::handle, Nil, Nil, ::nWidth, ::nHeight, .F. )
          hwg_Redrawwindow( ::handle )
+         /*
+         IF !Empty( ::hScrollV )
+            hwg_Redrawwindow( ::hScrollV )
+         ENDIF
+         IF !Empty( ::hScrollH )
+            hwg_Redrawwindow( ::hScrollH )
+         ENDIF
+         */
       ENDIF
    ENDIF
 

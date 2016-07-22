@@ -8,6 +8,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-07-22 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hfrmtmpl.prg
+    ! Fixes for images printing
+  * source/gtk/hdialog.prg
+  * source/gtk/hwindow.prg
+  * source/gtk/window.c
+    * Now windows and dialogs handles bGetFocus properly
+  * source/gtk/misc.c
+    * hwg_RunConsoleApp() returns the process exit code.
+  * source/gtk/hpanel.prg
+  * source/winapi/hwindow.prg
+    * Now windows handles bGetFocus properly
+  * source/winapi/misc.c
+    * Changes in hwg_RunConsoleApp() and hwg_RunApp()
+
 2016-06-29 13:53 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hfrmtmpl.prg
     ! Small fixes

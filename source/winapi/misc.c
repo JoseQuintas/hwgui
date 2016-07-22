@@ -920,7 +920,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    STARTUPINFO si;
    BOOL bSuccess;
 
-   DWORD dwRead, dwWritten; 
+   DWORD dwRead, dwWritten, dwExitCode;
    CHAR chBuf[BUFSIZE]; 
    HANDLE hOut = NULL;
    void * hStr;
@@ -966,6 +966,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    }
 
    WaitForSingleObject( pi.hProcess, INFINITE );
+   GetExitCodeProcess( pi.hProcess, &dwExitCode );
    CloseHandle( pi.hProcess );
    CloseHandle( pi.hThread );
    CloseHandle( g_hChildStd_OUT_Wr );
@@ -992,12 +993,37 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
       CloseHandle( hOut );
    CloseHandle( g_hChildStd_OUT_Rd );
 
-   hb_retni(0);
+   hb_retni( (int) dwExitCode);
 }
 
 HB_FUNC( HWG_RUNAPP )
 {
-   hb_retni( WinExec( hb_parc( 1 ), (HB_ISNIL(2))? SW_SHOW : ( UINT ) hb_parni( 2 ) ) );
+   if( HB_ISNIL(3) || !hb_parl(3) )
+      hb_retni( WinExec( hb_parc( 1 ), (HB_ISNIL(2))? SW_SHOW : ( UINT ) hb_parni( 2 ) ) );
+   else
+   {
+      STARTUPINFO si;
+      PROCESS_INFORMATION pi;
+      void * hStr;
+
+      ZeroMemory( &si, sizeof(si) );
+      si.cb = sizeof(si);
+      si.wShowWindow = SW_SHOW;
+      si.dwFlags = STARTF_USESHOWWINDOW;
+      ZeroMemory( &pi, sizeof(pi) );
+
+      CreateProcess( NULL,   // No module name (use command line)
+          (LPTSTR)HB_PARSTR( 1, &hStr, NULL ),  // Command line
+          NULL,           // Process handle not inheritable
+          NULL,           // Thread handle not inheritable
+          FALSE,          // Set handle inheritance to FALSE
+          CREATE_NEW_CONSOLE,   // No creation flags
+          NULL,           // Use parent's environment block
+          NULL,           // Use parent's starting directory 
+          &si,            // Pointer to STARTUPINFO structure
+          &pi );          // Pointer to PROCESS_INFORMATION structure
+      hb_strfree( hStr );
+   }
 }
 
 

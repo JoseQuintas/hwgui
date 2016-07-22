@@ -42,6 +42,7 @@ void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname );
 void SetWindowObject( GtkWidget * hWnd, PHB_ITEM pObject );
 void all_signal_connect( gpointer hWnd );
+void set_signal( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
 void cb_signal( GtkWidget *widget,gchar* data );
 gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data );
 void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 );
@@ -123,13 +124,14 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
    gtk_widget_add_events( hWnd, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK |
-         GDK_POINTER_MOTION_MASK );
+         GDK_POINTER_MOTION_MASK | GDK_FOCUS_CHANGE );
    set_event( ( gpointer ) hWnd, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) hWnd, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) hWnd, "motion_notify_event", 0, 0, 0 );
 
    all_signal_connect( G_OBJECT (hWnd) );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
+   set_event( (gpointer)hWnd, "focus_in_event", 0, 0, 0 );
 
    g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
@@ -184,13 +186,14 @@ HB_FUNC( HWG_CREATEDLG )
 
    gtk_widget_add_events( hWnd, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK |
-         GDK_POINTER_MOTION_MASK );
+         GDK_POINTER_MOTION_MASK | GDK_FOCUS_CHANGE );
    set_event( ( gpointer ) hWnd, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) hWnd, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) hWnd, "motion_notify_event", 0, 0, 0 );
 
    all_signal_connect( G_OBJECT (hWnd) );
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
+   set_event( (gpointer)hWnd, "focus_in_event", 0, 0, 0 );
 
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 

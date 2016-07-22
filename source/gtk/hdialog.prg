@@ -17,10 +17,10 @@ REQUEST HWG_ENDWINDOW
 STATIC aMessModalDlg := { ;
       { WM_COMMAND, { |o,w,l|hwg_DlgCommand( o,w,l ) } },     ;
       { WM_SIZE, { |o,w,l|hwg_onWndSize( o,w,l ) } },         ;
-      { WM_MOVE, { |o,w,l|hwg_onMove( o,w,l ) } },         ;
+      { WM_MOVE, { |o,w,l|hwg_onMove( o,w,l ) } },            ;
       { WM_INITDIALOG, { |o,w,l|InitModalDlg( o,w,l ) } },    ;
       { WM_DESTROY, { |o|onDestroy( o ) } },                  ;
-      { WM_ACTIVATE, { |o,w,l|onActivate( o,w,l ) } }         ;
+      { WM_SETFOCUS, { |o,w,l|onGetFocus( o,w,l ) } }         ;
       }
 
 STATIC FUNCTION onDestroy( oDlg )
@@ -288,13 +288,10 @@ FUNCTION hwg_DlgCommand( oDlg, wParam, lParam )
 
    RETURN 1
 
-STATIC FUNCTION onActivate( oDlg, wParam, lParam )
-   LOCAL iParLow := hwg_Loword( wParam )
+STATIC FUNCTION onGetFocus( oDlg, w, l )
 
-   IF iParLow > 0 .AND. oDlg:bGetFocus != Nil
+   IF oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )
-   ELSEIF iParLow == 0 .AND. oDlg:bLostFocus != Nil
-      Eval( oDlg:bLostFocus, oDlg )
    ENDIF
 
    RETURN 0

@@ -69,6 +69,18 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
    NEXT
    RETURN Nil
 
+STATIC FUNCTION hwg_onActivate( oDlg, wParam, lParam )
+
+   LOCAL iParLow := hwg_Loword( wParam ), b
+
+   IF iParLow > 0 .AND. oDlg:bGetFocus != Nil
+      Eval( oDlg:bGetFocus, oDlg )
+   ELSEIF iParLow == 0 .AND. oDlg:bLostFocus != Nil
+      Eval( oDlg:bLostFocus, oDlg )
+   ENDIF
+
+   RETURN 0
+
 STATIC FUNCTION hwg_onEnterIdle( oDlg, wParam, lParam )
    LOCAL oItem, b
    IF ( Empty( wParam ) .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
@@ -240,7 +252,7 @@ CLASS HMainWindow INHERIT HWindow
 
    CLASS VAR aMessages INIT { ;
       { WM_COMMAND, WM_ERASEBKGND, WM_MOVE, WM_SIZE, WM_SYSCOMMAND, ;
-      WM_NOTIFYICON, WM_ENTERIDLE, WM_ACTIVATEAPP, WM_CLOSE, WM_DESTROY, WM_ENDSESSION }, ;
+      WM_NOTIFYICON, WM_ACTIVATE, WM_ENTERIDLE, WM_ACTIVATEAPP, WM_CLOSE, WM_DESTROY, WM_ENDSESSION }, ;
       { ;
       {|o,w,l|onCommand( o, w, l ) },       ;
       {|o,w|onEraseBk( o, w ) },            ;
@@ -248,6 +260,7 @@ CLASS HMainWindow INHERIT HWindow
       {|o,w,l|hwg_onWndSize( o, w, l ) },   ;
       {|o,w|onSysCommand( o, w ) },         ;
       {|o,w,l|onNotifyIcon( o, w, l ) },    ;
+      {|o,w,l|hwg_onActivate( o, w, l ) },  ;
       {|o,w,l|hwg_onEnterIdle( o, w, l ) }, ;
       {|o,w,l|hwg_onEnterIdle( o, w, l ) }, ;
       {|o|onCloseQuery( o ) },              ;

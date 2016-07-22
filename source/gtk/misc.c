@@ -245,11 +245,11 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
     FILE *cmd_file = (FILE *) popen( hb_parc(1), "r" );
     FILE *hOut;
     char buf[CHUNK_LEN];
-    int bytes_read, iOutExist = 0;
+    int bytes_read, iOutExist = 0, iExitCode;
 
     if( !cmd_file )
     {
-        hb_retl( 0 );
+        hb_retni( -1 );
         return;
     }
 
@@ -266,11 +266,11 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
            fwrite( buf, 1, bytes_read, hOut );
     } while (bytes_read == CHUNK_LEN);
  
-    pclose(cmd_file);
+    iExitCode = pclose(cmd_file);
     if( iOutExist )
        fclose( hOut );
 
-    hb_retl( 1 ); 
+    hb_retni( iExitCode ); 
 }
 
 HB_FUNC( HWG_RUNAPP )

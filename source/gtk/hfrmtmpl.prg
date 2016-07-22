@@ -92,6 +92,8 @@ REQUEST DBSKIP
 REQUEST DBGOTOP
 REQUEST DBCLOSEAREA
 
+Memvar aImgs
+
 #ifndef G_CONSOLE_MODE
 
 CLASS HCtrlTmpl
@@ -1036,7 +1038,7 @@ METHOD PRINT( printer, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
    LOCAL oPrinter := Iif( printer != Nil, Iif( ValType(printer ) == "O",printer,HPrinter():New(printer, .T. ) ), HPrinter():New( , .T. ) )
    LOCAL i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1, nDuplex
    MEMVAR oReport
-   PRIVATE oReport := Self
+   PRIVATE oReport := Self, aImgs
 
    IF oPrinter == Nil
       RETURN Nil
@@ -1107,9 +1109,15 @@ METHOD PRINT( printer, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
          oPrinter:SetFont( oFont )
       ENDIF
       ::nTOffset := ::nAOffSet := ::ny := 0
+      aImgs := {}
       FOR i := 1 TO Len( ::aControls )
          ::PrintItem( ::aControls[i] )
       NEXT
+      IF !Empty( aImgs )
+         FOR i := 1 TO Len( aImgs )
+            ::oPrinter:Bitmap( aImgs[i,1],aImgs[i,2],aImgs[i,3],aImgs[i,4],, aImgs[i,5], aImgs[i,6] )
+         NEXT
+      ENDIF
       oPrinter:EndPage()
       IF ::lFinish
          EXIT
@@ -1135,14 +1143,15 @@ METHOD PrintAsPage( printer, nPageType, lPreview, p1, p2, p3, p4, p5 ) CLASS HRe
 Local oPrinter := Iif( printer != Nil, Iif( Valtype(printer)=="O",printer,HPrinter():New(printer,.T.) ), HPrinter():New(,.T.) )
 Local i, j, aMethod, xProperty, oFont, xTemp, nPWidth, nPHeight, nOrientation := 1, nDuplex
 Memvar oReport
-Private oReport := Self
+Private oReport := Self, aImgs := {}
 
    IF oPrinter == Nil
       Return Nil
    ENDIF
    SetDebugInfo( ::lDebug )
+#ifndef G_CONSOLE_MODE
    SetDebugger( ::lDebug )
-
+#endif
    FOR i := 1 TO Len( ::aProp )
       IF ::aProp[ i,1 ] == "paper size"
          IF Lower(::aProp[i,2]) == "a4"
@@ -1207,9 +1216,15 @@ Private oReport := Self
          oPrinter:SetFont( oFont )
       ENDIF
       ::nTOffset := ::nAOffSet := ::ny := 0
+      aImgs := {}
       FOR i := 1 TO Len( ::aControls )
          ::PrintItem( ::aControls[i] )
       NEXT
+      IF !Empty( aImgs )
+         FOR i := 1 TO Len( aImgs )
+            ::oPrinter:Bitmap( aImgs[i,1],aImgs[i,2],aImgs[i,3],aImgs[i,4],, aImgs[i,5], aImgs[i,6] )
+         NEXT
+      ENDIF
       oPrinter:EndPage()
       IF ::lFinish
          EXIT
@@ -1367,7 +1382,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
             ENDIF
             IF oItem:obj == Nil
                IF ( xProperty := aGetSecond( oItem:aProp,"font" ) ) != Nil
-                  oItem:obj := hrep_FontFromxml( ::oPrinter,xProperty,::nKoefY,aGetSecond(::aProp,"fonth") )
+                  oItem:obj := hrep_FontFromxml( ::oPrinter,xProperty,::nKoefY,aGetSecond(oItem:aProp,"fonth") )
                ENDIF
             ENDIF
             // hwg_Settransparentmode( ::oPrinter:hDC,.T. )
@@ -1410,10 +1425,13 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
       ELSEIF oItem:cClass == "hline"
          ::oPrinter:Line( x, y, x2, y, oItem:oPen )
       ELSEIF oItem:cClass == "bitmap"
+#ifndef G_CONSOLE_MODE
          IF oItem:obj == Nil .AND. !::oPrinter:lPreview
             oItem:obj := hwg_Openbitmap( aGetSecond( oItem:aProp,"bitmap" ), ::oPrinter:hDC )
          ENDIF
-         ::oPrinter:Bitmap( x,y,x2,y2,, oItem:obj, aGetSecond( oItem:aProp,"bitmap" ) )
+#endif
+         Aadd( aImgs, { x,y,x2,y2, oItem:obj, aGetSecond( oItem:aProp,"bitmap" ) } )
+         //::oPrinter:Bitmap( x,y,x2,y2,, oItem:obj, aGetSecond( oItem:aProp,"bitmap" ) )
       ENDIF
       ::ny := Max( ::ny, y2 + ::nAOffSet )
    ENDIF
@@ -1433,7 +1451,9 @@ METHOD ReleaseObj( aControls ) CLASS HRepTmpl
       ELSE
          IF !Empty( aControls[i]:obj )
             IF aControls[i]:cClass == "bitmap"
+#ifndef G_CONSOLE_MODE
                hwg_Deleteobject( aControls[i]:obj )
+#endif
                aControls[i]:obj := Nil
             ELSEIF aControls[i]:cClass == "label"
                aControls[i]:obj:Release()

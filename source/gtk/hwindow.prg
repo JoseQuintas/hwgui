@@ -201,9 +201,10 @@ METHOD EvalKeyList( nKey, nctrl ) CLASS HWindow
 CLASS HMainWindow INHERIT HWindow
 
    CLASS VAR aMessages INIT { ;
-      { WM_COMMAND,WM_MOVE,WM_SIZE,WM_CLOSE,WM_DESTROY }, ;
+      { WM_COMMAND,WM_SETFOCUS,WM_MOVE,WM_SIZE,WM_CLOSE,WM_DESTROY }, ;
       { ;
          {|o,w,l|onCommand(o,w,l)},        ;
+         {|o,w,l|onGetFocus(o,w,l)},       ;
          {|o,w,l|hwg_onMove(o,w,l)},       ;
          {|o,w,l|hwg_onWndSize(o,w,l)},    ;
          {|o|hwg_ReleaseAllWindows(o:handle)}, ;
@@ -311,4 +312,10 @@ Local iItem, iCont, aMenu, iParHigh, iParLow, nHandle
 
 Return 0
 
+STATIC FUNCTION onGetFocus( oDlg, w, l )
 
+   IF oDlg:bGetFocus != Nil
+      Eval( oDlg:bGetFocus, oDlg )
+   ENDIF
+
+   RETURN 0

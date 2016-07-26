@@ -381,7 +381,7 @@ METHOD MUp() CLASS HOwnButton
       ENDIF
       IF ::bClick != Nil
          hwg_Releasecapture()
-         Eval( ::bClick, ::oParent, ::id )
+         Eval( ::bClick, Self )
       ENDIF
       hwg_Invalidaterect( ::handle, 0 )
       //    hwg_Sendmessage( ::handle, WM_PAINT, 0, 0 )

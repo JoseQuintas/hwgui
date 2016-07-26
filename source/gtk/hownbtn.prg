@@ -266,7 +266,7 @@ METHOD MUp() CLASS HOwnButton
          ENDIF
       ENDIF
       IF ::bClick != Nil
-         Eval( ::bClick, ::oParent, ::id )
+         Eval( ::bClick, Self )
       ENDIF
       hwg_Redrawwindow( ::handle )
    ENDIF

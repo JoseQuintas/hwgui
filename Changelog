@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-07-26 14:19 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hownbtn.prg
+  * source/winapi/hownbtn.prg
+    * Changed list of parameters, passed to ON CLICK codeblock
+      of ownerbutton. Now it is the ownerbutton object itself.
+
 2016-07-22 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
     ! Fixes for images printing

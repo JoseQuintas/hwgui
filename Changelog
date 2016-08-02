@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-02 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+  * source/gtk/hownbtn.prg
+  * source/winapi/drawwidg.prg
+  * source/winapi/hownbtn.prg
+    * ::Draw( hDC, nWidth, nHeight ) method added to HStyle to draw styled control,
+      appropriate code moved from HOwnBtn():Paint() method.
+  * utils/editor/editor.prg
+    * Corrections due to above changes.
+
 2016-08-02 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcombo.prg
   * source/winapi/hcombo.prg

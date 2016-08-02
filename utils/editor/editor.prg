@@ -2466,10 +2466,10 @@ STATIC FUNCTION Help()
 
 STATIC FUNCTION About()
 
-   LOCAL oDlg, oStyle1, oStyle2
+   LOCAL oDlg, oStyle1, oStyle2, aRadius := { 8,8,8,8 }
 
-   oStyle1 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 1,, )
-   oStyle2 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 2,, )
+   oStyle1 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 1, aRadius, )
+   oStyle2 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 2, aRadius, )
 
    INIT DIALOG oDlg TITLE "About" ;
       AT 0, 0 SIZE 400, 330 FONT HWindow():GetMain():oFont COLOR hwg_colorC2N("CCCCCC")
@@ -2485,7 +2485,7 @@ STATIC FUNCTION About()
           TEXT "Close" COLOR hwg_colorC2N("0000FF")
 
    Atail(oDlg:aControls):aStyle := { oStyle1, oStyle2 }
-   Atail(oDlg:aControls):aRadius := { 8,8,8,8 }
+   //Atail(oDlg:aControls):aRadius := { 8,8,8,8 }
 
    ACTIVATE DIALOG oDlg CENTER
 

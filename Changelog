@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-02 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcombo.prg
+  * source/winapi/hcombo.prg
+    ! Small fix: exact comparison is used now for Ascan()
+
 2016-07-26 14:19 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hownbtn.prg
   * source/winapi/hownbtn.prg

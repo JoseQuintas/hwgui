@@ -142,7 +142,11 @@ METHOD Init() CLASS HComboBox
             hwg_Comboaddstring( ::handle, iif( ValType(::aItems[i] ) == "A", ::aItems[i,1], ::aItems[i] ) )
          NEXT
          IF ::lText
-            i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
+#ifdef __XHARBOUR__
+            i := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == ::xValue } ), AScan( ::aItems, {|s|s == ::xValue } ) )
+#else
+            i := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == ::xValue } ), hb_AScan( ::aItems, ::xValue,,,.T. ) )
+#endif
             hwg_Combosetstring( ::handle, i )
          ELSE
             hwg_Combosetstring( ::handle, ::xValue )
@@ -180,7 +184,11 @@ METHOD Refresh( xVal ) CLASS HComboBox
       NEXT
 
       IF ::lText
-         i := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == ::xValue } ), AScan( ::aItems, ::xValue ) )
+#ifdef __XHARBOUR__
+         i := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == ::xValue } ), AScan( ::aItems, {|s|s == ::xValue } ) )
+#else
+         i := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == ::xValue } ), hb_AScan( ::aItems, ::xValue,,,.T. ) )
+#endif
          hwg_Combosetstring( ::handle, i )
       ELSE
          hwg_Combosetstring( ::handle, ::xValue )
@@ -230,7 +238,11 @@ METHOD Value ( xValue ) CLASS HComboBox
 
    IF xValue != Nil
       IF ValType( xValue ) == "C"
-         xValue := iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, { |a|a[1] == xValue } ), AScan( ::aItems, xValue ) )
+#ifdef __XHARBOUR__
+         xValue := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == xValue } ), AScan( ::aItems, {|s|s == xValue } ) )
+#else
+         xValue := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == xValue } ), hb_AScan( ::aItems, xValue,,,.T. ) )
+#endif
       ENDIF
       ::SetItem( xValue )
 

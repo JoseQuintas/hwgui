@@ -197,7 +197,12 @@ METHOD SetItem( nPos ) CLASS HComboBox
 
 METHOD GetValue( nItem ) CLASS HComboBox
    LOCAL vari := hwg_edit_Gettext( ::hEdit )
-   LOCAL nPos := Iif( !Empty(::aItems) .AND. Valtype(::aItems[1]) == "A", Ascan(::aItems,{|a|a[1]==vari}), Ascan(::aItems,vari) )
+#ifdef __XHARBOUR__
+   LOCAL nPos := Iif( !Empty(::aItems) .AND. ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == vari } ), AScan( ::aItems, {|s|s == vari } ) )
+#else
+   LOCAL nPos := Iif( !Empty(::aItems) .AND. ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == vari } ), hb_AScan( ::aItems, vari,,,.T. ) )
+#endif
+
    LOCAL l := nPos > 0 .AND. Valtype(::aItems[nPos]) == "A"
 
    ::xValue := Iif( ::lText, vari, nPos )
@@ -210,7 +215,11 @@ METHOD Value ( xValue ) CLASS HComboBox
  
    IF xValue != Nil
       IF Valtype( xValue ) == "C"
-         xValue := Iif( Valtype(::aItems[1]) == "A", AScan( ::aItems, {|a|a[1]==xValue} ), AScan( ::aItems, xValue ) )
+#ifdef __XHARBOUR__
+         xValue := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == xValue } ), AScan( ::aItems, {|s|s == xValue } ) )
+#else
+         xValue := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == xValue } ), hb_AScan( ::aItems, xValue,,,.T. ) )
+#endif
       ENDIF
       ::SetItem( xValue )
 

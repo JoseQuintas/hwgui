@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-03 14:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+  * source/gtk/hownbtn.prg
+  * source/winapi/drawwidg.prg
+  * source/winapi/hownbtn.prg
+    * Parameters changed in HStyle():Draw() function
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * ::oStyleHead added to HBrowse class, ::DrawHeader() method added ( code was moved from
+      ::HeaderOut().
+      It is possible now to have styled browse headers.
+
 2016-08-02 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawwidg.prg
   * source/gtk/hownbtn.prg

@@ -545,7 +545,7 @@ CLASS HStyle INHERIT HObject
    DATA aCorners
 
    METHOD New( aColors, nOrient, aCorners, nBorder, tColor )
-   METHOD Draw( hDC, nWidth, nHeight )
+   METHOD Draw( hDC, nTop, nLeft, nRight, nBottom )
 ENDCLASS
 
 METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
@@ -582,15 +582,16 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
 
    RETURN Self
 
-METHOD Draw( hDC, nWidth, nHeight ) CLASS HStyle
+METHOD Draw( hDC, nTop, nLeft, nRight, nBottom ) CLASS HStyle
 
-   hwg_drawGradient( hDC, 0, 0, nWidth, nHeight, ::nOrient, ::aColors,, ::aCorners )
+   hwg_drawGradient( hDC, nTop, nLeft, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
    IF !Empty( ::oPen )
       hwg_Selectobject( hDC, ::oPen:handle )
-      hwg_Rectangle( hDC, 0, 0, nWidth-1, nHeight-1 )
+      hwg_Rectangle( hDC, nTop, nLeft, nRight-1, nBottom-1 )
    ENDIF
 
    RETURN Nil
+
 
 FUNCTION hwg_aCompare( arr1, arr2 )
 

@@ -113,6 +113,7 @@ CLASS HBrowse INHERIT HControl
    DATA aArray                                 // An array browsed if this is BROWSE ARRAY
    DATA lInFocus   INIT .F.                    // Set focus in :Paint()
    DATA recCurr INIT 0
+   DATA oStyleHead                             // An HStyle object to draw the header
    DATA headColor                              // Header text color
    DATA sepColor INIT 12632256                 // Separators color
    DATA lSep3d  INIT .F.
@@ -161,6 +162,7 @@ CLASS HBrowse INHERIT HControl
    METHOD DelColumn( nPos )
    METHOD Paint()
    METHOD LineOut()
+   METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen )
    METHOD HeaderOut( hDC )
    METHOD FooterOut( hDC )
    METHOD SetColumn( nCol )
@@ -716,7 +718,51 @@ METHOD Paint()  CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
+METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
+
+   LOCAL cStr, cNWSE, nLine //, oPenHdr
+
+   IF ::oStyleHead != Nil
+      ::oStyleHead:Draw( hDC, x1, y1, x2, y2 )
+      hwg_Selectobject( hDC, oPen:handle )
+   ELSE
+      hwg_Drawbutton( hDC, x1, y1, x2, y2, Iif(oColumn:cGrid == Nil, 5, 0 ) )
+   ENDIF
+
+   IF oColumn:cGrid != Nil
+      //IF oPenHdr == Nil
+      //   oPenHdr := HPen():Add( BS_SOLID, 1, 0 )
+      //ENDIF
+      //hwg_Selectobject( hDC, oPenHdr:handle )
+      cStr := oColumn:cGrid + ';'
+      FOR nLine := 1 TO ::nHeadRows
+         cNWSE := hb_tokenGet( @cStr, nLine, ';' )
+         IF At( 'S', cNWSE ) != 0
+            hwg_Drawline( hDC, x1, y1 + ::height * nLine, x2, y1 + ::height * nLine )
+         ENDIF
+         IF At( 'N', cNWSE ) != 0
+            hwg_Drawline( hDC, x1, y1 + ::height * (nLine-1), x2, y1 + ::height * (nLine-1) )
+         ENDIF
+         IF At( 'E', cNWSE ) != 0
+            hwg_Drawline( hDC, x2-1, y1 + ::height * (nLine-1) + 1, x2-1, y1 + ::height * nLine )
+         ENDIF
+         IF At( 'W', cNWSE ) != 0
+            hwg_Drawline( hDC, x1, y1 + ::height * (nLine-1) + 1, x1, y1 + ::height * nLine )
+         ENDIF
+      NEXT
+      //hwg_Selectobject( hDC, oPen:handle )
+      //IF oPenHdr != Nil
+      //   oPenHdr:Release()
+      //ENDIF
+   ENDIF
+   cStr := oColumn:heading + ';'
+   FOR nLine := 1 TO ::nHeadRows
+      hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x1+1,      ;
+            y1 + ::height * (nLine-1) + 1, x2, y1 + ::height * nLine, ;
+            oColumn:nJusHead  + Iif( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
+   NEXT
+
+   RETURN Nil
 
 METHOD HeaderOut( hDC ) CLASS HBrowse
 
@@ -724,12 +770,6 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    LOCAL nRows := Min( ::nRecords + iif( ::lAppMode,1,0 ), ::rowCount )
    LOCAL oPen // , oldBkColor := hwg_Setbkcolor( hDC,hwg_Getsyscolor(COLOR_3DFACE) )
    LOCAL oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
-
-   /*
-   IF ::lSep3d
-      oPenLight := HPen():Add( PS_SOLID,1,hwg_Getsyscolor(COLOR_3DHILIGHT) )
-   ENDIF
-   */
 
    IF ::lDispSep
       oPen := HPen():Add( PS_SOLID, 0.6, ::sepColor )
@@ -749,38 +789,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          xSize := Max( ::x2 - x, xSize )
       ENDIF
       if ::lDispHead .AND. !::lAppMode
-         IF oColumn:cGrid == nil
-            hwg_Drawbutton( hDC, x - 1, ::y1 - ::height * ::nHeadRows, x + xSize - 1, ::y1 + 1, 5 )
-         ELSE
-            hwg_Drawbutton( hDC, x - 1, ::y1 - ::height * ::nHeadRows, x + xSize - 1, ::y1 + 1, 0 )
-            IF oPenHdr == nil
-               oPenHdr := HPen():Add( BS_SOLID, 0.6, 0 )
-            ENDIF
-            hwg_Selectobject( hDC, oPenHdr:handle )
-            cStr := oColumn:cGrid + ';'
-            for nLine := 1 to ::nHeadRows
-               cNWSE := hb_tokenGet( @cStr, nLine, ';' )
-               IF At( 'S', cNWSE ) != 0
-                  hwg_Drawline( hDC, x - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ), x + xSize - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ) )
-               ENDIF
-               IF At( 'N', cNWSE ) != 0
-                  hwg_Drawline( hDC, x - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ), x + xSize - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ) )
-               ENDIF
-               IF At( 'E', cNWSE ) != 0
-                  hwg_Drawline( hDC, x + xSize - 2, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ) + 1, x + xSize - 2, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ) )
-               ENDIF
-               IF At( 'W', cNWSE ) != 0
-                  hwg_Drawline( hDC, x - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ) + 1, x - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ) )
-               ENDIF
-            next
-            hwg_Selectobject( hDC, oPen:handle )
-         ENDIF
-         // Ahora Titulos Justificados !!!
-         cStr := oColumn:heading + ';'
-         for nLine := 1 to ::nHeadRows
-            hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ) + 1, x + xSize - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ), ;
-               oColumn:nJusHead  + if( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
-         next
+         ::DrawHeader( hDC, oColumn, x-1, ::y1 - ::height * ::nHeadRows, x + xSize - 1, ::y1 + 1, oPen )
       ENDIF
       if ::lDispSep .AND. x > ::x1
          IF ::lSep3d

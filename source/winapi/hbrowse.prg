@@ -58,8 +58,6 @@
    STATIC oCursor     := 0
    STATIC xDrag
 
-   //----------------------------------------------------//
-
 CLASS HColumn INHERIT HObject
 
    DATA block, heading, footing, width, type
@@ -88,8 +86,6 @@ CLASS HColumn INHERIT HObject
    METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
 
 ENDCLASS
-
-   //----------------------------------------------------//
 
 METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick ) CLASS HColumn
 
@@ -134,6 +130,7 @@ CLASS HBrowse INHERIT HControl
    DATA nCurrent   INIT 1                     // Current record
    DATA aArray                                 // An array browsed if this is BROWSE ARRAY
    DATA recCurr    INIT 0
+   DATA oStyleHead                             // An HStyle object to draw the header
    DATA headColor                              // Header text color
    DATA sepColor   INIT 12632256               // Separators color
    DATA lSep3d     INIT .F.
@@ -189,6 +186,7 @@ CLASS HBrowse INHERIT HControl
    METHOD DelColumn( nPos )
    METHOD Paint( lLostFocus )
    METHOD LineOut()
+   METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen )
    METHOD HeaderOut( hDC )
    METHOD FooterOut( hDC )
    METHOD SetColumn( nCol )
@@ -215,8 +213,6 @@ CLASS HBrowse INHERIT HControl
    METHOD End()
 
 ENDCLASS
-
-   //----------------------------------------------------//
 
 METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, ;
@@ -274,8 +270,6 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
 
    RETURN Self
 
-   //----------------------------------------------------//
-
 METHOD Activate CLASS HBrowse
 
    IF !Empty( ::oParent:handle )
@@ -285,8 +279,6 @@ METHOD Activate CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
@@ -418,8 +410,6 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
    RETURN - 1
 
-   //----------------------------------------------------//
-
 METHOD Init CLASS HBrowse
 
    IF !::lInit
@@ -429,8 +419,6 @@ METHOD Init CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD Redefine( lType, oWndParent, nId, oFont, bInit, bSize, bPaint, bEnter, bGfocus, bLfocus ) CLASS HBrowse
 
@@ -449,15 +437,11 @@ METHOD Redefine( lType, oWndParent, nId, oFont, bInit, bSize, bPaint, bEnter, bG
 
    RETURN Self
 
-   //----------------------------------------------------//
-
 METHOD FindBrowse( nId ) CLASS HBrowse
 
    LOCAL i := Ascan( ::aItemsList, { |o|o:id == nId }, 1, ::iItems )
 
    RETURN iif( i > 0, ::aItemsList[i], Nil )
-
-   //----------------------------------------------------//
 
 METHOD AddColumn( oColumn ) CLASS HBrowse
 
@@ -474,8 +458,6 @@ METHOD AddColumn( oColumn ) CLASS HBrowse
    InitColumn( Self, oColumn, Len( ::aColumns ) )
 
    RETURN oColumn
-
-   //----------------------------------------------------//
 
 METHOD InsColumn( oColumn, nPos ) CLASS HBrowse
 
@@ -519,8 +501,6 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD DelColumn( nPos ) CLASS HBrowse
 
    ADel( ::aColumns, nPos )
@@ -528,8 +508,6 @@ METHOD DelColumn( nPos ) CLASS HBrowse
    ::lChanged := .T.
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD End() CLASS HBrowse
 
@@ -544,8 +522,6 @@ METHOD End() CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD InitBrw( nType )  CLASS HBrowse
 
@@ -608,8 +584,6 @@ METHOD InitBrw( nType )  CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD Rebuild( hDC ) CLASS HBrowse
 
@@ -679,8 +653,6 @@ METHOD Rebuild( hDC ) CLASS HBrowse
    ::lChanged := .F.
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD Paint( lLostFocus )  CLASS HBrowse
 
@@ -832,14 +804,58 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
+METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
+
+   LOCAL cStr, cNWSE, nLine //, oPenHdr
+
+   IF ::oStyleHead != Nil
+      ::oStyleHead:Draw( hDC, x1, y1, x2, y2 )
+      hwg_Selectobject( hDC, oPen:handle )
+   ELSE
+      hwg_Drawbutton( hDC, x1, y1, x2, y2, Iif(oColumn:cGrid == Nil, 1, 0 ) )
+   ENDIF
+
+   IF oColumn:cGrid != Nil
+      //IF oPenHdr == Nil
+      //   oPenHdr := HPen():Add( BS_SOLID, 1, 0 )
+      //ENDIF
+      //hwg_Selectobject( hDC, oPenHdr:handle )
+      cStr := oColumn:cGrid + ';'
+      FOR nLine := 1 TO ::nHeadRows
+         cNWSE := hb_tokenGet( @cStr, nLine, ';' )
+         IF At( 'S', cNWSE ) != 0
+            hwg_Drawline( hDC, x1, y1 + ::height * nLine, x2, y1 + ::height * nLine )
+         ENDIF
+         IF At( 'N', cNWSE ) != 0
+            hwg_Drawline( hDC, x1, y1 + ::height * (nLine-1), x2, y1 + ::height * (nLine-1) )
+         ENDIF
+         IF At( 'E', cNWSE ) != 0
+            hwg_Drawline( hDC, x2-1, y1 + ::height * (nLine-1) + 1, x2-1, y1 + ::height * nLine )
+         ENDIF
+         IF At( 'W', cNWSE ) != 0
+            hwg_Drawline( hDC, x1, y1 + ::height * (nLine-1) + 1, x1, y1 + ::height * nLine )
+         ENDIF
+      NEXT
+      //hwg_Selectobject( hDC, oPen:handle )
+      //IF oPenHdr != Nil
+      //   oPenHdr:Release()
+      //ENDIF
+   ENDIF
+   cStr := oColumn:heading + ';'
+   FOR nLine := 1 TO ::nHeadRows
+      hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x1+1,      ;
+            y1 + ::height * (nLine-1) + 1, x2, y1 + ::height * nLine, ;
+            oColumn:nJusHead  + Iif( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
+   NEXT
+
+   RETURN Nil
 
 METHOD HeaderOut( hDC ) CLASS HBrowse
 
    LOCAL i, x, oldc, fif, xSize
    LOCAL nRows := Min( ::nRecords + iif( ::lAppMode,1,0 ), ::rowCount )
    LOCAL oPen, oldBkColor := hwg_Setbkcolor( hDC, hwg_Getsyscolor( COLOR_3DFACE ) )
-   LOCAL oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
+   LOCAL oColumn, oPenHdr, oPenLight
 
    IF ::lDispSep
       oPen := HPen():Add( PS_SOLID, 1, ::sepColor )
@@ -850,7 +866,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    ENDIF
 
    x := ::x1
-   IF ::headColor <> Nil
+   IF ::headColor != Nil
       oldc := hwg_Settextcolor( hDC, ::headColor )
    ENDIF
    fif := iif( ::freeze > 0, 1, ::nLeftCol )
@@ -862,38 +878,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          xSize := Max( ::x2 - x, xSize )
       ENDIF
       IF ::lDispHead .AND. !::lAppMode
-         IF oColumn:cGrid == nil
-            hwg_Drawbutton( hDC, x - 1, ::y1 - ::height * ::nHeadRows, x + xSize - 1, ::y1 + 1, 1 )
-         ELSE
-            hwg_Drawbutton( hDC, x - 1, ::y1 - ::height * ::nHeadRows, x + xSize - 1, ::y1 + 1, 0 )
-            IF oPenHdr == nil
-               oPenHdr := HPen():Add( BS_SOLID, 1, 0 )
-            ENDIF
-            hwg_Selectobject( hDC, oPenHdr:handle )
-            cStr := oColumn:cGrid + ';'
-            FOR nLine := 1 TO ::nHeadRows
-               cNWSE := hb_tokenGet( @cStr, nLine, ';' )
-               IF At( 'S', cNWSE ) != 0
-                  hwg_Drawline( hDC, x - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ), x + xSize - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ) )
-               ENDIF
-               IF At( 'N', cNWSE ) != 0
-                  hwg_Drawline( hDC, x - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ), x + xSize - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ) )
-               ENDIF
-               IF At( 'E', cNWSE ) != 0
-                  hwg_Drawline( hDC, x + xSize - 2, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ) + 1, x + xSize - 2, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ) )
-               ENDIF
-               IF At( 'W', cNWSE ) != 0
-                  hwg_Drawline( hDC, x - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ) + 1, x - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ) )
-               ENDIF
-            NEXT
-            hwg_Selectobject( hDC, oPen:handle )
-         ENDIF
-         // Ahora Titulos Justificados !!!
-         cStr := oColumn:heading + ';'
-         FOR nLine := 1 TO ::nHeadRows
-            hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x, ::y1 - ( ::height ) * ( ::nHeadRows - nLine + 1 ) + 1, x + xSize - 1, ::y1 - ( ::height ) * ( ::nHeadRows - nLine ), ;
-               oColumn:nJusHead  + if( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
-         NEXT
+         ::DrawHeader( hDC, oColumn, x-1, ::y1 - ::height * ::nHeadRows, x + xSize - 1, ::y1 + 1, oPen )
       ENDIF
       IF ::lDispSep .AND. x > ::x1
          IF ::lSep3d
@@ -927,17 +912,12 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    ENDIF
    IF ::lDispSep
       oPen:Release()
-      IF oPenHdr != nil
-         oPenHdr:Release()
-      ENDIF
       IF oPenLight != nil
          oPenLight:Release()
       ENDIF
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD FooterOut( hDC ) CLASS HBrowse
 
@@ -979,8 +959,6 @@ METHOD FooterOut( hDC ) CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //-------------- -Row--  --Col-- ------------------------------//
 
 METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
 
@@ -1101,8 +1079,6 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD SetColumn( nCol ) CLASS HBrowse
 
    LOCAL nColPos, lPaint := .F.
@@ -1136,8 +1112,6 @@ METHOD SetColumn( nCol ) CLASS HBrowse
 
    RETURN 1
 
-   //----------------------------------------------------//
-
 STATIC FUNCTION LINERIGHT( oBrw )
 
    LOCAL i
@@ -1159,8 +1133,6 @@ STATIC FUNCTION LINERIGHT( oBrw )
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 STATIC FUNCTION LINELEFT( oBrw )
 
    IF oBrw:lEditable
@@ -1177,8 +1149,6 @@ STATIC FUNCTION LINELEFT( oBrw )
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD DoVScroll( wParam ) CLASS HBrowse
 
@@ -1208,8 +1178,6 @@ METHOD DoVScroll( wParam ) CLASS HBrowse
    ENDIF
 
    RETURN 0
-
-   //----------------------------------------------------//
 
 METHOD DoHScroll( wParam ) CLASS HBrowse
 
@@ -1279,8 +1247,6 @@ METHOD DoHScroll( wParam ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
    LOCAL minPos, maxPos, nPos
@@ -1326,8 +1292,6 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
    hwg_Setfocus( ::handle )
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD LINEUP() CLASS HBrowse
 

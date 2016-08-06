@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-06 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * ::oStyleHead added to HColumn class, too.
+  * source/winapi/hcombo.prg
+    ! A bug fixed, reported by Itamar M. Lins Jr.
+
 2016-08-03 14:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawwidg.prg
   * source/gtk/hownbtn.prg

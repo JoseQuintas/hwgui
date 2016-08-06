@@ -225,14 +225,16 @@ METHOD GetValue( nItem ) CLASS HComboBox
       ::xValue := ::GetText()
    ELSE
       nPos := hwg_Sendmessage( ::handle, CB_GETCURSEL, 0, 0 ) + 1
-      l := nPos > 0 .AND. ValType( ::aItems[nPos] ) == "A"
-      ::xValue := iif( ::lText, iif( l, ::aItems[nPos,1], ::aItems[nPos] ), nPos )
+      IF nPos > 0 .AND. nPos <= Len( ::aItems )
+         l := ValType( ::aItems[nPos] ) == "A"
+         ::xValue := Iif( ::lText, Iif( l, ::aItems[nPos,1], ::aItems[nPos] ), nPos )
+      ENDIF
    ENDIF
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::xValue, Self )
    ENDIF
 
-   RETURN iif( l .AND. nItem != Nil, iif( nItem > 0 .AND. nItem <= Len(::aItems[nPos] ), ::aItems[nPos,nItem], Nil ), ::xValue )
+   RETURN iif( l .AND. nItem != Nil, Iif( nItem > 0 .AND. nItem <= Len(::aItems[nPos] ), ::aItems[nPos,nItem], Nil ), ::xValue )
 
 METHOD Value ( xValue ) CLASS HComboBox
 
@@ -267,18 +269,19 @@ STATIC FUNCTION __Valid( oCtrl )
    IF lESC // "if" by Luiz Henrique dos Santos (luizhsantos@gmail.com) 04/06/2006
       nPos := hwg_Sendmessage( oCtrl:handle, CB_GETCURSEL, 0, 0 ) + 1
 
-      IF oCtrl:lEdit
-         oCtrl:xValue := oCtrl:GetText()
-      ELSE
-         oCtrl:xValue := iif( oCtrl:lText, iif( ValType(oCtrl:aItems[nPos] ) == "A", oCtrl:aItems[nPos,1], oCtrl:aItems[nPos] ), nPos )
+      IF nPos > 0 .AND. nPos <= Len( oCtrl:aItems )
+         IF oCtrl:lEdit
+            oCtrl:xValue := oCtrl:GetText()
+         ELSE
+            oCtrl:xValue := iif( oCtrl:lText, iif( ValType(oCtrl:aItems[nPos] ) == "A", oCtrl:aItems[nPos,1], oCtrl:aItems[nPos] ), nPos )
+         ENDIF
+         IF oCtrl:bSetGet != Nil
+            Eval( oCtrl:bSetGet, oCtrl:xValue, oCtrl )
+         ENDIF
+         IF oCtrl:bChangeSel != Nil
+            Eval( oCtrl:bChangeSel, nPos, oCtrl )
+         ENDIF
       ENDIF
-      IF oCtrl:bSetGet != Nil
-         Eval( oCtrl:bSetGet, oCtrl:xValue, oCtrl )
-      ENDIF
-      IF oCtrl:bChangeSel != Nil
-         Eval( oCtrl:bChangeSel, nPos, oCtrl )
-      ENDIF
-
       // By Luiz Henrique dos Santos (luizhsantos@gmail.com.br) 03/06/2006
       IF oCtrl:bValid != Nil
          IF ! Eval( oCtrl:bValid, oCtrl )

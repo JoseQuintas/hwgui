@@ -70,7 +70,8 @@ CLASS HColumn INHERIT HObject
    DATA oFont
    DATA lEditable INIT .F.       // Is the column editable
    DATA aList                    // Array of possible values for a column -
-   // combobox will be used while editing the cell
+                                 // combobox will be used while editing the cell
+   DATA oStyleHead               // An HStyle object to draw the header
    DATA aBitmaps
    DATA bValid, bWhen             // When and Valid codeblocks for cell editing
    DATA bEdit                    // Codeblock, which performs cell editing, if defined
@@ -808,7 +809,9 @@ METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
 
    LOCAL cStr, cNWSE, nLine //, oPenHdr
 
-   IF ::oStyleHead != Nil
+   IF oColumn:oStyleHead != Nil
+      oColumn:oStyleHead:Draw( hDC, x1, y1, x2, y2 )
+   ELSEIF ::oStyleHead != Nil
       ::oStyleHead:Draw( hDC, x1, y1, x2, y2 )
       hwg_Selectobject( hDC, oPen:handle )
    ELSE
@@ -842,11 +845,13 @@ METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
       //ENDIF
    ENDIF
    cStr := oColumn:heading + ';'
+   hwg_Settransparentmode( hDC, .T. )
    FOR nLine := 1 TO ::nHeadRows
       hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x1+1,      ;
             y1 + ::height * (nLine-1) + 1, x2, y1 + ::height * nLine, ;
             oColumn:nJusHead  + Iif( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
    NEXT
+   hwg_Settransparentmode( hDC, .F. )
 
    RETURN Nil
 

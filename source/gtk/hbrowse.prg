@@ -37,8 +37,6 @@ STATIC arrowCursor := nil
 STATIC vCursor     := nil
 STATIC xDrag
 
-   //----------------------------------------------------//
-
 CLASS HColumn INHERIT HObject
 
    DATA block, heading, footing, width, type
@@ -51,9 +49,10 @@ CLASS HColumn INHERIT HObject
    DATA oFont
    DATA lEditable INIT .F.       // Is the column editable
    DATA aList                    // Array of possible values for a column -
-   // combobox will be used while editing the cell
+                                 // combobox will be used while editing the cell
+   DATA oStyleHead               // An HStyle object to draw the header
    DATA aBitmaps
-   DATA bValid, bWhen             // When and Valid codeblocks for cell editing
+   DATA bValid, bWhen            // When and Valid codeblocks for cell editing
    DATA bEdit                    // Codeblock, which performs cell editing, if defined
    DATA cGrid
    DATA lSpandHead INIT .F.
@@ -68,8 +67,6 @@ CLASS HColumn INHERIT HObject
    METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
 
 ENDCLASS
-
-   //----------------------------------------------------//
 
 METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick ) CLASS HColumn
 
@@ -89,8 +86,6 @@ METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::bHeadClick  := bHeadClick
 
    RETURN Self
-
-   //----------------------------------------------------//
 
 CLASS HBrowse INHERIT HControl
 
@@ -190,8 +185,6 @@ CLASS HBrowse INHERIT HControl
 
 ENDCLASS
 
-   //----------------------------------------------------//
-
 METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, ;
       lNoBorder, lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect ) CLASS HBrowse
@@ -230,8 +223,6 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
 
    RETURN Self
 
-   //----------------------------------------------------//
-
 METHOD Activate CLASS HBrowse
 
    IF !Empty( ::oParent:handle )
@@ -240,8 +231,6 @@ METHOD Activate CLASS HBrowse
    ENDIF
 
    RETURN Self
-
-   //----------------------------------------------------//
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
@@ -362,8 +351,6 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
    RETURN retValue
 
-   //----------------------------------------------------//
-
 METHOD Init CLASS HBrowse
 
    IF !::lInit
@@ -372,8 +359,6 @@ METHOD Init CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD AddColumn( oColumn ) CLASS HBrowse
 
@@ -391,8 +376,6 @@ METHOD AddColumn( oColumn ) CLASS HBrowse
    InitColumn( Self, oColumn, Len( ::aColumns ) )
 
    RETURN oColumn
-
-   //----------------------------------------------------//
 
 METHOD InsColumn( oColumn, nPos ) CLASS HBrowse
 
@@ -428,8 +411,6 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD DelColumn( nPos ) CLASS HBrowse
 
    ADel( ::aColumns, nPos )
@@ -437,8 +418,6 @@ METHOD DelColumn( nPos ) CLASS HBrowse
    ::lChanged := .T.
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD End() CLASS HBrowse
 
@@ -459,8 +438,6 @@ METHOD End() CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD InitBrw( nType )  CLASS HBrowse
 
@@ -505,8 +482,6 @@ METHOD InitBrw( nType )  CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD Rebuild( hDC ) CLASS HBrowse
 
@@ -572,8 +547,6 @@ METHOD Rebuild( hDC ) CLASS HBrowse
    ::lChanged := .F.
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD Paint()  CLASS HBrowse
 
@@ -722,7 +695,9 @@ METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
 
    LOCAL cStr, cNWSE, nLine //, oPenHdr
 
-   IF ::oStyleHead != Nil
+   IF oColumn:oStyleHead != Nil
+      oColumn:oStyleHead:Draw( hDC, x1, y1, x2, y2 )
+   ELSEIF ::oStyleHead != Nil
       ::oStyleHead:Draw( hDC, x1, y1, x2, y2 )
       hwg_Selectobject( hDC, oPen:handle )
    ELSE
@@ -831,8 +806,6 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD FooterOut( hDC ) CLASS HBrowse
 
    LOCAL i, x, fif, xSize, oPen, nLine, cStr
@@ -873,8 +846,6 @@ METHOD FooterOut( hDC ) CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
 
@@ -982,8 +953,6 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD SetColumn( nCol ) CLASS HBrowse
 
    LOCAL nColPos, lPaint := .F.
@@ -1017,8 +986,6 @@ METHOD SetColumn( nCol ) CLASS HBrowse
 
    RETURN 1
 
-   //----------------------------------------------------//
-
 METHOD DoHScroll( wParam ) CLASS HBrowse
 
    LOCAL nScrollH, nLeftCol, colpos
@@ -1050,8 +1017,6 @@ METHOD DoHScroll( wParam ) CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 STATIC FUNCTION LINERIGHT( oBrw, lRefresh )
 
@@ -1090,8 +1055,6 @@ STATIC FUNCTION LINERIGHT( oBrw, lRefresh )
    hwg_Setfocus( oBrw:area )
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 STATIC FUNCTION LINELEFT( oBrw, lRefresh )
 
@@ -1132,8 +1095,6 @@ STATIC FUNCTION LINELEFT( oBrw, lRefresh )
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD DoVScroll( wParam ) CLASS HBrowse
 
    LOCAL nScrollV := hwg_getAdjValue( ::hScrollV )
@@ -1155,8 +1116,6 @@ METHOD DoVScroll( wParam ) CLASS HBrowse
    // hwg_WriteLog( "DoVScroll " + Ltrim(Str(::nScrollV)) + " " + Ltrim(Str(::nCurrent)) + "( " + Ltrim(Str(::nRecords)) + " )" )
 
    RETURN 0
-
-   //----------------------------------------------------//
 
 METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
@@ -1203,8 +1162,6 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD LINEUP( lMouse ) CLASS HBrowse
 
    LOCAL maxPos, nPos
@@ -1240,8 +1197,6 @@ METHOD LINEUP( lMouse ) CLASS HBrowse
    hwg_Setfocus( ::area )
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD PAGEUP( lMouse ) CLASS HBrowse
 
@@ -1279,8 +1234,6 @@ METHOD PAGEUP( lMouse ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD PAGEDOWN( lMouse ) CLASS HBrowse
 
    LOCAL maxPos, nPos, nRows := ::rowCurrCount
@@ -1315,8 +1268,6 @@ METHOD PAGEDOWN( lMouse ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD BOTTOM( lPaint ) CLASS HBrowse
 
    LOCAL nPos
@@ -1339,8 +1290,6 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD TOP() CLASS HBrowse
 
    LOCAL nPos
@@ -1358,8 +1307,6 @@ METHOD TOP() CLASS HBrowse
    hwg_Setfocus( ::area )
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD ButtonDown( lParam ) CLASS HBrowse
 
@@ -1433,8 +1380,6 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD ButtonRDown( lParam ) CLASS HBrowse
 
    LOCAL nLine := Int( hwg_Hiword( lParam )/ (::height + 1 ) + iif(::lDispHead,1 - ::nHeadRows,1 ) )
@@ -1500,8 +1445,6 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD ButtonDbl( lParam ) CLASS HBrowse
 
    LOCAL hBrw := ::handle
@@ -1514,8 +1457,6 @@ METHOD ButtonDbl( lParam ) CLASS HBrowse
    ::lBtnDbl := .T.
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD MouseMove( wParam, lParam ) CLASS HBrowse
 
@@ -1550,8 +1491,6 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------------------------------//
-
 METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
 
    IF Hwg_BitAnd( nKeys, MK_MBUTTON ) != 0
@@ -1569,8 +1508,6 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
    ENDIF
 
    RETURN nil
-
-   //----------------------------------------------------//
 
 METHOD Edit( wParam, lParam ) CLASS HBrowse
 
@@ -1714,16 +1651,12 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos )
 
    RETURN .T.
 
-   //----------------------------------------------------//
-
 METHOD RefreshLine() CLASS HBrowse
 
    ::internal[1] := 0
    hwg_Invalidaterect( ::area, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD Refresh( lFull ) CLASS HBrowse
 
@@ -1736,8 +1669,6 @@ METHOD Refresh( lFull ) CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 STATIC FUNCTION FldStr( oBrw, numf )
 
@@ -1799,8 +1730,6 @@ STATIC FUNCTION FldStr( oBrw, numf )
 
    RETURN rez
 
-   //----------------------------------------------------//
-
 STATIC FUNCTION FLDCOUNT( oBrw, xstrt, xend, fld1 )
 
    LOCAL klf := 0, i := iif( oBrw:freeze > 0, 1, fld1 )
@@ -1818,8 +1747,6 @@ STATIC FUNCTION FLDCOUNT( oBrw, xstrt, xend, fld1 )
    ENDDO
 
    RETURN iif( klf = 0, 1, klf )
-
-   //----------------------------------------------------//
 
 FUNCTION hwg_CREATEARLIST( oBrw, arr )
 
@@ -1842,8 +1769,6 @@ FUNCTION hwg_CREATEARLIST( oBrw, arr )
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 PROCEDURE ARSKIP( oBrw, kolskip )
 
    LOCAL tekzp1
@@ -1859,8 +1784,6 @@ PROCEDURE ARSKIP( oBrw, kolskip )
    ENDIF
 
    RETURN
-
-   //----------------------------------------------------//
 
 FUNCTION hwg_CreateList( oBrw, lEditable )
 

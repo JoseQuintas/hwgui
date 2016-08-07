@@ -112,6 +112,8 @@ CLASS HBrowse INHERIT HControl
    DATA headColor                              // Header text color
    DATA sepColor INIT 12632256                 // Separators color
    DATA lSep3d  INIT .F.
+   DATA aPadding   INIT { 4,2,4,2 }
+   DATA aHeadPadding   INIT { 4,0,4,0 }
    DATA varbuf                                 // Used on Edit()
    DATA tcolorSel, bcolorSel, brushSel, htbColor, httColor
    DATA bSkip, bGoTo, bGoTop, bGoBot, bEof, bBof
@@ -540,7 +542,7 @@ METHOD Rebuild( hDC ) CLASS HBrowse
          xSize := Round( ( nColLen + 2 ) * 8, 0 )
       ENDIF
 
-      oColumn:width := xSize
+      oColumn:width := xSize + ::aPadding[1] + ::aPadding[3]
 
    next
 
@@ -576,8 +578,11 @@ METHOD Paint()  CLASS HBrowse
 
    ::x1 := aCoors[ 1 ] + 2
    ::y1 := aCoors[ 2 ] + 2 + iif( ::lDispHead, ::height * ::nHeadRows, 0 )
+   ::y1 := aCoors[ 2 ] + 2 + Iif( ::lDispHead, ::height * ::nHeadRows + ::aHeadPadding[2] + ::aHeadPadding[4], 0 )
    ::x2 := aCoors[ 3 ] - 2
    ::y2 := aCoors[ 4 ] - 2
+
+   ::height += ::aPadding[2] + ::aPadding[4]
 
    ::nRecords := Eval( ::bRcou, Self )
    IF ::nCurrent > ::nRecords .AND. ::nRecords > 0
@@ -693,7 +698,7 @@ METHOD Paint()  CLASS HBrowse
 
 METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
 
-   LOCAL cStr, cNWSE, nLine //, oPenHdr
+   LOCAL cStr, cNWSE, nLine, nHeight := ::height - ::aPadding[2] - ::aPadding[4] //, oPenHdr
 
    IF oColumn:oStyleHead != Nil
       oColumn:oStyleHead:Draw( hDC, x1, y1, x2, y2 )
@@ -732,8 +737,8 @@ METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
    ENDIF
    cStr := oColumn:heading + ';'
    FOR nLine := 1 TO ::nHeadRows
-      hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x1+1,      ;
-            y1 + ::height * (nLine-1) + 1, x2, y1 + ::height * nLine, ;
+      hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x1+1+::aHeadPadding[1], ;
+            y1 + nHeight * (nLine-1) + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], y1 + nHeight * nLine, ;
             oColumn:nJusHead  + Iif( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
    NEXT
 
@@ -741,7 +746,7 @@ METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
 
 METHOD HeaderOut( hDC ) CLASS HBrowse
 
-   LOCAL i, x, oldc, fif, xSize
+   LOCAL i, x, y1, oldc, fif, xSize
    LOCAL nRows := Min( ::nRecords + iif( ::lAppMode,1,0 ), ::rowCount )
    LOCAL oPen // , oldBkColor := hwg_Setbkcolor( hDC,hwg_Getsyscolor(COLOR_3DFACE) )
    LOCAL oColumn, nLine, cStr, cNWSE, oPenHdr, oPenLight
@@ -752,6 +757,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    ENDIF
 
    x := ::x1
+   y1 := ::y1 - ( ::height - ::aPadding[2] - ::aPadding[4] ) * ::nHeadRows - ::aHeadPadding[2] - ::aHeadPadding[4]
    if ::headColor != Nil
       oldc := hwg_Settextcolor( hDC, ::headColor )
    ENDIF
@@ -764,7 +770,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
          xSize := Max( ::x2 - x, xSize )
       ENDIF
       if ::lDispHead .AND. !::lAppMode
-         ::DrawHeader( hDC, oColumn, x-1, ::y1 - ::height * ::nHeadRows, x + xSize - 1, ::y1 + 1, oPen )
+         ::DrawHeader( hDC, oColumn, x-1, y1, x + xSize - 1, ::y1 + 1, oPen )
       ENDIF
       if ::lDispSep .AND. x > ::x1
          IF ::lSep3d
@@ -778,7 +784,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
       ENDIF
       x += xSize
       IF ! ::lAdjRight .AND. fif == Len( ::aColumns )
-         hwg_Drawline( hDC, x - 1, ::y1 - ( ::height * ::nHeadRows ), x - 1, ::y1 + ( ::height + 1 ) * nRows )
+         hwg_Drawline( hDC, x - 1, y1, x - 1, ::y1 + ( ::height + 1 ) * nRows )
       ENDIF
       fif := iif( fif = ::freeze, ::nLeftCol, fif + 1 )
       IF fif > Len( ::aColumns )
@@ -904,7 +910,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                            y1 := 0
                            bh := ::height
                            bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
-                           hwg_Drawbitmap( hDC, ob:handle, , x, y1 + ::y1 + ( ::height + 1 ) * ( nstroka - 1 ) + 1, bw, bh )
+                           hwg_Drawbitmap( hDC, ob:handle, , x + ::aPadding[1], y1 + ::y1 + ( ::height + 1 ) * ( nstroka - 1 ) + 1 + ::aPadding[2], bw, bh )
                         ENDIF
                         EXIT
                      ENDIF
@@ -927,7 +933,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                      ENDIF
                      lColumnFont := .F.
                   ENDIF
-                  hwg_Drawtext( hDC, sviv, x, ::y1 + ( ::height + 1 ) * ( nstroka - 1 ) + 1, x + xSize - 2, ::y1 + ( ::height + 1 ) * nstroka - 1, ::aColumns[fif]:nJusLin )
+                  hwg_Drawtext( hDC, sviv, x + ::aPadding[1], ::y1 + ( ::height + 1 ) * ( nstroka - 1 ) + 1 + ::aPadding[2], x + xSize - 2 - ::aPadding[3], ::y1 + ( ::height + 1 ) * nstroka - 1 - ::aPadding[4], ::aColumns[fif]:nJusLin )
                   IF ::aColumns[fif]:tColor != Nil
                      hwg_Settextcolor( hDC, oldT1Color )
                   ENDIF

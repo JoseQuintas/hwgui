@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-08 10:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+    * CreatePanel() uses gtk_layout_new() now instead of gtk_toolbar_new()
+  * source/gtk/hpanel.prg
+    ! Parameters of the ::New() method has been fixed.
+
 2016-08-07 18:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg

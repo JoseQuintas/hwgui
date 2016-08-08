@@ -686,7 +686,8 @@ HB_FUNC( HWG_CREATEPANEL )
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
       hCtrl = gtk_drawing_area_new();
    else
-      hCtrl = gtk_toolbar_new();
+      hCtrl = gtk_layout_new( NULL,NULL );
+      //hCtrl = gtk_toolbar_new();
 
    gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
    if( ulStyle & WS_VSCROLL )
@@ -1174,7 +1175,6 @@ HB_FUNC( HWG_SETBGCOLOR )
    hwg_parse_color( hColor, &(style->bg[GTK_STATE_NORMAL]) );
    hwg_parse_color( hColor, &(style->base[GTK_STATE_NORMAL]) );
    gtk_widget_set_style( hCtrl, style );
-
 }
 
 /*

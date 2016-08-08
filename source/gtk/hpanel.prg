@@ -24,7 +24,7 @@ CLASS HPanel INHERIT HControl
    DATA bVScroll, bHScroll
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  bInit,bSize,bPaint,lDocked )
+                  bInit,bSize,bPaint,bColor )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -34,12 +34,12 @@ CLASS HPanel INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ;
-                  bInit,bSize,bPaint,lDocked ) CLASS HPanel
+                  bInit,bSize,bPaint,bColor ) CLASS HPanel
 Local oParent:=iif(oWndParent==Nil, ::oDefaultParent, oWndParent)
 
    ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,Iif( nWidth==Nil,0,nWidth ), ;
                   nHeight,oParent:oFont,bInit, ;
-                  bSize,bPaint )
+                  bSize,bPaint,,,bColor )
 
    ::bPaint  := bPaint
 

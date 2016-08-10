@@ -1513,6 +1513,11 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
          hwg_Postmessage( hBrw, WM_PAINT, 0, 0 )
       ENDIF
 
+   ELSEIF nLine == 0 .AND. hwg_isPtrEq( oCursor, ColSizeCursor )
+      ::lResizing := .T.
+      Hwg_SetCursor( oCursor )
+      xDrag := hwg_Loword( lParam )
+
    ELSEIF ::lDispHead .AND. ;
          nLine >= - ::nHeadRows .AND. ;
          fif <= Len( ::aColumns ) .AND. ;
@@ -1520,12 +1525,6 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
       Eval( ::aColumns[fif]:bHeadClick, Self, fif )
 
-   ELSEIF nLine == 0
-      IF hwg_isPtrEq( oCursor, ColSizeCursor )
-         ::lResizing := .T.
-         Hwg_SetCursor( oCursor )
-         xDrag := hwg_Loword( lParam )
-      ENDIF
    ENDIF
 
    RETURN Nil

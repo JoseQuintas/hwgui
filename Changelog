@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-10 20:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * :bHeadClick doesn't prevent now column resizing
+
 2016-08-10 14:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
     * style SS_OWNERDRAW id added automatically, if ON PAINT is defined

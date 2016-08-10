@@ -1369,6 +1369,11 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
          hwg_Invalidaterect( ::area, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
       ENDIF
 
+   ELSEIF nLine == 0 .AND. ::nCursor == 1
+      ::nCursor := 2
+      Hwg_SetCursor( vCursor, ::area )
+      xDrag := hwg_Loword( lParam )
+
    ELSEIF ::lDispHead .AND. ;
          nLine >= - ::nHeadRows .AND. ;
          fif <= Len( ::aColumns ) .AND. ;
@@ -1376,12 +1381,6 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
       Eval( ::aColumns[fif]:bHeadClick, Self, fif )
 
-   ELSEIF nLine == 0
-      IF ::nCursor == 1
-         ::nCursor := 2
-         Hwg_SetCursor( vCursor, ::area )
-         xDrag := hwg_Loword( lParam )
-      ENDIF
    ENDIF
 
    RETURN Nil

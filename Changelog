@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-10 14:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hpanel.prg
+    * style SS_OWNERDRAW id added automatically, if ON PAINT is defined
+    * file formatted
+  * include/guilib.ch
+    * New command ADD TOP PANEL OF <oWnd> HEIGHT <height> ... has been added
+      to simplify creation of a PANEL control, attached to the top of a window.
+
 2016-08-10 13:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/misc.c
     ! hwg_ptrToUlong() fixed

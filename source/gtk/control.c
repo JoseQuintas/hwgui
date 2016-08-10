@@ -686,8 +686,7 @@ HB_FUNC( HWG_CREATEPANEL )
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
       hCtrl = gtk_drawing_area_new();
    else
-      hCtrl = gtk_layout_new( NULL,NULL );
-      //hCtrl = gtk_toolbar_new();
+      hCtrl = gtk_toolbar_new();
 
    gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
    if( ulStyle & WS_VSCROLL )

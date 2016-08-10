@@ -790,10 +790,13 @@ HB_FUNC( HWG_SETFOCUS )
    GObject * hObj = ( GObject * ) HB_PARHANDLE( 1 );
    GtkWidget * handle = gtk_window_get_focus( gtk_window_list_toplevels()->data );
 
-   if( g_object_get_data( hObj, "window" ) )
-      gtk_window_present( (GtkWindow*) HB_PARHANDLE( 1 ) );
-   else
-      gtk_widget_grab_focus( (GtkWidget*) HB_PARHANDLE( 1 ) );
+   if( hObj )
+   {
+      if( g_object_get_data( hObj, "window" ) )
+         gtk_window_present( (GtkWindow*) HB_PARHANDLE( 1 ) );
+      else
+         gtk_widget_grab_focus( (GtkWidget*) HB_PARHANDLE( 1 ) );
+   }
    HB_RETHANDLE( handle );
 }
 

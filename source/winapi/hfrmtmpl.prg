@@ -608,7 +608,7 @@ Local i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName
 Local nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
 MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
 MEMVAR onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lAppend,lAutoedit,bUpdate,onKeyDown,onPosChg
-MEMVAR nWidth, nHeight, oFont, lNoBorder, bSetGet
+MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, bSetGet
 MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
 MEMVAR aImages, lEditLabels, aParts
 
@@ -692,6 +692,10 @@ MEMVAR aImages, lEditLabels, aParts
       ELSEIF cPName == "3dlook"
          IF xProperty
             nStyle += DS_3DLOOK
+         ENDIF
+      ELSEIF cPName == "transparent"
+         IF xProperty
+            lTransp := .T.
          ENDIF
 
       ELSEIF cPName == "atree"

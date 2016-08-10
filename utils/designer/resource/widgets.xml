@@ -58,6 +58,7 @@
          <property name="Border" type="L" value="False"/>
          <property name="Justify" type="C" value="Left"/>
          <property name="3DLook" type="L" value="False" />
+         <property name="Transparent" type="L" value="False" />
 	 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />

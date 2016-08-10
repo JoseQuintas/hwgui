@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-10 13:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/misc.c
+    ! hwg_ptrToUlong() fixed
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+  * utils/designer/resource/widgets.xml
+    * "Transparent" property added to the label control
+
 2016-08-10 10:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     * Reverted last change: gtk_toolbar_new() is used again, because

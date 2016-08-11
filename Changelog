@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-11 16:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+    * New class added HPanelSts, inherited from HPanel to implement STATUS PANEL
+  * include/guilib.ch
+    * ADD TOP PANEL OF <oWnd> ... changed to ADD TOP PANEL TO <oWnd> ...
+    * New command added: ADD STATUS PANEL OF <oWnd> HEIGHT <height> PARTS ...
+  * source/gtk/gtkmain.prg
+  * source/winapi/guimain.prg
+    * hwg_writestatus() changed. If STATUS PANEL exists, it writes there.
+
 2016-08-11 15:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
   * source/gtk/window.c

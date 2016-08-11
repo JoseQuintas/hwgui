@@ -20,26 +20,26 @@ CLASS HPanel INHERIT HControl
    DATA lResizeX, lResizeY, nSize HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               bInit, bSize, bPaint, bcolor )
+      bInit, bSize, bPaint, bcolor )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Redefine( oWndParent, nId, nWidth, nHeight, bInit, bSize, bPaint, bcolor )
    METHOD Paint()
-   METHOD BackColor( bcolor ) INLINE ::SetColor(, bcolor, .T. )
+   METHOD BackColor( bcolor ) INLINE ::Setcolor( , bcolor, .T. )
    METHOD Hide()
    METHOD Show()
-   METHOD Release()
+   METHOD RELEASE()
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-               bInit, bSize, bPaint, bcolor ) CLASS HPanel
-LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
+      bInit, bSize, bPaint, bcolor ) CLASS HPanel
+   LOCAL oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
-   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, Iif( nWidth == Nil, 0, nWidth ), ;
-              Iif( nHeight == Nil, 0, nHeight ), oParent:oFont, bInit, ;
-              bSize, bPaint,,, bcolor )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, iif( nWidth == Nil, 0, nWidth ), ;
+      iif( nHeight == Nil, 0, nHeight ), oParent:oFont, bInit, ;
+      bSize, bPaint, , , bcolor )
 
    IF bcolor != NIL
       ::brush  := HBrush():Add( bcolor )
@@ -63,17 +63,18 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    hwg_RegPanel()
    ::Activate()
 
-RETURN Self
+   RETURN Self
 
 METHOD Activate CLASS HPanel
-LOCAL handle := ::oParent:handle
+   LOCAL handle := ::oParent:handle
 
    IF !Empty( handle )
       ::handle := hwg_Createpanel( handle, ::id, ;
-                               ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
-RETURN Nil
+
+   RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
 
@@ -81,7 +82,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
       ::Paint()
    ELSEIF msg == WM_ERASEBKGND
       IF ::brush != Nil
-         IF Valtype( ::brush ) != "N"
+         IF ValType( ::brush ) != "N"
             hwg_Fillrect( wParam, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
          ENDIF
          RETURN 1
@@ -104,16 +105,16 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
       RETURN ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
-RETURN - 1
+   RETURN - 1
 
 METHOD Init CLASS HPanel
 
    IF !::lInit
       IF ::bSize == Nil .AND. Empty( ::Anchor )
-         ::bSize := { | o, x, y | o:Move( Iif( ::nLeft > 0, x - ::nLeft, 0 ), ;
-                      Iif( ::nTop > 0, y - ::nHeight, 0 ), ;
-                      Iif( ::nWidth == 0 .OR. ::lResizeX, x, ::nWidth ), ;
-                      Iif( ::nHeight == 0 .OR. ::lResizeY, y, ::nHeight ) ) }
+         ::bSize := { | o, x, y | o:Move( iif( ::nLeft > 0, x - ::nLeft, 0 ), ;
+            iif( ::nTop > 0, y - ::nHeight, 0 ), ;
+            iif( ::nWidth == 0 .OR. ::lResizeX, x, ::nWidth ), ;
+            iif( ::nHeight == 0 .OR. ::lResizeY, y, ::nHeight ) ) }
       ENDIF
 
       ::Super:Init()
@@ -122,14 +123,14 @@ METHOD Init CLASS HPanel
       Hwg_InitWinCtrl( ::handle )
    ENDIF
 
-RETURN Nil
+   RETURN Nil
 
 METHOD Redefine( oWndParent, nId, nWidth, nHeight, bInit, bSize, bPaint, bcolor ) CLASS HPanel
-LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
+   LOCAL oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
-   ::Super:New( oWndParent, nId, 0, 0, 0, Iif( nWidth == Nil, 0, nWidth ), ;
-              Iif( nHeight != Nil, nHeight, 0 ), oParent:oFont, bInit, ;
-              bSize, bPaint,,, bcolor )
+   ::Super:New( oWndParent, nId, 0, 0, 0, iif( nWidth == Nil, 0, nWidth ), ;
+      iif( nHeight != Nil, nHeight, 0 ), oParent:oFont, bInit, ;
+      bSize, bPaint, , , bcolor )
 
    IF bcolor != NIL
       ::brush  := HBrush():Add( bcolor )
@@ -141,10 +142,10 @@ LOCAL oParent := Iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    ::lResizeY := ( ::nHeight == 0 )
    hwg_RegPanel()
 
-RETURN Self
+   RETURN Self
 
 METHOD Paint() CLASS HPanel
-LOCAL pps, hDC, aCoors, oPenLight, oPenGray
+   LOCAL pps, hDC, aCoors, oPenLight, oPenGray
 
    IF ::bPaint != Nil
       Eval( ::bPaint, Self )
@@ -165,9 +166,9 @@ LOCAL pps, hDC, aCoors, oPenLight, oPenGray
       hwg_Endpaint( ::handle, pps )
    ENDIF
 
-RETURN Nil
+   RETURN Nil
 
-METHOD Release CLASS HPanel
+METHOD RELEASE CLASS HPanel
 
    IF __ObjHasMsg( ::oParent, "AOFFSET" ) .AND. ::oParent:type == WND_MDI
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
@@ -183,10 +184,11 @@ METHOD Release CLASS HPanel
    ENDIF
    hwg_Sendmessage( ::oParent:handle, WM_SIZE, 0, 0 )
    ::oParent:DelControl( Self )
-RETURN Nil
+
+   RETURN Nil
 
 METHOD Hide CLASS HPanel
-LOCAL i
+   LOCAL i
 
    IF ::lHide
       RETURN Nil
@@ -209,10 +211,11 @@ LOCAL i
    NEXT
    ::super:hide()
    hwg_Sendmessage( ::oParent:Handle, WM_SIZE, 0, 0 )
-RETURN Nil
+
+   RETURN Nil
 
 METHOD Show CLASS HPanel
-LOCAL i
+   LOCAL i
 
    IF !::lHide
       RETURN Nil
@@ -236,4 +239,80 @@ LOCAL i
       ::acontrols[ i ]:Show()
    NEXT
    hwg_Movewindow( ::Handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-RETURN Nil
+
+   RETURN Nil
+
+CLASS HPanelStS INHERIT HPANEL
+
+   DATA oStyle
+   DATA aParts
+   DATA aText
+
+   METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, aParts )
+   METHOD Write( cText, nPart, lRedraw )
+   METHOD Paint()
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, aParts ) CLASS HPanelStS
+
+   oWndParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
+   IF bColor == Nil
+      bColor := hwg_GetSysColor( COLOR_3DFACE )
+   ENDIF
+
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
+      oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight, w ) }, bPaint, bcolor )
+
+   ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
+   ::aParts := aParts
+   ::aText := Array( Len(aParts) )
+   AFill( ::aText, "" )
+
+   RETURN Self
+
+METHOD Write( cText, nPart, lRedraw ) CLASS HPanelStS
+
+   ::aText[nPart] := cText
+   IF Valtype( lRedraw ) != "L" .OR. lRedraw
+      hwg_Invalidaterect( ::handle, 0 )
+   ENDIF
+
+   RETURN Nil
+
+METHOD Paint() CLASS HPanelStS
+   LOCAL pps, hDC, aCoors, i, x1, x2, nWidth
+
+   IF ::bPaint != Nil
+      RETURN Eval( ::bPaint, Self )
+   ENDIF
+
+   pps    := hwg_Definepaintstru()
+   hDC    := hwg_Beginpaint( ::handle, pps )
+   aCoors := hwg_Getclientrect( ::handle )
+   nWidth := aCoors[3]
+
+   IF Empty( ::oStyle )
+      ::oStyle := HStyle():New( {::bColor}, 1,, 0.4, 0 )
+   ENDIF
+   ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
+
+   IF ::oFont != Nil
+      hwg_Selectobject( hDC, ::oFont:handle )
+   ENDIF
+   hwg_Settransparentmode( hDC, .T. )
+   FOR i := 1 TO Len( ::aParts )
+      x1 := Iif( i == 1, 4, x2 + 4 )
+      IF ::aParts[i] == 0
+         x2 := x1 + Int( nWidth/(Len(::aParts)-i+1) )
+      ELSE
+         x2 := x1 + ::aParts[i]
+      ENDIF
+      nWidth -= ( x2-x1+1 )
+      hwg_Drawtext( hDC, ::aText[i], x1, 6, x2, ::nHeight-2, DT_LEFT + DT_VCENTER )
+   NEXT
+   hwg_Settransparentmode( hDC, .F. )
+
+   hwg_Endpaint( ::handle, pps )
+
+   RETURN Nil

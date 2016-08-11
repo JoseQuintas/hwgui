@@ -759,7 +759,7 @@
     [<oPanel> :=] HPanel():Redefine( <oWnd>,<nId>,<nHeight>,<bInit>,<bSize>,<bDraw> );
     [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
-#xcommand ADD TOP PANEL [ <oPanel> ] OF <oWnd> ;
+#xcommand ADD TOP PANEL [ <oPanel> ] TO <oWnd> ;
             [ ID <nId> ]               ;
             HEIGHT <height>            ;
             [ BACKCOLOR <bcolor> ]     ;
@@ -770,6 +770,17 @@
     [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,0,0,<oWnd>:nWidth,<height>,<bInit>,ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS,<bDraw>,<bcolor> );
     [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
+#xcommand ADD STATUS PANEL [ <oPanel> ] TO <oWnd> ;
+            [ ID <nId> ]               ;
+            HEIGHT <height>            ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON INIT <bInit> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ FONT <oFont> ]           ;
+            [ PARTS <aparts,...> ]     ;
+          => ;
+    [<oPanel> :=] HPanelSts():New( <oWnd>,<nId>,<height>,<oFont>,<bInit>,<bDraw>,<bcolor>,\{<aparts>\} );
+    [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
             [ <lArr: ARRAY> ]          ;

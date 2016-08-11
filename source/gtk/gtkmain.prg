@@ -224,7 +224,8 @@ FUNCTION hwg_WriteStatus( oWnd, nPart, cText )
    aControls := oWnd:aControls
    IF ( i := Ascan( aControls, { |o|o:ClassName() == "HSTATUS" } ) ) > 0
       hwg_Writestatuswindow( aControls[i]:handle, 0, cText )
-
+   ELSEIF ( i := Ascan( aControls, { |o|o:ClassName() = "HPANELSTS" } ) ) > 0
+      aControls[i]:Write( cText, nPart )
    ENDIF
 
    RETURN Nil

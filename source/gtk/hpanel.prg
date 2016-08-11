@@ -152,3 +152,78 @@ METHOD Move( x1, y1, width, height )  CLASS HPanel
    //::Super:Move( x1,y1,width,height,.T. )
 
    RETURN Nil
+
+CLASS HPanelStS INHERIT HPANEL
+
+   DATA oStyle
+   DATA aParts
+   DATA aText
+
+   METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, aParts )
+   METHOD Write( cText, nPart, lRedraw )
+   METHOD Paint()
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, aParts ) CLASS HPanelStS
+
+   oWndParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
+   IF bColor == Nil
+      bColor := hwg_GetSysColor( COLOR_3DFACE )
+   ENDIF
+
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
+      oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight, w ) }, bPaint, bcolor )
+
+   ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
+   ::aParts := aParts
+   ::aText := Array( Len(aParts) )
+   AFill( ::aText, "" )
+
+   RETURN Self
+
+METHOD Write( cText, nPart, lRedraw ) CLASS HPanelStS
+
+   ::aText[nPart] := cText
+   IF Valtype( lRedraw ) != "L" .OR. lRedraw
+      hwg_Invalidaterect( ::handle, 0 )
+   ENDIF
+
+   RETURN Nil
+
+METHOD Paint() CLASS HPanelStS
+   LOCAL pps, hDC, aCoors, i, x1, x2, nWidth
+
+   IF ::bPaint != Nil
+      RETURN Eval( ::bPaint, Self )
+   ENDIF
+
+   pps    := hwg_Definepaintstru()
+   hDC    := hwg_Beginpaint( ::handle, pps )
+   aCoors := hwg_Getclientrect( ::handle )
+   nWidth := aCoors[3]
+
+   IF Empty( ::oStyle )
+      ::oStyle := HStyle():New( {::bColor}, 1,, 0.4, 0 )
+   ENDIF
+   ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
+
+   IF ::oFont != Nil
+      hwg_Selectobject( hDC, ::oFont:handle )
+   ENDIF
+   hwg_Settransparentmode( hDC, .T. )
+   FOR i := 1 TO Len( ::aParts )
+      x1 := Iif( i == 1, 4, x2 + 4 )
+      IF ::aParts[i] == 0
+         x2 := x1 + Int( nWidth/(Len(::aParts)-i+1) )
+      ELSE
+         x2 := x1 + ::aParts[i]
+      ENDIF
+      nWidth -= ( x2-x1+1 )
+      hwg_Drawtext( hDC, ::aText[i], x1, 6, x2, ::nHeight-2, DT_LEFT + DT_VCENTER )
+   NEXT
+   hwg_Settransparentmode( hDC, .F. )
+
+   hwg_Endpaint( ::handle, pps )
+
+   RETURN Nil

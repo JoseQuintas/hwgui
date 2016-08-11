@@ -50,7 +50,7 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 PHB_DYNS pSym_onEvent = NULL;
 PHB_DYNS pSym_keylist = NULL;
 guint s_KeybHook = 0;
-GtkWidget * hMainWindow;
+GtkWidget * hMainWindow = NULL;
 
 #define HB_IT_DEFAULT   ( ( HB_TYPE ) 0x40000 )
 HB_LONG prevp2 = -1;

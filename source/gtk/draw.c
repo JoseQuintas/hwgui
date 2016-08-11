@@ -24,6 +24,8 @@
 
 #include <math.h>
 
+extern GtkWidget * hMainWindow;
+
 void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor )
 {
    char color[10]={0};
@@ -379,7 +381,13 @@ HB_FUNC( HWG_DRAWICON )
 
 HB_FUNC( HWG_GETSYSCOLOR )
 {
-   hb_retnl( 0 );
+   if( hMainWindow )
+   {
+      GdkColor color = gtk_widget_get_style(hMainWindow)->bg[GTK_STATE_NORMAL];
+      hb_retnl( hwg_gdk_color( &color ) );
+   }
+   else
+      hb_retnl( 0 );
 }
 
 #define  PS_SOLID   0

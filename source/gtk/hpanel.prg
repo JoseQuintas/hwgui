@@ -159,13 +159,14 @@ CLASS HPanelStS INHERIT HPANEL
    DATA aParts
    DATA aText
 
-   METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, aParts )
+   METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aParts )
    METHOD Write( cText, nPart, lRedraw )
+   METHOD PaintText( hDC )
    METHOD Paint()
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, aParts ) CLASS HPanelStS
+METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aParts ) CLASS HPanelStS
 
    oWndParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    IF bColor == Nil
@@ -176,6 +177,7 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, aParts ) CLA
       oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight, w ) }, bPaint, bcolor )
 
    ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
+   ::oStyle := oStyle
    ::aParts := aParts
    ::aText := Array( Len(aParts) )
    AFill( ::aText, "" )
@@ -191,22 +193,9 @@ METHOD Write( cText, nPart, lRedraw ) CLASS HPanelStS
 
    RETURN Nil
 
-METHOD Paint() CLASS HPanelStS
-   LOCAL pps, hDC, aCoors, i, x1, x2, nWidth
+METHOD PaintText( hDC ) CLASS HPanelStS
 
-   IF ::bPaint != Nil
-      RETURN Eval( ::bPaint, Self )
-   ENDIF
-
-   pps    := hwg_Definepaintstru()
-   hDC    := hwg_Beginpaint( ::handle, pps )
-   aCoors := hwg_Getclientrect( ::handle )
-   nWidth := aCoors[3]
-
-   IF Empty( ::oStyle )
-      ::oStyle := HStyle():New( {::bColor}, 1,, 0.4, 0 )
-   ENDIF
-   ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
+   LOCAL i, x1, x2, nWidth := ::nWidth
 
    IF ::oFont != Nil
       hwg_Selectobject( hDC, ::oFont:handle )
@@ -220,9 +209,30 @@ METHOD Paint() CLASS HPanelStS
          x2 := x1 + ::aParts[i]
       ENDIF
       nWidth -= ( x2-x1+1 )
-      hwg_Drawtext( hDC, ::aText[i], x1, 6, x2, ::nHeight-2, DT_LEFT + DT_VCENTER )
+      IF !Empty( ::aText[i] )
+         hwg_Drawtext( hDC, ::aText[i], x1, 6, x2, ::nHeight-2, DT_LEFT + DT_VCENTER )
+      ENDIF
    NEXT
    hwg_Settransparentmode( hDC, .F. )
+
+   RETURN Nil
+
+METHOD Paint() CLASS HPanelStS
+   LOCAL pps, hDC
+
+   IF ::bPaint != Nil
+      RETURN Eval( ::bPaint, Self )
+   ENDIF
+
+   pps    := hwg_Definepaintstru()
+   hDC    := hwg_Beginpaint( ::handle, pps )
+
+   IF Empty( ::oStyle )
+      ::oStyle := HStyle():New( {::bColor}, 1,, 0.4, 0 )
+   ENDIF
+   ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )
+
+   ::PaintText( hDC )
 
    hwg_Endpaint( ::handle, pps )
 

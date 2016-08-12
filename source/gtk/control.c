@@ -796,10 +796,13 @@ HB_FUNC( HWG_CREATEOWNBTN )
 
 HB_FUNC( HWG_ADDTOOLTIP )
 {
+   gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 3 ) );
+
    if( !pTooltip )
       pTooltip = gtk_tooltips_new(  );
    gtk_tooltips_set_tip( pTooltip, ( GtkWidget * ) HB_PARHANDLE( 2 ),
-         hb_parc( 3 ), NULL );
+         gcTitle, NULL );
+   g_free( gcTitle );
 }
 
 static gint cb_timer( gchar * data )

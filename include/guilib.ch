@@ -777,9 +777,10 @@
             [ ON INIT <bInit> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ FONT <oFont> ]           ;
+            [ HSTYLE <oStyle> ]        ;
             [ PARTS <aparts,...> ]     ;
           => ;
-    [<oPanel> :=] HPanelSts():New( <oWnd>,<nId>,<height>,<oFont>,<bInit>,<bDraw>,<bcolor>,\{<aparts>\} );
+    [<oPanel> :=] HPanelSts():New( <oWnd>,<nId>,<height>,<oFont>,<bInit>,<bDraw>,<bcolor>,<oStyle>,\{<aparts>\} );
     [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;

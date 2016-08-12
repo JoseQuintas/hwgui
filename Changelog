@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-12 10:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+    * New parameter 'oStyle' added to HPanelSts():New(),
+      new method added: :PaintText() for separating text painting from :Paint()
+  * include/guilib.ch
+    * New clause added: HSTYLE to ADD STATUS PANEL command
+  * source/gtk/control.c
+    ! hwg_addTooltip() fixed
+  * source/common/editor/hcedit.prg
+    ! Fixes for gtk version
+
 2016-08-11 16:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
   * source/winapi/hpanel.prg

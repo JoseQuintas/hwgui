@@ -383,7 +383,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       x := hwg_GetKeyboardState( lParam )
       n := Iif( Asc( SubStr(x,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(x,0x11,1 ) ) >= 128,FSHIFT,0 ) )
       IF n != FCONTROL
+#ifdef __PLATFORM__UNIX
+         x := wParam
+#else
          x := hwg_PtrToUlong( wParam )
+#endif
          IF ::bKeyDown != Nil .AND. ( n := Eval( ::bKeyDown, Self, x, n, 1 ) ) != -1
             RETURN -1
          ENDIF
@@ -391,8 +395,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ENDIF
 
    ELSEIF msg == WM_KEYDOWN
+#ifdef __PLATFORM__UNIX
+      lRes := ::onKeyDown( wParam, lParam )
+#else
       lRes := ::onKeyDown( hwg_PtrToUlong( wParam ), lParam )
-
+#endif
    ELSEIF msg == WM_LBUTTONDOWN .OR. msg == WM_RBUTTONDOWN
 #ifdef __PLATFORM__UNIX
       hced_SetFocus( ::hEdit )

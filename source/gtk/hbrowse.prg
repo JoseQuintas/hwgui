@@ -448,18 +448,18 @@ METHOD InitBrw( nType )  CLASS HBrowse
    ELSE
       ::aColumns := {}
       ::nRecords := 0
-      ::rowPos    := ::nCurrent  := ::colpos := ::nLeftCol := 1
-      ::freeze  := ::height := 0
-      ::internal  := { 15, 1 }
-      ::aArray     := Nil
+      ::nLeftCol := 1
+      ::internal := { 15, 1 }
+      ::aArray   := Nil
+      ::freeze := ::height := 0
 
       IF Empty( crossCursor )
          crossCursor := hwg_Loadcursor( GDK_CROSS )
          arrowCursor := hwg_Loadcursor( GDK_LEFT_PTR )
          vCursor := hwg_Loadcursor( GDK_SB_V_DOUBLE_ARROW )
       ENDIF
-
    ENDIF
+   ::rowPos := ::nCurrent := ::colpos := 1
 
    if ::type == BRW_DATABASE
       ::alias   := Alias()

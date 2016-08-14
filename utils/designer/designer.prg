@@ -485,8 +485,7 @@ STATIC FUNCTION ArrangeBtn( oTab, x, y )
 
    RETURN Nil
 
-STATIC FUNCTION ClickBtn( oTab, nId, cItem, cText, nWidth, nHeight )
-   LOCAL oBtn := oTab:FindControl( nId )
+STATIC FUNCTION ClickBtn( oBtn, cItem, cText, nWidth, nHeight )
 
    IF !Empty( HFormGen():aForms )
       oDesigner:addItem := oBtn:cargo

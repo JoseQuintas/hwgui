@@ -152,9 +152,9 @@ Local oDoc
 Local i, j, nCtrl := 0, aItems, o, aProp := {}, aMethods := {}
 Local cPre, cName
 
-   IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
+   /* IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
       Return o
-   ENDIF
+   ENDIF */
    IF Left( fname,5 ) == "<?xml"
       oDoc := HXMLDoc():ReadString( fname )
    ELSE

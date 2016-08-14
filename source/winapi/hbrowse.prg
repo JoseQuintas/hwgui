@@ -532,16 +532,17 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::type := nType
    ELSE
       ::aColumns := {}
-      ::rowPos    := ::nCurrent  := ::colpos := ::nLeftCol := 1
-      ::freeze  := ::height := 0
-      ::internal  := { 15, 1 }
-      ::aArray     := Nil
+      ::nLeftCol := 1
+      ::internal := { 15, 1 }
+      ::aArray   := Nil
+      ::freeze := ::height := 0
 
       IF Empty( ColSizeCursor )
          ColSizeCursor := hwg_Loadcursor( IDC_SIZEWE )
          arrowCursor := hwg_Loadcursor( IDC_ARROW )
       ENDIF
    ENDIF
+   ::rowPos := ::nCurrent := ::colpos := 1
 
    IF ::type == BRW_DATABASE
       ::alias   := Alias()

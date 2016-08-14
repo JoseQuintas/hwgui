@@ -155,9 +155,9 @@ METHOD READ( fname, cId ) CLASS HFormTmpl
    LOCAL i, j, nCtrl := 0, aItems, o, aProp := {}, aMethods := {}
    LOCAL cPre, cName
 
-   IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
+   /* IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
       RETURN o
-   ENDIF
+   ENDIF */
    IF Left( fname, 5 ) == "<?xml"
       oDoc := HXMLDoc():ReadString( fname )
    ELSE

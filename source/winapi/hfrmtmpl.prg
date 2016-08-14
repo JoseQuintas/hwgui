@@ -123,6 +123,7 @@ CLASS HFormTmpl
 
    CLASS VAR aForms   INIT {}
    CLASS VAR maxId    INIT 0
+   CLASS VAR oActive
    DATA oDlg
    DATA aControls     INIT {}
    DATA aProp
@@ -135,6 +136,7 @@ CLASS HFormTmpl
    DATA nContainer    INIT 0
    DATA nCtrlId       INIT CONTROL_FIRST_ID
    DATA lDebug        INIT .F.
+   DATA lModal        INIT .F.
    DATA cargo
 
    METHOD Read( fname,cId )
@@ -222,12 +224,13 @@ METHOD Show( nMode,p1,p2,p3 ) CLASS HFormTmpl
 Local i, j, cType
 Local nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F., lExitOnEnter := .F.
 Local xProperty, block, bFormExit, nStyle, nExclude := 0, bColor := -1
-Local lModal := .f.
 Local lMdi :=.F.
 Local lMdiChild := .f.
 Local lval := .f.
 Local cBitmap := nil
-Local oBmp := NIL 
+Local oBmp := NIL
+LOCAL bGetFo := {|o| HFormTmpl():oActive := o }
+
 Memvar oDlg
 Private oDlg
 
@@ -254,7 +257,7 @@ Private oDlg
       ELSEIF ::aProp[ i,1 ] == "exstyle"
          nStyle := xProperty
       ELSEIF ::aProp[ i,1 ] == "modal"
-         lModal := xProperty
+         ::lModal := xProperty
       ELSEIF ::aProp[ i,1 ] == "formtype"
          IF nMode == Nil
             lMdi := AT( "mdimain", Lower( xProperty ) ) > 0
@@ -331,7 +334,8 @@ Private oDlg
           STYLE nStyle + nExclude;
           FONT oFont ;
           BACKGROUND BITMAP oBmp ;
-          COLOR Iif( bColor>=0, bColor, Nil )
+          COLOR Iif( bColor>=0, bColor, Nil ) ;
+          ON GETFOCUS bGetFo
       ::oDlg:lClipper := lClipper
       ::oDlg:lExitOnEnter := lExitOnEnter
       ::oDlg:oParent  := Self
@@ -345,14 +349,16 @@ Private oDlg
          STYLE IF( nStyle >0 ,nStyle, NIL ) ;
          FONT oFont ;
          BACKGROUND BITMAP oBmp ;
-         COLOR Iif( bColor>=0, bColor, Nil )
+         COLOR Iif( bColor>=0, bColor, Nil ) ;
+         ON GETFOCUS bGetFo
       ELSEIF lMdiChild
          INIT WINDOW ::oDlg  MDICHILD TITLE cTitle    ;
          AT nLeft, nTop SIZE nWidth, nHeight ;
          STYLE IF( nStyle >0 , nStyle, NIL ) ;
          FONT oFont ;
          BACKGROUND BITMAP oBmp ;
-         COLOR Iif( bColor>=0, bColor, Nil )
+         COLOR Iif( bColor>=0, bColor, Nil ) ;
+         ON GETFOCUS bGetFo
       ELSE
 #endif
          nExclude := hwg_BitAndInverse( WS_MAXIMIZEBOX+WS_MINIMIZEBOX, nExclude )
@@ -362,7 +368,8 @@ Private oDlg
              BACKGROUND BITMAP oBmp ;
              COLOR Iif( bColor>=0, bColor, Nil ) ;
              STYLE Iif( nStyle > 0 ,nStyle, NIL ) ;
-             EXCLUDE Iif( nExclude > 0 , nExclude, NIL )
+             EXCLUDE Iif( nExclude > 0 , nExclude, NIL ) ;
+             ON GETFOCUS bGetFo
 #ifndef __GTK__
       ENDIF
 #endif
@@ -409,7 +416,7 @@ Private oDlg
       hwg_Setfocus( i:handle )
    ENDIF
 
-   ::oDlg:Activate(lModal)
+   ::oDlg:Activate( Iif( nMode == Nil .OR. nMode == 2 , ::lModal, Nil ) )
 
    IF bFormExit != Nil
       Return Eval( bFormExit )

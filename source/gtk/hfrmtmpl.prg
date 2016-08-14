@@ -126,6 +126,7 @@ CLASS HFormTmpl
 
    CLASS VAR aForms   INIT {}
    CLASS VAR maxId    INIT 0
+   CLASS VAR oActive
    DATA oDlg
    DATA aControls     INIT {}
    DATA aProp
@@ -138,6 +139,7 @@ CLASS HFormTmpl
    DATA nContainer    INIT 0
    DATA nCtrlId       INIT CONTROL_FIRST_ID
    DATA lDebug        INIT .F.
+   DATA lModal        INIT .F.
    DATA cargo
 
    METHOD READ( fname, cId )
@@ -225,12 +227,13 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
    LOCAL i, j, cType
    LOCAL nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F. , lExitOnEnter := .F.
    LOCAL xProperty, block, bFormExit, nstyle
-   LOCAL lModal := .F.
    LOCAL lMdi := .F.
    LOCAL lMdiChild := .F.
    LOCAL lval := .F.
    LOCAL cBitmap := nil
    LOCAL oBmp := NIL
+   LOCAL bGetFo := {|o| HFormTmpl():oActive := o }
+
    MEMVAR oDlg
    PRIVATE oDlg
 
@@ -257,7 +260,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
       ELSEIF ::aProp[ i,1 ] == "exstyle"
          nStyle := xProperty
       ELSEIF ::aProp[ i,1 ] == "modal"
-         lModal := xProperty
+         ::lModal := xProperty
       ELSEIF ::aProp[ i,1 ] == "formtype"
          IF nMode == Nil
             lMdi := At( "mdimain", Lower( xProperty ) ) > 0
@@ -332,7 +335,8 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
          AT nLeft, nTop SIZE nWidth, nHeight ;
          STYLE nStyle ;
          FONT oFont ;
-         BACKGROUND BITMAP oBmp
+         BACKGROUND BITMAP oBmp ;
+         ON GETFOCUS bGetFo
       ::oDlg:lClipper := lClipper
       ::oDlg:lExitOnEnter := lExitOnEnter
       ::oDlg:oParent  := Self
@@ -345,20 +349,23 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
             AT nLeft, nTop SIZE nWidth, nHeight ;
             STYLE IF( nStyle > 0 , nStyle, NIL );
             FONT oFont;
-            BACKGROUND BITMAP oBmp
+            BACKGROUND BITMAP oBmp ;
+            ON GETFOCUS bGetFo
       ELSEIF lMdiChild
          INIT WINDOW ::oDlg  MDICHILD TITLE cTitle    ;
             AT nLeft, nTop SIZE nWidth, nHeight ;
             STYLE IF( nStyle > 0 , nStyle, NIL );
             FONT oFont ;
-            BACKGROUND BITMAP oBmp
+            BACKGROUND BITMAP oBmp ;
+            ON GETFOCUS bGetFo
       ELSE
 #endif
          INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
             AT nLeft, nTop SIZE nWidth, nHeight ;
             FONT oFont;
             BACKGROUND BITMAP oBmp;
-            STYLE IF( nStyle > 0 , nStyle, NIL )
+            STYLE IF( nStyle > 0 , nStyle, NIL ) ;
+            ON GETFOCUS bGetFo
 #ifndef __GTK__
       ENDIF
 #endif
@@ -401,7 +408,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
       hwg_Setfocus( i:handle )
    ENDIF
 
-   ::oDlg:Activate( lModal )
+   ::oDlg:Activate( Iif( nMode == Nil .OR. nMode == 2 , ::lModal, Nil ) )
 
    IF bFormExit != Nil
       RETURN Eval( bFormExit )

@@ -77,7 +77,7 @@ METHOD Init() CLASS HTab
       ::Super:Init()
       FOR i := 1 TO Len( ::aTabs )
          h := hwg_Addtab( ::handle, ::aTabs[i] )
-         AAdd( ::aPages, { 0, 0, .F. , h } )
+         AAdd( ::aPages, { 0, 0, .T. , h } )
       NEXT
 
       hwg_Setwindowobject( ::handle, Self )
@@ -89,7 +89,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTab
 
    IF msg == WM_USER
       ::nActive := wParam
-      IF ::bChange2 != Nil
+      IF ::bChange2 != Nil .AND. ::aPages[ ::nActive,3 ]
          Eval( ::bChange2, Self, wParam )
       ENDIF
    ENDIF
@@ -109,7 +109,7 @@ METHOD StartPage( cname ) CLASS HTab
    ::oDefaultParent := Self
    AAdd( ::aTabs, cname )
    i := Len( ::aTabs )
-   AAdd( ::aPages, { Len( ::aControls ), 0, .T., 0 } )
+   AAdd( ::aPages, { Len( ::aControls ), 0, .F., 0 } )
 
    ::nActive := i
    ::aPages[ i,4 ] := hwg_Addtab( ::handle, ::aTabs[i] )
@@ -119,6 +119,7 @@ METHOD StartPage( cname ) CLASS HTab
 METHOD EndPage() CLASS HTab
 
    ::aPages[ ::nActive,2 ] := Len( ::aControls ) - ::aPages[ ::nActive,1 ]
+   ::aPages[ ::nActive,3 ] := .T.
    ::nActive := 1
 
    ::oDefaultParent := ::oTemp

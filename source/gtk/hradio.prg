@@ -101,7 +101,7 @@ CLASS HRadioButton INHERIT HControl
       bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Value( lValue )
+   METHOD Value( lValue ) SETGET
 
 ENDCLASS
 

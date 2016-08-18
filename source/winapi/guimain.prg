@@ -202,7 +202,7 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
       IF cCancel != Nil
          minWidth += 100
       ENDIF
-      addY += 30
+      addY += 36
    ENDIF
 
    IF ValType( arr ) == "C"
@@ -231,11 +231,11 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
    aArea := hwg_Getdevicearea( hDC )
    aRect := hwg_Getwindowrect( hwg_Getactivewindow() )
    hwg_Releasedc( hwg_Getactivewindow(), hDC )
-   height := ( aMetr[1] + 1 ) * aLen + 4 + addY + 8
+   height := ( aMetr[1] + 5 ) * aLen + 4 + addY + 8
    IF height > aArea[2] - aRect[2] - nTop - 60
       height := aArea[2] - aRect[2] - nTop - 60
    ENDIF
-   width := Max( aMetr[2] * 2 * nLen + addX, minWidth )
+   width := Max( aMetr[2] * 2 * nLen + 8 + addX, minWidth )
 
    INIT DIALOG oDlg TITLE cTitle ;
       AT nLeft, nTop           ;
@@ -245,7 +245,7 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
       ON INIT { |o|hwg_Resetwindowpos( o:handle ), hwg_Setfocus( oBrw:handle ) }
 
    IF lArray
-      @ 0, 0 BROWSE oBrw ARRAY
+      @ addX/2, 10 BROWSE oBrw ARRAY SIZE width - addX, height - addY
       oBrw:aArray := arr
       IF ValType( arr[1] ) == "A"
          oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent,1] },"C",nLen ) )
@@ -253,12 +253,12 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
          oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent] },"C",nLen ) )
       ENDIF
    ELSE
-      @ 0, 0 BROWSE oBrw DATABASE
+      @ addX/2, 10 BROWSE oBrw DATABASE SIZE width - addX, height - addY
       oBrw:AddColumn( HColumn():New( ,{ |value,o|(o:alias ) -> (FieldGet(nField ) ) },"C",nLen ) )
    ENDIF
 
    oBrw:oFont  := oFont
-   oBrw:bSize  := { |o, x, y|hwg_Movewindow( o:handle, addX/2, 10, x - addX, y - addY ) }
+   oBrw:bSize  := { |o, x, y|o:Move( ,, x - addX, y - addY ) }
    oBrw:bEnter := { |o|nChoice := o:nCurrent, hwg_EndDialog( o:oParent:handle ) }
    oBrw:bKeyDown := { |o, key|iif( key == 27, ( hwg_EndDialog(oDlg:handle ), .F. ), .T. ) }
 
@@ -273,14 +273,14 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
       oBrw:tcolorSel := clrTSel
    ENDIF
    IF clrBSel != Nil
-      oBrw:bcolorSel := clrBSel
+      oBrw:htbColor := oBrw:bcolorSel := clrBSel
    ENDIF
 
    IF cOk != Nil
       x1 := Int( width/2 ) - iif( cCancel != Nil, 90, 40 )
-      @ x1, height - 36 BUTTON cOk SIZE 80, 30 ON CLICK { ||nChoice := oBrw:nCurrent, hwg_EndDialog( oDlg:handle ) }
+      @ x1, height - 36 BUTTON cOk SIZE 80, 28 ON CLICK { ||nChoice := oBrw:nCurrent, hwg_EndDialog( oDlg:handle ) } ON SIZE {|o,x,y|o:Move( ,y-36 ) }
       IF cCancel != Nil
-         @ x1 + 100, height - 36 BUTTON cCancel SIZE 80, 30 ON CLICK { ||hwg_EndDialog( oDlg:handle ) }
+         @ x1 + 100, height - 36 BUTTON cCancel SIZE 80, 28 ON CLICK { ||hwg_EndDialog( oDlg:handle ) } ON SIZE {|o,x,y|o:Move( x-100,y-36 ) }
       ENDIF
    ENDIF
 

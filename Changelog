@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-22 16:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/tutor_eng.xml
+    * New sample module added: "Styled controls", which demonstrate using of
+      recently added TOP PANEL, STATUS PANEL, styles for ownerbuttons and
+      browse headers
+
 2016-08-22 14:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg

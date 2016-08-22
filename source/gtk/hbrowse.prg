@@ -737,8 +737,9 @@ METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
    ENDIF
    cStr := oColumn:heading + ';'
    FOR nLine := 1 TO ::nHeadRows
-      hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x1+1+::aHeadPadding[1], ;
-            y1 + nHeight * (nLine-1) + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], y1 + nHeight * nLine, ;
+      hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x1+1+::aHeadPadding[1],    ;
+            y1 + nHeight * (nLine-1) + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], ;
+            y1 + nHeight * nLine + ::aHeadPadding[2] + ::aHeadPadding[4], ;
             oColumn:nJusHead  + Iif( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
    NEXT
 

@@ -51,6 +51,8 @@ Local bChgPos := {|o|
    @ 20,20 BROWSE oBrowse ARRAY SIZE 308,190 ;
        STYLE WS_BORDER+WS_VSCROLL ON POSCHANGE bChgPos
 
+   oBrowse:aHeadPadding := { 4,2,4,2 }
+   oBrowse:oStyleHead := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
    oBrowse:aArray := af
    oBrowse:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",4,0 ) )
    oBrowse:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",14,0 ) )

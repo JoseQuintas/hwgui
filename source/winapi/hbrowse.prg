@@ -853,7 +853,8 @@ METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
    hwg_Settransparentmode( hDC, .T. )
    FOR nLine := 1 TO ::nHeadRows
       hwg_Drawtext( hDC, hb_tokenGet( @cStr, nLine, ';' ), x1+1+::aHeadPadding[1],      ;
-            y1 + nHeight * (nLine-1) + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], y1 + nHeight * nLine, ;
+            y1 + nHeight * (nLine-1) + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], ;
+            y1 + nHeight * nLine + ::aHeadPadding[2] + ::aHeadPadding[4], ;
             oColumn:nJusHead  + Iif( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
    NEXT
    hwg_Settransparentmode( hDC, .F. )
@@ -1511,7 +1512,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
          hwg_Invalidaterect( hBrw, 0, ::x1, ::y1 + ( ::height + 1 ) * ::internal[2] - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::internal[2] )
          hwg_Invalidaterect( hBrw, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
          ::internal[1] := hwg_Setbit( ::internal[1], 1, 0 )
-         hwg_Postmessage( hBrw, WM_PAINT, 0, 0 )
+         hwg_Sendmessage( hBrw, WM_PAINT, 0, 0 )
       ENDIF
 
    ELSEIF nLine == 0 .AND. hwg_isPtrEq( oCursor, ColSizeCursor )

@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-22 14:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    ! Small fix in DrawHeader()
+  * utils/designer/resource/widgets.xml
+    * "Modal" property replaced by "NoModal"
+  * utils/dbc/dbchw.prg
+  * utils/dbc/modistru.prg
+    * Browse headers uses gradient style now.
+
 2016-08-18 12:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
   * source/gtk/htab.prg

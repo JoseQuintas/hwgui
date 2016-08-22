@@ -458,6 +458,8 @@ Local oDlg, oBrowse, width, height, nChoice := 0, cOrder, nOrder := OrdNumber()+
    oBrowse:AddColumn( HColumn():New( "Filename",{|v,o|o:aArray[o:nCurrent,3]},"C",10,0 ) )
 
    oBrowse:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
+   oBrowse:aHeadPadding := { 4,2,4,2 }
+   oBrowse:oStyleHead := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
    
    oBrowse:rowPos := nOrder
    Eval( oBrowse:bGoTo,oBrowse,nOrder )
@@ -770,6 +772,7 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
 
       oBrowse:bPosChanged := bPosChg
       oBrowse:bcolorSel := COLOR_SELE
+      oBrowse:oStyleHead := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
       oBrowse:ofont := oBrwFont
       oBrowse:cargo := { improc, {"","",""} }
 

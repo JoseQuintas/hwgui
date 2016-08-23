@@ -120,7 +120,7 @@ STATIC FUNCTION __Valid( oCtrl )
       Eval( oCtrl:bSetGet, oCtrl:lValue, oCtrl )
    ENDIF
    IF oCtrl:bLostFocus != Nil .AND. ;
-         ValType( res := Eval( oCtrl:bLostFocus, oCtrl:lValue, oCtrl ) ) == "L" ;
+         ValType( res := Eval( oCtrl:bLostFocus, oCtrl, oCtrl:lValue ) ) == "L" ;
          .AND. !res
       hwg_Setfocus( oCtrl:handle )
    ENDIF

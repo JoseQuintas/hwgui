@@ -50,7 +50,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::bClick := bClick
    ::bLostFocus := bLFocus
    ::bGetFocus  := bGFocus
-
+                                                                      
    ::oParent:AddEvent( BN_CLICKED, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
    IF bGFocus != Nil
       ::oParent:AddEvent( BN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) } )
@@ -154,7 +154,7 @@ STATIC FUNCTION __Valid( oCtrl )
    IF oCtrl:bSetGet != Nil
       Eval( oCtrl:bSetGet, oCtrl:lValue, oCtrl )
    ENDIF
-   IF oCtrl:bClick != Nil .AND. !Eval( oCtrl:bClick, oCtrl:lValue, oCtrl )
+   IF oCtrl:bClick != Nil .AND. !Eval( oCtrl:bClick, oCtrl, oCtrl:lValue )
       hwg_Setfocus( oCtrl:handle )
    ENDIF
 

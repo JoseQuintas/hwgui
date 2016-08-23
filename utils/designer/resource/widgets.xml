@@ -678,7 +678,7 @@
       <method name="onInit" params="oCtrl" />
       <method name="onSize" params="oCtrl,x,y" />
       <method name="onPaint" params="oCtrl,hDC" />
-      <method name="onClick" params="oDlg,nId" />
+      <method name="onClick" params="oCtrl" />
       <method name="onTreeClick" params="oItem" />
    </methods>
    <temp>

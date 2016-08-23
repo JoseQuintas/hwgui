@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-23 16:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcheck.prg
+  * source/gtk/hradio.prg
+  * source/winapi/hcheck.prg
+  * source/winapi/hradio.prg
+    * Changed list of parameters, passed to ON CLICK codeblock
+      of checkbutton and radiobutton - for unification.
+      Now the first is the control object itself.
+
 2016-08-23 14:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hdialog.prg
     * COLOR clause of INIT DIALOG command works now

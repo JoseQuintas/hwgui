@@ -96,6 +96,7 @@ CLASS HRadioButton INHERIT HControl
 
    CLASS VAR winclass   INIT "BUTTON"
    DATA  oGroup
+   DATA bClick
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
       bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor )
@@ -132,7 +133,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    ::Activate()
    ::oParent:AddControl( Self )
-   ::bLostFocus := bClick
+   ::bClick := bClick
    IF bClick != Nil .AND. ( ::oGroup == Nil .OR. ::oGroup:bSetGet == Nil )
       hwg_SetSignal( ::handle, "released", WM_LBUTTONUP, 0, 0 )
    ENDIF
@@ -162,7 +163,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
 
    IF msg == WM_LBUTTONUP
       IF ::oGroup:bSetGet == Nil
-         Eval( ::bLostFocus, ::oGroup:nValue, Self )
+         Eval( ::bClick, Self, ::oGroup:nValue )
       ELSE
          __Valid( Self )
       ENDIF
@@ -182,8 +183,8 @@ STATIC FUNCTION __Valid( oCtrl )
    IF oCtrl:oGroup:bSetGet != Nil
       Eval( oCtrl:oGroup:bSetGet, oCtrl:oGroup:nValue )
    ENDIF
-   IF oCtrl:bLostFocus != Nil
-      Eval( oCtrl:bLostFocus, oCtrl:oGroup:nValue, oCtrl )
+   IF oCtrl:bClick != Nil
+      Eval( oCtrl:bClick, oCtrl, oCtrl:oGroup:nValue )
    ENDIF
 
    RETURN .T.

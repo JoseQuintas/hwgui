@@ -109,6 +109,7 @@ CLASS HRadioButton INHERIT HControl
 
    CLASS VAR winclass   INIT "BUTTON"
    DATA  oGroup
+   DATA bClick
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
       bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, lTransp )
@@ -153,15 +154,15 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
       ::brush := HBrush():Add( bcolor )
    ENDIF
 
+   ::bClick := bClick
    ::Activate()
    ::oParent:AddControl( Self )
    IF bClick != Nil .AND. ( ::oGroup == Nil .OR. ::oGroup:bSetGet == Nil )
-      ::oParent:AddEvent( 0, ::id, bClick )
+      ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
    ENDIF
    IF ::oGroup != Nil
       AAdd( ::oGroup:aButtons, Self )
-      ::bLostFocus := bClick
-      ::oParent:AddEvent( BN_CLICKED, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
+      ::oParent:AddEvent( BN_CLICKED, ::id, { |o,id|__Valid( o:FindControl(id) ) } )
    ENDIF
 
    RETURN Self
@@ -200,14 +201,14 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
       ::brush := HBrush():Add( bcolor )
    ENDIF
 
+   ::bClick := bClick
    ::oParent:AddControl( Self )
    IF bClick != Nil .AND. ( ::oGroup == Nil .OR. ::oGroup:bSetGet == Nil )
-      ::oParent:AddEvent( 0, ::id, bClick )
+      ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
    ENDIF
    IF ::oGroup != Nil
       AAdd( ::oGroup:aButtons, Self )
-      ::bLostFocus := bClick
-      ::oParent:AddEvent( BN_CLICKED, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
+      ::oParent:AddEvent( BN_CLICKED, ::id, { |o,id|__Valid( o:FindControl(id) ) } )
    ENDIF
 
    RETURN Self
@@ -224,8 +225,18 @@ STATIC FUNCTION __Valid( oCtrl )
    IF oCtrl:oGroup:bSetGet != Nil
       Eval( oCtrl:oGroup:bSetGet, oCtrl:oGroup:nValue )
    ENDIF
-   IF oCtrl:bLostFocus != Nil
-      Eval( oCtrl:bLostFocus, oCtrl:oGroup:nValue, oCtrl )
+   IF oCtrl:bClick != Nil
+      Eval( oCtrl:bClick, oCtrl, oCtrl:oGroup:nValue )
+   ENDIF
+
+   RETURN .T.
+
+STATIC FUNCTION onClick( oParent, id )
+
+   LOCAL oCtrl := oParent:FindControl( id )
+
+   IF !Empty( oCtrl )
+      Eval( oCtrl:bClick, oCtrl )
    ENDIF
 
    RETURN .T.

@@ -446,9 +446,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    IF bClick != NIL
       IF ::oParent:className == "HSTATUS"
-         ::oParent:oParent:AddEvent( 0, ::id, bClick )
+         ::oParent:oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
       ELSE
-         ::oParent:AddEvent( 0, ::id, bClick )
+         ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
       ENDIF
    ENDIF
 
@@ -472,7 +472,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::title   := cCaption
 
    IF bClick != NIL
-      ::oParent:AddEvent( 0, ::id, bClick )
+      ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
    ENDIF
 RETURN Self
 
@@ -587,3 +587,12 @@ LOCAL x2  := drawInfo[6], y2 := drawInfo[7]
 
 RETURN NIL
 
+STATIC FUNCTION onClick( oParent, id )
+
+   LOCAL oCtrl := oParent:FindControl( id )
+
+   IF !Empty( oCtrl )
+      Eval( oCtrl:bClick, oCtrl )
+   ENDIF
+
+   RETURN .T.

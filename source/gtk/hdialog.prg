@@ -62,7 +62,7 @@ CLASS HDialog INHERIT HWindow
    DATA lModal
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
-      bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc )
+      bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor )
    METHOD Activate( lNoModal )
    METHOD onEvent( msg, wParam, lParam )
    METHOD AddItem( oWnd, lModal )
@@ -74,13 +74,14 @@ CLASS HDialog INHERIT HWindow
 ENDCLASS
 
 METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
-      bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc ) CLASS HDialog
+      bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor ) CLASS HDialog
 
    ::oDefaultParent := Self
    ::xResourceID := xResourceID
    ::type     := lType
    ::title    := cTitle
    ::style    := iif( nStyle == Nil, WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX, nStyle )
+   ::bColor   := bColor
    ::oBmp     := oBmp
    ::oIcon    := oIcon
    ::nTop     := iif( y == Nil, 0, y )
@@ -219,6 +220,9 @@ STATIC FUNCTION InitModalDlg( oDlg )
       hwg_Sendmessage( oDlg:handle, WM_SETFONT, oDlg:oFont:handle, 0 )
    ENDIF
    */
+   IF oDlg:bColor != Nil
+      hwg_SetBgColor( oDlg:handle, oDlg:bColor )
+   ENDIF
    IF oDlg:bInit != Nil
       Eval( oDlg:bInit, oDlg )
    ENDIF

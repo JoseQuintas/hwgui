@@ -38,7 +38,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    LOCAL oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
-   IF !Empty( bPaint )
+   IF !Empty( bPaint ) .OR. bColor != Nil
       nStyle := SS_OWNERDRAW
    ENDIF
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, iif( nWidth == Nil,0,nWidth ), ;

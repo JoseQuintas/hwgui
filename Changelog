@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-24 13:27 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htree.prg
+    ! Small fix
+
 2016-08-24 11:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
   * source/winapi/hpanel.prg

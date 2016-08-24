@@ -669,8 +669,10 @@ STATIC PROCEDURE ReleaseTree( aItems, lDelImages )
    FOR i := 1 TO iLen
       IF lDelImages .AND. !Empty( aItems[i]:aImages )
          FOR j := 1 TO Len( aItems[i]:aImages )
-            hwg_Deleteobject( aItems[i]:aImages[j] )
-            aItems[i]:aImages[j] := Nil
+            IF aItems[i]:aImages[j] != Nil
+               hwg_Deleteobject( aItems[i]:aImages[j] )
+               aItems[i]:aImages[j] := Nil
+            ENDIF
          NEXT
       ENDIF
       ReleaseTree( aItems[i]:aItems, lDelImages )

@@ -79,6 +79,10 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    hwg_SetEvent( ::hEdit, "focus_out_event", EN_KILLFOCUS, 0, 0 )
    hwg_SetSignal( ::hEdit, "changed", CBN_SELCHANGE, 0, 0 )
 
+   IF Left( ::oParent:ClassName(),6 ) == "HPANEL" .AND. hwg_BitAnd( ::oParent:style,SS_OWNERDRAW ) != 0
+      Aadd( ::oParent:aItems, { "c",{|h,a|hwg__DrawCombo(h,::nLeft+::nWidth-22,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1)} } )
+   ENDIF
+
    RETURN Self
 
 METHOD Activate CLASS HComboBox

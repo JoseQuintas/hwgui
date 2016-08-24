@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-24 11:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+    * :aItems variable and :DrawItems() method has been added to make it more easy
+      to draw items on a panel control:
+         Aadd( oPanel:aItems, { cId, {|hDC,aCoors|SomeDrawFunc(hDC,aCoors,...)} )
+  * source/gtk/draw.c
+  * source/gtk/hcombo.prg
+    * The drawable areas in gtk ( such as PANEL with SS_OWNERDRAW style ) doesn't
+      allow buttons (including check- and radiobuttons), clicable part of a combobox
+      to display. Now this is fixed for comboboxes by redrawing this part on a
+      drawable panel.
+
 2016-08-23 16:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcheck.prg
   * source/gtk/hradio.prg

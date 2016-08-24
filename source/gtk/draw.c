@@ -752,3 +752,26 @@ HB_FUNC( HWG_DRAWGRADIENT )
    if( user_colors_num > 1 )
       cairo_pattern_destroy( pat );
 }
+
+HB_FUNC( HWG__DRAWCOMBO )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = (gdouble)hb_parni( 2 ), y1 = (gdouble)hb_parni( 3 ),
+           x2 = (gdouble)hb_parni( 4 ), y2 = (gdouble)hb_parni( 5 ),
+           nWidth = x2-x1+1, nHeight = y2-y1+1;
+
+   hwg_setcolor( hDC->cr, 0xffffff );
+   cairo_rectangle( hDC->cr, x1, y1, nWidth, nHeight );
+   cairo_fill( hDC->cr );
+
+   hwg_setcolor( hDC->cr, 0 );
+   cairo_set_line_width( hDC->cr, 0.5 );
+
+   cairo_rectangle( hDC->cr, x1, y1, nWidth, nHeight );
+
+   cairo_move_to( hDC->cr, x1+6, y1+nHeight/2-3 );
+   cairo_line_to( hDC->cr, x1+nWidth/2, y1+nHeight/2+3 );
+   cairo_line_to( hDC->cr, x2-6, y1+nHeight/2-3 );
+
+   cairo_stroke( hDC->cr );
+}

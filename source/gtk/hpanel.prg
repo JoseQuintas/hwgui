@@ -17,6 +17,9 @@ CLASS HPanel INHERIT HControl
    DATA winclass   INIT "PANEL"
 
    DATA hBox
+   DATA oStyle
+   DATA aItems    INIT {}       // Array of items to draw: { cIt, bDraw(hDC,aCoors) }
+
    DATA hScrollV  INIT Nil
    DATA hScrollH  INIT Nil
    DATA nScrollV  INIT 0
@@ -28,6 +31,7 @@ CLASS HPanel INHERIT HControl
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
+   METHOD DrawItems( hDC, aCoors )
    METHOD Paint()
    METHOD Move( x1, y1, width, height )
 
@@ -99,16 +103,37 @@ METHOD Init CLASS HPanel
 
    RETURN Nil
 
+METHOD DrawItems( hDC, aCoors ) CLASS HPanel
+
+   LOCAL i
+
+   IF Empty( aCoors )
+      aCoors := hwg_Getclientrect( ::handle )
+   ENDIF
+   FOR i := 1 TO Len( ::aItems )
+      Eval( ::aItems[i,2], hDC, aCoors )
+   NEXT
+
+   RETURN Nil
+
 METHOD Paint() CLASS HPanel
    LOCAL hDC, aCoors, oPenLight, oPenGray
 
    IF ::bPaint != Nil
-      Eval( ::bPaint, Self )
-   ELSE
-      hDC := hwg_Getdc( ::handle )
-      hwg_Drawbutton( hDC, 0, 0, ::nWidth - 1, ::nHeight - 1, 5 )
-      hwg_Releasedc( ::handle, hDC )
+      RETURN Eval( ::bPaint, Self )
    ENDIF
+
+   hDC := hwg_Getdc( ::handle )
+   aCoors := hwg_Getclientrect( ::handle )
+
+   IF ::oStyle == Nil
+      hwg_Drawbutton( hDC, 0, 0, ::nWidth - 1, ::nHeight - 1, 5 )
+   ELSE
+      ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
+   ENDIF
+   ::DrawItems( hDC, aCoors )
+
+   hwg_Releasedc( ::handle, hDC )
 
    RETURN Nil
 
@@ -233,6 +258,7 @@ METHOD Paint() CLASS HPanelStS
    ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )
 
    ::PaintText( hDC )
+   ::DrawItems( hDC )
 
    hwg_Endpaint( ::handle, pps )
 

@@ -70,6 +70,7 @@
 
 #xtranslate hwg_Rgb([<n,...>])                    => hwg_ColorRGB2N(<n>)
 #xtranslate hwg_VColor([<n,...>])                 => hwg_ColorC2N(<n>)
+#xtranslate hwg_ParentGetDialog([<n,...>])        => hwg_getParentForm(<n>)
 
 // Allow the definition of different classes without defining a new command
 
@@ -87,7 +88,7 @@
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
              [ SYSCOLOR <clr> ]             ;
-             [ COLOR <bcolor> ]             ;
+             [ <bclr: BACKCOLOR, COLOR> <bcolor> ] ;
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
              [ EXCLUDE <nExclude> ]         ;
@@ -116,7 +117,7 @@
              [ AT <x>, <y> ]                ;
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
-             [ COLOR <bColor> ]             ;
+             [ <bclr: BACKCOLOR, COLOR> <bColor> ] ;
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
@@ -143,7 +144,7 @@
              [ SIZE <width>, <height> ]     ;
              [ ICON <ico> ]                 ;
              [ SYSCOLOR <clr> ]             ;
-             [ COLOR <bColor> ]             ;
+             [ <bclr: BACKCOLOR, COLOR> <bColor> ] ;
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
@@ -172,7 +173,7 @@
              [ BACKGROUND BITMAP <oBmp> ]   ;
              [ STYLE <nStyle> ]             ;
              [ FONT <oFont> ]               ;
-             [ COLOR <bColor> ]             ;
+             [ <bclr: BACKCOLOR, COLOR> <bColor> ] ;
              [<lClipper: CLIPPER>]          ;
              [<lExitOnEnter: NOEXIT>]       ; //Modified By Sandro
              [<lExitOnEsc: NOEXITESC>]      ; //Modified By Sandro
@@ -1038,7 +1039,7 @@
 #xcommand PREPARE FONT <oFont>       ;
              NAME <cName>            ;
              [ WIDTH <nWidth> ]      ;
-             [ HEIGHT <nHeight> ]     ;
+             [ HEIGHT <nHeight> ]    ;
              [ WEIGHT <nWeight> ]    ;
              [ CHARSET <charset> ]   ;
              [ <ita: ITALIC> ]       ;
@@ -1107,7 +1108,7 @@
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
             [<lTransp: TRANSPARENT>]   ;
-            [ <valid: VALID, ON CLICK> <bClick> ] ;
+            [ <valid: VALID, ON CLICK> <bClick> ]     ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;

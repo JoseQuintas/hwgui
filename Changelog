@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-29 13:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * BACKCOLOR added as preferrable alternative for COLOR clause in INIT WINDOW,
+      INIT DIALOG commands.
+    * added #xtranslate hwg_ParentGetDialog => hwg_getParentForm
+  * source/gtk/gtkmain.prg
+    * hwg_getParentForm( oCtrl ) added.
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    * hwg_getParentForm() is used now instead of hwg_ParentGetDialog(),
+      hwg_ParentGetDialog() is deleted.
+    ! Some fixes for 'tab' key.
+
 2016-08-24 13:27 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htree.prg
     ! Small fix

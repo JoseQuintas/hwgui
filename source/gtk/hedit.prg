@@ -671,7 +671,7 @@ STATIC FUNCTION __valid( oCtrl )
    LOCAL vari, oDlg
 
    IF oCtrl:bSetGet != Nil
-      IF ( oDlg := hwg_ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
+      IF ( oDlg := hwg_getParentForm( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := UnTransform( oCtrl, hwg_Edit_GetText( oCtrl:handle ) )
          oCtrl:title := vari
          IF oCtrl:cType == "D"
@@ -930,26 +930,11 @@ FUNCTION hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )
 FUNCTION hwg_SetGetUpdated( o )
 
    o:lChanged := .T.
-   IF ( o := hwg_ParentGetDialog( o ) ) != Nil
+   IF ( o := hwg_getParentForm( o ) ) != Nil
       o:lUpdated := .T.
    ENDIF
 
    RETURN Nil
-
-FUNCTION hwg_ParentGetDialog( o )
-
-   DO WHILE .T.
-      o := o:oParent
-      IF o == Nil
-         EXIT
-      ELSE
-         IF __ObjHasMsg( o, "GETLIST" )
-            EXIT
-         ENDIF
-      ENDIF
-   ENDDO
-
-   RETURN o
 
 FUNCTION hwg_Chr( nCode )
    RETURN Iif( hb_cdpSelect()=="UTF8", hwg_keyToUtf8( nCode ), Chr( nCode ) )

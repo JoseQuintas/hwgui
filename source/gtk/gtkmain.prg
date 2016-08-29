@@ -263,3 +263,8 @@ FUNCTION hwg_FindSelf( hCtrl )
 
    RETURN Nil
 
+FUNCTION hwg_getParentForm( o )
+   DO WHILE o:oParent != Nil .AND. !__ObjHasMsg( o, "GETLIST" )
+      o := o:oParent
+   ENDDO
+   RETURN o

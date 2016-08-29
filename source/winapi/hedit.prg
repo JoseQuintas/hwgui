@@ -216,13 +216,21 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                //****   Paulo Flecha
                IF Asc( SubStr( hwg_Getkeyboardstate(), VK_SHIFT + 1, 1 ) ) >= 128
                   IF !hwg_GetSkip( oParent, ::handle, - 1 ) // First Get
-                     nextHandle := hwg_Getnextdlgtabitem ( hwg_Getactivewindow() , hwg_Getfocus() , .T. )
-                     hwg_Postmessage( hwg_ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1 )
+                     nextHandle := hwg_Getnextdlgtabitem ( (oParent := hwg_getParentForm(Self)):handle, ::handle, .T. )
+                     IF oParent:Classname() == "HDIALOG"
+                        hwg_Postmessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
+                     ELSE
+                        hwg_Setfocus( nextHandle )
+                     ENDIF
                   ENDIF
                ELSE
                   IF !hwg_GetSkip( oParent, ::handle, 1 ) // Last Get
-                     nextHandle := hwg_Getnextdlgtabitem ( hwg_Getactivewindow() , hwg_Getfocus() , .F. )
-                     hwg_Postmessage( hwg_ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1 )
+                     nextHandle := hwg_Getnextdlgtabitem ( (oParent := hwg_getParentForm(Self)):handle, ::handle, .F. )
+                     IF oParent:Classname() == "HDIALOG"
+                        hwg_Postmessage( oParent:handle, WM_NEXTDLGCTL, nextHandle , 1 )
+                     ELSE
+                        hwg_Setfocus( nextHandle )
+                     ENDIF
                   ENDIF
                ENDIF
                RETURN 0
@@ -271,16 +279,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
 
             IF wParam == VK_TAB     // Tab
-               IF Asc( SubStr( hwg_Getkeyboardstate(), VK_SHIFT + 1, 1 ) ) >= 128
-                  nextHandle := hwg_Getnextdlgtabitem ( hwg_Getactivewindow() , hwg_Getfocus() , .T. )
-                  hwg_Setfocus( nextHandle )
-               ELSE
-                  nextHandle := hwg_Getnextdlgtabitem ( hwg_Getactivewindow() , hwg_Getfocus() , .F. )
-                  hwg_Setfocus( nextHandle )
-               ENDIF
+               nextHandle := hwg_Getnextdlgtabitem ( hwg_getParentForm(Self):handle, ::handle, ;
+                     (Asc( SubStr( hwg_Getkeyboardstate(), VK_SHIFT + 1, 1 ) ) >= 128) )
+               hwg_Setfocus( nextHandle )
                RETURN 0
-            end
-         end
+            ENDIF
+         ENDIF
          /* Sauli */
       ENDIF
 
@@ -315,13 +319,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          IF wParam == VK_TAB     // Tab
             IF Asc( SubStr( hwg_Getkeyboardstate(), VK_SHIFT + 1, 1 ) ) >= 128
                IF !hwg_GetSkip( oParent, ::handle, - 1 ) // First Get
-                  nextHandle := hwg_Getnextdlgtabitem ( hwg_Getactivewindow() , hwg_Getfocus() , .T. )
-                  hwg_Postmessage( hwg_ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1 )
+                  nextHandle := hwg_Getnextdlgtabitem ( hwg_getParentForm(Self):handle, ::handle, .T. )
+                  hwg_Postmessage( hwg_getParentForm(Self):handle, WM_NEXTDLGCTL, nextHandle , 1 )
                ENDIF
             ELSE
                IF !hwg_GetSkip( oParent, ::handle, 1 ) // Last Get
-                  nextHandle := hwg_Getnextdlgtabitem ( hwg_Getactivewindow() , hwg_Getfocus() , .F. )
-                  hwg_Postmessage( hwg_ParentGetDialog( Self ):handle, WM_NEXTDLGCTL, nextHandle , 1 )
+                  nextHandle := hwg_Getnextdlgtabitem ( hwg_getParentForm(Self):handle, ::handle , .F. )
+                  hwg_Postmessage( hwg_getParentForm(Self):handle, WM_NEXTDLGCTL, nextHandle , 1 )
                ENDIF
             ENDIF
             RETURN 0
@@ -828,7 +832,7 @@ STATIC FUNCTION __valid( oCtrl )
    LOCAL vari, oDlg
 
    IF oCtrl:bSetGet != Nil
-      IF ( oDlg := hwg_ParentGetDialog( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
+      IF ( oDlg := hwg_getParentForm( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
          vari := UnTransform( oCtrl, hwg_Getedittext( oCtrl:oParent:handle, oCtrl:id ) )
          oCtrl:title := vari
          IF oCtrl:cType == "D"
@@ -1057,26 +1061,11 @@ FUNCTION hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )
 FUNCTION hwg_SetGetUpdated( o )
 
    o:lChanged := .T.
-   IF ( o := hwg_ParentGetDialog( o ) ) != Nil
+   IF ( o := hwg_getParentForm( o ) ) != Nil
       o:lUpdated := .T.
    ENDIF
 
    RETURN Nil
-
-FUNCTION hwg_ParentGetDialog( o )
-
-   DO WHILE .T.
-      o := o:oParent
-      IF o == Nil
-         EXIT
-      ELSE
-         IF __ObjHasMsg( o, "GETLIST" )
-            EXIT
-         ENDIF
-      ENDIF
-   ENDDO
-
-   RETURN o
 
 FUNCTION hwg_SetColorinFocus( lDef, tColor, bColor )
 

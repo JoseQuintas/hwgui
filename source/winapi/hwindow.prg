@@ -129,6 +129,8 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
    DATA nLastKey INIT 0
    DATA bCloseQuery
    DATA bActivate
+   DATA tColorinFocus  INIT -1
+   DATA bColorinFocus  INIT -1
 
    DATA aOffset
    DATA oEmbedded

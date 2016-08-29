@@ -21,19 +21,20 @@ STATIC bColorinFocus := 16777164
 
 CLASS HEdit INHERIT HControl
 
-   CLASS VAR winclass   INIT "EDIT"
-   DATA lMultiLine   INIT .F.
+   CLASS VAR winclass  INIT "EDIT"
+   DATA lMultiLine     INIT .F.
    DATA cType INIT "C"
    DATA bSetGet
    DATA bValid
    DATA cPicFunc, cPicMask
-   DATA lPicComplex  INIT .F.
-   DATA lFirst       INIT .T.
-   DATA lChanged     INIT .F.
-   DATA lNoPaste     INIT .F.
-   DATA nMaxLength   INIT Nil
+   DATA lPicComplex    INIT .F.
+   DATA lFirst         INIT .T.
+   DATA lChanged       INIT .F.
+   DATA lNoPaste       INIT .F.
+   DATA nMaxLength     INIT Nil
    DATA bkeydown, bkeyup, bchange
-   DATA aColorOld    INIT { 0,0 }
+   DATA aColorOld      INIT { 0,0 }
+   DATA bColorBlock
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
@@ -288,18 +289,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          /* Sauli */
       ENDIF
 
-      IF lColorinFocus
-         IF msg == WM_SETFOCUS
-            ::aColorOld[1] := ::tcolor
-            ::aColorOld[2] := ::bcolor
-            ::Setcolor( tColorinFocus , bColorinFocus, .T. )
-         ELSEIF msg == WM_KILLFOCUS
-            ::tcolor := ::aColorOld[1]
-            ::bcolor := ::aColorOld[2]
-            ::Setcolor( ::tcolor, ::bColor, .T. )
-         ENDIF
-      ENDIF
-
    ELSE
 
       IF msg == WM_MOUSEWHEEL
@@ -344,6 +333,27 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
    ELSEIF msg == WM_DESTROY
       ::End()
+   ENDIF
+
+   IF msg == WM_SETFOCUS
+      oParent := hwg_getParentForm( Self )
+      IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
+         ::aColorOld[1] := ::tcolor
+         ::aColorOld[2] := ::bcolor
+         IF ::bColorBlock != Nil
+            Eval( ::bColorBlock, Self )
+         ELSE
+            ::Setcolor( Iif( oParent:tColorinFocus >= 0, oParent:tColorinFocus, tColorinFocus ), ;
+                  Iif( oParent:bColorinFocus >= 0, oParent:bColorinFocus, bColorinFocus ), .T. )
+         ENDIF
+      ENDIF
+   ELSEIF msg == WM_KILLFOCUS
+      oParent := hwg_getParentForm( Self )
+      IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
+         ::tcolor := ::aColorOld[1]
+         ::bcolor := ::aColorOld[2]
+         ::Setcolor( ::tcolor, ::bColor, .T. )
+      ENDIF
    ENDIF
 
    Return - 1
@@ -1069,15 +1079,21 @@ FUNCTION hwg_SetGetUpdated( o )
 
 FUNCTION hwg_SetColorinFocus( lDef, tColor, bColor )
 
-   IF ValType( lDef ) <> "L"
-      RETURN .F.
-   ENDIF
-   lColorinFocus := lDef
-   IF tColor != Nil
-      tColorinFocus := tColor
-   ENDIF
-   IF bColor != Nil
-      bColorinFocus := bColor
+   IF ValType( lDef ) ==  "O"
+      IF tColor != Nil
+         lDef:tColorinFocus := tColor
+      ENDIF
+      IF bColor != Nil
+         lDef:bColorinFocus := bColor
+      ENDIF
+   ELSEIF ValType( lDef ) == "L"
+      lColorinFocus := lDef
+      IF tColor != Nil
+         tColorinFocus := tColor
+      ENDIF
+      IF bColor != Nil
+         bColorinFocus := bColor
+      ENDIF
    ENDIF
 
    RETURN .T.

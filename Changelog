@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-29 15:41 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hwindow.prg
+  * source/winapi/hedit.prg
+    * Color in Focus handling has been changed.
+      Now there are 3 levels:
+      1) a global one, the same as before - it works for all GET's in all windows
+      2) a window level: you can define colors in focus, using;
+         hwg_SetColorinFocus( oWindow, tColor, bColor ) function - the same as bafore,
+         but oWindow (oDlg) is passed instead of lDef;
+      3) a GET level: you may set colors in focus for any GET, using a new HEdit variable:
+         bColorBlock, which is called while WM_SETFOCUS, get as a parameter the HEdit
+         object and should call :Setcolor() method to set colors.
+      Thanks to SergKis for the idea.
+
 2016-08-29 13:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * BACKCOLOR added as preferrable alternative for COLOR clause in INIT WINDOW,

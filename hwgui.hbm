@@ -39,6 +39,7 @@
 {win}source/winapi/barcode.prg
 {win}source/winapi/hbincnt.prg
 {win}source/winapi/hbrowse.prg
+{win}source/winapi/hbrwflt.prg
 {win}source/winapi/hcheck.prg
 {win}source/winapi/hcombo.prg
 {win}source/winapi/hcontrol.prg

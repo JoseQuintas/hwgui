@@ -19,25 +19,24 @@
    //    columna. 27.07.2002. WHT.                                             //
    //////////////////////////////////////////////////////////////////////////////
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "inkey.ch"
 #include "dbstruct.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 #ifdef __XHARBOUR__
 #xtranslate hb_tokenGet([<x>,<n>,<c>] ) =>  __StrToken(<x>,<n>,<c>)
 #xtranslate hb_tokenPtr([<x>,<n>,<c>] ) =>  __StrTkPtr(<x>,<n>,<c>)
 #endif
 
-   REQUEST DBGOTOP
-   REQUEST DBGOTO
-   REQUEST DBGOBOTTOM
-   REQUEST DBSKIP
-   REQUEST RECCOUNT
-   REQUEST RECNO
-   REQUEST EOF
-   REQUEST BOF
+REQUEST DBGOTOP
+REQUEST DBGOTO
+REQUEST DBGOBOTTOM
+REQUEST DBSKIP
+REQUEST RECCOUNT
+REQUEST RECNO
+REQUEST EOF
+REQUEST BOF
 
 /*
  * Scroll Bar Constants
@@ -51,12 +50,12 @@
 
 #define HDM_GETITEMCOUNT    4608
 
-   // #define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys */
+// #define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys */
 
-   STATIC ColSizeCursor := 0
-   STATIC arrowCursor := 0
-   STATIC oCursor     := 0
-   STATIC xDrag
+STATIC ColSizeCursor := 0
+STATIC arrowCursor := 0
+STATIC oCursor     := 0
+STATIC xDrag
 
 CLASS HColumn INHERIT HObject
 
@@ -163,20 +162,11 @@ CLASS HBrowse INHERIT HControl
    DATA lResizing INIT .F.                     // .T. while a column resizing is undergoing
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
    DATA aSelected                              // An array of selected records numbers
-   // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
-   DATA lDescend INIT .F.              // Descend Order?
-   DATA lFilter INIT .F.               // Filtered? (atribuition is automatic in method "New()").
-   DATA bFirst INIT { || DBGOTOP() }     // Block to place pointer in first record of condition filter. (Ex.: DbGoTop(), DbSeek(), etc.).
-   DATA bLast  INIT { || dbGoBottom() }  // Block to place pointer in last record of condition filter. (Ex.: DbGoBottom(), DbSeek(), etc.).
-   DATA bWhile INIT { || .T. }           // Clausule "while". Return logical.
-   DATA bFor INIT { || .T. }             // Clausule "for". Return logical.
-   DATA nLastRecordFilter INIT 0       // Save the last record of filter.
-   DATA nFirstRecordFilter INIT 0      // Save the first record of filter.
    DATA nPaintRow, nPaintCol                   // Row/Col being painted
 
    METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
-      lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bFirst, bWhile, bFor, bRClick )
+      lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bRClick )
    METHOD InitBrw( nType )
    METHOD Rebuild()
    METHOD Activate()
@@ -220,7 +210,7 @@ ENDCLASS
 METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, ;
       lNoBorder, lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, ;
-      lDescend, bWhile, bFirst, bLast, bFor, bRClick ) CLASS HBrowse
+      lDescend, bWhile, bRClick ) CLASS HBrowse
 
    nStyle   := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE +  ;
       iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) +            ;
@@ -245,26 +235,6 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    ::bPosChanged := bPosChg
    IF lMultiSelect != Nil .AND. lMultiSelect
       ::aSelected := {}
-   ENDIF
-   ::lDescend    := iif( lDescend == Nil, .F. , lDescend )
-
-   // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
-   IF HB_ISBLOCK( bFirst ) .OR. HB_ISBLOCK( bFor ) .OR. HB_ISBLOCK( bWhile )
-      ::lFilter := .T.
-      IF HB_ISBLOCK( bFirst )
-         ::bFirst  := bFirst
-      ENDIF
-      IF HB_ISBLOCK( bLast )
-         ::bLast   := bLast
-      ENDIF
-      IF HB_ISBLOCK( bWhile )
-         ::bWhile  := bWhile
-      ENDIF
-      IF HB_ISBLOCK( bFor )
-         ::bFor    := bFor
-      ENDIF
-   ELSE
-      ::lFilter := .F.
    ENDIF
 
    hwg_RegBrowse()
@@ -546,35 +516,14 @@ METHOD InitBrw( nType )  CLASS HBrowse
 
    IF ::type == BRW_DATABASE
       ::alias   := Alias()
-      //Modified By Luiz Henrique dos Santos (luizhsantos@gmail.com.br)
-      IF ::lFilter
-         ::nLastRecordFilter  := ::nFirstRecordFilter := 0
-         IF ::lDescend
-            ::bSkip     := { |o, n| ( ::alias ) -> ( FltSkip( o, n, .T. ) ) }
-            ::bGoTop    := { |o| ( ::alias ) -> ( FltGoBottom( o ) ) }
-            ::bGoBot    := { |o| ( ::alias ) -> ( FltGoTop( o ) ) }
-            ::bEof      := { |o| ( ::alias ) -> ( FltBOF( o ) ) }
-            ::bBof      := { |o| ( ::alias ) -> ( FltEOF( o ) ) }
-         ELSE
-            ::bSkip     := { |o, n| ( ::alias ) -> ( FltSkip( o, n, .F. ) ) }
-            ::bGoTop    := { |o| ( ::alias ) -> ( FltGoTop( o ) ) }
-            ::bGoBot    := { |o| ( ::alias ) -> ( FltGoBottom( o ) ) }
-            ::bEof      := { |o| ( ::alias ) -> ( FltEOF( o ) ) }
-            ::bBof      := { |o| ( ::alias ) -> ( FltBOF( o ) ) }
-         ENDIF
-         ::bRcou     := { |o| ( ::alias ) -> ( FltRecCount( o ) ) }
-         ::bRecnoLog := ::bRecno := { |o| ( ::alias ) -> ( FltRecNo( o ) ) }
-         ::bGoTo     := { |o, n|( ::alias ) -> ( FltGoTo( o, n ) ) }
-      ELSE
-         ::bSkip     :=  { |o, n| ( ::alias ) -> ( dbSkip( n ) ) }
-         ::bGoTop    :=  { || ( ::alias ) -> ( DBGOTOP() ) }
-         ::bGoBot    :=  { || ( ::alias ) -> ( dbGoBottom() ) }
-         ::bEof      :=  { || ( ::alias ) -> ( Eof() ) }
-         ::bBof      :=  { || ( ::alias ) -> ( Bof() ) }
-         ::bRcou     :=  { || ( ::alias ) -> ( RecCount() ) }
-         ::bRecnoLog := ::bRecno  := { ||( ::alias ) -> ( RecNo() ) }
-         ::bGoTo     := { |o, n|( ::alias ) -> ( dbGoto( n ) ) }
-      ENDIF
+      ::bSkip     :=  { |o, n| ( ::alias ) -> ( dbSkip( n ) ) }
+      ::bGoTop    :=  { || ( ::alias ) -> ( DBGOTOP() ) }
+      ::bGoBot    :=  { || ( ::alias ) -> ( dbGoBottom() ) }
+      ::bEof      :=  { || ( ::alias ) -> ( Eof() ) }
+      ::bBof      :=  { || ( ::alias ) -> ( Bof() ) }
+      ::bRcou     :=  { || ( ::alias ) -> ( RecCount() ) }
+      ::bRecnoLog := ::bRecno  := { ||( ::alias ) -> ( RecNo() ) }
+      ::bGoTo     := { |o, n|( ::alias ) -> ( dbGoto( n ) ) }
    ELSEIF ::type == BRW_ARRAY
       ::bSkip      := { | o, n | ARSKIP( o, n ) }
       ::bGoTop  := { | o | o:nCurrent := 1 }
@@ -647,7 +596,6 @@ METHOD Rebuild( hDC ) CLASS HBrowse
             ::nFootRows := Max( ::nFootRows, nCount )
          ENDIF
          xSize := Round( ( nColLen ) * hwg_GetTextMetric(hDC)[2], 0 )
-         //hwg_writelog( str(i)+":"+str(xsize)+"/"+str(nColLen)+"/"+Str(hwg_GetTextMetric(hDC)[2]) )
       ENDIF
 
       oColumn:width := xSize + ::aPadding[1] + ::aPadding[3]
@@ -771,13 +719,11 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       ::LineOut( nRows + 1, 0, hDC, .F. , .T. )
    ENDIF
 
-   //::LineOut( ::rowPos, Iif( ::lEditable, ::colpos, 0 ), hDC, .T. )
    ::LineOut( ::rowPos, 0, hDC, .T. )
-   //if ::lEditable
+
    IF lLostFocus == NIL
       ::LineOut( ::rowPos, ::colpos, hDC, .T. )
    ENDIF
-   //endif
 
    IF hwg_Checkbit( ::internal[1], 1 ) .OR. ::lAppMode
       ::HeaderOut( hDC )
@@ -980,7 +926,6 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
    LOCAL oLineBrush :=  iif( vybfld >= 1, HBrush():Add( ::htbColor ), iif( lSelected, ::brushSel,::brush ) )
    LOCAL lColumnFont := .F.
 
-   //Local nPaintCol, nPaintRow
    LOCAL aCores
 
    ::xpos := x := ::x1
@@ -1339,7 +1284,6 @@ METHOD LINEUP() CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
 
 METHOD PAGEUP() CLASS HBrowse
 
@@ -1372,8 +1316,6 @@ METHOD PAGEUP() CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD PAGEDOWN() CLASS HBrowse
 
    LOCAL minPos, maxPos, nPos, nRows := ::rowCurrCount
@@ -1403,7 +1345,6 @@ METHOD PAGEDOWN() CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
 
 METHOD BOTTOM( lPaint ) CLASS HBrowse
 
@@ -1428,8 +1369,6 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD TOP() CLASS HBrowse
 
    LOCAL minPos, maxPos, nPos
@@ -1449,8 +1388,6 @@ METHOD TOP() CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD ButtonDown( lParam ) CLASS HBrowse
 
@@ -1595,8 +1532,6 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD ButtonDbl( lParam ) CLASS HBrowse
 
    LOCAL hBrw := ::handle
@@ -1609,8 +1544,6 @@ METHOD ButtonDbl( lParam ) CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 METHOD MouseMove( wParam, lParam ) CLASS HBrowse
 
@@ -1648,8 +1581,6 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------------------------------//
-
 METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
 
    IF Hwg_BitAnd( nKeys, MK_MBUTTON ) != 0
@@ -1667,8 +1598,6 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
    ENDIF
 
    RETURN nil
-
-   //----------------------------------------------------//
 
 METHOD Edit( wParam, lParam ) CLASS HBrowse
 
@@ -1716,10 +1645,6 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             rowPos ++
          ENDIF
          y1 := ::y1 + ( ::height + 1 ) * rowPos
-
-         // aCoors := hwg_Getwindowrect( ::handle )
-         // x1 += aCoors[1]
-         // y1 += aCoors[2]
 
          aCoors := hwg_Clienttoscreen( ::handle, x1, y1 )
          x1 := aCoors[1]
@@ -1861,8 +1786,6 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD RefreshLine() CLASS HBrowse
 
    ::internal[1] := 0
@@ -1871,16 +1794,9 @@ METHOD RefreshLine() CLASS HBrowse
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 METHOD Refresh( lFull ) CLASS HBrowse
 
    IF lFull == Nil .OR. lFull
-      IF ::lFilter
-         ::nLastRecordFilter := 0
-         ::nFirstRecordFilter := 0
-         FltGoTop( Self )
-      ENDIF
       ::internal[1] := 15
       hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
@@ -1890,8 +1806,6 @@ METHOD Refresh( lFull ) CLASS HBrowse
    ENDIF
 
    RETURN Nil
-
-   //----------------------------------------------------//
 
 STATIC FUNCTION FldStr( oBrw, numf )
 
@@ -1955,8 +1869,6 @@ STATIC FUNCTION FldStr( oBrw, numf )
 
    RETURN cRes
 
-   //----------------------------------------------------//
-
 STATIC FUNCTION FLDCOUNT( oBrw, xstrt, xend, fld1 )
 
    LOCAL klf := 0, i := iif( oBrw:freeze > 0, 1, fld1 )
@@ -1976,8 +1888,6 @@ STATIC FUNCTION FLDCOUNT( oBrw, xstrt, xend, fld1 )
    ENDDO
 
    RETURN iif( klf = 0, 1, klf )
-
-   //----------------------------------------------------//
 
 FUNCTION hwg_CREATEARLIST( oBrw, arr )
 
@@ -2000,8 +1910,6 @@ FUNCTION hwg_CREATEARLIST( oBrw, arr )
 
    RETURN Nil
 
-   //----------------------------------------------------//
-
 PROCEDURE ARSKIP( oBrw, nSkip )
 
    LOCAL nCurrent1
@@ -2017,8 +1925,6 @@ PROCEDURE ARSKIP( oBrw, nSkip )
    ENDIF
 
    RETURN
-
-   //----------------------------------------------------//
 
 FUNCTION hwg_CreateList( oBrw, lEditable )
 
@@ -2133,159 +2039,5 @@ STATIC FUNCTION HdrToken( cStr, nMaxLen, nCount )
    ENDDO
 
    RETURN nil
-
-   // By Luiz Henrique dos Santos (luizhsantos@gmail.com)
-
-STATIC FUNCTION FltSkip( oBrw, nLines, lDesc )
-
-   LOCAL n, r
-
-   IF nLines == NIL
-      nLines := 1
-   ENDIF
-   IF lDesc == NIL
-      lDesc := .F.
-   ENDIF
-   IF nLines > 0
-      FOR n := 1 TO nLines
-         SKIP IF( lDesc, - 1, + 1 )
-         WHILE ! Eof() .AND. Eval( oBrw:bWhile ) .AND. ! Eval( oBrw:bFor )
-            SKIP IF( lDesc, - 1, + 1 )
-         ENDDO
-      NEXT
-   ELSEIF nLines < 0
-      FOR n := 1 TO ( nLines * ( - 1 ) )
-         IF Eof()
-            IF lDesc
-               FltGoTop( oBrw )
-            ELSE
-               FltGoBottom( oBrw )
-            ENDIF
-         ELSE
-            SKIP IF( lDesc, + 1, - 1 )
-         ENDIF
-         WHILE ! Bof() .AND. Eval( oBrw:bWhile ) .AND. ! Eval( oBrw:bFor )
-            SKIP IF( lDesc, + 1, - 1 )
-         ENDDO
-      NEXT
-   ENDIF
-
-   RETURN NIL
-
-STATIC FUNCTION FltGoTop( oBrw )
-
-   IF oBrw:nFirstRecordFilter == 0
-      Eval( oBrw:bFirst )
-      IF ! Eof()
-         WHILE ! Eof() .AND. ! ( Eval( oBrw:bWhile ) .AND. Eval( oBrw:bFor ) )
-            dbSkip()
-         ENDDO
-         oBrw:nFirstRecordFilter := FltRecNo( oBrw )
-      ELSE
-         oBrw:nFirstRecordFilter := 0
-      ENDIF
-   ELSE
-      FltGoTo( oBrw, oBrw:nFirstRecordFilter )
-   ENDIF
-
-   RETURN NIL
-
-STATIC FUNCTION FltGoBottom( oBrw )
-
-   IF oBrw:nLastRecordFilter == 0
-      Eval( oBrw:bLast )
-      IF ! Eval( oBrw:bWhile ) .OR. ! Eval( oBrw:bFor )
-         WHILE ! Bof() .AND. ! Eval( oBrw:bWhile )
-            dbSkip( - 1 )
-         ENDDO
-         WHILE ! Bof() .AND. Eval( oBrw:bWhile ) .AND. ! Eval( oBrw:bFor )
-            dbSkip( - 1 )
-         ENDDO
-      ENDIF
-      oBrw:nLastRecordFilter := FltRecNo( oBrw )
-   ELSE
-      FltGoTo( oBrw, oBrw:nLastRecordFilter )
-   ENDIF
-
-   RETURN NIL
-
-STATIC FUNCTION FltBOF( oBrw )
-
-   LOCAL lRet := .F. , cKey := "", nRecord := 0
-   LOCAL xValue, xFirstValue
-
-   IF Bof()
-      lRet := .T.
-   ELSE
-      cKey  := IndexKey()
-      nRecord := FltRecNo( oBrw )
-
-      xValue := OrdKeyNo() //&(cKey)
-
-      FltGoTop( oBrw )
-      xFirstValue := OrdKeyNo()//&(cKey)
-
-      IF xValue < xFirstValue
-         lRet := .T.
-         FltGoTop( oBrw )
-      ELSE
-         FltGoTo( oBrw, nRecord )
-      ENDIF
-   ENDIF
-
-   RETURN lRet
-
-STATIC FUNCTION FltEOF( oBrw )
-
-   LOCAL lRet := .F. , cKey := "", nRecord := 0
-   LOCAL xValue, xLastValue
-
-   IF Eof()
-      lRet := .T.
-   ELSE
-      cKey := IndexKey()
-      nRecord := FltRecNo( oBrw )
-
-      xValue := OrdKeyNo()
-
-      FltGoBottom( oBrw )
-      xLastValue := OrdKeyNo()
-
-      IF xValue > xLastValue
-         lRet := .T.
-         FltGoBottom( oBrw )
-         dbSkip()
-      ELSE
-         FltGoTo( oBrw, nRecord )
-      ENDIF
-   ENDIF
-
-   RETURN lRet
-
-STATIC FUNCTION FltRecCount( oBrw )
-
-   LOCAL nRecord := 0, nCount := 0
-
-   nRecord := FltRecNo( oBrw )
-   FltGoTop( oBrw )
-   WHILE ! Eof() .AND. Eval( oBrw:bWhile )
-      IF Eval( oBrw:bFor )
-         nCount ++
-      ENDIF
-      dbSkip()
-   ENDDO
-   FltGoTo( oBrw, nRecord )
-
-   RETURN nCount
-
-STATIC FUNCTION FltGoTo( oBrw, nRecord )
-
-   RETURN dbGoto( nRecord )
-
-STATIC FUNCTION FltRecNo( oBrw )
-
-   RETURN RecNo()
-
-   //End Implementation by Luiz
 
 

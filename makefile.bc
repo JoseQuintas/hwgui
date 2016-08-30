@@ -61,7 +61,7 @@ DEBUG_DIR    = source\common\debug
 # C compiler definition and C flags. These should never have to change.
 #
 
-CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__
+CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) -w $(CFLAGS) -D__WIN32__
 #CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__ -DHWG_USE_POINTER_ITEM
 !if $d(HB_MULTI_GT)
 CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
@@ -128,6 +128,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hanimat.obj \
    $(HWGUI_OBJ_DIR)\hbincnt.obj \
    $(HWGUI_OBJ_DIR)\hbrowse.obj \
+   $(HWGUI_OBJ_DIR)\hbrwflt.obj \
    $(HWGUI_OBJ_DIR)\hcheck.obj \
    $(HWGUI_OBJ_DIR)\hcombo.obj \
    $(HWGUI_OBJ_DIR)\hcontrol.obj \
@@ -169,6 +170,8 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\printdos.obj \
    $(HWGUI_OBJ_DIR)\hdc.obj \
    $(HWGUI_OBJ_DIR)\pager.obj \
+   $(HWGUI_OBJ_DIR)\tmci.obj \
+   $(HWGUI_OBJ_DIR)\video.obj \
    $(HWGUI_OBJ_DIR)\hhyper.obj
 
 #

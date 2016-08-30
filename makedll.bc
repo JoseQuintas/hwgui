@@ -55,6 +55,7 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\guimain.obj \
    $(OBJ_DIR)\hbincnt.obj \
    $(OBJ_DIR)\hbrowse.obj \
+   $(OBJ_DIR)\hbrwflt.obj \
    $(OBJ_DIR)\hcheck.obj \
    $(OBJ_DIR)\hcombo.obj \
    $(OBJ_DIR)\hcontrol.obj \

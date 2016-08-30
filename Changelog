@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-30 11:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+  + source/winapi/hbrwflt.prg
+    * All code, related to filtering, moved from HBrowse to a new subclass HBrwFlt
+  * include/guilib.ch
+    * New command added @ ... BROWSE ... FILTER for HBrwFlt
+      So, if you use those WHILE, FIRST, LAST, FOR clauses of BROWSE ... DATABASE
+      command, use BROWSE ... FILTER instead.
+  * makefile*
+    * makefiles updated for a new source file hbrwflt.prg
+
 2016-08-29 15:41 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hwindow.prg
   * source/winapi/hedit.prg

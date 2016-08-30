@@ -35,7 +35,7 @@ CLASS HEdit INHERIT HControl
    DATA lMouse       INIT .F.
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctoolt, tcolor, bcolor, cPicture, lNoBorder, nMaxLength )
+      oFont, bInit, bSize, bGfocus, bLfocus, ctoolt, tcolor, bcolor, cPicture, lNoBorder, nMaxLength )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -47,7 +47,7 @@ CLASS HEdit INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctoolt, ;
+      oFont, bInit, bSize, bGfocus, bLfocus, ctoolt, ;
       tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword ) CLASS HEdit
 
    nStyle := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), ;
@@ -55,7 +55,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       iif( lPassword == Nil .OR. !lPassword, 0, ES_PASSWORD )  )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-      bSize, bPaint, ctoolt, tcolor, bcolor )
+      bSize,, ctoolt, tcolor, bcolor )
 
    IF vari != Nil
       ::cType := ValType( vari )

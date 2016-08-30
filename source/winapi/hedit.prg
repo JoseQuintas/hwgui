@@ -37,12 +37,12 @@ CLASS HEdit INHERIT HControl
    DATA bColorBlock
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
+      oFont, bInit, bSize, bGfocus, bLfocus, ctooltip, ;
       tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword, bKeyDown, bChange )
    METHOD Activate()
    METHOD Init()
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bDraw, bGfocus, ;
+   METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bGfocus, ;
       bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLength )
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, self )
    METHOD Refresh()
@@ -54,7 +54,7 @@ CLASS HEdit INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
+      oFont, bInit, bSize, bGfocus, bLfocus, ctooltip, ;
       tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword, bKeyDown, bChange ) CLASS HEdit
 
    nStyle := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), ;
@@ -62,7 +62,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       iif( lPassword == Nil .OR. !lPassword, 0, ES_PASSWORD )  )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-      bSize, bPaint, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
+      bSize,, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
    IF vari != Nil
       ::cType := ValType( vari )
@@ -358,11 +358,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
    Return - 1
 
-METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, ;
+METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, ;
       bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLength )  CLASS HEdit
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
-      bSize, bPaint, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
+      bSize,, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
    IF vari != Nil
       ::cType := ValType( vari )

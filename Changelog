@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-30 15:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    * ON PAINT clause deleted from @ ... EDITBOX command as unused
+
 2016-08-30 11:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
   + source/winapi/hbrwflt.prg

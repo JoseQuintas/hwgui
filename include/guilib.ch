@@ -403,7 +403,6 @@
             [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
-            [ ON PAINT <bDraw> ]       ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ ON KEYDOWN <bKeyDown>]   ;
@@ -415,7 +414,7 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<caption>,,<nStyle>,<x>,<y>,<width>, ;
-                    <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
+                    <height>,<oFont>,<bInit>,<bSize>,<bGfocus>, ;
                     <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>, <bKeyDown>, <bChange> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
@@ -428,12 +427,11 @@
             [ FONT <oFont> ]           ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
-            [ ON PAINT <bDraw> ]       ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
-    [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,,,<oFont>,<bInit>,<bSize>,<bDraw>, ;
+    [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,,,<oFont>,<bInit>,<bSize>, ;
                    <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
@@ -1105,7 +1103,7 @@
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},             ;
-                   <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,<bSize>,,  ;
+                   <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,<bSize>,  ;
                    <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,<nMaxLength>,<.lPassword.>,<bKeyDown>,<bChange> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
@@ -1123,7 +1121,7 @@
           => ;
     [<oEdit> := ] HEdit():Redefine( <oWnd>,<nId>,<vari>, ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},    ;
-                   <oFont>,,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<(vari)> );
+                   <oFont>,,,<{bGfocus}>,<{bLfocus}>,<ctoolt>,<color>,<bcolor>,<cPicture>,<nMaxLength>,<(vari)> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
 

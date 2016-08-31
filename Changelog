@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-08-31 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+    * hwg_ParentGetDialog() removed, hwg_getParentForm() added.
+  * source/winapi/hbrowse.prg
+    * Further cleanup: I finally get rid of mystic :internal variable and added
+      :lRefrLinesOnly and :lRefrHead instead.
+    * Some changes to avoid flickering
+
 2016-08-30 15:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
   * source/gtk/hedit.prg

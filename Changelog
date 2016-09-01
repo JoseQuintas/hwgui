@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-01 16:53 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+  * source/gtk/hbrowse.prg
+    * Some changes for multiline headers
+  * utils/tutorial/tutor_eng.xml
+    * Styled button added to "Styled controls" module.
+
 2016-09-01 13:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
     ! Small fixes, related to color in focus handling

@@ -164,7 +164,7 @@ CLASS HBrowse INHERIT HControl
    METHOD DelColumn( nPos )
    METHOD Paint()
    METHOD LineOut()
-   METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen )
+   METHOD DrawHeader( hDC, nColumn, x1, y1, x2, y2, oPen )
    METHOD HeaderOut( hDC )
    METHOD FooterOut( hDC )
    METHOD SetColumn( nCol )
@@ -533,13 +533,26 @@ METHOD Rebuild( hDC ) CLASS HBrowse
       ::width := Max( ::width, Round( ( arr[3] + arr[2] ) / 2 - 1, 0 ) )
 
       nColLen := oColumn:length
-      IF oColumn:heading != nil
-         HdrToken( oColumn:heading, @nHdrLen, @nCount )
+      nHdrLen := 0
+      IF oColumn:heading != Nil
+         IF Valtype( oColumn:heading ) == "C"
+            IF ( ';' $ oColumn:heading )
+               oColumn:heading := hb_aTokens( oColumn:heading, ';' )
+            ELSE
+               nHdrLen := Len( oColumn:heading )
+               nCount := 1
+            ENDIF
+         ENDIF
+         IF Valtype( oColumn:heading ) == "A"
+            Aeval( oColumn:heading, {|s|nHdrLen := Max(nHdrLen,Len(s))} )
+            nCount := Len( oColumn:heading )
+         ENDIF
          IF ! oColumn:lSpandHead
             nColLen := Max( nColLen, nHdrLen )
          ENDIF
          ::nHeadRows := Max( ::nHeadRows, nCount )
       ENDIF
+
       IF oColumn:footing != nil
          HdrToken( oColumn:footing, @nHdrLen, @nCount )
          IF ! oColumn:lSpandFoot
@@ -708,9 +721,10 @@ METHOD Paint()  CLASS HBrowse
 
    RETURN Nil
 
-METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
+METHOD DrawHeader( hDC, nColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
 
-   LOCAL cStr, cNWSE, nLine, nHeight := ::nRowTextHeight, cText //, oPenHdr
+   LOCAL cStr, oColumn := ::aColumns[nColumn], cNWSE, nLine
+   LOCAL nHeight := ::nRowTextHeight  //, oPenHdr
 
    IF oColumn:oStyleHead != Nil
       oColumn:oStyleHead:Draw( hDC, x1, y1, x2, y2 )
@@ -747,15 +761,21 @@ METHOD DrawHeader( hDC, oColumn, x1, y1, x2, y2, oPen ) CLASS HBrowse
       //   oPenHdr:Release()
       //ENDIF
    ENDIF
-   cStr := oColumn:heading + ';'
-   FOR nLine := 1 TO ::nHeadRows
-      IF !Empty( cText := hb_tokenGet( @cStr, nLine, ';' ) )
-         hwg_Drawtext( hDC, cText, x1+1+::aHeadPadding[1],    ;
-               y1 + nHeight * (nLine-1) + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], ;
-               y1 + nHeight * nLine + ::aHeadPadding[2] + ::aHeadPadding[4], ;
-               oColumn:nJusHead  + Iif( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
-      ENDIF
-   NEXT
+
+   IF Valtype( oColumn:heading ) == "C"
+      hwg_Drawtext( hDC, oColumn:heading, x1+1+::aHeadPadding[1],    ;
+            y1 + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], ;
+            y1 + nHeight + ::aHeadPadding[2] + ::aHeadPadding[4], oColumn:nJusHead )
+   ELSE
+      FOR nLine := 1 TO Len( oColumn:heading )
+         IF !Empty( oColumn:heading[nLine] )
+            hwg_Drawtext( hDC, oColumn:heading[nLine], x1+1+::aHeadPadding[1], ;
+                  y1 + nHeight * (nLine-1) + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], ;
+                  y1 + nHeight * nLine + ::aHeadPadding[2] + ::aHeadPadding[4], ;
+                  oColumn:nJusHead  + Iif( oColumn:lSpandHead, DT_NOCLIP, 0 ) )
+         ENDIF
+      NEXT
+   ENDIF
 
    RETURN Nil
 
@@ -764,7 +784,7 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    LOCAL i, x, y1, oldc, fif, xSize
    LOCAL nRows := Min( ::nRecords + iif( ::lAppMode,1,0 ), ::rowCount )
    LOCAL oPen // , oldBkColor := hwg_Setbkcolor( hDC,hwg_Getsyscolor(COLOR_3DFACE) )
-   LOCAL oColumn, oPenHdr, oPenLight
+   LOCAL oPenHdr, oPenLight
 
    IF ::lDispSep
       oPen := HPen():Add( PS_SOLID, 0.6, ::sepColor )
@@ -779,13 +799,12 @@ METHOD HeaderOut( hDC ) CLASS HBrowse
    fif := iif( ::freeze > 0, 1, ::nLeftCol )
 
    DO WHILE x < ::x2 - 2
-      oColumn := ::aColumns[fif]
-      xSize := oColumn:width
+      xSize := ::aColumns[fif]:width
       if ::lAdjRight .AND. fif == Len( ::aColumns )
          xSize := Max( ::x2 - x, xSize )
       ENDIF
       if ::lDispHead .AND. !::lAppMode
-         ::DrawHeader( hDC, oColumn, x-1, y1, x + xSize - 1, ::y1 + 1, oPen )
+         ::DrawHeader( hDC, fif, x-1, y1, x + xSize - 1, ::y1 + 1, oPen )
       ENDIF
       if ::lDispSep .AND. x > ::x1
          IF ::lSep3d

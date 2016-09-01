@@ -18,6 +18,10 @@
 #define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
 #endif
 
+STATIC lColorinFocus := .F.
+STATIC tColorinFocus := 0
+STATIC bColorinFocus := 16777164
+
 CLASS HEdit INHERIT HControl
 
    CLASS VAR winclass   INIT "EDIT"
@@ -33,6 +37,8 @@ CLASS HEdit INHERIT HControl
    DATA nMaxLength   INIT Nil
    DATA nLastKey     INIT 0
    DATA lMouse       INIT .F.
+   DATA aColorOld      INIT { 0,0 }
+   DATA bColorBlock
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bGfocus, bLfocus, ctoolt, tcolor, bcolor, cPicture, lNoBorder, nMaxLength )
@@ -55,7 +61,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       iif( lPassword == Nil .OR. !lPassword, 0, ES_PASSWORD )  )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-      bSize,, ctoolt, tcolor, bcolor )
+      bSize,, ctoolt, Iif(tcolor==Nil,0,tcolor), Iif(bcolor==Nil,0xffffff,bcolor) )
 
    IF vari != Nil
       ::cType := ValType( vari )
@@ -104,7 +110,7 @@ METHOD Activate CLASS HEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
-   LOCAL oParent := ::oParent, nPos
+   LOCAL oParent, nPos
 
    //hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent, Self, msg, wParam, lParam ) != 0
@@ -112,6 +118,17 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    ENDIF
 
    IF msg == WM_SETFOCUS
+      oParent := hwg_getParentForm( Self )
+      IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
+         ::aColorOld[1] := ::tcolor
+         ::aColorOld[2] := ::bcolor
+         IF ::bColorBlock != Nil
+            Eval( ::bColorBlock, Self )
+         ELSE
+            ::Setcolor( Iif( oParent:tColorinFocus >= 0, oParent:tColorinFocus, tColorinFocus ), ;
+                  Iif( oParent:bColorinFocus >= 0, oParent:bColorinFocus, bColorinFocus ), .T. )
+         ENDIF
+      ENDIF
       IF ::lMouse
          ::lFirst := .F.
          ::lMouse := .F.
@@ -125,6 +142,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          __When( Self )
       ENDIF
    ELSEIF msg == WM_KILLFOCUS
+      oParent := hwg_getParentForm( Self )
+      IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
+         ::Setcolor( ::aColorOld[1], ::aColorOld[2], .T. )
+      ENDIF
       IF ::bSetGet == Nil
          IF ::bLostFocus != Nil
             Eval( ::bLostFocus, hwg_Edit_GetText( ::handle ), Self )
@@ -150,6 +171,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       RETURN 0
    ENDIF
 
+   oParent := ::oParent
    IF !::lMultiLine
       IF msg == WM_KEYDOWN
          ::nLastKey := wParam
@@ -286,6 +308,9 @@ METHOD Refresh()  CLASS HEdit
       hwg_Edit_SetText( ::handle, vari )
    ELSE
       hwg_Edit_SetText( ::handle, ::title )
+   ENDIF
+   IF ::bColorBlock != Nil .AND. hwg_Isptreq( ::handle, hwg_Getfocus() )
+      Eval( ::bColorBlock, Self )
    ENDIF
 
    RETURN Nil
@@ -935,6 +960,27 @@ FUNCTION hwg_SetGetUpdated( o )
    ENDIF
 
    RETURN Nil
+
+FUNCTION hwg_SetColorinFocus( lDef, tColor, bColor )
+
+   IF ValType( lDef ) ==  "O"
+      IF tColor != Nil
+         lDef:tColorinFocus := tColor
+      ENDIF
+      IF bColor != Nil
+         lDef:bColorinFocus := bColor
+      ENDIF
+   ELSEIF ValType( lDef ) == "L"
+      lColorinFocus := lDef
+      IF tColor != Nil
+         tColorinFocus := tColor
+      ENDIF
+      IF bColor != Nil
+         bColorinFocus := bColor
+      ENDIF
+   ENDIF
+
+   RETURN .T.
 
 FUNCTION hwg_Chr( nCode )
    RETURN Iif( hb_cdpSelect()=="UTF8", hwg_keyToUtf8( nCode ), Chr( nCode ) )

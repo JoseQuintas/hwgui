@@ -8,16 +8,16 @@
  * www - http://www.kresin.ru
 */
 
-STATIC lColorinFocus := .F.
-STATIC tColorinFocus := 0
-STATIC bColorinFocus := 16777164
-
 #include "windows.ch"
 #include "hbclass.ch"
 #include "hblang.ch"
 #include "guilib.ch"
 
 #define WM_IME_CHAR      646
+
+STATIC lColorinFocus := .F.
+STATIC tColorinFocus := 0
+STATIC bColorinFocus := 16777164
 
 CLASS HEdit INHERIT HControl
 
@@ -62,7 +62,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       iif( lPassword == Nil .OR. !lPassword, 0, ES_PASSWORD )  )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-      bSize,, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
+      bSize,, ctooltip, Iif(tcolor==Nil,0,tcolor), Iif(bcolor==Nil,hwg_Getsyscolor(COLOR_BTNHIGHLIGHT),bcolor) )
 
    IF vari != Nil
       ::cType := ValType( vari )
@@ -350,9 +350,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    ELSEIF msg == WM_KILLFOCUS
       oParent := hwg_getParentForm( Self )
       IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
-         ::tcolor := ::aColorOld[1]
-         ::bcolor := ::aColorOld[2]
-         ::Setcolor( ::tcolor, ::bColor, .T. )
+         //::tColor := ::aColorOld[1]
+         //::bColor := ::aColorOld[2]
+         ::Setcolor( ::aColorOld[1], ::aColorOld[2], .T. )
       ENDIF
    ENDIF
 
@@ -409,6 +409,9 @@ METHOD Refresh()  CLASS HEdit
       hwg_Setdlgitemtext( ::oParent:handle, ::id, vari )
    ELSE
       hwg_Setdlgitemtext( ::oParent:handle, ::id, ::title )
+   ENDIF
+   IF ::bColorBlock != Nil .AND. hwg_Isptreq( ::handle, hwg_Getfocus() )
+      Eval( ::bColorBlock, Self )
    ENDIF
 
    RETURN Nil

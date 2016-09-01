@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-01 13:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hedit.prg
+    ! Small fixes, related to color in focus handling
+  * source/gtk/hedit.prg
+  * source/gtk/hwindow.prg
+    * synhronized with winapi version
+
 2016-09-01 11:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
   * source/gtk/hbrowse.prg

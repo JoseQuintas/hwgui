@@ -96,6 +96,8 @@ CLASS HWindow INHERIT HCustomWindow
    DATA nLastKey INIT 0
    DATA bActivate
    DATA lActivated  INIT .F.
+   DATA tColorinFocus  INIT -1
+   DATA bColorinFocus  INIT -1
 
    DATA aOffset
 

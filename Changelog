@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-01 11:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+  * source/gtk/hbrowse.prg
+    * Changed a calculation of a header height
+    * gtk version of HBrowse synhronized with winapi version
+    ! Few fixes
+
 2016-08-31 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
     * hwg_ParentGetDialog() removed, hwg_getParentForm() added.

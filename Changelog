@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-02 15:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+    ! Small fix
+
 2016-09-02 15:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
   * source/gtk/hbrowse.prg

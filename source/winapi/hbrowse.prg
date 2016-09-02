@@ -735,7 +735,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
       Eval( ::bGoTo, Self, tmp )
 
       hwg_Fillrect( hDC, ::x1, ::y1 + ( ::height + 1 ) * nRows, ;
-            ::x2, ::y2, ::brush )
+            ::x2, ::y2, ::brush:handle )
    ENDIF
    IF ::lAppMode
       ::LineOut( nRows + 1, 0, hDC, .F. , .T. )

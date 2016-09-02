@@ -110,6 +110,9 @@ CLASS HBrowse INHERIT HControl
 
    DATA lRefrLinesOnly INIT .F.
    DATA lRefrHead  INIT .T.
+   DATA lRefrBmp   INIT .F.
+   DATA lBuffering INIT .F.
+   DATA hBitmap
 
    DATA aColAlias  INIT {}
    DATA aRelation  INIT .F.
@@ -372,6 +375,8 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       ELSEIF msg == WM_DESTROY
          ::End()
+      ELSEIF msg == WM_SIZE
+         ::lRefrBmp := .T.
       ENDIF
 
    ENDIF
@@ -487,6 +492,10 @@ METHOD End() CLASS HBrowse
    IF ::brushSel != Nil
       ::brushSel:Release()
       ::brushSel := Nil
+   ENDIF
+   IF !Empty( ::hBitmap )
+      hwg_DeleteObject( ::hBitmap )
+      ::hBitmap := Nil
    ENDIF
 
    RETURN Nil
@@ -622,15 +631,8 @@ METHOD Rebuild( hDC ) CLASS HBrowse
 METHOD Paint( lLostFocus )  CLASS HBrowse
 
    LOCAL aCoors, i, oldAlias, l, tmp, nRows
-   LOCAL pps, hDC, hDCReal, hBitmap
+   LOCAL pps, hDC, hDCReal
    LOCAL oldBkColor, oldTColor
-
-   IF !::active .OR. Empty( ::aColumns )
-      pps := hwg_Definepaintstru()
-      hDC := hwg_Beginpaint( ::handle, pps )
-      hwg_Endpaint( ::handle, pps )
-      RETURN Nil
-   ENDIF
 
    IF ::tcolor    == Nil ; ::tcolor    := 0 ; ENDIF
    IF ::bcolor    == Nil ; ::bcolor    := hwg_ColorC2N( "FFFFFF" ) ; ENDIF
@@ -643,6 +645,10 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
    pps := hwg_Definepaintstru()
    hDCReal := hwg_Beginpaint( ::handle, pps )
+   IF !::active .OR. Empty( ::aColumns )
+      hwg_Endpaint( ::handle, pps )
+      RETURN Nil
+   ENDIF
 
    IF ::brush == Nil .OR. ::lChanged
       ::Rebuild( hDCReal )
@@ -668,93 +674,106 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    ::rowCount := Int( ( ::y2 - ::y1 ) / ( ::height + 1 ) ) - ::nFootRows
    nRows := Min( ::nRecords, ::rowCount )
 
-   hDC := hwg_CreateCompatibleDC( hDCReal )
-   hBitmap := hwg_CreateCompatibleBitmap( hDCReal, ;
-         aCoors[3]-aCoors[1], aCoors[4]-aCoors[2] )
-   hwg_Selectobject( hDC, hBitmap )
-
-   IF ::oFont != Nil
-      hwg_Selectobject( hDC, ::oFont:handle )
+   IF ::lRefrBmp .AND. !Empty( ::hBitmap )
+      hwg_DeleteObject( ::hBitmap )
+      ::hBitmap := Nil
    ENDIF
-
-   IF ::lRefrLinesOnly
-      IF ::rowPos != ::rowPosOld .AND. !::lAppMode
-         Eval( ::bSkip, Self, ::rowPosOld - ::rowPos )
-         IF ::aSelected != Nil .AND. Ascan( ::aSelected, { |x| x = Eval( ::bRecno,Self ) } ) > 0
-            ::LineOut( ::rowPosOld, 0, hDC, .T. )
-         ELSE
-            ::LineOut( ::rowPosOld, 0, hDC, .F. )
-         ENDIF
-         Eval( ::bSkip, Self, ::rowPos - ::rowPosOld )
-      ENDIF
+   IF ::lBuffering .AND. !Empty( ::hBitmap )
+      hwg_DrawBitmap( hDCReal, ::hBitmap,, aCoors[ 1 ], aCoors[ 2 ], aCoors[ 3 ] - aCoors[ 1 ] , aCoors[ 4 ] - aCoors[ 2 ] )
+      hwg_Endpaint( ::handle, pps )
    ELSE
-      // Modified by Luiz Henrique dos Santos (luizhsantos@gmail.com)
-      IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self )
-         Eval( ::bGoTop, Self )
-         ::rowPos := 1
+      IF ::lBuffering
+         hDC := hwg_CreateCompatibleDC( hDCReal )
+         ::hBitmap := hwg_CreateCompatibleBitmap( hDCReal, ;
+               aCoors[3]-aCoors[1], aCoors[4]-aCoors[2] )
+         hwg_Selectobject( hDC, ::hBitmap )
+      ELSE
+         hDC := hDCReal
       ENDIF
-      IF ::rowPos > nRows .AND. nRows > 0
-         ::rowPos := nRows
+      IF ::oFont != Nil
+         hwg_Selectobject( hDC, ::oFont:handle )
       ENDIF
-      tmp := Eval( ::bRecno, Self )
-      IF ::rowPos > 1
-         Eval( ::bSkip, Self, - ( ::rowPos - 1 ) )
-      ENDIF
-      i := 1
-      l := .F.
-      DO WHILE .T.
-         IF Eval( ::bRecno, Self ) == tmp
-            ::rowPos := i
-            l := .T.
-         ENDIF
-         IF i > nRows .OR. Eval( ::bEof, Self )
-            EXIT
-         ENDIF
-         IF l
-            l := .F.
-         ELSE
+
+      IF ::lRefrLinesOnly
+         IF ::rowPos != ::rowPosOld .AND. !::lAppMode
+            Eval( ::bSkip, Self, ::rowPosOld - ::rowPos )
             IF ::aSelected != Nil .AND. Ascan( ::aSelected, { |x| x = Eval( ::bRecno,Self ) } ) > 0
-               ::LineOut( i, 0, hDC, .T. )
+               ::LineOut( ::rowPosOld, 0, hDC, .T. )
             ELSE
-               ::LineOut( i, 0, hDC, .F. )
+               ::LineOut( ::rowPosOld, 0, hDC, .F. )
             ENDIF
+            Eval( ::bSkip, Self, ::rowPos - ::rowPosOld )
          ENDIF
-         i ++
-         Eval( ::bSkip, Self, 1 )
-      ENDDO
-      ::rowCurrCount := i - 1
+      ELSE
+         // Modified by Luiz Henrique dos Santos (luizhsantos@gmail.com)
+         IF Eval( ::bEof, Self ) .OR. Eval( ::bBof, Self )
+            Eval( ::bGoTop, Self )
+            ::rowPos := 1
+         ENDIF
+         IF ::rowPos > nRows .AND. nRows > 0
+            ::rowPos := nRows
+         ENDIF
+         tmp := Eval( ::bRecno, Self )
+         IF ::rowPos > 1
+            Eval( ::bSkip, Self, - ( ::rowPos - 1 ) )
+         ENDIF
+         i := 1
+         l := .F.
+         DO WHILE .T.
+            IF Eval( ::bRecno, Self ) == tmp
+               ::rowPos := i
+               l := .T.
+            ENDIF
+            IF i > nRows .OR. Eval( ::bEof, Self )
+               EXIT
+            ENDIF
+            IF l
+               l := .F.
+            ELSE
+               IF ::aSelected != Nil .AND. Ascan( ::aSelected, { |x| x = Eval( ::bRecno,Self ) } ) > 0
+                  ::LineOut( i, 0, hDC, .T. )
+               ELSE
+                  ::LineOut( i, 0, hDC, .F. )
+               ENDIF
+            ENDIF
+            i ++
+            Eval( ::bSkip, Self, 1 )
+         ENDDO
+         ::rowCurrCount := i - 1
 
-      IF ::rowPos >= i
-         ::rowPos := Iif( i > 1, i - 1, 1 )
+         IF ::rowPos >= i
+            ::rowPos := Iif( i > 1, i - 1, 1 )
+         ENDIF
+         DO WHILE i <= nRows
+            ::LineOut( i, 0, hDC, .F. , .T. )
+            i ++
+         ENDDO
+
+         Eval( ::bGoTo, Self, tmp )
+
+         hwg_Fillrect( hDC, ::x1, ::y1 + ( ::height + 1 ) * nRows, ;
+               ::x2, ::y2, ::brush:handle )
       ENDIF
-      DO WHILE i <= nRows
-         ::LineOut( i, 0, hDC, .F. , .T. )
-         i ++
-      ENDDO
-
-      Eval( ::bGoTo, Self, tmp )
-
-      hwg_Fillrect( hDC, ::x1, ::y1 + ( ::height + 1 ) * nRows, ;
-            ::x2, ::y2, ::brush:handle )
-   ENDIF
-   IF ::lAppMode
-      ::LineOut( nRows + 1, 0, hDC, .F. , .T. )
-   ENDIF
-
-   ::LineOut( ::rowPos, ::colpos, hDC, .T. )
-
-   //IF ::lRefrHead .OR. ::lAppMode
-      ::HeaderOut( hDC )
-      IF ::nFootRows > 0
-         ::FooterOut( hDC )
+      IF ::lAppMode
+         ::LineOut( nRows + 1, 0, hDC, .F. , .T. )
       ENDIF
-   //ENDIF
 
-   hwg_BitBlt( hDCReal, 0, 0, aCoors[3] - aCoors[1], aCoors[4] - aCoors[2], hDC, 0, 0, SRCCOPY )
-   hwg_DeleteDC( hDC )
-   hwg_DeleteObject( hBitmap )
+      ::LineOut( ::rowPos, ::colpos, hDC, .T. )
 
-   hwg_Endpaint( ::handle, pps )
+      //IF ::lRefrHead .OR. ::lAppMode
+         ::HeaderOut( hDC )
+         IF ::nFootRows > 0
+            ::FooterOut( hDC )
+         ENDIF
+      //ENDIF
+      IF ::lBuffering
+         hwg_BitBlt( hDCReal, 0, 0, aCoors[3] - aCoors[1], aCoors[4] - aCoors[2], hDC, 0, 0, SRCCOPY )
+         hwg_DeleteDC( hDC )
+      ENDIF
+      hwg_Endpaint( ::handle, pps )
+   ENDIF
+
+   ::lRefrBmp  := .F.
    ::lRefrHead := .T.
    ::lRefrLinesOnly := .F.
    ::rowPosOld := ::rowPos
@@ -1061,6 +1080,7 @@ METHOD SetColumn( nCol ) CLASS HBrowse
             ::colpos := ::freeze + 1
             lPaint := .T.
          ENDIF
+         ::lRefrBmp := .T.
          IF !lPaint
             ::RefreshLine()
          ELSE
@@ -1204,6 +1224,7 @@ METHOD DoHScroll( wParam ) CLASS HBrowse
 
       ENDIF
 
+      ::lRefrBmp := .T.
       IF ::nLeftCol == oldLeft
          ::RefreshLine()
       ELSE
@@ -1229,6 +1250,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       ENDIF
    ENDIF
    ::rowPos ++
+   ::lRefrBmp := .T.
    IF ::rowPos > ::rowCount
       ::rowPos := ::rowCount
       hwg_Invalidaterect( ::handle, 0 )
@@ -1242,11 +1264,6 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       ENDIF
       ::colPos := ::nLeftCol := 1
    ENDIF
-   /*
-   IF !::lAppMode  .OR. ::nLeftCol == 1
-      ::internal[1] := hwg_Setbit( ::internal[1], 1, 0 )
-   ENDIF
-   */
 
    IF ::bScrollPos != Nil
       Eval( ::bScrollPos, Self, 1, .F. )
@@ -1271,6 +1288,7 @@ METHOD LINEUP() CLASS HBrowse
       Eval( ::bGoTop, Self )
    ELSE
       ::rowPos --
+      ::lRefrBmp := .T.
       IF ::rowPos = 0
          ::rowPos := 1
          hwg_Invalidaterect( ::handle, 0 )
@@ -1294,7 +1312,6 @@ METHOD LINEUP() CLASS HBrowse
    hwg_Setfocus( ::handle )
 
    RETURN Nil
-
 
 METHOD PAGEUP() CLASS HBrowse
 
@@ -1369,9 +1386,9 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
    hwg_Setscrollpos( ::handle, SB_VERT, maxPos )
 
    IF ::rowCount != Nil
+      ::lRefrBmp := .T.
       hwg_Invalidaterect( ::handle, 0 )
 
-      //::internal[1] := hwg_Setbit( ::internal[1], 1, 0 )
       IF lPaint == Nil .OR. lPaint
          hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
          hwg_Setfocus( ::handle )
@@ -1392,6 +1409,7 @@ METHOD TOP() CLASS HBrowse
    hwg_Setscrollpos( ::handle, SB_VERT, minPos )
 
    IF ::rowCount != Nil
+      ::lRefrBmp := .T.
       hwg_Invalidaterect( ::handle, 0 )
       hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
       hwg_Setfocus( ::handle )
@@ -1458,6 +1476,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
       ENDIF
 
       IF res
+         ::lRefrBmp := .T.
          hwg_Invalidaterect( hBrw, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPosOld - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPosOld )
          hwg_Invalidaterect( hBrw, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
          hwg_Sendmessage( hBrw, WM_PAINT, 0, 0 )
@@ -1520,6 +1539,7 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
          Hwg_SetCursor( arrowCursor )
          oCursor := 0
          ::lResizing := .F.
+         ::lRefrBmp := .T.
          hwg_Invalidaterect( hBrw, 0 )
          hwg_Postmessage( hBrw, WM_PAINT, 0, 0 )
       ENDIF
@@ -1798,8 +1818,8 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    RETURN Nil
 
 METHOD RefreshLine() CLASS HBrowse
-
-   ::lRefrLinesOnly := .T.
+  
+   ::lRefrBmp := ::lRefrLinesOnly := .T.
    hwg_Invalidaterect( ::handle, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
    hwg_Sendmessage( ::handle, WM_PAINT, 0, 0 )
 
@@ -1807,6 +1827,7 @@ METHOD RefreshLine() CLASS HBrowse
 
 METHOD Refresh( lFull ) CLASS HBrowse
 
+   ::lRefrBmp := .T.
    IF lFull == Nil .OR. lFull
       ::lRefrHead := .T.
       ::lRefrLinesOnly := .F.

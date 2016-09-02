@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-02 18:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+    * Logical :lBuffering variable ( default value is .F. ) added to HBrowse to handle
+      paint buffering.
+    * :hBitmap with the paint buffer image is used repeatedly when it is possible.
+
 2016-09-02 15:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
     ! Small fix

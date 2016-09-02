@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-02 15:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+  * source/gtk/hbrowse.prg
+    * Added buffering while Paint() procedure in Windows version.
+    * Cleaned some part of code, using of pens
+
 2016-09-02 09:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
     * removed background filling while WM_ERASEBKGND

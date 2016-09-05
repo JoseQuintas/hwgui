@@ -117,21 +117,20 @@ METHOD Init CLASS HSplitter
 METHOD Paint() CLASS HSplitter
    LOCAL pps, hDC, aCoors, x1, y1, x2, y2
 
-
-   pps := hwg_Definepaintstru()
-   hDC := hwg_Beginpaint( ::handle, pps )
-   aCoors := hwg_Getclientrect( ::handle )
-   x1 := aCoors[ 1 ] + IIf( ::lVertical, 1, 5 )
-   y1 := aCoors[ 2 ] + IIf( ::lVertical, 5, 1 )
-   x2 := aCoors[ 3 ] - IIf( ::lVertical, 0, 5 )
-   y2 := aCoors[ 4 ] - IIf( ::lVertical, 5, 0 )
-
    IF ::bPaint != Nil
       Eval( ::bPaint, Self )
    ELSE
+      pps := hwg_Definepaintstru()
+      hDC := hwg_Beginpaint( ::handle, pps )
+      aCoors := hwg_Getclientrect( ::handle )
+      x1 := aCoors[ 1 ] + IIf( ::lVertical, 1, 5 )
+      y1 := aCoors[ 2 ] + IIf( ::lVertical, 5, 1 )
+      x2 := aCoors[ 3 ] - IIf( ::lVertical, 0, 5 )
+      y2 := aCoors[ 4 ] - IIf( ::lVertical, 5, 0 )
+
       hwg_Drawedge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
+      hwg_Endpaint( ::handle, pps )
    ENDIF
-   hwg_Endpaint( ::handle, pps )
 
    RETURN Nil
 

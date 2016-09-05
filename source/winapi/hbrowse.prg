@@ -1657,7 +1657,7 @@ METHOD ButtonDbl( lParam ) CLASS HBrowse
 METHOD MouseMove( wParam, lParam ) CLASS HBrowse
 
    LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam )
-   LOCAL x := ::x1, i := ::nLeftCol, res := .F.
+   LOCAL x := ::x1, i := ::nLeftCol, res := .F., nLen
 
    IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       RETURN Nil
@@ -1669,7 +1669,8 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
          Hwg_SetCursor( oCursor )
          res := .T.
       ELSE
-         DO WHILE x < ::x2 - 2 .AND. i <= Len( ::aColumns )
+         nLen := Len( ::aColumns ) - Iif( ::lAdjRight, 1, 0 )
+         DO WHILE x < ::x2 - 2 .AND. i <= nLen
             x += ::aColumns[i++]:width
             IF Abs( x - xPos ) < 8
                IF !hwg_isPtrEq( oCursor, ColSizeCursor )

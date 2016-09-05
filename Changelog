@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-05 09:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Few #define sentences added for the new HColumn():SetPaintCB()
+  * source/winapi/hbrowse.prg
+  * source/gtk/hbrowse.prg
+    * :nRowHeight variable added to HBrowse to set row height
+    * :aPaintCB variable and SetPaintCB( nId, block, cId ) method added to
+      HColumn to support user defined codeblocks for painting browse items
+      ( header, lines, footers )
+  * utils/tutorial/tutor.prg
+  * utils/tutorial/hwgrun.prg
+    * New EXTERNAL added
+  * utils/tutorial/tutor_eng.xml
+    * New module "Tab" added in "Controls" chapter
+    * New chapter added "Advanced using of controls" and new module in this chapter:
+      "Browse", illustrating, how HColumn():SetPaintCB() works.
+
 2016-09-02 18:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
     * Logical :lBuffering variable ( default value is .F. ) added to HBrowse to handle

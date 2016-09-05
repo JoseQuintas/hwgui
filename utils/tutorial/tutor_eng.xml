@@ -359,7 +359,7 @@ Function Test()
 Local oDlg, oPanel
 
    INIT DIALOG oDlg TITLE "Panel and Ownerbuttons";
-         AT 0, 0 SIZE 320, 120 COLOR 12632256 ;
+         AT 0, 0 SIZE 320, 120 BACKCOLOR 12632256 ;
          FONT HFont():Add( "MS Sans Serif",0,-13 )
 
    @ 0,0 PANEL oPanel SIZE 320,32 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
@@ -539,6 +539,49 @@ Local oDlg, oSplitV, oSplitH, oEdit1, oEdit2, oEdit3
 Return Nil
       ]]>
     </module>
+    <module name="Tab" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oTab
+// In WinAPI version we must have an hspace for controls in a tab control, because a top of the tab
+// is occupied by tabs. This hspace depend on the font size.
+Local nTop := Iif( "windows" $ Lower(Os()), 24, 0 )
+
+   INIT DIALOG oDlg TITLE "Tab control";
+         AT 0, 0 SIZE 380, 260 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 20, 20 TAB oTab ITEMS {} SIZE 340, 180 ;
+      ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   BEGIN PAGE "First" of oTab
+
+     @ 30, nTop+16 EDITBOX "Pyotr" SIZE 200, 26
+     @ 30, nTop+46 EDITBOX "Ilyich" SIZE 200, 26
+     @ 30, nTop+76 EDITBOX "Tchaikovsky" SIZE 200, 26
+     @ 30, nTop+106 EDITBOX "07/05/1840" SIZE 100, 26
+
+   END PAGE of oTab
+
+   BEGIN PAGE "Second" of oTab
+
+     @ 30, nTop+16 EDITBOX "Sergei" SIZE 200, 26
+     @ 30, nTop+46 EDITBOX "Vasilievich" SIZE 200, 26
+     @ 30, nTop+76 EDITBOX "Rachmaninoff" SIZE 200, 26
+     @ 30, nTop+106 EDITBOX "01/04/1873" SIZE 100, 26
+
+   END PAGE of oTab
+
+   @ 140,220 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:Close() } ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+  </chapter>
+  <chapter name="Advanced using of controls" >
     <module name="Styled controls" >
       <![CDATA[#include "hwgui.ch"
 Function Test()
@@ -551,7 +594,7 @@ Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"John",31,15000} }
    oStyleOver := HStyle():New( {16759929}, 1,, 2, 12164479 )
 
    INIT DIALOG oDlg TITLE "Styled controls" ;
-         AT 0, 0 SIZE 380, 320 COLOR 16772062 ;
+         AT 0, 0 SIZE 380, 320 BACKCOLOR 16772062 ;
          FONT HFont():Add( "MS Sans Serif",0,-15 )
 
    // A TOP PANEL is the same PANEL control, which we used in "Panel and Ownerbuttons"
@@ -595,6 +638,129 @@ Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"John",31,15000} }
 
    ACTIVATE DIALOG oDlg
 
+Return Nil
+      ]]>
+    </module>
+    <module name="Browse" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBrw, oBtnOk, oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 ), oPen
+Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"Pyotr",56,45500}, ;
+      {"Sergei",28,14800}, {"Ivan",26,21300} }
+Local bCol1 := {|o,h,x1,y1,x2,y2|
+   oStyle:Draw( h,x1,y1,x2,y2 )
+   RETURN Nil
+}
+Local bBack := {|o,h,x1,y1,x2,y2,n|
+   Local y := y1 + Int( (y2-y1)/2 )
+   // Draw a column header background
+   hwg_Fillrect( h, x1, y1, x2, y, oBrw:brush:handle )
+   oStyle:Draw( h, x1, y, x2, y2 )
+   IF n == 4
+      // While drawing the 4-th column header output a "Super header" for 3-th and 4-th columns
+      hwg_Settransparentmode( h, .T. )
+      hwg_Drawtext( h, "Some data", x1-oBrw:aColumns[3]:width, y1 + 2, x2, y-2, DT_CENTER )
+      hwg_Settransparentmode( h, .F. )
+   ENDIF
+   RETURN Nil
+}
+Local bDrawOrd := {|o,h,x1,y1,x2,y2|
+   IF o:cargo == 1
+      hwg_Selectobject( h, oPen:handle )
+      hwg_DrawLine( h, x2-16, y2-14, x2-12, y2-8 )
+      hwg_DrawLine( h, x2-12, y2-8, x2-8, y2-14 )
+   ELSEIF o:cargo == 2
+      hwg_Selectobject( h, oPen:handle )
+      hwg_DrawLine( h, x2-16, y2-8, x2-12, y2-14 )
+      hwg_DrawLine( h, x2-12, y2-14, x2-8, y2-8 )
+   ENDIF
+   RETURN Nil
+}
+
+   oPen := HPen():Add( BS_SOLID, 2, 0 )
+
+   INIT DIALOG oDlg TITLE "Styled controls" ;
+         AT 0, 0 SIZE 380, 300 BACKCOLOR 0xeeeeee;
+         FONT HFont():Add( "MS Sans Serif",0,-15 )
+
+   @ 20,16 SAY "Press on a column head to change order" SIZE 340,24 ;
+         TRANSPARENT STYLE DT_CENTER COLOR 8404992
+   @ 20,40 BROWSE oBrw ARRAY SIZE 340,200 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+   oBrw:oStyleHead := oStyle
+   oBrw:bcolorSel := 0xeeeeee
+   oBrw:tcolorSel := 0
+   oBrw:aArray := aSample
+
+   // Increase Left, top and bottom padding
+   oBrw:aPadding[1] := oBrw:aPadding[2] := oBrw:aPadding[4] := 8
+   oBrw:aHeadPadding[2] := oBrw:aHeadPadding[4] := 4
+
+   //First column we draw ourselves, using the nCol1 codeblock, so we may to not set the
+   // column codeblock.
+   oBrw:AddColumn( HColumn():New( "",,"C",2,0 ) )
+   oBrw:aColumns[1]:setPaintCB( PAINT_LINE_ALL, bCol1 )
+
+   oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
+   oBrw:AddColumn( HColumn():New( ";Age",{|v,o|o:aArray[o:nCurrent,2]},"N",6,0 ) )
+   oBrw:AddColumn( HColumn():New( ";Salary",{|v,o|o:aArray[o:nCurrent,3]},"N",8,0 ) )
+
+   oBrw:aColumns[3]:cGrid := "W;WN"
+   oBrw:aColumns[4]:cGrid := "E;WEN"
+
+   // Add a codeblock to draw column hraders bacground
+   oBrw:aColumns[3]:setPaintCB( PAINT_HEAD_BACK, bBack )
+   oBrw:aColumns[4]:setPaintCB( PAINT_HEAD_BACK, bBack )
+
+   // Add a codeblock to draw the current order
+   oBrw:aColumns[2]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
+   oBrw:aColumns[3]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
+   oBrw:aColumns[4]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
+
+   // Set a codeblock to change order
+   oBrw:aColumns[2]:bHeadClick := oBrw:aColumns[3]:bHeadClick := ;
+      oBrw:aColumns[4]:bHeadClick := {|o,n|onHeadClick(o,n)}
+   // We use the column :cargo here to keep info about current order
+   oBrw:aColumns[2]:cargo := oBrw:aColumns[3]:cargo := oBrw:aColumns[4]:cargo := 0
+
+   @ 128,260 OWNERBUTTON oBtnOk SIZE 100,32 ;
+         TEXT "Ok" ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS ;
+         ON CLICK {||hwg_EndDialog()}
+   oBtnOk:aStyle := { HStyle():New( {0xffffff,0xdddddd}, 1,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 2,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 1,, 2, 8421440 ) }
+
+   ACTIVATE DIALOG oDlg
+
+   oPen:Release()
+
+Return Nil
+
+Function onHeadClick( oBrw, nCol )
+Local no := Ascan( oBrw:aColumns, {|o|o:cargo>0}, 2 )
+
+   IF no == 0
+      oBrw:aColumns[nCol]:cargo := 1
+   ELSEIF no == nCol
+      IF oBrw:aColumns[no]:cargo == 1
+         oBrw:aColumns[no]:cargo := 2
+      ELSE
+         oBrw:aColumns[no]:cargo := 1
+      ENDIF
+   ELSE
+      oBrw:aColumns[no]:cargo := 0
+      oBrw:aColumns[nCol]:cargo := 1
+   ENDIF
+
+   no := nCol
+   nCol --
+   IF oBrw:aColumns[no]:cargo == 1
+      oBrw:aArray := ASort( oBrw:aArray,,, {|z,y| z[nCol] < y[nCol] } )
+   ELSE
+      oBrw:aArray := ASort( oBrw:aArray,,, {|z,y| z[nCol] > y[nCol] } )
+   ENDIF
+   oBrw:Refresh()
 Return Nil
       ]]>
     </module>

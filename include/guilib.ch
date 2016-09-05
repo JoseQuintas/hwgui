@@ -31,6 +31,16 @@
 #define	BRW_ARRAY               1
 #define	BRW_DATABASE            2
 
+#define	PAINT_LINE_ALL          0
+#define	PAINT_LINE_BACK         1
+#define	PAINT_HEAD_ALL          2
+#define	PAINT_HEAD_BACK         3
+#define	PAINT_FOOT_ALL          4
+#define	PAINT_FOOT_BACK         5
+#define	PAINT_LINE_ITEM        11
+#define	PAINT_HEAD_ITEM        12
+#define	PAINT_FOOT_ITEM        13
+
 #define	PAGE_FIRST              1
 #define	PAGE_LAST               2
 

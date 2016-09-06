@@ -20,7 +20,7 @@ Private nColor, oBmp2
    // hb_SetCodepage( "RU1251" )
 
    INIT WINDOW oMainWindow MDI TITLE "Example" SIZE 800,500 ;
-         MENUPOS 3 COLOR 16744703
+         MENUPOS 3 BACKCOLOR 16744703
 
    @ 0,0 PANEL oPanel SIZE 800,32 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
    @ 2,3 OWNERBUTTON OF oPanel ON CLICK {||CreateChildWindow()} ;

@@ -18,7 +18,7 @@ CLASS HPanel INHERIT HControl
 
    DATA hBox
    DATA oStyle
-   DATA aItems    INIT {}       // Array of items to draw: { cIt, bDraw(hDC,aCoors) }
+   DATA aPaintCB  INIT {}       // Array of items to draw: { cIt, bDraw(hDC,aCoors) }
 
    DATA hScrollV  INIT Nil
    DATA hScrollH  INIT Nil
@@ -34,6 +34,7 @@ CLASS HPanel INHERIT HControl
    METHOD DrawItems( hDC, aCoors )
    METHOD Paint()
    METHOD Move( x1, y1, width, height )
+   METHOD SetPaintCB( nId, block, cId )
 
 ENDCLASS
 
@@ -105,19 +106,21 @@ METHOD Init CLASS HPanel
 
 METHOD DrawItems( hDC, aCoors ) CLASS HPanel
 
-   LOCAL i
+   LOCAL i, aCB
 
    IF Empty( aCoors )
       aCoors := hwg_Getclientrect( ::handle )
    ENDIF
-   FOR i := 1 TO Len( ::aItems )
-      Eval( ::aItems[i,2], hDC, aCoors )
-   NEXT
+   IF !Empty( aCB := hwg_getPaintCB( ::aPaintCB, PAINT_ITEM ) )
+      FOR i := 1 TO Len( aCB )
+         Eval( aCB[i], Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
+      NEXT
+   ENDIF
 
    RETURN Nil
 
 METHOD Paint() CLASS HPanel
-   LOCAL hDC, aCoors, oPenLight, oPenGray
+   LOCAL hDC, aCoors, block
 
    IF ::bPaint != Nil
       RETURN Eval( ::bPaint, Self )
@@ -126,7 +129,9 @@ METHOD Paint() CLASS HPanel
    hDC := hwg_Getdc( ::handle )
    aCoors := hwg_Getclientrect( ::handle )
 
-   IF ::oStyle == Nil
+   IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
+      Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
+   ELSEIF ::oStyle == Nil
       hwg_Drawbutton( hDC, 0, 0, ::nWidth - 1, ::nHeight - 1, 5 )
    ELSE
       ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
@@ -177,6 +182,35 @@ METHOD Move( x1, y1, width, height )  CLASS HPanel
    //::Super:Move( x1,y1,width,height,.T. )
 
    RETURN Nil
+
+METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
+
+   LOCAL i, nLen
+
+   IF Empty( cId ); cId := "_"; ENDIF
+   IF Empty( ::aPaintCB ); ::aPaintCB := {}; ENDIF
+
+   nLen := Len( ::aPaintCB )
+   FOR i := 1 TO nLen
+      IF ::aPaintCB[i,1] == nId .AND. ::aPaintCB[i,2] == cId
+         EXIT
+      ENDIF
+   NEXT
+   IF Empty( block )
+      IF i <= nLen
+         ADel( ::aPaintCB, i )
+         ::aPaintCB := ASize( ::aPaintCB, nLen-1 )
+      ENDIF
+   ELSE
+      IF i > nLen
+         Aadd( ::aPaintCB, { nId, cId, block } )
+      ELSE
+         ::aPaintCB[i,3] := block
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
 
 CLASS HPanelStS INHERIT HPANEL
 
@@ -243,7 +277,7 @@ METHOD PaintText( hDC ) CLASS HPanelStS
    RETURN Nil
 
 METHOD Paint() CLASS HPanelStS
-   LOCAL pps, hDC
+   LOCAL pps, hDC, block, aCoors
 
    IF ::bPaint != Nil
       RETURN Eval( ::bPaint, Self )
@@ -252,7 +286,10 @@ METHOD Paint() CLASS HPanelStS
    pps    := hwg_Definepaintstru()
    hDC    := hwg_Beginpaint( ::handle, pps )
 
-   IF Empty( ::oStyle )
+   IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
+      aCoors := hwg_Getclientrect( ::handle )
+      Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
+   ELSEIF Empty( ::oStyle )
       ::oStyle := HStyle():New( {::bColor}, 1,, 0.4, 0 )
    ENDIF
    ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )

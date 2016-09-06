@@ -40,6 +40,8 @@
 #define	PAINT_LINE_ITEM        11
 #define	PAINT_HEAD_ITEM        12
 #define	PAINT_FOOT_ITEM        13
+#define	PAINT_BACK              1
+#define	PAINT_ITEM             11
 
 #define	PAGE_FIRST              1
 #define	PAGE_LAST               2

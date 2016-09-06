@@ -764,11 +764,11 @@ METHOD DrawHeader( hDC, nColumn, x1, y1, x2, y2 ) CLASS HBrowse
    LOCAL cStr, oColumn := ::aColumns[nColumn], cNWSE, nLine, ya, yb
    LOCAL nHeight := ::nRowTextHeight, aCB := oColumn:aPaintCB, block, i
 
-   IF !Empty( block := getPaintCB( aCB, PAINT_HEAD_ALL ) )
+   IF !Empty( block := hwg_getPaintCB( aCB, PAINT_HEAD_ALL ) )
       RETURN Eval( block, oColumn, hDC, x1, y1, x2, y2, nColumn )
    ENDIF
 
-   IF !Empty( block := getPaintCB( aCB, PAINT_HEAD_BACK ) )
+   IF !Empty( block := hwg_getPaintCB( aCB, PAINT_HEAD_BACK ) )
       Eval( block, oColumn, hDC, x1, y1, x2, y2, nColumn )
    ELSEIF oColumn:oStyleHead != Nil
       oColumn:oStyleHead:Draw( hDC, x1, y1, x2, y2 )
@@ -815,7 +815,7 @@ METHOD DrawHeader( hDC, nColumn, x1, y1, x2, y2 ) CLASS HBrowse
       NEXT
    ENDIF
 
-   IF !Empty( aCB := getPaintCB( aCB, PAINT_HEAD_ITEM ) )
+   IF !Empty( aCB := hwg_getPaintCB( aCB, PAINT_HEAD_ITEM ) )
       FOR i := 1 TO Len( aCB )
          Eval( aCB[i], oColumn, hDC, x1, y1, x2, y2, nColumn )
       NEXT
@@ -901,10 +901,10 @@ METHOD FooterOut( hDC ) CLASS HBrowse
       y1 := ::y1 + ( ::rowCount ) * ( ::height + 1 ) + 1
       y2 := ::y1 + ( ::rowCount + nLine ) * ( ::height + 1 )
       aCB := oColumn:aPaintCB
-      IF !Empty( block := getPaintCB( aCB, PAINT_FOOT_ALL ) )
+      IF !Empty( block := hwg_getPaintCB( aCB, PAINT_FOOT_ALL ) )
          RETURN Eval( block, oColumn, hDC, x, y1, x2, y2, fif )
       ELSE
-         IF !Empty( block := getPaintCB( aCB, PAINT_FOOT_BACK ) )
+         IF !Empty( block := hwg_getPaintCB( aCB, PAINT_FOOT_BACK ) )
             Eval( block, oColumn, hDC, x, y1, x2, y2, fif )
          ENDIF
 
@@ -922,7 +922,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
                NEXT
             ENDIF
          ENDIF
-         IF !Empty( aCB := getPaintCB( aCB, PAINT_FOOT_ITEM ) )
+         IF !Empty( aCB := hwg_getPaintCB( aCB, PAINT_FOOT_ITEM ) )
             FOR i := 1 TO Len( aCB )
                Eval( aCB[i], oColumn, hDC, x, y1, x2, y2, fif )
             NEXT
@@ -990,10 +990,10 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
          x2 := x + xSize - Iif( ::lSep3d,2,1 )
          y1 := ::y1 + ( ::height + 1 ) * ( nstroka - 1 ) + 1
          y2 := ::y1 + ( ::height + 1 ) * nstroka
-         IF !Empty( block := getPaintCB( aCB, PAINT_LINE_ALL ) )
+         IF !Empty( block := hwg_getPaintCB( aCB, PAINT_LINE_ALL ) )
             Eval( block, oColumn, hDC, x, y1, x2, y2, nCol )
          ELSE
-            IF !Empty( block := getPaintCB( aCB, PAINT_LINE_BACK ) )
+            IF !Empty( block := hwg_getPaintCB( aCB, PAINT_LINE_BACK ) )
                Eval( block, oColumn, hDC, x, y1, x2, y2, nCol )
             ELSE
                hBReal := Iif( oColumn:brush != Nil, ;
@@ -1034,7 +1034,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                   IF !Empty( sviv := AllTrim( FLDSTR( Self, nCol ) ) )
                      hwg_Drawtext( hDC, sviv, x + ::aPadding[1], y1 + ::aPadding[2], x2 - ::aPadding[3], y2 - 1 - ::aPadding[4], oColumn:nJusLin )
                   ENDIF
-                  IF !Empty( aCB := getPaintCB( aCB, PAINT_LINE_ITEM ) )
+                  IF !Empty( aCB := hwg_getPaintCB( aCB, PAINT_LINE_ITEM ) )
                      FOR j := 1 TO Len( aCB )
                         Eval( aCB[j], oColumn, hDC, x, y1, x2, y2, nCol )
                      NEXT

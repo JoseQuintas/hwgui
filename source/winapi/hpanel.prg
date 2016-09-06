@@ -18,7 +18,7 @@ CLASS HPanel INHERIT HControl
    DATA oEmbedded
    DATA bScroll
    DATA oStyle
-   DATA aItems    INIT {}         // Array of items to draw: { cIt, bDraw(hDC,aCoors) }
+   DATA aPaintCB    INIT {}         // Array of items to draw: { cIt, bDraw(hDC,aCoors) }
    DATA lResizeX, lResizeY, nSize HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -32,7 +32,8 @@ CLASS HPanel INHERIT HControl
    METHOD BackColor( bcolor ) INLINE ::Setcolor( , bcolor, .T. )
    METHOD Hide()
    METHOD Show()
-   METHOD RELEASE()
+   METHOD SetPaintCB( nId, block, cId )
+   METHOD Release()
 
 ENDCLASS
 
@@ -149,19 +150,21 @@ METHOD Redefine( oWndParent, nId, nWidth, nHeight, bInit, bSize, bPaint, bcolor 
 
 METHOD DrawItems( hDC, aCoors ) CLASS HPanel
 
-   LOCAL i
+   LOCAL i, aCB
 
    IF Empty( aCoors )
       aCoors := hwg_Getclientrect( ::handle )
    ENDIF
-   FOR i := 1 TO Len( ::aItems )
-      Eval( ::aItems[i,2], hDC, aCoors )
-   NEXT
+   IF !Empty( aCB := hwg_getPaintCB( ::aPaintCB, PAINT_ITEM ) )
+      FOR i := 1 TO Len( aCB )
+         Eval( aCB[i], Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
+      NEXT
+   ENDIF
 
    RETURN Nil
 
 METHOD Paint() CLASS HPanel
-   LOCAL pps, hDC, aCoors, oPenLight, oPenGray
+   LOCAL pps, hDC, aCoors, block, oPenLight, oPenGray
 
    IF ::bPaint != Nil
       RETURN Eval( ::bPaint, Self )
@@ -171,13 +174,15 @@ METHOD Paint() CLASS HPanel
    hDC    := hwg_Beginpaint( ::handle, pps )
    aCoors := hwg_Getclientrect( ::handle )
 
-   IF ::oStyle == Nil
+   IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
+      Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
+   ELSEIF ::oStyle == Nil
       oPenLight := HPen():Add( BS_SOLID, 1, hwg_Getsyscolor( COLOR_3DHILIGHT ) )
       hwg_Selectobject( hDC, oPenLight:handle )
-      hwg_Drawline( hDC, 5, 1, aCoors[ 3 ] - 5, 1 )
+      hwg_Drawline( hDC, 5, 1, aCoors[3] - 5, 1 )
       oPenGray := HPen():Add( BS_SOLID, 1, hwg_Getsyscolor( COLOR_3DSHADOW ) )
       hwg_Selectobject( hDC, oPenGray:handle )
-      hwg_Drawline( hDC, 5, 0, aCoors[ 3 ] - 5, 0 )
+      hwg_Drawline( hDC, 5, 0, aCoors[3] - 5, 0 )
    ELSE
       ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
    ENDIF
@@ -189,7 +194,7 @@ METHOD Paint() CLASS HPanel
 
    RETURN Nil
 
-METHOD RELEASE CLASS HPanel
+METHOD Release() CLASS HPanel
 
    IF __ObjHasMsg( ::oParent, "AOFFSET" ) .AND. ::oParent:type == WND_MDI
       IF ::nWidth > ::nHeight .OR. ::nWidth == 0
@@ -263,6 +268,35 @@ METHOD Show CLASS HPanel
 
    RETURN Nil
 
+METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
+
+   LOCAL i, nLen
+
+   IF Empty( cId ); cId := "_"; ENDIF
+   IF Empty( ::aPaintCB ); ::aPaintCB := {}; ENDIF
+
+   nLen := Len( ::aPaintCB )
+   FOR i := 1 TO nLen
+      IF ::aPaintCB[i,1] == nId .AND. ::aPaintCB[i,2] == cId
+         EXIT
+      ENDIF
+   NEXT
+   IF Empty( block )
+      IF i <= nLen
+         ADel( ::aPaintCB, i )
+         ::aPaintCB := ASize( ::aPaintCB, nLen-1 )
+      ENDIF
+   ELSE
+      IF i > nLen
+         Aadd( ::aPaintCB, { nId, cId, block } )
+      ELSE
+         ::aPaintCB[i,3] := block
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+
 CLASS HPanelStS INHERIT HPANEL
 
    DATA oStyle
@@ -328,7 +362,7 @@ METHOD PaintText( hDC ) CLASS HPanelStS
    RETURN Nil
 
 METHOD Paint() CLASS HPanelStS
-   LOCAL pps, hDC
+   LOCAL pps, hDC, block, aCoors
 
    IF ::bPaint != Nil
       RETURN Eval( ::bPaint, Self )
@@ -337,7 +371,10 @@ METHOD Paint() CLASS HPanelStS
    pps := hwg_Definepaintstru()
    hDC := hwg_Beginpaint( ::handle, pps )
 
-   IF Empty( ::oStyle )
+   IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
+      aCoors := hwg_Getclientrect( ::handle )
+      Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
+   ELSEIF Empty( ::oStyle )
       ::oStyle := HStyle():New( {::bColor}, 1,, 0.4, 0 )
    ENDIF
    ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )

@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-06 13:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+  * source/gtk/hbrowse.prg
+  * include/guilib.ch
+  * source/winapi/hpanel.prg
+  * source/gtk/hpanel.prg
+    * :aPaintCB variable and SetPaintCB( nId, block, cId ) method added to
+      HPanel as for HColumn instead of :aItems for compatibility
+  * samples/a.prg
+    * COLOR clause has been replaced by BACKCOLOR for a window
+
 2016-09-06 11:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
   * source/gtk/hbrowse.prg

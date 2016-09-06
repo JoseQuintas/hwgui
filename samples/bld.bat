@@ -31,7 +31,7 @@ echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgdebug.lib + >> b32.bc
-echo %HWGUI_INSTALL%\lib\hwg_qhtm.lib + >> b32.bc
+if exist %HWGUI_INSTALL%\lib\hwg_qhtm.lib echo echo %HWGUI_INSTALL%\lib\hwg_qhtm.lib + >> b32.bc
 if exist %HWGUI_INSTALL%\lib\hbactivex.lib echo %HWGUI_INSTALL%\lib\hbactivex.lib + >> b32.bc
 
 if exist %HRB_DIR%\lib\hbvm.lib goto hrb

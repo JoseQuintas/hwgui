@@ -1416,7 +1416,6 @@ METHOD TOP() CLASS HBrowse
 METHOD ButtonDown( lParam ) CLASS HBrowse
 
    LOCAL hBrw := ::handle, nLine
-   //LOCAL nLine := Int( hwg_Hiword( lParam )/ (::height + 1 ) + Iif(::lDispHead,1 - ::nHeadRows,1 ) )
    LOCAL step, res := .F. , nrec
    LOCAL maxPos, nPos
    LOCAL ym := hwg_Hiword( lParam ), xm := hwg_Loword( lParam ), x1, fif
@@ -1431,6 +1430,9 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
       x1 += ::aColumns[fif]:width
       fif := Iif( fif == ::freeze, ::nLeftCol, fif + 1 )
    ENDDO
+   IF fif > Len( ::aColumns ) .AND. ::lAdjRight
+      fif := Len( ::aColumns )
+   ENDIF
 
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
@@ -1466,7 +1468,6 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
          ENDIF
       ENDIF
       IF res
-         //::internal[1] := 1
          hwg_Invalidaterect( ::area, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPosOld - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPosOld )
          hwg_Invalidaterect( ::area, 0, ::x1, ::y1 + ( ::height + 1 ) * ::rowPos - ::height, ::x2, ::y1 + ( ::height + 1 ) * ::rowPos )
       ENDIF
@@ -1481,7 +1482,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
          fif <= Len( ::aColumns ) .AND. ;
          ::aColumns[fif]:bHeadClick != Nil
 
-      Eval( ::aColumns[fif]:bHeadClick, Self, fif )
+      Eval( ::aColumns[fif]:bHeadClick, Self, fif, xm, ym )
 
    ENDIF
 
@@ -1489,7 +1490,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
 METHOD ButtonRDown( lParam ) CLASS HBrowse
 
-   LOCAL nLine //:= Int( hwg_Hiword( lParam )/ (::height + 1 ) + Iif(::lDispHead,1 - ::nHeadRows,1 ) )
+   LOCAL nLine
    LOCAL ym := hwg_Hiword( lParam ), xm := hwg_Loword( lParam ), x1, fif
 
    IF ::bRClick == Nil
@@ -1556,7 +1557,6 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
 METHOD ButtonDbl( lParam ) CLASS HBrowse
 
    LOCAL hBrw := ::handle, nLine
-   //LOCAL nLine := Int( hwg_Hiword( lParam )/ (::height + 1 ) + Iif(::lDispHead,1 - ::nHeadRows,1 ) )
    LOCAL ym := hwg_Hiword( lParam )
 
    nLine := Iif( ym < ::y1, 0, Int( (ym-::y1) / (::height+1) ) + 1 )

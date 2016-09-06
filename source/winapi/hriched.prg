@@ -34,7 +34,7 @@ CLASS HRichEdit INHERIT HControl
    DATA bChange
 
    METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
+      oFont, bInit, bSize, bGfocus, bLfocus, ctooltip, ;
       tcolor, bcolor, bOther, lAllowTabs, bChange, lnoBorder )
 
    METHOD Activate()
@@ -50,14 +50,14 @@ CLASS HRichEdit INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctooltip, ;
+      oFont, bInit, bSize, bGfocus, bLfocus, ctooltip, ;
       tcolor, bcolor, bOther, lAllowTabs, bChange, lnoBorder ) CLASS HRichEdit
 
    nStyle := Hwg_BitOr( iif( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + WS_TABSTOP + ;
          iif( lNoBorder = Nil .OR. ! lNoBorder, WS_BORDER, 0 ) )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
-      bSize, bPaint, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
+      bSize,, ctooltip, tcolor, iif( bcolor == Nil, hwg_Getsyscolor( COLOR_BTNHIGHLIGHT ), bcolor ) )
 
    ::title  := vari
    ::bOther := bOther

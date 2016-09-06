@@ -1508,10 +1508,13 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
    x1  := ::x1
    fif := Iif( ::freeze > 0, 1, ::nLeftCol )
 
-   DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[ fif ]:width < xm
-      x1 += ::aColumns[ fif ]:width
+   DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[fif]:width < xm
+      x1 += ::aColumns[fif]:width
       fif := Iif( fif == ::freeze, ::nLeftCol, fif + 1 )
    ENDDO
+   IF fif > Len( ::aColumns ) .AND. ::lAdjRight
+      fif := Len( ::aColumns )
+   ENDIF
 
    IF nLine > 0 .AND. nLine <= ::rowCurrCount
       IF step != 0
@@ -1568,7 +1571,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
    ELSEIF nLine == 0 .AND. ::lDispHead .AND. ;
          fif <= Len( ::aColumns ) .AND. ::aColumns[fif]:bHeadClick != Nil
 
-      Eval( ::aColumns[fif]:bHeadClick, Self, fif )
+      Eval( ::aColumns[fif]:bHeadClick, Self, fif, xm, ym )
 
    ENDIF
 
@@ -1576,7 +1579,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
 
 METHOD ButtonRDown( lParam ) CLASS HBrowse
 
-   LOCAL nLine //:= Int( hwg_Hiword( lParam )/ (::height + 1 ) + Iif(::lDispHead,1 - ::nHeadRows,1 ) )
+   LOCAL nLine
    LOCAL ym := hwg_Hiword( lParam ), xm := hwg_Loword( lParam ), x1, fif
 
    IF ::bRClick == Nil
@@ -1643,7 +1646,6 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
 METHOD ButtonDbl( lParam ) CLASS HBrowse
 
    LOCAL hBrw := ::handle, nLine
-   //LOCAL nLine := Int( hwg_Hiword( lParam )/ (::height + 1 ) + Iif(::lDispHead,1 - ::nHeadRows,1 ) )
    LOCAL ym := hwg_Hiword( lParam )
 
    nLine := Iif( ym < ::y1, 0, Int( (ym-::y1) / (::height+1) ) + 1 )

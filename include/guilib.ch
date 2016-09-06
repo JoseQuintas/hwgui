@@ -454,7 +454,6 @@
             [<lallowtabs: ALLOWTABS>]  ; 
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
-            [ ON PAINT <bDraw> ]       ;
             [ ON GETFOCUS <bGfocus> ]  ;
             [ ON LOSTFOCUS <bLfocus> ] ;
             [ ON CHANGE <bChange>]     ;
@@ -464,7 +463,7 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oEdit> := ] HRichEdit():New( <oWnd>,<nId>,<vari>,<nStyle>,<x>,<y>,<width>, ;
-                    <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<bGfocus>, ;
+                    <height>,<oFont>,<bInit>,<bSize>,<bGfocus>, ;
                     <bLfocus>,<ctoolt>,<color>,<bcolor>,<bOther>,<.lallowtabs.>,<bChange> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 

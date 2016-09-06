@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-06 11:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+  * source/gtk/hbrowse.prg
+    ! Small fix
+  * include/guilib.ch
+  * source/winapi/hriched.prg
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+    * ON PAINT clause deleted from @ ... RICHEDIT command as unused, bPaint parameter
+      from HRichedit():New()
+
 2016-09-06 10:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * samples/bld.bat
     ! Small fix

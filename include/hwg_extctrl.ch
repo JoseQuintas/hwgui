@@ -164,6 +164,17 @@
                             <{bKeyDown}>, <{bPosChg}>, <{bDispInfo}>, <nItemCount>,;
                              <.lNoLines.>, <color>, <bkcolor>, <.lNoHeader.> ,<aBit>,<a>)
 
+#xcommand ADDROWEX TO GRID <oGrid>    ;
+            [ HEADER <cHeader> ]        ;
+            [ BITMAP <n> ]              ;
+            [ COLOR <color> ]           ;
+            [ BACKCOLOR <bkcolor> ]     ;
+            [ HEADER <cHeadern> ]        ;
+            [ BITMAP <nn> ]              ;
+            [ COLOR <colorn> ]           ;
+            [ BACKCOLOR <bkcolorn> ]     ;
+            => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [, <cHeadern>, <nn>,<colorn>,<bkcolorn> ]\})
+
 #xcommand @ <x>, <y>  CONTAINER [<oCnt>] [OF <oWnd>] ;
              [ ID <nId> ]               ;
              [ SIZE <width>, <height> ] ;

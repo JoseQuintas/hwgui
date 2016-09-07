@@ -957,7 +957,7 @@
             [ SIZE <width>, <height> ] ;
             [ ON INIT <bInit> ]     ;
             [ ON SIZE <bSize> ]     ;
-            [ ON DRAW <bDraw> ]     ;
+            [ ON PAINT <bPaint> ]   ;
             [ ON CLICK <bClick> ]   ;
             [ STYLE <nStyle> ]      ;
             [ <flat: FLAT> ]        ;
@@ -973,7 +973,7 @@
             [ <lCheck: CHECK> ]     ;
           => ;
     [<oOwnBtn> :=] HOWNBUTTON():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-          <height>,<bInit>,<bSize>,<bDraw>, ;
+          <height>,<bInit>,<bSize>,<bPaint>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
               <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, <ctoolt>,!<.enable.>,<.lCheck.> );
@@ -985,7 +985,7 @@
             ID <nId>                          ;
             [ ON INIT <bInit> ]     ;
             [ ON SIZE <bSize> ]     ;
-            [ ON DRAW <bDraw> ]     ;
+            [ ON PAINT <bPaint> ]   ;
             [ ON CLICK <bClick> ]   ;
             [ <flat: FLAT> ]        ;
             [ TEXT <cText>          ;
@@ -999,7 +999,7 @@
             [ <enable: DISABLED> ]        ;
           => ;
     [<oOwnBtn> :=] HOWNBUTTON():Redefine( <oWnd>,<nId>, ;
-          <bInit>,<bSize>,<bDraw>, ;
+          <bInit>,<bSize>,<bPaint>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
               <bmp>,<.res.>,<xb>, <yb>,<widthb>,<heightb>,<.ltr.>, <ctoolt>, !<.enable.>);
@@ -1014,7 +1014,7 @@
                  [ COLORING <coloring> ] [ SHCOLOR <shcolor> ] ];
             [ ON INIT <bInit> ]     ;
             [ ON SIZE <bSize> ]     ;
-            [ ON DRAW <bDraw> ]     ;
+            [ ON PAINT <bPaint> ]    ;
             [ ON CLICK <bClick> ]   ;
             [ STYLE <nStyle> ]      ;
             [ <flat: FLAT> ]        ;
@@ -1029,7 +1029,7 @@
             [ TOOLTIP <ctoolt> ]    ;
           => ;
     [<oShBtn> :=] HSHADEBUTTON():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-          <height>,<bInit>,<bSize>,<bDraw>, ;
+          <height>,<bInit>,<bSize>,<bPaint>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>, ;
               <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, ;
@@ -1678,18 +1678,6 @@ Added by Marcos Antonio Gambeta
             [ JUSTIFY HEAD <nJusHeadn> ] ;
             [ BITMAP <nn> ]              ;
             => <oGrid>:AddRow(<cHeader>,<nJusHead>,<n>) [;<oGrid>:AddRow(<cHeadern>,<nJusHeadn>,<nn>)]
-
-
-#xcommand ADDROWEX TO GRID <oGrid>    ;
-            [ HEADER <cHeader> ]        ;
-            [ BITMAP <n> ]              ;
-            [ COLOR <color> ]           ;
-            [ BACKCOLOR <bkcolor> ]     ;
-            [ HEADER <cHeadern> ]        ;
-            [ BITMAP <nn> ]              ;
-            [ COLOR <colorn> ]           ;
-            [ BACKCOLOR <bkcolorn> ]     ;
-            => <oGrid>:AddRow(\{<cHeader>,<n>,<color>,<bkcolor> [, <cHeadern>, <nn>,<colorn>,<bkcolorn> ]\})
 
 
 #xcommand REDEFINE TAB  <oTab>  ;

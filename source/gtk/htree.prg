@@ -41,7 +41,6 @@ CLASS HTreeNode INHERIT HObject
    DATA aImages
    DATA aItems      INIT {}
    DATA bAction
-   DATA cargo
 
    METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages )
    METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )

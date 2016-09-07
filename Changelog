@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-07 09:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hpanel.prg
+  * source/gtk/hpanel.prg
+    * Removed duplicated :oStyle from HPanelSts
+  * source/winapi/htree.prg
+  * source/gtk/htree.prg
+    * Removed duplicated :cargo from HTreeItem
+  * source/gtk/hbrowse.prg
+    * Removed duplicated :cargo from HColumn
+
 2016-09-06 13:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
   * source/gtk/hbrowse.prg

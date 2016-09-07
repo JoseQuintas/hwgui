@@ -38,7 +38,7 @@ CLASS HColumn INHERIT HObject
 
    DATA block, heading, footing, width, type
    DATA length INIT 0
-   DATA dec, cargo
+   DATA dec
    DATA nJusHead, nJusLin        // Para poder Justificar los Encabezados de las columnas y lineas.
    // WHT. 27.07.2002
    DATA tcolor, bcolor, brush

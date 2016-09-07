@@ -214,7 +214,6 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
 
 CLASS HPanelStS INHERIT HPANEL
 
-   DATA oStyle
    DATA aParts
    DATA aText
 

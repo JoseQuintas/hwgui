@@ -261,8 +261,8 @@ METHOD Show CLASS HPanel
    ::nWidth := ::nsize
    hwg_Sendmessage( ::oParent:Handle, WM_SIZE, 0, 0 )
    ::super:Show()
-   FOR i := 1 TO Len( ::acontrols )
-      ::acontrols[ i ]:Show()
+   FOR i := 1 TO Len( ::aControls )
+      ::aControls[ i ]:Show()
    NEXT
    hwg_Movewindow( ::Handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
@@ -299,7 +299,6 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
 
 CLASS HPanelStS INHERIT HPANEL
 
-   DATA oStyle
    DATA aParts
    DATA aText
 

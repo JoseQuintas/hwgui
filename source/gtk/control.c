@@ -63,10 +63,32 @@ static PHB_DYNS pSymTimerProc = NULL;
 
 static PHB_DYNS pSym_onEvent = NULL;
 
+static GtkWidget *h4stock = NULL;
+
 GtkFixed *getFixedBox( GObject * handle )
 {
    return ( GtkFixed * ) g_object_get_data( handle, "fbox" );
 }
+
+HB_FUNC( HWG_STOCKBITMAP )
+{
+   PHWGUI_PIXBUF hpix;
+   GdkPixbuf * handle;
+
+   if( !h4stock )
+      h4stock = gtk_drawing_area_new();
+
+   handle = gtk_widget_render_icon( h4stock, hb_parc(1),
+                                         GTK_ICON_SIZE_BUTTON, NULL );
+   if( handle )
+   {
+      hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
+      hpix->type = HWGUI_OBJECT_PIXBUF;
+      hpix->handle = handle;
+      HB_RETHANDLE( hpix );
+   }
+}
+
 
 /*
    CreateStatic( hParentWindow, nControlID, nStyle, x, y, nWidth, nHeight, nExtStyle, cTitle )

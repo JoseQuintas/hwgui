@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-09 11:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+    ! Small fix in HBitmap():AddStandard()
+
 2016-09-09 11:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/gtk.ch
   * source/gtk/control.c

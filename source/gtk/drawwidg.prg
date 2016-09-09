@@ -392,10 +392,11 @@ METHOD AddString( name, cVal ) CLASS HBitmap
    RETURN Self
 
 METHOD AddStandard( cId, nSize ) CLASS HBitmap
-   LOCAL i, aBmpSize
+   LOCAL i, aBmpSize, cName
 
+   cName := cId + Iif( nSize==Nil, "", Str(nSize,1) )
    FOR EACH i IN ::aBitmaps
-      IF i:name == cId
+      IF i:name == cName
          i:nCounter ++
          RETURN i
       ENDIF
@@ -405,7 +406,7 @@ METHOD AddStandard( cId, nSize ) CLASS HBitmap
    IF Empty( ::handle )
       RETURN Nil
    ENDIF
-   ::name    := cId
+   ::name    := cName
    aBmpSize  := hwg_Getbitmapsize( ::handle )
    ::nWidth  := aBmpSize[ 1 ]
    ::nHeight := aBmpSize[ 2 ]

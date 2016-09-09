@@ -314,7 +314,7 @@ CLASS HBitmap INHERIT HObject
    METHOD AddResource( name )
    METHOD AddFile( name, HDC )
    METHOD AddString( name, cVal )
-   METHOD AddStandard( cId )
+   METHOD AddStandard( cId, nSize )
    METHOD Transparent( trColor )
    METHOD AddWindow( oWnd, lFull )
    METHOD Release()
@@ -391,7 +391,7 @@ METHOD AddString( name, cVal ) CLASS HBitmap
 
    RETURN Self
 
-METHOD AddStandard( cId ) CLASS HBitmap
+METHOD AddStandard( cId, nSize ) CLASS HBitmap
    LOCAL i, aBmpSize
 
    FOR EACH i IN ::aBitmaps
@@ -401,7 +401,7 @@ METHOD AddStandard( cId ) CLASS HBitmap
       ENDIF
    NEXT
 
-   ::handle := hwg_StockBitmap( cId )
+   ::handle := hwg_StockBitmap( cId, nSize )
    IF Empty( ::handle )
       RETURN Nil
    ENDIF

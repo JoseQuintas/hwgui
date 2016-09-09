@@ -79,7 +79,7 @@ HB_FUNC( HWG_STOCKBITMAP )
       h4stock = gtk_drawing_area_new();
 
    handle = gtk_widget_render_icon( h4stock, hb_parc(1),
-                                         GTK_ICON_SIZE_BUTTON, NULL );
+        ( ( HB_ISNIL(2) ) ? GTK_ICON_SIZE_BUTTON : hb_parni(2)), NULL );
    if( handle )
    {
       hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );

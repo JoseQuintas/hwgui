@@ -679,7 +679,7 @@ Local bDrawOrd := {|o,h,x1,y1,x2,y2|
 
    oPen := HPen():Add( BS_SOLID, 2, 0 )
 
-   INIT DIALOG oDlg TITLE "Styled controls" ;
+   INIT DIALOG oDlg TITLE "Browse" ;
          AT 0, 0 SIZE 380, 300 BACKCOLOR 0xeeeeee;
          FONT HFont():Add( "MS Sans Serif",0,-15 )
 
@@ -761,6 +761,91 @@ Local no := Ascan( oBrw:aColumns, {|o|o:cargo>0}, 2 )
       oBrw:aArray := ASort( oBrw:aArray,,, {|z,y| z[nCol] > y[nCol] } )
    ENDIF
    oBrw:Refresh()
+Return Nil
+      ]]>
+    </module>
+    <module name="Browse of bitmaps" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBrw, oBtnOk, i, oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
+Local aStock, aStockNames, oBitmap
+Local bCol2 := {|o,h,x1,y1,x2,y2|
+   Local oBmp
+   hwg_Fillrect( h, x1, y1, x2, y2, oBrw:brush:handle )
+   IF oBrw:nCurrent <= Len(oBrw:aArray) .AND. Valtype( oBrw:aArray[oBrw:nCurrent] ) == "O"
+      oBmp := oBrw:aArray[oBrw:nCurrent]
+      hwg_Drawbitmap( h, oBmp:handle,, x1+20, y1+4, oBmp:nWidth, oBmp:nHeight )
+   ENDIF
+   RETURN Nil
+}
+
+   // We will browse predefined bitmaps ( they are called "stock" in GTK ),
+   //   using a user-defined codeblock to paint a cell.
+   // Note, that the HBitmap():AddStandard() receives numerical id for WinAPI
+   //   and a string for GTK.
+   IF "windows" $ Lower(Os())
+      oBitmap := HBitmap():AddStandard( OBM_BTNCORNERS )
+      aStock := { OBM_BTNCORNERS, OBM_BTSIZE, ;
+         OBM_CHECK, OBM_CHECKBOXES, OBM_CLOSE, OBM_REDUCE, ;
+         OBM_COMBO, OBM_REDUCED, OBM_DNARROW, OBM_RESTORE, OBM_DNARROWD, OBM_RESTORED, ;
+         OBM_DNARROWI, OBM_RGARROW, OBM_LFARROW, OBM_RGARROWD, OBM_LFARROWD, OBM_RGARROWI, ;
+         OBM_LFARROWI, OBM_SIZE, OBM_MNARROW, OBM_UPARROW, OBM_UPARROWD, ;
+         OBM_UPARROWI, OBM_ZOOM, OBM_ZOOMD }
+      aStockNames := { "OBM_BTNCORNERS", "OBM_BTSIZE", ;
+         "OBM_CHECK", "OBM_CHECKBOXES", "OBM_CLOSE", "OBM_REDUCE", ;
+         "OBM_COMBO", "OBM_REDUCED", "OBM_DNARROW", "OBM_RESTORE", "OBM_DNARROWD", "OBM_RESTORED", ;
+         "OBM_DNARROWI", "OBM_RGARROW", "OBM_LFARROW", "OBM_RGARROWD", "OBM_LFARROWD", "OBM_RGARROWI", ;
+         "OBM_LFARROWI", "OBM_SIZE", "OBM_MNARROW", "OBM_UPARROW", "OBM_UPARROWD", ;
+         "OBM_UPARROWI", "OBM_ZOOM", "OBM_ZOOMD" }
+   ELSE
+      oBitmap := HBitmap():AddStandard( "gtk-ok" )
+      aStock := { "gtk-about", "gtk-add", "gtk-apply", "gtk-bold", "gtk-cancel", "gtk-cdrom", ;
+         "gtk-clear", "gtk-close", "gtk-color-picker", "gtk-convert", "gtk-connect", ;
+         "gtk-copy", "gtk-cut", "gtk-delete", "gtk-dialog-error", "gtk-dialog-info", ;
+         "gtk-dialog-question", "gtk-dialog-warning", "gtk-directory", "gtk-disconnect", ;
+         "gtk-dnd", "gtk-dnd-multiple", "gtk-edit", "gtk-execute", "gtk-file", "gtk-find", ;
+         "gtk-find-and-replace", "gtk-floppy", "gtk-fullscreen", "gtk-goto-bottom", ;
+         "gtk-goto-first", "gtk-goto-last", "gtk-goto-top", "gtk-go-back", "gtk-go-down", ;
+         "gtk-go-forward", "gtk-go-up", "gtk-harddisk", "gtk-help", "gtk-home", ;
+         "gtk-indent", "gtk-index", "gtk-info", "gtk-italic", "gtk-jump-to", ;
+         "gtk-justify-center", "gtk-justify-left", "gtk-justify-fill", "gtk-justify-right", ;
+         "gtk-leave-fullscreen", "gtk-media-forward", "gtk-media-next", "gtk-media-pause", ;
+         "gtk-media-play", "gtk-media-previous", "gtk-media-record", "gtk-media-rewind", ;
+         "gtk-media-stop", "gtk-missing-image", "gtk-network", "gtk-new", "gtk-no", "gtk-ok", "gtk-open" }
+      aStockNames := aStock
+   ENDIF
+
+   INIT DIALOG oDlg TITLE "Browse of images" ;
+         AT 0, 0 SIZE 380, 360 BACKCOLOR 0xeeeeee;
+         FONT HFont():Add( "MS Sans Serif",0,-15 )
+
+   @ 20,20 BROWSE oBrw ARRAY SIZE 340,280 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+   oBrw:oStyleHead := oStyle
+   oBrw:bcolorSel := oBrw:htbColor := 0xeeeeee
+   oBrw:tcolorSel := oBrw:httColor := 0
+   oBrw:nRowHeight := 36
+   oBrw:aArray := Array( Len(aStock) )
+   FOR i := 1 TO Len( aStock )
+      oBrw:aArray[i] := HBitmap():AddStandard( aStock[i] )
+   NEXT
+
+   oBrw:AddColumn( HColumn():New( "Name",{|v,o|aStockNames[o:nCurrent]},"C",20,0 ) )
+   oBrw:AddColumn( HColumn():New( "Bitmap",,"C",10,0 ) )
+
+   oBrw:aColumns[2]:setPaintCB( PAINT_LINE_ALL, bCol2 )
+
+   @ 120,320 OWNERBUTTON oBtnOk SIZE 140,32 ;
+         TEXT "Ok" COORDINATES 80,0,0,0 ;
+         BITMAP oBitmap COORDINATES 40,0,0,0 ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS ;
+         ON CLICK {||hwg_EndDialog()}
+   oBtnOk:aStyle := { HStyle():New( {0xffffff,0xdddddd}, 1,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 2,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 1,, 2, 8421440 ) }
+
+   ACTIVATE DIALOG oDlg
+
 Return Nil
       ]]>
     </module>

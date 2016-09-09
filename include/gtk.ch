@@ -84,3 +84,10 @@
 #define GDK_UR_ANGLE            148
 #define GDK_WATCH               150
 #define GDK_XTERM               152
+
+#define GTK_ICON_SIZE_MENU            1
+#define GTK_ICON_SIZE_SMALL_TOOLBAR   2
+#define GTK_ICON_SIZE_LARGE_TOOLBAR   3
+#define GTK_ICON_SIZE_BUTTON          4
+#define GTK_ICON_SIZE_DND             5
+#define GTK_ICON_SIZE_DIALOG          6

@@ -8,6 +8,36 @@
 [-] Fixed error
 [*] Changes
 
+HWGUI 2.20 build 1 ( 09.09.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] HBitmap():AddStandard( cId ) method added for GTK version. Now it is possible to use
+    stock icons in GTK version as predefined bitmaps in WinAPI.
+[+] :nRowHeight variable added to HBrowse to set row height.
+[+] :aPaintCB variable and SetPaintCB( nId, block, cId ) method added to
+    HPanel to support user defined codeblocks for painting.
+[+] :aPaintCB variable and SetPaintCB( nId, block, cId ) method added to
+    HColumn to support user defined codeblocks for painting browse items
+    ( header, lines, footers )
+[*] Color in Focus handling has been changed for HEdit.
+[*] Double buffering implemented for HBrowse in Windows version, logical :lBuffering
+    variable ( default value is .F. ) added to HBrowse to handle buffering.
+[*] HBrowse cleaned, a part of a code, related to filtering, moved to
+    a new HBrwFlt class, New command added for this class: @ ... BROWSE ... FILTER.
+[*] Changed a list of parameters, passed to some codeblocks for unification.
+[*] ON DRAW changed to ON PAINT for OWNERBUTTON and SHADEBUTTON
+[-] ON PAINT clause deleted from EDITBOX and RICHEDIT commands.
+[-] hwg_ParentGetDialog() removed, hwg_getParentForm() should be used instead.
+[+] :oStyleHead variable added to HBrowse and HColumn classes: It is possible
+    now to have styled browse headers.
+[+] :Draw( hDC, nWidth, nHeight ) method added to HStyle to draw styled control.
+[+] New class added HPanelSts, inherited from HPanel to implement STATUS PANEL.
+[+] Two commands added: ADD TOP PANEL, ADD STATUS PANEL.
+[+] BACKCOLOR added as preferrable alternative for COLOR clause in INIT WINDOW,
+    INIT DIALOG commands.
+[*] Tutorial extended with new chapters and modules.
+[!] Many bug fixes and improvements
+
+
 HWGUI 2.19 build 6 ( 01.02.2016 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     This is a bug fix release - The Designer was partially broken, because

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-09 12:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Version number is changed to "2.20", build number to 1
+  * whatsnew.txt has been updated.
+
 2016-09-09 11:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawwidg.prg
     ! Small fix in HBitmap():AddStandard()

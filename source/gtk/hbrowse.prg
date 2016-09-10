@@ -1965,7 +1965,7 @@ STATIC FUNCTION CountToken( cStr, nMaxLen, nCount )
 
    RETURN cStr
 
-STATIC FUNCTION getPaintCB( arr, nId )
+FUNCTION hwg_getPaintCB( arr, nId )
 
    LOCAL i, nLen, aRes
 
@@ -1987,3 +1987,4 @@ STATIC FUNCTION getPaintCB( arr, nId )
    ENDIF
 
    RETURN aRes
+

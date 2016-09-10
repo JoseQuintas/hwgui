@@ -50,7 +50,7 @@ STATIC cHrb_inc_dir := "", cHrb_bin_dir := ""
 
 FUNCTION Main
    LOCAL oMain, oPanel, oFont := HFont():Add( "Georgia", 0, - 15 )
-   LOCAL oTree, oSplit
+   LOCAL oTree, oSplit, oBmp
 
    IF hwg__isUnicode()
       hb_cdpSelect( "UTF8" )
@@ -64,6 +64,9 @@ FUNCTION Main
    cHwg_include_dir := StrTran( cHwg_include_dir, '\', '/' )
    cHrb_inc_dir := StrTran( cHrb_inc_dir, '\', '/' )
    cHrb_bin_dir := StrTran( cHrb_bin_dir, '\', '/' )
+   oBmp := HBitmap():AddStandard( "gtk-go-forward" )
+#else
+   oBmp := HBitmap():AddStandard( OBM_MNARROW )
 #endif
 
    HBitmap():cPath := cHwg_image_dir
@@ -71,11 +74,17 @@ FUNCTION Main
    INIT WINDOW oMain MAIN TITLE "HwGUI Tutorial" ;
       AT 200, 0 SIZE 800, 600 FONT oFont
 
-   @ 0, 0 PANEL oPanel SIZE 800, 32 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
-   @ 760, 3 OWNERBUTTON oBtnRun OF oPanel ON CLICK { ||RunSample() } ;
-      SIZE 32, 26 FLAT ;
-      BITMAP "next.bmp" TRANSPARENT COLOR 12632256 ;
+   ADD TOP PANEL oPanel TO oMain HEIGHT 32
+   oPanel:oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
+
+   @ 710, 3 OWNERBUTTON oBtnRun OF oPanel ON CLICK { ||RunSample() } ;
+      SIZE 80, 26 FLAT ;
+      TEXT "Run" COORDINATES 12,0,0,0 ;
+      BITMAP oBmp COORDINATES 52,0,0,0 TRANSPARENT COLOR 0xffffff ;
       TOOLTIP "Run sample" ON SIZE ANCHOR_RIGHTABS
+   oBtnRun:aStyle := { HStyle():New( {0xffffff,0xdddddd}, 1,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 2,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 1,, 2, 8421440 ) }
    oBtnRun:Disable()
 
    @ 0, 32 TREE oTree SIZE 270, 568 ;
@@ -85,7 +94,7 @@ FUNCTION Main
 
    oTree:bDblClick := { |oTree, oItem|RunSample( oItem ) }
 
-   oText := HCEdit():New( oMain, , WS_BORDER, 274, 32, 526, 568, oFont, , { |o, x, y|o:Move( ,,x - oSplit:nLeft - oSplit:nWidth,y - 32 ) } )
+   oText := HCEdit():New( oMain, ,, 274, 32, 526, 568, oFont, , { |o, x, y|o:Move( ,,x - oSplit:nLeft - oSplit:nWidth,y - 32 ) } )
    IF hwg__isUnicode()
       oText:lUtf8 := .T.
    ENDIF
@@ -122,8 +131,8 @@ STATIC FUNCTION ReadIni()
             cTutor := oNode1:GetAttribute( "file" )
          ELSEIF oNode1:title == "hwgui_dir"
             IF !Empty( cHwgui_dir := oNode1:GetAttribute( "path",,"" ) )
-               cHwg_include_dir := cHwgui_dir + "\include"
-               cHwg_image_dir := cHwgui_dir + "\image"
+               cHwg_include_dir := cHwgui_dir + DIR_SEP + "include"
+               cHwg_image_dir := cHwgui_dir + DIR_SEP + "image"
             ENDIF
          ELSEIF oNode1:title == "harbour_bin"
             cHrb_bin_dir := oNode1:GetAttribute( "path", , "" )

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-10 17:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hpanel.prg
+    ! Some fixes
+  * utils/tutorial/tutor.prg
+    * Styles added to Panel and a button.
+
 2016-09-10 13:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
   * utils/tutorial/tutor.prg

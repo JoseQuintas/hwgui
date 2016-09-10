@@ -188,8 +188,10 @@ METHOD Paint() CLASS HPanel
    ENDIF
    ::DrawItems( hDC, aCoors )
 
-   oPenGray:Release()
-   oPenLight:Release()
+   IF !Empty( oPenGray )
+      oPenGray:Release()
+      oPenLight:Release()
+   ENDIF
    hwg_Endpaint( ::handle, pps )
 
    RETURN Nil

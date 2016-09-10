@@ -1,50 +1,10 @@
 /*
  * $Id$
- * Harbour Project source code:
- * Standalone Harbour Portable Object file runner
  *
- * Copyright 1999 Ryszard Glab <rglab@imid.med.pl>
- * www - http://www.harbour-project.org
+ * HWGUI runner
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2, or (at your option)
- * any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this software; see the file COPYING.  If not, write to
- * the Free Software Foundation, Inc., 59 Temple Place, Suite 330,
- * Boston, MA 02111-1307 USA (or visit the web site http://www.gnu.org/).
- *
- * As a special exception, the Harbour Project gives permission for
- * additional uses of the text contained in its release of Harbour.
- *
- * The exception is that, if you link the Harbour libraries with other
- * files to produce an executable, this does not by itself cause the
- * resulting executable to be covered by the GNU General Public License.
- * Your use of that executable is in no way restricted on account of
- * linking the Harbour library code into it.
- *
- * This exception does not however invalidate any other reasons why
- * the executable file might be covered by the GNU General Public License.
- *
- * This exception applies only to the code released by the Harbour
- * Project under the name Harbour.  If you copy code from other
- * Harbour Project or Free Software Foundation releases into a copy of
- * Harbour, as the General Public License permits, the exception does
- * not apply to the code that you add in this way.  To avoid misleading
- * anyone as to the status of such modified files, you must delete
- * this exception notice from them.
- *
- * If you write modifications of your own for Harbour, it is your choice
- * whether to permit this exception to apply to your modifications.
- * If you do not wish that, delete this exception notice.
- *
+ * Copyright 2013 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
  */
 
 #include "hwgextern.ch"
@@ -54,29 +14,48 @@ EXTERNAL BOF, EOF, DBF, DBAPPEND, DBCLOSEALL, DBCLOSEAREA, DBCOMMIT,DBCOMMITALL,
 EXTERNAL DBDELETE, DBFILTER, DBSETFILTER, DBGOBOTTOM, DBGOTO, DBGOTOP, DBRLOCK, DBRECALL, DBDROP, DBEXISTS
 EXTERNAL DBRLOCKLIST, DBRUNLOCK, LOCK, RECNO,  DBSETFILTER, DBFILEGET, DBFILEPUT, FIELDBLOCK
 EXTERNAL DBSKIP, DBSTRUCT, DBTABLEEXT, DELETED, DBINFO, DBORDERINFO, DBRECORDINFO
+EXTERNAL ORDNUMBER, ORDKEY, ORDNAME, ORDSETFOCUS, ORDBAGNAME, ORDCONDSET, ORDKEYNO, ORDKEYCOUNT
 EXTERNAL FCOUNT, FIELDDEC, FIELDGET, FIELDNAME, FIELDLEN, FIELDPOS, FIELDPUT
 EXTERNAL FIELDTYPE, FLOCK, FOUND, HEADER, LASTREC, LUPDATE, NETERR, AFIELDS
 EXTERNAL RECCOUNT, RECSIZE, SELECT, ALIAS, RLOCK
-EXTERNAL __DBZAP, USED, RDDSETDEFAULT, __DBPACK, __DBAPP, __DBCOPY
+EXTERNAL __DBZAP, USED, RDDSETDEFAULT, __DBPACK, __DBAPP, __DBCOPY, __DBLOCATE, __DBCONTINUE, __SETFORMAT
 EXTERNAL DBFCDX, DBFFPT
-EXTERNAL FOPEN, FCLOSE, FSEEK, FREAD, FWRITE, FERASE
-EXTERNAL HB_BITAND, HB_BITSHIFT
-EXTERNAL ASORT, ASCAN
+EXTERNAL FOPEN, FCLOSE, FSEEK, FREAD, FWRITE, FERASE, DIRECTORY, CURDIR
+EXTERNAL HB_BITAND, HB_BITOR, HB_BITSHIFT
+EXTERNAL HB_ATOKENS
+EXTERNAL ASORT, ASCAN, OS
+EXTERNAL HB_CODEPAGE_RU866, HB_CODEPAGE_RU1251, HB_CODEPAGE_RUKOI8, HB_CODEPAGE_UTF8
+
+#ifdef __PLATFORM__UNIX
+#define DIR_SEP         '/'
+#else
+#define DIR_SEP         '\'
+#endif
+
+STATIC cHwg_include_dir, cHrb_inc_dir
 
 FUNCTION _APPMAIN( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
-   LOCAL xRetVal, cHrb
+   LOCAL xRetVal, cHrb, cInitPath := FilePath( hb_ArgV( 0 ) ), cIncPath
 
    IF Empty( cHRBFile )
       hwg_Msginfo( "Harbour Runner - HwGUI version" + HB_OSNewLine() +;
-              "Copyright 1999-2000, http://www.harbour-project.org" + HB_OSNewLine() +;
+              "Copyright 1999-2016, http://www.harbour-project.org" + HB_OSNewLine() +;
+              Version() + ",  " + hwg_Version() + HB_OSNewLine() +;
               HB_OSNewLine() +;
-              "Syntax:  hbrun <hrbfile[.hrb]> [parameters]" + HB_OSNewLine() +;
-              HB_OSNewLine() +;
-              "Note:  Linked with " + Version() + HB_OSNewLine() )
+              "Syntax:  hbrun <hrbfile[.hrb]> [parameters]" )
+
    ELSE
       IF Lower( Right( cHRBFile,4 ) ) == ".prg"
 #ifndef __XHARBOUR__
-         IF Empty( cHrb := hb_compileBuf( "harbour", cHRBFile, "/n","/I..\include" ) )
+         ReadIni( cInitPath )
+         IF Empty( cHwg_include_dir ) .OR. !File( cHwg_include_dir + DIR_SEP + "hwgui.ch" )
+            hwg_MsgStop( "Set correct path to HwGUI headers in hwgrun.xml", "Hwgui.ch isn't found" )
+            RETURN Nil
+         ENDIF
+         cIncPath := cHwg_include_dir + Iif( Empty(cHrb_inc_dir), "", ;
+               hb_OsPathListSeparator() + cHrb_inc_dir )
+
+         IF Empty( cHrb := hb_compileBuf( "harbour", cHRBFile, "/n","/I"+cIncPath ) )
             hwg_MsgStop( "Error while compiling " + cHRBFile )
          ELSE
             hb_Memowrit( "__tmp.hrb", cHrb )
@@ -90,3 +69,20 @@ FUNCTION _APPMAIN( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cP
 
    RETURN xRetVal
 
+STATIC FUNCTION ReadIni( cPath )
+   LOCAL oInit, i, oNode1, cHwgui_dir
+
+   oIni := HXMLDoc():Read( cPath + "hwgrun.xml" )
+   IF !Empty( oIni:aItems ) .AND. oIni:aItems[1]:title == "init"
+      oInit := oIni:aItems[1]
+      FOR i := 1 TO Len( oInit:aItems )
+         oNode1 := oInit:aItems[i]
+         IF oNode1:title == "hwgui_inc"
+            cHwg_include_dir := oNode1:GetAttribute( "path",,"" )
+         ELSEIF oNode1:title == "harbour_inc"
+            cHrb_inc_dir := oNode1:GetAttribute( "path",,"" )
+         ENDIF
+      NEXT
+   ENDIF
+
+   RETURN Nil

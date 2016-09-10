@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-10 13:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+  * utils/tutorial/tutor.prg
+  * utils/tutorial/hwgrun.prg
+    * Some improvements
+  + utils/tutorial/hwgrun.xml
+    + Configuration file for hwgrun added
+  * utils/tutorial/tutor_eng.xml   
+
 2016-09-09 12:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Version number is changed to "2.20", build number to 1

@@ -925,7 +925,8 @@ Local e7 := "Password"
    SET KEY FSHIFT,VK_F3 TO hwg_Msginfo("Shift-F3") 
    SET KEY FCONTROL,VK_F3 TO hwg_Msginfo("Ctrl-F3") 
    SET KEY 0,VK_F3 TO hwg_Msginfo("F3") 
-   SET KEY 0,VK_RETURN TO hwg_Msginfo("Return") 
+
+   hwg_SetColorinFocus( oDlg,, 13172680 )
    
    @ 20,10 SAY "Input something:" SIZE 260, 22
 

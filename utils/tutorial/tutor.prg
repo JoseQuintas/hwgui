@@ -33,6 +33,12 @@ REQUEST HB_CODEPAGE_UTF8
 #define HILIGHT_QUOTE   3
 #define HILIGHT_COMM    4
 
+#ifdef __PLATFORM__UNIX
+#define DIR_SEP         '/'
+#else
+#define DIR_SEP         '\'
+#endif
+
 STATIC oIni
 STATIC cIniPath, cTutor
 STATIC oText, oHighLighter
@@ -40,7 +46,7 @@ STATIC oBtnRun
 STATIC cHwgrunPath
 STATIC cHwg_include_dir := "..\..\include"
 STATIC cHwg_image_dir := "..\..\image"
-STATIC cHrb_inc_dir := "", cHrb_bin_dir
+STATIC cHrb_inc_dir := "", cHrb_bin_dir := ""
 
 FUNCTION Main
    LOCAL oMain, oPanel, oFont := HFont():Add( "Georgia", 0, - 15 )
@@ -50,12 +56,14 @@ FUNCTION Main
       hb_cdpSelect( "UTF8" )
    ENDIF
    cIniPath := FilePath( hb_ArgV( 0 ) )
-   cHwgrunPath := isFileInPath()
+   cHwgrunPath := FindHwgrun()
    ReadIni()
 
 #ifdef __PLATFORM__UNIX
    cHwg_image_dir := StrTran( cHwg_image_dir, '\', '/' )
    cHwg_include_dir := StrTran( cHwg_include_dir, '\', '/' )
+   cHrb_inc_dir := StrTran( cHrb_inc_dir, '\', '/' )
+   cHrb_bin_dir := StrTran( cHrb_bin_dir, '\', '/' )
 #endif
 
    HBitmap():cPath := cHwg_image_dir
@@ -120,13 +128,23 @@ STATIC FUNCTION ReadIni()
          ELSEIF oNode1:title == "harbour_bin"
             cHrb_bin_dir := oNode1:GetAttribute( "path", , "" )
          ELSEIF oNode1:title == "harbour_inc"
-            IF !Empty( cHrb_inc_dir := oNode1:GetAttribute( "path",,"" ) )
-               cHrb_inc_dir := hb_OsPathListSeparator() + cHrb_inc_dir
-            ENDIF
+            cHrb_inc_dir := oNode1:GetAttribute( "path",,"" )
          ELSEIF oNode1:title == "hilight"
             oHighLighter := Hilight():New( oNode1 )
          ENDIF
       NEXT
+   ENDIF
+
+   IF !File( cHwg_include_dir + DIR_SEP + "hwgui.ch" )
+      hwg_MsgStop( "Set correct path to HwGUI in tutor.xml", "Hwgui.ch isn't found" )
+   ENDIF
+   /*
+   IF !File( cHrb_inc_dir + DIR_SEP + "hbapi.h" )
+      hwg_MsgStop( "Set correct path to Harbour in tutor.xml", "Hbapi.h isn't found" )
+   ENDIF
+   */
+   IF !Empty( cHrb_inc_dir )
+      cHrb_inc_dir := hb_OsPathListSeparator() + cHrb_inc_dir
    ENDIF
 
    RETURN Nil
@@ -271,7 +289,7 @@ STATIC FUNCTION RunSample( oItem )
 
    RETURN Nil
 
-STATIC FUNCTION isFileInPath()
+STATIC FUNCTION FindHwgrun()
    LOCAL arr, i, cPath
 #ifdef __PLATFORM__UNIX
    LOCAL cDefSep := "/"

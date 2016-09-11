@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-11 11:06 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    ! Some fixes
+  * utils/dbc/dbchw.h
+  * utils/dbc/dbchw.prg
+  * utils/dbc/commands.prg
+    * Styles added
+
 2016-09-10 17:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hpanel.prg

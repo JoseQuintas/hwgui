@@ -18,4 +18,5 @@
 #define LOCAL_SERVER          1
 #define REMOTE_SERVER         2
 
-#define COLOR_SELE      8388736
+#define BCOLOR_SEL     0xDDDDDD
+#define TCOLOR_SEL            0

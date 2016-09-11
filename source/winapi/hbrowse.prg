@@ -1602,18 +1602,18 @@ METHOD ButtonRDown( lParam ) CLASS HBrowse
 METHOD ButtonUp( lParam ) CLASS HBrowse
 
    LOCAL hBrw := ::handle
-   LOCAL xPos := hwg_Loword( lParam ), x, x1, i
+   LOCAL xPos := hwg_Loword( lParam ), x, x1 := xPos, i
 
    IF ::lResizing
       x := ::x1
-      i := ::nLeftCol
+      i := Iif( ::freeze > 0, 1, ::nLeftCol )
       DO WHILE x < xDrag
          x += ::aColumns[i]:width
          IF Abs( x - xDrag ) < 10
             x1 := x - ::aColumns[i]:width
             EXIT
          ENDIF
-         i ++
+         i := Iif( i == ::freeze, ::nLeftCol, i + 1 )
       ENDDO
       IF xPos > x1
          ::aColumns[i]:width := xPos - x1
@@ -1659,7 +1659,7 @@ METHOD ButtonDbl( lParam ) CLASS HBrowse
 METHOD MouseMove( wParam, lParam ) CLASS HBrowse
 
    LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam )
-   LOCAL x := ::x1, i := ::nLeftCol, res := .F., nLen
+   LOCAL x := ::x1, i, res := .F., nLen
 
    IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
       RETURN Nil
@@ -1672,8 +1672,9 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
          res := .T.
       ELSE
          nLen := Len( ::aColumns ) - Iif( ::lAdjRight, 1, 0 )
+         i := Iif( ::freeze > 0, 1, ::nLeftCol )
          DO WHILE x < ::x2 - 2 .AND. i <= nLen
-            x += ::aColumns[i++]:width
+            x += ::aColumns[i]:width
             IF Abs( x - xPos ) < 8
                IF !hwg_isPtrEq( oCursor, ColSizeCursor )
                   oCursor := ColSizeCursor
@@ -1682,6 +1683,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
                res := .T.
                EXIT
             ENDIF
+            i := Iif( i == ::freeze, ::nLeftCol, i + 1 )
          ENDDO
       ENDIF
       IF !res .AND. !Empty( oCursor )

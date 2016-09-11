@@ -713,6 +713,7 @@ Return Nil
 
 FUNCTION OpenDbf( fname, alsname, hChild, pass )
    LOCAL oWindow, oBrowse, i, nArea, kolf
+   LOCAL oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
    LOCAL bPosChg := {|o|
       LOCAL j := 0, j1, cAls
       WriteTableInfo( 1,LTrim(Str(Eval(o:bRecno,o)))+"/"+LTrim(Str(Eval(o:bRcou,o))) )
@@ -726,6 +727,16 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
             ENDIF
          NEXT
       ENDDO
+      RETURN Nil
+   }
+   LOCAL bCol1 := {|o,h,x1,y1,x2,y2|
+      oStyle:Draw( h,x1,y1,x2,y2 )
+      IF (oBrowse:alias)->(Deleted())
+         hwg_Settextcolor( h,0 )
+         hwg_Settransparentmode( h, .T. )
+         hwg_Drawtext( h, '*', x1, y1 + 6, x2, y2 - 4, 1 )
+         hwg_Settransparentmode( h, .F. )
+      ENDIF
       RETURN Nil
    }
 
@@ -752,9 +763,11 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
             ON GETFOCUS { |o|ChildGetFocus( o ) }  ;
             ON EXIT { |o|ChildKill( o ) }
 
-         ADD STATUS PARTS 140, 360, 0
+         //ADD STATUS PARTS 140, 360, 0
+         ADD STATUS PANEL TO oWindow HEIGHT 28 HSTYLE oStyle PARTS 140, 360, 0
 
-         @ 0, 0 BROWSE oBrowse DATABASE ON SIZE {|o,x,y|ResizeBrwQ( o,x,y ) }
+         @ 0, 0 BROWSE oBrowse DATABASE ON SIZE {|o,x,y|o:Move( ,,x,y-28 ) }
+         //{|o,x,y|ResizeBrwQ( o,x,y ) }
 #endif
       ELSE
          BEGIN PAGE Lower(Alias()) of oTabMain
@@ -771,18 +784,21 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
       ENDIF
 
       oBrowse:bPosChanged := bPosChg
-      oBrowse:bcolorSel := COLOR_SELE
-      oBrowse:oStyleHead := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
+      oBrowse:htbcolor := 0x777777
+      oBrowse:bcolorSel := BCOLOR_SEL
+      oBrowse:tcolorSel := TCOLOR_SEL
+      oBrowse:oStyleHead := oStyle
       oBrowse:ofont := oBrwFont
       oBrowse:cargo := { improc, {"","",""} }
 
-      //hwg_CreateList( oBrowse, .T. )
       nArea := Select()
       kolf := FCount()
 
       oBrowse:alias := Alias()
       oBrowse:aColumns := {}
-      oBrowse:AddColumn( { "", &( "{||Iif(" + oBrowse:alias + "->(Deleted()),'*',' ')}" ), "C", 1, 0 } )
+      oBrowse:AddColumn( { "",, "C", 2, 0 } )
+      oBrowse:aColumns[1]:cargo := oBrowse
+      oBrowse:aColumns[1]:setPaintCB( PAINT_LINE_ALL, bCol1 )
       FOR i := 1 TO kolf
          oBrowse:AddColumn( { FieldName( i ),        ;
             FieldWBlock( FieldName( i ), nArea ), ;
@@ -794,6 +810,8 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
       oBrowse:lAppable := .T.
       oBrowse:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
       oBrowse:lInFocus := .T.
+      oBrowse:freeze := 1
+      oBrowse:colpos := 2
       oBrowse:Refresh()
 
       IF lMdi
@@ -819,7 +837,8 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
       ENDIF
       IF !Empty( oBrowse )
          oBrowse:InitBrw()
-         oBrowse:bcolorSel := COLOR_SELE
+         oBrowse:bcolorSel := BCOLOR_SEL
+         oBrowse:tcolorSel := TCOLOR_SEL
          oBrowse:ofont := oBrwFont
          oBrowse:cargo := { improc, {"","",""} }
          oBrowse:Refresh()
@@ -1222,7 +1241,8 @@ STATIC FUNCTION EditRec()
    oBrowse:AddColumn( HColumn():New( "Value",{|v,o|Iif(v==Nil,o:aArray[o:nCurrent,2],o:aArray[o:nCurrent,2]:=v)},"C",40,0,.T. ) )
    oBrowse:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
 
-   oBrowse:bcolorSel := COLOR_SELE
+   oBrowse:bcolorSel := BCOLOR_SEL
+   oBrowse:tcolorSel := TCOLOR_SEL
 #ifndef __GTK__
    oBrowse:bEnter := {|o,n|EdRec(o,n,nFile)}
 #endif

@@ -648,7 +648,8 @@ FUNCTION C_REL
    oBrowse:AddColumn( HColumn():New( "",{|v,o|o:nCurrent},"N",4,0 ) )
    oBrowse:AddColumn( HColumn():New( "Expression",{|v,o|o:aArray[o:nCurrent,1]},"C",30,0 ) )
    oBrowse:AddColumn( HColumn():New( "Child",{|v,o|o:aArray[o:nCurrent,2]},"C",10,0 ) )
-   oBrowse:bcolorSel := COLOR_SELE
+   oBrowse:bcolorSel := BCOLOR_SEL
+   oBrowse:tcolorSel := TCOLOR_SEL
 
    cExpr := ""
    @ 10,160 SAY "Expression: " SIZE 90, 22

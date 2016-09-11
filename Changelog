@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-11 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  - utils/hwreport
+  + contrib/hwreport
+    * hwreport has been moved from utils/ to contrib/
+
 2016-09-11 11:06 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg

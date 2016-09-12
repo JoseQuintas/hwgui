@@ -3,10 +3,13 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-[!] Important
-[+] New
-[-] Fixed error
-[*] Changes
+
+HWGUI 2.20 build 2 ( 12.09.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a bug fix release
+[*] Styles added to the Tutorial and Dbc to make them a bit more nice.
+[*] Hwreport moved from utils/ to contrib/ directory.
+[!] Few bugs fixed
 
 HWGUI 2.20 build 1 ( 09.09.2016 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

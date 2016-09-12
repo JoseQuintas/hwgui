@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-12 09:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Build number has been changed to 2
+  * whatsnew.txt has been updated.
+  * utils/tutorial/tutor.prg
+    ! Bug fixed.
+
 2016-09-11 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   - utils/hwreport
   + contrib/hwreport

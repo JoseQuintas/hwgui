@@ -60,10 +60,6 @@ FUNCTION Main
    ReadIni()
 
 #ifdef __PLATFORM__UNIX
-   cHwg_image_dir := StrTran( cHwg_image_dir, '\', '/' )
-   cHwg_include_dir := StrTran( cHwg_include_dir, '\', '/' )
-   cHrb_inc_dir := StrTran( cHrb_inc_dir, '\', '/' )
-   cHrb_bin_dir := StrTran( cHrb_bin_dir, '\', '/' )
    oBmp := HBitmap():AddStandard( "gtk-go-forward" )
 #else
    oBmp := HBitmap():AddStandard( OBM_MNARROW )
@@ -144,14 +140,17 @@ STATIC FUNCTION ReadIni()
       NEXT
    ENDIF
 
+#ifdef __PLATFORM__UNIX
+   cHwg_image_dir := StrTran( cHwg_image_dir, '\', '/' )
+   cHwg_include_dir := StrTran( cHwg_include_dir, '\', '/' )
+   cHrb_inc_dir := StrTran( cHrb_inc_dir, '\', '/' )
+   cHrb_bin_dir := StrTran( cHrb_bin_dir, '\', '/' )
+#endif
+
    IF !File( cHwg_include_dir + DIR_SEP + "hwgui.ch" )
       hwg_MsgStop( "Set correct path to HwGUI in tutor.xml", "Hwgui.ch isn't found" )
    ENDIF
-   /*
-   IF !File( cHrb_inc_dir + DIR_SEP + "hbapi.h" )
-      hwg_MsgStop( "Set correct path to Harbour in tutor.xml", "Hbapi.h isn't found" )
-   ENDIF
-   */
+
    IF !Empty( cHrb_inc_dir )
       cHrb_inc_dir := hb_OsPathListSeparator() + cHrb_inc_dir
    ENDIF

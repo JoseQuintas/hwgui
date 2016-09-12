@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-12 16:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+    * Lists of commands and classes synhronized with actual state
+  * doc/hwgdoc.html
+    * References changed
+
 2016-09-12 09:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number has been changed to 2

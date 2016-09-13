@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-13 10:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/menu.prg
+    * hwg_SearchPosBitmap() renamed to SearchPosBitmap() and is set STATIC.
+
 2016-09-12 16:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_commands.html

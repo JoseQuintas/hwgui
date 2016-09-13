@@ -160,7 +160,7 @@ FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
             IIf( ValType( aMenu[ 1, nPos, 4 ] ) == "L", aMenu[ 1, nPos, 4 ] := .f., )
             hwg__AddMenuItem( hMenu, aMenu[ 1, nPos, 2 ], nPos, .T., ;
                               aMenu[ 1, nPos, 3 ], aMenu[ 1, nPos, 4 ], .F. )
-            oBmp := Hwg_SearchPosBitmap( aMenu[ 1, nPos, 3 ] )
+            oBmp := SearchPosBitmap( aMenu[ 1, nPos, 3 ] )
             IF oBmp[ 1 ]
                hwg__Setmenuitembitmaps( hMenu, aMenu[ 1, nPos, 3 ], oBmp[ 2 ], "" )
             ENDIF
@@ -290,7 +290,7 @@ FUNCTION Hwg_InsertBitmapMenu( aMenu, nId, lBitmap, oResource )
    HWG__InsertBitmapMenu( oMenu, nId, oBmp:handle )
    RETURN Nil
 
-FUNCTION Hwg_SearchPosBitmap( nPos_Id )
+STATIC FUNCTION SearchPosBitmap( nPos_Id )
 
    LOCAL nPos := 1, lBmp := { .F., "" }
 

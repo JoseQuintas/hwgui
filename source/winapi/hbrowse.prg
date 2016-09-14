@@ -1723,8 +1723,11 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
    oColumn := ::aColumns[fipos]
-   IF oColumn:lEditable .AND. ( ::bEnter == Nil .OR. ;
-         ( ValType( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes ) )
+   IF ::bEnter == Nil .OR. ;
+         ( ValType( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
+      IF !oColumn:lEditable
+         RETURN Nil
+      ENDIF
       IF ::type == BRW_DATABASE
          ::varbuf := ( ::alias ) -> ( Eval( oColumn:block,,Self,fipos ) )
       ELSE

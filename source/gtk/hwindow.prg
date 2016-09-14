@@ -109,7 +109,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD GetMain()
    METHOD EvalKeyList( nKey )
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
-   METHOD Restore()  INLINE hwg_WindowRestore( ::handle )
+   METHOD Restore()  INLINE hwg_RestoreWindow( ::handle )
    METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
    METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
    METHOD Close()    INLINE hwg_DestroyWindow( ::handle )

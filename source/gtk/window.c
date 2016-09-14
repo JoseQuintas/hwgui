@@ -742,7 +742,7 @@ HB_FUNC( HWG_WINDOWMAXIMIZE )
    gtk_window_maximize( (GtkWindow*) HB_PARHANDLE(1) );
 }
 
-HB_FUNC( HWG_WINDOWRESTORE )
+HB_FUNC( HWG_RESTOREWINDOW )
 {
 
    gtk_window_unmaximize( (GtkWindow*) HB_PARHANDLE(1) );

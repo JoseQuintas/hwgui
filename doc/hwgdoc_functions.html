@@ -9,12 +9,12 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td width="15%" align="left"><a href="http://kresin.belgorod.su">Home page</a></td>
-    <td width="70%" align="center"><strong class="title"> HwGUI 2.16 reference manual </strong></td>
+    <td width="70%" align="center"><strong class="title"> HwGUI 2.20 reference manual </strong></td>
     <td width="15%" align="right">&nbsp;</td>
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, September 2006</td>
+    <td width="70%" align="center">Alexander S.Kresin, September 2016</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -23,207 +23,1061 @@
 <br><strong class="title"><A NAME="Functions" HREF="hwgdoc.html#_Functions">
  5.  Functions</A></strong><br>
 
-<br><strong class="subhead"><A NAME="Functions1" HREF="hwgdoc.html#_Functions1">
-5.1.  Common dialogs</A></strong>
- <UL>
-   <LI><A NAME="_Functions1_1" HREF="#Functions1_1">5.1.1.  hwg_SelectFont( oFont )</A>
-   <LI><A NAME="_Functions1_2" HREF="#Functions1_2">5.1.2.  hwg_SelectFile( xDescript,xMask,cInitDir,cTitle )</A>
-   <LI><A NAME="_Functions1_3" HREF="#Functions1_3">5.1.3.  hwg_SelectfontSaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A>
-   <LI><A NAME="_Functions1_4" HREF="#Functions1_4">5.1.4.  hwg_PrintSetup()</A>
-   <LI><A NAME="_Functions1_5" HREF="#Functions1_5">5.1.5.  hwg_ChooseColor( nColorCurrent )</A>
- </UL>
-<br><strong class="subhead"><A NAME="Functions1_1" HREF="#_Functions1_1">
-5.1.1.  hwg_SelectFont( [ oFont ] )</A></strong>
-<p>This function calls the standard dialog for font selecting.</p>
-<UL>
-  <LI> <b>oFont</b> - optional parameter, the current font object ( HFont instance ).
-  <LI> <b>Return value</b> - the array with selected font characteristics ( nHandle, fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
-       or Nil, if the font wasn't selected.
-</UL>
-Usually it isn't needed to call this function directly, use HFont():Select( oFont )
-instead.<br>
+   <ul>
+     <li><a name="_Functions1" href="#Functions1">5.1.  Common dialogs</a>
+     <li><a name="_Functions2" href="#Functions2">5.2.  MessageBoxes and HwGUI dialogs</a>
+     <li><a name="_Functions3" href="#Functions3">5.3.  Drawing functions.</a>
+     <li><a name="_Functions4" href="#Functions4">5.4.  Windows handling functions.</a>
+     <li><a name="_Functions5" href="#Functions5">5.5.  Controls handling functions.</a>
+     <li><a name="_Functions6" href="#Functions6">5.6.  Menu functions.</a>
+     <li><a name="_Functions7" href="#Functions7">5.7.  Windows registry.</a>
+     <li><a name="_Functions8" href="#Functions8">5.8.  Miscellaneous functions.</a>
+     <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions1_2" HREF="#_Functions1_2">
-5.1.2.  hwg_SelectFile( xDescript,xMask,[ cInitDir ], [ cTitle ] )</A></strong>
-<p>This function calls the standard dialog for file selecting.</p>
-<UL>
-  <LI> <b>xDescript</b> - this is a display string that describes the filter (for example, "dBase files")
-    or an array of such strings - in case if you need to have few file filters in a dialog box.
-  <LI> <b>xMask</b> - this parameter combines into a pair with the <b>xDescript</b>,
-    it specifies the filter pattern (for example, "*.dbf"), which is described by the <b>xDescript</b>.
-    If you need to specify multiple filter patterns for a single display string,
-    use a semicolon to separate the patterns (for example, "*.bmp;*.jpg;*.png").
-    The <b>xMask</b> must be an array of filter patterns, if the <b>xDescript</b> is an array - and
-    must have the same length as the <b>xDescript</b> array.
-  <LI> <b>cInitDir</b> - optional string parameter, the initial directory for file selecting.
-  <LI> <b>cTitle</b> - optional string parameter, the title of a dialog box.
-  <LI> <b>Return value</b> - a string with a selected file name, or an empty string, if a file wasn't selected.
-</UL>
+   <br><strong class="subhead"><a name="Functions1" href="hwgdoc.html#_Functions1">
+   5.1.  Common dialogs</a></strong><br>
 
-<br><strong class="subhead"><A NAME="Functions1_3" HREF="#_Functions1_3">
-5.1.3.  hwg_SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</A></strong>
-<p>This function calls the standard dialog for file saving.</p>
-<UL>
-  <LI> <b>cPrompt</b> - this string appears as a prompt of a file name.
-  <LI> <b>cDescript</b> - this string appears in the dialog as a description of a file type.
-  <LI> <b>cMask</b> - string type parameter, describing the file mask.
-  <LI> <b>cInitDir</b> - optional string parameter, the initial directory for file selecting.
-  <LI> <b>cTitle</b> - optional string parameter, the title of a dialog box.
-  <LI> <b>Return value</b> - a string with a selected file name, or an empty string, if a file wasn't selected.
-</UL>
+   <br><strong class="subhead"> hwg_SelectFont( [ oFont ] )</strong> 
+   <br>This function calls the standard dialog for font selecting.
+   <ul>
+     <li> oFont - optional parameter, the current font object ( HFont instance ).
+     <li> Return value - the array with selected font characteristics ( nHandle, fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
+          or Nil, if the font wasn't selected.
+   </ul>
+   <br>Usually it isn't needed to call this function directly, use HFont():Select( oFont )
+   instead.<br>
 
-<br><strong class="subhead"><A NAME="Functions1_4" HREF="#_Functions1_4">
-5.1.4.  hwg_PrintSetup( @cPrinterName )</A></strong>
-<p>This function calls the standard dialog for printer selecting.</p>
-<UL>
-  <LI> <b>Return value</b> ( numeric ) - handle to device context ( hDC ) of selected printer, 0 - if printer wasn't selected.
-  <LI> Writes to the cPrinterName parameter the name of a selected printer.
-</UL>
+   <br><strong class="subhead"> hwg_SelectFile( cDescript,cMask,[ cInitDir ], [ cTitle ] )</strong> 
+   <br>This function calls the standard dialog for file selecting.
+   <ul>
+     <li> cDescript - this string appears in the dialog as a description of a file type. In
+          Windows version this parameter may be an array of descriptions ({ &quot;All files&quot;, &quot;Dbf files&quot;});
+     <li> cMask - string type parameter, describing the file mask (*.dbf, for example). In
+          Windows version this parameter may be an array of masks ({ &quot;*.*&quot;, &quot;*.dbf&quot;});
+          The length of this array must be the same as of <code>cDescript</code>;
+     <li> cInitDir - optional string parameter, the initial directory for file selecting.
+     <li> cTitle - optional string parameter, the title of a dialog box.
+     <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions1_5" HREF="#_Functions1_5">
-5.1.5.  hwg_ChooseColor( nColorCurrent )</A></strong>
-<p>This function calls the standard dialog for color selecting.</p>
-<UL>
-  <LI> <b>nColorCurrent</b> - a numeric parameter, initial value of a color,
-  <LI> <b>Return value</b> ( numeric ) - selected color.
-</UL>
+   <br><strong class="subhead"> hwg_SelectFileEx( [cTitle] [,cInitDir] [,aDescript] )</strong> (GTK only)
+   <br>Another standard dialog for file selection.
+   <ul>
+     <li> cTitle - optional string parameter, the title of a dialog box.
+     <li> cInitDir - optional string parameter, the initial directory for file selecting.
+     <li> aDescript - 
+     <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions2" HREF="hwgdoc.html#_Functions2">
-5.2.  MessageBoxes and HwGUI dialogs</A></strong>
- <UL>
-   <LI><A NAME="_Functions2_1" HREF="#Functions2_1">5.2.1.  MsgInfo( cMessage,cTitle )</A>
-   <LI><A NAME="_Functions2_2" HREF="#Functions2_2">5.2.2.  MsgStop( cMessage,cTitle )</A>
-   <LI><A NAME="_Functions2_3" HREF="#Functions2_3">5.2.3.  MsgOkCancel( cMessage,cTitle )</A>
-   <LI><A NAME="_Functions2_4" HREF="#Functions2_4">5.2.4.  MsgYesNo( cMessage,cTitle )</A>
-   <LI><A NAME="_Functions2_5" HREF="#Functions2_5">5.2.5.  MsgBeep( nSound )</A>
-   <LI><A NAME="_Functions2_6" HREF="#Functions2_6">5.2.6.  MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )</A>
-   <LI><A NAME="_Functions2_7" HREF="#Functions2_7">5.2.7.  WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )</A>
- </UL>
+   <br><strong class="subhead"> hwg_SelectFolder( cTitle )</strong> 
+   <br>The standard dialog for folder selection.
+   <ul>
+     <li> cTitle - optional string parameter, the title of a dialog box.
+     <li> Return value - a string with a selected folder name, or an empty string, if a folder wasn't selected.
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions2_1" HREF="#_Functions2_1">
-5.2.1.  MsgInfo( cMessage,cTitle )</A></strong>
-<p></p>
+   <br><strong class="subhead"> hwg_SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</strong> (Windows only)
+   <br>This function calls the standard dialog for file saving.
+   <ul>
+     <li> cPrompt - this string appears as a prompt of a file name.
+     <li> cDescript - this string appears in the dialog as a description of a file type.
+     <li> cMask - string type parameter, describing the file mask.
+     <li> cInitDir - optional string parameter, the initial directory for file selecting.
+     <li> cTitle - optional string parameter, the title of a dialog box.
+     <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions2_2" HREF="#_Functions2_2">
-5.2.2.  MsgStop( cMessage,cTitle )</A></strong>
-<p></p>
+   <br><strong class="subhead"> hwg_PrintSetup( @cPrinterName )</strong> (Windows only)
+   <br>This function calls the standard dialog for printer selecting.
+   <ul>
+     <li> Return value ( numeric ) - handle to device context ( hDC ) of selected printer, 0 - if printer wasn't selected.
+     <li> Writes to the cPrinterName parameter the name of a selected printer.
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions2_3" HREF="#_Functions2_3">
-5.2.3. MsgOkCancel( cMessage,cTitle )</A></strong>
-<p></p>
+   <br><strong class="subhead"> hwg_ChooseColor( nColorCurrent )</strong> 
+   <br>This function calls the standard dialog for color selecting.
+   <ul>
+     <li> nColorCurrent - a numeric parameter, initial value of a color,
+     <li> Return value ( numeric ) - selected color.
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions2_4" HREF="#_Functions2_4">
-5.2.4.  MsgYesNo( cMessage,cTitle )</A></strong>
-<p></p>
+   <br><strong class="subhead"><a name="Functions2" href="hwgdoc.html#_Functions2">
+   5.2.  MessageBoxes and HwGUI dialogs</a></strong><br>
 
-<br><strong class="subhead"><A NAME="Functions2_5" HREF="#_Functions2_5">
-5.2.5.  MsgBeep( nSound )</A></strong>
-<p></p>
+   <br><strong class="subhead"> hwg_MsgInfo( cMessage,cTitle )</strong> 
+   <br><strong class="subhead"> hwg_MsgStop( cMessage,cTitle )</strong> 
+   <br><strong class="subhead"> hwg_MsgOkCancel( cMessage,cTitle )</strong> 
+   <br><strong class="subhead"> hwg_MsgYesNo( cMessage,cTitle )</strong> 
+   <br><strong class="subhead"> hwg_MsgYesNoCancel( cMessage,cTitle )</strong>
+   <br><strong class="subhead"> hwg_MsgNoYes( cMessage,cTitle )</strong> (Windows only)
+   <br><strong class="subhead"> hwg_MsgRetryCancel( cMessage,cTitle )</strong> (Windows only)
+   <br><strong class="subhead"> hwg_Exclamation( cMessage,cTitle )</strong> 
+   <p>These all are standard message boxes with a different buttons set.</p>
+   <ul>
+     <li> cMessage - a message text;
+     <li> cTitle - a title of a box;
+     <li> Return value ( logical ) - for those of them, which has more than one button.
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions2_6" HREF="#_Functions2_6">
-5.2.6.  MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle )</A></strong> 
-<p></p>
+   <br><strong class="subhead"> hwg_MsgBeep( nSound )</strong> (Windows only)
+   <p></p>
 
-<br><strong class="subhead"><A NAME="Functions2_7" HREF="#_Functions2_7">
-5.2.7.  WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )</A></strong> 
-<p></p>
+   <br><strong class="subhead"> hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cInitStr )</strong> 
+   <br>Creates a dialog box to input a string.
+   <ul>
+     <li> cTitle - a title of a box;
+     <li> cText - a prompt for the input;
+     <li> nStyle - a WinAPI style for a GET item (ES_PASSWORD, for example);
+     <li> x, y - dialog box coordinates;
+     <li> nDlgStyle - a WinAPI style for a dialog;
+     <li> cInitStr - init value of a string;
+     <li> Return value ( string ) - the string, which you entered, empty - if you press CANCEL.
+   </ul>
 
-<br><strong class="subhead"><A NAME="Functions3" HREF="hwgdoc.html#_Functions3">
-5.3.  Drawing functions.</A></strong>
- <UL>
-   <LI><A NAME="_Functions3_1" HREF="#Functions3_1">5.3.1.  Overview</A>
- </UL>
+   <br><strong class="subhead"> hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )</strong> 
+   <p></p>
 
-<br><strong class="subhead"><A NAME="Functions3_1" HREF="#_Functions3_1">
-5.3.1.  Overview</A></strong>
-<p>This is a set of functions, which is intended for drawing on a
-window or control surface. There are few things I want to note before these
-functions will be described:</p>
- <UL>
-   <LI> You can draw while WM_PAINT message processing only.
-   <LI> You can draw on any kinds of windows/dialogs and on some kinds of controls:
-   panel, trackbar, owner button, splitter.
-   <LI> All drawing functions demands the device context handle ( hDC ) to work,
-   so you need to get the hDC to start drawing.
- </UL>
+   <br><strong class="subhead"><a name="Functions3" href="hwgdoc.html#_Functions3">
+   5.3.  Drawing functions.</a></strong><br>
+   <p></p>
 
-5.4.  Menu functions</A></strong>
- <UL>
-   <LI><A NAME="_Functions4_1" HREF="#Functions4_1">5.4.1.  CheckMenuItem( [oMenu|hWindow], nId, lCheck )</A>
-   <LI><A NAME="_Functions4_2" HREF="#Functions4_2">5.4.2.  IsCheckedMenuItem( [oMenu|hWindow], nId )</A>
-   <LI><A NAME="_Functions4_3" HREF="#Functions4_3">5.4.3.  EnableMenuItem( [oMenu|hWindow], nId|nPos, lEnable[, lId] )</A>
-   <LI><A NAME="_Functions4_4" HREF="#Functions4_4">5.4.3.  IsEnabledMenuItem( [oMenu|hWindow], nId|nPos[, lId] )</A>
-   <LI><A NAME="_Functions4_5" HREF="#Functions4_5">5.4.5.  SetMenuCaption( [oMenu|hWindow], nId, cCaption )</A>
- </UL>
+   <br><strong class="subhead"> hwg_DefinePaintStru()</strong> 
+   <p></p>
 
-<br><strong class="subhead"><A NAME="Functions4_1" HREF="#_Functions4_1">
-5.4.1.  CheckMenuItem( [oMenu|hWindow], nId, lCheck )</A></strong>
-<p>Checks or unchecks a menu item.</p>
-<UL>
-  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
- handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
- the main application menu is selected.
-  <LI> <b>nId</b> - the ID number of a menu item.
-  <LI> <b>lCheck</b> - a logical value, which shows, should the menu item be checked (.T.)
-  or unchecked (.F.).
-</UL>
+   <br><strong class="subhead"> hwg_BeginPaint( handle, pps )</strong> 
+   <p></p>
 
-<br><strong class="subhead"><A NAME="Functions4_2" HREF="#_Functions4_2">
-5.4.2.  IsCheckedMenuItem( [oMenu|hWindow], nId )</A></strong>
-<p>Returns .T. if the menu item is checked, and .F. in other case. </p>
-<UL>
-  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
- handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
- the main application menu is selected.
-  <LI> <b>nId</b> - the ID number of a menu item.
-  <LI> <b>Return value</b> ( logical ) - .T. if the menu item is checked, and .F. in other case.
-</UL>
+   <br><strong class="subhead"> hwg_EndPaint( handle, pps )</strong> 
+   <p></p>
 
-<br><strong class="subhead"><A NAME="Functions4_3" HREF="#_Functions4_3">
-5.4.3.  EnableMenuItem( [oMenu|hWindow], nId|nPos, lEnable[, lId] )</A></strong>
-<p>Enables or disables a menu item.</p>
-<UL>
-  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
- handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
- the main application menu is selected.
-  <LI> <b>nId|nPos</b> - the ID number ( nId ) of a menu item or a position ( nPos )
-  in the menu. Forth parameter <b>lId</b> determines how to interpret this parameter.<br>
-  If the menu item is a submenu itself, i.e. it has nested menu items, you <i>can't</i>
-  refer to it by ID number, only the position can be used.
-  <LI> <b>lEnable</b> - a logical value, which shows, should the menu item be enabled (.T.)
-  or disabled (.F.).
-  <LI> <b>lId</b> - a logical value, which determines, is the second parameter
-  an ID number (.T.) or a position (.F.). The default value is .T., so, if this parameter
-  is omitted, the second parameter is interpreted as ID number.
-</UL>
-<p>If you enable/disable top level menu item, you need to call DrawMenuBar( hWindow ) function
-( where hWindow is a handle of the  window - menu owner ) to repaint the menu.</p>
+   <br><strong class="subhead"> hwg_Getdrawiteminfo( lpDis )</strong> (Windows only)
+   <p></p>
 
-<br><strong class="subhead"><A NAME="Functions4_4" HREF="#_Functions4_4">
-5.4.4.  IsEnabledMenuItem( [oMenu|hWindow], nId|nPos[, lId] )</A></strong>
-<p>Returns .T. if the menu item is Enabled, and .F. in other case. </p>
-<UL>
-  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
- handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
- the main application menu is selected.
-  <LI> <b>nId|nPos</b> - the ID number ( nId ) of a menu item or a position ( nPos )
-  in the menu. Third parameter <b>lId</b> determines how to interpret this parameter.
-  <LI> <b>lId</b> - a logical value, which determines, is the second parameter
-  an ID number (.T.) or a position (.F.). The default value is .T., so, if this parameter
-  is omitted, the second parameter is interpreted as ID number.
-  <LI> <b>Return value</b> ( logical ) - .T. if the menu item is checked, and .F. in other case.
-</UL>
+   <br><strong class="subhead"> hwg_GetClientRect( handle )</strong> 
+   <p></p>
 
-<br><strong class="subhead"><A NAME="Functions4_5" HREF="#_Functions4_5">
-5.4.5.  SetMenuCaption( [oMenu|hWindow], nId, cCaption )</A></strong>
-<p>Change a caption of a menu item.</p>
-<UL>
-  <LI> <b>oMenu|hWindow</b> - this parameter can be a menu object ( oMenu ), or a
- handle of a window ( hWindow ), which owns the menu. If this parameter is omitted,
- the main application menu is selected.
-  <LI> <b>nId</b> - the ID number of a menu item.
-  <LI> <b>cCaption</b> - string value, new menu item caption.
-</UL>
+   <br><strong class="subhead"> hwg_SelectObject( hDC, handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DeleteObject( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_MoveTo( hDC, x1, y1 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_LineTo( hDC, x1, y1 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Rectangle( hDC, x1, y1, x2, y2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Box( hDC, x1, y1, x2, y2 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DrawLine( hDC, x1, y1, x2, y2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Pie( hDC, x1, y1, x2, y2, xr1, yr1, xr2, yr2 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Ellipse( hDC, x1, y1, x2, y2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_FillRect( hDC, x1, y1, x2, y2, hBrush )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RoundRect( hDC, x1, y1, x2, y2, xRad, yRad )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Drawbutton( hDC, x1, y1, x2, y2, nFlag )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DrawEdge( hDC, x1, y1, x2, y2, nFlag, nBorder )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_gtk_DrawEdge( hDC, x1, y1, x2, y2, nFlag )</strong> (GTK only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_drawGradient( hDC, x1, y1, x2, y2, int type, array colors, array stops, array radiuses )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Openimage( cName | cBody [, lMem] )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DrawBitmap( hDC, hBitmap, style, x, y, width, height )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DrawTransparentBitmap( hDC, hBitmap, x, y [,trColor] )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Drawgraybitmap( hDC, hBitmap, x1, y1 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SpreadBitmap( hDC, hWnd, hBitmap, nStyle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CenterBitmap( hDC, hWnd, hBitmap, style, brush )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetBitmapSize( hBitmap )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetIconSize( hIcon )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Openbitmap( cName [, hDC] )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Drawicon( hDC, hIcon, x1, y1 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Getsyscolor( nCode )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetsyscolorBrush( nCode )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Createpen( nStyle, nWidth, nColor )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Createsolidbrush( nColor )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Createhatchbrush( nHatch, nColor )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetDC( hWnd )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ReleaseDC( hWnd, hDC )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SaveDC( hDC )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DeleteDC( hDC )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Restoredc( hDC, nSavedDC )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CreateCompatibleDC( hDC )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CreateCompatibleBitmap( hDC, nWidth, nHeight )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Patblt( hDc, a, s, d, f, g )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Bitblt( hDc, x, y, nWidth, nHeight,  pSrcDC, xSrc,  ySrc, nFlag )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setmapmode( hDC, nMapMode )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setwindoworgex( hDC, x, y, @point )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setwindowextex( hDC, x, y, @point )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setviewportorgex( hDC, x, y, @point )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setviewportextex( hDC, x, y, @point )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setarcdirection( hDC, nArcDirection )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setrop2( hDC, nDrawMode )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DrawFrameControl( hDC, nType, nState )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_TextOut( hDC, x, y, cText )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DrawText( hDC, cText, x1 | aRect [, y1, x2, y2, nStyle [,aRect]] )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetTextMetric( hDC )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetTextSize( hDC, cText )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetClientRect( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetWindowRect( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetTextColor( hDC, nColor )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetTextColor( hDC )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetBkColor( hDC, nColor )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetBkColor( hDC )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetTransparentMode( hDC, lTransparent )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Exttextout( hDC, x, y, x1, y1, x2, y2, cText )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_WindowFromDC( hDC )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Createfont( fontName, nWidth, nHeight, fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setctrlfont( parentHandle, nId, hFont )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setctrlfont( handle, hFont )</strong> (GTK only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetFontsList()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> </strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Loadimage( hInstance, cName, nType, nWidth, nHeight, nFlags )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Loadbitmap( nId | cName [,l] )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Window2bitmap( hWnd, lFull )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RedrawWindow( handle, nFlags, x1, y1, nWidth, nHeight )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Invalidaterect( handle, lEraseBack, x1, y1, x2, y2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetPpsRect( pps )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetPpsErase( pps )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetUpdateRect( hWnd )</strong> (Windows only)
+   <p></p>
+
+
+   <br><strong class="subhead"><a name="Functions4" href="hwgdoc.html#_Functions4">
+   5.4.  Windows handling functions.</a></strong><br>
+   <p></p>
+   <br><strong class="subhead"> hwg_GetModalDlg()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_EndDialog()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_EndWindow()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isWindow( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_FlashWindow( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetActiveWindow()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetInstance</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetWindowStyle( handle, nStyle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetWindowStyle( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetWindowExtStyle( handle, nStyle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetWindowExtStyle( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_FindWindow( cClassName, cWindowName)</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetForegroundWindow( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_BringWindowToTop( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_BringToTop( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ResetWindowPos( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_UpdateWindow( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CenterWindow( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RestoreWindow( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_EnableWindow( handle, lEnable )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isWindowEnabled( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_HideWindow( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ShowWindow( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ProcessMessage( [lMdi] [, nSleep] )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_PeekMessage( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DoEvents()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SendMessage( handle, nMessage, wParam, lParam )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_PostMessage( handle, nMessage, wParam, lParam )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetWindowObject( handle, object )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetWindowObject( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetWindowText( handle, cTitle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetWindowText( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetWindowFont( handle, hFont, l )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetLastError()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isIconic( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isWindowVisible( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ExitProcess()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetTopmost( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RemoveTopmost( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ChildWindowFromPoint( hWnd, x, y )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_WindowFromPoint( hWnd, x, y )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetFontDialogUnits( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetWindowPlacement( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ClearKeyboard()</strong> (Windows only)
+   <p></p>
+
+   <p></p>
+   <br><strong class="subhead"><a name="Functions5" href="hwgdoc.html#_Functions5">
+   5.5.  Controls handling functions.</a></strong><br>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetFocus( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetFocus()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_WriteStatus( oWnd, nPart, cText, lRedraw )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_FindParent( hCtrl )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_FindSelf( hCtrl )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_getParentForm( o )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_MoveWindow( handle, nLeft, nTop, nWidth, nHeight, lRepaint )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DestroyWindow( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Createarlist( oBrw, arr )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CreateList( oBrw, lEditable )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_VScrollPos( oBrw, nType, lEof, nPos )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_HScrollPos( oBrw, nType, lEof, nPos )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ColumnArBlock()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ShowProgress( nStep, maxPos, nRange, cTitle, oWnd, x1, y1, width, height )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_UpdateProgressBar( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetProgressBar( handle, nPos )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetRangeProgressBar( handle, nValue )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_trackbarsetrange( handle, nLow, nHigh )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetMonthCalendarDate( handle , dValue )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetMonthCalendarDate( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_AddTooltip( parenthandle, handle, cTooltip )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DelTooltip( parenthandle, handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetTooltipTitle( parenthandle, handle, cTooltip )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetUpdown( handle, nValue )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetRangeUpdown( handle, n1, n2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetDatePicker( handle, dValue )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetDatePickerNull( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetDatePicker( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetTimePicker( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_AddTab( handle, cName )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DeleteTab( handle, nPage )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetCurrentTab( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetCurrentTab( handle, nPage )</strong> (GTK only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetTabSize( handle, nWidth, nHeight )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetTabHeight( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetTabName( handle, nPage, cName )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CreateImageList( aImages, nWidth, nHeight, nGrow, nFlags )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DestroyImageList( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Imagelist_Add( handle, hBitmap )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Imagelist_AddMasked( handle, hBitmap, nMask )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ImageList_GetImageCount( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_getParent( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_getAncestor( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_LoadCursor( cursor )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetCursor( cursor, hCtrl )</strong> 
+   <p></p>
+   <ul>
+     <li> cursor - cursor handle;
+     <li> hCtrl - handle of the widget under cursor (GTK only).
+   </ul>
+
+   <br><strong class="subhead"> hwg_GetCursor()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetTooltipBalloon( lBalloon )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetTooltipBalloon()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetDlgItemText( parentHandle, nId, cText )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetDlgItemText( parentHandle, nId )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetEditText( parentHandle, nId )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CheckDlgButton( parentHandle, nId, lValue )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isDlgButtonChecked( parentHandle, nId )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ComboAddString( handle, cText )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ComboInsertString( handle, nPos, cText )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ComboSetString( handle, nPos )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ListboxAddString( handle, cValue )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ModifyStyle( hWnd, nStyleDel, nStyleAdd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, 
+           lUnderline, nCharset, lSuperScript/lSubscript, lProtected )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_SetDefault( hCtrl, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_CharFromPos( hEdit, xPos, yPos )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_GetTextRange( hEdit, n1, n2 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_GetLine( hEdit, nLine )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_InsertText( hEdit, cText )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_FindText( hEdit, cFind, nStart, bCase, bWholeWord, bSearchUp )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_SetZoom( hEdit, nNum, nDen )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_SetZoomOff( hEdit )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_re_GetZoom( hEdit, @nNum, @nDen )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_PrintRtf( hEdit, hDC )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SaveRichedit( hEdit, cFileName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_LoadRichedit( hEdit, cFileName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"><a name="Functions6" href="hwgdoc.html#_Functions6">
+   5.6.  Menu functions.</a></strong><br>
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBitmap, lResource, lCheck )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_DefineAccelItem( nId, bItem, accFlag, accKey )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_InsertBitmapMenu( aMenu, nId, lBitmap, oResource )</strong>  (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_SetMenuItemBitmaps( aMenu, nId, abmp1, abmp2 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DeleteMenuItem( oWnd, nId )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_FindMenuItem( aMenu, nId, nPos )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CheckMenuItem( hWnd, nId, lValue )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_IsCheckedMenuItem( hWnd, nId )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_EnableMenuItem( hWnd, nId, lValue )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_IsEnabledMenuItem( hWnd, nId )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetMenuCaption( hWnd, nId, cText )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetMenuCaption( hWnd, nId )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DrawMenuBar( hWnd )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> </strong> 
+   <p></p>
+
+   <br><strong class="subhead"><a name="Functions7" href="hwgdoc.html#_Functions7">
+   5.7.  Windows registry.</a></strong><br>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RegCreateKey( handle, cKeyName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RegOpenKey( handle, cKeyName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RegCloseKey( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RegSetString( handle, cKeyName, cKeyValue )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RegSetBinary( handle, cKeyName, cBinValue )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RegGetValue( handle, cKeyName [,nType] )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"><a name="Functions8" href="hwgdoc.html#_Functions8">
+   5.8.  Miscellaneous functions.</a></strong><br>
+   <p></p>
+   <br><strong class="subhead"> hwg_Version( n )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_WriteLog( cText, fname )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetDlgKey( oDlg, nctrl, nkey, block, lGlobal )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ColorC2N( cColor )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ColorN2C( nColor )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ColorN2RGB( nColor, nr, ng, nb )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ColorRgb2N( nRed, nGreen, nBlue )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_BmpFromRes( cBmp )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetResContainer( cName )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetCtrlName( oCtrl, cName )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RefreshAllGets( oDlg )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_IsCtrlShift( lCtrl, lShift )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetGetUpdated( o )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetColorinFocus( lDef, tColor, bColor )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Chr( nCode )</strong> 
+   <br><strong class="subhead"> hwg_Substr( cString, nPos, nLen )</strong> 
+   <br><strong class="subhead"> hwg_Left( cString, nLen )</strong> 
+   <br><strong class="subhead"> hwg_Len( cString )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg__isUnicode()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetPrinters()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_HdSerial( cDrive )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_HdGetSerial( cDrive )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_GetIni( cSection, cEntry, cDefault, cFile )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_WriteIni( cSection, cEntry, cValue, cFile )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_TxtRect( cTxt, oWin, oFont )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ErrMsg( oError )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ShellNotifyIcon( lAdd, hWnd, hIcon, cTooltip )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ShellModifyIcon( hWnd, hIcon, cTooltip )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ShellExecute( cFile, cOperation, cParams, cDir, nFlag )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetLocaleInfo()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> Hwg_SetDlgResult( handle, nValue )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetCapture( hWnd )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ReleaseCapture()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CopyStringToClipboard( cString )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetClipboardText( hWnd )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetStockObject( nId )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_LoWord( n )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_HiWord( n )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_BitOr( n1, n2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_BitAnd( n1, n2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_BitAndInverse( n1, n2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetBit( n, nBit )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CheckBit( n, nBit )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Sin( n )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Cos( n )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ClientToScreen( handle, x1, y1 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ScreenToClient( handle, x1, y1 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetCursorPos()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetCursorPos( x, y )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_WinExec( cCommand, nFlag )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetKeyboardState( nState )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Getkeystate( nKey )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetKeyNameText( nCode )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Pts2Pix( nPoints [,hDC] )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetWindowsDir()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetSystemDir()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetTempDir()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Postquitmessage( nExitCode )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ShellAbout( cText1, cText2 [,hIcon] )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetDesktopWidth()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetDesktopHeight()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetNextDlgTabItem ( parentHandle, ::handle, lNext )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Sleep( n )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetScrollInfo( handle, nType, nRedraw, nHScrollPos , nPage, nHscrollMax )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetScrollRange( handle, nType, @minPos, @maxPos )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetScrollRange( handle, nType, minPos, maxPos )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetScrollPos( handle, nType )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetScrollPos( handle, nType, nPos )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ShowScrollBar( handle, nType, lShow )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ScrollWindow( handle, n1, n2 )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isCapslockActive()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isNumlockActive()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isScrolllockActive()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_CreateDirectory( cDirName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RemoveDirectory( cDirName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetCurrentDirectory( cDirName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_DeleteFile( cFileName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetFileAttributes( cFileName )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_SetFileAttributes( cFileName, nAttr )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetComputerName()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetUserName( [@nLength] )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_PtrToUlong( ptr )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Isptreq( handle1, handle2 )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_OutputDebugString( cText )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Getsystemmetrics( nCode )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetBackBrush( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_LastKey()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_isWin7()</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RunConsoleApp( cCommand, cOutFile )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_RunApp( cCommand [, nFlag] [, lAsync] )</strong> 
+   <p></p>
 
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

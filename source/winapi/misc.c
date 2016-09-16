@@ -662,17 +662,6 @@ HB_FUNC( HWG_GETUSERNAME )
    hb_stornl( nSize, 1 );
 }
 
-
-HB_FUNC( HWG_ISDOWNPRESSESED )
-{
-   hb_retl( HIWORD( GetKeyState( VK_DOWN ) ) > 0 );
-}
-
-HB_FUNC( HWG_ISPGDOWNPRESSESED )
-{
-   hb_retl( HIWORD( GetKeyState( VK_NEXT ) ) > 0 );
-}
-
 HB_FUNC( HWG_EDIT1UPDATECTRL )
 {
    HWND hChild = ( HWND ) HB_PARHANDLE( 1 );

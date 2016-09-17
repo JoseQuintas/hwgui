@@ -4,6 +4,11 @@
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+HWGUI 2.20 build 3 ( 17.09.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Documentation files synhronized with actual state.
+[!] Few bugs fixed.
+
 HWGUI 2.20 build 2 ( 12.09.2016 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 This is a bug fix release

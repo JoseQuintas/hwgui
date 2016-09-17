@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-17 10:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+    ! Few functions excluded from the list
+  * utils/tutorial/hwgrun.prg
+    ! Warnings fixed
+  + utils/tutorial/hwgrun.hbp
+  + utils/tutorial/tutor.hbp
+    + hbmk files added, provided by Itamar M. Lins Jr.
+  * utils/dbc/dbchw.prg
+    * STATUS PANEL added instead of a standard STATUS
+
 2016-09-16 19:07 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc_functions.html
     * List of functions synhronized with actual state

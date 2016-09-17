@@ -3,7 +3,7 @@
  * DBCHW - DBC ( Harbour + HWGUI )
  * Main file
  *
- * Copyright 2001-2014 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2001-2016 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
 
@@ -174,10 +174,11 @@ FUNCTION Main( ... )
    ELSE
       INIT WINDOW oWndMain MAIN TITLE "Dbc" SIZE 600, 474;
          ICON HIcon():AddResource("DBC")
-      ADD STATUS PARTS 140, 360, 0
-      @ 0, 24 TAB oTabMain ITEMS {} SIZE 600,436 ON SIZE {|o,x,y|ResizeBrwQ( o,x,y ) }
+      //ADD STATUS PARTS 140, 360, 0
+      ADD STATUS PANEL TO oWndMain HEIGHT 28 BACKCOLOR 0xEEEEEE FONT oBrwFont PARTS 140, 360, 0
+      @ 0, 24 TAB oTabMain ITEMS {} SIZE 600,436 ON SIZE {|o,x,y|o:Move( ,,x,y-28-o:nTop ) }
+      //{|o,x,y|ResizeBrwQ( o,x,y ) }
       oTabMain:bChange2 := {|o,n|Iif(Len(o:aControls)>=n,ChildGetFocus(n),.T.)}
-      //hwg_SetTabSize( oTabMain:handle, 100,28 )
    ENDIF
 
    MENU OF oWndMain
@@ -409,7 +410,7 @@ STATIC FUNCTION About
    @ 288, 0 GROUPBOX "" SIZE 170, 92
    @ 290, 12 SAY "xBase files management" SIZE 178, 18 STYLE SS_CENTER
    @ 290, 30 SAY "utility" SIZE 178, 18 STYLE SS_CENTER
-   @ 290, 48 SAY "version 3.1" SIZE 178, 20 STYLE SS_CENTER
+   @ 290, 48 SAY "version 3.2" SIZE 178, 20 STYLE SS_CENTER
 #ifdef __XHARBOUR__
    sv := version()
 #else   
@@ -419,7 +420,7 @@ STATIC FUNCTION About
    @ 290, 68 SAY Left( sv, nPos-1 ) SIZE 178, 20 STYLE SS_CENTER
 
    @ 298, 92 GROUPBOX "" SIZE 172, 36
-   @ 300,108 SAY "Alexander Kresin, 2014" SIZE 168, 20 STYLE SS_CENTER
+   @ 300,108 SAY "Alexander Kresin, 2016" SIZE 168, 20 STYLE SS_CENTER
 
    @ 288, 132 BUTTON "Close" SIZE 182, 32 ON CLICK { || hwg_EndDialog() } ;
 
@@ -764,7 +765,8 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
             ON EXIT { |o|ChildKill( o ) }
 
          //ADD STATUS PARTS 140, 360, 0
-         ADD STATUS PANEL TO oWindow HEIGHT 28 HSTYLE oStyle PARTS 140, 360, 0
+         //ADD STATUS PANEL TO oWindow HEIGHT 28 HSTYLE oStyle PARTS 140, 360, 0
+         ADD STATUS PANEL TO oWindow HEIGHT 28 BACKCOLOR 0xEEEEEE FONT oBrwFont PARTS 140, 360, 0
 
          @ 0, 0 BROWSE oBrowse DATABASE ON SIZE {|o,x,y|o:Move( ,,x,y-28 ) }
          //{|o,x,y|ResizeBrwQ( o,x,y ) }

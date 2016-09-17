@@ -70,7 +70,7 @@ FUNCTION _APPMAIN( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cP
    RETURN xRetVal
 
 STATIC FUNCTION ReadIni( cPath )
-   LOCAL oInit, i, oNode1, cHwgui_dir
+   LOCAL oIni, oInit, i, oNode1, cHwgui_dir
 
    oIni := HXMLDoc():Read( cPath + "hwgrun.xml" )
    IF !Empty( oIni:aItems ) .AND. oIni:aItems[1]:title == "init"

@@ -18,7 +18,11 @@ Memvar mypath, numdriv, oMainFont
 Static cQuery := ""
 
 Function OpenQuery
+#ifdef __GTK__
+Local fname := hwg_SelectFileEx( , mypath, { { "Query files( *.que )", "*.que" }, { "All files", "*" } } )
+#else
 Local fname := hwg_Selectfile( "Query files( *.que )", "*.que", mypath )
+#endif
 
    IF !Empty( fname )
       mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
@@ -32,7 +36,7 @@ Function Query( lEdit )
 Local oDlg
 Local bBtnSave := {||
 #ifdef __GTK__
-   Local fname := hwg_Selectfile( "Query files( *.que )","*.que",mypath )
+   Local fname := hwg_SelectFileEx( , mypath, { { "Query files( *.que )", "*.que" }, { "All files", "*" } } )
 #else
    Local fname := hwg_Savefile( "*.que","Query files( *.que )", "*.que", mypath )
 #endif

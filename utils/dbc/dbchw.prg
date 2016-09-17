@@ -155,6 +155,9 @@ FUNCTION Main( ... )
    hb_cdpSelect( cAppCpage )
 #ifdef __GTK__
    hwg_SetResContainer(  cExePath + "dbchw.bin" )
+   PREPARE FONT oMainFont NAME "MS Sans Serif" WIDTH 0 HEIGHT - 12
+#else
+   PREPARE FONT oMainFont NAME "MS Sans Serif" WIDTH 0 HEIGHT - 13
 #endif
 
 #ifdef RDD_ADS
@@ -163,8 +166,6 @@ FUNCTION Main( ... )
 #endif
 
    oBrwFont := HFont():Add( aBrwFont[1], Val(aBrwFont[2]), Val(aBrwFont[3]) )
-
-   PREPARE FONT oMainFont NAME "MS Sans Serif" WIDTH 0 HEIGHT - 13
 
    IF lMdi
 #ifndef __GTK__
@@ -537,7 +538,11 @@ Static Function OpenIndex()
 Local fname, cExt := Iif( numdriv==1,"*.cdx", "*.ntx" )
 
    IF aFiles[ improc, AF_LOCAL ]
+#ifdef __GTK__
+      fname := hwg_SelectFileEx( ,, { { "Index files", cExt }, { "All files", "*" } } )
+#else
       fname := hwg_SelectFile( {"index files( "+cExt+" )","All files(*.*)"}, {cExt,"*.*"}, "\" + Curdir() + Iif( Empty( Curdir() ), "", "\" ) )
+#endif
    ELSE
       fname := hwg_MsgGet( "Open index", "Input file name:" )
    ENDIF
@@ -627,7 +632,11 @@ Local lRemote := (nServerType == REMOTE_SERVER)
 #endif
 Local oBtnFile, bBtnDis := {||Iif(lRemote,oBtnFile:Disable(),oBtnFile:Enable()),.T.}
 Local bFileBtn := {||
+#ifdef __GTK__
+   cFile := hwg_SelectFileEx( ,, { { "Dbf files", "*.dbf" }, { "All files", "*" } } )
+#else
    cFile := hwg_Selectfile( {"dbf files( *.dbf )","All files(*.*)"}, {"*.dbf","*.*"}, hb_curDrive()+":\"+Curdir() )
+#endif
    IF Empty( cFile )
       cFile := ""
    ENDIF
@@ -915,7 +924,11 @@ FUNCTION Calcul()
 FUNCTION Scripts( nAct )
    LOCAL oDlg, oEdit1
    LOCAL bLoadBtn := {||
+#ifdef __GTK__
+      Local fname := hwg_SelectFileEx( ,, { { "Script files( *.scr )", "*.scr" }, { "All files", "*" } } )
+#else
       Local fname := hwg_SelectFile( "Script files( *.scr )", "*.scr", mypath )
+#endif
       IF !Empty( fname )
          oEdit1:SetText( Memoread(fname) )
       ENDIF

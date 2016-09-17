@@ -221,7 +221,11 @@ FUNCTION C_APPEND()
       RETURN .T.
    }
    LOCAL bFileBtn := {||
+#ifdef __GTK__
+   cFile := hwg_SelectFileEx( ,, { { "All files", "*" } } )
+#else
    cFile := hwg_Selectfile( "*.*", "*.*", hb_curDrive()+":\"+Curdir() )
+#endif
    hwg_RefreshAllGets( oDlg )
    Return .T.
    }
@@ -409,7 +413,7 @@ FUNCTION C_COPY()
    }
    LOCAL bFileBtn := {||
 #ifdef __GTK__
-   cFile := hwg_Selectfile( "( *.* )","*.*",mypath )
+   cFile := hwg_SelectFileEx( ,, { { "All files", "*" } } )
 #else
    cFile := hwg_Savefile( "*.*","*.*", "*.dbf", mypath )
 #endif

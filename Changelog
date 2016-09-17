@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-17 14:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/dbc/commands.prg
+  * utils/dbc/dbchw.prg
+  * utils/dbc/query.prg
+    * hwg_SelectFileEx() instead of hwg_SelectFile() (for GTK version)
+
 2016-09-17 10:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
     ! Few functions excluded from the list

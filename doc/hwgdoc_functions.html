@@ -577,14 +577,25 @@
    <br><strong class="subhead"> hwg_GetMonthCalendarDate( handle )</strong> 
    <p></p>
 
-   <br><strong class="subhead"> hwg_AddTooltip( parenthandle, handle, cTooltip )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_AddTooltip( handle, cTooltip )</strong> 
+   <br>Add a tooltip to the control.
+   <ul>
+     <li> handle - handle of the control;
+     <li> cTooltip - a text of a tooltip.
+   </ul>
 
-   <br><strong class="subhead"> hwg_DelTooltip( parenthandle, handle )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_DelTooltip( handle )</strong> 
+   <br>Delete a tooltip of the control.
+   <ul>
+     <li> handle - handle of the control.
+   </ul>
 
-   <br><strong class="subhead"> hwg_SetTooltipTitle( parenthandle, handle, cTooltip )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_SetTooltipTitle( handle, cTooltip )</strong> 
+   <br>Update the text of a tooltip.
+   <ul>
+     <li> handle - handle of the control;
+     <li> cTooltip - a new text of a tooltip.
+   </ul>
 
    <br><strong class="subhead"> hwg_SetUpdown( handle, nValue )</strong> 
    <p></p>
@@ -592,16 +603,16 @@
    <br><strong class="subhead"> hwg_SetRangeUpdown( handle, n1, n2 )</strong> 
    <p></p>
 
-   <br><strong class="subhead"> hwg_SetDatePicker( handle, dValue )</strong> 
+   <br><strong class="subhead"> hwg_SetDatePicker( handle, dValue )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_SetDatePickerNull( handle )</strong> 
+   <br><strong class="subhead"> hwg_SetDatePickerNull( handle )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_GetDatePicker( handle )</strong> 
+   <br><strong class="subhead"> hwg_GetDatePicker( handle )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_GetTimePicker( handle )</strong> 
+   <br><strong class="subhead"> hwg_GetTimePicker( handle )</strong> (Windows only)
    <p></p>
 
    <br><strong class="subhead"> hwg_AddTab( handle, cName )</strong> 

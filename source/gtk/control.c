@@ -58,7 +58,7 @@ extern void cb_signal( GtkWidget * widget, gchar * data );
 extern void all_signal_connect( gpointer hWnd );
 extern GtkWidget *GetActiveWindow( void );
 extern GdkPixbuf *alpha2pixbuf( GdkPixbuf * hPixIn, long int nColor );
-static GtkTooltips *pTooltip = NULL;
+
 static PHB_DYNS pSymTimerProc = NULL;
 
 static PHB_DYNS pSym_onEvent = NULL;
@@ -815,15 +815,28 @@ HB_FUNC( HWG_CREATEOWNBTN )
 
 }
 
-
 HB_FUNC( HWG_ADDTOOLTIP )
 {
-   gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 3 ) );
+   gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 2 ) );
 
-   if( !pTooltip )
-      pTooltip = gtk_tooltips_new(  );
-   gtk_tooltips_set_tip( pTooltip, ( GtkWidget * ) HB_PARHANDLE( 2 ),
-         gcTitle, NULL );
+   gtk_widget_set_tooltip_text( ( GtkWidget * ) HB_PARHANDLE( 1 ), gcTitle );
+
+   g_free( gcTitle );
+}
+
+HB_FUNC( HWG_DELTOOLTIP )
+{
+
+   gtk_widget_set_tooltip_text( ( GtkWidget * ) HB_PARHANDLE( 1 ), NULL );
+
+}
+
+HB_FUNC( HWG_SETTOOLTIPTITLE )
+{
+   gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 2 ) );
+
+   gtk_widget_set_tooltip_text( ( GtkWidget * ) HB_PARHANDLE( 1 ), gcTitle );
+
    g_free( gcTitle );
 }
 

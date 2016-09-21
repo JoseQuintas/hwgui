@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-21 10:46 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/control.c
+  * source/winapi/hcontrol.prg
+    * Tooltip functions modified, the number of parameters is changed - the
+      parent window handle not needed anymore.
+  * source/gtk/control.c
+  * source/gtk/hcontrol.prg
+    * synhronized with WinAPI version.
+    * Now GtkTooltip is used instead of deprecated GtkTooltips
+  * doc/hwgdoc_functions.html
+    * Information about tooltip functions has been updated.
+  * utils/tutorial/hwgrun.prg
+    ! Warning fixed
+
 2016-09-17 14:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number has been changed to 3

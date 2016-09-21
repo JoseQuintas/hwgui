@@ -97,7 +97,7 @@ METHOD INIT CLASS HControl
 
    IF !::lInit
       IF ::tooltip != Nil
-         hwg_Addtooltip( ::oParent:handle, ::handle, ::tooltip )
+         hwg_Addtooltip( ::handle, ::tooltip )
       ENDIF
       IF ::oFont != Nil
          hwg_Setctrlfont( ::oParent:handle, ::id, ::oFont:handle )
@@ -141,7 +141,7 @@ METHOD End() CLASS HControl
    ::Super:End()
 
    IF ::tooltip != NIL
-      hwg_Deltooltip( ::oParent:handle, ::handle )
+      hwg_Deltooltip( ::handle )
       ::tooltip := NIL
    ENDIF
 RETURN NIL

@@ -437,6 +437,7 @@ HB_FUNC( HWG_GETNOTIFYSBPARTS )
 
 HB_FUNC( HWG_ADDTOOLTIP )
 {
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    TOOLINFO ti;
    int iStyle = 0;
    void * hStr;
@@ -458,10 +459,10 @@ HB_FUNC( HWG_ADDTOOLTIP )
    memset( &ti, 0, sizeof( TOOLINFO ) );
    ti.cbSize = sizeof( TOOLINFO );
    ti.uFlags = TTF_SUBCLASS | TTF_IDISHWND;
-   ti.hwnd = ( HWND ) HB_PARHANDLE( 1 );
-   ti.uId = ( UINT_PTR ) HB_PARHANDLE( 2 );
+   ti.hwnd = GetParent( ( HWND ) hWnd );
+   ti.uId = ( UINT_PTR ) hWnd;
    ti.hinst = GetModuleHandle( NULL );
-   ti.lpszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
+   ti.lpszText = ( LPTSTR ) HB_PARSTR( 2, &hStr, NULL );
 
    hb_retl( SendMessage( hWndTT, TTM_ADDTOOL, 0,
                ( LPARAM ) ( LPTOOLINFO ) & ti ) );
@@ -470,6 +471,7 @@ HB_FUNC( HWG_ADDTOOLTIP )
 
 HB_FUNC( HWG_DELTOOLTIP )
 {
+   HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
    TOOLINFO ti;
 
    if( hWndTT )
@@ -477,8 +479,8 @@ HB_FUNC( HWG_DELTOOLTIP )
       memset( &ti, 0, sizeof( TOOLINFO ) );
       ti.cbSize = sizeof( TOOLINFO );
       ti.uFlags = TTF_IDISHWND;
-      ti.hwnd = ( HWND ) HB_PARHANDLE( 1 );
-      ti.uId = ( UINT_PTR ) HB_PARHANDLE( 2 );
+      ti.hwnd = GetParent( ( HWND ) hWnd );
+      ti.uId = ( UINT_PTR ) hWnd;
       ti.hinst = GetModuleHandle( NULL );
 
       SendMessage( hWndTT, TTM_DELTOOL, 0, ( LPARAM ) ( LPTOOLINFO ) & ti );
@@ -496,10 +498,11 @@ HB_FUNC( HWG_SETTOOLTIPTITLE )
 
       ti.cbSize = sizeof( TOOLINFO );
       ti.uFlags = TTF_IDISHWND;
-      ti.hwnd = hWnd;
-      ti.uId = ( UINT_PTR ) HB_PARHANDLE( 2 );
+      ti.hwnd = GetParent( ( HWND ) hWnd );
+      ti.uId = ( UINT_PTR ) hWnd;
       ti.hinst = GetModuleHandle( NULL );
-      ti.lpszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
+      //ti.lpszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
+      ti.lpszText = ( LPTSTR ) HB_PARSTR( 2, &hStr, NULL );
 
       hb_retl( SendMessage( hWndTT, TTM_SETTOOLINFO, 0,
                             ( LPARAM ) ( LPTOOLINFO ) & ti ) );

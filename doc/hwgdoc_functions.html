@@ -20,8 +20,8 @@
 </table>
 <hr align="left" width="100%">
 
-<br><strong class="title"><A NAME="Functions" HREF="hwgdoc.html#_Functions">
- 5.  Functions</A></strong><br>
+   <br><strong class="title"><a name="Functions" href="hwgdoc.html#_Functions">
+    5.  Functions</a></strong><br>
 
    <ul>
      <li><a name="_Functions1" href="#Functions1">5.1.  Common dialogs</a>
@@ -52,23 +52,31 @@
    <br>This function calls the standard dialog for file selecting.
    <ul>
      <li> cDescript - this string appears in the dialog as a description of a file type. In
-          Windows version this parameter may be an array of descriptions ({ &quot;All files&quot;, &quot;Dbf files&quot;});
-     <li> cMask - string type parameter, describing the file mask (*.dbf, for example). In
-          Windows version this parameter may be an array of masks ({ &quot;*.*&quot;, &quot;*.dbf&quot;});
+          Windows version this parameter may be an array of descriptions (<code>{ &quot;All files&quot;, &quot;Dbf files&quot;}</code>);
+     <li> cMask - string type parameter, describing the file mask (<code>&quot;*.dbf&quot;</code>, for example). In
+          Windows version this parameter may be an array of masks (<code>{ &quot;*.*&quot;, &quot;*.dbf&quot;}</code>);
           The length of this array must be the same as of <code>cDescript</code>;
      <li> cInitDir - optional string parameter, the initial directory for file selecting.
      <li> cTitle - optional string parameter, the title of a dialog box.
      <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
    </ul>
+   An example:
+   <pre class="code">
+   cFileName := hwg_Selectfile( {"dbf files( *.dbf )","All files(*.*)"}, ;
+      {"*.dbf","*.*"}, cPath )</pre>
 
    <br><strong class="subhead"> hwg_SelectFileEx( [cTitle] [,cInitDir] [,aDescript] )</strong> (GTK only)
    <br>Another standard dialog for file selection.
    <ul>
      <li> cTitle - optional string parameter, the title of a dialog box.
      <li> cInitDir - optional string parameter, the initial directory for file selecting.
-     <li> aDescript - 
+     <li> aDescript - an array like <code>{ { "Dbf files", "*.dbf" }, { "All files", "*" } }</code> with
+       file masks and descriptions;
      <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
    </ul>
+   An example:
+   <pre class="code">
+   cFileName := hwg_SelectFileEx( ,, { { "Dbf files", "*.dbf" }, { "All files", "*" } } )</pre>
 
    <br><strong class="subhead"> hwg_SelectFolder( cTitle )</strong> 
    <br>The standard dialog for folder selection.
@@ -87,11 +95,14 @@
      <li> cTitle - optional string parameter, the title of a dialog box.
      <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
    </ul>
+   An example:
+   <pre class="code">
+   fname := hwg_Savefile( "*.htm","( *.htm )","*.htm", cPath )</pre>
 
    <br><strong class="subhead"> hwg_PrintSetup( @cPrinterName )</strong> (Windows only)
    <br>This function calls the standard dialog for printer selecting.
    <ul>
-     <li> Return value ( numeric ) - handle to device context ( hDC ) of selected printer, 0 - if printer wasn't selected.
+     <li> Return value - handle to device context ( hDC ) of selected printer, 0 - if a printer wasn't selected.
      <li> Writes to the cPrinterName parameter the name of a selected printer.
    </ul>
 
@@ -99,7 +110,7 @@
    <br>This function calls the standard dialog for color selecting.
    <ul>
      <li> nColorCurrent - a numeric parameter, initial value of a color,
-     <li> Return value ( numeric ) - selected color.
+     <li> Return value ( numeric ) - selected color, Nil - if a color wasn't selected.
    </ul>
 
    <br><strong class="subhead"><a name="Functions2" href="hwgdoc.html#_Functions2">
@@ -123,33 +134,59 @@
    <br><strong class="subhead"> hwg_MsgBeep( nSound )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cInitStr )</strong> 
+   <br><strong class="subhead"> hwg_MsgGet( cTitle, cText, nStyle, nLeft, nTop, nDlgStyle, cInitStr )</strong> 
    <br>Creates a dialog box to input a string.
    <ul>
      <li> cTitle - a title of a box;
      <li> cText - a prompt for the input;
      <li> nStyle - a WinAPI style for a GET item (ES_PASSWORD, for example);
-     <li> x, y - dialog box coordinates;
+     <li> nLeft, nTop - coordinates of the left upper corner of a dialog box;
      <li> nDlgStyle - a WinAPI style for a dialog;
      <li> cInitStr - init value of a string;
      <li> Return value ( string ) - the string, which you entered, empty - if you press CANCEL.
    </ul>
 
    <br><strong class="subhead"> hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrBSel, cOk, cCancel )</strong> 
-   <p></p>
+   <br>Creates a dialog box to select from a list.
+   <ul>
+     <li> arr - an array, one-dimensional or multidimensional, which represents the list;
+     <li> cTitle - a header of a dialog box;
+     <li> nLeft, nTop - dialog box left upper corner coordinates;
+     <li> oFont - a font for a dialog, an object of HFont class;
+     <li> clrT, clrB - colors ( text and background ) of a browse;
+     <li> clrTSel, clrBSel - colors ( text and background ) of a selected row of a browse;
+     <li> cOk - a caption of a button to confirm selecting. If this parameter is omitted, the button will not present;
+     <li> cCancel - a caption of a button to cancel selecting. If this parameter is omitted, the button will not present;
+     <li> Return value - the number of selected row, 0 - if nothing is selected.
+   </ul>
 
    <br><strong class="subhead"><a name="Functions3" href="hwgdoc.html#_Functions3">
    5.3.  Drawing functions.</a></strong><br>
    <p></p>
 
    <br><strong class="subhead"> hwg_DefinePaintStru()</strong> 
-   <p></p>
+   <ul>
+     <li> Return value - a pointer to a paint structure.
+   </ul>
+   It is called during the painting (usually it is a <code>Paint()</code> method),
+   together with two next functions, <code>hwg_BeginPaint( handle, pps )</code> and
+   <code>hwg_EndPaint( handle, pps )</code>.
 
-   <br><strong class="subhead"> hwg_BeginPaint( handle, pps )</strong> 
    <p></p>
+   <br><strong class="subhead"> hwg_BeginPaint( handle, pps )</strong> 
+   <br>This function starts painting.
+   <ul>
+     <li> handle - handle of a painted object;
+     <li> pps - a pointer to a paint structure;
+     <li> Return value - handle of a device context (hDC).
+   </ul>
 
    <br><strong class="subhead"> hwg_EndPaint( handle, pps )</strong> 
-   <p></p>
+   <br>This function ends painting.
+   <ul>
+     <li> handle - handle of a painted object;
+     <li> pps - a pointer to a paint structure.
+   </ul>
 
    <br><strong class="subhead"> hwg_Getdrawiteminfo( lpDis )</strong> (Windows only)
    <p></p>

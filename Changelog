@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-22 16:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc.html
+  * doc/hwgdoc_functions.html
+  * doc/hwgdoc_misc.html
+    * Documentation updated.
+
 2016-09-21 10:46 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/control.c
   * source/winapi/hcontrol.prg

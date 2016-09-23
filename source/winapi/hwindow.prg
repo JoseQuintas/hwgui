@@ -614,7 +614,7 @@ STATIC FUNCTION onEraseBk( oWnd, hDC )
    LOCAL aCoors
 
    IF oWnd:oBmp != Nil
-      hwg_Spreadbitmap( hDC, oWnd:handle, oWnd:oBmp:handle )
+      hwg_Spreadbitmap( hDC, oWnd:oBmp:handle )
       RETURN 1
    ELSEIF oWnd:brush != Nil .AND. oWnd:type != WND_MAIN
       aCoors := hwg_Getclientrect( oWnd:handle )

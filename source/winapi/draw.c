@@ -552,20 +552,20 @@ HB_FUNC( HWG_DRAWTRANSPARENTBITMAP )
    DeleteDC( dcTrans );
 }
 
-/*  SpreadBitmap( hDC, hWnd, hBitmap, style )
+/*  SpreadBitmap( hDC, hBitmap, style )
 */
 HB_FUNC( HWG_SPREADBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
-   DWORD dwraster = ( HB_ISNIL( 4 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 4 );
-   HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 3 );
+   DWORD dwraster = ( HB_ISNIL( 3 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 3 );
+   HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 2 );
    BITMAP bitmap;
    RECT rc;
 
    SelectObject( hDCmem, hBitmap );
    GetObject( hBitmap, sizeof( BITMAP ), ( LPVOID ) & bitmap );
-   GetClientRect( ( HWND ) HB_PARHANDLE( 2 ), &rc );
+   GetClientRect( WindowFromDC( hDC ), &rc );
 
    while( rc.top < rc.bottom )
    {

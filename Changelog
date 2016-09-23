@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-23 15:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/draw.c
+  * source/winapi/hdialog.prg
+  * source/winapi/hwindow.prg
+    * hwg_SpreadBitmap() second parameter ( window handle ) removed.
+  * source/gtk/draw.c
+    * hwg_MoveTo(), hwg_LineTo() functions added for compatibility with WinAPI version.
+  * doc/hwgdoc_functions.html
+    * Documentation updated.
+
 2016-09-22 16:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc.html
   * doc/hwgdoc_functions.html

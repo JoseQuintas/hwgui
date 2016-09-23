@@ -90,6 +90,22 @@ HB_FUNC( HWG_RECTANGLE )
    cairo_stroke( hDC->cr );
 }
 
+HB_FUNC( HWG_MOVETO )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   cairo_move_to( hDC->cr, (gdouble)hb_parni(2), (gdouble)hb_parni(3) );
+
+}
+
+HB_FUNC( HWG_LINETO )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+
+   cairo_line_to( hDC->cr, (gdouble)hb_parni(2), (gdouble)hb_parni(3) );
+   cairo_stroke( hDC->cr );
+
+}
+
 HB_FUNC( HWG_DRAWLINE )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);

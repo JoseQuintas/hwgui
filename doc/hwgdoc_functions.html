@@ -189,40 +189,129 @@
    </ul>
 
    <br><strong class="subhead"> hwg_Getdrawiteminfo( lpDis )</strong> (Windows only)
-   <p></p>
+   <br>If a control has SS_OWNERDRAW style and messages for him aren't handled by HwGUI
+   (look at <a href="hwgdoc.html#Using9"> 3.9. Inside HwGUI</a>), 
+   the handler of <i>ON PAINT</i> gets as a second parameter a pointer to
+       <code>DRAWITEMSTRUCT</code> WinAPI structure, which contains an information, needed
+       to draw this control. A function <code>hwg_GetDrawItemInfo( lpDis )</code> extracts this info
+       and returns to a programmer as an array.
+   <br>While drawing these controls functions <code>hwg_DefinePaintStru()</code>,
+       <code>hwg_BeginPaint()</code>, <code>hwg_EndPaint()</code> shouldn't be used.
+   <ul>
+     <li> lpDis - a pointer to <code>DRAWITEMSTRUCT</code>;
+     <li> Return value - an array <code>aDrawItem</code> with an information about widget being painted;
+          <br><code>aDrawItem[3]</code> - hDC;
+          <br><code>aDrawItem[4]</code> - nLeft, left border of drawing area;
+          <br><code>aDrawItem[5]</code> - nTop, top border of drawing area;
+          <br><code>aDrawItem[6]</code> - nRight, right border of drawing area;
+          <br><code>aDrawItem[7]</code> - nBottom, bottom border of drawing area;
+   </ul>
 
    <br><strong class="subhead"> hwg_GetClientRect( handle )</strong> 
-   <p></p>
+   <ul>
+     <li> handle - handle of a control;
+     <li> Return value - an array <code>aArea</code> with a control client area coordinates;
+          <br><code>aArea[1]</code> - nLeft, left border of client area;
+          <br><code>aArea[2]</code> - nTop, top border of client area;
+          <br><code>aArea[3]</code> - nRight, right border of client area;
+          <br><code>aArea[4]</code> - nBottom, bottom border of client area;
+   </ul>
 
    <br><strong class="subhead"> hwg_SelectObject( hDC, handle )</strong> 
-   <p></p>
+   <br>This function selects an object of HFont, HPen or HBrush class as current for
+   drawing area, i.e., all subsequent drawing operations will use it.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> handle - a variable <code>handle</code> of an object of HFont, HPen or HBrush class.
+   </ul>
+   For example:
+   <pre class="code">
+    // Create HPen object: a line thickness - 2px, a color - red
+    oPen := HPen():Add( BS_SOLID, 2, 255 )
+    // Select this object as current for hDC
+    hwg_Selectobject( hDC, oPen:handle )
+    // Draw a 2px red line
+    hwg_Drawline( hDC, 5, 1, 100, 1 )</pre>
 
    <br><strong class="subhead"> hwg_DeleteObject( handle )</strong> 
-   <p></p>
+   <br>Deletes a font, a pen, a brush, a bitmap or an icon. Pay attention that this function works
+   on WinAPI/GTK level, it deletes not a HwGUI object, but WinaPI/GTK's.
+   Ususlly it isn't needed to call it directly from your application, the <code>Release()</code>
+   method of an appropriate HwGUI class does all necessary operations.
+   <ul>
+     <li> handle - a variable <code>handle</code> of an object of HFont, HPen, HBrush, HBitmap or HIcon class.
+   </ul>
 
-   <br><strong class="subhead"> hwg_MoveTo( hDC, x1, y1 )</strong> (Windows only)
-   <p></p>
+   <br><strong class="subhead"> hwg_MoveTo( hDC, x1, y1 )</strong>
+   <br> Changes current position of a pen on a drawing area.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - point coordinates.
+   </ul>
 
-   <br><strong class="subhead"> hwg_LineTo( hDC, x1, y1 )</strong> (Windows only)
-   <p></p>
+   <br><strong class="subhead"> hwg_LineTo( hDC, x1, y1 )</strong>
+   <br> Draw a line from a current position to a point with given coordinates. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - point coordinates.
+   </ul>
 
    <br><strong class="subhead"> hwg_Rectangle( hDC, x1, y1, x2, y2 )</strong> 
-   <p></p>
+   <br> Draw a rectangle with given coordinates. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates.
+   </ul>
 
    <br><strong class="subhead"> hwg_Box( hDC, x1, y1, x2, y2 )</strong> (Windows only)
-   <p></p>
+   <br> Draw a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
+   selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates.
+   </ul>
 
    <br><strong class="subhead"> hwg_DrawLine( hDC, x1, y1, x2, y2 )</strong> 
-   <p></p>
+   <br> Draw a line from one point to another. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - first point coordinates.
+     <li> x2, y2 - second point coordinates.
+   </ul>
 
    <br><strong class="subhead"> hwg_Pie( hDC, x1, y1, x2, y2, xr1, yr1, xr2, yr2 )</strong> (Windows only)
-   <p></p>
+   <br> Draw a pie-shaped wedge bounded by the intersection of an ellipse and two radials and fills area inside. Uses a pen and a brush,
+   selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates of a bounding rectangle;
+     <li> x2, y2 - right bottom corner coordinates of a bounding rectangle;
+     <li> xr1, yr1 - coordinates of the endpoint of the first radial;
+     <li> xr2, yr2 - coordinates of the endpoint of the second radial.
+   </ul>
 
    <br><strong class="subhead"> hwg_Ellipse( hDC, x1, y1, x2, y2 )</strong> 
-   <p></p>
+   <br> Draw an ellipse in a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
+   selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates of a bounding rectangle;
+     <li> x2, y2 - right bottom corner coordinates of a bounding rectangle;
+   </ul>
 
    <br><strong class="subhead"> hwg_FillRect( hDC, x1, y1, x2, y2, hBrush )</strong> 
-   <p></p>
+   <br> Fills a rectangle with given coordinates, using a passed brush.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates;
+     <li> hBrush - a handle of a brush ( may be <code>oBrush:handle</code> ).
+   </ul>
 
    <br><strong class="subhead"> hwg_RoundRect( hDC, x1, y1, x2, y2, xRad, yRad )</strong> (Windows only)
    <p></p>
@@ -251,7 +340,7 @@
    <br><strong class="subhead"> hwg_Drawgraybitmap( hDC, hBitmap, x1, y1 )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_SpreadBitmap( hDC, hWnd, hBitmap, nStyle )</strong> (Windows only)
+   <br><strong class="subhead"> hwg_SpreadBitmap( hDC, hBitmap, nStyle )</strong> (Windows only)
    <p></p>
 
    <br><strong class="subhead"> hwg_CenterBitmap( hDC, hWnd, hBitmap, style, brush )</strong> (Windows only)
@@ -374,21 +463,6 @@
    <br><strong class="subhead"> hwg_WindowFromDC( hDC )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_Createfont( fontName, nWidth, nHeight, fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )</strong> 
-   <p></p>
-
-   <br><strong class="subhead"> hwg_Setctrlfont( parentHandle, nId, hFont )</strong> (Windows only)
-   <p></p>
-
-   <br><strong class="subhead"> hwg_Setctrlfont( handle, hFont )</strong> (GTK only)
-   <p></p>
-
-   <br><strong class="subhead"> hwg_GetFontsList()</strong> 
-   <p></p>
-
-   <br><strong class="subhead"> </strong> 
-   <p></p>
-
    <br><strong class="subhead"> hwg_Loadimage( hInstance, cName, nType, nWidth, nHeight, nFlags )</strong> (Windows only)
    <p></p>
 
@@ -417,13 +491,22 @@
    <br><strong class="subhead"><a name="Functions4" href="hwgdoc.html#_Functions4">
    5.4.  Windows handling functions.</a></strong><br>
    <p></p>
-   <br><strong class="subhead"> hwg_GetModalDlg()</strong> 
-   <p></p>
 
-   <br><strong class="subhead"> hwg_EndDialog()</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_GetModalDlg()</strong> 
+   <ul>
+     <li> Return value - an object of HDialog class, a current modal dialog;
+          Nil - if there is no opened modal dialog.
+   </ul>
+
+   <br><strong class="subhead"> hwg_EndDialog( [handle] )</strong> 
+   <br> Closes a dialog with a <code>handle</code>; if <code>handle</code> isn't passed,
+        the current modal dialog is closed.
+   <ul>
+     <li> handle - optional parameter, a handle of a dialog window, which should be closed.
+   </ul>
 
    <br><strong class="subhead"> hwg_EndWindow()</strong> 
+   <br> Closes the main window.
    <p></p>
 
    <br><strong class="subhead"> hwg_isWindow( hWnd )</strong> (Windows only)
@@ -612,6 +695,12 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_GetMonthCalendarDate( handle )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setctrlfont( parentHandle, nId, hFont )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Setctrlfont( handle, hFont )</strong> (GTK only)
    <p></p>
 
    <br><strong class="subhead"> hwg_AddTooltip( handle, cTooltip )</strong> 
@@ -912,6 +1001,12 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_GetPrinters()</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Createfont( fontName, nWidth, nHeight, fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )</strong> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetFontsList()</strong> 
    <p></p>
 
    <br><strong class="subhead"> hwg_HdSerial( cDrive )</strong> (Windows only)

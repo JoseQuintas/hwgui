@@ -563,16 +563,17 @@ CLASS HStyle INHERIT HObject
    DATA id
    DATA nOrient
    DATA aColors
+   DATA oBitmap
    DATA nBorder
    DATA tColor
    DATA oPen
    DATA aCorners
 
-   METHOD New( aColors, nOrient, aCorners, nBorder, tColor )
+   METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap )
    METHOD Draw( hDC, nTop, nLeft, nRight, nBottom )
 ENDCLASS
 
-METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
+METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
 
    LOCAL i, nlen := Len( ::aStyles )
 
@@ -586,7 +587,9 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
          Valtype(::aStyles[i]:tColor) == Valtype(tColor) .AND. ;
          ::aStyles[i]:nBorder == nBorder .AND. ;
          ::aStyles[i]:tColor == tColor .AND. ;
-         ::aStyles[i]:nOrient == nOrient
+         ::aStyles[i]:nOrient == nOrient .AND. ;
+         ( ( ::aStyles[i]:oBitmap == Nil .AND. oBitmap == Nil ) .OR. ;
+         ( ::aStyles[i]:oBitmap != Nil .AND. oBitmap != Nil .AND. ::aStyles[i]:oBitmap:name == oBitmap:name ) )
 
          RETURN ::aStyles[ i ]
       ENDIF
@@ -597,6 +600,7 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
    ::nBorder  := nBorder
    ::tColor   := tColor
    ::aCorners := aCorners
+   ::oBitmap := oBitmap
    IF nBorder > 0
       ::oPen := HPen():Add( BS_SOLID, nBorder, tColor )
    ENDIF
@@ -608,7 +612,12 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor ) CLASS HStyle
 
 METHOD Draw( hDC, nTop, nLeft, nRight, nBottom ) CLASS HStyle
 
-   hwg_drawGradient( hDC, nTop, nLeft, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
+   IF ::oBitmap == Nil
+      hwg_drawGradient( hDC, nTop, nLeft, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
+   ELSE
+      hwg_SpreadBitmap( hDC, ::oBitmap:handle, nTop, nLeft, nRight, nBottom )
+   ENDIF
+
    IF !Empty( ::oPen )
       hwg_Selectobject( hDC, ::oPen:handle )
       hwg_Rectangle( hDC, nTop, nLeft, nRight-1, nBottom-1 )

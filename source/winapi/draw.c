@@ -552,30 +552,39 @@ HB_FUNC( HWG_DRAWTRANSPARENTBITMAP )
    DeleteDC( dcTrans );
 }
 
-/*  SpreadBitmap( hDC, hBitmap, style )
+/*  SpreadBitmap( hDC, hBitmap [, nLeft, nTop, nRight, nBottom] )
 */
 HB_FUNC( HWG_SPREADBITMAP )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
    HDC hDCmem = CreateCompatibleDC( hDC );
-   DWORD dwraster = ( HB_ISNIL( 3 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 3 );
+   //DWORD dwraster = ( HB_ISNIL( 3 ) ) ? SRCCOPY : ( DWORD ) hb_parnl( 3 );
    HBITMAP hBitmap = ( HBITMAP ) HB_PARHANDLE( 2 );
    BITMAP bitmap;
    RECT rc;
+   int nLeft, nWidth, nHeight;
+
+   rc.left = (HB_ISNUM(3))? hb_parni(3) : 0;
+   rc.top = (HB_ISNUM(4))? hb_parni(4) : 0;
+   rc.right = (HB_ISNUM(5))? hb_parni(5) : 0;
+   rc.bottom = (HB_ISNUM(6))? hb_parni(6) : 0;
 
    SelectObject( hDCmem, hBitmap );
    GetObject( hBitmap, sizeof( BITMAP ), ( LPVOID ) & bitmap );
-   GetClientRect( WindowFromDC( hDC ), &rc );
+   if( rc.left == 0 && rc.right == 0 )
+      GetClientRect( WindowFromDC( hDC ), &rc );
 
+   nLeft = rc.left;
    while( rc.top < rc.bottom )
    {
+      nHeight = (rc.bottom-rc.top >= bitmap.bmHeight)? bitmap.bmHeight : rc.bottom-rc.top;
       while( rc.left < rc.right )
       {
-         BitBlt( hDC, rc.left, rc.top, bitmap.bmWidth, bitmap.bmHeight,
-               hDCmem, 0, 0, dwraster );
+         nWidth = (rc.right-rc.left >= bitmap.bmWidth)? bitmap.bmWidth : rc.right-rc.left;
+         BitBlt( hDC, rc.left, rc.top, nWidth, nHeight, hDCmem, 0, 0, SRCCOPY );
          rc.left += bitmap.bmWidth;
       }
-      rc.left = 0;
+      rc.left = nLeft;
       rc.top += bitmap.bmHeight;
    }
 

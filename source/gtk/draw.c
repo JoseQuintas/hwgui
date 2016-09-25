@@ -302,6 +302,49 @@ HB_FUNC( HWG_DRAWTRANSPARENTBITMAP )
 
 HB_FUNC( HWG_SPREADBITMAP )
 {
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(2);
+   GtkWidget * widget = hDC->widget;
+   GdkPixbuf * pixbuf;
+   int nWidth, nHeight, x1, x2, y1, y2, nw, nh;
+   int nLeft = (HB_ISNUM(3))? hb_parni(3) : 0;
+   int nTop = (HB_ISNUM(4))? hb_parni(4) : 0;
+   int nRight = (HB_ISNUM(5))? hb_parni(5) : 0;
+   int nBottom = (HB_ISNUM(6))? hb_parni(6) : 0;
+
+   if( nLeft == 0 && nRight == 0 )
+   {
+      nLeft = nTop = 0;
+      nRight = widget->allocation.width;
+      nBottom = widget->allocation.height;
+   }
+
+   x1 = y1 = 0;
+   x2 = nRight - nLeft + 1;
+   y2 = nBottom - nTop + 1;
+
+   pixbuf = gdk_pixbuf_new( GDK_COLORSPACE_RGB, 0,
+      gdk_pixbuf_get_bits_per_sample( obj->handle ), x2-x1+1, y2-y1+1 );
+
+   nWidth = gdk_pixbuf_get_width( obj->handle );
+   nHeight = gdk_pixbuf_get_height( obj->handle );
+   while( y1 < y2 )
+   {
+      nh = (y2-y1 >= nHeight)? nHeight : y2-y1;
+      while( x1 < x2 )
+      {
+         nw = (x2-x1 >= nWidth)? nWidth : x2-x1;
+         gdk_pixbuf_copy_area( (const GdkPixbuf *)obj->handle, 0, 0, nw, nh, pixbuf, x1, y1);
+         x1 += nWidth;
+      }
+      x1 = 0;
+      y1 += nHeight;
+   }
+
+   gdk_cairo_set_source_pixbuf( hDC->cr, pixbuf, nLeft, nTop );
+   cairo_paint( hDC->cr );
+   g_object_unref( (GObject*) pixbuf );
+
 }
 
 HB_FUNC( HWG_GETBITMAPSIZE )

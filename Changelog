@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-26 19:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/draw.c
+    * Four parameters added to hwg_SpreadBitmap() - coordinates of a rectangle where to draw if not
+      all the area should be filled.
+  * source/gtk/draw.c
+    * hwg_SpreadBitmap() implemented for GTK version.
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    * New variable added to HStyle class :oBitmap and a new parameter to the :New() method.
+      Now, if :oBitmap is set, the bitmap filles all area with hwg_SpreadBitmap() function.
+
 2016-09-23 15:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/draw.c
   * source/winapi/hdialog.prg

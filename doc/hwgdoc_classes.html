@@ -20,1076 +20,1706 @@
 </table>
 <hr align="left" width="100%">
 
-<br><strong class="title"><A NAME="Classes" HREF="hwgdoc.html#_Classes">
- 6.  Classes</A></strong><br>
-<br><strong class="subhead"><A NAME="Classes1" HREF="hwgdoc.html#_Classes1">
-6.1.  Class hierarchy</A></strong>
-<p>The following schema illustrates the hierarchy of classes, currently
- implemented in HwGUI.</p>
-<UL>
-  <LI><A NAME="_Classes2" HREF="#Classes2">HObject</A>
-  <UL>
-    <LI><A NAME="_Classes3" HREF="#Classes3">HCustomWindow</A>
-    <UL>
-      <LI><A NAME="_Classes3_1" HREF="#Classes3_1">HWindow</A>
-      <UL>
-        <LI><A NAME="_Classes3_1_1" HREF="#Classes3_1_1">HMainWindow</A>
-        <LI><A NAME="_Classes3_1_2" HREF="#Classes3_1_2">HMDIChildWindow</A>
-        <LI><A NAME="_Classes3_1_3" HREF="#Classes3_1_3">HChildWindow</A>
-      </UL>
-      <LI><A NAME="_Classes3_2" HREF="#Classes3_2">HDialog</A>
-      <LI><A NAME="_Classes3_3" HREF="#Classes3_3">HControl</A>
-      <UL>
-        <LI><A NAME="_Classes3_3_1" HREF="#Classes3_3_1">HBrowse</A>
-        <LI><A NAME="_Classes3_3_2" HREF="#Classes3_3_2">HPanel</A>
-        <LI><A NAME="_Classes3_3_3" HREF="#Classes3_3_3">HOwnerButton</A>
-        <LI><A NAME="_Classes3_3_4" HREF="#Classes3_3_4">HSplitter</A>
-        <LI><A NAME="_Classes3_3_5" HREF="#Classes3_3_5">HStatus</A>
-        <LI><A NAME="_Classes3_3_6" HREF="#Classes3_3_6">HStatic</A>
-        <UL>
-          <LI><A NAME="_Classes3_3_6_1" HREF="#Classes3_3_6_1">HStaticLink</A>
-        </UL>
-        <LI><A NAME="_Classes3_3_7" HREF="#Classes3_3_7">HButton</A>
-        <LI><A NAME="_Classes3_3_8" HREF="#Classes3_3_8">HEdit</A>
-        <LI><A NAME="_Classes3_3_9" HREF="#Classes3_3_9">HChecBox</A>
-        <LI><A NAME="_Classes3_3_10" HREF="#Classes3_3_10">HRadioButton</A>
-        <LI><A NAME="_Classes3_3_11" HREF="#Classes3_3_11">HCombobox</A>
-        <LI><A NAME="_Classes3_3_12" HREF="#Classes3_3_12">HGroup</A>
-        <LI><A NAME="_Classes3_3_13" HREF="#Classes3_3_13">HLine</A>
-        <LI><A NAME="_Classes3_3_14" HREF="#Classes3_3_14">HSayImage</A>
-        <UL>
-          <LI><A NAME="_Classes3_3_14_1" HREF="#Classes3_3_14_1">HSayBmp</A>
-          <LI><A NAME="_Classes3_3_14_2" HREF="#Classes3_3_14_2">HSayIcon</A>
-          <LI><A NAME="_Classes3_3_14_3" HREF="#Classes3_3_14_3">HSayFImage</A>
-        </UL>
-        <LI><A NAME="_Classes3_3_15" HREF="#Classes3_3_15">HDatePicker</A>
-        <LI><A NAME="_Classes3_3_16" HREF="#Classes3_3_16">HUpDown</A>
-        <LI><A NAME="_Classes3_3_17" HREF="#Classes3_3_17">HTab</A>
-        <LI><A NAME="_Classes3_3_18" HREF="#Classes3_3_18">HTree</A>
-        <LI><A NAME="_Classes3_3_19" HREF="#Classes3_3_19">HMonthCalendar</A>
-        <LI><A NAME="_Classes3_3_20" HREF="#Classes3_3_20">HListbox</A>
-        <LI><A NAME="_Classes3_3_21" HREF="#Classes3_3_21">HTrackBar</A>
-        <LI><A NAME="_Classes3_3_22" HREF="#Classes3_3_22">HAnimation</A>
-        <LI><A NAME="_Classes3_3_23" HREF="#Classes3_3_23">HGrid</A>
-        <LI><A NAME="_Classes3_3_24" HREF="#Classes3_3_24">HGridEx</A>
-        <LI><A NAME="_Classes3_3_25" HREF="#Classes3_3_25">HToolBar</A>
-      </UL>
-    </UL>
-    <LI><A NAME="_Classes5" HREF="#Classes5">HColumn</A>
-    <LI><A NAME="_Classes6" HREF="#Classes6">HRadioGroup</A>
-    <LI><A NAME="_Classes7" HREF="#Classes7">HFont</A>
-    <LI><A NAME="_Classes8" HREF="#Classes8">HPen</A>
-    <LI><A NAME="_Classes9" HREF="#Classes9">HBrush</A>
-    <LI><A NAME="_Classes10" HREF="#Classes10">HBitmap</A>
-    <LI><A NAME="_Classes11" HREF="#Classes11">HIcon</A>
-    <LI><A NAME="_Classes12" HREF="#Classes12">HPrinter</A>
-    <LI><A NAME="_Classes13" HREF="#Classes13">HTreeNode</A>
-    <LI><A NAME="_Classes14" HREF="#Classes14">HTimer</A>
-    <LI><A NAME="_Classes15" HREF="#Classes15">HFreeImage</A>
-    <LI><A NAME="_Classes16" HREF="#Classes16">HSplash</A>
-    <LI><A NAME="_Classes17" HREF="#Classes17">HPrintDos</A>
-    <LI><A NAME="_Classes18" HREF="#Classes18">HWinPrn</A>
-    <LI><A NAME="_Classes19" HREF="#Classes19">HFormTmpl</A>
-    <LI><A NAME="_Classes20" HREF="#Classes20">HRepTmpl</A>
-  </UL>
-</UL>
+   <br><strong class="title"><A NAME="Classes" HREF="hwgdoc.html#_Classes">
+    6.  Classes</A></strong><br>
 
-<br><strong class="subhead"><A NAME="Classes2" HREF="#_Classes2">
-HObject</A></strong> 
-<p>It is a base class for all HwGUI classes.</p>
+   6.1.  Introduction</a></strong>
 
-<br><strong class="subhead"><A NAME="Classes3" HREF="#_Classes3">
- HCustomWindow</A></strong> 
-<p>Do not create instances of HCustomWindow. It serves as a base class
- for windows, dialogs and controls classes. Variables and methods of
- HCustomWindow provide basic behavior that descendant classes inherit
- as well as behavior that components can override to customize their behavior.</p>
-<pre class="code">DATA
-  CLASS VAR oDefaultParent SHARED 
-  handle 
-  oParent 
-  title 
-  type 
-  nTop, nLeft, nWidth, nHeight 
-  tcolor, bcolor, brush 
-  style 
-  extstyle 
-  lHide 
-  oFont 
-  aEvents, aNotify 
-  aControls 
-  bInit 
-  bDestroy 
-  bSize 
-  bPaint 
-  bGetFocus 
-  bLostFocus 
-  bOther 
-  cargo 
-  HelpId 
-  nHolder
-</pre>
-<pre class="code">METHODS
-  AddControl( oCtrl ) 
-  DelControl( oCtrl ) 
-  AddEvent( nEvent,nId,bAction,lNotify )
-  FindControl( nId,nHandle )
-  Hide()
-  Show()
-  Move( x1,y1,width,height )
-  onEvent( msg, wParam, lParam )
-  End()
-</pre>
+   <p>This section describes all of the classes that make up the HwGUI. In the description of the classes
+    I omitted the variables that are used only for the internal needs of the class methods.
+    Redefine() methods also omitted as outdated and not recommended for use.</p>
 
-<br><strong class="subhead"><A NAME="Classes3_1" HREF="#_Classes3_1">
-HWindow</A></strong> 
-Do not create instances of HWindow. It serves as a base class
- for other windows - main, child and MDI child. Variables and methods of
- HWindow provide basic behavior that descendant classes inherit
- as well as behavior that components can override to customize their behavior.</p>
-<pre class="code">DATA
-   CLASS VAR aWindows 
-   CLASS VAR szAppName 
-   menu, oPopup, hAccel 
-   oIcon, oBmp 
-   lUpdated 
-   lClipper 
-   GetList 
-   KeyList 
-   nLastKey 
-   aOffset 
-</pre>
-<pre class="code">METHODS
-   New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,oFont, 
-	 bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,cAppName,oBmp,cHelp,nHelpId,bCloseQuery ) 
-   AddItem( oWnd ) 
-   DelItem( oWnd ) 
-   FindWindow( hWnd ) 
-   GetMain() 
-   Center() 
-   Restore() 
-   Maximize() 
-   Minimize() 
-   Close()
-</pre>
+   <br><strong class="subhead"><A NAME="Classes1" HREF="hwgdoc.html#_Classes1">
+   6.2.  Class hierarchy</A></strong>
+   <p>The following schema illustrates the hierarchy of classes, currently
+    implemented in HwGUI.</p>
 
-<br><strong class="subhead"><A NAME="Classes3_1_1" HREF="#_Classes3_1_1">
-HMainWindow</A></strong> 
-<pre class="code">DATA
-   CLASS VAR aMessages 
-   nMenuPos 
-   oNotifyIcon, bNotify, oNotifyMenu 
-   lTray
-</pre>
-<pre class="code">METHODS
-   New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos, 
-      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, 
-      cAppName,oBmp,cHelp,nHelpId,bCloseQuery ) 
-   Activate( lShow ) 
-   onEvent( msg, wParam, lParam ) 
-   InitTray( oNotifyIcon, bNotify, oNotifyMenu ) 
-   GetMdiActive()
-</pre>
+   <ul>
+     <li><a name="_Classes2" href="#Classes2">HObject</a>
+     <ul>
+       <li><a name="_Classes4" href="#Classes4">HScrollArea</a> (WinAPI version only)
+       <li><a name="_Classes3" href="#Classes3">HCustomWindow</a>
+       <ul>
+         <li><a name="_Classes3_1" href="#Classes3_1">HWindow</a>
+         <ul>
+           <li><a name="_Classes3_1_1" href="#Classes3_1_1">HMainWindow</a>
+           <li><a name="_Classes3_1_2" href="#Classes3_1_2">HMDIChildWindow</a> (WinAPI version only)
+           <li><a name="_Classes3_1_3" href="#Classes3_1_3">HDialog</a>
+         </ul>
+         <li><a name="_Classes3_3" href="#Classes3_3">HControl</a>
+         <ul>
+           <li><a name="_Classes3_3_1" href="#Classes3_3_1">HBrowse</a>
+           <li><a name="_Classes3_3_2" href="#Classes3_3_2">HPanel</a>
+           <ul>
+             <li><a name="_Classes3_3_2_1" href="#Classes3_3_2_1">HPanelSts</a>
+           </ul>
+           <li><a name="_Classes3_3_3" href="#Classes3_3_3">HOwnerButton</a>
+           <li><a name="_Classes3_3_4" href="#Classes3_3_4">HSplitter</a>
+           <li><a name="_Classes3_3_5" href="#Classes3_3_5">HStatus</a>
+           <li><a name="_Classes3_3_6" href="#Classes3_3_6">HStatic</a>
+           <ul>
+             <li><a name="_Classes3_3_6_1" href="#Classes3_3_6_1">HStaticLink</a>
+           </ul>
+           <li><a name="_Classes3_3_7" href="#Classes3_3_7">HButton</a>
+           <li><a name="_Classes3_3_8" href="#Classes3_3_8">HEdit</a>
+           <li><a name="_Classes3_3_9" href="#Classes3_3_9">HChecBox</a>
+           <li><a name="_Classes3_3_10" href="#Classes3_3_10">HRadioButton</a>
+           <li><a name="_Classes3_3_11" href="#Classes3_3_11">HCombobox</a>
+           <li><a name="_Classes3_3_12" href="#Classes3_3_12">HGroup</a>
+           <li><a name="_Classes3_3_13" href="#Classes3_3_13">HLine</a>
+           <li><a name="_Classes3_3_14" href="#Classes3_3_14">HSayImage</a>
+           <ul>
+             <li><a name="_Classes3_3_14_1" href="#Classes3_3_14_1">HSayBmp</a>
+             <li><a name="_Classes3_3_14_2" href="#Classes3_3_14_2">HSayIcon</a>
+             <li><a name="_Classes3_3_14_3" href="#Classes3_3_14_3">HSayFImage</a> (WinAPI version only)
+           </ul>
+           <li><a name="_Classes3_3_15" href="#Classes3_3_15">HDatePicker</a> (WinAPI version only)
+           <li><a name="_Classes3_3_16" href="#Classes3_3_16">HUpDown</a>
+           <li><a name="_Classes3_3_17" href="#Classes3_3_17">HTab</a>
+           <li><a name="_Classes3_3_18" href="#Classes3_3_18">HTree</a>
+           <li><a name="_Classes3_3_19" href="#Classes3_3_19">HMonthCalendar</a>
+           <li><a name="_Classes3_3_20" href="#Classes3_3_20">HListbox</a> (WinAPI version only)
+           <li><a name="_Classes3_3_21" href="#Classes3_3_21">HTrackBar</a> (WinAPI version only)
+           <li><a name="_Classes3_3_22" href="#Classes3_3_22">HAnimation</a> (WinAPI version only)
+           <li><a name="_Classes3_3_23" href="#Classes3_3_23">HGrid</a> (WinAPI version only)
+           <li><a name="_Classes3_3_24" href="#Classes3_3_24">HToolBar</a>
+           <li><a name="_Classes3_3_25" href="#Classes3_3_25">HGraph</a>
+           <li><a name="_Classes3_3_26" href="#Classes3_3_26">HPager</a> (WinAPI version only)
+           <li><a name="_Classes3_3_27" href="#Classes3_3_27">HRebar</a> (WinAPI version only)
+           <li><a name="_Classes3_3_28" href="#Classes3_3_28">HCEdit</a>
+         </ul>
+       </ul>
+       <li><a name="_Classes5" href="#Classes5">HColumn</a>
+       <li><a name="_Classes6" href="#Classes6">HRadioGroup</a>
+       <li><a name="_Classes7" href="#Classes7">HFont</a>
+       <li><a name="_Classes8" href="#Classes8">HPen</a>
+       <li><a name="_Classes9" href="#Classes9">HBrush</a>
+       <li><a name="_Classes10" href="#Classes10">HBitmap</a>
+       <li><a name="_Classes11" href="#Classes11">HIcon</a>
+       <li><a name="_Classes12" href="#Classes12">HPrinter</a>
+       <li><a name="_Classes13" href="#Classes13">HTreeNode</a>
+       <li><a name="_Classes14" href="#Classes14">HTimer</a>
+       <li><a name="_Classes15" href="#Classes15">HFreeImage</a> (WinAPI version only)
+       <li><a name="_Classes16" href="#Classes16">HSplash</a> (WinAPI version only)
+       <li><a name="_Classes17" href="#Classes17">HPrintDos</a> (WinAPI version only)
+       <li><a name="_Classes18" href="#Classes18">HWinPrn</a>
+       <li><a name="_Classes19" href="#Classes19">HFormTmpl</a>
+       <li><a name="_Classes20" href="#Classes20">HRepTmpl</a>
+       <li><a name="_Classes21" href="#Classes21">HBinC</a>
+       <li><a name="_Classes22" href="#Classes22">HStyle</a>
+       <li><a name="_Classes23" href="#Classes23">HilightBase</a>
+         <ul>
+           <li><a name="_Classes23_1" href="#Classes23_1">Hilight</a>
+         </ul>
+       <li><a name="_Classes24" href="#Classes24">HXMLNode</a>
+         <ul>
+           <li><a name="_Classes24_1" href="#Classes24_1">HXMLDoc</a>
+         </ul>
+     </ul>
+   </ul>
 
-<br><strong class="subhead"><A NAME="Classes3_1_2" HREF="#_Classes3_1_2">
-HMDIChildWindow</A></strong> 
-<pre class="code">DATA
-   CLASS VAR aMessages 
-</pre>
-<pre class="code">METHODS
-   Activate( lShow ) 
-   onEvent( msg, wParam, lParam )
-</pre>
+   <br><strong class="subhead"><a name="Classes2" href="#_Classes2">
+   HObject</a></strong> 
+   <p>It is a base class for all HwGUI classes.</p>
+   <pre class="code">DATA
+     cargo
+   </pre>
 
- <strong class="subhead"><A NAME="Classes3_1_3" HREF="#_Classes3_1_3">
-HChildWindow</A></strong> 
-<pre class="code">DATA
-   oNotifyMenu 
-</pre>
-<pre class="code">METHODS
-   New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, 
-      bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, 
-      cAppName,oBmp,cHelp,nHelpId ) 
-   Activate( lShow ) 
-   onEvent( msg, wParam, lParam )
-</pre>
+   <br><strong class="subhead"><a name="Classes4" href="#_Classes4">
+    HScrollArea</a></strong> 
 
-<br><strong class="subhead"><A NAME="Classes3_2" HREF="#_Classes3_2">
-HDialog</A></strong> 
-<pre class="code">DATA
-   CLASS VAR aDialogs 
-   CLASS VAR aModalDialogs 
-   menu 
-   oPopup 
-   lResult 
-   lUpdated      // TRUE, if any GET is changed 
-   lClipper      // Set it to TRUE for moving between GETs with ENTER key 
-   GetList 
-   KeyList 
-   nLastKey 
-   oIcon, oBmp
-   lExitOnEnter
-   lExitOnEsc
-   bActivate 
-   lActivated 
-   xResourceID
-</pre>
-<pre class="code">METHODS
-  New( lType,nStyle,x,y,width,height,cTitle,bInit,bExit,bSize, 
-      bPaint,bGfocus,bLfocus,bOther,lClipper,oBmp,oIcon,lExitOnEnter,nHelpId,xResourceID,lExitOnEsc )
-  Activate(lNoModal) 
-  onEvent( msg, wParam, lParam ) 
-  Add() 
-  Del() 
-  FindDialog( hWnd ) 
-  GetActive() 
-  Center() 
-  Restore() 
-  Maximize() 
-  Minimize() 
-  Close()
-</pre>
-<br><strong class="subhead"><A NAME="Classes3_3" HREF="#_Classes3_3">
-HControl</A></strong> 
-<pre class="code">DATA
-   id 
-   tooltip 
-   lInit
-</pre>
-<pre class="code">METHODS
-   New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, 
-      bSize,bPaint,ctoolt,tcolor,bcolor ) 
-   Init() 
-   SetColor( tcolor,bcolor,lRepaint ) 
-   NewId() 
-   Disable() 
-   Enable() 
-   IsEnabled() 
-   SetFocus() 
-   GetText() 
-   SetText( c )
-   Refresh()
-   End()
-</pre>
+   <p>It is a base class for windows (HWindow), currently it is implemented in WinAPI version only.</p>
 
-<br><strong class="subhead"><A NAME="Classes3_3_1" HREF="#_Classes3_3_1">
-HBrowse</A></strong> 
-<pre class="code">DATA
-  <table>
-  <tr><td>winclass<td>
-  <tr><td>active<td>
-  <tr><td>lChanged<td>
-  <tr><td>lDispHead<td> Should I display headers ?
-  <tr><td>lDispSep<td> Should I display separators ?
-  <tr><td>aColumns<td> HColumn's array
-  <tr><td>aColAlias<td>
-  <tr><td>aRelation<td>
-  <tr><td>rowCount<td>  Number of visible data rows
-  <tr><td>rowPos<td>  Current row position
-  <tr><td>rowCurrCount<td>Current number of rows
-  <tr><td>colPos<td>  Current column position
-  <tr><td>nColumns<td> Number of visible data columns
-  <tr><td>nLeftCol<td> Leftmost column
-  <tr><td>xpos<td>
-  <tr><td>freeze<td> Number of columns to freeze
-  <tr><td>nRecords<td> Number of records in browse
-  <tr><td>nCurrent<td>
-  <tr><td>aArray<td>
-  <tr><td>recCurr<td>
-  <tr><td>headColor<td> Header text color
-  <tr><td>sepColor<td> Separators color
-  <tr><td>lSep3d<td>
-  <tr><td>varbuf<td>
-  <tr><td>tcolorSel,bcolorSel,brushSel<td>
-  <tr><td>bSkip,bGoTo,bGoTop,bGoBot,bEof,bBof<td>
-  <tr><td>bRcou,bRecno,bRecnoLog<td>
-  <tr><td>bPosChanged, bLineOut, bScrollPos, bHScrollPos<td>
-  <tr><td>bEnter, bKeyDown, bUpdate<td>
-  <tr><td>internal<td>
-  <tr><td>alias<td> Alias name of browsed database
-  <tr><td>x1,y1,x2,y2,width,height<td>
-  <tr><td>minHeight<td>
-  <tr><td>lEditable<td>
-  <tr><td>lAppable<td>
-  <tr><td>lAppMode<td>
-  <tr><td>lAutoEdit<td>
-  <tr><td>lUpdated<td>
-  <tr><td>lAppended<td>
-  <tr><td>lAdjRight<td> Adjust last column to right
-  <tr><td>nHeadRows<td> Rows in header
-  <tr><td>nFootRows<td> Rows in footer
-  <tr><td>lResizing<td>
-  <tr><td>lCtrlPress<td>
-  <tr><td>aSelected<td>
- </table>
-</pre>
-<pre class="code">METHODS
-   New( lType,oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont ; 
-      bInit,bSize,bPaint,bEnter,bGfocus,bLfocus,lNoVScroll,lNoBorder, 
-      lAppend,lAutoedit,bUpdate,bKeyDown,bPosChg,,lMultiSelect )
-   InitBrw( nType ) 
-   Rebuild() 
-   Activate() 
-   onEvent( msg, wParam, lParam ) 
-   Redefine( lType,oWnd,nId,bInit,bSize,bDraw,bEnter,bGfocus,bLfocus ) 
-   FindBrowse( nId ) 
-   AddColumn( oColumn ) 
-   InsColumn( oColumn,nPos ) 
-   DelColumn( nPos ) 
-   Paint() 
-   LineOut() 
-   HeaderOut( hDC ) 
-   FooterOut( hDC ) 
-   SetColumn( nCol ) 
-   DoHScroll( wParam ) 
-   DoVScroll( wParam ) 
-   LineDown() 
-   LineUp() 
-   PageUp() 
-   PageDown() 
-   Bottom() 
-   Top()
-   Home()
-   ButtonDown( lParam ) 
-   ButtonUp( lParam ) 
-   ButtonDbl( lParam ) 
-   MouseMove( wParam, lParam ) 
-   MouseWheel( nKeys, nDelta, nXPos, nYPos ) 
-   Edit( wParam,lParam ) 
-   Append() 
-   RefreshLine() 
-   Refresh() 
-   ShowSizes() 
-   End()
-</pre>
+   <br><strong class="subhead"><a name="Classes3" href="#_Classes3">
+    HCustomWindow</a></strong> 
 
-<br><strong class="subhead"><A NAME="Classes3_3_2" HREF="#_Classes3_3_2">
-HPanel</A></strong> 
-<pre class="code">DATA
-   winclass
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, 
-      bInit,bSize,bPaint,lDocked ) 
-  Activate() 
-  onEvent( msg, wParam, lParam ) 
-  Redefine( oWnd,nId,nHeight,bInit,bSize,bPaint ) 
-  Paint() 
-</pre>
+   <p>Do not create instances of HCustomWindow. It serves as a base class
+    for all windows and controls. In other words, HCustomWindow provide basic variables and methods,
+    which are inherited by all windows and controls. Every subclass adds its own variables and methods,
+    modifies inherited, if needed, and use others as is.</p>
 
-<br><strong class="subhead"><A NAME="Classes3_3_3" HREF="#_Classes3_3_3">
-HOwnerButton</A></strong> 
-<pre class="code">DATA
-  CLASS VAR cPath SHARED
-  winclass 
-  lFlat 
-  state 
-  bClick 
-  lPress 
-  text,tfont,xt,yt,widtht,heightt 
-  bitmap,xb,yb,widthb,heightb,lTransp,trColor,oBitmap 
-  lEnabled
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, 
-      bInit,bSize,bPaint,bClick,lflat, 
-      cText,color,font,xt,yt,widtht,heightt, 
-      bmp,lResour,xb,yb,widthb,heightb,lTr,trColor,
-      cTooltip,lEnabled ) 
-  Activate() 
-  onEvent( msg, wParam, lParam ) 
-  Init() 
-  Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, 
-      cText,color,font,xt,yt,widtht,heightt, 
-      bmp,lResour,xb,yb,widthb,heightb,lTr, 
-      cTooltip,lEnabled )
-  Paint() 
-  MouseMove( wParam, lParam ) 
-  MDown() 
-  MUp() 
-  Press() 
-  Release() 
-  End()
-  Enable()
-  Disable()
-</pre>
+   <pre class="code">DATA
+     CLASS VAR oDefaultParent
+     handle                       - handle of a GUI element
+     oParent                      - an object of a parent window or control
+     title                        - 
+     type 
+     nTop, nLeft                  - coordinates of a top left corner
+     nWidth, nHeight              - a size: width and height
+     tcolor, bcolor               - text and background color, respectively,
+     brush
+     style                        - WinAPI style
+     extstyle                     - extended WinAPI style
+     lHide                        - .T., if the element is hidden
+     oFont                        - a font, an object of HFont class
+     aEvents, aNotify 
+     aControls                    - an array with controls objects, belonged to this
+                                    window or container
+     bInit                        - codeblock, performed during initialization
+     bDestroy                     - codeblock, performed during destroying
+     bSize                        - codeblock, performed when a size is changed
+     bPaint                       - codeblock, which paints the element
+     bGetFocus                    - codeblock, executed when it receives focus
+     bLostFocus                   - codeblock, executed when it looses focus
+     bOther                       - codeblock, executed for all messages
+     HelpId 
+     nHolder
+   </pre>
+   <pre class="code">METHODS
+     AddControl( oCtrl ) 
+     DelControl( oCtrl ) 
+     AddEvent( nEvent,nId,bAction,lNotify )
+     FindControl( nId,nHandle )
+     Hide()
+     Show()
+     Move( x1,y1,width,height )
+     SetColor( tcolor, bColor, lRepaint )
+     onEvent( msg, wParam, lParam )
+     End()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_4" HREF="#_Classes3_3_4">
-HSplitter</A></strong> 
-<pre class="code">DATA
-   winclass 
-   aLeft 
-   aRight 
-   lVertical 
-   hCursor 
-   lCaptured, lMoved 
-   bEndDrag
-</pre>
-<pre class="code">METHODS
-   New( oWndParent,nId,nLeft,nTop,nWidth,nHeight, 
-      bSize,bPaint,color,bcolor,aLeft,aRight ) 
-   Activate() 
-   onEvent( msg, wParam, lParam ) 
-   Init() 
-   Paint( lpdis ) 
-   Drag( lParam ) 
-   DragAll()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_1" href="#_Classes3_1">
+   HWindow</a></strong> 
 
-<br><strong class="subhead"><A NAME="Classes3_3_5" HREF="#_Classes3_3_5">
-HStatus</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   aParts
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nStyle,aParts,bInit,bSize,bPaint ) 
-  Activate() 
-  Init()
-</pre>
+   <p>It is a base class for all windows and dialogs, do not create instances of it.</p>
 
-<br><strong class="subhead"><A NAME="Classes3_3_6" HREF="#_Classes3_3_6">
-HStatic</A></strong> 
-<pre class="code">DATA
-  CLASS VAR winclass
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit,bSize,bPaint,ctoolt,tcolor,bcolor,lTransp ) 
-  Activate() 
-  Redefine( oWndParent,nId,oFont,bInit, ; 
-     bSize,bPaint,ctoolt,tcolor,bcolor,lTransp ) 
-  SetValue(value) 
-  Init()
-</pre>
+   <pre class="code">DATA
+      CLASS VAR aWindows 
+      CLASS VAR szAppName 
+      CLASS VAR aKeysGlobal
+      menu, oPopup, hAccel 
+      oIcon, oBmp 
+      lUpdated                    - .F., if any of GET items is changed
+      lClipper 
+      GetList 
+      KeyList 
+      nLastKey 
+      bCloseQuery
+      bActivate                   - codeblock, performed one time while window activation
+      tColorinFocus               - text color for an Edit control, which has focus
+      bColorinFocus               - background color for an Edit control, which has focus
+      aOffset
+      oEmbedded
+      bScroll                     - codeblock, performed during window scrolling
+   </pre>
+   <pre class="code">METHODS
+      New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
+         oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,
+         cAppName, oBmp, cHelp, nHelpId,bCloseQuery ) 
+      AddItem( oWnd ) 
+      DelItem( oWnd ) 
+      FindWindow( hWnd )          - Seeking a window by the handle, returns a window object
+      GetMain()                   - returns a main window object
+      Center()                    - moves the window in the center of the screen
+      Restore()                   - restores the normal window size
+      Maximize()                  - expands window to full screen
+      Minimize()                  - minimizes window
+      SetTitle( cTitle )          - set a new window title
+      Close()                     - closes windows, deletes it with all controls
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_6_1" HREF="#_Classes3_3_6_1">
-HStaticLink</A></strong> 
-<p></p>
+   <br><strong class="subhead"><a name="Classes3_1_1" href="#_Classes3_1_1">
+   HMainWindow</a></strong> 
 
-<br><strong class="subhead"><A NAME="Classes3_3_7" HREF="#_Classes3_3_7">
-HButton</A></strong> 
-<pre class="code">DATA
-  CLASS VAR winclass
-  bClick
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, 
-      bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) 
-  Activate() 
-  Redefine( oWnd,nId,oFont,bInit,bSize,bDraw,bClick,ctoolt,tcolor,bcolor ) 
-  Init()
-</pre>
+   <p>A class of a main window. the corresponding command: <a href="hwgdoc_commands.html#Commands1-1"><i>INIT WINDOW MAIN</i></a></p>
 
-<br><strong class="subhead"><A NAME="Classes3_3_8" HREF="#_Classes3_3_8">
-HEdit</A></strong> 
-<pre class="code">DATA
-  CLASS VAR winclass 
-  lMultiLine 
-  cType 
-  bSetGet 
-  bValid 
-  cPicFunc, cPicMask 
-  lPicComplex 
-  lFirst 
-  lChanged 
-  lMaxLength
-  nColorinFocus
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,oFont, 
-      bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture,lNoBorder,lMaxLength,lPassword ) 
-  Activate() 
-  onEvent( msg, wParam, lParam ) 
-  Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bDraw,bGfocus,bLfocus,ctoolt,tcolor,bcolor,cPicture ) 
-  Init() 
-  SetGet(value) INLINE Eval( ::bSetGet,value ) 
-  Refresh()  
-  SetText(c)
-</pre>
+   <pre class="code">DATA
+      CLASS VAR aMessages 
+      nMenuPos 
+      oNotifyIcon, bNotify, oNotifyMenu 
+      lTray
+   </pre>
+   <pre class="code">METHODS
+      New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos, 
+         oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, 
+         cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor, nExclude ) 
+      Activate( lShow, lMaximized,           - Activates a window, the corresponding
+         lMinimized, lCentered, bActivate )    command: <a href="hwgdoc_commands.html#Commands1-3"><i>ACTIVATE WINDOW</i></a>
+      onEvent( msg, wParam, lParam ) 
+      InitTray( oNotifyIcon, bNotify, oNotifyMenu ) 
+      GetMdiActive()                         - returns an active MDI child window object
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_9" HREF="#_Classes3_3_9">
-HChecButton</A></strong> 
-<pre class="code">DATA
-  CLASS VAR winclass 
-  bSetGet 
-  value
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, 
-      bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor,bGFocus ) 
-  Activate() 
-  Redefine( oWnd,nId,vari,bSetGet,oFont,bInit,bSize,bDraw,bClick,ctoolt,tcolor,bcolor,bGFocus ) 
-  Init() 
-  Refresh() 
-  Disable() 
-  Enable()
-  SetValue( lValue )
-  GetValue()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_1_2" href="#_Classes3_1_2">
+   HMDIChildWindow</a></strong>
+   
+   <p>A class of a MDI child window. the corresponding command: <a href="hwgdoc_commands.html#Commands1-1"><i>INIT WINDOW MDICHILD</i></a></p>
 
-<br><strong class="subhead"><A NAME="Classes3_3_10" HREF="#_Classes3_3_10">
-HRadioButton</A></strong> 
-<pre class="code">DATA
-  CLASS VAR winclass 
-  CLASS VAR oGroup
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, 
-      bInit,bSize,bPaint,bClick,ctoolt,tcolor,bcolor ) 
-  Activate() 
-  Redefine( oWnd,nId,oFont,bInit,bSize,bDraw,bClick,ctoolt,tcolor,bcolor ) 
-</pre>
+   <pre class="code">DATA
+      CLASS VAR aMessages 
+   </pre>
+   <pre class="code">METHODS
+      New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont,
+         bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,
+         cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor )
+      Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
+      onEvent( msg, wParam, lParam )
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_11" HREF="#_Classes3_3_11">
-HCombobox</A></strong> 
-<pre class="code">DATA
-  CLASS VAR winclass 
-  aItems 
-  bSetGet 
-  value 
-  bValid
-  bChangeSel 
-  lText 
-  lEdit
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems, 
-      bInit,bSize,bPaint,bChange,cTooltip,lEdit,lText,bGFocus,tcolor,bcolor,bValid )
-  Activate()
-  Redefine( oWnd,nId,vari,bSetGet,aItems,bInit,bSize,bPaint,bChange,cTooltip,bGFocus )
-  Init( aCombo, nCurrent )
-  Refresh()
-  Setitem( nPos )
-</pre>
+   <br><strong class="subhead"><a name="Classes3_1_3" href="#_Classes3_1_3">
+   HDialog</a></strong> 
 
-<br><strong class="subhead"><A NAME="Classes3_3_12" HREF="#_Classes3_3_12">
-HGroup</A></strong> 
-<pre class="code">DATA
-  CLASS VAR winclass
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont, 
-      bInit,bSize,bPaint,tcolor,bcolor ) 
-  Activate()
-</pre>
+   <pre class="code">DATA
+      CLASS VAR aDialogs 
+      CLASS VAR aModalDialogs 
+      lModal
+      lResult
+      lClipper        - IF .T., ENTER allows to move between GET items
+      lExitOnEnter
+      lExitOnEsc
+      lClosable
+      nInitState
+   </pre>
+   <pre class="code">METHODS
+     New( lType, nStyle, x, y, width, height, cTitle, bInit, bExit, bSize, 
+         bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId,
+         xResourceID, lExitOnEsc, bColor, lNoClosable )
+     Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate )
+     onEvent( msg, wParam, lParam ) 
+     AddItem() 
+     DelItem() 
+     FindDialog( hWnd ) 
+     GetActive() 
+     Close()
+   </pre>
+   <br><strong class="subhead"><a name="Classes3_3" href="#_Classes3_3">
+   HControl</a></strong> 
+   <pre class="code">DATA
+      id 
+      objName
+      tooltip 
+      lInit
+      Anchor
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, 
+         bSize,bPaint,ctoolt,tcolor,bcolor ) 
+      Init() 
+      NewId() 
+      Disable() 
+      Enable() 
+      Enabled() 
+      SetFocus() 
+      GetText() 
+      SetText( c )
+      Refresh()
+      End()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_13" HREF="#_Classes3_3_13">
-HLine</A></strong> 
-<pre class="code">DATA
-  CLASS VAR winclass 
-  lVert 
-  oPenLight, oPenGray
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,lVert,nLeft,nTop,nLength,bSize ) 
-  Activate() 
-  Paint()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_1" href="#_Classes3_3_1">
+   HBrowse</a></strong> 
+   <pre class="code">DATA
+      winclass
+      active
+      lChanged
 
-<br><strong class="subhead"><A NAME="Classes3_3_14" HREF="#_Classes3_3_14">
-HSayImage</A></strong>
-<pre class="code">DATA
-  CLASS VAR winclass
-  oImage
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,bInit,
-     bSize,ctoolt )
-  Activate()
-  Redefine( oWndParent,nId,bInit,bSize,ctoolt ) 
-  End()
-</pre>
+      lDispHead                   - Should I display headers ?
+      lDispSep                    - Should I display separators ?
 
-<br><strong class="subhead"><A NAME="Classes3_3_14_1" HREF="#_Classes3_3_14_1">
-HSayBmp</A></strong> 
-<pre class="code">DATA
-  nOffsetV
-  nOffsetH
-  nZoom
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, 
-     bSize,ctoolt )
-  Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctoolt )
-  Paint( lpdis )
-  ReplaceBitmap( Image, lRes )
-</pre>
+      lBuffering
 
-<br><strong class="subhead"><A NAME="Classes3_3_14_2" HREF="#_Classes3_3_14_2">
-HSayIcon</A></strong> 
-<pre class="code">METHODS
-  New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, 
-     bSize,ctoolt ) 
-  Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctoolt ) 
-  Init()
-</pre>
+      aColumns                    - HColumn's array
+      aColAlias
+      aRelation
 
-<br><strong class="subhead"><A NAME="Classes3_3_14_3" HREF="#_Classes3_3_14_3">
-HSayFImage</A></strong> 
-<pre class="code">DATA
-  nOffsetV
-  nOffsetH
-  nZoom
-</pre>
-<pre class="code">METHODS
-  New( oWndParent,nId,nLeft,nTop,nWidth,nHeight,Image,lRes,bInit, 
-     bSize,ctoolt ) 
-  Redefine( oWndParent,nId,Image,lRes,bInit,bSize,ctoolt ) 
-  Paint( lpdis )
-  ReplaceImage( Image )
-</pre>
+      nRowHeight INIT 0                      // Predefined height of a row
+      nRowTextHeight                         // A max text height in a row
 
-<br><strong class="subhead"><A NAME="Classes3_3_15" HREF="#_Classes3_3_15">
-HDatePicker</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   bSetGet 
-   value 
-   bChange
-</pre>
-<pre class="code">METHODS
-   New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ; 
-      oFont,bInit,bGfocus,bLfocus,ctoolt,tcolor,bcolor ) 
-   Activate() 
-   Init() 
-   Refresh()
-</pre>
+      rowCount                    - Number of visible data rows
+      rowPos                      - Current row position
+      rowCurrCount                - Current number of rows
+      colPos                      - Current column position
+      nColumns                    -  Number of visible data columns
+      nLeftCol                    - Leftmost column
+      freeze                      - Number of columns to freeze
+      nRecords                    - Number of records in browse
+      nCurrent
+      aArray
+      recCurr
+      headColor                   - Header text color
+      sepColor                    - Separators color
+      oPenSep, oPenHdr, oPen3d
+      lSep3d
+      aPadding
+      aHeadPadding
+      lInFocus
+      tcolorSel, bcolorSel, brushSel, htbColor, httColor
+      bSkip, bGoTo, bGoTop, bGoBot, bEof, bBof
+      bRcou, bRecno, bRecnoLog
+      bPosChanged, bLineOut, 
+      bScrollPos, bHScrollPos
+      bEnter, bKeyDown, bUpdate
+      bRClick
+      alias                       - Alias name of browsed database
+      x1,y1,x2,y2,width,height
+      lEditable
+      lAppable
+      lAppMode
+      lAutoEdit
+      lUpdated
+      lAppended
+      lAdjRight                   - Adjust last column to right
+      nHeadRows                   - Rows in header
+      nFootRows                   - Rows in footer
+      lResizing
+      lCtrlPress
+      aSelected
+      nPaintRow, nPaintCol        - Row/Col being painted
+   </pre>
+   <pre class="code">METHODS
+      New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont ; 
+         bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, 
+         lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bRClick )
+      InitBrw( nType ) 
+      Rebuild() 
+      Activate() 
+      onEvent( msg, wParam, lParam ) 
+      FindBrowse( nId ) 
+      AddColumn( oColumn ) 
+      InsColumn( oColumn,nPos ) 
+      DelColumn( nPos ) 
+      Paint() 
+      DrawHeader( hDC, nColumn, x1, y1, x2, y2 )
+      LineOut() 
+      HeaderOut( hDC ) 
+      FooterOut( hDC ) 
+      SetColumn( nCol ) 
+      DoHScroll( wParam ) 
+      DoVScroll( wParam ) 
+      LineDown( lMouse ) 
+      LineUp() 
+      PageUp() 
+      PageDown() 
+      Bottom() 
+      Top()
+      Home()
+      ButtonDown( lParam ) 
+      ButtonRDown( lParam ) 
+      ButtonUp( lParam ) 
+      ButtonDbl( lParam ) 
+      MouseMove( wParam, lParam ) 
+      MouseWheel( nKeys, nDelta, nXPos, nYPos ) 
+      Edit( wParam,lParam ) 
+      Append() 
+      RefreshLine() 
+      Refresh() 
+      ShowSizes() 
+      End()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_16" HREF="#_Classes3_3_16">
-HUpDown</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   bSetGet 
-   value 
-   hUpDown, idUpDown, styleUpDown 
-   nLower 
-   nUpper 
-   nUpDownWidth 
-   lChanged
-</pre>
-<pre class="code">METHODS
-   New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight, ; 
-      oFont,bInit,bSize,bPaint,bGfocus,bLfocus,ctoolt,tcolor,bcolor,nUpDWidth,nLower,nUpper ) 
-   Activate() 
-   Init() 
-   Refresh()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_2" href="#_Classes3_3_2">
+   HPanel</a></strong> 
+   <pre class="code">DATA
+      winclass
+      oEmbedded
+      bScroll
+      oStyle
+      aPaintCB                    - Array of items to draw
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, 
+         bInit, bSize, bPaint, bColor ) 
+     Activate() 
+     onEvent( msg, wParam, lParam ) 
+     DrawItems( hDC, aCoors )
+     Paint() 
+     Hide()
+     Show()
+     SetPaintCB( nId, block, cId )
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_17" HREF="#_Classes3_3_17">
-HTab</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   aTabs 
-   aPages 
-   bChange,bChange2 
-   hIml, aImages, Image1, Image2 
-   oTemp 
-   bAction
-</pre>
-<pre class="code">METHODS
-   New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight, ; 
-      oFont,bInit,bSize,bPaint,aTabs,bChange,,aImages,lResour,nBC,bClick, bGetFocus, bLostFocus ) 
-   Activate()
-   Init()
-   SetTab( n )
-   StartPage( cname )
-   EndPage()
-   ChangePage( nPage )
-   DeletePage( nPage )
-   HidePage( nPage )
-   ShowPage( nPage )
-   GetActivePage( nFirst,nEnd )
-   Notify( lParam )
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_2_1" href="#_Classes3_3_2_1">
+   HPanelSts</a></strong> 
+   <pre class="code">DATA
+      aParts
+      aText
+   </pre>
+   <pre class="code">METHODS
+      Write( cText, nPart, lRedraw )
+      PaintText( hDC )
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_18" HREF="#_Classes3_3_18">
-HTree</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   aItems 
-   oSelected 
-   himl,aImages,Image1,Image2 
-   bItemChange, bExpand, bRClick, bDblClick, bAction 
-   lEmpty
-</pre>
-<pre class="code">METHODS
-   New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,
-      bInit,bSize,color,bcolor,aImages,lResour,lEditLabels,bAction,nBC )
-   Activate()
-   Init()
-   AddNode( cTitle, oPrev, oNext, bAction, aImages )
-   FindChild( handle )
-   GetSelected()
-   EditLabel( oNode )
-   Expand( oNode )
-   Select( oNode )
-   Clean()
-   Notify( lParam )
-   End()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_3" href="#_Classes3_3_3">
+   HOwnerButton</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR cPath SHARED
+     winclass 
+     lFlat
+     aStyle
+     state 
+     bClick 
+     lPress 
+     lCheck
+     text, tfont, xt, yt, widtht, heightt 
+     oBitmap, xb, yb, widthb, heightb, lTransp, trColor
+     lEnabled
+     nOrder
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,
+         bInit, bSize, bPaint, bClick, lflat,
+         cText, color, font, xt, yt, widtht, heightt,
+         bmp, lResour, xb, yb, widthb, heightb, lTr, trColor,
+         cTooltip, lEnabled, lCheck )
+     Activate() 
+     onEvent( msg, wParam, lParam ) 
+     Init() 
+     Redefine( oWndParent,nId,bInit,bSize,bPaint,bClick,lflat, 
+         cText,color,font,xt,yt,widtht,heightt, 
+         bmp,lResour,xb,yb,widthb,heightb,lTr, 
+         cTooltip,lEnabled )
+     Paint() 
+     DrawItems( hDC )
+     MouseMove( wParam, lParam ) 
+     MDown() 
+     MUp() 
+     Press() 
+     Release() 
+     End()
+     Enable()
+     Disable()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_19" HREF="#_Classes3_3_19">
-HMonthCalendar</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   value 
-   bChange
-</pre>
-<pre class="code">METHODS
-   New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, 
-      oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, lWeekNumbers ) 
-   Activate() 
-   Init() 
-   SetValue( dValue ) 
-   GetValue()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_4" href="#_Classes3_3_4">
+   HSplitter</a></strong> 
+   <pre class="code">DATA
+      winclass 
+      aLeft 
+      aRight 
+      lVertical
+      lRepaint
+      nFrom, nTo
+      hCursor 
+      lCaptured, lMoved 
+      bEndDrag
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight,
+         bSize, bPaint, color, bcolor, aLeft, aRight, nFrom, nTo )
+      Activate() 
+      onEvent( msg, wParam, lParam ) 
+      Init() 
+      Paint( lpdis ) 
+      Drag( lParam ) 
+      DragAll()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_20" HREF="#_Classes3_3_20">
-HListbox</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   aItems 
-   bSetGet 
-   value 
-   bChangeSel
-</pre>
-<pre class="code">METHODS
-   New( oWndParent,nId,vari,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,aItems,oFont, 
-      bInit,bSize,bPaint,bChange,cTooltip ) 
-   Activate() 
-   Redefine( oWnd,nId,vari,bSetGet,aItems,oFont,bInit,bSize,bDraw,bChange,cTooltip ) 
-   Init( aListbox, nCurrent ) 
-   Refresh() 
-   Setitem( nPos )
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_5" href="#_Classes3_3_5">
+   HStatus</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      aParts
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nStyle, aParts, bInit, bSize, bPaint ) 
+     Activate() 
+     Init()
+     SetText( cText,nPart )
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_21" HREF="#_Classes3_3_21">
-HTrackBar</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   value 
-   bChange 
-   bThumbDrag 
-   nLow 
-   nHigh 
-   hCursor
-</pre>
-<pre class="code">METHODS
-   New( oWndParent,nId,vari,nStyle,nLeft,nTop,nWidth,nHeight, 
-      bInit,bSize,bPaint,cTooltip,bChange,bDrag,nLow,nHigh,lVertical,TickStyle,TickMarks ) 
-   Activate() 
-   onEvent( msg, wParam, lParam ) 
-   Init() 
-   SetValue( nValue ) 
-   GetValue()
-   GetNumTics()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_6" href="#_Classes3_3_6">
+   HStatic</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR winclass
+     nStyleDraw
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont,
+        bInit, bSize, bPaint, ctoolt, tcolor, bcolor, lTransp ) 
+     Activate() 
+     Init()
+     Paint( lpDis )
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_22" HREF="#_Classes3_3_22">
-HAnimation</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   cFileName
-</pre>
-<pre class="code">METHODS
-   New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, 
-      cFilename, lAutoPlay, lCenter, lTransparent ) 
-   Activate() 
-   Init() 
-   Open( cFileName ) 
-   Play( nFrom, nTo, nRep ) 
-   Seek( nFrame ) 
-   Stop() 
-   Close() 
-   Destroy()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_6_1" href="#_Classes3_3_6_1">
+   HStaticLink</a></strong> 
+   <pre class="code">DATA
+      state
+      m_bFireChild
+      m_hHyperCursor
+      m_bMouseOver
+      m_bVisited
+      m_oTextFont
+      m_csUrl
+      dc
+      dwFlags
 
-<br><strong class="subhead"><A NAME="Classes3_3_23" HREF="#_Classes3_3_23">
-HGrid</A></strong> 
-<p></p>
+      m_sHoverColor
+      m_sLinkColor
+      m_sVisitedColor
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit,
+         bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
+     Activate() 
+     Init()
+     onEvent( msg, wParam, lParam )
+     GoToLinkUrl( csLink )
+     SetLinkUrl( csUrl )
+     GetLinkUrl()
+     SetVisitedColor( sVisitedColor )
+     SetHoverColor( cHoverColor )
+     SetFireChild( lFlag )
+     OnClicked()
+     SetLinkColor( sLinkColor )
+     Paint()
+     OnMouseMove( nFlags, point )
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_24" HREF="#_Classes3_3_24">
-HGridEx</A></strong> 
-<p></p>
+   <br><strong class="subhead"><a name="Classes3_3_7" href="#_Classes3_3_7">
+   HButton</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR winclass
+     bClick
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, 
+         bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor ) 
+     Activate() 
+     Init()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes3_3_25" HREF="#_Classes3_3_25">
-HToolBar</A></strong> 
-<p></p>
+   <br><strong class="subhead"><a name="Classes3_3_8" href="#_Classes3_3_8">
+   HEdit</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR winclass 
+     lMultiLine 
+     cType 
+     bSetGet 
+     bValid 
+     cPicFunc, cPicMask 
+     lPicComplex 
+     lFirst 
+     lChanged 
+     lNoPaste
+     nMaxLength
+     bkeydown, bkeyup, bchange
+     aColorOld
+     bColorBlock
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
+        oFont, bInit, bSize, bGfocus, bLfocus, ctooltip, ;
+        tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword, bKeyDown, bChange )
+     Activate() 
+     onEvent( msg, wParam, lParam ) 
+     Init() 
+     Refresh()
+     Value( xValue ) SETGET
+     SelStart( nStart ) SETGET
+     SelLength( nLength ) SETGET
+     ParsePict( cPicture, vari )
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes5" HREF="#_Classes5">
-HColumn</A></strong> 
-<pre class="code">DATA
-  block,heading,width,type,length,dec,cargo 
-  nJusHead, nJusLin, nJusFoot  
-  tcolor,bcolor,brush 
-  lEditable 
-  aList 
-  aBitmaps 
-  bValid,bWhen 
-  bEdit 
-  cGrid 
-  lSpandHead 
-  lSpandFoot 
-  Picture
-  bHeadClick
-  bColorFoot
-  bColorBlock
-</pre>
-<pre class="code">METHODS
-  New( cHeading,block,type,length,dec,lEditable,nJusHead,nJusLin,cPict,bValid,bWhen,aItem,bColorBlock )
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_9" href="#_Classes3_3_9">
+   HCheckButton</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR winclass 
+     bSetGet 
+     lValue
+     bClick
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, vari, bSetGet,nStyle, nLeft, nTop, nWidth, nHeight,
+        cCaption, oFont, bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor,
+        bGFocus, lTransp, bLFocus ) 
+     Activate() 
+     Init() 
+     Refresh() 
+     Disable() 
+     Enable()
+     Value( lValue ) SETGET
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes6" HREF="#_Classes6">
-HRadioGroup</A></strong> 
-<pre class="code">DATA
-   CLASS VAR oGroupCurrent 
-   aButtons 
-   value 
-   bSetGet
-</pre>
-<pre class="code">METHODS
-   New( vari,bSetGet )
-   EndGroup( nSelected )
-   SetValue( nValue )
-   GetValue()
-   Refresh()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_10" href="#_Classes3_3_10">
+   HRadioButton</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR winclass 
+     oGroup
+     bClick
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, 
+         bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor, lTransp ) 
+     Activate()
+     Value( lValue ) SETGET
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes7" HREF="#_Classes7">
-HFont</A></strong> 
-<pre class="code">DATA
-  CLASS VAR aFonts 
-  handle 
-  name, width, height ,weight 
-  charset, italic, Underline, StrikeOut 
-  nCounter
-</pre>
-<pre class="code">METHODS
-   Add( fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle )
-   Select( oFont )
-   Release()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_11" href="#_Classes3_3_11">
+   HCombobox</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR winclass 
+     aItems 
+     bSetGet 
+     xValue 
+     bValid
+     bChangeSel 
+     lText 
+     lEdit
+     nDisplay
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, aItems, 
+         bInit, bSize, bPaint, bChange, cTooltip, lEdit, lText, bGFocus, tcolor,
+         bcolor, bValid, nDisplay )
+     Activate()
+     Init( aCombo, nCurrent )
+     Refresh( xVal )
+     Setitem( nPos )
+     GetValue( nItem )
+     Value ( xValue ) SETGET
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes8" HREF="#_Classes8">
-HPen</A></strong> 
-<pre class="code">DATA
-  CLASS VAR aPens 
-  handle 
-  style, width, color 
-  nCounter
-</pre>
-<pre class="code">METHODS
-   Add( style, width, color )
-   Get( nStyle,nWidth,nColor )
-   Release()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_12" href="#_Classes3_3_12">
+   HGroup</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR winclass
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, 
+         bInit, bSize, bPaint, tcolor, bcolor ) 
+     Activate()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes9" HREF="#_Classes9">
-HBrush</A></strong> 
-<pre class="code">DATA
-  CLASS VAR aBrushes 
-  handle 
-  color 
-  nHatch 
-  nCounter
-</pre>
-<pre class="code">METHODS
-   Add( color,nHatch )
-   Release()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_13" href="#_Classes3_3_13">
+   HLine</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR winclass 
+     lVert 
+     oPenLight, oPenGray
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize ) 
+     Activate() 
+     Paint()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes10" HREF="#_Classes10">
-HBitmap</A></strong> 
-<pre class="code">DATA
-  CLASS VAR aBitmaps 
-  handle 
-  name 
-  nWidth, nHeight 
-  nCounter
-</pre>
-<pre class="code">METHODS
-   AddResource( name )
-   AddStandard( nId )
-   AddFile( name,hDC )
-   AddWindow( oWnd,lFull )
-   Release()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_14" href="#_Classes3_3_14">
+   HSayImage</a></strong>
+   <pre class="code">DATA
+     CLASS VAR winclass
+     oImage
+     bClick, bDblClick
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bInit,
+        bSize, ctoolt, bClick, bDblClick )
+     Activate()
+     End()
+     onClick()
+     onDblClick()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes11" HREF="#_Classes11">
-HIcon</A></strong> 
-<pre class="code">DATA
-  CLASS VAR aIcons 
-  handle 
-  name 
-  nCounter
-</pre>
-<pre class="code">METHODS
-   AddResource( name ) 
-   AddFile( name,hDC ) 
-   Release()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_14_1" href="#_Classes3_3_14_1">
+   HSayBmp</a></strong> 
+   <pre class="code">DATA
+     nOffsetV
+     nOffsetH
+     nZoom
+     lTransp, trcolor
+     nStretch
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, 
+        bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor )
+     Paint( lpdis )
+     ReplaceBitmap( Image, lRes )
+     Refresh()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes12" HREF="#_Classes12">
-HPrinter</A></strong> 
-<pre class="code">DATA
-  hDCPrn 
-  hDC 
-  cPrinterName 
-  hPrinter 
-  aMeta 
-  lPreview 
-  cMetaName 
-  nWidth, nHeight 
-  nPWidth, nPHeight 
-  nHRes, nVRes 
-  lmm 
-  nPage
-  nCurrPage, oTrackV, oTrackH
-  nZoom, xOffset, yOffset, x1, y1, x2, y2
-</pre>
-<pre class="code">METHODS
-  <table>
-   <tr><td>New( cPrinter,lmm )<td>Opening a printer. If 'cPrinter' is omitted, Printer Setup dialog appears; if 'cPrinter' is an empty string, default printer is used.
-   <tr><td>SetMode( nOrientation )<td>
-   <tr><td>AddFont( fontName, nHeight ,lBold, lItalic, lUnderline )<td>
-   <tr><td>SetFont( oFont )<td>
-   <tr><td>SetTextColor( nColor )<td>Set text color.
-   <tr><td>SetTBkColor( nColor )<td>Set background color of a text.
-   <tr><td>SetBkmode( lmode )<td>Set transparent mode for printing text.
-   <tr><td>StartDoc( lPreview,cMetaName )<td>Starts printing of a document. lPreview should be TRUE, if you want to preview the printing result.
-   <tr><td>EndDoc()<td>End of a document printing.
-   <tr><td>StartPage()<td>
-   <tr><td>EndPage()<td>
-   <tr><td>ReleaseMeta()<td>
-   <tr><td>PlayMeta( nPage, oWnd, x1, y1, x2, y2 )<td>
-   <tr><td>PrintMeta( nPage )<td>
-   <tr><td>Preview( cTitle,aBitmaps,aTooltips,aBtnUser )<td>Opening of a preview window, this should be used after EndDoc() call.
-   <tr><td>End()<td>Releasing the printer.
-   <tr><td>Box( x1,y1,x2,y2,oPen,oBrush )<td>
-   <tr><td>Line( x1,y1,x2,y2,oPen )<td>
-   <tr><td>Say(cString,x1,y1,x2,y2,nOpt,oFont,nTextColor,nBkColor)<td>
-   <tr><td>Bitmap( x1,y1,x2,y2,nOpt,hBitmap )<td>
-   <tr><td>GetTextWidth( cString, oFont )<td>
-  </table>
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_14_2" href="#_Classes3_3_14_2">
+   HSayIcon</a></strong> 
+   <pre class="code">METHODS
+     New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, 
+        bSize, ctoolt, lOEM, bClick, bDblClick ) 
+     Init()
+     Refresh()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes13" HREF="#_Classes13">
-HTreeNode</A></strong> 
-<pre class="code">DATA
-   CLASS VAR winclass 
-   aItems 
-   handle 
-   oTree, oParent 
-   bAction 
-   cargo
-</pre>
-<pre class="code">METHODS
-   New( oTree, oParent, oPrev, oNext, cTitle, bAction,aImages ) 
-   AddNode( cTitle, oPrev, oNext, bAction, aImages ) 
-   Delete() 
-   FindChild( handle ) 
-   GetText() 
-   SetText(cText)
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_14_3" href="#_Classes3_3_14_3">
+   HSayFImage</a></strong> 
+   <pre class="code">DATA
+     nOffsetV
+     nOffsetH
+     nZoom
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, 
+        bSize, ctoolt, cType ) 
+     Paint( lpdis )
+     ReplaceImage( Image, cType )
+     Refresh()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes14" HREF="#_Classes14">
-HTimer</A></strong> 
-<pre class="code">DATA
-   CLASS VAR aTimers 
-   id 
-   value 
-   oParent 
-   bAction
-</pre>
-<pre class="code">METHODS
-   New( oParent,id,value,bAction ) 
-   End()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_15" href="#_Classes3_3_15">
+   HDatePicker</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      bSetGet 
+      value 
+      bChange
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight,
+         oFont, bInit, bGfocus, bLfocus, ctoolt, tcolor, bcolor ) 
+      Activate() 
+      Init() 
+      Refresh()
+      Value ( dValue ) SETGET
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes15" HREF="#_Classes15">
-HFreeImage</A></strong> 
-<p>This class is similar to HBitmap, HIcon classes, it allows to load, save and draw
-an image in BMP, JPEG, PNG and some other formats. It uses FreeImage library (<a href=http://freeimage.sourceforge.net>http://freeimage.sourceforge.net></a>) -
-so, if you include it in your application, you need to have FreeImage.dll.</p>
-<pre class="code">DATA
-   CLASS VAR aImages 
-   handle 
-   hBitmap 
-   name 
-   nWidth, nHeight 
-   nCounter
-</pre>
-<pre class="code">METHODS
-  <table>
-  <tr><td>AddFile( name )<td>Load the image from a file
-  <tr><td>AddFromVar( cImage,cType )
-  <tr><td>FromBitmap( oBitmap )<td>Create an image from a bitmap
-  <tr><td>Draw( hDC,nLeft,nTop,nWidth,nHeight )<td>Draw the image on specified device contect
-  <tr><td>Release()<td>Unload the image
-  </table>
-</pre>
-The example of using this class you may find in samples/viewer/viewer.prg. 
+   <br><strong class="subhead"><a name="Classes3_3_16" href="#_Classes3_3_16">
+   HUpDown</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      bSetGet 
+      nValue 
+      hUpDown, idUpDown, styleUpDown 
+      nLower 
+      nUpper 
+      nUpDownWidth 
+      lChanged
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, vari,bSetGet, nStyle, nLeft, nTop, nWidth, nHeight,
+         oFont, bInit, bSize, bPaint, bGfocus, bLfocus, ctoolt, tcolor, bcolor,
+         nUpDWidth, nLower, nUpper ) 
+      Activate() 
+      Init() 
+      Refresh()
+      Value( nValue ) SETGET
+      SetRange( n1, n2 )
+      Hide()
+      Show()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes16" HREF="#_Classes16">
-HSplash</A></strong>
-<pre class="code">METHODS
- Create( cFile,oTime,oResource )
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_17" href="#_Classes3_3_17">
+   HTab</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      aTabs 
+      aPages 
+      bChange,bChange2 
+      hIml, aImages, Image1, Image2 
+      oTemp 
+      bAction
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
+         bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, bClick, bGetFocus,
+         bLostFocus ) 
+      Activate()
+      Init()
+      onEvent( msg, wParam, lParam )
+      SetTab( n )
+      StartPage( cname )
+      EndPage()
+      ChangePage( nPage )
+      DeletePage( nPage )
+      HidePage( nPage )
+      ShowPage( nPage )
+      GetActivePage( nFirst,nEnd )
+      Notify( lParam )
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes17" HREF="#_Classes17">
-HPrintDos</A></strong>
-<pre class="code">DATA
-</pre>
-<pre class="code">METHODS
-</pre>
-<p></p>
+   <br><strong class="subhead"><a name="Classes3_3_18" href="#_Classes3_3_18">
+   HTree</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      aItems 
+      oSelected 
+      himl,aImages,Image1,Image2 
+      bItemChange, bExpand, bRClick, bDblClick, bAction 
+      lEmpty
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
+         bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bAction, nBC )
+      Activate()
+      Init()
+      AddNode( cTitle, oPrev, oNext, bAction, aImages )
+      FindChild( handle )
+      GetSelected()
+      EditLabel( oNode )
+      Expand( oNode )
+      Select( oNode )
+      Clean()
+      Notify( lParam )
+      End()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes18" HREF="#_Classes18">
-HWinPrn</A></strong>
-<pre class="code">DATA
-   CLASS VAR nStdHeight SHARED
-   CLASS VAR cPrinterName SHARED
-   oPrinter
-   oFont
-   nLineHeight, nLined
-   nCharW
-   x, y
-   lElite
-   lCond
-   nLineInch
-   lBold
-   lItalic
-   lUnder
-   lChanged
+   <br><strong class="subhead"><a name="Classes3_3_19" href="#_Classes3_3_19">
+   HMonthCalendar</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      dValue 
+      bChange
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, 
+         oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, lWeekNumbers ) 
+      Activate() 
+      Init()
+      Value( dValue ) SETGET
+   </pre>
 
-   cpFrom, cpTo
-   nTop
-   nBottom
-   nLeft
-   nRight
-</pre>
-<pre class="code">METHODS
-   New( cPrinter, cpFrom, cpTo )
-   InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder  )
-   SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder )
-   StartDoc( lPreview,cMetaName )
-   NextPage()
-   PrintLine( cLine,lNewLine )
-   PrintText( cText )
-   PutCode( cText )
-   EndDoc()
-   End()
-</pre>
+   <br><strong class="subhead"><a name="Classes3_3_20" href="#_Classes3_3_20">
+   HListbox</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      aItems 
+      bSetGet 
+      value 
+      bChangeSel
+      bkeydown, bDblclick
+      bValid
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight,
+         aItems, oFont, bInit, bSize, bPaint, bChange, cTooltip, tColor, bcolor,
+         bGFocus, bLFocus, bKeydown, bDblclick, bOther ) 
+      Activate() 
+      Init( aListbox, nCurrent ) 
+      Refresh() 
+      Requery()
+      Setitem( nPos )
+      AddItems( p )
+      DeleteItem( nPos )
+      Valid( oCtrl )
+      When( oCtrl )
+      onChange( oCtrl )
+      onDblClick()
+      Clear()
+      onEvent( msg, wParam, lParam )
+   </pre>
 
-<p></p>
+   <br><strong class="subhead"><a name="Classes3_3_21" href="#_Classes3_3_21">
+   HTrackBar</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      nValue 
+      bChange 
+      bThumbDrag 
+      nLow 
+      nHigh 
+      hCursor
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, bInit,
+         bSize, bPaint, cTooltip, bChange, bDrag, nLow, nHigh, lVertical,
+         TickStyle, TickMarks ) 
+      Activate() 
+      onEvent( msg, wParam, lParam ) 
+      Init() 
+      Value( nValue ) SETGET
+      GetNumTics()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes19" HREF="#_Classes19">
-HFormTmpl</A></strong> 
-<p></p>
+   <br><strong class="subhead"><a name="Classes3_3_22" href="#_Classes3_3_22">
+   HAnimation</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      cFileName
+      xResID
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, 
+         cFilename, lAutoPlay, lCenter, lTransparent, xResID )
+      Activate() 
+      Init() 
+      Open( cFileName ) 
+      Play( nFrom, nTo, nRep ) 
+      Seek( nFrame ) 
+      Stop() 
+      Close() 
+      Destroy()
+   </pre>
 
-<br><strong class="subhead"><A NAME="Classes20" HREF="#_Classes20">
-HRepTmpl</A></strong> 
-<p></p>
+   <br><strong class="subhead"><a name="Classes3_3_23" href="#_Classes3_3_23">
+   HGrid</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      aBitMaps
+      ItemCount
+      color
+      bkcolor
+      aColumns
+      nRow
+      nCol
+
+      lNoScroll
+      lNoBorder
+      lNoLines
+      lNoHeader
+
+      bEnter
+      bKeyDown
+      bPosChg
+      bDispInfo
+
+      bGfocus
+      bLfocus
+   </pre>
+   <pre class="code">METHODS
+      New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint, bEnter,
+               bGfocus, bLfocus, lNoScroll, lNoBord, bKeyDown, bPosChg, bDispInfo,
+               nItemCount, lNoLines, color, bkcolor, lNoHeader, aBit )
+      Activate() 
+      Init() 
+      AddColumn( cHeader, nWidth, nJusHead, nBit )
+      Refresh()
+      RefreshLine()
+      SetItemCount( nItem )
+      Row()
+      Notify( lParam )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes3_3_24" href="#_Classes3_3_24">
+   HToolBar</a></strong> 
+   <pre class="code">DATA
+      Name
+      id
+      nBitIp
+      bState
+      bStyle
+      tooltip
+      aMenu
+      hMenu
+      Title
+      bClick
+      oParent
+   </pre>
+   <pre class="code">METHODS
+      New( oParent, cName, nBitIp, nId, bState, bStyle, cText, bClick, ctip, aMenu )
+      Enable()
+      Disable()
+      Show()
+      Hide()
+      Enabled( lEnabled ) SETGET
+      Checked( lCheck ) SETGET
+      Pressed( lPressed ) SETGET
+      onClick()
+      Caption( cText ) SETGET
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes3_3_25" href="#_Classes3_3_25">
+   HGraph</a></strong> 
+   <pre class="code">DATA
+      aValues
+      aSignX, aSignY
+      nGraphs
+      nType
+      lGridX
+      lGridY
+      lGridXMid
+      lPositive
+      x1Def
+      x2Def
+      y1Def
+      y2Def
+      scaleX, scaleY
+      ymaxSet
+      tbrush
+      colorCoor
+      oPen, oPenCoor
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont,
+           bSize, ctooltip, tcolor, bcolor )
+      Activate()
+      Init()
+      CalcMinMax()
+      Paint()
+      Rebuild( aValues )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes3_3_26" href="#_Classes3_3_26">
+   HPager</a></strong> 
+   <pre class="code">DATA
+      CLASS DATA oSelected INIT Nil
+      winclass
+      TEXT, id, nTop, nLeft, nwidth, nheight
+      ExStyle
+      bClick
+      lVert
+      hTool
+      m_nWidth, m_nHeight
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont,
+         bInit, bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
+      SetScrollArea( nWidth, nHeight )
+      Activate()
+      Init()
+      Notify( lParam )
+      Pagersetchild( b )
+      Pagerrecalcsize()
+      Pagerforwardmouse( b )
+      Pagersetbkcolor( b )
+      Pagergetbkcolor()
+      Pagersetborder( b )
+      Pagergetborder()
+      Pagersetpos( b )
+      Pagergetpos()
+      Pagersetbuttonsize( b )
+      Pagergetbuttonsize()
+      Pagergetbuttonstate()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes3_3_27" href="#_Classes3_3_27">
+   HRebar</a></strong> 
+   <pre class="code">DATA
+      CLASS DATA oSelected
+      winclass
+      TEXT, id, nTop, nLeft, nwidth, nheight
+      ExStyle
+      bClick
+      lVert
+      hTool
+      m_nWidth, m_nHeight
+      aBands
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption,
+         oFont, bInit, bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
+      Activate()
+      Init()
+      ADDBARColor( pBar, clrFore, clrBack, pszText, dwStyle )
+      Addbarbitmap( pBar, pszText, pbmp, dwStyle )
+      RebarBandNew( pBar, pszText, clrFore, clrBack, pbmp, dwStyle )
+      CreateBands( pBar, pszText, clrFore, clrBack, pbmp, dwStyle )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes3_3_28" href="#_Classes3_3_28">
+   HCEdit</a></strong> 
+
+   <pre class="code">DATA
+      CLASS VAR winclass  INIT "TEDIT"
+      hEdit
+      cFileName
+      aText, nTextLen
+      nMaxLines
+      cp, cpSource
+      lUtf8
+      aWrap, nLinesAll
+      nDocFormat
+      nDocOrient
+      aDocMargins
+      nKoeffScr
+
+      lShowNumbers
+      lReadOnly
+      lUpdated
+      lInsert
+      lNoPaste
+
+      nShiftL
+      nBoundL
+      nBoundR
+      nBoundT
+      nMarginL
+      nMarginR
+      nMarginT
+      nMarginB
+
+      n4Number
+      n4Separ
+      bColorCur
+      tcolorSel
+      bcolorSel
+      nClrDesk
+      nAlign
+      nIndent
+      nDefFont
+
+      nLineF
+      nPosF
+      aLines, nLines, nLineC, nPosC
+
+      nWCharF
+      nWSublF
+      aFonts
+      aFontsPrn
+      oPenNum
+
+      nCaret
+      lChgCaret
+      lSetFocus
+      bChangePos, bKeyDown, bClickDoub
+      bAfter
+
+      lMDown
+      aPointC, aPointM1, aPointM2
+
+      nTabLen
+      lStripSpaces
+      lVScroll
+      nClientWidth
+      nDocWidth
+
+      nMaxUndo
+      aUndo
+
+      oHili
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
+         bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
+      Open( cFileName, cPageIn, cPageOut )
+      Activate()
+      Init()
+      SetHili( xGroup, oFont, tColor, bColor )
+      onEvent( msg, wParam, lParam )
+      Paint( lReal )
+      PaintLine( hDC, yPos, nLine, lUse_aWrap )
+      MarkLine( nLine, lReal, nSubLine )
+      End()
+      Convert( cPageIn, cPageOut )
+      SetText( xText, cPageIn, cPageOut )
+      SAVE( cFileName )
+      AddFont( oFont, name, width, height , weight,
+         CharSet, Italic, Underline, StrikeOut )
+      SetFont( oFont )
+      SetCaretPos( nType, p1, p2 )
+      onKeyDown( nKeyCode, lParam, nCtrl )
+      PutChar( nKeyCode )
+      LineDown()
+      LineUp()
+      PageDown()
+      PageUp()
+      Top()
+      Bottom()
+      GOTO( nLine )
+      onVScroll( wParam )
+      PCopy( Psource, Pdest )
+      PCmp( P1, P2 )
+      GetText( P1, P2 )
+      InsText( aPoint, cText, lOver, lChgPos )
+      DelText( P1, P2, lChgPos )
+      AddLine( nLine )
+      DelLine( nLine )
+      Refresh()
+      SetWrap( lWrap, lInit )
+      SetPadding( nValue )
+      SetBorder( nThick, nColor )
+      Highlighter( oHili )
+      Scan()
+      Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
+      Print( nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB )
+      PrintLine( oPrinter, yPos, nL )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes5" href="#_Classes5">
+   HColumn</a></strong> 
+   <pre class="code">DATA
+      block
+      heading
+      footing
+      width
+      type
+      length
+      dec
+      nJusHead, nJusLin 
+      tcolor, bcolor, brush 
+      lEditable 
+      aList 
+      oStyleHead               - An HStyle object to draw the header
+      aPaintCB                 - An array with codeblocks to paint column items
+      aBitmaps 
+      bValid,bWhen 
+      bEdit 
+      Picture
+      cGrid 
+      lSpandHead 
+      lSpandFoot 
+      bHeadClick
+      bColorBlock
+   </pre>
+   <pre class="code">METHODS
+     New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin,
+        cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
+     SetPaintCB( nId, block, cId )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes6" href="#_Classes6">
+   HRadioGroup</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR oGroupCurrent 
+      aButtons 
+      nValue 
+      bSetGet
+      oHGroup
+   </pre>
+   <pre class="code">METHODS
+      New( vari,bSetGet )
+      NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeight,
+         cCaption, oFont, bInit, bSize, tcolor, bColor )
+      EndGroup( nSelected )
+      Value( nValue ) SETGET
+      Refresh()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes7" href="#_Classes7">
+   HFont</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR aFonts 
+     handle 
+     name, width, height ,weight 
+     charset, italic, Underline, StrikeOut 
+     nCounter
+   </pre>
+   <pre class="code">METHODS
+      Add( fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic,
+         fdwUnderline, fdwStrikeOut, nHandle )
+      Select( oFont )
+      SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight )
+      Release()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes8" href="#_Classes8">
+   HPen</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR aPens 
+     handle 
+     style, width, color 
+     nCounter
+   </pre>
+   <pre class="code">METHODS
+      Add( style, width, color )
+      Get( nStyle,nWidth,nColor )
+      Release()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes9" href="#_Classes9">
+   HBrush</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR aBrushes 
+     handle 
+     color 
+     nHatch 
+     nCounter
+   </pre>
+   <pre class="code">METHODS
+      Add( color,nHatch )
+      Release()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes10" href="#_Classes10">
+   HBitmap</a></strong> 
+   <pre class="code">DATA
+     CLASS VAR cPath SHARED
+     CLASS VAR lSelFile
+     CLASS VAR aBitmaps 
+     handle 
+     name 
+     nFlags
+     nWidth, nHeight 
+     nCounter
+   </pre>
+   <pre class="code">METHODS
+      AddResource( name, nFlags, lOEM, nWidth, nHeight )
+      AddStandard( nId )
+      AddFile( name, hDC, lTranparent, nWidth, nHeight )
+      AddString( name, cVal )
+      AddWindow( oWnd,lFull )
+      Draw( hDC, x1, y1, width, height )
+      Release()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes11" href="#_Classes11">
+   HIcon</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR cPath SHARED
+      CLASS VAR aIcons 
+      CLASS VAR lSelFile
+      handle 
+      name 
+      nWidth, nHeight
+      nCounter
+   </pre>
+   <pre class="code">METHODS
+      AddResource( name, nWidth, nHeight, nFlags, lOEM )
+      AddFile( name, nWidth, nHeight )
+      Draw( hDC, x, y )
+      Release()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes12" href="#_Classes12">
+   HPrinter</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR aPaper
+      hDCPrn 
+      hDC 
+      cPrinterName 
+      hPrinter 
+      lPreview 
+      cMetaName 
+      nWidth, nHeight 
+      nPWidth, nPHeight 
+      nHRes, nVRes 
+      nOrient
+      lmm 
+      nPage
+
+      lBuffPrn
+      lUseMeta
+      aPages, aJob
+      aFonts
+      aPens, aBitmaps
+      oFont, oPen
+      cScriptFile
+
+      lmm
+      nCurrPage, oTrackV, oTrackH
+      nZoom, xOffset, yOffset, x1, y1, x2, y2
+
+      FormType
+      BinNumber
+      Copies
+      PaperLength
+      PaperWidth
+      TopMargin
+      BottomMargin
+      LeftMargin
+      RightMargin
+   </pre>
+   <pre class="code">METHODS
+      New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
+      SetMode( nOrientation, nDuplex )
+      AddFont( fontName, nHeight ,lBold, lItalic, lUnderline, nCharset )
+      SetFont( oFont )
+      StartDoc( lPreview,cMetaName ) - Starts printing of a document.
+      EndDoc()                  - End of a document printing.
+      StartPage()
+      EndPage()
+      LoadScript( cScriptFile )
+      SaveScript( cScriptFile )
+      ReleaseMeta()
+      PaintDoc( oWnd )
+      PrintDoc( nPage )
+      PrintDlg()
+      PrintScript( hDC, nPage, x1, y1, x2, y2 )
+      Preview( cTitle, aBitmaps, aTooltips, aBootUser )
+      End()                     - Releasing the printer.
+      Box( x1,y1,x2,y2,oPen )
+      Line( x1,y1,x2,y2,oPen )
+      Say( cString,x1,y1,x2,y2,nOpt,oFont )
+      Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
+      GetTextWidth( cString, oFont )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes13" href="#_Classes13">
+   HTreeNode</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass 
+      aItems 
+      handle 
+      oTree, oParent 
+      bAction 
+   </pre>
+   <pre class="code">METHODS
+      New( oTree, oParent, oPrev, oNext, cTitle, bAction,aImages ) 
+      AddNode( cTitle, oPrev, oNext, bAction, aImages ) 
+      Delete() 
+      FindChild( handle ) 
+      GetText() 
+      SetText(cText)
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes14" href="#_Classes14">
+   HTimer</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR aTimers 
+      objname
+      id 
+      value 
+      lOnce
+      oParent 
+      bAction
+   </pre>
+   <pre class="code">METHODS
+      New( oParent, id, value, bAction, lOnce )
+      End()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes15" href="#_Classes15">
+   HFreeImage</a></strong> 
+   <p>This class is similar to HBitmap, HIcon classes, it allows to load, save and draw
+   an image in BMP, JPEG, PNG and some other formats. It uses FreeImage library (<a href=http://freeimage.sourceforge.net>http://freeimage.sourceforge.net></a>) -
+   so, if you include it in your application, you need to have FreeImage.dll.</p>
+   <pre class="code">DATA
+      CLASS VAR aImages 
+      handle 
+      hBitmap 
+      name 
+      nWidth, nHeight 
+      nCounter
+   </pre>
+   <pre class="code">METHODS
+      AddFile( name )           - Load the image from a file
+      AddFromVar( cImage,cType )
+      FromBitmap( oBitmap )     - Create an image from a bitmap
+      Draw( hDC, nLeft, nTop, nWidth, nHeight )
+      Release()                 - Unload the image
+   </pre>
+   The example of using this class you may find in samples/viewer/viewer.prg. 
+
+   <br><strong class="subhead"><a name="Classes16" href="#_Classes16">
+   HSplash</a></strong>
+   <pre class="code">METHODS
+    Create( cFile,oTime,oResource )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes17" href="#_Classes17">
+   HPrintDos</a></strong>
+   <pre class="code">DATA
+      cCompr, cNormal, oText, cDouble, cBold, cUnBold
+      oPorta, oPicture
+      orow, oCol
+      cEject, nProw, nPcol, fText, gText
+      oTopMar
+      oLeftMar
+      oAns2Oem
+      LastError
+      oPrintStyle
+      colorPreview
+      nStartPage
+      nEndPage
+      nCopy
+   </pre>
+   <pre class="code">METHODS
+      New( oPorta )
+      Say( oProw, oCol, oTexto, oPicture )
+      SetCols( nRow, nCol )
+      gWrite( oText )
+      NewLine()
+      Eject()
+      Compress()
+      Double()
+      DesCompress()
+      Bold()
+      UnBold()
+      Comando()
+      SetPrc( x, y )
+      PrinterFile( oFile )
+      TxttoGraphic( oFile, osize, oPreview )
+      Preview( fname, cTitle )
+      END()
+   </pre>
+   <p></p>
+
+   <br><strong class="subhead"><a name="Classes18" href="#_Classes18">
+   HWinPrn</a></strong>
+   <pre class="code">DATA
+      CLASS VAR nStdHeight SHARED
+      CLASS VAR cPrinterName SHARED
+      oPrinter
+      nFormType
+      oFont
+      nLineHeight, nLined
+      nCharW
+      x, y
+      cPseudo
+      lElite
+      lCond
+      nLineInch
+      lBold
+      lItalic
+      lUnder
+      nLineMax
+      lChanged
+
+      cpFrom, cpTo
+      nTop
+      nBottom
+      nLeft
+      nRight
+   </pre>
+   <pre class="code">METHODS
+      New( cPrinter, cpFrom, cpTo, nFormType )
+      InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
+      SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
+      StartDoc( lPreview,cMetaName )
+      NextPage()
+      PrintLine( cLine,lNewLine )
+      PrintText( cText )
+      PutCode( cText )
+      EndDoc()
+      End()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes19" href="#_Classes19">
+   HFormTmpl</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR aForms
+      CLASS VAR maxId
+      CLASS VAR oActive
+      oDlg
+      aControls
+      aProp
+      aMethods
+      aVars
+      aNames
+      pVars
+      aFuncs
+      id
+      cId
+      nContainer
+      nCtrlId
+      lDebug
+      lNoModal
+      bDlgExit, bFormExit
+      cargo
+   </pre>
+   <pre class="code">METHODS
+      Read( fname, cId )
+      Show( nMode, params )
+      ShowMain( params )
+      ShowModal( params )
+      Close()
+      F( id, n )
+      Find( cId )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes20" href="#_Classes20">
+   HRepTmpl</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR aReports
+      CLASS VAR maxId
+      CLASS VAR aFontTable
+      aControls
+      aProp
+      aMethods
+      aVars
+      aFuncs
+      lDebug
+      id
+      cId
+
+      nKoefX, nKoefY, nKoefPix
+      nTOffset, nAOffSet, ny
+      lNextPage, lFinish
+      oPrinter
+   </pre>
+   <pre class="code">METHODS
+      READ( fname, cId )
+      PRINT( printer, lPreview, p1, p2, p3, p4, p5 )
+      PrintAsPage( printer, nPageType, lPreview, p1, p2, p3, p4, p5 )
+      PrintItem( oItem )
+      ReleaseObj( aControls )
+      Find( cId )
+      CLOSE()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes21" href="#_Classes21">
+   HBinC</a></strong> 
+   <pre class="code">DATA
+      cName
+      handle
+      lWriteAble
+      nVerHigh, nVerLow
+      nItems
+      nCntLen
+      nCntBlocks
+      nPassLen
+
+      nFileLen
+
+      aObjects
+   </pre>
+   <pre class="code">METHODS
+      Create( cName, n )
+      Open( cName, lWr )
+      Close()
+      Add( cObjName, cType, cVal )
+      Del( cObjName, cType )
+      Pack()
+      Exist( cObjName )
+      Get( cObjName )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes22" href="#_Classes22">
+   HStyle</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR aStyles   INIT { }
+
+      id
+      nOrient
+      aColors
+      oBitmap
+      nBorder
+      tColor
+      oPen
+      aCorners
+   </pre>
+   <pre class="code">METHODS
+      New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap )
+      Draw( hDC, nTop, nLeft, nWidth, nHeight )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes23" href="#_Classes23">
+   HilightBase</a></strong> 
+   <pre class="code">DATA
+      oEdit   
+      lCase
+      aLineStru, nItems, nLine
+   </pre>
+   <pre class="code">METHODS
+      New()
+      End()
+      Do()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes23_1" href="#_Classes23_1">
+   Hilight</a></strong> 
+   <pre class="code">DATA
+      cCommands                - A list of keywords (commands), divided by space
+      cFuncs                   - A list of keywords (functions), divided by space
+      cScomm                   - A string, which starts single line comments
+      cMcomm1, cMcomm2         - Start and end strings for multiline comments
+
+      lMultiComm
+      aDop, nDopChecked
+   </pre>
+   <pre class="code">METHODS
+      New( cFile, cSection )
+      Set( oEdit )
+      Do( nLine, lCheck )
+      UpdSource( nLine )
+      AddItem( nPos1, nPos2, nType )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes24" href="#_Classes24">
+   HXMLNode</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR nLastErr SHARED
+      title
+      type
+      aItems
+      aAttr
+      cargo
+   </pre>
+   <pre class="code">METHODS
+      New( cTitle, type, aAttr )
+      Add( xItem )
+      GetAttribute( cName, cType, xDefault )
+      SetAttribute( cName,cValue )
+      DelAttribute( cName )
+      Save( handle,level )
+      Find( cTitle,nStart )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes24_1" href="#_Classes24_1">
+   HXMLDoc</a></strong> 
+   <pre class="code">DATA
+   </pre>
+   <pre class="code">METHODS
+      New( encoding )
+      Read( fname )
+      ReadString( buffer )
+      Save( fname,lNoHeader )
+      Save2String()
+   </pre>
 
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

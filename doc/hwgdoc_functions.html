@@ -340,8 +340,13 @@
    <br><strong class="subhead"> hwg_Drawgraybitmap( hDC, hBitmap, x1, y1 )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_SpreadBitmap( hDC, hBitmap, nStyle )</strong> (Windows only)
-   <p></p>
+   <br><strong class="subhead"> hwg_SpreadBitmap( hDC, hBitmap [, nLeft, nTop, nRight, nBottom] )</strong>
+   <br> This funtion spreads a bitmap over all the drawing area or within rectangle with passed coordinates by multiplying.
+   <ul>
+     <li> hDC - handle of device context;
+     <li> hBitmap - handle of a bitmap;
+     <li> nLeft, nTop, nRight, nBottom - coordinates of a rectangle (optional).
+   </ul>
 
    <br><strong class="subhead"> hwg_CenterBitmap( hDC, hWnd, hBitmap, style, brush )</strong> (Windows only)
    <p></p>

@@ -8,7 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2016-09-26 19:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+2016-09-26 09:31 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_functions.html
+    * Synhronized with latest changes.
+
+2016-09-25 19:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/draw.c
     * Four parameters added to hwg_SpreadBitmap() - coordinates of a rectangle where to draw if not
       all the area should be filled.

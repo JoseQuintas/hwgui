@@ -315,7 +315,6 @@ CLASS HBitmap INHERIT HObject
    METHOD AddFile( name, HDC )
    METHOD AddString( name, cVal )
    METHOD AddStandard( cId, nSize )
-   METHOD Transparent( trColor )
    METHOD AddWindow( oWnd, lFull )
    METHOD Release()
 
@@ -413,12 +412,6 @@ METHOD AddStandard( cId, nSize ) CLASS HBitmap
    AAdd( ::aBitmaps, Self )
 
    RETURN Self
-
-METHOD Transparent( trColor ) CLASS HBitmap
-
-   hwg_alpha2pixbuf( ::handle, trColor )
-
-   RETURN Nil
 
 METHOD AddWindow( oWnd, lFull ) CLASS HBitmap
    LOCAL i, aBmpSize

@@ -85,6 +85,7 @@ HB_FUNC( HWG_STOCKBITMAP )
       hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
       hpix->type = HWGUI_OBJECT_PIXBUF;
       hpix->handle = handle;
+      hpix->trcolor = -1;
       HB_RETHANDLE( hpix );
    }
 }

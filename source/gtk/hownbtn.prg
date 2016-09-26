@@ -88,7 +88,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
       IF ::oBitmap != Nil .AND. lTr != Nil .AND. lTr
          ::trColor := Iif( trColor != Nil, trColor, 16777215 )
          ::lTransp := .T.
-         hwg_alpha2pixbuf( ::oBitmap:handle, ::trColor )
+         //hwg_alpha2pixbuf( ::oBitmap:handle, ::trColor )
       ENDIF
    ENDIF
    ::xb      := xb
@@ -187,7 +187,11 @@ METHOD Paint() CLASS HOwnButton
       y1 := Iif( ::yb != Nil .AND. ::yb != 0, ::yb, ;
          Round( ( aCoors[4] - aCoors[2] - ::heightb ) / 2, 0 ) )
       IF ::lEnabled
-         hwg_Drawbitmap( hDC, ::oBitmap:handle, , x1, y1, ::widthb, ::heightb )
+         IF ::lTransp
+            hwg_Drawtransparentbitmap( hDC, ::oBitmap:handle, x1, y1, ::trColor )
+         ELSE
+            hwg_Drawbitmap( hDC, ::oBitmap:handle, , x1, y1 )
+         ENDIF
       ELSE
          hwg_Drawgraybitmap( hDC, ::oBitmap:handle, x1, y1 )
       ENDIF

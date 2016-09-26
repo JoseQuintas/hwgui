@@ -53,6 +53,7 @@ typedef struct HWGUI_FONT_STRU
 typedef struct HWGUI_PIXBUF_STRU
 {
    short int type;
+   long int  trcolor;
    GdkPixbuf * handle;
 } HWGUI_PIXBUF, * PHWGUI_PIXBUF;
 

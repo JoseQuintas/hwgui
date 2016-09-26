@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-26 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+    * hwg_DrawTransparentBitmap() implemented for GTK version.
+  * source/gtk/hwgtk.h
+  * source/gtk/control.c
+  * source/gtk/hownbtn.prg
+    * Changed implementation of a bitmap transparency.
+  * source/gtk/drawwidg.prg
+    * :Transparent() metod removed from HBitmap class as obsolete.
+
 2016-09-26 09:31 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_functions.html

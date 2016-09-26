@@ -57,6 +57,36 @@ void hwg_setcolor( cairo_t * cr, long int nColor )
 
 }
 
+GdkPixbuf * alpha2pixbuf( GdkPixbuf * hPixIn, long int nColor )
+{
+   short int r, g, b;
+
+   r = nColor % 256;
+   g = ( ( nColor - r ) % 65536 ) / 256;
+   b = ( nColor - g - r ) / 65536;
+   return gdk_pixbuf_add_alpha( hPixIn, 1,
+            (guchar) r, (guchar) g, (guchar) b );
+}
+
+/*
+ * hwg_Alpha2Pixbuf( hBitmap, nColor )
+ */
+HB_FUNC( HWG_ALPHA2PIXBUF )
+{
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(1);
+   GdkPixbuf * handle;
+   long int nColor = hb_parnl(2);
+
+   if( obj && obj->handle && obj->trcolor != nColor )
+   {
+      handle = alpha2pixbuf( obj->handle, nColor );
+      g_object_unref( (GObject*) obj->handle );
+      obj->handle = handle;
+      obj->trcolor = nColor;
+   }
+   
+}
+
 HB_FUNC( HWG_INVALIDATERECT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
@@ -281,23 +311,61 @@ HB_FUNC( HWG_DRAWBITMAP )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(2);
+   GdkPixbuf * pixbuf;
    gint x =  hb_parni(4);
    gint y =  hb_parni(5);
-   gint width = hb_parni(6);
-   gint height = hb_parni(7);
-   GdkPixbuf * pixbuf = gdk_pixbuf_scale_simple( obj->handle, width, height, GDK_INTERP_HYPER );
-   
-   gdk_cairo_set_source_pixbuf( hDC->cr, pixbuf, x, y );
-   cairo_paint( hDC->cr );
-   g_object_unref( (GObject*) pixbuf );
+   gint srcWidth = gdk_pixbuf_get_width( obj->handle );
+   gint srcHeight = gdk_pixbuf_get_height( obj->handle );
+   gint destWidth = ( hb_pcount(  ) >= 5 && !HB_ISNIL( 6 ) ) ? hb_parni( 6 ) : srcWidth;
+   gint destHeight = ( hb_pcount(  ) >= 6 && !HB_ISNIL( 7 ) ) ? hb_parni( 7 ) : srcHeight;
+
+   if( srcWidth == destWidth && srcHeight == destHeight ) {
+      gdk_cairo_set_source_pixbuf( hDC->cr, obj->handle, x, y );
+      cairo_paint( hDC->cr );
+   }
+   else {
+      pixbuf = gdk_pixbuf_scale_simple( obj->handle, destWidth, destHeight, GDK_INTERP_HYPER );
+      gdk_cairo_set_source_pixbuf( hDC->cr, pixbuf, x, y );
+      cairo_paint( hDC->cr );
+      g_object_unref( (GObject*) pixbuf );
+   }
 
 }
 
 /*
- * DrawTransparentBitmap( hDC, hBitmap, x, y )
+ * DrawTransparentBitmap( hDC, hBitmap, x, y, trcolor, width, height )
  */
 HB_FUNC( HWG_DRAWTRANSPARENTBITMAP )
 {
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(2);
+   GdkPixbuf * pixbuf;
+   gint x =  hb_parni(3);
+   gint y =  hb_parni(4);
+   long int nColor = hb_parnl(5);
+   gint srcWidth = gdk_pixbuf_get_width( obj->handle );
+   gint srcHeight = gdk_pixbuf_get_height( obj->handle );
+   gint destWidth = ( hb_pcount(  ) >= 5 && !HB_ISNIL( 6 ) ) ? hb_parni( 6 ) : srcWidth;
+   gint destHeight = ( hb_pcount(  ) >= 6 && !HB_ISNIL( 7 ) ) ? hb_parni( 7 ) : srcHeight;
+
+   if( obj->trcolor != nColor )
+   {
+      pixbuf = alpha2pixbuf( obj->handle, nColor );
+      g_object_unref( (GObject*) obj->handle );
+      obj->handle = pixbuf;
+      obj->trcolor = nColor;
+   }
+
+   if( srcWidth == destWidth && srcHeight == destHeight ) {
+      gdk_cairo_set_source_pixbuf( hDC->cr, obj->handle, x, y );
+      cairo_paint( hDC->cr );
+   }
+   else {
+      pixbuf = gdk_pixbuf_scale_simple( obj->handle, destWidth, destHeight, GDK_INTERP_HYPER );
+      gdk_cairo_set_source_pixbuf( hDC->cr, pixbuf, x, y );
+      cairo_paint( hDC->cr );
+      g_object_unref( (GObject*) pixbuf );
+   }
 }
 
 HB_FUNC( HWG_SPREADBITMAP )
@@ -376,6 +444,7 @@ HB_FUNC( HWG_OPENBITMAP )
       hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
       hpix->type = HWGUI_OBJECT_PIXBUF;
       hpix->handle = handle;
+      hpix->trcolor = -1;
       HB_RETHANDLE( hpix );
    }
 }
@@ -402,36 +471,9 @@ HB_FUNC( HWG_OPENIMAGE )
       hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
       hpix->type = HWGUI_OBJECT_PIXBUF;
       hpix->handle = handle;
+      hpix->trcolor = -1;
       HB_RETHANDLE( hpix );
    }
-}
-
-GdkPixbuf * alpha2pixbuf( GdkPixbuf * hPixIn, long int nColor )
-{
-   short int r, g, b;
-
-   r = nColor % 256;
-   g = ( ( nColor - r ) % 65536 ) / 256;
-   b = ( nColor - g - r ) / 65536;
-   return gdk_pixbuf_add_alpha( hPixIn, 1,
-            (guchar) r, (guchar) g, (guchar) b );
-}
-
-/*
- * hwg_Alpha2Pixbuf( hBitmap, nColor )
- */
-HB_FUNC( HWG_ALPHA2PIXBUF )
-{
-   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(1);
-   GdkPixbuf * handle;
-
-   if( obj && obj->handle )
-   {
-      handle = alpha2pixbuf( obj->handle, hb_parnl(2) );
-      g_object_unref( (GObject*) obj->handle );
-      obj->handle = handle;
-   }
-   
 }
 
 HB_FUNC( HWG_DRAWICON )

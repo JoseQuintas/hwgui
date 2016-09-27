@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-27 13:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc_functions.html
+    * Some descriptions added.
+  * source/winapi/window.c
+    * hwg_FlashWindow(): second parameter is made optional, default value is 1.
+  * utils/tutorial/tutor_eng.xml
+    * List of stock icons has been extended.
+
 2016-09-26 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
     * hwg_DrawTransparentBitmap() implemented for GTK version.

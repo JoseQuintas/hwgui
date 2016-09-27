@@ -250,7 +250,7 @@
    </ul>
 
    <br><strong class="subhead"> hwg_LineTo( hDC, x1, y1 )</strong>
-   <br> Draw a line from a current position to a point with given coordinates. Uses a pen,
+   <br> Draws a line from a current position to a point with given coordinates. Uses a pen,
    selected with the help of <code>hwg_SelectObject()</code>.
    <ul>
      <li> hDC - handle of the device context;
@@ -258,7 +258,7 @@
    </ul>
 
    <br><strong class="subhead"> hwg_Rectangle( hDC, x1, y1, x2, y2 )</strong> 
-   <br> Draw a rectangle with given coordinates. Uses a pen,
+   <br> Draws a rectangle with given coordinates. Uses a pen,
    selected with the help of <code>hwg_SelectObject()</code>.
    <ul>
      <li> hDC - handle of the device context;
@@ -267,7 +267,7 @@
    </ul>
 
    <br><strong class="subhead"> hwg_Box( hDC, x1, y1, x2, y2 )</strong> (Windows only)
-   <br> Draw a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
+   <br> Draws a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
    selected with the help of <code>hwg_SelectObject()</code>.
    <ul>
      <li> hDC - handle of the device context;
@@ -276,7 +276,7 @@
    </ul>
 
    <br><strong class="subhead"> hwg_DrawLine( hDC, x1, y1, x2, y2 )</strong> 
-   <br> Draw a line from one point to another. Uses a pen,
+   <br> Draws a line from one point to another. Uses a pen,
    selected with the help of <code>hwg_SelectObject()</code>.
    <ul>
      <li> hDC - handle of the device context;
@@ -285,7 +285,7 @@
    </ul>
 
    <br><strong class="subhead"> hwg_Pie( hDC, x1, y1, x2, y2, xr1, yr1, xr2, yr2 )</strong> (Windows only)
-   <br> Draw a pie-shaped wedge bounded by the intersection of an ellipse and two radials and fills area inside. Uses a pen and a brush,
+   <br> Draws a pie-shaped wedge bounded by the intersection of an ellipse and two radials and fills area inside. Uses a pen and a brush,
    selected with the help of <code>hwg_SelectObject()</code>.
    <ul>
      <li> hDC - handle of the device context;
@@ -296,7 +296,7 @@
    </ul>
 
    <br><strong class="subhead"> hwg_Ellipse( hDC, x1, y1, x2, y2 )</strong> 
-   <br> Draw an ellipse in a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
+   <br> Draws an ellipse in a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
    selected with the help of <code>hwg_SelectObject()</code>.
    <ul>
      <li> hDC - handle of the device context;
@@ -314,54 +314,172 @@
    </ul>
 
    <br><strong class="subhead"> hwg_RoundRect( hDC, x1, y1, x2, y2, xRad, yRad )</strong> (Windows only)
-   <p></p>
+   <br> Draws a rectangle with rounded corners. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates;
+     <li> xRad, yRad - width and height of an ellipse used to draw rounded corners.
+   </ul>
 
    <br><strong class="subhead"> hwg_Drawbutton( hDC, x1, y1, x2, y2, nFlag )</strong> 
-   <p></p>
+   <br> Draws a button.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates;
+     <li> nFlag - determines, how to draw a button:
+       <br> &nbsp;&nbsp; 1 - normal;
+       <br> &nbsp;&nbsp; 2 - pressed;
+       <br> &nbsp;&nbsp; 5 - flat;
+       <br> &nbsp;&nbsp; 6 - flat pressed.
+   </ul>
 
    <br><strong class="subhead"> hwg_DrawEdge( hDC, x1, y1, x2, y2, nFlag, nBorder )</strong> (Windows only)
-   <p></p>
+   <br>Draws one or more edges of rectangle.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates;
+     <li> nFlag - the type of inner and outer edges, it is a combination of one
+       inner-border flag and one outer-border flag. For details look at the MSDN documentation for
+       <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd162477%28v=vs.85%29.aspx">DrawEdge() function</a>.
+     <li> nBorder - the type of border, For details look at the MSDN documentation for DrawEdge() function.
+   </ul>
 
    <br><strong class="subhead"> hwg_gtk_DrawEdge( hDC, x1, y1, x2, y2, nFlag )</strong> (GTK only)
-   <p></p>
+   <br>Draws one or more edges of rectangle.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates;
+     <li> nFlag - determines, how to draw.
+   </ul>
 
    <br><strong class="subhead"> hwg_drawGradient( hDC, x1, y1, x2, y2, int type, array colors, array stops, array radiuses )</strong> 
-   <p></p>
+   <br> This function draws rectangle with rounded corners and fill it with gradient pattern.
+   <ul>
+     <li>hDC - handle of device context;
+     <li>x1 and y1 - coordinates of upper left corner;
+     <li>x2 and y2 - coordinates of bottom right corner;
+     <li>type - the type of gradient filling:
+       <br>&nbsp;&nbsp; 1 - vertical and down;
+       <br>&nbsp;&nbsp; 2 - vertical and up;
+       <br>&nbsp;&nbsp; 3 - horizontal and to the right;
+       <br>&nbsp;&nbsp; 4 - horizontal and to the left;
+       <br>&nbsp;&nbsp; 5 - diagonal right-up;
+       <br>&nbsp;&nbsp; 6 - diagonal left-down;
+       <br>&nbsp;&nbsp; 7 - diagonal right-down;
+       <br>&nbsp;&nbsp; 8 - diagonal left-up;
+       <br>&nbsp;&nbsp; 9 - radial gradient;
+     <li>colors - our colors (maximum - 16 colors), a color can be represented as 0xBBGGRR;
+     <li>stops - fractions on interval [0;1] that correspond to the colors,
+           a stop determines the position where the corresponding color reaches its maximum;
+     <li>radiuses - for our rounded corners:
+       <br>&nbsp;&nbsp; first  - for upper left;
+       <br>&nbsp;&nbsp; second - for upper right;
+       <br>&nbsp;&nbsp; third  - for bottom right;
+       <br>&nbsp;&nbsp; fourth - for bottom left;
+   </ul>
 
-   <br><strong class="subhead"> hwg_Openimage( cName | cBody [, lMem] )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_OpenImage( cName | cBody [, lMem] )</strong> 
+   <br>Create a bitmap from the data stored in an image file or in a passed data.
+   <ul>
+     <li> cName | cBody - the name of an image file or a string with a previously loaded image file content;
+     <li> lMem - a logical variable must be set to .T., if a first parameter is a string with an image file content;
+     <li> Return value - handle of a bitmap;
+   </ul>
 
-   <br><strong class="subhead"> hwg_DrawBitmap( hDC, hBitmap, style, x, y, width, height )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_OpenBitmap( cName [, hDC] )</strong> 
+   <br>Creates a bitmap from the data stored in the <i>bmp</i> file.
+   <ul>
+     <li> cName - name of a <i>bmp</i> file;
+     <li> hDC - (optional) handle to a current device context.
+     <li> Return value - handle of a bitmap;
+   </ul>
 
-   <br><strong class="subhead"> hwg_DrawTransparentBitmap( hDC, hBitmap, x, y [,trColor] )</strong> (Windows only)
-   <p></p>
+   <br><strong class="subhead"> hwg_StockBitmap( cName [,nSizeType] )</strong> (GTK only)
+   <br> GTK has a number of predefined stock icons, which can be used in application.
+     It is very convenient because it saves the programmer from having to store the image files included with the executable.
+     This function creates a bitmap from a stock object.
+   <ul>
+     <li> cName - name of a stock object. The set of names you may see, for example,
+      with the help of Tutorial utility, chapter &quot;Advanced using of controls&quot;, module &quot;Browse of bitmaps&quot; ; 
+     <li> nSizeType - (optional) type of a size, may be one of following:
+       <br>&nbsp;&nbsp; GTK_ICON_SIZE_MENU,
+       <br>&nbsp;&nbsp; GTK_ICON_SIZE_SMALL_TOOLBAR,
+       <br>&nbsp;&nbsp; GTK_ICON_SIZE_LARGE_TOOLBAR,
+       <br>&nbsp;&nbsp; GTK_ICON_SIZE_BUTTON (default),
+       <br>&nbsp;&nbsp; GTK_ICON_SIZE_DND,
+       <br>&nbsp;&nbsp; GTK_ICON_SIZE_DIALOG;
+     <li> Return value - handle of a bitmap;
+   </ul>
 
-   <br><strong class="subhead"> hwg_Drawgraybitmap( hDC, hBitmap, x1, y1 )</strong> (Windows only)
-   <p></p>
+   <br><strong class="subhead"> hwg_DrawBitmap( hDC, hBitmap, style, x, y [, width, height] )</strong> 
+   <br> Draws a bitmap.
+   <ul>
+     <li> hDC - handle of device context;
+     <li> hBitmap - handle of a bitmap (<code>oBitmap:handle</code> usually);
+     <li> style - (optional parameter, for WinAPI only). By default the value is SRCCOPY: copies the source rectangle directly to the destination rectangle;
+     <li> x, y - coordinates of a point where to start drawing bitmap (left top corner);
+     <li> width, height - width and height of a destination image (optional parameters, by default - original bitmap size).
+   </ul>
+
+   <br><strong class="subhead"> hwg_DrawTransparentBitmap( hDC, hBitmap, x, y [,trColor] [, width, height] )</strong>
+   <br> Draws a transparent bitmap.
+   <ul>
+     <li> hDC - handle of device context;
+     <li> hBitmap - handle of a bitmap (<code>oBitmap:handle</code> usually);
+     <li> x, y - coordinates of a point where to start drawing bitmap (left top corner);
+     <li> trcolor - transparent color;
+     <li> width, height - width and height of a destination image (optional parameters, by default - original bitmap size).
+   </ul>
+
+   <br><strong class="subhead"> hwg_Drawgraybitmap( hDC, hBitmap, x, y )</strong> (Windows only)
+   <br> Draws a bitmap in grayscale mode.
+   <ul>
+     <li> hDC - handle of device context;
+     <li> hBitmap - handle of a bitmap (<code>oBitmap:handle</code> usually);
+     <li> x, y - coordinates of a point where to start drawing bitmap (left top corner).
+   </ul>
 
    <br><strong class="subhead"> hwg_SpreadBitmap( hDC, hBitmap [, nLeft, nTop, nRight, nBottom] )</strong>
    <br> This funtion spreads a bitmap over all the drawing area or within rectangle with passed coordinates by multiplying.
    <ul>
      <li> hDC - handle of device context;
-     <li> hBitmap - handle of a bitmap;
+     <li> hBitmap - handle of a bitmap (<code>oBitmap:handle</code> usually);
      <li> nLeft, nTop, nRight, nBottom - coordinates of a rectangle (optional).
+   </ul>
+
+   <br><strong class="subhead"> hwg_Drawicon( hDC, hIcon, x1, y1 )</strong> (Windows only)
+   <br> Draws an icon.
+   <ul>
+     <li> hDC - handle of device context;
+     <li> hIcon - handle of an icon (<code>oIcon:handle</code> usually);
+     <li> x, y - coordinates of a point where to start drawing an icon (left top corner);
    </ul>
 
    <br><strong class="subhead"> hwg_CenterBitmap( hDC, hWnd, hBitmap, style, brush )</strong> (Windows only)
    <p></p>
 
    <br><strong class="subhead"> hwg_GetBitmapSize( hBitmap )</strong> 
-   <p></p>
+   <br>Returns an array with the size (width and height) of a bitmap.
+   <ul>
+     <li> hBitmap - handle of a bitmap (<code>oBitmap:handle</code> usually);
+     <li> Return value - an array:
+          <br><code>aArray[1]</code> - width of a bitmap;
+          <br><code>aArray[2]</code> - height of a bitmap.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetIconSize( hIcon )</strong> (Windows only)
-   <p></p>
-
-   <br><strong class="subhead"> hwg_Openbitmap( cName [, hDC] )</strong> 
-   <p></p>
-
-   <br><strong class="subhead"> hwg_Drawicon( hDC, hIcon, x1, y1 )</strong> (Windows only)
-   <p></p>
+   <br>Returns an array with the size (width and height) of an icon.
+   <ul>
+     <li> hBitmap - handle of an icon (<code>oIcon:handle</code> usually);
+     <li> Return value - an array:
+          <br><code>aArray[1]</code> - width of an icon;
+          <br><code>aArray[2]</code> - height of an icon.
+   </ul>
 
    <br><strong class="subhead"> hwg_Getsyscolor( nCode )</strong> 
    <p></p>
@@ -515,13 +633,22 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_isWindow( hWnd )</strong> (Windows only)
-   <p></p>
+   <br>Determines whether the specified window handle identifies an existing window.
+   <ul>
+     <li> Return value (logical) - .T., if the window handle identifies an existing window.
+   </ul>
 
    <br><strong class="subhead"> hwg_FlashWindow( hWnd )</strong> (Windows only)
-   <p></p>
+   <br>Flashes the specified window one time - change the appearance of its caption bar
+    as if the window were changing from inactive to active status, or vice versa.
+   <ul>
+     <li> hWnd - window handle.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetActiveWindow()</strong> 
-   <p></p>
+   <ul>
+     <li> Return value - handle of an active window.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetInstance</strong> (Windows only)
    <p></p>

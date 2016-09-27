@@ -1391,7 +1391,8 @@ HB_FUNC( HWG_GETWINDOWPLACEMENT )
 HB_FUNC( HWG_FLASHWINDOW )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   int itrue = hb_parni( 2 );
+   int itrue = (HB_ISNIL(2))? 1 : hb_parni( 2 );
+
    FlashWindow( hWnd, itrue );
 }
 

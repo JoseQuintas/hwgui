@@ -783,7 +783,7 @@ Local bCol2 := {|o,h,x1,y1,x2,y2|
    //   using a user-defined codeblock to paint a cell.
    // Note, that the HBitmap():AddStandard() receives numerical id for WinAPI
    //   and a string for GTK.
-   IF "windows" $ Lower(Os())
+   #ifndef __PLATFORM__UNIX
       oBitmap := HBitmap():AddStandard( OBM_BTNCORNERS )
       aStock := { OBM_BTNCORNERS, OBM_BTSIZE, ;
          OBM_CHECK, OBM_CHECKBOXES, OBM_CLOSE, OBM_REDUCE, ;
@@ -797,7 +797,7 @@ Local bCol2 := {|o,h,x1,y1,x2,y2|
          "OBM_DNARROWI", "OBM_RGARROW", "OBM_LFARROW", "OBM_RGARROWD", "OBM_LFARROWD", "OBM_RGARROWI", ;
          "OBM_LFARROWI", "OBM_SIZE", "OBM_MNARROW", "OBM_UPARROW", "OBM_UPARROWD", ;
          "OBM_UPARROWI", "OBM_ZOOM", "OBM_ZOOMD" }
-   ELSE
+   #else
       oBitmap := HBitmap():AddStandard( "gtk-ok" )
       aStock := { "gtk-about", "gtk-add", "gtk-apply", "gtk-bold", "gtk-cancel", "gtk-cdrom", ;
          "gtk-clear", "gtk-close", "gtk-color-picker", "gtk-convert", "gtk-connect", ;
@@ -811,9 +811,16 @@ Local bCol2 := {|o,h,x1,y1,x2,y2|
          "gtk-justify-center", "gtk-justify-left", "gtk-justify-fill", "gtk-justify-right", ;
          "gtk-leave-fullscreen", "gtk-media-forward", "gtk-media-next", "gtk-media-pause", ;
          "gtk-media-play", "gtk-media-previous", "gtk-media-record", "gtk-media-rewind", ;
-         "gtk-media-stop", "gtk-missing-image", "gtk-network", "gtk-new", "gtk-no", "gtk-ok", "gtk-open" }
+         "gtk-media-stop", "gtk-missing-image", "gtk-network", "gtk-new", "gtk-no", "gtk-ok", "gtk-open", ;
+         "gtk-orientation-landscape", "gtk-orientation-portrait", "gtk-orientation-reverse-landscape", "gtk-orientation-reverse-portrait", ;
+         "gtk-page-setup", "gtk-paste", "gtk-preferences", "gtk-print", "gtk-print-error", ;
+         "gtk-print-paused", "gtk-print-preview", "gtk-print-report", "gtk-print-warning", "gtk-properties", ;
+         "gtk-quit", "gtk-redo", "gtk-refresh", "gtk-remove", "gtk-revert-to-saved", "gtk-save", "gtk-save-as", ;
+         "gtk-select-all", "gtk-select-color", "gtk-select-font", "gtk-sort-ascending", "gtk-sort-descending", ;
+         "gtk-spell-check", "gtk-stop", "gtk-strikethrough", "gtk-undelete", "gtk-underline", "gtk-undo", "gtk-unindent", ;
+         "gtk-yes", "gtk-zoom-100", "gtk-zoom-fit", "gtk-zoom-in", "gtk-zoom-out" }
       aStockNames := aStock
-   ENDIF
+   #endif
 
    INIT DIALOG oDlg TITLE "Browse of images" ;
          AT 0, 0 SIZE 380, 360 BACKCOLOR 0xeeeeee;

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-09-30 19:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcombo.prg
+    ! Bug fixed.
+
 2016-09-30 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc_functions.html
     * Some descriptions added.

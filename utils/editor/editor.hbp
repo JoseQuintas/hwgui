@@ -9,5 +9,6 @@
 
 editor.prg
 hcediext.prg
+calc.prg
 
 ..\..\hwgui.hbc

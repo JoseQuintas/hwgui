@@ -357,7 +357,7 @@
      <li> nFlag - determines, how to draw.
    </ul>
 
-   <br><strong class="subhead"> hwg_drawGradient( hDC, x1, y1, x2, y2, int type, array colors, array stops, array radiuses )</strong> 
+   <a name="Functions3h"></a><br><strong class="subhead"> hwg_drawGradient( hDC, x1, y1, x2, y2, int type, array colors, array stops, array radiuses )</strong> 
    <br> This function draws rectangle with rounded corners and fill it with gradient pattern.
    <ul>
      <li>hDC - handle of device context;
@@ -444,7 +444,7 @@
      <li> x, y - coordinates of a point where to start drawing bitmap (left top corner).
    </ul>
 
-   <br><strong class="subhead"> hwg_SpreadBitmap( hDC, hBitmap [, nLeft, nTop, nRight, nBottom] )</strong>
+   <a name="Functions3k"></a><br><strong class="subhead"> hwg_SpreadBitmap( hDC, hBitmap [, nLeft, nTop, nRight, nBottom] )</strong>
    <br> This funtion spreads a bitmap over all the drawing area or within rectangle with passed coordinates by multiplying.
    <ul>
      <li> hDC - handle of device context;
@@ -497,10 +497,19 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_GetDC( hWnd )</strong> 
-   <p></p>
+   <br>Returns handle of device context of GUI element. After using this handle
+     must be released with a help of hwg_ReleaseDC( hWnd, hDC ).
+   <ul>
+     <li> hWnd - handle of GUI element;
+     <li> Return value - handle of device context.
+   </ul>
 
    <br><strong class="subhead"> hwg_ReleaseDC( hWnd, hDC )</strong> 
-   <p></p>
+   <br>Releases handle of device context, which was created using hwg_GetDC( hWnd ).
+   <ul>
+     <li> hWnd - handle of appropriate GUI element;
+     <li> hDC - handle of device context.
+   </ul>
 
    <br><strong class="subhead"> hwg_SaveDC( hDC )</strong> (Windows only)
    <p></p>
@@ -654,16 +663,32 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_SetWindowStyle( handle, nStyle )</strong> (Windows only)
-   <p></p>
+   <br>This function sets a WinAPI style to GUI element.
+   <ul>
+     <li> handle - handle of GUI element;
+     <li> nStyle - WinAPI style.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetWindowStyle( handle )</strong> (Windows only)
-   <p></p>
+   <br>This function returns a WinAPI style of GUI element.
+   <ul>
+     <li> handle - handle of GUI element;
+     <li> Return value - (numeric) WinAPI style.
+   </ul>
 
    <br><strong class="subhead"> hwg_SetWindowExtStyle( handle, nStyle )</strong> (Windows only)
-   <p></p>
+   <br>This function sets an extended WinAPI style to GUI element.
+   <ul>
+     <li> handle - handle of GUI element;
+     <li> nStyle - an extended WinAPI style.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetWindowExtStyle( handle )</strong> (Windows only)
-   <p></p>
+   <br>This function returns an extended WinAPI style of GUI element.
+   <ul>
+     <li> handle - handle of GUI element;
+     <li> Return value - (numeric) an extended WinAPI style.
+   </ul>
 
    <br><strong class="subhead"> hwg_FindWindow( cClassName, cWindowName)</strong> (Windows only)
    <p></p>
@@ -910,7 +935,12 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_getParent( handle )</strong> 
-   <p></p>
+   <br>Returns handle of a parent GUI element, using a system call WinAPI/GTK - so,
+   it is faster, than with the help of <code>oParent</code> variable of appropriate object.
+   <ul>
+     <li> handle - handle of a control;
+     <li> Return value - handle of a parent GUI element.
+   </ul>
 
    <br><strong class="subhead"> hwg_getAncestor( handle )</strong> (Windows only)
    <p></p>
@@ -935,13 +965,28 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_SetDlgItemText( parentHandle, nId, cText )</strong> (Windows only)
-   <p></p>
+   <br>Sets the title or text of a control.
+   <ul>
+     <li> parentHandle - handle of a parent window (<code>oCtrl:oParent:handle</code>);
+     <li> nId - id of a control (<code>oCtrl:id</code>);
+     <li> cText - text string to be set.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetDlgItemText( parentHandle, nId )</strong> (Windows only)
-   <p></p>
+   <br>Retrieves the title or text associated with a control.
+   <ul>
+     <li> parentHandle - handle of a parent window (<code>oCtrl:oParent:handle</code>);
+     <li> nId - id of a control (<code>oCtrl:id</code>);
+     <li> Return value - text string, displayed in a control.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetEditText( parentHandle, nId )</strong> (Windows only)
-   <p></p>
+   <br>Retrieves the text associated with an edit control.
+   <ul>
+     <li> parentHandle - handle of a parent window (<code>oCtrl:oParent:handle</code>);
+     <li> nId - id of a control (<code>oEdit:id</code>);
+     <li> Return value - text string, displayed in an edit control.
+   </ul>
 
    <br><strong class="subhead"> hwg_CheckDlgButton( parentHandle, nId, lValue )</strong> (Windows only)
    <p></p>

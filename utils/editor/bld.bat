@@ -3,15 +3,16 @@
 set HRB_DIR=%HB_PATH%
 set HWGUI_INSTALL=..\..
 
-%HRB_DIR%\bin\harbour editor.prg hcediext.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_DIR%\bin\harbour editor.prg hcediext.prg calc.prg -n -w -q -i%HRB_DIR%\include;%HWGUI_INSTALL%\include %1 >a1.log 2>a2.log
 
-   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include editor.c hcediext.c
+   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include editor.c hcediext.c calc.c
 
    echo 1 24 "..\..\image\WindowsXP.Manifest" > hwgui_xp.rc
    brc32 -r hwgui_xp -fohwgui_xp
 
 echo c0w32.obj + > b32.bc
 echo hcediext.obj + >> b32.bc
+echo calc.obj + >> b32.bc
 echo editor.obj, + >> b32.bc
 echo editor.exe, + >> b32.bc
 echo editor.map, + >> b32.bc
@@ -40,7 +41,7 @@ echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
 if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
 if exist %HRB_DIR%\lib\hbole.lib echo %HRB_DIR%\lib\hbole.lib + >> b32.bc
-echo %HRB_DIR%\lib\ct.lib + >> b32.bc
+echo %HRB_DIR%\lib\libct.lib + >> b32.bc
 goto common
 
 :hrb

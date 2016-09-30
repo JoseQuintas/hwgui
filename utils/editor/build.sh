@@ -19,8 +19,9 @@ export HWGUI_LIB=../../lib
 
 $HRB_BIN/harbour editor -n -i$HRB_INC -i$HWGUI_INC -w2 2>bldh.log
 $HRB_BIN/harbour hcediext -n -i$HRB_INC -i$HWGUI_INC -w2 2>>bldh.log
+$HRB_BIN/harbour calc -n -i$HRB_INC -i$HWGUI_INC -w2 2>>bldh.log
 
-gcc editor.c hcediext.c -oeditor -I $HRB_INC -I $HWGUI_INC -I ../../../source/gtk -DHWG_USE_POINTER_ITEM -L $HRB_LIB -L $HWGUI_LIB $SYSTEM_LIBS -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS -Wl,--end-group `pkg-config --cflags gtk+-2.0` `pkg-config gtk+-2.0 --libs`  >bld.log 2>bld.log
+gcc editor.c hcediext.c calc.c -oeditor -I $HRB_INC -I $HWGUI_INC -I ../../../source/gtk -DHWG_USE_POINTER_ITEM -L $HRB_LIB -L $HWGUI_LIB $SYSTEM_LIBS -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS -Wl,--end-group `pkg-config --cflags gtk+-2.0` `pkg-config gtk+-2.0 --libs`  >bld.log 2>bld.log
 
 rm *.c
 rm *.o

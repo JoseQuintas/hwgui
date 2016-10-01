@@ -46,6 +46,20 @@ Function hwg_onMove( oWnd, wParam, lParam )
 
 Return 0
 
+FUNCTION hwg_HideHidden( oWnd )
+   LOCAL i, aControls := oWnd:aControls
+
+   FOR i := 1 TO Len( aControls )
+      IF !Empty( aControls[i]:aControls )
+         hwg_HideHidden( aControls[i] )
+      ENDIF
+      IF aControls[i]:lHide
+         hwg_Hidewindow( aControls[i]:handle )
+      ENDIF
+   NEXT
+
+   RETURN Nil
+
 STATIC FUNCTION onAnchor( oWnd, wold, hold, wnew, hnew )
 LOCAL aControls := oWnd:aControls, oItem, w, h
 
@@ -249,9 +263,11 @@ METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
 Return Self
 
 METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMainWindow
-Local oWndClient, handle
+Local i
 
    IF ::type == WND_MAIN
+
+      hwg_ShowAll( ::handle )
 
       ::lActivated := .T.
       IF HB_ISBLOCK( bActivate )
@@ -261,10 +277,16 @@ Local oWndClient, handle
          Eval( ::bActivate, Self )
       ENDIF
 
-      IF !Empty( lCentered )
+      IF !Empty( lMinimize )
+         ::Minimize()
+      ELSEIF !Empty( lMaximize )
+         ::Maximize()
+      ELSEIF !Empty( lCentered )
          ::Center()
       ENDIF
-      Hwg_ActivateMainWindow( ::handle,::hAccel, lMaximize, lMinimize )
+      hwg_HideHidden( Self )
+
+      Hwg_ActivateMainWindow( ::handle )
 
    ENDIF
 

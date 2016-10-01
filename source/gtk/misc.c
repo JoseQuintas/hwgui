@@ -141,7 +141,7 @@ HB_FUNC( HWG_CHECKBIT )
 
 HB_FUNC( HWG_PTRTOULONG )
 {
-   hb_retnl( (long int) HB_PARHANDLE( 1 ) );
+   hb_retnl( hb_parnl( 1 ) );
 }
 
 HB_FUNC( HWG_ISPTREQ )

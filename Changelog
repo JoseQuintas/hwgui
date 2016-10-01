@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-01 11:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawtext.c
+    * hwg_windowfromdc() added - synhro with WinAPI version.
+  * source/gtk/hcombo.prg
+    ! Bug fixed.
+  * source/gtk/hcontrol.prg
+  * source/gtk/hdialog.prg
+  * source/gtk/hwindow.prg
+  * source/gtk/window.c
+    * Some changes in handling of hide/show state.
+  * source/gtk/misc.c
+    * hwg_ptrtoulong() reverted.
+
 2016-09-30 19:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcombo.prg
     ! Bug fixed.

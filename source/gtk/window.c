@@ -206,8 +206,8 @@ HB_FUNC( HWG_CREATEDLG )
  */
 HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 {
+/*
    GtkWidget * hWnd = (GtkWidget*) HB_PARHANDLE(1);
-   // HACCEL hAcceler = ( HB_ISNIL(2) )? NULL : (HACCEL) hb_parnl(2);
 
    if( !HB_ISNIL(3) && hb_parl(3) )
    {
@@ -219,6 +219,7 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
    }
 
    gtk_widget_show_all( hWnd );
+*/
    gtk_main();
 }
 

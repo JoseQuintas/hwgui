@@ -145,6 +145,8 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       Eval( ::bActivate, Self )
    ENDIF
 
+   hwg_HideHidden( Self )
+
    hwg_ActivateDialog( ::handle, lNoModal  )
 
    RETURN Nil
@@ -184,10 +186,6 @@ METHOD DelItem( oWnd, lModal ) CLASS HDialog
    RETURN Nil
 
 METHOD FindDialog( hWnd ) CLASS HDialog
-/*
-Local i := Ascan( ::aDialogs, {|o|o:handle==hWnd} )
-Return Iif( i == 0, Nil, ::aDialogs[i] )
-*/
 
    RETURN hwg_Getwindowobject( hWnd )
 
@@ -207,19 +205,9 @@ STATIC FUNCTION InitModalDlg( oDlg )
    IF ValType( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
    ENDIF
-   /*
-   IF oDlg:oIcon != Nil
-      hwg_Sendmessage( oDlg:handle,WM_SETICON,1,oDlg:oIcon:handle )
-   ENDIF
-   */
    IF oDlg:Title != NIL
       hwg_Setwindowtext( oDlg:Handle, oDlg:Title )
    ENDIF
-   /*
-   IF oDlg:oFont != Nil
-      hwg_Sendmessage( oDlg:handle, WM_SETFONT, oDlg:oFont:handle, 0 )
-   ENDIF
-   */
    IF oDlg:bColor != Nil
       hwg_SetBgColor( oDlg:handle, oDlg:bColor )
    ENDIF

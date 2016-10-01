@@ -99,7 +99,6 @@ METHOD NewId() CLASS HControl
    RETURN nId
 
 METHOD INIT CLASS HControl
-   LOCAL o
 
    IF !::lInit
       IF ::oFont != Nil
@@ -112,14 +111,10 @@ METHOD INIT CLASS HControl
       IF HB_ISBLOCK( ::bInit )
          Eval( ::bInit, Self )
       ENDIF
-      o := ::oParent
-      DO WHILE o != Nil .AND. !__ObjHasMsg( o, "LACTIVATED" )
-         o := o:oParent
-      ENDDO
       ::Setcolor( ::tcolor, ::bcolor )
 
-      IF o != Nil .AND. o:lActivated
-         hwg_ShowAll( o:handle )
+      IF !::lHide
+         ::Show()
       ENDIF
       ::lInit := .T.
    ENDIF

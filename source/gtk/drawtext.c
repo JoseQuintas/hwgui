@@ -240,6 +240,9 @@ HB_FUNC( HWG_WRITESTATUSWINDOW )
 */
 HB_FUNC( HWG_WINDOWFROMDC )
 {
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   HB_RETHANDLE( (GtkWidget *) hDC->widget );
+
 }
 
 /* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet], 

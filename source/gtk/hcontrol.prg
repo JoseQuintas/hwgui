@@ -100,6 +100,8 @@ METHOD NewId() CLASS HControl
 
 METHOD INIT CLASS HControl
 
+   LOCAL o
+
    IF !::lInit
       IF ::oFont != Nil
          hwg_SetCtrlFont( ::handle,, ::oFont:handle )
@@ -113,8 +115,9 @@ METHOD INIT CLASS HControl
       ENDIF
       ::Setcolor( ::tcolor, ::bcolor )
 
-      IF !::lHide
-         ::Show()
+      IF ( o := hwg_getParentForm( Self ) ) != Nil .AND. o:lActivated
+         hwg_ShowAll( o:handle )
+         hwg_HideHidden( o )
       ENDIF
       ::lInit := .T.
    ENDIF

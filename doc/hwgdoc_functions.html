@@ -14,11 +14,26 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, September 2016</td>
+    <td width="70%" align="center">Alexander S.Kresin, October 2016</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
 <hr align="left" width="100%">
+
+   <br><strong class="title"><a name="Functions" href="hwgdoc.html#_Functions">
+    5.  Functions</a></strong><br>
+
+   <ul>
+     <li><a name="_Functions1" href="#Functions1">5.1.  Common dialogs</a>
+     <li><a name="_Functions2" href="#Functions2">5.2.  MessageBoxes and HwGUI dialogs</a>
+     <li><a name="_Functions3" href="#Functions3">5.3.  Drawing functions.</a>
+     <li><a name="_Functions4" href="#Functions4">5.4.  Windows handling functions.</a>
+     <li><a name="_Functions5" href="#Functions5">5.5.  Controls handling functions.</a>
+     <li><a name="_Functions6" href="#Functions6">5.6.  Menu functions.</a>
+     <li><a name="_Functions7" href="#Functions7">5.7.  Windows registry.</a>
+     <li><a name="_Functions8" href="#Functions8">5.8.  Miscellaneous functions.</a>
+     <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
+   </ul>
 
    <br><strong class="title"><a name="Functions" href="hwgdoc.html#_Functions">
     5.  Functions</a></strong><br>
@@ -385,6 +400,7 @@
 
    <br><strong class="subhead"> hwg_OpenImage( cName | cBody [, lMem] )</strong> 
    <br>Create a bitmap from the data stored in an image file or in a passed data.
+   In most cases you don't need to call this function directly, use <code>HBitmap():AddFile(cName)</code> instead.
    <ul>
      <li> cName | cBody - the name of an image file or a string with a previously loaded image file content;
      <li> lMem - a logical variable must be set to .T., if a first parameter is a string with an image file content;
@@ -393,6 +409,7 @@
 
    <br><strong class="subhead"> hwg_OpenBitmap( cName [, hDC] )</strong> 
    <br>Creates a bitmap from the data stored in the <i>bmp</i> file.
+   In most cases you don't need to call this function directly, use <code>HBitmap():AddFile(cName)</code> instead.
    <ul>
      <li> cName - name of a <i>bmp</i> file;
      <li> hDC - (optional) handle to a current device context.
@@ -403,6 +420,7 @@
    <br> GTK has a number of predefined stock icons, which can be used in application.
      It is very convenient because it saves the programmer from having to store the image files included with the executable.
      This function creates a bitmap from a stock object.
+     In most cases you don't need to call this function directly, use <code>HBitmap():AddStandard(cName)</code> instead.
    <ul>
      <li> cName - name of a stock object. The set of names you may see, for example,
       with the help of Tutorial utility, chapter &quot;Advanced using of controls&quot;, module &quot;Browse of bitmaps&quot; ; 
@@ -557,7 +575,12 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_TextOut( hDC, x, y, cText )</strong> 
-   <p></p>
+   <br>Draws a text. Uses a font, selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - coordinates of a start point.
+     <li> cText - the text string to draw.
+   </ul>
 
    <br><strong class="subhead"> hwg_DrawText( hDC, cText, x1 | aRect [, y1, x2, y2, nStyle [,aRect]] )</strong> 
    <p></p>
@@ -593,7 +616,11 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_WindowFromDC( hDC )</strong> (Windows only)
-   <p></p>
+   <br>Retrieves a handle of GUI element by it hDC.
+   <ul>
+     <li> hDC - handle of device context;
+     <li> Return value - handle of GUI element.
+   </ul>
 
    <br><strong class="subhead"> hwg_Loadimage( hInstance, cName, nType, nWidth, nHeight, nFlags )</strong> (Windows only)
    <p></p>
@@ -795,22 +822,50 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_SetFocus( handle )</strong> 
-   <p></p>
+   <br>Sets the keyboard focus to the specified GUI element (window or control).
+   <ul>
+     <li> handle - handle of a GUI element;
+     <li> Return value - handle to the GUI element that previously had the keyboard focus.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetFocus()</strong> 
-   <p></p>
+   <br>Retrieves the handle to the GUI element (window or control) that has the keyboard focus.
+   <ul>
+     <li> Return value - handle to the GUI element that has the keyboard focus.
+   </ul>
 
    <br><strong class="subhead"> hwg_WriteStatus( oWnd, nPart, cText, lRedraw )</strong> 
-   <p></p>
+   <br>Writes a text string to a fragment of a status pane. This function works for a standard <i>Status</i>
+   and or a <i>Status Panel</i>.
+   <ul>
+     <li> oWnd - the window with the status pane, an object of one of subclasses of HWindow class;
+     <li> nPart - a number of a fragment of the status pane;
+     <li> CText - a text for the status pane;
+     <li> lRedraw - .T., to redraw status pane immedeately.
+   </ul>
 
    <br><strong class="subhead"> hwg_FindParent( hCtrl )</strong> 
-   <p></p>
+   <br>Returns an object of a parent GUI element for a widget by it handle.
+   <ul>
+     <li> hCtrl - a handle of a widget;
+     <li> Return value - an object of a parent GUI element.
+   </ul>
 
    <br><strong class="subhead"> hwg_FindSelf( hCtrl )</strong> 
-   <p></p>
+   <br>Returns an object of a widget by it handle.
+   <ul>
+     <li> hCtrl - a handle of a widget;
+     <li> Return value - an object of a widget.
+   </ul>
 
-   <br><strong class="subhead"> hwg_getParentForm( o )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_getParentForm( oCtrl )</strong> 
+   <br>Returns an object of a window, which includes a given widget. The distinction from <code>hwg_FindParent()</code>
+   is the following: <code>hwg_FindParent()</code> looks for a direct parent, it may be another widget, such as <i>Tab</i>,
+   <i>Panel</i> or <i>Toolbar</i>. <code>hwg_getParentForm()</code> always returns a window, which includes the given widget.
+   <ul>
+     <li> oCtrl - an object of a widget;
+     <li> Return value - an object of a window.
+   </ul>
 
    <br><strong class="subhead"> hwg_MoveWindow( handle, nLeft, nTop, nWidth, nHeight, lRepaint )</strong> 
    <p></p>
@@ -1124,37 +1179,90 @@
    5.8.  Miscellaneous functions.</a></strong><br>
    <p></p>
    <br><strong class="subhead"> hwg_Version( n )</strong> 
-   <p></p>
+   <br>Returns an information about current HwGUI version. The optional parameter defines
+   the kind of information:
+   <ul>
+     <li> n == 1:  returns a short string with version number, e.g. &quot;2.20&quot;,
+     <li> n == 2:  returns an integer build number,
+     <li> n == 3:  returns a logical value, which tells, if this is a UNICODE build,
+     <li> n is omitted: returns a string with full information. 
+   </ul>
 
-   <br><strong class="subhead"> hwg_WriteLog( cText, fname )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_WriteLog( cText [, fname] )</strong> 
+   <br>Adds a text to a file, the functions is intended for debugging purposes.
+   <ul>
+     <li> cText - the text to be written;
+     <li> fname - (optional) a file name, the default is &quot;a.log&quot;.
+   </ul>
 
-   <br><strong class="subhead"> hwg_SetDlgKey( oDlg, nctrl, nkey, block, lGlobal )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_SetDlgKey( [oDlg], nCtrl, nKey, block [, lGlobal] )</strong> 
+   <br>Sets a &quot;hot key&quot; for a window/dialog or globally - for all the application. There is
+   appropriate command, which is preprocessed into this function: <a href="hwgdoc_commands.html#Commands4-13"> SET KEY</a>.
+   <ul>
+     <li> oDlg - (optional, default value is default parent window) an object of subclass of HWindow, the window, a key is set for;
+     <li> nCtrl - a code of a control key (e.g. <code>FCONTROL</code>), 0 - if not defined;
+     <li> nKey  - a key code,
+     <li> block - a codeblock, which should be evaluated while pressing the key;
+     <li> lGlobal - (optional, default is .F.) - logical value, which determines, if the &quot;hot key&quot; is set globally.
+   </ul>
 
    <br><strong class="subhead"> hwg_ColorC2N( cColor )</strong> 
-   <p></p>
+   <br>Converts color representation from string to numeric format.
+   <ul>
+     <li> cColor - a string in <code>#RRGGBB</code> format, describing the color;
+     <li> Return value - an integer representation of a color.
+   </ul>
 
    <br><strong class="subhead"> hwg_ColorN2C( nColor )</strong> 
-   <p></p>
+   <br>Converts color representation from numeric to string format.
+   <ul>
+     <li> nColor - an integer representation of a color;
+     <li> Return value - a string in <code>RRGGBB</code> format, describing the color.
+   </ul>
 
-   <br><strong class="subhead"> hwg_ColorN2RGB( nColor, nr, ng, nb )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_ColorN2RGB( nColor [, @nRed, @nGreen, @nBlue] )</strong> 
+   <br>Converts color representation from one numeric value to three, which corresponds to red, green and blue.
+   You may get the result by passing parameters by reference or using the return value.
+   <ul>
+     <li> nColor - an integer representation of a color;
+     <li> nRed - (optional) red component, passed by reference;
+     <li> nGreen - (optional) green component, passed by reference;
+     <li> nBlue - (optional) blue component, passed by reference;
+     <li> Return value - an array of three numbers, which corresponds to red, green and blue color components.
+   </ul>
 
    <br><strong class="subhead"> hwg_ColorRgb2N( nRed, nGreen, nBlue )</strong> 
-   <p></p>
+   <br>Converts three color components (red, green and blue) to a numeric value.
+   <ul>
+     <li> nRed - red component;
+     <li> nGreen - green component;
+     <li> nBlue - blue component;
+     <li> Return value - a numeric color representation.
+   </ul>
 
    <br><strong class="subhead"> hwg_BmpFromRes( cBmp )</strong> 
-   <p></p>
+   <br>Creates a bitmap from the data stored in the resources or in the binary container (if it is previouslu opened with hwg_SetResContainer() function).
+   In most cases you don't need to call this function directly, use <code>HBitmap():AddResource(cBmp)</code> instead.
+   <ul>
+     <li> cName - name of a <i>bmp</i> resource;
+     <li> Return value - handle of a bitmap;
+   </ul>
 
-   <br><strong class="subhead"> hwg_SetResContainer( cName )</strong> 
-   <p></p>
+   <a name="Functions8f"></a><br><strong class="subhead"> hwg_SetResContainer( cName )</strong> 
+   <br>Opens a file of a binary container and sets is as a current fot resources retrieving.
+   <ul>
+     <li>cName - a full path and name of a binary container;
+     <li>Return value - (logical) .T., if a file is opened successfully and .F. - in other case.
+   </ul>
 
    <br><strong class="subhead"> hwg_SetCtrlName( oCtrl, cName )</strong> 
    <p></p>
 
    <br><strong class="subhead"> hwg_RefreshAllGets( oDlg )</strong> 
-   <p></p>
+   <br>Refresh the state of all GET-elements in a window.
+   <ul>
+     <li> oDlg - the window with GET-elements, an object of one of subclasses of HWindow.
+   </ul>
 
    <br><strong class="subhead"> hwg_IsCtrlShift( lCtrl, lShift )</strong> (Windows only)
    <p></p>
@@ -1235,30 +1343,30 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_LoWord( n )</strong> 
-   <p></p>
+   <br>Retrieves the low-order word from the specified 32-bit value.
+   <ul>
+     <li> n - the value to be converted;
+     <li> Return value - the low-order word of the specified value.
+   </ul>
 
    <br><strong class="subhead"> hwg_HiWord( n )</strong> 
-   <p></p>
+   <br>Retrieves the high-order word from the specified 32-bit value.
+   <ul>
+     <li> n - the value to be converted;
+     <li> Return value - the high-order word of the specified value.
+   </ul>
 
    <br><strong class="subhead"> hwg_BitOr( n1, n2 )</strong> 
-   <p></p>
-
    <br><strong class="subhead"> hwg_BitAnd( n1, n2 )</strong> 
-   <p></p>
-
    <br><strong class="subhead"> hwg_BitAndInverse( n1, n2 )</strong> 
-   <p></p>
-
    <br><strong class="subhead"> hwg_SetBit( n, nBit )</strong> 
-   <p></p>
-
    <br><strong class="subhead"> hwg_CheckBit( n, nBit )</strong> 
+   <br>Bit functions as in Harbour ( hb_bitand(),... ).
    <p></p>
 
    <br><strong class="subhead"> hwg_Sin( n )</strong> 
-   <p></p>
-
    <br><strong class="subhead"> hwg_Cos( n )</strong> 
+   <br>Two mathematical functions.
    <p></p>
 
    <br><strong class="subhead"> hwg_ClientToScreen( handle, x1, y1 )</strong> (Windows only)
@@ -1304,9 +1412,11 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_GetDesktopWidth()</strong> 
+   <br>Returns a width of a desktop in pixels.
    <p></p>
 
    <br><strong class="subhead"> hwg_GetDesktopHeight()</strong> 
+   <br>Returns a height of a desktop in pixels.
    <p></p>
 
    <br><strong class="subhead"> hwg_GetNextDlgTabItem ( parentHandle, ::handle, lNext )</strong> (Windows only)
@@ -1370,9 +1480,14 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_PtrToUlong( ptr )</strong> 
-   <p></p>
+   <br>Converts a variable of Pointer type to a long integer. This is necessary in some cases for handling parameters of system messages.
+   <ul>
+     <li> ptr - a variable of Pointer type;
+     <li> Return value - long integer.
+   </ul>
 
    <br><strong class="subhead"> hwg_Isptreq( handle1, handle2 )</strong> 
+   <br>Compares two pointers, returns .T., if they are equal.
    <p></p>
 
    <br><strong class="subhead"> hwg_OutputDebugString( cText )</strong> (Windows only)

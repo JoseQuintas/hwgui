@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-03 19:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc_functions.html
+    * Some descriptions added.
+  * source/gtk/hcontrol.prg
+    ! Fixes.
+
 2016-10-01 11:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawtext.c
     * hwg_windowfromdc() added - synhro with WinAPI version.

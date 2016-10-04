@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-04 16:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+    * hwg__drawcheckbtn() and hwg__drawradiobtn() functions added to draw appropriate widgets.
+      These functions intended for using from HCheckButton and HRadioButton code only.
+  * source/gtk/hcheck.prg
+  * source/gtk/hradio.prg
+    * Displaying of checkbutton and radiobutton on a drawable surfaces has been implemented.
+
 2016-10-03 19:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc_functions.html
     * Some descriptions added.

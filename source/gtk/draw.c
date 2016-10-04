@@ -688,6 +688,18 @@ HB_FUNC( HWG_GETDRAWITEMINFO )
  */
 HB_FUNC( HWG_DRAWGRAYBITMAP )
 {
+/*
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   PHWGUI_PIXBUF obj = (PHWGUI_PIXBUF) HB_PARHANDLE(2);
+   gint x =  hb_parni(3);
+   gint y =  hb_parni(4);
+
+   gdk_cairo_set_source_pixbuf( hDC->cr, obj->handle, x, y );
+   cairo_paint( hDC->cr );
+   cairo_set_source_rgb( hDC->cr, 1, 1, 1 );
+   cairo_set_operator( hDC->cr, CAIRO_OPERATOR_HSL_COLOR );
+   cairo_paint( hDC->cr );
+*/
 }
 
 HB_FUNC( HWG_GETCLIENTAREA )
@@ -875,4 +887,84 @@ HB_FUNC( HWG__DRAWCOMBO )
    cairo_line_to( hDC->cr, x2-6, y1+nHeight/2-3 );
 
    cairo_stroke( hDC->cr );
+}
+
+HB_FUNC( HWG__DRAWCHECKBTN )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = (gdouble)hb_parni( 2 ), y1 = (gdouble)hb_parni( 3 ),
+           x2 = (gdouble)hb_parni( 4 ), y2 = (gdouble)hb_parni( 5 ),
+           nHeight = y2-y1-6;
+   int iSet = hb_parl(6);
+   const char *cTitle = ( hb_pcount(  ) > 6 ) ? hb_parc( 7 ) : NULL;
+   gchar *gcTitle;
+
+   x1 += 2;
+   y1 += 3;
+   hwg_setcolor( hDC->cr, 0xffffff );
+   cairo_rectangle( hDC->cr, x1, y1, nHeight, nHeight );
+   cairo_fill( hDC->cr );
+
+   hwg_setcolor( hDC->cr, 0 );
+   cairo_set_line_width( hDC->cr, 1 );
+
+   cairo_rectangle( hDC->cr, x1, y1, nHeight, nHeight );
+
+   if( iSet )
+   {
+      cairo_move_to( hDC->cr, x1+2, y1+nHeight/2 );
+      cairo_line_to( hDC->cr, x1+nHeight/2, y1+nHeight-2 );
+      cairo_line_to( hDC->cr, x1+nHeight-1, y1 );
+   }
+
+   cairo_stroke( hDC->cr );
+
+   if( cTitle )
+   {
+      gcTitle = hwg_convert_to_utf8( cTitle );
+      pango_layout_set_text( hDC->layout, gcTitle, -1 );
+      cairo_move_to( hDC->cr, x1 + nHeight + 4, y1-2 );
+      pango_cairo_show_layout( hDC->cr, hDC->layout );
+      g_free( gcTitle );
+   }
+
+}
+
+HB_FUNC( HWG__DRAWRADIOBTN )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = (gdouble)hb_parni( 2 ), y1 = (gdouble)hb_parni( 3 ),
+           x2 = (gdouble)hb_parni( 4 ), y2 = (gdouble)hb_parni( 5 ),
+           nHeight = y2-y1-4;
+   int iSet = hb_parl(6);
+   const char *cTitle = ( hb_pcount(  ) > 6 ) ? hb_parc( 7 ) : NULL;
+   gchar *gcTitle;
+
+   x1 += 2;
+   y1 += 2;
+   hwg_setcolor( hDC->cr, 0xffffff );
+   cairo_arc( hDC->cr, x1+nHeight/2, y1+nHeight/2, nHeight/2, 0, 6.28 );
+   cairo_fill( hDC->cr );
+
+   hwg_setcolor( hDC->cr, 0 );
+   cairo_set_line_width( hDC->cr, 1 );
+
+   cairo_arc( hDC->cr, x1+nHeight/2, y1+nHeight/2, nHeight/2, 0, 6.28 );
+   cairo_stroke( hDC->cr );
+
+   if( iSet )
+   {
+      cairo_arc( hDC->cr, x1+nHeight/2, y1+nHeight/2, nHeight/2-3, 0, 6.28 );
+      cairo_fill( hDC->cr );
+   }
+
+   if( cTitle )
+   {
+      gcTitle = hwg_convert_to_utf8( cTitle );
+      pango_layout_set_text( hDC->layout, gcTitle, -1 );
+      cairo_move_to( hDC->cr, x1 + nHeight + 4, y1-2 );
+      pango_cairo_show_layout( hDC->cr, hDC->layout );
+      g_free( gcTitle );
+   }
+
 }

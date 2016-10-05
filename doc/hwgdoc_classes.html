@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_functions.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, September 2016</td>
+    <td width="70%" align="center">Alexander S.Kresin, October 2016</td>
     <td width="15%" align="right"><a href="hwgdoc_misc.html">next</a></td>
   </tr>
 </table>
@@ -1613,44 +1613,81 @@
 
    <br><strong class="subhead"><a name="Classes21" href="#_Classes21">
    HBinC</a></strong> 
+   <p>This class implements a binary container - an one-file repository for different files, which you need to use
+   in your program - an images, for example. It gets rid off directories with icons, images and other
+   supplementary files, which are included in the distribution of your application, replacing them all
+   with one file.</p>
+
+   <p>The binary container may serve as a cross-platform alternative for a resources file.
+   GTK doesn't support Windows-like resources (*.rc, *.res). Using a binary container,
+   we are able to write a code, which works identically in both versions, especially there
+   are means in HwGUI to use operations with a binary container as a substitute for operations with resources.
+   If you call <a href="hwgdoc_functions.html#Functions8f">hwg_SetResContainer( cName ) function</a>,
+   files will be retrieved from this container instead of resources:</p>
+
+   <pre class="code">
+     hwg_SetResContainer( cPath + "myapp.bin" )
+     ...
+     // The bitmap will retrieve from myapp.bin
+     oBitmap := HBitmap():AddResource( "open" )
+     ...
+     // and here, too!
+     @ x, y OWNERBUTTON OF oToolBar ON CLICK {||Test()} ;
+        SIZE 32, 32 BITMAP "TEST" FROM RESOURCE</pre>
+
+   <p>There is a special HwGUI utility for creating the binary container and filling it with files.
+   It is placed in <code>hwgui/utils/bincnt</code> - <a href="hwgdoc_misc.html#Util6">Binary container manager</a>.</p>
+
    <pre class="code">DATA
-      cName
-      handle
-      lWriteAble
-      nVerHigh, nVerLow
-      nItems
-      nCntLen
-      nCntBlocks
-      nPassLen
-
-      nFileLen
-
-      aObjects
+      cName                       - the name of a file of a binary container;
+      handle                      - a handle of a file of a binary container;
+      lWriteAble                  - opening mode (.T. - it is writeable);
+      nVerHigh, nVerLow           - a version of a binary container;
+      nItems                      - a number of elements in a container;
+      nCntLen                     - a length of a table of contents of a file in bytes;
+      nCntBlocks                  - a number of blocks in a table of contents;
+      nPassLen                    - a password length;
+      nFileLen                    - a file length;
+      aObjects                    - an array of elements.
    </pre>
    <pre class="code">METHODS
-      Create( cName, n )
-      Open( cName, lWr )
-      Close()
-      Add( cObjName, cType, cVal )
-      Del( cObjName, cType )
-      Pack()
-      Exist( cObjName )
-      Get( cObjName )
+      Create( cName, n )          - creates a file of a binary container;
+      Open( cName, lWr )          - opens a file of a binary container;
+      Close()                     - closes a file of a binary container;
+      Add( cObjName, cType, cVal )- adds an element to a container;
+      Del( cObjName, cType )      - removes an element from a container;
+      Pack()                      - packs the container;
+      Exist( cObjName )           - checks, if the element exisis in a container;
+      Get( cObjName )             - retrieves an element from a container.
    </pre>
 
    <br><strong class="subhead"><a name="Classes22" href="#_Classes22">
    HStyle</a></strong> 
-   <pre class="code">DATA
-      CLASS VAR aStyles   INIT { }
+   <p>This class defines a style, painting parameters of a rectangular area, in particular - of some widget.
+   It is possible to define a bacground color, an array of colors - in this case a gradient will be drawn.
+   A direction of a gradient, a thickness and color of a border (if needed) may be specified in HStyle object.
+   You can set a bitmap instead of background colors - it will fill the backgroung (look at
+   <a href="hwgdoc_functions.html#Functions3k">hwg_SpreadBitmap() function</a>). The corners may be
+   drawn rounded, each corner - with a specified radius.</p>
 
-      id
-      nOrient
-      aColors
-      oBitmap
-      nBorder
-      tColor
-      oPen
-      aCorners
+   <p>You may create at first an HStyle object with the help of <code>HStyle():New()</code>,
+   and the to use it for different controls. Look for the samples of using HStyle in
+   the Tutorial, chapter &quot;Advanced using of controls&quot;.</p>
+
+   <pre class="code">DATA
+      CLASS VAR aStyles    - an array with all defined styles, it is filled
+                             automatically;
+      id                   - a style id, it is created automatically;
+      nOrient              - a gradient direction (look at <a href="hwgdoc_functions.html#Functions3h">hwg_DrawGradient()</a>);
+      aColors              - an array of background colors, if few are defined, a
+                             gradient is drawn;
+      oBitmap              - an object of HBitmap class - a bitmap to fill background;
+      nBorder              - a thickness of a border in pixels. If it is absent,
+                             the border will not be drawn;
+      tColor               - a color of a border;
+      oPen                 - an object of HPen class, it is created automatically;
+      aCorners             - an array with corners radiuses (look at
+                <a href="hwgdoc_functions.html#Functions3h">hwg_DrawGradient()</a>).
    </pre>
    <pre class="code">METHODS
       New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap )
@@ -1659,6 +1696,7 @@
 
    <br><strong class="subhead"><a name="Classes23" href="#_Classes23">
    HilightBase</a></strong> 
+   <p>Do not create instances of HilightBase. It serves as a base class for other syntax hilighting classes.</p>
    <pre class="code">DATA
       oEdit   
       lCase
@@ -1672,6 +1710,8 @@
 
    <br><strong class="subhead"><a name="Classes23_1" href="#_Classes23_1">
    Hilight</a></strong> 
+   <p>Syntax hilighting class, it is intended to be used together with an editor class
+   <a href="#Classes3_3_28">HCEdit</a>.</p>
    <pre class="code">DATA
       cCommands                - A list of keywords (commands), divided by space
       cFuncs                   - A list of keywords (functions), divided by space

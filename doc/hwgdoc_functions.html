@@ -35,21 +35,6 @@
      <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
    </ul>
 
-   <br><strong class="title"><a name="Functions" href="hwgdoc.html#_Functions">
-    5.  Functions</a></strong><br>
-
-   <ul>
-     <li><a name="_Functions1" href="#Functions1">5.1.  Common dialogs</a>
-     <li><a name="_Functions2" href="#Functions2">5.2.  MessageBoxes and HwGUI dialogs</a>
-     <li><a name="_Functions3" href="#Functions3">5.3.  Drawing functions.</a>
-     <li><a name="_Functions4" href="#Functions4">5.4.  Windows handling functions.</a>
-     <li><a name="_Functions5" href="#Functions5">5.5.  Controls handling functions.</a>
-     <li><a name="_Functions6" href="#Functions6">5.6.  Menu functions.</a>
-     <li><a name="_Functions7" href="#Functions7">5.7.  Windows registry.</a>
-     <li><a name="_Functions8" href="#Functions8">5.8.  Miscellaneous functions.</a>
-     <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
-   </ul>
-
    <br><strong class="subhead"><a name="Functions1" href="hwgdoc.html#_Functions1">
    5.1.  Common dialogs</a></strong><br>
 
@@ -60,7 +45,7 @@
      <li> Return value - the array with selected font characteristics ( nHandle, fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut )
           or Nil, if the font wasn't selected.
    </ul>
-   <br>Usually it isn't needed to call this function directly, use HFont():Select( oFont )
+   <br>Usually it isn't needed to call this function directly, use <code>HFont():Select( oFont )<code>
    instead.<br>
 
    <br><strong class="subhead"> hwg_SelectFile( cDescript,cMask,[ cInitDir ], [ cTitle ] )</strong> 
@@ -500,19 +485,49 @@
    </ul>
 
    <br><strong class="subhead"> hwg_Getsyscolor( nCode )</strong> 
-   <p></p>
+   <br>Retrieves the current color of the specified display element. Display elements are the parts of a window and the display that appear on the system display screen.
+   In GTK version always return a background color of a main window.
+   <ul>
+     <li> nCode - look at MSDN,
+       <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724371%28v=vs.85%29.aspx">GetSysColor() function</a>.
+     <li> Return value - numeric color representation.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetsyscolorBrush( nCode )</strong> (Windows only)
-   <p></p>
+   <br>Retrieves a brush handle, corresponding to a current color of the specified display element. Display elements are the parts of a window and the display that appear on the system display screen.
+   <ul>
+     <li> nCode - look at MSDN,
+       <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/ms724371%28v=vs.85%29.aspx">GetSysColor() function</a>.
+     <li> Return value - a brush handle.
+   </ul>
 
    <br><strong class="subhead"> hwg_Createpen( nStyle, nWidth, nColor )</strong> 
-   <p></p>
+   <br>Creates a pen with given parameters.
+   Usually it isn't needed to call this function directly, use <code>HPen():Add()</code> instead.
+   <ul>
+     <li> nStyle - a pen style ( PS_SOLID, PS_DASH, PS_DOT, ... );
+     <li> nWidth - a pen thickness;
+     <li> nColor - numeric color representation;
+     <li> Return value - a pen handle.
+   </ul>
 
    <br><strong class="subhead"> hwg_Createsolidbrush( nColor )</strong> 
-   <p></p>
+   <br>Creates a brush that has the specified color.
+   Usually it isn't needed to call this function directly, use <code>HBrush():Add()</code> instead.
+   <ul>
+     <li> nColor - numeric color representation;
+     <li> Return value - a brush handle.
+   </ul>
 
    <br><strong class="subhead"> hwg_Createhatchbrush( nHatch, nColor )</strong> (Windows only)
-   <p></p>
+   <br>Creates a brush that has the specified hatch pattern and color.
+   Usually it isn't needed to call this function directly, use <code>HBrush():Add()</code> instead.
+   <ul>
+     <li> nHatch - the hatch style of the brush, look at MSDN,
+       <a target="_blank" href="https://msdn.microsoft.com/en-us/library/windows/desktop/dd183504%28v=vs.85%29.aspx">CreateHatchBrush() function</a>.;
+     <li> nColor - numeric color representation;
+     <li> Return value - a brush handle.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetDC( hWnd )</strong> 
    <br>Returns handle of device context of GUI element. After using this handle
@@ -1250,6 +1265,7 @@
 
    <a name="Functions8f"></a><br><strong class="subhead"> hwg_SetResContainer( cName )</strong> 
    <br>Opens a file of a binary container and sets is as a current fot resources retrieving.
+   Corresponding command: <a href="hwgdoc_commands.html#Commands6-3"> SET RESOURCES CONTAINER TO</a>.
    <ul>
      <li>cName - a full path and name of a binary container;
      <li>Return value - (logical) .T., if a file is opened successfully and .F. - in other case.

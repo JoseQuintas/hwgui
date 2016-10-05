@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-05 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc.html
+  * doc/hwgdoc_classess.html
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+    * Documentation updated.
+  * source/gtk/draw.c
+    * hwg_RoundRect() implemented - synhro with WinAPI version.
+
 2016-10-04 16:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
     * hwg__drawcheckbtn() and hwg__drawradiobtn() functions added to draw appropriate widgets.

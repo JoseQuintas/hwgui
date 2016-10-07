@@ -723,11 +723,6 @@ HB_FUNC( HWG_SETFOREGROUNDWINDOW )
    hb_retl( SetForegroundWindow( ( HWND ) HB_PARHANDLE( 1 ) ) );
 }
 
-HB_FUNC( HWG_BRINGWINDOWTOTOP )
-{
-   hb_retl( BringWindowToTop( ( HWND ) HB_PARHANDLE( 1 ) ) );
-}
-
 //HB_FUNC( HWG_SETACTIVEWINDOW )
 //{
 //   hb_retnl( SetActiveWindow( (HWND) HB_PARHANDLE(1) ) );

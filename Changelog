@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-07 10:46 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/window.c
+    - hwg_BringWindowToTop() deleted, because there is hwg_BringToTop(),
+      which do the same.
+
 2016-10-06 13:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * ON INIT clause added to @ ... GET ... command.

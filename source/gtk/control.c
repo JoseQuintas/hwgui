@@ -227,10 +227,11 @@ HB_FUNC( HWG_CREATEEDIT )
          gtk_text_view_set_editable( ( GtkTextView * ) hCtrl, 0 );
    }
    else
+   {
       hCtrl = gtk_entry_new(  );
-   if( ulStyle & ES_PASSWORD )
-      gtk_entry_set_visibility( ( GtkEntry * ) hCtrl, FALSE );
-
+      if( ulStyle & ES_PASSWORD )
+         gtk_entry_set_visibility( ( GtkEntry * ) hCtrl, FALSE );
+   }
 
    GtkFixed *box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
    if( box )
@@ -347,6 +348,7 @@ HB_FUNC( HWG_EDIT_SET_OVERMODE )
      if( !( HB_ISNIL(2) ) )
         gtk_text_view_set_overwrite( ( (GtkTextView *) hCtrl ), hb_parl(2) );
    }
+   else
    {
      bOver = gtk_entry_get_overwrite_mode( ( (GtkEntry *) hCtrl ) );
      if( !( HB_ISNIL(2) ) )

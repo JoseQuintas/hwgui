@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-10 12:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+    ! Bug fixed in hwg_edit_set_Overmode()
+
 2016-10-10 12:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * ON INIT and ON SIZE clauses added to few others @ ... GET ... commands.

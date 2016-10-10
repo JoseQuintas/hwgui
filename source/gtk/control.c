@@ -338,10 +338,20 @@ HB_FUNC( HWG_EDIT_GETSELPOS )
 
 HB_FUNC( HWG_EDIT_SET_OVERMODE )
 {
-   gboolean bOver = gtk_entry_get_overwrite_mode( ( (GtkEntry *) HB_PARHANDLE(1) ) );
-   if( !( HB_ISNIL(2) ) )
-      gtk_entry_set_overwrite_mode( ( (GtkEntry *) HB_PARHANDLE(1) ),
-         hb_parl(2) );
+   GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
+   gboolean bOver;
+
+   if( g_object_get_data( ( GObject * ) hCtrl, "multi" ) )
+   {
+     bOver = gtk_text_view_get_overwrite( ( (GtkTextView *) hCtrl ) );
+     if( !( HB_ISNIL(2) ) )
+        gtk_text_view_set_overwrite( ( (GtkTextView *) hCtrl ), hb_parl(2) );
+   }
+   {
+     bOver = gtk_entry_get_overwrite_mode( ( (GtkEntry *) hCtrl ) );
+     if( !( HB_ISNIL(2) ) )
+        gtk_entry_set_overwrite_mode( ( (GtkEntry *) hCtrl ), hb_parl(2) );
+   }
    hb_retl( bOver );
 }
 

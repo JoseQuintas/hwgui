@@ -1150,12 +1150,14 @@
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
             [ WHEN <bWhen> ]           ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
             [ ON LOSTFOCUS <bLfocus> ] ;
           => ;
     [<oCheck> := ] HCheckButton():New( <oWnd>,<nId>,<vari>,              ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},                   ;
                     <nStyle>,<x>,<y>,<width>,<height>,<caption>,<oFont>, ;
-                    ,,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lTransp.>,<bLfocus> );
+                    <bInit>,<bSize>,,<bClick>,<ctoolt>,<color>,<bcolor>,<bWhen>,<.lTransp.>,<bLfocus> );
     [; hwg_SetCtrlName( <oCheck>,<(oCheck)> )]
 
 #xcommand REDEFINE GET CHECKBOX [ <oCheck> VAR ] <vari>  ;
@@ -1180,6 +1182,8 @@
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
             [ ON CHANGE <bChange> ]    ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
@@ -1193,7 +1197,7 @@
     [<oCombo> := ] HComboBox():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
-                    <aItems>,<oFont>,,,,<bChange>,<ctoolt>, ;
+                    <aItems>,<oFont>,<bInit>,<bSize>,,<bChange>,<ctoolt>, ;
                     <.edit.>,<.text.>,<bWhen>,<color>,<bcolor>,<bValid>,<nDisplay> );
     [; hwg_SetCtrlName( <oCombo>,<(oCombo)> )]
 
@@ -1224,11 +1228,13 @@
             [ VALID <bLfocus> ]        ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oUpd> := ] HUpDown():New( <oWnd>,<nId>,<vari>,               ;
                    {|v|Iif(v==Nil,<vari>,<vari>:=v)},              ;
-                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,,,,  ;
+                    <nStyle>,<x>,<y>,<width>,<height>,<oFont>,<bInit>,<bSize>,,  ;
                     <bGfocus>,<bLfocus>,<ctoolt>,<color>,<bcolor>, ;
                     <nUpDWidth>,<nLower>,<nUpper> );
     [; hwg_SetCtrlName( <oUpd>,<(oUpd)> )]
@@ -1242,6 +1248,7 @@
             [ BACKCOLOR <bcolor> ]     ;
             [ WHEN <bGfocus> ]         ;
             [ VALID <bLfocus> ]        ;
+            [ ON INIT <bInit> ]        ;
             [ ON CHANGE <bChange> ]    ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
@@ -1250,7 +1257,7 @@
     [<oPick> :=] HDatePicker():New( <oWnd>,<nId>,<vari>,    ;
                     {|v|Iif(v==Nil,<vari>,<vari>:=v)},      ;
                     <nStyle>,<x>,<y>,<width>,<height>,      ;
-                    <oFont>,,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor> );
+                    <oFont>,<bInit>,<bGfocus>,<bLfocus>,<bChange>,<ctoolt>,<color>,<bcolor> );
     [; hwg_SetCtrlName( <oPick>,<(oPick)> )]
 
 

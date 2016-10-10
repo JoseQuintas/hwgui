@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-10 12:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * ON INIT and ON SIZE clauses added to few others @ ... GET ... commands.
+
 2016-10-10 11:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hdialog.prg
   * source/gtk/hwindow.prg

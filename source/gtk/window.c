@@ -66,6 +66,28 @@ static HW_SIGNAL aSignals[NUMBER_OF_SIGNALS] = { { "destroy",2 } };
 
 static gchar szAppLocale[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
+gboolean cb_delete_event( GtkWidget *widget, gchar* data )
+{
+   gpointer gObject;
+
+   gObject = g_object_get_data( (GObject*) widget, "obj" );
+
+   if( !pSym_onEvent )
+      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
+
+   if( pSym_onEvent && gObject )
+   {
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPush( ( PHB_ITEM ) gObject );
+      hb_vmPushLong( 2 );
+      hb_vmPushLong( 0 );
+      hb_vmPushLong( 0 );
+      hb_vmSend( 3 );
+      return ! ((gboolean) hb_parl( -1 ));
+   }
+   return FALSE;
+}
+
 HB_FUNC( HWG_GTK_INIT )
 {
    gtk_init( 0,0 );
@@ -93,7 +115,6 @@ HB_FUNC( HWG_INITMAINWINDOW )
    int width = hb_parnl(10);
    int height = hb_parnl(11);
    PHWGUI_PIXBUF szFile = HB_ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;  
-   //PHB_ITEM temp;
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
    if (szFile)
@@ -113,10 +134,6 @@ HB_FUNC( HWG_INITMAINWINDOW )
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_start( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
-   //temp = HB_PUTHANDLE( NULL, box );
-   //SetObjectVar( pObject, "_FBOX", temp );
-   //hb_itemRelease( temp );
-
    g_object_set_data( ( GObject * ) hWnd, "window", ( gpointer ) 1 );
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "vbox", (gpointer) vbox );
@@ -129,7 +146,11 @@ HB_FUNC( HWG_INITMAINWINDOW )
    set_event( ( gpointer ) hWnd, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) hWnd, "motion_notify_event", 0, 0, 0 );
 
-   all_signal_connect( G_OBJECT (hWnd) );
+   g_signal_connect (G_OBJECT (hWnd), "delete-event",
+	 	      G_CALLBACK (cb_delete_event), NULL );
+   g_signal_connect (G_OBJECT (hWnd), "destroy",
+	 	      G_CALLBACK (gtk_main_quit), NULL);
+
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
    set_event( (gpointer)hWnd, "focus_in_event", 0, 0, 0 );
 
@@ -152,7 +173,6 @@ HB_FUNC( HWG_CREATEDLG )
    int height = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
    PHB_ITEM pIcon = GetObjectVar( pObject, "OICON" );
    PHWGUI_PIXBUF szFile = NULL;
-   //PHB_ITEM temp;
 
    if (!HB_IS_NIL(pIcon))
    {
@@ -176,10 +196,6 @@ HB_FUNC( HWG_CREATEDLG )
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
-   //temp = HB_PUTHANDLE( NULL, box );
-   //SetObjectVar( pObject, "_FBOX", temp );
-   //hb_itemRelease( temp );
-
    g_object_set_data( ( GObject * ) hWnd, "window", ( gpointer ) 1 ); 
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
@@ -191,7 +207,9 @@ HB_FUNC( HWG_CREATEDLG )
    set_event( ( gpointer ) hWnd, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) hWnd, "motion_notify_event", 0, 0, 0 );
 
-   all_signal_connect( G_OBJECT (hWnd) );
+   g_signal_connect (G_OBJECT (hWnd), "delete-event",
+      G_CALLBACK (cb_delete_event), NULL );
+
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
    set_event( (gpointer)hWnd, "focus_in_event", 0, 0, 0 );
 
@@ -293,6 +311,7 @@ void cb_signal( GtkWidget *widget,gchar* data )
       /* res = hb_parnl( -1 ); */
    }
 }
+
 static HB_LONG ToKey(HB_LONG a,HB_LONG b)
 {
 
@@ -601,6 +620,11 @@ HB_FUNC( HWG_SETSIGNAL )
 {
    gpointer p = (gpointer) HB_PARHANDLE(1);
    set_signal( (gpointer)p, (char*)hb_parc(2), hb_parnl(3), hb_parnl(4), ( long int ) HB_PARHANDLE( 5 ) );
+}
+
+HB_FUNC( HWG_EMITSIGNAL )
+{
+   g_signal_emit_by_name( GTK_OBJECT (HB_PARHANDLE(1)), (char*)hb_parc(2) );
 }
 
 void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long int p3 )

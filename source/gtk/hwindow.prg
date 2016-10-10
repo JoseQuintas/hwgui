@@ -75,9 +75,12 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
 
 Static Function onDestroy( oWnd )
 
-   LOCAL i
+   LOCAL i, lRes
+
    IF oWnd:bDestroy != Nil
-      Eval( oWnd:bDestroy, oWnd )
+      IF Valtype( lRes := Eval( oWnd:bDestroy, oWnd ) ) == "L" .AND. !lRes
+         RETURN .F.
+      ENDIF
       oWnd:bDestroy := Nil
    ENDIF
    IF __ObjHasMsg( oWnd, "HACCEL" ) .AND. oWnd:hAccel != Nil
@@ -90,9 +93,9 @@ Static Function onDestroy( oWnd )
 
    oWnd:Super:onEvent( WM_DESTROY )
    HWindow():DelItem( oWnd )
-   hwg_gtk_exit()  
+   //hwg_gtk_exit()  
 
-Return 0
+Return .T.
 
 CLASS HWindow INHERIT HCustomWindow
 
@@ -126,7 +129,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD Restore()  INLINE hwg_RestoreWindow( ::handle )
    METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
    METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
-   METHOD Close()    INLINE hwg_DestroyWindow( ::handle )
+   METHOD Close()    INLINE Iif( !onDestroy( Self ), .F., hwg_DestroyWindow( ::handle ) )
    METHOD SetTitle( cTitle ) INLINE hwg_Setwindowtext( ::handle, ::title := cTitle )
 ENDCLASS
 

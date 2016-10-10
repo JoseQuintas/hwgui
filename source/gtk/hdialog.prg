@@ -25,9 +25,12 @@ STATIC aMessModalDlg := { ;
 
 STATIC FUNCTION onDestroy( oDlg )
 
-   LOCAL i
+   LOCAL i, lRes
+
    IF oDlg:bDestroy != Nil
-      Eval( oDlg:bDestroy, oDlg )
+      IF Valtype( lRes := Eval( oDlg:bDestroy, oDlg ) ) == "L" .AND. !lRes
+         RETURN .F.
+      ENDIF
       oDlg:bDestroy := Nil
    ENDIF
 
@@ -41,7 +44,7 @@ STATIC FUNCTION onDestroy( oDlg )
       hwg_gtk_exit()
    ENDIF
 
-   RETURN 0
+   RETURN .T.
 
    // Class HDialog
 
@@ -304,24 +307,17 @@ FUNCTION hwg_EndDialog( handle )
 
    LOCAL oDlg
 
-   // hwg_WriteLog( "EndDialog-0" )
    IF handle == Nil
       IF ( oDlg := Atail( HDialog():aModalDialogs ) ) == Nil
-         // hwg_WriteLog("EndDialog-1")
          RETURN Nil
       ENDIF
    ELSE
       oDlg := hwg_Getwindowobject( handle )
    ENDIF
 
-   // hwg_WriteLog( "EndDialog-1" )
-   IF oDlg:bDestroy != Nil
-      // hwg_WriteLog( "EndDialog-2" )
-      Eval( oDlg:bDestroy, oDlg )
-      oDlg:bDestroy := Nil
+   IF !onDestroy( oDlg )
+      RETURN .F.
    ENDIF
-
-   // hwg_WriteLog("EndDialog-10")
 
    RETURN  hwg_DestroyWindow( oDlg:handle )
 

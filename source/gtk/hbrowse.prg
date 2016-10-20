@@ -969,8 +969,8 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
          IF oColumn:bColorBlock != Nil
             aCores := Eval( oColumn:bColorBlock )
             IF lSelected
-               oColumn:tColor := aCores[3]
-               oColumn:bColor := aCores[4]
+               oColumn:tColor := Iif( vybfld==i.AND.Len(aCores)>=5.AND.aCores[5]!=Nil, aCores[5], aCores[3] )
+               oColumn:bColor := Iif( vybfld==i.AND.Len(aCores)>=6.AND.aCores[6]!=Nil, aCores[6], aCores[4] )
             ELSE
                oColumn:tColor := aCores[1]
                oColumn:bColor := aCores[2]

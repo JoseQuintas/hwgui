@@ -35,6 +35,21 @@
      <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
    </ul>
 
+   <br><strong class="title"><a name="Functions" href="hwgdoc.html#_Functions">
+    5.  Functions</a></strong><br>
+
+   <ul>
+     <li><a name="_Functions1" href="#Functions1">5.1.  Common dialogs</a>
+     <li><a name="_Functions2" href="#Functions2">5.2.  MessageBoxes and HwGUI dialogs</a>
+     <li><a name="_Functions3" href="#Functions3">5.3.  Drawing functions.</a>
+     <li><a name="_Functions4" href="#Functions4">5.4.  Windows handling functions.</a>
+     <li><a name="_Functions5" href="#Functions5">5.5.  Controls handling functions.</a>
+     <li><a name="_Functions6" href="#Functions6">5.6.  Menu functions.</a>
+     <li><a name="_Functions7" href="#Functions7">5.7.  Windows registry.</a>
+     <li><a name="_Functions8" href="#Functions8">5.8.  Miscellaneous functions.</a>
+     <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
+   </ul>
+
    <br><strong class="subhead"><a name="Functions1" href="hwgdoc.html#_Functions1">
    5.1.  Common dialogs</a></strong><br>
 
@@ -132,6 +147,9 @@
    </ul>
 
    <br><strong class="subhead"> hwg_MsgBeep( nSound )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_ShellAbout( cText1, cText2 [,hIcon] )</strong> (Windows only)
    <p></p>
 
    <br><strong class="subhead"> hwg_MsgGet( cTitle, cText, nStyle, nLeft, nTop, nDlgStyle, cInitStr )</strong> 
@@ -313,7 +331,7 @@
      <li> hBrush - a handle of a brush ( may be <code>oBrush:handle</code> ).
    </ul>
 
-   <br><strong class="subhead"> hwg_RoundRect( hDC, x1, y1, x2, y2, xRad, yRad )</strong> (Windows only)
+   <br><strong class="subhead"> hwg_RoundRect( hDC, x1, y1, x2, y2, xRad, yRad )</strong>
    <br> Draws a rectangle with rounded corners. Uses a pen,
    selected with the help of <code>hwg_SelectObject()</code>.
    <ul>
@@ -598,13 +616,39 @@
    </ul>
 
    <br><strong class="subhead"> hwg_DrawText( hDC, cText, x1 | aRect [, y1, x2, y2, nStyle [,aRect]] )</strong> 
-   <p></p>
+   <br>Draws a text in a given rectangle, aligned accorgingly to a passed parameter.
+    Uses a font, selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> cText - the text string to draw.
+     <li> x1, y1, x2, y2 - text area coordinates;
+     <li> aRect - an array with text area coordinates, may be passed instead of x1, y1, x2, y2;
+     <li> nStyle - alignment style: DT_LEFT (by default), DT_CENTER, DT_RIGHT.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetTextMetric( hDC )</strong> 
-   <p></p>
+   <br>Returns an array with geometric text parameters for a given device contect, for a font, selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> Return value - an array:
+       <br> &nbsp;&nbsp; array[1] - a text height,
+       <br> &nbsp;&nbsp; array[2] - average character width;
+       <br> &nbsp;&nbsp; array[3] - maximal character width; (WinAPI only)
+       <br> &nbsp;&nbsp; array[4] - tmExternalLeading; (WinAPI only)
+       <br> &nbsp;&nbsp; array[5] - tmInternalLeading; (WinAPI only)
+       <br> &nbsp;&nbsp; array[6] - tmAscent; (WinAPI only)
+       <br> &nbsp;&nbsp; array[7] - tmDescent; (WinAPI only)
+       <br> &nbsp;&nbsp; array[8] - tmWeight. (WinAPI only)
+   </ul>
 
    <br><strong class="subhead"> hwg_GetTextSize( hDC, cText )</strong> 
-   <p></p>
+   <br>Returns an array with geometric text size for a given device contect, for a font, selected with the help of <code>hwg_SelectObject()</code>.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> Return value - an array:
+       <br> &nbsp;&nbsp; array[1] - a text width,
+       <br> &nbsp;&nbsp; array[2] - a text height;
+   </ul>
 
    <br><strong class="subhead"> hwg_GetClientRect( handle )</strong> 
    <p></p>
@@ -613,16 +657,34 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_SetTextColor( hDC, nColor )</strong> 
-   <p></p>
+   <br>Sets text color for a drawing.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> nColor - new color value;
+     <li> Return value - previous color value.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetTextColor( hDC )</strong> 
-   <p></p>
+   <br>Returns current text color setting for a drawing area.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> Return value - previous color value.
+   </ul>
 
    <br><strong class="subhead"> hwg_SetBkColor( hDC, nColor )</strong> 
-   <p></p>
+   <br>Sets background color for a drawing.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> nColor - new color value;
+     <li> Return value - previous color value.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetBkColor( hDC )</strong> 
-   <p></p>
+   <br>Returns current background color setting for a drawing area.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> Return value - previous color value.
+   </ul>
 
    <br><strong class="subhead"> hwg_SetTransparentMode( hDC, lTransparent )</strong> 
    <p></p>
@@ -738,11 +800,11 @@
    <br><strong class="subhead"> hwg_SetForegroundWindow( handle )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_BringWindowToTop( handle )</strong> (Windows only)
-   <p></p>
-
    <br><strong class="subhead"> hwg_BringToTop( handle )</strong> (Windows only)
-   <p></p>
+   <br> Sets the window over all other windows.
+   <ul>
+     <li> handle - window handle.
+   </ul>
 
    <br><strong class="subhead"> hwg_ResetWindowPos( handle )</strong> (Windows only)
    <p></p>
@@ -751,22 +813,42 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_CenterWindow( handle )</strong> 
-   <p></p>
+   <br> Centers a window on a screen.
+   <ul>
+     <li> handle - window handle.
+   </ul>
 
    <br><strong class="subhead"> hwg_RestoreWindow( handle )</strong> 
-   <p></p>
+   <br> Restores the default window size.
+   <ul>
+     <li> handle - window handle.
+   </ul>
 
    <br><strong class="subhead"> hwg_EnableWindow( handle, lEnable )</strong> 
-   <p></p>
+   <br> Enables or disables GUI element (window or control).
+   <ul>
+     <li> handle - handle of a GUI element;
+     <li> lEnable - (logical) enable, if .T., disable if .F..
+   </ul>
 
    <br><strong class="subhead"> hwg_isWindowEnabled( handle )</strong> 
-   <p></p>
+   <br> Checks, if the GUI element (window or control) is enabled.
+   <ul>
+     <li> handle - handle of a GUI element;
+     <li> Return value - (logical) .T., if GUI element is enabled.
+   </ul>
 
    <br><strong class="subhead"> hwg_HideWindow( handle )</strong> 
-   <p></p>
+   <br> Hide GUI element (window or control).
+   <ul>
+     <li> handle - handle of a GUI element.
+   </ul>
 
    <br><strong class="subhead"> hwg_ShowWindow( handle )</strong> 
-   <p></p>
+   <br> Show GUI element (window or control).
+   <ul>
+     <li> handle - handle of a GUI element.
+   </ul>
 
    <br><strong class="subhead"> hwg_ProcessMessage( [lMdi] [, nSleep] )</strong> 
    <p></p>
@@ -790,10 +872,18 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_SetWindowText( handle, cTitle )</strong> 
-   <p></p>
+   <br> Changes the text of the specified window's title bar or the text of a control.
+   <ul>
+     <li> handle - handle of a GUI element;
+     <li> cTitle - the text.
+   </ul>
 
    <br><strong class="subhead"> hwg_GetWindowText( handle )</strong> 
-   <p></p>
+   <br> Returns the text of the specified window's title bar or the text of a control.
+   <ul>
+     <li> handle - handle of a GUI element;
+     <li> Return value - the text.
+   </ul>
 
    <br><strong class="subhead"> hwg_SetWindowFont( handle, hFont, l )</strong> (Windows only)
    <p></p>
@@ -1424,9 +1514,6 @@
    <br><strong class="subhead"> hwg_Postquitmessage( nExitCode )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_ShellAbout( cText1, cText2 [,hIcon] )</strong> (Windows only)
-   <p></p>
-
    <br><strong class="subhead"> hwg_GetDesktopWidth()</strong> 
    <br>Returns a width of a desktop in pixels.
    <p></p>
@@ -1436,7 +1523,13 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_GetNextDlgTabItem ( parentHandle, ::handle, lNext )</strong> (Windows only)
-   <p></p>
+   <br>Returns a handle of a next or previous control in a window.
+   <ul>
+     <li> parentHandle - handle of a parent window;
+     <li> handle - handle of a current control;
+     <li> lNext - .T., if a next control is demanded, .F. - if the previous;
+     <li> Return value - handle of a next or previous control.
+   </ul>
 
    <br><strong class="subhead"> hwg_Sleep( n )</strong> 
    <p></p>
@@ -1524,8 +1617,13 @@
    <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_RunConsoleApp( cCommand, cOutFile )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_RunConsoleApp( cCommand [, cOutFile] )</strong> 
+   <br>Executes a console program in sync mode, waiting for result.
+   <ul>
+     <li> cCommand - a command line to execute;
+     <li> cOutFile - optional parameter, a file name for program output;
+     <li> Return value - (integer) program exit code.
+   </ul>
 
    <br><strong class="subhead"> hwg_RunApp( cCommand [, nFlag] [, lAsync] )</strong> 
    <p></p>

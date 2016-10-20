@@ -904,7 +904,7 @@ HB_FUNC( HWG__DRAWCHECKBTN )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = (gdouble)hb_parni( 2 ), y1 = (gdouble)hb_parni( 3 ),
-           x2 = (gdouble)hb_parni( 4 ), y2 = (gdouble)hb_parni( 5 ),
+           y2 = (gdouble)hb_parni( 5 ),
            nHeight = y2-y1-6;
    int iSet = hb_parl(6);
    const char *cTitle = ( hb_pcount(  ) > 6 ) ? hb_parc( 7 ) : NULL;
@@ -945,7 +945,7 @@ HB_FUNC( HWG__DRAWRADIOBTN )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = (gdouble)hb_parni( 2 ), y1 = (gdouble)hb_parni( 3 ),
-           x2 = (gdouble)hb_parni( 4 ), y2 = (gdouble)hb_parni( 5 ),
+           y2 = (gdouble)hb_parni( 5 ),
            nHeight = y2-y1-4;
    int iSet = hb_parl(6);
    const char *cTitle = ( hb_pcount(  ) > 6 ) ? hb_parc( 7 ) : NULL;

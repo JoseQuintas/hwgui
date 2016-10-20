@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-10-20 11:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc_functions.html
+    * Documentation updated.
+  * source/gtk/draw.c
+    ! Warnings fixed.
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * Now oCOlumn:bColorBlock may return an array with 6 items,
+      the 5-th is a replacement for :httColor, 6-th - for :htbColor
+
 2016-10-10 13:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     ! Yet another fix.

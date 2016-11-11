@@ -325,6 +325,7 @@
             [ OF <oWnd> ]              ;
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
+            [ BACKCOLOR <bcolor> ]     ;
             [ STRETCH <nStretch>]      ;
             [<lTransp: TRANSPARENT> [COLOR  <trcolor> ]] ;
             [ ON INIT <bInit> ]        ;
@@ -332,7 +333,7 @@
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBmp> := ] HSayBmp():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,,,<.lTransp.>,<nStretch>,<trcolor> );
+        <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,,,<.lTransp.>,<nStretch>,<trcolor>,<bcolor> );
     [; hwg_SetCtrlName( <oBmp>,<(oBmp)> )]
 
 #xcommand REDEFINE BITMAP [ <oBmp> SHOW ] <bitmap> ;

@@ -17,22 +17,26 @@ CLASS HSayImage INHERIT HControl
 
    CLASS VAR winclass   INIT "STATIC"
    DATA  oImage
+   DATA bClick, bDblClick
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
-      bSize, ctoolt )
+      bSize, ctoolt, bClick, bDblClick, bColor )
    METHOD Activate()
-   METHOD End()  INLINE ( ::Super:End(), iif( ::oImage <> Nil,::oImage:Release(),::oImage := Nil ), ::oImage := Nil )
+   METHOD End()  INLINE ( ::Super:End(), Iif( ::oImage <> Nil,::oImage:Release(),::oImage := Nil ), ::oImage := Nil )
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
-      bSize, ctoolt ) CLASS HSayImage
+      bSize, ctoolt, bClick, bDblClick, bColor ) CLASS HSayImage
 
-   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop,               ;
-      iif( nWidth != Nil, nWidth, 0 ), iif( nHeight != Nil, nHeight, 0 ), , ;
-      bInit, bSize, , ctoolt )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, ;
+      iif( nWidth != Nil, nWidth, 0 ), iif( nHeight != Nil, nHeight, 0 ),, ;
+      bInit, bSize,, ctoolt,, bColor )
 
-   ::title   := ""
+   ::title := ""
+
+   ::bClick := bClick
+   ::bDblClick := bDblClick
 
    RETURN Self
 
@@ -56,7 +60,7 @@ CLASS HSayBmp INHERIT HSayImage
    DATA lTransp, trcolor
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-      bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor )
+      bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor, bColor )
    METHOD INIT
    METHOD onEvent( msg, wParam, lParam )
    METHOD Paint()
@@ -65,9 +69,10 @@ CLASS HSayBmp INHERIT HSayImage
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-      bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor ) CLASS HSayBmp
+      bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor, bColor ) CLASS HSayBmp
 
-   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctoolt )
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, ;
+         bInit, bSize, ctoolt, bClick, bDblClick, bColor )
 
    ::lTransp := Iif( lTransp = Nil, .F. , lTransp )
    ::trcolor := Iif( trcolor = Nil, 16777215, trcolor )
@@ -114,6 +119,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSayBmp
 METHOD Paint() CLASS HSayBmp
    LOCAL hDC := hwg_Getdc( ::handle )
 
+   IF ::brush != Nil
+      hwg_Fillrect( hDC, ::nOffsetH, ::nOffsetV, ::nWidth, ::nHeight, ::brush:handle )
+   ENDIF
    IF ::oImage != Nil
       IF ::nZoom == Nil
          hwg_Drawbitmap( hDC, ::oImage:handle, , ::nOffsetH, ;

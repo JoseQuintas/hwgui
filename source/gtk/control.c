@@ -225,6 +225,7 @@ HB_FUNC( HWG_CREATEEDIT )
       g_object_set_data( ( GObject * ) hCtrl, "multi", ( gpointer ) 1 );
       if( ulStyle & ES_READONLY )
          gtk_text_view_set_editable( ( GtkTextView * ) hCtrl, 0 );
+      gtk_text_view_set_wrap_mode( GTK_TEXT_VIEW(hCtrl), GTK_WRAP_WORD_CHAR);
    }
    else
    {

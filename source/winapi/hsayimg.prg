@@ -23,7 +23,7 @@ CLASS HSayImage INHERIT HControl
    DATA bClick, bDblClick
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
-      bSize, ctooltip, bClick, bDblClick )
+      bSize, ctooltip, bClick, bDblClick, bColor )
    METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip, bClick, bDblClick )
    METHOD Activate()
    METHOD END()  INLINE ( ::Super:END(), iif( ::oImage <> Nil, ::oImage:Release(), ::oImage := Nil ), ::oImage := Nil )
@@ -33,14 +33,14 @@ CLASS HSayImage INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
-      bSize, ctooltip, bClick, bDblClick ) CLASS HSayImage
+      bSize, ctooltip, bClick, bDblClick, bColor ) CLASS HSayImage
 
    nStyle := Hwg_BitOr( nStyle, SS_NOTIFY )
-   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop,               ;
-      iif( nWidth != Nil, nWidth, 0 ), iif( nHeight != Nil, nHeight, 0 ), , ;
-      bInit, bSize, , ctooltip )
+   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, ;
+      Iif( nWidth != Nil, nWidth, 0 ), iif( nHeight != Nil, nHeight, 0 ),, ;
+      bInit, bSize,, ctooltip,, bColor )
 
-   ::title   := ""
+   ::title := ""
 
    ::bClick := bClick
    ::oParent:AddEvent( STN_CLICKED, ::id, { || ::onClick() } )
@@ -52,7 +52,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
 
 METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip ) CLASS HSayImage
 
-   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, , bInit, bSize, , ctooltip )
+   ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize,, ctooltip )
 
    RETURN Self
 
@@ -97,20 +97,19 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nStretch
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-      bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, trcolor )
+      bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, trcolor, bColor )
    METHOD Redefine( oWndParent, nId, Image, lRes, bInit, bSize, ctooltip, lTransp )
    METHOD Init()
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
-   //METHOD REFRESH() INLINE ::HIDE(), hwg_Sendmessage( ::handle, WM_PAINT, 0, 0 ), ::SHOW()
    METHOD Refresh() INLINE hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
-      bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, trcolor ) CLASS HSayBmp
+      bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, trcolor, bColor ) CLASS HSayBmp
 
-   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick, bColor )
 
    ::bPaint := { | o, lpdis | o:Paint( lpdis ) }
    ::lTransp := Iif( lTransp = Nil, .F. , lTransp )
@@ -160,6 +159,9 @@ METHOD Init() CLASS HSayBmp
 METHOD Paint( lpdis ) CLASS HSayBmp
    LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
 
+   IF ::brush != Nil
+      hwg_Fillrect( drawInfo[ 3 ], drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ], ::brush:handle )
+   ENDIF
    IF ::oImage != Nil .AND. !Empty( ::oImage:Handle )
       IF ::nZoom == Nil
          IF ::lTransp

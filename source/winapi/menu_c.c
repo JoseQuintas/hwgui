@@ -573,7 +573,7 @@ HB_FUNC( HWG_ENABLEMENUSYSTEMITEM )
 }
 
 
-HB_FUNC( HWG_SETMENUINFO )
+HB_FUNC( HWG_SETMENUBACKCOLOR )
 {
 
    HMENU hMenu;
@@ -599,7 +599,7 @@ HB_FUNC( HWG_SETMENUINFO )
             !HB_ISNIL( 2 ) ? CreateSolidBrush( ( COLORREF ) hb_parnl( 2 ) ) :
             NULL;
       mi.cbSize = sizeof( mi );
-      mi.fMask = MIM_APPLYTOSUBMENUS | MIM_BACKGROUND;
+      mi.fMask = MIM_BACKGROUND | ( (HB_ISLOG(3) && !hb_parl(3))? 0 : MIM_APPLYTOSUBMENUS );
       mi.hbrBack = hbrush;
       SetMenuInfo( hMenu, &mi );
    }

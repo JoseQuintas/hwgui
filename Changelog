@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-11-11 10:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * BACKCOLOR clause added to @ ... BITMAP command
+  * include/hwgextern.ch
+    * hwg_SetMenuBackColor added to a list of REQUEST's
+  * source/gtk/control.c
+    * Word wrapping added fot multiline edit controls, provided by Andrey Tarasov.
+  * source/gtk/hsayimg.prg
+  * source/winapi/hsayimg.prg
+    * Backcolor support added to HSayBmp
+  * source/winapi/menu_c.c
+    * hwg_SetMenuInfo() has been renamed to hwg_SetMenuBackColor(), third parameter
+      added - logical value - if set to .F., the background color doesn't apply to submenus.
+
 2016-10-20 11:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc_functions.html
     * Documentation updated.

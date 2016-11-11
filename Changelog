@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-11-11 14:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/commond.c
+    * Now a font selection dialog respects the font object, passed by parameter
+      (based on suggestion of Andrey Tarasov).
+
 2016-11-11 10:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * BACKCOLOR clause added to @ ... BITMAP command

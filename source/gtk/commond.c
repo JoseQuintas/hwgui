@@ -22,7 +22,8 @@
 extern GtkWidget * GetActiveWindow( void );
 extern void hwg_set_modal( GtkWindow * hDlg, GtkWindow * hParent );
 extern void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
-extern GtkWidget * hMainWindow;
+
+extern PHB_ITEM GetObjectVar( PHB_ITEM pObject, const char *varname );
 
 void store_font( gpointer fontseldlg )
 {
@@ -95,6 +96,17 @@ HB_FUNC( HWG_SELECTFONT )
 
    if( hb_pcount() > 0 && !HB_ISNIL(1) )
    {
+      PHB_ITEM pObj = hb_param( 1, HB_IT_OBJECT );
+      const char * ptr = hb_itemGetCPtr( GetObjectVar( pObj, "NAME" ) );
+      int height = hb_itemGetNI( GetObjectVar( pObj, "HEIGHT" ) );
+      int weight = hb_itemGetNI( GetObjectVar( pObj, "WEIGHT" ) );
+      int italic = hb_itemGetNI( GetObjectVar( pObj, "ITALIC" ) );
+      char szFont[256];
+
+      sprintf( szFont, "%s %s %s %d", ptr, ( (weight<700)? "" : "BOLD" ), ( (italic==0)? "" : "ITALIC" ), height );
+
+      gtk_font_selection_dialog_set_font_name( GTK_FONT_SELECTION_DIALOG(fontseldlg),
+           szFont );
    }
 
    g_signal_connect( G_OBJECT (fontseldlg), "destroy",

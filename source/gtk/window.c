@@ -858,6 +858,16 @@ HB_FUNC( HWG_WINDOWSETRESIZE )
   gtk_window_set_resizable( handle ,hb_parl(2));
 }
 
+HB_FUNC( HWG_SETTOPMOST )
+{
+   gtk_window_set_keep_above( (GtkWindow*) HB_PARHANDLE(1), TRUE );
+}
+
+HB_FUNC( HWG_REMOVETOPMOST )
+{
+   gtk_window_set_keep_above( (GtkWindow*) HB_PARHANDLE(1), FALSE );
+}
+
 gchar * hwg_convert_to_utf8( const char * szText )
 {
    if( *szAppLocale )

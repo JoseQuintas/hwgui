@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-11-17 08:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/window.c
+    * hwg_SetTopMost( handle ) and hwg_RemoveTopMost( handle ) functions added
+      as in WinAPI version.
+
 2016-11-11 14:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/commond.c
     * Now a font selection dialog respects the font object, passed by parameter

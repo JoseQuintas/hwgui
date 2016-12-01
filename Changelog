@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2016-12-01 10:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hpanel.prg
+    ! Bug fixed
+
 2016-11-17 08:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/window.c
     * hwg_SetTopMost( handle ) and hwg_RemoveTopMost( handle ) functions added

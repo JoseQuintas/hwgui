@@ -899,7 +899,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
       ENDIF
       x2 := x + xSize - 1
       y1 := ::y1 + ( ::rowCount ) * ( ::height + 1 ) + 1
-      y2 := ::y1 + ( ::rowCount + nLine ) * ( ::height + 1 )
+      y2 := ::y1 + ( ::rowCount + 1 ) * ( ::height + 1 )
       aCB := oColumn:aPaintCB
       IF !Empty( block := hwg_getPaintCB( aCB, PAINT_FOOT_ALL ) )
          RETURN Eval( block, oColumn, hDC, x, y1, x2, y2, fif )

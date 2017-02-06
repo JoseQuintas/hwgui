@@ -468,7 +468,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, cTooltip, tcolor, bColor )
-
+   ::bClick  := bClick
    ::title   := cCaption
 
    IF bClick != NIL

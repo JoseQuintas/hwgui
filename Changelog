@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2017-02-06 20:16 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
+  * source/winapi/hcontrol.prg
+  * Added Bclick assingment to hbutton redefine method
+   
 2017-01-11 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg

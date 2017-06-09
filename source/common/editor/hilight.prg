@@ -98,14 +98,14 @@ CLASS Hilight INHERIT HilightBase
    DATA   lMultiComm
    DATA   aDop, nDopChecked
 
-   METHOD New( cFile, cSection )
+   METHOD New( cFile, cSection, cCommands, cFuncs, cSComm, cMComm, lCase )
    METHOD Set( oEdit )
    METHOD Do( nLine, lCheck )
    METHOD UpdSource( nLine )  INLINE  ( ::nDopChecked := nLine-1 )
    METHOD AddItem( nPos1, nPos2, nType )
 ENDCLASS
 
-METHOD New( cFile, cSection ) CLASS Hilight
+METHOD New( cFile, cSection, cCommands, cFuncs, cSComm, cMComm, lCase ) CLASS Hilight
 Local oIni, oMod, oNode, i, nPos
 
    ::aLineStru := Array( 20,3 )
@@ -146,14 +146,34 @@ Local oIni, oMod, oNode, i, nPos
                ENDIF
             ENDIF
          NEXT
-         IF !::lCase
-            IF !Empty( ::cCommands )
-               ::cCommands := Lower( ::cCommands )
-            ENDIF
-            IF !Empty( ::cFuncs )
-               ::cFuncs := Lower( ::cFuncs )
-            ENDIF
+      ENDIF
+   ELSE
+      IF !Empty( cCommands )
+         ::cCommands := " " + AllTrim( cCommands ) + " "
+      ENDIF
+      IF !Empty( cFuncs )
+         ::cFuncs := " " + AllTrim( cFuncs ) + " "
+      ENDIF
+      IF !Empty( cSComm )
+         ::cScomm := AllTrim( cScomm )
+      ENDIF
+      IF !Empty( cMComm )
+         ::cMcomm1 := AllTrim( cMcomm )
+         IF !Empty(::cMcomm1) .AND. ( nPos := At( " ", ::cMcomm1 ) ) > 0
+            ::cMcomm2 := Ltrim( Substr( ::cMcomm1,nPos+1 ) )
+            ::cMcomm1 := Trim( Left( ::cMcomm1,nPos-1 ) )
          ENDIF
+      ENDIF
+      IF Valtype( lCase ) == 'L'
+         ::lCase := lCase
+      ENDIF
+   ENDIF
+   IF !::lCase
+      IF !Empty( ::cCommands )
+         ::cCommands := Lower( ::cCommands )
+      ENDIF
+      IF !Empty( ::cFuncs )
+         ::cFuncs := Lower( ::cFuncs )
       ENDIF
    ENDIF
 

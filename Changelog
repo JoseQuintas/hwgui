@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2017-06-09 15:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/control.c
+    ! Warning fixed ( hb_snprintf() instead of sprintf )
+  * source/common/editor/hilight.prg
+    * Hilight rules may be set directly in Hilight():New() now.
+
 2017-02-06 20:16 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
   * source/winapi/hcontrol.prg
   * Added Bclick assingment to hbutton redefine method

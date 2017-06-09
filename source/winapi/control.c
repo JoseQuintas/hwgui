@@ -650,14 +650,8 @@ HB_FUNC( HWG_GETTIMEPICKER )
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), DTM_GETSYSTEMTIME, 0,
                 ( LPARAM ) & st );
 
-/*
-   #if __HARBOUR__ - 0 >= 0x010100
-      hb_snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
-   #else
-      snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
-   #endif
-*/
-   sprintf( szTime, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
+   //sprintf( szTime, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
+   hb_snprintf( szTime, 9, "%02d:%02d:%02d", st.wHour, st.wMinute, st.wSecond );
    hb_retc( szTime ) ;
 }
 

@@ -2448,12 +2448,14 @@ void WINAPI DoPageAction( HWND hwnd, DWORD action )
          {
             // Call the IWebBrowser2 object's Refresh function.
             webBrowser2->lpVtbl->Refresh( webBrowser2 );
+            break;
          }
 
          case WEBPAGE_STOP:
          {
             // Call the IWebBrowser2 object's Stop function.
             webBrowser2->lpVtbl->Stop( webBrowser2 );
+            break;
          }
       }
 

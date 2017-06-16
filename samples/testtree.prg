@@ -23,17 +23,25 @@ Return Nil
 
 Function DlgGet
 Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
-Local oTree, oSplit, oSay
+Local oTree, oSplit, oSay, oPopup
 
    INIT DIALOG oDlg TITLE "TreeView control sample"  ;
    AT 210,10  SIZE 430,300                  ;
    FONT oFont                               ;
    ON INIT {||BuildTree(oDlg,oTree,oSay)}
 
+   CONTEXT MENU oPopup
+      MENUITEM "Add child"  ACTION {||AddNode( oTree,0 )}
+      MENUITEM "Add after"  ACTION {||AddNode( oTree,1 )}
+      MENUITEM "Add before" ACTION {||AddNode( oTree,2 )}
+   ENDMENU
+
    @ 10,10 TREE oTree OF oDlg SIZE 200,280 ;
         EDITABLE ;
         BITMAP { "..\image\cl_fl.bmp","..\image\op_fl.bmp" } ;
         ON SIZE {|o,x,y|o:Move(,,,y-20)}
+
+   oTree:bRClick := {|ot,on|TreeMenuShow( ot, oPopup, on )}
 
    @ 214,10 SAY oSay CAPTION "" SIZE 206,280 STYLE WS_BORDER ;
         ON SIZE {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth-10,y-20)}
@@ -78,4 +86,27 @@ Local aText := { ;
       oSay:SetText(aText[n])
    ENDIF
 
+Return Nil
+
+Static Function TreeMenuShow( oTree, oPopup, oNode )
+
+   oTree:Select( oNode )
+   oPopup:Show( oTree:oParent )
+
+Return Nil
+
+Static Function AddNode( oTree, nType )
+
+   LOCAL cName, oTo
+
+   IF !Empty( cName := hwg_MsgGet( "Node name" ) )
+      oTo := Iif( oTree:oSelected:oParent == Nil, oTree, oTree:oSelected:oParent )
+      IF nType == 0
+         INSERT NODE cName TO oTree:oSelected
+      ELSEIF nType == 1
+         INSERT NODE cName TO oTo AFTER oTree:oSelected
+      ELSE
+         INSERT NODE cName TO oTo BEFORE oTree:oSelected
+      ENDIF
+   ENDIF
 Return Nil

@@ -291,7 +291,10 @@ void cb_signal( GtkWidget *widget,gchar* data )
    if( !p1 )
    {
       p1 = 273;
-      widget = (GtkWidget*) p3;
+      if( p3 )
+         widget = (GtkWidget*) p3;
+      else
+         widget = hMainWindow;
       p3 = 0;
    }
 

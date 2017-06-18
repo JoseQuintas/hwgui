@@ -61,6 +61,7 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages ) CLASS HTree
    ::nLevel  := Iif( __ObjHasMsg( oParent, "NLEVEL" ), oParent:nLevel+1, 1 )
    ::bAction := bAction
    ::title := Iif( Empty(cTitle), "", cTitle )
+   ::handle := ++ oTree:nNodeCount
 
    IF aImages != Nil .AND. !Empty( aImages )
       ::aImages := {}
@@ -190,6 +191,7 @@ CLASS HTree INHERIT HControl
 CLASS VAR winclass   INIT "SysTreeView32"
 
    DATA aItems INIT {}
+   DATA nNodeCount  INIT 0
    DATA aScreen
    DATA oFirst
    DATA oSelected

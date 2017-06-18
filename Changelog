@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2017-06-18 17:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/menu.prg
+  * source/gtk/window.c
+    ! Some fixes for context menus
+  * source/gtk/htree.prg
+    ! Adding/deleting tree nodes works properly now.
+
 2017-06-16 15:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * samples/testtree.prg
     * Sample modified to demonstrate, how to call a popup menu on a tree right click and

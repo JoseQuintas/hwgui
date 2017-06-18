@@ -36,7 +36,7 @@ ENDCLASS
 
 METHOD Show( oWnd ) CLASS HMenu
 
-   IF oWnd == Nil
+   IF !Empty( HWindow():GetMain() )
       oWnd := HWindow():GetMain()
    ENDIF
    oWnd:oPopup := Self
@@ -74,7 +74,7 @@ FUNCTION Hwg_SetMenu( oWnd, aMenu )
  *  else it inserts menu item in nPos position.
  */
 
-FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos )
+FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos, hWnd )
    LOCAL hSubMenu
 
    IF nPos == Nil
@@ -82,7 +82,8 @@ FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos )
    ENDIF
 
    hSubMenu := hLast := aMenu[5]
-   hSubMenu := hwg__AddMenuItem( hSubMenu, cItem, nPos - 1, hwg_Getactivewindow(), nMenuId, , lSubMenu )
+   hSubMenu := hwg__AddMenuItem( hSubMenu, cItem, nPos - 1, ;
+      Iif( Empty(hWnd), 0, hWnd ), nMenuId, , lSubMenu )
 
    IF nPos > Len( aMenu[1] )
       IF lSubmenu
@@ -207,7 +208,7 @@ FUNCTION Hwg_ContextMenu()
    _lContext := .T.
    _aMenuDef := {}
    _oBitmap  := {}
-   _oWnd := Nil //HWindow():GetMain()
+   _oWnd   := Nil
    _nLevel := 0
    _Id := CONTEXTMENU_FIRST_ID
    _oMenu := HMenu():New()
@@ -219,7 +220,7 @@ FUNCTION Hwg_EndMenu()
    IF _nLevel > 0
       _nLevel --
    ELSE
-      hwg_BuildMenu( AClone( _aMenuDef ), iif( _oWnd != Nil,_oWnd:handle,HWindow():Getmain():handle ), ;
+      hwg_BuildMenu( AClone( _aMenuDef ), Iif( _oWnd != Nil,_oWnd:handle,0 ), ;
          _oWnd, , _lContext )
       IF _oWnd != Nil .AND. !Empty( _aAccel )
          _oWnd:hAccel := hwg_Createacceleratortable( _oWnd )

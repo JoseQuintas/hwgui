@@ -574,24 +574,31 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdiExt
       IF !Empty(::nLineC)
          aPointC[P_Y] := nl := ::aPointC[P_Y]
          aPointC[P_X] := ::aPointC[P_X]
-         IF !Empty( nL ) .AND. Valtype( ::aStru[nL,1,OB_TYPE] ) != "N"
-            IF ::aStru[nL,1,1] == "tr"
-               aTbl1 := aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
-            ELSEIF ::aStru[nL,1,1] == "img"
-               IF msg == MESS_CHAR 
-                  IF ( nKey := hwg_PtrToUlong( wParam ) ) == VK_RETURN
-                     IF nL == 1
-                       ::AddLine( nL )
-                       ::aText[nL] := ""
+         IF !Empty( nL )
+            IF Valtype( ::aStru[nL] ) != "A"
+               DO WHILE nl > 0 .AND. Valtype( ::aStru[--nL] ) != "A"; ENDDO
+               aPointC[P_Y] := ::aPointC[P_Y] := nl
+               aPointC[P_X] := ::aPointC[P_X] := 1 //Len( ::aText[nl] )
+            ENDIF
+            IF Valtype( ::aStru[nL,1,OB_TYPE] ) != "N"
+               IF ::aStru[nL,1,1] == "tr"
+                  aTbl1 := aStruTbl := ::aStru[nL-::aStru[nL,1,OB_TRNUM]+1,1,OB_TBL]
+               ELSEIF ::aStru[nL,1,1] == "img"
+                  IF msg == MESS_CHAR 
+                     IF ( nKey := hwg_PtrToUlong( wParam ) ) == VK_RETURN
+                        IF nL == 1
+                          ::AddLine( nL )
+                          ::aText[nL] := ""
+                        ELSE
+                          ::AddLine( nL+1 )
+                          ::aText[nL+1] := ""
+                        ENDIF
+                        ::Paint( .F. )
+                        msg := WM_KEYDOWN
+                        wParam := VK_DOWN
                      ELSE
-                       ::AddLine( nL+1 )
-                       ::aText[nL+1] := ""
+                        RETURN 0
                      ENDIF
-                     ::Paint( .F. )
-                     msg := WM_KEYDOWN
-                     wParam := VK_DOWN
-                  ELSE
-                     RETURN 0
                   ENDIF
                ENDIF
             ENDIF

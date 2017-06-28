@@ -1766,6 +1766,9 @@ METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
       NEXT
    ENDIF
    ::Scan( Pstart[P_Y], Min( Pend[P_Y], ::nTextLen ) )
+   IF ::lWrap
+      ::GoTo( Pstart[P_Y] )
+   ENDIF
    ::Paint( .F. )
 
    IF lChgPos

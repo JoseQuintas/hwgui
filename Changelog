@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-01-09 17:36 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
+  * contrib/ext_controls/hctrlex.prg
+  * contrib/ext_controls/hcomboex.prg
+    ! adjust to work when used wit redefine
+  * source/winapi/hcombo.prg
+    ! added missing CBN_KILLFOCUS event to redefine method
+  * source/winapi/hbrowse.prg
+    ! changed FldStr function to display timestamp fields
+         
 2017-10-20 14:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htimer.prg
   * source/winapi/htimer.prg

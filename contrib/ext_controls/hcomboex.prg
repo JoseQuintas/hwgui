@@ -119,7 +119,7 @@ CLASS HComboBoxEx INHERIT HControl
       aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, ;
       bcolor, bLFocus, bIChange, nDisplay, nhItem, ncWidth, nMaxLength )
    METHOD Activate()
-   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength, ledit, ltext )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength, ledit, ltext,aCheck )
    METHOD INIT()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Requery( aItems, xValue )
@@ -240,7 +240,7 @@ METHOD Activate() CLASS HComboBoxEx
    RETURN Nil
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
-      bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength, ledit, ltext  ) CLASS HComboBoxEx
+      bChange, ctooltip, bGFocus, bLFocus, bIChange, nDisplay, nMaxLength, ledit, ltext,aCheck  ) CLASS HComboBoxEx
 
    HB_SYMBOL_UNUSED( bLFocus )
    IF lEdit == Nil
@@ -252,6 +252,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
 
    ::lEdit := lEdit
    ::lText := lText
+   ::acheck := acheck
 
    IF !Empty( nDisplay ) .AND. nDisplay > 0
       ::Style := Hwg_BitOr( ::Style, CBS_NOINTEGRALHEIGHT )
@@ -954,7 +955,7 @@ METHOD INIT() CLASS hCheckComboBox
    IF !::lInit
       ::Super:Init()
       IF Len( ::acheck ) > 0
-         AEval( ::aCheck, { | a | ::Setcheck( a, .T. ) } )
+         AEval( ::aCheck, { | a ,v| ::Setcheck(v, a ) } )
       ENDIF
       IF !Empty( ::aItems ) .AND. !Empty( ::nhItem )
          FOR i := 1 TO Len( ::aItems )
@@ -1104,7 +1105,7 @@ METHOD Requery() CLASS hCheckComboBox
 
    ::Super:Requery()
    IF Len( ::acheck ) > 0
-      AEval( ::aCheck, { | a | ::Setcheck( a, .T. ) } )
+      AEval( ::aCheck, { | a ,v| ::Setcheck( v,a ) } )
    ENDIF
    IF !Empty( ::aItems ) .AND. !Empty( ::nhItem )
       FOR i := 1 TO Len( ::aItems )

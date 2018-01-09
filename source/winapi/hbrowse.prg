@@ -1952,10 +1952,21 @@ STATIC FUNCTION FldStr( oBrw, numf )
          IF type == "C"
             cRes := vartmp
          ELSEIF type == "N"
+            if vartmp = nil
+               cRes := PadL( space(oBrw:aColumns[numf]:length+ ;
+                  oBrw:aColumns[numf]:dec ), oBrw:aColumns[numf]:length )
+            ELSE   
             cRes := PadL( Str( vartmp, oBrw:aColumns[numf]:length, ;
                oBrw:aColumns[numf]:dec ), oBrw:aColumns[numf]:length )
+            endif   
          ELSEIF type == "D"
             cRes := PadR( Dtoc( vartmp ), oBrw:aColumns[numf]:length )
+         ELSEIF type == "T"
+            if vartmp == nil 
+               cRes := Space(23)
+            else
+               cRes := PadR(  HB_TSTOSTR( vartmp,.t. ), oBrw:aColumns[numf]:length )    
+            endif
 
          ELSEIF type == "L"
             cRes := PadR( Iif( vartmp, "T", "F" ), oBrw:aColumns[numf]:length )

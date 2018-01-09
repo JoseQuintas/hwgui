@@ -8,7 +8,7 @@ LGUI = .F.
 LIBFOLDERS = 
 LMT = .F.
 LPRG_CLASSICDEBUG = .F.
-LPRG_DEBUG = .T.
+LPRG_DEBUG = .F.
 LUSEDLL = .F.
 MAPFILE = 
 MYC_FLAGS =  
@@ -29,3 +29,5 @@ TARGETFOLDER =
 [source\common\procmisc\*.*]
 [source\common\xml\*.*]
 [contrib\misc\*.*]
+[contrib\ext_controls\*.prg]
+[contrib\ext_controls\*.c]

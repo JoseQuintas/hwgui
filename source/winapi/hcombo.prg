@@ -120,6 +120,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ELSEIF bChange != Nil
       ::oParent:AddEvent( CBN_SELCHANGE, ::id, bChange )
    ENDIF
+   ::oParent:AddEvent( CBN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
    ::Refresh() // By Luiz Henrique dos Santos
 
    RETURN Self

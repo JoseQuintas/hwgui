@@ -318,7 +318,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
       cTooltip, tcolor, bColor, cCaption, bGFocus ) CLASS HButtonX
 
-   HControl():New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
+   ::super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
 
    ::title   := cCaption
@@ -532,10 +532,12 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    RETURN Self
 
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-      cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon, bGFocus, nPictureMargin ) CLASS HButtonEx
+      cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon, bGFocus, nPictureMargin ,Transp,lnoThemes) CLASS HButtonEx
 
    DEFAULT iStyle TO ST_ALIGN_HORIZ
    DEFAULT nPictureMargin TO 0
+    DEFAULT Transp TO .T.
+     DEFAULT lnoThemes  TO .F.
    bPaint := { | o, p | o:paint( p ) }
    ::m_bLButtonDown := .F.
    ::m_bIsToggle := .F.
@@ -553,9 +555,11 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := hwg_Getsyscolor( COLOR_BTNFACE )
    ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := hwg_Getsyscolor( COLOR_BTNTEXT )
    ::PictureMargin                      := nPictureMargin
-
+   ::m_bDrawTransparent  := Transp   
+   ::lnoThemes           := lnoThemes
    ::Super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-      cTooltip, tcolor, bColor, cCaption, hBitmap, iStyle, hIcon, bGFocus  )
+      cTooltip, tcolor, bColor, cCaption,  bGFocus  )
+                  
    ::title := cCaption
    ::Caption := cCaption
 

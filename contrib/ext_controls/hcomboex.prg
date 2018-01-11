@@ -31,7 +31,7 @@
 
 static WNDPROC wpOrigComboProc;
 
-HB_FUNC_STATIC( COPYDATA )
+HB_FUNC( COPYDATA )
 {
    LPARAM lParam = ( LPARAM ) hb_parnl( 1 ) ;
    void * hText;
@@ -134,7 +134,7 @@ CLASS HComboBoxEx INHERIT HControl
    METHOD onSelect()
    METHOD InteractiveChange( )
    METHOD onChange( lForce )
-   METHOD Populate() HIDDEN
+   METHOD Populate() 
    METHOD GetValueBound( xItem )
    METHOD RowSource( xSource ) SETGET
    METHOD DisplayValue( cValue ) SETGET
@@ -849,6 +849,7 @@ METHOD Populate() CLASS HComboBoxEx
          ( cAlias ) -> ( dbGoto( nRecno ) )
       ENDIF
    ELSE
+   tracelog(valtoprg( ::aItems ))
       FOR i := 1 TO Len( ::aItems )
          IF ::columnBound > 1
             IF ValType( ::aItems[ i ] ) = "A" .AND. Len(  ::aItems[ i ] ) > 1
@@ -871,8 +872,7 @@ METHOD Populate() CLASS HComboBoxEx
 
    RETURN LongComboWidth
 
-   //***************************************************
-#define TRANSPARENT        1
+
 
 CLASS HCheckComboBox INHERIT HComboBoxEx
 
@@ -896,7 +896,7 @@ CLASS HCheckComboBox INHERIT HComboBoxEx
       aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, ;
       tcolor, bcolor, bValid, acheck, nDisplay, nhItem, ncWidth, aImages )
    METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
-      bChange, ctooltip, bGFocus, acheck )
+      bChange, ctooltip, bGFocus, acheck,aImage )
    METHOD INIT()
    METHOD Requery()
    METHOD Refresh()
@@ -940,12 +940,16 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    RETURN Self
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
-      bChange, ctooltip, bGFocus, acheck ) CLASS hCheckComboBox
-
-   ::Super:Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
-      bChange, ctooltip, bGFocus )
+      bChange, ctooltip, bGFocus, acheck, aImages ) CLASS hCheckComboBox
+      bPaint := { | o, p | o:paint( p ) }   
+     ::acheck := iif( acheck == Nil, {}, acheck )
+     ::lCheck := iif( aImages == Nil, .T. , .F. )
+     ::aImages := aImages
+     ::Super:Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
+      bChange, ctooltip, bGFocus,, , , , , ,aCheck )
+      
    ::lResource := .T.
-   ::acheck    := acheck
+  
 
    RETURN Self
 
@@ -954,6 +958,7 @@ METHOD INIT() CLASS hCheckComboBox
 
    IF !::lInit
       ::Super:Init()
+     
       IF Len( ::acheck ) > 0
          AEval( ::aCheck, { | a ,v| ::Setcheck(v, a ) } )
       ENDIF
@@ -1020,7 +1025,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
       ENDIF
 
    ELSEIF msg == WM_CHAR
-
+      
       IF ( wParam == VK_SPACE )
          nIndex := hwg_Sendmessage( ::handle, CB_GETCURSEL, wParam, lParam ) + 1
          rcItem := hwg_Combogetitemrect( ::handle, nIndex - 1 )
@@ -1225,6 +1230,7 @@ METHOD Paint( lpDis ) CLASS hCheckComboBox
       ::RecalcText()
 
       strtext := ::m_strText
+      
 
       ncheck := 0
 
@@ -1435,3 +1441,4 @@ FUNCTION hwg_multibitor( ... )
    NEXT
 
    RETURN result
+   

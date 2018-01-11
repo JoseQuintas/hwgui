@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2018-01-10 23:30 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
+  * contrib/ext_controls/hcomboex.prg
+    ! Some adjust to work with resource
+  * include/hwg_extctrl.ch
+    ! added  REDEFINE GET CHECKCOMBOBOX command
+        
 2018-01-09 17:36 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
   * contrib/ext_controls/hctrlex.prg
   * contrib/ext_controls/hcomboex.prg

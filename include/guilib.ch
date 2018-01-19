@@ -271,6 +271,21 @@
                        <nHeight>,<maxpos>,<nRange> );
             [; hwg_SetCtrlName( <oPBar>,<(oPBar)> )]
 
+            
+#xcommand REDEFINE progress  [ <oBmp>  ] ;            
+            [ OF <oWnd> ]              ;
+            ID <nId>                   ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ TOOLTIP <ctoolt> ]       ;
+            [ MAXPOS <mpos> ] ;
+            [ RANGE <nRange> ] ;
+          => ;
+    [<oBmp> := ] HProgressBar():Redefine( <oWnd>,<nId>,<mpos>,<nRange>, ;
+        <bInit>,<bSize>,,<ctoolt> );
+    [; hwg_SetCtrlName( <oBmp>,<(oBmp)> )]            
+        
+            
 #xcommand ADD STATUS [<oStat>] [ TO <oWnd> ] ;
             [ ID <nId> ]           ;
             [ ON INIT <bInit> ]    ;

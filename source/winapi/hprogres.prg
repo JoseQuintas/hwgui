@@ -35,6 +35,7 @@ CLASS HProgressBar INHERIT HControl
    METHOD SetLabel( cCaption )
    METHOD CLOSE()
    METHOD End() INLINE hwg_Destroywindow( ::handle )
+   METHOD Redefine( oWndParent, nId,  maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical )
 
 ENDCLASS
 
@@ -55,6 +56,20 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit
 
    RETURN Self
 
+   
+METHOD Redefine( oWndParent, nId,  maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical )
+
+   ::Super:New( oWndParent,nId,0,0,0,0,0,,bInit, ;
+                  bSize,bPaint,ctooltip,, )
+   HWG_InitCommonControlsEx()
+   //::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
+   ::maxPos  := iif( maxPos == Nil, 20, maxPos )
+   ::lNewBox := .F.
+   ::nRange := iif( nRange != Nil .AND. nRange != 0, nRange, 100 )
+   ::nLimit := iif( nRange != Nil, Int( ::nRange / ::maxPos ), 1 )  
+    ::nAnimation := nAnimation
+return self    
+   
 METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPercent ) CLASS HProgressBar
 
    // ::classname:= "HPROGRESSBAR"

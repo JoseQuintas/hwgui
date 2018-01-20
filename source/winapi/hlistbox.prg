@@ -293,6 +293,6 @@ METHOD Valid( oCtrl ) CLASS HListBox
       ENDIF
    ENDIF
    IF Empty( hwg_Getfocus() )
-       hwg_GetSkip( ::oParent, ::handle,, ::nGetSkip )
+       hwg_GetSkip( ::oParent, ::handle, 1 )
    ENDIF
    RETURN .T.

@@ -536,16 +536,21 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
 
    DEFAULT iStyle TO ST_ALIGN_HORIZ
    DEFAULT nPictureMargin TO 0
-    DEFAULT Transp TO .T.
-     DEFAULT lnoThemes  TO .F.
+   DEFAULT Transp TO .T.
+   DEFAULT lnoThemes  TO .F.
+
    bPaint := { | o, p | o:paint( p ) }
+   ::Super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
+      cTooltip, tcolor, bColor, cCaption,  bGFocus  )
+   ::bPaint  := bPaint	  
    ::m_bLButtonDown := .F.
    ::m_bIsToggle := .F.
    ::m_bLButtonDown := .F.
    ::m_bSent := .F.
+  
    ::title := cCaption
    ::Caption := cCaption
-   ::iStyle  := iStyle
+   ::iStyle  := iStyle 
    ::hBitmap := hBitmap
    ::hIcon   := hIcon
    ::m_crColors[ BTNST_COLOR_BK_IN ]    := hwg_Getsyscolor( COLOR_BTNFACE )
@@ -557,8 +562,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::PictureMargin                      := nPictureMargin
    ::m_bDrawTransparent  := Transp   
    ::lnoThemes           := lnoThemes
-   ::Super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
-      cTooltip, tcolor, bColor, cCaption,  bGFocus  )
+   
                   
    ::title := cCaption
    ::Caption := cCaption
@@ -595,7 +599,7 @@ METHOD END() CLASS HButtonEX
 
 METHOD INIT() CLASS HButtonEx
    LOCAL nbs
-
+altd()
    IF ! ::lInit
       ::nHolder := 1
       IF !Empty( ::handle )

@@ -7,7 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
-
+2018-01-20 16:00 2018-01-19 17:36 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
+  * source/winapi/hlistbox.prg 
+    ! fixed error on valid method reported by Gianantonio 
+  * include/hwg_extctrl.ch
+    ! added  REDEFINE BUTTONEX command
+  * contrib/ext_controls/hctrlex.prg
+    ! fix to hbuttonex redefine method
+		
 2018-01-19 17:36 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
   * include/guilib.ch
     ! add missing REDEFINE progress command

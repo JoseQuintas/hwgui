@@ -58,7 +58,7 @@
        OB_ALIN, OB_NLINES, OB_NLINEF, OB_NTLEN, OB_NWCF, OB_NWSF, OB_NLINEC, OB_NPOSC,
        OB_NLALL, OB_APC, OB_APM1, OB_APM2
  */
-#define OB_ARRLEN      19
+#define OB_ARRLEN      23
 #define OB_TYPE         1
 #define OB_OB           2
 #define OB_ASTRU        2
@@ -94,6 +94,10 @@
 #define OB_APC         17
 #define OB_APM1        18
 #define OB_APM2        19
+#define OB_FONT        20
+#define OB_TCLR        21
+#define OB_BCLR        22
+#define OB_BCLRCUR     23
 
 #define BIT_ALLOW       1
 #define BIT_RDONLY      2
@@ -464,7 +468,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd, nFrom ) CLASS HCEdiExt
                nPosA := nPos2 + 1
                i := Iif( (i:=Ascan(aAttr,{|a|a[1]=="colspan"}))==0, 0, Val(aAttr[i,2]) )
                j := Iif( (j:=Ascan(aAttr,{|a|a[1]=="rowspan"}))==0, 0, Val(aAttr[j,2]) )
-               Aadd( ::aStru[n,1,OB_OB], { "td", {}, cClsName, {}, i, j, Nil, Array(4,AL_LENGTH), 0, 1, 0, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0} } )
+               Aadd( ::aStru[n,1,OB_OB], { "td", {}, cClsName, {}, i, j, Nil, Array(4,AL_LENGTH), 0, 1, 0, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0}, 0, 0, 0, 0 } )
                iTd := Len( ::aStru[n,1,OB_OB] )
                aStruBack := ::aStru
                ::aStru := aStruBack[ n,1,OB_OB,iTd,2 ]
@@ -756,7 +760,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
    LOCAL nL := ::nLineF+nLine-1, aHili, aHiliTD, aLine, aStru := ::aStru[nL,1], i, j, aStruTbl
    LOCAL nMargL, nMargR, nIndent, nAlign, nBoundL, nBoundR, tColor, bColor, bColorCur, nDefFont
    LOCAL iCol, iTd, yPosMax := 0, yPosB := yPos, nBorder := 0, nTWidth, nWidth
-   LOCAL oPrinter, lFormat := !Empty( ::nDocFormat ), x1, x2
+   LOCAL oPrinter, lFormat := !Empty( ::nDocFormat ), x1, x2, aTD
    LOCAL nsec := seconds()
 
    IF ::lPrinting
@@ -899,7 +903,6 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
          ENDIF
       ENDIF
       IF ( i := aStruTbl[OB_TWIDTH] ) == 0 .OR. i == -100
-         //::nBoundL := 0
          nTWidth := nWidth - nBorder * ( Len(aStruTbl[OB_OB])+1 )
       ELSE
          nTWidth := Iif( i>0,i,Round(nWidth*(-i)/100,0) ) - nBorder * ( Len(aStruTbl[OB_OB])+1 )
@@ -919,29 +922,10 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
 
       iCol := 0
       // Draw cells of a table row
+      aTD := Array( Len( aStru[OB_OB] ) )
       FOR iTd := 1 TO Len( aStru[OB_OB] )
          iCol ++
-         ::LoadEnv( nL, iTd )
-         aHiliTD := Nil
-         bColor := -1
-         IF hwg_BitAnd( aStru[OB_OPT], TROPT_SEL ) > 0
-            bColor := ::bColor; bColorCur := ::bColorCur
-            ::bColor := ::bcolorSel
-            IF ::bColorCur == bColor
-               ::bColorCur := ::bColor
-            ENDIF
-            hced_Setcolor( ::hEdit,, ::bColor )
-         ELSEIF !Empty( hDC ) .AND. !Empty( aStru[OB_OB,iTd,OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStru[OB_OB,iTd,OB_CLS] )
-            aHiliTD := ::aHili[aStru[OB_OB,iTd,OB_CLS]]
-            IF aHiliTD[3] != Nil .AND. aHiliTD[3] >= 0
-               bColor := ::bColor; bColorCur := ::bColorCur
-               ::bColor := aHiliTD[3]
-               IF ::bColorCur == bColor
-                  ::bColorCur := ::bColor
-               ENDIF
-               hced_Setcolor( ::hEdit,, ::bColor )
-            ENDIF
-         ENDIF
+         ::LoadEnv( nL, iTd, !Empty( hDC ) )
          ::nBoundL += nBorder
          IF iCol > 1
            i := aStruTbl[ OB_OB,iCol-1,OB_CWIDTH ]
@@ -998,27 +982,15 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
                ENDDO
             ENDIF
          ENDIF
-         IF bColor >= 0
-            ::bColor := bColor; ::bColorCur := bColorCur
-            hced_Setcolor( ::hEdit,, ::bColor )
-         ENDIF
 
-         ::RestoreEnv( nL, iTd )
+         aTD[iTd] := yPos
+         ::RestoreEnv( nL, iTd, !Empty( hDC ) )
          yPosMax := Max( yPos, yPosMax )
          yPos := yPosB
       NEXT
-      ::nIndent := nIndent
 
       yPos := yPosMax
       IF !Empty( hDC ) .OR. ::lPrinting
-         iCol := 0
-         FOR iTd := 1 TO Len( aStru[OB_OB] )
-            iCol ++
-            IF itd == 1 .AND. aStruTbl[OB_OB,itd,OB_CLEFT] > 0
-            ENDIF
-            j := Iif( aStru[OB_OB,iTd,OB_COLSPAN] > 1, aStru[OB_OB,iTd,OB_COLSPAN]-1, 0 )
-            iCol += j
-         NEXT
          IF nBorder > 0  // Drawing a border around the table
             x1 := aStruTbl[OB_OB,1,OB_CLEFT]-nBorder
             x2 := aStruTbl[OB_OB,1,OB_CLEFT]+nTWidth-1
@@ -1042,12 +1014,18 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
                iCol := 0
                FOR iTd := 1 TO Len( aStru[OB_OB] )
                   iCol ++
+                  IF aStru[OB_OB,iCol,OB_BCLR] != ::bColor
+                     hced_Setcolor( ::hEdit,, aStru[OB_OB,iCol,OB_BCLR] )
+                     hced_FillRect( ::hEdit, aStruTbl[OB_OB,iCol,OB_CLEFT], ;
+                        aTD[iTd], aStruTbl[OB_OB,iCol,OB_CRIGHT], yPos )
+                  ENDIF
                   hwg_Drawline( hDC, aStruTbl[OB_OB,iCol,OB_CLEFT]-nBorder, ;
                      yPosB-nBorder, aStruTbl[OB_OB,iCol,OB_CLEFT]-nBorder, yPos )
                   IF aStru[OB_OB,iTd,OB_COLSPAN] > 1
                      iCol += (aStru[OB_OB,iTd,OB_COLSPAN] - 1)
                   ENDIF
                NEXT
+               hced_Setcolor( ::hEdit,, ::bColor )
                hwg_Drawline( hDC, x2, yPosB-nBorder, x2, yPos )
                IF aStru[OB_TRNUM] == 1
                   hwg_Drawline( hDC, x1, yPosB, x2, yPosB )
@@ -1137,7 +1115,6 @@ METHOD SetCaretPos( nt, p1, p2 ) CLASS HCEdiExt
          xPos := hced_GetXCaretPos( ::hEdit )
       ENDIF
       aStruTbl := ::aStru[nL-aStru[OB_TRNUM]+1,1,OB_TBL]
-
       iTd := hced_td4Pos( Self, nL, xPos )
 
       nBoundL := ::nBoundL; nBoundR := ::nBoundR; nBoundT := ::nBoundT
@@ -1211,10 +1188,6 @@ METHOD AddLine( nLine ) CLASS HCEdiExt
 
 METHOD DelLine( nLine ) CLASS HCEdiExt
 
-   //LOCAL aStru := ::aStru[nLine,1]
-
-   //IF Valtype(aStru[OB_TYPE]) == "C" .AND. aStru[OB_TYPE] == "img"
-   //ENDIF
    ADel( ::aStru, nLine )
 
    RETURN ::Super:DelLine( nLine )
@@ -1697,7 +1670,7 @@ METHOD InsRows( nL, nRows, nCols, lNoAddline ) CLASS HCEdiExt
       ::aStru[nL,1] :=  { "tr", {},, nRow, 0 }
       ::aText[nL] := ""
       FOR i := 1 TO nCols
-         Aadd( ::aStru[nL,1,OB_OB], { "td", { { { 0,0,Nil } } }, Nil, {""}, 0, 0, {Nil}, Array(4,AL_LENGTH), 0, 1, 1, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0} } )
+         Aadd( ::aStru[nL,1,OB_OB], { "td", { { { 0,0,Nil } } }, Nil, {""}, 0, 0, {Nil}, Array(4,AL_LENGTH), 0, 1, 1, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0}, 0, 0, 0, 0 } )
       NEXT
       IF n < nRows
          nRow ++
@@ -1806,6 +1779,14 @@ METHOD DelCol( nL, iTd ) CLASS HCEdiExt
 
    RETURN .T.
 
+/* InsImage( cName, nAlign, xAttr, xBin, cExt ) - inserts an image in a current position - ::aPointC
+ *    cName - a name of an image file
+ *    nAlign - alignment ( 0, 1, 2 : Left, Center, Right )
+ *    xAttr - attributes ( "bw2" - border width 2px )
+ *    xBin - a string, an image file content - in case of embedded image
+ *    cExt - an extention of an image file
+ * In case of embedded image a <xBin> must present and <cName> may be omitted (default "img_..." name will be set)
+ */
 METHOD InsImage( cName, nAlign, xAttr, xBin, cExt ) CLASS HCEdiExt
 
    LOCAL nL, xVal, aStruTbl, iTd, nIndent, nBoundL, nBoundR, nBoundT, nLTr, cClsName, i, j
@@ -1933,7 +1914,7 @@ METHOD DelObject( cType, nL, nCol ) CLASS HCEdiExt
    ENDIF
    RETURN Nil
 
-METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
+METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo, lEmbed ) CLASS HCEdiExt
    LOCAL nHand := -1, s := "", s1, i, iTbl, j, nPos, cLine, aClasses, aImages, aHili, oFont
    LOCAL cPart, cHref, cId, nAcc, cAcc
    LOCAL lNested := ( Valtype(cFileName) == "L"), aStruTbl, xTemp
@@ -1973,7 +1954,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
          NEXT
          IF Valtype(::aStru[i,1,OB_TYPE]) == "C"
             IF ::aStru[i,1,OB_TYPE] == "img"
-               Aadd( aImages, Substr( ::aStru[i,1,OB_HREF], 2 ) )
+               Aadd( aImages, ::aStru[i,1,OB_HREF] )
             ELSEIF ::aStru[i,1,OB_TYPE] == "tr"
                IF ::aStru[i,1,OB_TRNUM] == 1 .AND. !Empty(xTemp := ::aStru[i,1,OB_TBL,OB_CLS] ) ;
                      .AND. Ascan( aClasses, xTemp ) == 0
@@ -1994,7 +1975,7 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
                      NEXT
                      IF Valtype(aStru[i1,1,OB_TYPE]) == "C" .AND. ;
                            aStru[i1,1,OB_TYPE] == "img"
-                        Aadd( aImages, Substr( aStru[i1,1,OB_HREF], 2 ) )
+                        Aadd( aImages, aStru[i1,1,OB_HREF] )
                      ENDIF
                   NEXT
                NEXT
@@ -2150,9 +2131,11 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
                   .AND. !Empty( ::aBin[j,4] )
                cHref += ::aBin[j,4]
             ENDIF
+         ELSEIF !Empty( lEmbed ) .AND. Left( cHref,1 ) != "#"
+            cHref = "#" + hb_FNameName( cHref )
          ENDIF
          s += "<img" + Iif( !Empty(::aStru[i,1,OB_CLS]), ' class="' + ::aStru[i,1,OB_CLS] + '"', "" ) ;
-            + ' src="' + ::aStru[i,1,OB_HREF] + '"' + ;
+            + ' src="' + cHref + '"' + ;
             Iif( !Empty(xTemp:=::aStru[i,1,OB_IALIGN]), ' align="' + Iif( xTemp==2, 'right"','center"' ), "" ) + ;
             Iif( Len(::aStru[i,1])>=OB_ID.and.!Empty(::aStru[i,1,OB_ID]),' id="'+::aStru[i,1,OB_ID]+'"','' ) + ;
             Iif( !lHtml.AND.Len(::aStru[i,1])>=OB_ACCESS.and.!Empty(::aStru[i,1,OB_ACCESS]),' access="'+hced_SaveAccInfo(::aStru[i,1,OB_ACCESS])+'"','' ) + ;
@@ -2204,17 +2187,28 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo ) CLASS HCEdiExt
       ::lUpdated := .F.
       hbxml_SetEntity()
       FOR i := 1 TO Len( ::aBin )
-         IF Ascan( aImages, ::aBin[i,1] ) != 0
+         IF ( j := Ascan( aImages, "#" + ::aBin[i,1] ) ) != 0
             IF lHtml
                cHref := Iif( Empty(hb_FNameExt(::aBin[i,1])) .AND. !Empty(::aBin[i,4]), ::aBin[i,1]+::aBin[i,4], ::aBin[i,1] )
-               hb_Memowrit( , ::aBin[i,2] )
+               hb_Memowrit( ::aBin[i,1], ::aBin[i,2] )
             ELSE
                s += '<binary id="' + ::aBin[i,1] + '"' + ;
                      Iif( !Empty(::aBin[i,4]), ' ext="'+::aBin[i,4]+'"', '' ) + '>' + ;
                      hb_Base64Encode( ::aBin[i,2] ) + '</binary>' + cNewL
             ENDIF
+            aImages[j] := ""
          ENDIF
       NEXT
+      IF !Empty( lEmbed )
+         FOR i := 1 TO Len( aImages )
+            IF !Empty( aImages[i] )
+               s += '<binary id="' + hb_FnameName( aImages[i] ) + '"' + ;
+                     ' ext="'+ hb_FnameExt( aImages[i] ) +'"' + '>' + ;
+                     hb_Base64Encode( Iif( ::bImgLoad==Nil, MemoRead(aImages[i]), Eval(::bImgLoad,aImages[i],.T.) ) ) ;
+                     + '</binary>' + cNewL
+            ENDIF
+         NEXT
+      ENDIF
       IF lHtml
          s += "</body></html>"
       ELSEIF Empty( lCompact )
@@ -2293,8 +2287,10 @@ METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText ) CLASS HCEdiExt
 
    RETURN Nil
 
-METHOD LoadEnv( nL, iTd ) CLASS HCEdiExt
-   LOCAL aStru := ::aStru[nL,1]
+METHOD LoadEnv( nL, iTd, lPaint ) CLASS HCEdiExt
+   LOCAL aStru := ::aStru[nL,1], aStruTbl, aHili, lChgClr := .F.
+
+   aStruTbl := ::aStru[nL-aStru[OB_TRNUM]+1,1,OB_TBL]
 
    ::aEnv[OB_TYPE] := nL * 256 + iTd
    ::aEnv[OB_ASTRU] := ::aStru
@@ -2312,6 +2308,7 @@ METHOD LoadEnv( nL, iTd ) CLASS HCEdiExt
    ::PCopy( ::aPointC, ::aEnv[OB_APC] )
    ::PCopy( ::aPointM1, ::aEnv[OB_APM1] )
    ::PCopy( ::aPointM2, ::aEnv[OB_APM2] )
+   ::aEnv[OB_FONT] := ::nDefFont
 
    ::aStru := aStru[OB_OB,iTd,OB_ASTRU]
    ::aText := aStru[OB_OB,iTd,OB_ATEXT]
@@ -2324,26 +2321,77 @@ METHOD LoadEnv( nL, iTd ) CLASS HCEdiExt
    ::nWSublF := aStru[OB_OB,iTd,OB_NWSF]
    ::nLineC := aStru[OB_OB,iTd,OB_NLINEC]
    ::nPosC := aStru[OB_OB,iTd,OB_NPOSC]
+   ::nLinesAll := aStru[OB_OB,iTd,OB_NLALL]
    ::PCopy( aStru[OB_OB,iTd,OB_APC], ::aPointC )
    ::PCopy( aStru[OB_OB,iTd,OB_APM1], ::aPointM1 )
    ::PCopy( aStru[OB_OB,iTd,OB_APM2], ::aPointM2 )
 
+   IF !Empty( lPaint )
+      ::aEnv[OB_TCLR] := ::tColor
+      ::aEnv[OB_BCLR] := ::bColor
+      ::aEnv[OB_BCLRCUR] := ::bColorCur
+   ENDIF
+   IF !Empty( aStruTbl[OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStruTbl[OB_CLS] )
+      aHili := ::aHili[aStruTbl[OB_CLS]]
+      IF aHili[1] != Nil .AND. aHili[1] > 0
+         ::nDefFont := aHili[1]
+      ENDIF
+      IF !Empty( lPaint )
+         IF aHili[3] != Nil .AND. aHili[3] >= 0
+            ::bColorCur := ::bColor := aHili[3]
+            lChgClr := .T.
+         ENDIF
+         IF aHili[2] != Nil .AND. aHili[2] >= 0
+            ::tColor := aHili[2]
+            lChgClr := .T.
+         ENDIF
+      ENDIF
+   ENDIF
+   IF !Empty( aStru[OB_OB,iTd,OB_CLS] ) .AND. hb_hHaskey( ::aHili,aStru[OB_OB,iTd,OB_CLS] )
+      aHili := ::aHili[aStru[OB_OB,iTd,OB_CLS]]
+      IF aHili[1] != Nil .AND. aHili[1] > 0
+         ::nDefFont := aHili[1]
+      ENDIF
+      IF !Empty( lPaint )
+         IF aHili[3] != Nil .AND. aHili[3] >= 0
+            ::bColorCur := ::bColor := aHili[3]
+            lChgClr := .T.
+         ENDIF
+         IF aHili[2] != Nil .AND. aHili[2] >= 0
+            ::tColor := aHili[2]
+            lChgClr := .T.
+         ENDIF
+      ENDIF
+   ENDIF
+   IF !Empty( lPaint ) .AND. hwg_BitAnd( aStru[OB_OPT], TROPT_SEL ) > 0
+      ::bColor := ::bcolorSel
+      lChgClr := .T.
+   ENDIF
+   IF lChgClr
+      hced_Setcolor( ::hEdit, ::tColor, ::bColor )
+   ENDIF
+
    RETURN Nil
 
-METHOD RestoreEnv( nL, iTd ) CLASS HCEdiExt
+METHOD RestoreEnv( nL, iTd, lPaint ) CLASS HCEdiExt
    LOCAL aStru := ::aEnv[OB_ASTRU,nL,1]
 
-   aStru[OB_OB,iTd,OB_ALIN] := ::aLines
+   aStru[OB_OB,iTd,OB_ASTRU] := ::aStru
+   aStru[OB_OB,iTd,OB_ATEXT] := ::aText
+   aStru[OB_OB,iTd,OB_AWRAP] := ::aWrap
+   aStru[OB_OB,iTd,OB_ALIN]  := ::aLines
    aStru[OB_OB,iTd,OB_NLINES] := ::nLines
    aStru[OB_OB,iTd,OB_NLINEF] := ::nLineF
-   aStru[OB_OB,iTd,OB_NTLEN] := ::nTextLen
+   aStru[OB_OB,iTd,OB_NTLEN]  := ::nTextLen
    aStru[OB_OB,iTd,OB_NWSF] := ::nWSublF
    aStru[OB_OB,iTd,OB_NWCF] := ::nWCharF
    aStru[OB_OB,iTd,OB_NLINEC] := ::nLineC
    aStru[OB_OB,iTd,OB_NPOSC]  := ::nPosC
+   aStru[OB_OB,iTd,OB_NLALL]  := ::nLinesAll
    ::PCopy( ::aPointC, aStru[OB_OB,iTd,OB_APC] )
    ::PCopy( ::aPointM1, aStru[OB_OB,iTd,OB_APM1] )
    ::PCopy( ::aPointM2, aStru[OB_OB,iTd,OB_APM2] )
+   aStru[OB_OB,iTd,OB_BCLR]  := ::bColor
 
    ::aStru := ::aEnv[OB_ASTRU]
    ::aText := ::aEnv[OB_ATEXT]
@@ -2360,6 +2408,13 @@ METHOD RestoreEnv( nL, iTd ) CLASS HCEdiExt
    ::PCopy( ::aEnv[OB_APC], ::aPointC )
    ::PCopy( ::aEnv[OB_APM1], ::aPointM1 )
    ::PCopy( ::aEnv[OB_APM2], ::aPointM2 )
+   ::nDefFont := ::aEnv[OB_FONT]
+   IF !Empty( lPaint )
+      ::tColor := ::aEnv[OB_TCLR]
+      ::bColor := ::aEnv[OB_BCLR]
+      ::bColorCur := ::aEnv[OB_BCLRCUR]
+      hced_Setcolor( ::hEdit, ::tColor, ::bColor )
+   ENDIF
    ::aEnv[OB_TYPE] := 0
 
    RETURN Nil
@@ -2398,7 +2453,7 @@ METHOD getClassAttr( cClsName ) CLASS HCEdiExt
          IF !Empty( oFont:cargo )
             Aadd( aAttr, "fh" + oFont:cargo )
          ENDIF
-         IF oFont:name != ::oFont:name
+         IF !(oFont:name == ::oFont:name)
             Aadd( aAttr, "fn" + oFont:name )
          ENDIF
       ENDIF

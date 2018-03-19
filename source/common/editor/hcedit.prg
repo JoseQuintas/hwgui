@@ -151,7 +151,7 @@ CLASS HCEdit INHERIT HControl
 
    DATA   n4Number     INIT 0
    DATA   n4Separ      INIT 0
-   DATA   bColorCur    INIT 16449510
+   DATA   bColorCur    INIT 16449510      // A bacground color for a current line
    DATA   tcolorSel    INIT 16777215
    DATA   bcolorSel    INIT 16744448
    DATA   nClrDesk     INIT 8421504
@@ -679,6 +679,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdit
 
    IF lUse_aWrap == Nil; lUse_aWrap := .F.; ENDIF
    IF nRight == Nil; nRight := ::nClientWidth; ENDIF
+
    DO WHILE .T.
 
       ::nLines ++
@@ -744,7 +745,6 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdit
             nWCharF += nPrinted
             nWSublF ++
          ENDIF
-         //IF ::nLines > 1 .AND. yPos + ( yPos - aLine[AL_Y1] ) > ::nHeight
          IF ::nLines > 1 .AND. yPos + BOTTOM_HEIGHT > ::nHeight
             EXIT
          ENDIF
@@ -781,7 +781,7 @@ METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC ) CLASS HCEdit
          ::oHili:Do( Self, nL )
       ENDIF
       IF ::nDefFont > 0
-         hced_setAttr( ::hEdit, nPos1, nPos2, ::nDefFont, 0, 0 )
+         hced_setAttr( ::hEdit, 1, nPos2, ::nDefFont, 0, 0 )
          hced_addAttrFont( ::hEdit, ::nDefFont )
       ENDIF
       IF ::oHili:nItems > 0
@@ -993,18 +993,18 @@ METHOD AddFont( oFont, name, width, height , weight, ;
    RETURN Len( ::aFonts )
 
 METHOD SetFont( oFont ) CLASS HCEdit
-   LOCAL i, oFont1
+   LOCAL i, oFont1, name, height
 
    IF Len( ::aFonts ) > 1
       FOR i := 2 TO Len( ::aFonts )
-         oFont1 := HFont():Add( oFont:name, ::aFonts[i]:width, oFont:height , ::aFonts[i]:weight, ;
+         name := Iif( ::oFont:name == ::aFonts[i]:name, oFont:name, ::aFonts[i]:name )
+         height := Iif( ::oFont:height == ::aFonts[i]:height, oFont:height, Int( ::aFonts[i]:height*oFont:height/::oFont:height) )
+         oFont1 := HFont():Add( name, ::aFonts[i]:width, height , ::aFonts[i]:weight, ;
             ::aFonts[i]:CharSet, ::aFonts[i]:Italic, ::aFonts[i]:Underline, ::aFonts[i]:StrikeOut )
-         //::aFonts[i]:Release()
          ::aFonts[i] := oFont1
          hced_SetFont( ::hEdit, oFont1:handle, i )
       NEXT
    ENDIF
-   //::aFonts[1]:Release()
    ::aFonts[1] := oFont
    hced_SetFont( ::hEdit, oFont:handle, 1 )
    ::oFont := oFont
@@ -1767,7 +1767,11 @@ METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
    ENDIF
    ::Scan( Pstart[P_Y], Min( Pend[P_Y], ::nTextLen ) )
    IF ::lWrap
-      ::GoTo( Pstart[P_Y] )
+      i := hced_P2Screen( Self, P1[P_Y], P1[P_X] )
+      nPos := hced_P2Screen( Self, P2[P_Y], P2[P_X] )
+      IF i < 0 .OR. nPos < 0 .OR. i > ::nLines .OR. nPos > ::nLines
+         ::GoTo( Pstart[P_Y] )
+      ENDIF
    ENDIF
    ::Paint( .F. )
 

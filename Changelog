@@ -7,6 +7,14 @@
    For example:
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2018-03-19 11:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    ! Few bugs fixed
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+    * Few bugs fixed, few new features implemented.
+
 2018-01-20 16:00 2018-01-19 17:36 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
   * source/winapi/hlistbox.prg 
     ! fixed error on valid method reported by Gianantonio 

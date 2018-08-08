@@ -400,6 +400,9 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd, nFrom ) CLASS HCEdiExt
                      IF ( nPos2 := hb_At( "]]>", xText, nPosS ) ) == 0
                         ::lError := .T. ; EXIT
                      ENDIF
+                     IF nPos1 > nPosA // + 1
+                        aText[n] += hbxml_preLoad( Substr( xText, nPosA, nPos1 - nPosA ) )
+                     ENDIF
                      hced_CrStru( Self, aAttr, ::aStru[n], aText[n], cClsname, cVal := aAttr[i,2], ;
                            Substr( xText, nPosS, nPos2 -nPosS ) )
                      aStru := Atail( ::aStru[n] )

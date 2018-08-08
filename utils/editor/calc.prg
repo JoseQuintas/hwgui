@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * Notes
  * Embedded calculator
  *
  * Copyright 2015 Alexander S.Kresin <alex@kresin.ru>
@@ -60,6 +60,7 @@ REQUEST PI, COS, SIN, TAN, COT, ACOS, ASIN, ATAN, DTOR, RTOD
 
 STATIC oEdiCurr, cIdExp := "clcexp", cIdRes := "clcres"
 STATIC aCurrTD := { 0,0,0 }
+STATIC ceol := e"\r\n"
 
 FUNCTION EditScr( oEdit, aStru )
 
@@ -99,37 +100,73 @@ FUNCTION EditScr( oEdit, aStru )
 
    RETURN Nil
 
-STATIC FUNCTION CalcScr( aStru, nL, iTD, nL1 )
+STATIC FUNCTION PreProc( s )
 
-   LOCAL xRes, cRes, nPos1 := 1, nPos2, c
+   LOCAL cRes := "", nPos1 := 1, nPos2, c, cTemp
 
-   IF aStru[OB_EXEC] == Nil
-      cRes := ""
-      DO WHILE Substr( aStru[OB_HREF],nPos1,1 ) <= ' '; nPos1 ++; ENDDO
-      DO WHILE ( nPos2 := hb_At( "$", aStru[OB_HREF], nPos1 ) ) > 0        
-         IF ( c := Substr( aStru[OB_HREF], nPos2+1, 1 ) ) $ "CR"
-            cRes += Substr( aStru[OB_HREF], nPos1, nPos2 - nPos1 )
-            nPos1 := nPos2 := nPos2 + 3
-            DO WHILE IsDigit( Substr( aStru[OB_HREF], nPos1, 1 ) ); nPos1 ++; ENDDO
-            IF Substr( aStru[OB_HREF], nPos1, 1 ) == ":"
-               cRes += "{" + Iif( c=="C","","," ) + Substr( aStru[OB_HREF], nPos2-1, nPos1-nPos2+1 ) + Iif( c=="C",",","" ) + ","
-               nPos1 := nPos2 := nPos1 + 2
-               DO WHILE IsDigit( Substr( aStru[OB_HREF], nPos1, 1 ) ); nPos1 ++; ENDDO
-               cRes += Iif( c=="C","","," ) + Substr( aStru[OB_HREF], nPos2-1, nPos1-nPos2+1 ) + Iif( c=="C",",","" ) + "}"
+   DO WHILE Substr( s,nPos1,1 ) <= ' '; nPos1 ++; ENDDO
+   DO WHILE ( nPos2 := hb_At( "$", s, nPos1 ) ) > 0        
+      IF ( c := Substr( s, nPos2+1, 1 ) ) $ "CR"
+         // $Cn (a column number 'n' of a current row)
+         // or $Rn (a row number 'n' of a current column)
+         cRes += Substr( s, nPos1, nPos2 - nPos1 )
+         nPos1 := nPos2 := nPos2 + 3
+         DO WHILE IsDigit( Substr( s, nPos1, 1 ) ); nPos1 ++; ENDDO
+         IF Substr( s, nPos1, 1 ) == ":"
+            // A range for "Sum" function: Sum($C1:3) or Sum($R1:4)
+            cRes += "{" + Iif( c=="C","","," ) + Substr( s, nPos2-1, nPos1-nPos2+1 ) + Iif( c=="C",",","" ) + ","
+            nPos1 := nPos2 := nPos1 + 1
+            DO WHILE IsDigit( Substr( s, nPos1, 1 ) ); nPos1 ++; ENDDO
+            cRes += Iif( c=="C","","," ) + Substr( s, nPos2, nPos1-nPos2 ) + Iif( c=="C",",","" ) + "}"
+         ELSE
+            cRes += "Z(" + Iif( c=="C","","," ) + Substr( s, nPos2-1, nPos1-nPos2+1 ) + ")"
+         ENDIF
+      ELSEIF c == 'M'
+         nPos1 := nPos2 + 2
+         cTemp := ""
+         DO WHILE !( (c := Substr(s,nPos1,1)) $ " :=!<>+-*/%,") .AND. !(c $ ceol)
+            cTemp += c
+            nPos1 ++
+         ENDDO
+         DO WHILE (c := Substr( s,nPos1,1 )) == ' '; nPos1 ++; ENDDO
+         IF c == ':'
+            cRes += "SetAt('" + cTemp + "',"
+            nPos1 += 2
+            IF (nPos2 := hb_At( Chr(10), s, nPos1 )) > 0
+               nPos2 --
+               IF Substr( s, nPos2, 1 ) == Chr(13)
+                  nPos2 --
+               ENDIF
+               cRes += PreProc( Substr( s,nPos1,nPos2-nPos1+1 ) ) + ")" + ceol
+               nPos1 := nPos2 + 1
             ELSE
-               cRes += "Z(" + Iif( c=="C","","," ) + Substr( aStru[OB_HREF], nPos2-1, nPos1-nPos2+1 ) + ")"
+               cRes += PreProc( Substr( s,nPos1 ) ) + ")"
+               nPos1 := Len(s) + 1
             ENDIF
          ELSE
-            cRes += Substr( aStru[OB_HREF], nPos1, nPos2 - nPos1 + 1 )
-            nPos1 := nPos2 + 1
+            cRes += "GetAt('" + cTemp + "')"
          ENDIF
-      ENDDO
-      cRes += Substr( aStru[OB_HREF], nPos1 )
-      nPos2 := Len( cRes )
-      DO WHILE Substr( cRes,nPos2,1 ) <= ' '; nPos2 --; ENDDO
-      IF nPos2 < Len( cRes )
-         cRes := Left( cRes, nPos2 )
+      ELSE
+         cRes += Substr( s, nPos1, nPos2 - nPos1 + 1 )
+         nPos1 := nPos2 + 1
       ENDIF
+   ENDDO
+   cRes += Substr( s, nPos1 )
+   nPos2 := Len( cRes )
+   DO WHILE Substr( cRes,nPos2,1 ) <= ' '; nPos2 --; ENDDO
+   IF nPos2 < Len( cRes )
+      cRes := Left( cRes, nPos2 )
+   ENDIF
+
+   RETURN cRes
+
+STATIC FUNCTION CalcScr( aStru, nL, iTD, nL1 )
+
+   LOCAL xRes, cRes, nPos2, c, nLen
+
+   IF aStru[OB_EXEC] == Nil
+      cRes := PreProc( aStru[OB_HREF] )
+      //hwg_writelog( cRes )
       IF !( Chr(10) $ cRes )
          IF Lower( Left( cRes, 6 ) ) == "return"
             cRes := Substr( cRes, 8 )
@@ -155,9 +192,10 @@ STATIC FUNCTION CalcScr( aStru, nL, iTD, nL1 )
       ELSE
          nL1 := nL
       ENDIF
+      nLen := hced_Len( oEdiCurr, hced_SubStr( oEdiCurr, oEdiCurr:aText[nL1], aStru[1], aStru[2] - aStru[1] + 1 ) )
       oEdiCurr:InsText( { aStru[1],nL1 }, cRes,, .F. )
       oEdiCurr:DelText( { aStru[1] + hced_Len( oEdiCurr,cRes ), nL1 }, ;
-            { aStru[1] + hced_Len( oEdiCurr,cRes ) + ( aStru[2]-aStru[1]+1 ), nL1 } , .F. )
+            { aStru[1] + hced_Len( oEdiCurr,cRes ) + nLen, nL1 } , .F. )
       oEdiCurr:lUpdated := .T.
       IF iTD != Nil
          oEdiCurr:RestoreEnv( nL, iTD )
@@ -317,27 +355,7 @@ FUNCTION Calc( oEdit, nL, iTD, nL1 )
          hwg_MsgStop( "Expression error", "Calculator" )
       ENDIF
    ELSE
-      IF ( cRes := Valtype(xRes) ) == "A"
-         cRes := "Array, " + Ltrim(Str(Len(xRes))) + " elements"
-      ELSEIF cRes == "O"
-         cRes := "Object of " + xRes:Classname()
-      ELSEIF cRes == "H"
-         cRes := "Hash array"
-      ELSEIF cRes == "U"
-         cRes := "Nil"
-      ELSEIF cRes == "C"
-         cRes := '"' + xRes + '"'
-      ELSE
-         cRes := Trim( Transform( xReS, "@B" ) )
-      ENDIF
-      IF Valtype( xRes ) == "N" .AND. Rat( ".", cRes ) > 0
-        nPos2 := Len( cRes )
-        DO WHILE Substr( cRes, nPos2, 1 ) == '0'; nPos2 --; ENDDO
-        IF Substr( cRes, nPos2, 1 ) == '.'
-           nPos2 --
-        ENDIF
-        cRes := Left( cRes, nPos2 )
-      ENDIF
+      cRes := CnvVal( xRes )
       IF Empty( nStruRes )
          nPos2 := Len(oEdit:aText[nL1]) + 1
          IF lNewExp
@@ -367,9 +385,10 @@ FUNCTION Calc( oEdit, nL, iTD, nL1 )
             Aadd( aStru, cIdRes )
          ENDIF
       ELSE
+         n := aStru[nStruRes,2]-aStru[nStruRes,1]+1
          oEdit:InsText( { aStru[nStruRes,1],nL1 }, cRes,, .F. )
          oEdit:DelText( { aStru[nStruRes,1]+hced_Len(oEdit,cRes),nL1 }, ;
-               { aStru[nStruRes,1]+hced_Len(oEdit,cRes)+(aStru[nStruRes,2]-aStru[nStruRes,1]+1),nL1 }, .F. )
+               { aStru[nStruRes,1]+hced_Len(oEdit,cRes)+n,nL1 }, .F. )
       ENDIF
       oEdit:lUpdated := .T.
    ENDIF
@@ -384,6 +403,34 @@ FUNCTION Calc( oEdit, nL, iTD, nL1 )
    hced_Setfocus( oEdit:hEdit )
    
    RETURN Nil
+
+STATIC FUNCTION CnvVal( xRes )
+
+   LOCAL cRes := Valtype(xRes), nPos2
+
+   IF cRes == "A"
+      cRes := "Array, " + Ltrim(Str(Len(xRes))) + " elements"
+   ELSEIF cRes == "O"
+      cRes := "Object of " + xRes:Classname()
+   ELSEIF cRes == "H"
+      cRes := "Hash array"
+   ELSEIF cRes == "U"
+      cRes := "Nil"
+   ELSEIF cRes == "C"
+      cRes := '"' + xRes + '"'
+   ELSE
+      cRes := Trim( Transform( xReS, "@B" ) )
+   ENDIF
+   IF Valtype( xRes ) == "N" .AND. Rat( ".", cRes ) > 0
+     nPos2 := Len( cRes )
+     DO WHILE Substr( cRes, nPos2, 1 ) == '0'; nPos2 --; ENDDO
+     IF Substr( cRes, nPos2, 1 ) == '.'
+        nPos2 --
+     ENDIF
+     cRes := Left( cRes, nPos2 )
+   ENDIF
+
+   RETURN cRes
 
 FUNCTION Z( nCol, nRow )
 
@@ -447,3 +494,38 @@ FUNCTION Sum( aCells )
    ENDIF
 
    RETURN nSum
+
+FUNCTION GetAt( cMet )
+
+   LOCAL arrf, nL, aStru, cOldVal
+
+   IF !Empty( arrf := oEdiCurr:Find( ,cMet ) ) .AND. arrf[1] > 1
+      nL := arrf[2]
+      aStru := oEdiCurr:aStru[nL,arrf[1]]
+      cOldVal := Ltrim( hced_SubStr( oEdiCurr, oEdiCurr:aText[nL], aStru[1], aStru[2] - aStru[1] + 1 ) )
+      IF Left( cOldVal,1 ) == "("
+         cOldVal := Substr( cOldVal,2,Len(cOldVal)-2 )
+      ENDIF
+      IF IsDigit( Left( cOldVal,1 ) )
+         RETURN Val( Substr(cOldVal,1) )
+      ELSE
+         RETURN cOldVal
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+FUNCTION SetAt( cMet, xVal )
+
+   LOCAL cVal := CnvVal(xVal), arrf, nL, aStru, cOldVal
+
+   IF !Empty( arrf := oEdiCurr:Find( ,cMet ) ) .AND. arrf[1] > 1
+      nL := arrf[2]
+      aStru := oEdiCurr:aStru[nL,arrf[1]]
+      cOldVal := hced_SubStr( oEdiCurr, oEdiCurr:aText[nL], aStru[1], aStru[2] - aStru[1] + 1 )
+      oEdiCurr:InsText( { aStru[1],nL }, cVal,, .F. )
+      oEdiCurr:DelText( { aStru[1]+hced_Len(oEdiCurr,cVal),nL }, ;
+            { aStru[1]+hced_Len(oEdiCurr,cVal)+hced_Len(oEdiCurr,cOldVal),nL }, .F. )
+   ENDIF
+
+   RETURN cVal

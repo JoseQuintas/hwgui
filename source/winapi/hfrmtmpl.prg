@@ -862,7 +862,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
       oCtrl:cargo := cVarName
    ENDIF
 
-   IF !Empty( cCtrlName )
+   IF !Empty( cCtrlName ) .AND. Valtype(oCtrl) == "O"
       __mvPut( cCtrlName, oCtrl )
       hwg_SetCtrlName( oCtrl, cCtrlName )
    ENDIF

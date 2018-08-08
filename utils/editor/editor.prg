@@ -662,6 +662,7 @@ STATIC FUNCTION insBlock()
    @ 110, 20 GET COMBOBOX nStyle ITEMS aStyles SIZE 160, 28 DISPLAYCOUNT 4
 
    IF !Empty( oEdit:aPointM2[P_Y] )
+      nChoice := 2
       @ 10,50 GET RADIOGROUP nChoice  CAPTION "" SIZE 280, 100
       @ 40,80 RADIOBUTTON "Insert empty" SIZE 230, 24
       @ 40,110 RADIOBUTTON "With selected lines" SIZE 230, 24
@@ -1068,7 +1069,7 @@ STATIC FUNCTION setPara()
 STATIC FUNCTION setSpan()
    LOCAL oDlg, oTab, nTop
    LOCAL nL, aStru, cClsName, aAttr, arr1
-   LOCAL cId := "", nAcc := 0, cHref := "", cHrefB := "", cBody := "", cBodyB := ""
+   LOCAL cId := "", cIdB := "", nAcc := 0, cHref := "", cHrefB := "", cBody := "", cBodyB := ""
 
    MEMVAR tColor, bColor, tc, tb, aComboFam, cFamily, nFamily
    MEMVAR nSize, nsb, nfb
@@ -1090,7 +1091,7 @@ STATIC FUNCTION setSpan()
       IF !Empty( aStru := arr1[3] )
          cClsName := aStru[OB_CLS]
          IF Len( aStru ) >= OB_ID
-            cId := aStru[OB_ID]
+            cId := cIdB := aStru[OB_ID]
          ENDIF
          IF Len( aStru ) >= OB_ACCESS
             nAcc := aStru[OB_ACCESS]
@@ -1126,8 +1127,10 @@ STATIC FUNCTION setSpan()
 
    BEGIN PAGE "Attributes" of oTab
 
-   @ 10,nTop SAY "Id:" SIZE 50, 22 TRANSPARENT
-   @ 60,nTop GET cId SIZE 100, 24 MAXLENGTH 0
+   IF !Empty( aStru )
+      @ 10,nTop SAY "Id:" SIZE 50, 22 TRANSPARENT
+      @ 60,nTop GET cId SIZE 100, 24 MAXLENGTH 0
+   ENDIF
 
    IF !Empty( cHRef ) .AND. !hwg_CheckBit( nAcc, BIT_CLCSCR )
       @ 10,nTop+40 SAY "Href:" SIZE 60, 22 TRANSPARENT
@@ -1161,6 +1164,14 @@ STATIC FUNCTION setSpan()
       ENDIF
       IF !( cHref == cHrefB )
          aStru[OB_HREF] := cHref
+         oEdit:lUpdated := .T.
+      ENDIF
+      IF !( cId == cIdB )
+         IF Len( aStru ) >= OB_ID
+            aStru[OB_ID] := cId
+         ELSE
+            Aadd( aStru, cId )
+         ENDIF
          oEdit:lUpdated := .T.
       ENDIF
       IF cBody != cBodyB

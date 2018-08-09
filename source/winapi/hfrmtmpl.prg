@@ -101,6 +101,7 @@ CLASS HFormTmpl
    CLASS VAR aForms   INIT {}
    CLASS VAR maxId    INIT 0
    CLASS VAR oActive
+   DATA cFormName
    DATA oDlg
    DATA aControls     INIT {}
    DATA aProp
@@ -141,6 +142,7 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
    IF Left( fname, 5 ) == "<?xml"
       oDoc := HXMLDoc():ReadString( fname )
    ELSE
+      ::cFormName := fname
       oDoc := HXMLDoc():Read( fname )
    ENDIF
 

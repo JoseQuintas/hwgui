@@ -39,7 +39,6 @@ Function hwg_SetCtrlName( oCtrl, cName )
 CLASS HControl INHERIT HCustomWindow
 
    DATA id
-   DATA objName
    DATA tooltip
    DATA lInit    INIT .F.
    DATA Anchor   INIT 0

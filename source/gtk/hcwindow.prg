@@ -36,6 +36,7 @@ CLASS HCustomWindow INHERIT HObject
    CLASS VAR oDefaultParent SHARED
    DATA handle  INIT 0
    DATA oParent
+   DATA objName
    DATA title
    DATA TYPE
    DATA nTop, nLeft, nWidth, nHeight

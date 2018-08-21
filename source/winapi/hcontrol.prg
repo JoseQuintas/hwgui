@@ -443,12 +443,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::title   := cCaption
    ::Activate()
 
-   IF bClick != NIL
-      IF ::oParent:className == "HSTATUS"
-         ::oParent:oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
-      ELSE
-         ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
-      ENDIF
+   IF ::oParent:className == "HSTATUS"
+      ::oParent:oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
+   ELSE
+      ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
    ENDIF
 
 RETURN Self
@@ -470,9 +468,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::bClick  := bClick
    ::title   := cCaption
 
-   IF bClick != NIL
-      ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
-   ENDIF
+   ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
 RETURN Self
 
 METHOD Init CLASS HButton
@@ -590,7 +586,7 @@ STATIC FUNCTION onClick( oParent, id )
 
    LOCAL oCtrl := oParent:FindControl( id )
 
-   IF !Empty( oCtrl )
+   IF !Empty( oCtrl ) .AND. !Empty( oCtrl:bClick )
       Eval( oCtrl:bClick, oCtrl )
    ENDIF
 

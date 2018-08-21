@@ -402,10 +402,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ELSEIF ::id == IDCANCEL
       bClick := { ||::oParent:Close() }
    ENDIF
-   IF bClick != Nil
-      ::bClick := bClick
-      hwg_SetSignal( ::handle, "clicked", WM_LBUTTONUP, 0, 0 )
-   ENDIF
+   ::bClick := bClick
+   hwg_SetSignal( ::handle, "clicked", WM_LBUTTONUP, 0, 0 )
 
    RETURN Self
 

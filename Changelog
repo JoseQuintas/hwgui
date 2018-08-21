@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-08-21 14:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * A problem with HButton():bClick has been fixed
+
 2018-08-20 21:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcwindow.prg
   * source/gtk/hcontrol.prg

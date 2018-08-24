@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-08-24 15:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+  * source/winapi/hownbtn.prg
+    * BACKCOLOR clause added to Ownerbutton for compatibility with some old code.
+      It is highly recommended. though, to use :aStyle instead.
+
 2018-08-21 14:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
   * source/winapi/hcontrol.prg

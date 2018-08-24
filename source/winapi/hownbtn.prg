@@ -33,7 +33,7 @@ CLASS HOwnButton INHERIT HControl
       bInit, bSize, bPaint, bClick, lflat,              ;
       cText, color, font, xt, yt, widtht, heightt,        ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
-      cTooltip, lEnabled, lCheck )
+      cTooltip, lEnabled, lCheck, bColor )
 
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
@@ -59,7 +59,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
       bInit, bSize, bPaint, bClick, lflat,             ;
       cText, color, oFont, xt, yt, widtht, heightt,       ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
-      cTooltip, lEnabled, lCheck ) CLASS HOwnButton
+      cTooltip, lEnabled, lCheck, bColor ) CLASS HOwnButton
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip )
@@ -74,6 +74,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
 
    ::title   := cText
    ::tcolor  := iif( color == Nil, hwg_Getsyscolor( COLOR_BTNTEXT ), color )
+   IF bColor != Nil
+      ::bcolor := bcolor
+      ::brush  := HBrush():Add( bcolor )
+   ENDIF
    ::xt      := iif( xt == Nil, 0, xt )
    ::yt      := iif( yt == Nil, 0, yt )
    ::widtht  := iif( widtht == Nil, 0, widtht )
@@ -275,6 +279,9 @@ METHOD DrawItems( hDC ) CLASS HOwnButton
    LOCAL x1, y1, x2, y2,  aCoors
 
    aCoors := hwg_Getclientrect( ::handle )
+   IF !Empty( ::brush )
+      hwg_Fillrect( hDC, aCoors[ 1 ] + 2, aCoors[ 2 ] + 2, aCoors[ 3 ] - 2, aCoors[ 4 ] - 2, ::brush:handle )
+   ENDIF
 
    IF ::oBitmap != Nil
       IF ::widthb == 0

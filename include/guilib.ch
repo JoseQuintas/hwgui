@@ -971,6 +971,7 @@
             [ OF <oWnd> ]             ;
             [ ID <nId> ]              ;
             [ SIZE <width>, <height> ] ;
+            [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]     ;
             [ ON SIZE <bSize> ]     ;
             [ ON PAINT <bPaint> ]   ;
@@ -992,7 +993,7 @@
           <height>,<bInit>,<bSize>,<bPaint>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;
-              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, <ctoolt>,!<.enable.>,<.lCheck.> );
+              <bmp>,<.res.>,<xb>,<yb>,<widthb>,<heightb>,<.ltr.>,<trcolor>, <ctoolt>,!<.enable.>,<.lCheck.>,<bcolor> );
     [; hwg_SetCtrlName( <oOwnBtn>,<(oOwnBtn)> )]
 
 

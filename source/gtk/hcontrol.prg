@@ -336,6 +336,7 @@ CLASS HStatic INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD SetText( value ) INLINE hwg_static_SetText( ::handle, value )
+   METHOD GetText() INLINE hwg_static_GetText( ::handle )
 
 ENDCLASS
 
@@ -383,6 +384,7 @@ CLASS HButton INHERIT HControl
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD SetText( value ) INLINE hwg_button_SetText( ::handle, value )
+   METHOD GetText() INLINE hwg_button_GetText( ::handle )
 
 ENDCLASS
 

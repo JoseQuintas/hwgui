@@ -144,6 +144,13 @@ HB_FUNC( HWG_STATIC_SETTEXT )
    g_free( gcTitle );
 }
 
+HB_FUNC( HWG_STATIC_GETTEXT )
+{
+
+   hb_retc( (char*) gtk_label_get_text( g_object_get_data( ( GObject * ) HB_PARHANDLE( 1 ),
+         "label" ) ) );
+}
+
 /*
    CreateButton( hParentWindow, nButtonID, nStyle, x, y, nWidth, nHeight,
                  cCaption )
@@ -195,6 +202,12 @@ HB_FUNC( HWG_BUTTON_SETTEXT )
 
    gtk_button_set_label( (GtkButton *) hBtn, gcTitle );
    g_free( gcTitle );
+}
+
+HB_FUNC( HWG_BUTTON_GETTEXT )
+{
+
+   hb_retc( (char*) gtk_button_get_label( (GtkButton *) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( HWG_CHECKBUTTON )

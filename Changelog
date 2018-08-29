@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-08-29 11:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+    * hwg_static_Gettext(), hwg_button_Gettext() functions added
+  * source/gtk/hcontrol.prg
+  * source/gtk/hedit.prg
+  * source/gtk/hcheck.prg
+  * source/gtk/hradio.prg
+    * :Setetxt(), :Gettext() methods added for compatibility with winapi version
+  * source/gtk/menu_c.c
+    ! Few warnings fixed.
+
 2018-08-24 15:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
   * source/winapi/hownbtn.prg

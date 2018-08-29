@@ -96,7 +96,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    }
    else
    {
-      char buf[20]={0};
+      char buf[40]={0};
       sprintf( buf,"0 %ld %ld",hb_parnl(5),( HB_LONG ) HB_PARHANDLE(4) );
       g_signal_connect(G_OBJECT (hMenu), "activate",
           G_CALLBACK (cb_signal), (gpointer) g_strdup (buf));
@@ -214,7 +214,7 @@ HB_FUNC( HWG__SETMENUCAPTION )
    GtkMenuItem * menu_item = (GtkMenuItem *) HB_PARHANDLE(1);
    gchar * gcptr = hwg_convert_to_utf8( hb_parc(2) );
 
-   gtk_label_set_text( GTK_BIN (menu_item)->child, gcptr );
+   gtk_label_set_text( (GtkLabel*) (GTK_BIN (menu_item)->child), gcptr );
    g_free( gcptr );
 }
 
@@ -222,7 +222,7 @@ HB_FUNC( HWG__DELETEMENU )
 {
    GtkMenuItem * menu_item = (GtkMenuItem *) HB_PARHANDLE(1);
 
-   gtk_container_remove( ((GtkWidget*)menu_item)->parent, (GtkWidget*)menu_item );
+   gtk_container_remove( (GtkContainer*)(((GtkWidget*)menu_item)->parent), (GtkWidget*)menu_item );
 }
 
 HB_FUNC( HWG_DRAWMENUBAR )

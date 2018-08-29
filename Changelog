@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-08-29 14:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcontrol.prg
+    ! Fixed problem with :Settext() for transparent static control.
+
 2018-08-29 11:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     * hwg_static_Gettext(), hwg_button_Gettext() functions added

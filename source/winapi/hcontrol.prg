@@ -325,6 +325,7 @@ CLASS HStatic INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD Paint( lpDis )
+   METHOD SetText( c )
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -408,6 +409,16 @@ METHOD Paint( lpDis ) CLASS HStatic
    hwg_Settransparentmode( hDC, .T. )
    hwg_Drawtext( hDC, ::title, x1, y1, x2, y2, ::nStyleDraw )
    hwg_Settransparentmode( hDC, .F. )
+
+   RETURN NIL
+
+METHOD SetText( c ) CLASS HStatic
+
+   ::Super:SetText( c )
+   IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0
+      hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft+::nWidth, ::nTop + ::nHeight )
+      hwg_Sendmessage( ::oParent:handle, WM_PAINT, 0, 0 )
+   ENDIF
 
    RETURN NIL
 

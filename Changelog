@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-08-30 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hownbtn.prg
+    ! Bug fixed with transparent color of a bitmap
+  * source/gtk/htree.prg
+    ! Bug fixed in HTree():End()
+
 2018-08-29 14:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcontrol.prg
     ! Fixed problem with :Settext() for transparent static control.

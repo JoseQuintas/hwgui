@@ -86,7 +86,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
             HBitmap():AddFile( Iif( ::cPath != Nil,::cPath + bmp,bmp ) ) )
       ENDIF
       IF ::oBitmap != Nil .AND. lTr != Nil .AND. lTr
-         ::trColor := Iif( trColor != Nil, trColor, 16777215 )
          ::lTransp := .T.
          //hwg_alpha2pixbuf( ::oBitmap:handle, ::trColor )
       ENDIF
@@ -95,7 +94,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
    ::yb      := yb
    ::widthb  := widthb
    ::heightb := heightb
-   ::trColor := trColor
+   ::trColor := Iif( trColor != Nil, trColor, 16777215 )
 
    ::Activate()
 

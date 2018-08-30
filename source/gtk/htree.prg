@@ -648,12 +648,14 @@ METHOD End() CLASS HTree
    LOCAL j
 
    ::Super:END()
-   FOR j := 1 TO Len( ::aImages )
-      IF !Empty(::aImages[j])
-         hwg_Deleteobject( ::aImages[j] )
-         ::aImages[j] := Nil
-      ENDIF
-   NEXT
+   IF !Empty( ::aImages )
+      FOR j := 1 TO Len( ::aImages )
+         IF !Empty(::aImages[j])
+            hwg_Deleteobject( ::aImages[j] )
+            ::aImages[j] := Nil
+         ENDIF
+      NEXT
+   ENDIF
    ReleaseTree( ::aItems, .T. )
    IF ::brush != Nil
       ::brush:Release()

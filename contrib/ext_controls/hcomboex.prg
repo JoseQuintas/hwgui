@@ -23,6 +23,7 @@
 #define CB_GETDROPPEDSTATE          343
 #define CB_FINDSTRINGEXACT          344
 #define CB_SETCUEBANNER             5891
+#define TRANSPARENT        1
 
 #pragma begindump
 #include "hwingui.h"

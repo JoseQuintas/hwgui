@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-08-31 11:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Version number is changed to "2.21", build number to 1
+  * doc/hwgdoc.html
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+    * Synhronized with last changes
+
 2018-08-31 09:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
     * Added virtual Refresh() method to HControl as in Winapi version

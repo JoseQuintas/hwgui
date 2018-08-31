@@ -434,10 +434,11 @@
     <p></p>
     <pre class="code">
     @ &lt;x&gt;,&lt;y&gt; PANEL &lt;oPanel&gt;
-    	 [ OF &lt;oWnd&gt ]; 
-    	 [ ID &lt;nId&gt; ] 
-    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
-    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+    	 [ OF &lt;oWnd&gt ];
+    	 [ ID &lt;nId&gt; ]
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ]
+    	 [ BACKCOLOR &lt;bcolor&gt; ]
+    	 [ HSTYLE &lt;oStyle&gt; ]
     	 [ ON INIT &lt;bInit&gt; ] 
     	 [ ON SIZE &lt;bSize&gt; ] 
     	 [ ON PAINT &lt;bDraw&gt; ] 
@@ -448,9 +449,10 @@
     <p></p>
     <pre class="code">
     ADD TOP PANEL [ &lt;oPanel&gt; ] TO &lt;oWnd&gt;
-    	 [ ID &lt;nId&gt; ] 
+    	 [ ID &lt;nId&gt; ]
          HEIGHT &lt;height&gt;
-    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ]
+    	 [ HSTYLE &lt;oStyle&gt; ]
     	 [ ON INIT &lt;bInit&gt; ] 
     	 [ ON PAINT &lt;bDraw&gt; ] 
     	 [ STYLE &lt;nStyle&gt; ]
@@ -584,6 +586,7 @@
     	 [ STYLE &lt;nStyle&gt; ] 
     	 [ FLAT ] 
     	 [ DISABLED ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ]
     	 [ TEXT &lt;cText&gt; 
     	    [ COLOR &lt;color&gt; ] [ FONT &lt;font&gt; ] 
     	    [ COORDINATES &lt;xt&gt;, &lt;yt&gt;, &lt;widthtt&gt;, &lt;heightt&gt; ] 

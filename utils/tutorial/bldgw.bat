@@ -5,7 +5,7 @@ set HRB_DIR=%HB_PATH%
 set HRB_LIB_DIR=%HB_PATH%\lib\win\mingw
 set HWGUI_INSTALL=..\..
 set HWGUI_LIBS=-lhwgui -lprocmisc -lhbxml
-if exist %HRB_DIR%\lib\hbvm.lib goto hrb
+if exist %HRB_LIB_DIR%\libhbvm.lib goto hrb
 goto common
 set HRB_LIBS=-lvm -lrdd -lmacro -lpp -lrtl -lcodepage -llang -lcommon -ldbfntx  -ldbfcdx -ldbffpt -lhsx -lhbsix -lgtgui -lgtwin
 :hrb

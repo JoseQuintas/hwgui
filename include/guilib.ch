@@ -766,12 +766,13 @@
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
             [ BACKCOLOR <bcolor> ]     ;
+            [ HSTYLE <oStyle> ]        ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ STYLE <nStyle> ]         ;
           => ;
-    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw>,<bcolor> );
+    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>,<bInit>,<bSize>,<bDraw>,<bcolor>,<oStyle> );
     [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
 #xcommand REDEFINE PANEL [ <oPanel> ]  ;
@@ -789,11 +790,12 @@
             [ ID <nId> ]               ;
             HEIGHT <height>            ;
             [ BACKCOLOR <bcolor> ]     ;
+            [ HSTYLE <oStyle> ]        ;
             [ ON INIT <bInit> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ STYLE <nStyle> ]         ;
           => ;
-    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,0,0,<oWnd>:nWidth,<height>,<bInit>,ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS,<bDraw>,<bcolor> );
+    [<oPanel> :=] HPanel():New( <oWnd>,<nId>,<nStyle>,0,0,<oWnd>:nWidth,<height>,<bInit>,ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS,<bDraw>,<bcolor>,<oStyle> );
     [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
 #xcommand ADD STATUS PANEL [ <oPanel> ] TO <oWnd> ;

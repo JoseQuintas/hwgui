@@ -54,6 +54,7 @@ CLASS HControl INHERIT HCustomWindow
 
    METHOD Setfocus() INLINE hwg_SetFocus( ::handle )
    METHOD Move( x1, y1, width, height )
+   METHOD Refresh()     VIRTUAL
    METHOD onAnchor( x, y, w, h )
    METHOD End()
 

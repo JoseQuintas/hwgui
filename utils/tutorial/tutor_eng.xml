@@ -599,7 +599,7 @@ Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"John",31,15000} }
 
    // A TOP PANEL is the same PANEL control, which we used in "Panel and Ownerbuttons"
    // module, but it has predefined ON SIZE codeblock to be at the top of a window
-   ADD TOP PANEL oTopPanel TO oDlg HEIGHT 48 BACKCOLOR 16770002
+   ADD TOP PANEL oTopPanel TO oDlg HEIGHT 48 HSTYLE oStyleNormal
 
    @ 0,0 OWNERBUTTON oBtn1 OF oTopPanel SIZE 64,48 ;
          TEXT "Date" ;

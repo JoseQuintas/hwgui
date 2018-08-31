@@ -22,7 +22,7 @@ CLASS HPanel INHERIT HControl
    DATA lResizeX, lResizeY, nSize HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      bInit, bSize, bPaint, bcolor )
+      bInit, bSize, bPaint, bcolor, oStyle )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -38,7 +38,7 @@ CLASS HPanel INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      bInit, bSize, bPaint, bcolor ) CLASS HPanel
+      bInit, bSize, bPaint, bcolor, oStyle ) CLASS HPanel
    LOCAL oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, iif( nWidth == Nil, 0, nWidth ), ;
@@ -49,6 +49,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       ::brush  := HBrush():Add( bcolor )
       ::bcolor := bcolor
    ENDIF
+   ::oStyle := oStyle
    ::bPaint   := bPaint
    ::lResizeX := ( ::nWidth == 0 )
    ::lResizeY := ( ::nHeight == 0 )

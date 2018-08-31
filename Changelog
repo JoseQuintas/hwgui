@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-08-31 09:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcontrol.prg
+    * Added virtual Refresh() method to HControl as in Winapi version
+  * include/guilib.ch
+    * Added a clause HSTYLE to PANEL and ADD TOP PANEL commands
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+    * Added a parameter oStyle to a :New() method
+  * utils/tutorial/tutor_eng.xml
+    * Changed a "Styled controls" module to demonatrate using of HSTYLE clause
+      in ADD TOP PANEL command
+
 2018-08-30 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hownbtn.prg
     ! Bug fixed with transparent color of a bitmap

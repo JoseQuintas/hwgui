@@ -5,6 +5,9 @@
 
 HWGUI 2.21 build 1 ( 31.08.2018 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] HSTYLE clause added to @ ... PANEL and ADD TOP PANEL commands
+[*] GTK version: improved compatibility with winapi version.
+[!] Bug fixes, cleanup and improvements
 
 HWGUI 2.20 build 3 ( 17.09.2016 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

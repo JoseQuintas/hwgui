@@ -106,6 +106,9 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
       hwg_Setwindowtext( ::oParent:handle, cTitle )
    ENDIF
    IF nPos != Nil
+      IF ::nLimit * ::maxpos != 0
+         nPos := nPos / (::nLimit*::maxpos)
+      ENDIF
       hwg_Setprogressbar( ::handle, nPos )
    ENDIF
 

@@ -17,7 +17,6 @@
 CLASS HTimer INHERIT HObject
 
    CLASS VAR aTimers   INIT {}
-   DATA objname
    DATA id
    DATA value
    DATA lOnce          INIT .F.

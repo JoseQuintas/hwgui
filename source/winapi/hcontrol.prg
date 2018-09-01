@@ -454,10 +454,12 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::title   := cCaption
    ::Activate()
 
-   IF ::oParent:className == "HSTATUS"
-      ::oParent:oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
-   ELSE
-      ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
+   IF bClick != NIL
+      IF ::oParent:className == "HSTATUS"
+         ::oParent:oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
+      ELSE
+         ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
+      ENDIF
    ENDIF
 
 RETURN Self
@@ -479,7 +481,9 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::bClick  := bClick
    ::title   := cCaption
 
-   ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
+   IF bClick != NIL
+      ::oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
+   ENDIF
 RETURN Self
 
 METHOD Init CLASS HButton

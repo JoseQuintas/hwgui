@@ -454,7 +454,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::title   := cCaption
    ::Activate()
 
-   IF bClick != NIL
+   IF ::id != IDOK .AND. ::id != IDCANCEL
       IF ::oParent:className == "HSTATUS"
          ::oParent:oParent:AddEvent( 0, ::id, {|o,id| onClick(o,id)} )
       ELSE

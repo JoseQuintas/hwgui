@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-09-02 13:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcontrol.prg
+    ! Bug fixed
+
 2018-09-01 18:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcontrol.prg
     ! Bug fixed

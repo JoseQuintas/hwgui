@@ -194,10 +194,11 @@ HB_FUNC( HWG_CREATEDLG )
    gtk_container_add (GTK_CONTAINER(hWnd), vbox);
 
    box = (GtkFixed*)gtk_fixed_new();
-   gtk_box_pack_end( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
+   gtk_box_pack_start( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
    g_object_set_data( ( GObject * ) hWnd, "window", ( gpointer ) 1 ); 
    SetWindowObject( hWnd, pObject );
+   g_object_set_data( (GObject*) hWnd, "vbox", (gpointer) vbox );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
 
    gtk_widget_add_events( hWnd, GDK_BUTTON_PRESS_MASK |

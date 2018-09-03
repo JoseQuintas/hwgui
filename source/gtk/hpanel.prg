@@ -220,6 +220,7 @@ CLASS HPanelStS INHERIT HPANEL
 
    METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aParts )
    METHOD Write( cText, nPart, lRedraw )
+   METHOD SetText( cText )    INLINE ::Write( cText,, .T. )
    METHOD PaintText( hDC )
    METHOD Paint()
 
@@ -237,15 +238,19 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
 
    ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
    ::oStyle := oStyle
-   ::aParts := aParts
-   ::aText := Array( Len(aParts) )
+   IF !Empty( aParts )
+      ::aParts := aParts
+   ELSE
+      ::aParts := {0}
+   ENDIF
+   ::aText := Array( Len(::aParts) )
    AFill( ::aText, "" )
 
    RETURN Self
 
 METHOD Write( cText, nPart, lRedraw ) CLASS HPanelStS
 
-   ::aText[nPart] := cText
+   ::aText[Iif(nPart==Nil,1,nPart)] := cText
    IF Valtype( lRedraw ) != "L" .OR. lRedraw
       hwg_Invalidaterect( ::handle, 0 )
    ENDIF

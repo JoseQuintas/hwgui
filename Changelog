@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-09-05 17:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * whatsnew.txt
+    * Updated with a short info about a new build.
+  * utils/tutorial/bldgw.bat
+    ! Small fix
+
 2018-09-05 14:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number is changed to 2

@@ -3,6 +3,12 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI 2.21 build 2 ( 04.09.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] HSTYLES clause added to OWNERBUTTON command instead of STYLE
+[*] :objname class variable moved to HObject class
+[!] Few bugs fixed.
+
 HWGUI 2.21 build 1 ( 31.08.2018 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] HSTYLE clause added to @ ... PANEL and ADD TOP PANEL commands

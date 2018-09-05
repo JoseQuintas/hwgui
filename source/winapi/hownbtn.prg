@@ -29,7 +29,7 @@ CLASS HOwnButton INHERIT HControl
    DATA lEnabled INIT .T.
    DATA nOrder
 
-   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+   METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight, ;
       bInit, bSize, bPaint, bClick, lflat,              ;
       cText, color, font, xt, yt, widtht, heightt,        ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
@@ -55,18 +55,19 @@ CLASS HOwnButton INHERIT HControl
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
+METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
       bInit, bSize, bPaint, bClick, lflat,             ;
       cText, color, oFont, xt, yt, widtht, heightt,       ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
       cTooltip, lEnabled, lCheck, bColor ) CLASS HOwnButton
 
-   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+   ::Super:New( oWndParent, nId,, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip )
 
    IF oFont == Nil
       ::oFont := ::oParent:oFont
    ENDIF
+   ::aStyle  := aStyles
    ::lflat   := iif( lflat == Nil, .F. , lflat )
    ::bClick  := bClick
    ::state   := OBTN_INIT

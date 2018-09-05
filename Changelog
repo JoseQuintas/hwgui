@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-09-05 14:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Build number is changed to 2
+    * HSTYLES clause added to OWNERBUTTON command instead of STYLE
+  * source/gtk/hownbtn.prg
+  * source/winapi/hownbtn.prg
+    * :aStyle initialization added
+
 2018-09-03 12:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hpanel.prg
   * source/gtk/hpanel.prg

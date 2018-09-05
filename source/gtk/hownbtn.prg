@@ -29,7 +29,7 @@ CLASS HOwnButton INHERIT HControl
    DATA lEnabled INIT .T.
    DATA nOrder
 
-   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+   METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight, ;
       bInit, bSize, bPaint, bClick, lflat,              ;
       cText, color, font, xt, yt, widtht, heightt,        ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
@@ -50,7 +50,7 @@ CLASS HOwnButton INHERIT HControl
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
+METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
       bInit, bSize, bPaint, bClick, lflat,             ;
       cText, color, font, xt, yt, widtht, heightt,       ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
@@ -64,7 +64,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight,   ;
    ::state   := OBTN_INIT
    ::nOrder  := Iif( oWndParent == nil, 0, Len( oWndParent:aControls ) )
 
-   ::title    := cText
+   ::aStyle  := aStyles
+   ::title   := cText
    ::tcolor  := Iif( color == Nil, 0, color )
    ::xt      := xt
    ::yt      := yt

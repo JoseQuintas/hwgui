@@ -602,19 +602,16 @@ Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"John",31,15000} }
    ADD TOP PANEL oTopPanel TO oDlg HEIGHT 48 HSTYLE oStyleNormal
 
    @ 0,0 OWNERBUTTON oBtn1 OF oTopPanel SIZE 64,48 ;
-         TEXT "Date" ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Date" ;
          ON CLICK {||hwg_WriteStatus(oDlg,1,Dtoc(Date()),.T.)}
-   oBtn1:aStyle := { oStyleNormal, oStylePressed, oStyleOver }
        
    @ 64,0 OWNERBUTTON oBtn2 OF oTopPanel SIZE 64,48 ;
-         TEXT "Time" ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Time" ;
          ON CLICK {||hwg_WriteStatus(oDlg,2,Time(),.T.)}
-   oBtn2:aStyle := { oStyleNormal, oStylePressed, oStyleOver }
 
    @ 128,0 OWNERBUTTON oBtn3 OF oTopPanel SIZE 64,48 ;
-         TEXT "Version" ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Version" ;
          ON CLICK {||hwg_WriteStatus(oDlg,3,hwg_Version(),.T.)}
-   oBtn3:aStyle := { oStyleNormal, oStylePressed, oStyleOver }
 
    @ 30,72 BROWSE oBrw ARRAY SIZE 320,140 STYLE WS_BORDER + WS_VSCROLL ;
          ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 

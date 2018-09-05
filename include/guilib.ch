@@ -2,7 +2,7 @@
  *$Id$
  */
 #define HWG_VERSION         "2.21"
-#define HWG_BUILD               1
+#define HWG_BUILD               2
 #define	WND_MAIN		        1
 #define	WND_MDI 		        2
 #define WND_MDICHILD            3
@@ -970,18 +970,18 @@
 
 
 #xcommand @ <x>,<y> OWNERBUTTON [ <oOwnBtn> ]  ;
-            [ OF <oWnd> ]             ;
-            [ ID <nId> ]              ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
             [ BACKCOLOR <bcolor> ]     ;
-            [ ON INIT <bInit> ]     ;
-            [ ON SIZE <bSize> ]     ;
-            [ ON PAINT <bPaint> ]   ;
-            [ ON CLICK <bClick> ]   ;
-            [ STYLE <nStyle> ]      ;
-            [ <flat: FLAT> ]        ;
-            [ <enable: DISABLED> ]        ;
-            [ TEXT <cText>          ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bPaint> ]      ;
+            [ ON CLICK <bClick> ]      ;
+            [ HSTYLES <aStyles,...> ]  ;
+            [ <flat: FLAT> ]           ;
+            [ <enable: DISABLED> ]     ;
+            [ TEXT <cText>             ;
                  [ COLOR <color>] [ FONT <font> ] ;
                  [ COORDINATES  <xt>, <yt>, <widtht>, <heightt> ] ;
             ] ;
@@ -991,7 +991,7 @@
             [ TOOLTIP <ctoolt> ]    ;
             [ <lCheck: CHECK> ]     ;
           => ;
-    [<oOwnBtn> :=] HOWNBUTTON():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
+    [<oOwnBtn> :=] HOWNBUTTON():New( <oWnd>,<nId>,\{<aStyles>\},<x>,<y>,<width>, ;
           <height>,<bInit>,<bSize>,<bPaint>, ;
           <bClick>,<.flat.>, ;
               <cText>,<color>,<font>,<xt>, <yt>,<widtht>,<heightt>, ;

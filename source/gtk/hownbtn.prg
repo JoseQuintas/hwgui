@@ -56,7 +56,7 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
       cTooltip, lEnabled, lCheck  ) CLASS HOwnButton
 
-   ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, font, bInit, ;
+   ::Super:New( oWndParent, nId,, nLeft, nTop, nWidth, nHeight, font, bInit, ;
       bSize, bPaint, ctooltip )
 
    ::lFlat   := Iif( lFlat == Nil, .F. , lFlat )

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-09-06 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/window.c
+  * source/gtk/wprint.c
+    ! Few warnings fixed.
+
 2018-09-05 17:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number is changed to 3

@@ -52,7 +52,6 @@ PHB_DYNS pSym_keylist = NULL;
 guint s_KeybHook = 0;
 GtkWidget * hMainWindow = NULL;
 
-#define HB_IT_DEFAULT   ( ( HB_TYPE ) 0x40000 )
 HB_LONG prevp2 = -1;
 
 typedef struct
@@ -357,8 +356,6 @@ if  ( a == GDK_asciicircum || a ==GDK_dead_circumflex)
    else if ( b == GDK_u )      
       return (HB_LONG)GDK_ucircumflex;      
    else if ( b== GDK_C) 
-      return (HB_LONG)GDK_Ccircumflex;
-   else if ( b == GDK_C )      
       return (HB_LONG)GDK_Ccircumflex;
    else if ( b== GDK_H) 
       return (HB_LONG)GDK_Hcircumflex;
@@ -890,7 +887,7 @@ gchar * hwg_convert_from_utf8( const char * szText )
 
 HB_FUNC( HWG_SETAPPLOCALE )
 {
-   char * szLocale = hb_parc(1);
+   const char * szLocale = hb_parc(1);
    int iLen = hb_parclen(1);
 
    hb_retc( szAppLocale );

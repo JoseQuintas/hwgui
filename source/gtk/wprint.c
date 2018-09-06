@@ -367,7 +367,7 @@ static void draw_page( cairo_t *cr, char * cpage )
 static void print_page( GtkPrintOperation * operation, GtkPrintContext * context,
       gint page_nr, PHB_ITEM ppages )
 {
-   char * cpage = hb_arrayGetCPtr( ppages, page_nr+1 );
+   const char * cpage = hb_arrayGetCPtr( ppages, page_nr+1 );
    char * ptr;
    cairo_t *cr;
    GtkPageSetup *page_setup;
@@ -375,10 +375,10 @@ static void print_page( GtkPrintOperation * operation, GtkPrintContext * context
    cr = gtk_print_context_get_cairo_context( context );
    draw_page( cr, cpage );
 
-   if( hb_arrayLen( ppages ) >= page_nr+2 )
+   if( hb_arrayLen( ppages ) >= (unsigned int)page_nr+2 )
    {
       page_setup = gtk_print_context_get_page_setup( context );
-      ptr = hb_arrayGetCPtr( ppages, page_nr+2 );
+      ptr = (char*) hb_arrayGetCPtr( ppages, page_nr+2 );
       if( !strncmp( ptr,"page",4 ) )
       {  
          ptr = strchr( ptr+5, ',' ); ptr += 4;

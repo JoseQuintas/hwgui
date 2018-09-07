@@ -16,6 +16,8 @@
 
 #include <locale.h>
 #include "gtk/gtk.h"
+#include "cairo-ps.h"
+#include "cairo-svg.h"
 
 #define DT_CENTER                   1
 #define DT_RIGHT                    2
@@ -186,7 +188,7 @@ void long2rgb( long int nColor, double * pr, double * pg, double * pb )
 
 }
 
-static void draw_page( cairo_t *cr, char * cpage )
+static void draw_page( cairo_t *cr, const char * cpage )
 {
    int iPathExist = 0;
    char * ptr, * ptre;
@@ -199,7 +201,7 @@ static void draw_page( cairo_t *cr, char * cpage )
 
    cairo_set_source_rgb( cr, 0, 0, 0 );
 
-   ptr = cpage;
+   ptr = (char*)cpage;
    while( *ptr )
    {
       if( !strncmp( ptr,"txt",3 ) )

@@ -112,7 +112,7 @@ HB_FUNC( HWG_CREATESTATIC )
       g_free( gcTitle );
       gtk_container_add( GTK_CONTAINER( hCtrl ), hLabel );
       g_object_set_data( ( GObject * ) hCtrl, "label", ( gpointer ) hLabel );
-      if( ulExtStyle && WS_EX_TRANSPARENT )
+      if( ulExtStyle & WS_EX_TRANSPARENT )
       {
          gtk_event_box_set_visible_window( GTK_EVENT_BOX( hCtrl ), 0 );
       }
@@ -617,6 +617,8 @@ void cb_signal_tab( GtkNotebook *notebook, GtkNotebookPage *page,
 {
    gpointer gObject = g_object_get_data( (GObject*) notebook, "obj" );
 
+   HB_SYMBOL_UNUSED( page );
+   HB_SYMBOL_UNUSED( user_data );
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
 

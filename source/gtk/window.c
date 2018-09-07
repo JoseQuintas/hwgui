@@ -69,6 +69,7 @@ gboolean cb_delete_event( GtkWidget *widget, gchar* data )
 {
    gpointer gObject;
 
+   HB_SYMBOL_UNUSED( data );
    gObject = g_object_get_data( (GObject*) widget, "obj" );
 
    if( !pSym_onEvent )
@@ -910,6 +911,7 @@ static gint snooper ( GtkWidget *grab_widget,
 {
    GtkWidget * window = GetActiveWindow();
 
+   HB_SYMBOL_UNUSED( func_data );
    if( window && event->type == GDK_KEY_RELEASE )
    {
       PHB_ITEM pObject = (PHB_ITEM) g_object_get_data( (GObject*) window, "obj" );

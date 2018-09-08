@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-09-08 11:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hfrmtmpl.prg
+  * source/gtk/hfrmtmpl.prg
+    * cFormName member added to the HRepTmpl class to keep the path and name
+      of a current form file.
+  * utils/designer/samples/testrep1.xml
+    * Report sample template updated
+
 2018-09-07 13:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
   * source/gtk/window.c

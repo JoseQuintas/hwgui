@@ -1001,6 +1001,7 @@ CLASS HRepTmpl
    CLASS VAR maxId    INIT 0
    CLASS VAR aFontTable
    DATA aControls     INIT {}
+   DATA cFormName
    DATA aProp
    DATA aMethods
    DATA aVars         INIT {}
@@ -1038,6 +1039,7 @@ METHOD READ( fname, cId ) CLASS HRepTmpl
    IF Left( fname, 5 ) == "<?xml"
       oDoc := HXMLDoc():ReadString( fname )
    ELSE
+      ::cFormName := fname
       oDoc := HXMLDoc():Read( fname )
    ENDIF
 

@@ -166,7 +166,7 @@ FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
       ENDIF
       nPos ++
    ENDDO
-   IF !_lContext .AND. hWnd != Nil .AND. oWnd != Nil
+   IF Empty(_lContext) .AND. hWnd != Nil .AND. oWnd != Nil
       Hwg_SetMenu( oWnd, aMenu )
    ELSEIF _oMenu != Nil
       _oMenu:handle := aMenu[5]

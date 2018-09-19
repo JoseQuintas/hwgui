@@ -1,7 +1,7 @@
 
 #include "hwgui.ch"
+#include "hwgextern.ch"
 
-REQUEST HTIMER
 REQUEST DBCREATE
 REQUEST DBUSEAREA
 REQUEST DBCREATEINDEX

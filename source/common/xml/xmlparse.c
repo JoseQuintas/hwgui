@@ -26,32 +26,34 @@ void hwg_writelog( const char * sFile, const char * sTraceMsg, ... );
    #define sscanf sscanf_s
 #endif
 
-#define HB_SKIPTABSPACES( sptr ) while( *sptr == ' ' || *sptr == '\t' || \
-         *sptr == '\r' || *sptr == '\n' ) ( sptr )++
-#define HB_SKIPCHARS( sptr ) while( *sptr && *sptr != ' ' && *sptr != '\t' && \
+#define SKIPTABSPACES( sptr ) while( (unsigned long)(sptr-pStart)<ulDataLen && ( *sptr == ' ' || *sptr == '\t' || \
+         *sptr == '\r' || *sptr == '\n' ) ) ( sptr )++
+#define SKIPCHARS( sptr ) while( (unsigned long)(sptr-pStart)<ulDataLen && *sptr != ' ' && *sptr != '\t' && \
          *sptr != '=' && *sptr != '>' && *sptr != '<' && *sptr != '\"' \
          && *sptr != '\'' && *sptr != '\r' && *sptr != '\n' ) ( sptr )++
 
-#define HBXML_ERROR_NOT_LT        1
-#define HBXML_ERROR_NOT_GT        2
-#define HBXML_ERROR_WRONG_TAG_END 3
-#define HBXML_ERROR_WRONG_END     4
-#define HBXML_ERROR_WRONG_ENTITY  5
-#define HBXML_ERROR_NOT_QUOTE     6
-#define HBXML_ERROR_TERMINATION   7
+#define XML_ERROR_NOT_LT        1
+#define XML_ERROR_NOT_GT        2
+#define XML_ERROR_WRONG_TAG_END 3
+#define XML_ERROR_WRONG_END     4
+#define XML_ERROR_WRONG_ENTITY  5
+#define XML_ERROR_NOT_QUOTE     6
+#define XML_ERROR_TERMINATION   7
+#define XML_ERROR_FILE         10
 
-#define HBXML_TYPE_TAG            0
-#define HBXML_TYPE_SINGLE         1
-#define HBXML_TYPE_COMMENT        2
-#define HBXML_TYPE_CDATA          3
-#define HBXML_TYPE_PI             4
+#define XML_TYPE_TAG            0
+#define XML_TYPE_SINGLE         1
+#define XML_TYPE_COMMENT        2
+#define XML_TYPE_CDATA          3
+#define XML_TYPE_PI             4
 
-static unsigned char *cBuffer;
+static unsigned char *pStart;
+static unsigned long ulDataLen;
 static int nParseError;
-static HB_ULONG ulOffset;
+static unsigned long ulOffset;
 
-#define HBXML_PREDEFS_KOL         6
-static int nPredefsKol = HBXML_PREDEFS_KOL;
+#define XML_PREDEFS_KOL         6
+static int nPredefsKol = XML_PREDEFS_KOL;
 
 static unsigned char *predefinedEntity1[] =
       { ( unsigned char * ) "lt;", ( unsigned char * ) "gt;",
@@ -65,18 +67,18 @@ static unsigned char *pEntity2 = NULL;
 void hbxml_error( int nError, unsigned char *ptr )
 {
    nParseError = nError;
-   ulOffset = ptr - cBuffer;
+   ulOffset = ptr - pStart;
 }
 
 HB_FUNC( HBXML_SETENTITY )
 {
 
    PHB_ITEM pArray, pArr;
-   HB_ULONG ul, ulLen, ulItemLen;
+   unsigned long ul, ulLen, ulItemLen;
 
    if( pEntity1 && predefinedEntity1 != pEntity1 )
    {
-      for( ul = 0; ul < ( HB_ULONG ) nPredefsKol; ul++ )
+      for( ul = 0; ul < ( unsigned long ) nPredefsKol; ul++ )
          hb_xfree( pEntity1[ul] );
 
       hb_xfree( pEntity1 );
@@ -85,14 +87,14 @@ HB_FUNC( HBXML_SETENTITY )
 
    if( HB_ISNIL( 1 ) )
    {
-      nPredefsKol = HBXML_PREDEFS_KOL;
+      nPredefsKol = XML_PREDEFS_KOL;
       pEntity1 = predefinedEntity1;
       pEntity2 = predefinedEntity2;
    }
    else
    {
       pArray = hb_param( 1, HB_IT_ARRAY );
-      ulLen = ( HB_ULONG ) hb_arrayLen( pArray );
+      ulLen = ( unsigned long ) hb_arrayLen( pArray );
 
       nPredefsKol = (int) ulLen;
       pEntity1 = (unsigned char **) hb_xgrab( ulLen * sizeof(unsigned char *) );
@@ -117,7 +119,7 @@ HB_FUNC( HBXML_PRESAVE )
    PHB_ITEM pItem;
    unsigned char *pBuffer = ( unsigned char * ) hb_parc( 1 ), *pNew;
    unsigned char *ptr, *ptr1, *ptrs, c;
-   HB_ULONG ulLen = hb_parclen( 1 );
+   unsigned long ulLen = hb_parclen( 1 );
    int iLenAdd = 0, iLen;
 
    if( !pEntity1 )
@@ -168,14 +170,14 @@ HB_FUNC( HBXML_PRESAVE )
 }
 
 /*
- * hbxml_pp( unsigned char * ptr, HB_ULONG ulLen )
+ * hbxml_pp( unsigned char * ptr, unsigned long ulLen )
  * Translation of the predefined entities ( &lt;, etc. )
  */
-PHB_ITEM hbxml_pp( unsigned char *ptr, HB_ULONG ulLen )
+PHB_ITEM hbxml_pp( unsigned char *ptr, unsigned long ulLen )
 {
    unsigned char *ptrStart = ptr;
    int i, nlen;
-   HB_ULONG ul = 0, ul1;
+   unsigned long ul = 0, ul1;
 
    while( ul < ulLen )
    {
@@ -210,14 +212,14 @@ PHB_ITEM hbxml_pp( unsigned char *ptr, HB_ULONG ulLen )
                }
             }
             if( i == nPredefsKol )
-               hbxml_error( HBXML_ERROR_WRONG_ENTITY, ptr );
+               hbxml_error( XML_ERROR_WRONG_ENTITY, ptr );
          }
       }
       ptr++;
       ul++;
    }
    ptr = ptrStart;
-   HB_SKIPTABSPACES( ptr );
+   SKIPTABSPACES( ptr );
    ulLen -= ( ptr - ptrStart );
    if( !ulLen )
       return hb_itemPutC( NULL, "" );
@@ -289,35 +291,35 @@ HB_FUNC( HBXML_PRELOAD )
 
 }
 
-PHB_ITEM hbxml_getattr( unsigned char **pBuffer, HB_BOOL * lSingle )
+PHB_ITEM hbxml_getattr( unsigned char **pBuffer, int * lSingle )
 {
 
    unsigned char *ptr, cQuo;
-   int nlen;
+   int iLen;
+   int bPI = 0;
    PHB_ITEM pArray = hb_itemNew( NULL );
    PHB_ITEM pSubArray = NULL;
    PHB_ITEM pTemp;
-   HB_BOOL bPI = 0;
 
    hb_arrayNew( pArray, 0 );
-   *lSingle = HB_FALSE;
+   *lSingle = 0;
    if( **pBuffer == '<' )
    {
       ( *pBuffer )++;
       if( **pBuffer == '?' )
          bPI = 1;
-      HB_SKIPTABSPACES( *pBuffer );     // go till tag name
-      HB_SKIPCHARS( *pBuffer ); // skip tag name
+      SKIPTABSPACES( *pBuffer );     // go till tag name
+      SKIPCHARS( *pBuffer ); // skip tag name
       if( *( *pBuffer - 1 ) == '/' || *( *pBuffer - 1 ) == '?' )
          ( *pBuffer )--;
       else
-         HB_SKIPTABSPACES( *pBuffer );
+         SKIPTABSPACES( *pBuffer );
 
-      while( **pBuffer && **pBuffer != '>' )
+      while( (unsigned long)(*pBuffer-pStart)<ulDataLen && **pBuffer != '>' )
       {
-         if( !( **pBuffer ) )
+         if( (unsigned long)(*pBuffer-pStart) >= ulDataLen )
          {
-            hbxml_error( HBXML_ERROR_TERMINATION, *pBuffer );
+            hbxml_error( XML_ERROR_TERMINATION, *pBuffer );
             break;
          }
          if( **pBuffer == '/' || **pBuffer == '?' )
@@ -326,52 +328,51 @@ PHB_ITEM hbxml_getattr( unsigned char **pBuffer, HB_BOOL * lSingle )
             ( *pBuffer )++;
             if( **pBuffer != '>' || ( *lSingle == 2 && !bPI ) )
             {
-               hbxml_error( HBXML_ERROR_NOT_GT, *pBuffer );
+               hbxml_error( XML_ERROR_NOT_GT, *pBuffer );
             }
             break;
          }
          ptr = *pBuffer;
-         HB_SKIPCHARS( *pBuffer );      // skip attribute name
-         nlen = *pBuffer - ptr;
+         SKIPCHARS( *pBuffer );      // skip attribute name
+         iLen = *pBuffer - ptr;
          // add attribute name to result array
          pSubArray = hb_itemNew( NULL );
          hb_arrayNew( pSubArray, 2 );
-         pTemp = hb_itemPutCL( NULL, ( char * ) ptr, nlen );
+         pTemp = hb_itemPutCL( NULL, ( char * ) ptr, iLen );
          hb_arraySet( pSubArray, 1, pTemp );
          hb_itemRelease( pTemp );
 
-         HB_SKIPTABSPACES( *pBuffer );  // go till '='
+         SKIPTABSPACES( *pBuffer );  // go till '='
          if( **pBuffer == '=' )
          {
             ( *pBuffer )++;
-            HB_SKIPTABSPACES( *pBuffer );       // go till attribute value
+            SKIPTABSPACES( *pBuffer );       // go till attribute value
             cQuo = **pBuffer;
             if( cQuo == '\"' || cQuo == '\'' )
                ( *pBuffer )++;
             else
             {
-               hbxml_error( HBXML_ERROR_NOT_QUOTE, *pBuffer );
+               hbxml_error( XML_ERROR_NOT_QUOTE, *pBuffer );
                break;
             }
             ptr = *pBuffer;
-            while( **pBuffer && **pBuffer != cQuo )
+            while( (unsigned long)(*pBuffer-pStart)<ulDataLen && **pBuffer != cQuo )
                ( *pBuffer )++;
-            if( **pBuffer != cQuo )
+            if( (unsigned long)(*pBuffer-pStart) >= ulDataLen )
             {
-               hbxml_error( HBXML_ERROR_NOT_QUOTE, *pBuffer );
+               hbxml_error( XML_ERROR_NOT_QUOTE, *pBuffer );
                break;
             }
-            nlen = *pBuffer - ptr;
+            iLen = *pBuffer - ptr;
             // add attribute value to result array
-            //pTemp = hbxml_pp( ptr, nlen );
-            pTemp = hb_itemPutCL( NULL, ( char * ) ptr, (unsigned long)nlen );
+            pTemp = hb_itemPutCL( NULL, ( char * ) ptr, (unsigned long)iLen );
             hb_arraySet( pSubArray, 2, pTemp );
             hb_itemRelease( pTemp );
             ( *pBuffer )++;
          }
          hb_arrayAdd( pArray, pSubArray );
          hb_itemRelease( pSubArray );
-         HB_SKIPTABSPACES( *pBuffer );
+         SKIPTABSPACES( *pBuffer );
       }
       if( nParseError )
       {
@@ -411,24 +412,24 @@ PHB_ITEM hbxml_addnode( PHB_ITEM pParent )
    return pNode;
 }
 
-HB_BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char **pBuffer )
+int hbxml_readComment( PHB_ITEM pParent, unsigned char **pBuffer )
 {
    unsigned char *ptr;
    PHB_ITEM pNode = hbxml_addnode( pParent );
    PHB_ITEM pTemp;
 
-   pTemp = hb_itemPutNI( NULL, HBXML_TYPE_COMMENT );
+   pTemp = hb_itemPutNI( NULL, XML_TYPE_COMMENT );
    hb_objSendMsg( pNode, "_TYPE", 1, pTemp );
    hb_itemRelease( pTemp );
 
    ( *pBuffer ) += 4;
    ptr = *pBuffer;
-   while( **pBuffer &&
+   while( (unsigned long)(*pBuffer-pStart)<ulDataLen &&
          ( **pBuffer != '-' || *( *pBuffer + 1 ) != '-' ||
                *( *pBuffer + 2 ) != '>' ) )
       ( *pBuffer )++;
 
-   if( **pBuffer )
+   if( (unsigned long)(*pBuffer-pStart) < ulDataLen )
    {
       pTemp = hb_itemPutCL( NULL, ( char * ) ptr, *pBuffer - ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
@@ -438,30 +439,30 @@ HB_BOOL hbxml_readComment( PHB_ITEM pParent, unsigned char **pBuffer )
       ( *pBuffer ) += 3;
    }
    else
-      hbxml_error( HBXML_ERROR_TERMINATION, *pBuffer );
+      hbxml_error( XML_ERROR_TERMINATION, *pBuffer );
 
    hb_itemRelease( pNode );
-   return ( nParseError ) ? HB_FALSE : HB_TRUE;
+   return ( nParseError ) ? 0 : 1;
 }
 
-HB_BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char **pBuffer )
+int hbxml_readCDATA( PHB_ITEM pParent, unsigned char **pBuffer )
 {
    unsigned char *ptr;
    PHB_ITEM pNode = hbxml_addnode( pParent );
    PHB_ITEM pTemp;
 
-   pTemp = hb_itemPutNI( NULL, HBXML_TYPE_CDATA );
+   pTemp = hb_itemPutNI( NULL, XML_TYPE_CDATA );
    hb_objSendMsg( pNode, "_TYPE", 1, pTemp );
    hb_itemRelease( pTemp );
 
    ( *pBuffer ) += 9;
    ptr = *pBuffer;
-   while( **pBuffer &&
+   while( (unsigned long)(*pBuffer-pStart)<ulDataLen &&
          ( **pBuffer != ']' || *( *pBuffer + 1 ) != ']' ||
                *( *pBuffer + 2 ) != '>' ) )
       ( *pBuffer )++;
 
-   if( **pBuffer )
+   if( (unsigned long)(*pBuffer-pStart) < ulDataLen )
    {
       pTemp = hb_itemPutCL( NULL, ( char * ) ptr, *pBuffer - ptr );
       hb_objSendMsg( pNode, "AITEMS", 0 );
@@ -471,27 +472,27 @@ HB_BOOL hbxml_readCDATA( PHB_ITEM pParent, unsigned char **pBuffer )
       ( *pBuffer ) += 3;
    }
    else
-      hbxml_error( HBXML_ERROR_TERMINATION, *pBuffer );
+      hbxml_error( XML_ERROR_TERMINATION, *pBuffer );
 
    hb_itemRelease( pNode );
-   return ( nParseError ) ? HB_FALSE : HB_TRUE;
+   return ( nParseError ) ? 0 : 1;
 }
 
-HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
+int hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
 {
    PHB_ITEM pNode = hbxml_addnode( pParent );
    PHB_ITEM pArray;
    unsigned char *ptr, cNodeName[50];
    PHB_ITEM pTemp;
    int nLenNodeName;
-   HB_BOOL lEmpty;
-   HB_BOOL lSingle;
+   int lEmpty;
+   int lSingle;
 
    ( *pBuffer )++;
    if( **pBuffer == '?' )
       ( *pBuffer )++;
    ptr = *pBuffer;
-   HB_SKIPCHARS( ptr );
+   SKIPCHARS( ptr );
    nLenNodeName = ptr - *pBuffer - ( ( *( ptr - 1 ) == '/' ) ? 1 : 0 );
    memcpy( cNodeName, *pBuffer, nLenNodeName );
    cNodeName[nLenNodeName] = '\0';
@@ -506,7 +507,7 @@ HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
    if( ( pArray = hbxml_getattr( pBuffer, &lSingle ) ) == NULL || nParseError )
    {
       hb_itemRelease( pNode );
-      return HB_FALSE;
+      return 0;
    }
    else
    {
@@ -516,23 +517,29 @@ HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
    pTemp =
          hb_itemPutNI( NULL,
          ( lSingle ) ? ( ( lSingle ==
-                     2 ) ? HBXML_TYPE_PI : HBXML_TYPE_SINGLE ) :
-         HBXML_TYPE_TAG );
+                     2 ) ? XML_TYPE_PI : XML_TYPE_SINGLE ) :
+         XML_TYPE_TAG );
    hb_objSendMsg( pNode, "_TYPE", 1, pTemp );
    hb_itemRelease( pTemp );
 
    if( !lSingle )
    {
-      while( HB_TRUE )
+      while( 1 )
       {
          ptr = *pBuffer;
-         lEmpty = HB_TRUE;
-         while( **pBuffer != '<' )
+         lEmpty = 1;
+         while( (unsigned long)(*pBuffer-pStart)<ulDataLen && **pBuffer != '<' )
          {
             if( lEmpty && ( **pBuffer != ' ' && **pBuffer != '\t' &&
                         **pBuffer != '\r' && **pBuffer != '\n' ) )
-               lEmpty = HB_FALSE;
+               lEmpty = 0;
             ( *pBuffer )++;
+         }
+         if( (unsigned long)(*pBuffer-pStart) >= ulDataLen )
+         {
+            hbxml_error( XML_ERROR_WRONG_TAG_END, *pBuffer );
+            hb_itemRelease( pNode );
+            return 0;
          }
          if( !lEmpty )
          {
@@ -543,7 +550,7 @@ HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
             if( nParseError )
             {
                hb_itemRelease( pNode );
-               return HB_FALSE;
+               return 0;
             }
          }
 
@@ -551,14 +558,20 @@ HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
          {
             if( memcmp( *pBuffer + 2, cNodeName, nLenNodeName ) )
             {
-               hbxml_error( HBXML_ERROR_WRONG_TAG_END, *pBuffer );
+               hbxml_error( XML_ERROR_WRONG_TAG_END, *pBuffer );
                hb_itemRelease( pNode );
-               return HB_FALSE;
+               return 0;
             }
             else
             {
-               while( **pBuffer != '>' )
+               while( (unsigned long)(*pBuffer-pStart)<ulDataLen && **pBuffer != '>' )
                   ( *pBuffer )++;
+               if( (unsigned long)(*pBuffer-pStart) >= ulDataLen )
+               {
+                  hbxml_error( XML_ERROR_WRONG_TAG_END, *pBuffer );
+                  hb_itemRelease( pNode );
+                  return 0;
+               }
                ( *pBuffer )++;
                break;
             }
@@ -570,7 +583,7 @@ HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
                if( !hbxml_readComment( pNode, pBuffer ) )
                {
                   hb_itemRelease( pNode );
-                  return HB_FALSE;
+                  return 0;
                }
             }
             else if( !memcmp( *pBuffer + 1, "![CDATA[", 8 ) )
@@ -578,7 +591,7 @@ HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
                if( !hbxml_readCDATA( pNode, pBuffer ) )
                {
                   hb_itemRelease( pNode );
-                  return HB_FALSE;
+                  return 0;
                }
             }
             else
@@ -586,22 +599,24 @@ HB_BOOL hbxml_readElement( PHB_ITEM pParent, unsigned char **pBuffer )
                if( !hbxml_readElement( pNode, pBuffer ) )
                {
                   hb_itemRelease( pNode );
-                  return HB_FALSE;
+                  return 0;
                }
             }
          }
       }
    }
    hb_itemRelease( pNode );
-   return HB_TRUE;
+   return 1;
 
 }
 
 HB_FUNC( HBXML_GETATTR )
 {
    unsigned char *pBuffer = (unsigned char *) hb_parc( 1 );
-   HB_BOOL lSingle;
+   int lSingle;
 
+   pStart = pBuffer;
+   ulDataLen = hb_parclen(1);
    hb_itemReturn( hbxml_getattr( &pBuffer, &lSingle ) );
    hb_storl( lSingle, 2 );
 }
@@ -613,8 +628,7 @@ HB_FUNC( HBXML_GETATTR )
 HB_FUNC( HBXML_GETDOC )
 {
    PHB_ITEM pDoc = hb_param( 1, HB_IT_OBJECT );
-   HB_BOOL bFile;
-   unsigned char *ptr;
+   unsigned char *ptr, *pBuffer = NULL;
    int iMainTags = 0;
 
    if( !pEntity1 )
@@ -624,38 +638,44 @@ HB_FUNC( HBXML_GETDOC )
    }
    if( HB_ISCHAR( 2 ) )
    {
-      cBuffer = ( unsigned char * ) hb_parc( 2 );
-      bFile = HB_FALSE;
+      ptr = ( unsigned char * ) hb_parc( 2 );
+      ulDataLen = hb_parclen(2);
    }
    else if( HB_ISNUM( 2 ) )
    {
       HB_FHANDLE hInput = ( HB_FHANDLE ) hb_parnint( 2 );
-      HB_ULONG ulLen = hb_fsSeek( hInput, 0, FS_END ), ulRead;
+      unsigned long ulLen = hb_fsSeek( hInput, 0, FS_END ), ulRead;
 
       hb_fsSeek( hInput, 0, FS_SET );
-      cBuffer = ( unsigned char * ) hb_xgrab( ulLen + 1 );
-      ulRead = hb_fsReadLarge( hInput, ( HB_BYTE * ) cBuffer, ulLen );
-      cBuffer[ulRead] = '\0';
-      bFile = HB_TRUE;
+      ptr = pBuffer = ( unsigned char * ) hb_xgrab( ulLen + 1 );
+      ulRead = hb_fsReadLarge( hInput, ( HB_BYTE * ) pBuffer, ulLen );
+      pBuffer[ulRead] = '\0';
+      ulDataLen = ulRead;
    }
    else
       return;
+   pStart = ptr;
 
+   if( !ptr )
+   {
+      nParseError = XML_ERROR_FILE;
+      hb_retni( nParseError );
+      return;
+   }
    nParseError = 0;
-   ptr = cBuffer;
-   HB_SKIPTABSPACES( ptr );
+   SKIPTABSPACES( ptr );
    if( *ptr != '<' )
-      hbxml_error( HBXML_ERROR_NOT_LT, ptr );
+      hbxml_error( XML_ERROR_NOT_LT, ptr );
    else
    {
       if( !memcmp( ptr + 1, "?xml", 4 ) )
       {
-         HB_BOOL lSingle;
+         int lSingle;
          PHB_ITEM pArray = hbxml_getattr( &ptr, &lSingle );
          if( !pArray || nParseError )
          {
-            if( bFile )
-               hb_xfree( cBuffer );
+            if( pBuffer )
+               hb_xfree( pBuffer );
             if( pArray )
                hb_itemRelease( pArray );
             hb_retni( nParseError );
@@ -663,33 +683,33 @@ HB_FUNC( HBXML_GETDOC )
          }
          hb_objSendMsg( pDoc, "_AATTR", 1, pArray );
          hb_itemRelease( pArray );
-         HB_SKIPTABSPACES( ptr );
+         SKIPTABSPACES( ptr );
       }
-      while( HB_TRUE )
+      while( 1 )
       {
          if( !memcmp( ptr + 1, "!DOCTYPE", 8 ) )
          {
             hbxml_getdoctype( pDoc, &ptr );
-            HB_SKIPTABSPACES( ptr );
+            SKIPTABSPACES( ptr );
          }
          else if( !memcmp( ptr + 1, "?xml", 4 ) )
          {
             while( *ptr != '>' )
                ptr ++;
             ptr ++;
-            HB_SKIPTABSPACES( ptr );
+            SKIPTABSPACES( ptr );
          }
          else if( !memcmp( ptr + 1, "!--", 3 ) )
          {
             while( (*ptr != '>') || (*(ptr-1) != '-') || (*(ptr-2) != '-') )
                ptr ++;
             ptr ++;
-            HB_SKIPTABSPACES( ptr );
+            SKIPTABSPACES( ptr );
          }
          else
             break;
       }
-      while( HB_TRUE )
+      while( 1 )
       {
          if( !memcmp( ptr + 1, "!--", 3 ) )
          {
@@ -699,19 +719,19 @@ HB_FUNC( HBXML_GETDOC )
          else
          {
             if( iMainTags )
-               hbxml_error( HBXML_ERROR_WRONG_END, ptr );
+               hbxml_error( XML_ERROR_WRONG_END, ptr );
             if( !hbxml_readElement( pDoc, &ptr ) )
                break;
             iMainTags++;
          }
-         HB_SKIPTABSPACES( ptr );
+         SKIPTABSPACES( ptr );
          if( !*ptr )
             break;
       }
    }
 
-   if( bFile )
-      hb_xfree( cBuffer );
+   if( pBuffer )
+      hb_xfree( pBuffer );
 
    hb_retni( nParseError );
 }

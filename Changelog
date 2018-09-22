@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-09-22 15:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hupdown.prg
+  * source/winapi/hupdown.prg
+    ! Bug fixed.
+  * utils/designer/designer.prg
+    * About() changed
+
 2018-09-21 10:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/xml/xmlparse.c
     * Now the xml parsing procedure catch more errors and doesn't hang on them.

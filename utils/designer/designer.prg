@@ -165,7 +165,7 @@ FUNCTION Main( p0, p1, p2 )
          MENUITEMCHECK "&BmpSelFile" ID MENU_BMPSEL ACTION hwg_Checkmenuitem( oDesigner:oMainWnd:handle, MENU_BMPSEL, HBitmap():lSelFile := !hwg_Ischeckedmenuitem( oDesigner:oMainWnd:handle,MENU_BMPSEL ) )
       ENDMENU
       MENU TITLE "&Help"
-         MENUITEM "&About" ACTION hwg_Msginfo( "Visual Designer", "Designer" )
+         MENUITEM "&About" ACTION hwg_Msginfo( hwg_Version() + Chr(10)+Chr(13) + "Visual Designer", "About" )
       ENDMENU
    ENDMENU
 

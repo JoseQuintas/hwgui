@@ -44,6 +44,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       bSize, bPaint, ctooltip, tcolor, bcolor )
 
    ::idUpDown := ::NewId()
+   IF Empty( vari )
+      vari := 0
+   ENDIF
    IF vari != Nil
       IF ValType( vari ) != "N"
          vari := 0

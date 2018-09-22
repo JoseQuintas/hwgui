@@ -45,6 +45,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, ctoolt, tcolor, bcolor )
 
+   IF Empty( vari )
+      vari := 0
+   ENDIF
    IF vari != Nil
       IF ValType( vari ) != "N"
          vari := 0

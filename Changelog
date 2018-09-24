@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-09-24 16:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htree.prg
+  * source/winapi/htree.prg
+    * :bAction has been renamed to :bClick
+
 2018-09-22 15:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hupdown.prg
   * source/winapi/hupdown.prg

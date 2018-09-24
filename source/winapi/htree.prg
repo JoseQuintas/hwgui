@@ -79,10 +79,10 @@ CLASS HTreeNode INHERIT HObject
    DATA handle
    DATA oTree, oParent
    DATA aItems INIT { }
-   DATA bAction
+   DATA bClick
 
-   METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages )
-   METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
+   METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages )
+   METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages )
    METHOD Delete()
    METHOD FindChild( h )
    METHOD GetText()  INLINE hwg_Treegetnodetext( ::oTree:handle, ::handle )
@@ -90,12 +90,12 @@ CLASS HTreeNode INHERIT HObject
 
 ENDCLASS
 
-METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages ) CLASS HTreeNode
+METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages ) CLASS HTreeNode
    LOCAL aItems, i, h, im1, im2, cImage, op, nPos
 
    ::oTree := oTree
    ::oParent := oParent
-   ::bAction := bAction
+   ::bClick := bClick
 
    IF aImages == Nil
       IF oTree:Image1 != Nil
@@ -164,9 +164,9 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages ) CLASS HTree
 
    RETURN Self
 
-METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages ) CLASS HTreeNode
+METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages ) CLASS HTreeNode
    LOCAL oParent := Self
-   LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bAction, aImages )
+   LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bClick, aImages )
 
    RETURN oNode
 
@@ -213,14 +213,14 @@ CLASS VAR winclass   INIT "SysTreeView32"
    DATA aItems INIT { }
    DATA oSelected
    DATA hIml, aImages, Image1, Image2
-   DATA bItemChange, bExpand, bRClick, bDblClick, bAction
+   DATA bItemChange, bExpand, bRClick, bDblClick, bClick
    DATA lEmpty INIT .T.
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
-               bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bAction, nBC )
+               bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bClick, nBC )
    METHOD Init()
    METHOD Activate()
-   METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
+   METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages )
    METHOD FindChild( h )
    METHOD GetSelected()   INLINE hwg_Treegetselected( ::handle )
    METHOD EditLabel( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
@@ -233,7 +233,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
-            bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bAction, nBC ) CLASS HTree
+            bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bClick, nBC ) CLASS HTree
    LOCAL i, aBmpSize
 
    nStyle   := Hwg_BitOr( IIf( nStyle == Nil, 0, nStyle ), WS_CHILD + WS_VISIBLE + ;
@@ -244,7 +244,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    ::title   := ""
    ::Type    := IIf( lResour == Nil, .F., lResour )
-   ::bAction := bAction
+   ::bClick := bClick
 
    IF aImages != Nil .AND. ! Empty( aImages )
       ::aImages := { }
@@ -285,8 +285,8 @@ METHOD Activate CLASS HTree
 
    RETURN Nil
 
-METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages ) CLASS HTree
-   LOCAL oNode := HTreeNode():New( Self, Nil, oPrev, oNext, cTitle, bAction, aImages )
+METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages ) CLASS HTree
+   LOCAL oNode := HTreeNode():New( Self, Nil, oPrev, oNext, cTitle, bClick, aImages )
    ::lEmpty := .F.
    RETURN oNode
 
@@ -320,10 +320,10 @@ METHOD Notify( lParam )  CLASS HTree
       IF ValType( oItem ) == "O"
          oItem:oTree:oSelected := oItem
          IF ! oItem:oTree:lEmpty
-            IF oItem:bAction != Nil
-               Eval( oItem:bAction, oItem )
-            ELSEIF oItem:oTree:bAction != Nil
-               Eval( oItem:oTree:bAction, oItem )
+            IF oItem:bClick != Nil
+               Eval( oItem:bClick, oItem )
+            ELSEIF oItem:oTree:bClick != Nil
+               Eval( oItem:oTree:bClick, oItem )
             ENDIF
          ENDIF
       ENDIF

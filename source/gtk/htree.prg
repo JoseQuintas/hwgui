@@ -40,10 +40,10 @@ CLASS HTreeNode INHERIT HObject
    DATA title
    DATA aImages
    DATA aItems      INIT {}
-   DATA bAction
+   DATA bClick
 
-   METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages )
-   METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
+   METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages )
+   METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages )
    METHOD Delete()
    METHOD GetText()  INLINE ::title
    METHOD SetText( cText ) INLINE ::title := cText
@@ -53,13 +53,13 @@ CLASS HTreeNode INHERIT HObject
 
 ENDCLASS
 
-METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages ) CLASS HTreeNode
+METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages ) CLASS HTreeNode
    LOCAL aItems, i, h, im1, im2, cImage, op, nPos
 
    ::oTree := oTree
    ::oParent := oParent
    ::nLevel  := Iif( __ObjHasMsg( oParent, "NLEVEL" ), oParent:nLevel+1, 1 )
-   ::bAction := bAction
+   ::bClick := bClick
    ::title := Iif( Empty(cTitle), "", cTitle )
    ::handle := ++ oTree:nNodeCount
 
@@ -106,9 +106,9 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bAction, aImages ) CLASS HTree
 
    RETURN Self
 
-METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages ) CLASS HTreeNode
+METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages ) CLASS HTreeNode
    LOCAL oParent := Self
-   LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bAction, aImages )
+   LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bClick, aImages )
 
    RETURN oNode
 
@@ -196,7 +196,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
    DATA oFirst
    DATA oSelected
    DATA aImages
-   DATA bItemChange, bExpand, bRClick, bDblClick, bAction
+   DATA bItemChange, bExpand, bRClick, bDblClick, bClick
    DATA lEmpty INIT .T.
    DATA area
    DATA width, height
@@ -214,11 +214,11 @@ CLASS VAR winclass   INIT "SysTreeView32"
    DATA bScrollPos
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
-               bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bAction, nBC )
+               bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bClick, nBC )
    METHOD Init()
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
-   METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages )
+   METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages )
    METHOD GetSelected()   INLINE ::oSelected
    //METHOD EditLabel( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
    //METHOD Expand( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ) }
@@ -240,7 +240,7 @@ CLASS VAR winclass   INIT "SysTreeView32"
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
-            bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bAction, nBC ) CLASS HTree
+            bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bClick, nBC ) CLASS HTree
    LOCAL i, aBmpSize
 
    IF color == Nil; color := 0; ENDIF
@@ -250,7 +250,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    ::title   := ""
    ::Type    := IIf( lResour == Nil, .F., lResour )
-   ::bAction := bAction
+   ::bClick := bClick
 
    IF aImages != Nil .AND. !Empty( aImages )
       ::aImages := {}
@@ -353,8 +353,8 @@ Local aCoors, retValue := -1
 Return retValue
 
 
-METHOD AddNode( cTitle, oPrev, oNext, bAction, aImages ) CLASS HTree
-   LOCAL oNode := HTreeNode():New( Self, Self, oPrev, oNext, cTitle, bAction, aImages )
+METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages ) CLASS HTree
+   LOCAL oNode := HTreeNode():New( Self, Self, oPrev, oNext, cTitle, bClick, aImages )
    ::lEmpty := .F.
    RETURN oNode
 
@@ -367,10 +367,10 @@ METHOD Select( oNode, lNoRedraw ) CLASS HTree
       ( oParent := oParent:oParent ):lExpanded := .T.
    ENDDO
 
-   IF oNode:bAction != Nil
-      Eval( oNode:bAction, oNode )
-   ELSEIF ::bAction != Nil
-      Eval( ::bAction, oNode )
+   IF oNode:bClick != Nil
+      Eval( oNode:bClick, oNode )
+   ELSEIF ::bClick != Nil
+      Eval( ::bClick, oNode )
    ENDIF
 
    IF Empty( lNoRedraw )

@@ -37,6 +37,10 @@ STATIC cHwg_include_dir, cHrb_inc_dir
 FUNCTION _APPMAIN( cHRBFile, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, cPar8, cPar9 )
    LOCAL xRetVal, cHrb, cInitPath := FilePath( hb_ArgV( 0 ) ), cIncPath
 
+   IF hwg__isUnicode()
+      hb_cdpSelect( "UTF8" )
+   ENDIF
+
    IF Empty( cHRBFile )
       hwg_Msginfo( "Harbour Runner - HwGUI version" + HB_OSNewLine() +;
               "Copyright 1999-2016, http://www.harbour-project.org" + HB_OSNewLine() +;

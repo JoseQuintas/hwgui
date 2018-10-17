@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-10-16 10:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  - source/gtk/hwgtk.h
+  + include/hwgtk.h
+    * GTK version header file moved
+  * utils/dbc/build.sh
+  * utils/debugger/build.sh
+  * utils/editor/build.sh
+  * utils/tutorial/build.sh
+    ! Small fixes
+
 2018-09-24 16:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htree.prg
   * source/winapi/htree.prg

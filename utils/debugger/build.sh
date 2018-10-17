@@ -19,5 +19,5 @@ export HWGUI_LIB=../../lib
 
 $HRB_BIN/harbour hwgdebug -n -i$HRB_INC -i$HWGUI_INC -w2
 #$HRB_BIN/harbour hwgdebug -n -i$HRB_INC -i$HWGUI_INC -w2 -d__HCEDIT__
-gcc hwgdebug.c -ohwgdebug -I $HRB_INC -L $HRB_LIB -L $HWGUI_LIB $SYSTEM_LIBS -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS -Wl,--end-group `pkg-config --libs gtk+-2.0`
+gcc hwgdebug.c -ohwgdebug -I $HRB_INC -L $HRB_LIB -L $HWGUI_LIB -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS $SYSTEM_LIBS -Wl,--end-group `pkg-config --libs gtk+-2.0`
 rm hwgdebug.c

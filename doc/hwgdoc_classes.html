@@ -122,7 +122,8 @@
    HObject</a></strong> 
    <p>It is a base class for all HwGUI classes.</p>
    <pre class="code">DATA
-     cargo
+     objName                      - a name of an object to identify it in user programs
+     cargo                        - a variable, which you may use as you need
    </pre>
 
    <br><strong class="subhead"><a name="Classes4" href="#_Classes4">
@@ -142,7 +143,6 @@
      CLASS VAR oDefaultParent
      handle                       - handle of a GUI element
      oParent                      - an object of a parent window or control
-     objName
      title                        - 
      type 
      nTop, nLeft                  - coordinates of a top left corner
@@ -714,11 +714,14 @@
    <br><strong class="subhead"><a name="Classes3_3_14_1" href="#_Classes3_3_14_1">
    HSayBmp</a></strong> 
    <pre class="code">DATA
-     nOffsetV
-     nOffsetH
-     nZoom
-     lTransp, trcolor
-     nStretch
+      nOffsetV
+      nOffsetH
+      nZoom
+      lTransp                     - Is the image transparent, .F. by default
+      trcolor                     - The transparent color value
+      nStretch
+      nBorder                     - A border width in pixels, 0 by default
+      oPen
    </pre>
    <pre class="code">METHODS
      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, 
@@ -1431,7 +1434,6 @@
    HTimer</a></strong> 
    <pre class="code">DATA
       CLASS VAR aTimers 
-      objname
       id 
       value 
       lOnce
@@ -1555,6 +1557,7 @@
       CLASS VAR aForms
       CLASS VAR maxId
       CLASS VAR oActive
+      cFormName
       oDlg
       aControls
       aProp
@@ -1588,6 +1591,7 @@
       CLASS VAR aReports
       CLASS VAR maxId
       CLASS VAR aFontTable
+      cFormName
       aControls
       aProp
       aMethods

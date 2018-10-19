@@ -11,5 +11,9 @@
 
 -iinclude
 
+# Uncomment these two lines to build HwGUI in Unicode mode
+#-prgflag=-DUNICODE
+#-cflag=-DUNICODE
+-cflag=-DHWG_USE_POINTER_ITEM
 source/common/xml/*.c
 source/common/xml/*.prg

@@ -9,6 +9,20 @@
 */
 
 2018-10-19 10:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Build number is changed to 4
+  * whatsnew.txt
+    * Updated for build 4
+  * hbxml.hbp
+  * hwgdebug.hbp
+  * hwgui.hbp
+  * procmisc.hbp
+    * Added commented lines for Unicode mode
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+    * Updated due to some last changes
+
+2018-10-19 10:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hsayimg.prg
   * source/winapi/hsayimg.prg
     * :nBorder variable added to draw border, if needed.

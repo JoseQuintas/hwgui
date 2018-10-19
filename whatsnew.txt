@@ -3,6 +3,14 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI 2.21 build 4 ( 19.10.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] XML parsing procedure catch more errors and doesn't hang on them now.
+[*] HTree, HTreeNode: bAction is renamed to bClick.
+[+] nBorder variable added to HSayBmp class to draw the border, if needed.
+[+] cFormName variable added to the HRepTmpl class to keep the path and name
+[!] Few bugs and compile time warnings fixed.
+
 HWGUI 2.21 build 3 ( 05.09.2018 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] HSTYLES clause added to OWNERBUTTON command instead of STYLE

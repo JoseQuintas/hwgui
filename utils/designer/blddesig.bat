@@ -2,7 +2,7 @@
 
 rem set HB_PATH=c:\harbour_v3
 set HRB_DIR=%HB_Path%
-set HRB_LIBS=%HRB_DIR%\lib
+set HRB_LIBS=%HRB_DIR%\lib\win\bcc
 set HWGUI_INSTALL=..\..
 
 %HRB_DIR%\bin\harbour designer.prg -w -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include

@@ -8,7 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2018-10-19 10:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+2018-10-19 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/bld.bat
+  * utils/designer/blddesig.bat
+    ! Fixes
+
+2018-10-19 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number is changed to 4
   * whatsnew.txt

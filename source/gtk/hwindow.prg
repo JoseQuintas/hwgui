@@ -236,7 +236,7 @@ CLASS HMainWindow INHERIT HWindow
 
    METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
-                     cAppName,oBmp,cHelp,nHelpId )
+                     cAppName,oBmp,cHelp,nHelpId,bCloseQuery,bColor,nExclude )
    METHOD Activate( lShow )
    METHOD onEvent( msg, wParam, lParam )
 
@@ -244,20 +244,25 @@ ENDCLASS
 
 METHOD New( lType,oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,nPos,   ;
                      oFont,bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther, ;
-                     cAppName,oBmp,cHelp,nHelpId ) CLASS HMainWindow
+                     cAppName,oBmp,cHelp,nHelpId,bCloseQuery,bColor,nExclude ) CLASS HMainWindow
 
    ::Super:New( oIcon,clr,nStyle,x,y,width,height,cTitle,cMenu,oFont, ;
                   bInit,bExit,bSize,bPaint,bGfocus,bLfocus,bOther,  ;
                   cAppName,oBmp,cHelp,nHelpId )
    ::type := lType
+   ::bColor := bColor
 
    IF lType == WND_MDI
    ELSEIF lType == WND_MAIN
 
-      ::handle := Hwg_InitMainWindow( Self, ::szAppName,cTitle,cMenu, ;
-              Iif(oIcon!=Nil,oIcon:handle,Nil),Iif(oBmp!=Nil,-1,clr),::Style,::nLeft, ;
-              ::nTop,::nWidth,::nHeight )
+      ::handle := Hwg_InitMainWindow( Self, ::szAppName, cTitle, cMenu, ;
+              Iif(oIcon!=Nil,oIcon:handle,Nil), ::Style, ::nLeft, ;
+              ::nTop, ::nWidth, ::nHeight )
     
+   ENDIF
+
+   IF ::bColor != Nil
+      hwg_SetBgColor( ::handle, ::bColor )
    ENDIF
    IF ::bInit != Nil
       Eval( ::bInit, Self )

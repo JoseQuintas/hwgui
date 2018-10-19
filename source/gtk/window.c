@@ -101,7 +101,7 @@ HB_FUNC( HWG_GTK_EXIT )
 }
 
 /*  Creates main application window
-    InitMainWindow( szAppName, cTitle, cMenu, hIcon, nBkColor, nStyle, nLeft, nTop, nWidth, nHeight )
+    InitMainWindow( pObject, szAppName, cTitle, cMenu, hIcon, nStyle, nLeft, nTop, nWidth, nHeight )
 */
 HB_FUNC( HWG_INITMAINWINDOW )
 {
@@ -110,10 +110,10 @@ HB_FUNC( HWG_INITMAINWINDOW )
    GtkFixed * box;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 3 ) );
-   int x = hb_parnl(8);
-   int y = hb_parnl(9);
-   int width = hb_parnl(10);
-   int height = hb_parnl(11);
+   int x = hb_parnl(7);
+   int y = hb_parnl(8);
+   int width = hb_parnl(9);
+   int height = hb_parnl(10);
    PHWGUI_PIXBUF szFile = HB_ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;  
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );

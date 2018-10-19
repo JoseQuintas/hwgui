@@ -95,6 +95,7 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nZoom
    DATA lTransp, trcolor
    DATA nStretch
+   DATA nBorder, oPen
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
       bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, trcolor, bColor )
@@ -115,6 +116,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
    ::lTransp := Iif( lTransp = Nil, .F. , lTransp )
    ::nStretch := Iif( nStretch = Nil, 0, nStretch )
    ::trcolor := Iif( trcolor = Nil, Nil, trcolor )
+   ::nBorder := 0
+   ::tColor := 0
 
    IF Image != Nil .AND. ! Empty( Image )
       IF lRes == Nil ; lRes := .F. ; ENDIF
@@ -137,6 +140,8 @@ METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp 
    ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
    ::bPaint := { | o, lpdis | o:Paint( lpdis ) }
    ::lTransp := iif( lTransp = Nil, .F. , lTransp )
+   ::nBorder := 0
+   ::tColor := 0
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := iif( lRes .OR. ValType( xImage ) == "N",     ;
       HBitmap():AddResource( xImage ), ;
@@ -192,6 +197,13 @@ METHOD Paint( lpdis ) CLASS HSayBmp
             drawInfo[ 5 ] + ::nOffsetV, ::oImage:nWidth * ::nZoom, ::oImage:nHeight * ::nZoom )
       ENDIF
    ENDIF
+   IF ::nBorder > 0
+      IF ::oPen == Nil
+         ::oPen := HPen():Add( BS_SOLID, ::nBorder, ::tColor )
+      ENDIF
+      hwg_Selectobject( drawInfo[ 3 ], ::oPen:handle )
+      hwg_Rectangle( drawInfo[ 3 ], ::nOffsetH, ::nOffsetV, ::nOffsetH+::nWidth-1-::nBorder, ::nOffsetV+::nHeight-1-::nBorder )
+   ENDIF
 
    RETURN Nil
 
@@ -199,12 +211,15 @@ METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
 
    IF ::oImage != Nil
       ::oImage:Release()
+      ::oImage := Nil
    ENDIF
-   IF lRes == Nil ; lRes := .F. ; ENDIF
-   ::oImage := iif( lRes .OR. ValType( Image ) == "N",     ;
-      HBitmap():AddResource( Image ), ;
-      iif( ValType( Image ) == "C",     ;
-      HBitmap():AddFile( Image ), Image ) )
+   IF !Empty( Image )
+      IF lRes == Nil ; lRes := .F. ; ENDIF
+      ::oImage := iif( lRes .OR. ValType( Image ) == "N",     ;
+         HBitmap():AddResource( Image ), ;
+         iif( ValType( Image ) == "C",     ;
+         HBitmap():AddFile( Image ), Image ) )
+   ENDIF
 
    RETURN Nil
 

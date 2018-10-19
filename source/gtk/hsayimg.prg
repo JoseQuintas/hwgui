@@ -58,6 +58,7 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nOffsetH  INIT 0
    DATA nZoom
    DATA lTransp, trcolor
+   DATA nBorder, oPen
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
       bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor, bColor )
@@ -65,6 +66,7 @@ CLASS HSayBmp INHERIT HSayImage
    METHOD onEvent( msg, wParam, lParam )
    METHOD Paint()
    METHOD ReplaceBitmap( Image, lRes )
+   METHOD Refresh() INLINE hwg_Redrawwindow( ::handle )
 
 ENDCLASS
 
@@ -76,6 +78,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    ::lTransp := Iif( lTransp = Nil, .F. , lTransp )
    ::trcolor := Iif( trcolor = Nil, 16777215, trcolor )
+   ::nBorder := 0
+   ::tColor := 0
 
    IF Image != Nil
       IF lRes == Nil ; lRes := .F. ; ENDIF
@@ -131,6 +135,13 @@ METHOD Paint() CLASS HSayBmp
             ::nOffsetV, ::oImage:nWidth * ::nZoom, ::oImage:nHeight * ::nZoom )
       ENDIF
    ENDIF
+   IF ::nBorder > 0
+      IF ::oPen == Nil
+         ::oPen := HPen():Add( BS_SOLID, ::nBorder, ::tColor )
+      ENDIF
+      hwg_Selectobject( hDC, ::oPen:handle )
+      hwg_Rectangle( hDC, ::nOffsetH, ::nOffsetV, ::nOffsetH+::nWidth-1-::nBorder, ::nOffsetV+::nHeight-1-::nBorder )
+   ENDIF
    hwg_Releasedc( ::handle, hDC )
 
    RETURN Nil
@@ -139,12 +150,15 @@ METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
 
    IF ::oImage != Nil
       ::oImage:Release()
+      ::oImage := Nil
    ENDIF
-   IF lRes == Nil ; lRes := .F. ; ENDIF
-   ::oImage := iif( lRes .OR. ValType( Image ) == "N",  ;
-      HBitmap():AddResource( Image ), ;
-      Iif( ValType( Image ) == "C",   ;
-      HBitmap():AddFile( Image ), Image ) )
+   IF !Empty( Image )
+      IF lRes == Nil ; lRes := .F. ; ENDIF
+      ::oImage := iif( lRes .OR. ValType( Image ) == "N",  ;
+         HBitmap():AddResource( Image ), ;
+         Iif( ValType( Image ) == "C",   ;
+         HBitmap():AddFile( Image ), Image ) )
+   ENDIF
 
    RETURN Nil
 

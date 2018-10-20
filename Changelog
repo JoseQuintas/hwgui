@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-10-20 16:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+    * Few functions added
+  * source/gtk/hprinter.prg
+    * INHERIT HOBJECT added to all classes here
+
 2018-10-20 10:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/window.c
     * hwg_WindowSetResize() function added

@@ -15,7 +15,7 @@
 STATIC crlf := e"\r\n"
 #define SCREEN_PRINTER ".buffer"
 
-CLASS HPrinter
+CLASS HPrinter INHERIT HObject
 
 #if defined( __GTK__ ) .AND. defined( __RUSSIAN__ )
 
@@ -620,7 +620,7 @@ METHOD ChangePage( oCanvas, oSayPage, n, nPage ) CLASS HPrinter
  *  CLASS HGP_Font
  */
 
-CLASS HGP_Font
+CLASS HGP_Font INHERIT HObject
 
    CLASS VAR aFonts   INIT {}
    DATA name, height , weight
@@ -692,7 +692,7 @@ METHOD RELEASE( lAll ) CLASS HGP_Font
 
    RETURN Nil
 
-CLASS HGP_Pen
+CLASS HGP_Pen INHERIT HObject
 
    CLASS VAR aPens   INIT {}
    DATA style, width, color

@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-10-20 10:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/window.c
+    * hwg_WindowSetResize() function added
+    * doc/hwgdoc.html
+    * doc/hwgdoc_classes.html
+    * doc/hwgdoc_commands.html
+    * doc/hwgdoc_func2.html
+    * doc/hwgdoc_functions.html
+    * doc/hwgdoc_misc.html
+      * docs updated
+
 2018-10-19 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hwindow.prg
   * source/gtk/window.c

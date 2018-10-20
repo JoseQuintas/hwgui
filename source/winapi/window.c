@@ -1428,6 +1428,19 @@ HB_FUNC( HWG_GETBACKBRUSH )
    HB_RETHANDLE( GetCurrentObject( GetDC( ( HWND ) HB_PARHANDLE( 1 ) ), OBJ_BRUSH ) );
 }
 
+HB_FUNC( HWG_WINDOWSETRESIZE )
+{
+   HWND handle = ( HWND ) HB_PARHANDLE( 1 );
+   int iResizeable = (HB_ISNIL(2))? 0 : hb_parl(2);
+
+   if( iResizeable )
+      SetWindowLong( handle, GWL_STYLE, GetWindowLong( handle, GWL_STYLE ) |
+         (WS_SIZEBOX | WS_MAXIMIZEBOX) );
+   else
+      SetWindowLong( handle, GWL_STYLE, GetWindowLong( handle, GWL_STYLE ) &~
+         (WS_SIZEBOX | WS_MAXIMIZEBOX) );
+}
+
 LRESULT CALLBACK KeybHook( int code, WPARAM wp, LPARAM lp )
 {
 

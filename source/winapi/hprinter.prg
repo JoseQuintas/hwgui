@@ -437,7 +437,7 @@ METHOD StartDoc( lPreview, cScriptFile ) CLASS HPrinter
    ELSE
       ::lPreview := .F.
       ::hDC := ::hDCPrn
-      nRes := Hwg_StartDoc( ::hDC )
+      nRes := Hwg_StartDoc( ::hDC, "HwGUIPrint" )
    ENDIF
    ::nPage := 0
 

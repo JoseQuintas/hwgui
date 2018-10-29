@@ -280,16 +280,17 @@
      AddItem() 
      DelItem() 
      FindDialog( hWnd ) 
-     GetActive() 
+     GetActive()      - returns a GET element object of this dialog, which owns input focus
      Close()
    </pre>
    <br><strong class="subhead"><a name="Classes3_3" href="#_Classes3_3">
    HControl</a></strong> 
    <pre class="code">DATA
-      id 
+      id
       tooltip 
       lInit
-      Anchor
+      Anchor          - a numeric value, which determines autoresizing of a control
+                        due to a parent window resizing
    </pre>
    <pre class="code">METHODS
       New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, 
@@ -302,7 +303,7 @@
       SetFocus() 
       GetText() 
       SetText( c )
-      Refresh()
+      Refresh()       - virtual method
       End()
    </pre>
 
@@ -322,19 +323,19 @@
       aColAlias
       aRelation
 
-      nRowHeight INIT 0                      // Predefined height of a row
-      nRowTextHeight                         // A max text height in a row
+      nRowHeight INIT 0           - Predefined height of a row
+      nRowTextHeight              - A max text height in a row
 
       rowCount                    - Number of visible data rows
       rowPos                      - Current row position
       rowCurrCount                - Current number of rows
       colPos                      - Current column position
-      nColumns                    -  Number of visible data columns
+      nColumns                    - Number of visible data columns
       nLeftCol                    - Leftmost column
       freeze                      - Number of columns to freeze
       nRecords                    - Number of records in browse
-      nCurrent
-      aArray
+      nCurrent                    - Number of a current record in a browse
+      aArray                      - An array to browse
       recCurr
       headColor                   - Header text color
       sepColor                    - Separators color

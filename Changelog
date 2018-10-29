@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-10-29 14:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * ON CLICK, ON DBLCLICK clauses added to @...BITMAP and @...ICON commands.
+  * source/winapi/hsayimg.prg
+    ! Bug fixed.
+  * samples/a.prg
+    * About() dialog updated.
+  * doc/hwgdoc_classes.html
+    * Small updates
+
 2018-10-22 13:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hprinter.prg
     ! Problem fixed with printing in Windows 10

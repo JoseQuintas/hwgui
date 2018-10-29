@@ -161,47 +161,41 @@ Local oSay
    PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 ITALIC UNDERLINE
 
    INIT DIALOG oModDlg TITLE "About"     ;
-   AT 190,10  SIZE 360,240               ;
+   AT 190,10  SIZE 360,300               ;
    ICON oIcon                            ;
    ON EXIT {||oBmp2 := HBitmap():AddWindow(oBrw),.T.} ;
    FONT oFontDlg
 
-   oModDlg:bActivate := {||hwg_Msginfo("!!")}
+   @ 30,10 BITMAP "..\image\astro.jpg" SIZE 100,90 TRANSPARENT ON CLICK {||hwg_MsgInfo("onclick")}
 
-   altd(1)
-   altd()
-   // @ 20,30 BITMAP "image\OPEN.BMP"
-   // @ 20,20 ICON "image\PIM.ICO"
-   @ 10,10 IMAGE "..\image\ASTRO.JPG" SIZE 50,50
-
-   @ 20,60 SAY "Sample Dialog"        ;
+   @ 20,110 SAY "Sample Dialog"       ;
        SIZE 130, 22 STYLE SS_CENTER  ;
         COLOR hwg_ColorC2N("0000FF")
 
-   @ 20,80 SAY "Written as a sample"  ;
+   @ 20,130 SAY "Written as a sample"  ;
         SIZE 130, 22 STYLE SS_CENTER
-   @ 20,100 SAY "of Harbour GUI" ;
+   @ 20,150 SAY "of Harbour GUI" ;
         SIZE 130, 22 STYLE SS_CENTER
-   @ 20,120 SAY "application"    ;
+   @ 20,170 SAY "application"    ;
         SIZE 130, 22 STYLE SS_CENTER
 
-   @ 20,140 SAY "Hwgui Page"        ;
-   LINK "http://kresin.belgorod.su/hwgui.html" ;
-       SIZE 130, 22 STYLE SS_CENTER  ;
+   @ 20,210 SAY "Hwgui Page"        ;
+   LINK "http://www.kresin.ru/en/hwgui.html" ;
+       SIZE 320, 22 STYLE SS_CENTER  ;
         COLOR hwg_ColorC2N("0000FF") ;
         VISITCOLOR hwg_ColorRgb2N(241,249,91)
 
-   @ 20,160 SAY "Hwgui international Forum"        ;
+   @ 20,230 SAY "Hwgui international Forum"        ;
    LINK "http://br.groups.yahoo.com/group/hwguibr" ;
-       SIZE 200, 22 STYLE SS_CENTER  ;
+       SIZE 320, 22 STYLE SS_CENTER  ;
         COLOR hwg_ColorC2N("0000FF") ;
         VISITCOLOR hwg_ColorRgb2N(241,249,91)
 
 
-   @ 160,30 BROWSE oBrw ARRAY SIZE 180,110 ;
+   @ 160,10 BROWSE oBrw ARRAY SIZE 180,180 ;
         STYLE WS_BORDER + WS_VSCROLL + WS_HSCROLL
 
-   @ 80,180 OWNERBUTTON ON CLICK {|| hwg_EndDialog()}        ;
+   @ 80,260 OWNERBUTTON ON CLICK {|| hwg_EndDialog()}    ;
        SIZE 180,35 FLAT                                  ;
        TEXT "Close" COLOR hwg_ColorC2N("0000FF") FONT oFontBtn ;
        BITMAP cImageDir+"door.bmp" COORDINATES 40,10,0,0

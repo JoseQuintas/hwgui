@@ -345,10 +345,12 @@
             [<lTransp: TRANSPARENT> [COLOR  <trcolor> ]] ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
+            [ ON CLICK <bClick> ]      ;
+            [ ON DBLCLICK <bDblClick> ];
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBmp> := ] HSayBmp():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,,,<.lTransp.>,<nStretch>,<trcolor>,<bcolor> );
+        <height>,<bitmap>,<.res.>,<bInit>,<bSize>,<ctoolt>,<bClick>,<bDblClick>,<.lTransp.>,<nStretch>,<trcolor>,<bcolor> );
     [; hwg_SetCtrlName( <oBmp>,<(oBmp)> )]
 
 #xcommand REDEFINE BITMAP [ <oBmp> SHOW ] <bitmap> ;
@@ -370,10 +372,12 @@
             [ SIZE <width>, <height> ] ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
+            [ ON CLICK <bClick> ]      ;
+            [ ON DBLCLICK <bDblClick> ];
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oIco> := ] HSayIcon():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<icon>,<.res.>,<bInit>,<bSize>,<ctoolt> );
+        <height>,<icon>,<.res.>,<bInit>,<bSize>,<ctoolt>,,<bClick>,<bDblClick> );
     [; hwg_SetCtrlName( <oIco>,<(oIco)> )]
 
 #xcommand REDEFINE ICON [ <oIco> SHOW ] <icon> ;

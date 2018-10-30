@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-10-30 15:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hdialog.prg
+  * source/winapi/hwindow.prg
+  * source/gtk/hdialog.prg
+  * source/gtk/hwindow.prg
+    * Now if a window is initialized with a negative size, this size (it's absolute value)
+      is used as a size of client area.
+  * source/gtk/draw.c
+    * hwg_GetClientRect() and hwg_GetClientArea() fixed
+
 2018-10-29 14:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * ON CLICK, ON DBLCLICK clauses added to @...BITMAP and @...ICON commands.

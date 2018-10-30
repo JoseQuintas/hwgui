@@ -70,7 +70,12 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    ::nTop     := Iif( y == Nil, 0, y )
    ::nLeft    := Iif( x == Nil, 0, x )
    ::nWidth   := Iif( width == Nil, 0, width )
-   ::nHeight  := Iif( height == Nil, 0, height )
+   ::nWidth   := Iif( width == Nil, 0, width )
+   ::nHeight  := Iif( height == Nil, 0, Abs(height) )
+   IF ::nWidth < 0
+      ::nWidth   := Abs( ::nWidth )
+      //::nAdjust := 1
+   ENDIF
    ::oFont    := oFont
    ::bInit    := bInit
    ::bDestroy := bExit
@@ -102,6 +107,7 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
 METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS HDialog
 
    LOCAL oWnd, hParent
+   //LOCAL aCoors, aRect
 
    IF bActivate != Nil
       ::bActivate := bActivate
@@ -149,6 +155,14 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       ELSEIF ::nInitState == 16
          ::Center()
       ENDIF
+      /*
+      IF ::nAdjust == 1
+         ::nAdjust := 2
+         aCoors := hwg_Getwindowrect( ::handle )
+         aRect := hwg_GetClientRect( ::handle )
+         ::Move( ,, ::nWidth + (aCoors[3]-aCoors[1]-(aRect[3]-aRect[1])), ::nHeight + (aCoors[4]-aCoors[2]-(aRect[4]-aRect[2])) )
+      ENDIF
+      */
       IF ::bActivate != Nil
          Eval( ::bActivate, Self )
          ::bActivate := Nil
@@ -227,7 +241,7 @@ METHOD GetActive() CLASS HDialog
 STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
 
    LOCAL nReturn := 1
-   LOCAL aCoors
+   LOCAL aCoors //, aRect
 
    IF ValType( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
@@ -260,9 +274,19 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
       ENDIF
    ENDIF
 
-   aCoors := hwg_Getwindowrect( oDlg:handle )
-   oDlg:nWidth  := aCoors[3] - aCoors[1]
-   oDlg:nHeight := aCoors[4] - aCoors[2]
+/*
+   IF oDlg:nAdjust == 1
+      oDlg:nAdjust := 2
+      aCoors := hwg_Getwindowrect( oDlg:handle )
+      aRect := hwg_GetClientRect( oDlg:handle )
+      hwg_writelog( str(oDlg:nHeight) + "/" + str(aCoors[4]-aCoors[2]) + "/" + str(aRect[4]) )
+      oDlg:Move( ,, oDlg:nWidth + (aCoors[3]-aCoors[1]-aRect[3]), oDlg:nHeight + (aCoors[4]-aCoors[2]-aRect[4]) )
+   ELSE
+*/
+      aCoors := hwg_Getwindowrect( oDlg:handle )
+      oDlg:nWidth  := aCoors[3] - aCoors[1]
+      oDlg:nHeight := aCoors[4] - aCoors[2]
+//   ENDIF
 
    RETURN nReturn
 

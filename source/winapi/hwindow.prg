@@ -16,6 +16,7 @@
 #define  MAX_MDICHILD_WINDOWS   18
 #define  WM_NOTIFYICON         WM_USER+1000
 #define  ID_NOTIFYICON           1
+#define SIZE_MINIMIZED           1
 
 FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
@@ -26,7 +27,7 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
       oWnd:oEmbedded:Resize( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ENDIF
 
-   IF wParam != 1
+   IF wParam != SIZE_MINIMIZED
       IF oWnd:nScrollBars > - 1 .AND. oWnd:lAutoScroll .AND. !Empty( oWnd:Type )
          IF Empty( oWnd:rect )
             oWnd:rect := hwg_Getclientrect( oWnd:handle )
@@ -36,11 +37,15 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
          oWnd:ResetScrollbars()
          oWnd:SetupScrollbars()
       ENDIF
-      onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, aCoors[3]-aCoors[1], aCoors[4]-aCoors[2] )
+      IF oWnd:nAdjust == 2
+         oWnd:nAdjust := 0
+      ELSE
+         onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, aCoors[3]-aCoors[1], aCoors[4]-aCoors[2] )
+      ENDIF
    ENDIF
    oWnd:Super:onEvent( WM_SIZE, wParam, lParam )
 
-   IF wParam != 1
+   IF wParam != SIZE_MINIMIZED
       oWnd:nWidth  := aCoors[3] - aCoors[1]
       oWnd:nHeight := aCoors[4] - aCoors[2]
    ENDIF
@@ -49,7 +54,7 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
       Eval( oWnd:bSize, oWnd, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ENDIF
    IF oWnd:type == WND_MDI .AND. Len( HWindow():aWindows ) > 1
-      aCoors := hwg_Getclientrect( oWnd:handle )
+      aCoors := hwg_GetClientRect( oWnd:handle )
       hwg_Movewindow( HWindow():aWindows[2]:handle, oWnd:aOffset[1], oWnd:aOffset[2], aCoors[3] - oWnd:aOffset[1] - oWnd:aOffset[3], aCoors[4] - oWnd:aOffset[2] - oWnd:aOffset[4] )
       RETURN 0
    ENDIF
@@ -83,11 +88,18 @@ STATIC FUNCTION hwg_onActivate( oDlg, wParam, lParam )
 
 STATIC FUNCTION hwg_onEnterIdle( oDlg, wParam, lParam )
    LOCAL oItem, b
+   LOCAL aCoors, aRect
    IF ( Empty( wParam ) .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
          .AND. oItem:handle == lParam )
       oDlg := oItem
    ENDIF
    IF __ObjHasMsg( oDlg, "BACTIVATE" )
+      IF oDlg:nAdjust == 1
+         oDlg:nAdjust := 2
+         aCoors := hwg_Getwindowrect( oDlg:handle )
+         aRect := hwg_GetClientRect( oDlg:handle )
+         oDlg:Move( ,, oDlg:nWidth + (aCoors[3]-aCoors[1]-aRect[3]), oDlg:nHeight + (aCoors[4]-aCoors[2]-aRect[4]) )
+      ENDIF
       IF oDlg:bActivate != Nil
          b := oDlg:bActivate
          oDlg:bActivate := Nil
@@ -129,6 +141,7 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
    DATA nLastKey INIT 0
    DATA bCloseQuery
    DATA bActivate
+   DATA nAdjust  INIT 0
    DATA tColorinFocus  INIT -1
    DATA bColorinFocus  INIT -1
 
@@ -165,7 +178,11 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    ::nTop     := Iif( y == Nil, 0, y )
    ::nLeft    := if( x == Nil, 0, x )
    ::nWidth   := Iif( width == Nil, 0, width )
-   ::nHeight  := Iif( height == Nil, 0, height )
+   ::nHeight  := Iif( height == Nil, 0, Abs(height) )
+   IF ::nWidth < 0
+      ::nWidth   := Abs( ::nWidth )
+      ::nAdjust := 1
+   ENDIF
    ::oFont    := oFont
    ::bInit    := bInit
    ::bDestroy := bExit

@@ -28,13 +28,13 @@ STATIC FUNCTION onDestroy( oDlg )
    LOCAL i, lRes
 
    IF oDlg:bDestroy != Nil
-      IF Valtype( lRes := Eval( oDlg:bDestroy, oDlg ) ) == "L" .AND. !lRes
+      IF ValType( lRes := Eval( oDlg:bDestroy, oDlg ) ) == "L" .AND. !lRes
          RETURN .F.
       ENDIF
       oDlg:bDestroy := Nil
    ENDIF
 
-   IF ( i := Ascan( HTimer():aTimers,{|o|hwg_Isptreq( o:oParent:handle,oDlg:handle )} ) ) != 0
+   IF ( i := Ascan( HTimer():aTimers,{ |o|hwg_Isptreq( o:oParent:handle,oDlg:handle ) } ) ) != 0
       HTimer():aTimers[i]:End()
    ENDIF
 
@@ -90,7 +90,11 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    ::nTop     := iif( y == Nil, 0, y )
    ::nLeft    := iif( x == Nil, 0, x )
    ::nWidth   := iif( width == Nil, 0, width )
-   ::nHeight  := iif( height == Nil, 0, height )
+   ::nHeight  := iif( height == Nil, 0, Abs( height ) )
+   IF ::nWidth < 0
+      ::nWidth  := Abs( ::nWidth )
+      //::nAdjust := 1
+   ENDIF
    ::oFont    := oFont
    ::bInit    := bInit
    ::bDestroy := bExit
@@ -112,7 +116,7 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    RETURN Self
 
 METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS HDialog
-   LOCAL hParent, oWnd
+   LOCAL hParent, oWnd, aCoors, aRect
 
    hwg_CreateGetList( Self )
 
@@ -132,6 +136,15 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
    InitModalDlg( Self )
    ::lActivated := .T.
 
+   /*
+   IF ::nAdjust == 1
+      ::nAdjust := 2
+      aCoors := hwg_Getwindowrect( ::handle )
+      aRect := hwg_GetClientRect( ::handle )
+      //hwg_writelog( str(::nheight)+"/"+str(aCoors[4]-aCoors[2])+"/"+str(arect[4]) )
+      ::Move( , , ::nWidth + ( aCoors[3] - aCoors[1] - aRect[3] ), ::nHeight + ( aCoors[4] - aCoors[2] - aRect[4] ) )
+   ENDIF
+   */
    IF !Empty( lMinimized )
       ::Minimize()
    ELSEIF !Empty( lMaximized )
@@ -139,7 +152,7 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
    ELSEIF !Empty( lCentered )
       ::Center()
    ELSEIF ::oParent != Nil .AND. __ObjHasMsg( ::oParent, "nLeft" )
-      hwg_MoveWindow( ::handle, ::oParent:nLeft+::nLeft, ::oParent:nTop+::nTop )
+      hwg_MoveWindow( ::handle, ::oParent:nLeft + ::nLeft, ::oParent:nTop + ::nTop )
    ENDIF
    IF HB_ISBLOCK( bActivate )
       ::bActivate := bActivate

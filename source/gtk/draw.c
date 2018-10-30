@@ -25,6 +25,7 @@
 #include <math.h>
 
 extern GtkWidget * hMainWindow;
+extern GtkFixed *getFixedBox( GObject * handle );
 
 void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor )
 {
@@ -719,6 +720,9 @@ HB_FUNC( HWG_GETCLIENTAREA )
    GtkWidget * widget = pps->hDC->widget;
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
 
+   if( getFixedBox( (GObject *) widget ) )
+      widget = (GtkWidget*) getFixedBox( (GObject *) widget );
+
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), 0 );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), 0 );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), widget->allocation.width );
@@ -730,6 +734,9 @@ HB_FUNC( HWG_GETCLIENTRECT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
+
+   if( getFixedBox( (GObject *) widget ) )
+      widget = (GtkWidget*) getFixedBox( (GObject *) widget );
 
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), 0 );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), 0 );

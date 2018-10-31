@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-10-31 11:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcwindow.prg
+  * source/gtk/hdialog.prg
+  * source/gtk/hwindow.prg
+  * source/gtk/window.c
+    * Some fixes, related to initializing a window with a negative size.
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+    * Small updates
+
 2018-10-30 15:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hdialog.prg
   * source/winapi/hwindow.prg

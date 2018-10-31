@@ -20,25 +20,28 @@ REQUEST HWG_ENDWINDOW
 
 FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
-   // hwg_WriteLog( "OnSize: "+Str(oWnd:nWidth)+" "+Str(oWnd:nHeight)+" "+Str(hwg_Loword(lParam))+" "+Str(hwg_Hiword(lParam)) )
+   LOCAL w := hwg_Loword( lParam ), h := hwg_Hiword( lParam )
 
-   //LOCAL lDlg := __ObjHasMsg( oWnd, "ADIALOGS" )
+   IF oWnd:nWidth == w .AND. oWnd:nHeight == h
+      RETURN 0
+   ENDIF
+   //hwg_WriteLog( "OnSize: "+Str(oWnd:nWidth)+" "+Str(oWnd:nHeight)+" "+Str(w)+" "+Str(h) )
 
    IF oWnd:nAdjust == 2
       oWnd:nAdjust := 0
    ELSEIF oWnd:nAdjust == 0
-      onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, w, h )
    ENDIF
    oWnd:Super:onEvent( WM_SIZE, wParam, lParam )
 
    //hwg_writelog( "on size "+str(oWnd:nheight)+"/"+str(hwg_Hiword(lParam)) )
    IF oWnd:nAdjust == 0
-      oWnd:nWidth  := hwg_Loword( lParam )
-      oWnd:nHeight := hwg_Hiword( lParam )
+      oWnd:nWidth  := w
+      oWnd:nHeight := h
    ENDIF
 
    IF HB_ISBLOCK( oWnd:bSize )
-      Eval( oWnd:bSize, oWnd, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      Eval( oWnd:bSize, oWnd, w, h )
    ENDIF
 
    RETURN 0
@@ -72,6 +75,7 @@ STATIC FUNCTION onAnchor( oWnd, wold, hold, wnew, hnew )
       IF oItem:Anchor > 0
          w := oItem:nWidth
          h := oItem:nHeight
+         //hwg_writelog( "onanchor: "+oItem:classname()+" "+str(hold)+"/"+str(hnew) )
          oItem:onAnchor( wold, hold, wnew, hnew )
          onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
       ENDIF

@@ -93,7 +93,7 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    ::nHeight  := iif( height == Nil, 0, Abs( height ) )
    IF ::nWidth < 0
       ::nWidth  := Abs( ::nWidth )
-      //::nAdjust := 1
+      ::nAdjust := 1
    ENDIF
    ::oFont    := oFont
    ::bInit    := bInit
@@ -136,7 +136,6 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
    InitModalDlg( Self )
    ::lActivated := .T.
 
-   /*
    IF ::nAdjust == 1
       ::nAdjust := 2
       aCoors := hwg_Getwindowrect( ::handle )
@@ -144,7 +143,6 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       //hwg_writelog( str(::nheight)+"/"+str(aCoors[4]-aCoors[2])+"/"+str(arect[4]) )
       ::Move( , , ::nWidth + ( aCoors[3] - aCoors[1] - aRect[3] ), ::nHeight + ( aCoors[4] - aCoors[2] - aRect[4] ) )
    ENDIF
-   */
    IF !Empty( lMinimized )
       ::Minimize()
    ELSEIF !Empty( lMaximized )

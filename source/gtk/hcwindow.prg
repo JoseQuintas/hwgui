@@ -13,10 +13,10 @@
 #include "guilib.ch"
 #include "error.ch"
 
-ANNOUNCE HB_GTSYS
-REQUEST HB_GT_CGI_DEFAULT
+   ANNOUNCE HB_GTSYS
+   REQUEST HB_GT_CGI_DEFAULT
 
-STATIC aCustomEvents := { ;
+   STATIC aCustomEvents := { ;
       { WM_PAINT, WM_COMMAND, WM_SIZE, WM_DESTROY }, ;
       { ;
       { |o, w|iif( o:bPaint != Nil, Eval( o:bPaint,o,w ), - 1 ) }, ;
@@ -30,6 +30,7 @@ CLASS HObject
 
    DATA cargo
    DATA objName
+
 ENDCLASS
 
 CLASS HCustomWindow INHERIT HObject
@@ -116,19 +117,21 @@ METHOD DelControl( oCtrl ) CLASS HCustomWindow
 
 METHOD Move( x1, y1, width, height )  CLASS HCustomWindow
 
-   IF x1 != Nil
-      ::nLeft := x1
+   hwg_Movewindow( ::handle, x1, y1, width, height )
+   IF !__ObjHasMsg( Self, "AWINDOWS" )
+      IF x1 != Nil
+         ::nLeft := x1
+      ENDIF
+      IF y1 != Nil
+         ::nTop  := y1
+      ENDIF
+      IF width != Nil
+         ::nWidth := width
+      ENDIF
+      IF height != Nil
+         ::nHeight := height
+      ENDIF
    ENDIF
-   IF y1 != Nil
-      ::nTop  := y1
-   ENDIF
-   IF width != Nil
-      ::nWidth := width
-   ENDIF
-   IF height != Nil
-      ::nHeight := height
-   ENDIF
-   hwg_Movewindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
    RETURN Nil
 
@@ -194,7 +197,7 @@ METHOD OnError() CLASS HCustomWindow
       ENDIF
    NEXT
    FOR EACH oItem IN HTimer():aTimers
-      IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg .AND. hwg_Isptreq( ::handle,oItem:oParent:handle )
+      IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg .AND. hwg_Isptreq( ::handle, oItem:oParent:handle )
          RETURN oItem
       ENDIF
    NEXT

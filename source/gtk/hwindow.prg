@@ -159,7 +159,7 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    ::nWidth   := iif( width == Nil, 0, width )
    ::nHeight  := iif( height == Nil, 0, Abs( height ) )
    IF ::nWidth < 0
-      ::nWidth   := Abs( ::nWidth )
+      ::nWidth  := Abs( ::nWidth )
       ::nAdjust := 1
    ENDIF
    ::oFont    := oFont
@@ -304,8 +304,12 @@ METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMain
          ::nAdjust := 2
          aCoors := hwg_Getwindowrect( ::handle )
          aRect := hwg_GetClientRect( ::handle )
-         //hwg_writelog( str(::nheight)+"/"+str(aCoors[4]-aCoors[2])+"/"+str(arect[4]) )
-         ::Move( , , ::nWidth + ( aCoors[3] - aCoors[1] - aRect[3] ), ::nHeight + ( aCoors[4] - aCoors[2] - aRect[4] ) )
+         IF aCoors[4] - aCoors[2] == aRect[4]
+            ::nAdjust := 0
+         ELSE
+            //hwg_writelog( str(::nheight)+"/"+str(aCoors[4]-aCoors[2])+"/"+str(arect[4]) )
+            ::Move( ,, ::nWidth + ( aCoors[3] - aCoors[1] - aRect[3] ), ::nHeight + ( aCoors[4] - aCoors[2] - aRect[4] ) )
+         ENDIF
       ENDIF
       ::lActivated := .T.
       IF HB_ISBLOCK( bActivate )

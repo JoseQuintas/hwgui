@@ -117,7 +117,7 @@ Local aCombo := {"First","Second" }
 
    @ 20,10 EDITBOX "Hello, World!" SIZE 200,26
 
-   @ 270,10 COMBOBOX aCombo SIZE 100, 150 TOOLTIP "Combobox"
+   @ 270,10 COMBOBOX aCombo SIZE 100, 28 TOOLTIP "Combobox"
 
    @ 120,60 BUTTON "Close" SIZE 150,30 ON CLICK {||oMain:Close()}
 
@@ -887,7 +887,7 @@ Local upd := 12, d1 := Date()+1
         SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_ColorC2N("FF0000"),,.T.)}
    END RADIOGROUP
 
-   @ 20,120 GET COMBOBOX oCombo VAR cm ITEMS aCombo SIZE 100, 150
+   @ 20,120 GET COMBOBOX oCombo VAR cm ITEMS aCombo SIZE 100, 28
 
    @ 20,170 GET UPDOWN upd RANGE 0,80 SIZE 50,30
    @ 160,170 GET DATEPICKER d1 SIZE 80, 20

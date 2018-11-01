@@ -20,12 +20,15 @@ REQUEST HWG_ENDWINDOW
 
 FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
-   LOCAL w := hwg_Loword( lParam ), h := hwg_Hiword( lParam )
+   LOCAL aCoors := hwg_Getwindowrect( oWnd:handle )
+
+   //LOCAL w := hwg_Loword( lParam ), h := hwg_Hiword( lParam )
+   LOCAL w := aCoors[3] - aCoors[1], h := aCoors[4] - aCoors[2]
 
    IF oWnd:nWidth == w .AND. oWnd:nHeight == h
       RETURN 0
    ENDIF
-   //hwg_WriteLog( "OnSize: "+Str(oWnd:nWidth)+" "+Str(oWnd:nHeight)+" "+Str(w)+" "+Str(h) )
+   //hwg_WriteLog( "OnSize: "+Str(oWnd:nWidth)+" "+Str(oWnd:nHeight)+" "+Str(w)+" "+Str(h)+" " + str(oWnd:nAdjust) )
 
    IF oWnd:nAdjust == 2
       oWnd:nAdjust := 0
@@ -41,7 +44,7 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
    ENDIF
 
    IF HB_ISBLOCK( oWnd:bSize )
-      Eval( oWnd:bSize, oWnd, w, h )
+      Eval( oWnd:bSize, oWnd, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ENDIF
 
    RETURN 0
@@ -159,7 +162,7 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    ::nWidth   := iif( width == Nil, 0, width )
    ::nHeight  := iif( height == Nil, 0, Abs( height ) )
    IF ::nWidth < 0
-      ::nWidth  := Abs( ::nWidth )
+      ::nWidth   := Abs( ::nWidth )
       ::nAdjust := 1
    ENDIF
    ::oFont    := oFont
@@ -308,7 +311,7 @@ METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMain
             ::nAdjust := 0
          ELSE
             //hwg_writelog( str(::nheight)+"/"+str(aCoors[4]-aCoors[2])+"/"+str(arect[4]) )
-            ::Move( ,, ::nWidth + ( aCoors[3] - aCoors[1] - aRect[3] ), ::nHeight + ( aCoors[4] - aCoors[2] - aRect[4] ) )
+            ::Move( , , ::nWidth + ( aCoors[3] - aCoors[1] - aRect[3] ), ::nHeight + ( aCoors[4] - aCoors[2] - aRect[4] ) )
          ENDIF
       ENDIF
       ::lActivated := .T.

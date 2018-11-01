@@ -141,7 +141,11 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       aCoors := hwg_Getwindowrect( ::handle )
       aRect := hwg_GetClientRect( ::handle )
       //hwg_writelog( str(::nheight)+"/"+str(aCoors[4]-aCoors[2])+"/"+str(arect[4]) )
-      ::Move( , , ::nWidth + ( aCoors[3] - aCoors[1] - aRect[3] ), ::nHeight + ( aCoors[4] - aCoors[2] - aRect[4] ) )
+      IF aCoors[4] - aCoors[2] == aRect[4]
+         ::nAdjust := 0
+      ELSE
+         ::Move( , , ::nWidth + ( aCoors[3] - aCoors[1] - aRect[3] ), ::nHeight + ( aCoors[4] - aCoors[2] - aRect[4] ) )
+      ENDIF
    ENDIF
    IF !Empty( lMinimized )
       ::Minimize()

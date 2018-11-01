@@ -154,7 +154,8 @@ HB_FUNC( HWG_INITMAINWINDOW )
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
    set_event( (gpointer)hWnd, "focus_in_event", 0, 0, 0 );
 
-   g_signal_connect_after( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
+   g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
+   //g_signal_connect_after( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
    hMainWindow = hWnd;
    HB_RETHANDLE( hWnd );
@@ -214,7 +215,8 @@ HB_FUNC( HWG_CREATEDLG )
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
    set_event( (gpointer)hWnd, "focus_in_event", 0, 0, 0 );
 
-   g_signal_connect( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
+   g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
+   //g_signal_connect( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
    HB_RETHANDLE( hWnd );
 
@@ -261,7 +263,8 @@ HB_FUNC( HWG_PROCESSMESSAGE )
 
 gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data )
 {
-   gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
+   gpointer gObject = g_object_get_data( (GObject*) widget->parent->parent, "obj" );
+   //gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
    HB_SYMBOL_UNUSED( data );
 
    if( !pSym_onEvent )

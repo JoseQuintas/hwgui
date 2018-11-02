@@ -322,8 +322,9 @@ STATIC FUNCTION ChangeFont( oCtrl, n )
    LOCAL oFont, nHeight := oCtrl:oFont:height
 
    nHeight := Iif( nHeight < 0, nHeight - n, nHeight + n )
-   oFont := HFont():Add( oCtrl:oFont:name, oCtrl:oFont:Width, nHeight, , oCtrl:oFont:Charset, )
-   hwg_Setctrlfont( oCtrl:oParent:handle, oCtrl:id, ( oCtrl:oFont := oFont ):handle )
+   oFont := HFont():Add( oCtrl:oFont:name,, nHeight,, ;
+      oCtrl:oFont:Charset,,,,, .T. )
+   hwg_Setctrlfont( oCtrl:oParent:handle, oCtrl:id, oFont:handle )
 
    oCtrl:SetFont( oFont )
 

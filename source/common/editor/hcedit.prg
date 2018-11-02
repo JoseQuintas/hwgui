@@ -112,6 +112,11 @@
 
 #define BOTTOM_HEIGHT   8
 
+#ifdef __PLATFORM__UNIX
+#define GDK_CONTROL_MASK  2
+#define GDK_MOD1_MASK     4
+#endif
+
 STATIC cNewLine := e"\r\n"
 
 #ifdef __PLATFORM__UNIX
@@ -1000,7 +1005,7 @@ METHOD SetFont( oFont ) CLASS HCEdit
          name := Iif( ::oFont:name == ::aFonts[i]:name, oFont:name, ::aFonts[i]:name )
          height := Iif( ::oFont:height == ::aFonts[i]:height, oFont:height, Int( ::aFonts[i]:height*oFont:height/::oFont:height) )
          oFont1 := HFont():Add( name, ::aFonts[i]:width, height , ::aFonts[i]:weight, ;
-            ::aFonts[i]:CharSet, ::aFonts[i]:Italic, ::aFonts[i]:Underline, ::aFonts[i]:StrikeOut )
+            ::aFonts[i]:CharSet, ::aFonts[i]:Italic, ::aFonts[i]:Underline, ::aFonts[i]:StrikeOut,, .T. )
          ::aFonts[i] := oFont1
          hced_SetFont( ::hEdit, oFont1:handle, i )
       NEXT
@@ -1325,10 +1330,12 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
 #ifdef __PLATFORM__UNIX
    ELSEIF nKeyCode < 0xFE00 .OR. ( nKeyCode >= GDK_KP_Multiply .AND. nKeyCode <= GDK_KP_9 ) ;
          .OR. nKeyCode == VK_RETURN .OR. nKeyCode == VK_BACK .OR. nKeyCode == VK_TAB .OR. nKeyCode == VK_ESCAPE
-      IF nKeyCode >= GDK_KP_0
-         nKeyCode -= ( GDK_KP_0 - 48 )
+      IF hwg_bitand( lParam, GDK_CONTROL_MASK+GDK_MOD1_MASK ) == 0
+         IF nKeyCode >= GDK_KP_0
+            nKeyCode -= ( GDK_KP_0 - 48 )
+         ENDIF
+         ::putChar( nKeyCode )
       ENDIF
-      ::putChar( nKeyCode )
 #endif
    ENDIF
    IF !Empty( ::aPointM2[P_Y] ) .AND. nKeyCode >= 32 .AND. nKeyCode < 0xFF60 .AND. ;

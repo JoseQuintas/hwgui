@@ -3,6 +3,14 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI 2.21 build 5 ( 02.11.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Now you may define a negative size value of a window or dialog, this mean that
+    absolute value of the size is the size of client area, not a whole window rectangle.
+[+] ON CLICK, ON DBLCLICK clauses added to @...BITMAP and @...ICON commands.
+[*] compatibility of gtk and winapi versions improved.
+[!] Few important fixes.
+
 HWGUI 2.21 build 4 ( 19.10.2018 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] XML parsing procedure catch more errors and doesn't hang on them now.

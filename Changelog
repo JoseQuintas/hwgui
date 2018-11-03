@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-03 20:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * Tabs handling extended
+
 2018-11-02 12:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number is changed to 5

@@ -184,7 +184,8 @@ CLASS HCEdit INHERIT HControl
    DATA   lMDown       INIT .F.
    DATA   aPointC, aPointM1, aPointM2
 
-   DATA   nTabLen      INIT 8
+   DATA   nTabLen      INIT 4
+   DATA   lTabs        INIT .F.
    DATA   lStripSpaces INIT .T.
    DATA   lVScroll
    DATA   nClientWidth
@@ -241,7 +242,7 @@ CLASS HCEdit INHERIT HControl
    METHOD onVScroll( wParam )
    METHOD PCopy( Psource, Pdest )
    METHOD PCmp( P1, P2 )
-   METHOD GetText( P1, P2 )
+   METHOD GetText( P1, P2, lTabs )
    METHOD InsText( aPoint, cText, lOver, lChgPos )
    METHOD DelText( P1, P2, lChgPos )
    METHOD AddLine( nLine )
@@ -873,13 +874,18 @@ METHOD End() CLASS HCEdit
 
 METHOD Convert( cPageIn, cPageOut )
    LOCAL i
-
-   IF cPageIn != Nil .AND. !Empty( hb_cdpUniId( cPageIn ) ) .AND. ;
+   LOCAL l := ( cPageIn != Nil .AND. !Empty( hb_cdpUniId( cPageIn ) ) .AND. ;
          cPageOut != Nil .AND. !Empty( hb_cdpUniId( cPageOut ) ) .AND. ;
-         !( cPageIn == cPageOut )
+         !( cPageIn == cPageOut ) )
+   IF l .OR. ::lTabs
       FOR i := 1 TO ::nTextLen
          IF !Empty( ::aText[i] )
-            ::aText[i] := hb_Translate( ::aText[i], cPageIn, cPageOut )
+            IF l
+               ::aText[i] := hb_Translate( ::aText[i], cPageIn, cPageOut )
+            ENDIF
+            IF ::lTabs .AND. Chr(9) $ ::aText[i]
+               ::aText[i] := Strtran( ::aText[i], Chr(9), Space(::nTablen) )
+            ENDIF
          ENDIF
       NEXT
       RETURN .T.
@@ -1701,8 +1707,8 @@ METHOD PCmp( P1, P2 ) CLASS HCEdit
 
    RETURN 0
 
-METHOD GetText( P1, P2 ) CLASS HCEdit
-   LOCAL cText := "", Pstart, Pend, i, nPos1
+METHOD GetText( P1, P2, lTabs ) CLASS HCEdit
+   LOCAL cText := "", Pstart, Pend, i, nPos1, cLine
 
    IF Empty( P1 )
       P1 := ::PCopy( {1,1}, P1 )
@@ -1720,10 +1726,15 @@ METHOD GetText( P1, P2 ) CLASS HCEdit
       Pstart := ::PCopy( P2, Pstart )
       Pend := ::PCopy( P1, Pend )
    ENDIF
+   IF lTabs == Nil; lTabs := .F.; ENDIF
    FOR i := Pstart[P_Y] TO Pend[P_Y]
-      cText += hced_Substr( Self, ::aText[i], ;
+      cLine := hced_Substr( Self, ::aText[i], ;
          nPos1 := Iif( i == Pstart[P_Y], Pstart[P_X], 1 ), ;
          Iif( i == Pend[P_Y], Pend[P_X], hced_Len( Self, ::aText[i] ) + 1 ) - nPos1 )
+      IF lTabs .AND. ::lTabs .AND. Space(::nTabLen) $ cLine
+         cLine := Strtran( cLine, Space(::nTabLen), Chr(9) )
+      ENDIF
+      cText += cLine
       IF i != Pend[P_Y]
          cText += cNewLine
       ENDIF

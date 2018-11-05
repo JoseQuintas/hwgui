@@ -72,7 +72,7 @@
 
 Static cSpaces := e" \t", cQuotes := e"\"\'"
 
-CLASS HilightBase
+CLASS HilightBase INHERIT HOBJECT
    DATA   oEdit   
    DATA   lCase      INIT .F.      // A flag - are the keywords case sensitive
    DATA   aLineStru, nItems, nLine

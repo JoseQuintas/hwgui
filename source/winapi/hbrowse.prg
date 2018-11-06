@@ -1315,13 +1315,19 @@ METHOD DoHScroll( wParam ) CLASS HBrowse
 
 METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
-   LOCAL minPos, maxPos, nPos
+   LOCAL minPos, maxPos, nPos, colpos
 
    Eval( ::bSkip, Self, 1 )
    IF Eval( ::bEof, Self )
       Eval( ::bSkip, Self, - 1 )
-      IF ::lAppable .AND. ( lMouse == Nil .OR. !lMouse )
-         ::lAppMode := .T.
+      IF ::lAppable .AND. ::lEditable .AND. ( lMouse == Nil .OR. !lMouse )
+         colpos := 1
+         DO WHILE colpos <= Len(::aColumns) .AND. !::aColumns[colpos]:lEditable
+            colpos ++
+         ENDDO
+         IF colpos <= Len(::aColumns)
+            ::lAppMode := .T.
+         ENDIF
       ELSE
          hwg_Setfocus( ::handle )
          RETURN Nil
@@ -1340,7 +1346,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
       IF ::rowPos > 1
          ::rowPos --
       ENDIF
-      ::colPos := ::nLeftCol := 1
+      ::colPos := ::nLeftCol := colpos
    ENDIF
 
    IF ::bScrollPos != Nil

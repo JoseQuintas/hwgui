@@ -508,6 +508,9 @@ METHOD AddFile( name ) CLASS HIcon
    NEXT
 
    name := AddPath( name, ::cPath )
+   IF Empty( hb_fNameExt( name ) )
+      name += ".png"
+   ENDIF
    ::handle := hwg_Openimage( name )
    IF !Empty( ::handle )
       ::name := name

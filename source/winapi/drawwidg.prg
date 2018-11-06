@@ -579,7 +579,9 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
       DirChange( cCurDir )
    ENDIF
 
-   //::handle := hwg_Loadimage( 0, name, IMAGE_ICON, 0, 0, LR_DEFAULTSIZE + LR_LOADFROMFILE )
+   IF Empty( hb_fNameExt( name ) )
+      name += ".ico"
+   ENDIF
    ::handle := hwg_Loadimage( 0, name, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )
    ::name := cname
    aIconSize := hwg_Geticonsize( ::handle )

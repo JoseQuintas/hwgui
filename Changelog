@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-06 12:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    * Now, if a file extention is absent in a call of HIcon():addFile(),
+      the "ico" and "png" are used as default for winapi and gtk versions, respectively.
+
 2018-11-06 10:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg

@@ -43,7 +43,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    LOCAL oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
-   IF !Empty( bPaint ) .OR. bColor != Nil
+   IF !Empty( bPaint ) .OR. bColor != Nil .OR. oStyle != Nil
       nStyle := Hwg_BitOr( nStyle, SS_OWNERDRAW )
    ENDIF
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, iif( nWidth == Nil,0,nWidth ), ;

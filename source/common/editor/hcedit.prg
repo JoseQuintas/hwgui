@@ -500,7 +500,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ENDIF
 
    ELSEIF msg == WM_SIZE
-      IF ::nHeight > 0
+      IF ::nHeight > 0 .AND. ::nWidth > 0
          ::Scan()
          ::nWCharF := ::nWSublF := 1
 #ifdef __PLATFORM__UNIX

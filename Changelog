@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-08 15:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * samples/bld.bat
+    ! bug fixed
+  * samples/testtray.prg
+  * samples/testtray.rc
+    * sample updated
+  * utils/tutorial/tutor.prg
+    * Small correction
+
 2018-11-07 09:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
     ! Small fix

@@ -70,8 +70,7 @@ FUNCTION Main
    INIT WINDOW oMain MAIN TITLE "HwGUI Tutorial" ;
       AT 200, 0 SIZE 800, 600 FONT oFont
 
-   ADD TOP PANEL oPanel TO oMain HEIGHT 32
-   oPanel:oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
+   ADD TOP PANEL oPanel TO oMain HEIGHT 32 STYLE HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
 
    @ 710, 3 OWNERBUTTON oBtnRun OF oPanel ON CLICK { ||RunSample() } ;
       SIZE 80, 26 FLAT ;
@@ -324,7 +323,7 @@ STATIC FUNCTION ChangeFont( oCtrl, n )
    nHeight := Iif( nHeight < 0, nHeight - n, nHeight + n )
    oFont := HFont():Add( oCtrl:oFont:name,, nHeight,, ;
       oCtrl:oFont:Charset,,,,, .T. )
-   hwg_Setctrlfont( oCtrl:oParent:handle, oCtrl:id, oFont:handle )
+   //hwg_Setctrlfont( oCtrl:oParent:handle, oCtrl:id, oFont:handle )
 
    oCtrl:SetFont( oFont )
 

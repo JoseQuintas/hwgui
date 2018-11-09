@@ -508,7 +508,7 @@ METHOD ButtonDown( lParam )  CLASS HTree
          lRedraw := .T.
 
       ENDIF
-      IF xm >= x1 .AND. xm <= x1 + ::nIndent + nWidth
+      IF xm >= x1 .AND. xm <= x1 + ::nIndent + nWidth + 24
          ::Select( oNode, .T. )
          lRedraw := .T.
       ENDIF

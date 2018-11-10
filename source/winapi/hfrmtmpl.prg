@@ -213,7 +213,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
    LOCAL lMdi := .F.
    LOCAL lMdiChild := .F.
    LOCAL lval := .F.
-   LOCAL cBitmap := nil
+   LOCAL oIcon := Nil, cBitmap := nil
    LOCAL oBmp := NIL
    LOCAL bGetFo := { |o| HFormTmpl():oActive := o }
 
@@ -297,6 +297,8 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "bitmap"
          cBitmap := xProperty
+      ELSEIF ::aProp[ i,1 ] == "icon"
+         oIcon := HIcon():Addfile(xProperty)
       ELSEIF ::aProp[ i,1 ] == "backcolor"
          bColor := xProperty
       ENDIF
@@ -358,6 +360,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
             BACKGROUND BITMAP oBmp ;
             COLOR Iif( bColor >= 0, bColor, Nil ) ;
             STYLE Iif( nStyle > 0 , nStyle, NIL ) ;
+            ICON oIcon ;
             EXCLUDE Iif( nExclude > 0 , nExclude, NIL ) ;
             ON GETFOCUS bGetFo
 #ifndef __GTK__

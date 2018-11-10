@@ -1968,12 +1968,15 @@ STATIC FUNCTION FldStr( oBrw, numf )
          ELSEIF type == "D"
             cRes := PadR( Dtoc( vartmp ), oBrw:aColumns[numf]:length )
          ELSEIF type == "T"
-            if vartmp == nil 
+#ifdef __XHARBOUR__
+            cRes := Space(23)
+#else
+            IF vartmp == nil 
                cRes := Space(23)
-            else
+            ELSE
                cRes := PadR(  HB_TSTOSTR( vartmp,.t. ), oBrw:aColumns[numf]:length )    
-            endif
-
+            ENDIF
+#endif
          ELSEIF type == "L"
             cRes := PadR( Iif( vartmp, "T", "F" ), oBrw:aColumns[numf]:length )
 

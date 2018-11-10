@@ -1040,11 +1040,13 @@ BOOL hb_itemEqual( PHB_ITEM pItem1, PHB_ITEM pItem2 )
       fResult = HB_IS_NIL( pItem2 );
 
    else if( HB_IS_DATETIME( pItem1 ) )
+      /*
       if( HB_IS_TIMEFLAG( pItem1 ) && HB_IS_TIMEFLAG( pItem2 ) )         
       fResult = HB_IS_DATETIME( pItem2 ) &&
                 pItem1->item.asDate.value == pItem2->item.asDate.value &&
                 pItem1->item.asDate.time == pItem2->item.asDate.time;
       else
+      */
       fResult = HB_IS_DATE( pItem2 ) &&
                 pItem1->item.asDate.value == pItem2->item.asDate.value ;
                 

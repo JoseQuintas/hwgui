@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-10 18:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+  * source/winapi/misc.c
+    ! Small fixes for xHarbour
+  * source/winapi/hfrmtmpl.prg
+  * source/gtk/hfrmtmpl.prg
+    * Added support of the icon in a main window for Designer's forms.
+
 2018-11-09 09:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
     * Small correction

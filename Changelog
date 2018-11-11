@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-11 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/misc.c
+    ! hwg_gethelpdata() and hwg_winhelp() fixed.
+
 2018-11-11 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor_eng.xml
     * Sample added Get system/Browse as a GET item

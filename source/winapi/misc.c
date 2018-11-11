@@ -418,7 +418,7 @@ HB_FUNC( HWG_GETDESKTOPHEIGHT )
 
 HB_FUNC( HWG_GETHELPDATA )
 {
-   hb_retnl( ( LONG ) ( ( ( HELPINFO FAR * ) hb_parnl( 1 ) )->hItemHandle ) );
+   HB_RETHANDLE( ( LONG ) ( ( ( HELPINFO FAR * ) HB_PARHANDLE( 1 ) )->hItemHandle ) );
 }
 
 HB_FUNC( HWG_WINHELP )
@@ -449,7 +449,7 @@ HB_FUNC( HWG_WINHELP )
          context = 0;
    }
 
-   hb_retni( WinHelp( ( HWND ) hb_parnl( 1 ), HB_PARSTR( 2, &hStr, NULL ),
+   hb_retni( WinHelp( ( HWND ) HB_PARHANDLE( 1 ), HB_PARSTR( 2, &hStr, NULL ),
                style, context ) );
    hb_strfree( hStr );
 }
@@ -1040,13 +1040,11 @@ BOOL hb_itemEqual( PHB_ITEM pItem1, PHB_ITEM pItem2 )
       fResult = HB_IS_NIL( pItem2 );
 
    else if( HB_IS_DATETIME( pItem1 ) )
-      /*
-      if( HB_IS_TIMEFLAG( pItem1 ) && HB_IS_TIMEFLAG( pItem2 ) )         
+      if( HB_IS_TIMEFLAG( pItem1 ) && HB_IS_TIMEFLAG( pItem2 ) )
       fResult = HB_IS_DATETIME( pItem2 ) &&
                 pItem1->item.asDate.value == pItem2->item.asDate.value &&
                 pItem1->item.asDate.time == pItem2->item.asDate.time;
       else
-      */
       fResult = HB_IS_DATE( pItem2 ) &&
                 pItem1->item.asDate.value == pItem2->item.asDate.value ;
                 

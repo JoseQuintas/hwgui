@@ -458,7 +458,9 @@ Return Nil
       ]]>
     </module>
     <module name="Browse" >
-      <![CDATA[#include "hwgui.ch"
+      <![CDATA[/* This is a very basic sample of using browse.
+Hwg_WChoice() do the same and more */
+#include "hwgui.ch"
 Function Test()
 Local oDlg, oBrw
 Local aSample := { {"Alex",17,1200}, {"Victor",42,1600}, {"John",31,1000} }
@@ -470,7 +472,15 @@ Local aSample := { {"Alex",17,1200}, {"Victor",42,1600}, {"John",31,1000} }
    @ 10,20 BROWSE oBrw ARRAY SIZE 280,140 STYLE WS_BORDER + WS_VSCROLL ;
          ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
 
+   // hwg_CreateArList() sets the array to browse and creates columns
+   // You may use oBrw:AddColumn( HColumn():New(...) ) instead to set
+   // columns with necessary options.
    hwg_CreateArList( oBrw, aSample )
+
+   // In case of using hwg_CreateArList() you may set some columns options later,
+   // for example:
+   oBrw:aColumns[1]:heading := "Name"
+   oBrw:aColumns[2]:heading := "Age"
 
    @ 100,180 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:Close() } ;
          ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
@@ -965,6 +975,54 @@ Local e7 := "Password"
                Str(e5) + chr(10) + chr(13) +  ;
                e7 + chr(10) + chr(13)         ;
                ,"Results:" )
+   ENDIF
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Browse as a GET item" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBrw
+Local n1, s1 := "", s2 := ""
+Local aSample := { {"Alex",17}, {"Victor",42}, {"John",31} }
+
+   INIT DIALOG oDlg TITLE "Get data";
+         AT 0, 0 SIZE 320, 230 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 10,20 BROWSE oBrw ARRAY SIZE 180,140 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_BOTTOMABS 
+
+   // Set aSample as an array to browse
+   oBrw:aArray := aSample
+
+   // Add two columns
+   oBrw:AddColumn( HColumn():New( "Name",{ |value,o|o:aArray[o:nCurrent,1] },"C",8 ) )
+   oBrw:AddColumn( HColumn():New( "Age",{ |value,o|o:aArray[o:nCurrent,2] },"N",4 ) )
+
+   // Set a codeblock to save current row position of a browse in a variable
+   // every time this positon is changed
+   oBrw:bPosChanged := {||n1 := oBrw:nCurrent}
+
+   // Increase the vertical padding in a browse cells
+   oBrw:aPadding[2] := oBrw:aPadding[4] := 4
+
+   @ 200,20 SAY "Input 1:" SIZE 100, 22
+   @ 200,44 GET s1 SIZE 100, 26 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+
+   @ 200,80 SAY "Input 2:" SIZE 100, 22
+   @ 200,104 GET s2 SIZE 100, 26 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+
+   @ 110,180 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:lResult:=.T.,oDlg:Close() } ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      hwg_Msginfo( aSample[n1,1] + chr(10) + chr(13) + ;
+               "Input 1: " + s1 + chr(10) + chr(13) +  ;
+               "Input 2: " + s2 + chr(10) + chr(13),"Results:" )
    ENDIF
 
 Return Nil

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-11 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/tutor_eng.xml
+    * Sample added Get system/Browse as a GET item
+
 2018-11-10 18:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
   * source/winapi/misc.c

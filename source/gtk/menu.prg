@@ -307,6 +307,8 @@ STATIC FUNCTION GetMenuByHandle( hWnd )
 
    IF hWnd == Nil
       aMenu := HWindow():GetMain():menu
+   ELSEIF Valtype(hWnd) == "O" .AND. __ObjHasMsg( hWnd, "AMENU" )
+      RETURN hWnd:aMenu
    ELSE
       IF ( oDlg := HDialog():FindDialog( hWnd ) ) != Nil
          aMenu := oDlg:menu
@@ -349,11 +351,7 @@ FUNCTION hwg_EnableMenuItem( hWnd, nId, lValue )
 
    LOCAL aMenu, aSubMenu, nPos
 
-   IF Valtype( hWnd ) == "O" .AND. __ObjHasMsg( hWnd, "AMENU" )
-      aMenu := hWnd:aMenu
-   ELSE
-      aMenu := GetMenuByHandle( iif( hWnd == Nil,HWindow():GetMain():handle,hWnd ) )
-   ENDIF
+   aMenu := GetMenuByHandle( hWnd )
    IF aMenu != Nil
       IF ( aSubMenu := Hwg_FindMenuItem( aMenu, nId, @nPos ) ) != Nil
          hwg__EnableMenuItem( aSubmenu[1,nPos,5], lValue )
@@ -366,7 +364,7 @@ FUNCTION hwg_IsEnabledMenuItem( hWnd, nId )
 
    LOCAL aMenu, aSubMenu, nPos
 
-   aMenu := GetMenuByHandle( iif( hWnd == Nil,HWindow():GetMain():handle,hWnd ) )
+   aMenu := GetMenuByHandle( hWnd )
    IF aMenu != Nil
       IF ( aSubMenu := Hwg_FindMenuItem( aMenu, nId, @nPos ) ) != Nil
          hwg__IsEnabledMenuItem( aSubmenu[1,nPos,5] )

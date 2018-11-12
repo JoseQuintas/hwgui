@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-12 13:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htree.prg
+  * source/gtk/menu.prg
+    ! Fixes
+  * doc/hwgdoc_functions.html
+    * Added more info about some menu functions
+
 2018-11-11 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/misc.c
     ! hwg_gethelpdata() and hwg_winhelp() fixed.

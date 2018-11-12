@@ -1230,22 +1230,46 @@
    <br><strong class="subhead"> Hwg_FindMenuItem( aMenu, nId, nPos )</strong> 
    <p></p>
 
-   <br><strong class="subhead"> hwg_CheckMenuItem( hWnd, nId, lValue )</strong> 
+   <br><strong class="subhead"> hwg_CheckMenuItem( xWnd, nId, lValue )</strong> 
+   <br>Checks or unchecks a menu item
+   <ul>
+     <li> xWnd - it may be a handle of a window - menu owner, or a context menu object,
+                 if it is an empty value (Nil), the main window menu is used;
+     <li> nId - id of a menu item;
+     <li> lCheck - logical value: if .T. item will be checked, if .F. - unckecked.
+   </ul>
+
+   <br><strong class="subhead"> hwg_IsCheckedMenuItem( xWnd, nId )</strong> 
+   <br>Return the state of a window (checked or unchecked)
+   <ul>
+     <li> xWnd - it may be a handle of a window - menu owner, or a context menu object,
+                 if it is an empty value (Nil), the main window menu is used;
+     <li> nId - id of a menu item;
+     <li> Return value - logical value: if .T. the item is checked, if .F. - unckecked.
+   </ul>
+
+   <br><strong class="subhead"> hwg_EnableMenuItem( xWnd, nId, lValue )</strong> 
+   <br>Enables or disables a menu item
+   <ul>
+     <li> xWnd - it may be a handle of a window - menu owner, or a context menu object,
+                 if it is an empty value (Nil), the main window menu is used;
+     <li> nId - id of a menu item;
+     <li> lValue - logical value: if .T. item will be enabled, if .F. - disabled.
+   </ul>
+
+   <br><strong class="subhead"> hwg_IsEnabledMenuItem( xWnd, nId )</strong> 
+   <br>Return the state of a window (enabled or disabled)
+   <ul>
+     <li> xWnd - it may be a handle of a window - menu owner, or a context menu object,
+                 if it is an empty value (Nil), the main window menu is used;
+     <li> nId - id of a menu item;
+     <li> Return value - logical value: if .T. the item is enabled, if .F. - disabled.
+   </ul>
+
+   <br><strong class="subhead"> hwg_SetMenuCaption( xWnd, nId, cText )</strong> 
    <p></p>
 
-   <br><strong class="subhead"> hwg_IsCheckedMenuItem( hWnd, nId )</strong> 
-   <p></p>
-
-   <br><strong class="subhead"> hwg_EnableMenuItem( hWnd, nId, lValue )</strong> 
-   <p></p>
-
-   <br><strong class="subhead"> hwg_IsEnabledMenuItem( hWnd, nId )</strong> 
-   <p></p>
-
-   <br><strong class="subhead"> hwg_SetMenuCaption( hWnd, nId, cText )</strong> 
-   <p></p>
-
-   <br><strong class="subhead"> hwg_SetMenuCaption( hWnd, nId )</strong> 
+   <br><strong class="subhead"> hwg_GetMenuCaption( xWnd, nId )</strong> 
    <p></p>
 
    <br><strong class="subhead"> hwg_DrawMenuBar( hWnd )</strong> 

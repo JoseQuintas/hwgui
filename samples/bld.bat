@@ -74,8 +74,7 @@ echo %HRB_DIR%\lib\hbpp.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbhsx.lib + >> b32.bc
 echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
 if exist %HRB_DIR%\lib\hbpcre.lib echo %HRB_DIR%\lib\hbpcre.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbole.lib echo %HRB_DIR%\lib\hbole.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbw32.lib echo %HRB_DIR%\lib\hbw32.lib + >> b32.bc
+if exist %HRB_DIR%\lib\hbwin.lib echo %HRB_DIR%\lib\hbwin.lib + >> b32.bc
 rem echo %HRB_DIR%\lib\hbct.lib + >> b32.bc
 
 :common

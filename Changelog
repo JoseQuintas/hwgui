@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-13 14:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * samples/bld.bat
+    * hbwin.lib added instead of hbw32.lib
+  * include/hwgextern.ch
+    * Few functions added
+
 2018-11-12 13:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htree.prg
   * source/gtk/menu.prg

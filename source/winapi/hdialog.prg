@@ -442,6 +442,7 @@ STATIC FUNCTION onPspNotify( oDlg, wParam, lParam )
    ELSEIF nCode == PSN_APPLY
       IF oDlg:bDestroy != Nil
          res := Eval( oDlg:bDestroy, oDlg )
+         res := Iif( Valtype(res)=="L", res, .T. )
       ENDIF
       // 'res' should be 0(Ok) or 2
       Hwg_SetDlgResult( oDlg:handle, Iif( res,0,2 ) )
@@ -498,7 +499,7 @@ FUNCTION hwg_GetModalHandle()
 
 FUNCTION hwg_EndDialog( handle )
 
-   LOCAL oDlg
+   LOCAL oDlg, lRes
 
    IF handle == Nil
       IF ( oDlg := Atail( HDialog():aModalDialogs ) ) == Nil
@@ -512,7 +513,8 @@ FUNCTION hwg_EndDialog( handle )
       ENDIF
    ENDIF
    IF oDlg:bDestroy != Nil
-      IF Eval( oDlg:bDestroy, oDlg )
+      lRes := Eval( oDlg:bDestroy, oDlg )
+      IF Valtype( lRes ) != "L" .OR. lRes
          RETURN Iif( oDlg:lModal, Hwg__EndDialog( oDlg:handle ), hwg_Destroywindow( oDlg:handle ) )
       ELSE
          RETURN Nil

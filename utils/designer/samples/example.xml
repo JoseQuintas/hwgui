@@ -1,15 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{124,144,772,111}</property>
+    <property name="Geometry">{416,191,770,120}</property>
     <property name="Caption">[Example]</property>
     <property name="FormType">[Main]</property>
     <property name="lClipper">.F.</property>
     <property name="lExitOnEnter">.F.</property>
-    <property name="Variables">{oForm1,oForm2,oForm3,oRep1,oForm4}</property>
+    <property name="lDebug">.F.</property>
+    <property name="Variables">{cFormPath}</property>
     <property name="FromStyle">[Popup]</property>
     <property name="Icon">[]</property>
-    <property name="Modal">.F.</property>
+    <property name="BackColor">-1</property>
+    <property name="NoModal">.F.</property>
     <property name="SystemMenu">.T.</property>
     <property name="Minimizebox">.F.</property>
     <property name="Maximizebox">.F.</property>
@@ -21,11 +23,9 @@
     <property name="Clipchildren">.F.</property>
   </style>
   <method name="onFormInit">
-    <![CDATA[oForm1 := HFormTmpl():Read( "testget1.xml" )
-oForm2 := HFormTmpl():Read( "testget2.xml" )
-oForm3 := HFormTmpl():Read( "testdbf1.xml" )
-oForm4 := HFormTmpl():Read( "barcode.xml" )
-orep1 := hreptmpl():Read("testrep1.xml")]]>
+    <![CDATA[Parameters oForm
+cFormPath := hb_fnameDir(oForm:cFormName)
+]]>
   </method>
   <part class="menu">
     <style>
@@ -34,13 +34,13 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
       <property name="atree">
         <item name="Test" id="32000">
           <item name="Test1" id="32001">
-            <![CDATA[oForm1:Show()]]>
+            <![CDATA[HFormTmpl():Read( cFormPath + "testget1.xml" ):Show()]]>
           </item>
           <item name="Test2" id="32002">
-            <![CDATA[oForm2:Show()]]>
+            <![CDATA[HFormTmpl():Read( cFormPath + "testget2.xml" ):Show()]]>
           </item>
           <item name="Test3" id="32003">
-            <![CDATA[oForm3:Show()]]>
+            <![CDATA[HFormTmpl():Read( cFormPath + "testdbf1.xml" ):Show()]]>
           </item>
           <item name="-" id="32007"/>
           <item name="Exit" id="32006">
@@ -67,7 +67,8 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
         <property name="Flat">.T.</property>
       </style>
       <method name="onClick">
-        <![CDATA[oDlg:Close()]]>
+        <![CDATA[oDlg:Close()
+]]>
       </method>
     </part>
     <part class="ownerbutton">
@@ -77,7 +78,7 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
         <property name="Flat">.T.</property>
       </style>
       <method name="onClick">
-        <![CDATA[oForm1:Show()]]>
+        <![CDATA[HFormTmpl():Read( cFormPath + "testget1.xml" ):Show()]]>
       </method>
     </part>
     <part class="ownerbutton">
@@ -87,7 +88,7 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
         <property name="Flat">.T.</property>
       </style>
       <method name="onClick">
-        <![CDATA[oForm2:Show()]]>
+        <![CDATA[HFormTmpl():Read( cFormPath + "testget2.xml" ):Show()]]>
       </method>
     </part>
     <part class="ownerbutton">
@@ -97,7 +98,7 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
         <property name="Flat">.T.</property>
       </style>
       <method name="onClick">
-        <![CDATA[oForm3:Show()]]>
+        <![CDATA[HFormTmpl():Read( cFormPath + "testdbf1.xml" ):Show()]]>
       </method>
     </part>
     <part class="ownerbutton">
@@ -108,7 +109,7 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
         <property name="Flat">.T.</property>
       </style>
       <method name="onClick">
-        <![CDATA[orep1:print(,.t.)]]>
+        <![CDATA[hreptmpl():Read("testrep1.xml"):print(,.t.)]]>
       </method>
     </part>
     <part class="ownerbutton">
@@ -119,13 +120,13 @@ orep1 := hreptmpl():Read("testrep1.xml")]]>
         <property name="Flat">.T.</property>
       </style>
       <method name="onClick">
-        <![CDATA[oForm4:Show()]]>
+        <![CDATA[HFormTmpl():Read( cFormPath + "barcode.xml" ):Show()]]>
       </method>
     </part>
   </part>
   <part class="status">
     <style>
-      <property name="Geometry">{0,89,772,22}</property>
+      <property name="Geometry">{0,90,770,22}</property>
       <property name="Name">[oStatus1]</property>
       <property name="aParts">{120,0}</property>
     </style>

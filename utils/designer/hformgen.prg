@@ -46,6 +46,8 @@ CLASS HFormGen INHERIT HObject
    DATA oDlg
    DATA nLeft  INIT 0
    DATA nTop   INIT 0
+   DATA nDiff  INIT 0
+   DATA nInitHeight
    DATA name
    DATA handle
    DATA filename, path
@@ -230,7 +232,7 @@ RETURN Nil
 
 METHOD CreateDialog( aProp ) CLASS HFormGen
 Local i, j, cPropertyName, xProperty, oFormDesc := oDesigner:oFormDesc
-Local hDC, aMetr, oPanel
+Local hDC, aMetr, aCoors, oPanel
 Memvar value, oCtrl
 Private value, oCtrl
 
@@ -314,6 +316,7 @@ Private value, oCtrl
    ENDIF
 
    ::oDlg:Activate(.T.)
+   ::nInitHeight := Val(hwg_aSetSecond(aProp,"Height"))
 #ifdef __GTK__
    IF aProp != Nil
       ::oDlg:Move( ,, Val(hwg_aSetSecond(aProp,"Width")), Val(hwg_aSetSecond(aProp,"Height")))
@@ -372,8 +375,10 @@ Local aCoors := hwg_Getclientrect( oDlg:handle )
 
    // Writelog( "dlgOnSize "+Str(h)+Str(w) )
    IF !oDesigner:lReport
-      oDlg:oParent:SetProp("Width",Ltrim(Str(oDlg:nWidth:=aCoors[3])))
-      oDlg:oParent:SetProp("Height",Ltrim(Str(oDlg:nHeight:=aCoors[4])))
+      //oDlg:oParent:SetProp("Width",Ltrim(Str(oDlg:nWidth:=aCoors[3])))
+      //oDlg:oParent:SetProp("Height",Ltrim(Str(oDlg:nHeight:=aCoors[4])))
+      oDlg:oParent:SetProp("Width",Ltrim(Str(aCoors[3])))
+      oDlg:oParent:SetProp("Height",Ltrim(Str(aCoors[4])))
       InspUpdBrowse()
       oDlg:oParent:lChanged:=.T.
    ENDIF
@@ -585,7 +590,7 @@ Return Nil
 
 Static Function ReadForm( oForm,cForm )
 Local oDoc := Iif( cForm!=Nil, HXMLDoc():ReadString(cForm), HXMLDoc():Read( oForm:path+oForm:filename ) )
-Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
+Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, aCoors, pos, cProperty
 
    IF Empty( oDoc:aItems )
       hwg_Msgstop( "Can't open "+oForm:path+oForm:filename, "Designer" )
@@ -635,6 +640,13 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, pos, cProperty
          ReadCtrls( Iif( oDesigner:lReport,oForm:oDlg:aControls[1]:aControls[1],oForm:oDlg ),aItems[i] )
       ENDIF
    NEXT
+   aCoors := hwg_GetClientRect( oForm:oDlg:handle )
+   aRect := hwg_GetWindowRect( oForm:oDlg:handle )
+   oForm:nDiff := aRect[4]-aRect[2] - aCoors[4]
+   IF aCoors[4] != oForm:nInitHeight
+      oForm:oDlg:Move( ,,, oForm:nInitHeight+oForm:nDiff )
+   ENDIF
+         
 Return Nil
 
 Function IsDefault( oCtrl,aPropItem )
@@ -773,7 +785,8 @@ Local oNode, oNode1, oStyle, i, i1, oMeth, cProperty, aControls
    oNode := oDoc:Add( HXMLNode():New( "part",,{ { "class",Iif(oDesigner:lReport,"report","form") } } ) )
    oStyle := oNode:Add( HXMLNode():New( "style" ) )  
    oStyle:Add( HXMLNode():New( "property",,{ { "name","Geometry" } }, ;
-       hwg_hfrm_Arr2Str( { oForm:oDlg:nLeft,oForm:oDlg:nTop,oForm:oDlg:nWidth,oForm:oDlg:nHeight } ) ) )
+       hwg_hfrm_Arr2Str( { oForm:oDlg:nLeft,oForm:oDlg:nTop,oForm:GetProp("Width"),oForm:GetProp("Height") } ) ) )
+       //hwg_hfrm_Arr2Str( { oForm:oDlg:nLeft,oForm:oDlg:nTop,oForm:oDlg:nWidth,oForm:oDlg:nHeight } ) ) )
    FOR i := 1 TO Len( oForm:aProp )
       IF Ascan( aG, Lower(oForm:aProp[i,1]) ) == 0
          IF Lower(oForm:aProp[i,1]) == "font"

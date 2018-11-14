@@ -147,7 +147,6 @@ Private value, oCtrl := Self
 
    ::oParent:AddControl( Self )
    ::oXMLDesc := oXMLDesc
-
    ::Activate()
    ctrlOnSize( Self, ::oParent:nWidth, ::oParent:nHeight )
    //hwg_writelog( ": "+::cclass+" "+valtype(::nLeft)+" "+valtype(::nTop) )
@@ -453,7 +452,9 @@ Return 0
 
 Function MoveCtrl( oCtrl )
 
-   hwg_Movewindow( oCtrl:handle, oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
+   LOCAL nDiff := Iif( oCtrl:oParent:Classname() == "HFORMGEN", oCtrl:oParent:nDiff, 0 )
+
+   hwg_Movewindow( oCtrl:handle, oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight+nDiff )
    hwg_Redrawwindow( oCtrl:oParent:handle, RDW_ERASE + RDW_INVALIDATE )
 Return Nil
 

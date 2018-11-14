@@ -322,7 +322,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
 
    IF nMode == Nil .OR. nMode == 2
       INIT DIALOG ::oDlg TITLE cTitle         ;
-         AT nLeft, nTop SIZE nWidth, nHeight ;
+         AT nLeft, nTop SIZE -nWidth, -nHeight ;
          STYLE nStyle + nExclude;
          FONT oFont ;
          BACKGROUND BITMAP oBmp ;
@@ -355,7 +355,7 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
 #endif
          nExclude := hwg_BitAndInverse( WS_MAXIMIZEBOX + WS_MINIMIZEBOX, nExclude )
          INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
-            AT nLeft, nTop SIZE nWidth, nHeight ;
+            AT nLeft, nTop SIZE -nWidth, -nHeight ;
             FONT oFont ;
             BACKGROUND BITMAP oBmp ;
             COLOR Iif( bColor >= 0, bColor, Nil ) ;

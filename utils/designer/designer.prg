@@ -13,6 +13,7 @@
 #include "hbclass.ch"
 #include "hxml.ch"
 #include "designer.ch"
+#include "hwgextern.ch"
 
    // #include "extmodul.ch"
 
@@ -31,16 +32,7 @@
    #define CURS_SIZEH IDC_SIZENS
 #endif
 
-#ifndef __GTK__
-   REQUEST hwg_Drawedge
-   REQUEST hwg_Setwindowfont
-   REQUEST hwg_inittrackbar
-   REQUEST BARCODE
-#endif
-   REQUEST hwg_Drawicon
-   REQUEST hwg_Ellipse
-   REQUEST hwg_initmonthcalendar
-   REQUEST HTIMER, DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK, HB_ATOKENS
+REQUEST DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK, HB_ATOKENS, HB_FNAMENAME, HB_FNAMEDIR
 
 MEMVAR oDesigner, crossCursor, vertCursor, horzCursor, cCurDir
 

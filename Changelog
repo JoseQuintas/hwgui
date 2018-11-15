@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-15 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hfrmtmpl.prg
+  * source/gtk/hfrmtmpl.prg
+    ! Small fix
+    * Added Anchor support
+  * utils/designer/designer.prg
+  * utils/designer/resource/widgets.xml
+    * Added Anchor for a toolbar
+
 2018-11-15 09:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number is changed to 6

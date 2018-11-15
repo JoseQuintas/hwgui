@@ -2,7 +2,7 @@
  *$Id$
  */
 #define HWG_VERSION         "2.21"
-#define HWG_BUILD               5
+#define HWG_BUILD               6
 #define	WND_MAIN		        1
 #define	WND_MDI 		        2
 #define WND_MDICHILD            3

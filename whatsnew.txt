@@ -3,6 +3,12 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI 2.21 build 6 ( 15.11.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] HIcon():AddFile() automatically adds file extension (ico or png) if it isn't defined.
+[*] Added support of the icon in a main window for Designer's forms.
+[!] Fixes, corrections.
+
 HWGUI 2.21 build 5 ( 02.11.2018 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] Now you may define a negative size value of a window or dialog, this mean that

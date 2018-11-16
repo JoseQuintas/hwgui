@@ -52,6 +52,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="22" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(8))) ]]></property>
          <property name="BackColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(15))) ]]></property>
          <property name="Font" type="O" />
@@ -78,6 +79,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="24" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(8))) ]]></property>
          <property name="BackColor" type="N" value="16777215" />
          <property name="Font" type="O" />
@@ -110,6 +112,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="32" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
@@ -130,6 +133,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="110" />
          <property name="Height" type="N" value="22" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="lInitValue" type="L" value="False"/>
          <property name="varName" type="C" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(8))) ]]></property>
@@ -153,6 +157,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="110" />
          <property name="Height" type="N" value="22" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="lInitValue" type="L" value="False"/>
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(8))) ]]></property>
          <property name="BackColor" type="N" value="16777215" />
@@ -175,6 +180,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="100" />
          <property name="Height" type="N" value="80" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />
@@ -192,6 +198,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="100" />
          <property name="Height" type="N" value="80" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="nInitValue" type="N" value="1"/>
          <property name="varName" type="C" />
          <property name="3DLook" type="L" value="False" />
@@ -213,6 +220,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="110" />
          <property name="Height" type="N" value="24" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="Items" type="A" />
          <property name="nInitValue" type="N" value="1"/>
          <property name="nMaxLines" type="N" value="4"/>
@@ -240,6 +248,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="60" />
          <property name="Height" type="N" value="60" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="Bitmap" type="C" value="" />
          <property name="lResource" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
@@ -295,6 +304,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="24" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="TextColor" type="N" value="0"/>
          <property name="BackColor" type="N" value="16777215" />
          <property name="Font" type="O" />
@@ -322,6 +332,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="24" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="nInitValue" type="N" value="1"/>
          <property name="nLower" type="N" value="1"/>
          <property name="nUpper" type="N" value="100"/>
@@ -348,6 +359,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="80" />
          <property name="Height" type="N" value="24" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="varName" type="C" />
          <property name="3DLook" type="L" value="False" />
 		 <property name="ToolTip" type="C" value=""/>
@@ -364,6 +376,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="240" />
          <property name="Height" type="N" value="195" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="lNoToday" type="L" value="True" />
          <property name="lNoTodayCircle" type="L" value="True" />
          <property name="lWeekNumber" type="L" value="True" />
@@ -382,6 +395,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="150" />
          <property name="Height" type="N" value="40" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="nInitValue" type="N" value="1" />
          <property name="nLower" type="N" value="1"/>
          <property name="nUpper" type="N" value="100"/>
@@ -403,6 +417,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="280" />
          <property name="Height" type="N" value="160" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="Font" type="O" />
          <property name="Tabs" type="A" />
          <method name="onInit" />
@@ -420,6 +435,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="150" />
          <property name="Height" type="N" value="160" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="Font" type="O" />
          <property name="aImages" type="A" />
          <property name="lResource" type="L" value="False" />
@@ -480,6 +496,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="100" />
          <property name="Height" type="N" value="2" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="lVertical" type="L" value="False" />
          <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
@@ -509,6 +526,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="28" />
          <property name="Height" type="N" value="28" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="Flat" type="L" value="False"/>
          <property name="Font" type="O" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(8))) ]]></property>
@@ -537,6 +555,7 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="200" />
          <property name="Height" type="N" value="150" />
+         <property name="Anchor" type="N" value="-1" />
          <property name="Font" type="O" />
          <property name="BrwType" type="C" value="Dbf" />
          <method name="onInit" />
@@ -556,8 +575,8 @@
          <property name="Top" type="N" value="0" />
          <property name="Width" type="N" value="200" />
          <property name="Height" type="N" value="50" />
-         <property name="Anchor" type="N" value="0" />
-         <property name="3DLook" type="L" value="False" />
+         <property name="Anchor" type="N" value="-1" />
+         <property name="Hstyle" type="O" />
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -671,6 +690,10 @@
       <property name="FormType" array="Main,dlgModal,dlgNoModal,mdiMain,mdiChild,Child">
       </property>
       <property name="FromStyle" array="Popup,Child,Overlapped">
+      </property>
+      <property name="Anchor" dlg="Anchor">
+      </property>
+      <property name="Hstyle" dlg="Hstyle">
       </property>
    </data>
    <methods>

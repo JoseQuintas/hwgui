@@ -12,84 +12,84 @@
 #include "hwgui.ch"
 #include "designer.ch"
 
-Static oCombo, oBrw1, oBrw2
-Static aProp := {}, aMethods := {}
-Static oTab
+STATIC oCombo, oBrw1, oBrw2
+STATIC aProp := {}, aMethods := {}
+STATIC oTab
 
-Memvar oDesigner
+MEMVAR oDesigner
 
-Function InspOpen
+FUNCTION InspOpen
 
    INIT DIALOG oDesigner:oDlgInsp TITLE "Object Inspector" ;
-      AT 0,280  SIZE 220,300                     ;
-      STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SIZEBOX ;
+      AT 0, 280  SIZE 220, 300                     ;
+      STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SIZEBOX ;
       FONT oDesigner:oMainWnd:oFont                   ;
-      ON INIT {||hwg_Movewindow(oDesigner:oDlgInsp:handle,0,280,230,280)}   ;
-      ON EXIT {||oDesigner:oDlgInsp:=Nil,hwg_Checkmenuitem(oDesigner:oMainWnd:handle,MENU_OINSP,.F.),.T.}
+      ON INIT { ||hwg_Movewindow( oDesigner:oDlgInsp:handle, 0, 280, 230, 280 ) }   ;
+      ON EXIT { ||oDesigner:oDlgInsp := Nil, hwg_Checkmenuitem( oDesigner:oMainWnd:handle, MENU_OINSP, .F. ), .T. }
 
-   @ 0,0 COMBOBOX oCombo ITEMS {} SIZE 220,26 ;
-          STYLE WS_VSCROLL                     ;
-          ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,0,x,)} ;
-          ON CHANGE {||ComboOnChg()}
+   @ 0, 0 COMBOBOX oCombo ITEMS {} SIZE 220, 26 ;
+      STYLE WS_VSCROLL                     ;
+      ON SIZE { |o, x, y|hwg_Movewindow( o:handle, 0, 0, x, ) } ;
+      ON CHANGE { ||ComboOnChg() }
 
-   @ 0,28 TAB oTab ITEMS {} SIZE 220,250 ;
-      ON SIZE {|o,x,y|hwg_Movewindow(o:handle,0,28,x,y-28)}
+   @ 0, 28 TAB oTab ITEMS {} SIZE 220, 250 ;
+      ON SIZE { |o, x, y|hwg_Movewindow( o:handle, 0, 28, x, y - 28 ) }
 
    BEGIN PAGE "Properties" OF oTab
-      @ 2,30 BROWSE oBrw1 ARRAY SIZE 214,218 STYLE WS_VSCROLL ;
-         ON CLICK {||Edit1()} ON SIZE {|o,x,y|hwg_Movewindow(o:handle,2,30,x-6,y-32)}
+   @ 2, 30 BROWSE oBrw1 ARRAY SIZE 214, 218 STYLE WS_VSCROLL ;
+      ON CLICK { ||Edit1() } ON SIZE { |o, x, y|hwg_Movewindow( o:handle, 2, 30, x - 6, y - 32 ) }
 #ifndef __GTK__
-      oBrw1:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
-      oBrw1:bColor := oBrw1:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
-      oBrw1:lSep3d := .T.
+   oBrw1:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
+   oBrw1:bColor := oBrw1:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
+   oBrw1:lSep3d := .T.
 #endif
-      oBrw1:tColorSel := 8404992
-      oBrw1:freeze := 1
-      oBrw1:lDispHead := .F.
-      oBrw1:sepColor  := hwg_Getsyscolor( COLOR_BTNSHADOW )
-      oBrw1:aArray := aProp
-      oBrw1:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
-      oBrw1:AddColumn( HColumn():New( ,hwg_ColumnArBlock(),"U",100,0,.T. ) )
-   END PAGE OF oTab
+   oBrw1:tColorSel := 8404992
+   oBrw1:freeze := 1
+   oBrw1:lDispHead := .F.
+   oBrw1:sepColor  := hwg_Getsyscolor( COLOR_BTNSHADOW )
+   oBrw1:aArray := aProp
+   oBrw1:AddColumn( HColumn():New( ,{ |v,o|iif(Empty(o:aArray[o:nCurrent,1] ),"","  " + o:aArray[o:nCurrent,1] ) },"C",12,0, .T. ) )
+   oBrw1:AddColumn( HColumn():New( ,hwg_ColumnArBlock(),"U",100,0, .T. ) )
+   ENDPAGE OF oTab
 
    BEGIN PAGE "Events" OF oTab
-      @ 2,30 BROWSE oBrw2 ARRAY SIZE 214,218 STYLE WS_VSCROLL ;
-         ON CLICK {||Edit2()} ON SIZE {|o,x,y|hwg_Movewindow(o:handle,2,30,x-6,y-32)}
+   @ 2, 30 BROWSE oBrw2 ARRAY SIZE 214, 218 STYLE WS_VSCROLL ;
+      ON CLICK { ||Edit2() } ON SIZE { |o, x, y|hwg_Movewindow( o:handle, 2, 30, x - 6, y - 32 ) }
 #ifndef __GTK__
-      oBrw2:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
-      oBrw2:bColor := oBrw2:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
-      oBrw2:lSep3d := .T.
+   oBrw2:tColor := hwg_Getsyscolor( COLOR_BTNTEXT )
+   oBrw2:bColor := oBrw2:bColorSel := hwg_Getsyscolor( COLOR_BTNFACE )
+   oBrw2:lSep3d := .T.
 #endif
-      oBrw2:tColorSel := 8404992
-      oBrw2:freeze := 1
-      oBrw2:lDispHead := .F.
-      oBrw2:sepColor  := hwg_Getsyscolor( COLOR_BTNSHADOW )
-      oBrw2:aArray := aMethods
-      oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,1]),"","  "+o:aArray[o:nCurrent,1])},"C",12,0,.T. ) )
-      oBrw2:AddColumn( HColumn():New( ,{|v,o|Iif(Empty(o:aArray[o:nCurrent,2]),"",":"+o:aArray[o:nCurrent,1])},"C",100,0,.T. ) )
-   END PAGE OF oTab
+   oBrw2:tColorSel := 8404992
+   oBrw2:freeze := 1
+   oBrw2:lDispHead := .F.
+   oBrw2:sepColor  := hwg_Getsyscolor( COLOR_BTNSHADOW )
+   oBrw2:aArray := aMethods
+   oBrw2:AddColumn( HColumn():New( ,{ |v,o|iif(Empty(o:aArray[o:nCurrent,1] ),"","  " + o:aArray[o:nCurrent,1] ) },"C",12,0, .T. ) )
+   oBrw2:AddColumn( HColumn():New( ,{ |v,o|iif(Empty(o:aArray[o:nCurrent,2] ),"",":" + o:aArray[o:nCurrent,1] ) },"C",100,0, .T. ) )
+   ENDPAGE OF oTab
 
    ACTIVATE DIALOG oDesigner:oDlgInsp NOMODAL
-   hwg_Checkmenuitem(oDesigner:oMainWnd:handle,MENU_OINSP,.T.)
+   hwg_Checkmenuitem( oDesigner:oMainWnd:handle, MENU_OINSP, .T. )
 
    InspSetCombo()
 
-   oDesigner:oDlgInsp:AddEvent( 0,IDOK,{||DlgOk()} )
-   oDesigner:oDlgInsp:AddEvent( 0,IDCANCEL,{||DlgCancel()} )
+   oDesigner:oDlgInsp:AddEvent( 0, IDOK, { ||DlgOk() } )
+   oDesigner:oDlgInsp:AddEvent( 0, IDCANCEL, { ||DlgCancel() } )
 
-Return Nil
+   RETURN Nil
 
-Static Function Edit1()
-Local varbuf, x1, y1, nWidth, j, cName, aCtrlProp, oGet
-Local aDataDef := oDesigner:aDataDef
-Local lRes := .F., oModDlg, oColumn, aCoors, nChoic, bInit, aItems
-Memvar value, oCtrl
-Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
+STATIC FUNCTION Edit1()
+   LOCAL varbuf, x1, y1, nWidth, j, cName, aCtrlProp, oGet
+   LOCAL aDataDef := oDesigner:aDataDef
+   LOCAL lRes := .F. , oModDlg, oColumn, aCoors, nChoic, bInit, aItems
+   MEMVAR value, oCtrl
+   PRIVATE value, oCtrl := iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
    IF oBrw1:SetColumn() == 1
-      Return Nil
+      RETURN Nil
    ENDIF
-   oBrw1:cargo := Eval( oBrw1:bRecno,oBrw1 )
+   oBrw1:cargo := Eval( oBrw1:bRecno, oBrw1 )
    IF oCombo:value == 1
       aCtrlProp := oCtrl:oParent:aProp
    ELSE
@@ -97,15 +97,15 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
    ENDIF
    oColumn := oBrw1:aColumns[2]
    cName := Lower( aProp[oBrw1:cargo,1] )
-   j := Ascan( aDataDef, {|a|a[1]==cName} )
-   varbuf := Eval( oColumn:block,,oBrw1,2 )
+   j := Ascan( aDataDef, { |a|a[1] == cName } )
+   varbuf := Eval( oColumn:block, , oBrw1, 2 )
 
    IF ( j != 0 .AND. aDataDef[ j,5 ] != Nil ) .OR. aCtrlProp[ oBrw1:cargo,3 ] == "A"
       IF j != 0 .AND. aDataDef[ j,5 ] != Nil
          IF aDataDef[ j,5 ] == "color"
-            varbuf := Hwg_ChooseColor( Val(varbuf),.F. )
+            varbuf := Hwg_ChooseColor( Val( varbuf ), .F. )
             IF varbuf != Nil
-               varbuf := Ltrim( Str( varbuf ) )
+               varbuf := LTrim( Str( varbuf ) )
                lRes := .T.
             ENDIF
          ELSEIF aDataDef[ j,5 ] == "font"
@@ -114,7 +114,18 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
                lRes := .T.
             ENDIF
          ELSEIF aDataDef[ j,5 ] == "file"
-            varbuf := hwg_Selectfile( "All files ( *.* )","*.*" )
+            varbuf := hwg_Selectfile( "All files ( *.* )", "*.*" )
+            IF varbuf != Nil
+               lRes := .T.
+            ENDIF
+         ELSEIF aDataDef[ j,5 ] == "anchor"
+            varbuf := SelectAnchor( Val(varbuf) )
+            IF varbuf != Nil
+               varbuf := LTrim( Str( varbuf ) )
+               lRes := .T.
+            ENDIF
+         ELSEIF aDataDef[ j,5 ] == "hstyle"
+            varbuf := SelectStyle( varbuf )
             IF varbuf != Nil
                lRes := .T.
             ENDIF
@@ -128,7 +139,7 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
 
       IF lRes
          cName := Lower( aProp[ oBrw1:cargo,1 ] )
-         j := Ascan( aDataDef, {|a|a[1]==cName} )
+         j := Ascan( aDataDef, { |a|a[1] == cName } )
          value := aProp[ oBrw1:cargo,2 ] := varbuf
          aCtrlProp[ oBrw1:cargo,2 ] := value
          IF j != 0 .AND. aDataDef[ j,3 ] != Nil
@@ -137,57 +148,58 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
                EvalCode( aDataDef[ j,4 ] )
             ENDIF
          ENDIF
-         hwg_Redrawwindow( oCtrl:handle,5 )
+         hwg_Redrawwindow( oCtrl:handle, 5 )
          HFormGen():oDlgSelected:oParent:lChanged := .T.
          oBrw1:lUpdated := .T.
          oBrw1:Refresh()
       ENDIF
    ELSE
       x1  := oBrw1:x1 + oBrw1:aColumns[1]:width - 2
-      y1 := oBrw1:y1 + ( oBrw1:height+1 ) * ( oBrw1:rowPos - 1 )
+      y1 := oBrw1:y1 + ( oBrw1:height + 1 ) * ( oBrw1:rowPos - 1 )
       nWidth := Min( oBrw1:aColumns[2]:width, oBrw1:x2 - x1 - 1 )
 
       ReadExit( .T. )
       IF ( j != 0 .AND. aDataDef[ j,6 ] != Nil ) .OR. aCtrlProp[ oBrw1:cargo,3 ] == "L"
 
-         aItems := Iif( j != 0 .AND. aDataDef[ j,6 ] != Nil, aDataDef[ j,6 ], { "True","False" } )
-         varbuf := AllTrim(varbuf)
-         nChoic := Ascan( aItems,varbuf )
+         aItems := iif( j != 0 .AND. aDataDef[ j,6 ] != Nil, aDataDef[ j,6 ], { "True", "False" } )
+         varbuf := AllTrim( varbuf )
+         nChoic := Ascan( aItems, varbuf )
 
-         @ x1,y1-2 COMBOBOX oGet         ;
+         @ x1, y1 - 2 COMBOBOX oGet         ;
             ITEMS aItems                 ;
             INIT nChoic                  ;
             OF oBrw1                     ;
-            SIZE nWidth, oBrw1:height*5  ;
+            SIZE nWidth, oBrw1:height * 5  ;
             FONT oBrw1:oFont
 
-         IF ( j := Ascan( oBrw1:aEvents, {|a|a[1] == CBN_KILLFOCUS .AND. ;
+         IF ( j := Ascan( oBrw1:aEvents, { |a|a[1] == CBN_KILLFOCUS .AND. ;
                a[2] == oGet:id } ) ) > 0
-            oBrw1:aEvents[j,3] := {||VldBrwGet(oGet)}
+            oBrw1:aEvents[j,3] := { ||VldBrwGet( oGet ) }
          ELSE
-            oBrw1:AddEvent( CBN_KILLFOCUS,oGet:id,{||VldBrwGet(oGet)} )
+            oBrw1:AddEvent( CBN_KILLFOCUS, oGet:id, { ||VldBrwGet( oGet ) } )
          ENDIF
       ELSE
-         @ x1,y1-2 GET oGet VAR varbuf OF oBrw1  ;
-            SIZE nWidth, oBrw1:height+6        ;
+         @ x1, y1 - 2 GET oGet VAR varbuf OF oBrw1  ;
+            SIZE nWidth, oBrw1:height + 6        ;
             STYLE ES_AUTOHSCROLL               ;
             FONT oBrw1:oFont                   ;
-            VALID {||VldBrwGet(oGet)}
+            VALID { ||VldBrwGet( oGet ) }
          oGet:nMaxLength := 0
       ENDIF
       hwg_Setfocus( oGet:handle )
    ENDIF
-RETURN Nil
 
-Static Function Edit2()
-Local value, cargo
+   RETURN Nil
+
+STATIC FUNCTION Edit2()
+   LOCAL value, cargo
 
    IF oBrw2:SetColumn() == 1
-      Return Nil
+      RETURN Nil
    ENDIF
-   cargo := oBrw2:cargo := Eval( oBrw2:bRecno,oBrw2 )
+   cargo := oBrw2:cargo := Eval( oBrw2:bRecno, oBrw2 )
    IF ( value := EditMethod( aMethods[cargo,1],aMethods[cargo,2] ) ) != Nil ;
-       .AND. !( aMethods[cargo,2] == value )
+         .AND. !( aMethods[cargo,2] == value )
       aMethods[cargo,2] := value
       IF oCombo:value == 1
          HFormGen():oDlgSelected:oParent:aMethods[cargo,2] := value
@@ -198,19 +210,20 @@ Local value, cargo
       oBrw2:lUpdated := .T.
       oBrw2:Refresh()
    ENDIF
-Return Nil
 
-Static Function VldBrwGet( oGet )
-Local vari, j, cName
-Memvar value, oCtrl
-Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
+   RETURN Nil
+
+STATIC FUNCTION VldBrwGet( oGet )
+   LOCAL vari, j, cName
+   MEMVAR value, oCtrl
+   PRIVATE value, oCtrl := iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
    cName := Lower( aProp[ oBrw1:cargo,1 ] )
 
-   j := Ascan( oDesigner:aDataDef, {|a|a[1]==cName} )
+   j := Ascan( oDesigner:aDataDef, { |a|a[1] == cName } )
 
    IF oGet:Classname() == "HCOMBOBOX"
-      vari := hwg_Sendmessage( oGet:handle,CB_GETCURSEL,0,0 ) + 1
+      vari := hwg_Sendmessage( oGet:handle, CB_GETCURSEL, 0, 0 ) + 1
       value := aProp[ oBrw1:cargo,2 ] := oGet:aItems[ vari ]
    ELSE
       vari := oGet:GetText()
@@ -227,22 +240,23 @@ Private value, oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrl
          EvalCode( oDesigner:aDataDef[ j,4 ] )
       ENDIF
    ENDIF
-   hwg_Redrawwindow( oCtrl:handle,5 )
+   hwg_Redrawwindow( oCtrl:handle, 5 )
    HFormGen():oDlgSelected:oParent:lChanged := .T.
    oBrw1:lUpdated := .T.
    oBrw1:DelControl( oGet )
 
-Return .T.
+   RETURN .T.
 
-Static Function DlgOk()
+STATIC FUNCTION DlgOk()
 
    IF !Empty( oBrw1:aControls )
       VldBrwGet( oBrw1:aControls[1] )
    ENDIF
-Return Nil
 
-Static Function DlgCancel()
-Local oDlg
+   RETURN Nil
+
+STATIC FUNCTION DlgCancel()
+   LOCAL oDlg
 
    IF !Empty( oBrw1:aControls )
       IF ( oDlg := hwg_ParentGetDialog( oBrw1:aControls[1] ) ) != Nil
@@ -252,52 +266,55 @@ Local oDlg
       oBrw1:DelControl( oBrw1:aControls[1] )
       oBrw1:Refresh()
    ENDIF
-Return Nil
 
-Function InspSetCombo()
-Local i, aControls, oCtrl, n := -1, oDlg := HFormGen():oDlgSelected
+   RETURN Nil
+
+FUNCTION InspSetCombo()
+   LOCAL i, aControls, oCtrl, n := - 1, oDlg := HFormGen():oDlgSelected
 
    oCombo:aItems := {}
    IF oDlg != Nil
       n := 0
-      Aadd( oCombo:aItems, "Form." + oDlg:title )
+      AAdd( oCombo:aItems, "Form." + oDlg:title )
       oCtrl := GetCtrlSelected( oDlg )
-      aControls := Iif( oDesigner:lReport, oDlg:aControls[1]:aControls[1]:aControls, ;
-          oDlg:aControls )
+      aControls := iif( oDesigner:lReport, oDlg:aControls[1]:aControls[1]:aControls, ;
+         oDlg:aControls )
       FOR i := 1 TO Len( aControls )
-         Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) )
+         AAdd( oCombo:aItems, aControls[i]:cClass + "." + iif( aControls[i]:title != Nil,Left(aControls[i]:title,15 ),LTrim(Str(aControls[i]:id ) ) ) )
          IF oCtrl != Nil .AND. oCtrl:handle == aControls[i]:handle
             n := i
          ENDIF
       NEXT
    ENDIF
-   oCombo:Refresh( n+1 )
+   oCombo:Refresh( n + 1 )
    //oCombo:value := n + 1
    InspSetBrowse()
-Return Nil
 
-Function InspUpdCombo( n )
-Local aControls, i
+   RETURN Nil
+
+FUNCTION InspUpdCombo( n )
+   LOCAL aControls, i
 
    IF n > 0
-      aControls := Iif( oDesigner:lReport, ;
+      aControls := iif( oDesigner:lReport, ;
          HFormGen():oDlgSelected:aControls[1]:aControls[1]:aControls, ;
          HFormGen():oDlgSelected:aControls )
       i := Len( aControls )
       IF i >= Len( oCombo:aItems )
-         Aadd( oCombo:aItems, aControls[i]:cClass + "." + Iif(aControls[i]:title!=Nil,Left(aControls[i]:title,15),Ltrim(str(aControls[i]:id)) ) )
+         AAdd( oCombo:aItems, aControls[i]:cClass + "." + iif( aControls[i]:title != Nil,Left(aControls[i]:title,15 ),LTrim(Str(aControls[i]:id ) ) ) )
       ELSEIF i + 1 < Len( oCombo:aItems )
-         Return InspSetCombo()
+         RETURN InspSetCombo()
       ENDIF
    ENDIF
-   oCombo:Refresh( n+1 )
+   oCombo:Refresh( n + 1 )
    //oCombo:value := n + 1
    InspSetBrowse()
-Return Nil
 
-Static Function ComboOnChg()
-Local oDlg := HFormGen():oDlgSelected, oCtrl, n
-Local aControls := Iif( oDesigner:lReport,oDlg:aControls[1]:aControls[1]:aControls,oDlg:aControls )
+   RETURN Nil
+
+STATIC FUNCTION ComboOnChg()
+   LOCAL oDlg := HFormGen():oDlgSelected, oCtrl, n
+   LOCAL aControls := iif( oDesigner:lReport, oDlg:aControls[1]:aControls[1]:aControls, oDlg:aControls )
 
    oCombo:GetValue()
    IF oDlg != Nil
@@ -309,55 +326,56 @@ Local aControls := Iif( oDesigner:lReport,oDlg:aControls[1]:aControls[1]:aContro
          ENDIF
       ELSEIF n > 0
          IF oCtrl == Nil .OR. oCtrl:handle != aControls[n]:handle
-            SetCtrlSelected( oDlg,aControls[n],n )
+            SetCtrlSelected( oDlg, aControls[n], n )
          ENDIF
       ENDIF
    ENDIF
-Return .T.
 
-Static Function InspSetBrowse()
-Local i, o
+   RETURN .T.
+
+STATIC FUNCTION InspSetBrowse()
+   LOCAL i, o
 
    aProp := {}
    aMethods := {}
 
    IF oCombo:value > 0
-      o := Iif( oCombo:value == 1, HFormGen():oDlgSelected:oParent, GetCtrlSelected( HFormGen():oDlgSelected ) )
+      o := iif( oCombo:value == 1, HFormGen():oDlgSelected:oParent, GetCtrlSelected( HFormGen():oDlgSelected ) )
       FOR i := 1 TO Len( o:aProp )
          IF Len( o:aProp[i] ) == 3
-            Aadd( aProp, { o:aProp[i,1], o:aProp[i,2] } )
+            AAdd( aProp, { o:aProp[i,1], o:aProp[i,2] } )
          ENDIF
       NEXT
       FOR i := 1 TO Len( o:aMethods )
-         Aadd( aMethods, { o:aMethods[i,1], o:aMethods[i,2] } )
+         AAdd( aMethods, { o:aMethods[i,1], o:aMethods[i,2] } )
       NEXT
    ENDIF
 
    oBrw1:aArray := aProp
    oBrw2:aArray := aMethods
 
-   Eval( oBrw1:bGoTop,oBrw1 )
-   Eval( oBrw2:bGoTop,oBrw2 )
+   Eval( oBrw1:bGoTop, oBrw1 )
+   Eval( oBrw2:bGoTop, oBrw2 )
    oBrw1:rowPos := 1
    oBrw2:rowPos := 1
    oBrw1:Refresh()
    oBrw2:Refresh()
 
-Return Nil
+   RETURN Nil
 
-Function InspUpdBrowse()
-Local i, j, lChg := .F.
-Memvar value, oCtrl
-Private value, oCtrl
+FUNCTION InspUpdBrowse()
+   LOCAL i, j, lChg := .F.
+   MEMVAR value, oCtrl
+   PRIVATE value, oCtrl
 
    IF oCombo == Nil
-      Return Nil
+      RETURN Nil
    ENDIF
-   oCtrl := Iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
+   oCtrl := iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
    IF oDesigner:oDlgInsp != Nil
       FOR i := 1 TO Len( aProp )
-         value := Iif( oCombo:value == 1,oCtrl:oParent:aProp[ i,2 ],oCtrl:aProp[ i,2 ] )
-         IF Valtype(aProp[ i,2 ]) != "O" .AND. Valtype(aProp[ i,2 ]) != "A" ;
+         value := iif( oCombo:value == 1, oCtrl:oParent:aProp[ i,2 ], oCtrl:aProp[ i,2 ] )
+         IF ValType( aProp[ i,2 ] ) != "O" .AND. ValType( aProp[ i,2 ] ) != "A" ;
                .AND. ( aProp[ i,2 ] == Nil .OR. !( aProp[ i,2 ] == value ) )
             aProp[ i,2 ] := value
             lChg := .T.
@@ -367,46 +385,46 @@ Private value, oCtrl
          oBrw1:Refresh()
       ENDIF
    ENDIF
- 
-Return Nil
 
-Function InspUpdProp( cName, xValue )
-Local i
+   RETURN Nil
+
+FUNCTION InspUpdProp( cName, xValue )
+   LOCAL i
 
    cName := Lower( cName )
-   IF ( i := Ascan( aProp, {|a|Lower(a[1])==Lower(cName)} ) ) > 0
+   IF ( i := Ascan( aProp, { |a|Lower(a[1] ) == Lower(cName ) } ) ) > 0
       aProp[ i,2 ] := xValue
       oBrw1:Refresh()
    ENDIF
 
-Return Nil
+   RETURN Nil
 
-Static Function EditArray( arr )
-Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 ), i
+STATIC FUNCTION EditArray( arr )
+   LOCAL oDlg, oBrw, nRec := Eval( oBrw1:bRecno, oBrw1 ), i
 
    IF arr == Nil
       arr := {}
    ENDIF
    IF Empty( arr )
-      Aadd( arr,"....." )
+      AAdd( arr, "....." )
    ENDIF
-   INIT DIALOG oDlg TITLE "Edit "+aProp[nRec,1]+" array" ;
-        AT 300,280 SIZE 400,300 FONT oDesigner:oMainWnd:oFont
+   INIT DIALOG oDlg TITLE "Edit " + aProp[nRec,1] + " array" ;
+      AT 300, 280 SIZE 400, 300 FONT oDesigner:oMainWnd:oFont
 
-   @ 0,0 BROWSE oBrw ARRAY SIZE 400,255  ;
-       ON SIZE {|o,x,y|o:Move(,,x,y-45)}      
+   @ 0, 0 BROWSE oBrw ARRAY SIZE 400, 255  ;
+      ON SIZE { |o, x, y|o:Move( , , x, y - 45 ) }
 
    oBrw:bcolor := 15132390
    oBrw:bcolorSel := hwg_ColorC2N( "008000" )
    oBrw:lAppable := .T.
    oBrw:aArray := arr
-   oBrw:AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},"C",100,0,.T.,,,Replicate("X",100) ) )
+   oBrw:AddColumn( HColumn():New( ,{ |v,o|iif(v != Nil,o:aArray[o:nCurrent] := v,o:aArray[o:nCurrent] ) },"C",100,0, .T. ,,,Replicate("X",100 ) ) )
 
-   @ 30,265 BUTTON "Ok" SIZE 100, 32     ;
-       ON SIZE {|o,x,y|o:Move(,y-35,,)}  ;
-       ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
-   @ 170,265 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ;
-       ON SIZE {|o,x,y|o:Move(,y-35,,)}
+   @ 30, 265 BUTTON "Ok" SIZE 100, 32     ;
+      ON SIZE { |o, x, y|o:Move( , y - 35, , ) }  ;
+      ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 170, 265 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 ;
+      ON SIZE { |o, x, y|o:Move( , y - 35, , ) }
 
    ACTIVATE DIALOG oDlg
 
@@ -417,7 +435,120 @@ Local oDlg, oBrw, nRec := Eval( oBrw1:bRecno,oBrw1 ), i
       FOR i := 1 TO Len( arr )
          arr[i] := Trim( arr[i] )
       NEXT
-      Return arr
+      RETURN arr
    ENDIF
 
-Return Nil
+   RETURN Nil
+
+FUNCTION SelectAnchor( nAnchor )
+   LOCAL oDlg
+   LOCAL c1 := .F., c2 := .F., c3 := .F., c4 := .F., c5 := .F., c6 := .F.
+   LOCAL c7 := .F., c8 := .F., c9 := .F., c10 := .F., c11 := .F.
+
+   IF nAnchor == 0
+      c1 := .T.
+   ELSEIF nAnchor > 0
+      IF hwg_BitAnd( nAnchor, ANCHOR_TOPABS ) > 0; c2 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_LEFTABS ) > 0; c3 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_BOTTOMABS ) > 0; c4 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_RIGHTABS ) > 0; c5 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_TOPREL ) > 0; c6 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_LEFTREL ) > 0; c7 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_BOTTOMREL ) > 0; c8 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_RIGHTREL ) > 0; c9 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_HORFIX ) > 0; c10 := .T.; ENDIF
+      IF hwg_BitAnd( nAnchor, ANCHOR_VERTFIX ) > 0; c11 := .T.; ENDIF
+   ENDIF
+
+   INIT DIALOG oDlg TITLE "Select anchor" ;
+      AT 300, 280 SIZE 280, 354 FONT oDesigner:oMainWnd:oFont
+
+   @ 20,20 GET CHECKBOX c1 CAPTION "ANCHOR_TOPLEFT" SIZE 200, 24
+   @ 20,44 GET CHECKBOX c2 CAPTION "ANCHOR_TOPABS" SIZE 200, 24
+   @ 20,68 GET CHECKBOX c3 CAPTION "ANCHOR_LEFTABS" SIZE 200, 24
+   @ 20,92 GET CHECKBOX c4 CAPTION "ANCHOR_BOTTOMABS" SIZE 200, 24
+   @ 20,116 GET CHECKBOX c5 CAPTION "ANCHOR_RIGHTABS" SIZE 200, 24
+   @ 20,140 GET CHECKBOX c6 CAPTION "ANCHOR_TOPREL" SIZE 200, 24
+   @ 20,164 GET CHECKBOX c7 CAPTION "ANCHOR_LEFTREL" SIZE 200, 24
+   @ 20,188 GET CHECKBOX c8 CAPTION "ANCHOR_BOTTOMREL" SIZE 200, 24
+   @ 20,212 GET CHECKBOX c9 CAPTION "ANCHOR_RIGHTREL" SIZE 200, 24
+   @ 20,236 GET CHECKBOX c10 CAPTION "ANCHOR_HORFIX" SIZE 200, 24
+   @ 20,260 GET CHECKBOX c11 CAPTION "ANCHOR_VERTFIX" SIZE 200, 24
+
+   @ 20, 310 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 160, 310 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      nAnchor := 0
+      IF c2; nAnchor += ANCHOR_TOPABS; ENDIF
+      IF c3; nAnchor += ANCHOR_LEFTABS; ENDIF
+      IF c4; nAnchor += ANCHOR_BOTTOMABS; ENDIF
+      IF c5; nAnchor += ANCHOR_RIGHTABS; ENDIF
+      IF c6; nAnchor += ANCHOR_TOPREL; ENDIF
+      IF c7; nAnchor += ANCHOR_LEFTREL; ENDIF
+      IF c8; nAnchor += ANCHOR_BOTTOMREL; ENDIF
+      IF c9; nAnchor += ANCHOR_RIGHTREL; ENDIF
+      IF c10; nAnchor += ANCHOR_HORFIX; ENDIF
+      IF c11; nAnchor += ANCHOR_VERTFIX; ENDIF
+      IF nAnchor == 0 .AND. !c1
+         nAnchor := -1
+      ENDIF
+      RETURN nAnchor
+   ENDIF
+
+   RETURN Nil
+
+FUNCTION SelectStyle( oStyle )
+   LOCAL oDlg
+   LOCAL nOrient := 1, aColors, oBitmap, nBorder, tColor, aCorners
+   LOCAL oGet1, cColors := "", i
+   LOCAL bAddClr := {||
+      LOCAL nColor := Hwg_ChooseColor(), cVal := oGet1:Value
+      IF nColor != Nil
+         oGet1:Value := cVal + Iif(!Empty(cVal).AND.Right(cVal,1)!= ',',',',"") + '#' + hwg_ColorN2C(nColor)
+      ENDIF
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Select style" ;
+      AT 300, 280 SIZE 320, 354 FONT oDesigner:oMainWnd:oFont
+
+   @ 20,16 GET oGet1 VAR cColors SIZE 200, 26
+   @ 220,16 BUTTON "Add" SIZE 40, 28 ON CLICK bAddClr
+
+   GET RADIOGROUP og VAR nOrient
+   @ 20,60 RADIOBUTTON "vertical down" SIZE 140, 24
+   @ 160,60 RADIOBUTTON "vertical up" SIZE 140, 24
+   @ 20,84 RADIOBUTTON "horizontal right" SIZE 140, 24
+   @ 160,84 RADIOBUTTON "horizontal left" SIZE 140, 24
+   @ 20,108 RADIOBUTTON "diagonal right-up" SIZE 140, 24
+   @ 160,108 RADIOBUTTON "diagonal left-dn" SIZE 140, 24
+   @ 20,132 RADIOBUTTON "diagonal right-dn" SIZE 140, 24
+   @ 160,132 RADIOBUTTON "diagonal left-up" SIZE 140, 24
+   END RADIOGROUP
+
+   @ 20, 310 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 200, 310 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      IF !Empty( cColors )
+         aColors := hb_ATokens( cColors,',' )
+         FOR i := 1 TO Len(aColors)
+            IF Left(aColors[i],1) == '#'
+               aColors[i] := hwg_ColorC2N( aColors[i] )
+            ELSEIF IsDigit( Left(aColors[i],1) )
+               aColors[i] := Val(aColors[i])
+            ELSE
+               hwg_MsgStop( "Wrong colors string" )
+               RETURN Nil
+            ENDIF
+         NEXT
+         RETURN HStyle():New( aColors, nOrient )
+      ENDIF
+   ENDIF
+
+   RETURN Nil

@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-16 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/inspect.prg
+  * utils/designer/resource/widgets.xml
+    * Anchors added for all controls
+    * A special dialog added to create/update an anchor
+
 2018-11-15 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hfrmtmpl.prg
   * source/gtk/hfrmtmpl.prg

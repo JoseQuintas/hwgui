@@ -673,7 +673,7 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
 STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    LOCAL i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName, cCtrlName
    LOCAL nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
-   MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop
+   MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop, oStyle
    MEMVAR onInit, onSize, onPaint, onEnter, onGetfocus, onLostfocus, lNoVScroll, lAppend, lAutoedit, bUpdate, onKeyDown, onPosChg
    MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, bSetGet
    MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
@@ -736,6 +736,8 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          ENDIF
       ELSEIF cPName == "font"
          oFont := hwg_hfrm_FontFromXML( xProperty )
+      ELSEIF Left(cPName,6) == "hstyle"
+         oStyle := hwg_HStyleFromXML( xProperty )
       ELSEIF cPName == "border"
          IF xProperty
             nStyle += WS_BORDER
@@ -926,6 +928,46 @@ FUNCTION hwg_hfrm_FontFromXML( oXmlNode, lDecr )
    RETURN HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
       width, height, weight, charset,   ;
       ita, under, , , lDecr )
+
+FUNCTION hwg_HStyle2XML( oStyle )
+   LOCAL aAttr := {}
+
+   IF !Empty( oStyle:aColors )
+      AAdd( aAttr, { "colors", hwg_hfrm_Arr2Str( oStyle:aColors ) } )
+      AAdd( aAttr, { "orient", Ltrim(Str( oStyle:nOrient )) } )
+   ENDIF
+   IF !Empty( oStyle:aCorners )
+      AAdd( aAttr, { "corners", hwg_hfrm_Arr2Str( oStyle:aCorners ) } )
+   ENDIF
+   IF oStyle:nBorder != 0
+      AAdd( aAttr, { "border", Ltrim(Str( oStyle:nBorder )) } )
+      AAdd( aAttr, { "tcolor", Ltrim(Str( oStyle:tColor )) } )
+   ENDIF
+
+   RETURN HXMLNode():New( "hstyle", HBXML_TYPE_SINGLE, aAttr )
+
+FUNCTION hwg_HstyleFromXML( oXmlNode )
+   LOCAL cColors := oXmlNode:GetAttribute( "colors" ), aColors, i, nOrient
+   LOCAL cCorners := oXmlNode:GetAttribute( "corners" ), aCorners
+   LOCAL nBorder, tColor
+
+   IF !Empty( cColors )
+      aColors := hwg_hfrm_Str2Arr( cColors )
+      FOR i := 1 TO Len(aColors)
+         aColors[i] := Val( aColors[i] )
+      NEXT
+      nOrient := oXmlNode:GetAttribute( "orient", "N", 1 )
+   ENDIF
+   IF !Empty( cCorners )
+      aCorners := hwg_hfrm_Str2Arr( cCorners )
+      FOR i := 1 TO Len(aCorners)
+         aCorners[i] := Val( aCorners[i] )
+      NEXT
+   ENDIF
+   nBorder := oXmlNode:GetAttribute( "border", "N", Nil )
+   tColor := oXmlNode:GetAttribute( "tcolor", "N", Nil )
+
+   RETURN HStyle():New( aColors, nOrient, aCorners, nBorder, tColor )
 
 #endif  // G_CONSOLE_MODE
 

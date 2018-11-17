@@ -531,6 +531,8 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
                   ENDIF
                ELSEIF Lower( cPropertyName ) == "font"
                   Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1],oDesigner:lReport ) } )
+               ELSEIF Left( Lower(cPropertyName),6 ) == "hstyle"
+                  Aadd( aProp, { cPropertyName,hwg_HstyleFromXML( o:aItems[1] ) } )
                ELSEIF Lower( cPropertyName ) == "atree"
                   Aadd( aProp, { cPropertyName,ReadTree( ,o ) } )
                ELSEIF !Empty(o:aItems)
@@ -730,6 +732,11 @@ Local cProperty, i1
                IF oCtrl:oFont != Nil
                   oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","font" } } ) )
                   oNode1:Add( hwg_Font2XML( oCtrl:oFont ) )
+               ENDIF
+            ELSEIF Left( Lower(oCtrl:aProp[j,1]),6 ) == "hstyle"
+               IF Valtype( oCtrl:aProp[j,2] ) == "O"
+                  oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","hstyle" } } ) )
+                  oNode1:Add( hwg_HStyle2XML( oCtrl:aProp[j,2] ) )
                ENDIF
             ELSEIF Lower(oCtrl:aProp[j,1]) == "atree"
                oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","atree" } } ) )

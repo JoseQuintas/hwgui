@@ -556,6 +556,7 @@
          <property name="Width" type="N" value="200" />
          <property name="Height" type="N" value="150" />
          <property name="Anchor" type="N" value="-1" />
+         <property name="Hstylehead" type="O" />
          <property name="Font" type="O" />
          <property name="BrwType" type="C" value="Dbf" />
          <method name="onInit" />
@@ -694,6 +695,8 @@
       <property name="Anchor" dlg="Anchor">
       </property>
       <property name="Hstyle" dlg="Hstyle">
+      </property>
+      <property name="Hstylehead" dlg="Hstyle">
       </property>
    </data>
    <methods>

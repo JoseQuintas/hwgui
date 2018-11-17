@@ -1246,7 +1246,6 @@
             [ WIDTH <nUpDWidth> ]      ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
-            [ PICTURE <cPicture> ]     ;
             [ WHEN  <bGfocus> ]        ;
             [ VALID <bLfocus> ]        ;
             [ STYLE <nStyle> ]         ;

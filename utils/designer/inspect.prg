@@ -124,7 +124,7 @@ STATIC FUNCTION Edit1()
                varbuf := LTrim( Str( varbuf ) )
                lRes := .T.
             ENDIF
-         ELSEIF aDataDef[ j,5 ] == "hstyle"
+         ELSEIF Left( aDataDef[j,5],6 ) == "hstyle"
             varbuf := SelectStyle( varbuf )
             IF varbuf != Nil
                lRes := .T.
@@ -501,54 +501,161 @@ FUNCTION SelectAnchor( nAnchor )
    RETURN Nil
 
 FUNCTION SelectStyle( oStyle )
-   LOCAL oDlg
-   LOCAL nOrient := 1, aColors, oBitmap, nBorder, tColor, aCorners
+   LOCAL oDlg, oDemo, oDemoStyle := Hstyle():New()
+   LOCAL nOrient := 1, aColors, nBorder := 0, aCorners, nUpLeft := 0, nUpRight := 0, nDnLeft := 0, nDnRight := 0
    LOCAL oGet1, cColors := "", i
    LOCAL bAddClr := {||
-      LOCAL nColor := Hwg_ChooseColor(), cVal := oGet1:Value
+      LOCAL nColor := Hwg_ChooseColor(), cVal := Trim(oGet1:Value)
       IF nColor != Nil
          oGet1:Value := cVal + Iif(!Empty(cVal).AND.Right(cVal,1)!= ',',',',"") + '#' + hwg_ColorN2C(nColor)
+         oDemoStyle:aColors := hwg_hfrm_Str2Arr( '{'+AllTrim(cColors)+'}' )
+         Cnv_aColors( oDemoStyle:aColors )
+         Demo( oDemo, oDemoStyle )
+      ENDIF
+      RETURN .T.
+   }
+   LOCAL bRadio := {||
+      oDemoStyle:nOrient := nOrient
+      //hwg_writelog( hwg_hfrm_Arr2Str( oDemoStyle:aColors ) )
+      Demo( oDemo, oDemoStyle )
+      RETURN .T.
+   }
+   LOCAL bValid := {||
+      oDemoStyle:aColors := hwg_hfrm_Str2Arr( '{'+AllTrim(cColors)+'}' )
+      Cnv_aColors( oDemoStyle:aColors )
+      Demo( oDemo, oDemoStyle )
+      RETURN .T.
+   }
+   LOCAL bUpd := {||
+      IF oDemoStyle:nBorder != nBorder
+         oDemoStyle:nBorder := nBorder
+         IF oDemoStyle:oPen != Nil
+            oDemoStyle:oPen:Release()
+         ENDIF
+         oDemoStyle:oPen := Nil
+         IF nBorder != 0
+            oDemoStyle:oPen := HPen():Add( BS_SOLID, nBorder, oDemoStyle:tColor )
+         ENDIF
+         Demo( oDemo, oDemoStyle )
+      ENDIF
+      RETURN .T.
+   }
+   LOCAL bUpdC := {||
+      IF aCorners == Nil
+         aCorners := {0,0,0,0}
+      ENDIF
+      aCorners[1] := nUpLeft
+      aCorners[2] := nUpRight
+      aCorners[3] := nDnRight
+      aCorners[4] := nDnLeft
+      oDemoStyle:aCorners := aCorners
+      Demo( oDemo, oDemoStyle )
+      RETURN .T.
+   }
+   LOCAL bBorderClr := {||
+      LOCAL nColor := Hwg_ChooseColor(oDemoStyle:tColor)
+      IF nColor != Nil .AND. oDemoStyle:tColor != nColor
+         oDemoStyle:tColor := nColor
+         IF oDemoStyle:oPen != Nil
+            oDemoStyle:oPen:Release()
+         ENDIF
+         oDemoStyle:oPen := Nil
+         IF nBorder != 0
+            oDemoStyle:oPen := HPen():Add( BS_SOLID, nBorder, oDemoStyle:tColor )
+         ENDIF
+         Demo( oDemo, oDemoStyle )
       ENDIF
       RETURN .T.
    }
 
-   INIT DIALOG oDlg TITLE "Select style" ;
-      AT 300, 280 SIZE 320, 354 FONT oDesigner:oMainWnd:oFont
+   IF oStyle != Nil
+      IF !Empty( oStyle:aColors )
+         cColors := hwg_hfrm_Arr2Str( oStyle:aColors )
+         cColors := Substr( cColors,2,Len(cColors)-2 )
+         nOrient := oStyle:nOrient
+         aCorners := oStyle:aCorners
+         nBorder := oStyle:nBorder
+         nUpLeft := Iif( !Empty(aCorners).AND.Len(aCorners)>0,aCorners[1],0 )
+         nUpRight := Iif( !Empty(aCorners).AND.Len(aCorners)>1,aCorners[2],0 )
+         nDnRight := Iif( !Empty(aCorners).AND.Len(aCorners)>2,aCorners[3],0 )
+         nDnLeft := Iif( !Empty(aCorners).AND.Len(aCorners)>3,aCorners[4],0 )
+      ENDIF
+      oDemoStyle:aColors := oStyle:aColors
+      oDemoStyle:nOrient := oStyle:nOrient
+      oDemoStyle:aCorners := oStyle:aCorners
+      oDemoStyle:nBorder := oStyle:nBorder
+      oDemoStyle:tColor := oStyle:tColor
+   ENDIF
 
-   @ 20,16 GET oGet1 VAR cColors SIZE 200, 26
+   INIT DIALOG oDlg TITLE "Select style" ;
+      AT 300, 120 SIZE 320, 400 FONT oDesigner:oMainWnd:oFont ;
+      ON INIT {||Iif(oStyle!=Nil,Demo( oDemo, oDemoStyle ),.t.)}
+
+   @ 20,16 GET oGet1 VAR cColors SIZE 200, 26 VALID bValid
    @ 220,16 BUTTON "Add" SIZE 40, 28 ON CLICK bAddClr
 
-   GET RADIOGROUP og VAR nOrient
-   @ 20,60 RADIOBUTTON "vertical down" SIZE 140, 24
-   @ 160,60 RADIOBUTTON "vertical up" SIZE 140, 24
-   @ 20,84 RADIOBUTTON "horizontal right" SIZE 140, 24
-   @ 160,84 RADIOBUTTON "horizontal left" SIZE 140, 24
-   @ 20,108 RADIOBUTTON "diagonal right-up" SIZE 140, 24
-   @ 160,108 RADIOBUTTON "diagonal left-dn" SIZE 140, 24
-   @ 20,132 RADIOBUTTON "diagonal right-dn" SIZE 140, 24
-   @ 160,132 RADIOBUTTON "diagonal left-up" SIZE 140, 24
+   GET RADIOGROUP nOrient
+   @ 20,60 RADIOBUTTON "vertical down" SIZE 140, 24 ON CLICK bRadio
+   @ 160,60 RADIOBUTTON "vertical up" SIZE 140, 24 ON CLICK bRadio
+   @ 20,84 RADIOBUTTON "horizontal right" SIZE 140, 24 ON CLICK bRadio
+   @ 160,84 RADIOBUTTON "horizontal left" SIZE 140, 24 ON CLICK bRadio
+   @ 20,108 RADIOBUTTON "diagonal right-up" SIZE 140, 24 ON CLICK bRadio
+   @ 160,108 RADIOBUTTON "diagonal left-dn" SIZE 140, 24 ON CLICK bRadio
+   @ 20,132 RADIOBUTTON "diagonal right-dn" SIZE 140, 24 ON CLICK bRadio
+   @ 160,132 RADIOBUTTON "diagonal left-up" SIZE 140, 24 ON CLICK bRadio
    END RADIOGROUP
 
-   @ 20, 310 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 200, 310 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+   @ 20, 160 LINE LENGTH 280
+
+   @ 20, 172 SAY "Border:" SIZE 100,24
+   @ 120, 168 GET UPDOWN nBorder RANGE 0,10 SIZE 50,30 VALID bUpd
+   @ 180, 168 BUTTON "Color" SIZE 80, 30 ON CLICK bBorderClr
+
+   @ 20, 208 LINE LENGTH 280
+
+   @ 20, 220 SAY "Corners:" SIZE 80,24
+   @ 100, 216 GET UPDOWN nUpLeft RANGE 0,80 SIZE 50,30 VALID bUpdC
+   @ 180, 216 GET UPDOWN nUpRight RANGE 0,80 SIZE 50,30 VALID bUpdC
+   @ 100, 250 GET UPDOWN nDnLeft RANGE 0,80 SIZE 50,30 VALID bUpdC
+   @ 180, 250 GET UPDOWN nDnRight RANGE 0,80 SIZE 50,30 VALID bUpdC
+
+   @ 100, 310 PANEL oDemo SIZE 120, 36
+
+   @ 20, 360 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 200, 360 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
 
    ACTIVATE DIALOG oDlg
 
    IF oDlg:lResult
       IF !Empty( cColors )
          aColors := hb_ATokens( cColors,',' )
-         FOR i := 1 TO Len(aColors)
-            IF Left(aColors[i],1) == '#'
-               aColors[i] := hwg_ColorC2N( aColors[i] )
-            ELSEIF IsDigit( Left(aColors[i],1) )
-               aColors[i] := Val(aColors[i])
-            ELSE
-               hwg_MsgStop( "Wrong colors string" )
-               RETURN Nil
-            ENDIF
-         NEXT
-         RETURN HStyle():New( aColors, nOrient )
+         Cnv_aColors( aColors )
+         IF aCorners != Nil .AND. aCorners[1] == 0 .AND. aCorners[2] == 0 .AND. aCorners[3] == 0 .AND. aCorners[4] == 0 
+            aCorners := Nil
+         ENDIF
+         RETURN HStyle():New( aColors, nOrient, aCorners, nBorder, oDemoStyle:tColor )
       ENDIF
    ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION Cnv_aColors( aColors )
+   LOCAL i
+   FOR i := 1 TO Len(aColors)
+      IF Left(aColors[i],1) == '#'
+         aColors[i] := hwg_ColorC2N( aColors[i] )
+      ELSEIF IsDigit( Left(aColors[i],1) )
+         aColors[i] := Val(aColors[i])
+      ELSE
+         hwg_MsgStop( "Wrong colors string" )
+         RETURN Nil
+      ENDIF
+   NEXT
+   RETURN Nil
+
+STATIC FUNCTION Demo( oDemo, oStyle )
+
+   oDemo:oStyle := oStyle
+   hwg_Invalidaterect( oDemo:handle, 1 )
 
    RETURN Nil

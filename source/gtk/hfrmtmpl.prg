@@ -651,6 +651,8 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
                ENDIF
                IF cName == "atree"
                   AAdd( aProp, { cName, ReadTree( oForm,,o ) } )
+               ELSEIF cname == "styles"
+                  AAdd( aProp, { cName, Iif( Empty(o:aItems ),"",o:aItems ) } )
                ELSE
                   AAdd( aProp, { cName, Iif( Empty(o:aItems ),"",o:aItems[1] ) } )
                ENDIF
@@ -673,7 +675,7 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
 STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    LOCAL i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName, cCtrlName
    LOCAL nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
-   MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop, oStyle
+   MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop, oStyle, aStyles
    MEMVAR onInit, onSize, onPaint, onEnter, onGetfocus, onLostfocus, lNoVScroll, lAppend, lAutoedit, bUpdate, onKeyDown, onPosChg
    MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, bSetGet
    MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
@@ -738,6 +740,11 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          oFont := hwg_hfrm_FontFromXML( xProperty )
       ELSEIF Left(cPName,6) == "hstyle"
          oStyle := hwg_HStyleFromXML( xProperty )
+      ELSEIF cPName == "styles"
+         aStyles := {}
+         FOR j := 1 TO Len( xProperty )
+            Aadd( aStyles, hwg_HstyleFromXML( xProperty[j] ) )
+         NEXT
       ELSEIF cPName == "border"
          IF xProperty
             nStyle += WS_BORDER

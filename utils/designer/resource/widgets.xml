@@ -506,13 +506,19 @@
       <widget class="ownerbutton" name="Owner drawn button" bmp="BMP_BUTTON">
          <paint>
             <![CDATA[
-            private xt := Max(Val(oCtrl:GetProp("TextLeft")),2),yt
-            hwg_Drawbutton( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
+            private xt := Max(Val(oCtrl:GetProp("TextLeft")),2),yt, aStyles:=oCtrl:GetProp("Styles")
+            if aStyles == Nil
+              hwg_Drawbutton( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
+            else
+              aStyles[1]:Draw(hDC,0,0,oCtrl:nWidth,oCtrl:nHeight)
+            endif
+            hwg_Settransparentmode( hDC, .T. )
             if ( yt := Val(oCtrl:GetProp("TextTop")) ) == 0
               hwg_Drawtext( hDC,oCtrl:title,xt,0,oCtrl:nWidth-xt*2,oCtrl:nHeight,37 )
             else
               hwg_Drawtext( hDC,oCtrl:title,xt,yt,oCtrl:nWidth-xt*2,yt+hwg_Gettextmetric(hDC)[1],37 )
             endif
+            hwg_Settransparentmode( hDC, .F. )
             if oCtrl:oBitmap != Nil
               xt := Iif( (xt:=Val(oCtrl:GetProp("BmpLeft")))==0,(oCtrl:nWidth-oCtrl:oBitmap:nWidth)/2,xt )
               yt := Iif( (yt:=Val(oCtrl:GetProp("BmpTop")))==0,(oCtrl:nHeight-oCtrl:oBitmap:nHeight)/2,yt )
@@ -529,6 +535,7 @@
          <property name="Anchor" type="N" value="-1" />
          <property name="Flat" type="L" value="False"/>
          <property name="Font" type="O" />
+         <property name="Styles" type="A" />
          <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(8))) ]]></property>
          <property name="TextLeft" type="N" value="0" />
          <property name="TextTop" type="N" value="0" />
@@ -570,6 +577,11 @@
       <widget class="toolbar" name="Toolbar" bmp="BMP_PANEL"  container="Yes">
          <paint><![CDATA[
             hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
+            if oCtrl:GetProp("hstyle") != Nil
+              oCtrl:GetProp("hstyle"):Draw(hDC,0,0,oCtrl:nWidth,oCtrl:nHeight)
+            elseif oCtrl:GetProp("backcolor") >= 0
+              hwg_Fillrect( hDC,2,2,oCtrl:nWidth-2,oCtrl:nHeight-2,oCtrl:brush:handle )
+            endif
          ]]></paint>
          <property name="Name" type="C" />
          <property name="Left" type="N" value="0" />
@@ -577,6 +589,7 @@
          <property name="Width" type="N" value="200" />
          <property name="Height" type="N" value="50" />
          <property name="Anchor" type="N" value="-1" />
+         <property name="BackColor" type="N" value="-1" />
          <property name="Hstyle" type="O" />
          <method name="onInit" />
          <method name="onSize" />
@@ -697,6 +710,8 @@
       <property name="Hstyle" dlg="Hstyle">
       </property>
       <property name="Hstylehead" dlg="Hstyle">
+      </property>
+      <property name="Styles" dlg="Styles">
       </property>
    </data>
    <methods>

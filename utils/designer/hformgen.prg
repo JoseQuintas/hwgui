@@ -511,7 +511,7 @@ Local i, aTree := {}, oNode
 Return Iif( Empty(aTree), Nil, aTree )
 
 Static Function ReadCtrls( oDlg, oCtrlDesc, oContainer, nPage )
-Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cProperty, cPropertyName
+Local i, j, j1, arr, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cProperty, cPropertyName
 
    FOR i := 1 TO Len( aItems )
       IF aItems[i]:title == "style"
@@ -533,6 +533,12 @@ Local i, j, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, cName, cPr
                   Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1],oDesigner:lReport ) } )
                ELSEIF Left( Lower(cPropertyName),6 ) == "hstyle"
                   Aadd( aProp, { cPropertyName,hwg_HstyleFromXML( o:aItems[1] ) } )
+               ELSEIF Left( Lower(cPropertyName),6 ) == "styles"
+                  arr := {}
+                  FOR j1 := 1 TO Len( o:aItems )
+                     Aadd( arr, hwg_HstyleFromXML( o:aItems[j1] ) )
+                  NEXT
+                  Aadd( aProp, { cPropertyName,arr } )
                ELSEIF Lower( cPropertyName ) == "atree"
                   Aadd( aProp, { cPropertyName,ReadTree( ,o ) } )
                ELSEIF !Empty(o:aItems)
@@ -737,6 +743,13 @@ Local cProperty, i1
                IF Valtype( oCtrl:aProp[j,2] ) == "O"
                   oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","hstyle" } } ) )
                   oNode1:Add( hwg_HStyle2XML( oCtrl:aProp[j,2] ) )
+               ENDIF
+            ELSEIF Left( Lower(oCtrl:aProp[j,1]),6 ) == "styles"
+               IF Valtype( oCtrl:aProp[j,2] ) == "A"
+                  oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","styles" } } ) )
+                  oNode1:Add( hwg_HStyle2XML( oCtrl:aProp[j,2,1] ) )
+                  oNode1:Add( hwg_HStyle2XML( oCtrl:aProp[j,2,2] ) )
+                  oNode1:Add( hwg_HStyle2XML( oCtrl:aProp[j,2,3] ) )
                ENDIF
             ELSEIF Lower(oCtrl:aProp[j,1]) == "atree"
                oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","atree" } } ) )

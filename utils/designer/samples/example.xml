@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <part class="form">
   <style>
-    <property name="Geometry">{416,191,770,120}</property>
+    <property name="Geometry">{415,190,710,120}</property>
     <property name="Caption">[Example]</property>
     <property name="FormType">[Main]</property>
     <property name="lClipper">.F.</property>
@@ -34,22 +34,27 @@ cFormPath := hb_fnameDir(oForm:cFormName)
       <property name="atree">
         <item name="Test" id="32000">
           <item name="Test1" id="32001">
-            <![CDATA[HFormTmpl():Read( cFormPath + "testget1.xml" ):Show()]]>
+            <![CDATA[HFormTmpl():Read( cFormPath + "testget1.xml" ):Show()
+]]>
           </item>
           <item name="Test2" id="32002">
-            <![CDATA[HFormTmpl():Read( cFormPath + "testget2.xml" ):Show()]]>
+            <![CDATA[HFormTmpl():Read( cFormPath + "testget2.xml" ):Show()
+]]>
           </item>
           <item name="Test3" id="32003">
-            <![CDATA[HFormTmpl():Read( cFormPath + "testdbf1.xml" ):Show()]]>
+            <![CDATA[HFormTmpl():Read( cFormPath + "testdbf1.xml" ):Show()
+]]>
           </item>
           <item name="-" id="32007"/>
           <item name="Exit" id="32006">
-            <![CDATA[hwg_EndWindow()]]>
+            <![CDATA[hwg_EndWindow()
+]]>
           </item>
         </item>
         <item name="Help" id="32004">
           <item name="About" id="32005">
-            <![CDATA[hwg_Shellabout("HwGUI forms example","")]]>
+            <![CDATA[hwg_Shellabout("HwGUI forms example","")
+]]>
           </item>
         </item>
       </property>
@@ -59,74 +64,114 @@ cFormPath := hb_fnameDir(oForm:cFormName)
     <style>
       <property name="Geometry">{0,0,710,48}</property>
       <property name="Name">[oToolbar1]</property>
+      <property name="Anchor">10</property>
+      <property name="hstyle">
+        <hstyle colors="{15790320,12763842}" orient="1"/>
+      </property>
     </style>
     <part class="ownerbutton">
       <style>
-        <property name="Geometry">{2,3,48,42}</property>
-        <property name="Caption">[Exit]</property>
+        <property name="Geometry">{2,3,75,42}</property>
+        <property name="Caption">[Test 1]</property>
         <property name="Flat">.T.</property>
+        <property name="styles">
+          <hstyle colors="{15790320,12763842}" orient="1"/>
+          <hstyle colors="{15790320}" orient="1" border="2" tcolor="0"/>
+          <hstyle colors="{15790320}" orient="1"/>
+        </property>
+      </style>
+      <method name="onClick">
+        <![CDATA[HFormTmpl():Read( cFormPath + "testget1.xml" ):Show()
+]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{78,3,75,42}</property>
+        <property name="Caption">[Test 2]</property>
+        <property name="Flat">.T.</property>
+        <property name="styles">
+          <hstyle colors="{15790320,12763842}" orient="1"/>
+          <hstyle colors="{15790320}" orient="1" border="2" tcolor="0"/>
+          <hstyle colors="{15790320}" orient="1"/>
+        </property>
+      </style>
+      <method name="onClick">
+        <![CDATA[HFormTmpl():Read( cFormPath + "testget2.xml" ):Show()
+]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{155,3,75,42}</property>
+        <property name="Caption">[Test 3]</property>
+        <property name="Flat">.T.</property>
+        <property name="styles">
+          <hstyle colors="{15790320,12763842}" orient="1"/>
+          <hstyle colors="{15790320}" orient="1" border="2" tcolor="0"/>
+          <hstyle colors="{15790320}" orient="1"/>
+        </property>
+      </style>
+      <method name="onClick">
+        <![CDATA[HFormTmpl():Read( cFormPath + "testdbf1.xml" ):Show()
+]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{231,3,75,42}</property>
+        <property name="Name">[oOwnerbutton1]</property>
+        <property name="Caption">[Report]</property>
+        <property name="Flat">.T.</property>
+        <property name="styles">
+          <hstyle colors="{15790320,12763842}" orient="1"/>
+          <hstyle colors="{15790320}" orient="1" border="2" tcolor="0"/>
+          <hstyle colors="{15790320}" orient="1"/>
+        </property>
+      </style>
+      <method name="onClick">
+        <![CDATA[hreptmpl():Read("testrep1.xml"):print(,.t.)
+]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{306,3,107,42}</property>
+        <property name="Name">[oOwnerbutton3]</property>
+        <property name="Caption">[BarCode]</property>
+        <property name="Flat">.T.</property>
+        <property name="styles">
+          <hstyle colors="{15790320,12763842}" orient="1"/>
+          <hstyle colors="{15790320}" orient="1" border="2" tcolor="0"/>
+          <hstyle colors="{15790320}" orient="1"/>
+        </property>
+      </style>
+      <method name="onClick">
+        <![CDATA[HFormTmpl():Read( cFormPath + "barcode.xml" ):Show()
+]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{658,3,48,42}</property>
+        <property name="Caption">[Exit]</property>
+        <property name="Anchor">8</property>
+        <property name="Flat">.T.</property>
+        <property name="styles">
+          <hstyle colors="{15790320,12763842}" orient="1"/>
+          <hstyle colors="{15790320}" orient="1" border="2" tcolor="0"/>
+          <hstyle colors="{15790320}" orient="1"/>
+        </property>
       </style>
       <method name="onClick">
         <![CDATA[oDlg:Close()
 ]]>
       </method>
     </part>
-    <part class="ownerbutton">
-      <style>
-        <property name="Geometry">{51,3,75,42}</property>
-        <property name="Caption">[Test 1]</property>
-        <property name="Flat">.T.</property>
-      </style>
-      <method name="onClick">
-        <![CDATA[HFormTmpl():Read( cFormPath + "testget1.xml" ):Show()]]>
-      </method>
-    </part>
-    <part class="ownerbutton">
-      <style>
-        <property name="Geometry">{127,3,75,42}</property>
-        <property name="Caption">[Test 2]</property>
-        <property name="Flat">.T.</property>
-      </style>
-      <method name="onClick">
-        <![CDATA[HFormTmpl():Read( cFormPath + "testget2.xml" ):Show()]]>
-      </method>
-    </part>
-    <part class="ownerbutton">
-      <style>
-        <property name="Geometry">{202,3,75,42}</property>
-        <property name="Caption">[Test 3]</property>
-        <property name="Flat">.T.</property>
-      </style>
-      <method name="onClick">
-        <![CDATA[HFormTmpl():Read( cFormPath + "testdbf1.xml" ):Show()]]>
-      </method>
-    </part>
-    <part class="ownerbutton">
-      <style>
-        <property name="Geometry">{278,3,75,42}</property>
-        <property name="Name">[oOwnerbutton1]</property>
-        <property name="Caption">[Report]</property>
-        <property name="Flat">.T.</property>
-      </style>
-      <method name="onClick">
-        <![CDATA[hreptmpl():Read("testrep1.xml"):print(,.t.)]]>
-      </method>
-    </part>
-    <part class="ownerbutton">
-      <style>
-        <property name="Geometry">{354,3,107,42}</property>
-        <property name="Name">[oOwnerbutton3]</property>
-        <property name="Caption">[BarCode]</property>
-        <property name="Flat">.T.</property>
-      </style>
-      <method name="onClick">
-        <![CDATA[HFormTmpl():Read( cFormPath + "barcode.xml" ):Show()]]>
-      </method>
-    </part>
   </part>
   <part class="status">
     <style>
-      <property name="Geometry">{0,90,770,22}</property>
+      <property name="Geometry">{0,98,710,22}</property>
       <property name="Name">[oStatus1]</property>
       <property name="aParts">{120,0}</property>
     </style>

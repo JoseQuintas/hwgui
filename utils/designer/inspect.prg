@@ -129,6 +129,11 @@ STATIC FUNCTION Edit1()
             IF varbuf != Nil
                lRes := .T.
             ENDIF
+         ELSEIF aDataDef[ j,5 ] == "styles"
+            varbuf := SeleStyles( varbuf )
+            IF varbuf != Nil
+               lRes := .T.
+            ENDIF
          ENDIF
       ELSE
          varbuf := EditArray( varbuf )
@@ -508,7 +513,7 @@ FUNCTION SelectStyle( oStyle )
       LOCAL nColor := Hwg_ChooseColor(), cVal := Trim(oGet1:Value)
       IF nColor != Nil
          oGet1:Value := cVal + Iif(!Empty(cVal).AND.Right(cVal,1)!= ',',',',"") + '#' + hwg_ColorN2C(nColor)
-         oDemoStyle:aColors := hwg_hfrm_Str2Arr( '{'+AllTrim(cColors)+'}' )
+         oDemoStyle:aColors := hb_ATokens( AllTrim(cColors),',' )
          Cnv_aColors( oDemoStyle:aColors )
          Demo( oDemo, oDemoStyle )
       ENDIF
@@ -521,8 +526,12 @@ FUNCTION SelectStyle( oStyle )
       RETURN .T.
    }
    LOCAL bValid := {||
-      oDemoStyle:aColors := hwg_hfrm_Str2Arr( '{'+AllTrim(cColors)+'}' )
-      Cnv_aColors( oDemoStyle:aColors )
+      IF Empty( cColors )
+         oDemoStyle:aColors := Nil
+      ELSE
+         oDemoStyle:aColors := hb_ATokens( AllTrim(cColors),',' )
+         Cnv_aColors( oDemoStyle:aColors )
+      ENDIF
       Demo( oDemo, oDemoStyle )
       RETURN .T.
    }
@@ -591,7 +600,7 @@ FUNCTION SelectStyle( oStyle )
       AT 300, 120 SIZE 320, 400 FONT oDesigner:oMainWnd:oFont ;
       ON INIT {||Iif(oStyle!=Nil,Demo( oDemo, oDemoStyle ),.t.)}
 
-   @ 20,16 GET oGet1 VAR cColors SIZE 200, 26 VALID bValid
+   @ 20,16 GET oGet1 VAR cColors SIZE 200, 26 VALID bValid MAXLENGTH 36
    @ 220,16 BUTTON "Add" SIZE 40, 28 ON CLICK bAddClr
 
    GET RADIOGROUP nOrient
@@ -628,7 +637,7 @@ FUNCTION SelectStyle( oStyle )
 
    IF oDlg:lResult
       IF !Empty( cColors )
-         aColors := hb_ATokens( cColors,',' )
+         aColors := hb_ATokens( AllTrim(cColors),',' )
          Cnv_aColors( aColors )
          IF aCorners != Nil .AND. aCorners[1] == 0 .AND. aCorners[2] == 0 .AND. aCorners[3] == 0 .AND. aCorners[4] == 0 
             aCorners := Nil
@@ -658,4 +667,52 @@ STATIC FUNCTION Demo( oDemo, oStyle )
    oDemo:oStyle := oStyle
    hwg_Invalidaterect( oDemo:handle, 1 )
 
+   RETURN Nil
+
+FUNCTION SeleStyles( aStyles )
+   LOCAL oDlg, aDemo := Array(3)
+   LOCAL bClick := {|o|
+      LOCAL oStyle := Iif( aStyles != Nil, aStyles[o:cargo], Nil )
+      IF !Empty( oStyle := SelectStyle( oStyle ) )
+         IF aStyles == Nil
+            aStyles := Array(3)
+         ENDIF
+         aStyles[o:cargo] := oStyle
+         Demo( aDemo[o:cargo], oStyle )
+      ENDIF
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Select styles" ;
+      AT 300, 120 SIZE 320, 240 FONT oDesigner:oMainWnd:oFont
+
+   @ 30, 20 BUTTON "Normal state" SIZE 180, 30 ON CLICK bClick
+   ATail(oDlg:aControls):cargo := 1
+
+   @ 230,20 PANEL aDemo[1] SIZE 40, 40
+
+   @ 30, 70 BUTTON "Pressed" SIZE 180, 30 ON CLICK bClick
+   ATail(oDlg:aControls):cargo := 2
+
+   @ 230,70 PANEL aDemo[2] SIZE 40, 40
+
+   @ 30, 120 BUTTON "Mouse over" SIZE 180, 30 ON CLICK bClick
+   ATail(oDlg:aControls):cargo := 3
+
+   @ 230,120 PANEL aDemo[3] SIZE 40, 40
+
+   @ 20, 200 BUTTON "Ok" SIZE 100, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
+   @ 200, 200 BUTTON "Cancel" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() }
+
+   IF aStyles != Nil
+      aDemo[1]:oStyle := aStyles[1]
+      aDemo[2]:oStyle := aStyles[2]
+      aDemo[3]:oStyle := aStyles[3]
+   ENDIF
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      RETURN aStyles
+   ENDIF
    RETURN Nil

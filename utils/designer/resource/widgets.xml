@@ -576,10 +576,11 @@
       </widget>
       <widget class="toolbar" name="Toolbar" bmp="BMP_PANEL"  container="Yes">
          <paint><![CDATA[
+            private xp
             hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
-            if oCtrl:GetProp("hstyle") != Nil
-              oCtrl:GetProp("hstyle"):Draw(hDC,0,0,oCtrl:nWidth,oCtrl:nHeight)
-            elseif oCtrl:GetProp("backcolor") >= 0
+            if (xp := oCtrl:GetProp("hstyle")) != Nil
+              xp:Draw(hDC,0,0,oCtrl:nWidth,oCtrl:nHeight)
+            elseif Valtype(xp := oCtrl:GetProp("backcolor")) == "C" .and. Val(xp) >= 0
               hwg_Fillrect( hDC,2,2,oCtrl:nWidth-2,oCtrl:nHeight-2,oCtrl:brush:handle )
             endif
          ]]></paint>

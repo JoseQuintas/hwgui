@@ -548,7 +548,7 @@ Local fname, cExt := Iif( numdriv==1,"*.cdx", "*.ntx" )
    ENDIF
 
    IF !Empty( fname )
-      Set Index To (fname)
+      Set Index To (fname) Additive
       UpdBrowse()
    ENDIF
 

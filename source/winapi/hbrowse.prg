@@ -1516,7 +1516,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
    x1  := ::x1
    fif := iif( ::freeze > 0, 1, ::nLeftCol )
 
-   DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. x1 + ::aColumns[fif]:width < xm
+   DO WHILE fif < ( ::nLeftCol + ::nColumns ) .AND. fif <= Len(::aColumns) .AND. x1 + ::aColumns[fif]:width < xm
       x1 += ::aColumns[fif]:width
       fif := iif( fif == ::freeze, ::nLeftCol, fif + 1 )
    ENDDO

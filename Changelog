@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-21 18:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+  * utils/dbc/dbchw.prg
+    ! Fixes.
+
 2018-11-21 11:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/resource/widgets.xml
     ! Small fix

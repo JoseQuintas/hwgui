@@ -605,7 +605,11 @@ METHOD Rebuild( hDC ) CLASS HBrowse
          xSize := Round( ( nColLen ) * arr[2], 0 )
       ENDIF
 
-      oColumn:width := xSize + ::aPadding[1] + ::aPadding[3]
+      IF oColumn:length < 0
+         oColumn:width := Abs( oColumn:length )
+      ELSE
+         oColumn:width := xSize + ::aPadding[1] + ::aPadding[3]
+      ENDIF
 
    NEXT
 
@@ -1032,7 +1036,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                   ENDIF
 
                   IF !Empty( sviv := AllTrim( FLDSTR( Self, nCol ) ) )
-                     hwg_Drawtext( hDC, sviv, x + ::aPadding[1], y1 + ::aPadding[2], x2 - ::aPadding[3], y2 - 1 - ::aPadding[4], oColumn:nJusLin )
+                     hwg_Drawtext( hDC, sviv, x + ::aPadding[1], y1 + ::aPadding[2], x2 - ::aPadding[3], y2 - 1 - ::aPadding[4], oColumn:nJusLin, .T. )
                   ENDIF
                   IF !Empty( aCB := hwg_getPaintCB( aCB, PAINT_LINE_ITEM ) )
                      FOR j := 1 TO Len( aCB )
@@ -1816,16 +1820,20 @@ STATIC FUNCTION FldStr( oBrw, numf )
             type := ValType( vartmp )
          ENDIF
          IF type == "C"
-            cRes := PadR( vartmp, oBrw:aColumns[numf]:length )
+            //cRes := PadR( vartmp, oBrw:aColumns[numf]:length )
+            cRes := vartmp
 
          ELSEIF type == "N"
-            cRes := PadL( Str( vartmp, oBrw:aColumns[numf]:length, ;
-               oBrw:aColumns[numf]:dec ), oBrw:aColumns[numf]:length )
+            //cRes := PadL( Str( vartmp, oBrw:aColumns[numf]:length, ;
+            //   oBrw:aColumns[numf]:dec ), oBrw:aColumns[numf]:length )
+            cRes := Ltrim( Str( vartmp, 24, oBrw:aColumns[numf]:dec ) )
          ELSEIF type == "D"
-            cRes := PadR( Dtoc( vartmp ), oBrw:aColumns[numf]:length )
+            //cRes := PadR( Dtoc( vartmp ), oBrw:aColumns[numf]:length )
+            cRes := Dtoc( vartmp )
 
          ELSEIF type == "L"
-            cRes := PadR( Iif( vartmp, "T", "F" ), oBrw:aColumns[numf]:length )
+            //cRes := PadR( Iif( vartmp, "T", "F" ), oBrw:aColumns[numf]:length )
+            cRes := Iif( vartmp, "T", "F" )
 
          ELSEIF type == "M"
             cRes := "<Memo>"
@@ -1837,7 +1845,8 @@ STATIC FUNCTION FldStr( oBrw, numf )
             cRes := "<Array>"
 
          ELSE
-            cRes := Space( oBrw:aColumns[numf]:length )
+            //cRes := Space( oBrw:aColumns[numf]:length )
+            cRes := " "
          ENDIF
       ENDIF
    ENDIF

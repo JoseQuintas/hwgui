@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-21 10:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawtext.c
+    * hwg_DrawText() changed - 8-th boolean parameter added, which forces
+      the text to fit in boundaries
+  * source/gtk/htree.prg
+    ! Small fix
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * Now, if you set the negative column length, it is interpreted as a width in pixels
+
 2018-11-17 16:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hfrmtmpl.prg
   * source/gtk/hfrmtmpl.prg

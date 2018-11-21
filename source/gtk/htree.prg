@@ -491,7 +491,7 @@ METHOD PaintNode( hDC, oNode, nNode, nLine ) CLASS HTree
    ELSE
       hwg_Fillrect( hDC, x1, y1, x1 + nTextWidth, y1 + ( ::height + 1 ), ::brush:handle )
    ENDIF
-   hwg_Drawtext( hDC, oNode:title, x1, y1, ::nWidth, y1 + ( ::height + 1 ) )
+   hwg_Drawtext( hDC, oNode:title, x1, y1, ::nLeft+::nWidth-1, y1 + ( ::height + 1 ),,.T. )
    hwg_Settextcolor( hDC, ::tcolor )
 
    FOR i := oNode:nLevel - 1 TO 1 STEP - 1

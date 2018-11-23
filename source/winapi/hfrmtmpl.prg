@@ -11,10 +11,6 @@
 #xtranslate HB_AT(<x,...>) => AT(<x>)
 #endif
 
-#ifdef __XHARBOUR__
-#xtranslate HB_AT(<x,...>) => AT(<x>)
-#endif
-
 STATIC nVertRes, nVertSize
 STATIC aClass := { "label", "button", "checkbox",       ;
       "radiobutton", "editbox", "group", "radiogroup",  ;

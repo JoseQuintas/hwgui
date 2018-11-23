@@ -60,6 +60,8 @@
 #include "hxml.ch"
 
 #ifdef __XHARBOUR__
+#xtranslate HB_AT(<x,...>) => AT(<x>)
+#xtranslate HB_RAT(<x,...>) => RAT(<x>)
 #xtranslate HB_HASH([<x,...>]) => HASH([<x>])
 #xtranslate HB_HHASKEY(<x,...>) => HHASKEY(<x>)
 #endif
@@ -1297,6 +1299,9 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       ELSEIF hwg_checkBit( nctrl,FBITSHIFT )
          IF !::lReadOnly .AND. !::lNoPaste
             cLine := hwg_Getclipboardtext()
+            IF Chr(9) $ cLine
+               cLine := Strtran( cLine, Chr(9), Space(::nTablen) )
+            ENDIF
             ::InsText( ::aPointC, cLine )
             hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
                ::nHeight )
@@ -1324,6 +1329,9 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    ELSEIF ( nKeyCode == 86 .OR. nKeyCode == 118 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'V'
       IF !::lReadOnly .AND. !::lNoPaste
          cLine := hwg_Getclipboardtext()
+         IF Chr(9) $ cLine
+            cLine := Strtran( cLine, Chr(9), Space(::nTablen) )
+         ENDIF
          ::InsText( ::aPointC, cLine )
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ::nHeight )
       ENDIF

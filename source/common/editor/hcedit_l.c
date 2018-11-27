@@ -229,16 +229,16 @@ int ted_CalcItemWidth( PangoLayout * layout, char *szText, TEDFONT *font, int *i
       pango_layout_get_pixel_extents( layout, &rc, NULL );
       font->iWidth = rc.width / 2;
       font->iHeight = PANGO_DESCENT( rc );
-      pango_layout_set_text( layout, "aa", 2 );
-      pango_layout_get_pixel_extents( layout, &rc, NULL );
-      font->ixAdd = rc.width;
+
       pango_layout_set_text( layout, "a", 1 );
       pango_layout_get_pixel_extents( layout, &rc, NULL );
-      font->ixAdd -= rc.width * 2;
+      font->ixAdd = PANGO_LBEARING(rc);
+      font->iSpace = PANGO_RBEARING(rc);
+      //wrlog( NULL, "a lBear = %d rBear= %d width= %d\r\n",PANGO_LBEARING(rc),PANGO_RBEARING(rc), rc.width );
+
       pango_layout_set_text( layout, "  a", 3 );
       pango_layout_get_pixel_extents( layout, &rc, NULL );
-      font->iSpace = PANGO_LBEARING(rc)/2;
-      // wrlog( NULL, "iWidth = %d iHeight= %d \r\n",font->iWidth,font->iHeight );
+      font->iSpace = (PANGO_RBEARING(rc) - font->iSpace)/2;
    }
 
    iReal = iWidth / font->iWidth;

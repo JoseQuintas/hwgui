@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-27 09:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hwindow.prg
+  * source/winapi/hsplit.prg
+  * source/gtk/hwindow.prg
+  * source/gtk/hsplit.prg
+    * Moving of the splitter respects anchors now
+  * doc/hwgdoc_functions.html
+    * hwg_onAnchor() added.
+
 2018-11-23 08:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hfrmtmpl.prg
     ! Small fix

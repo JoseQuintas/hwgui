@@ -40,7 +40,7 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
       IF oWnd:nAdjust == 2
          oWnd:nAdjust := 0
       ELSE
-         onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, aCoors[3]-aCoors[1], aCoors[4]-aCoors[2] )
+         hwg_onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, aCoors[3]-aCoors[1], aCoors[4]-aCoors[2] )
       ENDIF
    ENDIF
    oWnd:Super:onEvent( WM_SIZE, wParam, lParam )
@@ -61,7 +61,7 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
    RETURN Iif( !Empty(oWnd:type) .AND. oWnd:type >= WND_DLG_RESOURCE, 0, - 1 )
 
-STATIC FUNCTION onAnchor( oWnd, wold, hold, wnew, hnew )
+FUNCTION hwg_onAnchor( oWnd, wold, hold, wnew, hnew )
 LOCAL aControls := oWnd:aControls, oItem, w, h
 
    FOR EACH oItem IN aControls
@@ -69,12 +69,12 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
          w := oItem:nWidth
          h := oItem:nHeight
          oItem:onAnchor( wold, hold, wnew, hnew )
-         onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
+         hwg_onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
       ENDIF
    NEXT
    RETURN Nil
 
-STATIC FUNCTION hwg_onActivate( oDlg, wParam, lParam )
+STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
    LOCAL iParLow := hwg_Loword( wParam ), b
 
@@ -86,7 +86,7 @@ STATIC FUNCTION hwg_onActivate( oDlg, wParam, lParam )
 
    RETURN 0
 
-STATIC FUNCTION hwg_onEnterIdle( oDlg, wParam, lParam )
+STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
    LOCAL oItem, b
    LOCAL aCoors, aRect
    IF ( Empty( wParam ) .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
@@ -279,9 +279,9 @@ CLASS HMainWindow INHERIT HWindow
       {|o,w,l|hwg_onWndSize( o, w, l ) },   ;
       {|o,w|onSysCommand( o, w ) },         ;
       {|o,w,l|onNotifyIcon( o, w, l ) },    ;
-      {|o,w,l|hwg_onActivate( o, w, l ) },  ;
-      {|o,w,l|hwg_onEnterIdle( o, w, l ) }, ;
-      {|o,w,l|hwg_onEnterIdle( o, w, l ) }, ;
+      {|o,w,l|onActivate( o, w, l ) },      ;
+      {|o,w,l|onEnterIdle( o, w, l ) },     ;
+      {|o,w,l|onEnterIdle( o, w, l ) },     ;
       {|o|onCloseQuery( o ) },              ;
       {|o|hwg_onDestroy( o ) },             ;
       {|o,w|onEndSession( o, w ) }          ;

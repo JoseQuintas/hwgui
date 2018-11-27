@@ -33,7 +33,7 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
    IF oWnd:nAdjust == 2
       oWnd:nAdjust := 0
    ELSEIF oWnd:nAdjust == 0
-      onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, w, h )
+      hwg_onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, w, h )
    ENDIF
    oWnd:Super:onEvent( WM_SIZE, wParam, lParam )
 
@@ -71,16 +71,15 @@ FUNCTION hwg_HideHidden( oWnd )
 
    RETURN Nil
 
-STATIC FUNCTION onAnchor( oWnd, wold, hold, wnew, hnew )
+FUNCTION hwg_onAnchor( oWnd, wold, hold, wnew, hnew )
    LOCAL aControls := oWnd:aControls, oItem, w, h
 
    FOR EACH oItem IN aControls
       IF oItem:Anchor > 0
          w := oItem:nWidth
          h := oItem:nHeight
-         //hwg_writelog( "onanchor: "+oItem:classname()+" "+str(hold)+"/"+str(hnew) )
          oItem:onAnchor( wold, hold, wnew, hnew )
-         onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
+         hwg_onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
       ENDIF
    NEXT
 

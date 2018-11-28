@@ -158,7 +158,7 @@ METHOD Init() CLASS HSayBmp
    RETURN Nil
 
 METHOD Paint( lpdis ) CLASS HSayBmp
-   LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
+   LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis ), n
 
    IF ::brush != Nil
       hwg_Fillrect( drawInfo[ 3 ], drawInfo[ 4 ], drawInfo[ 5 ], drawInfo[ 6 ], drawInfo[ 7 ], ::brush:handle )
@@ -198,7 +198,8 @@ METHOD Paint( lpdis ) CLASS HSayBmp
          ::oPen := HPen():Add( BS_SOLID, ::nBorder, ::tColor )
       ENDIF
       hwg_Selectobject( drawInfo[ 3 ], ::oPen:handle )
-      hwg_Rectangle( drawInfo[ 3 ], ::nOffsetH, ::nOffsetV, ::nOffsetH+::nWidth-1-::nBorder, ::nOffsetV+::nHeight-1-::nBorder )
+      n := Int( ::nBorder/2 )
+      hwg_Rectangle( drawInfo[ 3 ], ::nOffsetH+n, ::nOffsetV+n, ::nOffsetH+::nWidth-n, ::nOffsetV+::nHeight-n )
    ENDIF
 
    RETURN Nil

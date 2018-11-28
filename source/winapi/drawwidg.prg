@@ -676,14 +676,16 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
 
 METHOD Draw( hDC, nTop, nLeft, nRight, nBottom ) CLASS HStyle
 
+   LOCAL n
    IF ::oBitmap == Nil
       hwg_drawGradient( hDC, nTop, nLeft, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
    ELSE
       hwg_SpreadBitmap( hDC, ::oBitmap:handle, nTop, nLeft, nRight, nBottom )
    ENDIF
    IF !Empty( ::oPen )
+      n := Int( ::nBorder/2 )
       hwg_Selectobject( hDC, ::oPen:handle )
-      hwg_Rectangle( hDC, nTop, nLeft, nRight-1, nBottom-1 )
+      hwg_Rectangle( hDC, nTop+n, nLeft+n, nRight-n, nBottom-n )
    ENDIF
 
    RETURN Nil

@@ -20,6 +20,7 @@ CLASS HSplitter INHERIT HControl
    DATA aLeft
    DATA aRight
    DATA lVertical
+   DATA oStyle
    DATA lRepaint    INIT .F.
    DATA nFrom, nTo
    DATA hCursor
@@ -28,7 +29,7 @@ CLASS HSplitter INHERIT HControl
    DATA bEndDrag
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      bSize, bPaint, color, bcolor, aLeft, aRight, nFrom, nTo )
+      bSize, bPaint, color, bcolor, aLeft, aRight, nFrom, nTo, oStyle )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -40,7 +41,7 @@ CLASS HSplitter INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      bSize, bDraw, color, bcolor, aLeft, aRight, nFrom, nTo ) CLASS HSplitter
+      bSize, bDraw, color, bcolor, aLeft, aRight, nFrom, nTo, oStyle ) CLASS HSplitter
 
    ::Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, , , ;
       bSize, bDraw, , iif( color == Nil, 0, color ), bcolor )
@@ -49,8 +50,9 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    ::aLeft  := iif( aLeft == Nil, {}, aLeft )
    ::aRight := iif( aRight == Nil, {}, aRight )
    ::lVertical := ( ::nHeight > ::nWidth )
-   ::nFrom := nFrom
-   ::nTo   := nTo
+   ::nFrom  := nFrom
+   ::nTo    := nTo
+   ::oStyle := oStyle
 
    ::Activate()
 
@@ -109,14 +111,19 @@ METHOD Init CLASS HSplitter
    RETURN Nil
 
 METHOD Paint() CLASS HSplitter
-   LOCAL hDC
+   LOCAL hDC, aCoors
 
    IF ::bPaint != Nil
       Eval( ::bPaint, Self )
    ELSE
       hDC := hwg_Getdc( ::handle )
-      hwg_Drawbutton( hDC, 0, 0, ::nWidth - 1, ::nHeight - 1, 6 )
-      hwg_Releasedc( ::handle, hDC )
+      IF ::oStyle == Nil
+         hwg_Drawbutton( hDC, 0, 0, ::nWidth - 1, ::nHeight - 1, 6 )
+      ELSE
+         aCoors := hwg_Getclientrect( ::handle )
+         ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
+      ENDIF
+   hwg_Releasedc( ::handle, hDC )
    ENDIF
 
    RETURN Nil

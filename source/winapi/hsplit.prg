@@ -20,6 +20,7 @@ CLASS VAR winclass INIT "STATIC"
    DATA aLeft
    DATA aRight
    DATA lVertical
+   DATA oStyle
    DATA lRepaint    INIT .F.
    DATA nFrom, nTo
    DATA hCursor
@@ -28,7 +29,7 @@ CLASS VAR winclass INIT "STATIC"
    DATA bEndDrag
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-               bSize, bPaint, color, bcolor, aLeft, aRight, nFrom, nTo )
+               bSize, bPaint, color, bcolor, aLeft, aRight, nFrom, nTo, oStyle )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -39,17 +40,18 @@ CLASS VAR winclass INIT "STATIC"
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-            bSize, bDraw, color, bcolor, aLeft, aRight, nFrom, nTo ) CLASS HSplitter
+            bSize, bDraw, color, bcolor, aLeft, aRight, nFrom, nTo, oStyle ) CLASS HSplitter
 
    ::Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight,,, ;
               bSize, bDraw,, Iif(color==Nil,0,color), bcolor )
 
-   ::title   := ""
-   ::aLeft   := IIf( aLeft == Nil, { }, aLeft )
-   ::aRight  := IIf( aRight == Nil, { }, aRight )
+   ::title  := ""
+   ::aLeft  := IIf( aLeft == Nil, { }, aLeft )
+   ::aRight := IIf( aRight == Nil, { }, aRight )
    ::lVertical := ( ::nHeight > ::nWidth )
-   ::nFrom := nFrom
-   ::nTo   := nTo
+   ::nFrom  := nFrom
+   ::nTo    := nTo
+   ::oStyle := oStyle
 
    ::Activate()
 
@@ -123,12 +125,16 @@ METHOD Paint() CLASS HSplitter
       pps := hwg_Definepaintstru()
       hDC := hwg_Beginpaint( ::handle, pps )
       aCoors := hwg_Getclientrect( ::handle )
-      x1 := aCoors[ 1 ] + IIf( ::lVertical, 1, 5 )
-      y1 := aCoors[ 2 ] + IIf( ::lVertical, 5, 1 )
-      x2 := aCoors[ 3 ] - IIf( ::lVertical, 0, 5 )
-      y2 := aCoors[ 4 ] - IIf( ::lVertical, 5, 0 )
 
-      hwg_Drawedge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
+      IF ::oStyle == Nil
+         x1 := aCoors[ 1 ] + IIf( ::lVertical, 1, 5 )
+         y1 := aCoors[ 2 ] + IIf( ::lVertical, 5, 1 )
+         x2 := aCoors[ 3 ] - IIf( ::lVertical, 0, 5 )
+         y2 := aCoors[ 4 ] - IIf( ::lVertical, 5, 0 )
+         hwg_Drawedge( hDC, x1, y1, x2, y2, EDGE_ETCHED, IIf( ::lVertical, BF_LEFT, BF_TOP ) )
+      ELSE
+         ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
+      ENDIF
       hwg_Endpaint( ::handle, pps )
    ENDIF
 

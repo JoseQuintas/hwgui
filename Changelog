@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-29 15:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hsplit.prg
+  * source/gtk/hsplit.prg
+    * :oStyle variable added, oStyle parameter added to New() method
+  * include/guilib.ch
+    * HSTYLE clause added to the @ ... SPLITTER command
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+    * Some changes, related to splitter.
+
 2018-11-28 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/drawwidg.prg
   * source/winapi/hsayimg.prg

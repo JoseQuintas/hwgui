@@ -321,7 +321,8 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
    ENDIF
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
-      oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight, w ) }, bPaint, bcolor )
+      oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
+   ::Anchor := ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
    ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
    ::oStyle := oStyle

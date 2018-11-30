@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-11-30 14:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hpanel.prg
+  * source/gtk/hpanel.prg
+    ! Small fix for a bottom panel
+
 2018-11-29 15:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hsplit.prg
   * source/gtk/hsplit.prg

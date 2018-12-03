@@ -452,6 +452,7 @@ HB_FUNC( HWG_CREATEFONTINDIRECT )
    HB_RETHANDLE( f );
 }
 
+#if __HARBOUR__ - 0 > 0x030000
 int CALLBACK GetFontsCallback( ENUMLOGFONTEX *lpelfe, NEWTEXTMETRICEX *lpntme,
       DWORD FontType, LPARAM lParam )
 {
@@ -486,3 +487,4 @@ HB_FUNC( HWG_GETFONTSLIST )
    hb_itemRelease( pFontsItemLast );
    hb_itemReturnRelease( aFontsList );
 }
+#endif

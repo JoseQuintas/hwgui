@@ -673,10 +673,12 @@ Local bBack := {|o,h,x1,y1,x2,y2,n|
 }
 Local bDrawOrd := {|o,h,x1,y1,x2,y2|
    IF o:cargo == 1
+      // if sorted ascending
       hwg_Selectobject( h, oPen:handle )
       hwg_DrawLine( h, x2-16, y2-14, x2-12, y2-8 )
       hwg_DrawLine( h, x2-12, y2-8, x2-8, y2-14 )
    ELSEIF o:cargo == 2
+      // if sorted descending
       hwg_Selectobject( h, oPen:handle )
       hwg_DrawLine( h, x2-16, y2-8, x2-12, y2-14 )
       hwg_DrawLine( h, x2-12, y2-14, x2-8, y2-8 )
@@ -727,7 +729,10 @@ Local bDrawOrd := {|o,h,x1,y1,x2,y2|
    // Set a codeblock to change order
    oBrw:aColumns[2]:bHeadClick := oBrw:aColumns[3]:bHeadClick := ;
       oBrw:aColumns[4]:bHeadClick := {|o,n|onHeadClick(o,n)}
-   // We use the column :cargo here to keep info about current order
+   // The :cargo variable exists in all HwGUI objects and isn't used by HwGUI itself.
+   // You may use it as you need in your programs.
+   // We use the column's :cargo here to keep info about the current order:
+   // 0 - not sorted by this column, 1 - sorted ascending, 2 - sorted descending
    oBrw:aColumns[2]:cargo := oBrw:aColumns[3]:cargo := oBrw:aColumns[4]:cargo := 0
 
    @ 128,260 OWNERBUTTON oBtnOk SIZE 100,32 ;
@@ -747,6 +752,7 @@ Return Nil
 Function onHeadClick( oBrw, nCol )
 Local no := Ascan( oBrw:aColumns, {|o|o:cargo>0}, 2 )
 
+   // no is an index of a column, used in sorting
    IF no == 0
       oBrw:aColumns[nCol]:cargo := 1
    ELSEIF no == nCol

@@ -63,6 +63,8 @@ CLASS HColumn INHERIT HObject
    DATA aList                    // Array of possible values for a column -
    // combobox will be used while editing the cell
    DATA oStyleHead               // An HStyle object to draw the header
+   DATA oStyleFoot               // An HStyle object to draw the footer
+   DATA oStyleCell               // An HStyle object to draw the cell
    DATA aPaintCB                 // An array with codeblocks to paint column items: { nId, cId, bDraw }
    DATA aBitmaps
 
@@ -163,6 +165,8 @@ CLASS HBrowse INHERIT HControl
    DATA aArray                                 // An array browsed if this is BROWSE ARRAY
    DATA recCurr    INIT 0
    DATA oStyleHead                             // An HStyle object to draw the header
+   DATA oStyleFoot                             // An HStyle object to draw the footer
+   DATA oStyleCell                             // An HStyle object to draw the cell
    DATA headColor                              // Header text color
    DATA sepColor   INIT 12632256               // Separators color
    DATA oPenSep, oPenHdr, oPen3d
@@ -971,6 +975,10 @@ METHOD FooterOut( hDC ) CLASS HBrowse
    x := ::x1
    fif := iif( ::freeze > 0, 1, ::nLeftCol )
 
+   //y1 := ::y1 + ( ::rowCount ) * ( ::height + 1 ) + 1
+   //y2 := ::y1 + ( ::rowCount + 1 ) * ( ::height + 1 )
+   y1 := ::y2 - ::height
+   y2 := ::y2
    DO WHILE x < ::x2 - 2
       oColumn := ::aColumns[fif]
       xSize := oColumn:width
@@ -978,17 +986,22 @@ METHOD FooterOut( hDC ) CLASS HBrowse
          xSize := Max( ::x2 - x, xSize )
       ENDIF
       x2 := x + xSize - 1
-      y1 := ::y1 + ( ::rowCount ) * ( ::height + 1 ) + 1
-      y2 := ::y1 + ( ::rowCount + 1 ) * ( ::height + 1 )
       aCB := oColumn:aPaintCB
       IF !Empty( block := hwg_getPaintCB( aCB, PAINT_FOOT_ALL ) )
          RETURN Eval( block, oColumn, hDC, x, y1, x2, y2, fif )
       ELSE
          IF !Empty( block := hwg_getPaintCB( aCB, PAINT_FOOT_BACK ) )
             Eval( block, oColumn, hDC, x, y1, x2, y2, fif )
+         ELSEIF oColumn:oStyleFoot != Nil
+            oColumn:oStyleFoot:Draw( hDC, x, y1, x2, y2 )
+         ELSEIF ::oStyleFoot != Nil
+            ::oStyleFoot:Draw( hDC, x, y1, x2, y2 )
+         ELSE
+            hwg_Drawbutton( hDC, x, y1, x2, y2, 0 )
          ENDIF
 
          IF oColumn:footing != Nil
+            hwg_Settransparentmode( hDC, .T. )
             IF ValType( oColumn:footing ) == "C"
                hwg_Drawtext( hDC, oColumn:footing, ;
                   x, y1, x2, y2, oColumn:nJusLin + iif( oColumn:lSpandFoot, DT_NOCLIP, 0 ) )
@@ -1001,6 +1014,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
                   ENDIF
                NEXT
             ENDIF
+            hwg_Settransparentmode( hDC, .F. )
          ENDIF
          IF !Empty( aCB := hwg_getPaintCB( aCB, PAINT_FOOT_ITEM ) )
             FOR i := 1 TO Len( aCB )
@@ -1016,7 +1030,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
    ENDDO
 
    IF ::lDispSep
-      hwg_Drawline( hDC, ::x1, ::y1 + ( ::rowCount ) * ( ::height + 1 ) + 1, iif( ::lAdjRight, ::x2, x ), ::y1 + ( ::rowCount ) * ( ::height + 1 ) + 1 )
+      hwg_Drawline( hDC, ::x1, y1, iif( ::lAdjRight, ::x2, x ), y1 )
    ENDIF
 
    RETURN Nil
@@ -1075,6 +1089,10 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
          ELSE
             IF !Empty( block := hwg_getPaintCB( aCB, PAINT_LINE_BACK ) )
                Eval( block, oColumn, hDC, x, y1, x2, y2, nCol )
+            ELSEIF oColumn:oStyleCell != Nil
+               oColumn:oStyleCell:Draw( hDC, x, y1, x2, y2 )
+            ELSEIF ::oStyleCell != Nil
+               ::oStyleCell:Draw( hDC, x, y1, x2, y2 )
             ELSE
                hBReal := iif( oColumn:brush != Nil, ;
                   oColumn:brush:handle, iif( vybfld == i, oBrushSele, oBrushLine ):handle )

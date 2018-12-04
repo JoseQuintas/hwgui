@@ -337,6 +337,9 @@
       nCurrent                    - Number of a current record in a browse
       aArray                      - An array to browse
       recCurr
+      oStyleHead                  - An HStyle object to draw the header
+      oStyleFoot                  - An HStyle object to draw the footer
+      oStyleCell                  - An HStyle object to draw the cell
       headColor                   - Header text color
       sepColor                    - Separators color
       oPenSep, oPenHdr, oPen3d
@@ -344,7 +347,9 @@
       aPadding
       aHeadPadding
       lInFocus
-      tcolorSel, bcolorSel, brushSel, htbColor, httColor
+      tcolorSel, bcolorSel        - Text and backgound color od a selected row
+      brushSel
+      httColor, htbColor          - Text and backgound color od a selected cell
       bSkip, bGoTo, bGoTop, bGoBot, bEof, bBof
       bRcou, bRecno, bRecnoLog
       bPosChanged, bLineOut, 
@@ -1230,6 +1235,8 @@
       lEditable 
       aList 
       oStyleHead               - An HStyle object to draw the header
+      oStyleFoot               - An HStyle object to draw the footer
+      oStyleCell               - An HStyle object to draw the cell
       aPaintCB                 - An array with codeblocks to paint column items
       aBitmaps 
       bValid,bWhen 

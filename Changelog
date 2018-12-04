@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-04 12:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * Footer drawing corrected
+  * samples/testbrw.prg
+    * Test corrected and updated
+  * doc/hwgdoc_classes.html
+    * New HBrowse variables added
+
 2018-12-03 21:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg

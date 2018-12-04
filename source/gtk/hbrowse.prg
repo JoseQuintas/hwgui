@@ -924,15 +924,17 @@ METHOD FooterOut( hDC ) CLASS HBrowse
 
          IF oColumn:footing != Nil
             hwg_Settransparentmode( hDC, .T. )
-            IF Valtype( oColumn:footing ) == "C"
+            IF ValType( oColumn:footing ) == "C"
                hwg_Drawtext( hDC, oColumn:footing, ;
-                  x, y1, x2, y2, oColumn:nJusLin + Iif( oColumn:lSpandFoot, DT_NOCLIP, 0 ) )
+                  x + ::aHeadPadding[1], y1 + ::aHeadPadding[2], ;
+                  x2 - ::aHeadPadding[3], y2 - ::aHeadPadding[4], oColumn:nJusLin + iif( oColumn:lSpandFoot, DT_NOCLIP, 0 ) )
             ELSE
                FOR nLine := 1 TO Len( oColumn:footing )
                   IF !Empty( oColumn:footing[nLine] )
                      hwg_Drawtext( hDC, oColumn:footing[nLine], ;
-                        x, ::y1 + ( ::rowCount + nLine - 1 ) * ( ::height + 1 ) + 1, x2, ::y1 + ( ::rowCount + nLine ) * ( ::height + 1 ), ;
-                        oColumn:nJusLin + Iif( oColumn:lSpandFoot, DT_NOCLIP, 0 ) )
+                        x + ::aHeadPadding[1], y1 + ( nLine - 1 ) * ( ::height + 1 ) + 1, ;
+                        x2 - ::aHeadPadding[3], ::y1 + nLine * ( ::height + 1 ), ;
+                        oColumn:nJusLin + iif( oColumn:lSpandFoot, DT_NOCLIP, 0 ) )
                   ENDIF
                NEXT
             ENDIF
@@ -942,6 +944,17 @@ METHOD FooterOut( hDC ) CLASS HBrowse
             FOR i := 1 TO Len( aCB )
                Eval( aCB[i], oColumn, hDC, x, y1, x2, y2, fif )
             NEXT
+         ENDIF
+      ENDIF
+      hwg_Selectobject( hDC, ::oPenSep:handle )
+      IF ::lDispSep .AND. x > ::x1
+         IF ::lSep3d
+            hwg_Selectobject( hDC, ::oPen3d:handle )
+            hwg_Drawline( hDC, x - 1, y1+1, x - 1, y2-1 )
+            hwg_Selectobject( hDC, ::oPenSep:handle )
+            hwg_Drawline( hDC, x - 2, y1 + 1, x - 2, y2 - 1 )
+         ELSE
+            hwg_Drawline( hDC, x - 1, y1 + 1, x - 1, y2 - 1 )
          ENDIF
       ENDIF
       x += xSize
@@ -983,7 +996,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
       WHILE x < ::x2 - 2
          oColumn := ::aColumns[nCol]
          IF oColumn:bColorBlock != Nil
-            aCores := Eval( oColumn:bColorBlock )
+            aCores := Eval( oColumn:bColorBlock, Self, nstroka, nCol )
             IF lSelected
                oColumn:tColor := Iif( vybfld==i.AND.Len(aCores)>=5.AND.aCores[5]!=Nil, aCores[5], aCores[3] )
                oColumn:bColor := Iif( vybfld==i.AND.Len(aCores)>=6.AND.aCores[6]!=Nil, aCores[6], aCores[4] )

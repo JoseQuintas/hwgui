@@ -34,6 +34,7 @@ Local aSample2 := { {.t.,"Line 1",10}, {.t.,"Line 2",22}, {.f.,"Line 3",40} }
    oBrw1:AddColumn( HColumn():New( "Age",{|v,o|o:aArray[o:nCurrent,2]},"N",6,0,.T.,DT_CENTER,DT_RIGHT ) )
    oBrw1:AddColumn( HColumn():New( "Koef",{|v,o|o:aArray[o:nCurrent,3]},"N",6,0,.F.,DT_CENTER,DT_RIGHT ) )
    oBrw1:aColumns[2]:footing := "Age"
+   oBrw1:aColumns[2]:lResizable := .F.
 
    hwg_CREATEARLIST( oBrw2,aSample2 )
    oBmp := HBitmap():AddStandard( OBM_CHECK )

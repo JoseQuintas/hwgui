@@ -59,7 +59,8 @@ CLASS HColumn INHERIT HObject
    // WHT. 27.07.2002
    DATA tcolor, bcolor, brush
    DATA oFont
-   DATA lEditable INIT .F.       // Is the column editable
+   DATA lEditable  INIT .F.      // Is the column editable
+   DATA lResizable INIT .T.      // Is the column resizable
    DATA aList                    // Array of possible values for a column -
    // combobox will be used while editing the cell
    DATA oStyleHead               // An HStyle object to draw the header
@@ -70,7 +71,7 @@ CLASS HColumn INHERIT HObject
 
    DATA bValid, bWhen            // When and Valid codeblocks for cell editing
    DATA bEdit                    // Codeblock, which performs cell editing, if defined
-   DATA PICTURE
+   DATA Picture
 
    DATA cGrid
    DATA lSpandHead INIT .F.
@@ -1603,9 +1604,10 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
       ENDIF
 
    ELSEIF nLine == 0 .AND. hwg_isPtrEq( oCursor, ColSizeCursor )
+
       ::lResizing := .T.
       Hwg_SetCursor( oCursor )
-      xDrag := hwg_Loword( lParam )
+      xDrag := xm
 
    ELSEIF nLine == 0 .AND. ::lDispHead .AND. ;
          fif <= Len( ::aColumns ) .AND. ::aColumns[fif]:bHeadClick != Nil
@@ -1715,11 +1717,13 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
          DO WHILE x < ::x2 - 2 .AND. i <= nLen
             x += ::aColumns[i]:width
             IF Abs( x - xPos ) < 8
-               IF !hwg_isPtrEq( oCursor, ColSizeCursor )
-                  oCursor := ColSizeCursor
+               IF ::aColumns[i]:lResizable
+                  IF !hwg_isPtrEq( oCursor, ColSizeCursor )
+                     oCursor := ColSizeCursor
+                  ENDIF
+                  Hwg_SetCursor( oCursor )
+                  res := .T.
                ENDIF
-               Hwg_SetCursor( oCursor )
-               res := .T.
                EXIT
             ENDIF
             i := iif( i == ::freeze, ::nLeftCol, i + 1 )

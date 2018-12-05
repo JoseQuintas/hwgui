@@ -44,6 +44,7 @@ CLASS HColumn INHERIT HObject
    DATA tcolor, bcolor, brush
    DATA oFont
    DATA lEditable INIT .F.       // Is the column editable
+   DATA lResizable INIT .T.      // Is the column resizable
    DATA aList                    // Array of possible values for a column -
                                  // combobox will be used while editing the cell
    DATA oStyleHead               // An HStyle object to draw the header
@@ -1626,11 +1627,13 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
          DO WHILE x < ::x2 - 2 .AND. i <= nLen
             x += ::aColumns[i]:width
             IF Abs( x - xPos ) < 8
-               IF ::nCursor != 2
-                  ::nCursor := 1
+               IF ::aColumns[i]:lResizable
+                  IF ::nCursor != 2
+                     ::nCursor := 1
+                  ENDIF
+                  Hwg_SetCursor( Iif( ::nCursor == 1,crossCursor,vCursor ), ::area )
+                  res := .T.
                ENDIF
-               Hwg_SetCursor( Iif( ::nCursor == 1,crossCursor,vCursor ), ::area )
-               res := .T.
                EXIT
             ENDIF
             i := Iif( i == ::freeze, ::nLeftCol, i + 1 )

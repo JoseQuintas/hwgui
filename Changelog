@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-05 11:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * :lResizable logical variable added to HColumn, default is .T.
+      If it is set to .F., the appropriate column cannot be resized.
+  * samples/testbrw.prg
+    * Added :lResizable demo.
+
 2018-12-05 09:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/dbc/dbchw.h
   * utils/dbc/dbchw.prg

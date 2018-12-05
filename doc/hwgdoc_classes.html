@@ -1224,28 +1224,30 @@
    HColumn</a></strong> 
    <pre class="code">DATA
       block
-      heading
-      footing
+      heading                  - Header text string
+      footing                  - Footer text string
       width
       type
-      length
+      length                   - column width in characters (or in pixels, if the value is negative)
       dec
-      nJusHead, nJusLin 
+      nJusHead                 - Header text alignment (0-left, 1-center, 2-right)
+      nJusLin                  - Cell text alignment (0-left, 1-center, 2-right)
       tcolor, bcolor, brush 
-      lEditable 
-      aList 
+      lEditable                - Is the column editable
+      lResizable               - Is the column resizable
+      aList                    - Array of possible values for a column - combobox will be used while editing the cell
       oStyleHead               - An HStyle object to draw the header
       oStyleFoot               - An HStyle object to draw the footer
       oStyleCell               - An HStyle object to draw the cell
       aPaintCB                 - An array with codeblocks to paint column items
       aBitmaps 
       bValid,bWhen 
-      bEdit 
+      bEdit                    - Codeblock, which performs cell editing, if defined
       Picture
       cGrid 
       lSpandHead 
       lSpandFoot 
-      bHeadClick
+      bHeadClick               - Codeblock, which executes after a mouse click on a header
       bColorBlock
    </pre>
    <pre class="code">METHODS

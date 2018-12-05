@@ -2,7 +2,7 @@
  * $Id$
  */
 
-#define AF_LEN                9
+#define AF_LEN               10
 #define AF_NAME               1
 #define AF_EXCLU              2
 #define AF_RDONLY             3
@@ -12,6 +12,7 @@
 #define AF_ALIAS              7
 #define AF_LFLT               8
 #define AF_BRW                9
+#define AF_CP                10
 
 #define OPENED_FILES_LIMIT   15
 

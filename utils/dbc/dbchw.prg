@@ -1116,7 +1116,7 @@ STATIC FUNCTION Fiopen( fname, alsname, pass )
       AdsEnableEncryption( pass )
    ENDIF
 #endif
-   aFiles[ improc, AF_NAME ] := Iif( fname != Nil, Upper( fname ), Alias() )
+   aFiles[ improc, AF_NAME ] := Iif( fname != Nil, fname, Alias() )
    aFiles[ improc, AF_EXCLU ] := Set( _SET_EXCLUSIVE )
    aFiles[ improc, AF_RDONLY ] := lRdonly
    aFiles[ improc, AF_DRIVER ] := numdriv
@@ -1124,6 +1124,7 @@ STATIC FUNCTION Fiopen( fname, alsname, pass )
    aFiles[ improc, AF_PASS ] := pass
    aFiles[ improc, AF_ALIAS ] := alsname
    aFiles[ improc, AF_LFLT ] := .F.
+   aFiles[ improc, AF_CP ] := cDataCpage
 
    RETURN .T.
 

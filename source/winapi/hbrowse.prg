@@ -162,7 +162,7 @@ CLASS HBrowse INHERIT HControl
    DATA nLeftCol                               // Leftmost column
    DATA freeze                                 // Number of columns to freeze
    DATA nRecords                               // Number of records in browse
-   DATA nCurrent   INIT 1                     // Current record
+   DATA nCurrent   INIT 1                      // Current record
    DATA aArray                                 // An array browsed if this is BROWSE ARRAY
    DATA recCurr    INIT 0
    DATA oStyleHead                             // An HStyle object to draw the header
@@ -823,7 +823,7 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
    IF ::recCurr != tmp
       ::recCurr := tmp
       IF ::bPosChanged != Nil
-         Eval( ::bPosChanged, Self )
+         Eval( ::bPosChanged, Self, ::nCurrent )
       ENDIF
    ENDIF
 
@@ -1636,7 +1636,7 @@ METHOD ButtonRDown( lParam ) CLASS HBrowse
       fif := iif( fif == ::freeze, ::nLeftCol, fif + 1 )
    ENDDO
 
-   Eval( ::bRClick, Self, nLine, fif )
+   Eval( ::bRClick, Self, fif, nLine - ::rowPos + ::nCurrent )
 
    RETURN Nil
 
@@ -1767,7 +1767,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
    oColumn := ::aColumns[fipos]
    IF ::bEnter == Nil .OR. ;
-         ( ValType( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
+         ( ValType( lRes := Eval( ::bEnter, Self, fipos, ::nCurrent ) ) == 'L' .AND. !lRes )
       IF !oColumn:lEditable
          RETURN Nil
       ENDIF

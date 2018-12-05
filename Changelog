@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-05 20:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    * :nCurrent is passed now to :bPosChanged and :bEnter
+
 2018-12-05 15:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc_classes.html
     * Updated due to recent changes

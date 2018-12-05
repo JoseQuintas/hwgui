@@ -752,7 +752,7 @@ METHOD Paint()  CLASS HBrowse
    IF ::recCurr != tmp
       ::recCurr := tmp
       IF ::bPosChanged != Nil
-         Eval( ::bPosChanged, Self )
+         Eval( ::bPosChanged, Self, :nCurrent )
       ENDIF
    ENDIF
 
@@ -1546,7 +1546,7 @@ METHOD ButtonRDown( lParam ) CLASS HBrowse
       fif := Iif( fif == ::freeze, ::nLeftCol, fif + 1 )
    ENDDO
 
-   Eval( ::bRClick, Self, nLine, fif )
+   Eval( ::bRClick, Self, fif, nLine - ::rowPos + ::nCurrent )
 
    RETURN Nil
 
@@ -1673,7 +1673,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
    oColumn := ::aColumns[fipos]
    IF ::bEnter == Nil .OR. ;
-         ( ValType( lRes := Eval( ::bEnter, Self, fipos ) ) == 'L' .AND. !lRes )
+         ( ValType( lRes := Eval( ::bEnter, Self, fipos, ::nCurrent ) ) == 'L' .AND. !lRes )
       IF !oColumn:lEditable
          RETURN Nil
       ENDIF

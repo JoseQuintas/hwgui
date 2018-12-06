@@ -28,9 +28,7 @@ CLASS HStaticLink FROM HSTATIC
    DATA m_bMouseOver INIT .F.
    DATA m_bVisited   INIT .F.
 
-   DATA m_oTextFont
    DATA m_csUrl
-   DATA dc
    DATA dwFlags      INIT 0
 
    DATA m_sHoverColor
@@ -84,7 +82,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
          ::oFont := HFONT():Add( ::oParent:oFont:name, ::oParent:oFont:width, ::oParent:oFont:height, ;
             ::oParent:oFont:weight, ::oParent:oFont:charset, ::oParent:oFont:italic, 1, ::oParent:oFont:StrikeOut )
       ELSE
-         ::oFont := HFONT():Add( "Arial", 0, - 12, , , , 1, )
+         ::oFont := HFONT():Add( "Arial", 0, -12,,,, 1, )
       ENDIF
    ELSE
       IF ::oFont:Underline  == 0
@@ -175,7 +173,7 @@ METHOD Init CLASS HStaticLink
 METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
 
    IF msg == WM_PAINT
-      ::PAint()
+      ::Paint()
    ELSEIF msg == WM_ERASEBKGND
       RETURN 1
    ELSEIF msg == WM_MOUSEMOVE
@@ -185,7 +183,14 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
       hwg_SetCursor( ::m_hHyperCursor )
    ELSEIF msg == WM_LBUTTONDOWN
       hwg_SetCursor( ::m_hHyperCursor )
+   ELSEIF msg == WM_LBUTTONUP
       ::OnClicked()
+   ELSEIF msg == WM_KILLFOCUS
+      IF ::state == LBL_MOUSEOVER
+         ::state := LBL_NORMAL
+         hwg_Releasecapture()
+         hwg_Invalidaterect( ::handle, 0 )
+      ENDIF
    ENDIF
 
    RETURN - 1
@@ -229,17 +234,17 @@ METHOD OnClicked() CLASS HStaticLink
    IF ( ::m_bFireChild )
       nCtrlID := ::id
       ::Sendmessage( ::oparent:Handle, _HYPERLINK_EVENT, nCtrlID, 0 )
-      //::Postmessage(pParent->m_hWnd, __EVENT_ID_, (WPARAM)nCtrlID, 0)
    ELSE
       ::GoToLinkUrl( ::m_csUrl )
    ENDIF
 
    ::m_bVisited := .T.
+   hwg_Releasecapture()
 
    ::state := LBL_NORMAL
    hwg_Invalidaterect( ::handle, 0 )
    hwg_Setfocus( ::handle )
-   hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
+   //hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
 
    RETURN NIL
 
@@ -262,14 +267,13 @@ METHOD OnMouseMove( nFlags, lParam ) CLASS HStaticLink
          hwg_Releasecapture()
          ::state := LBL_NORMAL
          hwg_Invalidaterect( ::handle, 0 )
-         hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
+         //hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
       ELSEIF ::state == LBL_NORMAL
 
-         //hwg_writelog( "set" )
          ::state := LBL_MOUSEOVER
          hwg_Invalidaterect( ::handle, 0 )
-         hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
-         HWG_SETFOREGROUNDWINDOW( ::handle )
+         //hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
+         //HWG_SETFOREGROUNDWINDOW( ::handle )
          hwg_Setcapture( ::handle )
       ENDIF
 
@@ -282,7 +286,7 @@ METHOD Paint() CLASS HStaticLink
    LOCAL pps, hDC, aCoors
 
    IF ::state == LBL_INIT
-      ::State := LBL_NORMAL
+      ::state := LBL_NORMAL
    ENDIF
 
    pps := hwg_Definepaintstru()

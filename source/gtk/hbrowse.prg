@@ -752,7 +752,7 @@ METHOD Paint()  CLASS HBrowse
    IF ::recCurr != tmp
       ::recCurr := tmp
       IF ::bPosChanged != Nil
-         Eval( ::bPosChanged, Self, :nCurrent )
+         Eval( ::bPosChanged, Self, ::nCurrent )
       ENDIF
    ENDIF
 

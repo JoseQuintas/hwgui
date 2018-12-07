@@ -10,6 +10,10 @@
 #define	WND_DLG_RESOURCE       10
 #define	WND_DLG_NORESOURCE     11
 
+#define WND_NOTITLE            -1
+#define WND_NOSYSMENU          -2
+#define WND_NOSIZEBOX          -4
+
 #define	OBTN_INIT               0
 #define	OBTN_NORMAL             1
 #define	OBTN_MOUSOVER           2
@@ -113,7 +117,6 @@
              [ ON GETFOCUS <bGfocus> ]      ;
              [ ON LOSTFOCUS <bLfocus> ]     ;
              [ ON OTHER MESSAGES <bOther> ] ;
-             [ ON CLOSEQUERY <bCloseQuery> ];
              [ ON EXIT <bExit> ]            ;
              [ HELP <cHelp> ]               ;
              [ HELPID <nHelpId> ]           ;
@@ -121,7 +124,7 @@
    <oWnd> := HMainWindow():New( Iif(<.lMdi.>,WND_MDI,WND_MAIN), ;
                    <ico>,<clr>,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<nPos>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>,;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bCloseQuery>,<bcolor>,<nExclude> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bcolor>,<nExclude> )
 
 #xcommand INIT WINDOW <oWnd> MDICHILD       ;
              [ APPNAME <appname> ]          ;
@@ -147,7 +150,7 @@
    <oWnd> := HMdiChildWindow():New( ;
                    <ico>,,<nStyle>,<x>,<y>,<width>,<height>,<cTitle>, ;
                    <cMenu>,<oFont>,<bInit>,<bExit>,<bSize>,<bPaint>, ;
-                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,,<bColor> )
+                   <bGfocus>,<bLfocus>,<bOther>,<appname>,<oBmp>,<cHelp>,<nHelpId>,<bColor> )
 
 #xcommand INIT WINDOW <oWnd> CHILD          ;
              APPNAME <appname>              ;

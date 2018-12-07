@@ -8,7 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2018-12-05 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+2018-12-07 21:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+  * source/gtk/hwindow.prg
+  * source/gtk/window.c
+  * source/winapi/hdialog.prg
+  * source/winapi/hwindow.prg
+  * source/winapi/window.c
+    * New cross-platform window styles added: WND_NOTITLE, WND_NOSYSMENU, WND_NOSIZEBOX
+
+2018-12-06 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
     ! Minor fix
 

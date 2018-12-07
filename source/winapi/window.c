@@ -117,8 +117,9 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
       if( RegisterClass( &wndclass ) )
       {
+         nStyle = ( WS_OVERLAPPEDWINDOW & ~nExcl ) | nStyle;
          hWnd = CreateWindowEx( ExStyle, lpAppName, lpTitle,
-               ( WS_OVERLAPPEDWINDOW & ~nExcl ) | nStyle,
+               nStyle,
                x, y,
                ( !width ) ? ( LONG ) CW_USEDEFAULT : width,
                ( !height ) ? ( LONG ) CW_USEDEFAULT : height,

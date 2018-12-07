@@ -176,7 +176,7 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       ::szAppName := cAppName
    ENDIF
 
-   IF hwg_BitAnd( ::style, DS_CENTER ) > 0
+   IF hwg_BitAnd( Abs(::style), DS_CENTER ) > 0
       ::nLeft := Int( ( hwg_Getdesktopwidth() - ::nWidth ) / 2 )
       ::nTop  := Int( ( hwg_Getdesktopheight() - ::nHeight ) / 2 )
    ENDIF
@@ -260,7 +260,7 @@ CLASS HMainWindow INHERIT HWindow
 
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor, nExclude )
+      cAppName, oBmp, cHelp, nHelpId, bColor, nExclude )
    METHOD Activate( lShow )
    METHOD onEvent( msg, wParam, lParam )
 
@@ -268,7 +268,7 @@ ENDCLASS
 
 METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor, nExclude ) CLASS HMainWindow
+      cAppName, oBmp, cHelp, nHelpId, bColor, nExclude ) CLASS HMainWindow
 
    ::Super:New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,  ;
@@ -300,8 +300,18 @@ METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMain
 
    IF ::type == WND_MAIN
 
+      IF ::style < 0 .AND. hwg_Bitand( Abs(::style), WND_NOTITLE ) != 0
+         hwg_WindowSetDecorated( ::handle, 0 )
+      ENDIF
       hwg_ShowAll( ::handle )
 
+      IF ::style < 0
+         IF hwg_Bitand( Abs(::style), WND_NOSIZEBOX ) != 0
+            hwg_WindowSetResize( ::handle, 0 )
+         ELSE
+            hwg_WindowSetResize( ::handle, 1 )
+         ENDIF
+      ENDIF
       IF ::nAdjust == 1
          ::nAdjust := 2
          aCoors := hwg_Getwindowrect( ::handle )

@@ -863,6 +863,12 @@ HB_FUNC( HWG_WINDOWSETRESIZE )
   gtk_window_set_resizable( handle ,hb_parl(2));
 }
 
+HB_FUNC( HWG_WINDOWSETDECORATED )
+{
+  GtkWindow * handle = (GtkWindow*) HB_PARHANDLE(1);
+  gtk_window_set_decorated( handle ,hb_parl(2));
+}
+
 HB_FUNC( HWG_SETTOPMOST )
 {
    gtk_window_set_keep_above( (GtkWindow*) HB_PARHANDLE(1), TRUE );

@@ -60,11 +60,26 @@ ENDCLASS
 METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
       bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor, lNoClosable ) CLASS HDialog
 
+   IF nStyle == Nil
+      ::style := WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX
+   ELSEIF nStyle < 0
+      ::style := WS_POPUP
+      IF hwg_Bitand( Abs(nStyle), Abs(WND_NOTITLE) ) = 0
+         ::style += WS_CAPTION
+      ENDIF
+      IF hwg_Bitand( Abs(nStyle), WND_NOSYSMENU ) = 0
+         ::style += WS_SYSMENU
+      ENDIF
+      IF hwg_Bitand( Abs(nStyle), WND_NOSIZEBOX ) = 0
+         ::style += WS_SIZEBOX
+      ENDIF
+   ELSE
+      ::style := nStyle
+   ENDIF
    ::oDefaultParent := Self
    ::xResourceID := xResourceID
    ::type     := lType
    ::title    := cTitle
-   ::style    := Iif( nStyle == Nil, WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX, nStyle )
    ::oBmp     := oBmp
    ::oIcon    := oIcon
    ::nTop     := Iif( y == Nil, 0, y )

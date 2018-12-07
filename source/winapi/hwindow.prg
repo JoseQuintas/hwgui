@@ -151,7 +151,7 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
 
    METHOD New( Icon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, cAppName, oBmp, cHelp, ;
-      nHelpId, bCloseQuery, bColor )
+      nHelpId, bColor )
    METHOD AddItem( oWnd )
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWnd )
@@ -168,7 +168,7 @@ ENDCLASS
 
 METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor ) CLASS HWindow
+      cAppName, oBmp, cHelp, nHelpId, bColor ) CLASS HWindow
 
    ::oDefaultParent := Self
    ::title    := cTitle
@@ -191,7 +191,6 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
    ::bOther     := bOther
-   ::bCloseQuery := bCloseQuery
 
    IF bColor != Nil
       ::brush := HBrush():Add( bColor )
@@ -293,7 +292,7 @@ CLASS HMainWindow INHERIT HWindow
 
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor, nExclude )
+      cAppName, oBmp, cHelp, nHelpId, bColor, nExclude )
    METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip )
@@ -303,12 +302,28 @@ ENDCLASS
 
 METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor, nExclude ) CLASS HMainWindow
+      cAppName, oBmp, cHelp, nHelpId, bColor, nExclude ) CLASS HMainWindow
    LOCAL hbrush
+
+   IF nStyle != Nil .AND. nStyle < 0
+      nExclude := 0
+      IF hwg_Bitand( Abs(nStyle), WND_NOSYSMENU ) != 0
+         nExclude := hwg_BitOr( nExclude, WS_SYSMENU )
+      ENDIF
+      IF hwg_Bitand( Abs(nStyle), WND_NOSIZEBOX ) != 0
+         nExclude := hwg_BitOr( nExclude, WS_THICKFRAME )
+      ENDIF
+      IF hwg_Bitand( Abs(nStyle), Abs(WND_NOTITLE) ) != 0
+         nExclude := hwg_BitOr( nExclude, WS_CAPTION )
+         nStyle := WS_POPUP
+      ELSE
+         nStyle := 0
+      ENDIF
+   ENDIF
 
    ::Super:New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,  ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor )
+      cAppName, oBmp, cHelp, nHelpId, bColor )
    ::type := lType
 
    hbrush := IIf( ::brush != Nil, ::brush:handle, clr )
@@ -418,7 +433,7 @@ CLASS HMDIChildWindow INHERIT HWindow
 
    METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor )
+      cAppName, oBmp, cHelp, nHelpId, bColor )
    METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
 
@@ -426,11 +441,11 @@ ENDCLASS
 
 METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor ) CLASS HMDIChildWindow
+      cAppName, oBmp, cHelp, nHelpId, bColor ) CLASS HMDIChildWindow
 
    ::Super:New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
-      cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor )
+      cAppName, oBmp, cHelp, nHelpId, bColor )
 
    ::type := WND_MDICHILD
 

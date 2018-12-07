@@ -375,9 +375,9 @@
 /*
  * Window States
  */
-#DEFINE WA_INACTIVE               0
-#DEFINE WA_ACTIVE                 1
-#DEFINE WA_CLICKACTIVE            2
+#define WA_INACTIVE               0
+#define WA_ACTIVE                 1
+#define WA_CLICKACTIVE            2
 
 /*
  * Static Control Constants
@@ -440,7 +440,7 @@
 #define BS_COMMANDLINK      14        // 0x0000000E
 #define BS_LEFTTEXT         32      // 0x00000020L
 
-#DEFINE BCM_SETNOTE         5641     // 0x00001609
+#define BCM_SETNOTE         5641     // 0x00001609
 
 #define IDC_ARROW           32512
 #define IDC_IBEAM           32513
@@ -1368,16 +1368,16 @@
 #define PBS_PRESSED   3
 #define PBS_DISABLED  4
 #define PBS_DEFAULTED 5
-#DEFINE PBS_SMOOTH       1
-#DEFINE PBS_VERTICAL     4
-#DEFINE PBS_MARQUEE      8
+#define PBS_SMOOTH       1
+#define PBS_VERTICAL     4
+#define PBS_MARQUEE      8
 
-#DEFINE PBM_SETRANGE     WM_USER+1
-#DEFINE PBM_SETPOS       WM_USER+2
+#define PBM_SETRANGE     WM_USER+1
+#define PBM_SETPOS       WM_USER+2
 #define PBM_DELTAPOS     WM_USER+3
-#DEFINE PBM_SETSTEP      WM_USER+4
-#DEFINE PBM_SETRANGE32   WM_USER+6
-#DEFINE PBM_SETMARQUEE   WM_USER+10
+#define PBM_SETSTEP      WM_USER+4
+#define PBM_SETRANGE32   WM_USER+6
+#define PBM_SETMARQUEE   WM_USER+10
 
 #define TMT_CONTENTMARGINS 3602
 
@@ -1512,14 +1512,14 @@ Ancestor() const defines
 /*
 Brush fill Styles
 */
-#DEFINE HS_HORIZONTAL    0
-#DEFINE HS_VERTICAL      1
-#DEFINE HS_BDIAGONAL     2
-#DEFINE HS_FDIAGONAL     3
-#DEFINE HS_CROSS         4
-#DEFINE HS_DIAGCROSS     5
-#DEFINE HS_SOLID         8
-#DEFINE BS_TRANSPARENT  10
+#define HS_HORIZONTAL    0
+#define HS_VERTICAL      1
+#define HS_BDIAGONAL     2
+#define HS_FDIAGONAL     3
+#define HS_CROSS         4
+#define HS_DIAGCROSS     5
+#define HS_SOLID         8
+#define BS_TRANSPARENT  10
 
 /*
 Up-Down const defines
@@ -1672,6 +1672,6 @@ ComboBox
 #define DMPAPER_A6                  70  /* A6 105 x 148 mm  */
 
 /* CONSTANTS TO TRACKMOUSEEVENT */
-#DEFINE  TME_CANCEL            0x80000000 
-#DEFINE  TME_HOVER             1
-#DEFINE  TME_LEAVE             2 
+#define  TME_CANCEL            0x80000000 
+#define  TME_HOVER             1
+#define  TME_LEAVE             2 

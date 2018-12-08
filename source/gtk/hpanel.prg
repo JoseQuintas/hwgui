@@ -19,6 +19,10 @@ CLASS HPanel INHERIT HControl
    DATA hBox
    DATA oStyle
    DATA aPaintCB  INIT {}       // Array of items to draw: { cIt, bDraw(hDC,aCoors) }
+   DATA lDragWin    INIT .F.
+   DATA lCaptured   INIT .F.
+   DATA hCursor
+   DATA nOldX, nOldY HIDDEN
 
    DATA hScrollV  INIT Nil
    DATA hScrollH  INIT Nil
@@ -35,6 +39,7 @@ CLASS HPanel INHERIT HControl
    METHOD Paint()
    METHOD Move( x1, y1, width, height )
    METHOD SetPaintCB( nId, block, cId )
+   METHOD Drag( xPos, yPos )
 
 ENDCLASS
 
@@ -69,7 +74,12 @@ METHOD Activate CLASS HPanel
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
 
-   IF msg == WM_PAINT
+   IF msg == WM_MOUSEMOVE
+      IF ::lDragWin .AND. ::lCaptured
+         ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      ENDIF
+
+   ELSEIF msg == WM_PAINT
       ::Paint()
 
    ELSEIF msg == WM_HSCROLL
@@ -81,6 +91,16 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
       IF ::bVScroll != Nil
          Eval( ::bVScroll, Self )
       ENDIF
+
+   ELSEIF msg == WM_LBUTTONDOWN
+      IF ::hCursor == Nil
+         ::hCursor := hwg_Loadcursor( GDK_SIZING )
+      ENDIF
+      Hwg_SetCursor( ::hCursor, ::handle )
+      ::lCaptured := .T.
+
+   ELSEIF msg == WM_LBUTTONUP
+      ::lCaptured := .F.
 
    ELSE
       Return ::Super:onEvent( msg, wParam, lParam )
@@ -169,18 +189,8 @@ METHOD Move( x1, y1, width, height )  CLASS HPanel
       IF lSize
          hwg_MoveWidget( ::handle, Nil, Nil, ::nWidth, ::nHeight, .F. )
          hwg_Redrawwindow( ::handle )
-         /*
-         IF !Empty( ::hScrollV )
-            hwg_Redrawwindow( ::hScrollV )
-         ENDIF
-         IF !Empty( ::hScrollH )
-            hwg_Redrawwindow( ::hScrollH )
-         ENDIF
-         */
       ENDIF
    ENDIF
-
-   //::Super:Move( x1,y1,width,height,.T. )
 
    RETURN Nil
 
@@ -212,6 +222,21 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
 
    RETURN Nil
 
+METHOD Drag( xPos, yPos ) CLASS HPanel
+
+   LOCAL oWnd := hwg_getParentForm( Self )
+   IF xPos > 32000
+      xPos -= 65535
+   ENDIF
+   IF yPos > 32000
+      yPos -= 65535
+   ENDIF
+
+   IF Abs(xPos-::nOldX) > 1 .OR. Abs(yPos-::nOldY) > 1
+      oWnd:Move( oWnd:nLeft + (xPos-::nOldX), oWnd:nTop + (yPos-::nOldY) )
+   ENDIF
+
+   RETURN Nil
 
 CLASS HPanelStS INHERIT HPANEL
 

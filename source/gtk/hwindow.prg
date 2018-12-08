@@ -300,17 +300,13 @@ METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMain
 
    IF ::type == WND_MAIN
 
-      IF ::style < 0 .AND. hwg_Bitand( Abs(::style), WND_NOTITLE ) != 0
+      IF ::style < 0 .AND. hwg_Bitand( Abs(::style), Abs(WND_NOTITLE) ) != 0
          hwg_WindowSetDecorated( ::handle, 0 )
       ENDIF
       hwg_ShowAll( ::handle )
 
-      IF ::style < 0
-         IF hwg_Bitand( Abs(::style), WND_NOSIZEBOX ) != 0
+      IF ::style < 0 .AND. hwg_Bitand( Abs(::style), Abs(WND_NOSIZEBOX) ) != 0
             hwg_WindowSetResize( ::handle, 0 )
-         ELSE
-            hwg_WindowSetResize( ::handle, 1 )
-         ENDIF
       ENDIF
       IF ::nAdjust == 1
          ::nAdjust := 2

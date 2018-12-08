@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-08 10:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdialog.prg
+  * source/gtk/hwindow.prg
+    * Some corrections for WND_NOTITLE, WND_NOSIZEBOX
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+    * New variable added :lDragWin.If .t., dragging the panel you move the window.
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+    * doc updated
+
 2018-12-07 21:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
   * source/gtk/hwindow.prg

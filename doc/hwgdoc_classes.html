@@ -206,7 +206,7 @@
    <pre class="code">METHODS
       New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
          oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,
-         cAppName, oBmp, cHelp, nHelpId,bCloseQuery ) 
+         cAppName, oBmp, cHelp, nHelpId, bColor ) 
       AddItem( oWnd ) 
       DelItem( oWnd ) 
       FindWindow( hWnd )          - Seeking a window by the handle, returns a window object
@@ -233,7 +233,7 @@
    <pre class="code">METHODS
       New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos, 
          oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, 
-         cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor, nExclude ) 
+         cAppName, oBmp, cHelp, nHelpId, bColor, nExclude ) 
       Activate( lShow, lMaximized,           - Activates a window, the corresponding
          lMinimized, lCentered, bActivate )    command: <a href="hwgdoc_commands.html#Commands1-3"><i>ACTIVATE WINDOW</i></a>
       onEvent( msg, wParam, lParam ) 
@@ -252,7 +252,7 @@
    <pre class="code">METHODS
       New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont,
          bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,
-         cAppName, oBmp, cHelp, nHelpId, bCloseQuery, bColor )
+         cAppName, oBmp, cHelp, nHelpId, bColor )
       Activate( lShow, lMaximized, lMinimized, lCentered, bActivate )
       onEvent( msg, wParam, lParam )
    </pre>
@@ -421,6 +421,9 @@
       bScroll
       oStyle
       aPaintCB                    - Array of items to draw
+      lDragWin
+      lCaptured
+      hCursor
    </pre>
    <pre class="code">METHODS
      New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, 

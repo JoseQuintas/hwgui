@@ -83,7 +83,7 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    ::xResourceID := xResourceID
    ::type     := lType
    ::title    := cTitle
-   ::style    := iif( nStyle == Nil, WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX, nStyle )
+   ::style    := iif( nStyle == Nil, 0, nStyle )
    ::bColor   := bColor
    ::oBmp     := oBmp
    ::oIcon    := oIcon
@@ -132,9 +132,17 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       hwg_Set_Modal( ::handle, hParent )
    ENDIF
 
+   IF ::style < 0 .AND. hwg_Bitand( Abs(::style), Abs(WND_NOTITLE) ) != 0
+      hwg_WindowSetDecorated( ::handle, 0 )
+   ENDIF
+
    hwg_ShowAll( ::handle )
    InitModalDlg( Self )
    ::lActivated := .T.
+
+   IF ::style < 0 .AND. hwg_Bitand( Abs(::style), Abs(WND_NOSIZEBOX) ) != 0
+      hwg_WindowSetResize( ::handle, 0 )
+   ENDIF
 
    IF ::nAdjust == 1
       ::nAdjust := 2

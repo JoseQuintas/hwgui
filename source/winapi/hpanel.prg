@@ -19,6 +19,10 @@ CLASS HPanel INHERIT HControl
    DATA bScroll
    DATA oStyle
    DATA aPaintCB    INIT {}         // Array of items to draw: { cIt, bDraw(hDC,aCoors) }
+   DATA lDragWin    INIT .F.
+   DATA lCaptured   INIT .F.
+   DATA hCursor
+   DATA nOldX, nOldY HIDDEN
    DATA lResizeX, lResizeY, nSize HIDDEN
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
@@ -33,6 +37,7 @@ CLASS HPanel INHERIT HControl
    METHOD Hide()
    METHOD Show()
    METHOD SetPaintCB( nId, block, cId )
+   METHOD Drag( xPos, yPos )
    METHOD Release()
 
 ENDCLASS
@@ -83,7 +88,11 @@ METHOD Activate CLASS HPanel
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
 
-   IF msg == WM_PAINT
+   IF msg == WM_MOUSEMOVE
+      IF ::lDragWin .AND. ::lCaptured
+         ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      ENDIF
+   ELSEIF msg == WM_PAINT
       ::Paint()
    ELSEIF msg == WM_ERASEBKGND
       IF ::brush != Nil
@@ -103,6 +112,22 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
       ENDIF
       ::Super:onEvent( WM_DESTROY )
       RETURN 0
+   ELSEIF msg == WM_LBUTTONDOWN
+      IF ::lDragWin
+         IF ::hCursor == Nil
+            ::hCursor := hwg_Loadcursor( IDC_HAND )
+         ENDIF
+         Hwg_SetCursor( ::hCursor )
+         hwg_Setcapture( ::handle )
+         ::lCaptured := .T.
+         ::nOldX := hwg_Loword( lParam )
+         ::nOldY := hwg_Hiword( lParam )
+      ENDIF
+   ELSEIF msg == WM_LBUTTONUP
+      IF ::lDragWin .AND. ::lCaptured
+         hwg_Releasecapture()
+         ::lCaptured := .F.
+      ENDIF
    ELSE
       IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .OR. msg == WM_MOUSEWHEEL
          hwg_onTrackScroll( Self, msg, wParam, lParam )
@@ -299,6 +324,21 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
 
    RETURN Nil
 
+METHOD Drag( xPos, yPos ) CLASS HPanel
+
+   LOCAL oWnd := hwg_getParentForm( Self )
+   IF xPos > 32000
+      xPos -= 65535
+   ENDIF
+   IF yPos > 32000
+      yPos -= 65535
+   ENDIF
+
+   IF Abs(xPos-::nOldX) > 1 .OR. Abs(yPos-::nOldY) > 1
+      oWnd:Move( oWnd:nLeft + (xPos-::nOldX), oWnd:nTop + (yPos-::nOldY) )
+   ENDIF
+
+   RETURN Nil
 
 CLASS HPanelStS INHERIT HPANEL
 

@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-08 16:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/hpanel.prg
+    * Some corrections for the panel.
+  * source/gtk/hwindow.prg
+    * hwg_onMove() corrected.
+  * source/gtk/window.c
+    * hwg_GetWindowPos() added.
+
 2018-12-08 10:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hdialog.prg
   * source/gtk/hwindow.prg

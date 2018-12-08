@@ -7,15 +7,14 @@
  * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
-
 #include "windows.ch"
 #include "hbclass.ch"
 #include "guilib.ch"
+#include "gtk.ch"
 
 CLASS HPanel INHERIT HControl
 
    DATA winclass   INIT "PANEL"
-
    DATA hBox
    DATA oStyle
    DATA aPaintCB  INIT {}       // Array of items to draw: { cIt, bDraw(hDC,aCoors) }
@@ -23,13 +22,11 @@ CLASS HPanel INHERIT HControl
    DATA lCaptured   INIT .F.
    DATA hCursor
    DATA nOldX, nOldY HIDDEN
-
    DATA hScrollV  INIT Nil
    DATA hScrollH  INIT Nil
    DATA nScrollV  INIT 0
    DATA nScrollH  INIT 0
    DATA bVScroll, bHScroll
-
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       bInit, bSize, bPaint, bColor, oStyle )
    METHOD Activate()
@@ -54,10 +51,8 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, iif( nWidth == Nil,0,nWidth ), ;
       nHeight, oParent:oFont, bInit, ;
       bSize, bPaint, , , bColor )
-
    ::oStyle := oStyle
    ::bPaint  := bPaint
-
    ::Activate()
 
    RETURN Self
@@ -78,30 +73,29 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
       IF ::lDragWin .AND. ::lCaptured
          ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       ENDIF
-
    ELSEIF msg == WM_PAINT
       ::Paint()
-
    ELSEIF msg == WM_HSCROLL
       IF ::bHScroll != Nil
          Eval( ::bHScroll, Self )
       ENDIF
-
    ELSEIF msg == WM_VSCROLL
       IF ::bVScroll != Nil
          Eval( ::bVScroll, Self )
       ENDIF
-
    ELSEIF msg == WM_LBUTTONDOWN
-      IF ::hCursor == Nil
-         ::hCursor := hwg_Loadcursor( GDK_SIZING )
+      IF ::lDragWin
+         IF ::hCursor == Nil
+            ::hCursor := hwg_Loadcursor( GDK_HAND1 )
+         ENDIF
+         Hwg_SetCursor( ::hCursor, ::handle )
+         ::lCaptured := .T.
+         ::nOldX := hwg_Loword( lParam )
+         ::nOldY := hwg_Hiword( lParam )
       ENDIF
-      Hwg_SetCursor( ::hCursor, ::handle )
-      ::lCaptured := .T.
-
    ELSEIF msg == WM_LBUTTONUP
       ::lCaptured := .F.
-
+      Hwg_SetCursor( Nil, ::handle )
    ELSE
       Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
@@ -118,7 +112,6 @@ METHOD Init CLASS HPanel
             ::bSize := { |o, x, y|o:Move( iif( ::nLeft > 0,x - ::nLeft,0 ), , ::nWidth, y ) }
          ENDIF
       ENDIF
-
       ::Super:Init()
       hwg_Setwindowobject( ::handle, Self )
    ENDIF
@@ -141,15 +134,14 @@ METHOD DrawItems( hDC, aCoors ) CLASS HPanel
    RETURN Nil
 
 METHOD Paint() CLASS HPanel
+
    LOCAL hDC, aCoors, block
 
    IF ::bPaint != Nil
       RETURN Eval( ::bPaint, Self )
    ENDIF
-
    hDC := hwg_Getdc( ::handle )
    aCoors := hwg_Getclientrect( ::handle )
-
    IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
       Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
    ELSEIF ::oStyle == Nil
@@ -158,7 +150,6 @@ METHOD Paint() CLASS HPanel
       ::oStyle:Draw( hDC, 0, 0, aCoors[3], aCoors[4] )
    ENDIF
    ::DrawItems( hDC, aCoors )
-
    hwg_Releasedc( ::handle, hDC )
 
    RETURN Nil
@@ -200,7 +191,6 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
 
    IF Empty( cId ); cId := "_"; ENDIF
    IF Empty( ::aPaintCB ); ::aPaintCB := {}; ENDIF
-
    nLen := Len( ::aPaintCB )
    FOR i := 1 TO nLen
       IF ::aPaintCB[i,1] == nId .AND. ::aPaintCB[i,2] == cId
@@ -210,11 +200,11 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
    IF Empty( block )
       IF i <= nLen
          ADel( ::aPaintCB, i )
-         ::aPaintCB := ASize( ::aPaintCB, nLen-1 )
+         ::aPaintCB := ASize( ::aPaintCB, nLen - 1 )
       ENDIF
    ELSE
       IF i > nLen
-         Aadd( ::aPaintCB, { nId, cId, block } )
+         AAdd( ::aPaintCB, { nId, cId, block } )
       ELSE
          ::aPaintCB[i,3] := block
       ENDIF
@@ -225,15 +215,15 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
 METHOD Drag( xPos, yPos ) CLASS HPanel
 
    LOCAL oWnd := hwg_getParentForm( Self )
+
    IF xPos > 32000
       xPos -= 65535
    ENDIF
    IF yPos > 32000
       yPos -= 65535
    ENDIF
-
-   IF Abs(xPos-::nOldX) > 1 .OR. Abs(yPos-::nOldY) > 1
-      oWnd:Move( oWnd:nLeft + (xPos-::nOldX), oWnd:nTop + (yPos-::nOldY) )
+   IF Abs( xPos - ::nOldX ) > 1 .OR. Abs( yPos - ::nOldY ) > 1
+      oWnd:Move( oWnd:nLeft + ( xPos - ::nOldX ), oWnd:nTop + ( yPos - ::nOldY ) )
    ENDIF
 
    RETURN Nil
@@ -242,10 +232,9 @@ CLASS HPanelStS INHERIT HPANEL
 
    DATA aParts
    DATA aText
-
    METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aParts )
    METHOD Write( cText, nPart, lRedraw )
-   METHOD SetText( cText )    INLINE ::Write( cText,, .T. )
+   METHOD SetText( cText )    INLINE ::Write( cText, , .T. )
    METHOD PaintText( hDC )
    METHOD Paint()
 
@@ -257,19 +246,17 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
    IF bColor == Nil
       bColor := hwg_GetSysColor( COLOR_3DFACE )
    ENDIF
-
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
       oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
-   ::Anchor := ANCHOR_LEFTABS+ANCHOR_RIGHTABS
-
-   ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
+   ::Anchor := ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   ::oFont := iif( oFont == Nil, ::oParent:oFont, oFont )
    ::oStyle := oStyle
    IF !Empty( aParts )
       ::aParts := aParts
    ELSE
-      ::aParts := {0}
+      ::aParts := { 0 }
    ENDIF
-   ::aText := Array( Len(::aParts) )
+   ::aText := Array( Len( ::aParts ) )
    AFill( ::aText, "" )
 
    RETURN Self
@@ -277,7 +264,7 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
 METHOD Write( cText, nPart, lRedraw ) CLASS HPanelStS
 
    ::aText[Iif(nPart==Nil,1,nPart)] := cText
-   IF Valtype( lRedraw ) != "L" .OR. lRedraw
+   IF ValType( lRedraw ) != "L" .OR. lRedraw
       hwg_Invalidaterect( ::handle, 0 )
    ENDIF
 
@@ -292,15 +279,15 @@ METHOD PaintText( hDC ) CLASS HPanelStS
    ENDIF
    hwg_Settransparentmode( hDC, .T. )
    FOR i := 1 TO Len( ::aParts )
-      x1 := Iif( i == 1, 4, x2 + 4 )
+      x1 := iif( i == 1, 4, x2 + 4 )
       IF ::aParts[i] == 0
-         x2 := x1 + Int( nWidth/(Len(::aParts)-i+1) )
+         x2 := x1 + Int( nWidth/ (Len(::aParts ) - i + 1 ) )
       ELSE
          x2 := x1 + ::aParts[i]
       ENDIF
-      nWidth -= ( x2-x1+1 )
+      nWidth -= ( x2 - x1 + 1 )
       IF !Empty( ::aText[i] )
-         hwg_Drawtext( hDC, ::aText[i], x1, 6, x2, ::nHeight-2, DT_LEFT + DT_VCENTER )
+         hwg_Drawtext( hDC, ::aText[i], x1, 6, x2, ::nHeight - 2, DT_LEFT + DT_VCENTER )
       ENDIF
    NEXT
    hwg_Settransparentmode( hDC, .F. )
@@ -308,26 +295,23 @@ METHOD PaintText( hDC ) CLASS HPanelStS
    RETURN Nil
 
 METHOD Paint() CLASS HPanelStS
+
    LOCAL pps, hDC, block, aCoors
 
    IF ::bPaint != Nil
       RETURN Eval( ::bPaint, Self )
    ENDIF
-
    pps    := hwg_Definepaintstru()
    hDC    := hwg_Beginpaint( ::handle, pps )
-
    IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
       aCoors := hwg_Getclientrect( ::handle )
       Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
    ELSEIF Empty( ::oStyle )
-      ::oStyle := HStyle():New( {::bColor}, 1,, 0.4, 0 )
+      ::oStyle := HStyle():New( { ::bColor }, 1, , 0.4, 0 )
    ENDIF
    ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )
-
    ::PaintText( hDC )
    ::DrawItems( hDC )
-
    hwg_Endpaint( ::handle, pps )
 
    RETURN Nil

@@ -879,6 +879,17 @@ HB_FUNC( HWG_REMOVETOPMOST )
    gtk_window_set_keep_above( (GtkWindow*) HB_PARHANDLE(1), FALSE );
 }
 
+HB_FUNC( HWG_GETWINDOWPOS )
+{
+   gint x, y;
+   PHB_ITEM aMetr = hb_itemArrayNew( 2 );
+
+   gtk_window_get_position( (GtkWindow*) HB_PARHANDLE(1), &x, &y );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), x );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), y );
+   hb_itemRelease( hb_itemReturn( aMetr ) );
+}
+
 gchar * hwg_convert_to_utf8( const char * szText )
 {
    if( *szAppLocale )

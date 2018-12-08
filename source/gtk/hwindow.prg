@@ -7,12 +7,9 @@
  * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
-
 #include "hbclass.ch"
 #include "hwgui.ch"
-
 REQUEST HWG_ENDWINDOW
-
 #define  FIRST_MDICHILD_ID     501
 #define  MAX_MDICHILD_WINDOWS   18
 #define  WM_NOTIFYICON         WM_USER+1000
@@ -24,25 +21,21 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
    //LOCAL w := hwg_Loword( lParam ), h := hwg_Hiword( lParam )
    LOCAL w := aCoors[3] - aCoors[1], h := aCoors[4] - aCoors[2]
-
    IF oWnd:nWidth == w .AND. oWnd:nHeight == h
       RETURN 0
    ENDIF
    //hwg_WriteLog( "OnSize: "+Str(oWnd:nWidth)+" "+Str(oWnd:nHeight)+" "+Str(w)+" "+Str(h)+" " + str(oWnd:nAdjust) )
-
    IF oWnd:nAdjust == 2
       oWnd:nAdjust := 0
    ELSEIF oWnd:nAdjust == 0
       hwg_onAnchor( oWnd, oWnd:nWidth, oWnd:nHeight, w, h )
    ENDIF
    oWnd:Super:onEvent( WM_SIZE, wParam, lParam )
-
    //hwg_writelog( "on size "+str(oWnd:nheight)+"/"+str(hwg_Hiword(lParam)) )
    IF oWnd:nAdjust == 0
       oWnd:nWidth  := w
       oWnd:nHeight := h
    ENDIF
-
    IF HB_ISBLOCK( oWnd:bSize )
       Eval( oWnd:bSize, oWnd, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ENDIF
@@ -51,13 +44,16 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
 FUNCTION hwg_onMove( oWnd, wParam, lParam )
 
-   // hwg_WriteLog( "onMove: "+str(oWnd:nLeft)+" "+str(oWnd:nTop)+" -> "+str(hwg_Loword(lParam))+str(hwg_Hiword(lParam)) )
-   oWnd:nLeft := hwg_Loword( lParam )
-   oWnd:nTop  := hwg_Hiword( lParam )
+   LOCAL apos := hwg_getwindowpos( oWnd:handle )
+
+   //hwg_WriteLog( "onMove: "+str(oWnd:nLeft)+" "+str(oWnd:nTop)+" -> "+str(hwg_Loword(lParam))+str(hwg_Hiword(lParam))+" "+str(apos[1])+" "+str(apos[2]) )
+   oWnd:nLeft := apos[1] //hwg_Loword( lParam )
+   oWnd:nTop  := apos[2] //hwg_Hiword( lParam )
 
    RETURN 0
 
 FUNCTION hwg_HideHidden( oWnd )
+
    LOCAL i, aControls := oWnd:aControls
 
    FOR i := 1 TO Len( aControls )
@@ -72,6 +68,7 @@ FUNCTION hwg_HideHidden( oWnd )
    RETURN Nil
 
 FUNCTION hwg_onAnchor( oWnd, wold, hold, wnew, hnew )
+
    LOCAL aControls := oWnd:aControls, oItem, w, h
 
    FOR EACH oItem IN aControls
@@ -98,11 +95,9 @@ STATIC FUNCTION onDestroy( oWnd )
    IF __ObjHasMsg( oWnd, "HACCEL" ) .AND. oWnd:hAccel != Nil
       hwg_Destroyacceleratortable( oWnd:hAccel )
    ENDIF
-
    IF ( i := Ascan( HTimer():aTimers,{ |o|hwg_Isptreq( o:oParent:handle,oWnd:handle ) } ) ) != 0
       HTimer():aTimers[i]:End()
    ENDIF
-
    oWnd:Super:onEvent( WM_DESTROY )
    HWindow():DelItem( oWnd )
    //hwg_gtk_exit()
@@ -114,7 +109,6 @@ CLASS HWindow INHERIT HCustomWindow
    CLASS VAR aWindows   SHARED INIT {}
    CLASS VAR szAppName  SHARED INIT "HwGUI_App"
    CLASS VAR aKeysGlobal SHARED INIT {}
-
    DATA fbox
    DATA menu, oPopup, hAccel
    DATA oIcon, oBmp
@@ -128,9 +122,7 @@ CLASS HWindow INHERIT HCustomWindow
    DATA nAdjust  INIT 0
    DATA tColorinFocus  INIT - 1
    DATA bColorinFocus  INIT - 1
-
    DATA aOffset
-
    METHOD New( Icon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, cAppName, oBmp, cHelp, nHelpId )
    METHOD AddItem( oWnd )
@@ -175,19 +167,15 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    IF cAppName != Nil
       ::szAppName := cAppName
    ENDIF
-
-   IF hwg_BitAnd( Abs(::style), DS_CENTER ) > 0
+   IF hwg_BitAnd( Abs( ::style ), DS_CENTER ) > 0
       ::nLeft := Int( ( hwg_Getdesktopwidth() - ::nWidth ) / 2 )
       ::nTop  := Int( ( hwg_Getdesktopheight() - ::nHeight ) / 2 )
    ENDIF
-
    IF nHelpId != nil
       ::HelpId := nHelpId
    END
-
    ::aOffset := Array( 4 )
    AFill( ::aOffset, 0 )
-
    ::AddItem( Self )
 
    RETURN Self
@@ -199,6 +187,7 @@ METHOD AddItem( oWnd ) CLASS HWindow
    RETURN Nil
 
 METHOD DelItem( oWnd ) CLASS HWindow
+
    LOCAL i
 
    IF ( i := Ascan( ::aWindows,{ |o|o == oWnd } ) ) > 0
@@ -223,10 +212,10 @@ METHOD GetMain CLASS HWindow
       iif( Len( ::aWindows ) > 1, ::aWindows[2], Nil ) ), Nil )
 
 METHOD EvalKeyList( nKey, nctrl ) CLASS HWindow
+
    LOCAL nPos
 
    nctrl := iif( nctrl == 2, FCONTROL, iif( nctrl == 1, FSHIFT, iif( nctrl == 4,FALT,0 ) ) )
-
    //hwg_writelog( str(nKey)+"/"+str(nctrl) )
    IF !Empty( ::KeyList )
       IF ( nPos := Ascan( ::KeyList,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
@@ -257,7 +246,6 @@ CLASS HMainWindow INHERIT HWindow
    DATA   nMenuPos
    DATA oNotifyIcon, bNotify, oNotifyMenu
    DATA lTray       INIT .F.
-
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId, bColor, nExclude )
@@ -275,16 +263,12 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
       cAppName, oBmp, cHelp, nHelpId )
    ::type := lType
    ::bColor := bColor
-
    IF lType == WND_MDI
    ELSEIF lType == WND_MAIN
-
       ::handle := Hwg_InitMainWindow( Self, ::szAppName, cTitle, cMenu, ;
          iif( oIcon != Nil, oIcon:handle, Nil ), ::Style, ::nLeft, ;
          ::nTop, ::nWidth, ::nHeight )
-
    ENDIF
-
    IF ::bColor != Nil
       hwg_SetBgColor( ::handle, ::bColor )
    ENDIF
@@ -299,14 +283,13 @@ METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMain
    LOCAL i, aCoors, aRect
 
    IF ::type == WND_MAIN
-
-      IF ::style < 0 .AND. hwg_Bitand( Abs(::style), Abs(WND_NOTITLE) ) != 0
+      IF ::style < 0 .AND. hwg_Bitand( Abs( ::style ), Abs( WND_NOTITLE ) ) != 0
          hwg_WindowSetDecorated( ::handle, 0 )
+         hwg_WindowSetResize( ::handle, 1 )
       ENDIF
       hwg_ShowAll( ::handle )
-
-      IF ::style < 0 .AND. hwg_Bitand( Abs(::style), Abs(WND_NOSIZEBOX) ) != 0
-            hwg_WindowSetResize( ::handle, 0 )
+      IF ::style < 0 .AND. hwg_Bitand( Abs( ::style ), Abs( WND_NOSIZEBOX ) ) != 0
+         hwg_WindowSetResize( ::handle, 0 )
       ENDIF
       IF ::nAdjust == 1
          ::nAdjust := 2
@@ -326,7 +309,6 @@ METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMain
       IF ::bActivate != Nil
          Eval( ::bActivate, Self )
       ENDIF
-
       IF !Empty( lMinimize )
          ::Minimize()
       ELSEIF !Empty( lMaximize )
@@ -335,14 +317,13 @@ METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMain
          ::Center()
       ENDIF
       hwg_HideHidden( Self )
-
       Hwg_ActivateMainWindow( ::handle )
-
    ENDIF
 
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
+
    LOCAL i
 
    // hwg_WriteLog( "On Event" + str(msg) + str(wParam) + str( lParam ) )
@@ -364,6 +345,7 @@ FUNCTION hwg_ReleaseAllWindows( hWnd )
    return - 1
 
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
+
    LOCAL iItem, iCont, aMenu, iParHigh, iParLow, nHandle
 
    iParHigh := hwg_Hiword( wParam )

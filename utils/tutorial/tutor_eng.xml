@@ -869,6 +869,24 @@ Local bCol2 := {|o,h,x1,y1,x2,y2|
 Return Nil
       ]]>
     </module>
+    <module name="Non-standard header" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oPanel
+
+   INIT DIALOG oDlg TITLE "" ;
+         AT 0, 0 SIZE 380, 300 STYLE WND_NOTITLE
+
+   ADD HEADER PANEL oPanel HEIGHT 32 BACKCOLOR 0xdddddd TEXT "Header" ;
+      BTN_CLOSE BTN_MAXIMIZE BTN_MINIMIZE
+
+   @ 140,260 BUTTON "Close" SIZE 100,30 ON CLICK {||oDlg:Close()} ;
+      ON SIZE ANCHOR_BOTTOMABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil]]>
+    </module>
   </chapter>
   <chapter name="Get system" >
     <module name="Dialog with various Gets" ver="win">

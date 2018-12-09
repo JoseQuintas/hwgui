@@ -244,7 +244,7 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
 
    oWndParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    IF bColor == Nil
-      bColor := hwg_GetSysColor( COLOR_3DFACE )
+      bColor := 0xeeeeee
    ENDIF
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
       oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
@@ -272,12 +272,13 @@ METHOD Write( cText, nPart, lRedraw ) CLASS HPanelStS
 
 METHOD PaintText( hDC ) CLASS HPanelStS
 
-   LOCAL i, x1, x2, nWidth := ::nWidth
+   LOCAL i, x1, x2, nWidth := ::nWidth, oldTColor
 
    IF ::oFont != Nil
       hwg_Selectobject( hDC, ::oFont:handle )
    ENDIF
    hwg_Settransparentmode( hDC, .T. )
+   oldTColor := hwg_Settextcolor( hDC, ::tcolor )
    FOR i := 1 TO Len( ::aParts )
       x1 := iif( i == 1, 4, x2 + 4 )
       IF ::aParts[i] == 0
@@ -290,6 +291,7 @@ METHOD PaintText( hDC ) CLASS HPanelStS
          hwg_Drawtext( hDC, ::aText[i], x1, 6, x2, ::nHeight - 2, DT_LEFT + DT_VCENTER )
       ENDIF
    NEXT
+   hwg_Settextcolor( hDC, oldTColor )
    hwg_Settransparentmode( hDC, .F. )
 
    RETURN Nil
@@ -313,5 +315,148 @@ METHOD Paint() CLASS HPanelStS
    ::PaintText( hDC )
    ::DrawItems( hDC )
    hwg_Endpaint( ::handle, pps )
+
+   RETURN Nil
+
+CLASS HPanelHea INHERIT HPANEL
+
+   DATA  xt, yt
+
+   METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, ;
+      cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
+   METHOD SetText( c )  INLINE (::title := c)
+   METHOD PaintText( hDC )
+   METHOD Paint()
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, ;
+   cText, xt, yt, lBtnClose, lBtnMax, lBtnMin ) CLASS HPanelHea
+
+   LOCAL nBtnSize, btnClose, btnMax, btnMin, x1, oPen1, oPen2
+   oWndParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
+   IF bColor == Nil
+      bColor := 0xeeeeee
+   ENDIF
+
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, 0, ;
+      oWndParent:nWidth, nHeight, bInit, ANCHOR_TOPABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS, ;
+         bPaint, bcolor, oStyle )
+
+   ::title := cText
+   ::xt := xt
+   ::yt := yt
+   ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
+   ::oStyle := oStyle
+   ::lDragWin := .T.
+
+   IF !Empty( lBtnClose ) .OR. !Empty( lBtnMax ) .OR. !Empty( lBtnMin )
+      oPen1 := HPen():Add( BS_SOLID, 2, 0 )
+      oPen2 := HPen():Add( BS_SOLID, 1, 0 )
+      nBtnSize := Min( 24, ::nHeight )
+      x1 := ::nWidth-nBtnSize-4
+
+      IF !Empty( lBtnClose )
+         @ x1, Int((::nHeight-nBtnSize)/2) OWNERBUTTON btnClose OF Self ;
+            BACKCOLOR 0xededed SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
+            ON SIZE ANCHOR_RIGHTABS ON CLICK {||::oParent:Close()}
+         btnClose:oPen1 := oPen1; btnClose:oPen2 := oPen2
+         x1 -= nBtnSize
+      ENDIF
+      IF !Empty( lBtnMax )
+         @ x1, Int((::nHeight-nBtnSize)/2) OWNERBUTTON btnMax OF Self ;
+            BACKCOLOR 0xededed SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
+            ON SIZE ANCHOR_RIGHTABS ;
+            ON CLICK {||Iif(::lMaximized,::oParent:Restore(),::oParent:Maximize()),::lMaximized:=!::lMaximized}
+         btnMax:oPen1 := oPen1; btnMax:oPen2 := oPen2
+         x1 -= nBtnSize
+      ENDIF
+      IF !Empty( lBtnMin )
+         @ x1, Int((::nHeight-nBtnSize)/2) OWNERBUTTON btnMin OF Self ;
+            BACKCOLOR 0xededed SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
+            ON SIZE ANCHOR_RIGHTABS ;
+            ON CLICK {||::oParent:Minimize()}
+         btnMin:oPen1 := oPen1; btnMin:oPen2 := oPen2
+      ENDIF
+   ENDIF
+
+   RETURN Self
+
+METHOD PaintText( hDC ) CLASS HPanelHea
+
+   LOCAL x1, y1, oldTColor
+
+   IF ::title != Nil
+
+      IF ::oFont != Nil
+         hwg_Selectobject( hDC, ::oFont:handle )
+      ENDIF
+      hwg_Settransparentmode( hDC, .T. )
+      oldTColor := hwg_Settextcolor( hDC, ::tcolor )
+      x1 := Iif( ::xt==Nil, 4, ::xt )
+      y1 := Iif( ::yt==Nil, 4, ::yt )
+      hwg_Drawtext( hDC, ::title, x1, y1, ::nWidth-4, ::nHeight-4, DT_LEFT + DT_VCENTER )
+      hwg_Settextcolor( hDC, oldTColor )
+      hwg_Settransparentmode( hDC, .F. )
+   ENDIF
+
+   RETURN Nil
+
+METHOD Paint() CLASS HPanelHea
+   LOCAL pps, hDC, block, aCoors
+
+   IF ::bPaint != Nil
+      RETURN Eval( ::bPaint, Self )
+   ENDIF
+
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( ::handle, pps )
+
+   IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
+      aCoors := hwg_Getclientrect( ::handle )
+      Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
+   ELSEIF Empty( ::oStyle )
+      ::oStyle := HStyle():New( {::bColor}, 1 )
+   ENDIF
+   ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )
+
+   ::PaintText( hDC )
+   ::DrawItems( hDC )
+
+   hwg_Endpaint( ::handle, pps )
+
+   RETURN Nil
+
+STATIC FUNCTION fPaintBtn( oBtn )
+
+   LOCAL pps, hDC, aCoors
+
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( oBtn:handle, pps )
+   aCoors := hwg_Getclientrect( oBtn:handle )
+
+   IF oBtn:state == OBTN_MOUSOVER
+      hwg_Fillrect( hDC, 0, 0, aCoors[3], aCoors[4], oBtn:brush:handle )
+   ELSEIF oBtn:state == OBTN_PRESSED
+      hwg_Fillrect( hDC, 0, 0, aCoors[3], aCoors[4], oBtn:brush:handle )
+      hwg_Selectobject( hDC, oBtn:oPen2:handle )
+      hwg_Rectangle( hDC, 0, 0, aCoors[3]-1, aCoors[4]-1 )
+   ENDIF
+
+   hwg_Selectobject( hDC, oBtn:oPen1:handle )
+   IF oBtn:objname == "BTNCLOSE"
+      hwg_Drawline( hDC, 6, 6, aCoors[3] - 6, aCoors[4] - 6 )
+      hwg_Drawline( hDC, aCoors[3] - 6, 6, 6, aCoors[4] - 6 )
+   ELSEIF oBtn:objname == "BTNMAX"
+      hwg_Drawline( hDC, 6, 6, aCoors[3] - 6, 6 )
+      hwg_Drawline( hDC, 6, aCoors[4] - 6, aCoors[3] - 6, aCoors[4] - 6 )
+      hwg_Selectobject( hDC, oBtn:oPen2:handle )
+      hwg_Drawline( hDC, 6, 6, 6, aCoors[4] - 6 )
+      hwg_Drawline( hDC, aCoors[3] - 6, 6, aCoors[3] - 6, aCoors[4] - 6 )
+   ELSEIF oBtn:objname == "BTNMIN"
+      hwg_Drawline( hDC, 6, aCoors[4] - 6, aCoors[3] - 12, aCoors[4] - 6 )
+   ENDIF
+
+   hwg_Endpaint( oBtn:handle, pps )
 
    RETURN Nil

@@ -24,6 +24,7 @@ CLASS HOwnButton INHERIT HControl
    DATA lCheck  INIT .F.
    DATA oFont, xt, yt, widtht, heightt
    DATA oBitmap, xb, yb, widthb, heightb
+   DATA oPen1, oPen2
    DATA lTransp  INIT .F.
    DATA trColor
    DATA lEnabled INIT .T.

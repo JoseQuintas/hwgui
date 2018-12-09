@@ -818,6 +818,23 @@
     [<oPanel> :=] HPanelSts():New( <oWnd>,<nId>,<height>,<oFont>,<bInit>,<bDraw>,<bcolor>,<oStyle>,\{<aparts>\} );
     [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
+#xcommand ADD HEADER PANEL [ <oPanel> ] [ TO <oWnd> ] ;
+            [ ID <nId> ]               ;
+            HEIGHT <height>            ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON INIT <bInit> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ FONT <oFont> ]           ;
+            [ HSTYLE <oStyle> ]        ;
+            [ TEXT <cText> [COORS [<xt>][,<yt>] ] ] ;
+            [ <lBtnClose: BTN_CLOSE> ] ;
+            [ <lBtnMax: BTN_MAXIMIZE> ];
+            [ <lBtnMin: BTN_MINIMIZE> ];
+          => ;
+    [<oPanel> :=] HPanelHea():New( <oWnd>,<nId>,<height>,<oFont>,<bInit>,<bDraw>, ;
+       <bcolor>,<oStyle>,<cText>,<xt>,<yt>,<.lBtnClose.>,<.lBtnMax.>,<.lBtnMin.> );
+    [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
+
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;
             [ <lArr: ARRAY> ]          ;
             [ <lDb: DATABASE> ]        ;

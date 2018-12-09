@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-09 22:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * ADD HEADER PANEL added
+  * source/gtk/hownbtn.prg
+  * source/gtk/hpanel.prg
+  * source/winapi/hownbtn.prg
+  * source/winapi/hpanel.prg
+    * New class added: HPanelHea.
+    * :lDragWin variable added to HPanel
+  * utils/tutorial/tutor_eng.xml
+
 2018-12-08 16:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
   * source/gtk/hpanel.prg

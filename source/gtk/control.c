@@ -70,6 +70,16 @@ GtkFixed *getFixedBox( GObject * handle )
    return ( GtkFixed * ) g_object_get_data( handle, "fbox" );
 }
 
+GtkWidget *getDrawing( GObject * handle )
+{
+   return ( GtkWidget * ) g_object_get_data( handle, "draw" );
+}
+
+HB_FUNC( HWG_GETDRAWING )
+{
+   HB_RETHANDLE( getDrawing( (GObject *)HB_PARHANDLE(1) ) );
+}
+
 HB_FUNC( HWG_STOCKBITMAP )
 {
    PHWGUI_PIXBUF hpix;
@@ -103,7 +113,10 @@ HB_FUNC( HWG_CREATESTATIC )
    HB_ULONG ulExtStyle = hb_parnl( 8 );
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
+   {
       hCtrl = gtk_drawing_area_new();
+      g_object_set_data( ( GObject * ) hCtrl, "draw", ( gpointer ) hCtrl );
+   }
    else
    {
       gchar *gcTitle = hwg_convert_to_utf8( cTitle );
@@ -549,6 +562,7 @@ HB_FUNC( HWG_CREATEBROWSE )
 
    // gtk_widget_show_all( hbox );
    all_signal_connect( ( gpointer ) area );
+   g_object_set_data( ( GObject * ) hbox, "draw", ( gpointer ) area );
    HB_RETHANDLE( hbox );
 }
 
@@ -735,7 +749,10 @@ HB_FUNC( HWG_CREATEPANEL )
    vbox = gtk_vbox_new( FALSE, 0 );
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
+   {
       hCtrl = gtk_drawing_area_new();
+      g_object_set_data( ( GObject * ) hCtrl, "draw", ( gpointer ) hCtrl );
+   }
    else
       hCtrl = gtk_toolbar_new();
 
@@ -822,7 +839,8 @@ HB_FUNC( HWG_CREATEOWNBTN )
    GtkWidget *hCtrl;
    GtkFixed *box;
 
-   hCtrl = gtk_drawing_area_new(  );
+   hCtrl = gtk_drawing_area_new();
+   g_object_set_data( ( GObject * ) hCtrl, "draw", ( gpointer ) hCtrl );
 
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
    if( box )
@@ -1256,6 +1274,7 @@ HB_FUNC( HWG_CREATESPLITTER )
    fbox = ( GtkFixed * ) gtk_fixed_new(  );
 
    hCtrl = gtk_drawing_area_new(  );
+   g_object_set_data( ( GObject * ) hCtrl, "draw", ( gpointer ) hCtrl );
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
 
    if( box )

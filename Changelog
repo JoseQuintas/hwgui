@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-10 16:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+    * hwg_Window2Bitmap() implemented for gtk version
+  * source/gtk/drawwidg.prg
+    * HBitmap():AddWindow() implemented for gtk version
+
 2018-12-10 13:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
   * source/gtk/hownbtn.prg

@@ -314,6 +314,20 @@ HB_FUNC( HWG_LOADBITMAP )
  */
 HB_FUNC( HWG_WINDOW2BITMAP )
 {
+   GtkWidget *hCtrl = (GtkWidget*) HB_PARHANDLE(1);
+   GdkPixbuf *pixbuf = gdk_pixbuf_new( GDK_COLORSPACE_RGB, 0, 8, hb_parni(4), hb_parni(5) );
+
+   pixbuf = gdk_pixbuf_get_from_drawable( pixbuf, hCtrl->window, NULL, hb_parni(2), hb_parni(3),
+      0, 0, hb_parni(4), hb_parni(5) );
+
+   if( pixbuf )
+   {
+      PHWGUI_PIXBUF hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
+      hpix->type = HWGUI_OBJECT_PIXBUF;
+      hpix->handle = pixbuf;
+      hpix->trcolor = -1;
+      HB_RETHANDLE( hpix );
+   }
 }
 
 /*

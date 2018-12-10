@@ -413,11 +413,11 @@ METHOD AddStandard( cId, nSize ) CLASS HBitmap
 
    RETURN Self
 
-METHOD AddWindow( oWnd, lFull ) CLASS HBitmap
+METHOD AddWindow( handle, x1, y1, x2, y2 ) CLASS HBitmap
    LOCAL i, aBmpSize
 
-   // ::handle := hwg_Window2bitmap( oWnd:handle,lFull )
-   ::name := LTrim( Str( oWnd:handle ) )
+   ::handle := hwg_Window2bitmap( handle,x1,y1,x2,y2 )
+   ::name := "bmp"
    aBmpSize  := hwg_Getbitmapsize( ::handle )
    ::nWidth  := aBmpSize[1]
    ::nHeight := aBmpSize[2]

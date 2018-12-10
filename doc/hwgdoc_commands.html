@@ -235,7 +235,8 @@
        <li><a name="_Commands3-8" href="#Commands3-8">4.3.8.  RADIOGROUP</a>
        <li><a name="_Commands3-9" href="#Commands3-9">4.3.9.  END RADIOGROUP</a>
        <li><a name="_Commands3-10" href="#Commands3-10">4.3.10.  @ &lt;x&gt;,&lt;y&gt; PANEL</a>
-       <li><a name="_Commands3-11" href="#Commands3-11">4.3.11.  ADD TOP PANEL</a>
+       <li><a name="_Commands3-11a" href="#Commands3-11a">4.3.11a.  ADD TOP PANEL</a>
+       <li><a name="_Commands3-11b" href="#Commands3-11b">4.3.11b.  ADD HEADER PANEL</a>
        <li><a name="_Commands3-12" href="#Commands3-12">4.3.12.  ADD STATUS PANEL</a>
 
        <li><a name="_Commands3-13" href="#Commands3-13">4.3.13.  @ &lt;x&gt;,&lt;y&gt; BROWSE</a>
@@ -444,7 +445,7 @@
     	 [ STYLE &lt;nStyle&gt; ]
     </pre>
 
-    <br><a name="Commands3-11" href="#_Commands3-11">4.3.11.  ADD TOP PANEL</a>
+    <br><a name="Commands3-11a" href="#_Commands3-11a">4.3.11a.  ADD TOP PANEL</a>
     <p></p>
     <pre class="code">
     ADD TOP PANEL [ &lt;oPanel&gt; ] TO &lt;oWnd&gt;
@@ -455,6 +456,25 @@
     	 [ ON INIT &lt;bInit&gt; ] 
     	 [ ON PAINT &lt;bDraw&gt; ] 
     	 [ STYLE &lt;nStyle&gt; ]
+    </pre>
+
+    <br><a name="Commands3-11b" href="#_Commands3-11b">4.3.11b.  ADD HEADER PANEL</a>
+    <p></p>
+    <pre class="code">
+    ADD HEADER PANEL [ &lt;oPanel&gt; ] [TO &lt;oWnd&gt;]
+    	 [ ID &lt;nId&gt; ]
+         HEIGHT &lt;height&gt;
+    	 [ TEXTCOLOR &lt;tcolor&gt; ]
+    	 [ BACKCOLOR &lt;bcolor&gt; ]
+    	 [ HSTYLE &lt;oStyle&gt; ]
+    	 [ FONT &lt;oFont&gt; ] 
+    	 [ ON INIT &lt;bInit&gt; ] 
+    	 [ ON PAINT &lt;bDraw&gt; ] 
+         [ TEXT &lt;cText&gt; [COORS &lt;xt&gt;[,&lt;yt&gt;] ] ]
+         [ &lt;lBtnClose: BTN_CLOSE&gt; ]
+         [ &lt;lBtnMax: BTN_MAXIMIZE&gt; ]
+         [ &lt;lBtnMin: BTN_MINIMIZE&gt; ]
+
     </pre>
 
     <br><a name="Commands3-12" href="#_Commands3-12">4.3.12.  ADD STATUS PANEL</a>

@@ -131,6 +131,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
    STATIC h
 
    IF msg == WM_PAINT
+      IF ::state == OBTN_INIT
+         ::state := OBTN_NORMAL
+      ENDIF
       IF ::bPaint != Nil
          Eval( ::bPaint, Self )
       ELSE
@@ -236,9 +239,6 @@ METHOD Paint() CLASS HOwnButton
 
    aCoors := hwg_Getclientrect( ::handle )
 
-   IF ::state == OBTN_INIT
-      ::state := OBTN_NORMAL
-   ENDIF
    IF ::nWidth != aCoors[3] .OR. ::nHeight != aCoors[4]
       ::nWidth  := aCoors[3]
       ::nHeight := aCoors[4]
@@ -339,6 +339,7 @@ METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
    IF ::state != OBTN_INIT
       xPos := hwg_Loword( lParam )
       yPos := hwg_Hiword( lParam )
+      //hwg_writelog( "mm-2 "+str(xpos)+"/"+str(ypos) )
       IF xPos > ::nWidth .OR. yPos > ::nHeight
          hwg_Releasecapture()
          res := .T.

@@ -821,18 +821,19 @@
 #xcommand ADD HEADER PANEL [ <oPanel> ] [ TO <oWnd> ] ;
             [ ID <nId> ]               ;
             HEIGHT <height>            ;
+            [ TEXTCOLOR <tcolor> ]     ;
             [ BACKCOLOR <bcolor> ]     ;
             [ ON INIT <bInit> ]        ;
             [ ON PAINT <bDraw> ]       ;
             [ FONT <oFont> ]           ;
             [ HSTYLE <oStyle> ]        ;
-            [ TEXT <cText> [COORS [<xt>][,<yt>] ] ] ;
+            [ TEXT <cText> [COORS <xt>[,<yt>] ] ] ;
             [ <lBtnClose: BTN_CLOSE> ] ;
             [ <lBtnMax: BTN_MAXIMIZE> ];
             [ <lBtnMin: BTN_MINIMIZE> ];
           => ;
     [<oPanel> :=] HPanelHea():New( <oWnd>,<nId>,<height>,<oFont>,<bInit>,<bDraw>, ;
-       <bcolor>,<oStyle>,<cText>,<xt>,<yt>,<.lBtnClose.>,<.lBtnMax.>,<.lBtnMin.> );
+       <tcolor>,<bcolor>,<oStyle>,<cText>,<xt>,<yt>,<.lBtnClose.>,<.lBtnMax.>,<.lBtnMin.> );
     [; hwg_SetCtrlName( <oPanel>,<(oPanel)> )]
 
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ]  ;

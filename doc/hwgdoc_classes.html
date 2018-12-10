@@ -52,6 +52,7 @@
            <li><a name="_Classes3_3_2" href="#Classes3_3_2">HPanel</a>
            <ul>
              <li><a name="_Classes3_3_2_1" href="#Classes3_3_2_1">HPanelSts</a>
+             <li><a name="_Classes3_3_2_2" href="#Classes3_3_2_2">HPanelHea</a>
            </ul>
            <li><a name="_Classes3_3_3" href="#Classes3_3_3">HOwnButton</a>
            <li><a name="_Classes3_3_4" href="#Classes3_3_4">HSplitter</a>
@@ -446,7 +447,23 @@
    <pre class="code">METHODS
       New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aParts )
       Write( cText, nPart, lRedraw )
+      SetText( cText )
       PaintText( hDC )
+      Paint()
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes3_3_2_2" href="#_Classes3_3_2_2">
+   HPanelHea</a></strong> 
+   <pre class="code">DATA
+     xt, yt
+     lMaximized
+   </pre>
+   <pre class="code">METHODS
+     New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
+      cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
+     SetText( c )  INLINE (::title := c)
+     PaintText( hDC )
+     Paint()
    </pre>
 
    <br><strong class="subhead"><a name="Classes3_3_3" href="#_Classes3_3_3">

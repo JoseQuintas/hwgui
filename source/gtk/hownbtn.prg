@@ -34,7 +34,7 @@ CLASS HOwnButton INHERIT HControl
       bInit, bSize, bPaint, bClick, lflat,              ;
       cText, color, font, xt, yt, widtht, heightt,        ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
-      cTooltip, lEnabled, lCheck )
+      cTooltip, lEnabled, lCheck, bColor )
 
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
@@ -55,7 +55,7 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
       bInit, bSize, bPaint, bClick, lflat,             ;
       cText, color, font, xt, yt, widtht, heightt,       ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
-      cTooltip, lEnabled, lCheck  ) CLASS HOwnButton
+      cTooltip, lEnabled, lCheck, bColor  ) CLASS HOwnButton
 
    ::Super:New( oWndParent, nId,, nLeft, nTop, nWidth, nHeight, font, bInit, ;
       bSize, bPaint, ctooltip )
@@ -68,6 +68,10 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
    ::aStyle  := aStyles
    ::title   := cText
    ::tcolor  := Iif( color == Nil, 0, color )
+   IF bColor != Nil
+      ::bcolor := bcolor
+      ::brush  := HBrush():Add( bcolor )
+   ENDIF
    ::xt      := xt
    ::yt      := yt
    ::widtht  := widtht
@@ -122,7 +126,14 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
    STATIC h
 
    IF msg == WM_PAINT
-      ::Paint()
+      IF ::state == OBTN_INIT
+         ::state := OBTN_NORMAL
+      ENDIF
+      IF ::bPaint != Nil
+         Eval( ::bPaint, Self )
+      ELSE
+         ::Paint()
+      ENDIF
    ELSEIF msg == WM_LBUTTONDOWN
       ::MDown()
       h := hwg_Setfocus( ::handle )
@@ -139,8 +150,12 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
 
 METHOD Init CLASS HOwnButton
 
+   LOCAL bColor
    IF !::lInit
+      bColor := ::bColor
+      ::bColor := Nil
       ::Super:Init()
+      ::bColor := bColor
       hwg_Setwindowobject( ::handle, Self )
    ENDIF
 
@@ -151,10 +166,6 @@ METHOD Paint() CLASS HOwnButton
    LOCAL aCoors, aMetr, x1, y1, x2, y2, n
 
    aCoors := hwg_Getclientrect( ::handle )
-
-   IF ::state == OBTN_INIT
-      ::state := OBTN_NORMAL
-   ENDIF
 
    IF !Empty( ::aStyle )
       n := Len( ::aStyle )
@@ -176,6 +187,10 @@ METHOD Paint() CLASS HOwnButton
       ELSEIF ::state == OBTN_PRESSED
          hwg_Drawbutton( hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4], 6 )
       ENDIF
+   ENDIF
+
+   IF !Empty( ::brush )
+      hwg_Fillrect( hDC, aCoors[ 1 ] + 2, aCoors[ 2 ] + 2, aCoors[ 3 ] - 2, aCoors[ 4 ] - 2, ::brush:handle )
    ENDIF
 
    IF ::oBitmap != Nil

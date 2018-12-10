@@ -321,8 +321,9 @@ METHOD Paint() CLASS HPanelStS
 CLASS HPanelHea INHERIT HPANEL
 
    DATA  xt, yt
+   DATA  lMaximized   INIT .F.
 
-   METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, ;
+   METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
       cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
    METHOD SetText( c )  INLINE (::title := c)
    METHOD PaintText( hDC )
@@ -330,7 +331,7 @@ CLASS HPanelHea INHERIT HPANEL
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, ;
+METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
    cText, xt, yt, lBtnClose, lBtnMax, lBtnMin ) CLASS HPanelHea
 
    LOCAL nBtnSize, btnClose, btnMax, btnMin, x1, oPen1, oPen2
@@ -348,11 +349,12 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, ;
    ::yt := yt
    ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
    ::oStyle := oStyle
+   ::tColor := Iif( tcolor==Nil, 0, tcolor )
    ::lDragWin := .T.
 
    IF !Empty( lBtnClose ) .OR. !Empty( lBtnMax ) .OR. !Empty( lBtnMin )
-      oPen1 := HPen():Add( BS_SOLID, 2, 0 )
-      oPen2 := HPen():Add( BS_SOLID, 1, 0 )
+      oPen1 := HPen():Add( BS_SOLID, 2, ::tColor )
+      oPen2 := HPen():Add( BS_SOLID, 1, ::tColor )
       nBtnSize := Min( 24, ::nHeight )
       x1 := ::nWidth-nBtnSize-4
 
@@ -436,9 +438,9 @@ STATIC FUNCTION fPaintBtn( oBtn )
    aCoors := hwg_Getclientrect( oBtn:handle )
 
    IF oBtn:state == OBTN_MOUSOVER
-      hwg_Fillrect( hDC, 0, 0, aCoors[3], aCoors[4], oBtn:brush:handle )
+      hwg_Fillrect( hDC, 0, 0, aCoors[3]-1, aCoors[4]-1, oBtn:brush:handle )
    ELSEIF oBtn:state == OBTN_PRESSED
-      hwg_Fillrect( hDC, 0, 0, aCoors[3], aCoors[4], oBtn:brush:handle )
+      hwg_Fillrect( hDC, 0, 0, aCoors[3]-1, aCoors[4]-1, oBtn:brush:handle )
       hwg_Selectobject( hDC, oBtn:oPen2:handle )
       hwg_Rectangle( hDC, 0, 0, aCoors[3]-1, aCoors[4]-1 )
    ENDIF

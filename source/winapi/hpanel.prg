@@ -444,6 +444,7 @@ CLASS HPanelHea INHERIT HPANEL
    METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
       cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
    METHOD SetText( c )  INLINE (::title := c)
+   METHOD SetSysbtnColor( tColor, bColor )
    METHOD PaintText( hDC )
    METHOD Paint()
 
@@ -452,7 +453,7 @@ ENDCLASS
 METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
    cText, xt, yt, lBtnClose, lBtnMax, lBtnMin ) CLASS HPanelHea
  
-   LOCAL nBtnSize, btnClose, btnMax, btnMin, x1, oPen1, oPen2
+   LOCAL nBtnSize, btnClose, btnMax, btnMin, x1
 
    oWndParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    IF bColor == Nil
@@ -472,36 +473,53 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oSty
    ::lDragWin := .T.
 
    IF !Empty( lBtnClose ) .OR. !Empty( lBtnMax ) .OR. !Empty( lBtnMin )
-      oPen1 := HPen():Add( BS_SOLID, 2, ::tColor )
-      oPen2 := HPen():Add( BS_SOLID, 1, ::tColor )
       nBtnSize := Min( 24, ::nHeight )
       x1 := ::nWidth-nBtnSize-4
 
       IF !Empty( lBtnClose )
          @ x1, Int((::nHeight-nBtnSize)/2) OWNERBUTTON btnClose OF Self ;
-            BACKCOLOR 0xededed SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
+            SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
             ON SIZE ANCHOR_RIGHTABS ON CLICK {||::oParent:Close()}
-         btnClose:oPen1 := oPen1; btnClose:oPen2 := oPen2
          x1 -= nBtnSize
       ENDIF
       IF !Empty( lBtnMax )
          @ x1, Int((::nHeight-nBtnSize)/2) OWNERBUTTON btnMax OF Self ;
-            BACKCOLOR 0xededed SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
+            SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
             ON SIZE ANCHOR_RIGHTABS ;
             ON CLICK {||Iif(::lMaximized,::oParent:Restore(),::oParent:Maximize()),::lMaximized:=!::lMaximized}
-         btnMax:oPen1 := oPen1; btnMax:oPen2 := oPen2
          x1 -= nBtnSize
       ENDIF
       IF !Empty( lBtnMin )
          @ x1, Int((::nHeight-nBtnSize)/2) OWNERBUTTON btnMin OF Self ;
-            BACKCOLOR 0xededed SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
+            SIZE nBtnSize, nBtnSize ON PAINT {|o|fPaintBtn(o)} ;
             ON SIZE ANCHOR_RIGHTABS ;
             ON CLICK {||::oParent:Minimize()}
-         btnMin:oPen1 := oPen1; btnMin:oPen2 := oPen2
       ENDIF
+      ::SetSysbtnColor( 0, 0xededed )
    ENDIF
 
    RETURN Self
+
+METHOD SetSysbtnColor( tColor, bColor )
+
+   LOCAL oBtn, oPen1, oPen2
+
+   oPen1 := HPen():Add( BS_SOLID, 2, tColor )
+   oPen2 := HPen():Add( BS_SOLID, 1, tColor )
+
+   IF !Empty( oBtn := ::FindControl( "btnclose" ) )
+      oBtn:SetColor( tColor, bColor )
+      oBtn:oPen1 := oPen1; oBtn:oPen2 := oPen2
+   ENDIF
+   IF !Empty( oBtn := ::FindControl( "btnmax" ) )
+      oBtn:SetColor( tColor, bColor )
+      oBtn:oPen1 := oPen1; oBtn:oPen2 := oPen2
+   ENDIF
+   IF !Empty( oBtn := ::FindControl( "btnmin" ) )
+      oBtn:SetColor( tColor, bColor )
+      oBtn:oPen1 := oPen1; oBtn:oPen2 := oPen2
+   ENDIF
+   RETURN Nil
 
 METHOD PaintText( hDC ) CLASS HPanelHea
 

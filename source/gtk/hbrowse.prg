@@ -235,8 +235,8 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, ;
       lNoBorder, lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bRClick ) CLASS HBrowse
 
-   nStyle   := Hwg_BitOr( Iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE + ;
-      Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) +            ;
+   nStyle := Hwg_BitOr( Iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE + ;
+      Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) + ;
       Iif( lNoVScroll = Nil .OR. !lNoVScroll, WS_VSCROLL, 0 ) )
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, Iif( nWidth == Nil,0,nWidth ), ;
       Iif( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint )
@@ -646,14 +646,20 @@ METHOD Paint()  CLASS HBrowse
    ENDIF
 
    aCoors := hwg_Getclientrect( ::handle )
-   hwg_gtk_drawedge( hDC, aCoors[1], aCoors[2], aCoors[3] - 1, aCoors[4] - 1, 6 )
+
+   IF hwg_BitAnd( ::style, WS_BORDER ) != 0
+      hwg_gtk_drawedge( hDC, aCoors[1], aCoors[2], aCoors[3] - 1, aCoors[4] - 1, 6 )
+      i := 1
+   ELSE
+      i := 0
+   ENDIF
 
    ::height := Iif( ::nRowHeight>0, ::nRowHeight, ;
          Max( ::nRowTextHeight, ::minHeight ) + 1 + ::aPadding[2] + ::aPadding[4] )
-   ::x1 := aCoors[ 1 ]
-   ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::nRowTextHeight * ::nHeadRows + ::aHeadPadding[2] + ::aHeadPadding[4], 0 )
-   ::x2 := aCoors[ 3 ]
-   ::y2 := aCoors[ 4 ]
+   ::x1 := aCoors[ 1 ] + i
+   ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::nRowTextHeight * ::nHeadRows + ::aHeadPadding[2] + ::aHeadPadding[4], 0 ) + i
+   ::x2 := aCoors[ 3 ] - i
+   ::y2 := aCoors[ 4 ] - i
 
    ::nRecords := Eval( ::bRcou, Self )
    IF ::nCurrent > ::nRecords .AND. ::nRecords > 0
@@ -730,6 +736,9 @@ METHOD Paint()  CLASS HBrowse
       ENDDO
 
       Eval( ::bGoTo, Self, tmp )
+
+      hwg_Fillrect( hDC, ::x1, ::y1 + ( ::height + 1 ) * nRows, ;
+         ::x2, ::y2, ::brush:handle )
    ENDIF
    IF ::lAppMode
       ::LineOut( nRows + 1, 0, hDC, .F. , .T. )

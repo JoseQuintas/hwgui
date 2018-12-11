@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-11 16:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+    * Border drawing corrected
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+    * :SetSysbtnColor(tColor,bColor) added
+  * utils/tutorial/tutor_eng.xml
+
 2018-12-11 13:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
   * source/gtk/draw.c

@@ -894,9 +894,7 @@ Local oDlg, oPanel, oFont, oStyleNormal, oStylePressed, oStyleOver
    // Set colors of predefined buttons to correspond panel color.
    // "btnClose" is a predefined name of a close button, "btnMax" and
    // "btnMin" - of maximize and minimize buttons.
-   oPanel:btnClose:SetColor( 0xffffff, 0x7b7680 )
-   oPanel:btnMax:SetColor( 0xffffff, 0x7b7680 )
-   oPanel:btnMin:SetColor( 0xffffff, 0x7b7680 )
+   oPanel:SetSysbtnColor( 0xffffff, 0x7b7680 )
 
    @ 140,260 OWNERBUTTON SIZE 100,32 TEXT "Close" COLOR 0xffffff ;
          HSTYLES oStyleNormal, oStylePressed, oStyleOver ;

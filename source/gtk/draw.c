@@ -475,6 +475,13 @@ HB_FUNC( HWG_OPENBITMAP )
    }
 }
 
+HB_FUNC( HWG_SAVEBITMAP )
+{
+   PHWGUI_PIXBUF hpix = HB_PARHANDLE(2);
+   const char * szType = (HB_ISCHAR(3))? hb_parc(3) : "bmp";
+   hb_retl( gdk_pixbuf_save( hpix->handle, hb_parc(1), szType, NULL, NULL ) );
+}
+
 HB_FUNC( HWG_OPENIMAGE )
 {
    PHWGUI_PIXBUF hpix;

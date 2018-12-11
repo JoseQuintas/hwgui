@@ -870,7 +870,10 @@ Return Nil
       ]]>
     </module>
     <module name="Non-standard header" >
-      <![CDATA[#include "hwgui.ch"
+      <![CDATA[// In this sample we will create a dialog with a customized
+// title bar. To do this, we create it without a standard title and add
+// a HEADER PANEL instead.
+#include "hwgui.ch"
 Function Test()
 Local oDlg, oPanel, oFont, oStyleNormal, oStylePressed, oStyleOver
 
@@ -878,13 +881,19 @@ Local oDlg, oPanel, oFont, oStyleNormal, oStylePressed, oStyleOver
    oStylePressed := HStyle():New( {0x7b7680}, 1,, 2, 0xffffff )
    oStyleOver := HStyle():New( {0x7b7680}, 1 )
 
+   // WND_NOTITLE style creates a dialog without the title bar
    INIT DIALOG oDlg TITLE "" BACKCOLOR 0x3C3940 ;
          AT 0, 0 SIZE 380, 300 STYLE WND_NOTITLE
 
    PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 ITALIC
 
+   // Add a header panel with predefined buttons
    ADD HEADER PANEL oPanel HEIGHT 32 TEXTCOLOR 0xFFFFFF BACKCOLOR 0x2F343F ;
       FONT oFont TEXT "Header" COORS 20 BTN_CLOSE BTN_MAXIMIZE BTN_MINIMIZE
+
+   // Set colors of predefined buttons to correspond panel color.
+   // "btnClose" is a predefined name of a close button, "btnMax" and
+   // "btnMin" - of maximize and minimize buttons.
    oPanel:btnClose:SetColor( 0xffffff, 0x7b7680 )
    oPanel:btnMax:SetColor( 0xffffff, 0x7b7680 )
    oPanel:btnMin:SetColor( 0xffffff, 0x7b7680 )

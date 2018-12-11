@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-11 13:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+  * source/gtk/draw.c
+  * source/winapi/draw.c
+     * hwg_SaveBitmap( cFileName, hBitmap ) added.
+  * utils/tutorial/tutor_eng.xml
+  * doc/hwgdoc_functions.html
+
 2018-12-11 11:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/draw.c
   * source/gtk/drawwidg.prg

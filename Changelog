@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-11 11:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/draw.c
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    * HBitmap():AddWindow(), hwg_Window2Bitmap() are compatible now for both versions.
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_functions.html
+    * doc updated
+
 2018-12-11 09:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcwindow.prg
   * source/winapi/hcwindow.prg

@@ -414,28 +414,36 @@ HB_FUNC( HWG_LOADBITMAP )
 HB_FUNC( HWG_WINDOW2BITMAP )
 {
    HWND hWnd = ( HWND ) HB_PARHANDLE( 1 );
-   BOOL lFull = ( HB_ISNIL( 2 ) ) ? 0 : ( BOOL ) hb_parl( 2 );
-   HDC hDC = ( lFull ) ? GetWindowDC( hWnd ) : GetDC( hWnd );
+   //BOOL lFull = ( HB_ISNIL( 2 ) ) ? 0 : ( BOOL ) hb_parl( 2 );
+   //HDC hDC = ( lFull ) ? GetWindowDC( hWnd ) : GetDC( hWnd );
+   HDC hDC = GetWindowDC( hWnd );
    HDC hDCmem = CreateCompatibleDC( hDC );
    HBITMAP hBitmap;
+   int x1 = HB_ISNUM(2)? hb_parni(2):0, y1 = HB_ISNUM(3)? hb_parni(3):0;
+   int width= HB_ISNUM(4)? hb_parni(4):0, height = HB_ISNUM(5)? hb_parni(5):0;
    RECT rc;
 
+   if( width == 0 || height == 0 )
+   {
+      GetWindowRect( hWnd, &rc );
+      width = rc.right - rc.left;
+      height = rc.bottom - rc.top;
+   }
+   /*
    if( lFull )
       GetWindowRect( hWnd, &rc );
    else
       GetClientRect( hWnd, &rc );
+   */
 
-   hBitmap =
-         CreateCompatibleBitmap( hDC, rc.right - rc.left,
-         rc.bottom - rc.top );
+
+   hBitmap = CreateCompatibleBitmap( hDC, width, height );
    SelectObject( hDCmem, hBitmap );
 
-   BitBlt( hDCmem, 0, 0, rc.right - rc.left, rc.bottom - rc.top, hDC, 0, 0,
-         SRCCOPY );
+   BitBlt( hDCmem, 0, 0, width, height, hDC, x1, y1, SRCCOPY );
 
    DeleteDC( hDCmem );
    DeleteDC( hDC );
-   //hb_retnl( (LONG) hBitmap );
    HB_RETHANDLE( hBitmap );
 }
 

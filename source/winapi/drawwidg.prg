@@ -312,7 +312,7 @@ CLASS HBitmap INHERIT HObject
    METHOD AddStandard( nId )
    METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight )
    METHOD AddString( name, cVal )
-   METHOD AddWindow( oWnd, lFull )
+   METHOD AddWindow( oWnd, x1, y1, width, height )
    METHOD Draw( hDC, x1, y1, width, height )  INLINE hwg_Drawbitmap( hDC, ::handle, SRCCOPY, x1, y1, width, height )
    METHOD RELEASE()
 
@@ -448,10 +448,14 @@ METHOD AddString( name, cVal ) CLASS HBitmap
 
    RETURN Self
 
-METHOD AddWindow( oWnd, lFull ) CLASS HBitmap
+METHOD AddWindow( oWnd, x1, y1, width, height ) CLASS HBitmap
    LOCAL aBmpSize
 
-   ::handle := hwg_Window2bitmap( oWnd:handle, lFull )
+   IF x1 == Nil .OR. y1 == Nil
+      x1 := 0; y1 := 0; width := oWnd:nWidth - 1; height := oWnd:nHeight - 1
+   ENDIF
+
+   ::handle := hwg_Window2bitmap( oWnd:handle, x1, y1, width, height )
    ::name := LTrim( hb_valToStr( oWnd:handle ) )
    aBmpSize  := hwg_Getbitmapsize( ::handle )
    ::nWidth  := aBmpSize[ 1 ]

@@ -694,8 +694,15 @@
    <br><strong class="subhead"> hwg_Loadbitmap( nId | cName [,l] )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_Window2bitmap( hWnd, lFull )</strong> (Windows only)
-   <p></p>
+   <br><strong class="subhead"> hwg_Window2bitmap( hWnd, x1, y1, width, height )</strong>
+   <br>Creates a bitmap from a given region of a window or control. If coordinates aren't
+       passed, the whole window is used.
+   <ul>
+     <li> hWnd - window handle;
+     <li> x1, y1 - coordinates of a top left corner of a selected region;
+     <li> width, height - width and height of a selected region;
+     <li> Return value - handle of a bitmap.
+   </ul>
 
    <br><strong class="subhead"> hwg_RedrawWindow( handle, nFlags, x1, y1, nWidth, nHeight )</strong> 
    <p></p>

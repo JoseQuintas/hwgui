@@ -87,9 +87,17 @@ CLASS HCustomWindow INHERIT HObject
 ENDCLASS
 
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
-   LOCAL i := iif( nId != NIL, Ascan( ::aControls, { |o| o:id == nId } ), ;
-      Ascan( ::aControls, { |o| hwg_Isptreq( o:handle,nHandle) } ) )
-   RETURN iif( i == 0, NIL, ::aControls[ i ] )
+   LOCAL i
+
+   IF Valtype( nId ) == "C"
+      nId := Upper( nId )
+      i := Ascan( ::aControls,{|o|o:objname != Nil .AND. o:objname == nId } )
+   ELSE
+      i := Iif( nId != Nil, Ascan( ::aControls,{|o|o:id == nId } ), ;
+         Ascan( ::aControls, {|o| hwg_Isptreq( o:handle,nHandle) } ) )
+   ENDIF
+
+   RETURN Iif( i == 0, Nil, ::aControls[i] )
 
 METHOD DelControl( oCtrl ) CLASS HCustomWindow
    LOCAL h := oCtrl:handle, id := oCtrl:id

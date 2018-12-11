@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-11 09:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcwindow.prg
+  * source/winapi/hcwindow.prg
+    * FindControl() can now look for an :objname, passed as a first parameter.
+  * source/gtk/hpanel.prg
+    * Corrections
+  * utils/tutorial/tutor_eng.xml
+
 2018-12-10 20:46 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
   * source/gtk/drawwidg.prg

@@ -210,7 +210,6 @@ CLASS HBrowse INHERIT HControl
    METHOD Init()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( lType, oWnd, nId, oFont, bInit, bSize, bPaint, bEnter, bGfocus, bLfocus )
-   METHOD FindBrowse( nId )
    METHOD AddColumn( oColumn )
    METHOD InsColumn( oColumn, nPos )
    METHOD DelColumn( nPos )
@@ -446,12 +445,6 @@ METHOD Redefine( lType, oWndParent, nId, oFont, bInit, bSize, bPaint, bEnter, bG
    ::InitBrw()
 
    RETURN Self
-
-METHOD FindBrowse( nId ) CLASS HBrowse
-
-   LOCAL i := Ascan( ::aItemsList, { |o|o:id == nId }, 1, ::iItems )
-
-   RETURN iif( i > 0, ::aItemsList[i], Nil )
 
 METHOD AddColumn( oColumn ) CLASS HBrowse
 

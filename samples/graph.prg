@@ -1,90 +1,88 @@
 #include "windows.ch"
 #include "guilib.ch"
 
-Function Main
-Local oMainWindow
+FUNCTION Main
 
+   LOCAL oMain, oPaneHea, oPaneTop, oGraph, oFont
+   LOCAL oStyleNormal, oStylePressed, oStyleOver
 
-   INIT WINDOW oMainWindow MAIN TITLE "Example" AT 200,0 SIZE 400,100
+   PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 ITALIC
 
-   MENU OF oMainWindow
-      MENUITEM "&Exit" ACTION hwg_EndWindow()
-      MENUITEM "&Graph1" ACTION Graph1()
-      MENUITEM "&Graph2" ACTION Graph2()
-      MENUITEM "&Graph3" ACTION Graph3()
-   ENDMENU
+   oStyleNormal := HStyle():New( {0x7b7680,0x5b5760}, 1 )
+   oStylePressed := HStyle():New( {0x7b7680}, 1,, 2, 0xffffff )
+   oStyleOver := HStyle():New( {0x7b7680}, 1 )
 
-   ACTIVATE WINDOW oMainWindow
-Return nil
+   INIT WINDOW oMain MAIN TITLE "Example" AT 200, 0 SIZE 400, 320 ;
+      BACKCOLOR 0x3C3940 FONT oFont STYLE WND_NOTITLE + WND_NOSIZEBOX
 
-Static Function Graph1
-Local oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oGraph
-Local i, aGraph[1]
+   ADD HEADER PANEL oPaneHea HEIGHT 32 TEXTCOLOR 0xFFFFFF BACKCOLOR 0x2F343F ;
+      FONT oFont TEXT "Graphs" COORS 20 BTN_CLOSE BTN_MINIMIZE
 
-   aGraph[1] := {}
-   FOR i := -40 TO 40
-      Aadd( aGraph[1], { i, hwg_cos(i/10) } )
+   oPaneHea:SetSysbtnColor( 0xffffff, 0x7b7680 )
+
+   @ 0, 32 PANEL oPaneTop SIZE 400, 48 HSTYLE oStyleNormal ;
+      ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 0,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "1" ;
+         ON CLICK {||Graph1()}
+   @ 64,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "2" ;
+         ON CLICK {||Graph2()}
+   @ 128,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "3" ;
+         ON CLICK {||Graph3()}
+
+   @ 332,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Exit" ;
+         ON CLICK {||hwg_EndWindow()}
+
+   @ 50, 100 GRAPH oGraph DATA Nil SIZE 300, 200 COLOR 65280
+
+   ACTIVATE WINDOW oMain
+
+   RETURN nil
+
+STATIC FUNCTION Graph1
+   LOCAL oGraph, i, aGraph := { {}, {} }
+
+   FOR i := - 40 TO 40
+      AAdd( aGraph[1], { i, hwg_cos( i/10 ) } )
+      AAdd( aGraph[2], { i, hwg_sin( i/10 ) } )
    NEXT
 
-   INIT DIALOG oModDlg CLIPPER TITLE "Graph"        ;
-           AT 210,10  SIZE 300,300                  ;
-           FONT oFont
+   oGraph := HWindow():GetMain():oGraph
+   oGraph:nGraphs := 2
+   oGraph:aColors := { 255 }
 
-   @ 50,30 GRAPH oGraph DATA aGraph SIZE 200,100 COLOR 65280
-   // oGraph:oPen := HPen():Add( PS_SOLID,2,oGraph:tcolor )
+   oGraph:Rebuild( aGraph, 1 )
 
-   @ 90,250 BUTTON "Close"  ;
-       SIZE 120,30          ;
-       ON CLICK {||hwg_EndDialog()}
+   RETURN Nil
 
-   ACTIVATE DIALOG oModDlg
+STATIC FUNCTION Graph2
+   LOCAL oGraph, i, aGraph := { {} }
 
-Return Nil
+   FOR i := 1 TO 8
+      AAdd( aGraph[1], { "", i * i } )
+   NEXT
 
-Static Function Graph2
-Local oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oGraph
-Local i, aGraph[1]
+   oGraph := HWindow():GetMain():oGraph
+   oGraph:nGraphs := 1
 
-   aGraph[1] := {}
+   oGraph:Rebuild( aGraph, 2 )
+
+   RETURN Nil
+
+STATIC FUNCTION Graph3
+   LOCAL oGraph, i, aGraph := { {} }
+
    FOR i := 1 TO 6
-      Aadd( aGraph[1], { "",i*i } )
+      AAdd( aGraph[1], { "", i * i } )
    NEXT
 
-   INIT DIALOG oModDlg CLIPPER TITLE "Graph"        ;
-           AT 210,10  SIZE 600,300                  ;
-           FONT oFont
+   oGraph := HWindow():GetMain():oGraph
+   oGraph:nGraphs := 1
 
-   @ 50,30 GRAPH oGraph DATA aGraph SIZE 400,200 COLOR 65280
-   oGraph:nType := 2
+   oGraph:Rebuild( aGraph, 3 )
 
-   @ 90,250 BUTTON "Close"  ;
-       SIZE 120,30          ;
-       ON CLICK {||hwg_EndDialog()}
-
-   ACTIVATE DIALOG oModDlg
-
-Return Nil
-
-Static Function Graph3
-Local oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oGraph
-Local i, aGraph[1]
-
-   aGraph[1] := {}
-   FOR i := 1 TO 6
-      Aadd( aGraph[1], i*i )
-   NEXT
-
-   INIT DIALOG oModDlg CLIPPER TITLE "Graph"        ;
-           AT 210,10  SIZE 300,300                  ;
-           FONT oFont
-/*
-   @ 50,30 GRAPH oGraph DATA aGraph SIZE 200,200 COLOR 65280
-   oGraph:nType := 3
-
-   @ 90,250 BUTTON "Close"  ;
-       SIZE 120,30          ;
-       ON CLICK {||hwg_EndDialog()}
-*/
-   ACTIVATE DIALOG oModDlg
-
-Return Nil
+   RETURN Nil

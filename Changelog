@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-12 16:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hgraph.prg
+  * source/winapi/hgraph.prg
+    * :aColors, :aPens added to draw graphs with different colors
+  * samples/graph.prg
+  * samples/gtk_samples/graph.prg
+    * sample updated
+  * doc/hwgdoc_classes.html
+    * doc updated
+
 2018-12-12 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hbrowse.prg
     * :FindBrowse() deleted

@@ -31,6 +31,7 @@ CLASS VAR winclass   INIT "STATIC"
    DATA ymaxSet
    DATA tbrush
    DATA colorCoor INIT 16777215
+   DATA aColors, aPens
    DATA oPen, oPenCoor
    DATA xmax, ymax, xmin, ymin PROTECTED
 
@@ -77,7 +78,7 @@ METHOD Init()  CLASS HGraph
 METHOD CalcMinMax() CLASS HGraph
    LOCAL i, j, nLen
 
-   IF ::nType == 0
+   IF ::nType == 0 .OR. ::nType > 3 .OR. Empty( ::aValues )
       RETURN Nil
    ENDIF
    ::xmax := ::xmin := ::ymax := ::ymin := 0
@@ -116,7 +117,7 @@ METHOD Paint( lpdis ) CLASS HGraph
    LOCAL i, j, nLen
    LOCAL x0, y0, px1, px2, py1, py2, nWidth
 
-   IF ::nType == 0
+   IF ::nType == 0 .OR. ::nType > 3 .OR. Empty( ::aValues )
       RETURN Nil
    ENDIF
 
@@ -138,6 +139,12 @@ METHOD Paint( lpdis ) CLASS HGraph
    IF ::oPen == Nil
       ::oPen := HPen():Add( PS_SOLID, 2, ::tcolor )
    ENDIF
+   IF ::nGraphs > 1 .AND. Valtype(::aColors) == "A" .AND. ::aPens == Nil
+      ::aPens := Array( Len(::aColors) )
+      FOR i := 1 TO Len(::aColors)
+         ::aPens[i] := HPen():Add( PS_SOLID, 2, ::aColors[i] )
+      NEXT
+   ENDIF
    x0 := x1 + ( 0 - ::xmin ) / ::scaleX
    y0 := Iif( ::lPositive, y2, y2 - ( 0 - ::ymin ) / ::scaleY )
 
@@ -149,8 +156,12 @@ METHOD Paint( lpdis ) CLASS HGraph
    ENDIF
 
    IF ::ymax != ::ymin .OR. ::ymax != 0
-      hwg_Selectobject( hDC, ::oPen:handle )
       FOR i := 1 TO ::nGraphs
+         IF ::aPens == Nil .OR. i > Len( ::aPens )
+            hwg_Selectobject( hDC, ::oPen:handle )
+         ELSE
+            hwg_Selectobject( hDC, ::aPens[i]:handle )
+         ENDIF
          nLen := Len( ::aValues[ i ] )
          IF ::nType == 1
             FOR j := 2 TO nLen

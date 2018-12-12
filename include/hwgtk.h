@@ -33,7 +33,7 @@ typedef struct HWGUI_PEN_STRU
 {
    short int type;
    gdouble width;
-   GdkLineStyle style;
+   int style;
    long int  color;
 } HWGUI_PEN, * PHWGUI_PEN;
 

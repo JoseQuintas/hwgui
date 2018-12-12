@@ -88,11 +88,10 @@ void cancel_font( gpointer fontseldlg )
 HB_FUNC( HWG_SELECTFONT )
 {
    GtkWidget *fontseldlg;
-   GtkFontSelection *fontsel;
    const char *cTitle = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2):"Select Font";
 
    fontseldlg = gtk_font_selection_dialog_new( cTitle );
-   fontsel = GTK_FONT_SELECTION( GTK_FONT_SELECTION_DIALOG (fontseldlg)->fontsel );
+   GTK_FONT_SELECTION( GTK_FONT_SELECTION_DIALOG (fontseldlg)->fontsel );
 
    if( hb_pcount() > 0 && !HB_ISNIL(1) )
    {

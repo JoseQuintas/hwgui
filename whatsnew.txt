@@ -3,6 +3,22 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI 2.22 build 1 ( 13.12.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] HGraph: :aColors, :aPens added to draw graphs with different colors.
+[+] hwg_SaveBitmap( cFileName, hBitmap ) function added.
+[+] New class added, HPanelHea, and appropiate command ADD HEADER PANEL as a
+    customizable alternative for a window title bar.
+[+] HPanel: new variable added :lDragWin. If .t., dragging the panel you move the window.
+[+] New cross-platform window styles added: WND_NOTITLE, WND_NOSYSMENU, WND_NOSIZEBOX.
+[+] HSTYLE clause added to the @ ... SPLITTER command.
+[+] :lResizable logical variable added to HColumn.
+[+] :oStyleFoot, :oStyleCell added to HBrowse and HColumn.
+[*] :FindControl() can now look for an :objname, passed as a first parameter.
+[*] HBrowse: if you set the negative column length, it is interpreted as a width in pixels.
+[*] Designer: added support for Anchor, HStyle, AStyles.
+[!] Fixes, corrections, Gtk?Winapi versions compatibility improvements.
+
 HWGUI 2.21 build 6 ( 15.11.2018 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] HIcon():AddFile() automatically adds file extension (ico or png) if it isn't defined.

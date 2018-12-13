@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-13 09:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Version number is changed to "2.22", build number to 1
+  * whatsnew.txt
+    * Updated with a short info about a new release.
+  * doc/hwgdoc.html
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_func2.html
+  * doc/hwgdoc_functions.html
+  * doc/hwgdoc_misc.html
+    * version number is changed to 2.22
+
 2018-12-12 20:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgtk.h
   * source/gtk/draw.c

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-14 17:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hgraph.prg
+    ! Minor fix.
+
 2018-12-14 15:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     * Some deprecated stuff changed.

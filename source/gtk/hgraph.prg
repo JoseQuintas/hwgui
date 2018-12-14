@@ -140,7 +140,7 @@ METHOD CalcMinMax() CLASS HGraph
 METHOD Paint() CLASS HGraph
    LOCAL hDC := hwg_Getdc( ::handle )
    LOCAL x1 := 0, y1 := 0, x2 := ::nWidth, y2 := ::nHeight
-   LOCAL i, j, nLen
+   LOCAL i, j, nLen, l1
    LOCAL x0, y0, px1, px2, py1, py2, nWidth
 
    IF ::nType == 0 .OR. ::nType > 3 .OR. Empty( ::aValues )

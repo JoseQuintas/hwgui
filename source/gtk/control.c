@@ -393,7 +393,7 @@ HB_FUNC( HWG_CREATECOMBO )
    gint iText = ((hb_parni(3) & 1) == 0);
    GtkFixed *box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
 
-   hCtrl = (GtkWidget *) gtk_combo_box_entry_new_text();
+   hCtrl = gtk_combo_box_entry_new_text();
    if( !iText )
    {
       gtk_editable_set_editable( (GtkEditable*)gtk_bin_get_child((GtkBin*)hCtrl), FALSE );
@@ -467,7 +467,12 @@ HB_FUNC( HWG_COMBOGETSTRING )
 
 HB_FUNC( HWG_CREATEUPDOWNCONTROL )
 {
-   GtkObject *adj = gtk_adjustment_new( ( gdouble ) hb_parnl( 6 ),      // value
+#if GTK_MAJOR_VERSION -0 < 3
+   GtkObject *adj;
+#else
+   GtkAdjustment *adj;
+#endif
+   adj = gtk_adjustment_new( ( gdouble ) hb_parnl( 6 ),      // value
          ( gdouble ) hb_parnl( 7 ),     // lower
          ( gdouble ) hb_parnl( 8 ),     // upper
          1, 1, 1 );
@@ -530,7 +535,11 @@ HB_FUNC( HWG_CREATEBROWSE )
    gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
    if( ulStyle & WS_VSCROLL )
    {
+#if GTK_MAJOR_VERSION -0 < 3
       GtkObject *adjV;
+#else
+      GtkAdjustment *adjV;
+#endif
       adjV = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
       vscroll = gtk_vscrollbar_new( GTK_ADJUSTMENT( adjV ) );
       gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
@@ -546,7 +555,11 @@ HB_FUNC( HWG_CREATEBROWSE )
    gtk_box_pack_start( GTK_BOX( vbox ), area, TRUE, TRUE, 0 );
    if( ulStyle & WS_HSCROLL )
    {
+#if GTK_MAJOR_VERSION -0 < 3
       GtkObject *adjH;
+#else
+      GtkAdjustment *adjH;
+#endif
       adjH = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
       hscroll = gtk_hscrollbar_new( GTK_ADJUSTMENT( adjH ) );
       gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
@@ -649,7 +662,7 @@ HB_FUNC( HWG_SETADJOPTIONS )
       gtk_adjustment_changed( adj );
 }
 
-void cb_signal_tab( GtkNotebook *notebook, GtkNotebookPage *page,
+void cb_signal_tab( GtkNotebook *notebook, GtkWidget *page,
       guint page_num, gpointer user_data )
 {
    gpointer gObject = g_object_get_data( (GObject*) notebook, "obj" );
@@ -782,7 +795,11 @@ HB_FUNC( HWG_CREATEPANEL )
    gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
    if( ulStyle & WS_VSCROLL )
    {
+#if GTK_MAJOR_VERSION -0 < 3
       GtkObject *adjV;
+#else
+      GtkAdjustment *adjV;
+#endif
       adjV = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
       vscroll = gtk_vscrollbar_new( GTK_ADJUSTMENT( adjV ) );
       gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
@@ -799,7 +816,11 @@ HB_FUNC( HWG_CREATEPANEL )
    gtk_fixed_put( fbox, hCtrl, 0, 0 );
    if( ulStyle & WS_HSCROLL )
    {
+#if GTK_MAJOR_VERSION -0 < 3
       GtkObject *adjH;
+#else
+      GtkAdjustment *adjH;
+#endif
       adjH = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
       hscroll = gtk_hscrollbar_new( GTK_ADJUSTMENT( adjH ) );
       gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
@@ -1144,7 +1165,7 @@ HB_FUNC( HWG_TOOLBAR_SETACTION )
 }
 
 static void tabchange_clicked( GtkNotebook * item,
-      GtkNotebookPage * Page, guint pagenum, gpointer user_data )
+      GtkWidget * Page, guint pagenum, gpointer user_data )
 {
    PHB_ITEM pData = ( PHB_ITEM ) user_data;
    gpointer dwNewLong = g_object_get_data( ( GObject * ) item, "obj" );

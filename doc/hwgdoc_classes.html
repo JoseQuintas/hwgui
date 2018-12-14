@@ -1080,30 +1080,31 @@
    <br><strong class="subhead"><a name="Classes3_3_25" href="#_Classes3_3_25">
    HGraph</a></strong> 
    <pre class="code">DATA
-      aValues                  (RW)
-      nType                    (RW)
-      aSignX, aSignY           (RW)
-      nGraphs                  (RW)
-      lGridX                   (RW)
-      lGridY                   (RW)
-      lGridXMid                (RW)
-      lPositive                (RW)
-      x1Def                    (RW)
-      x2Def                    (RW)
-      y1Def                    (RW)
-      y2Def                    (RW)
-      ymaxSet                  (RW)
-      colorCoor                (RW)
-      aColors                  (RW)
+      aValues                  (RW) Data array                                          
+      nType                    (RW) Signs arrays for X and Y axes                       
+      aSignX, aSignY           (RW) Number of lines in a line chart                     
+      nGraphs                  (RW) Graph type: 1 - line chart, 2 - bar histogram       
+      lGridX                   (RW) Should I draw grid lines for X axis                 
+      lGridY                   (RW) Should I draw grid lines for Y axis                 
+      lGridXMid                (RW) Should I shift X axis grid line to a middle of a bar
+      lPositive                (RW)                                                     
+      x1Def                    (RW) A left indent                                       
+      x2Def                    (RW) A right indent                                      
+      y1Def                    (RW) A top indent                                        
+      y2Def                    (RW) A bottom indent                                     
+      ymaxSet                  (RW)                      
+      colorCoor                (RW) A color for signs                                   
+      colorGrid                (RW) A color for axes and grid lines                     
+      aColors                  (RW) Colors for each line           
       aPens                     (R)
       scaleX, scaleY            (R)
       tbrush                    (R)
-      oPen, oPenCoor            (R)
+      oPen, oPenGrid            (R)
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont,
            bSize, ctooltip, tcolor, bcolor )
-      Rebuild( aValues )
+      Rebuild( aValues, nType )
   Internal:
       Activate()
       Init()

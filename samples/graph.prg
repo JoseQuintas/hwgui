@@ -29,9 +29,9 @@ FUNCTION Main
    @ 64,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
          HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "2" ;
          ON CLICK {||Graph2()}
-   @ 128,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
-         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "3" ;
-         ON CLICK {||Graph3()}
+   //@ 128,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
+   //      HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "3" ;
+   //      ON CLICK {||Graph3()}
 
    @ 332,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
          HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Exit" ;
@@ -47,8 +47,8 @@ STATIC FUNCTION Graph1
    LOCAL oGraph, i, aGraph := { {}, {} }
 
    FOR i := - 40 TO 40
-      AAdd( aGraph[1], { i, hwg_cos( i/10 ) } )
-      AAdd( aGraph[2], { i, hwg_sin( i/10 ) } )
+      AAdd( aGraph[1], hwg_cos( i/10 ) )
+      AAdd( aGraph[2], hwg_sin( i/10 ) )
    NEXT
 
    oGraph := HWindow():GetMain():oGraph
@@ -63,7 +63,7 @@ STATIC FUNCTION Graph2
    LOCAL oGraph, i, aGraph := { {} }
 
    FOR i := 1 TO 8
-      AAdd( aGraph[1], { "", i * i } )
+      AAdd( aGraph[1], i * i )
    NEXT
 
    oGraph := HWindow():GetMain():oGraph

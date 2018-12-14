@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-14 11:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hgraph.prg
+  * source/winapi/hgraph.prg
+    * :colorGrid variable added, comments added
+    ! Small fixes
+  * samples/graph.prg
+  * samples/gtk_samples/graph.prg
+  * doc/hwgdoc_classes.html
+
 2018-12-13 09:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Version number is changed to "2.22", build number to 1

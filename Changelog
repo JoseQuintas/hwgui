@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-14 14:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/hcombo.prg
+    * Implementation of a combobox changed: GtkComboBox is used now
+      instead of deprecated GtkCombo
+
 2018-12-14 11:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hgraph.prg
   * source/winapi/hgraph.prg

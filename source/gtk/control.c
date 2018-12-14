@@ -389,46 +389,69 @@ HB_FUNC( HWG_EDIT_SET_OVERMODE )
 */
 HB_FUNC( HWG_CREATECOMBO )
 {
-   GtkWidget *hCtrl = gtk_combo_new(  );
+   GtkWidget *hCtrl;
+   gint iText = ((hb_parni(3) & 1) == 0);
    GtkFixed *box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
+
+   hCtrl = (GtkWidget *) gtk_combo_box_entry_new_text();
+   if( !iText )
+   {
+      gtk_editable_set_editable( (GtkEditable*)gtk_bin_get_child((GtkBin*)hCtrl), FALSE );
+      //hCtrl = gtk_combo_box_new_text();
+   }
    if( box )
       gtk_fixed_put( box, hCtrl, hb_parni( 4 ), hb_parni( 5 ) );
    gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
-
-   if( hb_parni(3) & 1 )
-      gtk_entry_set_editable (GTK_ENTRY (GTK_COMBO (hCtrl)->entry), FALSE);
 
    HB_RETHANDLE( hCtrl );
 }
 
 HB_FUNC( HWG_COMBOSETARRAY )
 {
+   GtkWidget *hCtrl = (GtkWidget *) HB_PARHANDLE( 1 );
    PHB_ITEM pArray = hb_param( 2, HB_IT_ARRAY );
-   GList *glist = NULL;
+   HB_ULONG ulKol;
 
    if( pArray )
    {
       HB_ULONG ul, ulLen = hb_arrayLen( pArray );
       char *cItem;
 
+      ulKol = (HB_ULONG) g_object_get_data( ( GObject * ) hCtrl, "kol" );
+      for( ul = 1; ul <= ulKol; ++ul )
+         gtk_combo_box_remove_text( (GtkComboBox *) (hCtrl), 0 );
       for( ul = 1; ul <= ulLen; ++ul )
       {
          if( hb_arrayGetType( pArray, ul ) & HB_IT_ARRAY )
             cItem = hwg_convert_to_utf8( hb_arrayGetCPtr( hb_arrayGetItemPtr( pArray, ul ), 1 ) );
          else
             cItem = hwg_convert_to_utf8( hb_arrayGetCPtr( pArray, ul ) );
-         glist = g_list_append( glist, cItem );
+         gtk_combo_box_append_text((GtkComboBox *) (hCtrl), cItem);
       }
+      g_object_set_data( ( GObject * ) hCtrl, "kol", ( gpointer ) ulLen);
    }
 
-   gtk_combo_set_popdown_strings( GTK_COMBO( HB_PARHANDLE( 1 ) ), glist );
-
 }
 
-HB_FUNC( HWG_COMBOGETEDIT )
+HB_FUNC( HWG_COMBOSET )
 {
-   hb_retptr( ( void * ) ( GTK_COMBO( HB_PARHANDLE( 1 ) )->entry ) );
+   gtk_combo_box_set_active( (GtkComboBox *) HB_PARHANDLE( 1 ), hb_parni(2)-1 );
 }
+
+HB_FUNC( HWG_COMBOGET )
+{
+   gint i = gtk_combo_box_get_active( (GtkComboBox *) HB_PARHANDLE( 1 ) ) + 1;
+   if( i <= 0 )
+     i = 1;
+   hb_retni( i );
+}
+
+/*
+HB_FUNC( HWG_COMBOGETEDIT )
+{  
+   hb_retptr( ( void * ) ( (GTK_ENTRY (GTK_BIN (HB_PARHANDLE( 1 ))->child)) ) );
+}
+*/
 
 /*
 HB_FUNC( HWG_COMBOSETSTRING )

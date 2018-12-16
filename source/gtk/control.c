@@ -584,7 +584,8 @@ HB_FUNC( HWG_CREATEBROWSE )
    SetWindowObject( area, pObject );
    set_event( ( gpointer ) area, "expose_event", WM_PAINT, 0, 0 );
 
-   GTK_WIDGET_SET_FLAGS( area, GTK_CAN_FOCUS );
+   gtk_widget_set_can_focus(area,1);
+   //GTK_WIDGET_SET_FLAGS( area, GTK_CAN_FOCUS );
 
    gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
@@ -608,15 +609,15 @@ HB_FUNC( HWG_GETADJVALUE )
    int iOption = ( HB_ISNIL( 2 ) ) ? 0 : hb_parni( 2 );
 
    if( iOption == 0 )
-      hb_retnl( ( HB_LONG ) adj->value );
+      hb_retnl( ( HB_LONG ) gtk_adjustment_get_value(adj) );
    else if( iOption == 1 )
-      hb_retnl( ( HB_LONG ) adj->upper );
+      hb_retnl( ( HB_LONG ) gtk_adjustment_get_upper(adj) );
    else if( iOption == 2 )
-      hb_retnl( ( HB_LONG ) adj->step_increment );
+      hb_retnl( ( HB_LONG ) gtk_adjustment_get_step_increment(adj) );
    else if( iOption == 3 )
-      hb_retnl( ( HB_LONG ) adj->page_increment );
+      hb_retnl( ( HB_LONG ) gtk_adjustment_get_page_increment(adj) );
    else if( iOption == 4 )
-      hb_retnl( ( HB_LONG ) adj->page_size );
+      hb_retnl( ( HB_LONG ) gtk_adjustment_get_page_size(adj) );
    else
       hb_retnl( 0 );
 }
@@ -630,32 +631,32 @@ HB_FUNC( HWG_SETADJOPTIONS )
    gdouble value;
    int lChanged = 0;
 
-   if( !HB_ISNIL( 2 ) && ( value = ( gdouble ) hb_parnl( 2 ) ) != adj->value )
+   if( !HB_ISNIL( 2 ) && ( value = ( gdouble ) hb_parnl( 2 ) ) != gtk_adjustment_get_value(adj) )
    {
-      adj->value = value;
+      gtk_adjustment_set_value(adj, value);
       lChanged = 1;
    }
-   if( !HB_ISNIL( 3 ) && ( value = ( gdouble ) hb_parnl( 3 ) ) != adj->upper )
+   if( !HB_ISNIL( 3 ) && ( value = ( gdouble ) hb_parnl( 3 ) ) != gtk_adjustment_get_upper(adj) )
    {
-      adj->upper = value;
+      gtk_adjustment_set_upper(adj, value);
       lChanged = 1;
    }
    if( !HB_ISNIL( 4 ) &&
-         ( value = ( gdouble ) hb_parnl( 4 ) ) != adj->step_increment )
+         ( value = ( gdouble ) hb_parnl( 4 ) ) != gtk_adjustment_get_step_increment(adj) )
    {
-      adj->step_increment = value;
+      gtk_adjustment_set_step_increment(adj, value);
       lChanged = 1;
    }
    if( !HB_ISNIL( 5 ) &&
-         ( value = ( gdouble ) hb_parnl( 5 ) ) != adj->page_increment )
+         ( value = ( gdouble ) hb_parnl( 5 ) ) != gtk_adjustment_get_page_increment(adj) )
    {
-      adj->page_increment = value;
+      gtk_adjustment_set_page_increment(adj, value);
       lChanged = 1;
    }
    if( !HB_ISNIL( 6 ) &&
-         ( value = ( gdouble ) hb_parnl( 6 ) ) != adj->page_size )
+         ( value = ( gdouble ) hb_parnl( 6 ) ) != gtk_adjustment_get_page_size(adj) )
    {
-      adj->page_size = value;
+      gtk_adjustment_set_page_size(adj, value);
       lChanged = 1;
    }
    if( lChanged )
@@ -851,7 +852,8 @@ HB_FUNC( HWG_CREATEPANEL )
    SetObjectVar( pObject, "_HBOX", temp );
    hb_itemRelease( temp );
 
-   GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
+   gtk_widget_set_can_focus(hCtrl,1);
+   //GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
       set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
@@ -893,7 +895,8 @@ HB_FUNC( HWG_CREATEOWNBTN )
       gtk_widget_set_size_request( hCtrl, hb_parni( 5 ), hb_parni( 6 ) );
    }
    set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
-   GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
+   gtk_widget_set_can_focus(hCtrl,1);
+   //GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK |
          GDK_LEAVE_NOTIFY_MASK );
@@ -947,8 +950,9 @@ static gint cb_timer( gchar * data )
       hb_vmPushNil(  );
       hb_vmPushLong( ( HB_LONG ) p1 );
       hb_vmDo( 1 );
+      return hb_parnl(-1);
    }
-   return 1;
+   return 0;
 }
 
 /*
@@ -959,8 +963,8 @@ HB_FUNC( HWG_SETTIMER )
 {
    char buf[10] = { 0 };
    sprintf( buf, "%ld", hb_parnl( 1 ) );
-   hb_retni( ( gint ) gtk_timeout_add( ( guint32 ) hb_parnl( 2 ),
-               ( GtkFunction ) cb_timer, g_strdup( buf ) ) );
+   hb_retni( ( gint ) g_timeout_add( ( guint32 ) hb_parnl( 2 ),
+               (GSourceFunc) cb_timer, g_strdup( buf ) ) );
 }
 
 /*
@@ -969,12 +973,12 @@ HB_FUNC( HWG_SETTIMER )
 
 HB_FUNC( HWG_KILLTIMER )
 {
-   gtk_timeout_remove( ( gint ) hb_parni( 1 ) );
+   //gtk_timeout_remove( ( gint ) hb_parni( 1 ) );
 }
 
 HB_FUNC( HWG_GETPARENT )
 {
-   hb_retptr( ( void * ) ( ( GtkWidget * ) HB_PARHANDLE( 1 ) )->parent );
+   hb_retptr( ( void * ) gtk_widget_get_parent( ( GtkWidget * ) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( HWG_LOADCURSOR )
@@ -992,36 +996,39 @@ HB_FUNC( HWG_SETCURSOR )
    GtkWidget *widget =
          ( HB_ISPOINTER( 2 ) ) ? ( GtkWidget * ) HB_PARHANDLE( 2 ) :
          GetActiveWindow(  );
-   gdk_window_set_cursor( widget->window, ( GdkCursor * ) HB_PARHANDLE( 1 ) );
+   gdk_window_set_cursor( gtk_widget_get_window( widget ), ( GdkCursor * ) HB_PARHANDLE( 1 ) );
 }
 
 HB_FUNC( HWG_MOVEWIDGET )
 {
    GtkWidget *widget = ( GtkWidget * ) HB_PARHANDLE( 1 );
    GtkWidget *ch_widget = NULL;
+   GtkWidget *parent;
 
    if( !HB_ISNIL( 6 ) && hb_parl( 6 ) )
    {
       ch_widget = widget;
-      widget = widget->parent;
+      widget = gtk_widget_get_parent( widget );
    }
 
+   parent = gtk_widget_get_parent( widget );
    if( !HB_ISNIL( 2 ) && !HB_ISNIL( 3 ) )
    {
-      gtk_fixed_move( ( GtkFixed * ) ( widget->parent ), widget,
+      gtk_fixed_move( ( GtkFixed * ) ( parent ), widget,
             hb_parni( 2 ), hb_parni( 3 ) );
    }
    if( !HB_ISNIL( 4 ) || !HB_ISNIL( 5 ) )
    {
       gint w, h, w1, h1;
-
+      GtkAllocation alloc;
+      gtk_widget_get_allocation( parent, &alloc );
       gtk_widget_get_size_request( widget, &w, &h );
       w1 = ( HB_ISNIL( 4 ) ) ? w : hb_parni( 4 );
       h1 = ( HB_ISNIL( 5 ) ) ? h : hb_parni( 5 );
-      if( w1 > widget->parent->allocation.width )
-         w1 = widget->parent->allocation.width;
-      if( h1 > widget->parent->allocation.height )
-         h1 = widget->parent->allocation.height;
+      if( w1 > alloc.width )
+         w1 = alloc.width;
+      if( h1 > alloc.height )
+         h1 = alloc.height;
       if( w != w1 || h != h1 )
       {
          gtk_widget_set_size_request( widget, w1, h1 );
@@ -1107,7 +1114,7 @@ HB_FUNC( HWG_CREATETOOLBAR )
 //   gint tmp_toolbar_icon_size;
    GObject *handle = ( GObject * ) HB_PARHANDLE( 1 );
    GtkFixed *box = getFixedBox( handle );
-   GtkWidget *vbox = ( ( GtkWidget * ) box )->parent;
+   GtkWidget *vbox = gtk_widget_get_parent( ( GtkWidget * ) box );
    gtk_box_pack_start( GTK_BOX( vbox ), hCtrl, FALSE, FALSE, 0 );
    HB_RETHANDLE( hCtrl );
 }
@@ -1333,7 +1340,8 @@ HB_FUNC( HWG_CREATESPLITTER )
    g_object_set_data( ( GObject * ) hCtrl, "fbox", ( gpointer ) fbox );
 
    set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
-   GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
+   gtk_widget_set_can_focus(hCtrl,1);
+   //GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
 
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK );

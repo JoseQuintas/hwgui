@@ -175,6 +175,8 @@ Local i, j, name := ::name, oDlgSel
          oDesigner:oDlgInsp:Close()
          // InspSetCombo()
       ENDIF
+      hwg_Enablemenuitem( ,MENU_OINSP, .F. , .T. )
+      hwg_Enablemenuitem( ,MENU_PREVIEW, .F. , .T. )
    ENDIF
 
    Adel( ::aForms,j )
@@ -323,6 +325,8 @@ Private value, oCtrl
    ENDIF
 #endif
    SetDlgSelected( ::oDlg )
+   hwg_Enablemenuitem( ,MENU_OINSP, .T. , .T. )
+   hwg_Enablemenuitem( ,MENU_PREVIEW, .T. , .T. )
 
    IF oDesigner:oDlgInsp == Nil
       InspOpen()

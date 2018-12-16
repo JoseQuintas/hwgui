@@ -91,7 +91,7 @@ HB_FUNC( HWG_SELECTFONT )
    const char *cTitle = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2):"Select Font";
 
    fontseldlg = gtk_font_selection_dialog_new( cTitle );
-   GTK_FONT_SELECTION( GTK_FONT_SELECTION_DIALOG (fontseldlg)->fontsel );
+   //GTK_FONT_SELECTION( GTK_FONT_SELECTION_DIALOG (fontseldlg)->fontsel );
 
    if( hb_pcount() > 0 && !HB_ISNIL(1) )
    {
@@ -111,12 +111,14 @@ HB_FUNC( HWG_SELECTFONT )
    g_signal_connect( G_OBJECT (fontseldlg), "destroy",
                       G_CALLBACK (gtk_main_quit), NULL);
 
-   g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->ok_button),
+   //g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->ok_button),
+   g_signal_connect_swapped( GTK_OBJECT (gtk_font_selection_dialog_get_ok_button((GtkFontSelectionDialog *)fontseldlg)),
                      "clicked",
                      G_CALLBACK (store_font),
                      (gpointer) fontseldlg );
 
-   g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->cancel_button),
+   //g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->cancel_button),
+      g_signal_connect_swapped( GTK_OBJECT (gtk_font_selection_dialog_get_cancel_button((GtkFontSelectionDialog *)fontseldlg)),
                              "clicked",
                              G_CALLBACK (cancel_font),
                              (gpointer) fontseldlg );
@@ -129,6 +131,7 @@ HB_FUNC( HWG_SELECTFONT )
 
 }
 
+#if GTK_MAJOR_VERSION -0 < 3
 void store_filename( gpointer file_selector )
 {
    hb_retc( (char*) gtk_file_selection_get_filename( GTK_FILE_SELECTION( file_selector ) ) );
@@ -174,13 +177,15 @@ HB_FUNC( HWG_SELECTFILE )
 
    gtk_main();
 }
+#endif
 
 void store_color( gpointer colorseldlg )
 {
    GtkColorSelection *colorsel;
    GdkColor color;
 
-   colorsel = GTK_COLOR_SELECTION( GTK_COLOR_SELECTION_DIALOG (colorseldlg)->colorsel );
+   //colorsel = GTK_COLOR_SELECTION( GTK_COLOR_SELECTION_DIALOG (colorseldlg)->colorsel );
+   colorsel = GTK_COLOR_SELECTION( gtk_color_selection_dialog_get_color_selection((GtkColorSelectionDialog *)colorseldlg) );
    gtk_color_selection_get_current_color (colorsel, &color);
 
    hb_retnl( (HB_ULONG) ( (color.red>>8) + (color.green&0xff00) + ((color.blue&0xff00)<<8) ) );
@@ -191,11 +196,13 @@ HB_FUNC( HWG_CHOOSECOLOR )
 {
    GtkWidget *colorseldlg;
    GtkColorSelection *colorsel;
-   GtkWidget * hParent = GetActiveWindow();
+   //GtkWidget * hParent = GetActiveWindow();
    const char *cTitle = ( hb_pcount()>2 && HB_ISCHAR(3) )? hb_parc(3):"Select color";
+   GdkColor color;
+   gint response;
 
    colorseldlg = gtk_color_selection_dialog_new( cTitle );
-   colorsel = GTK_COLOR_SELECTION( GTK_COLOR_SELECTION_DIALOG (colorseldlg)->colorsel );
+   colorsel = GTK_COLOR_SELECTION( gtk_color_selection_dialog_get_color_selection((GtkColorSelectionDialog *)colorseldlg) );
 
    if( hb_pcount() > 0 && !HB_ISNIL(1) )
    {
@@ -206,7 +213,7 @@ HB_FUNC( HWG_CHOOSECOLOR )
       gtk_color_selection_set_current_color( colorsel, &color );
    }
    gtk_color_selection_set_has_palette (colorsel, TRUE);
-
+/*
    g_signal_connect( G_OBJECT (colorseldlg), "destroy",
                       G_CALLBACK (gtk_main_quit), NULL);
 
@@ -225,6 +232,18 @@ HB_FUNC( HWG_CHOOSECOLOR )
 
    gtk_widget_show( colorseldlg );
    gtk_main();
+*/
+  response = gtk_dialog_run (GTK_DIALOG (colorseldlg));
+
+  if (response == GTK_RESPONSE_OK)
+    {
+      gtk_color_selection_get_current_color (colorsel,
+					     &color);
+      hb_retnl( (HB_ULONG) ( (color.red>>8) + (color.green&0xff00) + ((color.blue&0xff00)<<8) ) );
+    }
+  
+  gtk_widget_destroy (colorseldlg);
+
 }
 
 static void actualiza_preview( GtkFileChooser *file_chooser, gpointer data )

@@ -147,7 +147,7 @@ FUNCTION Main( p0, p1, p2 )
       MENU TITLE "&View"
          MENUITEMCHECK "&Object Inspector" ID MENU_OINSP ACTION iif( oDesigner:oDlgInsp == Nil, InspOpen(), oDesigner:oDlgInsp:Close() )
          SEPARATOR
-         MENUITEM "&Preview"  ACTION DoPreview()
+         MENUITEM "&Preview"  ID MENU_PREVIEW ACTION DoPreview()
       ENDMENU
       MENU TITLE "&Control"
          MENUITEM "&Delete"  ACTION DeleteCtrl()
@@ -244,6 +244,8 @@ FUNCTION Main( p0, p1, p2 )
    HWG_InitCommonControlsEx()
 #endif
 
+   hwg_Enablemenuitem( ,MENU_OINSP, .F. , .T. )
+   hwg_Enablemenuitem( ,MENU_PREVIEW, .F. , .T. )
 #ifdef INTEGRATED
 #ifdef MODAL
    ACTIVATE DIALOG oDesigner:oMainWnd

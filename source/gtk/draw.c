@@ -102,9 +102,12 @@ HB_FUNC( HWG_INVALIDATERECT )
    }
    else
    {
+      GtkAllocation alloc;
+      gtk_widget_get_allocation( widget, &alloc );
+
       x1 = y1 = 0;
-      x2 = widget->allocation.width;
-      y2 = widget->allocation.height;      
+      x2 = alloc.width;
+      y2 = alloc.height;      
    }
    gtk_widget_queue_draw_area( widget, x1, y1,
         x2 - x1 + 1, y2 - y1 + 1 );
@@ -190,8 +193,11 @@ HB_FUNC( HWG_ROUNDRECT )
 HB_FUNC( HWG_REDRAWWINDOW )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
+   GtkAllocation alloc;
+
+   gtk_widget_get_allocation( widget, &alloc );
    gtk_widget_queue_draw_area( widget, 0, 0,
-        widget->allocation.width, widget->allocation.height );
+        alloc.width, alloc.height );
 }
 
 HB_FUNC( HWG_DRAWBUTTON )
@@ -202,7 +208,7 @@ HB_FUNC( HWG_DRAWBUTTON )
    int right = hb_parni( 4 );
    int bottom = hb_parni( 5 );
    unsigned int iType = hb_parni( 6 );
-   GtkStyle * style = hDC->widget->style;
+   GtkStyle * style = gtk_widget_get_style( hDC->widget );
 
    if( iType == 0 )
    {
@@ -251,7 +257,7 @@ HB_FUNC( HWG_DRAWBUTTON )
 void hwg_gtk_drawedge( PHWGUI_HDC hDC, int left, int top, int right, int bottom, unsigned int iType )
 {
 
-   GtkStyle * style = hDC->widget->style;
+   GtkStyle * style = gtk_widget_get_style( hDC->widget );
 
    hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->mid : style->light ) );
    cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
@@ -317,8 +323,8 @@ HB_FUNC( HWG_WINDOW2BITMAP )
    GtkWidget *hCtrl = (GtkWidget*) HB_PARHANDLE(1);
    GdkPixbuf *pixbuf = gdk_pixbuf_new( GDK_COLORSPACE_RGB, 0, 8, hb_parni(4), hb_parni(5) );
 
-   pixbuf = gdk_pixbuf_get_from_drawable( pixbuf, hCtrl->window, NULL, hb_parni(2), hb_parni(3),
-      0, 0, hb_parni(4), hb_parni(5) );
+   pixbuf = gdk_pixbuf_get_from_drawable( pixbuf, gtk_widget_get_window(hCtrl),
+      NULL, hb_parni(2), hb_parni(3), 0, 0, hb_parni(4), hb_parni(5) );
 
    if( pixbuf )
    {
@@ -408,9 +414,12 @@ HB_FUNC( HWG_SPREADBITMAP )
 
    if( nLeft == 0 && nRight == 0 )
    {
+      GtkAllocation alloc;
+      gtk_widget_get_allocation( widget, &alloc );
+
       nLeft = nTop = 0;
-      nRight = widget->allocation.width;
-      nBottom = widget->allocation.height;
+      nRight = alloc.width;
+      nBottom = alloc.height;
    }
 
    x1 = y1 = 0;
@@ -626,8 +635,8 @@ HB_FUNC( HWG_BEGINPAINT )
    memset( hDC, 0, sizeof(HWGUI_HDC) );
    hDC->widget = widget;
 
-   hDC->window = widget->window;
-   hDC->cr = gdk_cairo_create( widget->window );
+   hDC->window = gtk_widget_get_window( widget );
+   hDC->cr = gdk_cairo_create( hDC->window );
 
    hDC->layout = pango_cairo_create_layout( hDC->cr );
    hDC->fcolor = hDC->bcolor = -1;
@@ -656,8 +665,8 @@ HB_FUNC( HWG_GETDC )
    memset( hDC, 0, sizeof(HWGUI_HDC) );
    hDC->widget = widget;
 
-   hDC->window = widget->window;
-   hDC->cr = gdk_cairo_create( widget->window );
+   hDC->window = gtk_widget_get_window( widget );
+   hDC->cr = gdk_cairo_create( hDC->window );
 
    hDC->layout = pango_cairo_create_layout( hDC->cr );
    hDC->fcolor = hDC->bcolor = -1;
@@ -740,41 +749,47 @@ HB_FUNC( HWG_GETCLIENTAREA )
    PHWGUI_PPS pps = ( PHWGUI_PPS ) HB_PARHANDLE( 1 );
    GtkWidget * widget = pps->hDC->widget;
    PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
+   GtkAllocation alloc;
 
    if( getFixedBox( (GObject *) widget ) )
       widget = (GtkWidget*) getFixedBox( (GObject *) widget );
 
+   gtk_widget_get_allocation( widget, &alloc );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), 0 );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), 0 );
-   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), widget->allocation.width );
-   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 4 ), widget->allocation.height );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), alloc.width );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 4 ), alloc.height );
    hb_itemRelease( hb_itemReturn( aMetr ) );
 }
 
 HB_FUNC( HWG_GETCLIENTRECT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
-   PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
+   GtkAllocation alloc;
 
    if( getFixedBox( (GObject *) widget ) )
       widget = (GtkWidget*) getFixedBox( (GObject *) widget );
 
+   gtk_widget_get_allocation( widget, &alloc );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), 0 );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), 0 );
-   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), widget->allocation.width );
-   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 4 ), widget->allocation.height );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), alloc.width );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 4 ), alloc.height );
    hb_itemRelease( hb_itemReturn( aMetr ) );
 }
 
 HB_FUNC( HWG_GETWINDOWRECT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
-   PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
+   GtkAllocation alloc;
+   gtk_widget_get_allocation( widget, &alloc );
 
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 1 ), 0 );
    hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 2 ), 0 );
-   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), widget->allocation.width );
-   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 4 ), widget->allocation.height );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 3 ), alloc.width );
+   hb_itemPutNL( hb_arrayGetItemPtr( aMetr, 4 ), alloc.height );
    hb_itemRelease( hb_itemReturn( aMetr ) );
 }
 

@@ -501,7 +501,11 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
    if( ulStyle & WS_VSCROLL )
    {
+#if GTK_MAJOR_VERSION -0 < 3
       GtkObject *adjV;
+#else
+      GtkAdjustment *adjV;
+#endif
       adjV = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
       vscroll = gtk_vscrollbar_new( GTK_ADJUSTMENT( adjV ) );
       gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
@@ -517,7 +521,11 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    gtk_box_pack_start( GTK_BOX( vbox ), area, TRUE, TRUE, 0 );
    if( ulStyle & WS_HSCROLL )
    {
+#if GTK_MAJOR_VERSION -0 < 3
       GtkObject *adjH;
+#else
+      GtkAdjustment *adjH;
+#endif
       adjH = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
       hscroll = gtk_hscrollbar_new( GTK_ADJUSTMENT( adjH ) );
       gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
@@ -542,7 +550,7 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    SetWindowObject( area, pObject );
    set_event( ( gpointer ) area, "expose_event", WM_PAINT, 0, 0 );
 
-   GTK_WIDGET_SET_FLAGS( area, GTK_CAN_FOCUS );
+   gtk_widget_set_can_focus( area, 1 );
 
    gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
@@ -795,7 +803,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
 
    if( iLen > 0 )
    {
-      cr = gdk_cairo_create( pted->area->window );
+      cr = gdk_cairo_create( gtk_widget_get_window( pted->area ) );
       layout = pango_cairo_create_layout( cr );
 
       if( xpos < 0 )
@@ -869,9 +877,12 @@ HB_FUNC( HCED_INVALIDATERECT )
    }
    else
    {
+      GtkAllocation alloc;
+      gtk_widget_get_allocation( widget, &alloc );
+
       x1 = y1 = 0;
-      x2 = widget->allocation.width;
-      y2 = widget->allocation.height;      
+      x2 = alloc.width;
+      y2 = alloc.height;      
    }
    gtk_widget_queue_draw_area( widget, x1, y1,
         x2 - x1 + 1, y2 - y1 + 1 );

@@ -38,7 +38,8 @@ static int MessageBox( const char * cMsg, const char * cTitle, int message_type,
       g_free( gcptr );
    }
    gtk_window_set_position( GTK_WINDOW(dialog), GTK_WIN_POS_CENTER );
-   gtk_window_set_policy( GTK_WINDOW(dialog), TRUE, TRUE, TRUE );
+   //gtk_window_set_policy( GTK_WINDOW(dialog), TRUE, TRUE, TRUE );
+   gtk_window_set_resizable( GTK_WINDOW(dialog), TRUE);
 
    result = gtk_dialog_run( GTK_DIALOG(dialog) );
    gtk_widget_destroy( dialog );
@@ -54,7 +55,7 @@ HB_FUNC( HWG_MSGINFO )
 HB_FUNC( HWG_MSGSTOP )
 {
    const char* cTitle = ( hb_pcount() == 1 )? "":hb_parc( 2 );
-   MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE );        
+   MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE );
 }
 
 HB_FUNC( HWG_MSGOKCANCEL )
@@ -104,7 +105,8 @@ HB_FUNC( HWG_MSGYESNOCANCEL )
    gtk_dialog_add_button( GTK_DIALOG(dialog), "Cancel", GTK_RESPONSE_CANCEL );
 
    gtk_window_set_position( GTK_WINDOW(dialog), GTK_WIN_POS_CENTER );
-   gtk_window_set_policy( GTK_WINDOW(dialog), TRUE, TRUE, TRUE );
+   //gtk_window_set_policy( GTK_WINDOW(dialog), TRUE, TRUE, TRUE );
+   gtk_window_set_resizable( GTK_WINDOW(dialog), TRUE);
 
    result = gtk_dialog_run( GTK_DIALOG(dialog) );
    gtk_widget_destroy( dialog );

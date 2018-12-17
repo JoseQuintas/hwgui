@@ -16,7 +16,6 @@
 static const char *ReadArray( const char *ptr, PHB_ITEM pItem )
 {
    HB_ULONG ulArLen, ulLen, ul;
-
    ptr++;
    ulArLen = HB_GET_LE_UINT16( ptr );
    ptr++;
@@ -75,6 +74,16 @@ static const char *ReadArray( const char *ptr, PHB_ITEM pItem )
          hb_itemPutCL( hb_arrayGetItemPtr( pItem, ul ), ptr, ulLen );
          ptr += ulLen;
       }
+#ifndef HB_LONG_LONG_OFF
+      else if( *ptr == '\10' )
+      {
+         ptr++;
+         ulLen = HB_GET_LE_UINT64( ptr );
+         ptr += 8;
+         hb_itemPutCL( hb_arrayGetItemPtr( pItem, ul ), ptr, ulLen );
+         ptr += ulLen;
+      }
+#endif
       else                      // Nil
       {
          ptr++;
@@ -116,10 +125,10 @@ static HB_ULONG ArrayMemoSize( PHB_ITEM pArray )
          case HB_IT_LONG:
             dVal = hb_arrayGetND( pArray, ul );
             if( HB_DBL_LIM_INT32( dVal ) )
-            {
                ulMemoSize += 5;
-               break;
-            }
+            else
+               ulMemoSize += 9;
+            break;
 
          case HB_IT_DOUBLE:
             ulMemoSize += 11;
@@ -137,6 +146,9 @@ static HB_ULONG ArrayMemoSize( PHB_ITEM pArray )
 static char *WriteArray( char *ptr, PHB_ITEM pArray )
 {
    HB_ULONG ulArrLen = hb_arrayLen( pArray ), ulVal, ul;
+#ifndef HB_LONG_LONG_OFF
+   HB_LONGLONG ullVal;
+#endif
    int iDec, iWidth;
    double dVal;
 
@@ -195,8 +207,17 @@ static char *WriteArray( char *ptr, PHB_ITEM pArray )
                ulVal = hb_arrayGetNL( pArray, ul );
                HB_PUT_LE_UINT32( ptr, ulVal );
                ptr += 4;
-               break;
             }
+#ifndef HB_LONG_LONG_OFF
+            else
+            {
+               *ptr++ = '\10';
+               ullVal = hb_arrayGetNLL( pArray, ul );
+               HB_PUT_LE_UINT64( ptr, ullVal );
+               ptr += 9;
+            }
+#endif
+            break;
 
          case HB_IT_DOUBLE:
             *ptr++ = '\3';

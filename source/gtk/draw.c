@@ -323,8 +323,13 @@ HB_FUNC( HWG_WINDOW2BITMAP )
    GtkWidget *hCtrl = (GtkWidget*) HB_PARHANDLE(1);
    GdkPixbuf *pixbuf = gdk_pixbuf_new( GDK_COLORSPACE_RGB, 0, 8, hb_parni(4), hb_parni(5) );
 
+#if GTK_MAJOR_VERSION -0 < 3
    pixbuf = gdk_pixbuf_get_from_drawable( pixbuf, gtk_widget_get_window(hCtrl),
       NULL, hb_parni(2), hb_parni(3), 0, 0, hb_parni(4), hb_parni(5) );
+#else
+   pixbuf = gdk_pixbuf_get_from_window( gtk_widget_get_window(hCtrl),
+      hb_parni(2), hb_parni(3), hb_parni(4), hb_parni(5) );
+#endif
 
    if( pixbuf )
    {

@@ -1061,7 +1061,8 @@ HB_FUNC( HWG_SETPROGRESSBAR )
    GtkWidget *widget = ( GtkWidget * ) HB_PARHANDLE( 1 );
    gdouble b = ( gdouble ) hb_parnd( 2 );
 
-   gtk_progress_bar_update( GTK_PROGRESS_BAR( widget ), b );
+   //gtk_progress_bar_update( GTK_PROGRESS_BAR( widget ), b );
+   gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( widget ), b );
    while( gtk_events_pending(  ) )
    {
       gtk_main_iteration(  );

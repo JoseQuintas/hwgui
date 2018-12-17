@@ -112,13 +112,13 @@ HB_FUNC( HWG_SELECTFONT )
                       G_CALLBACK (gtk_main_quit), NULL);
 
    //g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->ok_button),
-   g_signal_connect_swapped( GTK_OBJECT (gtk_font_selection_dialog_get_ok_button((GtkFontSelectionDialog *)fontseldlg)),
+   g_signal_connect_swapped( G_OBJECT (gtk_font_selection_dialog_get_ok_button((GtkFontSelectionDialog *)fontseldlg)),
                      "clicked",
                      G_CALLBACK (store_font),
                      (gpointer) fontseldlg );
 
    //g_signal_connect_swapped( GTK_OBJECT (GTK_FONT_SELECTION_DIALOG (fontseldlg)->cancel_button),
-      g_signal_connect_swapped( GTK_OBJECT (gtk_font_selection_dialog_get_cancel_button((GtkFontSelectionDialog *)fontseldlg)),
+      g_signal_connect_swapped( G_OBJECT (gtk_font_selection_dialog_get_cancel_button((GtkFontSelectionDialog *)fontseldlg)),
                              "clicked",
                              G_CALLBACK (cancel_font),
                              (gpointer) fontseldlg );
@@ -158,12 +158,12 @@ HB_FUNC( HWG_SELECTFILE )
    g_signal_connect (G_OBJECT (file_selector), "destroy",
                       G_CALLBACK (gtk_main_quit), NULL);
 
-   g_signal_connect_swapped( GTK_OBJECT (GTK_FILE_SELECTION (file_selector)->ok_button),
+   g_signal_connect_swapped( G_OBJECT (GTK_FILE_SELECTION (file_selector)->ok_button),
                      "clicked",
                      G_CALLBACK (store_filename),
                      (gpointer) file_selector);
 
-   g_signal_connect_swapped( GTK_OBJECT (GTK_FILE_SELECTION (file_selector)->cancel_button),
+   g_signal_connect_swapped( G_OBJECT (GTK_FILE_SELECTION (file_selector)->cancel_button),
                              "clicked",
                              G_CALLBACK (cancel_filedlg),
                              (gpointer) file_selector); 

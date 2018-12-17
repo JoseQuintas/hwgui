@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-17 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/commond.c
+  * source/gtk/control.c
+  * source/gtk/draw.c
+  * source/gtk/menu_c.c
+  * source/gtk/message.c
+  * source/gtk/window.c
+  * source/common/editor/hcedit_l.c
+    * Reworked to compile under GTK3
+  * contrib/misc/arr2str.c
+    ! Warnings fixed.
+
 2018-12-16 19:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/commond.c
   * source/gtk/control.c

@@ -115,7 +115,7 @@ HB_FUNC( HWG__SETMENU )
 {
    GObject * handle = (GObject*) HB_PARHANDLE(1);
    GtkFixed * box = getFixedBox( handle );
-   GtkWidget * vbox = ( (GtkWidget*)box )->parent;
+   GtkWidget * vbox = gtk_widget_get_parent( (GtkWidget*)box );
    gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)HB_PARHANDLE(2), FALSE, FALSE, 0);
    gtk_box_reorder_child(GTK_BOX(vbox), (GtkWidget*)HB_PARHANDLE(2), 0);
    hb_retl(1);
@@ -155,7 +155,7 @@ HB_FUNC( HWG__ENABLEMENUITEM )
 
 HB_FUNC( HWG__ISENABLEDMENUITEM )
 {
-   hb_retl( GTK_WIDGET_IS_SENSITIVE( (GtkMenuItem*) HB_PARHANDLE(1) ) );
+   hb_retl( gtk_widget_is_sensitive( (GtkWidget*) HB_PARHANDLE(1) ) );
 }
 
 HB_FUNC( HWG_TRACKMENU )
@@ -214,7 +214,7 @@ HB_FUNC( HWG__SETMENUCAPTION )
    GtkMenuItem * menu_item = (GtkMenuItem *) HB_PARHANDLE(1);
    gchar * gcptr = hwg_convert_to_utf8( hb_parc(2) );
 
-   gtk_label_set_text( (GtkLabel*) (GTK_BIN (menu_item)->child), gcptr );
+   gtk_label_set_text( (GtkLabel*) gtk_bin_get_child((GtkBin*)(menu_item)), gcptr );
    g_free( gcptr );
 }
 
@@ -222,7 +222,7 @@ HB_FUNC( HWG__DELETEMENU )
 {
    GtkMenuItem * menu_item = (GtkMenuItem *) HB_PARHANDLE(1);
 
-   gtk_container_remove( (GtkContainer*)(((GtkWidget*)menu_item)->parent), (GtkWidget*)menu_item );
+   gtk_container_remove( (GtkContainer*)gtk_widget_get_parent(((GtkWidget*)menu_item)), (GtkWidget*)menu_item );
 }
 
 HB_FUNC( HWG_DRAWMENUBAR )

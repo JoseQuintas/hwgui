@@ -359,7 +359,7 @@ METHOD SaveScript( cScriptFile ) CLASS HPrinter
 
    IF Empty( cScriptFile )
       IF Empty( ::cScriptFile )
-         cScriptFile := ::cScriptFile := hwg_Selectfile( "( *.* )", "*.*", CurDir() )
+         cScriptFile := ::cScriptFile := hwg_SelectfileEx( ,, { { "All files", "*" } } )
       ELSE
          cScriptFile := ::cScriptFile
       ENDIF

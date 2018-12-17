@@ -393,7 +393,11 @@ HB_FUNC( HWG_CREATECOMBO )
    gint iText = ((hb_parni(3) & 1) == 0);
    GtkFixed *box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
 
+#if GTK_MAJOR_VERSION -0 < 3
    hCtrl = gtk_combo_box_entry_new_text();
+#else
+   hCtrl = gtk_combo_box_text_new_with_entry();
+#endif
    if( !iText )
    {
       gtk_editable_set_editable( (GtkEditable*)gtk_bin_get_child((GtkBin*)hCtrl), FALSE );
@@ -419,14 +423,22 @@ HB_FUNC( HWG_COMBOSETARRAY )
 
       ulKol = (HB_ULONG) g_object_get_data( ( GObject * ) hCtrl, "kol" );
       for( ul = 1; ul <= ulKol; ++ul )
+#if GTK_MAJOR_VERSION -0 < 3
          gtk_combo_box_remove_text( (GtkComboBox *) (hCtrl), 0 );
+#else
+         gtk_combo_box_text_remove( (GtkComboBox *) (hCtrl), 0 );
+#endif
       for( ul = 1; ul <= ulLen; ++ul )
       {
          if( hb_arrayGetType( pArray, ul ) & HB_IT_ARRAY )
             cItem = hwg_convert_to_utf8( hb_arrayGetCPtr( hb_arrayGetItemPtr( pArray, ul ), 1 ) );
          else
             cItem = hwg_convert_to_utf8( hb_arrayGetCPtr( pArray, ul ) );
+#if GTK_MAJOR_VERSION -0 < 3
          gtk_combo_box_append_text((GtkComboBox *) (hCtrl), cItem);
+#else
+         gtk_combo_box_text_append((GtkComboBox *) (hCtrl), NULL, cItem);
+#endif
       }
       g_object_set_data( ( GObject * ) hCtrl, "kol", ( gpointer ) ulLen);
    }

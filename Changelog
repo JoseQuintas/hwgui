@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-17 15:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/hprinter.prg
+    * Corrections to compile under GTK3
+
 2018-12-17 14:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/designer.iml
     * &nbsp; removed.

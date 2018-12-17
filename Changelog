@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-17 14:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/designer.iml
+    * &nbsp; removed.
+  * utils/designer/designer.ch
+  * utils/designer/designer.prg
+  * utils/designer/resource/f_hwgprg.prg
+    * hb_osNewline() is used instead of chr(10).
+
 2018-12-17 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/commond.c
   * source/gtk/control.c

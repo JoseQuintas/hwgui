@@ -5,7 +5,7 @@ FUNCTION Font2Str
 
    PARAMETERS oFont
 
-   RETURN " ;" + _Chr( 10 ) + Space( 8 ) + ;
+   RETURN " ;" + hb_OsNewline() + Space( 8 ) + ;
       "FONT HFont():Add( '" + oFont:name + "'," + LTrim( Str( oFont:width,5 ) ) + "," + ;
       LTrim( Str( oFont:height,5 ) ) + "," + iif( oFont:weight != 0, LTrim( Str(oFont:weight,5 ) ), "" ) + "," + ;
       iif( oFont:charset != 0, LTrim( Str(oFont:charset,5 ) ), "" ) + "," + ;
@@ -27,7 +27,7 @@ FUNCTION Menu2Prg
    i := 1
    IF ValType( aLMenu[i,1] ) == "A"
       stroka := Space( 2 ) + "  MENU TITLE '" + aLMenu[i,2] + "' ID " + Str( aLMenu[i,3] ) + " "
-      FWrite( han, _Chr( 10 ) + stroka )
+      FWrite( han, hb_OsNewline() + stroka )
    ENDIF
 
    DO WHILE i <=  Len( aLMenu )
@@ -35,12 +35,12 @@ FUNCTION Menu2Prg
       IF ValType( aLMenu[i,1] ) == "A"
          //BuildTree( oNode, aMenu[i,1] )
          stroka := Space( 2 * nMaxid ) + "  MENU TITLE '" + aLMenu[i,2] + "' ID " + Str( aLMenu[i,3] ) + " "
-         FWrite( han, _Chr( 10 ) + stroka )
+         FWrite( han, hb_OsNewline() + stroka )
          nMaxId += 1
          CallFunc( "Menu2Prg", { oCtrl , alMenu[i,1] } )
          nMaxId -= 1
          stroka := Space( 2 * nmaxid ) + "  ENDMENU  "
-         FWrite( han, _Chr( 10 ) + stroka )
+         FWrite( han, hb_OsNewline() + stroka )
       ELSE
          IF alMenu[i,2] != "-"
             stroka := Space( 2 * nMaxId + 2 ) + "MENUITEM '" + alMenu[i,2] + "' ID " + LTrim( Str( alMenu[i,3] ) ) + "  "
@@ -56,7 +56,7 @@ FUNCTION Menu2Prg
          ELSE
             stroka := Space( 4 + nMaxId ) + "SEPARATOR"
          ENDIF
-         FWrite( han, _Chr( 10 ) + stroka + " " )
+         FWrite( han, hb_OsNewline() + stroka + " " )
       ENDIF
       i ++
    ENDDO
@@ -80,7 +80,7 @@ FUNCTION Tool2Prg
    //Private crelexpr, clink, cfilter, cKey
 
    cName := Trim( oCtrl:GetProp( "Name" ) )
-   //cTool += "    *- " + cname + _CHR(10)+ "    *- SCRIPT GERADO AUTOMATICAMENTE PELO DESIGNER" + _CHR(10)+"    *-  " + _CHR(10)
+   //cTool += "    *- " + cname + hb_OsNewline()+ "    *- SCRIPT GERADO AUTOMATICAMENTE PELO DESIGNER" + hb_OsNewline()+"    *-  " + hb_OsNewline()
    IF cName = Nil .OR. Empty( cName )
       RETURN cTool
    ENDIF
@@ -89,7 +89,7 @@ FUNCTION Tool2Prg
    FWrite( han, " ID " + LTrim( Str(cid ) ) )
    //<O>:AddButton(<nBitIp>,<nId>,<bstate>,<bstyle>,<ctext>,<bclick>,<c>,<d>)
    IF Len( oCtrl:aControls ) > 0
-      FWrite( han, _CHR( 10 ) + cTool )
+      FWrite( han, hb_OsNewline() + cTool )
       i := 1
       DO WHILE i <= Len( oCtrl:aControls )
          cName := Trim( oCtrl:GetProp( "Name" ) )
@@ -158,12 +158,12 @@ FUNCTION Tool2Prg
          //  cTool += ",{|| .T. }"
          //ENDIF
          cTool += "," + cTip + ",''"
-         FWrite( han, cTool + ")" + _CHR( 10 ) )
+         FWrite( han, cTool + ")" + hb_OsNewline() )
          cTool := ""
          i ++
       ENDDO
-      //cTool := "    *- FIM DE " + cname + _CHR(10)
-      cTool := ""  //_CHR(10)
+      //cTool := "    *- FIM DE " + cname + hb_OsNewline()
+      cTool := ""  //hb_OsNewline()
    ENDIF
 
    RETURN cTool
@@ -189,7 +189,7 @@ FUNCTION Browse2Prg
 
    cName := Trim( oCtrl:GetProp( "Name" ) )
 
-//   cBrowser += "    // " + cname + "    *- SCRIPT GERADO AUTOMATICAMENTE PELO DESIGNER" + _CHR( 10 ) + "    //  " + _CHR( 10 )
+//   cBrowser += "    // " + cname + "    *- SCRIPT GERADO AUTOMATICAMENTE PELO DESIGNER" + hb_OsNewline() + "    //  " + hb_OsNewline()
    nType := iif( oCtrl:GetProp( "BrwType" ) != "dbf" , BRW_ARRAY, BRW_DATABASE )
    IF cName = Nil .OR. Empty( cName ) .OR. ( ( cAlias := oCtrl:GetProp("FileDbf" ) )  = Nil .AND. nType = BRW_DATABASE )
       RETURN cBrowser
@@ -197,14 +197,14 @@ FUNCTION Browse2Prg
 
    nColumns := iif( ( temp := oCtrl:GetProp("ColumnsCount" ) ) != Nil .AND. !Empty( temp ), Val( temp ) , 0 )
    nColunas := nColumns
-   cBrowser += Space( 4 ) + cname + ":aColumns := {}" + _chr( 10 )
+   cBrowser += Space( 4 ) + cname + ":aColumns := {}" + hb_OsNewline()
 
    j := 3
    DO WHILE j < Len( aBrwProp )
       temp := oCtrl:GetProp( aBrwXml[j] )
       IF temp  != Nil .AND. !Empty( temp )
          cBrowser += Space( 4 ) + cname + ":" + aBrwProp[j] + ":= " + ;
-            iif( temp = "True", '.T.', iif( temp = "False",'.F.',temp ) ) + _chr( 10 )
+            iif( temp = "True", '.T.', iif( temp = "False",'.F.',temp ) ) + hb_OsNewline()
       ENDIF
       j ++
    ENDDO
@@ -212,7 +212,7 @@ FUNCTION Browse2Prg
    IF nType = BRW_DATABASE
       cAlias := Left( CutPath( cAlias ), At( ".",CutPath( cAlias ) ) - 1 )
       cAlias := Lower( Trim( iif( (temp := oCtrl:GetProp("alias" ) ) != Nil .AND. !Empty(temp ),temp , calias ) ) )
-      cBrowser += Space( 4 ) + cname + ":alias := '" + calias + "'" + _chr( 10 )
+      cBrowser += Space( 4 ) + cname + ":alias := '" + calias + "'" + hb_OsNewline()
       // abrir tablea
       //     IF (temp:=oCtrl:GetProp("filedbf")) != Nil //.AND. !EMPTY(temp)
       //      cTmpAlias := Lower(LEFT(CutPath( temp ),AT(".",CutPath( temp ))-1))
@@ -229,9 +229,9 @@ FUNCTION Browse2Prg
       //     ENDIF
       //calias := alias()
       nColumns := iif( nColumns = 0, iif( Len( oCtrl:aControls ) = 0,&cTmpalias -> (FCount() ),Len( oCtrl:aControls ) ), nColumns )
-      cBrowser += Space( 4 ) + cname + ":nColumns := " + LTrim( Str( nColumns ) ) + _chr( 10 )
-      cBrowser += Space( 4 ) + "IF select(" + cname + ":alias) = 0 ; USE ('" + temp + "') NEW ALIAS (" + cname + ":alias) SHARED ;ENDIF" + _CHR( 10 )
-      cBrowser += Space( 4 ) + "SELECT (" + cname + ":alias) " + _CHR( 10 )
+      cBrowser += Space( 4 ) + cname + ":nColumns := " + LTrim( Str( nColumns ) ) + hb_OsNewline()
+      cBrowser += Space( 4 ) + "IF select(" + cname + ":alias) = 0 ; USE ('" + temp + "') NEW ALIAS (" + cname + ":alias) SHARED ;ENDIF" + hb_OsNewline()
+      cBrowser += Space( 4 ) + "SELECT (" + cname + ":alias) " + hb_OsNewline()
       //
       aTypes := &cTmpalias -> ( dbStruct() )
 
@@ -239,7 +239,7 @@ FUNCTION Browse2Prg
       temp := iif( ( temp := oCtrl:GetProp("childorder" ) ) != Nil .AND. !Empty( temp ), Trim( temp ), "" )
       cKey := ""
       IF !Empty( temp )
-         cBrowser += Space( 4 ) + calias + "->(DBSETORDER('" + temp + "'))" + _chr( 10 )
+         cBrowser += Space( 4 ) + calias + "->(DBSETORDER('" + temp + "'))" + hb_OsNewline()
          &calias -> ( dbSetOrder( temp ) )
          cKey := &calias -> ( OrdKey( temp ) )
          ckey := iif( At( '+',ckey ) > 0, Left( ckey, At('+',ckey ) - 1 ), ckey )
@@ -247,15 +247,15 @@ FUNCTION Browse2Prg
       crelexpr := iif( ( temp := oCtrl:GetProp("relationalexpr" ) ) != Nil .AND. !Empty( temp ), Trim( temp ), cKey )
       clink := iif( ( temp := oCtrl:GetProp("linkmaster" ) ) != Nil .AND. !Empty( temp ), Trim( temp ), "" )
       IF !Empty( crelexpr ) .AND. !Empty( clink )
-         cBrowser += "    *-  LINK --> RELACIONAMENTO E FILTER " + _CHR( 10 )
-         cBrowser += Space( 4 ) + clink + "->(DBSETRELATION('" + calias + "', {|| " + crelexpr + "},'" + crelexpr + "')) " + _chr( 10 )
+         cBrowser += "    *-  LINK --> RELACIONAMENTO E FILTER " + hb_OsNewline()
+         cBrowser += Space( 4 ) + clink + "->(DBSETRELATION('" + calias + "', {|| " + crelexpr + "},'" + crelexpr + "')) " + hb_OsNewline()
          cfilter := crelexpr + "=" + clink + "->(" + crelexpr + ")"
-         cBrowser += Space( 4 ) + calias + "->(DBSETFILTER( {|| " + cfilter + "}, '" + cfilter + "' ))" + _chr( 10 ) + "    *-" + _CHR( 10 )
+         cBrowser += Space( 4 ) + calias + "->(DBSETFILTER( {|| " + cfilter + "}, '" + cfilter + "' ))" + hb_OsNewline() + "    *-" + hb_OsNewline()
       ENDIF
       // fim dos relacionamentos
    ELSE
       caArray := Trim( iif( (temp := oCtrl:GetProp("aarray" ) ) != Nil .AND. !Empty(temp ),temp , "{}" ) )
-      cBrowser += Space( 4 ) + cname + ":aArray := " + caArray + "" + _chr( 10 )
+      cBrowser += Space( 4 ) + cname + ":aArray := " + caArray + "" + hb_OsNewline()
       nColumns := iif( nColumns = 0, 1, nColumns )
    ENDIF
 
@@ -264,15 +264,15 @@ FUNCTION Browse2Prg
       DO WHILE i <= nColumns
          IF nType = BRW_DATABASE
             cBrowser += Space( 4 ) + cname + ":AddColumn( HColumn():New(FieldName(" + LTrim( Str( i ) ) + ") ,FieldBlock(FieldName(" + LTrim( Str( i ) ) + "))," + ;
-               "'" + aTypes[i,2] + "'," + LTrim( Str( aTypes[i,3] + 1 ) ) + "," + LTrim( Str( aTypes[i,4] ) ) + "))" + _chr( 10 ) //,,,,,,,,,{|| .t.}))
+               "'" + aTypes[i,2] + "'," + LTrim( Str( aTypes[i,3] + 1 ) ) + "," + LTrim( Str( aTypes[i,4] ) ) + "))" + hb_OsNewline() //,,,,,,,,,{|| .t.}))
          ELSE
-            cBrowser += Space( 4 ) + cname + ":AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},'C',100,0))" + _CHR( 10 )
+            cBrowser += Space( 4 ) + cname + ":AddColumn( HColumn():New( ,{|v,o|Iif(v!=Nil,o:aArray[o:nCurrent]:=v,o:aArray[o:nCurrent])},'C',100,0))" + hb_OsNewline()
          ENDIF
          i ++
       ENDDO
-      cBrowser :=  _CHR( 10 ) + cBrowser + "    *- FIM DE " + cname
+      cBrowser :=  hb_OsNewline() + cBrowser + "    *- FIM DE " + cname
    ELSE
-      FWrite( han, _chr( 10 ) + _CHR( 10 ) + cbrowser )
+      FWrite( han, hb_OsNewline() + hb_OsNewline() + cbrowser )
       i := 1
       DO WHILE i <= Len( oCtrl:aControls )
          cName := Trim( oCtrl:GetProp( "Name" ) )
@@ -319,7 +319,7 @@ FUNCTION Browse2Prg
          cbrowser += "," + iif( ( temp := oCtrl1:GetProp("JustifyHeader" ) ) != Nil, LTrim( Str(Val(temp ) ) ), "" )
          cbrowser += "," + iif( ( temp := oCtrl1:GetProp("JustifyLine" ) ) != Nil, LTrim( Str(Val(temp ) ) ), "" )
          cbrowser += "," + iif( ( temp := oCtrl1:GetProp("Picture" ) ) != Nil .AND. !Empty( temp ), "'" + Trim( temp ) + "'", "" )
-         //Fwrite( han, +_CHR(10) + cbrowser)
+         //Fwrite( han, +hb_OsNewline() + cbrowser)
 
          // Methods ( events ) for the control
          k := 1
@@ -349,11 +349,11 @@ FUNCTION Browse2Prg
          cbrowser += "," + CallFunc( "Bloco2Prg", { aMethods, "ColorBlock" } )
          cbrowser += "," + CallFunc( "Bloco2Prg", { aMethods, "HeadClick" } )
          //cbrowser += "))"
-         FWrite( han, cbrowser + "))" + _CHR( 10 ) )
+         FWrite( han, cbrowser + "))" + hb_OsNewline() )
          //( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,<nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}> ) )
          i ++
       ENDDO
-      cBrowser := "    *- FIM DE " + cname + _CHR( 10 )
+      cBrowser := "    *- FIM DE " + cname + hb_OsNewline()
    ENDIF
    IF nType = BRW_DATABASE .AND.  lOpen
       USE
@@ -405,7 +405,7 @@ FUNCTION Imagem2Prg
    ENDIF
 
    IF Len( cImagem ) > 0
-      cImagem := ";" + _CHR( 10 ) + Space( 8 ) + cImagem
+      cImagem := ";" + hb_OsNewline() + Space( 8 ) + cImagem
    ENDIF
 
    RETURN cImagem
@@ -420,7 +420,7 @@ FUNCTION Color2Prg
    PRIVATE xProperty := ""
 
    IF oCtrl:GetProp( "Textcolor", @j ) != Nil .AND. !IsDefault( oCtrl, oCtrl:aProp[j] )
-      cColor += iif( Empty( cStyle ), "", ";" + _Chr( 10 ) + Space( 8 ) ) + ;
+      cColor += iif( Empty( cStyle ), "", ";" + hb_OsNewline() + Space( 8 ) ) + ;
          " COLOR " + LTrim( Str( oCtrl:tcolor ) ) + " "
    ENDIF
    IF oCtrl:GetProp( "Backcolor", @j ) != Nil .AND. !IsDefault( oCtrl, oCtrl:aProp[j] )
@@ -428,7 +428,7 @@ FUNCTION Color2Prg
    ENDIF
    IF oCtrl:cClass == "link"
       IF oCtrl:GetProp( "VisitColor", @j ) != Nil .AND. !IsDefault( oCtrl, oCtrl:aProp[j] )
-         cColor += iif( Empty( cStyle ), "", ";" + _Chr( 10 ) + Space( 8 ) ) + ;
+         cColor += iif( Empty( cStyle ), "", ";" + hb_OsNewline() + Space( 8 ) ) + ;
             " VISITCOLOR " + LTrim( Str( oCtrl:tcolor ) ) + " "
       ENDIF
       IF oCtrl:GetProp( "LinkColor", @j ) != Nil .AND. !IsDefault( oCtrl, oCtrl:aProp[j] )
@@ -439,7 +439,7 @@ FUNCTION Color2Prg
       ENDIF
    ENDIF
    IF Len( Trim( cColor ) ) > 0
-      cColor := ";" + _CHR( 10 ) + Space( 8 )  + cColor //substr(cStyle,2)
+      cColor := ";" + hb_OsNewline() + Space( 8 )  + cColor //substr(cStyle,2)
    ENDIF
 
    RETURN cColor
@@ -499,7 +499,7 @@ FUNCTION Style2Prg
          iif( oCtrl:GetProp( "TickMarks" ) = "Top" , "+ 4", "+ 0" ) )
    ENDIF
    IF Len( Trim( cStyle ) ) > 0  //.AND. VAL(&(substr(cStyle,1)))>0
-      cStyle := ";" + _CHR( 10 ) + Space( 8 ) +  "STYLE " + SubStr( cStyle, 2 )
+      cStyle := ";" + hb_OsNewline() + Space( 8 ) +  "STYLE " + SubStr( cStyle, 2 )
    ELSE
       cStyle := ""
    ENDIF
@@ -619,7 +619,7 @@ FUNCTION Ctrl2Prg
          IF ( temp := oCtrl:GetProp( "VarItems" ) ) != Nil .AND. !Empty( temp )
             stroka += "ITEMS " + cStyle + Trim( temp ) + iif( cStyle == "", " ", ") " )
          ELSEIF ( temp := oCtrl:GetProp( "Items" ) ) != Nil .AND. !Empty( temp )
-            stroka += ";" + _chr( 10 ) + Space( 8 ) + "ITEMS " + cStyle + "{" + '"' + temp[1] + '"'
+            stroka += ";" + hb_OsNewline() + Space( 8 ) + "ITEMS " + cStyle + "{" + '"' + temp[1] + '"'
             j := 2
             DO WHILE j <= Len( temp )
                stroka += ',"' + temp[j] + '"'
@@ -641,11 +641,11 @@ FUNCTION Ctrl2Prg
       IF oCtrl:cClass == "bitmap"
          IF ( temp := oCtrl:GetProp( "Bitmap" ) ) != Nil
             // cImagem += " BACKGROUND BITMAP " + Iif( At(".",temp) !=0 ,"HBitmap():AddFile('" + temp+"') ","HBitmap():AddResource('" + temp + "') ")
-            stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "SHOW " + iif( At( ".",Trim(temp ) ) != 0 , "HBitmap():AddFile('" + temp + "') ", "'" + temp + "' " )
+            stroka += " ;" + hb_OsNewline() + Space( 8 ) + "SHOW " + iif( At( ".",Trim(temp ) ) != 0 , "HBitmap():AddFile('" + temp + "') ", "'" + temp + "' " )
             IF ( temp := oCtrl:GetProp( "lResource" ) ) != Nil .AND. temp = "True"
                stroka += " FROM RESOURCE "
             ENDIF
-            stroka += " ;" + _Chr( 10 ) + Space( 8 )
+            stroka += " ;" + hb_OsNewline() + Space( 8 )
          ENDIF
       ENDIF
 
@@ -666,7 +666,7 @@ FUNCTION Ctrl2Prg
       ELSE
          // colocar o group para depois dos demais objetos
          IF !Empty( cGroup )
-            FWrite( han, _Chr( 10 ) + cGroup )
+            FWrite( han, hb_OsNewline() + cGroup )
          ENDIF
          cofgroup := ""
          cGroup := ""
@@ -675,7 +675,7 @@ FUNCTION Ctrl2Prg
       // BASSO
       IF oCtrl:cClass == "link"
          IF ( temp := oCtrl:GetProp( "Link" ) ) != Nil .AND. !Empty( temp )
-            stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "LINK '" + Trim( temp ) + "' "
+            stroka += " ;" + hb_OsNewline() + Space( 8 ) + "LINK '" + Trim( temp ) + "' "
          ENDIF
       ENDIF
       stroka += iif( oCtrl:GetProp( "Transparent" ) = "True", " TRANSPARENT ", " " )
@@ -691,7 +691,7 @@ FUNCTION Ctrl2Prg
       //
       IF oCtrl:cClass == "combobox"
          IF ( temp := oCtrl:GetProp( "checkEX" ) ) != Nil
-            stroka += ";" + _chr( 10 ) + Space( 8 ) + "CHECK {" + '"' + temp[1] + '"'
+            stroka += ";" + hb_OsNewline() + Space( 8 ) + "CHECK {" + '"' + temp[1] + '"'
             j := 2
             DO WHILE j <= Len( temp )
                stroka += ',"' + temp[j] + '"'
@@ -705,7 +705,7 @@ FUNCTION Ctrl2Prg
             nHeight := 4
          ENDIF
          IF oCtrl:GetProp( "lEdit" ) = "True"
-            stroka += " EDIT ;" + _CHR( 10 ) + Space( 8 )
+            stroka += " EDIT ;" + hb_OsNewline() + Space( 8 )
          ENDIF
          IF oCtrl:GetProp( "lText" ) = "True"
             stroka += " TEXT "
@@ -737,7 +737,7 @@ FUNCTION Ctrl2Prg
          nLeft   := oCtrl:GetProp( "Lower" )
          nTop    := oCtrl:GetProp( "Upper" )
          IF nLeft != Nil .AND. nTop != Nil
-            stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "RANGE " + LTrim( nLeft ) + ", " + LTrim( nTop )
+            stroka += " ;" + hb_OsNewline() + Space( 8 ) + "RANGE " + LTrim( nLeft ) + ", " + LTrim( nTop )
          ENDIF
          IF ( temp := oCtrl:GetProp( "lVertical" ) ) != Nil .AND. temp == "True"
             stroka += " VERTICAL "
@@ -763,16 +763,16 @@ FUNCTION Ctrl2Prg
 
          IF oCtrl:cClass == "shadebutton"
             //temp := ""
-            stroka += " ;" + _Chr( 10 ) + Space( 8 )
+            stroka += " ;" + hb_OsNewline() + Space( 8 )
             stroka += iif( ( temp := oCtrl:GetProp( "Effect" ) ) != Nil , " EFFECT " + temp + " ", "" )
             stroka += iif( ( temp := oCtrl:GetProp( "Palette" ) ) != Nil , " PALETTE " + temp + " ", "" )
             stroka += iif( ( temp := oCtrl:GetProp( "Granularity" ) ) != Nil , " GRANULARITY " + temp + " ", "" )
             stroka += iif( ( temp := oCtrl:GetProp( "Highlight" ) ) != Nil , " HIGHLIGHT " + temp + " ", "" )
-            //stroka += Iif( !empty(temp)," ;" + _Chr(10) + Space(8),"")
+            //stroka += Iif( !empty(temp)," ;" + hb_OsNewline() + Space(8),"")
          ENDIF
 
          IF ( temp := oCtrl:GetProp( "Caption" ) ) != Nil //.AND. !EMPTY(caption)
-            stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "TEXT '" + Trim( temp ) + "' "
+            stroka += " ;" + hb_OsNewline() + Space( 8 ) + "TEXT '" + Trim( temp ) + "' "
 
             IF oCtrl:GetProp( "Textcolor", @j ) != Nil .AND. !IsDefault( oCtrl, oCtrl:aProp[j] )
                stroka += "COLOR " + LTrim( Str( oCtrl:tcolor ) ) + " "
@@ -783,7 +783,7 @@ FUNCTION Ctrl2Prg
             nHeight := '0'
             nWidth  := '0'
             IF nLeft != Nil .AND. nTop != Nil
-               stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "COORDINATES " + LTrim( nLeft ) + ", " + LTrim( nTop ) + ;
+               stroka += " ;" + hb_OsNewline() + Space( 8 ) + "COORDINATES " + LTrim( nLeft ) + ", " + LTrim( nTop ) + ;
                   iif( oCtrl:cClass != "shadebutton", ", " + LTrim( nHeight ) + ", " + LTrim( nWidth ) + " ", " " )
             ENDIF
          ENDIF
@@ -794,12 +794,12 @@ FUNCTION Ctrl2Prg
             nHeight := '0'
             nWidth  := '0'
             //IF nLeft != Nil .AND. nTop != Nil
-            stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "BITMAP " + "HBitmap():AddFile('" + temp + "') "
+            stroka += " ;" + hb_OsNewline() + Space( 8 ) + "BITMAP " + "HBitmap():AddFile('" + temp + "') "
             IF oCtrl:GetProp( "lResource" ) = "True"
                stroka += " FROM RESOURCE "
             ENDIF
             stroka +=  iif( oCtrl:cClass != "shadebutton", " TRANSPARENT ", "" )
-            stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "COORDINATES " + ;
+            stroka += " ;" + hb_OsNewline() + Space( 8 ) + "COORDINATES " + ;
                LTrim( nLeft ) + ", " + LTrim( nTop ) + ", " + LTrim( nHeight ) + ", " + LTrim( nWidth ) + " "
          ENDIF
          //ENDIF
@@ -808,9 +808,9 @@ FUNCTION Ctrl2Prg
       IF oCtrl:cClass == "buttonex"
          IF !Empty( ( temp := oCtrl:GetProp("bitmap" ) ) )
             //cImagem += " BACKGROUND BITMAP HBitmap():AddFile('"+temp+"') "
-            stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "BITMAP " + "(HBitmap():AddFile('" + temp + "')):handle "
+            stroka += " ;" + hb_OsNewline() + Space( 8 ) + "BITMAP " + "(HBitmap():AddFile('" + temp + "')):handle "
             IF !Empty( ( temp := oCtrl:GetProp("pictureposition" ) ) )
-               stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "BSTYLE " + Left( temp, 1 )
+               stroka += " ;" + hb_OsNewline() + Space( 8 ) + "BSTYLE " + Left( temp, 1 )
             ENDIF
          ENDIF
       ENDIF
@@ -843,17 +843,17 @@ FUNCTION Ctrl2Prg
       // tooltip
       IF oCtrl:cClass != "label"
          IF ( temp := oCtrl:GetProp( "ToolTip" ) ) != Nil .AND. !Empty( temp )
-            stroka += "; " + _chr( 10 ) + Space( 8 ) + "TOOLTIP '" + temp + "'"
+            stroka += "; " + hb_OsNewline() + Space( 8 ) + "TOOLTIP '" + temp + "'"
          ENDIF
       ENDIF
 
       // BASSO
       IF oCtrl:cClass == "animation"
          stroka += " OF " + cFormName
-         //Fwrite( han, _Chr(10) + "   ADD STATUS " + cName + " TO " + cFormName + " ")
+         //Fwrite( han, hb_OsNewline() + "   ADD STATUS " + cName + " TO " + cFormName + " ")
          IF ( temp := oCtrl:GetProp( "Filename" ) ) != Nil
-            stroka += " ;" + _Chr( 10 ) + Space( 8 ) + "FILE '" + Trim( temp ) + "' "
-            stroka += " ;" + _Chr( 10 ) + Space( 8 )
+            stroka += " ;" + hb_OsNewline() + Space( 8 ) + "FILE '" + Trim( temp ) + "' "
+            stroka += " ;" + hb_OsNewline() + Space( 8 )
             stroka += iif( oCtrl:GetProp( "autoplay" ) = "True", "AUTOPLAY ", "" )
             stroka += iif( oCtrl:GetProp( "center" ) = "True", "CENTER ", "" )
             stroka += iif( oCtrl:GetProp( "transparent" ) = "True", "TRANSPARENT ", "" )
@@ -863,7 +863,7 @@ FUNCTION Ctrl2Prg
       IF oCtrl:cClass == "status"
          stroka := ""
          cname := oCtrl:GetProp( "Name" )
-         FWrite( han, _Chr( 10 ) + "   ADD STATUS " + cName + " TO " + cFormName + " " )
+         FWrite( han, hb_OsNewline() + "   ADD STATUS " + cName + " TO " + cFormName + " " )
          IF ( temp := oCtrl:GetProp( "aParts" ) ) != Nil
             FWrite( han, " ; " )
             stroka += Space( 8 ) + "PARTS " + temp[1]
@@ -878,7 +878,7 @@ FUNCTION Ctrl2Prg
          // enviar para tras
          cGroup += stroka
       ELSE
-         FWrite( han, _Chr( 10 ) )
+         FWrite( han, hb_OsNewline() )
          FWrite( han, stroka )
       ENDIF
       // Methods ( events ) for the control
@@ -925,14 +925,14 @@ FUNCTION Ctrl2Prg
                   cname := oCtrl:GetProp( "Name" )
                   temp := oCtrl:GetProp( "interval" ) //) != Nil
                   stroka := "ON INIT {|| " + cName + " := HTimer():New( " + cFormName + ",," + iif( temp != Nil, temp, '0' ) + "," + stroka + " )}"
-                  FWrite( han, " ; //OBJECT TIMER " + _Chr( 10 ) + Space( 8 ) + stroka )
+                  FWrite( han, " ; //OBJECT TIMER " + hb_OsNewline() + Space( 8 ) + stroka )
                ELSE
                   IF lsubParameter
                      //temp :=  " {|" + temp + "| " +  cName +"("+ cFormParameters + ")  }"
-                     FWrite( han, " ;" + _Chr( 10 ) + Space( 8 ) + cMethod + "{ ||" + cName + "(" + cFormParameters + ")  }"  )
+                     FWrite( han, " ;" + hb_OsNewline() + Space( 8 ) + cMethod + "{ ||" + cName + "(" + cFormParameters + ")  }"  )
                   ELSE
 
-                     FWrite( han, " ; " + _Chr( 10 ) + Space( 8 ) + cMethod + " {|" + temp + "| " + ;
+                     FWrite( han, " ; " + hb_OsNewline() + Space( 8 ) + cMethod + " {|" + temp + "| " + ;
                         cName + "( " + temp + " ) }" )
                   ENDIF
                ENDIF
@@ -945,14 +945,14 @@ FUNCTION Ctrl2Prg
                   temp := oCtrl:GetProp( "value" ) //) != Nil
                   //ON INIT {|| oTimer1 := HTimer():New( otESTE,,5000,{|| OtIMER1:END(),hwg_Msginfo('oi'),hwg_EndDialog() } )}
                   stroka := "ON INIT {|| " + cName + " := HTimer():New( " + cFormName + ",," + temp + "," + stroka + " )}"
-                  FWrite( han, " ; //OBJECT TIMER " + _Chr( 10 ) + Space( 8 ) + stroka )
+                  FWrite( han, " ; //OBJECT TIMER " + hb_OsNewline() + Space( 8 ) + stroka )
                ELSE
 
                   IF lsubParameter
                      //temp :=  " {|" + temp + "| " +  cName +"("+ cFormParameters + ")  }"
-                     FWrite( han, " ;" + _Chr( 10 ) + Space( 8 ) + cMethod + "{ ||" + cName + "(" + cFormParameters + ")  }"  )
+                     FWrite( han, " ;" + hb_OsNewline() + Space( 8 ) + cMethod + "{ ||" + cName + "(" + cFormParameters + ")  }"  )
                   ELSE
-                     FWrite( han, " ;" + _Chr( 10 ) + Space( 8 ) + cMethod + " {|" + temp + "| " +  iif( Len( cName ) == 1, cName[ 1 ], cName[ 2 ] ) + " }" )
+                     FWrite( han, " ;" + hb_OsNewline() + Space( 8 ) + cMethod + " {|" + temp + "| " +  iif( Len( cName ) == 1, cName[ 1 ], cName[ 2 ] ) + " }" )
                   ENDIF
 
                ENDIF
@@ -966,13 +966,13 @@ FUNCTION Ctrl2Prg
    // gerar o codigo da TOOLBAR
    IF oCtrl:cClass == "toolbar"
       stroka := CallFunc( "Tool2Prg", { oCtrl } )
-      FWrite( han, _chr( 10 ) + stroka )
+      FWrite( han, hb_OsNewline() + stroka )
    ENDIF
 
    // gerar o codigo do browse
    IF oCtrl:cClass == "browse"
       stroka := CallFunc( "Browse2Prg", { oCtrl } )
-      FWrite( han, _chr( 10 ) + stroka )
+      FWrite( han, hb_OsNewline() + stroka )
    ENDIF
 
    IF !Empty( oCtrl:aControls )
@@ -983,7 +983,7 @@ FUNCTION Ctrl2Prg
          //Fwrite( han, stroka)
          j := 1
          DO WHILE j <= Len( temp )
-            FWrite( han, _Chr( 10 ) + "  BEGIN PAGE '" + temp[j] + "' OF " + oCtrl:GetProp( "Name" ) )
+            FWrite( han, hb_OsNewline() + "  BEGIN PAGE '" + temp[j] + "' OF " + oCtrl:GetProp( "Name" ) )
 
             i := 1
             DO WHILE i <= Len( oCtrl:aControls )
@@ -993,16 +993,16 @@ FUNCTION Ctrl2Prg
                i ++
             ENDDO
 
-            FWrite( han, _Chr( 10 ) + "  END PAGE OF " + oCtrl:GetProp( "Name" ) + _Chr( 10 ) )
+            FWrite( han, hb_OsNewline() + "  END PAGE OF " + oCtrl:GetProp( "Name" ) + hb_OsNewline() )
             j ++
          ENDDO
          RETURN
       ELSEIF oCtrl:cClass == "radiogroup"
          varname := oCtrl:GetProp( "varName" )
          IF varname == Nil
-            FWrite( han, _Chr( 10 ) + "  RADIOGROUP" )
+            FWrite( han, hb_OsNewline() + "  RADIOGROUP" )
          ELSE
-            FWrite( han, _Chr( 10 ) + "  GET RADIOGROUP " + varname )
+            FWrite( han, hb_OsNewline() + "  GET RADIOGROUP " + varname )
          ENDIF
       ENDIF
 
@@ -1014,7 +1014,7 @@ FUNCTION Ctrl2Prg
 
       IF oCtrl:cClass == "radiogroup"
          temp := oCtrl:GetProp( "nInitValue" )
-         FWrite( han, _Chr( 10 ) + "  END RADIOGROUP SELECTED " + iif( temp == Nil,"1",temp ) + _Chr( 10 ) )
+         FWrite( han, hb_OsNewline() + "  END RADIOGROUP SELECTED " + iif( temp == Nil,"1",temp ) + hb_OsNewline() )
       ENDIF
    ENDIF
 
@@ -1059,21 +1059,21 @@ FUNCTION Ctrl2Prg
    han := FCreate( fname )
 
    //Add the lines to include
-   //Fwrite( han,'#include "windows.ch"'+ _Chr(10)  )
-   //Fwrite( han,'#include "guilib.ch"' + _Chr(10)+ _Chr(10) )
-   FWrite( han, '#include "hwgui.ch"' + _Chr( 10 ) )
-   FWrite( han, '#include "common.ch"' + _Chr( 10 ) )
-   FWrite( han, '#ifdef __XHARBOUR__' + _Chr( 10 ) )
-   FWrite( han, '   #include "ttable.ch"' + _Chr( 10 ) )
-   FWrite( han, '#endif' + _Chr( 10 ) + _Chr( 10 ) )
+   //Fwrite( han,'#include "windows.ch"'+ hb_OsNewline()  )
+   //Fwrite( han,'#include "guilib.ch"' + hb_OsNewline()+ hb_OsNewline() )
+   FWrite( han, '#include "hwgui.ch"' + hb_OsNewline() )
+   FWrite( han, '#include "common.ch"' + hb_OsNewline() )
+   FWrite( han, '#ifdef __XHARBOUR__' + hb_OsNewline() )
+   FWrite( han, '   #include "ttable.ch"' + hb_OsNewline() )
+   FWrite( han, '#endif' + hb_OsNewline() + hb_OsNewline() )
 
-   //Fwrite( han, "FUNCTION " + "_" + Iif( cName != Nil, cName, "Main" ) + _Chr(10)  )
-   FWrite( han, "FUNCTION " + "_" + iif( cName != Nil, cFunction, cFunction ) + _Chr( 10 )  )
+   //Fwrite( han, "FUNCTION " + "_" + Iif( cName != Nil, cName, "Main" ) + hb_OsNewline()  )
+   FWrite( han, "FUNCTION " + "_" + iif( cName != Nil, cFunction, cFunction ) + hb_OsNewline()  )
 
    // Declare 'Private' variables
    IF cName != Nil
-      //    Fwrite( han, "PRIVATE " + cName + _Chr(10) )
-      FWrite( han, "Local " + cName + _Chr( 10 ) )
+      //    Fwrite( han, "PRIVATE " + cName + hb_OsNewline() )
+      FWrite( han, "Local " + cName + hb_OsNewline() )
    ENDIF
 
    i := 1
@@ -1097,16 +1097,16 @@ FUNCTION Ctrl2Prg
          IF Len( stroka ) < 76
             stroka += aParameters[i] + ", "
          ELSE
-            FWrite( han, _Chr( 10 ) + SubStr( stroka,1,Len(stroka ) - 2 ) )
+            FWrite( han, hb_OsNewline() + SubStr( stroka,1,Len(stroka ) - 2 ) )
             stroka := "LOCAL "
          ENDIF
          i ++
       ENDDO
 
       //  stroka := "LOCAL " + stroka
-      Stroka += _Chr( 10 ) //+ "PUBLIC oDlg"
+      Stroka += hb_OsNewline() //+ "PUBLIC oDlg"
 
-      FWrite( han, _Chr( 10 ) + SubStr( stroka,1,RAt(',',stroka ) - 1 ) )
+      FWrite( han, hb_OsNewline() + SubStr( stroka,1,RAt(',',stroka ) - 1 ) )
 
    ENDIF
 
@@ -1134,7 +1134,7 @@ FUNCTION Ctrl2Prg
             ENDIF
          ELSE
             IF Upper( AllTrim( stroka ) ) == "LOCAL" .AND. Len( Upper( AllTrim(stroka ) ) ) > 5
-               FWrite( han, _Chr( 10 ) + SubStr( stroka,1,RAt(',',stroka ) - 1 ) )
+               FWrite( han, hb_OsNewline() + SubStr( stroka,1,RAt(',',stroka ) - 1 ) )
             ENDIF
             stroka := "LOCAL "
          ENDIF
@@ -1142,23 +1142,23 @@ FUNCTION Ctrl2Prg
       ENDDO
 
       //  stroka := " LOCAL " + stroka
-      Stroka += _Chr( 10 ) //+ "PUBLIC oDlg"
+      Stroka += hb_OsNewline() //+ "PUBLIC oDlg"
       IF Upper( SubStr(AllTrim( stroka ),1,5) ) == "LOCAL" .AND. Len( AllTrim(stroka ) ) > 5
-         FWrite( han, _Chr( 10 ) + SubStr( stroka,1,RAt(',',stroka ) - 1 ) )
+         FWrite( han, hb_OsNewline() + SubStr( stroka,1,RAt(',',stroka ) - 1 ) )
       ENDIF
    ENDIF
 
    // DEFINIR AS VARIVEIS DE VARIABLES
    IF ( temp := oForm:GetProp( "Variables" ) ) != Nil
       j := 1
-      stroka :=  _chr( 10 )
+      stroka :=  hb_OsNewline()
       DO WHILE j <= Len( temp )
          // nando adicionu o PRIVATE PARA EVITAR ERROS NO CODIGO
-         stroka += "PRIVATE "+temp[j] + _chr(10)
-         //stroka += "LOCAL " + temp[j] + _chr( 10 )
+         stroka += "PRIVATE "+temp[j] + hb_OsNewline()
+         //stroka += "LOCAL " + temp[j] + hb_OsNewline()
          j ++
       ENDDO
-      FWrite( han, _Chr( 10 ) + stroka )
+      FWrite( han, hb_OsNewline() + stroka )
    ENDIF
 
 
@@ -1167,7 +1167,7 @@ FUNCTION Ctrl2Prg
       IF oForm:aMethods[ i, 2 ] != Nil .AND. ! Empty( oForm:aMethods[ i, 2 ] )
 
          IF Lower( oForm:aMethods[i,1] ) == "onforminit"
-            FWrite( han, _Chr( 10 ) + _Chr( 10 ) )
+            FWrite( han, hb_OsNewline() + hb_OsNewline() )
             FWrite( han, oForm:aMethods[i,2] )
          ENDIF
 
@@ -1184,14 +1184,14 @@ FUNCTION Ctrl2Prg
          cName := "oDlg"
       ENDIF
 
-      FWrite( han, _Chr( 10 ) + _Chr( 10 ) + '  INIT DIALOG ' + cname + ' TITLE "' + oForm:oDlg:title + '" ;' + _Chr( 10 ) )
+      FWrite( han, hb_OsNewline() + hb_OsNewline() + '  INIT DIALOG ' + cname + ' TITLE "' + oForm:oDlg:title + '" ;' + hb_OsNewline() )
 
    ELSE
       // 'INIT WINDOW' command
       IF cName == Nil
          cName := "oWin"
       ENDIF
-      FWrite( han, _Chr( 10 ) + _Chr( 10 ) + '  INIT WINDOW ' + cName + ' TITLE "' + oForm:oDlg:title + '" ;' + _Chr( 10 ) )
+      FWrite( han, hb_OsNewline() + hb_OsNewline() + '  INIT WINDOW ' + cName + ' TITLE "' + oForm:oDlg:title + '" ;' + hb_OsNewline() )
 
    ENDIF
 
@@ -1207,7 +1207,7 @@ FUNCTION Ctrl2Prg
       cStyle += "BACKGROUND BITMAP HBitmap():AddFile('" + temp + "') "
    ENDIF
    IF Len( cStyle ) > 0
-      FWrite( han,  Space( 4 ) + cStyle + " ;" + _CHR( 10 ) )
+      FWrite( han,  Space( 4 ) + cStyle + " ;" + hb_OsNewline() )
    ENDIF
 
    cFormName := cName
@@ -1248,7 +1248,7 @@ FUNCTION Ctrl2Prg
    temp := 0
    IF Len( cStyle ) > 6
       temp := 26
-      //cStyle := ";"+_CHR(10)+SPACE(8) +  "STYLE " + substr(cStyle,2)
+      //cStyle := ";"+hb_OsNewline()+SPACE(8) +  "STYLE " + substr(cStyle,2)
       cStyle :=  Space( 1 ) + "STYLE " + SubStr( cStyle, 2 )
    ENDIF
    FWrite( han, Space( 4 ) + "AT " + LTrim( Str( oForm:oDlg:nLeft ) ) + "," ;
@@ -1266,13 +1266,13 @@ FUNCTION Ctrl2Prg
       FWrite( han, ' CLIPPER '  )
    ENDIF
    IF oForm:GetProp( "lExitOnEnter" ) = "True"
-      //-Fwrite( han,  ' ;' + _Chr(10) + SPACE(8) + 'NOEXIT'  )
+      //-Fwrite( han,  ' ;' + hb_OsNewline() + SPACE(8) + 'NOEXIT'  )
       FWrite( han, ' NOEXIT '  )
    ENDIF
    //
 
    IF Len( cStyle ) > 6
-      FWrite( han,  ' ;' + _Chr( 10 ) + Space( 4 ) + cStyle )
+      FWrite( han,  ' ;' + hb_OsNewline() + Space( 4 ) + cStyle )
    ENDIF
 
    i := 1
@@ -1285,7 +1285,7 @@ FUNCTION Ctrl2Prg
          IF Lower( Left( oForm:aMethods[ i, 2 ],10 ) ) == "parameters"
 
             // Note, do we look for a CR or a LF??
-            j := At( _Chr( 10 ), oForm:aMethods[ i, 2 ] )
+            j := At( hb_OsNewline(), oForm:aMethods[ i, 2 ] )
 
             temp := SubStr( oForm:aMethods[ i, 2 ], 12, j - 13 )
          ELSE
@@ -1293,7 +1293,7 @@ FUNCTION Ctrl2Prg
          ENDIF
          // fim
          // all methods are onSomething so, strip leading "on"
-         FWrite( han, " ;" + + _Chr( 10 ) + Space( 8 ) + "ON " + ;
+         FWrite( han, " ;" + + hb_OsNewline() + Space( 8 ) + "ON " + ;
             StrTran( StrTran( Upper( SubStr( oForm:aMethods[ i, 1 ], 3 ) ), "DLG", "" ), "FORM", "" ) + ;
             " {|" + temp + "| " + oForm:aMethods[ i, 1 ] + "( " + temp + " ) }" )
 
@@ -1303,7 +1303,7 @@ FUNCTION Ctrl2Prg
 
       i ++
    ENDDO
-   FWrite( han, _Chr( 10 ) + _Chr( 10 ) )
+   FWrite( han, hb_OsNewline() + hb_OsNewline() )
 
    // Controls initialization
    i := 1
@@ -1314,9 +1314,9 @@ FUNCTION Ctrl2Prg
          ENDIF
       ELSE
          nMaxId := 0
-         FWrite( han, _Chr( 10 ) + " MENU OF " + cformname + " " )
+         FWrite( han, hb_OsNewline() + " MENU OF " + cformname + " " )
          CallFunc( "Menu2Prg", { aControls[ i ] , getmenu() } )
-         FWrite( han, _Chr( 10 ) + " ENDMENU" + " " + _chr( 10 ) + _chr( 10 ) )
+         FWrite( han, hb_OsNewline() + " ENDMENU" + " " + hb_OsNewline() + hb_OsNewline() )
       ENDIF
       i ++
    ENDDO
@@ -1328,9 +1328,9 @@ FUNCTION Ctrl2Prg
       ELSE
          temp := cname + ":lresult"  // nando pos  return
       ENDIF
-      FWrite( han, _Chr( 10 ) + _Chr( 10 ) + "   ACTIVATE DIALOG " + cname + _Chr( 10 ) )
+      FWrite( han, hb_OsNewline() + hb_OsNewline() + "   ACTIVATE DIALOG " + cname + hb_OsNewline() )
    ELSE
-      FWrite( han, _Chr( 10 ) + _Chr( 10 ) + "   ACTIVATE WINDOW " + cname + _Chr( 10 ) )
+      FWrite( han, hb_OsNewline() + hb_OsNewline() + "   ACTIVATE WINDOW " + cname + hb_OsNewline() )
    ENDIF
 
    i := 1
@@ -1340,7 +1340,7 @@ FUNCTION Ctrl2Prg
 
          IF Lower( oForm:aMethods[ i, 1 ] ) == "onformexit"
             FWrite( han, oForm:aMethods[ i, 2 ] )
-            FWrite( han, _Chr( 10 ) + _Chr( 10 ) )
+            FWrite( han, hb_OsNewline() + hb_OsNewline() )
          ENDIF
 
       ENDIF
@@ -1348,7 +1348,7 @@ FUNCTION Ctrl2Prg
    ENDDO
 
 
-   FWrite( han, "RETURN " + temp + _Chr( 10 ) + _Chr( 10 ) )
+   FWrite( han, "RETURN " + temp + hb_OsNewline() + hb_OsNewline() )
 
    // "common" Form/Dialog methods
    i := 1
@@ -1369,21 +1369,21 @@ FUNCTION Ctrl2Prg
                ENDIF
 
                IF Lower( Left( stroka,8 ) ) == "function"
-                  FWrite( han, "STATIC " + stroka + _Chr( 10 ) )
+                  FWrite( han, "STATIC " + stroka + hb_OsNewline() )
                   temp := .F.
 
                ELSEIF Lower( Left( stroka,6 ) ) == "return"
-                  FWrite( han, stroka + _Chr( 10 ) )
+                  FWrite( han, stroka + hb_OsNewline() )
                   temp := .T.
 
                ELSEIF Lower( Left( stroka,7 ) ) == "endfunc"
                   IF !temp
-                     FWrite( han, "Return Nil" +  _Chr( 10 ) )
+                     FWrite( han, "Return Nil" +  hb_OsNewline() )
                   ENDIF
                   temp := .F.
 
                ELSE
-                  FWrite( han, stroka + _Chr( 10 ) )
+                  FWrite( han, stroka + hb_OsNewline() )
                   temp := .F.
                ENDIF
 
@@ -1391,16 +1391,16 @@ FUNCTION Ctrl2Prg
 
          ELSEIF cName != "onforminit" .AND. cName != "onformexit"
 
-            FWrite( han, "STATIC FUNCTION " + oForm:aMethods[i,1] + _Chr( 10 ) + _Chr( 13 ) )
+            FWrite( han, "STATIC FUNCTION " + oForm:aMethods[i,1] + hb_OsNewline() + _Chr( 13 ) )
             FWrite( han, oForm:aMethods[i,2] )
 
-            j1 := RAt( _Chr( 10 ), oForm:aMethods[i,2] )
+            j1 := RAt( hb_OsNewline(), oForm:aMethods[i,2] )
 
             IF j1 == 0 .OR. Lower( Left( LTrim( SubStr( oForm:aMethods[i,2],j1 + 1 ) ),6 ) ) != "return"
-               FWrite( han, _Chr( 10 ) + "RETURN Nil" )
+               FWrite( han, hb_OsNewline() + "RETURN Nil" )
             ENDIF
 
-            FWrite( han, _Chr( 10 ) + _Chr( 10 ) )
+            FWrite( han, hb_OsNewline() + hb_OsNewline() )
 
          ENDIF
 
@@ -1425,19 +1425,19 @@ FUNCTION Ctrl2Prg
 
             IF ValType( cName := Callfunc( "FUNC_NAME", { oCtrl, i } ) ) == "C"
 
-               FWrite( han, "STATIC FUNCTION " + cName + _Chr( 10 ) )
+               FWrite( han, "STATIC FUNCTION " + cName + hb_OsNewline() )
                FWrite( han, oCtrl:aMethods[ i, 2 ] )
 
-               j1 := RAt( _Chr( 10 ), oCtrl:aMethods[i,2] )
+               j1 := RAt( hb_OsNewline(), oCtrl:aMethods[i,2] )
 
                IF j1 == 0 .OR. ;
                      Lower( Left( LTrim( SubStr( oCtrl:aMethods[ i, 2 ], j1 + 1 ) ), 6 ) ) != "return"
 
-                  FWrite( han, _Chr( 10 ) + "RETURN Nil" )
+                  FWrite( han, hb_OsNewline() + "RETURN Nil" )
 
                ENDIF
 
-               FWrite( han, _Chr( 10 ) + _Chr( 10 ) )
+               FWrite( han, hb_OsNewline() + hb_OsNewline() )
 
             ENDIF
 

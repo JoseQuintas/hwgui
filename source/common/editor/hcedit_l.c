@@ -548,7 +548,11 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    hb_itemRelease( temp );
 
    SetWindowObject( area, pObject );
-   set_event( ( gpointer ) area, "expose_event", WM_PAINT, 0, 0 );
+#if GTK_MAJOR_VERSION -0 < 3
+      set_event( ( gpointer ) area, "expose_event", WM_PAINT, 0, 0 );
+#else
+      set_event( ( gpointer ) area, "draw", WM_PAINT, 0, 0 );
+#endif
 
    gtk_widget_set_can_focus( area, 1 );
 

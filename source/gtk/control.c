@@ -141,7 +141,11 @@ HB_FUNC( HWG_CREATESTATIC )
 
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
    {
+#if GTK_MAJOR_VERSION -0 < 3
       set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
+#else
+      set_event( ( gpointer ) hCtrl, "draw", WM_PAINT, 0, 0 );
+#endif
    }
    HB_RETHANDLE( hCtrl );
 
@@ -594,7 +598,11 @@ HB_FUNC( HWG_CREATEBROWSE )
    hb_itemRelease( temp );
 
    SetWindowObject( area, pObject );
+#if GTK_MAJOR_VERSION -0 < 3
    set_event( ( gpointer ) area, "expose_event", WM_PAINT, 0, 0 );
+#else
+   set_event( ( gpointer ) area, "draw", WM_PAINT, 0, 0 );
+#endif
 
    gtk_widget_set_can_focus(area,1);
    //GTK_WIDGET_SET_FLAGS( area, GTK_CAN_FOCUS );
@@ -867,7 +875,11 @@ HB_FUNC( HWG_CREATEPANEL )
    gtk_widget_set_can_focus(hCtrl,1);
    //GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
    if( ( ulStyle & SS_OWNERDRAW ) == SS_OWNERDRAW )
+#if GTK_MAJOR_VERSION -0 < 3
       set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
+#else
+      set_event( ( gpointer ) hCtrl, "draw", WM_PAINT, 0, 0 );
+#endif
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK |
          GDK_LEAVE_NOTIFY_MASK | GDK_POINTER_MOTION_MASK );
@@ -906,7 +918,11 @@ HB_FUNC( HWG_CREATEOWNBTN )
       gtk_fixed_put( box, hCtrl, hb_parni( 3 ), hb_parni( 4 ) );
       gtk_widget_set_size_request( hCtrl, hb_parni( 5 ), hb_parni( 6 ) );
    }
+#if GTK_MAJOR_VERSION -0 < 3
    set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
+#else
+   set_event( ( gpointer ) hCtrl, "draw", WM_PAINT, 0, 0 );
+#endif
    gtk_widget_set_can_focus(hCtrl,1);
    //GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
@@ -1352,7 +1368,11 @@ HB_FUNC( HWG_CREATESPLITTER )
    gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
    g_object_set_data( ( GObject * ) hCtrl, "fbox", ( gpointer ) fbox );
 
+#if GTK_MAJOR_VERSION -0 < 3
    set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
+#else
+   set_event( ( gpointer ) hCtrl, "draw", WM_PAINT, 0, 0 );
+#endif
    gtk_widget_set_can_focus(hCtrl,1);
    //GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
 

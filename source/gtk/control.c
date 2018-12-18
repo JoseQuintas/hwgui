@@ -1386,3 +1386,8 @@ HB_FUNC( HWG_CREATESPLITTER )
    HB_RETHANDLE( hCtrl );
 
 }
+
+HB_FUNC( HWG_SETWIDGETNAME )
+{
+   gtk_widget_set_name( ( GtkWidget * ) HB_PARHANDLE( 1 ), hb_parc(2) );
+}

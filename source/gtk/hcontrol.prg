@@ -25,11 +25,14 @@ REQUEST HWG_ENDWINDOW
 Function hwg_SetCtrlName( oCtrl, cName )
    LOCAL nPos
 
-   IF !Empty( cName ) .AND. ValType( cName ) == "C" .AND. oCtrl:oParent != Nil .AND. ! "[" $ cName
+   IF !Empty( cName ) .AND. ValType( cName ) == "C" .AND. ! "[" $ cName
       IF ( nPos :=  RAt( ":", cName ) ) > 0 .OR. ( nPos :=  RAt( ">", cName ) ) > 0
          cName := SubStr( cName, nPos + 1 )
       ENDIF
       oCtrl:objName := Upper( cName )
+      IF __ObjHasMsg( oCtrl, "ODEFAULTPARENT" )
+         hwg_SetWidgetName( oCtrl:handle, oCtrl:objName )
+      ENDIF
    ENDIF
 
    RETURN Nil

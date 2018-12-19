@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-19 21:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/hctrl.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/resource/widgets.xml
+    * Corrections.
+
 2018-12-19 15:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
   * source/winapi/hfrmtmpl.prg

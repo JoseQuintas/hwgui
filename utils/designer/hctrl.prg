@@ -30,6 +30,7 @@ CLASS HControlGen INHERIT HControl
    DATA aProp         INIT {}
    DATA aMethods      INIT {}
    DATA aPaint, oBitmap
+   DATA aInit
    DATA cCreate
    DATA Adjust        INIT 0
    DATA lEmbed        INIT .F.
@@ -87,6 +88,11 @@ Private value, oCtrl := Self
                   ::oBitmap := HBitmap():AddResource( bmp)
                ENDIF
             ENDIF
+         ELSEIF oXMLDesc:aItems[i]:title == "init"
+            oPaint := oXMLDesc:aItems[i]
+            IF !Empty( oPaint:aItems ) .AND. oPaint:aItems[1]:type == HBXML_TYPE_CDATA
+               ::aInit := RdScript( ,oPaint:aItems[1]:aItems[1] )
+            ENDIF
          ELSEIF oXMLDesc:aItems[i]:title == "create"
             oPaint := oXMLDesc:aItems[i]
             IF !Empty( oPaint:aItems ) .AND. oPaint:aItems[1]:type == HBXML_TYPE_CDATA
@@ -139,9 +145,6 @@ Private value, oCtrl := Self
       ::nLeft := ::nTop := -1
    ELSE
       ::title   := Iif( ::title==Nil,xClass,::title )
-      ::nTop := Iif( ::nTop==Nil, 0, ::nTop )
-      ::nLeft := Iif( ::nLeft==Nil, 0, ::nLeft )
-      ::nWidth := Iif( ::nWidth==Nil, ::oParent:nWidth, ::nWidth )
       ::bPaint  := {|o,lp|o:Paint(lp)}
       ::bSize   := {|o,x,y|ctrlOnSize(o,x,y)}
       ::SetColor( ::tcolor,::bcolor )
@@ -160,8 +163,11 @@ Local oFont
 Memvar oCtrl
 
    IF ::oParent != Nil .AND. !Empty( ::oParent:handle )
+      Private oCtrl := Self
+      IF ::aInit != Nil
+         DoScript( ::aInit )
+      ENDIF
       IF ::cCreate != Nil
-         Private oCtrl := Self
          ::handle := &( ::cCreate )
       ELSE
          ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;

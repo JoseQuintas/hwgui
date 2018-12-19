@@ -1094,13 +1094,13 @@ Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
    IF oCtrl != Nil .AND. ;
         ( resizeDirection := CheckResize( oCtrl,xPos,yPos ) ) > 0
       IF resizeDirection == 1 .OR. resizeDirection == 3
-         i := Ascan( oCtrl:aProp,{|a|Lower(a[1])=="height"} )
+         i := Ascan( oCtrl:aProp,{|a|Lower(a[1])=="width"} )
          IF i != 0 .AND. ( Len( oCtrl:aProp[i] ) == 3 .OR. oDesigner:lReport )
             SetBDown( oCtrl,xPos,yPos,resizeDirection )
             Hwg_SetCursor( horzCursor )
          ENDIF
       ELSEIF resizeDirection == 2 .OR. resizeDirection == 4
-         i := Ascan( oCtrl:aProp,{|a|Lower(a[1])=="width"} )
+         i := Ascan( oCtrl:aProp,{|a|Lower(a[1])=="height"} )
          IF i != 0 .AND. ( Len( oCtrl:aProp[i] ) == 3 .OR. oDesigner:lReport )
             SetBDown( oCtrl,xPos,yPos,resizeDirection )
             Hwg_SetCursor( vertCursor )

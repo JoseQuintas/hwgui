@@ -17,9 +17,9 @@ STATIC aClass := { "label", "button", "checkbox",       ;
       "radiobutton", "editbox", "group", "radiogroup",  ;
       "bitmap", "icon",                                 ;
       "richedit", "datepicker", "updown", "combobox",   ;
-      "line", "toolbar", "ownerbutton", "browse",       ;
-      "splitter", "monthcalendar", "trackbar", "page",  ;
-      "tree", "status", "menu", "animation"             ;
+      "line", "toolbar", "toolbartop", "ownerbutton",   ;
+      "browse", "splitter", "monthcalendar", "trackbar",;
+       "page", "tree", "status", "menu", "animation"    ;
       }
 STATIC aCtrls := { ;
       "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp)", ;
@@ -37,6 +37,7 @@ STATIC aCtrls := { ;
       "HComboBox():New(oPrnt,nId,nInitValue,bSetGet,nStyle,nLeft,nTop,nWidth,nHeight,Items,oFont,onInit,onSize,onPaint,onChange,cTooltip,lEdit,lText,onGetFocus,TextColor,BackColor,onLostFocus,nDisplay)", ;
       "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
       "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,BackColor,oStyle)", ;
+      "HPanel():New(oPrnt,nId,nStyle,0,0,oPrnt:nWidth,nHeight,onInit,11,onPaint,BackColor,oStyle)", ;
       "HOwnButton():New(oPrnt,nId,aStyles,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip,lEnabled,lCheck,BackColor)", ;
       "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg,lMultiSelect,onRClick )", ;
       "HSplitter():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,onSize,onPaint,TextColor,BackColor,aLeft,aRight,nFrom,nTo,oStyle )", ;
@@ -718,7 +719,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
       i += 4
       DO WHILE .T.
          IF ( j := hb_At( ",",stroka,i ) ) != 0 .OR. ( j := hb_At( ")",stroka,i ) ) != 0
-            IF j - i > 0
+            IF j - i > 0 .AND. !IsDigit(SubStr( stroka, i, 1 ))
                varname := SubStr( stroka, i, j - i )
                __mvPrivate( varname )
                IF SubStr( varname, 2 ) == "InitValue"

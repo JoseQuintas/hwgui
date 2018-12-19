@@ -139,7 +139,9 @@ Private value, oCtrl := Self
       ::nLeft := ::nTop := -1
    ELSE
       ::title   := Iif( ::title==Nil,xClass,::title )
-
+      ::nTop := Iif( ::nTop==Nil, 0, ::nTop )
+      ::nLeft := Iif( ::nLeft==Nil, 0, ::nLeft )
+      ::nWidth := Iif( ::nWidth==Nil, ::oParent:nWidth, ::nWidth )
       ::bPaint  := {|o,lp|o:Paint(lp)}
       ::bSize   := {|o,x,y|ctrlOnSize(o,x,y)}
       ::SetColor( ::tcolor,::bcolor )

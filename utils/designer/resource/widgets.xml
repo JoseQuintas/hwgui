@@ -596,6 +596,28 @@
          <method name="onSize" />
          <method name="onPaint" />
       </widget>
+      <widget class="toolbartop" name="Top toolbar" bmp="BMP_PANETOP" container="Yes">
+         <paint><![CDATA[
+            private xp
+            if oCtrl:anchor == 0
+               oCtrl:anchor := 11
+            endif
+            hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
+            if (xp := oCtrl:GetProp("hstyle")) != Nil
+              xp:Draw(hDC,0,0,oCtrl:nWidth,oCtrl:nHeight)
+            elseif Valtype(xp := oCtrl:GetProp("backcolor")) == "C" .and. Val(xp) >= 0
+              hwg_Fillrect( hDC,2,2,oCtrl:nWidth-2,oCtrl:nHeight-2,oCtrl:brush:handle )
+            endif
+         ]]></paint>
+         <property name="Name" type="C" />
+         <property name="Height" type="N" value="48" />
+         <property name="Anchor" type="N" value="11" />
+         <property name="BackColor" type="N" value="-1" />
+         <property name="Hstyle" type="O" />
+         <method name="onInit" />
+         <method name="onSize" />
+         <method name="onPaint" />
+      </widget>
       <widget class="splitter" name="Splitter" bmp="BMP_VLINE">
          <paint><![CDATA[
             private xp

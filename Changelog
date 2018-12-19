@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-19 15:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/drawtext.c
+    * hwg_SetFgColor(), hwg_SetBgColor(), hwg_SetCtrlFont() are reworked to use under GTK3.
+    * hwg_CSSLoad() added to use under GTK3
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+  * utils/designer/resource/widgets.xml
+    * Splitter support added to the Designer.
+
 2018-12-18 21:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     * hwg_setwidgetname() added

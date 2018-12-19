@@ -70,6 +70,30 @@ GtkFixed *getFixedBox( GObject * handle )
    return ( GtkFixed * ) g_object_get_data( handle, "fbox" );
 }
 
+void hwg_colorN2C( long lColor, char *szColor )
+{
+   char c;
+   sprintf( szColor, "%06x", lColor );
+   c = szColor[0]; szColor[0] = szColor[4]; szColor[4] = c;
+   c = szColor[1]; szColor[1] = szColor[5]; szColor[5] = c;
+}
+
+#if GTK_MAJOR_VERSION -0 > 2
+void set_css_data( char *szData )
+{
+   GtkCssProvider* provider = gtk_css_provider_new();
+   GdkDisplay* display = gdk_display_get_default();
+   GdkScreen* screen = gdk_display_get_default_screen(display);
+
+   gtk_style_context_add_provider_for_screen(screen,
+      GTK_STYLE_PROVIDER(provider), GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+   gtk_css_provider_load_from_data(GTK_CSS_PROVIDER(provider), szData, -1, NULL);
+   g_object_unref(provider);
+
+}
+#endif
+
 GtkWidget *getDrawing( GObject * handle )
 {
    return ( GtkWidget * ) g_object_get_data( handle, "draw" );
@@ -1304,6 +1328,7 @@ HB_FUNC( HWG_MONTHCALENDAR_SETACTION )
 
 void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 
+#if GTK_MAJOR_VERSION -0 < 3
 HB_FUNC( HWG_SETFGCOLOR )
 {
    GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
@@ -1342,6 +1367,38 @@ HB_FUNC( HWG_SETBGCOLOR )
    gtk_widget_set_style( hCtrl, style );
 }
 
+#else
+
+HB_FUNC( HWG_SETFGCOLOR )
+{
+   GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
+   char szData[128], szColor[8];
+   const char *pName = gtk_widget_get_name( hCtrl );
+
+   if( pName && strncmp(pName,"Gtk",3) != 0 )
+   {
+      hwg_colorN2C( hb_parnl( 2 ), szColor );
+      sprintf( szData, "#%s { color: #%s; }", pName, szColor );
+      //hwg_writelog( NULL,szData );
+      set_css_data( szData );
+   }
+}
+
+HB_FUNC( HWG_SETBGCOLOR )
+{
+   GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
+   char szData[128], szColor[8];
+   const char *pName = gtk_widget_get_name( hCtrl );
+
+   if( pName && strncmp(pName,"Gtk",3) != 0 )
+   {
+      hwg_colorN2C( hb_parnl( 2 ), szColor );
+      sprintf( szData, "#%s { background: #%s; }", pName, szColor );
+      //hwg_writelog( NULL,szData );
+      set_css_data( szData );
+   }
+}
+#endif
 /*
    CreateSplitter( hParentWindow, nControlID, nStyle, x, y, nWidth, nHeight )
 */
@@ -1385,6 +1442,13 @@ HB_FUNC( HWG_CREATESPLITTER )
    all_signal_connect( ( gpointer ) hCtrl );
    HB_RETHANDLE( hCtrl );
 
+}
+
+HB_FUNC( HWG_CSSLOAD )
+{
+#if GTK_MAJOR_VERSION -0 > 2
+   set_css_data( (char *)hb_parc(1) );
+#endif
 }
 
 HB_FUNC( HWG_SETWIDGETNAME )

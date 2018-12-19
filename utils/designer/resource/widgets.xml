@@ -543,7 +543,7 @@
          <property name="lResource" type="L" value="False" />
          <property name="BmpLeft" type="N" value="0" />
          <property name="BmpTop" type="N" value="0" />
-	 <property name="ToolTip" type="C" value=""/>
+	     <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -592,6 +592,27 @@
          <property name="Anchor" type="N" value="-1" />
          <property name="BackColor" type="N" value="-1" />
          <property name="Hstyle" type="O" />
+         <method name="onInit" />
+         <method name="onSize" />
+         <method name="onPaint" />
+      </widget>
+      <widget class="splitter" name="Splitter" bmp="BMP_VLINE">
+         <paint><![CDATA[
+            private xp
+            hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
+         ]]></paint>
+         <property name="Name" type="C" />
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Width" type="N" value="100" />
+         <property name="Height" type="N" value="4" />
+         <property name="lVertical" type="L" value="False" />
+         <property name="Anchor" type="N" value="-1" />
+         <property name="Hstyle" type="O" />
+         <property name="ALeft" type="A" />
+         <property name="ARight" type="A" />
+         <property name="nFrom" type="N" value="0"/>
+         <property name="nTo" type="N" value="0"/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />

@@ -18,8 +18,8 @@ STATIC aClass := { "label", "button", "checkbox",       ;
       "bitmap", "icon",                                 ;
       "richedit", "datepicker", "updown", "combobox",   ;
       "line", "toolbar", "ownerbutton", "browse",       ;
-      "monthcalendar", "trackbar", "page", "tree",      ;
-      "status", "menu", "animation"                     ;
+      "splitter", "monthcalendar", "trackbar", "page",  ;
+      "tree", "status", "menu", "animation"             ;
       }
 STATIC aCtrls := { ;
       "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp)", ;
@@ -39,6 +39,7 @@ STATIC aCtrls := { ;
       "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,BackColor,oStyle)", ;
       "HOwnButton():New(oPrnt,nId,aStyles,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip,lEnabled,lCheck,BackColor)", ;
       "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg,lMultiSelect,onRClick )", ;
+      "HSplitter():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,onSize,onPaint,TextColor,BackColor,aLeft,aRight,nFrom,nTo,oStyle )", ;
       "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cTooltip,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
       "HTrackBar():New(oPrnt,nId,nInitValue,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,bPaint,cTooltip,onChange,onDrag,nLow,nHigh,lVertical,TickStyle,TickMarks)", ;
       "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,aTabs,onChange,aImages,lResource,nBC,onClick,onGetFocus,onLostFocus)", ;
@@ -213,7 +214,7 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
    RETURN Self
 
 METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
-   LOCAL i, j, cType, xRes
+   LOCAL i, j, i1, j1, cTemp, a1, cType, xRes
    LOCAL nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F. , lExitOnEnter := .F.
    LOCAL xProperty, block, nstyle
    LOCAL lMdi := .F.
@@ -398,6 +399,24 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
 
    FOR i := 1 TO j
       CreateCtrl( ::oDlg, ::aControls[i], Self )
+   NEXT
+   FOR i := 1 TO Len( ::oDlg:aControls )
+      IF __ObjHasMsg( ::oDlg:aControls[i], "ALEFT" )
+         a1 := ::oDlg:aControls[i]:aLeft
+         FOR i1 := 1 TO Len( a1 )
+            cTemp := Upper( a1[i1] )
+            IF (j1 := Ascan( ::oDlg:aControls,{|o|o:objname != Nil .AND. o:objname == cTemp } )) != 0
+               a1[i1] := ::oDlg:aControls[j1]
+            ENDIF
+         NEXT
+         a1 := ::oDlg:aControls[i]:aRight
+         FOR i1 := 1 TO Len( a1 )
+            cTemp := Upper( a1[i1] )
+            IF (j1 := Ascan( ::oDlg:aControls,{|o|o:objname != Nil .AND. o:objname == cTemp } )) != 0
+               a1[i1] := ::oDlg:aControls[j1]
+            ENDIF
+         NEXT
+      ENDIF
    NEXT
 
    IF ::lDebug .AND. ( i := HWindow():GetMain() ) != Nil
@@ -679,7 +698,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    MEMVAR onInit, onSize, onPaint, onEnter, onGetfocus, onLostfocus, lNoVScroll, lAppend, lAutoedit, bUpdate, onKeyDown, onPosChg
    MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, bSetGet
    MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
-   MEMVAR aImages, lEditLabels, aParts
+   MEMVAR aImages, lEditLabels, aParts, aLeft, aRight, nFrom, nTo
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"

@@ -29,6 +29,9 @@
 extern void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 extern void hwg_setcolor( cairo_t * cr, long int nColor );
 extern GtkWidget * GetActiveWindow( void );
+#if GTK_MAJOR_VERSION -0 > 2
+extern void set_css_data( char *szData );
+#endif
 
 HB_FUNC( HWG_DELETEDC )
 {
@@ -287,11 +290,11 @@ HB_FUNC( HWG_CREATEFONT )
 /*
  * SetCtrlFont( hCtrl, hFont )
 */
+#if GTK_MAJOR_VERSION -0 < 3
 HB_FUNC( HWG_SETCTRLFONT )
 {
    GtkWidget * hCtrl = (GtkWidget*) HB_PARHANDLE(1);
    GtkWidget * hLabel = (GtkWidget*) g_object_get_data( (GObject*) hCtrl,"label" );   
-   //GtkStyle * style;
 
    if( GTK_IS_BUTTON( hCtrl ) )
       hCtrl = gtk_bin_get_child( GTK_BIN( hCtrl ) );
@@ -300,13 +303,33 @@ HB_FUNC( HWG_SETCTRLFONT )
    else if( hLabel )
       hCtrl = (GtkWidget*) hLabel;
       
-   //style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
-   //style->font_desc = ( (PHWGUI_FONT) HB_PARHANDLE(3) )->hFont;
-   //gtk_widget_set_style( hCtrl, style );
-
    gtk_widget_modify_font( hCtrl, ( (PHWGUI_FONT) HB_PARHANDLE(3) )->hFont );
+}
+#else
+HB_FUNC( HWG_SETCTRLFONT )
+{
+   GtkWidget * hCtrl = (GtkWidget*) HB_PARHANDLE(1);
+   PHWGUI_FONT pFont = (PHWGUI_FONT) HB_PARHANDLE(3);
+   char szData[256];
+   const char *pName = gtk_widget_get_name( hCtrl );
+
+   if( pName && strncmp(pName,"Gtk",3) != 0 )
+   {
+      char *szFamily = pango_font_description_get_family( pFont->hFont );
+      gint iHeight = pango_font_description_get_size( pFont->hFont );
+      int iIta = (pango_font_description_get_style( pFont->hFont ) == PANGO_STYLE_ITALIC)? 1 : 0;
+      int iBold = (pango_font_description_get_weight( pFont->hFont ) == PANGO_WEIGHT_BOLD)? 1 : 0;
+         
+      sprintf( szData, "#%s { font-family: %s; font-size: %dpx; font-weight: %s;  font-style: %s; }",
+         pName, szFamily, iHeight/PANGO_SCALE,
+         (iBold)? "bold" : "normal",
+         (iIta)? "italic" : "normal");
+      //hwg_writelog( NULL,szData );
+      set_css_data( szData );
+   }
 
 }
+#endif
 
 HB_FUNC( G_DEBUG )
 {

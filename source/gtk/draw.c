@@ -927,6 +927,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
 
 HB_FUNC( HWG__DRAWCOMBO )
 {
+#if GTK_MAJOR_VERSION -0 < 3
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = (gdouble)hb_parni( 2 ), y1 = (gdouble)hb_parni( 3 ),
            x2 = (gdouble)hb_parni( 4 ), y2 = (gdouble)hb_parni( 5 ),
@@ -946,10 +947,12 @@ HB_FUNC( HWG__DRAWCOMBO )
    cairo_line_to( hDC->cr, x2-6, y1+nHeight/2-3 );
 
    cairo_stroke( hDC->cr );
+#endif
 }
 
 HB_FUNC( HWG__DRAWCHECKBTN )
 {
+#if GTK_MAJOR_VERSION -0 < 3
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = (gdouble)hb_parni( 2 ), y1 = (gdouble)hb_parni( 3 ),
            y2 = (gdouble)hb_parni( 5 ),
@@ -986,11 +989,12 @@ HB_FUNC( HWG__DRAWCHECKBTN )
       pango_cairo_show_layout( hDC->cr, hDC->layout );
       g_free( gcTitle );
    }
-
+#endif
 }
 
 HB_FUNC( HWG__DRAWRADIOBTN )
 {
+#if GTK_MAJOR_VERSION -0 < 3
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = (gdouble)hb_parni( 2 ), y1 = (gdouble)hb_parni( 3 ),
            y2 = (gdouble)hb_parni( 5 ),
@@ -1025,5 +1029,5 @@ HB_FUNC( HWG__DRAWRADIOBTN )
       pango_cairo_show_layout( hDC->cr, hDC->layout );
       g_free( gcTitle );
    }
-
+#endif
 }

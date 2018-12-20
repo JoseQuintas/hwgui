@@ -177,6 +177,91 @@ HB_FUNC( HWG_SELECTFILE )
 
    gtk_main();
 }
+#else
+static void selefile_preview( GtkFileChooser *file_chooser, gpointer data )
+{
+  GtkWidget *preview;
+  char *filename;
+  GdkPixbuf *pixbuf;
+  gboolean have_preview;
+
+  preview = GTK_WIDGET (data);
+  filename = gtk_file_chooser_get_preview_filename (file_chooser);
+
+  pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+  have_preview = (pixbuf != NULL);
+  g_free (filename);
+
+  gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
+  if (pixbuf)
+    g_object_unref (pixbuf);
+
+  gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+}
+
+HB_FUNC( HWG_SELECTFILE )
+{
+   GtkWidget * selector_archivo;
+   gint resultado;
+   GtkImage *preview;
+   PHB_ITEM pArrTip = ( ( HB_ISARRAY(1) )? hb_param( 1,HB_IT_ARRAY ) : NULL );
+   PHB_ITEM pArrMsk = ( ( hb_pcount()>1 && HB_ISARRAY(2) )? hb_param( 2,HB_IT_ARRAY ) : NULL );
+   const char * cTip = ( HB_ISCHAR(1) )? hb_parc(1) : NULL;
+   const char * cMsk = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2) : NULL;
+   const char * cDir = ( hb_pcount()>2 && HB_ISCHAR(3) )? hb_parc(3) : "";
+   const char *cTitle = ( hb_pcount()>3 && HB_ISCHAR(4) )? hb_parc(4):"Select a file";
+   char *filename;
+   int i, iLen, iLenTip;
+
+   selector_archivo = gtk_file_chooser_dialog_new ( cTitle,
+             (GtkWindow *) GetActiveWindow(),
+             GTK_FILE_CHOOSER_ACTION_OPEN,
+             "gtk-cancel", GTK_RESPONSE_CANCEL,
+             "gtk-open", GTK_RESPONSE_ACCEPT, NULL );
+
+   if( pArrMsk )
+   {
+      iLen = hb_arrayLen( pArrMsk );
+      iLenTip = (pArrTip)? hb_arrayLen(pArrTip) : 0;
+      for( i=1; i<=iLen; i++ )
+      {
+          GtkFileFilter *filtro = gtk_file_filter_new();
+          gtk_file_filter_add_pattern (filtro, hb_arrayGetC( pArrMsk,i ));
+          if( iLenTip >= i )
+             gtk_file_filter_set_name( filtro, hb_arrayGetC( pArrTip,i ) );
+          gtk_file_chooser_add_filter( (GtkFileChooser*)selector_archivo, filtro);
+      }
+   }
+   else if( cMsk )
+   {
+      GtkFileFilter *filtro = gtk_file_filter_new();
+      gtk_file_filter_add_pattern( filtro, cMsk );
+      if( cTip )
+         gtk_file_filter_set_name( filtro, cTip );
+      gtk_file_chooser_add_filter( (GtkFileChooser*)selector_archivo, filtro);
+   }
+
+   gtk_file_chooser_set_current_folder ( (GtkFileChooser*)selector_archivo, cDir );
+
+   preview = (GtkImage *)gtk_image_new();
+   gtk_file_chooser_set_preview_widget( (GtkFileChooser*)selector_archivo, (GtkWidget*)preview );
+   g_signal_connect(selector_archivo, "update-preview",
+               G_CALLBACK(selefile_preview), preview);
+
+   resultado = gtk_dialog_run (GTK_DIALOG (selector_archivo));
+   switch (resultado)
+   {
+       case GTK_RESPONSE_ACCEPT:
+          filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (selector_archivo));
+          hb_retc( filename );
+          g_free( filename );
+          break;
+       default:
+          // do_nothing_since_dialog_was_cancelled ();
+       break;
+   }
+   gtk_widget_destroy (selector_archivo);
+}
 #endif
 
 void store_color( gpointer colorseldlg )
@@ -285,8 +370,8 @@ HB_FUNC( HWG_SELECTFILEEX )
    selector_archivo = gtk_file_chooser_dialog_new ( cTitle,
              (GtkWindow *) GetActiveWindow(),
              GTK_FILE_CHOOSER_ACTION_OPEN,
-             GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-             GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT, NULL );
+             "gtk-cancel", GTK_RESPONSE_CANCEL,
+             "gtk-open", GTK_RESPONSE_ACCEPT, NULL );
    //
    // -----------------------
    // Opciones de los filtros
@@ -359,8 +444,8 @@ HB_FUNC( HWG_SELECTFOLDER )
    selector_archivo = gtk_file_chooser_dialog_new ( cTitle,
                       (GtkWindow *) GetActiveWindow(),
                          GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
-                         GTK_STOCK_CANCEL, GTK_RESPONSE_CANCEL,
-                         GTK_STOCK_OPEN, GTK_RESPONSE_ACCEPT,
+                         "gtk-cancel", GTK_RESPONSE_CANCEL,
+                         "gtk-open", GTK_RESPONSE_ACCEPT,
                          NULL);
    //
    // ----------------------

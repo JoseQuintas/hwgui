@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-20 14:37 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/commond.c
+  * source/gtk/drawtext.c
+    * Some corrections for gtk3
+
 2018-12-20 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
   * source/winapi/hfrmtmpl.prg

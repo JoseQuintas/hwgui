@@ -613,7 +613,32 @@
          ]]></init>
          <property name="Name" type="C" />
          <property name="Height" type="N" value="48" />
-         <property name="Anchor" type="N" value="11" />
+         <property name="BackColor" type="N" value="-1" />
+         <property name="Hstyle" type="O" />
+         <method name="onInit" />
+         <method name="onSize" />
+         <method name="onPaint" />
+      </widget>
+      <widget class="toolbarbot" name="Status toolbar" bmp="BMP_PANEBOT" container="Yes">
+         <paint><![CDATA[
+            private xp
+            hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
+            if (xp := oCtrl:GetProp("hstyle")) != Nil
+              xp:Draw(hDC,0,0,oCtrl:nWidth,oCtrl:nHeight)
+            elseif Valtype(xp := oCtrl:GetProp("backcolor")) == "C" .and. Val(xp) >= 0
+              hwg_Fillrect( hDC,2,2,oCtrl:nWidth-2,oCtrl:nHeight-2,oCtrl:brush:handle )
+            endif
+         ]]></paint>
+         <init><![CDATA[
+            private a := hwg_getClientRect(oCtrl:oParent:handle)
+            oCtrl:anchor := 10
+            oCtrl:bSize := {|o,w,h|o:Move( 0, h - o:nHeight )}
+            oCtrl:nTop := a[4]-a[2] - oCtrl:nHeight
+            oCtrl:nLeft := 0
+            oCtrl:nWidth := oCtrl:oParent:nWidth
+         ]]></init>
+         <property name="Name" type="C" />
+         <property name="Height" type="N" value="48" />
          <property name="BackColor" type="N" value="-1" />
          <property name="Hstyle" type="O" />
          <method name="onInit" />

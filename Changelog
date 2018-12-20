@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-20 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+  * utils/designer/resource/widgets.xml
+    * Status Panel support added to the Designer.
+  * utils/designer/hformgen.prg
+    ! Small fix
+
 2018-12-19 21:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/designer/hctrl.prg
   * utils/designer/hformgen.prg

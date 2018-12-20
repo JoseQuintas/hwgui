@@ -15,11 +15,11 @@
 #ifndef G_CONSOLE_MODE
 STATIC aClass := { "label", "button", "checkbox",       ;
       "radiobutton", "editbox", "group", "radiogroup",  ;
-      "bitmap", "icon",                                 ;
-      "richedit", "datepicker", "updown", "combobox",   ;
-      "line", "toolbar", "toolbartop", "ownerbutton",   ;
+      "bitmap", "icon", "richedit", "datepicker",       ;
+      "updown", "combobox", "line", "toolbar",          ;
+      "toolbartop", "toolbarbot", "ownerbutton",        ;
       "browse", "splitter", "monthcalendar", "trackbar",;
-       "page", "tree", "status", "menu", "animation"    ;
+      "page", "tree", "status", "menu", "animation"     ;
       }
 STATIC aCtrls := { ;
       "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp)", ;
@@ -38,6 +38,7 @@ STATIC aCtrls := { ;
       "HLine():New(oPrnt,nId,lVertical,nLeft,nTop,nLength,onSize)", ;
       "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,BackColor,oStyle)", ;
       "HPanel():New(oPrnt,nId,nStyle,0,0,oPrnt:nWidth,nHeight,onInit,11,onPaint,BackColor,oStyle)", ;
+      "HPanelStS():New(oPrnt,nId,nHeight,oFont,onInit,onPaint,BackColor,oStyle,aParts)", ;
       "HOwnButton():New(oPrnt,nId,aStyles,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip,lEnabled,lCheck,BackColor)", ;
       "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg,lMultiSelect,onRClick )", ;
       "HSplitter():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,onSize,onPaint,TextColor,BackColor,aLeft,aRight,nFrom,nTo,oStyle )", ;
@@ -861,7 +862,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
       ELSE
          TickMarks := TBS_TOP
       ENDIF
-   ELSEIF oCtrlTmpl:cClass == "status"
+   ELSEIF oCtrlTmpl:cClass == "status" .OR. oCtrlTmpl:cClass == "toolbarbot"
       IF aParts != Nil
          FOR i := 1 TO Len( aParts )
             aParts[i] := Val( aParts[i] )

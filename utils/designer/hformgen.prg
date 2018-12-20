@@ -1108,7 +1108,7 @@ Local oCtrl := GetCtrlSelected( oDlg ), resizeDirection, flag, i
       ENDIF            
    ELSE
       IF ( oCtrl := CtrlByPos( oDlg,xPos,yPos ) ) != Nil
-         IF oCtrl:Adjust == 0
+         IF oCtrl:Adjust == 0 .AND. Ascan( oCtrl:aProp,{|a|Lower(a[1])=="left"} ) != 0
             SetBDown( oCtrl,xPos,yPos,0 )
          ELSE
             SetCtrlSelected( oCtrl:oParent,oCtrl )

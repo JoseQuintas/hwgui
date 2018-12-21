@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-21 20:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+    * hwg_DrawGrid() added
+  * utils/designer/designer.prg
+  * utils/designer/hctrl.prg
+  * utils/designer/hformgen.prg
+    * Grid support.
+
 2018-12-21 14:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     ! Warning fixed

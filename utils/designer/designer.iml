@@ -8,5 +8,4 @@
   <rep_format name="Plain text format" ext="rpt" file="resource/r_text.prg" rdscr="read"/>
   <dirpath default="c:\myapps\source\huchet\options\"/>
   <recent></recent>
-  <grid default="5"/>
 </designer>

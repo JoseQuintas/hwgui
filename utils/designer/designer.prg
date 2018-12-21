@@ -252,6 +252,10 @@ FUNCTION Main( p0, p1, p2 )
 
    hwg_Enablemenuitem( ,MENU_OINSP, .F. , .T. )
    hwg_Enablemenuitem( ,MENU_PREVIEW, .F. , .T. )
+   IF oDesigner:nGrid > 0
+      hwg_Checkmenuitem( , Iif( oDesigner:nGrid==4, MENU_GRID4, MENU_GRID8 ), .T. )
+   ENDIF
+
 #ifdef INTEGRATED
 #ifdef MODAL
    ACTIVATE DIALOG oDesigner:oMainWnd
@@ -276,7 +280,7 @@ CLASS HDesigner
    DATA oClipbrd
    DATA lReport      INIT .F.
    DATA ds_mypath, cBmpPath
-   DATA lChgPath     INIT .F.
+   DATA lChgOpt      INIT .F.
    DATA aRecent      INIT Array( MAX_RECENT_FILES )
    DATA lChgRecent   INIT .F.
    DATA oWidgetsSet, oFormDesc
@@ -359,6 +363,8 @@ STATIC FUNCTION ReadIniFiles()
          IF !Empty( l_ds_mypath )
             oDesigner:ds_mypath := Lower( l_ds_mypath )
          ENDIF
+      ELSEIF oNode:title == "grid"
+         oDesigner:nGrid := oNode:GetAttribute( "value", "N", 0 )
       ELSEIF oNode:title == "bmppath"
          cBmpPath := oNode:GetAttribute( "default" )
       ELSEIF oNode:title == critem .AND. !oDesigner:lSingleForm
@@ -582,6 +588,7 @@ FUNCTION AddRecent( oForm )
 
 STATIC FUNCTION EndIde
    LOCAL i, j, alen := Len( HFormGen():aForms ), lRes := .T. , oIni, critem, oNode
+   LOCAL nGrid := 0
 
    IF alen > 0
       IF hwg_Msgyesno( "Are you really want to quit ?", "Designer" )
@@ -592,18 +599,30 @@ STATIC FUNCTION EndIde
          lRes := .F.
       ENDIF
    ENDIF
-   IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgPath )
+   IF !oDesigner:lSingleForm .AND. ( oDesigner:lChgRecent .OR. oDesigner:lChgOpt )
       critem := iif( oDesigner:lReport, "rep_recent", "recent" )
       oIni := HXMLDoc():Read( cCurDir + "Designer.iml" )
-      IF oDesigner:lChgPath
-         i := 1
-         oNode := HXMLNode():New( "dirpath", HBXML_TYPE_SINGLE, { { "default",oDesigner:ds_myPath } } )
-         IF oIni:aItems[1]:Find( "dirpath", @i ) == Nil
+
+      i := 1
+      oNode := HXMLNode():New( "dirpath", HBXML_TYPE_SINGLE, { { "default",oDesigner:ds_myPath } } )
+      IF oIni:aItems[1]:Find( "dirpath", @i ) == Nil
+         oIni:aItems[1]:Add( oNode )
+      ELSE
+         oIni:aItems[1]:aItems[i] := oNode
+      ENDIF
+
+      IF ( oNode := oIni:aItems[1]:Find( "grid" ) ) != Nil
+         nGrid := oNode:GetAttribute( "value", "N", 0 )
+      ENDIF
+      IF nGrid != oDesigner:nGrid
+         IF oNode == Nil
+            oNode := HXMLNode():New( "grid", HBXML_TYPE_SINGLE, { { "value",Ltrim(Str(oDesigner:nGrid)) } } )
             oIni:aItems[1]:Add( oNode )
          ELSE
-            oIni:aItems[1]:aItems[i] := oNode
+            oNode:SetAttribute( "value", Ltrim(Str(oDesigner:nGrid)) )
          ENDIF
       ENDIF
+
       IF oDesigner:lChgRecent
          i := 1
          IF oIni:aItems[1]:Find( critem, @i ) == Nil
@@ -641,6 +660,7 @@ FUNCTION SetOmmitMenuFile( lom )
 STATIC FUNCTION SetGrid( nGrid )
 
    LOCAL i, j, aControls, lNeedAlign := .F.
+
    IF oDesigner:nGrid == nGrid
       hwg_Checkmenuitem( , Iif( nGrid==4, MENU_GRID4, MENU_GRID8 ), .F. )
       oDesigner:nGrid := 0
@@ -676,6 +696,7 @@ STATIC FUNCTION SetGrid( nGrid )
    FOR i := 1 TO Len( HFormGen():aForms )
       hwg_Invalidaterect( HFormGen():aForms[i]:oDlg:handle, 1 )
    NEXT
+   oDesigner:lChgOpt := .T.
 
    RETURN Nil
 

@@ -526,6 +526,14 @@ Local lRes := .F., xPos, yPos, delta := 15
       ENDIF
    NEXT
    IF lRes
+      IF oDesigner:nGrid > 0
+         IF xPos % oDesigner:nGrid != 0
+            xPos := Int( xPos - (xPos%oDesigner:nGrid) + 0.01 + oDesigner:nGrid )
+         ENDIF
+         IF yPos % oDesigner:nGrid != 0
+            yPos := Int( yPos - (yPos%oDesigner:nGrid) + 0.01 + oDesigner:nGrid )
+         ENDIF
+      ENDIF
       CtrlMove( oCtrl,xPos-oCtrl:nLeft,yPos-oCtrl:nTop,.F.,.T. )
       Container( oCtrl:oParent,oCtrl,oCtrl:nLeft,oCtrl:nTop )
       InspUpdBrowse()

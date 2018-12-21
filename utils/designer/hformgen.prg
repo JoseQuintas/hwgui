@@ -377,10 +377,7 @@ Return Nil
 Static Function dlgOnSize( oDlg,h,w )
 Local aCoors := hwg_Getclientrect( oDlg:handle )
 
-   // Writelog( "dlgOnSize "+Str(h)+Str(w) )
    IF !oDesigner:lReport
-      //oDlg:oParent:SetProp("Width",Ltrim(Str(oDlg:nWidth:=aCoors[3])))
-      //oDlg:oParent:SetProp("Height",Ltrim(Str(oDlg:nHeight:=aCoors[4])))
       oDlg:oParent:SetProp("Width",Ltrim(Str(aCoors[3])))
       oDlg:oParent:SetProp("Height",Ltrim(Str(aCoors[4])))
       InspUpdBrowse()
@@ -486,7 +483,7 @@ Local fname, s1, s2, l_ds_mypath
       l_ds_mypath := Lower( FilePath( fname ) )
       IF !( oDesigner:ds_mypath == l_ds_mypath )
          oDesigner:ds_mypath := l_ds_mypath
-         oDesigner:lChgPath  := .T.
+         oDesigner:lChgOpt  := .T.
       ENDIF
       fname := CutPath( fname )
       oEdit1:SetGet( fname )
@@ -963,21 +960,45 @@ Local oCtrl, aCoors, nShift
       IF wParam == 40        // Down
          IF oCtrl != Nil
             SetBDown( ,0,0,0 )
+            IF oDesigner:nGrid > 0
+               nShift *= oDesigner:nGrid
+               IF oCtrl:nTop % oDesigner:nGrid != 0
+                  nShift -= oCtrl:nTop % oDesigner:nGrid
+               ENDIF
+            ENDIF
             CtrlMove( oCtrl,0,nShift,.F. )
          ENDIF
       ELSEIF wParam == 38    // Up
          IF oCtrl != Nil
             SetBDown( ,0,0,0 )
+            IF oDesigner:nGrid > 0
+               nShift *= oDesigner:nGrid
+               IF oCtrl:nTop % oDesigner:nGrid != 0
+                  nShift += ( oCtrl:nTop % oDesigner:nGrid - oDesigner:nGrid )
+               ENDIF
+            ENDIF
             CtrlMove( oCtrl,0,-nShift,.F. )
          ENDIF
       ELSEIF wParam == 39    // Right
          IF oCtrl != Nil
             SetBDown( ,0,0,0 )
+            IF oDesigner:nGrid > 0
+               nShift *= oDesigner:nGrid
+               IF oCtrl:nLeft % oDesigner:nGrid != 0
+                  nShift -= oCtrl:nLeft % oDesigner:nGrid
+               ENDIF
+            ENDIF
             CtrlMove( oCtrl,nShift,0,.F. )
          ENDIF
       ELSEIF wParam == 37    // Left
          IF oCtrl != Nil
             SetBDown( ,0,0,0 )
+            IF oDesigner:nGrid > 0
+               nShift *= oDesigner:nGrid
+               IF oCtrl:nLeft % oDesigner:nGrid != 0
+                  nShift += ( oCtrl:nLeft % oDesigner:nGrid - oDesigner:nGrid )
+               ENDIF
+            ENDIF
             CtrlMove( oCtrl,-nShift,0,.F. )
          ENDIF
       ENDIF
@@ -1137,7 +1158,6 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
          IF aBDown[4] > 0
             CtrlResize( oCtrl,xPos,yPos )
          ELSE
-            // writelog( "LButtonUp-1 "+str(xpos)+str(abdown[2])+str(ypos)+str(abdown[3]) )
             CtrlMove( oCtrl,xPos,yPos,.T. )
             Container( oDlg,oCtrl )
          ENDIF

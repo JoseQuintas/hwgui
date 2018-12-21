@@ -148,6 +148,11 @@ FUNCTION Main( p0, p1, p2 )
       MENU TITLE "&View"
          MENUITEMCHECK "&Object Inspector" ID MENU_OINSP ACTION iif( oDesigner:oDlgInsp == Nil, InspOpen(), oDesigner:oDlgInsp:Close() )
          SEPARATOR
+         IF !oDesigner:lReport
+            MENUITEMCHECK "Grid &4px" ID MENU_GRID4 ACTION SetGrid( 4 )
+            MENUITEMCHECK "Grid &8px" ID MENU_GRID8 ACTION SetGrid( 8 )
+            SEPARATOR
+         ENDIF
          MENUITEM "&Preview"  ID MENU_PREVIEW ACTION DoPreview()
       ENDMENU
       MENU TITLE "&Control"
@@ -282,6 +287,7 @@ CLASS HDesigner
    DATA lSingleForm  INIT .F.
    DATA cResForm
    DATA nrepzoom     INIT 1
+   DATA nGrid        INIT 0
 
    METHOD NEW   INLINE Self
 
@@ -631,3 +637,71 @@ FUNCTION SetOmmitMenuFile( lom )
    lOmmitMenuFile := lOm
 
    RETURN lOm
+
+STATIC FUNCTION SetGrid( nGrid )
+
+   LOCAL i, j, aControls, lNeedAlign := .F.
+   IF oDesigner:nGrid == nGrid
+      hwg_Checkmenuitem( , Iif( nGrid==4, MENU_GRID4, MENU_GRID8 ), .F. )
+      oDesigner:nGrid := 0
+   ELSE
+      IF oDesigner:nGrid > 0
+         hwg_Checkmenuitem( , Iif( nGrid==4, MENU_GRID8, MENU_GRID4 ), .F. )
+      ENDIF
+      hwg_Checkmenuitem( , Iif( nGrid==4, MENU_GRID4, MENU_GRID8 ), .T. )
+      oDesigner:nGrid := nGrid
+
+      FOR i := 1 TO Len( HFormGen():aForms )
+         aControls := HFormGen():aForms[i]:oDlg:aControls
+         FOR j := 1 TO Len(aControls)
+            IF aControls[j]:nLeft % nGrid != 0 .OR. aControls[j]:nTop % nGrid != 0
+                  //aControls[j]:nWidth % nGrid != 0 .OR. aControls[j]:nHeight % nGrid != 0
+               lNeedAlign := .T.
+               EXIT
+            ENDIF
+         NEXT
+         IF lNeedAlign
+            EXIT
+         ENDIF
+      NEXT
+      IF lNeedAlign
+         IF hwg_MsgYesNo( "Align controls to grid?", "Alignment" )
+            FOR i := 1 TO Len( HFormGen():aForms )
+               AlignToGrid( HFormGen():aForms[i]:oDlg )
+            NEXT
+         ENDIF
+      ENDIF
+   ENDIF
+
+   FOR i := 1 TO Len( HFormGen():aForms )
+      hwg_Invalidaterect( HFormGen():aForms[i]:oDlg:handle, 1 )
+   NEXT
+
+   RETURN Nil
+
+STATIC FUNCTION AlignToGrid( oDlg )
+
+   LOCAL j, aControls := oDlg:aControls, oCtrl
+
+   FOR j := 1 TO Len(aControls)
+      oCtrl := aControls[j]
+      IF oCtrl:nLeft % oDesigner:nGrid != 0 .OR. oCtrl:nTop % oDesigner:nGrid != 0
+         CtrlMove( oCtrl, - (oCtrl:nLeft % oDesigner:nGrid), ;
+            -(oCtrl:nTop % oDesigner:nGrid), .F., .T. )
+      ENDIF
+      /*
+      IF oCtrl:nWidth % oDesigner:nGrid != 0
+         SetBDown( oCtrl, oCtrl:nLeft+oCtrl:nWidth-1, oCtrl:nTop+oCtrl:nHeight-1, 3 )
+         CtrlResize( oCtrl, oCtrl:nLeft+oCtrl:nWidth-1 - (oCtrl:nWidth % oDesigner:nGrid), ;
+            oCtrl:nTop+oCtrl:nHeight-1 )
+      ENDIF
+      IF oCtrl:nHeight % oDesigner:nGrid != 0
+         SetBDown( oCtrl, oCtrl:nLeft+oCtrl:nWidth-1, oCtrl:nTop+oCtrl:nHeight-1, 4 )
+         CtrlResize( oCtrl, oCtrl:nLeft+oCtrl:nWidth-1, ;
+            oCtrl:nTop+oCtrl:nHeight-1  - (oCtrl:nHeight % oDesigner:nGrid) )
+      ENDIF
+      */
+      SetBDown( Nil, 0, 0, 0 )
+   NEXT
+
+   RETURN Nil

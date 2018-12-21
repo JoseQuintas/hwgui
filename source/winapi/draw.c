@@ -245,6 +245,19 @@ HB_FUNC( HWG_ELLIPSE )
    hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
 }
 
+HB_FUNC( HWG_DRAWGRID )
+{
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
+   int x1 = hb_parni(2), y1 = hb_parni(3), x2 = hb_parni(4), y2 = hb_parni(5);
+   int n = ( HB_ISNIL( 6 ) ) ? 4 : hb_parni( 6 );
+   COLORREF lColor = ( HB_ISNIL( 7 ) ) ? 0 : ( COLORREF ) hb_parnl( 7 );
+   int i, j;
+
+   for( i = x1+n; i < x2; i+=n )
+      for( j = y1+n; j < y2; j+=n )
+         SetPixel( hDC, i, j, 0 );
+}
+
 HB_FUNC( HWG_FILLRECT )
 {
    RECT rc;

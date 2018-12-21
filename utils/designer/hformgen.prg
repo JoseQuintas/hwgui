@@ -858,19 +858,15 @@ Local x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, i, n1cm, xt, yt
 
    pps := hwg_Definepaintstru()
    hDC := hwg_Beginpaint( oDlg:handle, pps )
+   aCoors := hwg_Getclientrect( oDlg:handle )
 
-   // aCoors := hwg_Getclientrect( oDlg:handle )   
-   // hwg_Fillrect( hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4], oDlg:brush:handle )
    IF oDesigner:lReport
       aCoors := hwg_Getclientrect( oDlg:handle )
-      // x2 := x1 + Round( oForm:nPWidth * oForm:nKoeff, 0 ) - 1
-      // y2 := y1 + Round( oForm:nPHeight * oForm:nKoeff, 0 ) - 1
       n1cm := Round( oForm:nKoeff * 10, 0 )
 
       hwg_Fillrect( hDC, 0, 0, aCoors[3], TOP_INDENT-5, COLOR_3DLIGHT+1 )
       hwg_Fillrect( hDC, 0, 0, LEFT_INDENT-12, aCoors[4], COLOR_3DLIGHT+1 )
       i := 0
-      // hwg_Selectobject( hDC,oPenLine:handle )
       hwg_Selectobject( hDC,oDlg:oFont:handle )
       hwg_Setbkcolor( hDC,hwg_Getsyscolor(COLOR_3DLIGHT) )
       DO WHILE i*n1cm < (aCoors[3]-aCoors[1]-LEFT_INDENT)
@@ -901,6 +897,9 @@ Local x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, i, n1cm, xt, yt
       hwg_Setscrollinfo( oDlg:handle, SB_VERT, 1, oForm:nYOffset/10+1, 1, Round((oForm:nPHeight-(aCoors[4]-TOP_INDENT)/oForm:nKoeff)/10,0)+1 )
 #endif
    ELSE
+      IF oDesigner:nGrid > 0
+         hwg_DrawGrid( hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4], oDesigner:nGrid )
+      ENDIF
       IF oCtrl != Nil .AND. oCtrl:nTop >= 0
 
          hwg_Rectangle( hDC, oCtrl:nLeft-3, oCtrl:nTop-3, ;
@@ -1146,6 +1145,10 @@ Local aBDown, oCtrl, oContainer, i, nLeft, aProp, j, name
       ENDIF
    ELSE 
       oContainer := CtrlByPos( oDlg,xPos,yPos )
+      IF oDesigner:nGrid > 0
+         xPos := Int( xPos - (xPos%oDesigner:nGrid) + 0.01 )
+         yPos := Int( yPos - (yPos%oDesigner:nGrid) + 0.01 )
+      ENDIF
       IF oDesigner:addItem:classname() == "HCONTROLGEN"
          aProp := AClone( oDesigner:addItem:aProp )
          j := 0

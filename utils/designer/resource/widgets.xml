@@ -675,19 +675,19 @@
       </property>
       <property name="Left">
          <code2><![CDATA[ oCtrl:nLeft := Val(value) ]]></code2>
-         <code3><![CDATA[ hwg_Movewindow(oCtrl:handle,oCtrl:nLeft) ]]></code3>
+         <code3><![CDATA[ hwg_Movewindow(oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight) ]]></code3>
       </property>
       <property name="Top">
          <code2><![CDATA[ oCtrl:nTop := Val(value) ]]></code2>
-         <code3><![CDATA[ hwg_Movewindow(oCtrl:handle,,oCtrl:nTop) ]]></code3>
+         <code3><![CDATA[ hwg_Movewindow(oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight) ]]></code3>
       </property>
       <property name="Width">
          <code2><![CDATA[ oCtrl:nWidth := Val(value) ]]></code2>
-         <code3><![CDATA[ hwg_Movewindow(oCtrl:handle,,,oCtrl:nWidth) ]]></code3>
+         <code3><![CDATA[ hwg_Movewindow(oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight) ]]></code3>
       </property>
       <property name="Height">
          <code2><![CDATA[ oCtrl:nHeight := Val(value) ]]></code2>
-         <code3><![CDATA[ hwg_Movewindow(oCtrl:handle,,,,oCtrl:nHeight+Iif(oCtrl:oParent:Classname()=="HFORMGEN",oCtrl:oParent:nDiff,0) ) ]]></code3>
+         <code3><![CDATA[ hwg_Movewindow(oCtrl:handle,oCtrl:nLeft,oCtrl:nTop,oCtrl:nWidth,oCtrl:nHeight) ]]></code3>
       </property>
       <property name="TextColor" dlg="Color">
          <code2><![CDATA[ oCtrl:tColor := Val( value ) ]]></code2>

@@ -163,6 +163,21 @@ HB_FUNC( HWG_ELLIPSE )
    cairo_stroke( hDC->cr );
 }
 
+HB_FUNC( HWG_DRAWGRID )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   int x1 = hb_parni(2), y1 = hb_parni(3), x2 = hb_parni(4), y2 = hb_parni(5);
+   int n = ( HB_ISNIL( 6 ) ) ? 4 : hb_parni( 6 );
+   unsigned int uiColor = ( HB_ISNIL( 7 ) ) ? 0 : ( unsigned int ) hb_parnl( 7 );
+   int i, j;
+
+   hwg_setcolor( hDC->cr, uiColor );
+   for( i = x1+n; i < x2; i+=n )
+      for( j = y1+n; j < y2; j+=n )
+         cairo_rectangle( hDC->cr, (gdouble)i, (gdouble)j, 1, 1 );
+   cairo_fill( hDC->cr );
+}
+
 HB_FUNC( HWG_FILLRECT )
 {
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );

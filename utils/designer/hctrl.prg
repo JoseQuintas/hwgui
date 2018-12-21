@@ -289,8 +289,16 @@ Local i, dx, dy
       IF oCtrl:nTop + dy < 0
          dy := - oCtrl:nTop
       ENDIF
-      oCtrl:SetCoor( "Left",oCtrl:nLeft := oCtrl:nLeft + dx )
-      oCtrl:SetCoor( "Top",oCtrl:nTop := oCtrl:nTop + dy )
+      oCtrl:nLeft := Int( oCtrl:nLeft + dx + 0.01 )
+      oCtrl:nTop := Int( oCtrl:nTop + dy + 0.01 )
+      /*
+      IF oDesigner:nGrid > 0
+         oCtrl:nLeft := Int( oCtrl:nLeft - (oCtrl:nLeft%oDesigner:nGrid) + 0.01 )
+         oCtrl:nTop := Int( oCtrl:nTop - (oCtrl:nTop%oDesigner:nGrid) + 0.01 )
+      ENDIF
+      */
+      oCtrl:SetCoor( "Left",oCtrl:nLeft )
+      oCtrl:SetCoor( "Top",oCtrl:nTop )
       IF oDesigner:lReport
          oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
          oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
@@ -333,8 +341,10 @@ Local dx, dy
          IF oCtrl:nWidth - dx < 4
             dx := oCtrl:nWidth - 4
          ENDIF
-         oCtrl:SetCoor( "Left",oCtrl:nLeft := oCtrl:nLeft + dx )
-         oCtrl:SetCoor( "Width",oCtrl:nWidth := oCtrl:nWidth - dx )
+         oCtrl:nLeft := Int( oCtrl:nLeft + dx + 0.01 )
+         oCtrl:nWidth := Int( oCtrl:nWidth - dx + 0.01 )
+         oCtrl:SetCoor( "Left",oCtrl:nLeft )
+         oCtrl:SetCoor( "Width",oCtrl:nWidth )
          IF oDesigner:lReport
             oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
          ENDIF
@@ -342,8 +352,10 @@ Local dx, dy
          IF oCtrl:nHeight - dy < 4
             dy := oCtrl:nHeight - 4
          ENDIF
-         oCtrl:SetCoor( "Top",oCtrl:nTop := oCtrl:nTop + dy )
-         oCtrl:SetCoor( "Height",oCtrl:nHeight := oCtrl:nHeight - dy )
+         oCtrl:nTop := Int( oCtrl:nTop + dy + 0.01 )
+         oCtrl:nHeight := Int( oCtrl:nHeight - dy + 0.01 )
+         oCtrl:SetCoor( "Top",oCtrl:nTop )
+         oCtrl:SetCoor( "Height",oCtrl:nHeight )
          IF oDesigner:lReport
             oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
          ENDIF
@@ -351,7 +363,8 @@ Local dx, dy
          IF oCtrl:nWidth + dx < 4
             dx := 4 - oCtrl:nWidth
          ENDIF
-         oCtrl:SetCoor( "Width",oCtrl:nWidth := oCtrl:nWidth + dx )
+         oCtrl:nWidth := Int( oCtrl:nWidth + dx + 0.01 )
+         oCtrl:SetCoor( "Width",oCtrl:nWidth )
          IF oDesigner:lReport
             oCtrl:SetCoor( "Right",oCtrl:nLeft+oCtrl:nWidth-1 )
          ENDIF
@@ -359,7 +372,8 @@ Local dx, dy
          IF oCtrl:nHeight + dy < 4
             dy := 4 - oCtrl:nHeight
          ENDIF
-         oCtrl:SetCoor( "Height",oCtrl:nHeight := oCtrl:nHeight + dy )
+         oCtrl:nHeight := Int( oCtrl:nHeight + dy + 0.01 )
+         oCtrl:SetCoor( "Height",oCtrl:nHeight )
          IF oDesigner:lReport
             oCtrl:SetCoor( "Bottom",oCtrl:nTop+oCtrl:nHeight-1 )
          ENDIF
@@ -484,7 +498,7 @@ Local lRes := .F., xPos, yPos, delta := 15
             aControls[i]:nLeft+aControls[i]:nWidth + delta > oCtrl:nLeft .AND. ;
             aControls[i]:nTop <= oCtrl:nTop .AND. aControls[i]:nTop + aControls[i]:nHeight > oCtrl:nTop
             lRes := .T.
-            xPos := aControls[i]:nLeft+aControls[i]:nWidth + 1
+            xPos := aControls[i]:nLeft+aControls[i]:nWidth
             yPos := aControls[i]:nTop
             EXIT
          ELSEIF lTop .AND. Abs( aControls[i]:nLeft-oCtrl:nLeft ) < delta .AND. ;
@@ -492,13 +506,13 @@ Local lRes := .F., xPos, yPos, delta := 15
                 aControls[i]:nTop + aControls[i]:nHeight + delta > oCtrl:nTop
             lRes := .T.
             xPos := aControls[i]:nLeft
-            yPos := aControls[i]:nTop + aControls[i]:nHeight + 1
+            yPos := aControls[i]:nTop + aControls[i]:nHeight
             EXIT
          ELSEIF lRight .AND. oCtrl:nLeft+oCtrl:nWidth < aControls[i]:nLeft .AND. ;
             oCtrl:nLeft+oCtrl:nWidth >= aControls[i]:nLeft - delta .AND. ;
             oCtrl:nTop >= aControls[i]:nTop .AND. aControls[i]:nTop + aControls[i]:nHeight > oCtrl:nTop
             lRes := .T.
-            xPos := aControls[i]:nLeft-oCtrl:nWidth - 1
+            xPos := aControls[i]:nLeft-oCtrl:nWidth
             yPos := aControls[i]:nTop
             EXIT
          ELSEIF lBottom .AND. Abs( aControls[i]:nLeft-oCtrl:nLeft ) <= delta .AND. ;
@@ -506,7 +520,7 @@ Local lRes := .F., xPos, yPos, delta := 15
                 aControls[i]:nTop - delta <= oCtrl:nTop + oCtrl:nHeight
             lRes := .T.
             xPos := aControls[i]:nLeft
-            yPos := aControls[i]:nTop - oCtrl:nHeight - 1
+            yPos := aControls[i]:nTop - oCtrl:nHeight
             EXIT
          ENDIF
       ENDIF

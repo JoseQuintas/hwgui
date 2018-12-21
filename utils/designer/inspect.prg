@@ -219,7 +219,7 @@ STATIC FUNCTION Edit2()
    RETURN Nil
 
 STATIC FUNCTION VldBrwGet( oGet )
-   LOCAL vari, j, cName
+   LOCAL vari, j, cName, x1, x2, y1, y2
    MEMVAR value, oCtrl
    PRIVATE value, oCtrl := iif( oCombo:value == 1, HFormGen():oDlgSelected, GetCtrlSelected( HFormGen():oDlgSelected ) )
 
@@ -239,13 +239,29 @@ STATIC FUNCTION VldBrwGet( oGet )
    ELSE
       oCtrl:aProp[ oBrw1:cargo,2 ] := value
    ENDIF
+
+   x1 := oCtrl:nLeft; y1 := oCtrl:nTop
+   x2 := oCtrl:nLeft + oCtrl:nWidth; y2 := oCtrl:nTop + oCtrl:nHeight
+
    IF j != 0 .AND. oDesigner:aDataDef[ j,3 ] != Nil
       EvalCode( oDesigner:aDataDef[ j,3 ] )
       IF oDesigner:aDataDef[ j,4 ] != Nil
          EvalCode( oDesigner:aDataDef[ j,4 ] )
       ENDIF
    ENDIF
-   hwg_Redrawwindow( oCtrl:handle, 5 )
+
+   IF x1 != oCtrl:nLeft .OR. y1 != oCtrl:nTop .OR. ;
+         x2 != oCtrl:nLeft + oCtrl:nWidth .OR. y2 != oCtrl:nTop + oCtrl:nHeight
+      hwg_Invalidaterect( oCtrl:oParent:handle, 1, x1-4, y1-4, x2+4, y2+4 )
+      hwg_Invalidaterect( oCtrl:oParent:handle, 1, oCtrl:nLeft-4, oCtrl:nTop-4, ;
+         oCtrl:nLeft + oCtrl:nWidth + 4, oCtrl:nTop + oCtrl:nHeight + 4 )
+      IF x1 != oCtrl:nLeft .OR. y1 != oCtrl:nTop
+         FOR j := 1 TO Len( oCtrl:aControls )
+            CtrlMove( oCtrl:aControls[j], oCtrl:nLeft - x1, oCtrl:nTop - y1, .F., .T. )
+         NEXT
+      ENDIF
+   ENDIF
+
    HFormGen():oDlgSelected:oParent:lChanged := .T.
    oBrw1:lUpdated := .T.
    oBrw1:DelControl( oGet )

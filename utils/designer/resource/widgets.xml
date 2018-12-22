@@ -60,7 +60,7 @@
          <property name="Justify" type="C" value="Left"/>
          <property name="3DLook" type="L" value="False" />
          <property name="Transparent" type="L" value="False" />
-	 <property name="ToolTip" type="C" value=""/>
+         <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -616,7 +616,6 @@
          <property name="BackColor" type="N" value="-1" />
          <property name="Hstyle" type="O" />
          <method name="onInit" />
-         <method name="onSize" />
          <method name="onPaint" />
       </widget>
       <widget class="toolbarbot" name="Status toolbar" bmp="BMP_PANEBOT" container="Yes">
@@ -642,7 +641,6 @@
          <property name="BackColor" type="N" value="-1" />
          <property name="Hstyle" type="O" />
          <method name="onInit" />
-         <method name="onSize" />
          <method name="onPaint" />
       </widget>
       <widget class="splitter" name="Splitter" bmp="BMP_VLINE">
@@ -662,6 +660,38 @@
          <property name="ARight" type="A" />
          <property name="nFrom" type="N" value="0"/>
          <property name="nTo" type="N" value="0"/>
+         <method name="onInit" />
+         <method name="onSize" />
+         <method name="onPaint" />
+      </widget>
+      <widget class="link" name="Static link" bmp="BMP_HLINK">
+         <paint>
+            <![CDATA[
+            Private pArray, nJust
+            hwg_Fillrect( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,oCtrl:brush:handle )
+            pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="justify"}),6]
+            nJust := Ascan(pArray,oCtrl:GetProp("Justify"))-1
+            hwg_Drawtext( hDC,oCtrl:title,2,2,oCtrl:nWidth,oCtrl:nHeight,nJust )
+            ]]>
+         </paint>
+         <property name="Name" type="C" />
+         <property name="Caption" type="C" value="Link" />
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Width" type="N" value="80" />
+         <property name="Height" type="N" value="22" />
+         <property name="Anchor" type="N" value="-1" />
+         <property name="BackColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(15))) ]]></property>
+         <property name="Font" type="O" />
+         <property name="Border" type="L" value="False"/>
+         <property name="Justify" type="C" value="Left"/>
+         <property name="3DLook" type="L" value="False" />
+         <property name="Transparent" type="L" value="False" />
+         <property name="ToolTip" type="C" value=""/>
+         <property name="cLink" type="C" value="" />
+         <property name="lColor" type="N" value="16711680"></property>
+         <property name="hColor" type="N" value="255"></property>
+         <property name="vColor" type="N" value=" 9380357"></property>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -694,6 +724,13 @@
       </property>
       <property name="BackColor" dlg="Color">
          <code2><![CDATA[ Iif( Val(value)>=0,oCtrl:SetColor(,Val(value)),.T.) ]]></code2>
+      </property>
+      <property name="lColor" dlg="Color">
+         <code2><![CDATA[ oCtrl:tColor := Val( value ) ]]></code2>
+      </property>
+      <property name="hColor" dlg="Color">
+      </property>
+      <property name="vColor" dlg="Color">
       </property>
       <property name="Font" dlg="Font">
          <code2><![CDATA[ oCtrl:oFont := value ]]></code2>

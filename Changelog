@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-22 17:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+  * utils/designer/resource/widgets.xml
+    * Static link control support added to the Designer.
+
 2018-12-21 20:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
     * hwg_DrawGrid() added

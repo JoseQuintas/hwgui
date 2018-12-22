@@ -18,7 +18,8 @@ STATIC aClass := { "label", "button", "checkbox",       ;
       "updown", "combobox", "line", "toolbar",          ;
       "toolbartop", "toolbarbot", "ownerbutton",        ;
       "browse", "splitter", "monthcalendar", "trackbar",;
-      "page", "tree", "status", "menu", "animation"     ;
+      "page", "tree", "status", "link", "menu",         ;
+      "animation"     ;
       }
 STATIC aCtrls := { ;
       "HStatic():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp)", ;
@@ -46,6 +47,7 @@ STATIC aCtrls := { ;
       "HTab():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,aTabs,onChange,aImages,lResource,nBC,onClick,onGetFocus,onLostFocus)", ;
       "HTree():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,TextColor,BackColor,aImages,lResource,lEditLabels,onTreeClick,nBC)", ;
       "HStatus():New(oPrnt,nId,nStyle,oFont,aParts,onInit,onSize)", ;
+      "HStaticLink():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,caption,oFont,onInit,onSize,onPaint,ctooltip,TextColor,BackColor,lTransp,cLink,vColor,lColor,hColor)", ;
       ".F.", ;
       "HAnimation():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,Filename,AutoPlay,Center,Transparent)" ;
       }
@@ -705,7 +707,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    MEMVAR onInit, onSize, onPaint, onEnter, onGetfocus, onLostfocus, lNoVScroll, lAppend, lAutoedit, bUpdate, onKeyDown, onPosChg
    MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, bSetGet
    MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
-   MEMVAR aImages, lEditLabels, aParts, aLeft, aRight, nFrom, nTo
+   MEMVAR aImages, lEditLabels, aParts, aLeft, aRight, nFrom, nTo, cLink, vColor, lColor, hColor
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"

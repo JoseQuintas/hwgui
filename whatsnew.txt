@@ -3,6 +3,13 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI 2.22 build 2 ( 23.12.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Designer: splitter, top panel, status panel, static link controls added.
+    Grid implemented.
+[*] GTK3 support mostly implemented.
+[!] Fixes, corrections.
+
 HWGUI 2.22 build 1 ( 13.12.2018 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [+] HGraph: :aColors, :aPens added to draw graphs with different colors.
@@ -17,7 +24,7 @@ HWGUI 2.22 build 1 ( 13.12.2018 )
 [*] :FindControl() can now look for an :objname, passed as a first parameter.
 [*] HBrowse: if you set the negative column length, it is interpreted as a width in pixels.
 [*] Designer: added support for Anchor, HStyle, AStyles.
-[!] Fixes, corrections, Gtk?Winapi versions compatibility improvements.
+[!] Fixes, corrections, Gtk/Winapi versions compatibility improvements.
 
 HWGUI 2.21 build 6 ( 15.11.2018 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

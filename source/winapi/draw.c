@@ -255,7 +255,7 @@ HB_FUNC( HWG_DRAWGRID )
 
    for( i = x1+n; i < x2; i+=n )
       for( j = y1+n; j < y2; j+=n )
-         SetPixel( hDC, i, j, 0 );
+         SetPixel( hDC, i, j, lColor );
 }
 
 HB_FUNC( HWG_FILLRECT )

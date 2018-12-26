@@ -664,7 +664,7 @@ METHOD Rebuild( hDC ) CLASS HBrowse
 
 METHOD Paint( lLostFocus )  CLASS HBrowse
 
-   LOCAL aCoors, i, oldAlias, l, tmp, nRows
+   LOCAL aCoors, i, oldAlias, l, tmp, nRows, x1
    LOCAL pps, hDC, hDCReal
    LOCAL oldBkColor, oldTColor
 
@@ -795,12 +795,23 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
 
       ::LineOut( ::rowPos, ::colpos, hDC, .T. )
 
-      //IF ::lRefrHead .OR. ::lAppMode
       ::HeaderOut( hDC )
       IF ::nFootRows > 0
          ::FooterOut( hDC )
       ENDIF
-      //ENDIF
+
+      IF !::lAdjRight
+         x1 := ::x1
+         i := iif( ::freeze > 0, 1, ::nLeftCol )
+         DO WHILE i < ( ::nLeftCol + ::nColumns ) .AND. i <= Len(::aColumns)
+            x1 += ::aColumns[i]:width
+            i := iif( i == ::freeze, ::nLeftCol, i + 1 )
+         ENDDO
+         IF i > Len(::aColumns)
+            hwg_Fillrect( hDC, x1, aCoors[2], ::x2, ::y2, ::brush:handle )
+         ENDIF
+      ENDIF
+
       IF ::lBuffering
          hwg_BitBlt( hDCReal, 0, 0, aCoors[3] - aCoors[1], aCoors[4] - aCoors[2], hDC, 0, 0, SRCCOPY )
          hwg_DeleteDC( hDC )

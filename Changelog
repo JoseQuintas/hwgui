@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2018-12-26 11:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+    ! Fixed drawing for the case if :lAdjRight is set to .f.
+
 2018-12-25 15:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/draw.c
     ! Small fix.

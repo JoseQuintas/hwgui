@@ -1714,7 +1714,8 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             x1 += ::aColumns[fif]:width
             fif := Iif( fif = ::freeze, ::nLeftCol, fif + 1 )
          ENDDO
-         nWidth := Min( ::aColumns[fif]:width, ::x2 - x1 - 1 )
+         nWidth := Iif( ::lAdjRight.AND.fif==Len(::aColumns), ;
+               ::x2 - x1 - 1, Min( ::aColumns[fif]:width, ::x2 - x1 - 1 ) )
          rowPos := ::rowPos - 1
          IF ::lAppMode .AND. ::nRecords != 0
             rowPos ++

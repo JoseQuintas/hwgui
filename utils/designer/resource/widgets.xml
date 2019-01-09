@@ -566,6 +566,10 @@
          <property name="Hstylehead" type="O" />
          <property name="Font" type="O" />
          <property name="BrwType" type="C" value="Dbf" />
+         <property name="lNoVScroll" type="L" value="False"/>
+         <property name="lNoBorder" type="L" value="False"/>
+         <property name="lAppend" type="L" value="False"/>
+         <property name="lMultiSelect" type="L" value="False"/>
          <method name="onInit" />
          <method name="onSize" />
          <method name="onPaint" />
@@ -573,6 +577,8 @@
          <method name="onGetFocus" />
          <method name="onLostFocus" />
          <method name="onUpdate" />
+         <method name="onPosChg" />
+         <method name="onRClick" />
       </widget>
       <widget class="toolbar" name="Toolbar" bmp="BMP_PANEL"  container="Yes">
          <paint><![CDATA[
@@ -830,6 +836,9 @@
       <method name="onPaint" params="oCtrl,hDC" />
       <method name="onClick" params="oCtrl" />
       <method name="onTreeClick" params="oItem" />
+      <method name="onEnter" params="oCtrl,nCol,nRow" />
+      <method name="onRClick" params="oCtrl,nCol,nRow" />
+      <method name="onPosChg" params="oCtrl,nRow" />
    </methods>
    <temp>
    </temp>

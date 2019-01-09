@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-01-09 14:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+  * utils/designer/hformgen.prg
+  * utils/designer/resource/widgets.xml
+    * oStyleHead, oStyleFoot, oStyleCell support added to the Designer.
+
 2018-12-26 15:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg

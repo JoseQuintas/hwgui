@@ -742,7 +742,7 @@ Local cProperty, i1
                ENDIF
             ELSEIF Left( Lower(oCtrl:aProp[j,1]),6 ) == "hstyle"
                IF Valtype( oCtrl:aProp[j,2] ) == "O"
-                  oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name","hstyle" } } ) )
+                  oNode1 := oStyle:Add( HXMLNode():New( "property",,{ { "name",Lower(oCtrl:aProp[j,1]) } } ) )
                   oNode1:Add( hwg_HStyle2XML( oCtrl:aProp[j,2] ) )
                ENDIF
             ELSEIF Left( Lower(oCtrl:aProp[j,1]),6 ) == "styles"

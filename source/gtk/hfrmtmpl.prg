@@ -703,6 +703,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, bSetGet
    MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
    MEMVAR aImages, lEditLabels, aParts, aLeft, aRight, nFrom, nTo, cLink, vColor, lColor, hColor
+   MEMVAR oStyleHead, oStyleFoot, oStyleCell
 
    IF nCtrl == 0
       IF Lower( oCtrlTmpl:cClass ) == "pagesheet"
@@ -763,6 +764,13 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          oFont := hwg_hfrm_FontFromXML( xProperty )
       ELSEIF Left(cPName,6) == "hstyle"
          oStyle := hwg_HStyleFromXML( xProperty )
+         IF cPName == "hstylehead"
+            oStyleHead := oStyle
+         ELSEIF cPName == "hstylefoot"
+            oStyleFoot := oStyle
+         ELSEIF cPName == "hstylecell"
+            oStyleCell := oStyle
+         ENDIF
       ELSEIF cPName == "styles"
          aStyles := {}
          FOR j := 1 TO Len( xProperty )
@@ -880,6 +888,15 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    IF !Empty( cCtrlName ) .AND. Valtype(oCtrl) == "O"
       __mvPut( cCtrlName, oCtrl )
       hwg_SetCtrlName( oCtrl, cCtrlName )
+   ENDIF
+   IF __mvExist( "OSTYLEHEAD" ) .AND. __ObjHasMsg( oCtrl, "OSTYLEHEAD" )
+      oCtrl:oStyleHead := oStyleHead
+   ENDIF
+   IF __mvExist( "OSTYLEFOOT" ) .AND. __ObjHasMsg( oCtrl, "OSTYLEFOOT" )
+      oCtrl:oStyleFoot := oStyleFoot
+   ENDIF
+   IF __mvExist( "OSTYLECELL" ) .AND. __ObjHasMsg( oCtrl, "OSTYLECELL" )
+      oCtrl:oStyleCell := oStyleCell
    ENDIF
 
    IF !Empty( oCtrlTmpl:aControls )

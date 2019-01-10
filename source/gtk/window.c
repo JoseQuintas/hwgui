@@ -750,6 +750,11 @@ HB_FUNC( HWG_ISWINDOWENABLED )
    hb_retl( gtk_widget_is_sensitive( (GtkWidget*) HB_PARHANDLE(1) ) );
 }
 
+HB_FUNC( HWG_ISICONIC )
+{
+   hb_retl( 0 );
+}
+
 HB_FUNC( HWG_MOVEWINDOW )
 {
    GtkWidget * hWnd = (GtkWidget*)HB_PARHANDLE(1);

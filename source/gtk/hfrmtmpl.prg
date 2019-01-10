@@ -40,7 +40,7 @@ STATIC aCtrls := { ;
       "HPanel():New(oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,BackColor,oStyle)", ;
       "HPanel():New(oPrnt,nId,nStyle,0,0,oPrnt:nWidth,nHeight,onInit,11,onPaint,BackColor,oStyle)", ;
       "HPanelStS():New(oPrnt,nId,nHeight,oFont,onInit,onPaint,BackColor,oStyle,aParts)", ;
-      "HOwnButton():New(oPrnt,nId,aStyles,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTr,trColor,cTooltip,lEnabled,lCheck,BackColor)", ;
+      "HOwnButton():New(oPrnt,nId,aStyles,nLeft,nTop,nWidth,nHeight,onInit,onSize,onPaint,onClick,flat,caption,TextColor,oFont,TextLeft,TextTop,widtht,heightt,BtnBitmap,lResource,BmpLeft,BmpTop,widthb,heightb,lTransp,trColor,cTooltip,lEnabled,lCheck,BackColor)", ;
       "Hbrowse():New(BrwType,oPrnt,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onSize,onPaint,onEnter,onGetfocus,onLostfocus,lNoVScroll,lNoBorder,lAppend,lAutoedit,onUpdate,onKeyDown,onPosChg,lMultiSelect,onRClick )", ;
       "HSplitter():New(oPrnt,nId,nLeft,nTop,nWidth,nHeight,onSize,onPaint,TextColor,BackColor,aLeft,aRight,nFrom,nTo,oStyle )", ;
       "HMonthCalendar():New(oPrnt,nId,dInitValue,nStyle,nLeft,nTop,nWidth,nHeight,oFont,onInit,onChange,cTooltip,lNoToday,lNoTodayCircle,lWeekNumbers)", ;
@@ -704,7 +704,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    LOCAL nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
    MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop, oStyle, aStyles
    MEMVAR onInit, onSize, onPaint, onEnter, onGetfocus, onLostfocus, lNoVScroll, lAppend, lAutoedit, bUpdate, onKeyDown, onPosChg
-   MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, bSetGet
+   MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, trColor, bSetGet
    MEMVAR name, nMaxLines, nLength, lVertical, brwType, TickStyle, TickMarks, Tabs, tmp_nSheet
    MEMVAR aImages, lEditLabels, aParts, aLeft, aRight, nFrom, nTo, cLink, vColor, lColor, hColor
    MEMVAR oStyleHead, oStyleFoot, oStyleCell

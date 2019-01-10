@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-01-10 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+  * utils/designer/resource/widgets.xml
+    * Added support of transparency to bitmap and owner button in the Designer.
+
 2019-01-10 12:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/window.c
   * include/hwgextern.ch

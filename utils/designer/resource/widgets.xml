@@ -251,6 +251,8 @@
          <property name="Anchor" type="N" value="-1" />
          <property name="Bitmap" type="C" value="" />
          <property name="lResource" type="L" value="False" />
+         <property name="Transparent" type="L" value="False" />
+         <property name="TrColor" type="N" value="16777215" />
 		 <property name="ToolTip" type="C" value=""/>
          <method name="onInit" />
          <method name="onSize" />
@@ -541,6 +543,8 @@
          <property name="TextTop" type="N" value="0" />
          <property name="BtnBitmap" type="C" value="" />
          <property name="lResource" type="L" value="False" />
+         <property name="Transparent" type="L" value="False" />
+         <property name="trColor" type="N" value="16777215" />
          <property name="BmpLeft" type="N" value="0" />
          <property name="BmpTop" type="N" value="0" />
 	     <property name="ToolTip" type="C" value=""/>
@@ -739,6 +743,8 @@
       <property name="hColor" dlg="Color">
       </property>
       <property name="vColor" dlg="Color">
+      </property>
+      <property name="trColor" dlg="Color">
       </property>
       <property name="Font" dlg="Font">
          <code2><![CDATA[ oCtrl:oFont := value ]]></code2>

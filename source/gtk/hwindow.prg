@@ -251,6 +251,7 @@ CLASS HMainWindow INHERIT HWindow
       cAppName, oBmp, cHelp, nHelpId, bColor, nExclude )
    METHOD Activate( lShow )
    METHOD onEvent( msg, wParam, lParam )
+   METHOD InitTray()
 
 ENDCLASS
 
@@ -337,6 +338,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
    ENDIF
 
    RETURN 0
+
+METHOD InitTray() CLASS HMainWindow
+   RETURN Nil
 
 FUNCTION hwg_ReleaseAllWindows( hWnd )
 

@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-01-10 11:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hwindow.prg
+    * Empty InitTray() method added.
+  * source/gtk/hfrmtmpl.prg
+    ! "ondlginit" works now for a main window
+  * utils/designer/resource/widgets.xml
+
 2019-01-09 14:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
   * source/winapi/hfrmtmpl.prg

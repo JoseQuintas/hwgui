@@ -381,7 +381,11 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
          block := ::aMethods[ i,2,1 ]
       ENDIF
       IF ::aMethods[ i,1 ] == "ondlginit"
-         ::oDlg:bInit := block
+         IF nMode == 1
+            Eval( block, Self )
+         ELSE
+            ::oDlg:bInit := block
+         ENDIF
       ELSEIF ::aMethods[ i,1 ] == "ondlgactivate"
          ::oDlg:bActivate := block
       ELSEIF ::aMethods[ i,1 ] == "onforminit"

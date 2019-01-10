@@ -564,6 +564,8 @@
          <property name="Height" type="N" value="150" />
          <property name="Anchor" type="N" value="-1" />
          <property name="Hstylehead" type="O" />
+         <property name="Hstylefoot" type="O" />
+         <property name="Hstylecell" type="O" />
          <property name="Font" type="O" />
          <property name="BrwType" type="C" value="Dbf" />
          <property name="lNoVScroll" type="L" value="False"/>
@@ -824,6 +826,10 @@
       <property name="Hstyle" dlg="Hstyle">
       </property>
       <property name="Hstylehead" dlg="Hstyle">
+      </property>
+      <property name="Hstylefoot" dlg="Hstyle">
+      </property>
+      <property name="Hstylecell" dlg="Hstyle">
       </property>
       <property name="Styles" dlg="Styles">
       </property>

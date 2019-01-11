@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-01-11 13:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/gtkmain.prg
+  * source/winapi/guimain.prg
+    * hwg_Version(4) now returns 0 for winapi version and 1 for gtk.
+
 2019-01-10 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
   * source/winapi/hfrmtmpl.prg

@@ -425,7 +425,7 @@ FUNCTION hwg_SelectMultipleFiles( cDescr, cTip, cIniDir, cTitle )
 
    RETURN( aFiles )
 
-FUNCTION HWG_Version( n )
+FUNCTION hwg_Version( n )
    LOCAL s
 
    IF !Empty( n )
@@ -435,10 +435,12 @@ FUNCTION HWG_Version( n )
          RETURN HWG_BUILD
       ELSEIF n == 3
 #ifdef UNICODE
-      RETURN Iif( hwg__isUnicode(), 1, 0 )
+         RETURN Iif( hwg__isUnicode(), 1, 0 )
 #else
-      RETURN 0
+         RETURN 0
 #endif
+      ELSEIF n == 4
+         RETURN 0
       ENDIF
    ENDIF
    s := "HWGUI " + HWG_VERSION + " Build " + Ltrim(Str(HWG_BUILD))

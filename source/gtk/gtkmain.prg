@@ -270,3 +270,13 @@ FUNCTION hwg_getParentForm( o )
       o := o:oParent
    ENDDO
    RETURN o
+
+FUNCTION HWG_ISWINDOWVISIBLE( handle )
+
+   LOCAL o := hwg_GetWindowObject( handle )
+
+   IF o != Nil .AND. o:lHide
+      RETURN .F.
+   ENDIF
+
+   RETURN .T.

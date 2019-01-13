@@ -143,7 +143,7 @@ METHOD Init() CLASS HComboBox
                ::xValue := 1
             ENDIF
          ENDIF
-         hwg_ComboSet( ::handle, 1 )
+         ::Value := ::xValue
          IF ::bSetGet != Nil
             Eval( ::bSetGet, ::xValue, Self )
          ENDIF

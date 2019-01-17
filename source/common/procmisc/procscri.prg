@@ -169,6 +169,27 @@ STATIC s_pp
    ENDIF
 RETURN __pp_process( s_pp, stroka )
 
+FUNCTION scr_GetFuncsList( strbuf )
+   LOCAL arr := {}, poz := 1, cLine, poz1, scom
+
+   DO WHILE .T.
+      cLine := RDSTR( , @strbuf, @poz, STR_BUFLEN )
+      IF Len( cLine ) = 0
+         EXIT
+      ENDIF
+      cLine := AllTrim( cLine )
+      IF ( poz1 := AT( " ", cLine ) ) > 0
+         scom := Upper( Left( cLine, poz1 - 1 ) )
+         IF scom == "FUNCTION"
+            cLine := Ltrim( Substr( cLine,poz1+1 ) )
+            poz1 := At( "(",cLine )
+            AAdd( arr, Upper( Left( cLine, Iif( poz1 != 0,poz1-1,999 ) ) ) )
+         ENDIF
+      ENDIF
+   ENDDO
+
+   RETURN arr
+
 STATIC FUNCTION COMPILESCR( han, strbuf, poz, rezArray, scrSource )
 
 LOCAL scom, poz1, stroka, strfull := "", bOldError, i, tmpArray := {}
@@ -189,7 +210,7 @@ Local cLine, lDebug := ( Len( rezArray ) >= 3 )
          ENDIF
          strfull := ""
       ENDIF
-      stroka := RTRIM( LTRIM( cLine ) )
+      stroka := AllTrim( cLine )
       IF RIGHT( stroka, 1 ) == CHR( 26 )
          stroka := LEFT( stroka, LEN( stroka ) - 1 )
       ENDIF

@@ -192,20 +192,24 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
             ENDIF
          NEXT
       ELSEIF aItems[i]:title == "method"
-         AAdd( aMethods, { cName := Lower( aItems[i]:GetAttribute("name" ) ), CompileMethod( aItems[i]:aItems[1]:aItems[1],Self,,cName ) } )
-         IF aMethods[ (j := Len(aMethods)),1 ] == "common"
-            ::aFuncs := ::aMethods[ j,2,2 ]
-            FOR j := 1 TO Len( ::aFuncs[2] )
-               cPre := "#xtranslate " + ::aFuncs[2,j,1] + ;
+         IF ( cName := Lower( aItems[i]:GetAttribute("name" ) ) ) == "common"
+            arr := scr_GetFuncsList( aItems[i]:aItems[1]:aItems[1] )
+            FOR j := 1 TO Len( arr )
+               cPre := "#xtranslate " + arr[j] + ;
                   "( <params,...> ) => callfunc('"  + ;
-                  Upper( ::aFuncs[2,j,1] ) + "',\{ <params> \}, HFormTmpl():F("+LTrim(Str(::id))+"):aFuncs )"
+                  Upper( arr[j] ) + "',\{ <params> \}, HFormTmpl():F("+LTrim(Str(::id))+"):aFuncs )"
                ppScript( cPre )
-               cPre := "#xtranslate " + ::aFuncs[2,j,1] + ;
+               cPre := "#xtranslate " + arr[j] + ;
                   "() => callfunc('"  + ;
-                  Upper( ::aFuncs[2,j,1] ) + "',, HFormTmpl():F("+LTrim(Str(::id))+"):aFuncs )"
+                  Upper( arr[j] ) + "',, HFormTmpl():F("+LTrim(Str(::id))+"):aFuncs )"
                ppScript( cPre )
             NEXT
+            AAdd( aMethods, { cName, CompileMethod( aItems[i]:aItems[1]:aItems[1],Self,,cName ) } )
+            ::aFuncs := ::aMethods[ Len(aMethods),2,2 ]
+         ELSE
+            AAdd( aMethods, { cName, CompileMethod( aItems[i]:aItems[1]:aItems[1],Self,,cName ) } )
          ENDIF
+
       ELSEIF aItems[i]:title == "part"
          nCtrl ++
          ::nContainer := nCtrl

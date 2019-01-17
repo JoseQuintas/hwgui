@@ -612,11 +612,11 @@ Local oDlg
 
    INIT DIALOG oDlg TITLE cTitle ;
          AT 0,0                  ;
-         SIZE 100,50  STYLE DS_CENTER
+         SIZE 160,50
 
-   @ 10, 20 SAY "Wait, please ..." SIZE 80,22
+   @ 10, 20 SAY "Wait, please ..." SIZE 140,22
 
-   ACTIVATE DIALOG oDlg NOMODAL
+   ACTIVATE DIALOG oDlg NOMODAL CENTER
 
 Return oDlg
 

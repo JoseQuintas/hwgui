@@ -141,7 +141,7 @@ Private oForm := Self, aCtrlTable
          Aadd( ::aForms, Self )
          InspSetCombo()
       ENDIF
-      IF ::oDlg == Nil .OR. Empty( ::oDlg:aControls )
+      IF ::oDlg == Nil //.OR. Empty( ::oDlg:aControls )
          hwg_Msgstop( "Can't load the form", "Designer" )
       ELSEIF !oDesigner:lSingleForm .AND. fname != Nil
          AddRecent( Self )

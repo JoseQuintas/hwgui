@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-01-25 11:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/hformgen.prg
+    ! Small correction
+  * utils/designer/resource/widgets.xml
+    * font, textcolor and backcolor properties added for a groupbox.
+      Textcolor, through will not work under winapi if a manifest file is linked.
+
 2019-01-17 14:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
   * source/winapi/hfrmtmpl.prg

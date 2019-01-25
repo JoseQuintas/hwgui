@@ -181,6 +181,9 @@
          <property name="Width" type="N" value="100" />
          <property name="Height" type="N" value="80" />
          <property name="Anchor" type="N" value="-1" />
+         <property name="TextColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(8))) ]]></property>
+         <property name="BackColor" type="N"><![CDATA[ Ltrim(Str(hwg_Getsyscolor(15))) ]]></property>
+         <property name="Font" type="O" />
          <property name="3DLook" type="L" value="False" />
          <method name="onInit" />
          <method name="onSize" />

@@ -90,7 +90,7 @@ STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
    LOCAL oItem, b
    LOCAL aCoors, aRect
    IF ( Empty( wParam ) .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
-         .AND. oItem:handle == lParam )
+         .AND. hwg_Isptreq( oItem:handle, lParam ) )
       oDlg := oItem
    ENDIF
    IF __ObjHasMsg( oDlg, "BACTIVATE" )

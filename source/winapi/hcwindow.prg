@@ -91,7 +91,7 @@ METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
 
    IF Valtype( nId ) == "C"
       nId := Upper( nId )
-      i := Ascan( ::aControls,{|o|o:objname != Nil .AND. o:objname == nId } )
+      RETURN hwg_GetItemByName( ::aControls, nId )
    ELSE
       i := Iif( nId != Nil, Ascan( ::aControls,{|o|o:id == nId } ), ;
          Ascan( ::aControls, {|o| hwg_Isptreq( o:handle,nHandle) } ) )
@@ -212,13 +212,11 @@ METHOD OnError() CLASS HCustomWindow
 
    LOCAL cMsg := __GetMessage()
    LOCAL oError
-   LOCAL aControls := ::aControls, oItem
+   LOCAL oItem
 
-   FOR EACH oItem IN aControls
-      IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg
-         RETURN oItem
-      ENDIF
-   NEXT
+   IF !Empty( oItem := hwg_GetItemByName( ::aControls, cMsg ) )
+      RETURN oItem
+   ENDIF
    FOR EACH oItem IN HTimer():aTimers
       IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg .AND. hwg_Isptreq( ::handle,oItem:oParent:handle )
          RETURN oItem
@@ -486,11 +484,22 @@ METHOD ResetScrollbars() CLASS HScrollArea
 
    RETURN Nil
 
+FUNCTION hwg_GetItemByName( arr, cName )
+
+   LOCAL oItem
+   FOR EACH oItem IN arr
+      IF !Empty( oItem:objname ) .AND. oItem:objname == cName
+         RETURN oItem
+      ENDIF
+   NEXT
+
+   RETURN Nil
+
 PROCEDURE HB_GT_DEFAULT_NUL()
 
    RETURN
 
-   INIT PROCEDURE HWGINIT
+INIT PROCEDURE HWGINIT
 
    Hwg_InitProc()
    hwg_ErrSys()

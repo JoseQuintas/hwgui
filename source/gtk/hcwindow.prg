@@ -78,7 +78,7 @@ METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
 
    IF Valtype( nId ) == "C"
       nId := Upper( nId )
-      i := Ascan( ::aControls,{|o|o:objname != Nil .AND. o:objname == nId } )
+      RETURN hwg_GetItemByName( ::aControls, nId )
    ELSE
       i := Iif( nId != Nil, Ascan( ::aControls,{|o|o:id == nId } ), ;
          Ascan( ::aControls, {|o|o:handle == nHandle } ) )
@@ -196,13 +196,11 @@ METHOD OnError() CLASS HCustomWindow
 
    LOCAL cMsg := __GetMessage()
    LOCAL oError
-   LOCAL aControls := ::aControls, oItem
+   LOCAL oItem
 
-   FOR EACH oItem IN aControls
-      IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg
-         RETURN oItem
-      ENDIF
-   NEXT
+   IF !Empty( oItem := hwg_GetItemByName( ::aControls, cMsg ) )
+      RETURN oItem
+   ENDIF
    FOR EACH oItem IN HTimer():aTimers
       IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg .AND. hwg_Isptreq( ::handle, oItem:oParent:handle )
          RETURN oItem
@@ -281,7 +279,18 @@ FUNCTION hwg_onTrackScroll( oWnd, wParam, lParam )
 
    RETURN 0
 
-   INIT PROCEDURE HWGINIT
+FUNCTION hwg_GetItemByName( arr, cName )
+
+   LOCAL oItem
+   FOR EACH oItem IN arr
+      IF !Empty( oItem:objname ) .AND. oItem:objname == cName
+         RETURN oItem
+      ENDIF
+   NEXT
+
+   RETURN Nil
+
+INIT PROCEDURE HWGINIT
 
    hwg_gtk_init()
    Hwg_InitProc()
@@ -290,7 +299,7 @@ FUNCTION hwg_onTrackScroll( oWnd, wParam, lParam )
 
    RETURN
 
-   EXIT PROCEDURE Hwg_ExitProcedure
+EXIT PROCEDURE Hwg_ExitProcedure
    Hwg_ExitProc()
 
    RETURN

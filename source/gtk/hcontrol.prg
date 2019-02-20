@@ -49,7 +49,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, ctoolt, tcolor, bcolor )
    METHOD Init()
-   METHOD NewId()
+   METHOD NewId( lDop )
 
    METHOD Disable()
    METHOD Enable()
@@ -90,16 +90,9 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
    RETURN Self
 
 METHOD NewId() CLASS HControl
-   LOCAL nId := CONTROL_FIRST_ID + Len( ::oParent:aControls )
+LOCAL nId := ::oParent:nChildId++
 
-   IF Ascan( ::oParent:aControls, { |o|o:id == nId } ) != 0
-      nId --
-      DO WHILE nId >= CONTROL_FIRST_ID .AND. Ascan( ::oParent:aControls, { |o|o:id == nId } ) != 0
-         nId --
-      ENDDO
-   ENDIF
-
-   RETURN nId
+RETURN nId
 
 METHOD INIT CLASS HControl
 

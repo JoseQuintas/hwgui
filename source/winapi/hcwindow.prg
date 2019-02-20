@@ -68,6 +68,7 @@ CLASS HCustomWindow INHERIT HObject
    DATA bOther
    DATA HelpId        INIT 0
    DATA nHolder       INIT 0
+   DATA nChildId      INIT 34000
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
    METHOD DelControl( oCtrl )

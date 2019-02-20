@@ -56,7 +56,8 @@ CLASS HCustomWindow INHERIT HObject
    DATA bGetFocus
    DATA bLostFocus
    DATA bOther
-   DATA HelpId   INIT 0
+   DATA HelpId    INIT 0
+   DATA nChildId  INIT 34000
 
    METHOD AddControl( oCtrl ) INLINE AAdd( ::aControls, oCtrl )
    METHOD DelControl( oCtrl )

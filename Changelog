@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-02-20 16:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcontrol.prg
+  * source/gtk/hcwindow.prg
+  * source/winapi/hcontrol.prg
+  * source/winapi/hcwindow.prg
+    * HControl():NewId() changed to fix problems with updown control
+
 2019-02-20 09:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/control.c
     * hwg_GetUpDown() function added.

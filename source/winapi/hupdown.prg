@@ -111,7 +111,8 @@ METHOD Value( nValue ) CLASS HUpDown
          ENDIF
       ENDIF
    ELSE
-      ::nValue := Val( LTrim( ::title := hwg_Getedittext( ::oParent:handle, ::id ) ) )
+      //::nValue := Val( LTrim( ::title := hwg_Getedittext( ::oParent:handle, ::id ) ) )
+      ::nValue := hwg_GetUpdown( ::hUpDown )
    ENDIF
 
    RETURN ::nValue

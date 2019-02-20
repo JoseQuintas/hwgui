@@ -525,6 +525,11 @@ HB_FUNC( HWG_SETUPDOWN )
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), UDM_SETPOS, 0, hb_parnl( 2 ) );
 }
 
+HB_FUNC( HWG_GETUPDOWN )
+{
+   hb_retnl( SendMessage( ( HWND ) HB_PARHANDLE( 1 ), UDM_GETPOS, 0, 0 ) );
+}
+
 HB_FUNC( HWG_SETRANGEUPDOWN )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), UDM_SETRANGE32, hb_parnl( 2 ), hb_parnl( 3 ) );

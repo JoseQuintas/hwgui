@@ -1651,6 +1651,7 @@ Local oBrw, i, nLen := Val( arr[n] )
          oBrw:aArray[i,2] := Hex2Str( arr[ ++n ] )
          oBrw:aArray[i,3] := Hex2Str( arr[ ++n ] )
       NEXT
+      oBrw:aArray := ASort( oBrw:aArray,,, {|z,y|z[1] < y[1]} )
       oBrw:Refresh()
    ENDIF
 Return Nil

@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-02-21 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/debugger/hwgdebug.prg
+    * Variables are sorted by name now in a Variables Inspector.
+  * doc/hwgdoc_functions.html
+    * hwg_GetItemByName() added.
+
 2019-02-20 16:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
   * source/gtk/hcwindow.prg
@@ -26,8 +32,8 @@
   * source/winapi/hcwindow.prg
     * New function hwg_GetItemByName( arr, cName ) has been added, which looks for
       an object in an array by the object's name (:objname), for example:
-         oDlg := GetItemByName( HDialog():aModalDialogs, "ODLG1" )
-         oFont := GetItemByName( HFont():aFonts, "OFONTBOLD" )
+         oDlg := hwg_GetItemByName( HDialog():aModalDialogs, "ODLG1" )
+         oFont := hwg_GetItemByName( HFont():aFonts, "OFONTBOLD" )
 
 2019-02-11 11:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hwindow.prg

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-02-22 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/debug/debugger.prg
+  * utils/debugger/hwgdebug.prg
+    * Browsing of open indexes added in a Workareas Inspector.
+
 2019-02-21 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/debugger/hwgdebug.prg
     * Variables are sorted by name now in a Variables Inspector.

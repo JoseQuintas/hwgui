@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-02-22 14:17 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/commond.c
+    * Added fourth parameter to hwg_SelectFileEx() - logical bMulti, which allows
+      multiply files selection, In this case the function returns an array with selected
+      file names or Nil if selected nothing.
+
 2019-02-22 12:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/debug/debugger.prg
   * utils/debugger/hwgdebug.prg

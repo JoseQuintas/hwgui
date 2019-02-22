@@ -360,6 +360,7 @@ HB_FUNC( HWG_SELECTFILEEX )
    const char * cDir = ( hb_pcount()>1 && HB_ISCHAR(2) )? hb_parc(2) : "";
    GtkImage *preview;
    PHB_ITEM pArray = ( ( hb_pcount()>2 && HB_ISARRAY(3) )? hb_param( 3,HB_IT_ARRAY ) : NULL ), pArr1;
+   int bMulti = (HB_ISLOG(4))? hb_parl(4) : 0;
    char *filename;
    int i, j, iLen, iLen1;
    //
@@ -401,7 +402,8 @@ HB_FUNC( HWG_SELECTFILEEX )
    // ---------------------
    //
    gtk_file_chooser_set_current_folder ( (GtkFileChooser*)selector_archivo, cDir );
-   //
+   if( bMulti )
+      gtk_file_chooser_set_select_multiple( (GtkFileChooser*)selector_archivo, 1);
    // ------------------------------
    // Definicion del previsualizador
    // ------------------------------
@@ -419,9 +421,30 @@ HB_FUNC( HWG_SELECTFILEEX )
    switch (resultado)
      {
        case GTK_RESPONSE_ACCEPT:
-         filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (selector_archivo));
-         hb_retc( filename );
-         g_free( filename );
+         if( bMulti )
+         {
+            GSList * gsli = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER (selector_archivo));
+            if( gsli && gsli->data )
+            {
+               PHB_ITEM aFiles;
+               GSList * pgs = gsli;
+               guint uiLen = g_slist_length(gsli);
+               int i1 = 0;
+               aFiles = hb_itemArrayNew( uiLen );
+               while( pgs )
+               {
+                  hb_arraySetC( aFiles, ++i1, (char*)pgs->data );
+                  pgs = pgs->next;
+               }
+               hb_itemReturnRelease( aFiles );
+               g_slist_free( gsli );
+            }
+         } else
+         {
+            filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (selector_archivo));
+            hb_retc( filename );
+            g_free( filename );
+         }
          break;
        default:
          // do_nothing_since_dialog_was_cancelled ();

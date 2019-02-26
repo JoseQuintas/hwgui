@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-02-26 13:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Build number is changed to 3
+  * whatsnew.txt
+    * Updated for v2.22 build 3
+  * samples/bld.bat
+    * %HRB_DIR%\lib changed to %HRB_DIR%\lib\win\bcc
+
 2019-02-22 14:17 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/commond.c
     * Added fourth parameter to hwg_SelectFileEx() - logical bMulti, which allows

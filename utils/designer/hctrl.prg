@@ -725,39 +725,56 @@ Static Function EditTree( aTree,oTree,nAction )
 Local oNode, cMethod
 Local nPos, aSubarr
 
+   IF Empty( oTree:oSelected ) .AND. !Empty( oTree:aItems )
+      oTree:Select( oTree:aItems[1] )
+   ENDIF
+
    IF nAction == 0       // Rename
-      oTree:EditLabel( oTree:oSelected )
+      IF !Empty( oTree:oSelected )
+         oTree:EditLabel( oTree:oSelected )
+      ENDIF
+
    ELSEIF nAction == 1   // Insert after
-      IF oTree:oSelected:oParent == Nil
-         oNode := oTree:AddNode( "New",oTree:oSelected )
-      ELSE
-         oNode := oTree:oSelected:oParent:AddNode( "New",oTree:oSelected )
+      IF !Empty( oTree:aItems )
+         IF oTree:oSelected:oParent == Nil
+            oNode := oTree:AddNode( "New" )
+         ELSE
+            oNode := oTree:oSelected:oParent:AddNode( "New",oTree:oSelected )
+         ENDIF
+         oTree:EditLabel( oNode )
+         nMaxId ++
+         oNode:cargo := nMaxId
+         IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
+            Aadd( aSubarr,Nil )
+            Ains( aSubarr,nPos+1 )
+            aSubarr[nPos+1] := { Nil,"New",nMaxId,Nil }
+         ENDIF
       ENDIF
-      oTree:EditLabel( oNode )
-      nMaxId ++
-      oNode:cargo := nMaxId
-      IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
-         Aadd( aSubarr,Nil )
-         Ains( aSubarr,nPos+1 )
-         aSubarr[nPos+1] := { Nil,"New",nMaxId,Nil }
-      ENDIF
+
    ELSEIF nAction == 2   // Insert before
-      IF oTree:oSelected:oParent == Nil
-         oNode := oTree:AddNode( "New",,oTree:oSelected )
-      ELSE
-         oNode := oTree:oSelected:oParent:AddNode( "New",,oTree:oSelected )
+      IF !Empty( oTree:aItems )
+         IF oTree:oSelected:oParent == Nil
+            oNode := oTree:AddNode( "New",,oTree:oSelected )
+         ELSE
+            oNode := oTree:oSelected:oParent:AddNode( "New",,oTree:oSelected )
+         ENDIF
+         oTree:EditLabel( oNode )
+         nMaxId ++
+         oNode:cargo := nMaxId
+         IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
+            Aadd( aSubarr,Nil )
+            Ains( aSubarr,nPos )
+            aSubarr[nPos] := { Nil,"New",nMaxId,Nil }
+         ENDIF
       ENDIF
-      oTree:EditLabel( oNode )
-      nMaxId ++
-      oNode:cargo := nMaxId
-      IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
-         Aadd( aSubarr,Nil )
-         Ains( aSubarr,nPos )
-         aSubarr[nPos] := { Nil,"New",nMaxId,Nil }
-      ENDIF
+
    ELSEIF nAction == 3   // Insert child
-      oNode := oTree:oSelected:AddNode( "New" )
-      oTree:Expand( oTree:oSelected )
+      IF Empty( oTree:aItems )
+         oNode := oTree:AddNode( "New" )
+      ELSE
+         oNode := oTree:oSelected:AddNode( "New" )
+         oTree:Expand( oTree:oSelected )
+      ENDIF
       oTree:EditLabel( oNode )
       nMaxId ++
       oNode:cargo := nMaxId
@@ -767,12 +784,16 @@ Local nPos, aSubarr
          ENDIF
          Aadd( aSubarr[nPos,1], { Nil,"New",nMaxId,Nil } )
       ENDIF
+
    ELSEIF nAction == 4   // Delete
-      IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
-         Adel( aSubarr,nPos )
-         Asize( aSubarr,Len(aSubarr)-1 )
+      IF !Empty( oTree:aItems ) .AND. !(oTree:oSelected == oTree:aItems[1])
+         IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
+            Adel( aSubarr,nPos )
+            Asize( aSubarr,Len(aSubarr)-1 )
+         ENDIF
+         oTree:oSelected:Delete()
       ENDIF
-      oTree:oSelected:Delete()
+
    ELSEIF nAction == 10  // Edit code
       IF ( aSubarr := FindTreeItem( aTree, oTree:oSelected:cargo, @nPos ) ) != Nil
          IF ( cMethod := EditMethod( oTree:oSelected:GetText(), aSubarr[nPos,4] ) ) != Nil

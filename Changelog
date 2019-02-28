@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-02-28 16:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/designer/hctrl.prg
+  * samples/winprn.prg
+    ! Fixes
+
 2019-02-26 13:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number is changed to 3

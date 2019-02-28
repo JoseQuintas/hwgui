@@ -8,14 +8,12 @@
 
 #include "hwgui.ch"
 
-/*
 REQUEST HB_CODEPAGE_RU866
 #ifdef __LINUX__
 REQUEST HB_CODEPAGE_RUKOI8
 #else
 REQUEST HB_CODEPAGE_RU1251
 #endif
-*/
 
 Function Main
 Local oWinPrn, i

@@ -896,7 +896,8 @@ METHOD Convert( cPageIn, cPageOut )
    RETURN .F.
 
 METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
-Local nPos
+
+   LOCAL nPos, i, c
 
    ::nLines := ::nShiftL := 0
 
@@ -915,6 +916,16 @@ Local nPos
    ENDIF
    ::nTextLen := Len( ::aText )
    DO WHILE ::aText[::nTextLen] == Nil; ::nTextLen--; ENDDO
+
+   FOR i := 1 TO ::nTextLen
+      IF ( c := Right(::aText[i],1) ) == Chr(13) .OR. c == Chr(10)
+         ::aText[i] := Left( ::aText[i],Len(::aText[i])-1 )
+      ENDIF
+      IF ( c := Left(::aText[i],1) ) == Chr(13) .OR. c == Chr(10)
+         ::aText[i] := Substr( ::aText[i],2 )
+      ENDIF
+   NEXT
+
    ::nLinesAll := ::nTextLen
    ::aUndo := Nil
 

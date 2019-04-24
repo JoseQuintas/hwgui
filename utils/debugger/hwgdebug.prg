@@ -893,7 +893,7 @@ STATIC FUNCTION DoCommand( nCmd, cDop, cDop2, cDop3 )
 STATIC FUNCTION SetPath( cRes, cName, lClear )
    LOCAL arr, i, cFull
 
-   IF !Empty( cRes ) .OR. !Empty( cRes := hu_Get( "Path to source files", "@S256", cPaths ) )
+   IF !Empty( cRes ) .OR. !Empty( cRes := hu_Get( "Path to source files", Replicate("X",256), cPaths ) )
       cPaths := iif( Left( cRes,1 ) != ";", ";" + cRes, cRes )
       arr := hb_aTokens( cPaths, ";" )
       IF !Empty( cName )

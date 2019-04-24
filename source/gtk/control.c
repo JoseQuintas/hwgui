@@ -675,36 +675,37 @@ HB_FUNC( HWG_SETADJOPTIONS )
    gdouble value;
    int lChanged = 0;
 
-   if( !HB_ISNIL( 2 ) && ( value = ( gdouble ) hb_parnl( 2 ) ) != gtk_adjustment_get_value(adj) )
+   if( !HB_ISNIL( 2 ) && ( ( value = ( gdouble ) hb_parnl( 2 ) ) != gtk_adjustment_get_value(adj) ) )
    {
       gtk_adjustment_set_value(adj, value);
       lChanged = 1;
    }
-   if( !HB_ISNIL( 3 ) && ( value = ( gdouble ) hb_parnl( 3 ) ) != gtk_adjustment_get_upper(adj) )
+   if( !HB_ISNIL( 3 ) && ( ( value = ( gdouble ) hb_parnl( 3 ) ) != gtk_adjustment_get_upper(adj) ) )
    {
       gtk_adjustment_set_upper(adj, value);
       lChanged = 1;
    }
    if( !HB_ISNIL( 4 ) &&
-         ( value = ( gdouble ) hb_parnl( 4 ) ) != gtk_adjustment_get_step_increment(adj) )
+         ( ( value = ( gdouble ) hb_parnl( 4 ) ) != gtk_adjustment_get_step_increment(adj) ) )
    {
       gtk_adjustment_set_step_increment(adj, value);
       lChanged = 1;
    }
    if( !HB_ISNIL( 5 ) &&
-         ( value = ( gdouble ) hb_parnl( 5 ) ) != gtk_adjustment_get_page_increment(adj) )
+         ( ( value = ( gdouble ) hb_parnl( 5 ) ) != gtk_adjustment_get_page_increment(adj) ) )
    {
       gtk_adjustment_set_page_increment(adj, value);
       lChanged = 1;
    }
    if( !HB_ISNIL( 6 ) &&
-         ( value = ( gdouble ) hb_parnl( 6 ) ) != gtk_adjustment_get_page_size(adj) )
+         ( ( value = ( gdouble ) hb_parnl( 6 ) ) != gtk_adjustment_get_page_size(adj) ) )
    {
       gtk_adjustment_set_page_size(adj, value);
       lChanged = 1;
    }
-   if( lChanged )
-      gtk_adjustment_changed( adj );
+   //if( lChanged )
+    //  gtk_adjustment_changed( adj );
+   hb_retl( lChanged );
 }
 
 void cb_signal_tab( GtkNotebook *notebook, GtkWidget *page,

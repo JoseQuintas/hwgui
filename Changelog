@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-04-24 08:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/hbrowse.prg
+    ! Problem solved with browse displaying.
+
 2019-04-23 15:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     ! Problem solved with non standard eols.

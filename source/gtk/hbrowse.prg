@@ -190,6 +190,7 @@ CLASS HBrowse INHERIT HControl
    DATA oGet, nGetRec
    DATA lBtnDbl   INIT .F.
    DATA nCursor   INIT 0
+   DATA lSetAdj   INIT .F.
 
    METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
@@ -674,7 +675,9 @@ METHOD Paint()  CLASS HBrowse
    IF ::hScrollV != Nil
       tmp := Iif( ::nRecords < 100, ::nRecords, 100 )
       i := Iif( ::nRecords < 100, 1, ::nRecords/100 )
-      hwg_SetAdjOptions( ::hScrollV, , tmp + nRows, i, nRows, nRows )
+      IF hwg_SetAdjOptions( ::hScrollV, , tmp + nRows, i, nRows, nRows )
+         ::lSetAdj := .T.
+      ENDIF
    ENDIF
    IF ::hScrollH != Nil
       tmp := Len( ::aColumns )
@@ -1216,6 +1219,10 @@ METHOD DoVScroll( wParam ) CLASS HBrowse
 
    LOCAL nScrollV := hwg_getAdjValue( ::hScrollV )
 
+   IF ::lSetAdj
+      ::lSetAdj := .F.
+      RETURN 0
+   ENDIF
    IF nScrollV - ::nScrollV == 1
       ::LINEDOWN( .T. )
    ELSEIF nScrollV - ::nScrollV == - 1
@@ -1309,7 +1316,9 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
          maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
          nPos := hwg_getAdjValue( ::hScrollV )
          nPos += Int( maxPos/ (::nRecords - 1 ) )
-         hwg_SetAdjOptions( ::hScrollV, nPos )
+         IF hwg_SetAdjOptions( ::hScrollV, nPos )
+            ::lSetAdj := .T.
+         ENDIF
          ::nScrollV := nPos
       ENDIF
    ENDIF
@@ -1344,7 +1353,9 @@ METHOD LINEUP( lMouse ) CLASS HBrowse
             maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
             nPos := hwg_getAdjValue( ::hScrollV )
             nPos -= Int( maxPos/ (::nRecords - 1 ) )
-            hwg_SetAdjOptions( ::hScrollV, nPos )
+            IF hwg_SetAdjOptions( ::hScrollV, nPos )
+               ::lSetAdj := .T.
+            ENDIF
             ::nScrollV := nPos
          ENDIF
       ENDIF
@@ -1380,7 +1391,9 @@ METHOD PAGEUP( lMouse ) CLASS HBrowse
          nPos := hwg_getAdjValue( ::hScrollV )
          nPos -= Int( maxPos/ (::nRecords - 1 ) )
          nPos := Max( nPos - Int( maxPos * step/(::nRecords - 1 ) ), 0 )
-         hwg_SetAdjOptions( ::hScrollV, nPos )
+         IF hwg_SetAdjOptions( ::hScrollV, nPos )
+            ::lSetAdj := .T.
+         ENDIF
          ::nScrollV := nPos
       ENDIF
    ENDIF
@@ -1414,7 +1427,9 @@ METHOD PAGEDOWN( lMouse ) CLASS HBrowse
          ELSE
             nPos := Min( nPos + Int( maxPos * step/(::nRecords - 1 ) ), maxPos )
          ENDIF
-         hwg_SetAdjOptions( ::hScrollV, nPos )
+         IF hwg_SetAdjOptions( ::hScrollV, nPos )
+            ::lSetAdj := .T.
+         ENDIF
          ::nScrollV := nPos
       ENDIF
    ENDIF
@@ -1434,7 +1449,9 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
 
    IF ::hScrollV != Nil
       nPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
-      hwg_SetAdjOptions( ::hScrollV, nPos )
+      IF hwg_SetAdjOptions( ::hScrollV, nPos )
+         ::lSetAdj := .T.
+      ENDIF
       ::nScrollV := nPos
    ENDIF
 
@@ -1455,7 +1472,9 @@ METHOD TOP() CLASS HBrowse
 
    IF ::hScrollV != Nil
       nPos := 0
-      hwg_SetAdjOptions( ::hScrollV, nPos )
+      IF hwg_SetAdjOptions( ::hScrollV, nPos )
+         ::lSetAdj := .T.
+      ENDIF
       ::nScrollV := nPos
    ENDIF
 
@@ -1498,7 +1517,9 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
                   nPos := hwg_getAdjValue( ::hScrollV )
                   maxPos := hwg_getAdjValue( ::hScrollV, 1 ) - hwg_getAdjValue( ::hScrollV, 4 )
                   nPos := Min( nPos + Int( maxPos * step/(::nRecords - 1 ) ), maxPos )
-                  hwg_SetAdjOptions( ::hScrollV, nPos )
+                  IF hwg_SetAdjOptions( ::hScrollV, nPos )
+                     ::lSetAdj := .T.
+                  ENDIF
                ENDIF
             ENDIF
             res := .T.
@@ -1987,7 +2008,10 @@ FUNCTION hwg_VScrollPos( oBrw, nType, lEof, nPos )
          Eval( oBrw:bSkip, oBrw, - 1 )
       ENDIF
       nPos := Round( ( maxPos/(oBrw:nRecords - 1 ) ) * ( Eval( oBrw:bRecnoLog,oBrw ) - 1 ),0 )
-      hwg_SetAdjOptions( oBrw:hScrollV, nPos )
+      IF hwg_SetAdjOptions( oBrw:hScrollV, nPos )
+          obrw:lSetAdj := .T.
+      ENDIF
+
       oBrw:nScrollV := nPos
    ELSE
       oldRecno := Eval( oBrw:bRecnoLog, oBrw )

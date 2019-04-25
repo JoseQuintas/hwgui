@@ -222,7 +222,7 @@ CLASS HTree INHERIT HControl
    METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages )
    METHOD GetSelected()   INLINE ::oSelected
    //METHOD EditLabel( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_EDITLABEL, 0, o:handle ) }
-   //METHOD Expand( oNode ) BLOCK { | Self, o | hwg_Sendmessage( ::handle, TVM_EXPAND, TVE_EXPAND, o:handle ) }
+   METHOD Expand( oNode ) BLOCK {|Self,o| o:lExpanded := .T., hwg_Redrawwindow( ::area ) }
    METHOD SELECT( oNode, lNoRedraw )
    METHOD Clean()
    METHOD Refresh()

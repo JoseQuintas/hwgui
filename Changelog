@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-04-26 13:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * Build number is changed to 4
+  * whatsnew.txt
+    * Updated for v2.22 build 4
+
 2019-04-25 09:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htree.prg
     * :Expand() method added.

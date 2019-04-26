@@ -3,6 +3,10 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI 2.22 build 4 ( 26.04.2019 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[!] Fixes.
+
 HWGUI 2.22 build 3 ( 26.02.2019 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] Added fourth parameter to hwg_SelectFileEx() - logical bMulti, which allows multiply files selection

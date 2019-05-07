@@ -307,8 +307,8 @@ STATIC FUNCTION GetMenuByHandle( hWnd )
 
    IF hWnd == Nil
       aMenu := HWindow():GetMain():menu
-   ELSEIF Valtype(hWnd) == "O" .AND. __ObjHasMsg( hWnd, "AMENU" )
-      RETURN hWnd:aMenu
+   ELSEIF Valtype(hWnd) == "O" .AND. __ObjHasMsg( hWnd, "MENU" )
+      RETURN hWnd:menu
    ELSE
       IF ( oDlg := HDialog():FindDialog( hWnd ) ) != Nil
          aMenu := oDlg:menu

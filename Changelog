@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-05-07 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/menu.prg
+    ! Bug fixed.
+
 2019-04-26 13:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * Build number is changed to 4

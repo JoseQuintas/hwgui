@@ -18,7 +18,7 @@ CLASS HComboBox INHERIT HControl
    DATA  aItems
    DATA  bSetGet
    DATA  xValue   INIT 1
-   DATA  bValid   INIT { || .T. }
+   DATA  bValid   INIT {|| .T. }
    DATA  bChangeSel
    DATA  nDisplay
 
@@ -74,7 +74,9 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    ::Activate()
 
-   ::bValid := bValid
+   IF !Empty( bValid )
+      ::bValid := bValid
+   ENDIF
    ::bChangeSel := bChange
    ::oParent:AddEvent( CBN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
    IF ::bChangeSel != Nil

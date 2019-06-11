@@ -80,7 +80,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    ::ParsePict( cPicture, vari )
    IF Empty( ::nMaxLength ) .AND. !Empty( ::bSetGet ) .AND. Valtype( vari ) == "C"
-      ::nMaxLength := Len( vari )
+      ::nMaxLength := hwg_Len( vari )
    ENDIF
    IF nMaxLength != Nil
       ::nMaxLength := nMaxLength
@@ -197,7 +197,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                IF !hwg_IsCtrlShift()
                   ::lFirst := .F.
                   IF ::cType == "C"
-                     nPos := Len( Trim( ::title ) )
+                     nPos := hwg_Len( Trim( ::title ) )
                      hwg_Sendmessage( ::handle, EM_SETSEL, nPos, nPos )
                      RETURN 0
                   ENDIF
@@ -246,7 +246,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF Empty( hwg_Getedittext( oParent:handle, ::id ) )
                hwg_Sendmessage( ::handle, EM_SETSEL, 0, 0 )
             ENDIF
-         ELSEIF msg = WM_COPY .OR. msg = WM_CUT           
+         ELSEIF msg = WM_COPY .OR. msg = WM_CUT
             nPos := hwg_Sendmessage( ::handle, EM_GETSEL, 0, 0 )
             cClipboardText := hwg_Getedittext( ::oParent:handle, ::id )
             IF hwg_Hiword( nPos ) > hwg_Loword( nPos ) .AND. hwg_Hiword( nPos ) - hwg_Loword( nPos ) < hwg_Len( cClipboardText )
@@ -735,7 +735,7 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
          vari := Val( LTrim( UnTransform( oEdit, xTmp ) ) )
          lMinus := Iif( Left( Ltrim(xTmp),1 ) == "-", .T., .F. )
       ENDIF
-      IF !Empty( oEdit:cPicFunc ) .OR. !Empty( oEdit:cPicMask )        
+      IF !Empty( oEdit:cPicFunc ) .OR. !Empty( oEdit:cPicMask )
          oEdit:title := Transform( vari, oEdit:cPicFunc + iif( Empty(oEdit:cPicFunc ),""," " ) + oEdit:cPicMask )
          IF lMinus .AND. vari == 0
             nLen := Len( oEdit:title )
@@ -775,15 +775,20 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
                   hwg_SubStr( oEdit:title, nPos )
             ENDIF
 
-            IF !Empty( oEdit:cPicMask ) .AND. Len( oEdit:cPicMask ) < Len( oEdit:title )
+            IF !Empty( oEdit:cPicMask ) .AND. Len( oEdit:cPicMask ) < hwg_Len( oEdit:title )
                oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + hwg_SubStr( oEdit:title, nPos + 1 )
             ENDIF
          ELSE
             oEdit:title := hwg_Left( oEdit:title, nPos - 1 ) + cKey + hwg_SubStr( oEdit:title, nPos + 1 )
          ENDIF
          IF !Empty( oEdit:nMaxLength )
-            i := Len( oEdit:cPicMask )
-            oEdit:title := PadR( oEdit:title, Iif( !Empty(i) .AND. i > oEdit:nMaxLength, i, oEdit:nMaxLength ) )
+            nGetLen := Max( Len( oEdit:cPicMask ), oEdit:nMaxLength )
+            nLen := hwg_Len( oEdit:title )
+            IF nGetLen > nLen
+               oEdit:title += Space( nGetLen-nLen )
+            ELSEIF nGetLen < nLen
+               oEdit:title := hwg_Left( oEdit:title, nGetLen )
+            ENDIF
          ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
          IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. nPos == Len( oEdit:cPicMask )
@@ -842,7 +847,7 @@ STATIC FUNCTION __When( oCtrl )
    RETURN res
 
 STATIC FUNCTION __valid( oCtrl )
-   LOCAL vari, oDlg
+   LOCAL vari, oDlg, nLen
 
    IF oCtrl:bSetGet != Nil
       IF ( oDlg := hwg_getParentForm( oCtrl ) ) == Nil .OR. oDlg:nLastKey != 27
@@ -859,7 +864,13 @@ STATIC FUNCTION __valid( oCtrl )
             oCtrl:title := Transform( vari, oCtrl:cPicFunc + iif( Empty(oCtrl:cPicFunc ),""," " ) + oCtrl:cPicMask )
             hwg_Setdlgitemtext( oCtrl:oParent:handle, oCtrl:id, oCtrl:title )
          ELSEIF oCtrl:cType == "C" .AND. !Empty( oCtrl:nMaxLength )
-            oCtrl:title := vari := PadR( vari, oCtrl:nMaxLength )
+            nLen := hwg_Len( vari )
+            IF oCtrl:nMaxLength > nLen
+               vari += Space( oCtrl:nMaxLength-nLen )
+            ELSEIF oCtrl:nMaxLength < nLen
+               vari := hwg_Left( vari, oCtrl:nMaxLength )
+            ENDIF
+            oCtrl:title := vari
          ENDIF
          Eval( oCtrl:bSetGet, vari, oCtrl )
 

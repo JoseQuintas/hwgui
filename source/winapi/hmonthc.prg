@@ -151,7 +151,7 @@ HB_FUNC( HWG_INITMONTHCALENDAR )
     HB_RETHANDLE(  hMC );
 }
 
-HB_FUNC( HWG_SETMONTHCALENDARDATE ) // adaptation of function hwg_Setdatepicker of file Control.c
+HB_FUNC( HWG_SETMONTHCALENDARDATE ) // adaptation of hwg_Setdatepicker of file Control.c
 {
    PHB_ITEM pDate = hb_param( 2, HB_IT_DATE );
 
@@ -180,7 +180,7 @@ HB_FUNC( HWG_SETMONTHCALENDARDATE ) // adaptation of function hwg_Setdatepicker 
    }
 }
 
-HB_FUNC( HWG_GETMONTHCALENDARDATE ) // adaptation of function hwg_Getdatepicker of file Control.c
+HB_FUNC( HWG_GETMONTHCALENDARDATE ) // adaptation of hwg_Getdatepicker of file Control.c
 {
    SYSTEMTIME st;
    char szDate[9];

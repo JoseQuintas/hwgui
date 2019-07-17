@@ -123,7 +123,7 @@
    <br><strong class="subhead"> hwg_MsgYesNoCancel( cMessage,cTitle )</strong>
    <br><strong class="subhead"> hwg_MsgNoYes( cMessage,cTitle )</strong> (Windows only)
    <br><strong class="subhead"> hwg_MsgRetryCancel( cMessage,cTitle )</strong> (Windows only)
-   <br><strong class="subhead"> hwg_Exclamation( cMessage,cTitle )</strong> 
+   <br><strong class="subhead"> hwg_MsgExclamation( cMessage,cTitle )</strong> 
    <p>These all are standard message boxes with a different buttons set.</p>
    <ul>
      <li> cMessage - a message text;
@@ -779,14 +779,14 @@
      <li> Return value - (numeric) WinAPI style.
    </ul>
 
-   <br><strong class="subhead"> hwg_SetWindowExtStyle( handle, nStyle )</strong> (Windows only)
+   <br><strong class="subhead"> hwg_SetWindowExStyle( handle, nStyle )</strong> (Windows only)
    <br>This function sets an extended WinAPI style to GUI element.
    <ul>
      <li> handle - handle of GUI element;
      <li> nStyle - an extended WinAPI style.
    </ul>
 
-   <br><strong class="subhead"> hwg_GetWindowExtStyle( handle )</strong> (Windows only)
+   <br><strong class="subhead"> hwg_GetWindowExStyle( handle )</strong> (Windows only)
    <br>This function returns an extended WinAPI style of GUI element.
    <ul>
      <li> handle - handle of GUI element;
@@ -1175,8 +1175,7 @@
    <br><strong class="subhead"> hwg_ModifyStyle( hWnd, nStyleDel, nStyleAdd )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, 
-           lUnderline, nCharset, lSuperScript/lSubscript, lProtected )</strong> (Windows only)
+   <br><strong class="subhead"> hwg_re_SetCharFormat( hCtrl, n1, n2, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset, lSuperScript/lSubscript, lProtected )</strong> (Windows only)
    <p></p>
 
    <br><strong class="subhead"> hwg_re_SetDefault( hCtrl, nColor, cName, nHeight, lBold, lItalic, lUnderline, nCharset )</strong> (Windows only)
@@ -1200,7 +1199,7 @@
    <br><strong class="subhead"> hwg_re_SetZoom( hEdit, nNum, nDen )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_re_SetZoomOff( hEdit )</strong> (Windows only)
+   <br><strong class="subhead"> hwg_re_ZoomOff( hEdit )</strong> (Windows only)
    <p></p>
 
    <br><strong class="subhead"> hwg_re_GetZoom( hEdit, @nNum, @nDen )</strong> (Windows only)

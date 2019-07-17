@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-07-17 17:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hmonthc.prg
+  * doc/hwgdoc_functions.html
+    ! Fixes
+
 2019-06-11 17:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hedit.prg
     ! Fixes for UNICODE mode

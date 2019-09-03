@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-09-03 13:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/window.c
+  * source/winapi/window.c
+    * Added a couple of C level functions
+
 2019-09-03 10:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * makefile.gcc
   * makemngw.bat

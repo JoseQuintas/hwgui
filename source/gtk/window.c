@@ -253,6 +253,11 @@ HB_FUNC( HWG_ACTIVATEDIALOG )
       gtk_main();
 }
 
+void hwg_doEvents( void )
+{
+   while( g_main_context_iteration( NULL, FALSE ) );
+}
+
 void ProcessMessage( void )
 {
    while( g_main_context_iteration( NULL, FALSE ) );
@@ -934,6 +939,12 @@ HB_FUNC( HWG_KEYTOUTF8 )
    iLen = g_unichar_to_utf8( gdk_keyval_to_unicode( hb_parnl(1) ), utf8string );
    utf8string[iLen] = '\0';
    hb_retc( utf8string );
+}
+
+HB_FUNC( HWG_SEND_KEY )
+{
+   gtk_test_widget_send_key ( (GtkWidget*) HB_PARHANDLE(1), 
+      (guint) hb_parni(2), (GdkModifierType) hb_parni(3) );
 }
 
 static gint snooper ( GtkWidget *grab_widget,

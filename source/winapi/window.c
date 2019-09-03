@@ -43,7 +43,7 @@ PHB_DYNS pSym_keylist = NULL;
 
 static LPCTSTR s_szChild = TEXT( "MDICHILD" );
 
-static void s_doEvents( void )
+void hwg_doEvents( void )
 {
    MSG msg;
 
@@ -72,7 +72,7 @@ static void s_ClearKeyboard( void )
  */
 HB_FUNC( HWG_DOEVENTS )
 {
-   s_doEvents(  );
+   hwg_doEvents();
 }
 
 /*  Creates main application window
@@ -205,25 +205,31 @@ void ProcessMdiMessage( HWND hJanBase, HWND hJanClient, MSG msg,
    }
 }
 
-/*
- *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize, lMinimize )
- */
-HB_FUNC( HWG_ACTIVATEMAINWINDOW )
+void hwg_ActivateMainWindow( BOOL bShow, HACCEL hAcceler, BOOL bMaximize, BOOL bMinimize )
 {
-   HACCEL hAcceler = ( HB_ISNIL( 2 ) ) ? NULL : ( HACCEL ) HB_PARHANDLE( 2 );
+
    MSG msg;
 
-   if( hb_parl( 1 ) )
-   {
-      ShowWindow( aWindows[0], ( HB_ISLOG( 3 ) &&
-                  hb_parl( 3 ) ) ? SW_SHOWMAXIMIZED : ( ( HB_ISLOG( 4 ) &&
-                        hb_parl( 4 ) ) ? SW_SHOWMINIMIZED : SW_SHOWNORMAL ) );
-   }
+   if( bShow )
+      ShowWindow( aWindows[0], bMaximize? SW_SHOWMAXIMIZED :
+         (bMinimize? SW_SHOWMINIMIZED : SW_SHOWNORMAL) );
 
    while( GetMessage( &msg, NULL, 0, 0 ) )
    {
       ProcessMessage( msg, hAcceler, 0 );
    }
+
+}
+
+/*
+ *  HWG_ACTIVATEMAINWINDOW( lShow, hAccel, lMaximize, lMinimize )
+ */
+HB_FUNC( HWG_ACTIVATEMAINWINDOW )
+{
+
+   hwg_ActivateMainWindow( hb_parl( 1 ), ( HB_ISNIL( 2 ) ? NULL : ( HACCEL ) HB_PARHANDLE( 2 ) ),
+     ( ( HB_ISLOG( 3 ) && hb_parl( 3 ) ) ? 1 : 0 ), ( ( HB_ISLOG( 4 ) && hb_parl( 4 ) ) ? 1 : 0 ) );
+
 }
 
 HB_FUNC( HWG_PROCESSMESSAGE )
@@ -622,7 +628,7 @@ HB_FUNC( HWG_SETWINDOWFONT )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), WM_SETFONT,
          HB_ISPOINTER( 2 ) ? ( WPARAM ) HB_PARHANDLE( 2 ) : ( WPARAM ) hb_parnl( 2 ),
-         MAKELPARAM( ( HB_ISNIL( 3 ) ) ? 0 : hb_parl( 3 ), 0 ) );
+         MAKELPARAM( (( HB_ISNIL( 3 ) ) ? 0 : hb_parl( 3 )), 0 ) );
 }
 
 HB_FUNC( HWG_GETLASTERROR )
@@ -1207,7 +1213,7 @@ HB_FUNC( HWG_MAKEWPARAM )
 {
    WPARAM p;
 
-   p = MAKEWPARAM( ( WORD ) hb_parnl( 1 ), ( WORD ) hb_parnl( 2 ) );
+   p = MAKEWPARAM( (( WORD ) hb_parnl( 1 )), (( WORD ) hb_parnl( 2 )) );
    hb_retnl( ( LONG ) p );
 }
 
@@ -1215,7 +1221,7 @@ HB_FUNC( HWG_MAKELPARAM )
 {
    LPARAM p;
 
-   p = MAKELPARAM( ( WORD ) hb_parnl( 1 ), ( WORD ) hb_parnl( 2 ) );
+   p = MAKELPARAM( (( WORD ) hb_parnl( 1 )), (( WORD ) hb_parnl( 2 )) );
    HB_RETHANDLE( p );
 }
 

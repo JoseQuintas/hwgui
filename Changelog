@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-09-03 10:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * makefile.gcc
+  * makemngw.bat
+  * samples/colrbloc.prg
+    ! Some fixes, provided by Wilfried Brunken.
+  * source/winapi/htab.prg
+  * source/gtk/htab.prg
+    ! Some fixes in DeletePage(), provided by Konstantin Horwitz.
+
 2019-07-17 17:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hmonthc.prg
   * doc/hwgdoc_functions.html

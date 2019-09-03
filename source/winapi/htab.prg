@@ -268,7 +268,7 @@ Local nFirst, nEnd, i
 
       nFirst := ::aPages[ nPage,1 ] + 1
       nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
-      FOR i := nFirst TO nEnd
+      FOR i := nEnd TO nFirst STEP -1
          ::DelControl( ::aControls[i] )
       NEXT
       FOR i := nPage + 1 TO Len( ::aPages )
@@ -278,8 +278,10 @@ Local nFirst, nEnd, i
       hwg_Deletetab( ::handle, nPage - 1 )
 
       ADel( ::aPages, nPage )
-
       ASize( ::aPages, Len( ::aPages ) - 1 )
+
+      ADel( :: aTabs, nPage )
+      ASize( :: aTabs, Len( :: aTabs) - 1 )
 
       IF nPage > 1
          ::nActive := nPage - 1

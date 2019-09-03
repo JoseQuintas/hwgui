@@ -3,6 +3,10 @@
 # Building of libhwgui.a - Harbour Win32 GUI library
 
 HRB_DIR = $(HB_PATH)
+# older Harbour versions
+# HRB_EXE = $(HRB_DIR)\bin\harbour.exe
+# newer Harbour versions
+HRB_EXE = $(HRB_DIR)\bin\win\mingw\harbour.exe
 INC_DIR = include
 OBJ_DIR = obj
 LIB_DIR = lib
@@ -114,37 +118,37 @@ $(LIB_DIR)/libhwgdebug.a : \
 	ar rc $@ $^
 
 .prg.c:
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 .c.o:
 	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(SRC_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(PROCMISC_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(PROCMISC_DIR)/%.c
 	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(EDITOR_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(EDITOR_DIR)/%.c
 	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(HBXML_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(HBXML_DIR)/%.c
 	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(HWGDEBUG_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(HWGDEBUG_DIR)/%.c
 	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^

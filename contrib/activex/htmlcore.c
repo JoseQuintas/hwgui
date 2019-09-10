@@ -471,7 +471,11 @@ void SetEmbedded( HWND handle, IOleObject ** obj )
    PHB_ITEM pObject, pEmbed;
    PHB_ITEM temp;
 
+   #ifdef _WIN64
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( handle, GWLP_USERDATA );
+   #else
    pObject = ( PHB_ITEM ) GetWindowLongPtr( handle, GWL_USERDATA );
+   #endif
    pEmbed = hb_itemNew( GetObjectVar( pObject, "OEMBEDDED" ) );
    temp = hb_itemPutNL( NULL, ( LONG ) obj );
    SetObjectVar( pEmbed, "_HANDLE", temp );
@@ -482,7 +486,11 @@ IOleObject **GetEmbedded( HWND handle )
 {
    PHB_ITEM pObject, pEmbed;
 
+   #ifdef _WIN64
+   pObject = ( PHB_ITEM ) GetWindowLongPtr( handle, GWLP_USERDATA );
+   #else
    pObject = ( PHB_ITEM ) GetWindowLongPtr( handle, GWL_USERDATA );
+   #endif
    pEmbed = hb_itemNew( GetObjectVar( pObject, "OEMBEDDED" ) );
    return ( IOleObject ** ) hb_itemGetNL( GetObjectVar( pEmbed, "HANDLE" ) );
 }

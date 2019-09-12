@@ -283,6 +283,8 @@ METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMain
 
    LOCAL i, aCoors, aRect
 
+   hwg_CreateGetList( Self )
+
    IF ::type == WND_MAIN
       IF ::style < 0 .AND. hwg_Bitand( Abs( ::style ), Abs( WND_NOTITLE ) ) != 0
          hwg_WindowSetDecorated( ::handle, 0 )

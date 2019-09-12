@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-09-12 13:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hwindow.prg
+    ! Bug fixed, reported by Domenico d'Oria 
+
 2019-09-10 16:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/activex/htmlcore.c
     ! Fix for 64-bit systems, provided by Wagner Nunes.

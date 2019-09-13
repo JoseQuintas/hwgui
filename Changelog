@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-09-13 12:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcwindow.prg
+    * hb_gcStep() added to onEvent() to collect garbage.
+
 2019-09-12 13:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hwindow.prg
     ! Bug fixed, reported by Domenico d'Oria 

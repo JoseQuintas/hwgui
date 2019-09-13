@@ -180,8 +180,12 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
    LOCAL i
+   STATIC iCount := 0
 
-   // Writelog( "== "+::Classname()+Str(msg)+IIF(wParam!=NIL,Str(wParam),"NIL")+IIF(lParam!=NIL,Str(lParam),"NIL") )
+   IF ++ iCount == 7
+      iCount := 0
+      hb_gcStep()
+   ENDIF
 
    IF ( i := Ascan( aCustomEvents[ EVENTS_MESSAGES ], msg ) ) != 0
       RETURN Eval( aCustomEvents[ EVENTS_ACTIONS, i ], Self, wParam, lParam )

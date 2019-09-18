@@ -239,7 +239,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                hwg_GetSkip( oParent, ::handle, - 1 )
             ENDIF
             RETURN 1
-         ELSEIF wParam == GDK_Return  // Enter
+         ELSEIF wParam == GDK_Return .OR. wParam == GDK_KP_Enter  // Enter
             IF !hwg_GetSkip( oParent, ::handle, 1, .T. ) .AND. ::bSetGet != Nil
                __Valid( Self )
             ENDIF

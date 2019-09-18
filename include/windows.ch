@@ -815,12 +815,13 @@
 #define GDK_KP_7   0xffb7
 #define GDK_KP_8   0xffb8
 #define GDK_KP_9   0xffb9
-#define GDK_KP_Divide   0xffaf
-#define GDK_KP_Multiply 0xffaa
-#define GDK_KP_Add      0xffab
+#define GDK_KP_Divide    0xffaf
+#define GDK_KP_Multiply  0xffaa
+#define GDK_KP_Add       0xffab
 #define GDK_KP_Separator 0xffac
-#define GDK_KP_Subtract 0xffad
-#define GDK_KP_Decimal  0xffae
+#define GDK_KP_Subtract  0xffad
+#define GDK_KP_Decimal   0xffae
+#define GDK_KP_Enter     0xff8d
 
 #define  VK_RIGHT   GDK_Right
 #define  VK_LEFT    GDK_Left

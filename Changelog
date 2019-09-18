@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-09-18 14:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/windows.ch
+  * source/gtk/hdialog.prg
+    ! Enter key on numeric keypad works now in HEdit.
+
 2019-09-18 13:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hdialog.prg
   * source/gtk/hdialog.prg

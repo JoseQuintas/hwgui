@@ -276,7 +276,7 @@ FUNCTION hwg_DlgCommand( oDlg, wParam, lParam )
             ENDIF
             RETURN 1
          ENDIF
-      ELSEIF iParLow == IDCANCEL
+      ELSEIF iParLow == IDCANCEL .AND. oDlg:lExitOnEsc
          oDlg:nLastKey := 27
       ENDIF
    ENDIF

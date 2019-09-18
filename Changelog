@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-09-18 13:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hdialog.prg
+  * source/gtk/hdialog.prg
+    ! Bug fixed, reported by Fernando Queiroz.
+
 2019-09-13 12:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcwindow.prg
     * hb_gcStep() added to onEvent() to collect garbage.

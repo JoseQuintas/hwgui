@@ -72,7 +72,7 @@ METHOD End() CLASS HTimer
 
    RETURN Nil
 
-FUNCTION hwg_TimerProc( hWnd, idTimer, time )
+FUNCTION hwg_TimerProc( hWnd, idTimer ) //, time )
 
    LOCAL i := Ascan( HTimer():aTimers, { |o|o:id == idTimer } ), b
 
@@ -81,7 +81,7 @@ FUNCTION hwg_TimerProc( hWnd, idTimer, time )
       IF HTimer():aTimers[i]:lOnce
          HTimer():aTimers[i]:End()
       ENDIF
-      Eval( b, time )
+      Eval( b ) //, time )
    ENDIF
 
    RETURN Nil

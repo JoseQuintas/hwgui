@@ -1269,8 +1269,8 @@ static void CALLBACK s_timerProc( HWND hWnd, UINT message, UINT idTimer, DWORD d
 //      hb_vmPushLong( (LONG ) hWnd );    /* pushes parameters on to the hvm stack */
       HB_PUSHITEM( hWnd );
       hb_vmPushLong( ( LONG ) idTimer );
-      hb_vmPushLong( ( LONG ) dwTime );
-      hb_vmDo( 3 );             /* where iArgCount is the number of pushed parameters */
+      //hb_vmPushLong( ( LONG ) dwTime );
+      hb_vmDo( 2 );             /* where iArgCount is the number of pushed parameters */
    }
 }
 

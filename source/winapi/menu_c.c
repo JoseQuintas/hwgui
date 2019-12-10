@@ -171,6 +171,8 @@ HB_FUNC( HWG_GETMENUHANDLE )
    HB_RETHANDLE( GetMenu( handle ) );
 }
 
+// hwg_CheckMenuItem( xMenu, idItem, lCheck )
+// xMenu: oMenu - context menu object OR hWnd - handle of a window OR hMenu - menu handle
 HB_FUNC( HWG_CHECKMENUITEM )
 {
    HMENU hMenu;
@@ -236,7 +238,7 @@ HB_FUNC( HWG_ISCHECKEDMENUITEM )
 
 HB_FUNC( HWG_ENABLEMENUITEM )
 {
-   HMENU hMenu;                 // = ( hb_pcount()>0 && !HB_ISNIL(1) )? (( HMENU ) HB_PARHANDLE(1)) : GetMenu(aWindows[0]);
+   HMENU hMenu;
    UINT uEnable = ( hb_pcount(  ) < 3 || !HB_ISLOG( 3 ) ||
          hb_parl( 3 ) ) ? MF_ENABLED : MF_GRAYED;
    UINT uFlag = ( hb_pcount(  ) < 4 || !HB_ISLOG( 4 ) ||
@@ -273,7 +275,7 @@ HB_FUNC( HWG_ENABLEMENUITEM )
 
 HB_FUNC( HWG_ISENABLEDMENUITEM )
 {
-   HMENU hMenu;                 // = ( hb_pcount()>0 && !HB_ISNIL(1) )? (( HMENU ) HB_PARHANDLE(1)):GetMenu(aWindows[0]);
+   HMENU hMenu;
    UINT uCheck;
    UINT uFlag = ( hb_pcount(  ) < 3 || !HB_ISLOG( 3 ) ||
          hb_parl( 3 ) ) ? MF_BYCOMMAND : MF_BYPOSITION;

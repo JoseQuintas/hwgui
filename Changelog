@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-12-10 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * makefile.vc
+  * source/winapi/draw.c
+    ! Small fixes for MSVC
+  * source/winapi/htimer.prg
+  * source/winapi/control.c
+    ! Small fix in timer
+
 2019-09-18 14:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/windows.ch
   * source/gtk/hdialog.prg

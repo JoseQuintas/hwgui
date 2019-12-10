@@ -68,7 +68,7 @@ HB_FUNC( HWG_SELECTFONT )
    if( !ChooseFont( &cf ) )
    {
       hb_itemRelease( aMetr );
-      hb_ret(  );
+      hb_ret();
       return;
    }
 

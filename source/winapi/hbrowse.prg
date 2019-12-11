@@ -560,8 +560,9 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bRcou     :=  { || ( ::alias ) -> ( RecCount() ) }
       ::bRecnoLog := ::bRecno  := { ||( ::alias ) -> ( RecNo() ) }
       ::bGoTo     := { |o, n|( ::alias ) -> ( dbGoto( n ) ) }
+
    ELSEIF ::type == BRW_ARRAY
-      ::bSkip      := { | o, n | ARSKIP( o, n ) }
+      ::bSkip   := { | o, n | ARSKIP( o, n ) }
       ::bGoTop  := { | o | o:nCurrent := 1 }
       ::bGoBot  := { | o | o:nCurrent := o:nRecords }
       ::bEof    := { | o | o:nCurrent > o:nRecords }
@@ -570,6 +571,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bRecnoLog := ::bRecno  := { | o | o:nCurrent }
       ::bGoTo   := { | o, n | o:nCurrent := n }
       ::bScrollPos := { |o, n, lEof, nPos|hwg_VScrollPos( o, n, lEof, nPos ) }
+
    ENDIF
 
    RETURN Nil

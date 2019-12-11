@@ -513,14 +513,15 @@ METHOD InitBrw( nType )  CLASS HBrowse
 
    if ::type == BRW_DATABASE
       ::alias   := Alias()
-      ::bSKip   := &( "{|o, x|" + ::alias + "->(DBSKIP(x)) }" )
-      ::bGoTop  := &( "{||" + ::alias + "->(DBGOTOP())}" )
-      ::bGoBot  := &( "{||" + ::alias + "->(DBGOBOTTOM())}" )
-      ::bEof    := &( "{||" + ::alias + "->(EOF())}" )
-      ::bBof    := &( "{||" + ::alias + "->(BOF())}" )
-      ::bRcou   := &( "{||" + ::alias + "->(RECCOUNT())}" )
-      ::bRecnoLog := ::bRecno  := &( "{||" + ::alias + "->(RECNO())}" )
-      ::bGoTo   := &( "{|a,n|"  + ::alias + "->(DBGOTO(n))}" )
+      ::bSkip     :=  { |o, n| ( ::alias ) -> ( dbSkip( n ) ) }
+      ::bGoTop    :=  { || ( ::alias ) -> ( DBGOTOP() ) }
+      ::bGoBot    :=  { || ( ::alias ) -> ( dbGoBottom() ) }
+      ::bEof      :=  { || ( ::alias ) -> ( Eof() ) }
+      ::bBof      :=  { || ( ::alias ) -> ( Bof() ) }
+      ::bRcou     :=  { || ( ::alias ) -> ( RecCount() ) }
+      ::bRecnoLog := ::bRecno  := { ||( ::alias ) -> ( RecNo() ) }
+      ::bGoTo     := { |o, n|( ::alias ) -> ( dbGoto( n ) ) }
+
    elseif ::type == BRW_ARRAY
       ::bSKip   := { | o, x | ARSKIP( o, x ) }
       ::bGoTop  := { | o | o:nCurrent := 1 }
@@ -531,6 +532,7 @@ METHOD InitBrw( nType )  CLASS HBrowse
       ::bRecnoLog := ::bRecno  := { | o | o:nCurrent }
       ::bGoTo   := { | o, n | o:nCurrent := n }
       ::bScrollPos := { |o, n, lEof, nPos|hwg_VScrollPos( o, n, lEof, nPos ) }
+
    ENDIF
 
    RETURN Nil

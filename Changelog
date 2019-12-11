@@ -9,6 +9,10 @@
 */
 
 2019-12-10 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+    ! Bug fixed, reported by Wilfried Brunken 
+
+2019-12-10 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * makefile.vc
   * source/winapi/draw.c
     ! Small fixes for MSVC

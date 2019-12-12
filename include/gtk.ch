@@ -5,6 +5,9 @@
  *
  */
 
+#ifndef __GTK__
+   #define __GTK__
+#endif
 /* Cursor types.
  */
 #define GDK_X_CURSOR            0

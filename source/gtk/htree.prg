@@ -8,12 +8,11 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "gtk.ch"
+#include "hwgui.ch"
 #include "inkey.ch"
 #include "dbstruct.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
-#include "gtk.ch"
 
 #ifndef SB_HORZ
 #define SB_HORZ             0

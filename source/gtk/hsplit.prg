@@ -8,10 +8,9 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "gtk.ch"
+#include "hwgui.ch"
 
 CLASS HSplitter INHERIT HControl
 

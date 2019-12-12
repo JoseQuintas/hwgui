@@ -8,12 +8,12 @@
  * www - http://www.kresin.ru
 */
 
+#include "gtk.ch"
 #include "hwgui.ch"
 #include "inkey.ch"
 #include "dbinfo.ch"
 #include "dbstruct.ch"
 #include "hbclass.ch"
-#include "gtk.ch"
 
 #ifdef __XHARBOUR__
 #xtranslate hb_tokenGet([<x>,<n>,<c>] ) =>  __StrToken(<x>,<n>,<c>)

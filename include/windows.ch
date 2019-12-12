@@ -759,7 +759,7 @@
 #define FCONTROL  8   // 0x08
 #define FALT     16   // 0x10
 
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
 
 #define GDK_BackSpace       0xFF08
 #define GDK_Tab             0xFF09

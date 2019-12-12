@@ -7,10 +7,10 @@
  * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
-#include "windows.ch"
+
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "gtk.ch"
+#include "hwgui.ch"
 
 CLASS HPanel INHERIT HControl
 

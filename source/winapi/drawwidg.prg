@@ -569,7 +569,8 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
       nHeight := 0
    ENDIF
    FOR EACH i IN  ::aIcons
-      IF i:name == cname
+      IF i:name == cname .AND. ( nWidth == Nil .OR. i:nWidth == nWidth ) ;
+         .AND. ( nHeight == Nil .OR. i:nHeight == nHeight )
          i:nCounter ++
          RETURN i
       ENDIF

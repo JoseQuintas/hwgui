@@ -96,11 +96,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HPanel
    ELSEIF msg == WM_LBUTTONUP
       ::lCaptured := .F.
       Hwg_SetCursor( Nil, ::handle )
-   ELSE
-      Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
-   RETURN 0
+   RETURN ::Super:onEvent( msg, wParam, lParam )
 
 METHOD Init CLASS HPanel
 

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-12-13 19:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+    ! Fix
+
 2019-12-12 15:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/drawwidg.prg
     ! Small correction for ico files of different sizes, suggested by Alexandre Simoes.

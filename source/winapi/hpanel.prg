@@ -105,7 +105,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
       IF ::oEmbedded != Nil
          ::oEmbedded:Resize( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       ENDIF
-      ::Super:onEvent( WM_SIZE, wParam, lParam )
    ELSEIF msg == WM_DESTROY
       IF ::oEmbedded != Nil
          ::oEmbedded:END()
@@ -128,14 +127,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
          hwg_Releasecapture()
          ::lCaptured := .F.
       ENDIF
-   ELSE
-      IF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .OR. msg == WM_MOUSEWHEEL
-         hwg_onTrackScroll( Self, msg, wParam, lParam )
-      ENDIF
-      RETURN ::Super:onEvent( msg, wParam, lParam )
+   ELSEIF msg == WM_HSCROLL .OR. msg == WM_VSCROLL .OR. msg == WM_MOUSEWHEEL
+      hwg_onTrackScroll( Self, msg, wParam, lParam )
    ENDIF
 
-   RETURN - 1
+   RETURN ::Super:onEvent( msg, wParam, lParam )
 
 METHOD Init CLASS HPanel
 

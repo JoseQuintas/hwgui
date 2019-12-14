@@ -256,14 +256,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             // Copy
             IF ::bSetGet != Nil
                DoCopy( Self )
-               //hwg_Copystringtoclipboard( UnTransform( Self, hwg_Edit_GetText( ::handle ) ) )
                RETURN 1
             ENDIF
          ELSEIF wParam == GDK_Insert     // Insert
             IF lParam == 0
                SET( _SET_INSERT, ! Set( _SET_INSERT ) )
             ENDIF
-         ELSEIF ( (wParam >= 32 .AND. wParam < 65000) .OR. (wParam >=  GDK_KP_0 .AND. wParam < GDK_KP_9) ) ;
+         ELSEIF ( (wParam >= 32 .AND. wParam < 65000) .OR. (wParam >= GDK_KP_0 .AND. wParam <= GDK_KP_9) ) ;
                .AND. !hwg_Checkbit( lParam, 2 )
             IF wParam >=  GDK_KP_0
                wParam -= ( GDK_KP_0 - 48 )

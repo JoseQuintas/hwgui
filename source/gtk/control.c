@@ -1276,6 +1276,8 @@ HB_FUNC( HWG_SETMONTHCALENDARDATE )
 
       hb_dateDecode( hb_itemGetDL( pDate ), &lYear, &lMonth, &lDay );
 
+      lMonth = lMonth - 1;
+
       gtk_calendar_select_month( GTK_CALENDAR( hCtrl ), lMonth, lYear );
       gtk_calendar_select_day( GTK_CALENDAR( hCtrl ), lDay );
 

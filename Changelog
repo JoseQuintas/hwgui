@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-12-16 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * samples/dbview.prg
+  * samples/gtk_samples/dbview.prg
+    ! Fixes, suggested by Wilfried Brunken 
+
 2019-12-14 09:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
     ! Bug fixed, reported by Domenico d'Oria 

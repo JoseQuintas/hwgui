@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-01-12 16:00 UTC-0300 Luiz Rafael Culik <luiz@xharbour.com.br>
+  * source/winapi/drawwidg.prg 
+    ! fix for xharbour
+	
 2019-12-16 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
   * samples/dbview.prg

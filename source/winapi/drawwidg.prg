@@ -560,7 +560,7 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
    RETURN Self
 
 METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
-   LOCAL i, aIconSize, cname := CutPath( name ), cCurDir
+   LOCAL i, aIconSize, cname := CutPath( name ), cCurDir,cFext
 
    IF nWidth == nil
       nWidth := 0
@@ -583,8 +583,12 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
       name := hwg_Selectfile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
       DirChange( cCurDir )
    ENDIF
-
+   #ifdef __XHARBOUR__
+   hb_FNameSplit( cFileName,, , @cFext )
+   IF Empty( cFext )
+   #else
    IF Empty( hb_fNameExt( name ) )
+   #endif   
       name += ".ico"
    ENDIF
    ::handle := hwg_Loadimage( 0, name, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )

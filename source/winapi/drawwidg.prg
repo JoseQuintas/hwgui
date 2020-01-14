@@ -584,7 +584,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
       DirChange( cCurDir )
    ENDIF
    #ifdef __XHARBOUR__
-   hb_FNameSplit( cFileName,, , @cFext )
+   hb_FNameSplit( name,, , @cFext )
    IF Empty( cFext )
    #else
    IF Empty( hb_fNameExt( name ) )

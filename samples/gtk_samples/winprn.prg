@@ -1,7 +1,6 @@
 /*
  * HWinPrn using sample
  * 
- * $Id$
  *
  * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su

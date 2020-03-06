@@ -1620,6 +1620,8 @@
       nBottom                  (R)
       nLeft                    (R)
       nRight                   (R)
+      nCharset                 (RW)  Printer Character Set, default is 0 (ANSI)
+                                     For allowed values see include file "prncharsets.ch".  
    </pre>
    <pre class="code">METHODS
       New( cPrinter, cpFrom, cpTo, nFormType )
@@ -1633,6 +1635,7 @@
       EndDoc()
       End()
    </pre>
+
 
    <br><strong class="subhead"><a name="Classes19" href="#_Classes19">
    HFormTmpl</a></strong> 

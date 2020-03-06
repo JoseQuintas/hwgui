@@ -6,6 +6,9 @@
  *
  * Copyright 2005 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
+ *
+ * Modified by DF7BE: New parameter "nCharset" for 
+ * selecting international charachter sets
 */
 
 #include "hwgui.ch"
@@ -45,11 +48,13 @@ CLASS HWinPrn
    DATA   nBottom   INIT 5
    DATA   nLeft     INIT 5
    DATA   nRight    INIT 5
+   
+   DATA   nCharset  INIT 0   &&  Charset (N) Default: 0  , 204 = Russian
 
 
-   METHOD New( cPrinter, cpFrom, cpTo, nFormType )
-   METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
-   METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax )
+   METHOD New( cPrinter, cpFrom, cpTo, nFormType, nCharset )
+   METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
+   METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD StartDoc( lPreview, cMetaName )
    METHOD NextPage()
    METHOD PrintLine( cLine, lNewLine )
@@ -68,7 +73,7 @@ CLASS HWinPrn
 
 ENDCLASS
 
-METHOD New( cPrinter, cpFrom, cpTo, nFormType ) CLASS HWinPrn
+METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
 
    ::oPrinter := HPrinter():New( cPrinter, .F., nFormType )
    IF ::oPrinter == Nil
@@ -84,10 +89,14 @@ METHOD New( cPrinter, cpFrom, cpTo, nFormType ) CLASS HWinPrn
    IF nFormType != Nil
       ::nFormType := nFormType
    ENDIF
+   
+   IF nCharset != Nil
+      :: nCharset := nCharset
+   ENDIF
 
    RETURN Self
 
-METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax ) CLASS HWinPrn
+METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset ) CLASS HWinPrn
 
    IF lElite != Nil ; ::lElite := lElite ;  ENDIF
    IF lCond != Nil ; ::lCond := lCond ;  ENDIF
@@ -96,11 +105,12 @@ METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax ) 
    IF lItalic != Nil ; ::lItalic := lItalic ;  ENDIF
    IF lUnder != Nil ; ::lUnder := lUnder ;  ENDIF
    IF nLineMax != Nil ; ::nLineMax := nLineMax ;  ENDIF
+   IF nCharset != Nil ; ::nCharset := nCharset ;  ENDIF
    ::lChanged := .T.
 
    RETURN Nil
 
-METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax ) CLASS HWinPrn
+METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset) CLASS HWinPrn
 
 #ifdef __GTK__
    LOCAL cFont := "monospace"
@@ -110,7 +120,7 @@ METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax ) CLA
    LOCAL aKoef := { 1, 1.22, 1.71, 2 }
    LOCAL nMode := 0, oFont, nWidth, nPWidth, nStdHeight, nStdLineW
 
-   ::InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
+   ::InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
 
    IF ::lPageStart
 
@@ -143,7 +153,7 @@ METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax ) CLA
       ::nLineHeight := ( nStdHeight / aKoef[ nMode + 1 ] ) * ::oPrinter:nVRes
       ::nLined := ( 25.4 * ::oPrinter:nVRes ) / ::nLineInch - ::nLineHeight
 
-      oFont := ::oPrinter:AddFont( cFont, ::nLineHeight, ::lBold, ::lItalic, ::lUnder, 204 )
+      oFont := ::oPrinter:AddFont( cFont, ::nLineHeight, ::lBold, ::lItalic, ::lUnder, ::nCharset ) && ::nCharset 204 = Russian
 
       IF ::oFont != Nil
          ::oFont:Release()

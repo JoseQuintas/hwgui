@@ -649,7 +649,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
    ENDIF
 
    @ 3, 140 OWNERBUTTON oBtn OF oToolBar ON CLICK { || ::ChangePage( oCanvas, oSayPage, 1 ) } ;
-      SIZE oToolBar:nWidth - 6, 24 TEXT ">>" FONT oFont                  ;
+      SIZE oToolBar:nWidth - 6, 24 TEXT ">" FONT oFont                  ;
       TOOLTIP Iif( aTooltips != Nil, aTooltips[ 4 ], "Next page" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 4 .AND. aBitmaps[ 5 ] != Nil
       oBtn:oBitmap := Iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 5 ] ), HBitmap():AddFile( aBitmaps[ 5 ] ) )
@@ -658,7 +658,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
    ENDIF
 
    @ 3, 164 OWNERBUTTON oBtn OF oToolBar ON CLICK { || ::ChangePage( oCanvas, oSayPage, - 1 ) } ;
-      SIZE oToolBar:nWidth - 6, 24 TEXT "<<" FONT oFont    ;
+      SIZE oToolBar:nWidth - 6, 24 TEXT "<" FONT oFont    ;
       TOOLTIP Iif( aTooltips != Nil, aTooltips[ 5 ], "Previous page" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 5 .AND. aBitmaps[ 6 ] != Nil
       oBtn:oBitmap := Iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 6 ] ), HBitmap():AddFile( aBitmaps[ 6 ] ) )

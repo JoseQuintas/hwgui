@@ -1770,6 +1770,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
    LOCAL oComboFont, oCombo
    LOCAL oGet1, owb1, owb2
+   LOCAL oEdit,mvarbuff,bMemoMod    && DF7BE
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
@@ -1876,15 +1877,37 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                   PICTURE oColumn:picture        ;
                   VALID oColumn:bValid
             ELSE
-               oGet1 := ::varbuf
-               @ 10, 10 GET oGet1 SIZE oModDlg:nWidth - 20, 240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
-               @ 010, 252 ownerbutton owb2 TEXT "Save" size 80, 24 ON Click { ||::varbuf := oGet1, omoddlg:close(), oModDlg:lResult := .T. }
+
+* =========================================================================
+* GET not suitable for memo editing, danger of data loss, use HCEDIT (DF7BE)
+* =========================================================================
+*               oGet1 := ::varbuf  && DF7BE
+                mvarbuff := ::varbuf  && DF7BE: inter variable avoids crash at store
+*               @ 10, 10 GET oGet1 SIZE oModDlg:nWidth - 20, 240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
+
+               @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
+                    FONT ::oFont
+               * ::varbuf ==> mvarbuff, oGet1 ==> oEdit (DF7BE)         
+               @ 010, 252 ownerbutton owb2 TEXT "Save" size 80, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
                @ 100, 252 ownerbutton owb1 TEXT "Close" size 80, 24 ON CLICK { ||oModDlg:close() }
+                 * serve memo field for editing (DF7BE)
+                oEdit:SetText(mvarbuff)       && DF7BE
+* =========================================================================
             ENDIF
          ENDIF
 
          ACTIVATE DIALOG oModDlg
-
+* =========================================================================
+* DF7BE
+         IF type == "M" 
+          * is modified ? (.T.) 
+          bMemoMod := oEdit:lUpdated
+          IF bMemoMod
+           * write out edited memo field
+           ::varbuf := oEdit:GetText()
+          ENDIF 
+         ENDIF
+* =========================================================================
          ::lEditing := .F.
 
          IF oColumn:aList != Nil

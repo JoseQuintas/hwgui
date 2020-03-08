@@ -8,33 +8,74 @@
  * www - http://kresin.belgorod.su
  * Copyright 2004 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
  * Demo for use Bitmap in menu
+ *
+ * Modified by DF7BE:
+ * See ticket #31: This example crashes
+ * To avoid crash: 
+ * - use ralative paths for bitmap files
+ * - Check, if bitmap file really exits
+ *
+ * The crash message is:
+ * Error BASE/1004  No exported method: HANDLE
+ * Called from ->HANDLE(0)
+ * Called from source\winapi/menu.prg->HWG_DEFINEMENUITEM(250)
+ * Called from testmenubitmap.prg->MAIN(48) 
 */
 
 #include "windows.ch"
 #include "guilib.ch"
 
  
-Function Main()
+Function Main
 Local oMain
+Local cbmpexit, cbmpnew, cbmpopen, cbmplogo, bbmperror 
 Private oMenu
 
+ bbmperror := .F.
+ * Use relative paths
+ cbmpexit := "..\image\exit_m.bmp"
+ cbmpnew  := "..\image\new_m.bmp"
+ cbmpopen := "..\image\open_m.bmp"
+ cbmplogo := "..\image\logo.bmp"
+ * Check for existing bitmaps
+ IF .NOT. FILE(cbmpexit)
+  hwg_MsgStop("Error: File not exists: " + cbmpexit, "Bitmap error")
+  bbmperror := .T.
+ ENDIF
+  IF .NOT. FILE(cbmpnew)
+  hwg_MsgStop("Error: File not exists: " + cbmpnew, "Bitmap error")
+  bbmperror := .T.
+ ENDIF
+  IF .NOT. FILE(cbmpopen)
+  hwg_MsgStop("Error: File not exists: " + cbmpopen, "Bitmap error")
+  bbmperror := .T.
+ ENDIF
+  IF .NOT. FILE(cbmplogo)
+  hwg_MsgStop("Error: File not exists: " + cbmplogo, "Bitmap error")
+  bbmperror := .T.
+ ENDIF 
+ * Exit, if bitmap error
+ IF bbmperror
+  RETURN NIL 
+ ENDIF
+ 
         INIT WINDOW oMain MAIN TITLE "Teste" ;
              AT 0,0 ;//BACKGROUND BITMAP OBMP;
              SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                MENU OF oMain
                   MENU TITLE "Samples"
-                     MENUITEM "&Exit"    ID 1001 ACTION oMain:Close()   BITMAP "\hwgui\image\exit_m.bmp" 
+                     MENUITEM "&Exit"    ID 1001 ACTION oMain:Close()   BITMAP cbmpexit 
                      SEPARATOR                      
-                     MENUITEM "&New "    ID 1002 ACTION hwg_Msginfo("New")  BITMAP "\hwgui\image\new_m.bmp"  
-                     MENUITEM "&Open"    ID 1003 ACTION hwg_Msginfo("Open") BITMAP "\hwgui\image\open_m.bmp" 
+                     MENUITEM "&New "    ID 1002 ACTION hwg_Msginfo("New")  BITMAP cbmpnew  
+                     MENUITEM "&Open"    ID 1003 ACTION hwg_Msginfo("Open") BITMAP cbmpopen 
                      MENUITEM "&Demo"    ID 1004 ACTION Test()
                      separator
                      MENUITEM "&Bitmap and a Text"  ID 1005 ACTION Test()
                   ENDMENU   
                 ENDMENU                
                 //The number ID is very important to use bitmap in menu
-                MENUITEMBITMAP oMain ID 1005 BITMAP "\hwgui\image\logo.bmp"                 
+                MENUITEMBITMAP oMain ID 1005 BITMAP cbmplogo                 
                 //Hwg_InsertBitmapMenu(oMain:Menu, 1005, "\hwgui\sourceoBmp:handle)   //do not use bitmap empty
         ACTIVATE WINDOW oMain
 Return Nil

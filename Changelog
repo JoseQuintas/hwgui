@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-03-08 15:51 UTC+0100 Wilfried Brunken DF7BE
+  * samples/gtk_samples/pseudocm.prg
+  * samples/pseudocm.prg
+  * samples/bldmingw.bat
+  * samples/testmenubitmap.prg
+    ! Added: bldmingw.bat: Working build script for samples MinGW
+    ! pseudocm.prg: New sample for context menu (right click), see ticket #13
+    ! testmenubitmap.prg: See ticket #31: This example crashes, fixed with comments
+
 2020-01-12 16:00 UTC-0300 Luiz Rafael Culik <luiz@xharbour.com.br>
   * source/winapi/drawwidg.prg 
     ! fix for xharbour

@@ -30,7 +30,7 @@
 #xtranslate hb_tokenPtr([<x>,<n>,<c>] ) =>  __StrTkPtr(<x>,<n>,<c>)
 #endif
 
-   REQUEST DBGOTOP, DBGOTO, DBGOBOTTOM, DBSKIP, RECCOUNT, RECNO, EOF, BOF
+REQUEST DBGOTOP, DBGOTO, DBGOBOTTOM, DBSKIP, RECCOUNT, RECNO, EOF, BOF
 
 /*
  * Scroll Bar Constants
@@ -63,7 +63,7 @@ CLASS HColumn INHERIT HObject
    DATA lEditable  INIT .F.      // Is the column editable
    DATA lResizable INIT .T.      // Is the column resizable
    DATA aList                    // Array of possible values for a column -
-   // combobox will be used while editing the cell
+                                 // combobox will be used while editing the cell
    DATA oStyleHead               // An HStyle object to draw the header
    DATA oStyleFoot               // An HStyle object to draw the footer
    DATA oStyleCell               // An HStyle object to draw the cell
@@ -201,6 +201,10 @@ CLASS HBrowse INHERIT HControl
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
    DATA aSelected                              // An array of selected records numbers
    DATA nPaintRow, nPaintCol                   // Row/Col being painted
+   // --- International Language Support for internal dialogs ---
+   DATA cTextTitME INIT "Memo Edit"   
+   DATA cTextClose INIT "Close"   // Button 
+   DATA cTextSave  INIT "Save"
 
    METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
@@ -1834,7 +1838,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                SIZE nWidth, ::height + iif( oColumn:aList == Nil, 1, 0 ) ;
                ON INIT bInit
          ELSE
-            INIT DIALOG oModDlg title "memo edit" AT 0, 0 SIZE 400, 300 ON INIT { |o|o:center() }
+            INIT DIALOG oModDlg title ::cTextTitME AT 0, 0 SIZE 400, 300 ON INIT { |o|o:center() }
          ENDIF
          ::lEditing := .T.
 
@@ -1888,8 +1892,8 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
                     FONT ::oFont
                * ::varbuf ==> mvarbuff, oGet1 ==> oEdit (DF7BE)         
-               @ 010, 252 ownerbutton owb2 TEXT "Save" size 80, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
-               @ 100, 252 ownerbutton owb1 TEXT "Close" size 80, 24 ON CLICK { ||oModDlg:close() }
+               @ 010, 252 ownerbutton owb2 TEXT ::cTextSave size 80, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
+               @ 100, 252 ownerbutton owb1 TEXT ::cTextClose size 80, 24 ON CLICK { ||oModDlg:close() }
                  * serve memo field for editing (DF7BE)
                 oEdit:SetText(mvarbuff)       && DF7BE
 * =========================================================================

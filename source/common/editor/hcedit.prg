@@ -114,16 +114,17 @@
 
 #define BOTTOM_HEIGHT   8
 
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
 #define GDK_CONTROL_MASK  2
 #define GDK_MOD1_MASK     4
 #endif
 
 STATIC cNewLine := e"\r\n"
 
-#ifdef __PLATFORM__UNIX
+* For multi OS request UTF8 forever
+* #ifdef __GTK__
 REQUEST  HB_CODEPAGE_UTF8
-#endif
+* #endif
 
 CLASS HCEdit INHERIT HControl
 
@@ -193,7 +194,7 @@ CLASS HCEdit INHERIT HControl
    DATA   nClientWidth
    DATA   nDocWidth
 
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
    DATA area
    DATA hScrollV  INIT Nil
    DATA hScrollH  INIT Nil
@@ -208,7 +209,7 @@ CLASS HCEdit INHERIT HControl
    DATA   aHili     PROTECTED
    DATA   lWrap     INIT .F. PROTECTED
    DATA   nPadding  INIT 0   PROTECTED
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
    DATA   lPainted  INIT .F. PROTECTED
    DATA   lNeedScan INIT .F. PROTECTED
 #endif
@@ -310,7 +311,7 @@ METHOD Open( cFileName, cPageIn, cPageOut ) CLASS HCEdit
 METHOD Activate() CLASS HCEdit
 
    IF !Empty( ::oParent:handle )
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       ::hEdit := hced_CreateTextEdit( Self )
       ::handle := hced_GetHandle( ::hEdit )
       IF hwg_bitand( ::style, WS_BORDER ) != 0
@@ -330,7 +331,7 @@ METHOD Init() CLASS HCEdit
 
    IF !::lInit
       ::Super:Init()
-#ifndef __PLATFORM__UNIX
+#ifndef __GTK__
       ::nHolder := 1
 #endif
       hced_SetHandle( ::hEdit, ::handle )
@@ -391,7 +392,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       x := hwg_GetKeyboardState( lParam )
       n := Iif( Asc( SubStr(x,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(x,0x11,1 ) ) >= 128,FSHIFT,0 ) )
       IF n != FCONTROL
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
          x := wParam
 #else
          x := hwg_PtrToUlong( wParam )
@@ -403,13 +404,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ENDIF
 
    ELSEIF msg == WM_KEYDOWN
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       lRes := ::onKeyDown( wParam, lParam )
 #else
       lRes := ::onKeyDown( hwg_PtrToUlong( wParam ), lParam )
 #endif
    ELSEIF msg == WM_LBUTTONDOWN .OR. msg == WM_RBUTTONDOWN
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       hced_SetFocus( ::hEdit )
 #endif
       IF msg == WM_LBUTTONDOWN .AND. !Empty( ::aPointM2[P_Y] )
@@ -505,7 +506,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       IF ::nHeight > 0 .AND. ::nWidth > 0
          ::Scan()
          ::nWCharF := ::nWSublF := 1
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
          IF ::lPainted
 #endif
             ::Paint( .F. )
@@ -517,7 +518,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
                n := ::nLines; x := 1
             ENDIF
             ::SetCaretPos( SETC_XYPOS, x, n )
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
          ENDIF
 #endif
          hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
@@ -568,14 +569,14 @@ METHOD Paint( lReal ) CLASS HCEdit
    ENDIF
 
    IF lReal == Nil .OR. lReal
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       ::lPainted := .T.
       IF ::lNeedScan
          ::Scan()
       ENDIF
 #endif
       pps := hwg_DefinePaintStru()
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       hDCReal := hwg_BeginPaint( ::area, pps )
       aCoors := hwg_GetClientRect( ::area )
       //hDC := hwg_CreateCompatibleDC( hDCReal, ;
@@ -597,7 +598,7 @@ METHOD Paint( lReal ) CLASS HCEdit
       ::nClientWidth := aCoors[3] - aCoors[1]
       lReal := .T.
    ELSE
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       hDCReal := hwg_Getdc( ::area )
 #else
       hDCReal := hwg_Getdc( ::handle )
@@ -658,7 +659,7 @@ METHOD Paint( lReal ) CLASS HCEdit
    ENDIF
 
    IF lReal
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       hced_drawBorder( ::hEdit, ::nWidth, ::nHeight )
       //hwg_BitBlt( hDCReal, 0, 0, aCoors[3] - aCoors[1], aCoors[4] - aCoors[2], hDC )
       //hwg_ReleaseDC( , hDC )
@@ -931,7 +932,7 @@ METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
 
    ::SetWrap( ::lWrap, .T. )
 
-#ifdef __PLATFORM__UNIX
+#ifndef __WINDOWS__
    ::lUtf8 := .T.
    ::Convert( cPageIn := Iif( Empty(cPageIn), "UTF8",cPageIn ), cPageOut := "UTF8" )
 #else
@@ -1105,7 +1106,7 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
          ENDIF
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
             ::aLines[::nLineC,AL_Y2] )
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       ELSE
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
             ::aLines[nLinePrev,AL_Y2] )
@@ -1352,7 +1353,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          hwg_Copystringtoclipboard( cLine )
          ::putChar( 7 )   // for to not interfere with '.'
       ENDIF
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
    ELSEIF nKeyCode < 0xFE00 .OR. ( nKeyCode >= GDK_KP_Multiply .AND. nKeyCode <= GDK_KP_9 ) ;
          .OR. nKeyCode == VK_RETURN .OR. nKeyCode == VK_BACK .OR. nKeyCode == VK_TAB .OR. nKeyCode == VK_ESCAPE
       IF hwg_bitand( lParam, GDK_CONTROL_MASK+GDK_MOD1_MASK ) == 0
@@ -1997,7 +1998,7 @@ METHOD SetPadding( nValue ) CLASS HCEdit
 
 METHOD SetBorder( nThick, nColor ) CLASS HCEdit
 
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
    IF nThick > 0
       IF ::nPadding <= 2
          ::SetPadding( nThick )
@@ -2027,7 +2028,7 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
    ENDIF
 
    IF !lNested
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       aCoors := hwg_GetClientRect( ::area )
       IF !::lPainted
          ::lNeedScan := .T.
@@ -2127,7 +2128,7 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
 
    IF !lNested
       ::lScan := .F.
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
       hwg_Releasedc( ::handle, hDC )
 #else
       //hwg_DeleteDC( hDC )
@@ -2141,7 +2142,7 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
    ::nLineC := nLineC
    ::nWCharF:= nWCharF
    ::nWSublF:= nWSublF
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
    ::lNeedScan := .F.
 #endif
    RETURN Nil
@@ -2465,7 +2466,7 @@ Function hced_Line4Pos( oEdit, yPos )
 
 Function hced_Chr( oEdit, nCode )
 #ifndef __XHARBOUR__
-#ifdef __PLATFORM__UNIX
+#ifndef __WINDOWS__
    IF oEdit:lUtf8; RETURN hwg_KeyToUtf8( nCode ); ENDIF
 #else
    IF oEdit:lUtf8; RETURN hb_utf8Chr( nCode ); ENDIF

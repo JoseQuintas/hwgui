@@ -8,6 +8,46 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-03-10 16:24 UTC+0100 Wilfried Brunken DF7BE
+  * source\common\editor\hcedit.prg
+  * source\winapi\hbrowse.prg  
+  * source\gtk\hbrowse.prg
+    !
+    ! Ticket #32 : Use HCEDIT instead of GET in Memoedit (GTK)
+    !
+    ! Task started:
+    ! Multi Language Support for internal HWGUI dialogs,
+    ! First entry for Memo Edit dialog in BROWSE class
+    ! (Needed for my App "CLLOG")
+    !
+    ! hcedit.prg : Changed all #ifdef __PLATFORM__UNIX
+    ! to __GTK__ for platform independance, except all
+    ! UTF8 items set to "#ifndef __WINDOWS__".
+    ! (Linux uses UTF8 !). Exact terms will be checked
+    ! later as soon as possible
+    !
+    ! hbrowse.prg for WinAPI and GTK:
+    !  Edited with WinMerge to reduce differences for
+    !  better transparency.
+    !  (blanks, blank lines and lower/upper case without
+    !   changing functionalaty, helps me to fix the bugs
+    !   in the GTK edition), for example Iif() to iif(),
+    !  "i+1" to "i + 1". 
+    !
+    ! TO-DO:
+    ! ======
+    !  Some bugs in GTK section found:
+    !  (will fixed by me as soon as possible, no tickets created)
+    !  - Memo field not stored back to DBF or array
+    !  - HCEDIT and Memo edit has problems with code page mapping
+    !    (Test with german umlaute, sharp "S" and Euro currency sign).
+    !  Others:
+    !  - Create new sample for demonstrating and 
+    !    testing multi language support for internal HWGUI dialogs
+    ! Hint:
+    !  The Euro currency sign was now supported by Harbour for Codepage
+    !  IBM CP858DE (look at Harbour issue #201 created by me).
+
 
 2020-03-08 15:51 UTC+0100 Wilfried Brunken DF7BE
   * samples/gtk_samples/pseudocm.prg
@@ -8309,7 +8349,7 @@
      + METHOD SetCueBanner ( cText, lshowFoco )
        Sets the textual cue, or tip, that is displayed by the edit control to prompt the user for information.
        TRUE if the cue banner should show even when the edit control has focus; otherwise, FALSE.
-       FALSE is the default behavioróthe cue banner disappears when the user clicks in the control.
+       FALSE is the default behavior\97the cue banner disappears when the user clicks in the control.
      * METHOD New
        ! defines the number of characters based on the size of control when there is no picture and no maxlenght
      * METHOD onEvent
@@ -9500,10 +9540,10 @@
 
 2010-06-06 01:25 UTC+0200 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * /hwguidyn.hbp
-    ! patch made by Viktor Szak‡ts to correct build .dll after latest
+    ! patch made by Viktor Szak\E0ts to correct build .dll after latest
       Harbour changes
   * source/richedit.prg
-    ! patch made by Viktor Szak‡ts to comply with the deletion of the
+    ! patch made by Viktor Szak\E0ts to comply with the deletion of the
       hb_NumToHex function from the hwGUI source
   * source/hedit.prg
     ! fixed onEvent method returning wrong value when a hot key
@@ -14579,13 +14619,13 @@
   * include\windows.ch
     * moved here the constants for hAnimation class
   + samples\bldhrb.bat
-    + batch file from Viktor Szak‡ts for samples Harbour build
+    + batch file from Viktor Szak\E0ts for samples Harbour build
   * all the files below are changed to obtain 2 things:
     . compile without warnings in both Harbour and xHarbour with
       /W2 /ES2 flags. I've tested many samples compiled in Harbour
       and now all seems working fine, but you're invited to make
       same thing and to signal or correct some mismatch.
-      Thanks to Viktor Szak‡ts for his precious suggestions and
+      Thanks to Viktor Szak\E0ts for his precious suggestions and
       very effective and gentle collaboration in restoring Harbour
       HwGUI compatibility.
     . prepare the code for a deeper revisitation, hoping to release
@@ -14688,7 +14728,7 @@
   * source/drawwidg.prg
     - removed some unused local causing warnings in Harbour compilation
   * source/pager.c
-    + added include file for Harbour compatibility (thanks to Viktor Szak·ts)
+    + added include file for Harbour compatibility (thanks to Viktor Szak\E1ts)
 
 2008-06-16 19:45 UTC+0100 Giuseppe Mastrangelo  <giuseppe-mastrangelo@tiscali.it>
   * source/hbrowse.prg
@@ -15060,7 +15100,7 @@
 2008-03-21 19:40 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg
     ! added property ::alias previously omitted
-          thanks to SËrgio Kondo who signaled the needed changes
+          thanks to S\E8rgio Kondo who signaled the needed changes
 
 2008-03-21 13:20 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * source/hbrowse.prg
@@ -15437,7 +15477,7 @@
   * utils\designer\designer.prg
   * utils\designer\hformgen.prg
     Fix bug in designer to create files in format PRG
-    Thanks to Jo„o Carlos Rosseto
+    Thanks to Jo\E3o Carlos Rosseto
 
 2007-11-30 16:00 UTC-0300 Luiz Rafael Culik <culikr at brturbo.com.br>
   * source/draw.c
@@ -17834,7 +17874,7 @@
   * source/hbrowse.prg
     * Removed WS_HSCROLL, because sometimes horizontal bar was not necessary
       by suggestion of Paulo Flecha pfflecha@yahoo.com.br
-    ! Fixed - some small letters ( g, y, p, q, Á, j ) wasn't displayed
+    ! Fixed - some small letters ( g, y, p, q, \E7, j ) wasn't displayed
       correctly - lowermost pixels was cut.
     * HColumn:bColorBlock => Codeblock that determines color of data items
       bColorBlock must return an array containing four colors values
@@ -19269,7 +19309,7 @@
 
 2004-07-29 10:18 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/hbrowse.prg
-    ! Bug fixed with lAutoEdit, reported by Juan Jos…?
+    ! Bug fixed with lAutoEdit, reported by Juan Jos\C9?
   * source/commond.c
     * hb_parcx() call is replaced with hb_parc() to be compatible with Harbour.
   * source/draw.c

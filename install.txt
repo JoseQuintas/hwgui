@@ -34,6 +34,19 @@
 
    bld a
 
+
+    Cross develop environment on Windows for GTK:
+     (For target *NIX operating systems)
+
+     For building an GTK version for test-
+     and develop purposes you can create a
+     GTK based version of HWGUI in parallel.
+     Details in file
+      samples\dev\MingW-GTK\Readme.txt
+     Be care of the Warning mentioned in this file
+     and dependent source files. 
+
+
    2) Linux
 
    	Sources for the Linux GTK version are located in the source/gtk/ directory. 

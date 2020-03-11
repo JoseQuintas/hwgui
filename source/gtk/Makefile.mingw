@@ -1,0 +1,133 @@
+# $Id$
+# Building of libhwgui.a - Harbour Linux (GTK) GUI library
+# Modified by DF7BE for Win32 / MingW
+# GCC : C:\hmg.3.3.1\MINGW\bin via PATH (Script pfad.bat)
+# Harbour install Path: C:\harbour\core-master
+#
+# Warning:
+# For normal use on Windows it is strictly recommended to build only the WinAPI
+# edition of HWGUI and your application. The WinAPI functions are quite stable and
+# effective.
+# Take the GTK build only for test- and development purposes ! 
+# Also it is strictly recommended to check the modified GTK sources
+# on Linux or another *NIX operating system before checking in into
+# a source repository.
+# For details read instructions in file
+# samples\dev\MingW-GTK\Readme.txt
+
+ifeq ($(HB_ROOT),)
+HRB_BIN = C:/harbour/core-master/bin/win/mingw
+HRB_INC = C:/harbour/core-master/include
+HRB_LIB = C:/harbour/core-master/lib/win/mingw
+HRB_EXE = $(HRB_BIN)/harbour.exe
+else
+HRB_BIN = $(HB_ROOT)/bin/win/mingw
+HRB_INC = $(HB_ROOT)/include
+HRB_LIB = $(HB_ROOT)/lib/win/mingw
+HRB_EXE = $(HRB_BIN)/harbour.exe
+endif
+
+INC_DIR = ../../include
+OBJ_DIR = ../../obj
+LIB_DIR = ../../lib
+
+PROCMISC_DIR=../common/procmisc
+XML_DIR=../common/xml
+DEBUG_DIR=../common/debug
+EDITOR_DIR=../common/editor
+SRC_DIR=./
+
+CFLAGS = -Wall -O3 -DHWG_USE_POINTER_ITEM
+CFLAGS_GTK = $(shell pkg-config --cflags gtk+-2.0)
+CFLAGS += $(CFLAGS_GTK)
+
+vpath %.a $(LIB_DIR)
+vpath %.o $(OBJ_DIR)
+vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR)
+vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR)
+
+# -es2 ==> -es0 (Abbruch bei hbrowse.prg ohne Fehlermeldung)
+$(OBJ_DIR)/%.c : %.prg
+	$(HRB_EXE) -n -q -w -es0 $(HB_FLAGS) -I$(HRB_INC) -I$(INC_DIR) -d__GTK__ -o$@ $<
+
+%.o : %.c
+	gcc $(CFLAGS) -c -I./ -I$(INC_DIR) -I$(HRB_INC) $(CFLAGS_GTK) -o $@ $<
+
+$(OBJ_DIR)/%.o : %.c
+	gcc $(CFLAGS) -c -I./ -I. -I$(INC_DIR) -I$(HRB_INC) $(CFLAGS_GTK) -o $@ $<
+
+
+$(LIB_DIR)/%.a ::
+	ar rc $@ $^
+
+all: \
+   $(LIB_DIR)/libhwgui.a \
+   $(LIB_DIR)/libprocmisc.a \
+   $(LIB_DIR)/libhbxml.a \
+   $(LIB_DIR)/libhwgdebug.a
+
+$(LIB_DIR)/libhwgui.a : \
+   $(OBJ_DIR)/commond.o \
+   $(OBJ_DIR)/control.o \
+   $(OBJ_DIR)/draw.o \
+   $(OBJ_DIR)/drawtext.o \
+   $(OBJ_DIR)/window.o \
+   $(OBJ_DIR)/wprint.o \
+   $(OBJ_DIR)/menu_c.o \
+   $(OBJ_DIR)/message.o \
+   $(OBJ_DIR)/misc.o \
+   $(OBJ_DIR)/drawwidg.o \
+   $(OBJ_DIR)/herrsys.o \
+   $(OBJ_DIR)/gtkmain.o \
+   $(OBJ_DIR)/hbincnt.o \
+   $(OBJ_DIR)/hbrowse.o \
+   $(OBJ_DIR)/hcwindow.o \
+   $(OBJ_DIR)/hcheck.o \
+   $(OBJ_DIR)/hcombo.o \
+   $(OBJ_DIR)/hcontrol.o \
+   $(OBJ_DIR)/hdialog.o \
+   $(OBJ_DIR)/hedit.o \
+   $(OBJ_DIR)/hfrmtmpl.o \
+   $(OBJ_DIR)/hgraph.o \
+   $(OBJ_DIR)/hhyper.o \
+   $(OBJ_DIR)/hownbtn.o \
+   $(OBJ_DIR)/hpanel.o \
+   $(OBJ_DIR)/hprinter.o \
+   $(OBJ_DIR)/hradio.o \
+   $(OBJ_DIR)/hsayimg.o \
+   $(OBJ_DIR)/hsplit.o \
+   $(OBJ_DIR)/htab.o \
+   $(OBJ_DIR)/htimer.o \
+   $(OBJ_DIR)/htool.o \
+   $(OBJ_DIR)/htree.o \
+   $(OBJ_DIR)/hupdown.o \
+   $(OBJ_DIR)/hwindow.o \
+   $(OBJ_DIR)/hwinprn.o \
+   $(OBJ_DIR)/hprogres.o \
+   $(OBJ_DIR)/hmonthc.o \
+   $(OBJ_DIR)/menu.o
+
+$(LIB_DIR)/libprocmisc.a : \
+   $(OBJ_DIR)/procini.o \
+   $(OBJ_DIR)/procs7.o \
+   $(OBJ_DIR)/procscri.o \
+   $(OBJ_DIR)/scrdebug.o \
+   $(OBJ_DIR)/hcedit.o \
+   $(OBJ_DIR)/hcedit_l.o \
+   $(OBJ_DIR)/hilight.o
+
+$(LIB_DIR)/libhbxml.a : \
+   $(OBJ_DIR)/xmlparse.o \
+   $(OBJ_DIR)/hxmldoc.o
+
+$(LIB_DIR)/libhwgdebug.a : \
+   $(OBJ_DIR)/dbgdop.o \
+   $(OBJ_DIR)/debugger.o \
+   $(OBJ_DIR)/dbgconnect.o
+
+clean:
+	-del /F ..\..\obj\*.o
+	-del /F ..\..\obj\*.c
+	-del /F ..\..\lib\*.a
+
+# ====== EOF of Makefile.mingw =========

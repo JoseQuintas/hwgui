@@ -199,6 +199,7 @@ CLASS HBrowse INHERIT HControl
    DATA cTextTitME INIT "Memo Edit"   
    DATA cTextClose INIT "Close"   // Button 
    DATA cTextSave  INIT "Save"
+   DATA cTextLockRec INIT "Can't lock the record!"
 
    METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
@@ -1860,7 +1861,7 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos )
             IF ( oBrw:alias ) -> ( RLock() )
                ( oBrw:alias ) -> ( Eval( oColumn:block,oBrw:varbuf,oBrw,fipos ) )
             ELSE
-               hwg_Msgstop( "Can't lock the record!" )
+               hwg_Msgstop( ::cTextLockRec )  /* Can't lock the record! */
             ENDIF
          ELSE
             Eval( oColumn:block, oBrw:varbuf, oBrw, fipos )

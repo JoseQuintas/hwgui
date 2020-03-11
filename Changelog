@@ -8,6 +8,39 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-03-11 15:00 UTC+0100 Wilfried Brunken DF7BE
+  * samples\dev\MingW-GTK\pfad.bat (New)
+  * samples\dev\MingW-GTK\Readme.txt (New)
+  * samples\gtk_samples\hwmingnw.bat (New)  
+  * samples\gtk_samples\sleep.c (New)
+  * source\gtk\Makefile.mingw (New)  
+  * source\gtk\build.bat
+  * install.txt
+  * source\winapi\hbrowse.prg  
+  * source\gtk\hbrowse.prg
+    !  
+    ! Task:
+    ! Cross develop environment on Windows for GTK
+    ! (Develop GTK code for *NIX operating systems
+    !  on a Windows 10 system)
+    ! All source files contain the following warning:
+    ! For normal use on Windows it is strictly recommended to build only the WinAPI
+    ! edition of HWGUI and your application. The WinAPI functions are quite stable and
+    ! effective.
+    ! Take the GTK build only for test- and development purposes ! 
+    ! Also it is strictly recommended to check the modified GTK sources
+    ! on Linux or another *NIX operating system before checking in into
+    ! a source repository.
+    ! For details read instructions in file
+    ! samples\dev\MingW-GTK\Readme.txt
+    !
+    ! Multi Language Support for internal HWGUI dialogs:
+    ! HBROWSE:
+    ! Record locking message
+    ! Class docu updated
+    !
+
+
 2020-03-10 16:24 UTC+0100 Wilfried Brunken DF7BE
   * source\common\editor\hcedit.prg
   * source\winapi\hbrowse.prg  

@@ -49,7 +49,10 @@
 
    2) Linux
 
-   	Sources for the Linux GTK version are located in the source/gtk/ directory. 
+   For installation on Linux you need some prerequisites,
+   they are listed at the bottom of these instructions.
+
+   Sources for the Linux GTK version are located in the source/gtk/ directory. 
    There is a shell file build.sh, which is intended for building HwGUI Linux 
    libraries. The environment variable HB_ROOT is set there, based on the 
    assumption, that HwGUI directory is within the Harbour directory. If no,
@@ -68,3 +71,57 @@
    The environment variable HB_ROOT is set there, based on the assumption, that
    HwGUI directory is within the Harbour directory. If no, you need to write the
    correct path to your Harbour directory.
+
+
+
+ List of packages for Ubuntu Linux and LinuxMINT
+ -----------------------------------------------
+  
+  Install packages as system administrator:
+  
+  LinuxMINT:
+  
+   sudo apt-get install build-essential linux-headers-generic dkms
+   sudo apt-get install libgtk2.0-dev
+   
+   Ubuntu 18:
+   
+   sudo apt-get install linux-headers-generic
+   sudo apt-get install libgtk2.0-dev
+ 
+  
+   Optional for all distributions (resolve dependencies), install them, if needed:
+    sudo apt-get install libxmu-dev libxaw7-dev libxt-dev
+   
+  For higher security and easier development we recommend a "non root" installation
+  of Harbour and HWGUI (You can ever use the newest code snapshot of Harbour and HWGUI).
+
+
+  1.) You need some entries in the .profile in the home directory of the desired
+      userid (sample):
+
+   # --- Harbour and HWGUI --
+   HARBOUR_INSTALL=$HOME/Harbour/core-master
+   PATH=$PATH:$HARBOUR_INSTALL/bin/linux/gcc
+   export PATH
+   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HARBOUR_INSTALL/lib/linux/gcc
+   export LD_LIBRARY_PATH
+   #  
+  
+   Modify the path entries to your own needs.
+   
+   Login to this userid new after modification, so that the
+   entries become valid.
+ 
+ 
+   2.) Build Harbour
+   Get the recent code snapshot and build Harbour following the installation instructions.
+   If Harbour was build complete, it is ready for HWGUI.
+   Some error messages appeared because of missing dependencies, ignore them.
+   Take care of them, if referenced Harbour extensions are used by your application.    
+
+   
+   3.) Build HWGUI following instructions above.
+
+   Now you should be able to build your application.  
+ 

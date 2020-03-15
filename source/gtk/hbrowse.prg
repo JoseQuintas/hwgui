@@ -208,6 +208,7 @@ CLASS HBrowse INHERIT HControl
    METHOD Rebuild()
    METHOD Activate()
    METHOD Init()
+   METHOD DefaultLang()         // Reset of messages to default value English
    METHOD onEvent( msg, wParam, lParam )
    METHOD AddColumn( oColumn )
    METHOD InsColumn( oColumn, nPos )
@@ -281,6 +282,14 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    ::Activate()
 
    RETURN Self
+
+
+METHOD DefaultLang() CLASS HBrowse
+   ::cTextTitME := "Memo Edit"   
+   ::cTextClose := "Close"   // Button 
+   ::cTextSave  := "Save"
+   ::cTextLockRec := "Can't lock the record!"
+   RETURN Self   
 
 METHOD Activate CLASS HBrowse
 
@@ -1819,6 +1828,11 @@ STATIC FUNCTION GetEventHandler( oBrw, msg, cod )
 STATIC FUNCTION VldBrwEdit( oBrw, fipos )
 
    LOCAL oColumn := oBrw:aColumns[fipos], nRec, fif, nChoic
+   LOCAL cErrMsgRecLock
+   /* Mysterious behavior of Harbour on Ubuntu and LinuxMINT:
+      Not ever found, that  ::cTextLockRec is not here
+      reachable, this function not member of HBROWSE class */  
+     cErrMsgRecLock := oBrw:cTextLockRec
 
    IF oBrw:oGet:nLastKey != GDK_Escape
       IF oColumn:aList != Nil
@@ -1861,7 +1875,8 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos )
             IF ( oBrw:alias ) -> ( RLock() )
                ( oBrw:alias ) -> ( Eval( oColumn:block,oBrw:varbuf,oBrw,fipos ) )
             ELSE
-               hwg_Msgstop( ::cTextLockRec )  /* Can't lock the record! */
+            /* Can't lock the record! */
+               hwg_Msgstop( cErrMsgRecLock )  
             ENDIF
          ELSE
             Eval( oColumn:block, oBrw:varbuf, oBrw, fipos )

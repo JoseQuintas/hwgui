@@ -214,6 +214,7 @@ CLASS HBrowse INHERIT HControl
    METHOD Rebuild()
    METHOD Activate()
    METHOD Init()
+   METHOD DefaultLang()         // Reset of messages to default value English
    METHOD onEvent( msg, wParam, lParam )
    METHOD Redefine( lType, oWnd, nId, oFont, bInit, bSize, bPaint, bEnter, bGfocus, bLfocus )
    METHOD AddColumn( oColumn )
@@ -283,6 +284,14 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
    ::Activate()
 
    RETURN Self
+
+
+METHOD DefaultLang() CLASS HBrowse
+   ::cTextTitME := "Memo Edit"   
+   ::cTextClose := "Close"   // Button 
+   ::cTextSave  := "Save"
+   ::cTextLockRec := "Can't lock the record!"
+   RETURN Self   
 
 METHOD Activate CLASS HBrowse
 

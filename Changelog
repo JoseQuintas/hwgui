@@ -8,6 +8,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-03-15 12:10 UTC+0100 Wilfried Brunken DF7BE
+  * source\winapi\hbrowse.prg  
+  * source\gtk\hbrowse.prg
+  * install.txt
+  * doc\hwgdoc.html
+  * doc\hwgdoc_classes.html
+    !
+    ! install.txt: 
+    ! Added package list for Ubuntu and LinuxMINT
+    ! hwgdoc.htm:
+    ! - Reference to install.txt
+    ! - Utility Hbmk is now Hbmk2
+    !
+    ! Task :
+    ! Multi Language Support for internal HWGUI dialogs:
+    ! Added:
+    ! METHOD DefaultLang()  CLASS HBrowse
+    ! // Reset of messages to default value English
+    ! Class docu updated
+
+
 2020-03-11 15:00 UTC+0100 Wilfried Brunken DF7BE
   * samples\dev\MingW-GTK\pfad.bat (New)
   * samples\dev\MingW-GTK\Readme.txt (New)

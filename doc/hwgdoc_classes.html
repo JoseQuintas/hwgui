@@ -391,7 +391,8 @@
       New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont ; 
          bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, 
          lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bRClick )
-      InitBrw( nType ) 
+      InitBrw( nType )
+      DefaultLang()                // Reset of messages to default value English 
       Rebuild() 
       AddColumn( oColumn ) 
       InsColumn( oColumn,nPos ) 

@@ -8,6 +8,39 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-03-19 10:50 UTC+0100 Wilfried Brunken DF7BE
+  * samples\sample.dbf (New)
+  * samples\sample.dbt (New) 
+  * source\gtk\hbrowse.prg
+    !  
+    ! sample.dbf/t: sample database,
+    ! Contains one field per type N C D L M
+    ! Open it with sample programs (a.prg,dbview.prg,...)
+    ! C and M field contains german umlaute, sharp "S",
+    ! Euro currency sign (CP858DE) , greek mue and degree sign.
+    !
+    !
+    ! Ticket #32: Blank lines click in BROWSE.
+    ! source\gtk\hbrowse.prg, METHOD ButtonUp(), at end of method added:
+    !   ::Refresh()
+    !   hwg_Setfocus( ::area )
+    ! Adding this 2 instructions, all the blank lines are repainted.
+    ! Feature copied (same in WinAPI): 
+    ! "<memo>" or "<MEMO>": lower case indicates empty memo field.
+    ! (A very helpful feature) 
+    !
+    ! HCEDIT for GTK in HBROWSE for GTK: Lines are truncated.
+    ! Setting of STYLE ES_HSCROLL has no effect.
+    ! The sizes for Memoedit increased:
+    ! The sizes of WinAPI are too small. Text was truncated at end of line.
+    ! (works well on WinAPI).
+    !
+    ! TO-DO (later ASAP by me): Codepage problem on Windows, store to DBF if modified.
+    ! After a Umlaut appeares the editing stops at this position.
+    ! Tested on LINUX and GTK Win cross development environment!
+
+
 2020-03-15 12:10 UTC+0100 Wilfried Brunken DF7BE
   * source\winapi\hbrowse.prg  
   * source\gtk\hbrowse.prg

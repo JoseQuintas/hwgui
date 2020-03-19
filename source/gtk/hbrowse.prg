@@ -1578,7 +1578,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
       Eval( ::aColumns[fif]:bHeadClick, Self, fif, xm, ym )
 
    ENDIF
-
+   hwg_Setfocus( ::area )
    RETURN Nil
 
 METHOD ButtonRDown( lParam ) CLASS HBrowse
@@ -1643,7 +1643,9 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
          ENDIF
       ENDIF
    ENDIF
-
+   
+   /* DF7BE : Ticket #33, blank lines repainted here, if lost */ 
+    ::Refresh()
    hwg_Setfocus( ::area )
 
    RETURN Nil
@@ -1789,13 +1791,16 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          * ===================================== *
          * Special dialog for memo edit (DF7BE)
          * ===================================== *
-            INIT DIALOG oModDlg title ::cTextTitME AT 0, 0 SIZE 400, 300  ON INIT { |o|o:center() }  
+            INIT DIALOG oModDlg title ::cTextTitME AT 0, 0 SIZE 610, 410  ON INIT { |o|o:center() }  
             mvarbuff := ::varbuf  && DF7BE: inter variable avoids crash at store
                // Debug: oModDlg:nWidth ==> set to 400
-               @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
-                    FONT ::oFont
-               @ 010, 252 ownerbutton owb2 TEXT ::cTextSave  size 80, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
-               @ 100, 252 ownerbutton owb1 TEXT ::cTextClose size 80, 24 ON CLICK { ||oModDlg:close() }
+//               @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
+// DF7BE: The sizes of WinAPI are too small. Text was truncated at end of line.
+               @ 0, 30 HCEDIT oEdit SIZE 600, 300 ;
+                    FONT ::oFont 
+               // old 010, 252 - 100, 252 - sizes 80,24 (too small)
+               @ 010, 340 ownerbutton owb2 TEXT ::cTextSave  size 100, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
+               @ 100, 340 ownerbutton owb1 TEXT ::cTextClose size 100, 24 ON CLICK { ||oModDlg:close() }
                  * serve memo field for editing
                 oEdit:SetText(mvarbuff)
             ACTIVATE DIALOG oModDlg
@@ -1956,7 +1961,7 @@ STATIC FUNCTION FldStr( oBrw, numf )
             cRes := iif( vartmp, "T", "F" )
 
          ELSEIF type == "M"
-            cRes := "<Memo>"
+            cRes := iif( Empty( vartmp ), "<memo>", "<MEMO>" )
 
          ELSEIF type == "O"
             cRes := "<" + vartmp:Classname() + ">"

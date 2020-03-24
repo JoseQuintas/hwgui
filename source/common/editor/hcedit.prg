@@ -193,6 +193,7 @@ CLASS HCEdit INHERIT HControl
    DATA   lVScroll
    DATA   nClientWidth
    DATA   nDocWidth
+   DATA   nLastKey     INIT 0
 
 #ifdef __GTK__
    DATA area
@@ -1122,7 +1123,10 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
 METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    LOCAL cLine, lUnsel := .T., lInvAll := .F., n, l, ntmp1, ntmp2
    LOCAL nLine, nDocWidth := ::nDocWidth
-
+   
+   // Store for last key (needed by memo edit)
+   ::nLastKey := nKeyCode
+ 
    IF nCtrl == Nil
       cLine := hwg_Getkeyboardstate( lParam )
       nCtrl := Iif( Asc( SubStr(cLine,0x12,1 ) ) >= 128, FCONTROL, 0 ) + ;

@@ -192,6 +192,7 @@ CLASS HBrowse INHERIT HControl
    DATA nScrollV  INIT 0
    DATA nScrollH  INIT 0
    DATA oGet, nGetRec
+   DATA oEdit
    DATA lBtnDbl   INIT .F.
    DATA nCursor   INIT 0
    DATA lSetAdj   INIT .F.
@@ -1725,7 +1726,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
    LOCAL fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
    LOCAL oColumn, type
-   LOCAL oEdit, mvarbuff , bMemoMod , owb1 , owb2 , oModDlg  
+   LOCAL mvarbuff , bMemoMod , owb1 , owb2 , oModDlg  
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
@@ -1796,20 +1797,21 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                // Debug: oModDlg:nWidth ==> set to 400
 //               @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
 // DF7BE: The sizes of WinAPI are too small. Text was truncated at end of line.
-               @ 0, 30 HCEDIT oEdit SIZE 600, 300 ;
+               @ 0, 30 HCEDIT ::oEdit SIZE 600, 300 ;
                     FONT ::oFont 
                // old 010, 252 - 100, 252 - sizes 80,24 (too small)
-               @ 010, 340 ownerbutton owb2 TEXT ::cTextSave  size 100, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
+               @ 010, 340 ownerbutton owb2 TEXT ::cTextSave  size 100, 24 ON Click { || mvarbuff := ::oEdit , omoddlg:close(), oModDlg:lResult := .T. }
                @ 100, 340 ownerbutton owb1 TEXT ::cTextClose size 100, 24 ON CLICK { ||oModDlg:close() }
                  * serve memo field for editing
-                oEdit:SetText(mvarbuff)
+                ::oEdit:SetText(mvarbuff)
             ACTIVATE DIALOG oModDlg
           * is modified ? (.T.) 
-          bMemoMod := oEdit:lUpdated
+          bMemoMod := ::oEdit:lUpdated
           IF bMemoMod
            * write out edited memo field
-           ::varbuf := oEdit:GetText()
-           * Store new contents
+           ::varbuf := ::oEdit:GetText()
+           * Store new memo contents
+            VldBrwEdit( Self, fipos , .T. )
           ENDIF
           // ::lEditing := .F.  
           * ===================================== *
@@ -1818,6 +1820,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    ENDIF
 
    RETURN Nil
+
 
 STATIC FUNCTION GetEventHandler( oBrw, msg, cod )
 
@@ -1830,16 +1833,30 @@ STATIC FUNCTION GetEventHandler( oBrw, msg, cod )
 
    RETURN 0
 
-STATIC FUNCTION VldBrwEdit( oBrw, fipos )
+STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo ) 
+* Purpose: Store edited contents
+* Parameter oEdit only used, if memo edit is used.
 
    LOCAL oColumn := oBrw:aColumns[fipos], nRec, fif, nChoic
-   LOCAL cErrMsgRecLock
+   LOCAL cErrMsgRecLock, bESCkey
    /* Mysterious behavior of Harbour on Ubuntu and LinuxMINT:
       Not ever found, that  ::cTextLockRec is not here
       reachable, this function not member of HBROWSE class */  
      cErrMsgRecLock := oBrw:cTextLockRec
 
-   IF oBrw:oGet:nLastKey != GDK_Escape
+   // Added case for memo edit (bmemo = .T.), because HCEDIT used
+   IF bmemo == NIL
+    bmemo := .F.
+   ENDIF
+   
+   // ESC key pressed ?
+   IF bmemo
+    bESCkey := iif( oBrw:oEdit:nLastKey != GDK_Escape , .F. , .T. ) /* Memo edit */
+   ELSE
+    bESCkey := iif( oBrw:oGet:nLastKey  != GDK_Escape , .F. , .T. ) /* GET */
+   ENDIF
+   
+   IF .NOT. bESCkey
       IF oColumn:aList != Nil
          IF ValType( oBrw:varbuf ) == 'N'
             oBrw:varbuf := nChoic
@@ -1891,15 +1908,20 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos )
          ENDIF
          oBrw:lUpdated := .T.
       ENDIF
-   ENDIF
+   ENDIF  /* GDK_Escape key */
 
    oBrw:Refresh()
    // Execute block after changes are made
-   IF oBrw:oGet:nLastKey != GDK_Escape .AND. oBrw:bUpdate != Nil
+   IF ( .NOT. bESCkey ) .AND. oBrw:bUpdate != Nil
       Eval( oBrw:bUpdate, oBrw, fipos )
    ENDIF
-   oBrw:oParent:DelControl( oBrw:oGet )
-   oBrw:oGet := Nil
+   IF bmemo
+     oBrw:oParent:DelControl( oBrw:oEdit )
+     oBrw:oEdit := Nil
+   ELSE
+     oBrw:oParent:DelControl( oBrw:oGet )
+     oBrw:oGet := Nil
+   ENDIF
    hwg_Setfocus( oBrw:area )
 
    RETURN .T.

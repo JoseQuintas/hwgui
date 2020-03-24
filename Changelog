@@ -8,6 +8,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-03-24 19:10 UTC+0100 Wilfried Brunken DF7BE
+  * source\common\editor\hcedit.prg
+  * source\gtk\hbrowse.prg
+    !
+    ! Task:
+    ! Modified Memo field now stored back to database
+    ! for GTK.
+    !
+    ! hbrowse.prg:
+    ! DATA oEdit
+    !  
+    ! STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo)
+    ! New parameter bmemo (.T. = store memo field)
+    !
+    ! Class HCEDIT:
+    ! return last key (needed by memo edit):
+    ! DATA nLastKey     INIT 0
+    !
+    ! class docu updated
+    !
+
 
 2020-03-22 13:30 UTC+0100 Wilfried Brunken DF7BE
   * samples\modtitle.prg (New)

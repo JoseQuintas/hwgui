@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-03-28 16:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/misc.c
+    * hwg_sleep( nMilliSec ) now receives milliseconds for compatibility with
+      winapi version.
+  * source\gtk\hbrowse.prg
+    * Small change in onEvent for compatibility with winapi version.
+
 2020-03-24 19:10 UTC+0100 Wilfried Brunken DF7BE
   * source\common\editor\hcedit.prg
   * source\gtk\hbrowse.prg

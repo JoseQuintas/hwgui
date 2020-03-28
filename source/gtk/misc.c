@@ -233,13 +233,13 @@ HB_FUNC( HWG_COLORRGB2N )
 HB_FUNC( HWG_SLEEP )
 {
    if( hb_parinfo( 1 ) )
-      sleep( hb_parnl( 1 ) );
+      usleep( hb_parnl( 1 ) * 1000 );
 }
 
 #define CHUNK_LEN 1024
 
-HB_FUNC( HWG_RUNCONSOLEAPP ) 
-{ 
+HB_FUNC( HWG_RUNCONSOLEAPP )
+{
     /* Ensure that output of command does interfere with stdout */
     fflush(stdin);
     FILE *cmd_file = (FILE *) popen( hb_parc(1), "r" );
@@ -265,12 +265,12 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
         if( iOutExist )
            fwrite( buf, 1, bytes_read, hOut );
     } while (bytes_read == CHUNK_LEN);
- 
+
     iExitCode = pclose(cmd_file);
     if( iOutExist )
        fclose( hOut );
 
-    hb_retni( iExitCode ); 
+    hb_retni( iExitCode );
 }
 
 HB_FUNC( HWG_RUNAPP )

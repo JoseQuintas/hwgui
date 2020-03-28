@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-03-28 23:30 UTC+0100 Wilfried Brunken DF7BE
+  * samples\gtk_samples\hwmingnw.bat  
+  * samples\dev\MingW-GTK\Readme.txt
+  * samples/gtk_samples/sleep.c (deleted)
+    ! After commit of r2819 by Alexander Kresin
+    ! the file sleep.c is not needed any more
+    ! for the cross development environment
+    ! on Windows GTK/MinGW.
+
+
 2020-03-28 16:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/misc.c
     * hwg_sleep( nMilliSec ) now receives milliseconds for compatibility with

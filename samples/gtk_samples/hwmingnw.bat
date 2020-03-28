@@ -72,13 +72,9 @@ set WIN_DLLS=-lcomctl32 -lole32 -lwinspool -loleaut32 -lshell32 -luuid -lwinmm
 
 %HRB_EXE% %PRGNAME%.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include -d__GTK__ %2
 gcc -I. -I%HRB_DIR%\include -Wall -c %PRGNAME%.c -o%PRGNAME%.o
-gcc -I. -Wall -c sleep.c -o sleep.o
-REM gcc -Wall -mwindows -o%1.exe %1.o -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib %GTK_LIB%  -Wl,--allow-multiple-definition -Wl,--start-group -lhwgtk -lhbxml -lprocmisc -lvm -lrdd -lmacro -lpp -lrtl -lpp -llang -lcommon -lcodepage -lnulsys  -ldbfntx  -ldbfcdx -ldbffpt -lhbsix -lgtnul -lgtcgi -lpcrepos -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lgtk-win32-2.0 -lgdk-win32-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangowin32-1.0 -lgdi32 -lpango-1.0 -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lintl -liconv -Wl,--end-group
 
 REM --- Link with GTK+ V2 =====
-REM gcc -Wall -mwindows -o%1.exe %1.o %GTK_INC% -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib %GTK_LIB%  -Wl,--allow-multiple-definition -Wl,--start-group  %HWGUI_LIBS% %HRB_LIBS% %GTK_LIBS% -lintl -liconv  %WIN_DLLS% -Wl,--end-group
-gcc -Wall -mwindows -o%PRGNAME%.exe %PRGNAME%.o sleep.o -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib %GTK_LIB%  -Wl,--allow-multiple-definition -Wl,--start-group  %HWGUI_LIBS% %HRB_LIBS% -lgtk-win32-2.0 -lgdk-win32-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangowin32-1.0 -lgdi32 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lintl -liconv -lgio-2.0  -lgdi32 -lpangocairo-1.0  -lgthread-2.0   %WIN_DLLS% -Wl,--end-group
-REM Hinzugefuegt: sleep.o -lgio-2.0  -lgdi32 -lpangocairo-1.0   -lgthread-2.0 
+gcc -Wall -mwindows -o%PRGNAME%.exe %PRGNAME%.o -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib %GTK_LIB%  -Wl,--allow-multiple-definition -Wl,--start-group  %HWGUI_LIBS% %HRB_LIBS% -lgtk-win32-2.0 -lgdk-win32-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangowin32-1.0 -lgdi32 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lintl -liconv -lgio-2.0  -lgdi32 -lpangocairo-1.0  -lgthread-2.0   %WIN_DLLS% -Wl,--end-group
 
 
 del %PRGNAME%.c

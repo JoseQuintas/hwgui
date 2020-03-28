@@ -207,9 +207,9 @@ Consult your preferred internet search engine.
        hwmingnw.bat a
        a.exe
   
-  5.) Copy 2 files to compile environment of your application
+  5.) Copy this file to compile environment of your application
         samples\gtk_samples\hwmingnw.bat
-        samples\gtk_samples\sleep.c
+  
 
         Compile your application with "hwmingnw.bat"
 

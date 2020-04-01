@@ -933,7 +933,7 @@ METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
 
    ::SetWrap( ::lWrap, .T. )
 
-#ifndef __WINDOWS__
+#ifndef __PLATFORM__Windows
    ::lUtf8 := .T.
    ::Convert( cPageIn := Iif( Empty(cPageIn), "UTF8",cPageIn ), cPageOut := "UTF8" )
 #else
@@ -2470,7 +2470,7 @@ Function hced_Line4Pos( oEdit, yPos )
 
 Function hced_Chr( oEdit, nCode )
 #ifndef __XHARBOUR__
-#ifndef __WINDOWS__
+#ifndef __PLATFORM__Windows
    IF oEdit:lUtf8; RETURN hwg_KeyToUtf8( nCode ); ENDIF
 #else
    IF oEdit:lUtf8; RETURN hb_utf8Chr( nCode ); ENDIF

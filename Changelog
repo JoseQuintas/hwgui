@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-04-01 19:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\common\editor\hcedit.prg
+    ! __WINDOWS__ is replaced by __PLATFORM__Windows to fix a
+      hwg_keyToUtf8 issue.
+
 2020-03-28 23:30 UTC+0100 Wilfried Brunken DF7BE
   * samples\gtk_samples\hwmingnw.bat  
   * samples\dev\MingW-GTK\Readme.txt

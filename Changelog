@@ -8,6 +8,43 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-04-03 00:30 UTC+0200 Wilfried Brunken DF7BE
+  * samples\dbview.prg
+  * source\winapi\hbrowse.prg  
+  * source\gtk\hbrowse.prg
+  * source\gtk\control.c
+  * source\winapi\misc.c
+  * source\gtk\misc.c
+    !
+    ! hbrowse.prg (WinAPI):
+    ! Translated spanish comments of WHT from
+    ! spanish to english
+    ! 
+    ! control.c:
+    ! HWG_SETTOOLTIPBALLOON() added as empty
+    ! function for compatibility purposes for GTK,
+    ! because feature is "Windows only".
+    ! Explanation in function docu added.
+    !
+    ! New Function:
+    !  hwg_getCentury()
+    ! Returns the value of the recent century setting.
+    !  Needed for fixing #18, function docu updated
+    ! 
+    ! Task:
+    ! #18 browse column/cell width:
+    ! Fixed in file gtk\hbrowse.prg and misc.c
+    ! Tested with sample dbview.prg and CLLOG.
+    ! Screen shot from sample program with
+    ! open file was posted with the ticket
+    ! for demonstration of modifications.
+    ! The ticket could be closed.
+    !
+    ! dbview.prg:
+    !  Checked for GTK, extensions made
+    !  for test of #18 bugfixing, for
+    !  details see inline comments.
+
 2020-04-01 19:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\common\editor\hcedit.prg
     ! __WINDOWS__ is replaced by __PLATFORM__Windows to fix a

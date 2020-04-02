@@ -18,6 +18,18 @@
    // 3) Se agreg¢ el Metodo "ShowSizes". Para poder ver la "width" de cada    //
    //    columna. 27.07.2002. WHT.                                             //
    //////////////////////////////////////////////////////////////////////////////
+   // Translation from spanish to english by DF7BE
+   //////////////////////////////////////////////////////////////////////////////
+   // Modifications and additions. 27.07.2002, WHT.de la Argentina //////////////
+   // 1) In the HColumn method, added the DATA "nJusHead" and "nJustLin",      //
+   //    to be able to justify the column headings and also the lines.         //
+   //    Default is DT_LEFT.                                                   //
+   //    0-DT_LEFT, 1-DT_RIGHT y 2-DT_CENTER. 27.07.2002. WHT.                 //
+   // 2) Variable "cargo" from the method Hbrowse:  Now it's codeblock is      //
+   //    executed in the CB.  27.07.2002. WHT                                  //
+   // 3) Method added "ShowSizes". In order to see the "width" of each         //
+   //    column. 27.07.2002. WHT.                                              //
+   //////////////////////////////////////////////////////////////////////////////
 
 #include "hwgui.ch"
 #include "inkey.ch"
@@ -57,6 +69,7 @@ CLASS HColumn INHERIT HObject
    DATA length INIT 0
    DATA dec
    DATA nJusHead, nJusLin        // Para poder Justificar los Encabezados de las columnas y lineas.
+                                 // To be able to justfy the headings of the columns and lines
    // WHT. 27.07.2002
    DATA tcolor, bcolor, brush
    DATA oFont
@@ -96,8 +109,8 @@ METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::length    := length
    ::dec       := dec
    ::lEditable := iif( lEditable != Nil, lEditable, .F. )
-   ::nJusHead  := iif( nJusHead == Nil,  DT_LEFT , nJusHead )  // Por default
-   ::nJusLin   := iif( nJusLin  == Nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda
+   ::nJusHead  := iif( nJusHead == Nil,  DT_LEFT , nJusHead )  // Por default      / For default
+   ::nJusLin   := iif( nJusLin  == Nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda / Justify left
    ::picture   := cPict
    ::bValid    := bValid
    ::bWhen     := bWhen

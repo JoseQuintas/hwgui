@@ -7,15 +7,43 @@
  * Copyright 2005 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  */
+    * Status:
+    *  WinAPI   :  Yes
+    *  GTK/Linux:  Yes
+    *  GTK/Win  :  Yes
 
+/* April 2020: Extensions by DF7BE testing bugfixing for ticket #18
+  - Ready for GTK, checked
+  - More Codepages:
+     - IBM858DE for Euro Currency sign (only for data), german,
+       (Recent code snapshot for Harbour needed, otherwise use
+        DE850)
+     - DEWIN (for Euro currency sign)
+     - UTF8 for LINUX
+  - SET and GET century settings
+  - Date format selectable:
+    AMERICAN (default), ANSI, USA, GERMAN, BRITISH/FRENCH, ITALIAN, JAPAN
+    (For Russia use german format)
+*/
 
 #include "hwgui.ch"
+#ifdef __GTK__
 #include "gtk.ch"
+#endif
 
 REQUEST HB_CODEPAGE_RU866
 REQUEST HB_CODEPAGE_RUKOI8
 REQUEST HB_CODEPAGE_RU1251
+* 858 : same as 850 with Euro Currency sign
+REQUEST HB_CODEPAGE_DE858
+* Windows codepage 
+REQUEST HB_CODEPAGE_DEWIN
+#ifdef __LINUX__
+* LINUX Codepage
+REQUEST HB_CODEPAGE_UTF8EX
+#endif
 
+REQUEST DBFNTX
 REQUEST DBFCDX
 REQUEST DBFFPT
 
@@ -30,11 +58,15 @@ Local oWndMain, oPanel
 Memvar oBrw, oFont
 Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
 
-   RDDSETDEFAULT( "DBFCDX" )
+* Best default index format is NTX
+   RDDSETDEFAULT( "DBFNTX" )
+*  RDDSETDEFAULT( "DBFCDX" )
    
    oFont := HFont():Add( "Courier",0,-14 )
    INIT WINDOW oWndMain MAIN TITLE "Dbf browse" AT 200,100 SIZE 300,300
 
+   * Attention ! Menu Structure errors were not be detected by the Harbour compiler.
+   *             In this case, the menu completely disappeared at run time.
    MENU OF oWndMain
      MENU TITLE "&File"
        MENUITEM "&New" ACTION ModiStru( .T. )
@@ -72,12 +104,38 @@ Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
           MENUITEMCHECK "EN" ACTION hb_cdpSelect( "EN" )
           MENUITEMCHECK "RUKOI8" ACTION hb_cdpSelect( "RUKOI8" )
           MENUITEMCHECK "RU1251" ACTION hb_cdpSelect( "RU1251" )
+          MENUITEMCHECK "DEWIN"  ACTION hb_cdpSelect( "DEWIN" )
+#ifdef __LINUX__
+          MENUITEMCHECK "UTF-8" ACTION  hb_cdpSelect( "UTF8EX" )
+#endif
        ENDMENU
        MENU TITLE "&Data's codepage"
           MENUITEMCHECK "EN" ACTION SetDataCP( "EN" )
           MENUITEMCHECK "RUKOI8" ACTION SetDataCP( "RUKOI8" )
           MENUITEMCHECK "RU1251" ACTION SetDataCP( "RU1251" )
           MENUITEMCHECK "RU866"  ACTION SetDataCP( "RU866" )
+          MENUITEMCHECK "DEWIN"  ACTION SetDataCP( "DEWIN" )
+          MENUITEMCHECK "IBM858DE (Euro)" ACTION SetDataCP( "DE858" )
+#ifdef __LINUX__
+          MENUITEMCHECK "UTF-8"  ACTION SetDataCP( "UTF8EX" )
+#endif
+       ENDMENU
+       MENU TITLE "Se&ttings"
+        MENU TITLE "&Century"
+          MENUITEM "Get recent setting" ACTION FSET_CENT_GET()
+          SEPARATOR
+          MENUITEMCHECK "ON"  ACTION FSET_CENT_ON()
+          MENUITEMCHECK "OFF" ACTION FSET_CENT_OFF()
+        ENDMENU
+        MENU TITLE "&Date Format"
+           MENUITEMCHECK "AMERICAN       (MM/DD/YY)" ACTION SET_DATE_F("AMERICAN")
+           MENUITEMCHECK "ANSI           (YY.MM.DD)" ACTION SET_DATE_F("ANSI")
+           MENUITEMCHECK "USA            (MM-DD-YY)" ACTION SET_DATE_F("USA")
+           MENUITEMCHECK "BRITISH/FRENCH (DD/MM/YY)" ACTION SET_DATE_F("BRITISH")
+           MENUITEMCHECK "GERMAN         (DD.MM.YY)" ACTION SET_DATE_F("GERMAN" )
+           MENUITEMCHECK "ITALIAN        (DD-MM-YY)" ACTION SET_DATE_F("ITALIAN")
+           MENUITEMCHECK "JAPAN          (YY.MM.DD)" ACTION SET_DATE_F("JAPAN")
+        ENDMENU 
        ENDMENU
      ENDMENU
      MENU TITLE "&Help"
@@ -719,4 +777,41 @@ Memvar oBrw
    ENDIF
 
 Return Nil
-                                                
+
+FUNCTION FSET_CENT_GET
+ LOCAL bC
+ IIF( hwg_getCentury(), bC := "ON", bC := "OFF")
+  hwg_MsgInfo("The current setting is: SET CENTURY " + bC, "Display Century Setting")
+RETURN Nil
+ 
+FUNCTION FSET_CENT_ON
+ SET CENTURY ON
+RETURN Nil
+
+FUNCTION FSET_CENT_OFF
+SET CENTURY OFF
+RETURN Nil
+
+
+FUNCTION SET_DATE_F(cc)
+  * SET DATE does not accept macro operator & or (...), syntax error
+  DO CASE
+   CASE cc == "GERMAN"
+    SET DATE GERMAN
+   CASE cc == "ANSI"
+     SET DATE ANSI
+  CASE cc == "USA"
+     SET DATE USA
+  CASE cc == "JAPAN"
+     SET DATE JAPAN 
+   CASE cc == "BRITISH"
+     SET DATE BRITISH
+   CASE cc == "ITALIAN"
+     SET DATE ITALIAN
+   OTHERWISE
+    SET DATE AMERICAN
+ ENDCASE
+ 
+RETURN Nil
+
+                                                 

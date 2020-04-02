@@ -1125,6 +1125,14 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_SetTooltipBalloon( lBalloon )</strong> (Windows only)
+   <br><br>
+      &nbsp;The tooltip balloon is a nice gimmick of Windows and is not available in GTK,<br>
+      &nbsp;so this function is an "empty function".<br>
+      &nbsp;For compatible purposes you can set<br>
+      &nbsp;&nbsp;hwg_Settooltipballoon(.T.)<br>
+      &nbsp;as you like in your app, but the function call has no effect in GTK.<br>
+      &nbsp;In GTK, the tooltip is always displayed in an rectangle.<br>
+   <br>
    <p></p>
 
    <br><strong class="subhead"> hwg_GetTooltipBalloon()</strong> (Windows only)
@@ -1311,6 +1319,15 @@
 
    <br><strong class="subhead"><a name="Functions8" href="hwgdoc.html#_Functions8">
    5.8.  Miscellaneous functions.</a></strong><br>
+   <p></p>
+   <br><strong class="subhead">hwg_getCentury()</strong>
+   <br>Returns the value of the recent century setting.
+   <ul>
+     <li> (set it with command "SET CENTURY ON|OFF")
+     <li>.F. : OFF
+     <li>.T. : ON
+   </ul>
+
    <p></p>
    <br><strong class="subhead"> hwg_GetItemByName( arr, cName )</strong> 
    <br>Returns an object from an array by its name, which is kept as :objname.

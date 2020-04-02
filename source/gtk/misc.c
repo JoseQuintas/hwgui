@@ -14,6 +14,7 @@
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
+#include "hbset.h"
 #include "item.api"
 #include <unistd.h>
 #include "gtk/gtk.h"
@@ -283,3 +284,10 @@ HB_FUNC( HWG_SHELLEXECUTE )
    const gchar * uri = hb_parc(1);
    hb_retl( gtk_show_uri( NULL, uri, GDK_CURRENT_TIME, NULL ) );
 }
+
+HB_FUNC( HWG_GETCENTURY )
+{
+  HB_BOOL centset = hb_setGetCentury();
+  hb_retl(centset);
+} 
+

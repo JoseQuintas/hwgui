@@ -47,6 +47,7 @@ CLASS HColumn INHERIT HObject
    DATA length INIT 0
    DATA dec
    DATA nJusHead, nJusLin        // Para poder Justificar los Encabezados de las columnas y lineas.
+                                 // To be able to justfy the headings of the columns and lines
    // WHT. 27.07.2002
    DATA tcolor, bcolor, brush
    DATA oFont
@@ -86,8 +87,8 @@ METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::length    := length
    ::dec       := dec
    ::lEditable := iif( lEditable != Nil, lEditable, .F. )
-   ::nJusHead  := iif( nJusHead == Nil,  DT_LEFT , nJusHead )  // Por default
-   ::nJusLin   := iif( nJusLin  == Nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda
+   ::nJusHead  := iif( nJusHead == Nil,  DT_LEFT , nJusHead )  // Por default      / For default
+   ::nJusLin   := iif( nJusLin  == Nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda / Justify left
    ::picture   := cPict
    ::bValid    := bValid
    ::bWhen     := bWhen
@@ -476,7 +477,12 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
       ENDIF
       oColumn:length := Max( oColumn:length, Len( oColumn:heading ) )
    ENDIF
-
+   // DF7BE: If century is on, the length of date field must set to 10
+   IF oColumn:type == "D"
+     IF hwg_getCentury()
+      oColumn:length := Max(oColumn:length,10)
+     ENDIF
+   ENDIF
    RETURN Nil
 
 METHOD DelColumn( nPos ) CLASS HBrowse
@@ -627,7 +633,7 @@ METHOD Rebuild( hDC ) CLASS HBrowse
             ENDIF
          NEXT
       ELSE
-         xSize := Round( ( nColLen ) * arr[2], 0 )
+         xSize := Round( ( nColLen ) * arr[2] , 0 )
       ENDIF
 
       IF oColumn:length < 0
@@ -679,7 +685,6 @@ METHOD Paint()  CLASS HBrowse
    ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::nRowTextHeight * ::nHeadRows + ::aHeadPadding[2] + ::aHeadPadding[4], 0 ) + i
    ::x2 := aCoors[ 3 ] - i
    ::y2 := aCoors[ 4 ] - i
-
    ::nRecords := Eval( ::bRcou, Self )
    IF ::nCurrent > ::nRecords .AND. ::nRecords > 0
       ::nCurrent := ::nRecords
@@ -842,7 +847,7 @@ METHOD DrawHeader( hDC, nColumn, x1, y1, x2, y2 ) CLASS HBrowse
 
    IF ValType( oColumn:heading ) == "C"
       hwg_Drawtext( hDC, oColumn:heading, x1 + 1 + ::aHeadPadding[1],    ;
-         y1 + 1 + ::aHeadPadding[2], x2 - ::aHeadPadding[3], ;
+         y1 + 1 + ::aHeadPadding[2], x2 + 1 + ::aHeadPadding[3], ;
          y1 + nHeight + ::aHeadPadding[2], oColumn:nJusHead )
    ELSE
       FOR nLine := 1 TO Len( oColumn:heading )
@@ -1098,7 +1103,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                   ENDIF
 
                   IF !Empty( sviv := AllTrim( FLDSTR( Self, nCol ) ) )
-                     hwg_Drawtext( hDC, sviv, x + ::aPadding[1], y1 + ::aPadding[2], x2 - ::aPadding[3], y2 - 1 - ::aPadding[4], oColumn:nJusLin, .T. )
+                     hwg_Drawtext( hDC, sviv, x + ::aPadding[1], y1 + ::aPadding[2], x2 + 1 + ::aPadding[3], y2 - 1 - ::aPadding[4], oColumn:nJusLin, .T. )
                   ENDIF
                   IF !Empty( aCB := hwg_getPaintCB( aCB, PAINT_LINE_ITEM ) )
                      FOR j := 1 TO Len( aCB )
@@ -2158,3 +2163,4 @@ FUNCTION hwg_getPaintCB( arr, nId )
    ENDIF
 
    RETURN aRes
+  

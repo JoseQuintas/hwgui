@@ -17,6 +17,7 @@
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
+#include "hbset.h"
 
 #include "missing.h"
 
@@ -1072,3 +1073,10 @@ BOOL hb_itemEqual( PHB_ITEM pItem1, PHB_ITEM pItem2 )
    return fResult;
 }
 #endif
+
+HB_FUNC( HWG_GETCENTURY )
+{
+  HB_BOOL centset = hb_setGetCentury();
+  hb_retl(centset);
+}
+

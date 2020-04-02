@@ -988,6 +988,18 @@ HB_FUNC( HWG_SETTOOLTIPTITLE )
    g_free( gcTitle );
 }
 
+HB_FUNC( HWG_SETTOOLTIPBALLOON )
+{
+  /* Empty function added by DF7BE
+   The tooltip balloon is a nice gimmick of Windows and is not available in GTK.
+   For compatible purposes you can set
+     hwg_Settooltipballoon(.T.)
+   as you like in your app, but the function call has no effect in GTK.
+   In GTK, the tooltip is displayed in an rectangle.
+      
+  */
+}
+
 static gint cb_timer( gchar * data )
 {
    HB_LONG p1;

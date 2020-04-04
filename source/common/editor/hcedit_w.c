@@ -164,8 +164,8 @@ TEDFONT * ted_setfont( TEDIT * pted, HFONT hFont, int iNum, short int bPrn  )
    if( iNum >= pted->iFonts )
    {
       pted->iFonts += NUMBER_OF_FONTS;
-      pted->pFontsScr = hb_xrealloc( pted->pFontsScr, sizeof( TEDFONT ) * pted->iFonts );
-      pted->pFontsPrn = hb_xrealloc( pted->pFontsPrn, sizeof( TEDFONT ) * pted->iFonts );
+      pted->pFontsScr = ( TEDFONT * ) hb_xrealloc( pted->pFontsScr, sizeof( TEDFONT ) * pted->iFonts );
+      pted->pFontsPrn = ( TEDFONT * ) hb_xrealloc( pted->pFontsPrn, sizeof( TEDFONT ) * pted->iFonts );
    }
 
    pFont = ( (bPrn)? pted->pFontsPrn : pted->pFontsScr ) + iNum;

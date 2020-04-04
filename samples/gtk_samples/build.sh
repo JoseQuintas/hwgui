@@ -1,5 +1,21 @@
 #!/bin/bash
+#
+# build.sh
+# 
+# $Id$
+#
+# Shell script building HWGUI samples for LINUX/GTK
+#
+# Modify path to Harbour to your own needs
 export HB_ROOT=../../..
+
+if [ "$1" == "" ]; then
+  echo "Usage: $0 <filename without or with extension .prg> [<additional Harbour options>]"
+  exit
+fi
+# remove file extension
+FILENAME=$1
+PGM_NAME="${FILENAME%.*}" 
 
 if [ "x$HB_ROOT" = x ]; then
 export HRB_BIN=/usr/local/bin
@@ -9,6 +25,7 @@ else
 export HRB_BIN=$HB_ROOT/bin/linux/gcc
 export HRB_INC=$HB_ROOT/include
 export HRB_LIB=$HB_ROOT/lib/linux/gcc
+export HRB_EXE=$HRB_BIN/harbour
 fi
 
 export SYSTEM_LIBS="-lm"
@@ -17,5 +34,6 @@ export HWGUI_LIBS="-lhwgui -lprocmisc -lhbxml -lhwgdebug"
 export HWGUI_INC=../../include
 export HWGUI_LIB=../../lib
 
-$HRB_BIN/harbour $1 -n -i$HRB_INC -i$HWGUI_INC -w2 -d__LINUX__ $2
-gcc $1.c -o$1 -I $HRB_INC -L $HRB_LIB -L $HWGUI_LIB -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS -Wl,--end-group `pkg-config --cflags gtk+-2.0` `pkg-config gtk+-2.0 --libs` $SYSTEM_LIBS
+$HRB_EXE $PGM_NAME -n -i$HRB_INC -i$HWGUI_INC -w2 -d__LINUX__ $2
+gcc $PGM_NAME.c -o$PGM_NAME -I $HRB_INC -L $HRB_LIB -L $HWGUI_LIB -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS -Wl,--end-group `pkg-config --cflags gtk+-2.0` `pkg-config gtk+-2.0 --libs` $SYSTEM_LIBS
+#

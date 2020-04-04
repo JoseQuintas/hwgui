@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-04-04 15:00 UTC+0200 Wilfried Brunken DF7BE
+  * source\common\editor\hcedit_w.c
+  * samples\gtk_samples\build.sh
+  * samples\dbview.prg  
+  * samples\Readme.txt (New)
+    ! - Feature request #22 from Alex Strickland:
+    !   Cast in hcedit_w.c  
+    !   Tested MingW+LinuxMINT, OK
+    ! - Readme.txt: List of WinAPI samples
+    !   with description and error status
+    ! - dbview.prg:
+    !   Best default index format is NTX.
+    ! - build.sh:
+    !   Remove file extension, hint for
+    !   usage and Harbour path, HRB_EXE var.
+
+
 2020-04-03 00:30 UTC+0200 Wilfried Brunken DF7BE
   * samples\dbview.prg
   * source\winapi\hbrowse.prg  

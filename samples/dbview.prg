@@ -1,5 +1,5 @@
 /*
- *$Id: dbview.prg,v 1.4 2006/09/13 15:47:24 alkresin Exp $
+ *$Id$
  *
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * dbview.prg - dbf browsing sample
@@ -24,6 +24,7 @@
   - Date format selectable:
     AMERICAN (default), ANSI, USA, GERMAN, BRITISH/FRENCH, ITALIAN, JAPAN
     (For Russia use german format)
+  - Best default index format is NTX
 */
 
 #include "hwgui.ch"
@@ -335,7 +336,7 @@ Return Nil
 
 Static Function OpenIndex()
 Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Local fname := hwg_Selectfile( "index files( *.cdx )", "*.cdx", mypath )
+Local fname := hwg_Selectfile( "index files( *.ntx )", "*.ntx", mypath )
 Memvar oBrw
 
    IF Len( oBrw:aColumns ) == 0

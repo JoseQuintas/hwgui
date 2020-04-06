@@ -8,6 +8,31 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-04-06 22:00 UTC+0200 Wilfried Brunken DF7BE
+  * clean.bat (New)
+  * samples\tstsplash.prg
+  * samples\Readme.txt
+  * source\common\procmisc\procs7.prg
+  * image\hwgui.png (New)
+  * makefile.gcc
+  * makemngw.bat
+  * todo.txt
+  * source\common\editor\hcedit.prg
+    ! clean.bat: Extended clean, this BAT
+    !  removes all *.o,  *.a and *.exe
+    !  of a HWGUI build with samples and utils.
+    ! tstsplash.prg: Sample	now working (WinAPI)
+    ! procs7.prg: new function hwg_GetDirSep(), docu updated
+    ! hwgui.png: PNG for experiments
+    ! makefile.gcc: hsplash.prg added
+    ! makemngw.bat: CLEAN: Do not delete libpcre.a
+    ! (GTK cross development environment)
+    ! todo.txt: Added list of my tasks
+    !  List of tickets to be closed.
+    ! Support request #21 from Alex Strickland:
+    ! hcedit.prg: #ifndef __PLATFORM__WINDOWS
+
+
 2020-04-04 15:00 UTC+0200 Wilfried Brunken DF7BE
   * source\common\editor\hcedit_w.c
   * samples\gtk_samples\build.sh

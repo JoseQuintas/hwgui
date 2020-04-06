@@ -1,3 +1,24 @@
+2020-04-06:
+Task for Alexander Kresin:
+Close Tickets created by DF7BE:
+ Bugs:
+  6,7,8,9,10,11,13,15,17,18,19,20,21,23,24,25,26,29,30,31,32,33
+ Feature requests:
+  10,17
+
+Tasks by DF7BE
+ - Support request #15: GTK port for GET .... DATEPICKER
+ - GTK port for LISTBOX (nice to have for CLLOG)
+ - Memo Edit Dialog: Close should dismiss modifications
+   (lresult wrong value)
+ - Try to get all samples working.
+     Recent: tstsplash.prg, works for WinAPI,
+     but background on GTK empty:
+     INIT DIALOG ... BACKGROUND BITMAP ... 
+
+
+=========================================================
+
 - MDICHILD,  the controls ENTER, TAB,... not functions how in DIALOG
 - MAIN MDI, background bitmap not function perfectly, only flick a bitmap and change for the default background color
 - DIALOG NOMODAL, always stay in a TOP, if you onpen a CHILD it go to DIALOG'S back, can't bring to FRONT

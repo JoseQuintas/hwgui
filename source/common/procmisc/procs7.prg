@@ -168,3 +168,13 @@ FUNCTION NextItem( stroka, lFirst, cSep )
    ENDIF
 
    RETURN ""
+
+FUNCTION hwg_GetDirSep()
+* returns the directory seperator character OS dependant
+#ifdef __PLATFORM__WINDOWS
+ RETURN "\"
+#else
+ RETURN "/"
+#endif
+
+* ===== EOF of proc7.prg =====

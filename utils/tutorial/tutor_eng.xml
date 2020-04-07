@@ -796,7 +796,9 @@ Local bCol2 := {|o,h,x1,y1,x2,y2|
    //   using a user-defined codeblock to paint a cell.
    // Note, that the HBitmap():AddStandard() receives numerical id for WinAPI
    //   and a string for GTK.
-   #ifndef __PLATFORM__UNIX
+   //
+   // or #ifndef __GTK__ ?
+   #ifdef __PLATFORM__WINDOWS
       oBitmap := HBitmap():AddStandard( OBM_BTNCORNERS )
       aStock := { OBM_BTNCORNERS, OBM_BTSIZE, ;
          OBM_CHECK, OBM_CHECKBOXES, OBM_CLOSE, OBM_REDUCE, ;

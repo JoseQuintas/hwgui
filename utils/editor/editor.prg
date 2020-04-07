@@ -15,7 +15,7 @@
 
 #define MAX_RECENT_FILES    6
 
-#ifdef __PLATFORM__UNIX
+#ifdef __GTK__
 #include "gtk.ch"
 #define CURS_HAND GDK_HAND1
 #else
@@ -141,7 +141,7 @@ FUNCTION Main ( fName )
       hb_cdpSelect( "UTF8" )
    ENDIF
 
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
    PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 13
    PREPARE FONT oFontP NAME "Sans" WIDTH 0 HEIGHT 12
 #else
@@ -157,7 +157,7 @@ FUNCTION Main ( fName )
    INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
       AT 200, 0 SIZE 600, 300 FONT oFont
 
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
    @ 80, 0 PANEL oToolBar SIZE oMainWindow:nWidth-80, 30 STYLE SS_OWNERDRAW ;
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
    @ 0,2 COMBOBOX oComboSiz ITEMS aComboSiz INIT Ascan( aComboSiz,cComboSizDef ) ;
@@ -357,7 +357,9 @@ FUNCTION OpenFile( fname, lAdd )
       CloseFile()
    ENDIF
    IF Empty( fname )
-#ifdef __PLATFORM__UNIX
+
+* or #ifdef __GTK__ ?
+#ifndef __PLATFORM__WINDOWS
       fname := hwg_SelectfileEx( ,, { { "HwGUI Editor files", "*.hwge" }, { "All files", "*" } } )
 #else
       fname := hwg_Selectfile( { "HwGUI Editor files","All files" }, { "*.hwge","*.*" }, Curdir() )
@@ -384,10 +386,12 @@ STATIC FUNCTION SaveFile( lAs, lHtml )
    LOCAL fname
 
    IF lAs .OR. Empty( oEdit:cFileName )
-#ifdef __PLATFORM__UNIX
+
+#ifndef __PLATFORM__WINDOWS
+      /* GTK only */
       fname := hwg_SelectfileEx( ,, { Iif(Empty(lHtml),{"HwGUI Editor files","*.hwge"},{"Html files","*.html"}), { "All files", "*" } } )
 #else
-      fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() )
+      fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() ) /* Windows only */
 #endif
       IF !Empty( fname )
          IF Empty( hb_FnameExt( fname ) )
@@ -746,11 +750,7 @@ STATIC FUNCTION textTab( oTab, aAttr, nTop )
    }
 
    IF nTop == Nil
-#ifdef __PLATFORM__UNIX
-      nTop := 10
-#else
-      nTop := 40
-#endif
+     nTop := GetVal_nTop()
    ENDIF
 
    IF !Empty( aAttr )
@@ -916,11 +916,7 @@ STATIC FUNCTION setPara()
    PRIVATE nSize := Ascan( oComboSiz:aItems,cComboSizDef ), nsb, nfb
    PRIVATE lb := .F., li := .F., lu := .F., ls := .F., lbb, lib, lub, lsb
 
-#ifdef __PLATFORM__UNIX
-   nTop := 10
-#else
-   nTop := 40
-#endif
+   nTop := GetVal_nTop()
 
    IF !Empty( oEdit:aPointM2[P_Y] ) .AND. oEdit:aPointM2[P_Y] != oEdit:aPointM1[P_Y]
       lFew := .T.
@@ -1079,11 +1075,7 @@ STATIC FUNCTION setSpan()
    PRIVATE nSize := Ascan( oComboSiz:aItems,cComboSizDef ), nsb, nfb
    PRIVATE lb := .F., li := .F., lu := .F., ls := .F., lbb, lib, lub, lsb
 
-#ifdef __PLATFORM__UNIX
-   nTop := 10
-#else
-   nTop := 40
-#endif
+   nTop := GetVal_nTop()
 
    IF !Empty( oEdit:aPointM2[P_Y] ) .OR. !Empty( oEdit:aTdSel[2] )
    ELSE
@@ -1240,11 +1232,7 @@ STATIC FUNCTION setBlock()
    nWidth := Iif( Empty(aStruTbl[OB_TWIDTH]), 100, Abs(aStruTbl[OB_TWIDTH]) )
    nAlign := aStruTbl[OB_TALIGN] + 1
 
-#ifdef __PLATFORM__UNIX
-   nTop := 10
-#else
-   nTop := 40
-#endif
+   nTop := GetVal_nTop()
 
    INIT DIALOG oDlg TITLE "Set block"  ;
       AT 20, 30 SIZE 460, 460 FONT HWindow():GetMain():oFont
@@ -1364,11 +1352,7 @@ STATIC FUNCTION setTable( lNew )
    PRIVATE nSize := Ascan( oComboSiz:aItems,cComboSizDef ), nsb, nfb
    PRIVATE lb := .F., li := .F., lu := .F., ls := .F., lbb, lib, lub, lsb
 
-#ifdef __PLATFORM__UNIX
-   nTop := 10
-#else
-   nTop := 40
-#endif
+   nTop := GetVal_nTop()
 
    IF lNew == ( Valtype(oEdit:aStru[nL,1,OB_TYPE]) == "C" .AND. oEdit:aStru[nL,1,OB_TYPE] == "tr" )
       RETURN Nil
@@ -2062,7 +2046,7 @@ STATIC FUNCTION UrlLaunch( oEdi, cAddr )
       IF !Empty( cWebBrow )
          hwg_RunApp( cWebBrow + " " + cAddr )
       ELSE
-#ifndef __PLATFORM__UNIX
+#ifdef __PLATFORM__WINDOWS
          hwg_Shellexecute( cAddr )
 #endif
       ENDIF
@@ -2362,3 +2346,13 @@ STATIC FUNCTION About()
    hced_Setfocus( oEdit:hEdit )
 
    RETURN Nil
+   
+STATIC FUNCTION GetVal_nTop
+* or #ifdef __GTK__ ?
+#ifndef __PLATFORM__WINDOWS
+   RETURN 10
+#else
+   RETURN 40
+#endif
+
+* ================== EOF of editor.prg =======================

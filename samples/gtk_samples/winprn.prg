@@ -1,6 +1,7 @@
 /*
  * HWinPrn using sample
  * 
+ * $Id$
  *
  * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
@@ -28,7 +29,7 @@ REQUEST HB_CODEPAGE_DE850
 * Windows codepage 
 REQUEST HB_CODEPAGE_DEWIN
 
-#ifdef __LINUX__
+#ifndef __PLATFORM__WINDOWS
 * LINUX Codepage
 REQUEST HB_CODEPAGE_UTF8
 #endif
@@ -41,7 +42,7 @@ LOCAL ctest1
 
 #ifdef CHARSET_RU
 * Initialize sequence for printer (Russiam)
-#ifdef __PLATFORM__Linux__
+#ifndef __PLATFORM__WINDOWS
    oWinPrn := HWinPrn():New( ,"RU866","RUKOI8" , , 204 )
    oWinPrn:StartDoc( .T.,"temp_a2.ps" )
 #else
@@ -55,7 +56,7 @@ LOCAL ctest1
 
 * Initialize sequence for printer (German)
 
-#ifdef __PLATFORM__Linux__
+#ifndef __PLATFORM__WINDOWS
    oWinPrn := HWinPrn():New( ,"DE850","UTF8" )
    oWinPrn:StartDoc( .T.,"temp_a2.ps" )
 #else

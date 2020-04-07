@@ -134,7 +134,7 @@ FUNCTION AddPath( fname, cPath )
 
    IF Empty( FilePath( fname ) ) .AND. !Empty( cPath )
       IF !( Right( cPath,1 ) $ "\/" )
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
          cPath += "/"
 #else
          cPath += "\"

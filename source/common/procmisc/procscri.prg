@@ -11,7 +11,7 @@
 #include "fileio.ch"
 #define __WINDOWS__
 
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
    #define DEF_SEP      '/'
    #define DEF_CH_SEP   '\'
 #else

@@ -565,7 +565,8 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd, nFrom ) CLASS HCEdiExt
    
    RETURN ::Super:SetText( aText, cPageIn, cPageOut )
 
-#ifdef __PLATFORM__UNIX
+* or #ifdef __GTK__ ?
+#ifndef __PLATFORM__WINDOWS
    #define MESS_CHAR  WM_KEYDOWN
 #else
    #define MESS_CHAR  WM_CHAR

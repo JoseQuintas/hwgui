@@ -119,7 +119,7 @@
 #define MENU_BRP         1909
 #define MENU_CMDLINE     1910
 
-#ifndef __PLATFORM__UNIX
+#ifdef __PLATFORM__WINDOWS
 REQUEST HWG_SAVEFILE, HWG_SELECTFOLDER
 #endif
 REQUEST GETENV, HB_FGETDATETIME
@@ -199,7 +199,7 @@ FUNCTION Main( ... )
    ReadHrb()
 
    IF Empty( oMainFont )
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
       oMainFont := HFont():Add( "Sans", 0, 12, 400, 4, , , , , .T. )
 #else
       PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT - 15 CHARSET 4
@@ -732,7 +732,7 @@ STATIC FUNCTION SetMode( newMode )
    oSayState:Setcolor( aStates[ newMode,2 ], aStates[ newMode,3 ], .T. )
    IF newMode == MODE_INPUT
       oBtnExp:Enable()
-#if defined( __PLATFORM__UNIX )
+#ifndef __PLATFORM__WINDOWS
 #else
       hwg_SetForeGroundWindow( HWindow():GetMain():handle )
 #endif
@@ -2199,7 +2199,7 @@ STATIC FUNCTION About()
    @ 20, 30 SAY "HwGUI Debugger" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
    @ 20, 60 SAY "Version 2.03" SIZE 300, 24 STYLE SS_CENTER ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
-#if !defined( __PLATFORM__UNIX )
+#ifdef __PLATFORM__WINDOWS
    @ 20, 90 SAY "http://www.kresin.ru/debugger.html" ;
       LINK "http://www.kresin.ru/debugger.html" ;
       SIZE 300, 24 STYLE SS_CENTER  ;

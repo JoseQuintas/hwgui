@@ -33,7 +33,7 @@ REQUEST HB_CODEPAGE_UTF8
 #define HILIGHT_QUOTE   3
 #define HILIGHT_COMM    4
 
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
 #define DIR_SEP         '/'
 #else
 #define DIR_SEP         '\'
@@ -59,7 +59,8 @@ FUNCTION Main
    cHwgrunPath := FindHwgrun()
    ReadIni()
 
-#ifdef __PLATFORM__UNIX
+* or #ifdef __GTK__ ?
+#ifndef __PLATFORM__WINDOWS
    oBmp := HBitmap():AddStandard( "gtk-go-forward" )
 #else
    oBmp := HBitmap():AddStandard( OBM_MNARROW )
@@ -138,8 +139,7 @@ STATIC FUNCTION ReadIni()
          ENDIF
       NEXT
    ENDIF
-
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
    cHwg_image_dir := StrTran( cHwg_image_dir, '\', '/' )
    cHwg_include_dir := StrTran( cHwg_include_dir, '\', '/' )
    cHrb_inc_dir := StrTran( cHrb_inc_dir, '\', '/' )
@@ -159,7 +159,7 @@ STATIC FUNCTION ReadIni()
 STATIC FUNCTION BuildTree( oTree )
    LOCAL oTreeNode1, oTreeNode2, oTNode
    LOCAL oIniTut, oInit, i, j, j1, oNode1, oNode2, oNode3, cTemp
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
    LOCAL cVer := "gtk"
 #else
    LOCAL cVer := "win"
@@ -298,7 +298,7 @@ STATIC FUNCTION RunSample( oItem )
 
 STATIC FUNCTION FindHwgrun()
    LOCAL arr, i, cPath
-#ifdef __PLATFORM__UNIX
+#ifndef __PLATFORM__WINDOWS
    LOCAL cDefSep := "/"
    LOCAL cHwgRun := "hwgrun"
 #else

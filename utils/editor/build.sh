@@ -1,5 +1,14 @@
 #!/bin/bash
-export HB_ROOT=../../..
+#
+# build.sh
+#
+# $Id$
+#
+# Scrips buildung HWGUI editor utility for LINUX/GTK
+#
+# Configure path to Harbour to your own needs
+#export HB_ROOT=../../..
+export HB_ROOT=$HOME/Harbour/core-master
 
 if [ "x$HB_ROOT" = x ]; then
 export HRB_BIN=/usr/local/bin
@@ -11,7 +20,8 @@ export HRB_INC=$HB_ROOT/include
 export HRB_LIB=$HB_ROOT/lib/linux/gcc
 fi
 
-export SYSTEM_LIBS="-lm -lrt"
+export SYSTEM_LIBS="-lm -lrt -lpcre"
+
 export HARBOUR_LIBS="-lhbdebug -lhbvmmt -lhbrtl -lgtcgi -lhblang -lhbrdd -lhbmacro -lhbpp -lrddntx -lrddcdx -lrddfpt -lhbsix -lhbcommon -lhbcpage -lhbct"
 export HWGUI_LIBS="-lhwgui -lprocmisc -lhbxml -lhwgdebug"
 export HWGUI_INC=../../include
@@ -21,7 +31,9 @@ $HRB_BIN/harbour editor -n -i$HRB_INC -i$HWGUI_INC -w2 2>bldh.log
 $HRB_BIN/harbour hcediext -n -i$HRB_INC -i$HWGUI_INC -w2 2>>bldh.log
 $HRB_BIN/harbour calc -n -i$HRB_INC -i$HWGUI_INC -w2 2>>bldh.log
 
-gcc editor.c hcediext.c calc.c -oeditor -I $HRB_INC -I $HWGUI_INC -I ../../../source/gtk -DHWG_USE_POINTER_ITEM -L $HRB_LIB -L $HWGUI_LIB -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS $SYSTEM_LIBS -Wl,--end-group `pkg-config --cflags gtk+-2.0` `pkg-config gtk+-2.0 --libs`  >bld.log 2>bld.log
+gcc editor.c hcediext.c calc.c -oeditor -I $HRB_INC -I $HWGUI_INC -I ../../../source/gtk -DHWG_USE_POINTER_ITEM -L $HRB_LIB -L $HWGUI_LIB -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS -Wl,--end-group `pkg-config --cflags gtk+-2.0` `pkg-config gtk+-2.0 --libs` $SYSTEM_LIBS >bld.log 2>bld.log
 
-rm *.c
-rm *.o
+rm *.c 2>/dev/null
+rm *.o 2>/dev/null
+
+# ========= EOF of build.sh ==========

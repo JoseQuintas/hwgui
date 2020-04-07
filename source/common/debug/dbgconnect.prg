@@ -165,7 +165,7 @@ Function hwg_dbg_New()
    handl2 := FCreate( cFile + ".d2" )
    FClose( handl2 )
 
-#if defined( __PLATFORM__UNIX )
+#ifndef __PLATFORM__WINDOWS
    IF Empty( cExe )
       cExe := Iif( File(cDebugger), "./", "" ) + cDebugger
    ENDIF
@@ -471,11 +471,11 @@ EXIT PROCEDURE hwg_dbg_exit
 Return
 
 #ifdef __XHARBOUR__
-#ifndef __PLATFORM__Windows
+#ifndef __PLATFORM__WINDOWS
 FUNCTION EXENAMEX()
    RETURN HB_ARGV( 0 )
 #endif
-#ifdef __PLATFORM__Windows
+#ifdef __PLATFORM__WINDOWS
 #pragma BEGINDUMP
 
 #include "hbapi.h"

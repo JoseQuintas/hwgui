@@ -10,11 +10,13 @@ Tasks by DF7BE
  - Support request #15: GTK port for GET .... DATEPICKER
  - GTK port for LISTBOX (nice to have for CLLOG)
  - Memo Edit Dialog: Close should dismiss modifications
-   (lresult wrong value)
+   (lresult wrong value), GTK only.
  - Try to get all samples working.
      Recent: tstsplash.prg, works for WinAPI,
      but background on GTK empty:
-     INIT DIALOG ... BACKGROUND BITMAP ... 
+     INIT DIALOG ... BACKGROUND BITMAP ...
+ - International language support for internal HWGUI dialogs,
+   next print preview dialog of WinPrn class.
 
 
 =========================================================

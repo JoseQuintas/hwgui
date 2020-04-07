@@ -8,6 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-04-07 23:10 UTC+0200 Wilfried Brunken DF7BE
+  * include/hwgextern.ch 
+  * samples/winprn.prg
+  * samples/gtk_samples/winprn.prg
+  * source/common/debug/dbgconnect.prg
+  * source/common/procmisc/procs7.prg
+  * source/common/procmisc/procscri.prg
+  * utils/debugger/hwgdebug.prg
+  * utils/editor/editor.prg
+  * utils/editor/hcediext.prg
+  * utils/tutorial/hwgrun.prg
+  * utils/tutorial/tutor_eng.xml
+  * utils/tutorial/tutor.prg
+  * utils/editor/build.sh
+    ! Feature Request #21 by Alex Strickland:
+    ! #ifdef __PLATFORM__UNIX ==> #ifndef __PLATFORM__WINDOWS
+    ! Modification tested with sample Winprn.prg and
+    ! utils editor and tutorial, WinAPI and GTK/LinuxMINT.
+    ! Details see posted report to above Ticket.
+    ! build.sh for editor now working. 
+
+
 2020-04-06 22:00 UTC+0200 Wilfried Brunken DF7BE
   * clean.bat (New)
   * samples\tstsplash.prg

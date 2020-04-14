@@ -7,6 +7,8 @@ if not exist obj md obj
 
 :BUILD
 
+   set CFLAGS=-DHWG_USE_POINTER_ITEM
+
    rem set path=d:\softools\mingw\bin
    mingw32-make.exe -f makefile.gcc
    if errorlevel 1 goto BUILD_ERR
@@ -20,12 +22,13 @@ if not exist obj md obj
    goto EXIT
 
 :CLEAN
-   del ..\lib\libhwg_qhtm.a
-   del ..\lib\libhbactivex.a
-   del ..\lib\libhwg_extctrl.a
-   del ..\lib\*.bak
-   del obj\*.o
-   del obj\*.c
+   del ..\lib\libhwg_misc.a 2> NUL
+   del ..\lib\libhwg_qhtm.a 2> NUL
+   del ..\lib\libhbactivex.a 2> NUL
+   del ..\lib\libhwg_extctrl.a 2> NUL
+   del ..\lib\*.bak 2> NUL
+   del obj\*.o 2> NUL
+   del obj\*.c 2> NUL
 
    goto EXIT
 

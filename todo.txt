@@ -1,10 +1,4 @@
-2020-04-06:
-Task for Alexander Kresin:
-Close Tickets created by DF7BE:
- Bugs:
-  6,7,8,9,10,11,13,15,17,18,19,20,21,23,24,25,26,29,30,31,32,33
- Feature requests:
-  10,17
+2020-04-14:
 
 Tasks by DF7BE
  - Support request #15: GTK port for GET .... DATEPICKER
@@ -12,14 +6,32 @@ Tasks by DF7BE
  - Memo Edit Dialog: Close should dismiss modifications
    (lresult wrong value), GTK only.
  - Try to get all samples working.
-     Recent: tstsplash.prg, works for WinAPI,
-     but background on GTK empty:
-     INIT DIALOG ... BACKGROUND BITMAP ...
+    List of sample programs with bug description follows.
  - International language support for internal HWGUI dialogs,
    next print preview dialog of WinPrn class.
 
+List:  Samples not running or have bugs (Fix bugs, if time available, low priority):
+  1.) WinAPI
+      grid_5.prg     crashes, if click on button "Change": 
+                     Hint: commenting out this line without crash:
+                     //   ADD COLUMN TO GRIDEDIT aItems FIELD "Field_2" LABEL "Char" PICTURE "@!" //READONLY
+      nice2.prg      Seems to be outdated, starts only in background, kill with Task Manager
+      tab.prg        missing function(s): hb_enumIndex(), resource DIALOG_1 not working
+      testchild.prg  child window not created ! command seems to be outdated.
+      testtray.prg   No exported method: HANDLE
+      xmltree.prg    Compiles with warning , crashes with "No exported method: AITEMS".
+
+  2.) GTK
+      tstsplash.prg  works for WinAPI, but background on GTK empty:
+                     INIT DIALOG ... BACKGROUND BITMAP ...
+      a.prg          Browse problem with Char field
+      escrita.prg    LINUX: Text in toolbuttons not visible, OK on cross development GTK/Win
+      progbars.prg   LINUX: Progbar create ok, but press button "Step" the progbar disappeared.
+
+
 
 =========================================================
+Old entries, must be checked (is bugfixing done ?)
 
 - MDICHILD,  the controls ENTER, TAB,... not functions how in DIALOG
 - MAIN MDI, background bitmap not function perfectly, only flick a bitmap and change for the default background color

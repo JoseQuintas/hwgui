@@ -1,0 +1,97 @@
+# $Id$
+# makefile for gcc compiler/Linux
+# Building of contrib libs - HWGUI
+
+# Modify path to Harbour to your own needs 
+# HRB_DIR = $(HB_PATH)
+HRB_DIR = $(HOME)/Harbour/core-master
+
+HRB_EXE = $(HRB_DIR)/bin/linux/gcc/harbour
+INC_DIR = ../include
+OBJ_DIR = obj
+LIB_DIR = ../lib
+HWGQHTM_DIR  = qhtm
+EXTCONTROL_DIR  = ext_controls
+HWGACTIVEX_DIR  = activex
+HWGMISC_DIR = misc
+
+HARBOURFLAG = -d__LINUX__ -d__GTK__ $(HARBOURFLAGS)
+CFLAGS = -Wall -O3 -march=pentium
+
+all: \
+   $(LIB_DIR)/libhwg_misc.a
+
+#   $(LIB_DIR)/libhwg_qhtm.a
+#   $(LIB_DIR)/libhwg_extctrl.a \
+
+# Support for ActiveX enden, outdated   
+#   $(LIB_DIR)/libhwg_activex.a
+
+$(LIB_DIR)/libhwg_misc.a : \
+  $(OBJ_DIR)/arr2str.o \
+  $(OBJ_DIR)/blowfish.o \
+  $(OBJ_DIR)/miscfunc.o \
+  $(OBJ_DIR)/richtext.o \
+  $(OBJ_DIR)/saymoney.o
+	ar rc $@ $^  
+
+#$(LIB_DIR)/libhwg_qhtm.a : \
+#   $(OBJ_DIR)/hqhtm.o \
+#   $(OBJ_DIR)/hwg_qhtm.o
+#	ar rc $@ $^
+
+#$(LIB_DIR)/libhwg_extctrl.a : \
+#   $(OBJ_DIR)/hbrowsex.o \
+#   $(OBJ_DIR)/hctrlex.o \
+#   $(OBJ_DIR)/hcomboex.o \
+#   $(OBJ_DIR)/hrectex.o \
+#   $(OBJ_DIR)/hgridex.o
+#	ar rc $@ $^
+
+#$(LIB_DIR)/libhwg_activex.a : \
+#   $(OBJ_DIR)/htmlcore.o \
+#   $(OBJ_DIR)/htmlfunc.o \
+#   $(OBJ_DIR)/hhtml.o \
+#   $(OBJ_DIR)/c_activex.o \
+#   $(OBJ_DIR)/h_activex.o
+#	ar rc $@ $^
+
+.prg.c:
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+.c.o:
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(SRC_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+# Libraries
+
+$(OBJ_DIR)/%.c : $(HWGMISC_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+$(OBJ_DIR)/%.o : $(HWGMISC_DIR)/%.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+
+#$(OBJ_DIR)/%.c : $(HWGQHTM_DIR)/%.prg
+#	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+#$(OBJ_DIR)/%.o : $(HWGQHTM_DIR)/%.c
+#	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+
+#$(OBJ_DIR)/%.c : $(EXTCONTROL_DIR)/%.prg
+#	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+#$(OBJ_DIR)/%.o : $(EXTCONTROL_DIR)/%.c
+#	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+# MS ActiveX seems to be outdated
+# mshtmhst.h needed
+
+#$(OBJ_DIR)/%.c : $(HWGACTIVEX_DIR)/%.prg
+#	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+#$(OBJ_DIR)/%.o : $(HWGACTIVEX_DIR)/%.c
+#	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^

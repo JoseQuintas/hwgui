@@ -8,6 +8,38 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-04-14 16:00 UTC+0200 Wilfried Brunken DF7BE
+  * contrib\makefile.gcc
+  * contrib\makemngw.bat
+  * hwgui\contrib\build.sh (New)
+  * hwgui\contrib\makefile.linux (New)
+  * samples\bldmingw.bat
+  * samples\Readme.txt
+  * samples\gtk_samples\Readme.txt (New)
+  * samples\gtk_samples\escrita.prg
+  * lib\empty.txt (New)
+  * include\hwgextern.ch
+  * doc\hwgdoc_commands.html
+    !
+    ! - contrib libraries ready for MinGW,
+    !   build of libhbactivex.a removed, because
+    !   support of ActiveX ended.
+    !   Build for Linux: libhwg_misc.a can be build.
+    ! - More WinAPI samples are running now, Readme updated
+    !   (some samples needed contrib library).
+    ! - Checked all samples and GTK samples , description in
+    !   files Readme.txt.
+    !   Not running samples listed in todo.txt
+    !   Some samples are outdated.
+    ! - Trick: File "empty.txt" preserves empty directory "lib"
+    !   by removing from archiving in ZIP file.
+    !   (need to copy libpcre.a into this dir before build)
+    ! - hwgextern.ch:
+    !   #ifndef __PLATFORM__WINDOWS ==> #ifdef __GTK__
+    !   (prepare for multiplatform use)
+    ! - hwgdoc_commands.html: at TOOLBUTTON correct:
+    !   <O< ;  ==> <oTool> 
+
 2020-04-10 11:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\common\editor\hcedit.prg
     ! Fixed problem with pasting some kind of texts.

@@ -3,20 +3,36 @@
 # Building of libhwgui.a - Harbour Win32 GUI library
 
 HRB_DIR = $(HB_PATH)
+# older Harbour versions
+# HRB_EXE = $(HRB_DIR)\bin\harbour.exe
+# newer Harbour versions
+HRB_EXE = $(HRB_DIR)\bin\win\mingw\harbour.exe
 INC_DIR = ..\include
 OBJ_DIR = obj
 LIB_DIR = ..\lib
 HWGQHTM_DIR  = qhtm
 EXTCONTROL_DIR  = ext_controls
 HWGACTIVEX_DIR  = activex
+HWGMISC_DIR = misc
 
+HARBOURFLAG = -d__WINDOWS__ $(HARBOURFLAGS)
 CFLAGS = -Wall -O3 -march=pentium
 
 all: \
+   $(LIB_DIR)/libhwg_misc.a \
    $(LIB_DIR)/libhwg_extctrl.a \
-   $(LIB_DIR)/libhwg_qhtm.a \
-   $(LIB_DIR)/libhwg_activex.a
+   $(LIB_DIR)/libhwg_qhtm.a
 
+# Support for ActiveX enden, outdated   
+#   $(LIB_DIR)/libhwg_activex.a
+
+$(LIB_DIR)/libhwg_misc.a : \
+  $(OBJ_DIR)/arr2str.o \
+  $(OBJ_DIR)/blowfish.o \
+  $(OBJ_DIR)/miscfunc.o \
+  $(OBJ_DIR)/richtext.o \
+  $(OBJ_DIR)/saymoney.o
+	ar rc $@ $^  
 
 $(LIB_DIR)/libhwg_qhtm.a : \
    $(OBJ_DIR)/hqhtm.o \
@@ -40,29 +56,40 @@ $(LIB_DIR)/libhwg_activex.a : \
 	ar rc $@ $^
 
 .prg.c:
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 
 .c.o:
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(SRC_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+
+# Libraries
+
+$(OBJ_DIR)/%.c : $(HWGMISC_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+
+$(OBJ_DIR)/%.o : $(HWGMISC_DIR)/%.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 
 $(OBJ_DIR)/%.c : $(HWGQHTM_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 
 $(OBJ_DIR)/%.o : $(HWGQHTM_DIR)/%.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 $(OBJ_DIR)/%.c : $(EXTCONTROL_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 
 $(OBJ_DIR)/%.o : $(EXTCONTROL_DIR)/%.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
-$(OBJ_DIR)/%.c : $(HWGACTIVEX_DIR)/%.prg
-	$(HRB_DIR)/bin/harbour.exe $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+# MS ActiveX seems to be outdated
+# mshtmhst.h needed
 
-$(OBJ_DIR)/%.o : $(HWGACTIVEX_DIR)/%.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+#$(OBJ_DIR)/%.c : $(HWGACTIVEX_DIR)/%.prg
+#	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+
+#$(OBJ_DIR)/%.o : $(HWGACTIVEX_DIR)/%.c
+#	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^

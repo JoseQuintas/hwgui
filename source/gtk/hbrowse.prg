@@ -1731,8 +1731,10 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
    LOCAL fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
    LOCAL oColumn, type
-   LOCAL mvarbuff , bMemoMod , owb1 , owb2 , oModDlg
+   LOCAL mvarbuff , bMemoMod , owb1 , owb2 , oModDlg , bclsbutt
 
+   bclsbutt := .T. 
+   
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
    oColumn := ::aColumns[fipos]
@@ -1805,18 +1807,21 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                @ 0, 30 HCEDIT ::oEdit SIZE 600, 300 ;
                     FONT ::oFont
                // old 010, 252 - 100, 252 - sizes 80,24 (too small)
-               @ 010, 340 ownerbutton owb2 TEXT ::cTextSave  size 100, 24 ON Click { || mvarbuff := ::oEdit , omoddlg:close(), oModDlg:lResult := .T. }
+               @ 010, 340 ownerbutton owb2 TEXT ::cTextSave  size 100, 24 ON Click { || bclsbutt := .F. , mvarbuff := ::oEdit , omoddlg:close(), oModDlg:lResult := .T. }
                @ 100, 340 ownerbutton owb1 TEXT ::cTextClose size 100, 24 ON CLICK { ||oModDlg:close() }
                  * serve memo field for editing
                 ::oEdit:SetText(mvarbuff)
             ACTIVATE DIALOG oModDlg
           * is modified ? (.T.)
-          bMemoMod := ::oEdit:lUpdated
-          IF bMemoMod
-           * write out edited memo field
-           ::varbuf := ::oEdit:GetText()
-           * Store new memo contents
+          bMemoMod := ::oEdit:lUpdated // on GTK forever .T.
+          * Close button pressed ? (Dismiss modification)
+          IF .NOT. bclsbutt
+           IF bMemoMod
+            * write out edited memo field
+            ::varbuf := ::oEdit:GetText()
+            * Store new memo contents
             VldBrwEdit( Self, fipos , .T. )
+           ENDIF
           ENDIF
           // ::lEditing := .F.
           * ===================================== *

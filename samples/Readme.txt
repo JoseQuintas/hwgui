@@ -67,7 +67,7 @@ For beginners:
  nice.prg           N     Demo of NICEBUTTON
  nice2.prg          N  #  Seems to be outdated, starts only in background, kill with Task Manager
  progbars.prg       N     Progress bar
- propsh.prg	        N     Property sheet, INIT DIALOG aDlg1 FROM RESOURCE not working.
+ propsh.prg         N     Property sheet, INIT DIALOG aDlg1 FROM RESOURCE not working.
  pseudocm.prg       Y     Pseudo context menu
  shadebtn.prg       N     Shade buttons
  tab.prg            N  #  missing function(s): hb_enumIndex(), resource DIALOG_1 not working

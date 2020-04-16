@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-04-16 16:30 UTC+0200 Wilfried Brunken DF7BE
+  * source\gtk\hbrowse.prg
+  * samples\Readme.txt
+    ! - HBROWSE.PRG, GTK only: "Close" button now dismiss modification,
+    !    "Save" button stores the modification. 
+    ! - One TAB too much in Readme.txt.
+
+
 2020-04-14 16:00 UTC+0200 Wilfried Brunken DF7BE
   * contrib\makefile.gcc
   * contrib\makemngw.bat

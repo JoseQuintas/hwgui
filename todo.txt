@@ -3,8 +3,6 @@
 Tasks by DF7BE
  - Support request #15: GTK port for GET .... DATEPICKER
  - GTK port for LISTBOX (nice to have for CLLOG)
- - Memo Edit Dialog: Close should dismiss modifications
-   (lresult wrong value), GTK only.
  - Try to get all samples working.
     List of sample programs with bug description follows.
  - International language support for internal HWGUI dialogs,
@@ -28,6 +26,12 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
       escrita.prg    LINUX: Text in toolbuttons not visible, OK on cross development GTK/Win
       progbars.prg   LINUX: Progbar create ok, but press button "Step" the progbar disappeared.
 
+
+=========================================================
+Area: Rich Text Format (RTF)
+Special Task for Alexander Kresin and 
+mlacecilia, JIJA, TRM, JJA:
+Bug Ticket #37 and #38.
 
 
 =========================================================

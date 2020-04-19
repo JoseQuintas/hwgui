@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-04-19 12:10 UTC+0200 Wilfried Brunken DF7BE
+  * samples\TwoListbox.prg (New)
+  * samples\Readme.txt
+    ! Preparing for port of LISTBOX to GTK:
+    ! Sample for select and move items between two listboxes.
+    ! Works with WinAPI.
+    ! (needed for CLLOG, such a dialog i found in many programs
+    !  for selecting data base fields)
+
+
 2020-04-16 16:30 UTC+0200 Wilfried Brunken DF7BE
   * source\gtk\hbrowse.prg
   * samples\Readme.txt

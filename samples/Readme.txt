@@ -35,6 +35,12 @@ For beginners:
      sample.dbf
      sample.dbt
 
+    Record Nr. 2 contains signs for codepage IBM858DE with german Umlaute (ÄÖÜäöü),
+    sharp "S" (ß), Euro currency sign (€) and greek mue (µ) for SI system as prefix for
+    one of a million. Select this codepage as data CP in dbview.prg. Select 
+    DEWIN or UTF-8 for Linux as Local codepage for correct display.
+
+
 4.) List of sample programs
 
     Special sample programs for GTK in directory "gtk_samples".
@@ -89,7 +95,8 @@ For beginners:
  tstcombo.prg       N     Test Combobox (crashes on GTK)
  tstprdos.prg  3)   N     Print on LPT, outdated, see 3)
  tstscrlbar.prg     N     Scrollbar (GTK: Compilable, but no scroll function)
- tstsplash.prg 	    N     SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty. 
+ tstsplash.prg 	    N     SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
+ TwoListbox.prg     N     Sample for select and move items between two listboxes. 
  winprn.prg  3)     Y     Printing via Windows GDI Interface (same sample in gtk_samples)
  xmltree.prg        Y  #  Show XML-Tree: compiles with warning , crashes with "No exported method: AITEMS".
  

@@ -8,6 +8,40 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-04-24 18:00 UTC+0200 Wilfried Brunken DF7BE
+  * source\winapi\misc.c
+  * source\winapi\hmisc.prg (New)
+  * makefile.gcc
+  * Makefile.scr
+  * source\gtk\misc.c
+  * source\gtk\hmisc.prg (New)
+  * source\gtk\Makefile.mingw
+  * source\gtk\Makefile.scr
+  * source\gtk\Makefile.linux
+  * samples\gtk_samples\GetWinVers.prg (New)
+  * samples\GetWinVers.prg (New)
+  * samples\Readme.txt
+    !
+    ! Functions added:
+    !  hwg_isWindows()
+    !  hwg_isWin10()
+    !  hwg_GetWinMajorVers()
+    !  hwg_GetWinMinorVers()
+    ! Modified: hwg_isWin7()
+    ! All these functions for checking Windows version
+    ! are ready for GTK cross development environment
+    ! and multi platform purposes.
+    ! Function docu updated.
+    ! For return values on non Windows OS's
+    ! detailed description added.
+    ! New sample GetWinVers.prg for demo and test.
+    ! GTK: Function HWG_GETKEYSTATE() added for
+    ! experimental purposes (is otherwise Windows only),
+    ! will test ASAP.
+    ! File hmisc.prg is a new container for adding qick
+    ! useful standalone functions. First issue has hwg_isWindows().
+
+
 2020-04-19 12:10 UTC+0200 Wilfried Brunken DF7BE
   * samples\TwoListbox.prg (New)
   * samples\Readme.txt

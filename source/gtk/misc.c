@@ -19,6 +19,9 @@
 #include <unistd.h>
 #include "gtk/gtk.h"
 #include "gdk/gdkkeysyms.h"
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+#include <windows.h>
+#endif
 
 static GtkClipboard* clipboard = NULL;
 
@@ -291,3 +294,72 @@ HB_FUNC( HWG_GETCENTURY )
   hb_retl(centset);
 } 
 
+/* DF7BE: This functions works on GTK cross development environment */
+HB_FUNC( HWG_ISWIN7 )
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+   OSVERSIONINFO ovi;
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   ovi.dwMajorVersion = 0;
+   ovi.dwMinorVersion = 0;
+   GetVersionEx( &ovi );
+   hb_retl( ovi.dwMajorVersion >= 6 && ovi.dwMinorVersion == 1 );
+#else
+   hb_retl( 1 == 2 );  /* .F.  for all other operating systems */
+#endif
+}
+
+HB_FUNC( HWG_ISWIN10 )
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+   OSVERSIONINFO ovi;
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   ovi.dwMajorVersion = 0;
+   ovi.dwMinorVersion = 0;
+   GetVersionEx( &ovi );
+   hb_retl( ovi.dwMajorVersion >= 6 && ovi.dwMinorVersion == 2 );
+#else
+   hb_retl( 1 == 2 );  /* .F.  for all other operating systems */
+#endif
+}
+
+HB_FUNC( HWG_GETWINMAJORVERS )
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+   OSVERSIONINFO ovi;
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   ovi.dwMajorVersion = 0;
+   ovi.dwMinorVersion = 0;
+   GetVersionEx( &ovi );
+   hb_retni( ovi.dwMajorVersion );
+#else
+   hb_retni( -1 );  /* -1  for all other operating systems */
+#endif
+}
+
+HB_FUNC( HWG_GETWINMINORVERS )
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+   OSVERSIONINFO ovi;
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   ovi.dwMajorVersion = 0;
+   ovi.dwMinorVersion = 0;
+   GetVersionEx( &ovi );
+   hb_retni( ovi.dwMinorVersion );
+#else
+   hb_retni( -1 );  /* -1  for all other operating systems */
+#endif
+}
+
+
+
+/* experimental state of this function */
+HB_FUNC( HWG_GETKEYSTATE )
+{
+  /* Attention ! gdk_window_get_pointer() is deprecated */
+  GdkModifierType keyboard_state;
+  gdk_window_get_pointer(NULL,NULL,NULL,&keyboard_state);
+   hb_retni( keyboard_state & hb_parni( 1 ) );
+}
+
+/* ========= EOF of misc.c ============ */

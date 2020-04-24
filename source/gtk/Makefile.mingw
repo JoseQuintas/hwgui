@@ -76,6 +76,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
    $(OBJ_DIR)/misc.o \
+   $(OBJ_DIR)/hmisc.o \
    $(OBJ_DIR)/drawwidg.o \
    $(OBJ_DIR)/herrsys.o \
    $(OBJ_DIR)/gtkmain.o \
@@ -106,6 +107,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hprogres.o \
    $(OBJ_DIR)/hmonthc.o \
    $(OBJ_DIR)/menu.o
+   
 
 $(LIB_DIR)/libprocmisc.a : \
    $(OBJ_DIR)/procini.o \
@@ -115,6 +117,7 @@ $(LIB_DIR)/libprocmisc.a : \
    $(OBJ_DIR)/hcedit.o \
    $(OBJ_DIR)/hcedit_l.o \
    $(OBJ_DIR)/hilight.o
+   
 
 $(LIB_DIR)/libhbxml.a : \
    $(OBJ_DIR)/xmlparse.o \

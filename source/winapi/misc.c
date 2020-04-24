@@ -1080,3 +1080,36 @@ HB_FUNC( HWG_GETCENTURY )
   hb_retl(centset);
 }
 
+
+HB_FUNC( HWG_ISWIN10 )
+{
+   OSVERSIONINFO ovi;
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   ovi.dwMajorVersion = 0;
+   ovi.dwMinorVersion = 0;
+   GetVersionEx( &ovi );
+   hb_retl( ovi.dwMajorVersion >= 6 && ovi.dwMinorVersion == 2 );
+}
+
+HB_FUNC( HWG_GETWINMAJORVERS )
+{
+   OSVERSIONINFO ovi;
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   ovi.dwMajorVersion = 0;
+   ovi.dwMinorVersion = 0;
+   GetVersionEx( &ovi );
+   hb_retni( ovi.dwMajorVersion );
+}
+
+HB_FUNC( HWG_GETWINMINORVERS )
+{
+   OSVERSIONINFO ovi;
+   ovi.dwOSVersionInfoSize = sizeof ovi;
+   ovi.dwMajorVersion = 0;
+   ovi.dwMinorVersion = 0;
+   GetVersionEx( &ovi );
+   hb_retni( ovi.dwMinorVersion );
+}
+
+
+/* ========= EOF of misc.c ============ */

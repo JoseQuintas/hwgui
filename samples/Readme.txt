@@ -59,6 +59,7 @@ For beginners:
  demodbf.prg        Y     Demo for Edit using command NOEXIT
  demohlist.prg      N     Demo for listbox
  getupdown.prg      Y     Usage of @ <x> <y> GET UPDOWN ..
+ GetWinVers.prg     Y     Functions for get recent Windows version
  graph.prg          Y     Paint graphs (Sinus, Bar diagram)
  grid_1.prg         N     Grid demo (HGrid class)
  grid_2.prg 2)      N     Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib

@@ -39,6 +39,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
    $(OBJ_DIR)/misc.o \
+   $(OBJ_DIR)/hmisc.o \
    $(OBJ_DIR)/nice.o \
    $(OBJ_DIR)/pager.o \
    $(OBJ_DIR)/registry.o \

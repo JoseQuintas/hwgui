@@ -58,6 +58,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
    $(OBJ_DIR)/misc.o \
+   $(OBJ_DIR)/hmisc.o \
    $(OBJ_DIR)/drawwidg.o \
    $(OBJ_DIR)/herrsys.o \
    $(OBJ_DIR)/gtkmain.o \

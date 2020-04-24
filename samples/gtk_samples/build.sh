@@ -7,6 +7,7 @@
 # Shell script building HWGUI samples for LINUX/GTK
 #
 # Modify path to Harbour to your own needs
+# export HB_ROOT=$HOME/Harbour/core-master
 export HB_ROOT=../../..
 
 if [ "$1" == "" ]; then

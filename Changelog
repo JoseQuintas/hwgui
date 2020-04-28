@@ -8,6 +8,51 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-03-28 21:30 UTC+0200 Wilfried Brunken DF7BE
+  * samples\demohlistsub.prg (New)
+  * samples\TwoLstSub.prg (New)
+  * source\gtk\hlistbox.prg (New) 
+  * source\gtk\listbox.c (New)
+  * samples\demohlist.prg
+  * samples\Readme.txt
+  * samples/gtk_samples/build.sh
+  * todo.txt
+    !
+    ! Because LISTBOX port to GTK not possible:
+    !
+    ! demohlistsub.prg:
+    ! Sample for multi platform use, same function as
+    ! demohlist.prg, but using BROWSE windows for arrays
+    ! instead of LISTBOX.
+    !
+    ! TwoLstSub.prg:
+    ! Sample for multi platform use, same function as
+    ! TwoListbox.prg, but using 2 BROWSE windows for arrays
+    ! instead of LISTBOX.
+    !
+    ! hlistbox.prg and listbox.c:
+    ! Trial versions of GTK port of LISTBOX feature:
+    ! (Not active). Committed in the hope, that the GTK
+    ! bug is fixed in future versions.
+    ! Inline comment describe the circumstances.
+    ! Could be activated by entry in makefiles,
+    ! if needed. Some work needed then.
+    !
+    ! Command and class docu updated,
+    ! with hint to sample program.
+    !
+    ! demohlist.prg:
+    ! Added display of result (position and value of selected item)
+    !
+    ! samples\Readme.txt : Winhelp on Windows 10.
+    ! todo.txt: List of buggy samples, listbox port.
+    !
+    ! C function hwg_writelog(): description added.
+    !
+    ! build.sh: -w2 : too much warnings
+
+
 2020-04-24 18:00 UTC+0200 Wilfried Brunken DF7BE
   * source\winapi\misc.c
   * source\winapi\hmisc.prg (New)

@@ -1362,6 +1362,14 @@
      <li> fname - (optional) a file name, the default is &quot;a.log&quot;.
    </ul>
 
+  <br><strong class="subhead"> void hwg_writelog( const char * sFile, const char * sTraceMsg, ... )( cText [, fname] )</strong><br>
+   C function similar to hwg_WriteLog, for use in C modules of your application.<br> 
+   Adds a text to a file, the functions is intended for debugging purposes.
+   <ul>
+     <li> sTraceMsg - pointer to a string with the text to be written;
+     <li> sFile - (optional) pointer to a string with file name, the default is "ca.log", set to NULL for default value.  
+   </ul>
+
    <br><strong class="subhead"> hwg_SetDlgKey( [oDlg], nCtrl, nKey, block [, lGlobal] )</strong> 
    <br>Sets a &quot;hot key&quot; for a window/dialog or globally - for all the application. There is
    appropriate command, which is preprocessed into this function: <a href="hwgdoc_commands.html#Commands4-13"> SET KEY</a>.

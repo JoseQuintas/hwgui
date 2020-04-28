@@ -36,6 +36,9 @@ Local oList, oItems:={"Item01","Item02","Item03","Item04"}
     ACTIVATE DIALOG oModDlg
     oFont:Release()
 
+   // show result
+   hwg_msgInfo(STR(oList:value),"Result of Listbox selection")
+
    IF oModDlg:lResult
     ENDIF
 Return Nil

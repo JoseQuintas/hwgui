@@ -1,8 +1,8 @@
-2020-04-14:
+2020-04-28:
 
 Tasks by DF7BE
  - Support request #15: GTK port for GET .... DATEPICKER
- - GTK port for LISTBOX (nice to have for CLLOG)
+ - LISTBOX port to GTK, if bug in GTK is fixed.
  - Try to get all samples working.
     List of sample programs with bug description follows.
  - International language support for internal HWGUI dialogs,
@@ -18,13 +18,15 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
       testchild.prg  child window not created ! command seems to be outdated.
       testtray.prg   No exported method: HANDLE
       xmltree.prg    Compiles with warning , crashes with "No exported method: AITEMS".
+      testrtf.prg    Created Rich text files are corupted, see bug ticket #37 (text above).
 
   2.) GTK
-      tstsplash.prg  works for WinAPI, but background on GTK empty:
+      tstsplash.prg  works for WinAPI, but background for splash window on GTK empty:
                      INIT DIALOG ... BACKGROUND BITMAP ...
       a.prg          Browse problem with Char field
       escrita.prg    LINUX: Text in toolbuttons not visible, OK on cross development GTK/Win
       progbars.prg   LINUX: Progbar create ok, but press button "Step" the progbar disappeared.
+      tstscrlbar.prg Compilable, but no scroll function
 
 
 =========================================================
@@ -43,6 +45,8 @@ Old entries, must be checked (is bugfixing done ?)
 - GET with AUTO_VSCROOL not function equal "@S"
 - change TITLE of DIALOG or WINDOW on the fly
 - possibilidade de um STYLE para que o objeto nao seje o proximo foco
+  in english:
+  possibility of a STYLE so that the object is not the next focus 
 - STYLE DT_VCENTER in SAY not function perfectly the back change to dark gray
 - CHILD possibility change de backgrond color
 - PANEL possibility change de backgrond color

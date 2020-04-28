@@ -58,6 +58,7 @@ For beginners:
  dbview.prg         Y     DBF access (Browse, Indexing, Codepages, Structure, ... )
  demodbf.prg        Y     Demo for Edit using command NOEXIT
  demohlist.prg      N     Demo for listbox
+ demohlistsub.prg   Y     Multi platform substitute for listbox by BROWSE.
  getupdown.prg      Y     Usage of @ <x> <y> GET UPDOWN ..
  GetWinVers.prg     Y     Functions for get recent Windows version
  graph.prg          Y     Paint graphs (Sinus, Bar diagram)
@@ -67,7 +68,7 @@ For beginners:
  grid_4.prg         N     File Viewer
  grid_5.prg         N  #  Grid Editor  (crashes, if click on button "Change") 
  hello.prg          N     Some elements: Edit field, tabs, tree view, combobox, ...
- helpdemo.prg       N     Context help using windows help (Shellexecute crashes)
+ helpdemo.prg  6)   N     Context help using windows help (Shellexecute crashes)
  hole.prg   2) 4)   N     MS Agent Control  
  iesample.prg 2) 5) N     Sample of ActiveX container for the IE browser object. 
  modtitle.prg       N     Sample for modifying a main window title in HWGUI
@@ -97,7 +98,8 @@ For beginners:
  tstprdos.prg  3)   N     Print on LPT, outdated, see 3)
  tstscrlbar.prg     N     Scrollbar (GTK: Compilable, but no scroll function)
  tstsplash.prg 	    N     SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
- TwoListbox.prg     N     Sample for select and move items between two listboxes. 
+ TwoListbox.prg     N     Sample for select and move items between two listboxes.
+ TwoLstSub.prg      Y     Multi platform substitute for two listboxes by BROWSE windows.
  winprn.prg  3)     Y     Printing via Windows GDI Interface (same sample in gtk_samples)
  xmltree.prg        Y  #  Show XML-Tree: compiles with warning , crashes with "No exported method: AITEMS".
  
@@ -114,4 +116,23 @@ For beginners:
     Not contained in Windows 7 and higher, support ended.
 
  5) Sample program needs ActiveX and contrib library "libhbactivex.a".
-    Support for ActiveX ended, substituted by HTML5 and Java. Sample is outdated. 
+    Support for ActiveX ended, substituted by HTML5 and Java. Sample is outdated.
+
+ 6) Sample is outdated.
+    Shellexecute crashes because of this:
+    Following the article in the magazine "Funkamateur", issue May 2020,
+    page 417, "Winhelp unter Windows 10 - die zweite Version" by Dr. Thomas Baier, DG8SAQ:
+    The files of the Windows help system are automatically removed at every Windows update.
+    Alan Rowe, M0PUB, has delivered a special installation package to recover the function
+    of the old help system on Windows 10. Download from:
+     https://www.funkamateur.de/downloads-zum-heft.html
+     File: dg8saq_winhelp2.zip (273 KB)
+    Be care of the installation archive, store it at a secure place, because you need it at every
+    greater Windows update.
+    Instructions:
+    - Extract the archive
+    - click with right mouse button to file "Install.cmd" and say
+      "Als Administrator ausführen" (Execute as Administrator).
+    - Compile and run sample "helpdemo.prg", Press F1 and the help program starts in an
+      extra window.
+ 

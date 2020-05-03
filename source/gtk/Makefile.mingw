@@ -106,8 +106,11 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hwinprn.o \
    $(OBJ_DIR)/hprogres.o \
    $(OBJ_DIR)/hmonthc.o \
-   $(OBJ_DIR)/menu.o
-   
+   $(OBJ_DIR)/menu.o \
+   $(OBJ_DIR)/inter.o    
+
+#   $(OBJ_DIR)/listbox.o \
+#   $(OBJ_DIR)/hlistbox.o
 
 $(LIB_DIR)/libprocmisc.a : \
    $(OBJ_DIR)/procini.o \

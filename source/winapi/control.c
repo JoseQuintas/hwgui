@@ -26,6 +26,7 @@
    #include "hbfast.h"
 #endif
 
+
 #if defined(__BORLANDC__) || (defined(_MSC_VER) && !defined(__XCC__) || defined(__WATCOMC__) || defined(__DMC__) )
 HB_EXTERN_BEGIN
 WINUSERAPI HWND WINAPI GetAncestor( HWND hwnd, UINT gaFlags );
@@ -2257,3 +2258,34 @@ HB_FUNC( HWG_GETTABNAME )
                     ( LPTCITEM ) &tie );
    HB_RETSTR( tie.pszText );
 }
+
+HB_FUNC( HWG_GETUTCTIMEDATE )
+/* Format: W,YYYYMMDD-HHMMSS */
+{
+  SYSTEMTIME st = { 0 };
+  char cst[9] = { 0 };
+  GetSystemTime(&st);
+  sprintf(cst,"%01d.%04d%02d%02d-%02d:%02d:%02d",st.wDayOfWeek, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+  HB_RETSTR(cst);
+}
+
+HB_FUNC( HWG_GETLOCALEINFON )
+{
+/* returns Windows LCID, type is int */
+   int lio;
+   lio = GetLocaleInfo( LOCALE_USER_DEFAULT, LOCALE_SLIST, NULL,
+                  0 );
+   hb_retni(lio);
+}
+
+HB_FUNC( HWG_DEFUSERLANG )
+/* Windows only , on other OSs available, returns forever "-1". */
+{
+  char clang[25] = { 0 };
+  LANGID l;  /* ==> WORD */
+  l = GetUserDefaultUILanguage();
+  sprintf(clang, "%d", l);
+  HB_RETSTR( clang  );
+}
+
+/* ====================== EOF of control.c ======================= */

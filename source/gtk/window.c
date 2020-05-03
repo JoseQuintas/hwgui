@@ -978,7 +978,17 @@ static gint snooper ( GtkWidget *grab_widget,
 
 HB_FUNC( HWG__ISUNICODE )
 {
+/* Windows */
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+#ifdef UNICODE
    hb_retl( 1 );
+#else
+   hb_retl( 0 );
+#endif
+#else 
+/* *NIX */
+   hb_retl( 1 );
+#endif
 }
 
 HB_FUNC( HWG_INITPROC )
@@ -990,3 +1000,5 @@ HB_FUNC( HWG_EXITPROC )
 {
    gtk_key_snooper_remove( s_KeybHook );
 }
+
+/* =============== EOF of window.c =================== */

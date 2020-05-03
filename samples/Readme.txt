@@ -68,7 +68,7 @@ For beginners:
  grid_4.prg         N     File Viewer
  grid_5.prg         N  #  Grid Editor  (crashes, if click on button "Change") 
  hello.prg          N     Some elements: Edit field, tabs, tree view, combobox, ...
- helpdemo.prg  6)   N     Context help using windows help (Shellexecute crashes)
+ helpdemo.prg 6) 7) N     Context help using windows help (Shellexecute crashes)
  hole.prg   2) 4)   N     MS Agent Control  
  iesample.prg 2) 5) N     Sample of ActiveX container for the IE browser object. 
  modtitle.prg       N     Sample for modifying a main window title in HWGUI
@@ -87,7 +87,7 @@ For beginners:
  testhmonth.prg     Y     Calendar, Datepicker, TOOLTIP
  testini.prg        N     Use INI file: create and read 
  testmenubitmap.prg N     Menu with bitmaps
- testrtf.prg  1)    N     Create Rich text files.
+ testrtf.prg  1)    N  #  Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 
  testsdi.prg        Y     Tree control
  testspli.prg       Y     Split windows
  testtray.prg       N  #  Tray Message: No exported method: HANDLE
@@ -100,9 +100,10 @@ For beginners:
  tstsplash.prg 	    N     SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
  TwoListbox.prg     N     Sample for select and move items between two listboxes.
  TwoLstSub.prg      Y     Multi platform substitute for two listboxes by BROWSE windows.
- winprn.prg  3)     Y     Printing via Windows GDI Interface (same sample in gtk_samples)
+ winprn.prg  3) 8)  Y     Printing via Windows GDI Interface (same sample in gtk_samples)
  xmltree.prg        Y  #  Show XML-Tree: compiles with warning , crashes with "No exported method: AITEMS".
  
+
  1) Sample program needs extra libraries of HWGUI, build them in directory "contrib".
 
  2) Sample program needs external prerequisites.
@@ -135,4 +136,30 @@ For beginners:
       "Als Administrator ausführen" (Execute as Administrator).
     - Compile and run sample "helpdemo.prg", Press F1 and the help program starts in an
       extra window.
+
+ 7) We suggest to create an own help system in your application to be independant of
+    a foreign help system. There are several possibilities for storing:
+    - As an XML file: There are classes in HWGUI supporting XML.
+      Could be edited with a normal text editor.
+      But for lot of help info it is not easy to handle.
+    - As a normal textfile: It could content topic marks like
+      the man format of UNIX to find the desired help text of a help topic.
+    - Use of a help database (like old Clipper feature "SET KEY F1 TO HELP").
+      For editing it could be handled easier. Also an index for quick access can be used.
+      Get a sample from application CLLOG:
+       https://sourceforge.net/projects/cllog/
+      Look for source file "hilfew.prg" and "helpedit.prg" (Console app), also 
+      help Database "hilfe.dbf/dbt" (sub directory "hilfe").
+      A big inline comment block (english and german) in "hilfew.prg"
+      explains the usage of this help system.
+      The same help database could be used in HWGUI and Harbour console applications.
+      The best way to call a help topic is to create a "Help" button in every 
+      dialog of your application.
+
+  8) A "Y" mark in column "GTK" says, that this sample also runs best on LINUX.
+     Samples with this footmark have a misfunction on GTK Windows cross development environment.
+     They are compilable, but some functions do not work correct.
+     Because this environment is not suggested for normal use on windows, this/these misfunction(s)
+     are irrelevant. In future, we try to describe the bugs in the inline comments of the sample program.
+     
  

@@ -92,6 +92,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\video.obj \
    $(OBJ_DIR)\tmci.obj \
    $(OBJ_DIR)\hhyper.obj \
+   $(OBJ_DIR)\inter.obj \
    $(OBJ_DIR)\hdc.obj
   lib /out:$@ $**
 

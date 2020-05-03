@@ -8,6 +8,28 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-03 15:00 UTC+0200 Wilfried Brunken DF7BE
+  * source\gtk\inter.c (New)
+  * source\gtk\Makefile.linux
+  * source\gtk\Makefile.mingw
+  * source\gtk\Makefile.scr
+  * source\winapi\control.c
+  * source\gtk\control.c
+  * source\gtk\window.c
+    !
+    ! Additional Info for help system sample.
+    !
+    ! Task:
+    ! Multi Language Support for internal HWGUI dialogs
+    ! and others:
+    ! - window.c: Function hwg__isUnicode() returns now 0
+    !   on cross develop environment for Windows/GTK.
+    !   (Windows is not UTF8)
+    ! - New functions hwg_GetLocaleInfoN(), 
+    !   hwg_GetUTCTimeDate() 
+    ! - Port of hwg_GetLocaleInfo() to GTK/(Win+LINUX).
+    ! Function docu updated
+    ! -Readme.txt: Hint to help system.
 
 2020-03-28 21:30 UTC+0200 Wilfried Brunken DF7BE
   * samples\demohlistsub.prg (New)

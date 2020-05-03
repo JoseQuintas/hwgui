@@ -29,6 +29,7 @@
 #include "hbfast.h"
 #endif
 
+
 #define SS_CENTER           1
 #define SS_RIGHT            2
 #define ES_PASSWORD 32
@@ -484,6 +485,11 @@ HB_FUNC( HWG_COMBOGET )
    if( i <= 0 )
      i = 1;
    hb_retni( i );
+}
+
+HB_FUNC( HWG_COMBOPOPUP )
+{
+  gtk_combo_box_popup( (GtkComboBox *) HB_PARHANDLE( 1 ) );
 }
 
 /*
@@ -1470,3 +1476,6 @@ HB_FUNC( HWG_SETWIDGETNAME )
 {
    gtk_widget_set_name( ( GtkWidget * ) HB_PARHANDLE( 1 ), hb_parc(2) );
 }
+
+
+/* ====================== EOF of control.c ======================= */

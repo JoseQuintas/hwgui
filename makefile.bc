@@ -115,6 +115,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\message.obj \
    $(HWGUI_OBJ_DIR)\herrsys.obj \
    $(HWGUI_OBJ_DIR)\misc.obj \
+   $(HWGUI_OBJ_DIR)\hmisc.obj \
    $(HWGUI_OBJ_DIR)\registry.obj \
    $(HWGUI_OBJ_DIR)\nice.obj \
    $(HWGUI_OBJ_DIR)\resource.obj \

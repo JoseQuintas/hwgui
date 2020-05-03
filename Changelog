@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-03 20:30 UTC+0200 Wilfried Brunken DF7BE
+  * makedll.bc
+  * makefile.bc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+  !
+  ! Added in all Windows makefiles:
+  ! $(OBJ_DIR)\hmisc.o \
+  ! in the hope, that the modification
+  ! works. Tested only with MinGW, OK.
+  ! see 2020-04-24 18:00: Added hmisc.prg r2831
+
+
 2020-05-03 15:00 UTC+0200 Wilfried Brunken DF7BE
   * source\gtk\inter.c (New)
   * source\gtk\Makefile.linux

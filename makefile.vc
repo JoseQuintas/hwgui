@@ -36,6 +36,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
+   $(OBJ_DIR)\hmisc.o \
    $(OBJ_DIR)\nice.obj \
    $(OBJ_DIR)\pager.obj \
    $(OBJ_DIR)\registry.obj \
@@ -92,7 +93,6 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\video.obj \
    $(OBJ_DIR)\tmci.obj \
    $(OBJ_DIR)\hhyper.obj \
-   $(OBJ_DIR)\inter.obj \
    $(OBJ_DIR)\hdc.obj
   lib /out:$@ $**
 

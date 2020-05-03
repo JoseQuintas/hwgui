@@ -69,6 +69,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
+   $(OBJ_DIR)\hmisc.o \
    $(OBJ_DIR)\nice.obj \
    $(OBJ_DIR)\pager.obj \
    $(OBJ_DIR)\registry.obj \

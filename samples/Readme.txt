@@ -79,6 +79,7 @@ For beginners:
  pseudocm.prg       Y     Pseudo context menu
  shadebtn.prg       N     Shade buttons
  tab.prg            N  #  missing function(s): hb_enumIndex(), resource DIALOG_1 not working
+ testalert.prg      N     Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
  test_bot.prg       N     bOther Test: Press key, after key up the scan code is displayed.
  testbrw.prg        N     Another BROWSE test
  testchild.prg      N  #  Create a child windows; child window not created ! command seems to be outdated.

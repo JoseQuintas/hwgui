@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-06 23:00 UTC+0200 Wilfried Brunken DF7BE
+  * include\halert.ch
+  * source\winapi\halert.prg
+  * source\winapi\misc.c
+  * samples\testalert.prg
+  * makefile.gcc
+  !
+  ! Ticket #23 :
+  ! Added feature "Clipper style Alert() replacement"
+  ! with sample program delivered by Alex Strickland (TNX !)
+  ! Class an function docu updated (Windows only).
+  ! Tested on Windows 10 with MinGW.
+  ! Task for port to GTK in TO-DO added.
+
 2020-05-03 20:30 UTC+0200 Wilfried Brunken DF7BE
   * makedll.bc
   * makefile.bc

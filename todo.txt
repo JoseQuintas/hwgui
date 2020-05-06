@@ -7,6 +7,8 @@ Tasks by DF7BE
     List of sample programs with bug description follows.
  - International language support for internal HWGUI dialogs,
    next print preview dialog of WinPrn class.
+ - Feature "Clipper style Alert() replacement" delivered
+   by Alex Strickland port to GTK.
 
 List:  Samples not running or have bugs (Fix bugs, if time available, low priority):
   1.) WinAPI

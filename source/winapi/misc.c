@@ -1111,5 +1111,18 @@ HB_FUNC( HWG_GETWINMINORVERS )
    hb_retni( ovi.dwMinorVersion );
 }
 
+HB_FUNC( HWG_ALERT_DISABLECLOSEBUTTON )
+{
+    DeleteMenu( GetSystemMenu( (HWND) hb_parptr( 1 ), FALSE ), SC_CLOSE, MF_BYCOMMAND );
+    DrawMenuBar( (HWND) hb_parptr( 1 ) );
+}
+
+
+HB_FUNC( HWG_ALERT_GETWINDOW )
+// Was former static
+{
+   hb_retptr( (HWND) GetWindow( (HWND) hb_parptr(1), (UINT) hb_parni( 2 ) ) );
+}
+
 
 /* ========= EOF of misc.c ============ */

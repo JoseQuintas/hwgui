@@ -5,7 +5,18 @@
   <link rel="stylesheet" type="text/css" href="table.css">
 </head>
 <body bgcolor="#ffffff" text="#000000">
-
+<!--
+  Modification Dokumentation
+  
+ +-------------------!---------------------------------!--------------------------------------------+ 
+ ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
+ +-------------------!---------------------------------!--------------------------------------------+
+ ! 2020-05-06        ! Wilfried Brunken, DF7BE         ! Clipper style Alert() replacement          !
+ !                   !                                 ! Delivered by Alex Strickland (TNX)         !  
+ +-------------------!---------------------------------!--------------------------------------------+ 
+ + 2018-12-          ! Alexander S.Kresin              ! Last known state                           !  
+ +-------------------!---------------------------------!--------------------------------------------+
+-->
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td width="15%" align="left"><a href="http://kresin.belgorod.su">Home page</a></td>
@@ -110,6 +121,7 @@
        <li><a name="_Classes21" href="#Classes21">HBinC</a>
        <li><a name="_Classes22" href="#Classes22">HStyle</a>
        <li><a name="_Classes23" href="#Classes23">HilightBase</a>
+       <li><a name="_Classes25" href="#Classes25">HAlert</a>
          <ul>
            <li><a name="_Classes23_1" href="#Classes23_1">Hilight</a>
          </ul>
@@ -1830,6 +1842,103 @@
       Do( nLine, lCheck )
       UpdSource( nLine )
       AddItem( nPos1, nPos2, nType )
+   </pre>
+
+  <br><strong class="subhead"><a name="Classes25" href="#_Classes25">
+   HAlert</a></strong> 
+   <p>
+   Clipper style Alert() replacement.<BR>
+   (Windows only)<br> 
+   Emulates the old Clipper function with some bells and whistles.<br>
+   Delivered by Alex Strickland (TNX !)<br>
+   For detailed description look into comment lines of sample program "testalert.prg".
+   </p>
+   <pre class="code">DATA
+    CLASS VAR anTimerIDs /*SHARED*/ INIT {}            // What does SHARED do?
+
+    PROTECT cTitle AS STRING INIT "Alert"
+    PROTECT cFont AS STRING INIT "Tahoma"
+    PROTECT nFontSize AS NUMERIC INIT 8
+    PROTECT nCharSet AS NUMERIC INIT 0
+    PROTECT nIcon AS NUMERIC INIT IDI_INFORMATION      // Feel free to use your own
+    PROTECT acOptions AS ARRAY INIT { "OK" }
+    PROTECT abOptionActions                            // Can be Nil, so no types
+    PROTECT nAlign AS NUMERIC INIT SS_CENTER           // MessageBox is SS_LEFT
+    PROTECT lModal AS LOGIC INIT .T.
+    PROTECT nTime AS NUMERIC INIT 0
+    PROTECT lBeep AS LOGIC INIT .T.
+    PROTECT nBeepSound AS NUMERIC INIT MB_ICONEXCLAMATION
+    PROTECT lTitleIcon AS LOGIC INIT .F.
+    PROTECT lCloseButton AS LOGIC INIT .T.
+    PROTECT nChoice AS NUMERIC INIT 0
+    PROTECT nTimerID AS NUMERIC INIT 1899    // Should you have timers with this ID ??? Change it.
+    PROTECT oDlg
+    PROTECT oFont
+    PROTECT oIcon
+    PROTECT oTimer
+    PROTECT oMessage
+
+    ACCESS Title INLINE ::cTitle
+    ASSIGN Title(cVar) INLINE ::cTitle := cVar
+
+    ACCESS Font INLINE ::cFont
+    ASSIGN Font(cVar) INLINE ::cFont := cVar
+
+    ACCESS FontSize INLINE ::nFontSize
+    ASSIGN FontSize(nVar) INLINE ::nFontSize := nVar
+
+    ACCESS FontCharset INLINE ::nCharset
+    ASSIGN FontCharset(nVar) INLINE ::nCharset := nVar
+
+    ACCESS Icon INLINE ::nIcon
+    ASSIGN Icon(nVar) INLINE ::nIcon := nVar
+
+    ACCESS Options INLINE ::acOptions
+    ASSIGN Options(acVar) INLINE ::acOptions := aclone(acVar)
+
+    ACCESS OptionActions INLINE ::abOptionActions
+    ASSIGN OptionActions(abVar) INLINE ::abOptionActions := aclone(abVar)
+
+    ACCESS Align INLINE ::nAlign
+    ASSIGN Align(nVar) INLINE ::nAlign := nVar
+
+    ACCESS Modal INLINE ::lModal
+    ASSIGN Modal(lVar) INLINE ::lModal := lVar
+
+    ACCESS Time INLINE ::nTime
+    ASSIGN Time(nVar) INLINE ::nTime := nVar
+
+    ACCESS Beep INLINE ::lBeep
+    ASSIGN Beep(lVar) INLINE ::lBeep := lVar
+
+    ACCESS BeepSound INLINE ::nBeepSound
+    ASSIGN BeepSound(nVar) INLINE ::nBeepSound := nVar
+
+    ACCESS TitleIcon INLINE ::lTitleIcon
+    ASSIGN TitleIcon(lVar) INLINE ::lTitleIcon := lVar
+
+    ACCESS CloseButton INLINE ::lCloseButton
+    ASSIGN CloseButton(lVar) INLINE ::lCloseButton := lVar
+
+    ACCESS TimerID INLINE ::nTimerID
+    ASSIGN TimerID(nVar) INLINE ::nTimerID := nVar
+
+    ACCESS Choice INLINE ::nChoice
+
+  
+   </pre>
+   <pre class="code">METHODS
+      Init(cTitle, cFont, nFontSize, nIcon, acOptions, nAlign, lModal, nTime, lBeep, nBeepSound, lTitleIcon, ;
+            lCloseButton, abOptionActions, nCharSet)
+      // Nice for SetDefaultAlert utility function
+      SetVars(cTitle, cFont, nFontSize, nIcon, acOptions, nAlign, lModal, nTime, lBeep, nBeepSound, lTitleIcon, ;
+            lCloseButton, abOptionActions, nCharSet)
+      ResetVars()
+      ReleaseNonModalAlert(lViaCode)
+      SetupTimer()
+      RemoveTimer(nTimerID)
+      Alert(cMessage, acOptions)
+      UpdateMessage(cMessage)
    </pre>
 
    <br><strong class="subhead"><a name="Classes24" href="#_Classes24">

@@ -9,6 +9,7 @@
  *
  * Modified by DF7BE: New parameter "nCharset" for 
  * selecting international charachter sets
+ * Data and methods for National Language Support
 */
 
 #include "hwgui.ch"
@@ -51,8 +52,13 @@ CLASS HWinPrn
    
    DATA   nCharset  INIT 0   &&  Charset (N) Default: 0  , 204 = Russian
 
+   // --- International Language Support for internal dialogs --
+   DATA aTooltips   INIT {}  // Array with tooltips messages for print preview dialog
+   DATA aBootUser   INIT {}  // Array with control  messages for print preview dialog  (optional usage)
+   
 
    METHOD New( cPrinter, cpFrom, cpTo, nFormType, nCharset )
+   METHOD SetLanguage(apBootUser,apTooltips)
    METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD StartDoc( lPreview, cMetaName )
@@ -75,6 +81,8 @@ ENDCLASS
 
 METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
 
+   ::SetLanguage() // Start with default english
+
    ::oPrinter := HPrinter():New( cPrinter, .F., nFormType )
    IF ::oPrinter == Nil
       RETURN Nil
@@ -93,8 +101,22 @@ METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
    IF nCharset != Nil
       :: nCharset := nCharset
    ENDIF
+ 
 
    RETURN Self
+
+
+METHOD SetLanguage(apTooltips) CLASS HWinPrn
+* NLS: Sets the message and control texts to print preview dialog
+* Are stored in arrays:   ::aBootUser[], ::aTooltips[]
+
+* Default settings (English)
+  ::aTooltips := hwg_HPrinter_LangArray_EN()
+* Overwrite default, if array with own language served 
+   IF apTooltips != NIL ; ::aTooltips := apTooltips ; ENDIF
+/* Activate, if necessary, then add parameter "apBootUser". */   
+//   IF apBootUser != NIL ; ::aBootUser := apBootUser ; ENDIF  
+RETURN Nil
 
 METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset ) CLASS HWinPrn
 
@@ -351,7 +373,7 @@ METHOD EndDoc() CLASS HWinPrn
       ::oPrinter:EndDoc()
       ::lDocStart := .F.
       IF __ObjHasMsg( ::oPrinter, "PREVIEW" ) .AND. ::oPrinter:lPreview
-         ::oPrinter:Preview()
+         ::oPrinter:Preview( , , ::aTooltips,)
       ENDIF
    ENDIF
 
@@ -364,3 +386,5 @@ METHOD END() CLASS HWinPrn
    ::oPrinter:END()
 
    RETURN Nil
+   
+* ================================ EOF of hwinprn.prg ==========================   

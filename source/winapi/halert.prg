@@ -401,7 +401,7 @@ RETURN Nil
 // These functions are used to manipulate the "default" alert setup.
 //
 
-function Alert(cMessage, acOptions)
+FUNCTION hwg_Alert(cMessage, acOptions)
 
     if soDefaultAlert == Nil
         soDefaultAlert := HAlert():New()

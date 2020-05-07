@@ -1459,7 +1459,11 @@
    <p></p>
 
    <br><strong class="subhead"> hwg__isUnicode()</strong> 
-   <p></p>
+   <p>Returns .T., if program is running with UTF-8 support.<BR>
+      This function works also on GTK cross development environment.<BR>
+      Windows operating system does not support Unicode.<BR>
+      Result may decide the setting of the local codepage for correct display.
+  </p>
 
    <br><strong class="subhead"> hwg_GetPrinters()</strong> 
    <p></p>
@@ -1767,6 +1771,9 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_onAnchor( oWnd, wold, hold, wnew, hnew )</strong>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Alert</strong>(Windows only)
    <p></p>
 
    <br><strong class="subhead"> hwg_Alert_DisableCloseButton()</strong>(Windows only)

@@ -29,11 +29,6 @@
  *
  */
 
-    * Status:
-    *  WinAPI   :  Yes
-    *  GTK/Linux:  No
-    *  GTK/Win  :  No
-
 
 #include "guilib.ch"
 #include "windows.ch"
@@ -53,13 +48,13 @@ procedure main()
     local oMainWindow
     local hCursor
 
-    Alert("Hello")
+    hwg_Alert("Hello")
 
     hCursor := Hwg_SetCursor(Hwg_LoadCursor(IDC_WAIT))
         // not Modal, param 7
     SetDefaultAlert( , , 10, IDI_HAND, , , ALERT_NOTMODAL, , , , , ALERT_NOCLOSEBUTTON)
         // Note default aOptions overriden with empty array
-    Alert("We will be processing (well, sleeping and beeping) for 5s (not modal)  ...", { })
+    hwg_Alert("We will be processing (well, sleeping and beeping) for 5s (not modal)  ...", { })
     for i := 1 to 5
         Hwg_MsgBeep(MB_ICONEXCLAMATION)
         Hwg_Sleep(1000)
@@ -72,23 +67,23 @@ procedure main()
         // Can't close - shows icon in title bar (and task bar)
         // Note aOptions overriden with empty array in SetDefaultAlert
     SetDefaultAlert( , , 10, IDI_HAND, { }, , , 5, , , ALERT_TITLEICON, ALERT_NOCLOSEBUTTON)
-    Alert("Useful ever? (5s imposed wait doing nothing (modal), can't press esc); note title icon ...")
+    hwg_Alert("Useful ever? (5s imposed wait doing nothing (modal), can't press esc); note title icon ...")
     hwg_GetDefaultAlert():ResetVars()
 
         // Thread safe like this, straight Alert and friends are not.
     HAlert():Init():Alert("Our own temporary object alert", { "Good", "or", "Bad" })
 
         // Compare alert() to Hwg_MsgYesNoCancel()
-    Alert("alert() returned " + ;
+    hwg_Alert("hwg_Alert() returned " + ;
             HB_ValToStr(Alert("'ello 'ello;How are you?;I am alert();;abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", ;
             { "Yes", "No", "Cancel" })))
         // By way of comparison to MessageBox which is what Hwg_MsgYesNoCancel() calls
-    Alert("Hwg_MsgYesNoCancel() returned " + ;
+    hwg_Alert("Hwg_MsgYesNoCancel() returned " + ;
             HB_ValToStr(Hwg_MsgYesNoCancel("'ello 'ello" + chr(10) + "How are you?" + chr(10) + "I am Hwg_MsgYesNoCancel()" + chr(10) + chr(10) + ;
             "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", "Alert")))
 
     SetDefaultAlert("Error", , , IDI_ERROR, , SS_LEFT)
-    nResult := Alert("This is how an error with Alert looks")
+    nResult := hwg_Alert("This is how an error with Alert looks")
         // By way of comparison to "error look" of MessageBox
     Hwg_MsgStop("This is how an error with Hwg_MsgStop looks!", "Error")
 
@@ -98,13 +93,13 @@ procedure main()
     oAlert:Beep := .f.  // Quiet please
     oAlert:Icon := IDI_EXCLAMATION
     oAlert:FontSize := 18
-    Alert("MessageBox can't do this, and quietly as well!")
+    hwg_Alert("MessageBox can't do this, and quietly as well!")
         // This is a clone
     oAlert := __objclone(hwg_GetDefaultAlert())
     oAlert:FontSize := 28
     oAlert:Alert("MessageBox can't do this, and quietly as well!;Clone")
         // so the original is unchanged
-    Alert("MessageBox can't do this, and quietly as well!;Original")
+    hwg_Alert("MessageBox can't do this, and quietly as well!;Original")
     ResetDefaultAlert()
 
     oAlert := hwg_GetDefaultAlert()
@@ -114,7 +109,7 @@ procedure main()
     oAlert:Time := 5
     oAlert:Icon := IDI_APPLICATION
     oAlert:TitleIcon := .t.
-    nResult := Alert("5s and we are done;but you can hit enter first!")
+    nResult := hwg_Alert("5s and we are done;but you can hit enter first!")
         // Remember to switch this off for new alerts
     oAlert:Time := 0
     oAlert:Icon := IDI_INFORMATION
@@ -126,7 +121,7 @@ procedure main()
         ON INIT { || TestNonModalAlert() }
 
     MENU OF oMainWindow
-        MENUITEM "E&xit" ACTION { || alert("Goodbye;;BTW I'm centered on the app window"), oMainWindow:Close() }
+        MENUITEM "E&xit" ACTION { || hwg_Alert("Goodbye;;BTW I'm centered on the app window"), oMainWindow:Close() }
     ENDMENU
 
     ACTIVATE WINDOW oMainWindow

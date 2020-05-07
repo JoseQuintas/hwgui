@@ -593,7 +593,7 @@ STATIC FUNCTION onClick( oParent, id )
    LOCAL oCtrl := oParent:FindControl( id )
 
    IF !Empty( oCtrl ) .AND. !Empty( oCtrl:bClick )
-      Eval( oCtrl:bClick, oCtrl , id )
+      Eval( oCtrl:bClick, oCtrl )
    ENDIF
 
    RETURN .T.

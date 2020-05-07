@@ -25,7 +25,7 @@ REQUEST HB_CODEPAGE_RU1251
 
 * === German ===
 * Data Codepage (in DBFs)
-REQUEST HB_CODEPAGE_DE850
+REQUEST HB_CODEPAGE_DE858
 * Windows codepage 
 REQUEST HB_CODEPAGE_DEWIN
 
@@ -36,9 +36,16 @@ REQUEST HB_CODEPAGE_UTF8
 
 
 Function Main
+ PRINT_OUT()
+RETURN NIL
+
+* ---------------------------------------------
+FUNCTION PRINT_OUT
+* Print test
+* ---------------------------------------------
+
 Local oWinPrn, i , j
 LOCAL ctest1
-
 
 #ifdef CHARSET_RU
 * Initialize sequence for printer (Russiam)
@@ -57,10 +64,14 @@ LOCAL ctest1
 * Initialize sequence for printer (German)
 
 #ifndef __PLATFORM__WINDOWS
-   oWinPrn := HWinPrn():New( ,"DE850","UTF8" )
+   oWinPrn := HWinPrn():New( ,"DE858","UTF8" )
+//    oWinPrn:aTooltips := hwg_HPrinter_LangArray_DE()
+*   oWinPrn:StartDoc( .T. )
    oWinPrn:StartDoc( .T.,"temp_a2.ps" )
 #else
-   oWinPrn := HWinPrn():New( ,"DE850","DEWIN")
+   oWinPrn := HWinPrn():New( ,"DE858","DEWIN")
+    // Test for german language 
+//    oWinPrn:aTooltips := hwg_HPrinter_LangArray_DE()
 *   oWinPrn:StartDoc( .T. )
     oWinPrn:StartDoc( .T.,"temp_a2.pdf" )
 #endif
@@ -70,6 +81,7 @@ LOCAL ctest1
 * Test German Umlaute and sharp "S"
    ctest1 := CHR(142) + CHR(153) + CHR(154) + CHR(132) + CHR(148) + CHR(129) + CHR(225)
 
+ 
   
   * print all chars over ASCII with decimal values
   FOR j := 128 TO 190
@@ -84,8 +96,8 @@ LOCAL ctest1
    oWinPrn:PrintLine( oWinPrn:oFont:name + " " + Str(oWinPrn:oFont:height) + " " + Str(oWinPrn:nCharW) + " " + Str(oWinPrn:nLineHeight) )
    oWinPrn:PrintLine( "A123456789012345678901234567890123456789012345678901234567890123456789012345678Z" )
 /*
-   oWinPrn:PrintLine( " ¡¢£¤¥¦§¨©ª«¬­®¯àáâãäåæçèéêëìíîï" )
-   oWinPrn:PrintLine( "€‚ƒ„…†‡ˆ‰Š‹Œ‘’“”•–—˜™š›œŸ" )
+   oWinPrn:PrintLine( "Â Â¡Â¢Â£Â¤Â¥Â¦Â§Â¨Â©ÂªÂ«Â¬Â­Â®Â¯Ã Ã¡Ã¢Ã£Ã¤Ã¥Ã¦Ã§Ã¨Ã©ÃªÃ«Ã¬Ã­Ã®Ã¯" )
+   oWinPrn:PrintLine( "â‚¬Ââ€šÆ’â€â€¦â€ â€¡Ë†â€°Å â€¹Å’ÂÅ½ÂÂâ€˜â€™â€œâ€â€¢â€“â€”Ëœâ„¢Å¡â€ºÅ“ÂÅ¾Å¸" )
 */
 
 *  DOS  (dez / oct / hex) >> CP850, DE850
@@ -113,14 +125,14 @@ LOCAL ctest1
  
    oWinPrn:PrintLine( "abcdefghijklmnopqrstuvwxyz" )
    oWinPrn:PrintLine( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" )
-   oWinPrn:PrintLine( "ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿" )
-   oWinPrn:PrintLine( "³   129.54³           0.00³" )
-   oWinPrn:PrintLine( "ÃÄÄÄÄÄÄÄÄÄÅÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ´" )
-   oWinPrn:PrintLine( "³    17.88³      961014.21³" )
-   oWinPrn:PrintLine( "ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ" )
+   oWinPrn:PrintLine( "ÃšÃ„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã‚Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Â¿" )
+   oWinPrn:PrintLine( "Â³   129.54Â³           0.00Â³" )
+   oWinPrn:PrintLine( "ÃƒÃ„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã…Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Â´" )
+   oWinPrn:PrintLine( "Â³    17.88Â³      961014.21Â³" )
+   oWinPrn:PrintLine( "Ã€Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„ÃÃ„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã™" )
    oWinPrn:PrintLine()
-   oWinPrn:PrintLine( "ÚÄÄÄÄÄÄÄÄÄÂÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿" )
-   oWinPrn:PrintLine( "ÀÄÄÄÄÄÄÄÄÄÁÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ" )
+   oWinPrn:PrintLine( "ÃšÃ„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã‚Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Â¿" )
+   oWinPrn:PrintLine( "Ã€Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„ÃÃ„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã„Ã™" )
 
    oWinPrn:PrintLine()
    oWinPrn:PrintLine()
@@ -152,4 +164,62 @@ LOCAL ctest1
 
 Return Nil
 
-* ======================================================================
+FUNCTION hwg_HPrinter_LangArray_DE()
+/* Returns array with captions for titles and controls of print preview dialog
+  in german language.
+  Use this code snippet as template to set to your own desired language. */
+  LOCAL aTooltips , CAGUML, COGUML, CUGUML, CAKUML, COKUML, CUKUML, CSZUML, cEuro
+  aTooltips := {}
+  * Language dependent special characters:
+  * Umlaute and Sharp "S", Euro currency sign.
+
+  IF hwg__isUnicode()
+  * UTF-8 (without BOM)
+    CAGUML := "Ã„"
+    COGUML := "Ã–"
+    CUGUML := "Ãœ"
+    CAKUML := "Ã¤"
+    COKUML := "Ã¶"
+    CUKUML := "Ã¼"
+    CSZUML := "ÃŸ"
+    cEuro  := "â‚¬"
+   ELSE
+   * DEWIN
+    CAGUML := CHR(196)
+    COGUML := CHR(214)
+    CUGUML := CHR(220)
+    CAKUML := CHR(228)
+    COKUML := CHR(246)
+    CUKUML := CHR(252)
+    CSZUML := CHR(223)
+    cEuro  := CHR(128)
+   ENDIF
+
+
+  /* 1  */ AAdd(aTooltips,"Vorschau beenden")            && Exit Preview
+  /* 2  */ AAdd(aTooltips,"Datei drucken")               && Print file
+  /* 3  */ AAdd(aTooltips,"Erste Seite")                 && First page
+  /* 4  */ AAdd(aTooltips,"N" + CAKUML + "chste Seite")  && Next page
+  /* 5  */ AAdd(aTooltips,"Vorherige Seite")             && Previous page
+  /* 6  */ AAdd(aTooltips,"Letzte Seite")                && Last page
+  /* 7  */ AAdd(aTooltips,"Kleiner")                     && Zoom out
+  /* 8  */ AAdd(aTooltips,"Gr" + COKUML + CSZUML + "er") && Zoom in
+  /* 9  */ AAdd(aTooltips,"Druck-Optionen")              && Print dialog
+  // added (Titles and other Buttons)
+  /* 10 */ AAdd(aTooltips,"Druckvorschau -") && Title                     "Print preview -"
+  /* 11 */ AAdd(aTooltips,"Drucken")         && Button                    "Print"
+  /* 12 */ AAdd(aTooltips,"Schlie" + CSZUML + "en") && Button             "Exit"
+  /* 13 */ AAdd(aTooltips,"Optionen")        && Button                    "Dialog"
+  /* 14 */ AAdd(aTooltips,"Benutzer-Knopf")  && aBootUser[ 3 ], Tooltip   "User Button"
+  /* 15 */ AAdd(aTooltips,"Benutzer-Knopf")  && aBootUser[ 4 ]            "User Button"
+  // Subdialog "Printer Dialog"
+  /* 16 */ AAdd(aTooltips,"Alles")           && Radio Button              "All"
+  /* 17 */ AAdd(aTooltips,"Aktuelle Seite")  && Radio Button              "Current"
+  /* 18 */ AAdd(aTooltips,"Seiten")          && Radio Button              "Pages"
+  /* 19 */ AAdd(aTooltips,"Drucken")         && Button                    "Print"
+  /* 20 */ AAdd(aTooltips,"Abbruch" )        && Button                    "Cancel"
+  /* 21 */ AAdd(aTooltips,"Seitenbereich(e) eingeben") && Tooltip         "Enter range of pages"
+  
+RETURN aTooltips  
+
+* ============================= EOF of winprn.prg =========================================

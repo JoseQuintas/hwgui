@@ -1508,7 +1508,7 @@
       ReleaseMeta()
       PaintDoc( oWnd )
       PrintDoc( nPage )
-      PrintDlg()
+      PrintDlg(aTooltips)
       PrintScript( hDC, nPage, x1, y1, x2, y2 )
       Preview( cTitle, aBitmaps, aTooltips, aBootUser )
       End()                     - Releasing the printer.
@@ -1684,8 +1684,14 @@
       lNoModal                 (R)
       bDlgExit, bFormExit      (R)
       cargo                   (RW)
+       // --- International Language Support for internal dialogs --
+      cTextCantOpenF          (RW)  INIT "Can't open"
+      cTextInvClMemb          (RW)  INIT "Invalid class member"
+      cTextFrmRepDescnotF     (RW)  INIT "Form description isn't found"
+      //  cTextRepDescnotF    (RW)  INIT "Report description isn't found" ==> Class HRepTmpl
    </pre>
    <pre class="code">METHODS
+      DefaultLang()
       Read( fname, cId )
       Show( nMode, params )
       ShowMain( params )
@@ -1715,6 +1721,8 @@
       nTOffset, nAOffSet, ny
       lNextPage, lFinish
       oPrinter
+      // --- International Language Support for internal dialogs --
+      cTextRepDescnotF         (RW)  INIT "Report description isn't found" 
    </pre>
    <pre class="code">METHODS
       READ( fname, cId )

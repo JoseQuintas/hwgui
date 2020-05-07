@@ -7,6 +7,7 @@
  * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
+
 #ifdef __XHARBOUR__
 #xtranslate HB_AT(<x,...>) => AT(<x>)
 #endif
@@ -119,7 +120,13 @@ CLASS HFormTmpl
    DATA lNoModal      INIT .F.
    DATA bDlgExit, bFormExit
    DATA cargo
+   // --- International Language Support for internal dialogs --
+   DATA cTextCantOpenF      INIT "Can't open"
+   DATA cTextInvClMemb      INIT "Invalid class member"
+   DATA cTextFrmRepDescnotF INIT "Form description isn't found"
+   // DATA cTextRepDescnotF    INIT "Report description isn't found" ==> Class HRepTmpl
 
+   METHOD DefaultLang()   
    METHOD Read( fname, cId )
    METHOD Show( nMode, params )
    METHOD ShowMain( params )   INLINE ::Show( 1, params )
@@ -130,6 +137,13 @@ CLASS HFormTmpl
    ERROR HANDLER OnError( xValue )
 
 ENDCLASS
+
+METHOD DefaultLang() CLASS HFormTmpl
+  ::cTextCantOpenF      := "Can't open"
+  ::cTextInvClMemb      := "Invalid class member"
+  ::cTextFrmRepDescnotF := "Form description isn't found"
+  ::cTextRepDescnotF    := "Report description isn't found"
+RETURN NIL
 
 METHOD Read( fname, cId ) CLASS HFormTmpl
    LOCAL oDoc
@@ -148,10 +162,10 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
    ENDIF
 
    IF Empty( oDoc:aItems )
-      hwg_Msgstop( "Can't open " + fname )
+      hwg_Msgstop( ::cTextCantOpenF + " " + fname )   && "Can't open "
       RETURN Nil
    ELSEIF oDoc:aItems[1]:title != "part" .OR. oDoc:aItems[1]:GetAttribute( "class" ) != "form"
-      hwg_Msgstop( "Form description isn't found" )
+      hwg_Msgstop( ::cTextFrmRepDescnotF )  && "Form description isn't found"
       RETURN Nil
    ENDIF
 
@@ -345,15 +359,15 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
       IF lMdi
          INIT WINDOW ::oDlg MDI TITLE cTitle    ;
             AT nLeft, nTop SIZE nWidth, nHeight ;
-            STYLE Iif( nStyle > 0 , nStyle, NIL ) ;
-            FONT oFont ;
+            STYLE Iif( nStyle > 0 , nStyle, NIL );
+            FONT oFont;
             BACKGROUND BITMAP oBmp ;
             COLOR Iif( bColor >= 0, bColor, Nil ) ;
             ON GETFOCUS bGetFo
       ELSEIF lMdiChild
          INIT WINDOW ::oDlg  MDICHILD TITLE cTitle    ;
             AT nLeft, nTop SIZE nWidth, nHeight ;
-            STYLE Iif( nStyle > 0 , nStyle, NIL ) ;
+            STYLE Iif( nStyle > 0 , nStyle, NIL );
             FONT oFont ;
             BACKGROUND BITMAP oBmp ;
             COLOR Iif( bColor >= 0, bColor, Nil ) ;
@@ -507,7 +521,7 @@ METHOD OnError( xValue ) CLASS HFormTmpl
    oError:genCode     := EG_LIMIT
    oError:subSystem   := "HFORMTMPL"
    oError:subCode     := 0
-   oError:description := "Invalid class member"
+   oError:description := ::cTextInvClMemb   &&  "Invalid class member"
    oError:canRetry    := .F.
    oError:canDefault  := .F.
    oError:fileName    := ""
@@ -827,6 +841,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
                the same name as the property */
             __mvPut( cPName, xProperty )
          ENDIF
+
          IF cPName == "varname"
             cVarName := xProperty
             bSetGet := &( "{|v|Iif(v==Nil,HFormTmpl():F("+LTrim(Str(oForm:id))+"):" + xProperty + ",HFormTmpl():F("+LTrim(Str(oForm:id))+"):" + xProperty + ":=v)}" )
@@ -1131,7 +1146,10 @@ CLASS HRepTmpl
    DATA nTOffset, nAOffSet, ny
    DATA lNextPage, lFinish
    DATA oPrinter
+   // --- International Language Support for internal dialogs --
+   DATA cTextFrmRepDescnotF INIT "Form description isn't found"
 
+   METHOD DefaultLang()
    METHOD READ( fname, cId )
    METHOD PRINT( printer, lPreview, p1, p2, p3, p4, p5 )
    METHOD PrintAsPage( printer, nPageType, lPreview, p1, p2, p3, p4, p5 )
@@ -1141,6 +1159,10 @@ CLASS HRepTmpl
    METHOD CLOSE()
 
 ENDCLASS
+
+METHOD DefaultLang() CLASS HRepTmpl
+  ::cTextFrmRepDescnotF := "Form description isn't found"
+RETURN NIL
 
 METHOD READ( fname, cId ) CLASS HRepTmpl
    LOCAL oDoc
@@ -1162,7 +1184,7 @@ METHOD READ( fname, cId ) CLASS HRepTmpl
       hwg_Msgstop( "Can't open " + fname )
       RETURN Nil
    ELSEIF oDoc:aItems[1]:title != "part" .OR. oDoc:aItems[1]:GetAttribute( "class" ) != "report"
-      hwg_Msgstop( "Report description isn't found" )
+      hwg_Msgstop( ::cTextFrmRepDescnotF ) &&  "Report description isn't found"
       RETURN Nil
    ENDIF
 
@@ -1260,7 +1282,7 @@ METHOD PRINT( printer, lPreview, p1, p2, p3, p4, p5 ) CLASS HRepTmpl
 #ifdef __GTK__
    xTemp := hwg_gp_GetDeviceArea( oPrinter:hDC )
 #else
-   xTemp := hwg_Getdevicearea( oPrinter:hDCPrn )
+   xTemp := hwg_GetDeviceArea( oPrinter:hDCPrn )
 #endif
    ::nKoefPix := ( ( xTemp[1]/xTemp[3] + xTemp[2]/xTemp[4] ) / 2 ) / 3.8
    oPrinter:SetMode( nOrientation, nDuplex )
@@ -1438,11 +1460,11 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
       y   := Val( xProperty[2] ) * ::nKoefY
       x2  := Val( xProperty[5] ) * ::nKoefX
       y2  := Val( xProperty[6] ) * ::nKoefY
-      // writelog( xProperty[1]+" "+xProperty[2] )
+      // hwg_WriteLog( xProperty[1]+" "+xProperty[2] )
 
       IF oItem:cClass == "area"
          oItem:y2 := y2
-         // writelog( "Area: "+cText+" "+Iif(::lNextPage,"T","F") )
+         // hwg_WriteLog( "Area: "+cText+" "+Iif(::lNextPage,"T","F") )
          IF ( xProperty := aGetSecond( oItem:aProp,"varoffset" ) ) == Nil ;
                .OR. !xProperty
             ::nTOffset := ::nAOffSet := 0
@@ -1474,7 +1496,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
                ENDIF
             ENDDO
             IF lLastCycle
-               // writelog( "--> "+str(::nAOffSet)+str(y2-y+1 - ( ::ny - y )) )
+               // hwg_WriteLog( "--> "+str(::nAOffSet)+str(y2-y+1 - ( ::ny - y )) )
                ::nAOffSet += y2 - y + 1 - ( ::ny - y )
                ::nTOffset := 0
                ::lFinish := .T.
@@ -1499,7 +1521,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
             oItem:lMark := .T.
             ::lNextPage := .T.
             ::nTOffset := ::nAOffSet := 0
-            // writelog( "::lNextPage := .T. "+ oItem:cClass )
+            // hwg_WriteLog( "::lNextPage := .T. "+ oItem:cClass )
             RETURN Nil
          ENDIF
       ENDIF
@@ -1716,3 +1738,5 @@ STATIC FUNCTION hrep_FontFromXML( oPrinter, oXmlNode, nKoeff, nFontH )
    under  := Iif( under != Nil, Val( under ), 0 )
 
    RETURN oPrinter:AddFont( name, height, ( weight > 400 ), ( ita > 0 ), ( under > 0 ), charset )
+
+   * ==================== EOF of hfrmtmpl.prg =====================

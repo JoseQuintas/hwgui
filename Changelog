@@ -8,6 +8,40 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-05-08 00:30 UTC+0200 Wilfried Brunken DF7BE
+  * source\winapi\hfrmtmpl.prg
+  * source\winapi\hprinter.prg
+  * samples\winprn.prg
+  * source\gtk\hfrmtmpl.prg
+  * source\gtk\hprinter.prg
+  * source\gtk\hwinprn.prg
+  * samples\gtk_samples\winprn.prg
+  * source\winapi\hcontrol.prg
+  * source\winapi\halert.prg
+  * samples\testalert.prg
+  * makefile.vc
+    ! 
+    ! National language support for
+    ! Print preview dialog in HPRINTER class
+    ! (Print preview dialog)
+    ! (Task to be continued for next classes)
+    !
+    ! hcontrol.prg:
+    ! Ticket #23, mod reverted by suggestion of
+    ! Maurizio la Cecilia
+    ! 
+    ! Ticket #24 by Itamar M. Lins Jr. Junior:
+    ! Alert() to hwg_Alert(), conflict.
+    !
+    ! Some updates in docu.
+    !
+    ! makefile.vc:
+    ! As posted from Alex Strickland at 2020-05-07,
+    ! but need to add file for HALERT class (halert.prg)
+    !
+
+
 2020-05-06 23:00 UTC+0200 Wilfried Brunken DF7BE
   * include\halert.ch
   * source\winapi\halert.prg

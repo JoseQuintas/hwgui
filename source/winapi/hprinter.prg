@@ -58,9 +58,24 @@ CLASS HPrinter INHERIT HObject
    DATA BottomMargin
    DATA LeftMargin
    DATA RightMargin
+   // --- International Language Support for internal dialogs --
+   DATA aLangTexts
+   // Print Preview Dialog with sub dialog:
+   // The messages and control text's are delivered by other classes, calling
+   // the method Preview() in Parameter aTooltips as an array.
+   // After call of Init method, you can update the array with messages in your
+   // desired language.
+   // Sample: Preview( , , aTooltips, )
+   // Structure of array look at 
+   // METHOD SetLanguage(apTooltips) CLASS HWinPrn
+   // in file hwinprn.prg.
+   // List of classes calling print preview
+   // HWINPRN, HRepTmpl , ...
+   // For more details see inline comments in sample program "nlsdemo.prg" 
 
    METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
-
+   // FUNCTION hwg_HPrinter_LangArray_EN()
+   METHOD DefaultLang()
    METHOD SetMode( nOrientation, nDuplex )
    METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset )
    METHOD SetFont( oFont )  INLINE (::oFont := oFont, hwg_Selectobject( ::hDC, oFont:handle ) )
@@ -77,9 +92,9 @@ CLASS HPrinter INHERIT HObject
    METHOD ReleaseMeta()
    METHOD PaintDoc( oWnd )
    METHOD PrintDoc( nPage )
-   METHOD PrintDlg()
+   METHOD PrintDlg(aTooltips)
    METHOD PrintScript( hDC, nPage, x1, y1, x2, y2 )
-   METHOD Preview( cTitle )
+   METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser )
    METHOD End()
    METHOD ReleaseRes()
    METHOD Box( x1, y1, x2, y2, oPen, oBrush )
@@ -92,10 +107,45 @@ CLASS HPrinter INHERIT HObject
 
 ENDCLASS
 
+FUNCTION hwg_HPrinter_LangArray_EN()
+/* Returns array with captions for titles and controls of print preview dialog
+  in default language english.
+  Use this code snippet as template to set to your own desired language. */
+  LOCAL aTooltips
+  aTooltips := {}
+
+  /* 1  */ AAdd(aTooltips,"Exit Preview")
+  /* 2  */ AAdd(aTooltips,"Print file")
+  /* 3  */ AAdd(aTooltips,"First page")
+  /* 4  */ AAdd(aTooltips,"Next page")
+  /* 5  */ AAdd(aTooltips,"Previous page")
+  /* 6  */ AAdd(aTooltips,"Last page")
+  /* 7  */ AAdd(aTooltips,"Zoom out")
+  /* 8  */ AAdd(aTooltips,"Zoom in")
+  /* 9  */ AAdd(aTooltips,"Print dialog") 
+  // added (Titles and other Buttons)
+  /* 10 */ AAdd(aTooltips,"Print preview -") && Title
+  /* 11 */ AAdd(aTooltips,"Print")           && Button
+  /* 12 */ AAdd(aTooltips,"Exit")            && Button
+  /* 13 */ AAdd(aTooltips,"Dialog")          && Button
+  /* 14 */ AAdd(aTooltips,"User Button")     && aBootUser[ 3 ], Tooltip
+  /* 15 */ AAdd(aTooltips,"User Button")     && aBootUser[ 4 ]
+  // Subdialog "Printer Dialog"
+  /* 16 */ AAdd(aTooltips,"All")             && Radio Button              "All"
+  /* 17 */ AAdd(aTooltips,"Current")         && Radio Button              "Current"
+  /* 18 */ AAdd(aTooltips,"Pages")           && Radio Button              "Pages"
+  /* 19 */ AAdd(aTooltips,"Print")           && Button                    "Print"
+  /* 20 */ AAdd(aTooltips,"Cancel")          && Button                    "Cancel"
+  /* 21 */ AAdd(aTooltips,"Enter range of pages") && Tooltip              "Enter range of pages"  
+  
+RETURN aTooltips  
+
 METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn ) CLASS HPrinter
 
    LOCAL aPrnCoors, cPrinterName, nTemp
 
+   ::DefaultLang()
+   
    IF ValType( nFormType ) == "N"
       // A3 - DMPAPER_A3, A4 - DMPAPER_A4
       ::FormType := nFormType
@@ -176,6 +226,10 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
    ENDIF
 
    RETURN Self
+
+METHOD DefaultLang() CLASS HPrinter
+  ::aLangTexts := hwg_HPrinter_LangArray_EN()
+RETURN NIL  
 
 METHOD SetMode( nOrientation, nDuplex ) CLASS HPrinter
 
@@ -562,8 +616,19 @@ METHOD ReleaseMeta() CLASS HPrinter
 
    RETURN Nil
 
-METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
+METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser) CLASS HPrinter
 
+/*
+aBootUser[ 1 ] : oBtn:bClick
+aBootUser[ 2 ] : AddResource(Bitmap)   
+aBootUser[ 3 ] : "User Button", Tooltip ==> cBootUser3
+aBootUser[ 4 ] : "User Button"          ==> cBootUser4
+
+Default values in array aTooltips see 
+FUNCTION hwg_HPrinter_LangArray_EN()
+*/
+
+   LOCAL cmExit, cmPrint, cmDialog, cBootUser3, cBootUser4, cmTitle
    LOCAL oDlg, oToolBar, oSayPage, oBtn, oCanvas, i, aPage := { }
    LOCAL oFont := HFont():Add( "Times New Roman", 0, - 13, 700 )
    LOCAL lTransp := ( aBitmaps != Nil .AND. Len( aBitmaps ) > 9 .AND. aBitmaps[ 10 ] != Nil .AND. aBitmaps[ 10 ] )
@@ -573,14 +638,39 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
       aPage[i] := Str( i, 4 ) + ":" + Str( Len( aPage ), 4 )
    NEXT
 
-   IF cTitle == Nil ; cTitle := "Print preview - " + ::cPrinterName ; ENDIF
+   // Button and title default captions
+   // "Print preview -", see above
+   cmExit         := "Exit"
+   cmPrint        := "Print"
+   cmDialog       := "Dialog"
+   cBootUser3     := "User Button"
+   cBootUser4     := "User Button"
+   cmTitle        := "Print preview - " + ::cPrinterName
+   
+   /* Parameter cTitle preferred */
+   IF cTitle == Nil
+    cTitle := cmTitle  
+    IF aTooltips != Nil  
+      cTitle := aTooltips[ 10 ] + " " + ::cPrinterName
+    ENDIF
+   ELSE
+    cTitle := cmTitle     
+   ENDIF
+   IF aTooltips != Nil
+      cmPrint    := aTooltips[ 11 ]   
+      cmExit     := aTooltips[ 12 ]
+      cmDialog   := aTooltips[ 13 ]
+      cBootUser3 := aTooltips[ 14 ]
+      cBootUser4 := aTooltips[ 15 ]
+   ENDIF
+ 
    ::nZoom := 0
    ::nCurrPage := 1
 
    ::NeedsRedraw := .T.
 
-   INIT DIALOG oDlg TITLE cTitle                  ;
-      At 40, 10 SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight()                        ;
+   INIT DIALOG oDlg TITLE cTitle ;
+      At 40, 10 SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() ;
       STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + WS_MAXIMIZEBOX + WS_CLIPCHILDREN ;
       ON INIT { | o | o:Maximize(), ::ResizePreviewDlg( oCanvas, 1 ) } ;
       ON EXIT { || oCanvas:brush := NIL, .T. }
@@ -606,7 +696,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
    oCanvas:brush := 0
 
    @ 3, 2 OWNERBUTTON oBtn OF oToolBar ON CLICK { || hwg_EndDialog() } ;
-      SIZE oToolBar:nWidth - 6, 24 TEXT "Exit" FONT oFont        ;
+      SIZE oToolBar:nWidth - 6, 24 TEXT cmExit FONT oFont              ;  && "Exit"
       TOOLTIP Iif( aTooltips != Nil, aTooltips[ 1 ], "Exit Preview" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 1 .AND. aBitmaps[ 2 ] != Nil
       oBtn:oBitmap  := Iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 2 ] ), HBitmap():AddFile( aBitmaps[ 2 ] ) )
@@ -617,7 +707,7 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
    @ 1, 31 LINE LENGTH oToolBar:nWidth - 1
 
    @ 3, 36 OWNERBUTTON oBtn OF oToolBar ON CLICK { || ::PrintDoc() } ;
-      SIZE oToolBar:nWidth - 6, 24 TEXT "Print" FONT oFont           ;
+      SIZE oToolBar:nWidth - 6, 24 TEXT cmPrint FONT oFont           ;  && "Print"
       TOOLTIP Iif( aTooltips != Nil, aTooltips[ 2 ], "Print file" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[ 3 ] != Nil
       oBtn:oBitmap := Iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 3 ] ), HBitmap():AddFile( aBitmaps[ 3 ] ) )
@@ -625,8 +715,8 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
       oBtn:lTransp := lTransp
    ENDIF
 
-   @ 3, 66 OWNERBUTTON oBtn OF oToolBar ON CLICK { || ::PrintDlg() } ;
-      SIZE oToolBar:nWidth - 6, 24 TEXT "Dialog" FONT oFont          ;
+   @ 3, 66 OWNERBUTTON oBtn OF oToolBar ON CLICK { || ::PrintDlg(aTooltips) } ;
+      SIZE oToolBar:nWidth - 6, 24 TEXT cmDialog FONT oFont          ;  && "Dialog"
       TOOLTIP Iif( aTooltips!=Nil .AND. Len(aTooltips)>8, aTooltips[ 9 ], "Print dialog" )
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 8 .AND. aBitmaps[ 9 ] != Nil
       oBtn:oBitmap := Iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 9 ] ), HBitmap():AddFile( aBitmaps[ 9 ] ) )
@@ -1048,23 +1138,28 @@ METHOD PrintDoc( nPage ) CLASS HPrinter
 
    RETURN Nil
 
-METHOD PrintDlg() CLASS HPrinter
-   LOCAL oDlg, oGet, nChoic := 2, cpages := "", arr, arrt, i, j, n1, n2, nPos
+METHOD PrintDlg(aTooltips) CLASS HPrinter
+   LOCAL oDlg, oGet, nChoic := 1, cpages := "", arr, arrt, i, j, n1, n2, nPos
 
-   INIT DIALOG oDlg TITLE "Print dialog";
+   IF aTooltips == Nil
+    aTooltips := ::aLangTexts
+   ENDIF
+   
+   INIT DIALOG oDlg TITLE aTooltips[9]  ; && "Print dialog"
       At 40, 10 SIZE 220, 230 STYLE DS_CENTER
 
    GET RADIOGROUP nChoic
-   @ 20,20 RADIOBUTTON "All" SIZE 90, 22 ON CLICK {||oGet:Disable()}
-   @ 20,46 RADIOBUTTON "Current" SIZE 90, 22 ON CLICK {||oGet:Disable()}
-   @ 20,70 RADIOBUTTON "" SIZE 90, 22 ON CLICK {||oGet:Enable()}
+   @ 20,20 RADIOBUTTON aTooltips[16] SIZE 150, 22 ON CLICK {||oGet:Disable()}  && "All"
+   @ 20,46 RADIOBUTTON aTooltips[17] SIZE 150, 22 ON CLICK {||oGet:Disable()}  && "Current"
+   @ 20,70 RADIOBUTTON aTooltips[18] SIZE 150, 22 ON CLICK {||oGet:Enable()}   && "Pages", former ""
    END RADIOGROUP
 
-   @ 40,100 GET oGet VAR cpages SIZE 160, 24
+   @ 40,100 GET oGet VAR cpages SIZE 160, 24 ;
+   TOOLTIP aTooltips[21]   && "Enter range of pages"
    oGet:Disable()
 
-   @  20, 150  BUTTON "Print" SIZE 80, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }
-   @ 120, 150 BUTTON "Cancel" ID IDCANCEL SIZE 80, 32
+   @  20, 150  BUTTON aTooltips[19] SIZE 80, 32 ON CLICK { ||oDlg:lResult := .T. , hwg_EndDialog() }  && "Print"
+   @ 120, 150  BUTTON aTooltips[20] ID IDCANCEL SIZE 80, 32   && "Cancel"
 
    ACTIVATE DIALOG oDlg
 
@@ -1240,3 +1335,6 @@ Static Function MessProc( oPrinter, oPanel, lParam )
    ENDIF
 
 Return 1
+
+* ============================ EOF of hprinter.prg =================================
+

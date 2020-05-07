@@ -129,7 +129,13 @@ CLASS HFormTmpl
    DATA lNoModal      INIT .F.
    DATA bDlgExit, bFormExit
    DATA cargo
+   // --- International Language Support for internal dialogs --
+   DATA cTextCantOpenF      INIT "Can't open"
+   DATA cTextInvClMemb      INIT "Invalid class member"
+   DATA cTextFrmRepDescnotF INIT "Form description isn't found"
+   // DATA cTextRepDescnotF    INIT "Report description isn't found" ==> Class HRepTmpl
 
+   METHOD DefaultLang()   
    METHOD Read( fname, cId )
    METHOD Show( nMode, params )
    METHOD ShowMain( params )   INLINE ::Show( 1, params )
@@ -141,13 +147,20 @@ CLASS HFormTmpl
 
 ENDCLASS
 
+METHOD DefaultLang() CLASS HFormTmpl
+  ::cTextCantOpenF      := "Can't open"
+  ::cTextInvClMemb      := "Invalid class member"
+  ::cTextFrmRepDescnotF := "Form description isn't found"
+  ::cTextRepDescnotF    := "Report description isn't found"
+RETURN NIL
+
 METHOD Read( fname, cId ) CLASS HFormTmpl
    LOCAL oDoc
    LOCAL i, j, nCtrl := 0, aItems, o, aProp := {}, aMethods := {}, arr
    LOCAL cPre, cName
 
    /* IF cId != Nil .AND. ( o := HFormTmpl():Find( cId ) ) != Nil
-      RETURN o
+      Return o
    ENDIF */
 
    IF Left( fname, 5 ) == "<?xml"
@@ -158,10 +171,10 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
    ENDIF
 
    IF Empty( oDoc:aItems )
-      hwg_Msgstop( "Can't open " + fname )
+      hwg_Msgstop( ::cTextCantOpenF + " " + fname )   && "Can't open "
       RETURN Nil
    ELSEIF oDoc:aItems[1]:title != "part" .OR. oDoc:aItems[1]:GetAttribute( "class" ) != "form"
-      hwg_Msgstop( "Form description isn't found" )
+      hwg_Msgstop( ::cTextFrmRepDescnotF )  && "Form description isn't found"
       RETURN Nil
    ENDIF
 
@@ -209,7 +222,7 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
          ELSE
             AAdd( aMethods, { cName, CompileMethod( aItems[i]:aItems[1]:aItems[1],Self,,cName ) } )
          ENDIF
-
+         
       ELSEIF aItems[i]:title == "part"
          nCtrl ++
          ::nContainer := nCtrl
@@ -323,14 +336,14 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
    FOR i := 1 TO Len( ::aVars )
       __mvPrivate( ::aVars[i] )
    NEXT
-
+   
    IF ::lNoModal
       ::pVars := hb_hash()
       FOR i := 1 TO Len( ::aVars )
          ::pVars[::aVars[i]] := Nil
       NEXT
    ENDIF
-
+   
    oBmp := Iif( !Empty( cBitmap ), HBitmap():addfile( cBitmap, NIL ), NIL )
 
    IF nMode == Nil .OR. nMode == 2
@@ -365,8 +378,8 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
 #endif
          INIT WINDOW ::oDlg MAIN TITLE cTitle    ;
             AT nLeft, nTop SIZE -nWidth, -nHeight ;
-            FONT oFont;
-            BACKGROUND BITMAP oBmp;
+            FONT oFont ;
+            BACKGROUND BITMAP oBmp ;
             STYLE Iif( nStyle > 0 , nStyle, NIL ) ;
             ICON oIcon ;
             ON GETFOCUS bGetFo
@@ -507,7 +520,7 @@ METHOD OnError( xValue ) CLASS HFormTmpl
    oError:genCode     := EG_LIMIT
    oError:subSystem   := "HFORMTMPL"
    oError:subCode     := 0
-   oError:description := "Invalid class member"
+   oError:description := ::cTextInvClMemb   &&  "Invalid class member"
    oError:canRetry    := .F.
    oError:canDefault  := .F.
    oError:fileName    := ""
@@ -517,6 +530,7 @@ METHOD OnError( xValue ) CLASS HFormTmpl
    __errInHandler()
 
    RETURN Nil
+
 
    // ------------------------------
 
@@ -676,9 +690,9 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
             o := aItems[i]:aItems[j]
             IF o:title == "property"
                IF ( cName := Lower( o:GetAttribute("name" ) ) ) == "varname"
-                  AAdd( oForm:aVars, Lower( hwg_hfrm_GetProperty( o:aItems[1] ) ) )
+                  AAdd( oForm:aVars, Lower( hwg_hfrm_GetProperty(o:aItems[1] ) ) )
                ELSEIF cName == "name"
-                  AAdd( oForm:aNames, hwg_hfrm_GetProperty( o:aItems[1] ) )
+                  AAdd( oForm:aNames, hwg_hfrm_GetProperty(o:aItems[1] ) )
                ENDIF
                IF cName == "atree"
                   AAdd( aProp, { cName, ReadTree( oForm,,o ) } )
@@ -1115,7 +1129,10 @@ CLASS HRepTmpl
    DATA nTOffset, nAOffSet, ny
    DATA lNextPage, lFinish
    DATA oPrinter
+   // --- International Language Support for internal dialogs --
+   DATA cTextFrmRepDescnotF INIT "Form description isn't found"
 
+   METHOD DefaultLang()
    METHOD READ( fname, cId )
    METHOD PRINT( printer, lPreview, p1, p2, p3, p4, p5 )
    METHOD PrintAsPage( printer, nPageType, lPreview, p1, p2, p3, p4, p5 )
@@ -1126,6 +1143,10 @@ CLASS HRepTmpl
    METHOD SetMetaFile( cMetafile )    INLINE ::cMetafile := cMetafile
 
 ENDCLASS
+
+METHOD DefaultLang() CLASS HRepTmpl
+  ::cTextFrmRepDescnotF := "Form description isn't found"
+RETURN NIL
 
 METHOD READ( fname, cId ) CLASS HRepTmpl
    LOCAL oDoc
@@ -1557,7 +1578,7 @@ METHOD PrintItem( oItem ) CLASS HRepTmpl
                   oItem:obj := hrep_FontFromxml( ::oPrinter, xProperty, ::nKoefY, aGetSecond( oItem:aProp,"fonth" ) )
                ENDIF
             ENDIF
-            // hwg_Settransparentmode( ::oPrinter:hDC,.T. )
+            // hwg_Settransparentmode( ::oPrinter:hDC, .T. )
             IF ( xProperty := aGetSecond( oItem:aProp,"multiline" ) ) != Nil ;
                   .AND. xProperty
                nLen := i := 1
@@ -1737,3 +1758,5 @@ STATIC FUNCTION hrep_FontFromXML( oPrinter, oXmlNode, nKoeff, nFontH )
    under  := Iif( under != Nil, Val( under ), 0 )
 
    RETURN oPrinter:AddFont( name, height, ( weight > 400 ), ( ita > 0 ), ( under > 0 ), charset )
+
+   * ==================== EOF of hfrmtmpl.prg =====================

@@ -46,8 +46,22 @@ CLASS PrintDos
    DATA nStartPage init 1
    DATA nEndPage init 0
    DATA nCopy init 1
+   // --- International Language Support for internal dialogs --
+   DATA aLangTexts  INIT {}
+   // Print Preview Dialog with sub dialog:
+   // The messages and control text's are delivered by other classes, calling
+   // the method Preview() in Parameter aTooltips as an array.
+   // After call of Init method, you can update the array with messages in your
+   // desired language.
+   // Sample: Preview( , , aLangTexts, )
+   // Structure of array look at 
+   // hwg_HPrinter_LangArray_EN() in file hprinter.prg
+   // Copy your own language message array direct after
+   // call of METHOD ::New()   
 
    METHOD New( oPorta ) CONSTRUCTOR
+   
+   METHOD DefaultLang()
 
    METHOD Say( oProw, oCol, oTexto, oPicture )
 
@@ -90,6 +104,8 @@ METHOD New( oPorta ) CLASS PrintDos
    LOCAL oBold    := { oMATRIXBOLD,     oINKJETBOLD,     oLASERBOLD  }       //Added by  por Fernando Athayde
    LOCAL oUnBold  := { oMATRIXUNBOLD,   oINKJETUNBOLD,   oLASERUNBOLD }       //Added by  por Fernando Athayde
    LOCAL oPtrSetup, oPtrName
+   
+   ::DefaultLang()
 
    ::cCompr   := oCompress[ ::oPrintStyle ]
    ::cNormal  := oNormal[ ::oPrintStyle ]
@@ -159,6 +175,9 @@ METHOD New( oPorta ) CLASS PrintDos
 
    RETURN Self
 
+METHOD DefaultLang() CLASS PrintDos
+  ::aLangTexts := hwg_HPrinter_LangArray_EN()
+RETURN NIL
 
 METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
                 oComm8, oComm9, oComm10 )  CLASS PrintDos

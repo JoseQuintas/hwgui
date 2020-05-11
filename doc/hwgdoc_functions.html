@@ -1481,10 +1481,34 @@
    <p></p>
 
    <br><strong class="subhead"> Hwg_GetIni( cSection, cEntry, cDefault, cFile )</strong> (Windows only)
-   <p></p>
+   <p>
+   Reads a value from an ini file.<BR>
+   See additional instructions at description of Hwg_WriteIni().
+   </p>
 
    <br><strong class="subhead"> Hwg_WriteIni( cSection, cEntry, cValue, cFile )</strong> (Windows only)
-   <p></p>
+   <p>Stores and modifies an ini file. The storage location of the file<BR>
+      depends on the the Windows version.<BR>
+      Example for Windows 10:<BR>
+      C:\Users\<user>\AppData\Local\VirtualStore\Windows\HwGui.ini<BR>
+      This is the directory, where the sample program<BR>
+      "samples\testini.prg" creates the ini file.<BR> 
+      <BR>
+      For multi platform use:<BR>
+      Look into the Source code of Harbour:<BR> 
+      The following files contains classes and functions for<BR>
+      handling Windows style ini files:<BR>
+       - src\rtl\hbini.prg<BR>
+       - tests\inifiles.prg : Class library from Matthew Hamilton (CLASS TIniFile).<BR>
+      For an extented version with additional functions look at project CLLOG:<BR>
+       https://sourceforge.net/projects/cllog/<BR>
+       File: src\libini.prg<BR>
+      The main section is in file "logw.prg".<BR>
+      Use this as sample for creating your own system<BR>
+      handling ini files. The program code contains<BR>
+      many inline comment with instructions for use<BR>
+      in english and german language.<BR>
+    </p>
 
    <br><strong class="subhead"> hwg_TxtRect( cTxt, oWin, oFont )</strong> 
    <p></p>

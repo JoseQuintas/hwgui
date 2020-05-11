@@ -58,7 +58,7 @@ CLASS HWinPrn
    
 
    METHOD New( cPrinter, cpFrom, cpTo, nFormType, nCharset )
-   METHOD SetLanguage(apBootUser,apTooltips)
+   METHOD SetLanguage(apTooltips, apBootUser)
    METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD StartDoc( lPreview, cMetaName )
@@ -106,15 +106,15 @@ METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
    RETURN Self
 
 
-METHOD SetLanguage(apTooltips) CLASS HWinPrn
+METHOD SetLanguage(apTooltips, apBootUser) CLASS HWinPrn
 * NLS: Sets the message and control texts to print preview dialog
-* Are stored in arrays:   ::aBootUser[], ::aTooltips[]
+* Are stored in arrays:   ::aTooltips[], ::aBootUser[]
 
 * Default settings (English)
   ::aTooltips := hwg_HPrinter_LangArray_EN()
 * Overwrite default, if array with own language served 
    IF apTooltips != NIL ; ::aTooltips := apTooltips ; ENDIF
-/* Activate, if necessary, then add parameter "apBootUser". */   
+/* Activate, if necessary */   
 //   IF apBootUser != NIL ; ::aBootUser := apBootUser ; ENDIF  
 RETURN Nil
 

@@ -27,6 +27,7 @@ CLASS HXMLNode
    DATA aItems  INIT {}
    DATA aAttr   INIT {}
    DATA cargo
+   DATA aItems  INIT {}
 
    METHOD New( cTitle, type, aAttr )
    METHOD Add( xItem )

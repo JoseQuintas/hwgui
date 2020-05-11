@@ -8,6 +8,44 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-11 19:00 UTC+0200 Wilfried Brunken DF7BE
+  * samples\winprn.prg
+  * samples\gtk_samples\winprn.prg
+  * samples\Readme.txt
+  * source\winapi\printdos.prg
+  * source\winapi\hprinter.prg
+  * source\winapi\hwinprn.prg
+  * source\gtk\hwinprn.prg
+  * source\common\editor\hcedit.prg
+  * source\common\xml\hxmldoc.prg
+  * makefile.gcc
+  * hwgui.hbm
+  * makefile.vc
+  * doc\image\Win10_PR2PDF_Dialog.png (New)
+  * doc\image\Win10_PR2PDF_FSel.png (New)
+    ! 
+    ! National language support for
+    ! Print preview dialog in HCEDIT and PrintDos class.
+    ! (Task to be continued)
+    ! Sample winprn.prg now extended
+    ! with main menu, settings for
+    ! Language and printer charset.
+    ! Lot of inline comment for usage instructions.
+    ! To Alexander Kresin:
+    ! Please add Russian language support.
+    !
+    ! makefile.gcc:
+    ! printdos.prg added
+    !
+    ! Some updates in docu
+    !
+    ! CLASS HXMLNode:
+    ! Added "DATA aItems  INIT {}"
+    ! Sample xmltree.prg now runable.
+    !
+    ! Makefiles for VC delivered by
+    ! Alex Strickland at 2020-05-10.
+
 
 2020-05-08 00:30 UTC+0200 Wilfried Brunken DF7BE
   * source\winapi\hfrmtmpl.prg

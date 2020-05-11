@@ -1260,12 +1260,15 @@
       nClientWidth             (R)
       nDocWidth                (R)
       aUndo                    (R)
-      nLastKey                 (R) 
+      nLastKey                 (R)
+      // --- International Language Support for internal dialogs --  
+      aLangTexts               (RW)  INIT {}  
 
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
          bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
+      DefaultLang()
       Open( cFileName, cPageIn, cPageOut )
       SetHili( xGroup, oFont, tColor, bColor )
       SetText( xText, cPageIn, cPageOut )
@@ -1493,9 +1496,25 @@
       BottomMargin            (RW)
       LeftMargin              (RW)
       RightMargin             (RW)
+      // --- International Language Support for internal dialogs --
+      aLangTexts              (RW) 
+      // Print Preview Dialog with sub dialog:
+      // The messages and control text's are delivered by other classes, calling
+      // the method Preview() in Parameter aTooltips as an array.
+      // After call of Init method, you can update the array with messages in your
+      // desired language.
+      // Sample: Preview( , , aTooltips, )
+      // Structure of array look at 
+      // METHOD SetLanguage(apTooltips) CLASS HWinPrn
+      // in file hwinprn.prg.
+      // List of classes calling print preview
+      // HWINPRN, HRepTmpl , ...
+      // For more details see inline comments in sample program "Winprn.prg" 
    </pre>
    <pre class="code">METHODS
       New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
+      FUNCTION hwg_HPrinter_LangArray_EN()
+      DefaultLang()
       SetMode( nOrientation, nDuplex )
       AddFont( fontName, nHeight ,lBold, lItalic, lUnderline, nCharset )
       SetFont( oFont )
@@ -1596,9 +1615,12 @@
       nStartPage
       nEndPage
       nCopy
+      // --- International Language Support for internal dialogs --
+      aLangTexts  INIT {}
    </pre>
    <pre class="code">METHODS
       New( oPorta )
+      DefaultLang()
       Say( oProw, oCol, oTexto, oPicture )
       SetCols( nRow, nCol )
       gWrite( oText )
@@ -1645,10 +1667,16 @@
       nLeft                    (R)
       nRight                   (R)
       nCharset                 (RW)  Printer Character Set, default is 0 (ANSI)
-                                     For allowed values see include file "prncharsets.ch".  
+                                     For allowed values see include file "prncharsets.ch".
+    // --- International Language Support for internal dialogs --
+      aTooltips                (RW) INIT {}  // Array with tooltips messages for print preview dialog
+      aBootUser                (RW) INIT {}  // Array with control  messages for print preview dialog  (optional usage)
+   
+  
    </pre>
    <pre class="code">METHODS
       New( cPrinter, cpFrom, cpTo, nFormType )
+      SetLanguage(apTooltips, apBootUser)
       InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       StartDoc( lPreview,cMetaName )
@@ -1659,7 +1687,24 @@
       EndDoc()
       End()
    </pre>
-
+   <p>
+   Additional instructions:<BR>
+   Special hints for test and development without printer usage:<BR>
+    Windows 10: You can install a virtual printer driver named "Print to PDF" to redirect the printer data.<BR>
+    LINUX: The Printer dialog of the system allows redirection into a PDF file.<BR>
+   <BR>
+   Attention: Before the print preview dialog appears, you must select a printer with this dialog<BR>
+   of the Windows System (Sample in german language):<BR>
+   <img src="./image/Win10_PR2PDF_Dialog.png" align=center wborder=0 alt="System dialog for printer selection">
+   <BR> ===> Do not press "Cancel" (Abbruch), otherwise the program crashes.
+   After say "Print" in the preview dialog, you must enter a file name for the created PDF file:<BR>
+   <BR>
+     <img src="./image/Win10_PR2PDF_FSel.png" align=center wborder=0 alt="System dialog for printer selection"> 
+   <BR>
+   National Language Support for Print Preview Dialog:<BR>
+   Detailed instructions in inline comment lines of sample program ""winprn.prg".<BR>
+   Here you find also instructions for National Language Support of the preview dialog. 
+   </p>
 
    <br><strong class="subhead"><a name="Classes19" href="#_Classes19">
    HFormTmpl</a></strong> 
@@ -1958,6 +2003,7 @@
       aItems                   (R)
       aAttr                    (R)
       cargo                   (RW)
+      aItems                  (RW)  INIT {}
    </pre>
    <pre class="code">METHODS
       New( cTitle, type, aAttr )
@@ -1972,6 +2018,7 @@
    <br><strong class="subhead"><a name="Classes24_1" href="#_Classes24_1">
    HXMLDoc</a></strong> 
    <pre class="code">DATA
+
    </pre>
    <pre class="code">METHODS
       New( encoding )

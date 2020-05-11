@@ -215,9 +215,23 @@ CLASS HCEdit INHERIT HControl
    DATA   lNeedScan INIT .F. PROTECTED
 #endif
    DATA   lScan     INIT .F. PROTECTED
+   // --- International Language Support for internal dialogs --
+   DATA aLangTexts  INIT {}
+   // Print Preview Dialog with sub dialog:
+   // The messages and control text's are delivered by other classes, calling
+   // the method Preview() in Parameter aTooltips as an array.
+   // After call of Init method, you can update the array with messages in your
+   // desired language.
+   // Sample: Preview( , , aLangTexts, )
+   // Structure of array look at 
+   // hwg_HPrinter_LangArray_EN() in file hprinter.prg
+   // Copy your own language message array direct after
+   // call of METHOD ::New()
+ 
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
+   METHOD DefaultLang()
    METHOD Open( cFileName, cPageIn, cPageOut )
    METHOD Activate()
    METHOD Init()
@@ -266,6 +280,8 @@ ENDCLASS
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )  CLASS HCEdit
 
+   ::DefaultLang()
+   
    ::lVScroll := ( lNoVScroll == Nil .OR. !lNoVScroll )
    nStyle := Hwg_BitOr( Iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE +  ;
       Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) +          ;
@@ -301,6 +317,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::Activate()
 
    RETURN Self
+
+METHOD DefaultLang() CLASS HCEdit
+  ::aLangTexts := hwg_HPrinter_LangArray_EN()
+RETURN NIL
 
 METHOD Open( cFileName, cPageIn, cPageOut ) CLASS HCEdit
 
@@ -2261,7 +2281,7 @@ METHOD Print( nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB ) C
    NEXT
    oPrinter:EndPage()
    oPrinter:EndDoc()
-   oPrinter:Preview()
+   oPrinter:Preview( , , ::aLangTexts, )
    oPrinter:End()
 
    ::nMarginL := nMargL; ::nMarginR := nMargR; ::nMarginT := nMargT; ::nMarginB := nMargB; ::nBoundL := nBoundL; ::nBoundR := nBoundR; ::nDocFormat := nDocF
@@ -2543,3 +2563,6 @@ Function hced_NextPos( oEdit, cLine, nPos )
    IF oEdit:lUtf8; RETURN nPos + Len( hced_Substr( oEdit, cLine, nPos, 1 ) ); ENDIF
 #endif
    RETURN nPos + 1
+
+* ====================== EOF of hcedit.prg =====================
+   

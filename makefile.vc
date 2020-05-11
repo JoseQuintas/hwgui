@@ -93,7 +93,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\video.obj \
    $(OBJ_DIR)\tmci.obj \
    $(OBJ_DIR)\hhyper.obj \
-   $(OBJ_DIR)\hdc.obj
+   $(OBJ_DIR)\hdc.obj \
+   $(OBJ_DIR)\halert.obj
   lib /out:$@ $**
 
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
@@ -184,6 +185,7 @@ $(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
 $(OBJ_DIR)\hwindow.obj  : $(OBJ_DIR)\hwindow.c
 $(OBJ_DIR)\hhyper.obj   : $(OBJ_DIR)\hhyper.c
 $(OBJ_DIR)\hdc.obj      : $(OBJ_DIR)\hdc.c
+$(OBJ_DIR)\halert.obj   : $(OBJ_DIR)\halert.c
 $(OBJ_DIR)\hwinprn.obj  : $(OBJ_DIR)\hwinprn.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\video.obj    : $(OBJ_DIR)\video.c
@@ -198,6 +200,8 @@ $(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
 $(OBJ_DIR)\hhyper.c    : $(SRC_DIR)\hhyper.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hdc.c    : $(SRC_DIR)\hdc.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\halert.c    : $(SRC_DIR)\halert.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 $(OBJ_DIR)\hwinprn.c    : $(SRC_DIR)\hwinprn.prg

@@ -8,6 +8,9 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-11 15:15 UTC-0300 Luiz Rafael Culik <culikr@gmail.com>
+  * makefile.gcc
+    - -march=pentium 
 2020-05-11 19:00 UTC+0200 Wilfried Brunken DF7BE
   * samples\winprn.prg
   * samples\gtk_samples\winprn.prg

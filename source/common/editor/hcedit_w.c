@@ -440,7 +440,7 @@ HWND ted_create( HWND hwndParent, int id, DWORD dwStyle, int x, int y,
    return CreateWindowEx( 
          ( dwStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0,
          TEXT( "TEDIT" ), _T( "" ), dwStyle,
-         x, y, iWidth, iHeight, hwndParent, ( HMENU ) id,
+         x, y, iWidth, iHeight, hwndParent, ( HMENU )(UINT_PTR) id,
          GetModuleHandle( 0 ), 0 );
 }
 

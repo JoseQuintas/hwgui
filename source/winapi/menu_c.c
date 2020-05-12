@@ -79,7 +79,7 @@ HB_FUNC( HWG__ADDMENUITEM )
 
       uFlags |= MF_POPUP;
       InsertMenu( ( HMENU ) HB_PARHANDLE( 1 ), hb_parni( 3 ), uFlags,   // menu item flags
-            ( UINT ) hSubMenu,  // menu item identifier or handle of drop-down menu or submenu
+            ( UINT_PTR ) hSubMenu,  // menu item identifier or handle of drop-down menu or submenu
             lpNewItem           // menu item content
              );
       HB_RETHANDLE( hSubMenu );
@@ -99,7 +99,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    else
    {
       InsertMenu( ( HMENU ) HB_PARHANDLE( 1 ), hb_parni( 3 ), uFlags,   // menu item flags
-            hb_parni( 5 ),      // menu item identifier or handle of drop-down menu or submenu
+            ( UINT_PTR ) hb_parni( 5 ),      // menu item identifier or handle of drop-down menu or submenu
             lpNewItem           // menu item content
              );
       hb_retnl( 0 );
@@ -262,11 +262,11 @@ HB_FUNC( HWG_ENABLEMENUITEM )
    {
       MessageBox( GetActiveWindow(  ), TEXT( "" ), TEXT( "No Menu!" ),
             MB_OK | MB_ICONINFORMATION );
-      HB_RETHANDLE( NULL );
+      hb_retl( FALSE );
    }
    else
    {
-      HB_RETHANDLE( EnableMenuItem( hMenu,      // handle to menu
+      hb_retl( EnableMenuItem( hMenu,      // handle to menu
                   hb_parni( 2 ),        // menu item to check or uncheck
                   uFlag | uEnable       // menu item flags
              ) );
@@ -372,7 +372,7 @@ HB_FUNC( HWG_CREATEACCELERATORTABLE )
  */
 HB_FUNC( HWG_DESTROYACCELERATORTABLE )
 {
-   hb_retl( DestroyAcceleratorTable( ( HACCEL ) hb_parnl( 1 ) ) );
+   hb_retl( DestroyAcceleratorTable( ( HACCEL ) HB_PARHANDLE( 1 ) ) );
 }
 
 HB_FUNC( HWG_DRAWMENUBAR )
@@ -563,11 +563,11 @@ HB_FUNC( HWG_ENABLEMENUSYSTEMITEM )
    hMenu = ( HMENU ) GetSystemMenu( ( HWND ) HB_PARHANDLE( 1 ), 0 );
    if( !hMenu )
    {
-      HB_RETHANDLE( NULL );
+      hb_retl( FALSE );
    }
    else
    {
-      HB_RETHANDLE( EnableMenuItem( hMenu,      // handle to menu
+      hb_retl( EnableMenuItem( hMenu,      // handle to menu
                   hb_parni( 2 ),        // menu item to check or uncheck
                   uFlag | uEnable       // menu item flags
              ) );

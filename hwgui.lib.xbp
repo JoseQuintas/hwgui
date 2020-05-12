@@ -28,6 +28,8 @@ TARGETFOLDER =
 [source\winapi\*.*]
 [source\common\procmisc\*.*]
 [source\common\xml\*.*]
+[source\common\editor\*.prg]
+[source\common\editor\hcedit_w.c]
 [contrib\misc\*.*]
 [contrib\ext_controls\*.prg]
 [contrib\ext_controls\*.c]

@@ -55,7 +55,7 @@ HB_FUNC( HWG_CREATERICHEDIT )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y   */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )(UINT_PTR) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
 
    lpText = HB_PARSTR( 8, &hText, NULL );
@@ -475,7 +475,7 @@ LRESULT APIENTRY RichSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
                   lParam ) );
 }
 
-static DWORD CALLBACK RichStreamOutCallback( DWORD dwCookie, LPBYTE pbBuff,
+static DWORD CALLBACK RichStreamOutCallback( DWORD_PTR dwCookie, LPBYTE pbBuff,
       LONG cb, LONG * pcb )
 {
    HANDLE pFile = ( HANDLE ) dwCookie;
@@ -543,7 +543,7 @@ HB_FUNC( HWG_LOADRICHEDIT )
       hb_retni( 0 );
       return;
    }
-   es.dwCookie = ( DWORD ) hFile;
+   es.dwCookie = ( DWORD_PTR ) hFile;
    es.pfnCallback = EditStreamCallback;
    SendMessage( hWnd, EM_STREAMIN, ( WPARAM ) SF_RTF, ( LPARAM ) & es );
    CloseHandle( hFile );

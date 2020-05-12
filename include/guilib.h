@@ -2,6 +2,10 @@
  *$Id$
  */
 
+
+#ifndef GUILIB_H_
+#define GUILIB_H_
+
 #include "hbapi.h"
 
 #define WND_DLG_RESOURCE      10
@@ -49,7 +53,22 @@
    typedef unsigned char   HB_BYTE;
    typedef int             HB_BOOL;
    typedef unsigned short  HB_USHORT;
-   typedef ULONG           HB_SIZE;
+   //typedef ULONG           HB_SIZE;
+   #if defined( HB_OS_WIN_64 )
+#  if defined( HB_SIZE_SIGNED )
+      typedef LONGLONG         HB_SIZE;
+#  else
+      typedef ULONGLONG        HB_SIZE;       
+#  endif
+ 
+#else
+#  if defined( HB_SIZE_SIGNED )
+      typedef LONG             HB_SIZE;
+#  else
+      typedef ULONG            HB_SIZE;       
+#  endif
+ 
+#endif
 #endif
 
 #if !defined( HB_FALSE )
@@ -77,4 +96,5 @@
 #if defined( __XHARBOUR__ ) && !defined( hb_itemPutCLPtr )
    #define hb_dynsymIsFunction( h ) ( ( h )->pSymbol->value.pFunPtr != NULL )
    #define hb_itemPutCLPtr( pItem, szText, ulLen ) hb_itemPutCPtr( pItem, szText, ulLen )
+#endif
 #endif

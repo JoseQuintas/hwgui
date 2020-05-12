@@ -123,7 +123,9 @@ STATIC cNewLine := e"\r\n"
 
 * For multi OS request UTF8 forever
 * #ifdef __GTK__
+#ifdef __XHARBOUR__
 REQUEST  HB_CODEPAGE_UTF8
+#endif
 * #endif
 
 CLASS HCEdit INHERIT HControl

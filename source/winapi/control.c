@@ -186,7 +186,7 @@ HB_FUNC( HWG_CREATEPANEL )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
 
    HB_RETHANDLE( hWndPanel );
@@ -205,7 +205,7 @@ HB_FUNC( HWG_CREATEOWNBTN )
          hb_parni( 3 ), hb_parni( 4 ),  /* x, y       */
          hb_parni( 5 ), hb_parni( 6 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
 
    HB_RETHANDLE( hWndPanel );
@@ -227,7 +227,7 @@ HB_FUNC( HWG_CREATESTATIC )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ),
          NULL );
 
@@ -261,7 +261,7 @@ HB_FUNC( HWG_CREATEBUTTON )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* button       ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* button       ID  */
          GetModuleHandle( NULL ),
          NULL );
    hb_strfree( hStr );
@@ -289,7 +289,7 @@ HB_FUNC( HWG_CREATEEDIT )
          hb_parni( 4 ), hb_parni( 5 ),
          hb_parni( 6 ), hb_parni( 7 ),
          ( HWND ) HB_PARHANDLE( 1 ),
-         ( HMENU ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ), GetModuleHandle( NULL ), NULL );
 
    if( hb_pcount() > 7 )
    {
@@ -316,7 +316,7 @@ HB_FUNC( HWG_CREATECOMBO )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* combobox ID      */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* combobox ID      */
          GetModuleHandle( NULL ),
          NULL );
 
@@ -342,7 +342,7 @@ HB_FUNC( HWG_CREATEBROWSE )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y  */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
    hb_strfree( hStr );
 
@@ -374,7 +374,7 @@ HB_FUNC( HWG_CREATESTATUSWINDOW )
          WS_CHILD | WS_VISIBLE | WS_OVERLAPPED | WS_CLIPSIBLINGS,       // creates a child window
          0, 0, 0, 0,            // ignores size and position
          hwndParent,            // handle to parent window
-         ( HMENU ) hb_parni( 2 ),       // child window identifier
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       // child window identifier
          GetModuleHandle( NULL ),       // handle to application instance
          NULL );                // no window creation data
 
@@ -556,7 +556,7 @@ HB_FUNC( HWG_CREATEDATEPICKER )
          hb_parni( 3 ), hb_parni( 4 ),  /* x, y       */
          hb_parni( 5 ), hb_parni( 6 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
 
    HB_RETHANDLE( hCtrl );
@@ -667,7 +667,7 @@ HB_FUNC( HWG_CREATETABCONTROL )
 
    hTab = CreateWindow( WC_TABCONTROL, NULL, WS_CHILD | WS_VISIBLE | hb_parnl( 3 ),     /* style  */
          hb_parni( 4 ), hb_parni( 5 ), hb_parni( 6 ), hb_parni( 7 ), ( HWND ) HB_PARHANDLE( 1 ),        /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
 
    HB_RETHANDLE( hTab );
@@ -797,7 +797,7 @@ HB_FUNC( HWG_CREATETREE )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
 
    if( !HB_ISNIL( 8 ) )
@@ -968,11 +968,11 @@ HB_FUNC( HWG_TREEGETNOTIFY )
    int iType = hb_parni( 2 );
 
    if( iType == TREE_GETNOTIFY_HANDLE )
-      hb_retnl( ( LONG ) ( ( ( NM_TREEVIEW * ) HB_PARHANDLE( 1 ) )->itemNew.
+      HB_RETHANDLE( ( HTREEITEM  ) ( ( ( NM_TREEVIEW * ) HB_PARHANDLE( 1 ) )->itemNew.
                   hItem ) );
 
    if( iType == TREE_GETNOTIFY_ACTION )
-      hb_retnl( ( LONG ) ( ( ( NM_TREEVIEW * ) HB_PARHANDLE( 1 ) )->
+      hb_retni( ( UINT ) ( ( ( NM_TREEVIEW * ) HB_PARHANDLE( 1 ) )->
                   action ) );
 
    else if( iType == TREE_GETNOTIFY_PARAM ||
@@ -1120,7 +1120,7 @@ HB_FUNC( HWG_SETTIMER )
 {
    SetTimer( ( HWND ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
              ( UINT ) hb_parni( 3 ),
-             hb_pcount() == 3 ? s_timerProc : ( TIMERPROC ) NULL );
+             hb_pcount() == 3 ? ( TIMERPROC ) s_timerProc : ( TIMERPROC ) NULL );
 }
 
 /*
@@ -1759,7 +1759,7 @@ HB_FUNC( HWG_CREATETOOLBAR )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ),
          NULL );
 
@@ -1803,7 +1803,7 @@ HB_FUNC( HWG_TOOLBARADDBUTTONS )
       tb[ulCount].fsStyle = (BYTE)hb_arrayGetNI( pTemp, 4 );
       tb[ulCount].dwData = hb_arrayGetNI( pTemp, 5 );
       tb[ulCount].iString =
-            hb_arrayGetCLen( pTemp, 6 ) > 0 ? ( int ) hb_arrayGetCPtr( pTemp,
+            hb_arrayGetCLen( pTemp, 6 ) > 0 ? ( INT_PTR ) hb_arrayGetCPtr( pTemp,
             6 ) : 0;
 
    }
@@ -1997,7 +1997,7 @@ HB_FUNC( HWG_CREATEPAGER )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ), NULL );
 
    HB_RETHANDLE( hWndPanel );
@@ -2017,7 +2017,7 @@ HB_FUNC( HWG_CREATEREBAR )
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y       */
          hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
          ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU ) hb_parni( 2 ),       /* control ID  */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
          GetModuleHandle( NULL ),
          NULL );
 
@@ -2136,7 +2136,7 @@ HB_FUNC( HWG_COMBOGETITEMRECT )
 
    int nIndex = hb_parnl( 2 );
    RECT rcItem;
-   SendMessage( hWnd, LB_GETITEMRECT, nIndex, ( LONG ) ( VOID * ) & rcItem );
+   SendMessage( hWnd, LB_GETITEMRECT, nIndex, ( LPARAM) & rcItem );
    hb_itemRelease( hb_itemReturn( Rect2Array( &rcItem ) ) );
 }
 
@@ -2263,7 +2263,7 @@ HB_FUNC( HWG_GETUTCTIMEDATE )
 /* Format: W,YYYYMMDD-HHMMSS */
 {
   SYSTEMTIME st = { 0 };
-  char cst[9] = { 0 };
+  char cst[41] = { 0 };
   GetSystemTime(&st);
   sprintf(cst,"%01d.%04d%02d%02d-%02d:%02d:%02d",st.wDayOfWeek, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
   HB_RETSTR(cst);

@@ -8,9 +8,39 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-12 19:20 UTC-0300 Luiz Rafael Culik <culikr@gmail.com>
+  * include/guilib.h
+    !added protection to avoid multiple include
+  * source/common/editor/hcedit.prg
+    ! when compiling for xharbour disable utf 8 code page request 
+  * source/common/editor/hcedit_w.c
+    ! on ted_create function added (UINT_PTR) cast to (HMENU) to make 64 bits happy
+  * source/winapi/control.c
+    Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
+	some (int) cast change to (INT_PTR) to make 64bits happy
+  * source/winapi/media_c.c
+    * (DWORD) ->( DWORD_PTR) to make 64bits happy
+  * source/winapi/menu_c.c
+   ! some changes to make 64bits happy   
+  * source/winapi/c_ipaddr.c (1 hit)
+	Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
+  * source/winapi/grid.c (1 hit)
+	Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
+  * source/winapi/listbox.c (1 hit)
+	Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
+  * source/winapi/nice.c (1 hit)
+	Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
+  * source/winapi/richedit.c (1 hit)   
+    Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
+  * source/winapi/richedit.c
+    * Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
+    * (DWORD) ->( DWORD_PTR) to make 64bits happy
+    
+ 	
 2020-05-11 15:15 UTC-0300 Luiz Rafael Culik <culikr@gmail.com>
   * makefile.gcc
     - -march=pentium 
+	
 2020-05-11 19:00 UTC+0200 Wilfried Brunken DF7BE
   * samples\winprn.prg
   * samples\gtk_samples\winprn.prg

@@ -8,6 +8,12 @@
  * www - http://www.kresin.ru
 */
 
+/*
+ Some troubleshootings:
+  The function HB_RETSTR() is windows only !
+  Use hb_retc().
+*/  
+
 #include <math.h>
 #include "guilib.h"
 #include "hbmath.h"
@@ -16,6 +22,8 @@
 #include "hbvm.h"
 #include "hbset.h"
 #include "item.api"
+#include "hbtypes.h"
+#include "hbwinuni.h"
 #include <unistd.h>
 #include "gtk/gtk.h"
 #include "gdk/gdkkeysyms.h"
@@ -351,7 +359,33 @@ HB_FUNC( HWG_GETWINMINORVERS )
 #endif
 }
 
+HB_FUNC( HWG_GETTEMPDIR )
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+   TCHAR szBuffer[MAX_PATH + 1] = { 0 };
 
+   GetTempPath( MAX_PATH, szBuffer );
+   HB_RETSTR( szBuffer );
+#else
+ char const * tempdirname = getenv("TMPDIR");
+ 
+ if (tempdirname == NULL)
+   tempdirname = "/tmp";
+   hb_retc(tempdirname);
+#endif
+}
+
+HB_FUNC( HWG_GETWINDOWSDIR )
+{
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+   TCHAR szBuffer[MAX_PATH + 1] = { 0 };
+
+   GetWindowsDirectory( szBuffer, MAX_PATH );
+   HB_RETSTR( szBuffer );
+#else
+   hb_retc("");
+#endif
+}
 
 /* experimental state of this function */
 HB_FUNC( HWG_GETKEYSTATE )

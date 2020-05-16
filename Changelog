@@ -8,6 +8,28 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-16 12:30 UTC+0200 Wilfried Brunken DF7BE
+  * source\gtk\misc.c
+  * source\gtk\hcheck.prg
+  * source\gtk\Makefile.linux
+  * samples\testfunc.prg (New)
+  * samples\Readme.txt
+    !
+    ! - hwg_GetTempDir()
+    !   Port to GTK/Win+LINUX
+    !
+    ! - Port of HWG_GETWINDOWSDIR()
+    !   to GTK/Win+LINUX
+    ! - New sample program testfunc.prg
+    !   for test and demo of standalone
+    !   hwg_* functions and enable/disable buttons.
+    ! - HCheckButton: METHOD Disable() added to GTK
+    !   simular to WinAPI.
+    !
+    ! - Docu updated.
+    !
+
+
 2020-05-12 19:20 UTC-0300 Luiz Rafael Culik <culikr@gmail.com>
   * include/guilib.h
     !added protection to avoid multiple include

@@ -1607,13 +1607,26 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_GetWindowsDir()</strong> (Windows only)
-   <p></p>
+   <p>
+   This function works also on GTK cross development environment.<BR>
+   Is available on other operating systems for compatibility,<BR>
+   then returns forever an empty string (""). 
+   </p>
 
    <br><strong class="subhead"> hwg_GetSystemDir()</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_GetTempDir()</strong> (Windows only)
-   <p></p>
+   <br><strong class="subhead"> hwg_GetTempDir()</strong>
+   <p>
+   Returns the path of the temporary directory.<BR>
+   Value depends on the version of the operating system.<BR>
+   This function works also on GTK cross development environment.<BR>
+   Windows: In most cases, the value is "C:\Windows".<BR> 
+   LINUX/UNIX: In most cases, the value is "/tmp" or "/var/tmp".<BR>
+   First the function reads the environment variable "TMPDIR" and<BR>
+   returns this value. If the TMPDIR variable does not exist, it returns<BR>
+   as default value "/tmp". 
+   </p>
 
    <br><strong class="subhead"> hwg_Postquitmessage( nExitCode )</strong> (Windows only)
    <p></p>

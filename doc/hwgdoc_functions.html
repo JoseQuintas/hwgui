@@ -1490,7 +1490,7 @@
    <p>Stores and modifies an ini file. The storage location of the file<BR>
       depends on the the Windows version.<BR>
       Example for Windows 10:<BR>
-      C:\Users\<user>\AppData\Local\VirtualStore\Windows\HwGui.ini<BR>
+      C:\Users\&lt;user&gt;\AppData\Local\VirtualStore\Windows\HwGui.ini<BR>
       This is the directory, where the sample program<BR>
       "samples\testini.prg" creates the ini file.<BR> 
       <BR>
@@ -1525,7 +1525,7 @@
    <br><strong class="subhead"> hwg_ShellExecute( cFile, cOperation, cParams, cDir, nFlag )</strong> 
    <p></p>
 
-   <br><strong class="subhead"> hwg_GetLocaleInfo()</strong> 
+   <br><strong class="subhead"> hwg_GetLocaleInfo()</strong><br> 
    Returns the recent language setting (National Language Support,<br>
    for setting the language of your application).<br>
    Windows: Returns the value of function call GetLocaleInfo(LOCAL_USER_DEFAULT,...).<br>
@@ -1774,9 +1774,9 @@
 
    <br><strong class="subhead"> hwg_GetLocaleInfoN()</strong><br>
    Returns the Windows LCID (Windows Language Code Identifier), type = int.<br>
-   The value is not so suitable (using another fucntion of the WinAPI).<br>
+   The value is not so suitable (using another function of the WinAPI).<br>
    For better result use the function hwg_GetLocaleInfo() to get the recent language
-   setting (for national langunge support, setting the language of your application).<br>
+   setting (for national language support, setting the language of your application).<br>
    Sample: Return 2 for german.<br>
    This function works also on GTK cross development environment.<br>
    Is available on other operating systems for compatibility,<br>

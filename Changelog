@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+*/
+
+2020-05-19 22:30 UTC+0200 Wilfried Brunken DF7BE
+  * hwgui.hbm
+    ! Ticket #42 from Itamar M. Lins Jr.:
+    ! Added
+    ! source/winapi/hmisc.prg
+    ! source/gtk/hmisc.prg
+    ! to hwgui.hbm.
+
 2020-05-16 12:30 UTC+0200 Wilfried Brunken DF7BE
   * source\gtk\misc.c
   * source\gtk\hcheck.prg

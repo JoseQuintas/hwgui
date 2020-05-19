@@ -80,6 +80,7 @@
 {win}source/winapi/printdos.prg
 {win}source/winapi/hdc.prg
 {win}source/winapi/hhyper.prg
+{win}source/winapi/hmisc.prg
 {win}source/winapi/halert.prg
 
 # GTK
@@ -122,4 +123,5 @@
 {unix}source/gtk/hwinprn.prg
 {unix}source/gtk/hprogres.prg
 {unix}source/gtk/hmonthc.prg
+{unix}source/gtk/hmisc.prg
 {unix}source/gtk/menu.prg

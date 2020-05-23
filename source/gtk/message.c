@@ -28,7 +28,7 @@ static int MessageBox( const char * cMsg, const char * cTitle, int message_type,
    dialog = gtk_message_dialog_new( GTK_WINDOW( GetActiveWindow() ),
                                      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                                      message_type,
-                                     button_type,
+                                     button_type, "%s" ,
                                      gcptr );
    g_free( gcptr );
    if( *cTitle )
@@ -91,7 +91,7 @@ HB_FUNC( HWG_MSGYESNOCANCEL )
    dialog = gtk_message_dialog_new( GTK_WINDOW( GetActiveWindow() ),
                                      GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT,
                                      GTK_MESSAGE_QUESTION,
-                                     GTK_BUTTONS_NONE,
+                                     GTK_BUTTONS_NONE, "%s" ,
                                      gcptr );
    g_free( gcptr );
    if( *cTitle )
@@ -112,3 +112,6 @@ HB_FUNC( HWG_MSGYESNOCANCEL )
    gtk_widget_destroy( dialog );
    hb_retni( (result==GTK_RESPONSE_YES)? IDYES : ( (result==GTK_RESPONSE_NO)? IDNO : IDCANCEL ) );
 }
+
+/* ================= EOF of message.c ======================== */
+

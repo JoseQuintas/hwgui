@@ -333,5 +333,8 @@ HB_FUNC( HWG_SETCTRLFONT )
 
 HB_FUNC( G_DEBUG )
 {
-   g_debug(hb_parc(1));
+   g_debug( "%s" , hb_parc(1));
 }
+
+/* =========================== EOF of drawtext.c ============================= */
+

@@ -9,7 +9,22 @@
 */
 
 
-*/
+2020-03-23 13:00 UTC+0200 Wilfried Brunken DF7BE
+    ! 3 warnings on LINUX fixed.
+  * source/gtk/message.c
+    ! gtk_message_dialog_new():
+    ! 5th parameter must be "%s":
+    ! gtk_message_dialog_new (GtkWindow *parent,
+    !  GtkDialogFlags flags,
+    !  GtkMessageType type,
+    !  GtkButtonsType buttons,
+    !  const gchar *message_format,
+    !  ...);
+  * source/gtk/drawtext.c
+    ! g_debug ():
+    ! first parameter must be "%s":
+    ! g_debug(const * format, ...);
+    !
 
 2020-05-19 22:30 UTC+0200 Wilfried Brunken DF7BE
   * hwgui.hbm

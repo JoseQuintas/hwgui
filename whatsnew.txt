@@ -3,6 +3,34 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+                                   $Id$
+
+Recent code snapshot
+~~~~~~~~~~~~~~~~~~~~
+*) Task partielly done, to be continued.
+
+For the next release build done:
+
+1.) Bugfixing:
+
+[!] Lot of bugs fixed (see Changelog).
+[!] Compiler warnings fixed. *)
+[!] More sample programs are running now.
+
+2.) New features and functions
+
+[+] Cross development environment for GTK on Windows (32bit),
+    develop and test GTK functions on Windows for *NIX targets.
+[+] National Language Support (NLS) for internal HWGUI dialogs added. *)
+[+] Added some special helpful standalone functions (Get UTC time and date, ...).
+[*] Some "Windows only" functions ported to GTK, improvement for GTK. 
+[+] Support for MinGW64, first issue. *)
+[+] Missing build scripts for MinGW64 added.
+    Need to fix a lot of compile warnings, will be done as soon as possible.
+    Also need to deliver build scripts for utils and contrib libraries.
+[+] Sample database with one field of every type.   
+
+
 HWGUI 2.22 build 4 ( 26.04.2019 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [!] Fixes.

@@ -9,6 +9,35 @@
 */
 
 
+2020-05-29 09:10 UTC+0200 Wilfried Brunken DF7BE
+  * install.txt
+  * samples\dev\env\pfad64.bat (New) 
+  * samples\dev\env\pfad.bat (New)
+  * samples\dev\env\Readme.txt (New)
+  * samples\dev\MinGW64\MinGW64.txt (New)
+  * samples\dev\MinGW64\starterr7b.png (New)
+  * makefile.gcc
+  * source\winapi\hsplash.prg
+  * samples\bldmingw64.bat (New)
+  * samples\hbmk64.bat (New)
+  * samples\a.rc
+  * samples\Readme.txt
+  * include\guilib.h
+  * winapi\animat.c
+  * whatsnew.txt
+  * samples\gtk_samples\dbview.prg
+    ! - First part of MinGW64 support,
+    !   some samples and application CLLOG now running 64bit.
+    !   Some modifications and additional instructions done.
+    !   For details see file MinGW64.txt.
+    !   Task to be continued, first the lot's of warnings
+    !   must be fixed.
+    !   (Ticket #40, commit r2840 of  Luiz Rafael Culik).
+    !   animat.c: cast ( HINSTANCE ) ( ULONG_PTR ) hb_parnl( 2 )
+    ! - guilib.h: EOL at EOF added
+    ! - dbview.prg: same as WinAPI with extension codepage.
+
+
 2020-03-23 13:00 UTC+0200 Wilfried Brunken DF7BE
     ! 3 warnings on LINUX fixed.
   * source/gtk/message.c

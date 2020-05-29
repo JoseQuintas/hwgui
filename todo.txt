@@ -19,7 +19,6 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
       tab.prg        missing function(s): hb_enumIndex(), resource DIALOG_1 not working
       testchild.prg  child window not created ! command seems to be outdated.
       testtray.prg   No exported method: HANDLE
-      xmltree.prg    Compiles with warning , crashes with "No exported method: AITEMS".
       testrtf.prg    Created Rich text files are corupted, see bug ticket #37 (text above).
 
   2.) GTK

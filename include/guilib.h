@@ -98,3 +98,6 @@
    #define hb_itemPutCLPtr( pItem, szText, ulLen ) hb_itemPutCPtr( pItem, szText, ulLen )
 #endif
 #endif
+
+/* ================================== EOF of guilib.h ============================== */
+

@@ -10,13 +10,15 @@
    make_pc.bat   - Pelles C
    make_vc.bat   - Microsoft Visual C
    make_w32.bat  - Open Watcom C
-   makemngw.bat  - Mingw
+   makemngw.bat  - Mingw (32bit, special instructions follow above)
 
    You need to set the environment variable HB_PATH, which must contain a path
    to your Harbour directory. This can be done in your Windows environment or
    by adding a line to appropriate bat file:
 
       SET HB_PATH=c:\harbour
+
+   You find some sample bat files for setting envirinment variable in directory "samples\dev\env".
 
    Then run the selected bat file and you'll get hwgui.lib, hwguimt.lib ( hwgui.lib for
    multithread mode ),  procmisc.lib, hbxml.lib and hwgdebug.lib in lib/ directory.
@@ -47,12 +49,36 @@
      and dependent source files. 
 
 
+   1.1) Special instructions for MinGW64 (x86_64):
+
+    You can install the 64bit version of MinGW in parallel with the 32 bit release.
+    You must only use the special environment settings and compile scripts for
+    decision of target 32 or 64 bit.
+
+    - Install MinGW for 64bit in directory C:\MinGW64.
+    - Extract Harbour in own directory "C:\harbour64\core-master"
+    - Set adapted environment as witten in script (samples\dev\path\pfad64.bat)
+      for all the next steps. Modify to your own needs.
+    - Build Harbour in base directory by typing "make"
+    - Build HWGUI :
+       hbmk2 hwgui.hbp procmisc.hbp hbxml.hbp hwgdebug.hbp
+      There are lots of warnings displayed, ingore them.
+      We will fix them as soon as possiblle.
+    - Build a sample program (a.prg or dbview.prg) with
+      build script "bldmingw64.bat".
+    - Use bldmingw64.bat as template for building your HWGUI application.
+
+    Attention !
+    Not all functions of the 32 bit build are available on MinGW64.
+    For details read instructions in file "samples\dev\MinGW64\MinGW64.txt"
+
+
    2) Linux
 
    For installation on Linux you need some prerequisites,
    they are listed at the bottom of these instructions.
 
-   Sources for the Linux GTK version are located in the source/gtk/ directory. 
+   Sources for the Linux GTK version are located in the source/gtk/ directory.
    There is a shell file build.sh, which is intended for building HwGUI Linux 
    libraries. The environment variable HB_ROOT is set there, based on the 
    assumption, that HwGUI directory is within the Harbour directory. If no,

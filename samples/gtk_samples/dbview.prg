@@ -4,18 +4,47 @@
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  * dbview.prg - dbf browsing sample
  *
- * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2005 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  */
+    * Status:
+    *  WinAPI   :  Yes
+    *  GTK/Linux:  Yes
+    *  GTK/Win  :  Yes
 
+/* April 2020: Extensions by DF7BE testing bugfixing for ticket #18
+  - Ready for GTK, checked
+  - More Codepages:
+     - IBM858DE for Euro Currency sign (only for data), german,
+       (Recent code snapshot for Harbour needed, otherwise use
+        DE850)
+     - DEWIN (for Euro currency sign)
+     - UTF8 for LINUX
+  - SET and GET century settings
+  - Date format selectable:
+    AMERICAN (default), ANSI, USA, GERMAN, BRITISH/FRENCH, ITALIAN, JAPAN
+    (For Russia use german format)
+  - Best default index format is NTX
+*/
 
 #include "hwgui.ch"
+#ifdef __GTK__
 #include "gtk.ch"
+#endif
 
 REQUEST HB_CODEPAGE_RU866
 REQUEST HB_CODEPAGE_RUKOI8
 REQUEST HB_CODEPAGE_RU1251
+* 858 : same as 850 with Euro Currency sign
+REQUEST HB_CODEPAGE_DE858
+* Windows codepage 
+REQUEST HB_CODEPAGE_DEWIN
+#ifdef __LINUX__
+* LINUX Codepage
+REQUEST HB_CODEPAGE_UTF8EX
+#endif
 
+REQUEST DBFNTX
 REQUEST DBFCDX
 REQUEST DBFFPT
 
@@ -30,15 +59,19 @@ Local oWndMain, oPanel
 Memvar oBrw, oFont
 Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
 
-   RDDSETDEFAULT( "DBFCDX" )
-   // hwg_SetAppLocale( "KOI8-R" )
-
+* Best default index format is NTX
+   RDDSETDEFAULT( "DBFNTX" )
+*  RDDSETDEFAULT( "DBFCDX" )
+   
    oFont := HFont():Add( "Courier",0,-14 )
    INIT WINDOW oWndMain MAIN TITLE "Dbf browse" AT 200,100 SIZE 300,300
 
+   * Attention ! Menu Structure errors were not be detected by the Harbour compiler.
+   *             In this case, the menu completely disappeared at run time.
    MENU OF oWndMain
      MENU TITLE "&File"
-       MENUITEM "&Open" ACTION FileOpen()
+       MENUITEM "&New" ACTION ModiStru( .T. )
+       MENUITEM "&Open"+Chr(9)+"Alt+O" ACTION FileOpen() ACCELERATOR FALT,Asc("O")
        SEPARATOR       
        MENUITEM "&Exit" ACTION oWndMain:Close()
      ENDMENU
@@ -61,6 +94,7 @@ Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
        MENUITEM "&Continue" ACTION dbv_Continue()
      ENDMENU
      MENU TITLE "&Command" ID 31040
+       MENUITEM "&Append record"+Chr(9)+"Alt+A" ACTION dbv_AppRec() ACCELERATOR FALT,Asc("A")
        MENUITEM "&Delete record" ACTION dbv_DelRec()
        MENUITEM "&Pack" ACTION dbv_Pack()
        MENUITEM "&Zap" ACTION dbv_Zap()
@@ -68,15 +102,41 @@ Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
      MENU TITLE "&View"
        MENUITEM "&Font" ACTION ChangeFont()
        MENU TITLE "&Local codepage"
-          MENUITEMCHECK "EN" ACTION hb_CdpSelect( "EN" )
-          MENUITEMCHECK "RUKOI8" ACTION hb_CdpSelect( "RUKOI8" )
-          MENUITEMCHECK "RU1251" ACTION hb_CdpSelect( "RU1251" )
+          MENUITEMCHECK "EN" ACTION hb_cdpSelect( "EN" )
+          MENUITEMCHECK "RUKOI8" ACTION hb_cdpSelect( "RUKOI8" )
+          MENUITEMCHECK "RU1251" ACTION hb_cdpSelect( "RU1251" )
+          MENUITEMCHECK "DEWIN"  ACTION hb_cdpSelect( "DEWIN" )
+#ifdef __LINUX__
+          MENUITEMCHECK "UTF-8" ACTION  hb_cdpSelect( "UTF8EX" )
+#endif
        ENDMENU
        MENU TITLE "&Data's codepage"
           MENUITEMCHECK "EN" ACTION SetDataCP( "EN" )
           MENUITEMCHECK "RUKOI8" ACTION SetDataCP( "RUKOI8" )
           MENUITEMCHECK "RU1251" ACTION SetDataCP( "RU1251" )
           MENUITEMCHECK "RU866"  ACTION SetDataCP( "RU866" )
+          MENUITEMCHECK "DEWIN"  ACTION SetDataCP( "DEWIN" )
+          MENUITEMCHECK "IBM858DE (Euro)" ACTION SetDataCP( "DE858" )
+#ifdef __LINUX__
+          MENUITEMCHECK "UTF-8"  ACTION SetDataCP( "UTF8EX" )
+#endif
+       ENDMENU
+       MENU TITLE "Se&ttings"
+        MENU TITLE "&Century"
+          MENUITEM "Get recent setting" ACTION FSET_CENT_GET()
+          SEPARATOR
+          MENUITEMCHECK "ON"  ACTION FSET_CENT_ON()
+          MENUITEMCHECK "OFF" ACTION FSET_CENT_OFF()
+        ENDMENU
+        MENU TITLE "&Date Format"
+           MENUITEMCHECK "AMERICAN       (MM/DD/YY)" ACTION SET_DATE_F("AMERICAN")
+           MENUITEMCHECK "ANSI           (YY.MM.DD)" ACTION SET_DATE_F("ANSI")
+           MENUITEMCHECK "USA            (MM-DD-YY)" ACTION SET_DATE_F("USA")
+           MENUITEMCHECK "BRITISH/FRENCH (DD/MM/YY)" ACTION SET_DATE_F("BRITISH")
+           MENUITEMCHECK "GERMAN         (DD.MM.YY)" ACTION SET_DATE_F("GERMAN" )
+           MENUITEMCHECK "ITALIAN        (DD-MM-YY)" ACTION SET_DATE_F("ITALIAN")
+           MENUITEMCHECK "JAPAN          (YY.MM.DD)" ACTION SET_DATE_F("JAPAN")
+        ENDMENU 
        ENDMENU
      ENDMENU
      MENU TITLE "&Help"
@@ -96,21 +156,23 @@ Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
    @ 5,4 SAY oSay1 CAPTION "" OF oPanel SIZE 150,22 FONT oFont
    @ 160,4 SAY oSay2 CAPTION "" OF oPanel SIZE 100,22 FONT oFont
    
-   hwg_EnableMenuItem( ,31010,.F. )
-   hwg_EnableMenuItem( ,31020,.F. )
-   hwg_EnableMenuItem( ,31030,.F. )
-   hwg_EnableMenuItem( ,31040,.F. )
+   hwg_Enablemenuitem( ,31010,.F. )
+   hwg_Enablemenuitem( ,31020,.F. )
+   hwg_Enablemenuitem( ,31030,.F. )
+   hwg_Enablemenuitem( ,31040,.F. )
 
    ACTIVATE WINDOW oWndMain
 
 Return Nil
 
-Static Function FileOpen
+Static Function FileOpen( fname )
 Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Local fname := hwg_SelectFileEx(,,{{"Dbf Files","*.dbf"},{"All files","*"}} )
 Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
 
-   IF Valtype( fname ) == "C"
+   IF Empty( fname )
+      fname := hwg_Selectfile( "xBase files( *.dbf )", "*.dbf", mypath )
+   ENDIF
+   IF !Empty( fname )
       close all
       
       IF DataCP != Nil
@@ -134,10 +196,10 @@ Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
       dbv_cLocate := dbv_cSeek := ""
       dbv_nRec := 0
       
-      hwg_EnableMenuItem( ,31010,.T. )
-      hwg_EnableMenuItem( ,31020,.T. )
-      hwg_EnableMenuItem( ,31030,.T. )
-      hwg_EnableMenuItem( ,31040,.T. )
+      hwg_Enablemenuitem( ,31010,.T. )
+      hwg_Enablemenuitem( ,31020,.T. )
+      hwg_Enablemenuitem( ,31030,.T. )
+      hwg_Enablemenuitem( ,31040,.T. )
 
    ENDIF
    
@@ -274,7 +336,7 @@ Return Nil
 
 Static Function OpenIndex()
 Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Local fname := hwg_Selectfile( "index files( *.cdx )", "*.cdx", mypath )
+Local fname := hwg_Selectfile( "index files( *.ntx )", "*.ntx", mypath )
 Memvar oBrw
 
    IF Len( oBrw:aColumns ) == 0
@@ -396,79 +458,89 @@ Memvar oBrw, currentCP, currFname
    IF oDlg:lResult
 
       oMsg = DlgWait("Restructuring")
-      cAlias := Alias()
-      nOrd := ordNumber()
-      nRec := RecNo()
-      SET ORDER TO 0
-      GO TOP
-      
-      fname := "a0_new"
-      dbCreate( fname,af )
-      IF currentCP != Nil
-         use (fname) new codepage (currentCP)
+      IF lNew
+         CLOSE ALL
+         fname := hwg_MsgGet("File creation","Input new file name")
+         IF Empty( fname )
+            Return Nil
+         ENDIF
+         dbCreate( fname,af )
+         FileOpen( fname )
       ELSE
-         use (fname) new
-      ENDIF
-      dbSelectArea( cAlias )
-      
-      DO WHILE !Eof()
-         dbSelectArea( fname )
-         APPEND BLANK
-         FOR i := 1 TO Len(af)
-            IF Len(af[i]) > 4
-               xValue := (cAlias)->(FieldGet(af[i,5]))
-               IF af[i,2] == af0[af[i,5],2] .AND. af[i,3] == af0[af[i,5],3]
-                  FieldPut( i, xValue )
-               ELSE
-                  IF af[i,2] != af0[af[i,5],2]
-                     IF af[i,2] == "C" .AND. af0[af[i,5],2] == "N"
-                        xValue := Str( xValue,af0[af[i,5],3],af0[af[i,5],4] )
-                     ELSEIF af[i,2] == "N" .AND. af0[af[i,5],2] == "C"
-                        xValue := Val( Ltrim( xValue ) )
-                     ELSE
-                        LOOP
-                     ENDIF
-                  ENDIF
-                  IF af[i,3] >= af0[af[i,5],3]
+         cAlias := Alias()
+         nOrd := ordNumber()
+         nRec := RecNo()
+         SET ORDER TO 0
+         GO TOP
+         
+         fname := "a0_new"
+         dbCreate( fname,af )
+         IF currentCP != Nil
+            use (fname) new codepage (currentCP)
+         ELSE
+            use (fname) new
+         ENDIF
+         dbSelectArea( cAlias )
+         
+         DO WHILE !Eof()
+            dbSelectArea( fname )
+            APPEND BLANK
+            FOR i := 1 TO Len(af)
+               IF Len(af[i]) > 4
+                  xValue := (cAlias)->(FieldGet(af[i,5]))
+                  IF af[i,2] == af0[af[i,5],2] .AND. af[i,3] == af0[af[i,5],3]
                      FieldPut( i, xValue )
                   ELSE
-                     IF af[i,2] =="C"
-                        FieldPut( i, Left( xValue,af[i,3] ) )
-                     ELSEIF af[i,2] =="N"
-                        FieldPut( i, 0 )
-                        lOverFlow := .T.
+                     IF af[i,2] != af0[af[i,5],2]
+                        IF af[i,2] == "C" .AND. af0[af[i,5],2] == "N"
+                           xValue := Str( xValue,af0[af[i,5],3],af0[af[i,5],4] )
+                        ELSEIF af[i,2] == "N" .AND. af0[af[i,5],2] == "C"
+                           xValue := Val( Ltrim( xValue ) )
+                        ELSE
+                           LOOP
+                        ENDIF
+                     ENDIF
+                     IF af[i,3] >= af0[af[i,5],3]
+                        FieldPut( i, xValue )
+                     ELSE
+                        IF af[i,2] =="C"
+                           FieldPut( i, Left( xValue,af[i,3] ) )
+                        ELSEIF af[i,2] =="N"
+                           FieldPut( i, 0 )
+                           lOverFlow := .T.
+                        ENDIF
                      ENDIF
                   ENDIF
                ENDIF
+            NEXT
+            IF (cAlias)->(Deleted())
+               DELETE
             ENDIF
-         NEXT
-         IF (cAlias)->(Deleted())
-            DELETE
+            dbSelectArea( cAlias )
+            SKIP
+         ENDDO
+         IF lOverFlow
+            hwg_Msginfo( "There was overflow in Numeric field","Warning!" )
          ENDIF
-         dbSelectArea( cAlias )
-         SKIP
-      ENDDO
-      IF lOverFlow
-         hwg_Msginfo( "There was overflow in Numeric field","Warning!" )
-      ENDIF
 
-      Close All
-      Ferase( currFname+".bak" )
-      Frename( currFname + ".dbf", currFname + ".bak" )
-      Frename( "a0_new.dbf", currFname + ".dbf" )
-      IF File( "a0_new.fpt" )
-         Frename( "a0_new.fpt", currFname + ".fpt" )
-      ENDIF
+         Close All
+         Ferase( currFname+".bak" )
+         Frename( currFname + ".dbf", currFname + ".bak" )
+         Frename( "a0_new.dbf", currFname + ".dbf" )
+         IF File( "a0_new.fpt" )
+            Frename( "a0_new.fpt", currFname + ".fpt" )
+         ENDIF
 
-      IF currentCP != Nil
-         use (currFname) new codepage (currentCP)
-      ELSE
-         use (currFname) new
-      ENDIF
-      REINDEX
+         IF currentCP != Nil
+            use (currFname) new codepage (currentCP)
+         ELSE
+            use (currFname) new
+         ENDIF
+         REINDEX
 
-      GO nRec
-      SET ORDER TO nOrd
+         GO nRec
+         SET ORDER TO nOrd
+      ENDIF
       oMsg:Close()
       oBrw:Refresh()
 
@@ -654,6 +726,15 @@ STATIC FUNCTION MacroError( e )
    BREAK
 RETURN .T.
 
+Static Function dbv_AppRec()
+
+   APPEND BLANK
+   oBrw:Refresh()
+   Eval( oBrw:bScrollPos,oBrw,0 )
+   oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
+   oSay2:SetText( "" )
+RETURN .T.
+
 Static Function dbv_Pack()
 Local oMsg, cTitle := "Packing database"
 Memvar oBrw, oSay1, oSay2
@@ -697,4 +778,41 @@ Memvar oBrw
    ENDIF
 
 Return Nil
-                                                
+
+FUNCTION FSET_CENT_GET
+ LOCAL bC
+ IIF( hwg_getCentury(), bC := "ON", bC := "OFF")
+  hwg_MsgInfo("The current setting is: SET CENTURY " + bC, "Display Century Setting")
+RETURN Nil
+ 
+FUNCTION FSET_CENT_ON
+ SET CENTURY ON
+RETURN Nil
+
+FUNCTION FSET_CENT_OFF
+SET CENTURY OFF
+RETURN Nil
+
+
+FUNCTION SET_DATE_F(cc)
+  * SET DATE does not accept macro operator & or (...), syntax error
+  DO CASE
+   CASE cc == "GERMAN"
+    SET DATE GERMAN
+   CASE cc == "ANSI"
+     SET DATE ANSI
+  CASE cc == "USA"
+     SET DATE USA
+  CASE cc == "JAPAN"
+     SET DATE JAPAN 
+   CASE cc == "BRITISH"
+     SET DATE BRITISH
+   CASE cc == "ITALIAN"
+     SET DATE ITALIAN
+   OTHERWISE
+    SET DATE AMERICAN
+ ENDCASE
+ 
+RETURN Nil
+
+                                                 

@@ -6,7 +6,10 @@ HRB_DIR = $(HB_PATH)
 # older Harbour versions
 # HRB_EXE = $(HRB_DIR)\bin\harbour.exe
 # newer Harbour versions
-HRB_EXE = $(HRB_DIR)\bin\win\mingw\harbour.exe
+# For MinGW64 set HRB_EXE to bin\win\mingw64\harbour.exe 
+ifeq ($(HRB_EXE),)
+ HRB_EXE = $(HRB_DIR)\bin\win\mingw\harbour.exe
+endif 
 INC_DIR = include
 OBJ_DIR = obj
 LIB_DIR = lib

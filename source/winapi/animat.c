@@ -67,8 +67,11 @@ HB_FUNC( HWG_ANIMATE_OPENEX )
       lpResource = MAKEINTRESOURCE( hb_parni( 3 ) );
 
    Animate_OpenEx( ( HWND ) HB_PARHANDLE( 1 ),
-                   ( HINSTANCE ) hb_parnl( 2 ),
+                   ( HINSTANCE ) ( ULONG_PTR ) hb_parnl( 2 ),
                    lpResource );
 
    hb_strfree( hResource );
 }
+
+/* ============================== EOF of animat.c ============================== */
+

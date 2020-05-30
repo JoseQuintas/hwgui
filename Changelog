@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-30 23:40 UTC+0200 Wilfried Brunken DF7BE
+  * install.txt
+  * utils/tutorial/build.sh
+    ! Ticket #44
+    ! Flags added in build.sh
+    ! -d__LINUX__ -d__GTK__
+    ! Tutor now runs.
+    ! Other utils follows ASAP.
+
 
 2020-05-29 09:10 UTC+0200 Wilfried Brunken DF7BE
   * install.txt

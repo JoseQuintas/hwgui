@@ -1,4 +1,14 @@
 #!/bin/bash
+#
+# build.sh
+#
+# $Id$
+# 
+# Build shell script build tutor on LINUX/GTK
+# 
+
+# Modify path to Harbour to your own needs
+# export HB_ROOT=$HOME/Harbour/core-master
 export HB_ROOT=../../..
 
 if [ "x$HB_ROOT" = x ]; then
@@ -17,11 +27,13 @@ export HWGUI_LIBS="-lhwgui -lprocmisc -lhbxml -lhwgdebug"
 export HWGUI_INC=../../include
 export HWGUI_LIB=../../lib
 
-$HRB_BIN/harbour tutor -n -i$HRB_INC -i$HWGUI_INC -w2
+$HRB_BIN/harbour tutor -n -i$HRB_INC -i$HWGUI_INC -w2 -d__LINUX__ -d__GTK__
 gcc tutor.c -otutor -I $HRB_INC -L $HRB_LIB -L $HWGUI_LIB -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS $SYSTEM_LIBS -Wl,--end-group `pkg-config --libs gtk+-2.0`
 
-$HRB_BIN/harbour hwgrun -n -i$HRB_INC -i$HWGUI_INC -w2
+$HRB_BIN/harbour hwgrun -n -i$HRB_INC -i$HWGUI_INC -w2 -d__LINUX__ -d__GTK__
 gcc hwgrun.c -ohwgrun -I $HRB_INC -L $HRB_LIB -L $HWGUI_LIB -Wl,--start-group $HWGUI_LIBS $HARBOUR_LIBS $SYSTEM_LIBS -Wl,--end-group `pkg-config --libs gtk+-2.0`
 
 rm tutor.c
 rm hwgrun.c
+
+# =================== EOF of build.sh =======================

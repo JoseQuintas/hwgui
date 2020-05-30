@@ -79,24 +79,30 @@
    they are listed at the bottom of these instructions.
 
    Sources for the Linux GTK version are located in the source/gtk/ directory.
-   There is a shell file build.sh, which is intended for building HwGUI Linux 
+   In the base directory is a shell file make_gtk.sh, which is intended for building HwGUI Linux 
    libraries. The environment variable HB_ROOT is set there, based on the 
    assumption, that HwGUI directory is within the Harbour directory. If no,
    you need to write the correct path to your Harbour directory, for example:
 
       export HB_ROOT=/home/me/harbour
 
-        Then just run the build.sh and four libraries must appear in the lib/ directory:
+   Then just run the script
+     ./make_gtk.sh -hb
+   and four libraries must appear in the lib/ directory:
 
       libhbxml.a
       libhwgui.a
       libhwgdebug.a
       libprocmisc.a
 
-   You will find few samples in samples/gtk_samples directory and a shell file build.sh.
+   For xHarbour platform set first parameter to "-xhb".    
+
+   You will find few samples in samples/gtk_samples directory and a shell file 
+    ./build.sh <prg file>.
    The environment variable HB_ROOT is set there, based on the assumption, that
    HwGUI directory is within the Harbour directory. If no, you need to write the
    correct path to your Harbour directory.
+   Some samples in the directory samples are ready for LINUX/GTK, look into the Readme.txt file.
 
 
 

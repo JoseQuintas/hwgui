@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-05-31 10:00 UTC+0200 Wilfried Brunken DF7BE
+  * install.txt
+  * utils/dbc/build.sh
+    ! Ticket #44, afterglow:
+    ! Build scripts for utils:
+    ! corrected.
+    ! dbc, debugger, editor
+    ! Set svn:executable on *.sh
+    ! 
+
 2020-05-30 23:40 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
   * utils/tutorial/build.sh

@@ -22,14 +22,19 @@
    DEL = del
 !endif
 
+!if !$d(BCC_INSTALL)
+  BCC_INSTALL = C:\bcc
+!endif  
+
 HRB_DIR = $(HB_PATH)
-INCLUDE_DIR = include;$(HRB_DIR)\include
-HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
+INCLUDE_DIR = include;$(HRB_DIR)\include;$(BCC_INSTALL)\include
+# HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
+HARBOUR_EXE = $(HRB_DIR)\bin\win\bcc\harbour.exe
 
 CC = bcc32
 LINKER = TLIB
 
-BIN_DIR  = $(HRB_DIR)\bin
+BIN_DIR  = $(HRB_DIR)\bin\win\bcc
 LIB_DIR  = lib
 
 HWGUI_OBJ_DIR      = $(OBJ_DIR)
@@ -265,10 +270,9 @@ $(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
 
 !
 
-# здддддддддддддддддддддддд©
-# Ё HWGUI.LIB Dependencies Ёш
-# юддддддддддддддддддддддддыш
-#  ъъъъъъъъъъъъъъъъъъъъъъъъъъ
+# =======================
+# ?HWGUI.LIB Dependencies
+# =======================
 
 {$(HWGUI_DIR)}.prg{$(OBJ_DIR)}.c:
     $(HB_CMD)
@@ -314,3 +318,5 @@ $(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
 
 {$(DEBUG_DIR)}.c{$(DEBUG_OBJ_DIR)}.obj:
    $(CC_CMD)
+
+# =================== EOF of makefile.bc =======================

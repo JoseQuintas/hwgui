@@ -1,5 +1,5 @@
 @echo off
-
+rem
 rem $Id$
 rem
 rem Batch file for building under Open-Watcom (OW)
@@ -10,11 +10,19 @@ rem
 SET _PATH=%PATH%
 SET _INCLUDE=%INCLUDE%
 SET _LIB=%LIB%
-SET PATH=C:\watcom\BINNT;C:\watcom\BINW;;D:\xhrb\bin\watcom;%_PATH%
-SET WATCOM=C:\watcom
-SET EDPATH=C:\watcom\EDDAT
-SET INCLUDE=C:\watcom\H;C:\watcom\H\NT;d:\xhrb\include
-SET LIB=C:\watcom\lib386;c:\watcom\lib386\nt;%_LIB%
+
+SET HB_PATH=C:\Harbour_wc\core-master
+SET HRB_EXE=%HB_PATH%\bin\win\watcom\harbour.exe
+
+SET WATCOM=C:\WATCOM
+SET PATH=%WATCOM%\BINNT64;%WATCOM%\BINNT;%PATH%
+SET EDPATH=%WATCOM%\EDDAT
+SET INCLUDE=%WATCOM%\H;%WATCOM%\H\NT;%HB_PATH%\include
+SET LIB=%WATCOM%\lib386;c:\watcom\lib386\nt;%_LIB%
+REM SET WHTMLHELP=D:\BINNT\HELP
+
+REM SET PATH=C:\watcom\BINNT;C:\watcom\BINW;;D:\xhrb\bin\watcom;%_PATH%
+
 
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
@@ -24,7 +32,7 @@ if not exist obj md obj
 
 :BUILD
 
-   wmake -h -ms __XHARBOUR__=1 HB_PATH=d:\xhrb -f makefile.wc
+   wmake -h -ms __XHARBOUR__=1 HB_PATH=%HB_PATH% -f makefile.wc
    rem wmake -h -ms -f makefile.wc > make_w32.log
    if errorlevel 1 goto BUILD_ERR
 
@@ -48,9 +56,12 @@ if not exist obj md obj
 
 :EXIT
 
+REM Restore old environment values
 SET PATH=%_PATH%
 SET _PATH=
 SET INCLUDE=%_INCLUDE%
 SET _INCLUDE=
 SET LIB=%_LIB%
 SET _LIB=
+
+REM =============================  EOF of make_w32.bat =========================

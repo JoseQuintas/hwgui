@@ -9,6 +9,7 @@ Tasks by DF7BE
    next print preview dialog of WinPrn class.
  - Feature "Clipper style Alert() replacement" delivered
    by Alex Strickland port to GTK.
+ - Check for Digital Mars C compiler
 
 List:  Samples not running or have bugs (Fix bugs, if time available, low priority):
   1.) WinAPI

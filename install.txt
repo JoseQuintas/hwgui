@@ -12,13 +12,16 @@
    make_w32.bat  - Open Watcom C
    makemngw.bat  - Mingw (32bit, special instructions follow above)
 
+   Read special build instructions for every compiler in files of directory:
+   samples\dev\compiler\<compiler>\...
+
    You need to set the environment variable HB_PATH, which must contain a path
    to your Harbour directory. This can be done in your Windows environment or
    by adding a line to appropriate bat file:
 
       SET HB_PATH=c:\harbour
 
-   You find some sample bat files for setting envirinment variable in directory "samples\dev\env".
+   You find some sample bat files for setting environment variable in directory "samples\dev\env".
 
    Then run the selected bat file and you'll get hwgui.lib, hwguimt.lib ( hwgui.lib for
    multithread mode ),  procmisc.lib, hbxml.lib and hwgdebug.lib in lib/ directory.
@@ -155,5 +158,8 @@
    
    3.) Build HWGUI following instructions above.
 
-   Now you should be able to build your application.  
+   Now you should be able to build your application. 
+
+* =============== EOF of install.txt ====================
+ 
  

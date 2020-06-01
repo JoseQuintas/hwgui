@@ -18,7 +18,12 @@
 #include "guilib.h"
 
 #if ((defined(_MSC_VER)&&(_MSC_VER<1300)&&!defined(__POCC__)) || defined(__WATCOMC__)|| defined(__DMC__))
+   /* DF7BE:
+      Open Watcom: Macro IS_INTRESOURCE now defined in: H\NT\winuser.h
+    */
+   #if !defined(__WATCOMC__)
    #define IS_INTRESOURCE(_r) ((((ULONG_PTR)(_r)) >> 16) == 0)
+   #endif
    #if (defined(_MSC_VER)&&(_MSC_VER<1300)||defined(__DMC__))
       #define GetWindowLongPtr    GetWindowLong
       #define SetWindowLongPtr    SetWindowLong

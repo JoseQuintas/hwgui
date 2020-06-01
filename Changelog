@@ -8,6 +8,39 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-06-01 13:15 UTC+0200 Wilfried Brunken DF7BE
+  * samples\dev\compiler\OpenWatcom\OpenWatcom.txt (New)
+  * samples\dev\env\pfad_wc.bat (New)
+  * samples\dev\env\pfad_bc.bat (New)
+  * samples\dev\compiler\OpenWatcom\OW_Error.png (New)
+  * samples\dev\compiler\Borland-C\Borland-C.txt (New)
+  * include\hwingui.h
+  * samples\hbmk.bat
+  * make_w32.bat
+  * makefile.wc
+  * makefile.bc
+  * install.txt
+    !
+    ! Ticket #25: Support OpenWatcom C:
+    ! Kyrillic characters in makefiles causes crash:
+    ! makefile.wc(142): Error(F46):
+    ! Illegal character value ffdaH in file
+    ! Error(E02): Make execution terminated
+    ! hwingui.h:
+    ! Macro IS_INTRESOURCE now defined in: H\NT\winuser.h
+    !
+    ! Internal: Check for Borland C
+    ! Need for compatibilty check of
+    ! modifications for MinGW64.
+    ! makefile.bc seems to be outdated, so 
+    ! update necessary.
+    ! Added TO-DO:
+    ! Check for Digital Mars C.
+    !
+    ! Special instructions for all these
+    ! compilers added.
+
+
 2020-05-31 10:00 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
   * utils/dbc/build.sh

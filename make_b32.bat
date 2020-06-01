@@ -1,4 +1,18 @@
 @echo off
+REM 
+REM make_b32.bat
+REM
+REM $Id$
+REM
+REM Batch file for building under Borland C (32 bit)
+REM
+REM Please modify environment accordingly
+REM
+
+SET BCC_INSTALL=C:\bcc
+SET MAKE=%BCC_INSTALL%\Bin\make.exe
+SET HRB_DIR=C:\harbour-bcc\core-master
+
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
 
@@ -12,9 +26,9 @@ rem set HARBOURFLAGS=-dUNICODE
 rem set CFLAGS=-DHWG_USE_POINTER_ITEM -DUNICODE
 set CFLAGS=-DHWG_USE_POINTER_ITEM
 
-make -l EXE_OBJ_DIR=obj\b32\bin OBJ_DIR=obj\b32 -fmakefile.bc %1 %2 %3 > make_b32.log
+%MAKE% -l EXE_OBJ_DIR=obj\b32\bin OBJ_DIR=obj\b32 -fmakefile.bc %1 %2 %3 > make_b32.log
 if errorlevel 1 goto BUILD_ERR
-make -l OBJ_DIR=obj\b32\mt -DHB_THREAD_SUPPORT -DHB_MT=mt -fmakefile.bc %2 %3 >> make_b32.log
+%MAKE% -l OBJ_DIR=obj\b32\mt -DHB_THREAD_SUPPORT -DHB_MT=mt -fmakefile.bc %2 %3 >> make_b32.log
 
 :BUILD_OK
 
@@ -22,7 +36,8 @@ make -l OBJ_DIR=obj\b32\mt -DHB_THREAD_SUPPORT -DHB_MT=mt -fmakefile.bc %2 %3 >>
 
 :BUILD_ERR
 
-   notepad make_b32.log
+REM   notepad make_b32.log
+   echo Build Error HWGUI
    goto EXIT
 
 :CLEAN
@@ -39,3 +54,4 @@ make -l OBJ_DIR=obj\b32\mt -DHB_THREAD_SUPPORT -DHB_MT=mt -fmakefile.bc %2 %3 >>
 
 :EXIT
 
+REM ====================== EOF of make_b32.bat =======================

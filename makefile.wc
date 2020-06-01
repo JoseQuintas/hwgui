@@ -1,5 +1,8 @@
+#
+# makefile.wc
+#
 # $Id$
-# makefile for Borland C/C++ 32 bits
+# makefile for Open-Watcom (OW)
 # Building of hwgui.lib - Harbour Win32 GUI library
 
 HRB_DIR = $(HB_PATH)
@@ -12,11 +15,12 @@ EDITOR_DIR = source\common\editor
 XML_DIR = source\common\xml
 DEBUG_DIR = source\common\debug
 
-HARBOUR_EXE = HARBOUR
-CC_EXE = WPP386
+HARBOUR_EXE = $(HB_PATH)\bin\win\watcom\harbour.exe
+CC_EXE = WCC386
 LIB_EXE = LIB386
 HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
-CFLAGS = -j -w3 -d0 -5 -fp5 -s -onaehtzr -oi+ -ei -zp8 -zq -zt0 -mf -bt=NT -i$(INCLUDE_DIR)
+#CFLAGS = -j -w3 -d0 -5 -fp5 -s -onaehtzr -oi+ -ei -zp8 -zq -zt0 -mf -bt=NT -i$(INCLUDE_DIR)
+CFLAGS = -6s -fp6 -onaehtr -s -w3 -ei -zp4 -zt0 -bt=NT -oi -zq -bc -DHWG_USE_POINTER_ITEM -i$(INCLUDE_DIR)
 
 !ifndef ECHO
 ECHO = echo.
@@ -67,7 +71,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
-   $(OBJ_DIR)\hmisc.o \
+   $(OBJ_DIR)\hmisc.obj \
    $(OBJ_DIR)\nice.obj \
    $(OBJ_DIR)\registry.obj \
    $(OBJ_DIR)\richedit.obj \
@@ -130,8 +134,8 @@ $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
 $(PROCMISC_LIB) : $(PROCMISC_LIB_OBJS)
    $(LIB_EXE) /nologo /out:$@ $**
 
-$(QHTM_LIB) : $(QHTM_LIB_OBJS)
-   $(LIB_EXE) /nologo /out:$@ $**
+# $(QHTM_LIB) : $(QHTM_LIB_OBJS)
+#   $(LIB_EXE) /nologo /out:$@ $**
 
 $(XML_LIB) : $(XML_LIB_OBJS)
    $(LIB_EXE) /nologo /out:$@ $**
@@ -139,10 +143,9 @@ $(XML_LIB) : $(XML_LIB_OBJS)
 $(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
    $(LIB_EXE) /nologo /out:$@ $**
 
-# ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-# ³ HWGUI.LIB Dependencies ³Û
-# ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
-#  ßßßßßßßßßßßßßßßßßßßßßßßßßß
+# ==========================
+# HWGUI.LIB Dependencies
+# ========================== 
 
 $(OBJ_DIR)\drawwidg.c : $(SRC_DIR)\drawwidg.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
@@ -160,6 +163,12 @@ $(OBJ_DIR)\guimain.c : $(SRC_DIR)\guimain.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\guimain.obj : $(OBJ_DIR)\guimain.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\barcode.c : $(SRC_DIR)\barcode.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\barcode.obj : $(OBJ_DIR)\barcode.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\hbincnt.c : $(SRC_DIR)\hbincnt.prg
@@ -198,7 +207,7 @@ $(OBJ_DIR)\hcontrol.c : $(SRC_DIR)\hcontrol.prg
 $(OBJ_DIR)\hcontrol.obj : $(OBJ_DIR)\hcontrol.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-   $(OBJ_DIR)\hcwindow.c : $(SRC_DIR)\hcwindow.prg
+$(OBJ_DIR)\hcwindow.c : $(SRC_DIR)\hcwindow.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hcwindow.obj : $(OBJ_DIR)\hcwindow.c
@@ -348,6 +357,9 @@ $(OBJ_DIR)\hsayimg.c : $(SRC_DIR)\hsayimg.prg
 $(OBJ_DIR)\hsayimg.obj : $(OBJ_DIR)\hsayimg.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
+$(OBJ_DIR)\hshbtn.c : $(SRC_DIR)\hshbtn.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
 $(OBJ_DIR)\hshbtn.obj : $(OBJ_DIR)\hshbtn.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
@@ -459,6 +471,12 @@ $(OBJ_DIR)\menu_c.obj : $(SRC_DIR)\menu_c.c
 $(OBJ_DIR)\message.obj : $(SRC_DIR)\message.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
+$(OBJ_DIR)\hmisc.c : $(SRC_DIR)\hmisc.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hmisc.obj : $(OBJ_DIR)\hmisc.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
 $(OBJ_DIR)\misc.obj : $(SRC_DIR)\misc.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
@@ -496,10 +514,9 @@ $(OBJ_DIR)\hhyper.obj : $(OBJ_DIR)\hhyper.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 
-# ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-# ³ PROCMISC.LIB Dependencies ³Û
-# ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
-#  ßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+# ========================== 
+# PROCMISC.LIB Dependencies
+# ==========================
 
 $(OBJ_DIR)\procini.c : $(PROCMISC_DIR)\procini.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
@@ -540,11 +557,9 @@ $(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
 $(OBJ_DIR)\hcedit_w.obj : $(EDITOR_DIR)\hcedit_w.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-# ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-# ³ HBXML.LIB Dependencies   ³Û
-# ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
-#  ßßßßßßßßßßßßßßßßßßßßßßßßßßßß
-
+# =======================
+# HBXML.LIB Dependencies
+# =======================
 $(OBJ_DIR)\hxmldoc.c : $(XML_DIR)\hxmldoc.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
@@ -554,10 +569,9 @@ $(OBJ_DIR)\hxmldoc.obj : $(OBJ_DIR)\hxmldoc.c
 $(OBJ_DIR)\xmlparse.obj : $(XML_DIR)\xmlparse.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-# ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-# ³ HWGDEBUG.LIB Dependencies   ³Û
-# ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙÛ
-#  ßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+# ==========================
+# HWGDEBUG.LIB Dependencies
+# ==========================
 
 $(OBJ_DIR)\debugger.c : $(DEBUG_DIR)\debugger.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
@@ -573,3 +587,5 @@ $(OBJ_DIR)\dbgconnect.obj : $(OBJ_DIR)\dbgconnect.c
 
 $(OBJ_DIR)\dbgdop.obj : $(DEBUG_DIR)\dbgdop.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+# =================== EOF of makefile.wc =======================  

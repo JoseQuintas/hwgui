@@ -853,10 +853,10 @@ HB_FUNC( HWG_TREEADDNODE )
 
    if( tvi.mask & TVIF_IMAGE )
       if ( tvi.iImage )
-         DeleteObject( ( HGDIOBJ ) tvi.iImage );
+         DeleteObject( ( HGDIOBJ ) ( UINT ) tvi.iImage );
    if( tvi.mask & TVIF_SELECTEDIMAGE )
       if ( tvi.iSelectedImage )
-         DeleteObject( ( HGDIOBJ ) tvi.iSelectedImage );
+         DeleteObject( ( HGDIOBJ ) ( UINT ) tvi.iSelectedImage );
 
    hb_strfree( hStr );
 }
@@ -2289,3 +2289,4 @@ HB_FUNC( HWG_DEFUSERLANG )
 }
 
 /* ====================== EOF of control.c ======================= */
+

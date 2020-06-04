@@ -16,10 +16,10 @@ Creating a "portable" Version of OpenWatcom
 
 You need 7zip to extract the archive with Open Watcom binaries.
   
-Download file "ow-snapshot.7z" (Archive with collection of binaries).
+Download file "ow-snapshot.tar.gz" or "ow-snapshot.7z" (Archive with collection of binaries).
 
 - Create install directory C:\WATCOM 
-- Extract archive "ow-snapshot.7z" into a temporary directory.
+- Extract archive "ow-snapshot.tar.gz" or "ow-snapshot.7z" into a temporary directory.
 - Move or copy the following directories to install directory:
    - binnt   (32bit) 
    - binnt64 (64bit)

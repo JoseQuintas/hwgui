@@ -778,6 +778,9 @@
                 [ ON DBLCLICK &lt;bDblClick&gt; ]
                 [ TOOLTIP &lt;ctoolt&gt; ]
     </pre>
+    <p>
+    Supported image formats: bmp, jpg
+    </p>
 
     <br><a name="Commands3-28" href="#_Commands3-28">4.3.28.  @ &lt;x&gt;,&lt;y&gt; ICON</a>
     <p></p>
@@ -804,6 +807,12 @@
                 [ ON SIZE &lt;bSize&gt; ] 
                 [ TOOLTIP &lt;ctoolt&gt; ]
     </pre>
+    <p>The usage of this command requires the FreeImage library<br>
+      (as static lib linked in your application or<br>
+       as shared library like Windows DLL or *.so on LINUX).<br>
+       If you only need *.bmp or *.jpg, you can use the command<br>
+      @ &lt;x&gt;,&lt;y&gt; BITMAP without usage of FreeImage.
+    </p>
 
     <br><a name="Commands3-30" href="#_Commands3-30">4.3.30.  @ &lt;x&gt;,&lt;y&gt; LINE</a>
     <p></p>

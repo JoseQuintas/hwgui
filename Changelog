@@ -8,6 +8,40 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-06-06 13:15 UTC+0200 Wilfried Brunken DF7BE
+  * samples\testimage.prg
+  * samples/Readme.txt
+  * samples\dev\compiler\OpenWatcom\OpenWatcom.txt
+  * makefile.wc
+  * samples\dev\env\pfad_pc.bat (New)
+  * make_pc.bat
+  * makefile.pc 
+  * samples\dev\compiler\Digital-Mars\Digital-Mars.txt (New)
+  * samples/dev/compiler/PellesC/PellesC.txt (New)
+  * samples\dev\env\pfad_dm.bat (New)
+  * samples/dev/env/Readme.txt
+    !
+    ! testimage.prg:
+    ! @ x, y BITMAP ... on GTK:
+    ! Sample program updated.
+    !
+    ! Info's for Compiler Support added:
+    ! Environment scripts only experimental status.
+    ! Compiled against BCC build of Harbour,
+    ! but fails. Should use HWGUI build with
+    ! same compiler of Harbour build, because
+    ! generated C source is otherwise incompatible.
+    ! 
+    ! Pelles C:
+    ! Not possinble at this time,
+    ! Harbour build crashes with 
+    ! "Access violation".
+    !
+    ! Digital Mars C:
+    ! No Harbour support.
+    !
+
 2020-06-04 08:00 UTC+0200 Wilfried Brunken DF7BE
   * samples\testimage.prg (New)
   * image/astro.bmp (New)

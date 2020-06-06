@@ -5,9 +5,23 @@ Created by DF7BE
 
    $Id$
 
+
 Valid for Version :
+
+Open Watcom C x86 32-bit Optimizing Compiler
+Version 2.0 beta May 30 2020 00:23:28 (32-bit)
+or
 Version 2.0 beta Nov  1 2017 21:05:53 (32-bit)
+
+
 Tested with Windows 10, 64 bit (x86_64)
+
+===============================================
+ OpenWatcom C compiler has bugs (see Appendix).
+ No support possible at this time.
+ All committed files have only
+ experimental status !
+===============================================
 
 
 Creating a "portable" Version of OpenWatcom
@@ -65,11 +79,15 @@ is available => Close Program".
   
 Ignore this, the libraries needed for a basic installation of HWGUI are built.
 
+
 Build HWGUI
 ===========
 - Modify "make_w32.bat" to your own needs.
 - Start by enter 
   make_w32.bat
+
+Build aborts with error:
+See Ticket: #25 watcom compiler support 
 
 Build a HWGUI sample 
 ====================

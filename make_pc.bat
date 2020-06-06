@@ -1,4 +1,4 @@
-@echo off
+rem @echo off
 
 rem $Id$
 rem
@@ -9,8 +9,9 @@ rem
 
 SET POCCDIR=%POCC%
 SET HARBOURDIR=%HB_PATH%
-SET _PATH=%PATH%
-SET PATH=%POCCDIR%\BIN;%HARBOURDIR%\BIN\XCC;%_PATH%
+REM SET _PATH=%PATH%
+SET PATH=%POCCDIR%\BIN;%HB_PATH%\BIN\XCC;%PATH%
+SET POMAKE=%POCCDIR%\BIN\pomake
 
 if "%1" == "clean" goto CLEAN
 if "%1" == "CLEAN" goto CLEAN
@@ -21,7 +22,7 @@ if not exist obj md obj
 
 :BUILD
 
-   pomake /F makefile.pc HB_PATH=%HARBOURDIR% POCCMAIN=%POCCDIR% %1 %2
+   %POMAKE%  /F makefile.pc HB_PATH=%HARBOURDIR% POCCMAIN=%POCCDIR% %1 %2
    if errorlevel 1 goto BUILD_ERR
 
 :BUILD_OK
@@ -44,5 +45,8 @@ if not exist obj md obj
 
 :EXIT
 
-SET PATH=%_PATH%
-SET _PATH=
+REM SET PATH=%_PATH%
+REM SET _PATH=
+
+REM ====================== EOF of make_pc.bat ====================
+

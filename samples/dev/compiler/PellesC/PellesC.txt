@@ -1,0 +1,101 @@
+Special Instructions for Pelles C compiler
+==========================================
+
+Created by DF7BE
+
+   $Id$
+
+
+
+Tested with Windows 10, 64 bit (x86_64)
+Pelles ISO C Compiler, Version 9.00.9
+
+===========================================
+ Pelles C compiler has bugs (see Appendix).
+ No support possible at this time.
+ All committed files have only
+ experimental status !
+===========================================
+
+
+
+
+Installation
+============
+
+
+Install with setup.exe, select as desitination folder "C:\PellesC"
+(no blanks in path name allowed for succesful build of Harbour, so
+the default installation path "C:\Program Files\PellesC" does not work). 
+   
+   
+Prerequisites
+=============
+
+You need GNU make, install it in c:\make.
+The binary "make.exe" must be found in subdir "bin".
+   
+   
+Set Environment for all following steps   
+=======================================
+
+Modify script to your own needs.
+
+Call environment script:
+samples\dev\env\pfad_wc.bat
+   
+Build Harbour
+=============
+
+Default installation directory is: C:\Harbour_pc\core-master
+
+Build of Harbour crashes, see appendix.
+
+
+
+Build HWGUI
+===========
+- Modify "make_pc.bat" to your own needs.
+- Start by enter 
+  make_pc.bat
+  
+
+Build a HWGUI sample 
+====================
+(in directory "samples")
+  
+hbmk.bat dbview.prg
+
+Use this script as a sample to build your own app.
+
+Appendix:
+=========
+
+Full error message building Harbour:
+
+:\harbour-pc\core-master>make
+! Building Harbour 3.2.0dev from source - https://harbour.github.io
+! MAKE: make 3.81 C:/Program Files (x86)/WinAVR-20100110/utils/bin/sh.exe
+! HB_HOST_PLAT: win (x86_64)  HB_SHELL: nt
+! HB_PLATFORM: win (x86)
+! HB_COMPILER: pocc
+! Component: 'zlib' found in C:/harbour-pc/core-master/src/3rd/zlib (local)
+! Component: 'pcre' found in C:/harbour-pc/core-master/src/3rd/pcre (local)
+! Component: 'gpm' not supported on win platform
+! Component: 'slang' not found. Configure with HB_WITH_SLANG.
+! Component: 'curses' not found. Configure with HB_WITH_CURSES.
+! Component: 'x11' not found. Configure with HB_WITH_X11.
+! Component: 'wattcp/watt-32' not supported on win platform
+make[1]: Für das Ziel »all« ist nichts zu tun.
+make[1]: Für das Ziel »all« ist nichts zu tun.
+! 'hbdossrl' library skipped (platform or compiler not supported)
+pocc.exe   -I. -IC:\PellesC\Include\Win -Ze -Go -MT -Ot  -DUNICODE -IC:/harbour-pc/core-master/src/3rd/zlib -DPNG_NO_STDIO -DPNG_ALLOCATED -DPNG_ARM_NEON_OPT=0  -Fopng.obj  -c ../../../png.c
+../../../png.c(328): fatal error: Internal error: 'Access violation' at 0x00007ff77e80a40e.
+make[4]: *** [png.obj] Fehler 1
+make[3]: *** [descend] Fehler 2
+make[2]: *** [png] Fehler 2
+make[1]: *** [3rd] Fehler 2
+make: *** [src] Fehler 2
+
+
+* =================== EOF of PellesC.txt ==================

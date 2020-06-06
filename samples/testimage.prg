@@ -15,21 +15,37 @@
 */
    * Status:
     *  WinAPI   :  Yes
-    *  GTK/Linux:  Yes 
-    *  GTK/Win  :  No (crashes)
+    *  GTK/Linux:  Yes
+    *  GTK/Win  :  Yes
 
 
 #include "hwgui.ch"
+#ifdef __GTK__
+#include "gtk.ch"
+#endif
 
-function main
-local odlg
-LOCAL nameimg := "..\image\astro.bmp"
+FUNCTION MAIN
+LOCAL odlg, oSayMain
+LOCAL nameimg
+LOCAL cs := hwg_GetDirSep()
+nameimg := ".." + cs + "image" + cs + "astro.bmp"
+#ifdef __GTK__
+* relative from path samples\gtk_samples
+ nameimg := ".." + cs + nameimg
+#endif
+
+IF .NOT. FILE(nameimg)
+ hwg_msginfo("File >" + nameimg + "< not found","Error" )
+ENDIF
 
 INIT Dialog oDlg AT 0,0 SIZE 500,400 CLIPPER NOEXIT NOEXITESC
 * This command requires FreeImage
 *@ 30, 10 IMAGE oSayMain SHOW nameimg OF oDlg SIZE 100, 90
+*
+* BITMAP:
 * Supported formats: bmp, jpg 
 @ 30, 10 BITMAP oSayMain SHOW nameimg OF oDlg SIZE 100, 90
+
 
 ACTIVATE Dialog oDlg center
 return nil

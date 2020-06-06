@@ -12,14 +12,15 @@ LIB_DIR = lib
 SRC_DIR = source\winapi
 PROCMISC_DIR = source\common\procmisc
 EDITOR_DIR = source\common\editor
-HARBOUR_EXE = HARBOUR
+HARBOUR_EXE = $(HRB_EXE)
 CC_EXE = $(POCCMAIN)\BIN\POCC.EXE
 LIB_EXE = $(POCCMAIN)\BIN\POLIB.EXE
 HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
 CFLAGS = /Ze /I"INCLUDE" /I"$(HRB_DIR)\INCLUDE" /I"$(POCCMAIN)\INCLUDE" /I"$(POCCMAIN)\INCLUDE\WIN" /I"$(POCCMAIN)\INCLUDE\MSVC" /D"HB_STATIC_STARTUP" /c
 
 # Please Note that /Op and /Go requires POCC version 2.80 or later
-CFLAGS = $(CFLAGS) /Op /Go
+# Version 9: not supported
+#CFLAGS = $(CFLAGS) /Op /Go
 
 !ifndef ECHO
 ECHO = echo.
@@ -136,11 +137,9 @@ $(PROCMISC_LIB) : $(PROCMISC_LIB_OBJS)
 $(XML_LIB) : $(XML_LIB_OBJS)
    $(LIB_EXE) /out:$@ $**
 
-# здддддддддддддддддддддддд©
-# Ё HWGUI.LIB Dependencies Ёш
-# юддддддддддддддддддддддддыш
-#  ъъъъъъъъъъъъъъъъъъъъъъъъъъ
-
+# =======================
+# HWGUI.LIB Dependencies
+# =======================
 $(OBJ_DIR)\drawwidg.c : $(SRC_DIR)\drawwidg.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
@@ -507,10 +506,9 @@ $(OBJ_DIR)\hhyper.c : $(SRC_DIR)\hhyper.prg
 $(OBJ_DIR)\hhyper.obj : $(OBJ_DIR)\hhyper.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-# зддддддддддддддддддддддддддд©
-# Ё PROCMISC.LIB Dependencies Ёш
-# юдддддддддддддддддддддддддддыш
-#  ъъъъъъъъъъъъъъъъъъъъъъъъъъъъъ
+# ==========================
+# PROCMISC.LIB Dependencies
+# ==========================
 
 $(OBJ_DIR)\procini.c : $(PROCMISC_DIR)\procini.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
@@ -545,10 +543,9 @@ $(OBJ_DIR)\hilight.c : $(EDITOR_DIR)\hilight.prg
 $(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-# здддддддддддддддддддддддддд©
-# Ё HBXML.LIB Dependencies   Ёш
-# юддддддддддддддддддддддддддыш
-#  ъъъъъъъъъъъъъъъъъъъъъъъъъъъъ
+# ========================
+# HBXML.LIB Dependencies
+# ========================
 
 $(OBJ_DIR)\hxmldoc.c : $(SRC_DIR)\xml\hxmldoc.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
@@ -559,10 +556,9 @@ $(OBJ_DIR)\hxmldoc.obj : $(OBJ_DIR)\hxmldoc.c
 $(OBJ_DIR)\xmlparse.obj : $(SRC_DIR)\xml\xmlparse.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-# здддддддддддддддддддддддддд©
-# Ё HWGDEBUG.LIB Dependencies   Ёш
-# юддддддддддддддддддддддддддыш
-#  ъъъъъъъъъъъъъъъъъъъъъъъъъъъъ
+# ===========================
+# HWGDEBUG.LIB Dependencies
+# ===========================
 
 $(OBJ_DIR)\debugger.c : $(SRC_DIR)\xml\debugger.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
@@ -578,3 +574,7 @@ $(OBJ_DIR)\dbgconnectr.obj : $(OBJ_DIR)\dbgconnect.c
 
 $(OBJ_DIR)\dbgdop.obj : $(SRC_DIR)\xml\dbgdop.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+# ================== EOF of makefile.pc =====================
+
+  

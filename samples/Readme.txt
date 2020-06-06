@@ -29,6 +29,12 @@ For beginners:
     bldvc.bat     Microsoft Visual C  
     hbmk.bat      Using hbmk2 utility
 
+    For Compiler support look into text files of directory:
+     samples/dev/compiler
+     samples/dev/env        (Envirinment scripts for Windows)
+     samples/dev/MinGW64
+     samples/dev/MingW-GTK  (Cross Development Environment for GTK on Windows)
+
 
 3.) Sample Database
     Contains 150 records with fields every type, open with a.prg or dbview.prg
@@ -96,7 +102,7 @@ For beginners:
  testget2.prg       N                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
  testfunc.prg       Y         Y       Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button. 
  testhmonth.prg     Y         Y       Calendar, Datepicker, TOOLTIP
- testimage.prg      N                 Displaying images and usage of FreeImage library (IMAGE, BITMAP).
+ testimage.prg      Y                 Displaying images and usage of FreeImage library (IMAGE, BITMAP).
  testini.prg        N                 Use INI file: create and read 
  testmenubitmap.prg N                 Menu with bitmaps
  testrtf.prg  1)    N  #      -       Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 

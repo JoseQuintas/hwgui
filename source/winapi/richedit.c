@@ -9,7 +9,7 @@
 */
 
 #include "hwingui.h"
-#if defined(__MINGW32__) || defined(__WATCOMC__)
+#if defined(__MINGW32__) || defined(__MINGW64__) || defined(__WATCOMC__)
 #include <prsht.h>
 #endif
 #include <commctrl.h>
@@ -549,4 +549,6 @@ HB_FUNC( HWG_LOADRICHEDIT )
    CloseHandle( hFile );
    HB_RETHANDLE( hFile );
 }
+
+/* =============================== EOF of richedit.c ================================ */
 

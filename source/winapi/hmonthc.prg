@@ -139,7 +139,7 @@ HB_FUNC( HWG_INITMONTHCALENDAR )
                          hb_parni(4), hb_parni(5),      /* x, y       */   
                          hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                          (HWND) HB_PARHANDLE(1),
-                         (HMENU) hb_parni(2),
+                         (HMENU) ( UINT_PTR ) hb_parni(2),
                          GetModuleHandle(NULL),
                          NULL );
 
@@ -193,4 +193,6 @@ HB_FUNC( HWG_GETMONTHCALENDARDATE ) // adaptation of hwg_Getdatepicker of file C
 }
 
 #pragma ENDDUMP
+
+* ====================== EOF of hmonthc.prg ==========================
 

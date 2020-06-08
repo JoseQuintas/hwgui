@@ -853,10 +853,10 @@ HB_FUNC( HWG_TREEADDNODE )
 
    if( tvi.mask & TVIF_IMAGE )
       if ( tvi.iImage )
-         DeleteObject( ( HGDIOBJ ) ( UINT ) tvi.iImage );
+         DeleteObject( ( HGDIOBJ ) ( UINT_PTR ) tvi.iImage );
    if( tvi.mask & TVIF_SELECTEDIMAGE )
       if ( tvi.iSelectedImage )
-         DeleteObject( ( HGDIOBJ ) ( UINT ) tvi.iSelectedImage );
+         DeleteObject( ( HGDIOBJ ) ( UINT_PTR ) tvi.iSelectedImage );
 
    hb_strfree( hStr );
 }
@@ -1120,7 +1120,7 @@ HB_FUNC( HWG_SETTIMER )
 {
    SetTimer( ( HWND ) HB_PARHANDLE( 1 ), ( UINT ) hb_parni( 2 ),
              ( UINT ) hb_parni( 3 ),
-             hb_pcount() == 3 ? ( TIMERPROC ) s_timerProc : ( TIMERPROC ) NULL );
+             hb_pcount() == 3 ?  ( TIMERPROC ) ( UINT_PTR ) s_timerProc : ( TIMERPROC ) ( UINT_PTR )  NULL );
 }
 
 /*
@@ -1255,6 +1255,7 @@ HB_FUNC( HWG_REGBROWSE )
 }
 
 static void CALLBACK s_timerProc( HWND hWnd, UINT message, UINT idTimer, DWORD dwTime )
+  /* DWORD dwTime as last parameter unused */
 {
    static PHB_DYNS s_pSymTest = NULL;
 
@@ -1717,7 +1718,7 @@ LRESULT APIENTRY TabSubclassProc( HWND hWnd, UINT message, WPARAM wParam,
                   lParam ) );
 }
 
-#if defined(__MINGW32__) && !defined(LPNMTBGETINFOTIP)
+#if ( defined(__MINGW32__) || defined(__MINGW64__) ) && !defined(LPNMTBGETINFOTIP)
 typedef struct tagNMTBGETINFOTIPA
 {
    NMHDR hdr;
@@ -2192,7 +2193,7 @@ HB_FUNC( HWG_DEFWINDOWPROC )
 
 HB_FUNC( HWG_CALLWINDOWPROC )
 {
-   WNDPROC wpProc = ( WNDPROC ) hb_parnl( 1 );
+   WNDPROC wpProc = ( WNDPROC ) ( ULONG_PTR ) hb_parnl( 1 );
    HWND hWnd = ( HWND ) HB_PARHANDLE( 2 );
    LONG message = hb_parnl( 3 );
    WPARAM wParam = ( WPARAM ) hb_parnl( 4 );
@@ -2289,4 +2290,3 @@ HB_FUNC( HWG_DEFUSERLANG )
 }
 
 /* ====================== EOF of control.c ======================= */
-

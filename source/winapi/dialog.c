@@ -11,7 +11,7 @@
 // #define OEMRESOURCE
 #include "hwingui.h"
 
-#if defined(__MINGW32__) || defined(__WATCOMC__)
+#if defined(__MINGW32__) || defined(__MINGW64__) || defined(__WATCOMC__)
 #include <prsht.h>
 #endif
 #if defined(__DMC__)
@@ -760,4 +760,6 @@ HB_FUNC( HWG_GETNOTIFYIDFROM )
 {
    hb_retnl( ( LONG ) ( ( ( NMHDR * ) HB_PARHANDLE( 1 ) )->idFrom ) );
 }
+
+/* ========================== EOF of dialog.c ====================== */
 

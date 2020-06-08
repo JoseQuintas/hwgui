@@ -49,7 +49,7 @@ static TRANSPARENTBLT s_pTransparentBlt = NULL;
 #define GRADIENT_FILL_RECT_H 0
 #define GRADIENT_FILL_RECT_V 1
 
-#if !defined(__WATCOMC__) && !defined(__MINGW32__)
+#if !defined(__WATCOMC__) && !defined(__MINGW32__) && !defined(__MINGW64__)
 typedef struct _GRADIENT_RECT
 {
    ULONG UpperLeft;
@@ -1850,3 +1850,6 @@ HB_FUNC( HWG_DRAWGRADIENT )
    DeleteObject( hBrush );
 
 }
+
+/* ============================== EOF of draw.c ================================ */
+

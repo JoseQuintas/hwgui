@@ -22,7 +22,7 @@
 #endif
 #include "hbapiitm.h"
 
-#if defined(__MINGW32__) && !defined(CDRF_NOTIFYSUBITEMDRAW)
+#if ( defined(__MINGW32__) || defined(__MINGW64__) ) && !defined(CDRF_NOTIFYSUBITEMDRAW)
 #define CDRF_NOTIFYSUBITEMDRAW  0x00000020
 #endif
 
@@ -524,3 +524,6 @@ HB_FUNC( HWG_LISTVIEWSORT )
    p->pListControl = ( HWND ) HB_PARHANDLE( 1 );
    ListView_SortItemsEx( ( HWND ) HB_PARHANDLE( 1 ), CompareFunc, p );
 }
+
+/* ========================= EOF of grid.c ======================== */
+

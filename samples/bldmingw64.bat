@@ -50,10 +50,9 @@ SET HWGUI_LIBS=%HWGUI_LIBS% -lhwg_qhtm
 %HRB_EXE% %PRGNAME%.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include %2
 gcc %MINGW_ARCH% -I. -I%HRB_DIR%\include -Wall -c %PRGNAME%.c -o%PRGNAME%.o
 
-REM buggy windres !
-goto link
 
 if not exist %PRGNAME%.rc goto link
+echo compile resource file %PRGNAME%.rc
 windres -F pe-x86-64 -i %PRGNAME%.rc -o %PRGNAME%_res.o
 set OBJ_LIST=%OBJ_LIST% %PRGNAME%_res.o
 

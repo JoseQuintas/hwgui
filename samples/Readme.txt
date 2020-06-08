@@ -21,13 +21,14 @@ For beginners:
 
 2.) List of build scripts for several compiler:
 
-    bld.bat       Borland C
-    bld4dll.bat   Borland C, build program which uses harbour.dll
-    bldmingw.bat  GCC(MinGW)
-    bldgw.bat     GCC(MinGW), alternative script 
-    bldpc.bat     Pelles C Compiler 
-    bldvc.bat     Microsoft Visual C  
-    hbmk.bat      Using hbmk2 utility
+    bld.bat         Borland C
+    bld4dll.bat     Borland C, build program which uses harbour.dll
+    bldmingw.bat    GCC(MinGW), 32 bit
+    bldmingw64.bat  GCC(MinGW), 64 bit
+    bldgw.bat       GCC(MinGW), alternative script 
+    bldpc.bat       Pelles C Compiler 
+    bldvc.bat       Microsoft Visual C  
+    hbmk.bat        Using hbmk2 utility
 
     For Compiler support look into text files of directory:
      samples/dev/compiler
@@ -67,7 +68,7 @@ For beginners:
 
  Sample program     GTK   NLS MinGW64 Purpose
  =================  ===   === ======= =======
- a.prg              N         CN 9)10)Some HWGUI basics (Open DBF's, GET's, ...)
+ a.prg              N         CN 9)   Some HWGUI basics (Open DBF's, GET's, ...)
  buildpelles.prg    N         Y       Build APP using Pelles C Compiler (*.bld file)
  colrbloc.prg       Y         Y       BROWSE: arrays and DBF's with colored lines and columns
  dbview.prg         Y         Y       DBF access (Browse, Indexing, Codepages, Structure, ... )
@@ -183,7 +184,5 @@ For beginners:
   9) MinGW64: Syntax error in rc file, hex values not allowed any more, must be following:
      <name> BITMAP "<file.bmp>"
 
- 10) The ressource compiler in MingW64 have bugs:
-     The Option "-F pe-x86-64" does not create a 64 bit object file. At program start the error message
-     "0xc000007b" appreared, so that the sample a.prg is not runnable on 64 bits, mixed obj files.
+
 

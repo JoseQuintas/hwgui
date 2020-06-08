@@ -6,11 +6,12 @@
 
    There are few bat files to build HwGUI with C compiler of your choice:
 
-   make_b32.bat  - Borland C
-   make_pc.bat   - Pelles C
-   make_vc.bat   - Microsoft Visual C
-   make_w32.bat  - Open Watcom C
-   makemngw.bat  - Mingw (32bit, special instructions follow above)
+   make_b32.bat   - Borland C
+   make_pc.bat    - Pelles C
+   make_vc.bat    - Microsoft Visual C
+   make_w32.bat   - Open Watcom C
+   makemngw.bat   - Mingw (32bit, special instructions follow above)
+   makemngw64.bat - Mingw (64bit, special instructions follow above) 
 
    Read special build instructions for every compiler in files of directory:
    samples\dev\compiler\<compiler>\...
@@ -64,7 +65,7 @@
       for all the next steps. Modify to your own needs.
     - Build Harbour in base directory by typing "make"
     - Build HWGUI :
-       hbmk2 hwgui.hbp procmisc.hbp hbxml.hbp hwgdebug.hbp
+       makemngw64.bat
       There are lots of warnings displayed, ingore them.
       We will fix them as soon as possiblle.
     - Build a sample program (a.prg or dbview.prg) with

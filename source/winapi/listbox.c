@@ -11,7 +11,7 @@
 */
 
 #include "hwingui.h"
-#if defined(__MINGW32__) || defined(__WATCOMC__)
+#if defined(__MINGW32__) || defined(__MINGW64__) || defined(__WATCOMC__)
 #include <prsht.h>
 #endif
 #include "hbapiitm.h"
@@ -55,3 +55,6 @@ HB_FUNC( HWG_LISTBOXDELETESTRING )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), LB_DELETESTRING, 0, ( LPARAM ) 0 );
 }
+
+/* ============================ EOF of listbox.c =============================== */
+

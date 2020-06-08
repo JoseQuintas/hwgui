@@ -8,6 +8,36 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-06-08 10:00 UTC+0200 Wilfried Brunken DF7BE
+  * install.txt
+  * source\winapi\hmonthc.prg
+  * source\winapi\control.c
+  * source\winapi\dialog.c
+  * source\winapi\draw.c
+  * makemngw64.bat (New)
+  * samples\bldmingw64.bat
+  * samples\a.rc
+  * source\winapi\grid.c
+  * source\winapi\listbox.c
+  * source\winapi\nice.c
+  * source\winapi\resource.c
+  * source\winapi\richedit.c
+  * source\gtk\listbox.c
+  * samples/Readme.txt
+  * samples/dev/MinGW64/MinGW64.txt
+    ! 
+    ! Task:
+    ! Support for MinGW64
+    ! (to be continued)
+    ! - Added compiler switch
+    !   "if ... defined(__MINGW64__)"
+    ! - Scripts for compile of
+    !   libs and samples updated
+    ! - Docu updated.
+    ! In general, nevertheless these much
+    ! of warnings HWGUI is now ready for MinGW64.
+    ! TO-DO: 50 warnings must be fixed.
+    !
 
 2020-06-06 13:15 UTC+0200 Wilfried Brunken DF7BE
   * samples\testimage.prg

@@ -95,7 +95,7 @@ HB_FUNC( HWG_GETLOCALEINFON )
 
 HB_FUNC( HWG_GETUTCTIMEDATE )
 {
-/* Format: W,YYYYMMDD-HHMMSS */
+/* Format: W,YYYYMMDD-HH:MM:SS */
   char cst[128] = { 0 };
   char * puf = malloc(25);
   int i;

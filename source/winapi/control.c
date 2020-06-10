@@ -2261,7 +2261,7 @@ HB_FUNC( HWG_GETTABNAME )
 }
 
 HB_FUNC( HWG_GETUTCTIMEDATE )
-/* Format: W,YYYYMMDD-HHMMSS */
+/* Format: W,YYYYMMDD-HH:MM:SS */
 {
   SYSTEMTIME st = { 0 };
   char cst[41] = { 0 };
@@ -2290,3 +2290,4 @@ HB_FUNC( HWG_DEFUSERLANG )
 }
 
 /* ====================== EOF of control.c ======================= */
+

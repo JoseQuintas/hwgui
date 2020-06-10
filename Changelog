@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-06-10 23:05 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * source/gtk/inter.c
+  * source/winapi/control.c
+   !
+   ! Function HWG_GETUTCTIMEDATE():
+   ! Format of output string corrected
+   ! in comment line and function docu 
+
 2020-06-08 10:00 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
   * source\winapi\hmonthc.prg

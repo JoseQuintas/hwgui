@@ -7,19 +7,23 @@
  * www - http://www.kresin.ru
 */
 
+#include "hbapi.h"
+#include "hbvm.h"
+#include "hbapiitm.h"
+
 #define MAXKEYBYTES 56          /* 448 bits */
 #define N           16
 
 typedef struct
 {
 
-  unsigned long P[16 + 2];
+  HB_U32 P[16 + 2];
 
-  unsigned long S[4][256];
+  HB_U32 S[4][256];
 
 } BLOWFISH_CTX;
 
-static const unsigned long ORIG_P[16 + 2] = {
+static const HB_U32 ORIG_P[16 + 2] = {
         0x243F6A88L, 0x85A308D3L, 0x13198A2EL, 0x03707344L,
         0xA4093822L, 0x299F31D0L, 0x082EFA98L, 0xEC4E6C89L,
         0x452821E6L, 0x38D01377L, 0xBE5466CFL, 0x34E90C6CL,
@@ -27,7 +31,7 @@ static const unsigned long ORIG_P[16 + 2] = {
         0x9216D5D9L, 0x8979FB1BL
 };
 
-static const unsigned long ORIG_S[4][256] = {
+static const HB_U32 ORIG_S[4][256] = {
     {   0xD1310BA6L, 0x98DFB5ACL, 0x2FFD72DBL, 0xD01ADFB7L,
         0xB8E1AFEDL, 0x6A267E96L, 0xBA7C9045L, 0xF12C7F99L,
         0x24A19947L, 0xB3916CF7L, 0x0801F2E2L, 0x858EFC16L,
@@ -290,10 +294,10 @@ static const unsigned long ORIG_S[4][256] = {
 
 };
 
-unsigned long F( BLOWFISH_CTX *ctx, unsigned long x )
+HB_U32 F( BLOWFISH_CTX *ctx, HB_U32 x )
 {
    unsigned short a, b, c, d;
-   unsigned long  y;
+   HB_U32  y;
 
    d = ( unsigned short ) ( x & 0x00FF );
    x >>= 8;
@@ -310,12 +314,12 @@ unsigned long F( BLOWFISH_CTX *ctx, unsigned long x )
 
 }
 
-void Blowfish_Encrypt( BLOWFISH_CTX * ctx, unsigned long *xl,
-      unsigned long *xr )
+void Blowfish_Encrypt( BLOWFISH_CTX * ctx, HB_U32 *xl,
+      HB_U32 *xr )
 {
-   unsigned long  Xl;
-   unsigned long  Xr;
-   unsigned long  temp;
+   HB_U32  Xl;
+   HB_U32  Xr;
+   HB_U32  temp;
    short  i;
 
    Xl = *xl;
@@ -342,12 +346,12 @@ void Blowfish_Encrypt( BLOWFISH_CTX * ctx, unsigned long *xl,
 
 }
 
-void Blowfish_Decrypt( BLOWFISH_CTX * ctx, unsigned long *xl,
-      unsigned long *xr )
+void Blowfish_Decrypt( BLOWFISH_CTX * ctx, HB_U32 *xl,
+      HB_U32 *xr )
 {
-   unsigned long  Xl;
-   unsigned long  Xr;
-   unsigned long  temp;
+   HB_U32  Xl;
+   HB_U32  Xr;
+   HB_U32  temp;
    short       i;
  
    Xl = *xl;
@@ -380,7 +384,7 @@ void Blowfish_Decrypt( BLOWFISH_CTX * ctx, unsigned long *xl,
 void Blowfish_Init( BLOWFISH_CTX *ctx, unsigned char *key, int keyLen )
 {
    int i, j, k;
-   unsigned long data, datal, datar;
+   HB_U32 data, datal, datar;
  
    for( i = 0; i < 4; i++ )
    {
@@ -427,10 +431,6 @@ void Blowfish_Init( BLOWFISH_CTX *ctx, unsigned char *key, int keyLen )
 #undef MAXKEYBYTES
 #undef N
 
-#include "hbapi.h"
-#include "hbvm.h"
-#include "hbapiitm.h"
-
 HB_FUNC( BF_ENCRYPT )
 {
 
@@ -440,7 +440,7 @@ HB_FUNC( BF_ENCRYPT )
    unsigned char *ptro;
    unsigned char *key;
    int iKeylen, iDiff;
-   unsigned long int ul, ulLen, ulPairs;
+   HB_U32 ul, ulLen, ulPairs;
 
    if( HB_ISNIL( 2 ) )
    {
@@ -464,9 +464,9 @@ HB_FUNC( BF_ENCRYPT )
    Blowfish_Init( &ctx, key, iKeylen );
 
    if( HB_ISNIL( 3 ) )
-      ulLen = ( unsigned long ) hb_parclen( 1 );
+      ulLen = ( HB_U32 ) hb_parclen( 1 );
    else
-      ulLen = ( unsigned long ) hb_parnl( 3 );
+      ulLen = ( HB_U32 ) hb_parnl( 3 );
 
    ulPairs = ( ulLen + 2 ) / 8 + ( ( ( ulLen + 2 ) % 8 ) ? 1 : 0 );
    ptro = ( unsigned char * ) hb_xgrab( ulPairs * 8 + 1 );
@@ -478,8 +478,8 @@ HB_FUNC( BF_ENCRYPT )
       *( ptro + ul ) = '\0';
 
    for( ul = 0; ul < ulPairs; ul++ )
-      Blowfish_Encrypt( &ctx, ( unsigned long * ) ( ptro + ul * 8 ),
-            ( unsigned long * ) ( ptro + ul * 8 + 4 ) );
+      Blowfish_Encrypt( &ctx, ( HB_U32 * ) ( ptro + ul * 8 ),
+            ( HB_U32 * ) ( ptro + ul * 8 + 4 ) );
 
    hb_retclen( ( char * ) ptro, ulPairs * 8 );
    hb_xfree( key );
@@ -496,7 +496,7 @@ HB_FUNC( BF_DECRYPT )
    unsigned char *ptro;
    unsigned char *key;
    int iKeylen, iDiff;
-   unsigned long int ul, ulLen, ulPairs;
+   HB_U32 ul, ulLen, ulPairs;
 
    if( HB_ISNIL( 2 ) )
    {
@@ -520,17 +520,17 @@ HB_FUNC( BF_DECRYPT )
    Blowfish_Init( &ctx, key, iKeylen );
 
    if( HB_ISNIL( 3 ) )
-      ulLen = ( unsigned long ) hb_parclen( 1 );
+      ulLen = ( HB_U32 ) hb_parclen( 1 );
    else
-      ulLen = ( unsigned long ) hb_parnl( 3 );
+      ulLen = ( HB_U32 ) hb_parnl( 3 );
 
    ulPairs = ulLen / 8;
    ptro = ( unsigned char * ) hb_xgrab( ulLen + 1 );
    memcpy( ptro, ptri, ulLen );
 
    for( ul = 0; ul < ulPairs; ul++ )
-      Blowfish_Decrypt( &ctx, ( unsigned long * ) ( ptro + ul * 8 ),
-            ( unsigned long * ) ( ptro + ul * 8 + 4 ) );
+      Blowfish_Decrypt( &ctx, ( HB_U32 * ) ( ptro + ul * 8 ),
+            ( HB_U32 * ) ( ptro + ul * 8 + 4 ) );
 
    iDiff = ( int ) ( *ptro );
    if( iDiff > 10 || *( ptro + 1 ) )

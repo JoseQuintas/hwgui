@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-06-16 12:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  ! contrib/misc/blowfish.c
+    ! Fixes for 64-bit compilers
+
 2020-06-10 23:05 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * source/gtk/inter.c

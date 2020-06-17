@@ -190,7 +190,7 @@ METHOD Del( cObjName ) CLASS HBinC
    FWrite( ::handle, Replicate( ' ', Len(cObjName)+4 ) )
    ::aObjects[n,OBJ_NAME] := ::aObjects[n,OBJ_TYPE] := ""
 
-   RETURN Nil
+   RETURN .T.
 
 METHOD Pack() CLASS HBinC
    LOCAL i, nItems := 0, nCntLen := 0
@@ -203,12 +203,12 @@ METHOD Pack() CLASS HBinC
 
    Aeval( ::aObjects, {|a| Iif(!Empty(a[OBJ_NAME]), (nItems++,nCntLen+=Len(a[OBJ_NAME])+CNT_FIX_LEN),.T.) } )
    IF nItems == ::nItems
-      RETURN Nil
+      RETURN .T.
    ENDIF
 
    cTempName := ::cName + ".new"
    IF ( handle := FCreate( cTempName ) ) == -1
-      RETURN Nil
+      RETURN .F.
    ENDIF
 
    ::nItems := nItems
@@ -251,7 +251,7 @@ METHOD Pack() CLASS HBinC
       ::aObjects := Nil
    ENDIF
 
-   RETURN Nil
+   RETURN .T.
 
 METHOD Get( cObjName ) CLASS HBinC
    LOCAL n, cBuf

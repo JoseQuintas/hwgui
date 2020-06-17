@@ -11,22 +11,15 @@
 #include "hbclass.ch"
 #include "fileio.ch"
 
-#define  CLR_DGREEN   3236352
-#define  CLR_MGREEN   8421440
-#define  CLR_GREEN      32768
-#define  CLR_LGREEN   7335072
-#define  CLR_DBLUE    8404992
-#define  CLR_VDBLUE  10485760
-#define  CLR_LBLUE   16759929
-#define  CLR_LIGHT1  15132390
-#define  CLR_LIGHT2  12632256
-#define  CLR_LIGHTG  12507070
+#define APP_VERSION  "1.0"
 
 STATIC oBrw, oContainer
-STATIC  cHead := "hwgbc"
+STATIC cHead := "hwgbc"
 
 FUNCTION Main( cContainer )
+
    LOCAL oMainW, oMainFont
+   LOCAL oStyle := HStyle():New( { 0xffffff, 0xbbbbbb } )
 
    PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT - 17 CHARSET 4
 
@@ -34,36 +27,44 @@ FUNCTION Main( cContainer )
       AT 200, 0 SIZE 600, 540 FONT oMainFont
 
    MENU OF oMainW
-   MENU TITLE "&File"
-   MENUITEM "&Create" ACTION CntCreate()
-   MENUITEM "&Open" ACTION CntOpen()
-   SEPARATOR
-   MENUITEM "&Exit" ACTION oMainW:Close()
-   ENDMENU
-   MENU TITLE "&Container" ID 1001
-   MENUITEM "&Add item" ACTION CntAdd()
-   MENUITEM "&Delete item" ACTION CntDel()
-   SEPARATOR
-   MENUITEM "&Save item as" ACTION CntSave()
-   SEPARATOR
-   MENUITEM "&Pack" ACTION CntPack()
-   ENDMENU
+      MENU TITLE "&File"
+         MENUITEM "&Create" ACTION CntCreate()
+         MENUITEM "&Open" ACTION CntOpen()
+         SEPARATOR
+         MENUITEM "&Exit" ACTION oMainW:Close()
+      ENDMENU
+      MENU TITLE "&Container" ID 1001
+         MENUITEM "&Add item" ACTION CntAdd()
+         MENUITEM "&Delete item" ACTION CntDel()
+         SEPARATOR
+         MENUITEM "&Save item as" ACTION CntSave()
+         SEPARATOR
+         MENUITEM "&Pack" ACTION CntPack()
+      ENDMENU
+      MENU TITLE "&Help"
+         MENUITEM "&About" ACTION About()
+      ENDMENU
    ENDMENU
 
-   @ 0, 0 BROWSE oBrw ARRAY             ;
-      SIZE 600, 540                     ;
+   @ 0, 0 BROWSE oBrw ARRAY            ;
+      SIZE 600, 510                    ;
       STYLE WS_VSCROLL                 ;
       FONT oMainFont                   ;
-      ON SIZE { |o, x, y|o:Move( , , x, y - 2 ) }
+      ON SIZE { |o, x, y|o:Move( , , x, y - 32 ) }
 
    oBrw:aArray := {}
    oBrw:AddColumn( HColumn():New( "Name",{ |value,o|o:aArray[o:nCurrent,1] },"C",32 ) )
    oBrw:AddColumn( HColumn():New( "Type",{ |value,o|o:aArray[o:nCurrent,2] },"C",8 ) )
    oBrw:AddColumn( HColumn():New( "Size",{ |value,o|o:aArray[o:nCurrent,4] },"N",14,0 ) )
 
-   oBrw:tcolor := 0
-   oBrw:bcolor := CLR_LIGHT1
-   oBrw:bcolorSel := oBrw:htbcolor := CLR_MGREEN
+   oBrw:oStyleHead := oStyle
+   oBrw:bcolorSel := oBrw:htbcolor := 0xeeeeee
+   oBrw:tcolorSel := oBrw:httcolor := 0
+   oBrw:aHeadPadding[2] := oBrw:aHeadPadding[4] := 4
+   oBrw:lInFocus := .T.
+
+   ADD STATUS PANEL TO oMainW HEIGHT 30 FONT oMainW:oFont ;
+      HSTYLE oStyle PARTS 200, 120, 0
 
    hwg_Enablemenuitem( , 1001, .F. , .T. )
 
@@ -80,6 +81,7 @@ FUNCTION Main( cContainer )
    RETURN Nil
 
 STATIC FUNCTION CntCreate()
+
    LOCAL fname
 
 #ifdef __GTK__
@@ -90,10 +92,15 @@ STATIC FUNCTION CntCreate()
 #endif
    IF !Empty( fname )
       IF !Empty( oContainer := HBinC():Create( fname ) )
+         hwg_WriteStatus( HWindow():GetMain(), 1, hb_fnameNameExt( fname ) )
+         hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
          hwg_Enablemenuitem( , 1001, .T. , .T. )
          hwg_Drawmenubar( HWindow():GetMain():handle )
          oBrw:aArray := oContainer:aObjects
          oBrw:Refresh()
+      ELSE
+         hwg_WriteStatus( HWindow():GetMain(), 1, "" )
+         hwg_WriteStatus( HWindow():GetMain(), 2, "" )
       ENDIF
    ENDIF
 
@@ -106,11 +113,15 @@ STATIC FUNCTION CntOpen( fname )
    ENDIF
    IF !Empty( fname )
       IF !Empty( oContainer := HBinC():Open( fname, .T. ) )
+         hwg_WriteStatus( HWindow():GetMain(), 1, hb_fnameNameExt( fname ) )
+         hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
          hwg_Enablemenuitem( , 1001, .T. , .T. )
          hwg_Drawmenubar( HWindow():GetMain():handle )
          oBrw:aArray := oContainer:aObjects
          oBrw:Refresh()
       ELSE
+         hwg_WriteStatus( HWindow():GetMain(), 1, "" )
+         hwg_WriteStatus( HWindow():GetMain(), 2, "" )
          hwg_MsgStop( "Error opening container" )
       ENDIF
    ENDIF
@@ -126,6 +137,7 @@ STATIC FUNCTION CntAdd()
       oEdit1:value := cFile
       oEdit2:value := Left( CutExten( CutPath(cFile ) ), 32 )
       oEdit3:value := Left( FilExten( cFile ), 4 )
+      hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
    ENDIF
 
    RETURN .T.
@@ -193,8 +205,32 @@ STATIC FUNCTION CntSave()
 STATIC FUNCTION CntPack()
 
    oContainer:Pack()
+   hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
    oBrw:aArray := oContainer:aObjects
    oBrw:Top()
    oBrw:Refresh()
+
+   RETURN Nil
+
+#define  CLR_VDBLUE  10485760
+#define  CLR_LBLUE0  12164479
+
+STATIC FUNCTION About()
+
+   LOCAL oDlg
+
+   INIT DIALOG oDlg TITLE "About" ;
+      AT 0, 0 SIZE 400, 320 FONT HWindow():GetMain():oFont COLOR hwg_colorC2N("CCCCCC")
+
+   @ 20, 40 SAY "Binary container manager" SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 20, 64 SAY "Version "+APP_VERSION SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 10, 100 SAY "Copyright 2014 Alexander S.Kresin" SIZE 380,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 20, 124 SAY "http://www.kresin.ru" LINK "http://www.kresin.ru" SIZE 360,26 STYLE SS_CENTER
+   @ 20, 160 LINE LENGTH 360
+   @ 20, 180 SAY hwg_version() SIZE 360,26 STYLE SS_CENTER COLOR CLR_LBLUE0 TRANSPARENT
+
+   @ 120, 250 BUTTON "Close" ON CLICK {|| hwg_EndDialog()} SIZE 160,36
+
+   ACTIVATE DIALOG oDlg CENTER
 
    RETURN Nil

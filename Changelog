@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-06-17 13:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/hbincnt.prg
+  * source/winapi/hbincnt.prg
+    * Return values corrected
+  * utils/bincnt/bincnt.prg
+    * Interface enhancements
+
 2020-06-16 12:45 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   ! contrib/misc/blowfish.c
     ! Fixes for 64-bit compilers

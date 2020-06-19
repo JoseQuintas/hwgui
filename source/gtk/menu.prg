@@ -86,19 +86,19 @@ FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos, hWnd )
       Iif( Empty(hWnd), 0, hWnd ), nMenuId, , lSubMenu )
 
    IF nPos > Len( aMenu[1] )
-      IF lSubmenu
-         AAdd( aMenu[1], { {}, cItem, nMenuId, 0, hSubMenu } )
+      IF Empty( lSubmenu )
+         AAdd( aMenu[1], { bItem, cItem, nMenuId, 0, hSubMenu } )        
       ELSE
-         AAdd( aMenu[1], { bItem, cItem, nMenuId, 0, hSubMenu } )
+         AAdd( aMenu[1], { {}, cItem, nMenuId, 0, hSubMenu } )
       ENDIF
       RETURN ATail( aMenu[1] )
    ELSE
       AAdd( aMenu[1], Nil )
       AIns( aMenu[1], nPos )
-      IF lSubmenu
-         aMenu[ 1,nPos ] := { {}, cItem, nMenuId, 0, hSubMenu }
-      ELSE
+      IF Empty( lSubmenu )
          aMenu[ 1,nPos ] := { bItem, cItem, nMenuId, 0, hSubMenu }
+      ELSE
+         aMenu[ 1,nPos ] := { {}, cItem, nMenuId, 0, hSubMenu }
       ENDIF
       RETURN aMenu[ 1,nPos ]
    ENDIF

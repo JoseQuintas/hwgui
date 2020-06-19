@@ -85,19 +85,20 @@ FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos )
    hSubMenu := hwg__AddMenuItem( hSubMenu, cItem, nPos - 1, .T., nMenuId,, lSubMenu )
 
    IF nPos > Len( aMenu[ 1 ] )
-      IF lSubMenu
-         AAdd( aMenu[ 1 ], { { }, cItem, nMenuId, 0, hSubMenu } )
-      ELSE
+      IF Empty( lSubMenu )
          AAdd( aMenu[ 1 ], { bItem, cItem, nMenuId, 0 } )
+      ELSE
+         AAdd( aMenu[ 1 ], { { }, cItem, nMenuId, 0, hSubMenu } )
       ENDIF
       RETURN ATail( aMenu[ 1 ] )
    ELSE
       AAdd( aMenu[ 1 ], Nil )
       AIns( aMenu[ 1 ], nPos )
-      IF lSubMenu
-         aMenu[ 1, nPos ] := { { }, cItem, nMenuId, 0, hSubMenu }
-      ELSE
+      IF Empty( lSubMenu )
          aMenu[ 1, nPos ] := { bItem, cItem, nMenuId, 0 }
+         
+      ELSE
+         aMenu[ 1, nPos ] := { { }, cItem, nMenuId, 0, hSubMenu }
       ENDIF
       RETURN aMenu[ 1, nPos ]
    ENDIF

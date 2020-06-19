@@ -88,7 +88,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    else
       hMenu = (GtkWidget *) gtk_separator_menu_item_new();
 
-   if( hb_parl(7) )
+   if( !HB_ISNIL( 7 ) && hb_parl(7) )
    {
       GtkWidget * hSubMenu = gtk_menu_new();
       gtk_menu_item_set_submenu( GTK_MENU_ITEM (hMenu), hSubMenu );

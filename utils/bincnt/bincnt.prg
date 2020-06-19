@@ -18,8 +18,25 @@ STATIC cHead := "hwgbc"
 
 FUNCTION Main( cContainer )
 
-   LOCAL oMainW, oMainFont
+   LOCAL oMainW, oMainFont, oMenuBrw
    LOCAL oStyle := HStyle():New( { 0xffffff, 0xbbbbbb } )
+   LOCAL bRClick := {|o,nCol,nLine|
+      LOCAL n := nLine, nRec := Eval( o:bRecno,o )
+      IF n != nRec
+         DO WHILE n != nRec
+            IF n < nRec
+               o:LineUp()
+               n ++
+            ELSE
+               o:LineDown()
+               n --
+            ENDIF
+         ENDDO
+      ENDIF
+      oMenuBrw:Show( HWindow():GetMain() )
+      RETURN Nil
+   }
+
 
    PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT - 17 CHARSET 4
 
@@ -46,6 +63,12 @@ FUNCTION Main( cContainer )
       ENDMENU
    ENDMENU
 
+   CONTEXT MENU oMenuBrw
+      MENUITEM "&Delete item" ACTION CntDel()
+      SEPARATOR
+      MENUITEM "&Save item as" ACTION CntSave()
+   ENDMENU
+
    @ 0, 0 BROWSE oBrw ARRAY            ;
       SIZE 600, 510                    ;
       STYLE WS_VSCROLL                 ;
@@ -62,6 +85,8 @@ FUNCTION Main( cContainer )
    oBrw:tcolorSel := oBrw:httcolor := 0
    oBrw:aHeadPadding[2] := oBrw:aHeadPadding[4] := 4
    oBrw:lInFocus := .T.
+
+   oBrw:bRClick := bRClick
 
    ADD STATUS PANEL TO oMainW HEIGHT 30 FONT oMainW:oFont ;
       HSTYLE oStyle PARTS 200, 120, 0

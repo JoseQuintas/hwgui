@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-06-19 13:42 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/menu.prg
+  * source/gtk/menu_c.c
+  * source/winapi/menu.prg
+  * source/winapi/menu_c.c
+    * The forth parameter to hwg_Addmenuitem(), lSubmenu, may be Nil now.
+  * utils/bincnt/bincnt.prg
+    * Interface enhancements
+
 2020-06-17 13:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/hbincnt.prg
   * source/winapi/hbincnt.prg

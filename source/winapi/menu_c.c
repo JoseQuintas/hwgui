@@ -73,7 +73,7 @@ HB_FUNC( HWG__ADDMENUITEM )
    else
       uFlags |= MF_SEPARATOR;
 
-   if( hb_parl( 7 ) )
+   if( !HB_ISNIL( 7 ) && hb_parl( 7 ) )
    {
       HMENU hSubMenu = CreateMenu(  );
 

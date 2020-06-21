@@ -7,33 +7,27 @@ Created by DF7BE
 
 
 Valid for Version :
+-------------------
 
 Open Watcom C x86 32-bit Optimizing Compiler
-Version 2.0 beta May 30 2020 00:23:28 (32-bit)
-or
-Version 2.0 beta Nov  1 2017 21:05:53 (32-bit)
-
+Version 2.0 beta Jun 20 2020 00:24:42 (32-bit)
 
 Tested with Windows 10, 64 bit (x86_64)
 
-===============================================
- OpenWatcom C compiler has bugs (see Appendix).
- No support possible at this time.
- All committed files have only
- experimental status !
-===============================================
+(Do not use older versions. they have bugs !)
+
 
 
 Creating a "portable" Version of OpenWatcom
--------------------------------------------
+===========================================
 (so it is no need to make modifications on the Windows system).
 
-You need 7zip to extract the archive with Open Watcom binaries.
+You need 7zip to extract the archive with Open Watcom binaries and includes.
   
-Download file "ow-snapshot.tar.gz" or "ow-snapshot.7z" (Archive with collection of binaries).
+Download file "ow-snapshot.tar.gz" from github (Archive with collection of binaries).
 
-- Create install directory C:\WATCOM 
-- Extract archive "ow-snapshot.tar.gz" or "ow-snapshot.7z" into a temporary directory.
+- Create install directory C:\WATCOM (default installation path).
+- Extract archive "ow-snapshot.tar.gz" into a temporary directory.
 - Move or copy the following directories to install directory:
    - binnt   (32bit) 
    - binnt64 (64bit)
@@ -41,7 +35,8 @@ Download file "ow-snapshot.tar.gz" or "ow-snapshot.7z" (Archive with collection 
    - l
    - lh
    - lib386
-   
+ 
+ 
 Prerequisites
 =============
 
@@ -56,28 +51,18 @@ Modify script to your own needs.
 
 Call environment script:
 samples\dev\env\pfad_wc.bat
-   
+
+(needed for all following steps).
+
+
+
 Build Harbour
 =============
 
 Default installation directory is: C:\Harbour_wc\core-master
 
-Build of Harbour crashes with this message:
-
-C:\Harbour_wc\core-master\bin\win\watcom\hbmk2 -quiet -width=0 -autohbm- @hbpre -inc hbrun/hbrun.hbp @hbpost
-hbmk2[hbrun]: Error: Running resource compiler. 255
-hbmk2[hbrun]: Exit status: 6: failed in compilation (Harbour, C compiler, Resource compiler)
-! Finished package build...
-make[1]: *** [first] Error 6
-make: *** [contrib] Error 2
-
-The resoource compiler stops with error Message (file OW_Error.png, german).
-In English:
-"Open Watcom Resource Compiler does not work any more, the program is not executed
-correct because of a problem. The Program is closed and you are informed, if a solution 
-is available => Close Program". 
-  
-Ignore this, the libraries needed for a basic installation of HWGUI are built.
+Build of Harbour crashes, full message see Appendix.
+Ignore this error, all libraries needed for HWGUI were built.
 
 
 Build HWGUI
@@ -86,8 +71,8 @@ Build HWGUI
 - Start by enter 
   make_w32.bat
 
-Build aborts with error:
-See Ticket: #25 watcom compiler support 
+One Warning "W303" can be ignored.
+
 
 Build a HWGUI sample 
 ====================
@@ -96,6 +81,8 @@ Build a HWGUI sample
 hbmk.bat dbview.prg
 
 Use this script as a sample to build your own app.
+If resources do not appear, the Manifest file could have errors.
+
 
 Appendix:
 =========
@@ -103,35 +90,13 @@ Appendix:
 Full error message building Harbour:
 
 C:\Harbour_wc\core-master\bin\win\watcom\hbmk2 -quiet -width=0 -autohbm- @hbpre -inc hbrun/hbrun.hbp @hbpost
-Error! E060:
-Error! E060:
-Error! E026:
-The instruction at 0x009dd64f referenced memory at 0x00000000.
-The memory could not be read.
-Exception fielded by 0x004037b0
-EAX=0x021c0736 EBX=0x00000000 ECX=0x0000002e EDX=0x00000000
-ESI=0x00000000 EDI=0x021c0735 EBP=0x00000000 ESP=0x0019fa5c
-EIP=0x009dd64f EFL=0x00010206 CS =0x00000023 SS =0x0000002b
-DS =0x0000002b ES =0x0000002b FS =0x00000053 GS =0x0000002b
-Stack dump (SS:ESP)
-0x00000000 0x009d7ca9 0x00451ce5 0x00451c95 0x0019fa20 0x021a0f9d
-0x00000005 0x009cd006 0x00001030 0x00000000 0x0045b899 0x0000006a
-0x00451c95 0x00451ce5 0x009ccc8e 0x00000000 0x00000000 0x00000000
-0x00000000 0x0045b899 0x009b744d 0x00000000 0x00000000 0x00000000
-0x00000000 0x021a0ff5 0x00000000 0x00000000 0x00000000 0x00000000
-0x00000000 0x00000000 0x00000000 0x00000000 0x009c9af7 0x009c9b6e
-0x009ca464 0x009ca79f 0x30003432 0x00000000 0x009d7ca9 0x00000018
-0x00000008 0x00000006 0x0019fb64 0x0019fb28 0x00000000 0x00000000
-0x009cb648 0x0019fb64 0x0019fb64 0x00000000 0x00000008 0x00000000
-0x0019fb64 0x00000000 0x00000000 0x009b97c6 0x0019fb00 0x009c8a00
-0x00409078 0x00000000 0x00000001 0x009c8a10 0x009edf2c 0x009b9842
-0x0045b899 0x0045b841 0x021f0c39 0x021f0c35 0x00000001 0x009c8986
-hbmk2[hbrun]: Error: Running resource compiler. -1
+Error! E060: Can't find file "../../package/harbour.ico".
+Error! E060: Can't find file "../../package/harbour.mft".
+Error! E024: Error reading temporary file "Temporary file 1 (res)": .
+hbmk2[hbrun]: Error: Running resource compiler. 8
 hbmk2[hbrun]: Exit status: 6: failed in compilation (Harbour, C compiler, Resource compiler)
 ! Finished package build...
 make[1]: *** [first] Error 6
 make: *** [contrib] Error 2
-
-
 
 * ============== EOF of OpenWatcom.txt ==================

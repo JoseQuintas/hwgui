@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-06-21 10:45 UTC+0200 Wilfried Brunken DF7BE
+  *  include/missing.h
+  *  install.txt
+  *  makefile.wc
+  *  samples/dev/compiler/OpenWatcom/OpenWatcom.txt
+   !
+   ! Ticket #25: OpenWatCom C Compiler Support:
+   ! Now done.  
+   ! Added hrect.prg, pager.c, hpager.prg and hrebar.prg
+   ! to makefile.wc
+   ! missing.h: extra section with individual
+   ! fixes.
+   ! 
+
 2020-06-19 13:42 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/menu.prg
   * source/gtk/menu_c.c

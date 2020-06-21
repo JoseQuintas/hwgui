@@ -16,6 +16,10 @@
    Read special build instructions for every compiler in files of directory:
    samples\dev\compiler\<compiler>\...
 
+   Attention !
+   We recommend to build Harbour, HWGUI and your application with
+   same C compiler, because generated C source by hbmk2 utility could be otherwise incompatible.
+
    You need to set the environment variable HB_PATH, which must contain a path
    to your Harbour directory. This can be done in your Windows environment or
    by adding a line to appropriate bat file:

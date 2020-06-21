@@ -126,6 +126,10 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hnice.obj \
    $(OBJ_DIR)\grid.obj \
    $(OBJ_DIR)\hdc.obj \
+   $(OBJ_DIR)\hrect.obj \
+   $(OBJ_DIR)\pager.obj \
+   $(OBJ_DIR)\hpager.obj \
+   $(OBJ_DIR)\hrebar.obj \
    $(OBJ_DIR)\hhyper.obj
 
 
@@ -509,6 +513,27 @@ $(OBJ_DIR)\hdc.c : $(SRC_DIR)\hdc.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hdc.obj : $(OBJ_DIR)\hdc.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hrect.c : $(SRC_DIR)\hrect.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hrect.obj : $(OBJ_DIR)\hrect.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\pager.obj : $(SRC_DIR)\pager.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hpager.c : $(SRC_DIR)\hpager.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hpager.obj : $(OBJ_DIR)\hpager.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hrebar.c : $(SRC_DIR)\hrebar.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hrebar.obj : $(OBJ_DIR)\hrebar.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\hhyper.c : $(SRC_DIR)\hhyper.prg

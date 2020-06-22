@@ -21,16 +21,20 @@
 
 #ifdef __GTK__
    #include "gtk.ch"
-   #define DIR_SEP  '/'
    #define CURS_CROSS GDK_CROSS
    #define CURS_SIZEV GDK_SIZING
    #define CURS_SIZEH GDK_HAND1
 #else
-   #define DIR_SEP  '\'
    #define CURS_CROSS IDC_CROSS
    #define CURS_SIZEV IDC_SIZEWE
    #define CURS_SIZEH IDC_SIZENS
 #endif
+
+#ifdef __PLATFORM__WINDOWS
+   #define DIR_SEP  '\'
+#else
+   #define DIR_SEP  '/'
+#endif   
 
 REQUEST DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK, HB_ATOKENS, HB_FNAMENAME, HB_FNAMEDIR
 REQUEST HB_OSNEWLINE

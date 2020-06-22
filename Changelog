@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-06-22 08:30 UTC+0200 Wilfried Brunken DF7BE
+  * utils\designer\blddeswc.bat (New)
+  * utils\designer\designer2.rc (New)
+  * utils\designer\designer.rc
+  * utils\designer\designer.prg
+  * utils\designer\designer2.hbp (New)
+    ! Ticket #25, watcom compiler support:
+    ! Designer ready.
+    ! File WindowsXP.Manifest
+    ! not needed.
+    ! "\" instead of "/" in rc file.
+
+
 2020-06-21 10:45 UTC+0200 Wilfried Brunken DF7BE
   *  include/missing.h
   *  install.txt

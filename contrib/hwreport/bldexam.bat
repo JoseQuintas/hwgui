@@ -1,11 +1,27 @@
 @echo off
+REM
+REM Build script HWGUI hwreport sample program for Borland C Compiler
+REM
+REM $Id$
+REM
+REM Before usage, start environment script:
+REM ..\..\samples\dev\env\pfad_bc.bat
+REM
+REM Modify path to BCC, Harbour and HWGUI your own needs
+SET BCC_INCLUDE=%CCOMP%\include
+SET BCC_LIB_DIR=%CCOMP%\Lib
+set HB_PATH=C:\harbour-bcc\core-master
+set HRB_DIR=%HB_PATH%
+set HRB_EXE=%HB_PATH%\bin\win\bcc\harbour.exe
+set HRB_LIB_DIR=%HB_PATH%\lib\win\bcc
+REM
 
 set HRB_DIR=%HB_PATH%
 set HWGUI_INSTALL=..\..
 
-%HRB_DIR%\bin\harbour example.prg repexec.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include
+%HRB_EXE% example.prg repexec.prg -n -I%HRB_DIR%\include;%HWGUI_INSTALL%\include
 
-   bcc32 -c -O2 -tW -M -I%HRB_DIR%\include example.c repexec.c
+   bcc32 -c -O2 -tW -M -I%BCC_INCLUDE% -I%HRB_DIR%\include example.c repexec.c
 
 echo c0w32.obj + > b32.bc
 echo example.obj + >> b32.bc
@@ -14,56 +30,58 @@ echo example.exe, + >> b32.bc
 echo example.map, + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbvm.lib goto hrb
+if exist %HRB_LIB_DIR%\hbvm.lib goto hrb
 
-echo %HRB_DIR%\lib\rtl%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\vm%HB_MT%.lib + >> b32.bc
-if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
-echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
-echo %HRB_DIR%\lib\lang.lib + >> b32.bc
-echo %HRB_DIR%\lib\codepage.lib + >> b32.bc
-echo %HRB_DIR%\lib\macro%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\rdd%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\dbfntx%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\dbfcdx%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\dbffpt%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\common.lib + >> b32.bc
-echo %HRB_DIR%\lib\debug.lib + >> b32.bc
-echo %HRB_DIR%\lib\pp.lib + >> b32.bc
-echo %HRB_DIR%\lib\hsx.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
-if exist %HRB_DIR%\lib\pcrepos.lib echo %HRB_DIR%\lib\pcrepos.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbole.lib echo %HRB_DIR%\lib\hbole.lib + >> b32.bc
-rem echo %HRB_DIR%\lib\libct.lib + >> b32.bc
+echo %HRB_LIB_DIR%\rtl%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\vm%HB_MT%.lib + >> b32.bc
+if exist %HRB_LIB_DIR%\gtgui.lib echo %HRB_LIB_DIR%\gtgui.lib + >> b32.bc
+echo %HRB_LIB_DIR%\gtgui.lib + >> b32.bc
+echo %HRB_LIB_DIR%\lang.lib + >> b32.bc
+echo %HRB_LIB_DIR%\codepage.lib + >> b32.bc
+echo %HRB_LIB_DIR%\macro%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\rdd%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\dbfntx%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\dbfcdx%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\dbffpt%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\common.lib + >> b32.bc
+echo %HRB_LIB_DIR%\debug.lib + >> b32.bc
+echo %HRB_LIB_DIR%\pp.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hsx.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbsix.lib + >> b32.bc
+if exist %HRB_LIB_DIR%\pcrepos.lib echo %HRB_LIB_DIR%\pcrepos.lib + >> b32.bc
+if exist %HRB_LIB_DIR%\hbole.lib echo %HRB_LIB_DIR%\hbole.lib + >> b32.bc
+rem echo %HRB_LIB_DIR%\libct.lib + >> b32.bc
 goto common
 
 :hrb
-echo %HRB_DIR%\lib\hbrtl%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbvm%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
-if exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtgui.lib + >> b32.bc
-if not exist %HRB_DIR%\lib\gtgui.lib echo %HRB_DIR%\lib\gtwin.lib + >> b32.bc
-echo %HRB_DIR%\lib\hblang.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbcpage.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbmacro%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbrdd%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\rddntx%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\rddcdx%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\rddfpt%HB_MT%.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbcommon.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbdebug.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbpp.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbhsx.lib + >> b32.bc
-echo %HRB_DIR%\lib\hbsix.lib + >> b32.bc
-if exist %HRB_DIR%\lib\hbpcre.lib echo %HRB_DIR%\lib\hbpcre.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbrtl%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbvm%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\gtwin.lib + >> b32.bc
+if exist %HRB_LIB_DIR%\gtgui.lib echo %HRB_LIB_DIR%\gtgui.lib + >> b32.bc
+if not exist %HRB_LIB_DIR%\gtgui.lib echo %HRB_LIB_DIR%\gtwin.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hblang.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbcpage.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbmacro%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbrdd%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\rddntx%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\rddcdx%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\rddfpt%HB_MT%.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbcommon.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbdebug.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbpp.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbhsx.lib + >> b32.bc
+echo %HRB_LIB_DIR%\hbsix.lib + >> b32.bc
+if exist %HRB_LIB_DIR%\hbpcre.lib echo %HRB_LIB_DIR%\hbpcre.lib + >> b32.bc
 
 :common
 echo cw32.lib + >> b32.bc
 echo import32.lib, >> b32.bc
-ilink32 -Gn -aa -Tpe @b32.bc
+ilink32 -Gn -aa -Tpe -L%BCC_LIB_DIR% @b32.bc
 
 del *.tds
 del *.c
 del *.map
 del *.obj
 del b32.bc
+
+REM ====================== EOF of bldexam.bat ===========================

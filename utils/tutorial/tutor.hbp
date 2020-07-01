@@ -1,4 +1,13 @@
-#Initial of tutor.hbp
-tutor.prg
-..\..\hwgui.hbc
+#
+# $Id$
+#
+
 -n -w
+
+-otutor
+
+tutor.prg
+
+..\..\hwgui.hbc
+
+# ============== EOF of tutor.hbp =============

@@ -1,6 +1,6 @@
-BUILD  BITMAP ..\..\samples\image\BUILD.BMP 
-EXIT   BITMAP ..\..\samples\image\DOOR.BMP
-NEW    BITMAP ..\..\samples\image\NEW.BMP
-SAVE   BITMAP ..\..\samples\image\SAVE.BMP
-OPEN   BITMAP ..\..\samples\image\op_fl.bmp
-PIN    ICON ..\..\samples\image\PIM.ICO
+BUILD  BITMAP ..\..\image\next.bmp
+EXIT   BITMAP ..\..\image\door.bmp
+NEW    BITMAP ..\..\image\new.bmp
+SAVE   BITMAP ..\..\image\save.bmp
+OPEN   BITMAP ..\..\image\op_fl.bmp
+PIN    ICON   ..\..\image\ok.ico

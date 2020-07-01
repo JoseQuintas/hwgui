@@ -44,8 +44,8 @@ STATIC cIniPath, cTutor
 STATIC oText, oHighLighter
 STATIC oBtnRun
 STATIC cHwgrunPath
-STATIC cHwg_include_dir := "..\..\include"
-STATIC cHwg_image_dir := "..\..\image"
+STATIC cHwg_include_dir := ".."+ DIR_SEP + ".." + DIR_SEP + "include"
+STATIC cHwg_image_dir := ".." + DIR_SEP + ".." + DIR_SEP + "image"
 STATIC cHrb_inc_dir := "", cHrb_bin_dir := ""
 
 FUNCTION Main

@@ -1,8 +1,15 @@
 /*
  * Example of printing reports, using HWReport
  *
+ * $Id$
+ *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://www.geocities.com/alkresin/
+*/
+
+/*
+ DF7BE: This sample does not work:
+ Error: Unresolved external '_HB_FUN_OPENREPORT'
 */
 
 #include "fileio.ch"

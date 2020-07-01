@@ -163,12 +163,18 @@ Private oIcon := HIcon():AddResource("PIM")
       @ 10, 205 BUTTON "Add"     SIZE 60,25  on click {||SearchFile(oBrowse4, "*.rc")}  
       @ 70, 205 BUTTON "Delete"  SIZE 60,25  on click {||BrwdelIten(oBrowse4)}
    END PAGE of oTAB
-   
+   * DF7BE : Syntax error
+/*
    @ 419, 20 BUTTONex oBtBuild CAPTION "Build" BITMAP oImgBuild:Handle on Click {||BuildApp()}      SIZE 88,52  
    @ 419, 80 BUTTONex oBtExit  CAPTION "Exit"  BITMAP oImgExit:Handle  on Click {||hwg_EndDialog()}     SIZE 88,52  
    @ 419,140 BUTTONex oBtOpen  CAPTION "Open"  BITMAP oImgOpen:Handle  on Click {||ReadBuildFile()} SIZE 88,52  
    @ 419,200 BUTTONex oBtSave  CAPTION "Save"  BITMAP oImgSave:Handle  on Click {||SaveBuildFile()} SIZE 88,52  
- 
+ */
+   @ 419, 20 BUTTON oBtBuild CAPTION "Build" on Click {||BuildApp()}      SIZE 88,52  
+   @ 419, 80 BUTTON oBtExit  CAPTION "Exit"  on Click {||hwg_EndDialog()} SIZE 88,52  
+   @ 419,140 BUTTON oBtOpen  CAPTION "Open"  on Click {||ReadBuildFile()} SIZE 88,52  
+   @ 419,200 BUTTON oBtSave  CAPTION "Save"  on Click {||SaveBuildFile()} SIZE 88,52  
+
    ACTIVATE DIALOG oDlg
 
 RETURN
@@ -577,7 +583,7 @@ Return cLib
  
 Function ExecuteCommand( cProc, cSend, cLog ) 
 Local cFile := "execcom.bat"
-Local nRet
+Local nRet := 0
 If cLog == Nil
    cLog := ""
 Else
@@ -586,8 +592,9 @@ EndIf
 If File( cFile )
    fErase( cFile )
 EndIf 
-Memowrit( cFile, cProc + " " + cSend + cLog ) 
-nRet := hwg_WAITRUN( cFile ) 
+Memowrit( cFile, cProc + " " + cSend + cLog )
+* DF7BE: HWG_WAITRUN() does not exist
+*  nRet := hwg_WAITRUN( cFile ) 
 If File( cFile )
    fErase( cFile )
 EndIf
@@ -603,17 +610,17 @@ Return oBrowse:Refresh()
 function OpenAbout
 Local oModDlg, oFontBtn, oFontDlg
 Local oBmp  
-Local oSay
+Local oSay, oBtExit
 
    PREPARE FONT oFontDlg NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
    PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 ITALIC UNDERLINE
 
    INIT DIALOG oModDlg TITLE "About"     ;
    AT 190,10  SIZE 360,200               ;
-   ICON oIcon                            ;   
+   ICON oIcon                            ;
    FONT oFontDlg
- 
-        
+
+
    @ 20,40 SAY "Hwgui Internacional Page"        ;
    LINK "http://www.hwgui.net" ;
        SIZE 230, 22 STYLE SS_CENTER  ;
@@ -632,11 +639,15 @@ Local oSay
        SIZE 230, 22 STYLE SS_CENTER  ;
         COLOR hwg_ColorC2N("0000FF") ;
         VISITCOLOR hwg_ColorRgb2N(241,249,91)
-                             
-   @ 40, 120 BUTTONex oBtExit  CAPTION "Close"  BITMAP oImgExit:Handle  on Click {||hwg_EndDialog()}    SIZE 180,35  
-  
+
+   * DF7BE: Syntax error, not BUTTONex 
+/*   @ 40, 120 BUTTON oBtExit CAPTION "Close" BITMAP oImgExit:Handle ;
+    on Click { || hwg_EndDialog() }    SIZE 180,35 */
+   @ 40, 120 BUTTON oBtExit CAPTION "Close" ;
+    on Click { || hwg_EndDialog() }    SIZE 180,35 
+
    ACTIVATE DIALOG oModDlg
-   
+
 Return Nil
 
 

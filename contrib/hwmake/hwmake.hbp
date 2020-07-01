@@ -1,0 +1,13 @@
+#
+# $Id$
+#
+
+-n -w
+
+-ohwmake
+
+hwmake.prg
+
+..\..\hwgui.hbc
+
+# ============== EOF of tutor.hbp =============

@@ -8,6 +8,57 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-07-01 11:00 UTC+0200 Wilfried Brunken DF7BE
+  * contrib\make_w32.bat
+  * contrib\makefile.wc
+  * utils\bincnt\bldcntow.bat (New)
+  * utils\dbc\blddbcow.bat (New)
+  * utils\dbc\dbchw2.rc (New)
+  * utils\tutorial\tutor.prg
+  * utils\tutorial\tutor.hbp
+  * utils\tutorial\bldow.bat (New)
+  * utils\editor\bldow.bat (New)
+  * utils\debugger\bldow.bat (New)
+  * image\save.bmp (copied from designer)
+  * contrib\hwmake\hwmake.prg
+  * contrib\hwmake\hwmake.rc
+  * contrib\hwmake\hwmake.hbp
+  * contrib\hwmake\bldow.bat (New)
+  * contrib\hwreport\hwreport.ico (New)
+  * contrib\hwreport\example.prg
+  * contrib\hwreport\bldexam.bat
+  * contrib\hwreport\bldhwrep.bat
+  * contrib\hwreport\hwreport2.hbp (New)
+  * contrib\hwreport\repbuild2.rc (New)
+  * contrib\hwreport\bldow.bat (New)
+  * contrib\hwreport\bldmngw.bat (New)
+    !
+    ! Ticket #25: watcom compiler support:
+    ! Build scripts for utils and contrib added.
+    ! Trouble build hwmake and hwreport, see above
+    !
+    ! Some hints:
+    ! Some work needed, low priority.
+    !
+    ! hwmake: some problems to compile,try to fix.
+    !  Seems to be outdated ?
+    !  Added inline comments for possible fixes.
+    !  Program starts, but not tested.
+    !  1 Icon and 1 bitmap missing, see inline comment of
+    !  bldow.bat for substitutes.
+    ! hwreport: 
+    !  hwreport.ico extracted from BCC exe
+    !  (because rc file contains only not more
+    !   allowed hex values)
+    ! example.prg can not be built: 
+    ! Error: Unresolved external '_HB_FUN_OPENREPORT'
+    ! repbuild2.rc (copy of repbuild.rc with mods)
+    ! ressource compiler of OpenWatCom
+    ! reports a lot of syntax error.
+    ! Same with MinGW32.
+    !
+
+
 2020-06-22 08:30 UTC+0200 Wilfried Brunken DF7BE
   * utils\designer\blddeswc.bat (New)
   * utils\designer\designer2.rc (New)

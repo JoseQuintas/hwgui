@@ -9,5 +9,6 @@
 hwmake.prg
 
 ..\..\hwgui.hbc
+xhb.hbc
 
-# ============== EOF of tutor.hbp =============
+# ============== EOF of hwmake.hbp =============

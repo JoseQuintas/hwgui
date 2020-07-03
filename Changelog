@@ -8,6 +8,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-07-03 11:30 UTC+0200 Wilfried Brunken DF7BE
+  * hwgui.hbc
+  * contrib\hwmake\bldow.bat
+  * contrib\hwmake\hwmake.hbp
+  * contrib\hwmake\hwmake.rc
+  * contrib\hwmake\bld.bat
+  * utils/tutorial/build.sh
+    ! Ticket #25: watcom compiler support
+    ! Suggestions of Oleksii Myronenko (TNX):
+    ! hwgui.hbc: {win&!allmingw&!watcom}libs=hbactivex
+    ! ==> Warning of missing lib now disappeared.
+    ! hwmake: compile errors in bld.bat fixed.
+    ! TO-DO:
+    ! some work for hwreport:
+    ! missing functions _HB_FUN_OPENREPORT()
+    ! HWG_WAITRUN(<file>),
+    ! resource file only for Borland C.
+    ! Lots of warnings about AMBIGIUOS REFERENCE
+    ! some work for hwmake:
+    ! Some bugs adding files and libs.
+    !
+    ! Ticket #46: 
+    ! Build error 
+    ! (to be continued)
+
+
 2020-07-01 11:00 UTC+0200 Wilfried Brunken DF7BE
   * contrib\make_w32.bat
   * contrib\makefile.wc

@@ -31,6 +31,16 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
       tstscrlbar.prg Compilable, but no scroll function
 
 
+some work for hwreport:
+
+missing functions _HB_FUN_OPENREPORT()
+HWG_WAITRUN(<file>),
+resource file only for Borland C.
+Lots of warnings about AMBIGIUOS REFERENCE
+some work for hwmake:
+Some bugs adding files and libs.
+
+
 =========================================================
 Area: Rich Text Format (RTF)
 Special Task for Alexander Kresin and 

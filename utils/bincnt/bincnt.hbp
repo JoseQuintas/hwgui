@@ -1,0 +1,13 @@
+#
+# $Id$
+#
+
+-n -w
+
+-obincnt
+
+bincnt.prg
+
+..\..\hwgui.hbc
+
+# ============== EOF of tutor.hbp =============

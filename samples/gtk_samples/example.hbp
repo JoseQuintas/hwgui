@@ -1,0 +1,14 @@
+#
+# $Id$
+#
+
+example.prg
+-oexample
+-n -w
+-lm
+-static
+-d__LINUX__ -d__GTK__
+
+../../hwgui.hbc
+
+# ==================== EOF of example.hbp ===============

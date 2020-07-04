@@ -31,7 +31,7 @@
    Then run the selected bat file and you'll get hwgui.lib, hwguimt.lib ( hwgui.lib for
    multithread mode ),  procmisc.lib, hbxml.lib and hwgdebug.lib in lib/ directory.
 
-   With Harbour you can also build libraries, using Hbmk2 utility, just write:
+   With Harbour you can also build libraries, using hbmk2 utility, just write:
 
       hbmk2 hwgui.hbp procmisc.hbp hbxml.hbp hwgdebug.hbp
 
@@ -113,6 +113,23 @@
    Some samples in the directory samples are ready for LINUX/GTK, look into the Readme.txt file.
 
 
+ 
+   3) Common instructions to build samples, utils and your application
+      (for all operating systems)
+
+   Easier way to build HWGUI applications is to use the "hbmk2" utility of Harbour.
+   Write an *.hbp file and run for example:
+   hbmk2 myapp.hbp
+
+   You find samples of *.hbp files in the utils and samples directory.  
+
+   Other way is to create list of all modules in the main program with "SET PROCDURE TO ..."
+   (be care of case sensitivity on UNIX/LINUX)
+   and write a bat or shell script with only one active line (for example on Windows): 
+    hbmk2 <main.prg> <main.rc> -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib -lhwgui -lprocmisc -lhbxml -lhwgdebug -gui
+   (-gui option only for windows necessary, for LINUX add options -d__LINUX__ -d__GTK__ , no *.rc files )
+  
+
 
  List of packages for Ubuntu Linux and LinuxMINT
  -----------------------------------------------
@@ -135,6 +152,11 @@
    
   For higher security and easier development we recommend a "non root" installation
   of Harbour and HWGUI (You can ever use the newest code snapshot of Harbour and HWGUI).
+
+  
+  To avoid the Gtk-WARNING "Unable to locate theme engine in module_path: "adwaita":
+    sudo apt-get install gnome-themes-standard
+    
 
 
   1.) You need some entries in the .profile in the home directory of the desired

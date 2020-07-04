@@ -17,9 +17,19 @@ Private var1 := 10320.54
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150
 
+* DF7BE: Trouble: If main menu points have no subtite, only "Aktivieren" apprears
+
    MENU OF oMainWindow
-      MENUITEM "&Exit" ACTION oMainWindow:Close()
-      MENUITEM "&Get a value" ACTION DlgGet()
+
+*      MENUITEM "&Exit" ACTION oMainWindow:Close()
+*      MENUITEM "&Get a value" ACTION DlgGet()
+
+       MENU TITLE "&Exit"
+        MENUITEM "&Exit" ACTION oMainWindow:Close()
+       ENDMENU
+       MENU TITLE "&Get a value"
+        MENUITEM "&Get a value" ACTION DlgGet()
+       ENDMENU
    ENDMENU
 
    ACTIVATE WINDOW oMainWindow

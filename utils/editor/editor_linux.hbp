@@ -1,0 +1,17 @@
+#
+# $Id$
+#
+
+-n -w
+-lm
+-static
+-oeditor
+-d__LINUX__ -d__GTK__
+
+editor.prg
+calc.prg
+hcediext.prg
+..\..\hwgui.hbc
+hbct.hbc
+
+# ==================== EOF of editor_linux.hbp ===============

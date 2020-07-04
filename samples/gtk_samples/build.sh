@@ -21,7 +21,10 @@ PGM_NAME="${FILENAME%.*}"
 if [ "x$HB_ROOT" = x ]; then
 export HRB_BIN=/usr/local/bin
 export HRB_INC=/usr/local/include/harbour
+# 32 bit
 export HRB_LIB=/usr/local/lib/harbour
+# 64 bit
+# export HRB_LIB=/usr/local/lib64/harbour
 else
 export HRB_BIN=$HB_ROOT/bin/linux/gcc
 export HRB_INC=$HB_ROOT/include

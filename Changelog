@@ -8,6 +8,60 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-07-04 12:50 UTC+0200 Wilfried Brunken DF7BE
+  * install.txt 
+  * samples/gtk_samples/GetWinVers.hbp (New)
+  * samples/gtk_samples/a.hbp (New)
+  * samples/gtk_samples/build.sh
+  * samples/gtk_samples/dbview.hbp  (New)
+  * samples/gtk_samples/escrita.hbp (New)
+  * samples/gtk_samples/example.hbp (New)
+  * samples/gtk_samples/graph.hbp (New)
+  * samples/gtk_samples/gtk_sample.hbp (New)
+  * samples/gtk_samples/hbmk.sh (New)
+  * samples/gtk_samples/progbars.hbp (New)
+  * samples/gtk_samples/progbars.prg
+  * samples/gtk_samples/pseudocm.hbp (New)
+  * samples/gtk_samples/testget2.hbp (New)
+  * samples/gtk_samples/testget2.prg 
+  * samples/gtk_samples/winprn.hbp (New)
+  * utils/bincnt/bincnt.hbp (New)
+  * utils/bincnt/bincnt_linux.hbp (New)
+  * utils/bincnt/hbmk.sh (New)
+  * utils/dbc/build.sh
+  * utils/dbc/dbc_linux.hbp (New)
+  * utils/dbc/dbchw (New)
+  * utils/dbc/hbmk.sh (New)
+  * utils/debugger/build.sh
+  * utils/debugger/debugger_linux.hbp  (New)
+  * utils/debugger/hbmk.sh (New)
+  * utils/designer/designer_linux.hbp  (New)
+  * utils/designer/hbmk.sh (New)
+  * utils/editor/build.sh
+  * utils/editor/editor.hbp
+  * utils/editor/editor_linux.hbp  (New)
+  * utils/editor/hbmk.sh  (New)
+  * utils/tutorial/build.sh
+  * utils/tutorial/hbmk.sh (New)
+  * utils/tutorial/hwgrun_linux.hbp (New)
+  * utils/tutorial/tutor.hbp
+  * utils/tutorial/tutor_linux.hbp  (New)
+    !
+    ! Ticket #46 Hwgui Linux GCC 9.3 64Bit "sqrt@@GLIBC_2.2.5"
+    ! (LINUX)
+    ! Suggestions of Itamar M. Lins Jr. (TNX):
+    ! - lib64 optional
+    ! - Support for hbmk2 with *.hpb files
+    !   in samples/gtk_samples and utils
+    ! It is easy building apps with
+    ! hbmk2 utility and *.hbp files
+    ! with options -lm and -static.
+    !
+    ! Menu bugs in some samples fixed.
+    ! Docu updated.
+    !
+
+
 2020-07-03 11:30 UTC+0200 Wilfried Brunken DF7BE
   * hwgui.hbc
   * contrib\hwmake\bldow.bat

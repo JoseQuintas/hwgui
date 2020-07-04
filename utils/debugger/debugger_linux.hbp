@@ -1,0 +1,14 @@
+#
+# $Id$
+#
+
+-n -w
+-lm
+-static
+-ohwgdebug
+-d__LINUX__ -d__GTK__
+
+hwgdebug.prg
+..\..\hwgui.hbc
+
+# ==================== EOF of debugger_linux.hbp ===============

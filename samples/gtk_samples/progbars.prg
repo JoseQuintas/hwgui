@@ -17,10 +17,21 @@ Static n :=0
 Function Main()
 
         INIT WINDOW oMain MAIN TITLE "Progress Bar Sample"
+* DF7BE: Trouble: If main menu points have no subtite, only "Aktivieren" apprears
+*        Bug:
+*         Some work needed, Progress bar could be created, but no steps appeared
+
 
         MENU OF oMain
-             MENUITEM "&Exit" ACTION oMain:Close()
-             MENUITEM "&Demo" ACTION Test()
+*             MENUITEM "&Exit" ACTION oMain:Close()
+*             MENUITEM "&Demo" ACTION Test()
+
+              MENU TITLE "&Exit" 
+               MENUITEM "&Exit" ACTION oMain:Close()
+              ENDMENU
+              MENU TITLE "&Demo" 
+               MENUITEM "&Demo" ACTION Test()
+              ENDMENU
         ENDMENU
 
         ACTIVATE WINDOW oMain MAXIMIZED

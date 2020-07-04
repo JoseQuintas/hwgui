@@ -1,0 +1,14 @@
+#
+# $Id$
+#
+
+pseudocm.prg
+-opseudocm
+-n -w
+-lm
+-static
+-d__LINUX__ -d__GTK__
+
+../../hwgui.hbc
+
+# ==================== EOF of pseudocm.hbp ===============

@@ -8,6 +8,21 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-07-05 08:15 UTC+0200 Wilfried Brunken DF7BE
+  * samples/gtk_samples/hbmk.hbm
+  * samples/gtk_samples/a.prg
+    !
+    ! Ticket #46 Hwgui Linux GCC 9.3 64Bit "sqrt@@GLIBC_2.2.5"
+    ! (LINUX)
+    ! Hint of Itamar M. Lins Jr. (TNX):
+    ! One file hbmk.hbm for default values.
+    ! with -strip:  1635128 Jul  5 07:21 a
+    ! without -strip: 1861936 Jul  5 07:23 a
+    ! Fixed some warnings:
+    ! Warning W0001  Ambiguous reference ...
+    ! (to be continued)
+    !
+
 2020-07-04 12:50 UTC+0200 Wilfried Brunken DF7BE
   * install.txt 
   * samples/gtk_samples/GetWinVers.hbp (New)

@@ -1,0 +1,23 @@
+#
+# hbmk.hbm
+#
+# $Id$
+#
+# Default values for hbmk2
+#
+# Not necessary many, several files *.hbp
+# hbmk2 get it and set defatult config for all files into folder
+# say only:
+#   hbmk2 a.prg
+# and HWGUI sample program a.prg will be build.
+#
+ 
+-n -w
+-lm
+-static
+# -strip
+-d__LINUX__ -d__GTK__
+
+../../hwgui.hbc
+
+# ================ EOF of hbmk.hbm ===============

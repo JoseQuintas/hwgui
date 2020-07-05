@@ -12,7 +12,7 @@
 
 Function Main
 Local oMainWindow
-Private var1 := 10320.54
+* Private var1 := 10320.54  && DF7BE: not used
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150
@@ -117,4 +117,6 @@ Static Function TimerFunc()
 
    oSayT:SetText( Time() )
 Return Nil
+
+* =========================== EOF of testget2.prg ==============================
 

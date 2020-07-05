@@ -11,10 +11,19 @@
 
 #define TEST_PRINT
 
+MEMVAR oFont, cImageDir, nColor
+
 Function Main
 Local oMainWindow,oPanel
-Private oFont := Nil, cImageDir := "/"+Curdir()+"/../../image/"
-Private nColor, oBmp2
+* DF7BE: Causes Warning W0001  Ambiguous reference ...
+* Private oFont := Nil, cImageDir := "/"+Curdir()+"/../../image/"
+
+Private oBmp2
+
+* DF7BE: Init MEMVAR's, otherwise crash because of non existing variables
+  oFont := Nil
+  cImageDir := "/"+Curdir()+"/../../image/"
+  ncolor := NIL
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150
@@ -227,4 +236,6 @@ Local oPrinter, oFont
    oPrinter:End()
 
 Return Nil
+
+* ================== EOF of a.prg =====================
                                                                

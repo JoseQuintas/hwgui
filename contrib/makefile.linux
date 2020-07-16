@@ -16,7 +16,7 @@ HWGACTIVEX_DIR  = activex
 HWGMISC_DIR = misc
 
 HARBOURFLAG = -d__LINUX__ -d__GTK__ $(HARBOURFLAGS)
-CFLAGS = -Wall -O3 -march=pentium
+CFLAGS = -Wall -O3
 
 all: \
    $(LIB_DIR)/libhwg_misc.a

@@ -8,6 +8,11 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-07-16 06:25 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/makefile.linux
+    ! #26 Error building contribs under linux
+    ! fix: -march=pentium removed
+
 2020-07-05 08:15 UTC+0200 Wilfried Brunken DF7BE
   * samples/gtk_samples/hbmk.hbm
   * samples/gtk_samples/a.prg

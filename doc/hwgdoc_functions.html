@@ -1804,8 +1804,41 @@
      <li> Return value - (integer) program exit code.
    </ul>
 
-   <br><strong class="subhead"> hwg_RunApp( cCommand [, nFlag] [, lAsync] )</strong> 
-   <p></p>
+   <br><strong class="subhead"> hwg_RunApp( cCommand [, nFlag] [, lAsync] )</strong><br>
+   Runs an external program.<br>
+   <br>
+   <br> Parameter 1: command line (mandatory):
+    <br>
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; We suggest to set up a command line including the full path.
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If the called application is in the current directory,
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; use the functions hwg_GetDirSep() and Curdir()
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for combining the recent directory + program file call.
+    <br> 
+    <br> Curdir() (a Harbour function):
+    <br> 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; returns the current directory.
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If you combine full path items, don't
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; forget to get the OS dependant
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; directory seprator character with
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; function hwg_GetDirSep()
+    <br>   
+    <br> 
+    <br> Windows:
+    <br> Parameter 2, nFlag:
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Is uCmdShow : For possible values see description of WinAPI function ShowWindow()  
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Default is SW_SHOW (Activates the window and displays it in its current size and position).
+    <br> 
+    <br> Parameter 3, lAsync:
+    <br> &nbsp;.F. or NIL: Function WinExec(LPCSTR lpCmdLine, UINT uCmdShow) of WinAPI used,
+    <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;             Starts program asynchronious.
+    <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;             Return value is of type N, if function succeeds, the value is greater than 31. 
+    <br> &nbsp;.T. : Function CreateProcess(..) of WinAPI used,
+    <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; returns NIL. 
+    <br> 
+    <br>LINUX: asynchronious start:
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; uses function g_spawn_command_line_async(),
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Parameters 2 and 3 are ignored.
+    <p></p>
 
    <br><strong class="subhead"> hwg_onAnchor( oWnd, wold, hold, wnew, hnew )</strong>
    <p></p>

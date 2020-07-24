@@ -8,6 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-07-24 15:00 UTC+0200 Wilfried Brunken DF7BE
+  * source\gtk\window.c
+  * source\gtk\hwindow.prg
+  * samples\gtk_samples\icons.prg (New)
+  * image/hwgui.bmp (New, copy from samples)
+  * samples/icons.prg
+  * make_gtk.sh
+  * samples/gtk_samples/build.sh
+  * doc/hwgdoc_functions.html
+    !
+    ! Ticket #48: Hwgui load image
+    ! for GTK: fixed for MAIN WINDOW
+    ! but chrashes in INIT DIALOG
+    ! With new sample program for
+    ! WinAPI and GTK.
+    ! (to be continued)
+    ! 
+    ! Docu for hwg_RunApp() extended
+    ! Pre setting of path to 
+    ! Harbour for non root installation.
+    !
+  
+
 2020-07-16 06:25 UTC+0200 Wilfried Brunken DF7BE
   * contrib/makefile.linux
     ! #26 Error building contribs under linux

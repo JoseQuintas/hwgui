@@ -259,6 +259,10 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId, bColor, nExclude ) CLASS HMainWindow
 
+    LOCAL  hbackground
+
+    IIF ( oBmp == NIL , hbackground := NIL , hbackground := oBmp:handle )
+
    ::Super:New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,  ;
       cAppName, oBmp, cHelp, nHelpId )
@@ -268,7 +272,8 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
    ELSEIF lType == WND_MAIN
       ::handle := Hwg_InitMainWindow( Self, ::szAppName, cTitle, cMenu, ;
          iif( oIcon != Nil, oIcon:handle, Nil ), ::Style, ::nLeft, ;
-         ::nTop, ::nWidth, ::nHeight )
+         ::nTop, ::nWidth, ::nHeight, hbackground )
+         * DF7BE: background missing, added as 11th parameter
    ENDIF
    IF ::bColor != Nil
       hwg_SetBgColor( ::handle, ::bColor )
@@ -382,3 +387,6 @@ STATIC FUNCTION onGetFocus( oDlg, w, l )
    ENDIF
 
    RETURN 0
+
+* ===================== EOF of hwindow.prg ==============================
+

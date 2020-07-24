@@ -16,8 +16,8 @@
 # ---------------------------------------------------------------
 
 # configure the path of the Harbour compiler to your own needs
-# export HB_ROOT=$HOME/Harbour/core-master
-export HB_ROOT=../
+export HB_ROOT=$HOME/Harbour/core-master
+#export HB_ROOT=../..
 
 case "$1" in
     -hb|-xhb)

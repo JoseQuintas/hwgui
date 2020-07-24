@@ -65,6 +65,7 @@ static HW_SIGNAL aSignals[NUMBER_OF_SIGNALS] = { { "destroy",2 } };
 
 static gchar szAppLocale[] = "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0";
 
+
 gboolean cb_delete_event( GtkWidget *widget, gchar* data )
 {
    gpointer gObject;
@@ -101,26 +102,39 @@ HB_FUNC( HWG_GTK_EXIT )
 }
 
 /*  Creates main application window
-    InitMainWindow( pObject, szAppName, cTitle, cMenu, hIcon, nStyle, nLeft, nTop, nWidth, nHeight )
+    hwg_InitMainWindow( pObject, szAppName, cTitle, cMenu, hIcon, nStyle, nLeft, nTop, nWidth, nHeight, hbackground )
 */
 HB_FUNC( HWG_INITMAINWINDOW )
 {
    GtkWidget * hWnd ;
-   GtkWidget *vbox;   
+   GtkWidget * vbox;   
    GtkFixed * box;
+   GdkPixmap * background;
+   GtkStyle * style;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 3 ) );
    int x = hb_parnl(7);
    int y = hb_parnl(8);
    int width = hb_parnl(9);
    int height = hb_parnl(10);
-   PHWGUI_PIXBUF szFile = HB_ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;  
+   /* Icon */
+   PHWGUI_PIXBUF szFile = HB_ISPOINTER(5) ? (PHWGUI_PIXBUF) HB_PARHANDLE(5): NULL;
+   /* Background image */
+   PHWGUI_PIXBUF szBackFile = HB_ISPOINTER(11) ? (PHWGUI_PIXBUF) HB_PARHANDLE(11): NULL;
+   
+   /* Background style*/
+   style = gtk_style_new();
+   if (szBackFile)
+   {
+      gdk_pixbuf_render_pixmap_and_mask(szBackFile->handle, &background, NULL, 0);
+      if ( ! background ) g_error("%s\n","Error loading background image");
+      style->bg_pixmap[0] = background ;
+   }
+
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
-   if (szFile)
-   {
-      gtk_window_set_icon( GTK_WINDOW( hWnd ), szFile->handle  );
-   }
+
+ 
 
    gtk_window_set_title( GTK_WINDOW(hWnd), gcTitle );
    g_free( gcTitle );
@@ -158,6 +172,20 @@ HB_FUNC( HWG_INITMAINWINDOW )
    g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    //g_signal_connect_after( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
+/* Set default icon
+   DF7BE: 
+   gtk_window_set_icon() does not work
+*/
+   if (szFile)
+   {
+        gtk_window_set_default_icon( szFile->handle );
+   }
+   /* Set Background */
+   if (szBackFile)
+   {
+     gtk_widget_set_style(GTK_WIDGET(hWnd), GTK_STYLE(style) );
+   }
+
    hMainWindow = hWnd;
    HB_RETHANDLE( hWnd );
 }
@@ -167,6 +195,8 @@ HB_FUNC( HWG_CREATEDLG )
    GtkWidget * hWnd;
    GtkWidget * vbox;
    GtkFixed  * box;
+   GdkPixmap * background;
+   GtkStyle * style;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    gchar *gcTitle = hwg_convert_to_utf8 ( hb_itemGetCPtr( GetObjectVar( pObject, "TITLE" ) ) );
    int x = hb_itemGetNI( GetObjectVar( pObject, "NLEFT" ) );
@@ -174,13 +204,31 @@ HB_FUNC( HWG_CREATEDLG )
    int width = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
    int height = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
    PHB_ITEM pIcon = GetObjectVar( pObject, "OICON" );
+   PHB_ITEM pBmp = GetObjectVar( pObject, "OBMP" );
    PHWGUI_PIXBUF szFile = NULL;
+   PHWGUI_PIXBUF szBackFile = NULL;
 
+   /* Icon */
    if (!HB_IS_NIL(pIcon))
    {
       szFile = (PHWGUI_PIXBUF) hb_itemGetPtr( GetObjectVar(pIcon,"HANDLE") );
    }
+   /* Background image */
+   if (!HB_IS_NIL(pBmp))
+   {
+      szBackFile = (PHWGUI_PIXBUF) hb_itemGetPtr( GetObjectVar(pBmp,"HANDLE") );
+   }
+   /* Background style*/
+   style = gtk_style_new();
+   if (szBackFile)
+   {
+      gdk_pixbuf_render_pixmap_and_mask(szBackFile->handle, &background, NULL, 0);
+      if ( ! background ) g_error("%s\n","Error loading background image");
+      style->bg_pixmap[0] = background ;
+   }
+   
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
+   
    if (szFile)
    {
       gtk_window_set_icon(GTK_WINDOW(hWnd), szFile->handle  );
@@ -219,6 +267,12 @@ HB_FUNC( HWG_CREATEDLG )
 
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    //g_signal_connect( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
+   
+   /* Set Background */
+   if (szBackFile)
+   {
+     gtk_widget_set_style(GTK_WIDGET(hWnd), GTK_STYLE(style) );
+   }
 
    HB_RETHANDLE( hWnd );
 
@@ -1001,4 +1055,5 @@ HB_FUNC( HWG_EXITPROC )
    gtk_key_snooper_remove( s_KeybHook );
 }
 
-/* =============== EOF of window.c =================== */
+/* ==================== EOF of window.c ==================== */
+

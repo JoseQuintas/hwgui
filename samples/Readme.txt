@@ -16,7 +16,7 @@ For beginners:
 1.2.) Compile and run the editorial in directory utils\tutorial
       Interactive - because you
       can not only read the code and comments, but execute it. Moreover,
-      you can edit the code and then execute it immedeately to see the
+      you can edit the code and then execute it immediately to see the
       results of your changes.
 
 2.) List of build scripts for several compiler:
@@ -44,7 +44,7 @@ For beginners:
 
     Record Nr. 2 contains signs for codepage IBM858DE with german Umlaute (ÄÖÜäöü),
     sharp "S" (ß), Euro currency sign (€) and greek mue (µ) for SI system as prefix for
-    part per million. Select this codepage as data CP in dbview.prg. Select 
+    parts per million. Select this codepage as data CP in dbview.prg. Select 
     DEWIN or UTF-8 for Linux as Local codepage for correct display. Do this
     before opening a dbf file ! (data codepage was set at open moment of dbf).
 
@@ -75,8 +75,9 @@ For beginners:
  demodbf.prg        Y         Y       Demo for Edit using command NOEXIT
  demohlist.prg      N         Y       Demo for listbox
  demohlistsub.prg   Y         Y       Multi platform substitute for listbox by BROWSE.
+ fileselect.prg     Y                 Sample for file selection menues
  getupdown.prg      Y                 Usage of @ <x> <y> GET UPDOWN ..
- GetWinVers.prg     Y                 Functions for get recent Windows version
+ GetWinVers.prg     Y                 Functions for get recenthwg_SaveFile() Windows version
  graph.prg          Y                 Paint graphs (Sinus, Bar diagram)
  grid_1.prg         N         Y       Grid demo (HGrid class)
  grid_2.prg 2)      N         -       Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
@@ -85,7 +86,8 @@ For beginners:
  grid_5.prg         N  #      -       Grid Editor  (crashes, if click on button "Change") 
  hello.prg          N                 Some elements: Edit field, tabs, tree view, combobox, ...
  helpdemo.prg 6) 7) N                 Context help using windows help (Shellexecute crashes)
- hole.prg   2) 4)   N                 MS Agent Control  
+ hole.prg   2) 4)   N                 MS Agent Control
+ icons.prg          Y                 Icons and background bitmaps
  iesample.prg 2) 5) N                 Sample of ActiveX container for the IE browser object. 
  modtitle.prg       N                 Sample for modifying a main window title in HWGUI
  nice.prg           N                 Demo of NICEBUTTON

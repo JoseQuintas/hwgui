@@ -32,8 +32,10 @@ Created by DF7BE
 a.prg    2)         Y         Y        N         Some HWGUI basics (Open DBF's, GET's, ...) 
 dbview.prg          Y         Y        N         DBF access (Browse, Indexing, Codepages, Structure, ... )
 escrita.prg 3)      Y         Y        N         "Teste da Acentuação", tool buttons with bitmaps
-example.prg         Y         Y        Y         HFormTmpl: Load forms from xml file.                   
+example.prg         Y         Y        Y         HFormTmpl: Load forms from xml file. 
+fileselect.prg      Y         Y        Y         Sample for file selection menues                  
 graph.prg           Y         Y        Y         Paint graphs (Sinus, Bar diagram)
+icons.prg    5)     Y         Y        Y      #  Icons and background bitmaps
 progbars.prg 4)     Y         N        Y         Progress bar: compilable, but progress bar not appreared
 pseudocm.prg        Y         Y        Y         Pseudo context menu
 testget2.prg        Y         Y        Y         Get system: several edit fields (date, password, ...), time display 
@@ -49,4 +51,6 @@ winprn.prg   1)     Y         N        Y         Printing via Windows GDI Interf
 3)  escrita.prg: Text in toolbuttons not visible
 
 4)  progbars.prg: LINUX: Progbar create ok, but press button "Step" the progbar disappeared.
+
+5)  Crashes at calling DIALOG, will be fixed as soon as possible.
 

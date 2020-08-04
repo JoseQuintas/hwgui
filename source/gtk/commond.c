@@ -258,6 +258,11 @@ HB_FUNC( HWG_SELECTFILE )
           break;
        default:
           // do_nothing_since_dialog_was_cancelled ();
+          /* DF7BE: if file selection cancelled,
+             crash at IF ... == NIL or IF EMPTY(..),
+             to handle this 
+             returning empty string */
+          hb_retc(""); 
        break;
    }
    gtk_widget_destroy (selector_archivo);
@@ -448,6 +453,11 @@ HB_FUNC( HWG_SELECTFILEEX )
          break;
        default:
          // do_nothing_since_dialog_was_cancelled ();
+         /* DF7BE: if file selection cancelled,
+             crash at IF ... == NIL or IF EMPTY(..),
+             to handle this 
+             returning empty string */
+         hb_retc(""); 
        break;
      }
     gtk_widget_destroy (selector_archivo);
@@ -489,3 +499,6 @@ HB_FUNC( HWG_SELECTFOLDER )
      }
     gtk_widget_destroy (selector_archivo);
 }
+
+/* =================== EOF of commond.c =========================== */
+

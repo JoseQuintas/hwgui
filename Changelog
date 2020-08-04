@@ -8,6 +8,34 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-08-04 09:15 UTC+0200 Wilfried Brunken DF7BE
+  * source/gtk/commond.c
+  * samples/gtk_samples/fileselect.prg (New)
+  * samples/fileselect.prg (New)
+  * samples/gtk_samples/Readme.txt
+  * samples/Readme.txt
+  * doc/hwgdoc_functions.html
+    !
+    ! Fix bug: 
+    ! If file selection cancelled,
+    ! crashes at IF ... == NIL or IF EMPTY(..),
+    ! to handle this returning empty string.
+    ! New sample demonstrates the usage
+    ! of: 
+    ! HWG_SELECTFOLDER()
+    ! HWG_SELECTFILE()
+    ! HWG_SELECTFILEEX()
+    ! hwg_SaveFile()
+    ! and also as testprogram for bugfix.
+    ! 
+    ! Function docu updated
+    !
+    ! Readme's for samples updated.
+    !
+    ! Ticket #48: Hwgui load image
+    ! for GTK: Sample modified for "stretch" test.
+
+
 2020-07-24 15:00 UTC+0200 Wilfried Brunken DF7BE
   * source\gtk\window.c
   * source\gtk\hwindow.prg

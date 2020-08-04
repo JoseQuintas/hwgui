@@ -25,9 +25,18 @@ LOCAL oFormMain, oFontMain
 LOCAL cDirSep := hwg_GetDirSep()
 LOCAL cImageMain, cImagepath 
 LOCAL oBmp
-LOCAL nPosX := hwg_Getdesktopwidth() 
-LOCAL nPosY := hwg_Getdesktopheight()
+LOCAL nPosX
+LOCAL nPosY
 LOCAL oIconEXE
+
+* Use this for full size 
+* nPosX := hwg_Getdesktopwidth() 
+* nPosY := hwg_Getdesktopheight()
+
+nPosX := 500
+nPosY := 400
+
+
 
 * decides for samples/gtk_samples or samples/
 #ifdef __GTK__

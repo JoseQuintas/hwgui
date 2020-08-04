@@ -60,6 +60,20 @@
      <li> cTitle - optional string parameter, the title of a dialog box.
      <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
    </ul>
+   The user can select an existing file or input a new file name, if application will<br>
+   create an new file.<br>
+
+
+   On GTK:<br>
+   hwg_Selectfile() ignores the mask and shows all files.<br>
+   Use hwg_SelectfileEx() instead.<br>
+   File extensions are not handled by this function.<br>
+   Please use Harbour function RAT() to detect, if no file extension is entered and
+   add it in this case after returning of this function.<br> 
+   <br>
+   See sample program "samples/fileselect.prg" for usage of all file selection dialogs.<br>
+   For Multi Platform purposes use the compiler switch "#ifdef __GTK__".<br>
+   <br>
    An example:
    <pre class="code">
    cFileName := hwg_Selectfile( {"dbf files( *.dbf )","All files(*.*)"}, ;
@@ -74,9 +88,15 @@
        file masks and descriptions;
      <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
    </ul>
+   Use this function instead of hwg_SelectFile() or hwg_SaveFile() with GTK.<br>
+   Only for selecting an existing file, for creating a new file use hwg_SelectFile().<br> 
+   See sample program "samples/fileselect.prg" for usage of all file selection dialogs.<br>
+   For Multi Platform purposes use the compiler switch "#ifdef __GTK__".<br>
+   <br>  
    An example:
    <pre class="code">
    cFileName := hwg_SelectFileEx( ,, { { "Dbf files", "*.dbf" }, { "All files", "*" } } )</pre>
+
 
    <br><strong class="subhead"> hwg_SelectFolder( cTitle )</strong> 
    <br>The standard dialog for folder selection.
@@ -84,6 +104,8 @@
      <li> cTitle - optional string parameter, the title of a dialog box.
      <li> Return value - a string with a selected folder name, or an empty string, if a folder wasn't selected.
    </ul>
+   See sample program "samples/fileselect.prg" for usage of all file selection dialogs.<br>
+   <br>
 
    <br><strong class="subhead"> hwg_SaveFile( cPrompt,cDescript,cMask,cInitDir,cTitle )</strong> (Windows only)
    <br>This function calls the standard dialog for file saving.
@@ -95,6 +117,14 @@
      <li> cTitle - optional string parameter, the title of a dialog box.
      <li> Return value - a string with a selected file name, or an empty string, if a file wasn't selected.
    </ul>
+   <br>
+   This function is a suitable solution, if an application needs to overwrite an existing<br>
+   file or create a new one, so that the user can input a file name of a non exiting file.<br>
+   See sample program "samples/fileselect.prg" for usage of all file selection dialogs.<br>
+   On GTK, use hwg_Selectfile() instead.<br>
+   For Multi Platform purposes use the compiler switch "#ifdef __GTK__".<br>
+   <br>
+ 
    An example:
    <pre class="code">
    fname := hwg_Savefile( "*.htm","( *.htm )","*.htm", cPath )</pre>

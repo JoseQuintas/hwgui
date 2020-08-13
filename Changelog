@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-08-13 10:15 UTC+0200 Wilfried Brunken DF7BE
+  * samples/gtk_samples/hbmk.hbm
+    ! Ticket #48:
+    ! (to be continued)
+    ! -lm removed, was delivered by hbmk2 tool.
+
+
 2020-08-04 09:15 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/commond.c
   * samples/gtk_samples/fileselect.prg (New)

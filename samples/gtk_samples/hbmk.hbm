@@ -13,7 +13,7 @@
 #
  
 -n -w
--lm
+
 -static
 # -strip
 -d__LINUX__ -d__GTK__

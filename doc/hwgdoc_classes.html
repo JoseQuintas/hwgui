@@ -11,6 +11,8 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
+ ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
+ +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-05-06        ! Wilfried Brunken, DF7BE         ! Clipper style Alert() replacement          !
  !                   !                                 ! Delivered by Alex Strickland (TNX)         !  
  +-------------------!---------------------------------!--------------------------------------------+ 
@@ -1432,12 +1434,14 @@
    <pre class="code">METHODS
       AddResource( name, nFlags, lOEM, nWidth, nHeight )
       AddStandard( nId )
-      AddFile( name, hDC, lTranparent, nWidth, nHeight )
+      AddFile( name, hDC, lTransparent, nWidth, nHeight )
       AddString( name, cVal )
       AddWindow( oWnd, x1, y1, width, height )  - Creates a bitmap from a given window.
       Draw( hDC, x1, y1, width, height )
       Release()
    </pre>
+   Parameter lTransparent ignored on GTK.<br>
+
 
    <br><strong class="subhead"><a name="Classes11" href="#_Classes11">
    HIcon</a></strong> 

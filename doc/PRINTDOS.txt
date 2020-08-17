@@ -1,3 +1,15 @@
+Attention !
+PRINTDOS class is outdated.
+
+Because recent computer systems have no parallel printer interfaces any more, it is strictly recommended,
+to use the Winprn class for Windows and Linux/GTK for all printing actions. The Winprn class contains a good print preview dialog. If you have a valid printer driver for your printer model installed,
+your printing job is done easy (printer connection via USB or LAN).
+
+
+For correct usage of the WinPrn class you find the sample program
+"winprn.prg" in directory "samples" (for Windows and Linux). 
+
+
 /*
  * Manual for use Class Print Dos
  *

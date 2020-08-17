@@ -96,6 +96,7 @@ For beginners:
  propsh.prg         N                 Property sheet, INIT DIALOG aDlg1 FROM RESOURCE not working.
  pseudocm.prg       Y                 Pseudo context menu
  shadebtn.prg       N                 Shade buttons
+ stretch.prg        Y  #              Sample for resizing bitmaps (background), some bugs (as test program) 
  tab.prg            N  #      -       missing function(s): hb_enumIndex(), resource DIALOG_1 not working
  testalert.prg      N                 Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
  test_bot.prg       N                 bOther Test: Press key, after key up the scan code is displayed.

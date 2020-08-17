@@ -38,6 +38,7 @@ graph.prg           Y         Y        Y         Paint graphs (Sinus, Bar diagra
 icons.prg    5)     Y         Y        Y      #  Icons and background bitmaps
 progbars.prg 4)     Y         N        Y         Progress bar: compilable, but progress bar not appreared
 pseudocm.prg        Y         Y        Y         Pseudo context menu
+ stretch.prg        Y         Y        Y         Sample for resizing bitmaps (background), some bugs (as test program)
 testget2.prg        Y         Y        Y         Get system: several edit fields (date, password, ...), time display 
 winprn.prg   1)     Y         N        Y         Printing via Windows GDI Interface
 

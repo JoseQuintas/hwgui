@@ -8,6 +8,31 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-08-17 13:33 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/Readme.txt (New)
+  * samples/gtk_samples/stretch.prg (New)
+  * samples/gtk_samples/Readme.txt
+  * samples/Readme.txt
+  * samples/stretch.prg (New)
+  * doc/activex.txt
+  * doc/hwgdoc.html
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_misc.html
+  * doc/PRINTDOS.txt
+  * source/gtk/drawwidg.prg
+   !
+   ! More preparations for tickets #48,49.
+   ! Sample and test programs.
+   ! (to be continued)
+   !
+   ! Readme for contrib added.
+   ! Some corrections in documents.
+   ! for example adding contrib's.
+   ! PRINTDOS is outdated.
+   ! ActiveX is out of support.
+
+
 2020-08-13 10:15 UTC+0200 Wilfried Brunken DF7BE
   * samples/gtk_samples/hbmk.hbm
     ! Ticket #48:

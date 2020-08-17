@@ -1,4 +1,15 @@
 
+===================================================================
+Attention !
+Support for ActiveX ended, substituted by HTML5 and Java.
+The usage of contrib library "libhbactivex.a" is not
+any longer recommended.
+===================================================================
+
+
+
+
+
 PREFACE:
 - Sorry for this long text.. but I wanted to tell a bit of history...
 - This code only works on xHarbour

@@ -312,7 +312,7 @@ CLASS HBitmap INHERIT HObject
    DATA nCounter   INIT 1
 
    METHOD AddResource( name )
-   METHOD AddFile( name, HDC )
+   METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight)
    METHOD AddString( name, cVal )
    METHOD AddStandard( cId, nSize )
    METHOD AddWindow( oWnd, x1, y1, width, height )
@@ -338,7 +338,7 @@ METHOD AddResource( name ) CLASS HBitmap
 
    RETURN Nil
 
-METHOD AddFile( name, HDC ) CLASS HBitmap
+METHOD AddFile( name, HDC , lTranparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize
 
    For EACH i IN ::aBitmaps
@@ -698,3 +698,4 @@ FUNCTION hwg_SetResContainer( cName )
 
    RETURN
 
+* ======================== EOF of drawwidg.prg =====================================

@@ -9,6 +9,12 @@
 */
 
 
+2020-08-19 14:24 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source\common\xml\hxmldoc.prg
+    ! Open error detection fixed.
+  * source\common\xml\xmlparse.c
+    * BOM detection added.
+
 2020-08-17 13:33 UTC+0200 Wilfried Brunken DF7BE
   * contrib/Readme.txt (New)
   * samples/gtk_samples/stretch.prg (New)

@@ -663,6 +663,10 @@ HB_FUNC( HBXML_GETDOC )
       return;
    }
    nParseError = 0;
+   if( !memcmp( ptr, "\xEF\xBB\xBF", 3 ) )
+   {
+      ptr += 3;
+   }
    SKIPTABSPACES( ptr );
    if( *ptr != '<' )
       hbxml_error( XML_ERROR_NOT_LT, ptr );

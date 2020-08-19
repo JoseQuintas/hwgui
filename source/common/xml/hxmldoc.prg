@@ -12,6 +12,8 @@
 #include "fileio.ch"
 #include "hxml.ch"
 
+#define XML_ERROR_FILEOPEN     11
+
 STATIC cNewLine := e"\r\n"
 
 /*
@@ -232,6 +234,8 @@ Local han
       IF han != -1
          ::nLastErr := hbxml_GetDoc( Self,han )
          FClose( han )
+      ELSE
+         ::nLastErr := XML_ERROR_FILEOPEN
       ENDIF
    ELSEIF buffer != Nil
       ::nLastErr := hbxml_GetDoc( Self,buffer )

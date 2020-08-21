@@ -1,6 +1,6 @@
 /*
  *
- * testfunc.prg
+ * testimage.prg
  *
  * Test program sample for displaying images and usage of FreeImage library.
  * 

@@ -8,6 +8,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-08-21 09:30 UTC+0200 Wilfried Brunken DF7BE
+  * samples/bincnts.prg (New)
+  * samples/Readme.txt
+  * samples/gtk_samples/Readme.txt
+  * image/door.png
+  * image/next.jpg
+  * samples/image/sample.bin (New)
+  * samples/gtk_samples/image (New directory)
+   ! Ticket #51:
+   ! How to use image in container ?
+   ! 
+   ! Sample with additional files
+   ! added for retracing the error.
+   ! (To be continued)
+  * samples/testimage.prg
+   ! Filename in comment corrected.
+  * doc/hwgdoc_misc.html
+   ! 7.3. Visual debugger:
+   ! Link to description in text files.
+   ! Short instructions for
+   ! Binary container manager added.
+  * doc/hwgdoc_functions.html
+   ! Little corrections.
+  * todo.txt
+   ! New tasks for me and A.Kresin added.
+
 
 2020-08-19 14:24 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source\common\xml\hxmldoc.prg

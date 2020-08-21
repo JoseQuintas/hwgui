@@ -1,15 +1,15 @@
-2020-04-28:
+2020-08-21:
 
 Tasks by DF7BE
  - Support request #15: GTK port for GET .... DATEPICKER
  - LISTBOX port to GTK, if bug in GTK is fixed.
  - Try to get all samples working.
     List of sample programs with bug description follows.
- - International language support for internal HWGUI dialogs,
-   next print preview dialog of WinPrn class.
+ - International language support for internal HWGUI dialogs.
  - Feature "Clipper style Alert() replacement" delivered
    by Alex Strickland port to GTK.
  - Check for Digital Mars C compiler
+   (recent state: not supported by Harbour)
 
 List:  Samples not running or have bugs (Fix bugs, if time available, low priority):
   1.) WinAPI
@@ -20,7 +20,7 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
       tab.prg        missing function(s): hb_enumIndex(), resource DIALOG_1 not working
       testchild.prg  child window not created ! command seems to be outdated.
       testtray.prg   No exported method: HANDLE
-      testrtf.prg    Created Rich text files are corupted, see bug ticket #37 (text above).
+      testrtf.prg    Created Rich text files are corrupted, see bug ticket #37 (text above).
 
   2.) GTK
       tstsplash.prg  works for WinAPI, but background for splash window on GTK empty:
@@ -39,7 +39,31 @@ resource file only for Borland C.
 Lots of warnings about AMBIGIUOS REFERENCE
 some work for hwmake:
 Some bugs adding files and libs.
+Validation for class WinPrn.
 
+
+Add feature: Label utility.
+It is an important feature for business application for
+example to label envelopes of letters to customers.
+In CLLOG it is necessary for QSL cards.
+The label editor is almost implememented in Clipper
+utility RL.EXE, in S'87 as LABEL.EXE
+and is also supported by Harbour.
+The console version of CLLOG also supports label.
+There is also an label editor as console application
+available.
+This must be ported to HWGUI using the WinPrn class. 
+  
+
+Documentation:
+- A lot of functions with no describing text for usage and
+  purpose (all developers).
+- doc/hwgdoc_misc.html
+  Fill with contents for:
+  7.4 Editor
+  7.5 Dbc
+  (Alexander Kresin)
+  
 
 =========================================================
 Area: Rich Text Format (RTF)
@@ -62,3 +86,7 @@ Old entries, must be checked (is bugfixing done ?)
 - STYLE DT_VCENTER in SAY not function perfectly the back change to dark gray
 - CHILD possibility change de backgrond color
 - PANEL possibility change de backgrond color
+
+
+* ======== EOF of todo.txt =============================
+

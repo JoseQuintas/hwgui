@@ -69,6 +69,7 @@ For beginners:
  Sample program     GTK   NLS MinGW64 Purpose
  =================  ===   === ======= =======
  a.prg              N         CN 9)   Some HWGUI basics (Open DBF's, GET's, ...)
+ bincnts.prg 10)    N  #              Usage of images from Binary container
  buildpelles.prg    N         Y       Build APP using Pelles C Compiler (*.bld file)
  colrbloc.prg       Y         Y       BROWSE: arrays and DBF's with colored lines and columns
  dbview.prg         Y         Y       DBF access (Browse, Indexing, Codepages, Structure, ... )
@@ -159,7 +160,7 @@ For beginners:
     - Compile and run sample "helpdemo.prg", Press F1 and the help program starts in an
       extra window.
 
- 7) We suggest to create an own help system in your application to be independant of
+ 7) We suggest to create an own help system in your application to be independent of
     a foreign help system. There are several possibilities for storing:
     - As an XML file: There are classes in HWGUI supporting XML.
       Could be edited with a normal text editor.
@@ -187,5 +188,11 @@ For beginners:
   9) MinGW64: Syntax error in rc file, hex values not allowed any more, must be following:
      <name> BITMAP "<file.bmp>"
 
-
+ 10) Binary container manager: See instructions in inline command. For this sample a
+     sample binary container is stored here: image/sample.bin.
+     It contains all images needed for this sample.
+     For creating and editing binary container you find the utility "Binary container manager"
+     in directory "utils/bincnt". 
+     GTK: The images in the OWNERBUTTONS are not visible, we will fix this as soon as possible.
+ 
 

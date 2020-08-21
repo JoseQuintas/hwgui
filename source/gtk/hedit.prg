@@ -48,7 +48,7 @@ CLASS HEdit INHERIT HControl
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, self )
    METHOD Refresh()
    METHOD Value ( xValue ) SETGET
-   METHOD SetText( value ) INLINE hwg_edit_SetText( ::handle, value )
+   METHOD SetText( value ) INLINE hwg_edit_SetText( ::handle, ::title := value )
    METHOD GetText() INLINE hwg_edit_GetText( ::handle )
    METHOD ParsePict( cPicture, vari )
 

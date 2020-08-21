@@ -102,7 +102,7 @@ CLASS HRadioButton INHERIT HControl
       bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
-   METHOD SetText( value ) INLINE hwg_button_SetText( ::handle, value )
+   METHOD SetText( value ) INLINE hwg_button_SetText( ::handle, ::title := value )
    METHOD GetText() INLINE hwg_button_GetText( ::handle )
    METHOD Value( lValue ) SETGET
 

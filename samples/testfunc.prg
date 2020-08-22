@@ -20,6 +20,19 @@
   Add extensions to your own needs
 */
 
+/*
+ List of used HWGUI standalone functions:
+ 
+ hwg_GetUTCTimeDate()
+ hwg_getCentury()
+ hwg_GetWindowsDir()
+ hwg_GetTempDir()
+ hwg_CreateTempfileName
+ Activate / Deactivate  Button
+ hwg_CompleteFullPath() 
+ 
+*/
+
 
 #include "hwgui.ch"
 #include "common.ch"
@@ -37,7 +50,8 @@ FUNCTION MAIN
 LOCAL Testfunc, oFont
 
 LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
-LOCAL oButton10, oButton11, oButton12
+LOCAL oButton10, oButton11, oButton12 , oButton13 , oButton14
+PUBLIC cDirSep := hwg_GetDirSep()
 PUBLIC bgtk
 
 * Detect GTK build
@@ -88,6 +102,14 @@ SET DATE ANSI  && YY(YY).MM.TT
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
        { | |Funkt(hwg_GetTempDir(),"C","hwg_GetTempDir()") }
 
+   @ 250,75 BUTTON oButton9 CAPTION "hwg_CreateTempfileName()" SIZE 218,18 FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+       { | |Funkt(hwg_CreateTempfileName(),"C","hwg_CreateTempfileName()") }
+
+   @ 505,75 BUTTON oButton12 CAPTION "GetWindowsDir Full" SIZE 218,18 FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+       { | | Funkt(GET_WINDIR_FULL(),"C","GET_WINDIR_FULL()") }
+
    @ 25,100 BUTTON oButton10 CAPTION "Test Button" SIZE 140,18 FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
        { | | Hwg_MsgInfo("This is a test without any function") }
@@ -96,9 +118,11 @@ SET DATE ANSI  && YY(YY).MM.TT
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
        { | | TstButt_Deact(oButton10) }
 
-   @ 340,100 BUTTON oButton11 CAPTION "Activate Test Button" SIZE 140,18 FONT oFont  ;
+   @ 340,100 BUTTON oButton13 CAPTION "Activate Test Button" SIZE 140,18 FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
        { | | TstButt_Act(oButton10) }
+
+
    
 
 /* Disable buttons for Windows only functions */
@@ -170,7 +194,8 @@ FUNCTION fSUMM
        "Locale :" + hwg_GetLocaleInfo() + CHR(10) +  ;
        "Locale (N) :" + N2STR(hwg_GetLocaleInfoN()) + CHR(10) +  ;
        "UTC :" + HWG_GETUTCTIMEDATE() + CHR(10) +  ;
-       "GTK : " + TotF(bgtk) ;
+       "GTK : " + TotF(bgtk)  + CHR(10) + ;
+       "Dir Separator: " + cDirSep ;
    )
 RETURN NIL
 
@@ -182,5 +207,15 @@ LOCAL verz
  verz := hwg_GetWindowsDir()
 #endif
 RETURN verz
+
+FUNCTION GET_WINDIR_FULL
+LOCAL verz
+#ifndef __PLATFORM__WINDOWS
+ verz := "<none>: Windows only"
+#else
+ verz := hwg_CompleteFullPath(hwg_GetWindowsDir() )
+#endif
+RETURN verz
+
 
 * ============================== EOF of testfunc.prg ==============================

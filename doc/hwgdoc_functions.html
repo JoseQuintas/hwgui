@@ -1638,6 +1638,7 @@
 
    <br><strong class="subhead"> hwg_GetWindowsDir()</strong> (Windows only)
    <p>
+   In most cases, the value is "C:\Windows".<BR>
    This function works also on GTK cross development environment.<BR>
    Is available on other operating systems for compatibility,<BR>
    then returns forever an empty string (""). 
@@ -1651,11 +1652,67 @@
    Returns the path of the temporary directory.<BR>
    Value depends on the version of the operating system.<BR>
    This function works also on GTK cross development environment.<BR>
-   Windows: In most cases, the value is "C:\Windows".<BR> 
+   Windows: In most cases, the value is "C:\Users\&lt;userid&gt;\AppData\Local\Temp\".<BR> 
    LINUX/UNIX: In most cases, the value is "/tmp" or "/var/tmp".<BR>
    First the function reads the environment variable "TMPDIR" and<BR>
    returns this value. If the TMPDIR variable does not exist, it returns<BR>
-   as default value "/tmp". 
+   as default value "/tmp".<br>
+   This function works also on GTK cross development environment.<BR>
+    </p>
+
+   <br><strong class="subhead"> hwg_CreateTempfileName(cPrefix , cSuffix)</strong>
+   <p>
+    Generates a unique full path and file name string for a temporary file.<br>
+    Format is:<br>
+    &lt;path to temporary directory&gt;+&lt;cPrefix&gt;999999&lt;cSuffix&gt;<br>
+    <br>
+    - The number is derived from return value of the SECONDS() function,<br>
+      &nbsp;&nbsp;&nbsp;so every hundreth second an new name is created.<br>
+      &nbsp;&nbsp;&nbsp;The returned number is of type integer.<br>
+      &nbsp;&nbsp;&nbsp;Range is from 0 to 8639900 (86399 * 100).<br>
+    - Parameters cPrefix and cSuffix are optional.<br>
+    - Default values: cPrefix = "e", cSuffix = ".tmp".<br> 
+    - &lt;path to temporary directory&gt; is returned from hwg_GetTempDir().<br>
+      &nbsp;&nbsp;&nbsp;Directory separator is suitable to used operating system.<br>
+    - If you need more than one temporary file at one time,<br>
+      &nbsp;&nbsp;&nbsp;use different prefixes or suffixes.<br> 
+    <br> 
+    Sample:<br>
+    &nbsp;&nbsp;&nbsp;cTmp := hwg_CreateTempfileName("pre",".ext")<br> 
+    <br>
+    Don't forget to delete the created file(s) after usage by<br>
+    &nbsp;&nbsp;&nbsp;FErase( cTmp )<br>
+    <br>
+    All characters for cPrefix and cSuffix are allowed, if supported by <br>
+    operating system for file and directory names (without directory separators).<br>
+    For best multi platform compatibilty we recommend to use only<br>
+    ASCII letters in lower case (a ... z).<br>
+    This function works also on GTK cross development environment.<BR>
+   </p>
+
+   <br><strong class="subhead"> hwg_CompleteFullPath()</strong>
+   <p>
+    Don't matter about a path string returned by several functions,<br>
+    if they are terminated with a trailing directory separator or not.<br>
+    This function adds the trailing directory separator,<br>
+    if it is not existing.<br>
+    So you can concatenate a normal file name<br>
+    to get full file name + path.<br>
+    Example:<br>
+    &nbsp;&nbsp;&nbsp;cp := hwg_CompleteFullPath( hwg_GetWindowsDir() ) + "filename.bin"<br>
+    hwg_GetWindowsDir() returns "C:\Windows", then<br>
+    cp was completed to:
+    &nbsp;&nbsp;&nbsp;"C:\Windows\filename.bin".<br>
+    Other example:<br>
+    hwg_GetTempDir() returns:<br>
+    &nbsp;&nbsp;&nbsp;"C:\Users\alex\AppData\Local\Temp\"<br>
+    so <br>
+    &nbsp;&nbsp;&nbsp;cp := hwg_CompleteFullPath( hwg_GetTempDir()  ) + "filename.bin"<br>
+    was completed to:<br>
+    &nbsp;&nbsp;&nbsp;"C:\Users\alex\AppData\Local\Temp\filename.bin".<br>
+    On UNIX/LINUX the functions handle the separator "/"<br>
+    in the same way as "\".<br>
+    This function works also on GTK cross development environment.<BR> 
    </p>
 
    <br><strong class="subhead"> hwg_Postquitmessage( nExitCode )</strong> (Windows only)

@@ -24,5 +24,19 @@ FUNCTION hwg_isWindows()
  RETURN .T.
 #endif
 
+FUNCTION hwg_CompleteFullPath( cPath )
+ LOCAL  cDirSep := hwg_GetDirSep()
+  IF RIGHT(cPath , 1 ) != cDirSep
+   cPath := cPath + cDirSep
+  ENDIF
+RETURN cPath
 
-* ============== EOF of hmisc.prg ================= 
+FUNCTION hwg_CreateTempfileName( cPrefix , cSuffix )
+ LOCAL cPre , cSuff
+  
+  cPre  := IIF( cPrefix == NIL , "e" , cPrefix )
+  cSuff := IIF( cSuffix == NIL , ".tmp" , cSuffix )
+  RETURN hwg_CompleteFullPath( hwg_GetTempDir() ) + cPre + Ltrim(Str(Int(Seconds()*100))) + cSuff
+
+* ============== EOF of hmisc.prg =================
+ 

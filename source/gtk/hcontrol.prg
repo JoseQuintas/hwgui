@@ -544,3 +544,6 @@ METHOD Activate CLASS HLine
    ENDIF
 
    RETURN Nil
+
+* ===================== EOF of hcontrol.prg ===================
+

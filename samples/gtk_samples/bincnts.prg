@@ -91,9 +91,10 @@ INIT WINDOW oMainW  ;
    FONT oFontMain  ;
    TITLE "Bitmap container sample" AT 0,0 SIZE 300 , 200 ;
    ICON oIcon STYLE WS_POPUP +  WS_CAPTION + WS_SYSMENU
-   
-@ 0, 0 TOOLBAR oToolbar OF oMainW SIZE  299 , 50 
-*  @ 0,0 PANEL oToolbar OF oMainW SIZE 300 , 50 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+
+* GTK + Toolbar : If used, the Ownerbuttons are not visible !   
+* @ 0, 0 TOOLBAR oToolbar OF oMainW SIZE  299 , 50 
+  @ 0,0 PANEL oToolbar OF oMainW SIZE 300 , 50 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
 
 @ htab+(nbut*32), 3 OWNERBUTTON oFileOpen OF oToolbar ;
    ON CLICK { | | FileOpen()} ;

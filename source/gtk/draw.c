@@ -504,6 +504,9 @@ HB_FUNC( HWG_OPENBITMAP )
    }
 }
 
+/* hwg_SaveBitMap( cfilename , hpixbuf , ctype )
+ * ctype default: "bmp"
+ */
 HB_FUNC( HWG_SAVEBITMAP )
 {
    PHWGUI_PIXBUF hpix = HB_PARHANDLE(2);
@@ -511,6 +514,11 @@ HB_FUNC( HWG_SAVEBITMAP )
    hb_retl( gdk_pixbuf_save( hpix->handle, hb_parc(1), szType, NULL, NULL ) );
 }
 
+/* hwg_Openimage( name , ltype )
+  ltype : .F. : from image file
+          .T. : from GDK pixbuffer
+  returns handle to pixbuffer  
+  */
 HB_FUNC( HWG_OPENIMAGE )
 {
    PHWGUI_PIXBUF hpix;
@@ -519,6 +527,7 @@ HB_FUNC( HWG_OPENIMAGE )
 
    if( iString )
    {
+   /* Load image from GDK pixbuffer */ 
       guint8 *buf = (guint8 *) hb_parc(1);
       GdkPixbufLoader *loader = gdk_pixbuf_loader_new();
 
@@ -526,6 +535,7 @@ HB_FUNC( HWG_OPENIMAGE )
       handle = gdk_pixbuf_loader_get_pixbuf( loader );
    }
    else
+   /* Load image from file */
       handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
    
    if( handle )
@@ -1046,3 +1056,6 @@ HB_FUNC( HWG__DRAWRADIOBTN )
    }
 #endif
 }
+
+/* ================== EOF of draw.c ========================== */
+

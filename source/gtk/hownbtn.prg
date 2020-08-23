@@ -85,8 +85,10 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
    ENDIF
    IF bmp != Nil
       IF ValType( bmp ) == "O"
+         * Valid bitmap object
          ::oBitmap := bmp
       ELSE
+         * otherwise load from file or resource container
          ::oBitmap := Iif( ( lResour != Nil .AND. lResour ) .OR. ValType( bmp ) == "N", ;
             HBitmap():AddResource( bmp ), ;
             HBitmap():AddFile( Iif( ::cPath != Nil,::cPath + bmp,bmp ) ) )
@@ -323,3 +325,5 @@ METHOD Disable() CLASS HOwnButton
    hwg_Enablewindow( ::handle, .F. )
 
    RETURN Nil
+   
+* ============================ EOF of hownbtn.prg =======================   

@@ -9,6 +9,26 @@
 */
 
 2020-08-22 18:30 UTC+0200 Wilfried Brunken DF7BE
+  * samples/bincnts.prg
+  * samples/gtk_samples/bincnts.prg
+  * samples/gtk_samples/image/sample.bin
+  * source/gtk/control.c
+  * source/gtk/draw.c
+  * source/gtk/drawwidg.prg
+  * source/gtk/hcontrol.prg
+  * source/gtk/hownbtn.prg
+   ! Ticket #51
+   ! (How to use image in container ?)
+   ! Fixed.
+   ! Tested with LinuxMINT.
+   ! Important !
+   ! Not visible, if TOOLBAR is used
+   ! on LINUX/GTK. WinAPI ok.
+   ! Added some inline comment for
+   ! better understanding.
+   ! Details in post to ticket. 
+
+2020-08-22 18:30 UTC+0200 Wilfried Brunken DF7BE
   * source/winapi/hmisc.prg
   * source/gtk/hmisc.prg
   * samples/testfunc.prg

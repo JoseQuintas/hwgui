@@ -194,8 +194,8 @@ HB_FUNC( HWG_STATIC_GETTEXT )
 }
 
 /*
-   CreateButton( hParentWindow, nButtonID, nStyle, x, y, nWidth, nHeight,
-                 cCaption )
+   hwg_CreateButton( hParentWindow, nButtonID, nStyle, x, y, nWidth, nHeight,
+                 cCaption , hpixbuf )
 */
 HB_FUNC( HWG_CREATEBUTTON )
 {

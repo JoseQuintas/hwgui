@@ -53,7 +53,7 @@
 FUNCTION Main
 
 LOCAL cImageDir, cppath , oIcon, oBitmap , oToolbar , oFileOpen , oQuit , oMainW , oFontMain
-LOCAL htab, nbut , oBMPExit , oPNGDoor , oBtnDoor , ojpeg , oBtnjpeg
+LOCAL htab, nbut , oBMPExit , oPNGDoor , oBtnDoor , ojpeg , oBtnjpeg, obtncnt , obtncnts
 LOCAL cDirSep := hwg_GetDirSep()
 
 htab := 0
@@ -80,6 +80,7 @@ oBitmap := HBitmap():AddResource("open")
 oBMPExit := HBitmap():AddResource("exit")
 oPNGDoor := HBitmap():AddResource("door")
 ojpeg  := HBitmap():AddResource("next")
+obtncnt := HBitmap():AddResource("container")
 
 #ifdef __PLATFORM__WINDOWS
    PREPARE FONT oFontMain NAME "MS Sans Serif" WIDTH 0 HEIGHT -14
@@ -129,7 +130,16 @@ INIT WINDOW oMainW  ;
    SIZE 28,24 FLAT ;
    BITMAP ojpeg ; 
    TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
-   TOOLTIP "JPEG image"  
+   TOOLTIP "JPEG image"
+
+  nbut += 1 
+
+@ htab+(nbut*32),3 OWNERBUTTON obtncnts OF oToolbar ;
+   ON CLICK { | | Clickcnt()} ;
+   SIZE 28,24 FLAT ;
+   BITMAP obtncnt ; 
+   TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
+   TOOLTIP "Container image"  
 
    
    oMainW:Activate()
@@ -145,6 +155,10 @@ RETURN NIL
 
 FUNCTION ClickJpeg
  hwg_msginfo("You have clicked >JPEG image<")
+RETURN NIL
+
+FUNCTION Clickcnt
+ hwg_msginfo("You have clicked >Container image<")
 RETURN NIL
 
 FUNCTION CHECK_FILE ( cfi )

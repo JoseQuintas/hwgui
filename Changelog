@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-08-24 22:40 UTC+0200 Wilfried Brunken DF7BE
+  * utils/bincnt/bldgtk.bat
+    ! For test purpose, build
+    ! for GTK Cross development environment
+    ! on Windows.
+  * source/gtk/misc.c
+    ! Warning on LINUX fixed: 
+    ! misc.c:372:2: warning: this ‘if’ clause does not guard...
+  * samples/gtk_samples/bincnts.prg
+  * samples/gtk_samples/image/sample.bin
+    ! Ticket #51:
+    ! See post to ticket.
+ 
+
 2020-08-24 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/tutorial/hwgrun.prg
     ! Small fixes

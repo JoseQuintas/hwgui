@@ -370,7 +370,7 @@ HB_FUNC( HWG_GETTEMPDIR )
  char const * tempdirname = getenv("TMPDIR");
  
  if (tempdirname == NULL)
-   tempdirname = "/tmp";
+   { tempdirname = "/tmp"; }
    hb_retc(tempdirname);
 #endif
 }

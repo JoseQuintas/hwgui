@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-08-24 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * utils/tutorial/hwgrun.prg
+    ! Small fixes
+
 2020-08-22 18:30 UTC+0200 Wilfried Brunken DF7BE
   * samples/bincnts.prg
   * samples/gtk_samples/bincnts.prg

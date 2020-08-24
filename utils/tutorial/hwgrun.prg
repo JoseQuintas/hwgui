@@ -40,16 +40,12 @@ FUNCTION _APPMAIN( cFileName, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, c
    LOCAL xRetVal, cHrb, cPath, cHrbName, lExt, lCompile
    LOCAL tHrb, tPrg
 
-   IF hwg__isUnicode()
-      hb_cdpSelect( "UTF8" )
-   ENDIF
-
    IF Empty( cFileName )
       hwg_Msginfo( "Harbour Runner - HwGUI version" + HB_OSNewLine() +;
               "Copyright 1999-2020, http://www.harbour-project.org" + HB_OSNewLine() +;
               Version() + ",  " + hwg_Version() + HB_OSNewLine() +;
               HB_OSNewLine() +;
-              "Syntax:  hbrun <hrbfile[.hrb]> [parameters]" )
+              "Syntax:  hwgrun <hrbfile[.hrb]> [parameters]" )
 
    ELSE
       ReadIni( cInitPath )
@@ -58,7 +54,7 @@ FUNCTION _APPMAIN( cFileName, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, c
       ENDIF
       IF !File( cFileName )
          IF !Empty( hb_fnameDir( cFileName ) ) .OR. Empty( cMod_Dir ) .OR. ;
-            !File( cFileName := cMod_Dir + cFileName )
+            !File( cFileName := hb_DirBase() + cMod_Dir + cFileName )
             hwg_Msgstop( "Can't find " + hb_fnameName( cFileName ) )
             RETURN Nil
          ENDIF
@@ -98,18 +94,6 @@ FUNCTION _APPMAIN( cFileName, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, c
 
    RETURN xRetVal
 
-STATIC FUNCTION CurrPath()
-
-   LOCAL cPrefix
-
-#ifndef __PLATFORM__WINDOWS
-   cPrefix := '/'
-#else
-   cPrefix := hb_curDrive() + ':\'
-#endif
-
-   RETURN cPrefix + CurDir() + hb_ps()
-
 STATIC FUNCTION ReadIni( cPath )
    LOCAL oIni, oInit, i, oNode1
 
@@ -129,3 +113,10 @@ STATIC FUNCTION ReadIni( cPath )
    ENDIF
 
    RETURN Nil
+
+INIT PROCEDURE FInit
+
+   IF hwg__isUnicode()
+      hb_cdpSelect( "UTF8" )
+   ENDIF
+   RETURN

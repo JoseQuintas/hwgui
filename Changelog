@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-08-25 21:15 UTC+0200 Wilfried Brunken DF7BE
+  * samples/gtk_samples/bincnts.prg
+  * samples/gtk_samples/image/sample.bin
+    ! Ticket #51:
+    ! Verify astro.png
+    ! See post to ticket.
+
 2020-08-24 22:40 UTC+0200 Wilfried Brunken DF7BE
   * utils/bincnt/bldgtk.bat
     ! For test purpose, build

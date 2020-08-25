@@ -53,7 +53,7 @@
 FUNCTION Main
 
 LOCAL cImageDir, cppath , oIcon, oBitmap , oToolbar , oFileOpen , oQuit , oMainW , oFontMain
-LOCAL htab, nbut , oBMPExit , oPNGDoor , oBtnDoor , ojpeg , oBtnjpeg, obtncnt , obtncnts
+LOCAL htab, nbut , oBMPExit , oPNGDoor , oBtnDoor , ojpeg , oBtnjpeg, obtncnt , obtncnts , oastropng 
 LOCAL cDirSep := hwg_GetDirSep()
 
 htab := 0
@@ -81,6 +81,7 @@ oBMPExit := HBitmap():AddResource("exit")
 oPNGDoor := HBitmap():AddResource("door")
 ojpeg  := HBitmap():AddResource("next")
 obtncnt := HBitmap():AddResource("container")
+oastropng := HBitmap():AddResource("astro")
 
 #ifdef __PLATFORM__WINDOWS
    PREPARE FONT oFontMain NAME "MS Sans Serif" WIDTH 0 HEIGHT -14
@@ -90,7 +91,7 @@ obtncnt := HBitmap():AddResource("container")
 
 INIT WINDOW oMainW  ;
    FONT oFontMain  ;
-   TITLE "Bitmap container sample" AT 0,0 SIZE 300 , 200 ;
+   TITLE "Bitmap container sample" AT 0,0 SIZE 300 , 250 ;
    ICON oIcon STYLE WS_POPUP +  WS_CAPTION + WS_SYSMENU
 
 * GTK + Toolbar : If used, the Ownerbuttons are not visible !   
@@ -115,7 +116,7 @@ INIT WINDOW oMainW  ;
    
    nbut += 1
 
-* !!!!! PNG not supported   
+* !!!!! PNG not supported on Windows  
 @ htab+(nbut*32),3 OWNERBUTTON oBtnDoor OF oToolbar ;
    ON CLICK { | | OpenDoor()} ;
    SIZE 28,24 FLAT ;
@@ -140,6 +141,9 @@ INIT WINDOW oMainW  ;
    BITMAP obtncnt ; 
    TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
    TOOLTIP "Container image"  
+
+ @ 60 , 100 SAY "astro.png" SIZE 100, 20
+ @ 60 , 150 BITMAP oastropng
 
    
    oMainW:Activate()

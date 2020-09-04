@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-04 08:00 UTC+0200 Wilfried Brunken DF7BE
+  * samples/gtk_samples/progbars.prg
+  * source/gtk/hprogres.prg
+    ! Ticket #52:
+    ! Progress bar, Bugfix for
+    ! LINUX, see comment 
+    ! to ticket. 
+
+
 2020-08-25 21:15 UTC+0200 Wilfried Brunken DF7BE
   * samples/gtk_samples/bincnts.prg
   * samples/gtk_samples/image/sample.bin

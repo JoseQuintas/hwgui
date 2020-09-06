@@ -1363,8 +1363,35 @@
    <br>Returns the directory seperator character OS dependant.
    <ul>
      <li> Windows: &nbsp; &nbsp;"\"
-     <li> UNIX/LINUX: &nbsp; "/"
+     <li> UNIX/LINUX: &nbsp; &nbsp; "/"
    </ul>
+
+  <p></p>
+  <br><strong class="subhead"> hwg_CurDrive()</strong> 
+  <br>Windows:<br>
+     &nbsp; &nbsp;Returns the current drive letter with suffix ":\",<br>
+     &nbsp; &nbsp;so that complete path values can be easy concatenated.<br>
+     &nbsp; &nbsp;This function works also on GTK cross development environment.<br>
+     UNIX/LINUX:<br>
+     &nbsp; &nbsp;Returns for multi platform usage an empty String "".<br>
+     &nbsp; &nbsp;Use this function like the Windows version.<br> 
+
+  <p></p>
+  <br><strong class="subhead"> hwg_CurDir()</strong><br>
+   Returns full path of current directory.<br>
+   The Harbour function CurDir() does not return the<br>
+   leading "\" or "/" Character.<br>
+   This function returns the complete path with drive letter on Windows.<br>
+   This function works also on GTK cross development environment.<br>
+
+   <p></p>
+   <br><strong class="subhead"> hwg_EOLStyle()</strong> 
+   <br> Returns the "End Of Line" (EOL) character(s) OS dependent.<br>
+    Windows: 0D0A (CRLF)<br>
+    LINUX/UNIX:   0A (LF)<br>
+    This function works also on GTK cross development environment.<br>
+    MacOS not supported yet.<br>
+    Must then return 0D (CR).<br>
 
    <p></p>
    <br><strong class="subhead"> hwg_GetItemByName( arr, cName )</strong> 
@@ -1930,6 +1957,56 @@
    <br><strong class="subhead"> hwg_onAnchor( oWnd, wold, hold, wnew, hnew )</strong>
    <p></p>
 
+   <p></p>
+   <br><strong class="subhead"> hwg_cHex2Bin( chexstr )</strong>
+   <br> Converts a hex string to binary.<br>
+      Returns empty string, if error<br>
+      or number of hex characters is odd.<br> 
+      Valid characters for chexstr:<br>
+      0 ... 9 , A ... F , a ... f<br>
+      Other characters are ignored.<br>
+
+   <p></p>
+   <br><strong class="subhead"> hwg_HEX_DUMP (cinfield, npmode, cpVarName)</strong>
+   <br> Hex dump from a C field (binary)<br>
+     into C field (Character type).<br>
+     In general, every byte value (2 hex digits)<br>
+     is separated by a blank.<br>
+     <br>
+     npmode:<br>
+     Selects the output format.<br> 
+     0 : &nbsp; All hex values in one line,<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    without quotes and trailing EOL.<br>
+     1 : &nbsp; 16 bytes per line,<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    with display of printable<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    characters,<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   not inserted in quotes,<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     but columns with printable<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    characters are separated with<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    ">> " in every line.<br> 
+     2 : &nbsp; As variable definition<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    for copy and paste into prg source<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    code file, 16 bytes per line,<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     concatenated by "+ ;"<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     (Default)<br>
+     3 : &nbsp; 16 bytes per line, only hex output,<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;     no quotes or other characters.<br>
+     <br>
+     cpVarName:<br>
+     Only used, if npmode = 2.<br>
+     Preset for variable name,<br>
+     Default is "cVar".<br>
+     For other modes, this parameter is ignored.<br>     
+     <br>
+     Sample writing hex dump to text file:<br>
+     MEMOWRIT("hexdump.txt",HEX_DUMP(varbuf))<br>
+
+   <p></p>
+   <br><strong class="subhead"> hwg_NUMB2HEX ( nascchar )</strong>
+   <br> Converts  0 ... 255 TO HEX 00 ... FF<br>
+   (2 Bytes String)<br>
+
+   <p></p>
    <br><strong class="subhead"> hwg_Alert</strong>(Windows only)
    <p></p>
 

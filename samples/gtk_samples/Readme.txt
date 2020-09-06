@@ -35,10 +35,11 @@ escrita.prg 3)      Y         Y        N         "Teste da Acentuação", tool b
 example.prg         Y         Y        Y         HFormTmpl: Load forms from xml file. 
 fileselect.prg      Y         Y        Y         Sample for file selection menues                  
 graph.prg           Y         Y        Y         Paint graphs (Sinus, Bar diagram)
+hexbincnt.prg  11)  Y         Y        Y         Handling of binary resources with hex values.
 icons.prg    5)     Y         Y        Y      #  Icons and background bitmaps
 progbars.prg 4)     Y         N        Y         Progress bar: compilable, but progress bar not appreared
 pseudocm.prg        Y         Y        Y         Pseudo context menu
- stretch.prg        Y         Y        Y         Sample for resizing bitmaps (background), some bugs (as test program)
+stretch.prg         Y         Y        Y         Sample for resizing bitmaps (background), some bugs (as test program)
 testget2.prg        Y         Y        Y         Get system: several edit fields (date, password, ...), time display 
 winprn.prg   1)     Y         N        Y         Printing via Windows GDI Interface
 
@@ -54,4 +55,6 @@ winprn.prg   1)     Y         N        Y         Printing via Windows GDI Interf
 4)  progbars.prg: LINUX: Progbar create ok, but press button "Step" the progbar disappeared.
 
 5)  Crashes at calling DIALOG, will be fixed as soon as possible.
+
+11) Read more about the handling of hex value resources in file "utils/bincnt/Readme.txt". 
 

@@ -130,6 +130,20 @@
    (-gui option only for windows necessary, for LINUX add options -d__LINUX__ -d__GTK__ , no *.rc files )
   
 
+   3.1) Resources
+   Resources means images and icons in GUI applications.
+   They could be loaded directly from an single image file
+   or compiled directly into the exe file.
+   If loading a lot of image files, you must deliver them all with your
+   setup script. This is uncomfortable. You can use the Windows resource
+   compiler utility (HWGUI supports this), but for multi platform programs
+   you must avoid the resource compiler.
+   But there are 2 alternatives:
+   1.) The Binary Container
+   2.) Hex value resources
+   Read more about this topic in file
+   "utils/bincnt/Readme.txt". 
+  
 
  List of packages for Ubuntu Linux and LinuxMINT
  -----------------------------------------------

@@ -29,7 +29,10 @@
  hwg_GetTempDir()
  hwg_CreateTempfileName
  Activate / Deactivate  Button
- hwg_CompleteFullPath() 
+ hwg_CompleteFullPath()
+
+ Harbour functions:
+ CurDir() 
  
 */
 
@@ -50,7 +53,7 @@ FUNCTION MAIN
 LOCAL Testfunc, oFont
 
 LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
-LOCAL oButton10, oButton11, oButton12 , oButton13 , oButton14
+LOCAL oButton10, oButton11, oButton12 , oButton13 , oButton14 , oButton15 , oButton16
 PUBLIC cDirSep := hwg_GetDirSep()
 PUBLIC bgtk
 
@@ -121,6 +124,15 @@ SET DATE ANSI  && YY(YY).MM.TT
    @ 340,100 BUTTON oButton13 CAPTION "Activate Test Button" SIZE 140,18 FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
        { | | TstButt_Act(oButton10) }
+
+   @ 25 ,125 BUTTON oButton15 CAPTION "CurDir()" SIZE 140,18 FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+        { | | Funkt(CurDir(),"C","CurDir()") }
+
+   @ 180 ,125 BUTTON oButton15 CAPTION "hwg_CurDir()" SIZE 140,18 FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+        { | | Funkt(hwg_CurDir(),"C","hwg_CurDir()") }
+
 
 
    

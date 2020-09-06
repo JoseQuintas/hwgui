@@ -87,6 +87,7 @@ For beginners:
  grid_5.prg         N  #      -       Grid Editor  (crashes, if click on button "Change") 
  hello.prg          N                 Some elements: Edit field, tabs, tree view, combobox, ...
  helpdemo.prg 6) 7) N                 Context help using windows help (Shellexecute crashes)
+ hexbincnt.prg 11)  Y                 Handling of binary resources with hex values. 
  hole.prg   2) 4)   N                 MS Agent Control
  icons.prg          Y                 Icons and background bitmaps
  iesample.prg 2) 5) N                 Sample of ActiveX container for the IE browser object. 
@@ -194,5 +195,7 @@ For beginners:
      For creating and editing binary container you find the utility "Binary container manager"
      in directory "utils/bincnt". 
      GTK: The images in the OWNERBUTTONS are not visible, we will fix this as soon as possible.
+
+ 11) Read more about the handling of hex value resources in file "utils/bincnt/Readme.txt".
  
 

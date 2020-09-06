@@ -497,6 +497,7 @@ CLASS HIcon INHERIT HObject
 
    METHOD AddResource( name )
    METHOD AddFile( name, HDC )
+   METHOD AddString( name, cVal )
    METHOD RELEASE()
 
 ENDCLASS
@@ -565,6 +566,41 @@ METHOD AddFile( name ) CLASS HIcon
    ENDIF
 
    RETURN Self
+   
+   
+ /* Added by DF7BE
+ name : Name of resource
+ cVal : Binary contents of *.ico file 
+ */
+METHOD AddString( name, cVal ) CLASS HIcon
+
+ LOCAL i , cTmp , aBmpSize
+
+   For EACH i IN ::aIcons
+      IF i:name == name
+         i:nCounter ++
+         * resource always existing, nothing to do
+         RETURN i
+      ENDIF
+   NEXT
+   * DF7BE:
+   * Write contents into temporary file
+       hb_memowrit( cTmp := hwg_CreateTempfileName() , cVal )
+       ::handle := hwg_OpenImage( cTmp )
+       FERASE(cTmp)
+   IF !Empty( ::handle )
+      ::name := name
+      aBmpSize  := hwg_Getbitmapsize( ::handle )
+      ::nWidth  := aBmpSize[1]
+      ::nHeight := aBmpSize[2]
+      AAdd( ::aIcons, Self )
+   ELSE
+      hwg_MsgStop("Can not load icon: >" + name + "<")
+      RETURN Nil
+   ENDIF
+  
+   RETURN Self  
+   
 
 METHOD RELEASE() CLASS HIcon
    LOCAL i, nlen := Len( ::aIcons )

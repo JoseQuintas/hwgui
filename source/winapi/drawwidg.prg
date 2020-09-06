@@ -506,6 +506,7 @@ CLASS HIcon INHERIT HObject
 
    METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM )
    METHOD AddFile( name, nWidth, nHeight )
+   METHOD AddString( name, cVal )
    METHOD Draw( hDC, x, y )   INLINE hwg_Drawicon( hDC, ::handle, x, y )
    METHOD RELEASE()
 
@@ -558,6 +559,22 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
    AAdd( ::aIcons, Self )
 
    RETURN Self
+
+   
+
+ /* Added by DF7BE
+ name : Name of resource 
+ cVal : Binary contents of *.ico file 
+ */  
+METHOD AddString( name, cVal ) CLASS HIcon
+ LOCAL cTmp, oreturn
+ * Write contents into temporary file
+ hb_memowrit( cTmp := hwg_CreateTempfileName( , ".ico") , cVal )
+ oreturn := ::AddFile( name )
+ FERASE(cTmp)
+ 
+RETURN  oreturn
+
 
 METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    LOCAL i, aIconSize, cname := CutPath( name ), cCurDir,cFext
@@ -769,3 +786,5 @@ EXIT PROCEDURE CleanDrawWidg
 
    RETURN
 
+* ======================== EOF of drawwidg.prg =========================
+   

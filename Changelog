@@ -8,6 +8,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-07 00:15 UTC+0200 Wilfried Brunken DF7BE
+  * samples/gtk_samples/hexbincnt.prg (New)
+  * samples/hexbincnt.prg (New)
+  * utils/bincnt/file2hex.prg (New)
+  * source/gtk/drawwidg.prg
+  * source/gtk/hmisc.prg
+  * source/winapi/drawwidg.prg
+  * source/winapi/hmisc.prg
+  * utils/tutorial/bldgtkwin.bat (New)
+  * samples/testfunc.prg
+  * doc/hwgdoc_functions.html
+  * doc/hwgdoc_misc.html
+  * utils/bincnt/Readme.txt (New)
+    ! Task: New feature 
+    ! binary resources with Hex values
+    ! (as multi platform substitute for
+    !  for Windows resource compiler,
+    ! compile resources into exe).
+    ! Afterglow to Ticket #51.
+    ! Added documentation for new functions
+    ! and instructions for bincnt and hex 
+    ! resources.
+    ! Build script Tutorial for GTK Cross
+    ! development environment added.  
+
+
 2020-09-04 08:00 UTC+0200 Wilfried Brunken DF7BE
   * samples/gtk_samples/progbars.prg
   * source/gtk/hprogres.prg

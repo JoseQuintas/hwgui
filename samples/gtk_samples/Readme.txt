@@ -6,7 +6,7 @@ $Id$
 Created by DF7BE
 
 1.) Learn more about HWGUI with this sample programs.
-    Read also instriction in file (WinAPI):
+    Read also instructions in file (WinAPI):
      samples\Readme.txt
 
 

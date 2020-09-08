@@ -115,7 +115,15 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
       IF ::nLimit * ::maxpos != 0
          nPos := nPos / (::nLimit*::maxpos)
       ENDIF
-      hwg_Setprogressbar( ::handle, nPos )
+      /*
+       DF7BE: Ticket #52: avoid message:
+       Gtk-CRITICAL ... IA__gtk_progress_set_percentage:
+       assertion 'percentage >= 0 && percentage <= 1.0' failed
+       if progbar reached end.
+      */
+      IF ( nPos >= 0  ) .AND. (nPos <= 1 ) 
+       hwg_Setprogressbar( ::handle, nPos )
+      END
    ENDIF
 
    RETURN Nil
@@ -128,7 +136,7 @@ METHOD RESET CLASS HProgressBar
     * hwg_Updateprogressbar( ::handle )    
  ENDIF
 RETURN NIL
-*/ 
+ 
 
 METHOD CLOSE()
 
@@ -139,4 +147,5 @@ METHOD CLOSE()
 
    RETURN Nil
 
-* ==================== EOF of hprogres.prg ======================   
+* ==================== EOF of hprogres.prg ======================
+   

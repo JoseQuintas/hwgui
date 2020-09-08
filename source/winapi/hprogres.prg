@@ -31,6 +31,7 @@ CLASS HProgressBar INHERIT HControl
    METHOD Activate()
    METHOD Increment() INLINE hwg_Updateprogressbar( ::handle )
    METHOD STEP()
+   METHOD RESET( cTitle )
    METHOD SET( cTitle, nPos )
    METHOD SetLabel( cCaption )
    METHOD CLOSE()
@@ -144,6 +145,16 @@ METHOD STEP( cTitle )
    ENDIF
 
    RETURN Nil
+   
+* Added by DF7BE
+METHOD RESET( cTitle )
+  IF cTitle != Nil
+      hwg_Setwindowtext( ::oParent:handle, cTitle )
+  ENDIF
+  hwg_Resetprogressbar( ::handle )
+
+  RETURN Nil
+   
 
 METHOD SET( cTitle, nPos ) CLASS HProgressBar
 
@@ -172,3 +183,6 @@ METHOD CLOSE()
    ENDIF
 
    RETURN Nil
+   
+* ============================ EOF of hprogres.prg =============================
+   

@@ -94,7 +94,7 @@ For beginners:
  modtitle.prg       N                 Sample for modifying a main window title in HWGUI
  nice.prg           N                 Demo of NICEBUTTON
  nice2.prg          N  #      -       Seems to be outdated, starts only in background, kill with Task Manager
- progbars.prg       N                 Progress bar
+ progbars.prg  12)  Y                 Progress bar
  propsh.prg         N                 Property sheet, INIT DIALOG aDlg1 FROM RESOURCE not working.
  pseudocm.prg       Y                 Pseudo context menu
  shadebtn.prg       N                 Shade buttons
@@ -194,8 +194,12 @@ For beginners:
      It contains all images needed for this sample.
      For creating and editing binary container you find the utility "Binary container manager"
      in directory "utils/bincnt". 
-     GTK: The images in the OWNERBUTTONS are not visible, we will fix this as soon as possible.
-
- 11) Read more about the handling of hex value resources in file "utils/bincnt/Readme.txt".
  
+ 11) Read more about the handling of hex value resources in file "utils/bincnt/Readme.txt".
+
+ 12) Little modifications for GTK needed (use compiler switch "#ifdef __GTK__").
+     Extra sample program with same filename in subdirectory "gtk_samples"
+ 
+* =================== EOF of Readme.txt ========================
+
 

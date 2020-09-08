@@ -161,6 +161,19 @@ HB_FUNC( HWG_UPDATEPROGRESSBAR )
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_STEPIT, 0, 0 );
 }
 
+/*
+   ResetProgressBar( hPBar )
+   Added by DF7BE
+*/
+HB_FUNC( HWG_RESETPROGRESSBAR )
+{
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETPOS,
+         ( WPARAM ) 0 , 0 );
+}
+
+/*
+   SetProgressBar( hPBar , nPercent )
+*/
 HB_FUNC( HWG_SETPROGRESSBAR )
 {
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETPOS,

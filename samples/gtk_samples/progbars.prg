@@ -48,9 +48,8 @@ Local cMsgErr := "Bar doesn't exist"
              STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
              ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
 
-* Does not work
-*             @ 300, 395 BUTTON 'Reset Bar'   SIZE 75,25 ;
-*                ON CLICK {|| IIF(oBar == NIL , .T. , oBar:Reset() ) }
+             @ 300, 395 BUTTON 'Reset Bar'   SIZE 75,25 ;
+                ON CLICK {|| IIF(oBar == NIL , .T. , RES_PROGBAR ( obar ) ) }
 
              @ 380, 395 BUTTON 'Step Bar'   SIZE 75,25 ;
                 ON CLICK {|| n+=100,Iif(oBar==Nil,hwg_Msgstop(cMsgErr),oBar:Set(,n/100)) }
@@ -72,6 +71,11 @@ Local cMsgErr := "Bar doesn't exist"
 
 Return Nil
 
+FUNCTION RES_PROGBAR ( opbar )
+ n := 0
+ opBar:Reset()
+ * opBar:Set(,0 )
+RETURN .F. 
 
 
 * ====================== EOF of progbars.prg ========================

@@ -34,7 +34,7 @@ CLASS HProgressBar INHERIT HControl
    METHOD Increment() INLINE hwg_Updateprogressbar( ::handle )
    METHOD Step()
    METHOD SET( cTitle, nPos )
-*  METHOD RESET()   && does not work
+   METHOD RESET()
    METHOD CLOSE()
 
 ENDCLASS
@@ -120,12 +120,12 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
 
    RETURN Nil
  
-/*
+
 METHOD RESET CLASS HProgressBar
  IF ::handle != NIL
     ::nCount := 0
-    hwg_Setprogressbar( ::handle, 0 )
-    hwg_Updateprogressbar( ::handle )    
+    hwg_Resetprogressbar( ::handle )
+    * hwg_Updateprogressbar( ::handle )    
  ENDIF
 RETURN NIL
 */ 

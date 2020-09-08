@@ -8,6 +8,24 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-08 13:10 UTC+0200 Wilfried Brunken DF7BE
+  * samples/gtk_samples/hwmingnw.bat
+    ! Relative path for HWGUI install
+  * samples/gtk_samples/progbars.prg
+  * samples/progbars.prg
+  * source/gtk/control.c
+  * source/gtk/hprogres.prg
+  * source/winapi/control.c
+  * source/winapi/hprogres.prg
+  * samples/gtk_samples/Readme.txt
+  * samples/Readme.txt
+    ! Ticket #52:
+    ! (To be continued)
+    ! Now reset of progbar fixed, METHOD RESET() added.
+    ! Docu: Missing part for CLASS HProgressBar added
+    
+
+
 2020-09-07 00:15 UTC+0200 Wilfried Brunken DF7BE
   * samples/gtk_samples/hexbincnt.prg (New)
   * samples/hexbincnt.prg (New)

@@ -37,7 +37,7 @@ fileselect.prg      Y         Y        Y         Sample for file selection menue
 graph.prg           Y         Y        Y         Paint graphs (Sinus, Bar diagram)
 hexbincnt.prg  11)  Y         Y        Y         Handling of binary resources with hex values.
 icons.prg    5)     Y         Y        Y      #  Icons and background bitmaps
-progbars.prg 4)     Y         N        Y         Progress bar: compilable, but progress bar not appreared
+progbars.prg 12)    Y         Y        Y         Progress bar
 pseudocm.prg        Y         Y        Y         Pseudo context menu
 stretch.prg         Y         Y        Y         Sample for resizing bitmaps (background), some bugs (as test program)
 testget2.prg        Y         Y        Y         Get system: several edit fields (date, password, ...), time display 
@@ -52,9 +52,13 @@ winprn.prg   1)     Y         N        Y         Printing via Windows GDI Interf
 
 3)  escrita.prg: Text in toolbuttons not visible
 
-4)  progbars.prg: LINUX: Progbar create ok, but press button "Step" the progbar disappeared.
-
 5)  Crashes at calling DIALOG, will be fixed as soon as possible.
 
 11) Read more about the handling of hex value resources in file "utils/bincnt/Readme.txt". 
+
+12) Little modifications for WinAPI needed (use compiler switch "#ifdef __GTK__").
+    Extra sample program with same filename in directory "samples" for WinAPI.
+
+* =================== EOF of Readme.txt ========================
+
 

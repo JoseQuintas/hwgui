@@ -52,7 +52,9 @@ set HRB_DIR=C:\harbour\core-master
 SET HRB_EXE=%HRB_DIR%\bin\win\mingw\harbour
 
 REM Installation path of HWGUI
-set HWGUI_INSTALL=C:\hwgui\hwgui-gtk\hwgui
+REM set HWGUI_INSTALL=C:\hwgui\hwgui-gtk\hwgui
+REM relative path
+set HWGUI_INSTALL=..\..
 REM =====================================
 
 

@@ -1141,6 +1141,25 @@ HB_FUNC( HWG_SETPROGRESSBAR )
 
 }
 
+/* Added by DF7BE:
+   Resets an existing progress bar:
+   Use this function after creating a
+   progress bar after a first use.
+ */
+HB_FUNC( HWG_RESETPROGRESSBAR )
+{
+   GtkWidget *widget = ( GtkWidget * ) HB_PARHANDLE( 1 );
+
+ 
+    gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( widget ), 0.0 );
+    gtk_progress_bar_update( GTK_PROGRESS_BAR( widget ), 0.0 );
+    while( gtk_events_pending(  ) )
+   {
+      gtk_main_iteration(  );
+   }
+
+}
+
 HB_FUNC( HWG_CREATESTATUSWINDOW )
 {
    GtkWidget *w, *h;

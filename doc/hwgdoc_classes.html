@@ -112,6 +112,7 @@
        <li><a name="_Classes10" href="#Classes10">HBitmap</a>
        <li><a name="_Classes11" href="#Classes11">HIcon</a>
        <li><a name="_Classes12" href="#Classes12">HPrinter</a>
+       <li><a name="_Classes26" href="#Classes26">HProgressBar</a>
        <li><a name="_Classes13" href="#Classes13">HTreeNode</a>
        <li><a name="_Classes14" href="#Classes14">HTimer</a>
        <li><a name="_Classes15" href="#Classes15">HFreeImage</a> (WinAPI version only)
@@ -133,6 +134,8 @@
          </ul>
      </ul>
    </ul>
+
+   <!-- Last name used: Classes26 -->
 
    <br><strong class="subhead"><a name="Classes2" href="#_Classes2">
    HObject</a></strong> 
@@ -1541,6 +1544,35 @@
       Say( cString,x1,y1,x2,y2,nOpt,oFont )
       Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
       GetTextWidth( cString, oFont )
+   </pre>
+
+   <br><strong class="subhead"><a name="Classes26" href="#_Classes26">
+   HProgressBar</a></strong> 
+   <pre class="code">DATA
+      CLASS VAR winclass
+      DATA  maxPos
+      DATA  nRange (WinAPI only)
+      DATA  lNewBox
+      DATA  nCount INIT 0
+      DATA  nLimit
+      DATA  nAnimation  (WinAPI only)
+      DATA  LabelBox  (WinAPI only)
+      DATA  nPercent INIT 0  (WinAPI only)
+      DATA  lPercent INIT .F.  (WinAPI only)
+   </pre>
+  <pre class="code">METHODS
+      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical )
+      NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, bInit, bSize, bPaint, ctooltip )
+      Init()    (WinAPI only)
+      Activate()
+      Increment() INLINE hwg_Updateprogressbar( ::handle )
+      STEP()
+      RESET( cTitle )    (Parameter cTitle WinAPI only)
+      SET( cTitle, nPos )
+      SetLabel( cCaption )   (WinAPI only)
+      CLOSE()
+      End() INLINE hwg_Destroywindow( ::handle )   (WinAPI only)
+      Redefine( oWndParent, nId,  maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical )  (WinAPI only)
    </pre>
 
    <br><strong class="subhead"><a name="Classes13" href="#_Classes13">

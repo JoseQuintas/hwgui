@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-09-12 22:20 UTC+0200 Wilfried Brunken DF7BE
+  *  hwgui/source/winapi/drawwidg.prg
+  *  hwgui/utils/bincnt/Readme.txt
+    ! hexbincnt: Bugfix for WinAPI
+    ! Additional info in Readme
+
+
 2020-09-12 16:55 UTC+0200 Wilfried Brunken DF7BE
   * todo.txt
   * utils/bincnt/Readme.txt

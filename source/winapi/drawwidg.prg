@@ -567,13 +567,29 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
  cVal : Binary contents of *.ico file 
  */  
 METHOD AddString( name, cVal ) CLASS HIcon
- LOCAL cTmp, oreturn
+ LOCAL cTmp    && , oreturn
+ LOCAL i, aIconSize , nWidth, nHeight
+
+ * prepare as use as parameter (if needed)
+ nWidth := 0
+ nHeight := 0
+
+ 
  * Write contents into temporary file
  hb_memowrit( cTmp := hwg_CreateTempfileName( , ".ico") , cVal )
- oreturn := ::AddFile( name )
+ * Load icon from temporary file
+ ::handle := hwg_Loadimage( 0, cTmp, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )
+ ::name := name
+  aIconSize := hwg_Geticonsize( ::handle )
+ ::nWidth  := aIconSize[ 1 ]
+ ::nHeight := aIconSize[ 2 ]
+
+   AAdd( ::aIcons, Self )
+
+  * oreturn := ::AddFile( name )
  FERASE(cTmp)
  
-RETURN  oreturn
+RETURN  Self   && oreturn
 
 
 METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon

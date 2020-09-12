@@ -30,6 +30,7 @@ For the next release build done:
     Need to fix a lot of compile warnings, will be done as soon as possible.
     Also need to deliver build scripts for utils and contrib libraries.
 [+] Sample database with one field of every type.
+[+] Ressources can be inserted into exe file by hex values.
 
 
 

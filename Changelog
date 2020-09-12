@@ -8,7 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2020-09-12 16:55 UTC+0200 Wilfried Brunken DF7BE
+  * todo.txt
+  * utils/bincnt/Readme.txt
+  * utils/bincnt/file2hex.hbp
+  * utils/bincnt/file2hex.prg
+  * whatsnew.txt
+    ! Ticket #54. 
 
 2020-09-08 17:00 UTC+0200 Wilfried Brunken DF7BE
   * samples/gtk_samples/Readme.txt

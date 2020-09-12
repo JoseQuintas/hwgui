@@ -28,7 +28,41 @@
 * Use hwg_CurDir() vor correct path value with
 * drive letter. 
 
+#include "hwgui.ch"
+
 FUNCTION MAIN
+
+LOCAL oFontMain , oMainW
+
+
+#ifdef __PLATFORM__WINDOWS
+   PREPARE FONT oFontMain NAME "MS Sans Serif" WIDTH 0 HEIGHT -14
+#else
+   PREPARE FONT oFontMain NAME "Sans" WIDTH 0 HEIGHT 12 
+#endif
+
+INIT WINDOW oMainW  ;
+   FONT oFontMain  ;
+   TITLE "File2hex Utility converts binary files to hex value" AT 0,0 SIZE 300 , 250 ;
+   STYLE WS_POPUP +  WS_CAPTION + WS_SYSMENU
+
+        MENU OF oMainW
+         MENU TITLE "&Exit"
+             MENUITEM "&Quit" ACTION oMainW:Close()
+         ENDMENU
+         MENU TITLE "&Convert"
+             MENUITEM "&File to HEX" ACTION Convert_file()
+         ENDMENU
+        ENDMENU
+
+        ACTIVATE WINDOW oMainW 
+
+RETURN NIL
+
+* --- End of Main ---
+
+
+FUNCTION Convert_file
 
 LOCAL fname, hd, varbuf, ccdir
 
@@ -36,7 +70,7 @@ LOCAL fname, hd, varbuf, ccdir
  fname := hwg_Selectfile("All files (*.*)" , "*.*", hwg_CurDir() )
  * Check for cancel 
  IF EMPTY(fname)
-  QUIT
+  RETURN NIL
  ENDIF
  * Read selected file
  varbuf := MEMOREAD(fname)

@@ -44,7 +44,8 @@ Created by DF7BE, 2020-09-07.
 
     For building the file2hex utility, copy a build script for your used compiler
     from the samples or samples/gtk_samples directory into the current directory and
-    call it with parameter "file2hex".
+    call it with parameter "file2hex" or by:
+    hbmk2 file2hex.hbp .    
 
 
     

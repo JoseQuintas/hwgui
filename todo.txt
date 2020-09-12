@@ -27,7 +27,6 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
                      INIT DIALOG ... BACKGROUND BITMAP ...
       a.prg          Browse problem with Char field
       escrita.prg    LINUX: Text in toolbuttons not visible, OK on cross development GTK/Win
-      progbars.prg   LINUX: Progbar create ok, but press button "Step" the progbar disappeared.
       tstscrlbar.prg Compilable, but no scroll function
 
 

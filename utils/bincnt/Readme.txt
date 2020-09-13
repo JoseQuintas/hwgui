@@ -45,14 +45,15 @@ Created by DF7BE, 2020-09-07.
 
     For building the file2hex utility, copy a build script for your used compiler
     from the samples or samples/gtk_samples directory into the current directory and
-    call it with parameter "file2hex".
+    call it with parameter "file2hex" or by:
+    hbmk2 file2hex.hbp .
 
 
 3.) Additional information for WinAPI
 
     The Windows resources in the exe file can be read by the operating sytem for displaying
     icons on the desktop for a link file to a program.
-    For icons it recommended to use the Windows resource compiler.
+    For icons it is recommended to use the Windows resource compiler.
     Use the compiler switch for multi platform applications (for example):
 
 
@@ -65,4 +66,5 @@ Created by DF7BE, 2020-09-07.
     For bitmaps the use of Hex value resources or the binary container it is no problem.    
 
     
-* =============== EOF of Readme.txt ================================  
+* =============== EOF of Readme.txt ================================
+  

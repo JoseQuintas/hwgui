@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-13 10:51 UTC+0200 Wilfried Brunken DF7BE
+  * utils/bincnt/Readme.txt
+    ! Little corrections.
+
 
 2020-09-12 22:20 UTC+0200 Wilfried Brunken DF7BE
   *  hwgui/source/winapi/drawwidg.prg

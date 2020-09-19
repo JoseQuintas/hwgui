@@ -1,6 +1,6 @@
 @echo off 
 REM
-REM hwmk.bat
+REM bldmingw.bat
 REM
 REM $Id$
 REM
@@ -13,6 +13,7 @@ SET HWGUI_INSTALL=..
 SET MINGW=C:\hmg.3.3.1\MINGW
 SET HRB_DIR=C:\harbour\core-master
 SET HRB_LIB_DIR=%HRB_DIR%\lib\win\mingw
+SET HBWINBC=%HRB_DIR%\contrib\hbwin.hbc
 REM Optional
 REM SET GTK_DIR=C:\gtk 
 REM
@@ -38,6 +39,12 @@ if exist %HWGUI_INSTALL%\lib\libhwg_qhtm.a (
 SET HWGUI_LIBS=%HWGUI_LIBS% -lhwg_qhtm
 )
 
+REM hbmk2 %1 hwgui_xp.rc %HBWINBC% -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWGUI_LIBS%
 
-hbmk2 %1 hwgui_xp.rc -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWGUI_LIBS%
-REM ---- EOF of hwmk.bat ----
+REM If you get this message
+REM hbmk2: Hint: Add option 'hbwin.hbc' for missing function(s):
+REM       win_oleCreateObject()
+REM activate the following command for compile: 
+hbmk2 %1 hwgui_xp.rc %HBWINBC% -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWGUI_LIBS%
+
+REM ---- EOF of bldmingw.bat ----

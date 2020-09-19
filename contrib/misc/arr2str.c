@@ -145,12 +145,22 @@ static HB_ULONG ArrayMemoSize( PHB_ITEM pArray )
 
 static char *WriteArray( char *ptr, PHB_ITEM pArray )
 {
-   HB_ULONG ulArrLen = hb_arrayLen( pArray ), ulVal, ul;
-#ifndef HB_LONG_LONG_OFF
-   HB_LONGLONG ullVal;
-#endif
    int iDec, iWidth;
    double dVal;
+
+#if  defined(__XHARBOUR__)
+   ULONG ulArrLen = hb_arrayLen( pArray ), ulVal, ul;
+#else
+   HB_ULONG ulArrLen = hb_arrayLen( pArray ), ulVal, ul;
+#endif
+
+#ifndef HB_LONG_LONG_OFF
+#if  defined(__XHARBOUR__)
+   LONGLONG ullVal;
+#else 
+   HB_LONGLONG ullVal;
+#endif
+#endif
 
    if( ulArrLen > 0xFFFF )
       ulArrLen = 0xFFFF;
@@ -258,3 +268,6 @@ HB_FUNC( STRING2ARRAY )
 
    hb_itemRelease( hb_itemReturn( pItem ) );
 }
+
+/* ==================== EOF of arr2str.c =========================== */
+

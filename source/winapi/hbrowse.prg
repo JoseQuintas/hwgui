@@ -1384,11 +1384,27 @@ METHOD DoHScroll( wParam ) CLASS HBrowse
 
 METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
-   LOCAL minPos, maxPos, nPos, colpos
+   LOCAL minPos, maxPos, nPos, colpos, btemp
 
-   Eval( ::bSkip, Self, 1 )
-   IF Eval( ::bEof, Self )
-      Eval( ::bSkip, Self, - 1 )
+   IF ::type == BRW_ARRAY
+       btemp := Eval( ::bSkip, Self, 1 ) == 0 .OR. Eval( ::bEof, Self )  
+   ELSE
+       * DF7BE: Modification suggested by Itarmar M. Lins Jr.
+       * (see sample program Testado.prg)
+       *
+       * Database (Default)
+       * If BROWSE command without "DATABASE" term, the attribute ::type is set to 0 !
+       Eval( ::bSkip, Self, 1 )
+       btemp := Eval( ::bEof, Self )
+   ENDIF
+
+   IF btemp
+      IF ::type == BRW_ARRAY
+         Eval( ::bGoBot, Self )
+      ELSE
+         Eval( ::bSkip, Self, - 1 )
+      ENDIF
+
       IF ::lAppable .AND. ::lEditable .AND. ( lMouse == Nil .OR. !lMouse ) .AND. ;
             ( ::type != BRW_DATABASE .OR. !Dbinfo(DBI_ISREADONLY) )
          colpos := 1
@@ -1435,10 +1451,18 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
 
 METHOD LINEUP() CLASS HBrowse
 
-   LOCAL minPos, maxPos, nPos
+   LOCAL minPos, maxPos, nPos, btemp
 
-   Eval( ::bSkip, Self, - 1 )
-   IF Eval( ::bBof, Self )
+   IF ::type == BRW_ARRAY
+      btemp := Eval( ::bSkip, Self, - 1 ) == 0
+   ELSE
+      Eval( ::bSkip, Self, - 1 )
+      btemp := Eval( ::bBof, Self )
+   ENDIF
+   
+   IF btemp
+      //Eval( ::bSkip, Self, - 1 )
+      //IF Eval( ::bBof, Self ) itamar
       Eval( ::bGoTop, Self )
    ELSE
       ::rowPos --
@@ -2298,3 +2322,7 @@ FUNCTION hwg_getPaintCB( arr, nId )
    ENDIF
 
    RETURN aRes
+
+
+* ========================== EOF of hbrowse.prg ============================
+   

@@ -8,6 +8,33 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-09-19 09:30 UTC+0200 Wilfried Brunken DF7BE
+  * samples\bldmingw.bat
+  * source\winapi\hbrowse.prg  
+  * samples\Testado.prg (New)
+  * doc/hwgdoc_commands.html
+    ! Ticket #55 HBROWSE LineUp and LineDown (WinAPI)
+    ! Sample program delivered by Itamar M. Lins Jr. (TNX)
+    ! Modification tested with samples Testado.prg and
+    ! colrbloc.prg and app CLLOG.
+    ! Docu updated (Default is DATABASE)
+    ! Build script: win_oleCreateObject()
+    ! needs to include "%HRB_DIR%\contrib\hbwin.hbc"
+  * contrib\misc\arr2str.c
+    ! Ticket #53: xHarbour support (with bcc)
+  * source\winapi\hwinprn.prg
+  * source\gtk\hwinprn.prg
+  * samples\winprn.prg
+  * samples\gtk_samples\winprn.prg
+  * doc/hwgdoc_classes.html
+    ! Prepare for "hwlabel":
+    ! New method SetDefaultMode():
+    ! should act like a "printer reset"
+    ! (Set back to default values).
+    ! Docu updated.   
+
+
 2020-09-13 10:51 UTC+0200 Wilfried Brunken DF7BE
   * utils/bincnt/Readme.txt
     ! Little corrections.

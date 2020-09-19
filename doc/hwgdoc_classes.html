@@ -1689,21 +1689,21 @@
       nCharW                   (R)
       x, y                     (R)
       cPseudo                  (R)
-      lElite                   (R)
-      lCond                    (R)
-      nLineInch                (R)
-      lBold                    (R)
-      lItalic                  (R)
-      lUnder                   (R)
-      nLineMax                 (R)
-      lChanged                 (R)
+      lElite                   (R)    INIT .F.
+      lCond                    (R)    INIT .F.
+      nLineInch                (R)    INIT 6
+      lBold                    (R)    INIT .F.
+      lItalic                  (R)    INIT .F.
+      lUnder                   (R)    INIT .F.
+      nLineMax                 (R)    INIT 0
+      lChanged                 (R)    INIT .F.
 
       cpFrom, cpTo             (R)
       nTop                     (R)
       nBottom                  (R)
       nLeft                    (R)
       nRight                   (R)
-      nCharset                 (RW)  Printer Character Set, default is 0 (ANSI)
+      nCharset                 (RW)  Printer Character Set, default is 0 (ANSI) "INIT 0".
                                      For allowed values see include file "prncharsets.ch".
     // --- International Language Support for internal dialogs --
       aTooltips                (RW) INIT {}  // Array with tooltips messages for print preview dialog
@@ -1716,6 +1716,7 @@
       SetLanguage(apTooltips, apBootUser)
       InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
+      SetDefaultMode() &nbsp;&nbsp;  // Should act like a "printer reset".
       StartDoc( lPreview,cMetaName )
       NextPage()
       PrintLine( cLine,lNewLine )
@@ -1725,6 +1726,10 @@
       End()
    </pre>
    <p>
+   Default fonts:<BR>
+   GTK:&nbsp;&nbsp;   "monospace"<BR>  
+   WinAPI:      "Lucida Console"<BR>
+   <BR>
    Additional instructions:<BR>
    Special hints for test and development without printer usage:<BR>
     Windows 10: You can install a virtual printer driver named "Print to PDF" to redirect the printer data.<BR>

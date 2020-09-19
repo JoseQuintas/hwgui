@@ -584,7 +584,7 @@ LOCAL aps := {}
  AAdd (aps, "1  : DEFAULT")    
  AAdd (aps, "2  : SYMBOL")   
  AAdd (aps, "77 : MAC")   
- AAdd (aps, "128: SHIFTJIS (CP932")
+ AAdd (aps, "128: SHIFTJIS (CP932)")
  AAdd (aps, "129: HANGEUL(CP949, ksc5601.1987-0")
  AAdd (aps, "129: HANGUL")      
  AAdd (aps, "130: JOHAB (korean (johab) CP1361)")

@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-20 23:10 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+    ! Ticket #56: Supported image formats
+    ! for HICON and HBITMAP classes.
+    ! Charset error in LINUX editor:
+    ! substitutes with &egrave;&euml;&egrave;
+    ! + little corrections.
+
 2020-09-20 10:00 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/hwinprn.prg
   * source/winapi/hwinprn.prg

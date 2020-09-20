@@ -1443,8 +1443,13 @@
       Draw( hDC, x1, y1, width, height )
       Release()
    </pre>
+   Supported image formats:<br>
+   Windows: bmp, jpg<br>
+   LINUX:  bmp, jpg, png, ico<br>
+   <br>
+   <p>
    Parameter lTransparent ignored on GTK.<br>
-
+   </p>
 
    <br><strong class="subhead"><a name="Classes11" href="#_Classes11">
    HIcon</a></strong> 
@@ -1464,6 +1469,12 @@
       Draw( hDC, x, y )
       Release()
    </pre>
+
+   <p>
+   Supported image formats:<br>
+   Windows: ico<br>
+   LINUX:  bmp, jpg, png, ico<br>
+   </p>
 
    <br><strong class="subhead"><a name="Classes12" href="#_Classes12">
    HPrinter</a></strong> 
@@ -1738,13 +1749,13 @@
    Attention: Before the print preview dialog appears, you must select a printer with this dialog<BR>
    of the Windows System (Sample in german language):<BR>
    <img src="./image/Win10_PR2PDF_Dialog.png" align=center wborder=0 alt="System dialog for printer selection">
-   <BR> ===> Do not press "Cancel" (Abbruch), otherwise the program crashes.
+   <BR> ===> Do not press "Cancel" (Abbruch), otherwise the program crashes.<br>
    After say "Print" in the preview dialog, you must enter a file name for the created PDF file:<BR>
    <BR>
      <img src="./image/Win10_PR2PDF_FSel.png" align=center wborder=0 alt="System dialog for printer selection"> 
    <BR>
    National Language Support for Print Preview Dialog:<BR>
-   Detailed instructions in inline comment lines of sample program ""winprn.prg".<BR>
+   Detailed instructions in inline comment lines of sample program "winprn.prg".<BR>
    Here you find also instructions for National Language Support of the preview dialog. 
    </p>
 

@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-20 10:00 UTC+0200 Wilfried Brunken DF7BE
+  * source/gtk/hwinprn.prg
+  * source/winapi/hwinprn.prg
+    ! Files forgotten for r2883 from 2020-09-19. 
 
 2020-09-19 09:30 UTC+0200 Wilfried Brunken DF7BE
   * samples\bldmingw.bat

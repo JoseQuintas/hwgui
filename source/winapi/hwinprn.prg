@@ -7,9 +7,14 @@
  * Copyright 2005 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  *
- * Modified by DF7BE: New parameter "nCharset" for 
- * selecting international charachter sets
- * Data and methods for National Language Support
+ * Modifications by DF7BE:
+ * - New parameter "nCharset" for 
+ *   selecting international charachter sets
+ *   Data and methods for National Language Support
+ *
+ * - New method SetDefaultMode():
+ *   should act like a "printer reset"
+ *   (Set back to default values).
 */
 
 #include "hwgui.ch"
@@ -61,6 +66,7 @@ CLASS HWinPrn
    METHOD SetLanguage(apTooltips, apBootUser)
    METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
+   METHOD SetDefaultMode()
    METHOD StartDoc( lPreview, cMetaName )
    METHOD NextPage()
    METHOD PrintLine( cLine, lNewLine )
@@ -189,6 +195,18 @@ METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCh
    ENDIF
 
    RETURN Nil
+
+/*
+  Added by DF7BE:
+  Should act like a "printer reset"
+  (Set back to default values).
+*/   
+METHOD SetDefaultMode() CLASS HWinPrn
+
+   ::SetMode( .F., .F. , 6, .F. , .F. , .F. , 0 , 0 )
+
+   RETURN Nil
+
 
 METHOD StartDoc( lPreview, cMetaName ) CLASS HWinPrn
 

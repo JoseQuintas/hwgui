@@ -21,6 +21,8 @@
  * Modifications by DF7BE:
  * - BUTTON ... CAPTION "&OK " does not work correct on GTK ==> "OK" only
  * - Added valid ressources from ../../image
+ * - Ready for LINUX (case dependent file names), TSTBRW.DBF ==> tstbrw.dbf
+ * - Edit error LINUX
  */
  
     * Status:
@@ -70,7 +72,7 @@ SET(_SET_EPOCH, 1950)
 REQUEST DBFCDX                      // Causes DBFCDX RDD to be linked in
 rddSetDefault( "DBFCDX" )           // Set up DBFCDX as default driver
 
-*FERASE("TSTBRW.DBF")
+*FERASE("tstbrw.dbf")
 
 * Image files
 cImgTop    := cImageDir + "top.bmp"
@@ -83,10 +85,10 @@ CHECK_FILE(cImgBottom)
 CHECK_FILE(cImgPrev)
 CHECK_FILE(cImgNext)
 
-IF !FILE("TSTBRW.DBF")
+IF !FILE("tstbrw.dbf")
    CriaDbf()
 ELSE
-   DBUSEAREA(.T., "DBFCDX", "TSTBRW", "TSTB")
+   DBUSEAREA(.T., "DBFCDX", "tstbrw", "TSTB")
 END
 
 INIT WINDOW oWinMain MAIN  ;
@@ -248,6 +250,7 @@ IF cType == "Dbs"
 ELSEIF cType == "Array"
   oEdGoto:SetText(oBrw:nCurrent)
 END
+oBrw:Refresh()
 Return Nil
 
 *************************************************
@@ -291,18 +294,18 @@ LOCAL Estrutura := {}
 LOCAL i := 1
 LOCAL nIncrement := 10
 
-  IF ! FILE("TSTBRW.DBF")
+  IF ! FILE("tstbrw.dbf")
      AADD(Estrutura, {"FIELD1", "N", 10, 02})
      AADD(Estrutura, {"FIELD2", "C", 11, 00})
      AADD(Estrutura, {"FIELD3", "D", 08, 00})
      AADD(Estrutura, {"FIELD4", "C", 30, 00})
      AADD(Estrutura, {"FIELD5", "C", 05, 00})
 
-     DBCREATE("TSTBRW.DBF", Estrutura)
+     DBCREATE("tstbrw.dbf", Estrutura)
      DBCLOSEAREA()
   ENDIF
 
-  DBUSEAREA(.T., "DBFCDX", "TSTBRW", "TSTB")
+  DBUSEAREA(.T., "DBFCDX", "tstbrw", "TSTB")
 
   For i := 1 to 200
         APPEND BLANK
@@ -318,7 +321,7 @@ LOCAL nIncrement := 10
         END
         FIELD->FIELD2 := "Field2 " + STRZERO(i,4)
         FIELD->FIELD3 := DATE() + i
-        FIELD->FIELD4 := "jgçpqy " + STRZERO(i, 23)
+        FIELD->FIELD4 := "jg" + CHR(231) + "pqy " + STRZERO(i, 23)  && 0xE7 = 231 &ccedil;
         FIELD->FIELD5 := STRZERO(i, 5)
   Next
 
@@ -471,7 +474,7 @@ LOCAL aArray := {}
              n := i
        END
     END
-    AADD(aArray, { n, STRZERO(i,4), DATE() + i, "jgçpqy " + STRZERO(i, 23), STRZERO(i, 5)})
+    AADD(aArray, { n, STRZERO(i,4), DATE() + i, "jg" + CHR(231) + "pqy " + STRZERO(i, 23), STRZERO(i, 5)})
   Next
 
 RETURN(aArray)

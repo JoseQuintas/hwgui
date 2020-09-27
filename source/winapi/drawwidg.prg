@@ -310,8 +310,8 @@ CLASS HBitmap INHERIT HObject
 
    METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight )
    METHOD AddStandard( nId )
-   METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight )
-   METHOD AddString( name, cVal )
+   METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight )
+   METHOD AddString( name, cVal , nWidth, nHeight)
    METHOD AddWindow( oWnd, x1, y1, width, height )
    METHOD Draw( hDC, x1, y1, width, height )  INLINE hwg_Drawbitmap( hDC, ::handle, SRCCOPY, x1, y1, width, height )
    METHOD RELEASE()
@@ -383,8 +383,15 @@ METHOD AddStandard( nId ) CLASS HBitmap
 
    RETURN Self
 
-METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
+METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize, cname := CutPath( name ), cCurDir
+   
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
 
    FOR EACH i IN ::aBitmaps
       IF i:name == cname .AND. ( nWidth == Nil .OR. nHeight == Nil )
@@ -401,14 +408,14 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
       DirChange( cCurDir )
    ENDIF
 
-   IF Lower( Right( name, 4 ) ) != ".bmp" .OR. ( nWidth == nil .AND. nHeight == nil .AND. lTranparent == Nil )
+   IF Lower( Right( name, 4 ) ) != ".bmp" .OR. ( nWidth == nil .AND. nHeight == nil .AND. lTransparent == Nil )
       IF Lower( Right( name, 4 ) ) == ".bmp"
          ::handle := hwg_Openbitmap( name, hDC )
       ELSE
          ::handle := hwg_Openimage( name )
       ENDIF
    ELSE
-      IF lTranparent != Nil .AND. lTranparent
+      IF lTransparent != Nil .AND. lTransparent
          ::handle := hwg_Loadimage( nil, name, IMAGE_BITMAP, nWidth, nHeight, LR_LOADFROMFILE + LR_LOADTRANSPARENT + LR_LOADMAP3DCOLORS )
       ELSE
          ::handle := hwg_Loadimage( nil, name, IMAGE_BITMAP, nWidth, nHeight, LR_LOADFROMFILE )
@@ -425,8 +432,15 @@ METHOD AddFile( name, hDC, lTranparent, nWidth, nHeight ) CLASS HBitmap
 
    RETURN Self
 
-METHOD AddString( name, cVal ) CLASS HBitmap
+METHOD AddString( name, cVal , nWidth, nHeight ) CLASS HBitmap
    LOCAL oBmp, aBmpSize
+   
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF   
 
    For EACH oBmp IN ::aBitmaps
       IF oBmp:name == name
@@ -506,7 +520,7 @@ CLASS HIcon INHERIT HObject
 
    METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM )
    METHOD AddFile( name, nWidth, nHeight )
-   METHOD AddString( name, cVal )
+   METHOD AddString( name, cVal , nWidth, nHeight )
    METHOD Draw( hDC, x, y )   INLINE hwg_Drawicon( hDC, ::handle, x, y )
    METHOD RELEASE()
 
@@ -527,6 +541,7 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
    IF lOEM == nil
       lOEM := .F.
    ENDIF
+   // hwg_writelog( "HIcon:AddResource " + Str(nWidth)+"/"+str(nHeight) )
    IF ValType( name ) == "N"
       name := LTrim( Str( name ) )
       lPreDefined := .T.
@@ -566,14 +581,16 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
  name : Name of resource 
  cVal : Binary contents of *.ico file 
  */  
-METHOD AddString( name, cVal ) CLASS HIcon
+METHOD AddString( name, cVal , nWidth, nHeight) CLASS HIcon
  LOCAL cTmp    && , oreturn
- LOCAL i, aIconSize , nWidth, nHeight
+ LOCAL i, aIconSize
 
- * prepare as use as parameter (if needed)
- nWidth := 0
- nHeight := 0
-
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
  
  * Write contents into temporary file
  hb_memowrit( cTmp := hwg_CreateTempfileName( , ".ico") , cVal )

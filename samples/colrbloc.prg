@@ -1,4 +1,9 @@
 /*
+ *
+ * colrbloc.prg
+ *
+ * $Id$
+ *
  * Demo by HwGUI Alexander Kresin
  *  http://kresin.belgorod.su/
  *
@@ -13,7 +18,22 @@
  *
  *       bColorBlock must return an array containing four colors values
  *
+ * Modifications by DF7BE:
+ * - BUTTON ... CAPTION "&OK " does not work correct on GTK ==> "OK" only
+ * - Added valid ressources from ../../image
  */
+ 
+    * Status:
+    *  WinAPI   :  Yes
+    *  GTK/Linux:  No
+    *  GTK/Win  :  No
+
+
+* DF7BE: Changed to valid image files
+* Home.bmp ==> top.bmp
+* End.bmp  ==> bottom.bmp
+* Up.bmp   ==> previous.bmp
+* Down.bmp ==> next.bmp
 
 #define x_BLUE       16711680
 #define x_DARKBLUE   10027008
@@ -31,7 +51,18 @@
 ***********************
 FUNCTION Main()
 ***********************
-LOCAL oWinMain
+LOCAL oWinMain , cImageDir
+LOCAL cDirSep := hwg_GetDirSep()
+
+PUBLIC cImgTop , cImgBottom , cImgPrev, cImgNext
+* Image dir
+#ifdef __GTK__
+cImageDir := ".." + hwg_GetDirSep() + ".." + hwg_GetDirSep() + "image" + hwg_GetDirSep()
+#else
+cImageDir := ".." + hwg_GetDirSep() + "image" + hwg_GetDirSep()
+#endif
+
+
 
 SET(_SET_DATEFORMAT, "dd/mm/yyyy")
 SET(_SET_EPOCH, 1950)
@@ -40,6 +71,17 @@ REQUEST DBFCDX                      // Causes DBFCDX RDD to be linked in
 rddSetDefault( "DBFCDX" )           // Set up DBFCDX as default driver
 
 *FERASE("TSTBRW.DBF")
+
+* Image files
+cImgTop    := cImageDir + "top.bmp"
+cImgBottom := cImageDir + "bottom.bmp"
+cImgPrev   := cImageDir + "previous.bmp"
+cImgNext   := cImageDir + "next.bmp" 
+* Check for extisting image files
+CHECK_FILE(cImgTop)
+CHECK_FILE(cImgBottom)
+CHECK_FILE(cImgPrev)
+CHECK_FILE(cImgNext)
 
 IF !FILE("TSTBRW.DBF")
    CriaDbf()
@@ -54,8 +96,8 @@ INIT WINDOW oWinMain MAIN  ;
 
 
    MENU OF oWinMain
-      MENU TITLE "&Arquivo"
-          MENUITEM "&Sair"              ACTION hwg_EndWindow()
+      MENU TITLE "&File"   && "&Arquivo"
+          MENUITEM "&Exit"              ACTION hwg_EndWindow()  && "&Sair"
       ENDMENU
       MENU TITLE "&Browse"
          MENUITEM "&Database"           ACTION BrwDbs(.f.)
@@ -108,7 +150,7 @@ LOCAL nLast := 0
         ON POSCHANGE {|| BrowseMove(oBrwDb, "NIL", oEdGoto, "Dbs" ) }
   END
 
-   @ 260,410 BUTTON oBtn1 CAPTION "&OK " SIZE 80,26 ;
+   @ 260,410 BUTTON oBtn1 CAPTION "OK " SIZE 80,26 ; && "&OK " does not work correct on GTK
          ON CLICK {|| hwg_EndDialog()}
 
    @ 0, 445 PANEL oTbar1 SIZE 600, 26
@@ -116,12 +158,12 @@ LOCAL nLast := 0
    @ 17,10 SAY oLbl1 CAPTION "Records :" OF oTbar1 SIZE 70,22
 
    @ 85,5 OWNERBUTTON o_Obtn1 OF oTbar1 SIZE 20,20     ;
-        BITMAP "Home.bmp";// TRANSPARENT COORDINATES 0,2,0,0 ;
+        BITMAP cImgTop ;// TRANSPARENT COORDINATES 0,2,0,0 ;  && Home.bmp
         ON CLICK {|| BrowseMove(oBrwDb, "Home", oEdGoto, "Dbs" ) };
         TOOLTIP "First Record"
 
    @ 105,5 OWNERBUTTON o_Obtn2 OF oTbar1 SIZE 20,20    ;
-        BITMAP "Up.bmp";// TRANSPARENT COORDINATES 0,2,0,0 ;
+        BITMAP cImgPrev ;// TRANSPARENT COORDINATES 0,2,0,0 ;  && Up.bmp
         ON CLICK {|| BrowseMove(oBrwDb, "Up", oEdGoto, "Dbs" ) } ;
         TOOLTIP "Prior"
 
@@ -133,12 +175,12 @@ LOCAL nLast := 0
    @ 270,7 SAY oLbl2 CAPTION " of  " + ALLTRIM(STR(nLast)) OF oTbar1 SIZE 70,22
 
    @ 215,5 OWNERBUTTON o_Obtn3 OF oTbar1 SIZE 20,20   ;
-        BITMAP "Down.bmp";// TRANSPARENT COORDINATES 0,2,0,0 ;
+        BITMAP cImgNext ;// TRANSPARENT COORDINATES 0,2,0,0 ; && Down.bmp
         ON CLICK {|| BrowseMove(oBrwDb, "Down", oEdGoto, "Dbs" ) } ;
         TOOLTIP "Next"
 
    @ 235,5 OWNERBUTTON o_Obtn4 OF oTbar1 SIZE 20,20   ;
-        BITMAP "End.bmp";// TRANSPARENT COORDINATES 0,2,0,0 ;
+        BITMAP cImgBottom ;// TRANSPARENT COORDINATES 0,2,0,0 ; && End.bmp
         ON CLICK {|| BrowseMove(oBrwDb, "End", oEdGoto, "Dbs" ) } ;
         TOOLTIP "Last Record"
 
@@ -316,7 +358,7 @@ LOCAL nI
         ON POSCHANGE {|| BrowseMove(oBrwArr, "NIL", oEdGoto, "Array" ) }
   END
 
-   @ 260,410 BUTTON oBtn1 CAPTION "&OK " SIZE 80,26 ;
+   @ 260,410 BUTTON oBtn1 CAPTION "OK " SIZE 80,26 ;  && "&OK " does not work correct on GTK
          ON CLICK {|| hwg_EndDialog()}
 
    @ 0, 445 PANEL oTbar1 SIZE 600, 26
@@ -324,12 +366,12 @@ LOCAL nI
    @ 17,10 SAY oLbl1 CAPTION "Elements :" OF oTbar1 SIZE 70,22
 
    @ 85,5 OWNERBUTTON o_Obtn1 OF oTbar1 SIZE 20,20     ;
-        BITMAP "Home.bmp";// TRANSPARENT COORDINATES 0,2,0,0 ;
+        BITMAP cImgTop ;// TRANSPARENT COORDINATES 0,2,0,0 ; && Home.bmp
         ON CLICK {|| BrowseMove(oBrwArr, "Home", oEdGoto, "Array" ) };
         TOOLTIP "First Record"
 
    @ 105,5 OWNERBUTTON o_Obtn2 OF oTbar1 SIZE 20,20    ;
-        BITMAP "Up.bmp";// TRANSPARENT COORDINATES 0,2,0,0 ;
+        BITMAP cImgPrev ;// TRANSPARENT COORDINATES 0,2,0,0 ;  && Up.bmp
         ON CLICK {|| BrowseMove(oBrwArr, "Up", oEdGoto, "Array" ) } ;
         TOOLTIP "Prior"
 
@@ -341,12 +383,12 @@ LOCAL nI
    @ 270,7 SAY oLbl2 CAPTION " of  " + ALLTRIM(STR(nLast)) OF oTbar1 SIZE 70,22
 
    @ 215,5 OWNERBUTTON o_Obtn3 OF oTbar1 SIZE 20,20   ;
-        BITMAP "Down.bmp";// TRANSPARENT COORDINATES 0,2,0,0 ;
+        BITMAP cImgNext ;// TRANSPARENT COORDINATES 0,2,0,0 ;  && Down.bmp
         ON CLICK {|| BrowseMove(oBrwArr, "Down", oEdGoto, "Array" ) } ;
         TOOLTIP "Next"
 
    @ 235,5 OWNERBUTTON o_Obtn4 OF oTbar1 SIZE 20,20   ;
-        BITMAP "End.bmp";// TRANSPARENT COORDINATES 0,2,0,0 ;
+        BITMAP cImgBottom ;// TRANSPARENT COORDINATES 0,2,0,0 ; && End.bmp
         ON CLICK {|| BrowseMove(oBrwArr, "End", oEdGoto, "Array" ) } ;
         TOOLTIP "Last Record"
 
@@ -461,3 +503,16 @@ FUNCTION MsgD( cV1, cV2, cV3, cV4, cV5, cV6, cV7, cV8, cV9, cV10 )
    hwg_Msginfo(LEFT(cVar, LEN(cVar) - 1))
 RETURN NIL
 
+******************************
+FUNCTION CHECK_FILE ( cfi )
+* Check, if file exist,
+* otherwise terminate program
+******************************
+ IF .NOT. FILE( cfi )
+  Hwg_MsgStop("File >" + cfi + "< not found, program terminated","File ERROR !")
+  QUIT
+ ENDIF 
+RETURN Nil
+
+
+* =================================== EOF of colrbloc.prg ==============================

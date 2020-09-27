@@ -240,10 +240,12 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
    IF lRes == Nil ; lRes := .F. ; ENDIF
    IF lOEM == Nil ; lOEM := .F. ; ENDIF
    IF ::oImage == nil
+      * Ticket #60
+      // hwg_writelog( "::oImage == nil" + Str(nWidth) + "/" + str(nHeight) )
       ::oImage := iif( lRes .OR. ValType( Image ) == "N",  ;
-         HIcon():AddResource( Image, , , , lOEM ),  ;
+         HIcon():AddResource( Image, nWidth , nHeight , , lOEM ),  ;
          iif( ValType( Image ) == "C",    ;
-         HIcon():AddFile( Image ), Image ) )
+         HIcon():AddFile( Image , nWidth , nHeight  ), Image ) )
    ENDIF
    ::Activate()
 
@@ -271,3 +273,6 @@ METHOD Init() CLASS HSayIcon
    ENDIF
 
    RETURN Nil
+
+* ======================== EOF of hsayimg.prg =========================
+

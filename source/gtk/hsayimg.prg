@@ -178,9 +178,12 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := iif( lRes .OR. ValType( Image ) == "N", ;
-      HIcon():AddResource( Image ),  ;
+      HIcon():AddResource( Image , nWidth, nHeight ),  ;
       Iif( ValType( Image ) == "C",  ;
-      HIcon():AddFile( Image ), Image ) )
+      HIcon():AddFile( Image , nWidth, nHeight ), Image ) )
    ::Activate()
 
    RETURN Self
+   
+* ====================== EOF of hsayimg.prg ========================
+   

@@ -495,16 +495,25 @@ CLASS HIcon INHERIT HObject
    DATA nCounter   INIT 1
    DATA nWidth, nHeight
 
-   METHOD AddResource( name )
-   METHOD AddFile( name, HDC )
-   METHOD AddString( name, cVal )
+   METHOD AddResource( name , nWidth, nHeight , nFlags, lOEM )
+   METHOD AddFile( name, nWidth, nHeight )
+   METHOD AddString( name, cVal , nWidth, nHeight )
    METHOD RELEASE()
 
 ENDCLASS
 
-METHOD AddResource( name ) CLASS HIcon
+METHOD AddResource( name , nWidth, nHeight , nFlags, lOEM ) CLASS HIcon
+* For compatibility to WinAPI the parameters nFlags and lOEM are dummys  
    LOCAL lPreDefined := .F. , i , cTmp
-
+ 
+/* 
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
+*/
    IF ValType( name ) == "N"
       name := LTrim( Str( name ) )
       lPreDefined := .T.
@@ -539,8 +548,16 @@ METHOD AddResource( name ) CLASS HIcon
 
    RETURN Self
 
-METHOD AddFile( name ) CLASS HIcon
+METHOD AddFile( name , nWidth, nHeight ) CLASS HIcon
+
    LOCAL i, aBmpSize
+   
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF   
 
    For EACH i IN  ::aIcons
       IF i:name == name
@@ -557,8 +574,20 @@ METHOD AddFile( name ) CLASS HIcon
    IF !Empty( ::handle )
       ::name := name
       aBmpSize  := hwg_Getbitmapsize( ::handle )
-      ::nWidth  := aBmpSize[1]
-      ::nHeight := aBmpSize[2]
+
+//      ::nWidth  := aBmpSize[1]
+//      ::nHeight := aBmpSize[2]
+      IF  nWidth > 0
+       ::nWidth := nWidth
+      ELSE
+       ::nWidth  := aBmpSize[ 1 ]
+      ENDIF
+      IF nHeight > 0
+       ::nHeight := nHeight
+      ELSE
+       ::nHeight := aBmpSize[ 2 ]
+      ENDIF
+
       AAdd( ::aIcons, Self )
    ELSE
       hwg_MsgStop("Can not load icon: >" + name + "<")
@@ -572,9 +601,16 @@ METHOD AddFile( name ) CLASS HIcon
  name : Name of resource
  cVal : Binary contents of *.ico file 
  */
-METHOD AddString( name, cVal ) CLASS HIcon
+METHOD AddString( name, cVal , nWidth, nHeight ) CLASS HIcon
 
  LOCAL i , cTmp , aBmpSize
+ 
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
 
    For EACH i IN ::aIcons
       IF i:name == name

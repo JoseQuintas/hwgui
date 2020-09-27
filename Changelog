@@ -8,6 +8,39 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-27 11:20 UTC+0200 Wilfried Brunken DF7BE
+  * image/exclmk_trsp.ico (New)
+  * source/gtk/drawwidg.prg
+  * source/gtk/hsayimg.prg
+  * source/winapi/drawwidg.prg
+  * source/winapi/hsayimg.prg
+  * test/Ticket60.prg  (New)
+  * test/Ticket60.rc  (New)
+  * test/bldmingw.bat  (New)
+  * test/gtk_test/build.sh  (New)
+  * test/gtk_test/hwmingnw.bat  (New)
+  * doc/hwgdoc_commands.html
+    ! Ticket #60:
+    ! Fix for WinAPI done.
+    ! Size parameters must be set at creating
+    ! HICON object.
+    ! Docu updated for @ x,y ICON ...
+    ! LINUX to be continued:
+    ! No resize possible.
+    ! Need to read a lot of GTK reference docu.
+    ! (I'll do it ASAP).
+    ! Directory "test" with  subdir "gtk_test"
+    ! added for handling tickets, bugfixing
+    ! and developing purposes.
+    ! The test programs must not be runnable,
+    ! so also for documentation purposes.
+    ! Parameter write:
+    ! lTranparent ==> lTransparent
+  * samples/colrbloc.prg 
+    ! Now valid resources. 
+    ! (OWNERBUTTONs for skipping in browse list).
+
+
 2020-09-20 23:10 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_commands.html

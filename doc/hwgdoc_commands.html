@@ -797,7 +797,29 @@
                 [ TOOLTIP &lt;ctoolt&gt; ]
     </pre>
     <p>
-    Supported image formats see documentation for CLASS HICON.
+    Supported image formats see documentation for CLASS HICON.<br>
+    <br>
+    Because of bugs in recent version:<br>
+    GTK:<br>
+    At this time, the resizing of icons does not work.<br>
+    The icon is displayed forever in original size.<br>
+    Will be fixed as soon als possible.<br>
+    WinAPI:<br>
+    The SIZE parameter has no effect. Do not use it.<br>
+    Size parameters must be set at creating HICON object (example calls):<br>
+    oIcon := HIcon():AddFile(cImgok,75,75)<br>
+    oIcon := HIcon():AddResource("ICON_1",75,75)<br>
+    oIcon := HIcon():AddString("ok",cValok,75,75 )<br>
+    <br>
+    Hint:<br>
+    Because icons are used normally for display in link on the desktop,<br>
+    Windows task bar or head bar of a main window or dialog window,<br>
+    it is recommended not to display an icon in a window.<br>
+    Please convert the *.ico to *.bmp and use the @ x,y BITMAP command instead.<br>
+    <br>
+    Background:<br>
+    The background of an icon is forever transparent. But the<br> 
+    background is forever displayed in white color.<br> 
     </p>
 
     <br><a name="Commands3-29" href="#_Commands3-29">4.3.29.  @ &lt;x&gt;,&lt;y&gt; IMAGE</a>

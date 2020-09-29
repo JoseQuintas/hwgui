@@ -8,6 +8,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-29 23:15 UTC+0200 Wilfried Brunken DF7BE
+  * test/Readme.txt
+  * test/Ticket27.hbp
+  * test/Ticket27.prg
+    ! Support Ticket #27:
+    ! Test sample for multithreading and mutex lock.
+    ! To be continued for LINUX.
+  * samples/Readme.txt
+    ! Hint for offline reading of document
+    ! "Harbour for beginners", how to extract *.chm file.
+  * doc/hwgdoc_functions.html
+    ! hwg_GetUTCTimeDate():
+    ! Hint, that output format is independent by settings of:
+    ! SET DATE ... and SET CENTURY ...
+
+
 2020-09-27 22:30 UTC+0200 Wilfried Brunken DF7BE
   * samples/colrbloc.prg
     ! Ready for LINUX.
@@ -22474,3 +22490,7 @@
    * source/Makefile
    + source/misc.c
      * Committed changes, included in the patch (29.10.2003)
+
+* ======================= EOF of Changelog =======================
+
+

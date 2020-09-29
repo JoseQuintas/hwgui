@@ -11,7 +11,11 @@ For beginners:
 
 1.1.) Read the Article of Alexander Kresin "Harbour for Beginners", it is a very good introduction
       into Harbour programming language: 
-      http://www.kresin.ru/en/hrbfaq.html
+       http://www.kresin.ru/en/hrbfaq.html
+      Hint for offline reading:
+      Download the *.chm file with complete manual
+      and extract it with 7zip. Now you can open the
+      HTML files with your preferred browser. 
 
 1.2.) Compile and run the editorial in directory utils\tutorial
       Interactive - because you

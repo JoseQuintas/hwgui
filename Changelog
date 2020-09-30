@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-09-30 22:30 UTC+0200 Wilfried Brunken DF7BE
+  * samples/testfunc.prg
+  * source/gtk/hmisc.prg
+  * source/gtk/inter.c
+  * source/winapi/control.c
+  * source/winapi/hmisc.prg
+  * doc/hwgdoc_functions.html
+    ! Added new functions (with docu update):
+    ! hwg_GetDateANSI()
+    ! hwg_GetUTCDateANSI()
+    ! hwg_GetUTCTime()
+
+
 2020-09-29 23:15 UTC+0200 Wilfried Brunken DF7BE
   * test/Readme.txt
   * test/Ticket27.hbp

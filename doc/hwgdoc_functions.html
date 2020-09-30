@@ -1898,7 +1898,7 @@
    <p></p> 
    
 
-    <br><strong class="subhead"> hwg_GetUTCTimeDate()</strong><br>
+   <br><strong class="subhead"> hwg_GetUTCTimeDate()</strong><br>
    Returns a string with date and time in UTC.<br>
    This function is platform independant.<br>
    Output format is: W,YYYYMMDD-HH:MM:SS<br>
@@ -1908,6 +1908,34 @@
    The output format is independent by settings of:<br>
    - SET DATE ...<br>
    - SET CENTURY ...<br>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetDateANSI()</strong><br>
+   Returns a string with date in ANSI format.<br>
+   This function is platform independant.<br>
+   Output format is: YYYYMMDD, based on local time.<br>
+   The output format is independent by settings of:<br>
+   - SET DATE ...<br>
+   - SET CENTURY ...<br>
+   If ANSI date is part of a file name, the files are listed<br>
+   in correct order sorted by date.<br> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetUTCDateANSI()</strong><br>
+   Returns a string with date in ANSI format.<br>
+   This function is platform independant.<br>
+   Output format is: YYYYMMDD, based on UTC.<br>
+   The output format is independent by settings of:<br>
+   - SET DATE ...<br>
+   - SET CENTURY ...<br>
+   If ANSI date is part of a file name, the files are listed<br>
+   in correct order sorted by date.<br> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetUTCTime()</strong><br>
+   Returns a string with UTC time.<br>
+   This function is platform independant.<br>
+   Output format is: HH:MM:SS (same as TIME() ).<br>
    <p></p>
 
    <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)

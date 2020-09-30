@@ -125,6 +125,37 @@ HB_FUNC( HWG_GETUTCTIMEDATE )
 #endif
 }
 
+HB_FUNC( HWG_GETDATEANSI )
+{
+/* Format: YYYYMMDD, based on local time */
+  char cst[128] = { 0 };
+  char * puf = malloc(25);
+  int i;
+  for ( i = 0 ; i < 128 ; i++) /* Fill string with zeroes to avoid buffer overflow on LINUX */
+    cst[i] = '\0';
+#if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
+  SYSTEMTIME lt = { 0 };
+  GetLocalTime(&lt);
+  sprintf(cst,"%04d%02d%02d", lt.wYear, lt.wMonth, lt.wDay);
+  strncpy(puf, cst, 24); 
+  hb_retc( puf);
+  free( puf);
+#else
+/* Note for possible extensions:
+    tm.tm_yday;    Days since Jan. 1: 0-365 
+    tm.tm_isdst;   +1 Daylight Savings Time, 0 No DST,
+                     * -1 don't know
+   Use localtime ( &T ); for local time
+*/
+  time_t T = time( NULL );
+  struct tm tm = * localtime( &T );
+  /* tm.tm_wday: Days since Sunday (0-6) */
+  sprintf(cst,"%04d%02d%02d", tm.tm_year + 1900,  tm.tm_mon + 1, tm.tm_mday );
+  strncpy(puf, cst, 24);
+  hb_retc( puf );
+  free( puf );
+#endif
+}
 
 
 HB_FUNC( HWG_DEFUSERLANG )

@@ -1781,6 +1781,11 @@ HB_FUNC( HWG_CREATETOOLBAR )
 
 }
 
+/*
+   hwg_Toolbaraddbuttons( handle, aItem, nLen )
+   nLen : Set to Len(aItem )
+*/
+
 HB_FUNC( HWG_TOOLBARADDBUTTONS )
 {
 
@@ -2280,6 +2285,16 @@ HB_FUNC( HWG_GETUTCTIMEDATE )
   char cst[41] = { 0 };
   GetSystemTime(&st);
   sprintf(cst,"%01d.%04d%02d%02d-%02d:%02d:%02d",st.wDayOfWeek, st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+  HB_RETSTR(cst);
+}
+
+HB_FUNC( HWG_GETDATEANSI )
+/* Format: YYYYMMDD, based on local time */
+{
+  SYSTEMTIME lt = { 0 };
+  char cst[41] = { 0 };
+  GetLocalTime(&lt);
+  sprintf(cst,"%04d%02d%02d", lt.wYear, lt.wMonth, lt.wDay);
   HB_RETSTR(cst);
 }
 

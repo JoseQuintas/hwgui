@@ -52,6 +52,14 @@ RETURN hwg_CurDrive() + CurDir()
 RETURN "/" + CurDir()
 #endif
 
+FUNCTION hwg_GetUTCDateANSI
+* Format: YYYYMMDD, based on UTC
+RETURN SUBSTR(hwg_GetUTCTimeDate(), 3 , 8 )
+
+FUNCTION hwg_GetUTCTime
+* Format: HH:MM:SS
+RETURN SUBSTR(hwg_GetUTCTimeDate(), 12 , 8 ) 
+
 * ================================= * 
 FUNCTION hwg_cHex2Bin (chexstr)
 * Converts a hex string to binary

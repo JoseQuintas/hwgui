@@ -353,27 +353,33 @@ STATIC FUNCTION ReadHrb()
    RETURN Nil
 
 STATIC FUNCTION ReadIni()
-   LOCAL oInit, i
+   LOCAL oInit, i , cxmlfile
 
-   oIni := HXMLDoc():Read( cIniPath + "hwgdebug.xml" )
-   IF !Empty( oIni:aItems ) .AND. oIni:aItems[1]:title == "init"
-      oInit := oIni:aItems[1]
-      FOR i := 1 TO Len( oInit:aItems )
-         IF oInit:aItems[i]:title == "module"
-         ELSEIF oInit:aItems[i]:title == "path"
-            cPaths := oInit:aItems[i]:aItems[1]
-            IF Left( cPaths, 1 ) != ";"
-               cPaths := ";" + cPaths
-            ENDIF
-         ELSEIF oInit:aItems[i]:title == "font"
-            oMainFont := hwg_hfrm_FontFromXML( oInit:aItems[i], .T. )
-         ELSEIF oInit:aItems[i]:title == "maxtabs"
-            nTabsMax := Val( oInit:aItems[i]:aItems[1] )
-         ELSEIF oInit:aItems[i]:title == "hrbpath"
-            cHrbPath := oInit:aItems[i]:aItems[1]
-         ENDIF
-      NEXT
-   ENDIF
+   cxmlfile := cIniPath + "hwgdebug.xml"
+   IF FILE(cxmlfile)
+   * DF7BE: crashes here, object oIni not constructed, if file not existing !
+    oIni := HXMLDoc():Read( cxmlfile )
+    IF !Empty( oIni:aItems ) 
+     IF oIni:aItems[1]:title == "init"
+       oInit := oIni:aItems[1]
+       FOR i := 1 TO Len( oInit:aItems )
+          IF oInit:aItems[i]:title == "module"
+          ELSEIF oInit:aItems[i]:title == "path"
+             cPaths := oInit:aItems[i]:aItems[1]
+             IF Left( cPaths, 1 ) != ";"
+                cPaths := ";" + cPaths
+             ENDIF
+          ELSEIF oInit:aItems[i]:title == "font"
+             oMainFont := hwg_hfrm_FontFromXML( oInit:aItems[i], .T. )
+          ELSEIF oInit:aItems[i]:title == "maxtabs"
+             nTabsMax := Val( oInit:aItems[i]:aItems[1] )
+          ELSEIF oInit:aItems[i]:title == "hrbpath"
+             cHrbPath := oInit:aItems[i]:aItems[1]
+          ENDIF
+       NEXT
+     ENDIF
+    ENDIF
+   ENDIF && FILE
 #ifdef __HCEDIT__
    oHighLighter := Hilight():New( cIniPath + "hilight.xml", "prg" )
 #endif
@@ -2341,3 +2347,6 @@ STATIC FUNCTION ExitDbg()
    ENDIF
 
    RETURN .T.
+
+* ===================== EOF of hwgdebug.prg ========================
+   

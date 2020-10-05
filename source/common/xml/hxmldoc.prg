@@ -29,7 +29,7 @@ CLASS HXMLNode
    DATA aItems  INIT {}
    DATA aAttr   INIT {}
    DATA cargo
-   DATA aItems  INIT {}
+//   DATA aItems  INIT {}
 
    METHOD New( cTitle, type, aAttr )
    METHOD Add( xItem )
@@ -273,3 +273,5 @@ Local cEncod, i, s
       ENDIF
    ENDIF
 Return .T.
+
+* ======================= EOF of hxmldoc.prg ========================

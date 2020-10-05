@@ -1,0 +1,16 @@
+#
+# $Id$
+#
+
+
+-b
+-n -w
+
+-osample
+
+sample.prg
+
+..\..\hwgui.hbc
+
+# ===================== EOF of sample.hbp ====================
+

@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-10-05 22:45 UTC+0200 Wilfried Brunken DF7BE
+  * source/common/xml/hxmldoc.prg
+  * utils/debugger/hwgdebug.prg
+  * utils/debugger/sample.hbp (New)
+  * utils/debugger/sample.prg (New)
+    ! Ticket #62 (with new sample) for WinAPI
+    ! To be continued: Check for LINUX.
+
+
 2020-09-30 22:30 UTC+0200 Wilfried Brunken DF7BE
   * samples/testfunc.prg
   * source/gtk/hmisc.prg

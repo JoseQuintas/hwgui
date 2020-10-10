@@ -318,8 +318,32 @@ CLASS HBitmap INHERIT HObject
    METHOD AddStandard( cId, nSize )
    METHOD AddWindow( oWnd, x1, y1, width, height )
    METHOD Release()
+   METHOD OBMP2FILE( cfilename , name )
 
 ENDCLASS
+
+/*
+ Stores a bitmap in a file from object
+*/
+METHOD OBMP2FILE( cfilename , name ) CLASS HBitmap
+
+LOCAL i , hbmp
+
+   hbmp := NIL
+   * Search for bitmap in object
+   FOR EACH i IN ::aBitmaps
+      IF i:name == name 
+         hbmp := i:handle
+      ELSE
+        * not found
+        RETURN NIL
+      ENDIF
+   NEXT
+   
+   hwg_SaveBitMap(cfilename, hbmp )
+
+RETURN NIL    
+
 
 METHOD AddResource( name ) CLASS HBitmap
 /*

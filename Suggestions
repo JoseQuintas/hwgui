@@ -44,11 +44,12 @@ DESIGNER :
    ADD BITMAP
 
 
-
+============ DONE ============
+==> HBROWSE class
 2004-09-08 14-00 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
 New class similar to TBROWSE
 
-
+============ DONE ============
 2004-08-13 12-30 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
 DESIGNER
 Open and save project in format PRG
@@ -63,9 +64,12 @@ Analyzed for ->
 Made For     ->
 It's possible (  ) Yes   (  ) No
 
+============ DONE ============
 2004-07-22 08-44 UTC-0300 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
 In Browse include the comand ON CLICKHEADER
 Analyzed for ->
 Made For     ->
 It's possible (  ) Yes   (  ) No
+
+* =================== EOF of Suggestions =======================
 

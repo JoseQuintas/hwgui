@@ -49,9 +49,10 @@
   - NLS , set printer character set in comboxbox.
     Try to find your correct language setting for your printer model.
     (Main menu appeared in selected language only after restart, so store language setting in ini file)
+  - Added PrintBitmap
 
     Special hints for test and development without printer uaage:
-    Windows 10: You can install a virtuel printer driver named "Print to PDF" to redirect the printer data.
+    Windows 10: You can install a virtual printer driver named "Print to PDF" to redirect the printer data.
     LINUX: The Printer dialog of the system allows redirection into a PDF file.
 */
 
@@ -66,7 +67,7 @@
 
 
 * ***********************
-* * REQUSTS             *
+* * REQUESTS            *
 * ***********************
 
 * === Russian ===
@@ -98,14 +99,16 @@ REQUEST HB_CODEPAGE_UTF8
 * ---------------------------------------------
 Function Main
 * ---------------------------------------------
- Local oMainWindow
- PUBLIC aMainMenu , aLanguages , aPriCharSets , att_priprev, clangset, cIniFile, cTitle
- PUBLIC nPrCharset, nchrs
+ LOCAL oMainWindow 
+ LOCAL cDirSep := hwg_GetDirSep()
  
+ PUBLIC aMainMenu , aLanguages , aPriCharSets , att_priprev, clangset, cIniFile, cTitle
+ PUBLIC nPrCharset, nchrs , cImageDir
+ PUBLIC cHexAstro , cValAstro , oBitmap1 , oBitmap2
 
    /* Names of supported languages, use only ANSI charset, displayed in language selection dialog */ 
    aLanguages := { "English", "Deutsch" }
-//   cIniFile := "language.ini"
+   //   cIniFile := "language.ini"
 
    /* Preset defaults */
    nPrCharset := 0
@@ -119,9 +122,33 @@ Function Main
 * and set to new language, if modified
  Select_LangDia(aLanguages)
  
+* ==== Handle Resources ====
 
+* Fill variables with hex values
+ Init_Hexvars()
  
-* Menu 
+#ifdef __GTK__
+ cImageDir := ".." + cDirSep + ".." + cDirSep + "image" + cDirSep
+#else 
+ cImageDir := ".." + cDirSep + "image" + cDirSep
+#endif 
+ 
+ CHECK_FILE(cImageDir + "hwgui.bmp")  && 301 x 160 pixel
+ 
+ * Convert them all to binary.
+ cValAstro := hwg_cHex2Bin ( cHexAstro )
+
+ * Load contents from hex resources into image objects.
+ * astro.bmp
+ oBitmap1 := HBitmap():AddString( "astro", cValAstro )  && original size (Width x Height): 107 x 90 Pixel
+ 
+ // not working yet:
+ // oBitmap2 := HBitmap():AddString( "astro", cValAstro , 428 , 360) && resized x 4
+ 
+ // Test
+ // oBitmap1:OBMP2FILE( "test.bmp" , "astro" )
+ 
+* Main Menu 
 
    INIT WINDOW oMainWindow MAIN TITLE cTitle ;
      AT 0,0 SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
@@ -148,6 +175,15 @@ Function Main
  
 RETURN NIL
 
+#ifdef __GTK__
+#ifdef __PLATFORM__WINDOWS
+#include "..\hexres.ch"
+#else
+#include "../hexres.ch"
+#endif
+#else
+#include "hexres.ch"
+#endif
 
 * ---------------------------------------------
 FUNCTION Set_Maintitle(omnwnd,ctit)
@@ -322,6 +358,16 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    FOR i := 1 TO 80
       oWinPrn:PrintLine( Padl( i,3 ) + " --------" )
    NEXT
+   
+   * Print a bitmap in several ways
+   oWinPrn:NextPage()
+   oWinPrn:PrintLine("From file >hwgui.bmp<")
+   oWinPrn:PrintBitmap( cImageDir + "hwgui.bmp" )
+   * astro.bmp   
+   oWinPrn:PrintLine("From Hex value")
+   oWinPrn:PrintBitmap( oBitmap1 , , "astro")
+   // oWinPrn:PrintLine("From Hex value, size x 4")
+   // oWinPrn:PrintBitmap( oBitmap2 , , "astro")
 
    oWinPrn:End()
 
@@ -616,13 +662,24 @@ FUNCTION Select_LangDia(acItems)
 * --------------------------------------------
 LOCAL result
  result := __frm_CcomboSelect(acItems,"Language","Please Select a language", ;
-   120 , "OK" , "Cancel", "Help" , "Need Help : " , "HELP !" )
+   200 , "OK" , "Cancel", "Help" , "Need Help : " , "HELP !" )
  IF result != 0
   * set to new language, if modified
   clangset := aLanguages[result] 
   NLS_SetLang(clangset)
   hwg_MsgInfo("Language set to " + clangset,"Language Setting")
  ENDIF
-RETURN NIL 
+RETURN NIL
+
+* --------------------------------------------
+FUNCTION CHECK_FILE ( cfi )
+* Check, if file exist,
+* otherwise terminate program
+* --------------------------------------------
+ IF .NOT. FILE( cfi )
+  Hwg_MsgStop("File >" + cfi + "< not found, program terminated","File ERROR !")
+  QUIT
+ ENDIF 
+RETURN Nil
 
 * ============================= EOF of winprn.prg =========================================

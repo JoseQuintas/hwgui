@@ -8,6 +8,28 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-10-10 23:59 UTC+0200 Wilfried Brunken DF7BE
+  * samples/gtk_samples/build.sh
+  * samples/gtk_samples/winprn.prg
+  * samples/hexres.ch
+  * samples/winprn.prg
+  * source/gtk/draw.c
+  * source/gtk/drawwidg.prg
+  * source/gtk/hwinprn.prg
+  * source/winapi/draw.c
+  * source/winapi/drawwidg.prg
+  * source/winapi/hwinprn.prg
+  * doc/hwgdoc_classes.html
+    ! Ticket #64, TNX HKrzak:
+    ! Recovered METHOD 
+    ! PrintBitmap() CLASS HWinPrn
+    ! with extension for bitmap objects.
+    ! To be continued for GTK:
+    ! Y position calculation.
+    ! Works correct on WinAPI.
+  * Suggestions
+    ! Marked done tasks 
+
 2020-10-05 22:45 UTC+0200 Wilfried Brunken DF7BE
   * source/common/xml/hxmldoc.prg
   * utils/debugger/hwgdebug.prg

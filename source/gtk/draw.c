@@ -489,6 +489,12 @@ HB_FUNC( HWG_GETBITMAPSIZE )
    
 }
 
+
+/*
+  hwg_Openbitmap( cBitmap )
+  cBitmap : File name of bitmap
+  returns handle to pixbuffer
+*/
 HB_FUNC( HWG_OPENBITMAP )
 {
    PHWGUI_PIXBUF hpix;

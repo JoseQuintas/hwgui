@@ -1442,6 +1442,7 @@
       AddWindow( oWnd, x1, y1, width, height )  - Creates a bitmap from a given window.
       Draw( hDC, x1, y1, width, height )
       Release()
+      OBMP2FILE( cfilename , name )  - Writes a bitmap object into file
    </pre>
    Supported image formats:<br>
    Windows: bmp, jpg<br>
@@ -1731,6 +1732,7 @@
       StartDoc( lPreview,cMetaName )
       NextPage()
       PrintLine( cLine,lNewLine )
+      PrintBitmap( xBitmap, nAlign , cBitmapName ) 
       PrintText( cText )
       PutCode( cText )
       EndDoc()

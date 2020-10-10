@@ -698,6 +698,11 @@ HB_FUNC( HWG_GETICONSIZE )
    hb_itemRelease( aMetr );
 }
 
+/*
+  hwg_Openbitmap( cBitmap, hDC )
+  cBitmap : File name of bitmap
+  hDC     : Printer device handle 
+*/
 HB_FUNC( HWG_OPENBITMAP )
 {
    BITMAPFILEHEADER bmfh;
@@ -799,6 +804,10 @@ HB_FUNC( HWG_OPENBITMAP )
    HB_RETHANDLE( hbm );
 }
 
+
+/*
+ *  hwg_SaveBitMap( cfilename , hBitmap )
+ */
 HB_FUNC( HWG_SAVEBITMAP )
 {
    HBITMAP hBitmap = (HBITMAP) HB_PARHANDLE( 2 );

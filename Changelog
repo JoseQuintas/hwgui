@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-10-15 23:50 UTC+0200 Wilfried Brunken DF7BE
+  * utils/editor/editor.prg
+    ! Ticket #65
+
 2020-10-10 23:59 UTC+0200 Wilfried Brunken DF7BE
   * samples/gtk_samples/build.sh
   * samples/gtk_samples/winprn.prg

@@ -155,7 +155,7 @@ FUNCTION Main ( fName )
    oStyle3 := HStyle():New( {CLR_LBLUE1}, 1,, 2, CLR_LBLUE0 )
 
    INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
-      AT 200, 0 SIZE 600, 300 FONT oFont
+      AT 200, 0 SIZE 900, 600 FONT oFont   && old: 600, 300
 
 #ifndef __PLATFORM__WINDOWS
    @ 80, 0 PANEL oToolBar SIZE oMainWindow:nWidth-80, 30 STYLE SS_OWNERDRAW ;
@@ -2247,16 +2247,18 @@ STATIC FUNCTION ReadIni( cPath )
    LOCAL oIni := HXMLDoc():Read( cPath + "editor.ini" )
    LOCAL oNode, i, j
 
-   IF !Empty( oIni:aItems )
-      FOR i := 1 TO Len( oIni:aItems[1]:aItems )
-         oNode := oIni:aItems[1]:aItems[i]
-         IF oNode:title == "recent"
-            FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
-               Aadd( aFilesRecent, Trim( oNode:aItems[j]:GetAttribute("name") ) )
-            NEXT
-         ENDIF
-      NEXT
-   ENDIF
+   IF FILE(cPath + "editor.ini")   
+    IF !Empty( oIni:aItems )
+       FOR i := 1 TO Len( oIni:aItems[1]:aItems )
+          oNode := oIni:aItems[1]:aItems[i]
+          IF oNode:title == "recent"
+             FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
+                Aadd( aFilesRecent, Trim( oNode:aItems[j]:GetAttribute("name") ) )
+             NEXT
+          ENDIF
+       NEXT
+    ENDIF
+   ENDIF 
 
    RETURN Nil
 

@@ -1062,6 +1062,10 @@ HB_FUNC( HWG_LOADCURSOR )
       HB_RETHANDLE( gdk_cursor_new( ( GdkCursorType ) hb_parni( 1 ) ) );
 }
 
+/*
+ Hwg_SetCursor(objecthandle , areahandle )
+ area : for example return value of Select() in HBROWSE
+*/
 HB_FUNC( HWG_SETCURSOR )
 {
    GtkWidget *widget =

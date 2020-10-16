@@ -8,6 +8,13 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-10-16 16:00 UTC+0200 Wilfried Brunken DF7BE
+  * source/gtk/control.c
+  * source/gtk/hbrowse.prg
+    ! Bugfix detected during developing of CLLOG:
+    ! HBROWSE/GTK: Fast cursor move with mouse wheel
+    ! let lines blank.
+
 2020-10-15 23:50 UTC+0200 Wilfried Brunken DF7BE
   * utils/editor/editor.prg
     ! Ticket #65

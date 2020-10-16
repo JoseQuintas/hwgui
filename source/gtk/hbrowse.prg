@@ -241,6 +241,7 @@ CLASS HBrowse INHERIT HControl
    METHOD RefreshLine()
    METHOD Refresh( lFull )
    METHOD Setfocus() INLINE hwg_SetFocus( ::area )
+   METHOD Repaint()  // only internal usage on GTK
    METHOD End()
 
 ENDCLASS
@@ -302,6 +303,7 @@ METHOD Activate CLASS HBrowse
 
    RETURN Self
 
+/* Event handler */
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
    LOCAL aCoors, retValue := - 1
@@ -394,21 +396,27 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          retValue := 1
 
       ELSEIF msg == WM_LBUTTONDOWN
+         // hwg_WriteLog( "Brw: WM_LBUTTONDOWN" )
          ::ButtonDown( lParam )
 
       ELSEIF msg == WM_LBUTTONUP
+         // hwg_WriteLog( "Brw: WM_LBUTTONUP" )
          ::ButtonUp( lParam )
 
       ELSEIF msg == WM_LBUTTONDBLCLK
+         // hwg_WriteLog( "Brw: WM_LBUTTONDBLCLK" )
          ::ButtonDbl( lParam )
 
       ELSEIF msg == WM_RBUTTONDOWN
+         // hwg_WriteLog( "Brw: WM_RBUTTONDOWN" )
          ::ButtonRDown( lParam )
 
       ELSEIF msg == WM_MOUSEMOVE
+         // hwg_WriteLog( "Brw: WM_MOUSEMOVE" ) 
          ::MouseMove( wParam, lParam )
 
       ELSEIF msg == WM_MOUSEWHEEL
+         // hwg_WriteLog( "Brw: WM_MOUSEWHEEL" )
          ::MouseWheel( hwg_Loword( wParam ), ;
             If( hwg_Hiword( wParam ) > 32768, ;
             hwg_Hiword( wParam ) - 65535, hwg_Hiword( wParam ) ), ;
@@ -1693,6 +1701,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
                   IF ::nCursor != 2
                      ::nCursor := 1
                   ENDIF
+                  // hwg_WriteLog( "Brw: Hwg_SetCursor 1" )
                   Hwg_SetCursor( Iif( ::nCursor == 1,crossCursor,vCursor ), ::area )
                   res := .T.
                ENDIF
@@ -1702,15 +1711,19 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
          ENDDO
       ENDIF
       IF !res .AND. ::nCursor != 0
+         // hwg_WriteLog( "Brw: Hwg_SetCursor 2" )
          Hwg_SetCursor( arrowCursor, ::area )
          ::nCursor := 0
       ENDIF
    ENDIF
 
+   ::Repaint()
+
    RETURN Nil
 
 METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
-
+  
+   // hwg_WriteLog( "Brw: MouseWheel" )
    IF Hwg_BitAnd( nKeys, MK_MBUTTON ) != 0
       IF nDelta > 0
          ::PageUp()
@@ -1724,7 +1737,9 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
          ::LineDown()
       ENDIF
    ENDIF
-
+   /* DF7BE : blank lines repainted here, if lost */
+   ::Refresh()
+   hwg_Setfocus( ::area )
    RETURN Nil
 
 METHOD Edit( wParam, lParam ) CLASS HBrowse
@@ -1829,6 +1844,17 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
       ENDIF
    ENDIF
 
+   RETURN Nil
+
+
+METHOD Repaint() CLASS HBrowse
+   /*
+     only internal usage: 
+     DF7BE : blank lines repainted, if lost.
+     Reference: Bug Ticket #33
+   */
+   ::Refresh()
+   hwg_Setfocus( ::area )
    RETURN Nil
 
 
@@ -2169,3 +2195,5 @@ FUNCTION hwg_getPaintCB( arr, nId )
 
    RETURN aRes
   
+* ======================= EOF of hbrowse.prg =====================
+

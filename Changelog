@@ -8,6 +8,10 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-10-17 10:10 UTC+0200 Wilfried Brunken DF7BE
+  * hwgui.hbm
+    ! Ticket #65, the 2nd.
+
 2020-10-16 16:00 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/control.c
   * source/gtk/hbrowse.prg

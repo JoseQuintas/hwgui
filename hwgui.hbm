@@ -93,6 +93,7 @@
 {unix}source/gtk/menu_c.c
 {unix}source/gtk/message.c
 {unix}source/gtk/misc.c
+{unix}source/gtk/inter.c
 
 {unix}source/gtk/drawwidg.prg
 {unix}source/gtk/herrsys.prg
@@ -125,3 +126,6 @@
 {unix}source/gtk/hmonthc.prg
 {unix}source/gtk/hmisc.prg
 {unix}source/gtk/menu.prg
+
+# ---------------- EOF of hwgui.hbm ------------------------------
+

@@ -132,6 +132,7 @@ FUNCTION Main ( fName )
    LOCAL oStyle1, oStyle2, oStyle3
    LOCAL aComboSiz := { "50%", "60%", "80%", "90%", cComboSizDef, "110%", "120%", "130%", "140%", "150%", "160%", "180%", "200%", "240%", "280%" }
    LOCAL x1
+   LOCAL obtn
 
    PRIVATE handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
 
@@ -155,24 +156,39 @@ FUNCTION Main ( fName )
    oStyle3 := HStyle():New( {CLR_LBLUE1}, 1,, 2, CLR_LBLUE0 )
 
    INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
-      AT 200, 0 SIZE 900, 600 FONT oFont   && old: 600, 300
+      AT 200, 0 SIZE 600, 300 FONT oFont
 
-#ifndef __PLATFORM__WINDOWS
-   @ 80, 0 PANEL oToolBar SIZE oMainWindow:nWidth-80, 30 STYLE SS_OWNERDRAW ;
-         ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
+   * Alexander S.Kresin - 2019-12-13
+   *    @ 0,272 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1,y-8)}
+   * The third and forth parameters of the :Move() method are not left and bottom coordinates,
+   * they are width and height. In this line you try to set height. which will overfill
+   * a parent window. Don't know why, this causes a serious internal error in gtk.
+   * So, just set a correct parameters:
+   *    @ 0,272 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1,26)}
+   * In fact, it isn't necessary to set height here at all, if you don't want to change it:
+   *    @ 0,272 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1)}
+   *
+   * old: ON SIZE {|o,x|o:Move(,,x)
+ 
+#ifdef __GTK__
+   * LINUX and GTK cross development environment
+   @ 80, 0 PANEL oToolBar SIZE oMainWindow:nWidth-80 , 30 STYLE SS_OWNERDRAW ;
+         ON SIZE {|o,x,y|o:Move(0,y-30,x) } ON PAINT {|o| PaintTB( o ) }
    @ 0,2 COMBOBOX oComboSiz ITEMS aComboSiz INIT Ascan( aComboSiz,cComboSizDef ) ;
          SIZE 80, 26 DISPLAYCOUNT 6 ON CHANGE {||onBtnSize()} TOOLTIP "Font size in %"
    x1 := 2
 #else
+   * Windows 
    @ 0, 0 PANEL oToolBar SIZE oMainWindow:nWidth, 30 STYLE SS_OWNERDRAW ;
          ON SIZE {|o,x|o:Move(,,x) } ON PAINT {|o| PaintTB( o ) }
    @ 0,2 COMBOBOX oComboSiz ITEMS aComboSiz OF oToolBar INIT Ascan( aComboSiz,cComboSizDef ) ;
          SIZE 80, 26 DISPLAYCOUNT 6 ON CHANGE {||onBtnSize()} TOOLTIP "Font size in %"
    x1 := 82
 #endif
+
    oToolBar:brush := 0
 
-   @ x1,0 OWNERBUTTON aButtons[1] OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
+   @ x1   ,0 OWNERBUTTON aButtons[1] OF oToolBar ON CLICK {|| onBtnStyle(1) } ;
        SIZE 30,30 TEXT "B" FONT oMainWindow:oFont:SetFontStyle( .T. ) CHECK
    aButtons[1]:aStyle := { oStyle1,oStyle2,oStyle3 }
    aButtons[1]:cargo := "fb"
@@ -191,11 +207,13 @@ FUNCTION Main ( fName )
 
    @ x1+124,0 OWNERBUTTON OF oToolBar ON CLICK {|| onBtnColor() } ;
        SIZE 30,30 TEXT "A" FONT oMainWindow:oFont:SetFontStyle( .T.,,.F.,.T. )
+
    Atail(oToolBar:aControls):aStyle := { oStyle1,oStyle2,oStyle3 }
 
-   @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW  ON SIZE {|o,x|o:Move(,,x) }
+   @ 0, 30 PANEL oRuler SIZE oMainWindow:nWidth, 0 STYLE SS_OWNERDRAW ON SIZE {|o,x|o:Move(,,x) }
 
-   @ 0, 30 HCEDITEXT oEdit SIZE 600, 270 ON SIZE { |o, x, y|o:Move( , oRuler:nHeight+oToolBar:nHeight, x, y-oRuler:nHeight-oToolBar:nHeight ) }
+* DF7BE: old SIZE  600, 270 
+   @ 0, 30 HCEDITEXT oEdit SIZE 569, 260 ON SIZE { |o, x, y|o:Move( , oRuler:nHeight+oToolBar:nHeight, x, y-oRuler:nHeight-oToolBar:nHeight ) }
    oEdit:nIndent := 20
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
@@ -387,7 +405,7 @@ STATIC FUNCTION SaveFile( lAs, lHtml )
 
    IF lAs .OR. Empty( oEdit:cFileName )
 
-#ifndef __PLATFORM__WINDOWS
+#ifdef __GTK__
       /* GTK only */
       fname := hwg_SelectfileEx( ,, { Iif(Empty(lHtml),{"HwGUI Editor files","*.hwge"},{"Html files","*.html"}), { "All files", "*" } } )
 #else

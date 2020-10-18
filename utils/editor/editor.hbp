@@ -2,6 +2,8 @@
 # $Id$
 #
 
+# Only for WinAPI
+
 -n -w
 
 -oeditor
@@ -12,3 +14,6 @@ hcediext.prg
 calc.prg
 
 ..\..\hwgui.hbc
+
+# --------------------- EOF of editor.hbp -------------------------
+

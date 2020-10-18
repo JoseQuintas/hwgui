@@ -4,8 +4,8 @@ REM bldgtk.bat
 REM
 REM  $Id$
 REM
-REM Created by DF7BE 2020-08-24
-REM Script building the Binary Container Manager
+REM Created by DF7BE 2020-10-17
+REM Script building the Editor
 REM for HWGUI on Windows with GTK+
 REM (not the native Windows calls)
 REM For test purposes.
@@ -24,8 +24,14 @@ REM a source repository.
 REM For details read instructions in file
 REM samples\dev\MingW-GTK\Readme.txt
 REM #######################################
-REM 
-SET PRGNAME=bincnt
+REM
+REM List of components:
+REM editor.prg
+REM hcediext.prg
+REM calc.prg 
+SET PRGNAME=editor
+SET PRGNAME2=hcediext
+SET PRGNAME3=calc
 
 REM =====================================
 REM configure all installation path's
@@ -65,17 +71,25 @@ REM SET /p GTK_INC= | pkg-config --cflags gtk+-2.0
 REM SET /p GTK_LIBS= | pkg-config gtk+-2.0 --libs
 REM 
 REM Libraries
+REM -lhbct for math functions like HB_FUN_SIN
 set HRB_LIB_DIR=%HRB_DIR%\lib\win\mingw
-set HRB_LIBS=-lhbdebug -lhbvm -lhbrtl -lgtcgi -lhbdebug -lhblang -lhbrdd -lhbmacro -lhbpp -lrddntx -lrddcdx -lrddfpt -lhbsix -lhbcommon -lhbcpage -lgtwin -lgtgui
+set HRB_LIBS=-lhbdebug -lhbvm -lhbrtl -lgtcgi -lhbdebug -lhblang -lhbrdd -lhbmacro -lhbpp -lrddntx -lrddcdx -lrddfpt -lhbsix -lhbcommon -lhbcpage -lgtwin -lgtgui -lhbct
 set HWGUI_LIBS=-lhbxml -lhwgdebug -lhwgui -lprocmisc -lpcre
 REM Windows-DLLs
 set WIN_DLLS=-lcomctl32 -lole32 -lwinspool -loleaut32 -lshell32 -luuid -lwinmm
 
+REM editor.prg
 %HRB_EXE% %PRGNAME%.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include -d__GTK__ %2
 gcc -I. -I%HRB_DIR%\include -Wall -c %PRGNAME%.c -o%PRGNAME%.o
+REM hcediext.prg
+%HRB_EXE% %PRGNAME2%.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include -d__GTK__ %2
+gcc -I. -I%HRB_DIR%\include -Wall -c %PRGNAME2%.c -o%PRGNAME2%.o
+REM calc.prg 
+%HRB_EXE% %PRGNAME3%.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include -d__GTK__ %2
+gcc -I. -I%HRB_DIR%\include -Wall -c %PRGNAME3%.c -o%PRGNAME3%.o
 
 REM --- Link with GTK+ V2 =====
-gcc -Wall -mwindows -o%PRGNAME%.exe %PRGNAME%.o -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib %GTK_LIB%  -Wl,--allow-multiple-definition -Wl,--start-group  %HWGUI_LIBS% %HRB_LIBS% -lgtk-win32-2.0 -lgdk-win32-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangowin32-1.0 -lgdi32 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lintl -liconv -lgio-2.0  -lgdi32 -lpangocairo-1.0  -lgthread-2.0   %WIN_DLLS% -Wl,--end-group
+gcc -Wall -mwindows -o%PRGNAME%.exe %PRGNAME%.o %PRGNAME2%.o %PRGNAME3%.o -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib %GTK_LIB%  -Wl,--allow-multiple-definition -Wl,--start-group  %HWGUI_LIBS% %HRB_LIBS% -lgtk-win32-2.0 -lgdk-win32-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangowin32-1.0 -lgdi32 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -lglib-2.0 -lintl -liconv -lgio-2.0  -lgdi32 -lpangocairo-1.0  -lgthread-2.0   %WIN_DLLS% -Wl,--end-group
 
 
 del %PRGNAME%.c

@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-10-18 12:15 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_misc.html
+  * utils/bincnt/bldgtk.bat
+  * utils/editor/Readme.txt (New)
+  * utils/editor/bldgtk.bat (New)
+  * utils/editor/editor.hbp
+  * utils/editor/editor.prg
+    ! Ticket #65, the 3rd.
+    ! Docu entended.
+    ! Build gtk/Win:
+    ! Installation path of HWGUI
+    ! shortened.
+
 2020-10-17 10:10 UTC+0200 Wilfried Brunken DF7BE
   * hwgui.hbm
     ! Ticket #65, the 2nd.

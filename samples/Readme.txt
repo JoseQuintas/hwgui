@@ -58,6 +58,11 @@ For beginners:
     Special sample programs for GTK in directory "gtk_samples".
     The list contains only the main programs.
     Some of the programs are also ready for GTK, they are marked in the GTK column with "Y".
+    
+    If sample program also ready for GTK:
+    For test with GTK create a locol copy of
+    sample program in samples\gtk_samples,
+    because here are the compile scripts.
 
     Some samples could not be compiled or are crashing, hope that we can fix the bugs if we have time,
     see remarks in "Purpose" column, marked with # sign (Test with MingW, recent Harbour Code snapshot).
@@ -65,9 +70,10 @@ For beginners:
     NLS: National language support could be possible (P) or is implemented, activate it with
     little modifications (Y).
 
-    MinGW64: Succesfull tested 64 bit support with MinGW.
+    MinGW64: Successfull tested 64 bit support with MinGW.
     Use only script "bldmingw64.bat" for building sample and environment settings of file "pfad64.bat".
-    Y: Run OK, W: compiled with warnings, -: not (yet) tested , C: can not be compiled , N: error at runtime
+    Y: Run OK, W: compiled with warnings, -: not (yet) tested ,
+    C: can not be compiled , N: error at runtime
 
 
  Sample program     GTK   NLS MinGW64 Purpose

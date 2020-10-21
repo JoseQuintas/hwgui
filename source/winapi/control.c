@@ -2317,5 +2317,14 @@ HB_FUNC( HWG_DEFUSERLANG )
   HB_RETSTR( clang  );
 }
 
+/*
+ DF7BE : Ticket #64
+ hwg_ShowCursor( lcursor )
+*/
+HB_FUNC( HWG_SHOWCURSOR )
+{
+  hb_retni(ShowCursor(hb_parl( 1 ) ) );
+}
+
 /* ====================== EOF of control.c ======================= */
 

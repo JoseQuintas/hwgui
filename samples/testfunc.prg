@@ -33,6 +33,8 @@
  hwg_CreateTempfileName
  Activate / Deactivate  Button
  hwg_CompleteFullPath()
+ hwg_ShowCursor()
+ hwg_GetCursorType() && GTK only
 
  Harbour functions:
  CurDir() 
@@ -56,10 +58,10 @@ FUNCTION MAIN
 LOCAL Testfunc, oFont , nheight
 
 LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
-LOCAL oButton10, oButton11, oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
-LOCAL oButton18, oButton19
+LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
+LOCAL oButton18, oButton19 , oButton20 , oButton21 
 PUBLIC cDirSep := hwg_GetDirSep()
-PUBLIC bgtk
+PUBLIC bgtk , ndefaultcsrtype
 
 * Detect GTK build
 bgtk := .F.
@@ -76,6 +78,16 @@ SET DATE ANSI  && YY(YY).MM.TT
  nheight := 25
  PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 12 && vorher 13
 #endif 
+  
+* save default cursor style in a numeric variable for
+* later recovery after cursor hide action.  
+#ifdef __GTK__  
+ ndefaultcsrtype := hwg_GetCursorType() && GTK only
+#else
+ ndefaultcsrtype := 0  && not needed on WinAPI
+#endif 
+ 
+ // hwg_msginfo(Str(ndefaultcsrtype))
 
   INIT WINDOW Testfunc MAIN TITLE "Test Of Standalone HWGUI Functions" ;
     AT 1,1 SIZE 770,548 ; 
@@ -151,13 +163,64 @@ SET DATE ANSI  && YY(YY).MM.TT
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
         { | | Funkt(hwg_GetUTCTime(),"C","hwg_GetUTCTime()") }
 
+   * Hide / recovery of mouse cursor in extra dialog
+   @ 25 ,175 BUTTON oButton20 CAPTION "Cursor functions" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+        { | | HIDE_CURSOR ( oFont , nheight , Testfunc) }
+ 
+
 
 /* Disable buttons for Windows only functions */
 #ifndef __PLATFORM__WINDOWS
      oButton8:Disable()
 #endif
 
+
+
    ACTIVATE WINDOW Testfunc
+RETURN NIL
+
+FUNCTION HIDE_CURSOR ( oFont , nheight , Testfunc )
+* Testfunc: object variable of main window only for GTK
+
+  LOCAL odlg , oButton1 , oButton2 , oButton3 , ncursor , hmain
+  
+  * Init, otherwise crashes, if dialog closed without any action.
+  ncursor := 0 
+
+* For hiding mouse cursor on main window
+//     hmain := Testfunc:handle
+
+      INIT DIALOG odlg TITLE "Hide / show cursor"  AT 0,0   SIZE 400 , 100 ;
+      FONT oFont CLIPPER
+
+* Hide cursor only in dialog window.
+  hmain := odlg:handle  
+
+
+   @ 25 , 25 BUTTON oButton1 CAPTION "hwg_ShowCursor(.F.)" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+        { | | Funkt( ncursor := hwg_ShowCursor(.F.,hmain,ndefaultcsrtype),"N","hwg_ShowCursor(.F.)") , ;
+            hwg_Setfocus(oButton2:handle) }
+
+   @ 180 , 25 BUTTON oButton2 CAPTION "hwg_ShowCursor(.T.)" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+        { | | Funkt( ncursor := hwg_ShowCursor(.T.,hmain,ndefaultcsrtype),"N","hwg_ShowCursor(.T.)") }
+
+   @ 25 , 50 BUTTON oButton3 CAPTION "Return" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+        { | | odlg:Close }
+
+  ACTIVATE DIALOG odlg
+ 
+#ifndef __GTK__ 
+   * Activate cursor before return to main window
+   * crash on GTK, because handle is lost after leaving dialog.
+   DO WHILE ncursor < 0
+      ncursor := hwg_ShowCursor(.T.)   && ,hmain,ndefaultcsrtype)  : crash 
+   ENDDO
+#endif   
+   
 RETURN NIL
 
 * ====================================

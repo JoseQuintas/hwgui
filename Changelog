@@ -8,6 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-10-21 09:45 UTC+0200 Wilfried Brunken DF7BE
+  * samples/testfunc.prg
+  * source/gtk/control.c
+  * source/winapi/control.c
+    ! Ticket #64:
+    ! New functions for
+    ! hide and recover mouse cursor:
+    ! hwg_ShowCursor()
+    ! hwg_GetCursorType() && GTK only
+    ! Docu updated.
+    ! TO-DO: crashes on LINUX with 
+    ! range overflow recovering the cursor.
+    ! Works best on WinAPI and.
+    ! GTK cross development environment on Windows.
+    ! (to be continued).
+  * todo.txt 
+    ! Tasks added.
+  * samples/Readme.txt
+    ! Update for copy to
+    ! sample/grk_samples.
+
+
+
 2020-10-18 12:15 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_misc.html
   * utils/bincnt/bldgtk.bat

@@ -30,6 +30,13 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
       tstscrlbar.prg Compilable, but no scroll function
 
 
+some work for recover mouse cursor on GTK.
+- Fix crash, sample testfunc.prg (Cursor functions)
+- Add parameters for internal HWGUI dialogs like
+  hwg_msginfo() or printer preview to hide there
+  the mouse cursor. 
+
+
 some work for hwreport:
 
 missing functions _HB_FUN_OPENREPORT()
@@ -59,10 +66,32 @@ Documentation:
   purpose (all developers).
 - doc/hwgdoc_misc.html
   Fill with contents for:
-  7.4 Editor
   7.5 Dbc
   (Alexander Kresin)
   
+=========================================================
+Create list with Windows only function 
+to use as a task list for port this functions to GTK.
+Insert them here.
+
+
+=========================================================
+
+Individual mouse cursor from bitmap.
+A sample part for GTK:
+
+// blank cursor:
+  gchar bits[] = { 0 };
+  GdkColor color = { 0, 0, 0, 0 };
+  GdkPixmap *pixmap;
+  GdkCursor *cursor;
+  
+  pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1); // here direct from bitmap
+  cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
+  gdk_window_set_cursor(widget->window, cursor);  
+
+
+
 
 =========================================================
 Area: Rich Text Format (RTF)

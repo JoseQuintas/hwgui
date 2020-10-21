@@ -1663,7 +1663,71 @@
    <br><strong class="subhead"> hwg_Pts2Pix( nPoints [,hDC] )</strong> (Windows only)
    <p></p>
 
+
+   <br><strong class="subhead"> hwg_ShowCursor(lcursor , hwindow , ndefaultcsrtype)</strong>
+   <p>
+   Hides or recovers the mouse cursor.<br>
+   This feature is helpful for computers with touchscreen.<br>
+   The behavior on GTK and Windows differs.<br>
+   First parameter: .F. hides the cursor, .T. recovers it.<br>
+   Do not forget, that the mouse action is forever active, only you<br>
+   cannot see the cursor.<br>
+   Use compiler switch "#ifdef __GTK__" to activate the individual function call<br>
+   on WinAPI or GTK for multi platform applications.<br>
+   For details see inline comments in sample program<br>
+   "testfunc.prg".<br>
+   <br>
+   WinAPI:<br>
+   Use this function only with first parameter, the second and third parameter are ignored.<br>
+   If used the 2nd and 3rd parameter (as a dummy for multi platform),<br>
+   be shure that they are not NIL,<br>
+   because the program crashes with argument error.<br>
+   The function has effect on all windows of the application<br>
+   (main window and child windows),<br>
+   also on internal HWGUI dialogs like hwg_msginfo().<br>
+   so only one call of this function is needed for the whole application.<br>
+   Parameter lcursor:<br>
+   - .T. increases the cursor display counter by 1.<br>
+   - .F. decrement it by 1.<br>
+   return value:<br>
+   Type = int, specifies the new display counter.<br>
+   The cursor is displayed, if greater or equal 0.<br>
+   Initial value is 0, if mouse is installed,<br>
+   otherwise -1.<br> 
+   <br>
+   GTK:<br>
+   The function has only effect on one window, the handle of the window<br>
+   desired for hiding the cursor must be delivered in parameter 2.<br>
+   The parameter 3 is needed for recovery.<br>
+   Repeat function for every window.<br>
+   Has no effect on special HWGUI dialogs like hwg_msginfo().<br>
+   Return values:<br>
+   0:  cursor visible<br>
+   -1: cursor hidden.
+   <br>
+   State of development: Only on LINUX the recovery crashes (range overflow).<br>
+   Will be fixed as soon as possible.<br>
+   This function works also on GTK cross development environment.<BR>
+   </p>
+
+   <br><strong class="subhead"> hwg_GetCursorType()</strong> (GTK only)
+   <p>
+   In usage together with hwg_ShowCursor().<br>
+   Call this function in main section to save the old mouse cursor style<br>
+   in a numeric variable for later recovery after hiding it.<br>
+   For details see hwg_ShowCursor() and inline comments in sample program<br>
+   "testfunc.prg".<br>
+   Use compiler switch "#ifndef __GTK__" to hide the function call on WinAPI<br>
+   for multi platform applications.<br>
+   <br>
+   Some standard curser styles are defined in:<br>
+   include\gtk-2.0\gdk\gdkcursor.h<br>
+   This function works also on GTK cross development environment.<BR>
+   </p>
+
+
    <br><strong class="subhead"> hwg_GetWindowsDir()</strong> (Windows only)
+
    <p>
    In most cases, the value is "C:\Windows".<BR>
    This function works also on GTK cross development environment.<BR>
@@ -2038,13 +2102,13 @@
    (2 Bytes String)<br>
 
    <p></p>
-   <br><strong class="subhead"> hwg_Alert</strong>(Windows only)
+   <br><strong class="subhead"> hwg_Alert</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_Alert_DisableCloseButton()</strong>(Windows only)
+   <br><strong class="subhead"> hwg_Alert_DisableCloseButton()</strong> (Windows only)
    <p>Internal: Needed by HAlert class</p>
 
-   <br><strong class="subhead"> hwhwg_Alert_GetWindow()</strong>(Windows only)
+   <br><strong class="subhead"> hwhwg_Alert_GetWindow()</strong> (Windows only)
    <p>Internal: Needed by HAlert class</p>
 
 <hr align="left" width="100%">

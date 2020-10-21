@@ -1500,5 +1500,46 @@ HB_FUNC( HWG_SETWIDGETNAME )
    gtk_widget_set_name( ( GtkWidget * ) HB_PARHANDLE( 1 ), hb_parc(2) );
 }
 
+/*
+ DF7BE : Ticket #64
+ hwg_ShowCursor( lcursor , hwindow , ndefaultcsrtype )
+*/
+HB_FUNC( HWG_SHOWCURSOR )
+{
+
+  HB_BOOL modus ;
+  int rvalue ;
+ 
+  GdkCursor *cursor;
+  GdkWindow *win; 
+
+  int csrtype;  
+  
+  modus = hb_parl( 1 );
+
+  csrtype = ( HB_ISNIL(3) ) ? 0 : hb_parni(3) ;
+  
+  
+  if (modus)
+  /* show cursor */
+  {
+  cursor = gdk_cursor_new(csrtype);
+  rvalue = 0;
+  }
+  else  
+  {
+  /* hide cursor */
+  cursor = gdk_cursor_new(GDK_BLANK_CURSOR);
+  rvalue = -1;
+  }
+  win = gtk_widget_get_window( ( GtkWidget * ) HB_PARHANDLE( 2 )  ) ; 
+  gdk_window_set_cursor( win , cursor); 
+  hb_retni( rvalue );
+} 
+
+HB_FUNC( HWG_GETCURSORTYPE )
+{
+  hb_retni( (int) gdk_cursor_get_type );
+}  
 
 /* ====================== EOF of control.c ======================= */

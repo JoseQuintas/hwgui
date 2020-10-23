@@ -303,5 +303,98 @@ FUNCTION hwg_EOLStyle
  RETURN CHR(10)
 #endif
 
+* ================================= *
+FUNCTION hwg_BaseName ( pFullpath )
+* ================================= *
+ LOCAL nPosifilna , cFilename , cseparator
+ * avoid crash
+ IF PCOUNT() == 0
+   RETURN ""
+ ENDIF
+ IF EMPTY(pFullpath)
+   RETURN ""
+ ENDIF
+
+ cseparator := hwg_GetDirSep()
+ * Search separator backwards
+ nPosifilna = RAT(cseparator,pFullpath)
+
+ IF nPosifilna == 0
+   * Only filename
+   cFilename := pFullpath
+ ELSE
+   cFilename := SUBSTR(pFullpath , nPosifilna + 1)
+ ENDIF
+
+ RETURN ALLTRIM(cFilename)
+ 
+* ================================= *
+FUNCTION hwg_Dirname ( pFullpath )
+* ================================= *
+ LOCAL nPosidirna , sFilePath , cseparator , sFullpath
+ * avoid crash
+ IF PCOUNT() == 0
+   RETURN ""
+ ENDIF
+ IF EMPTY(pFullpath)
+   RETURN ""
+ ENDIF
+
+ cseparator := hwg_GetDirSep()
+ *  Reduce \\ to \  or // to /
+ sFullpath := ALLTRIM(hwg_CleanPathname(pFullpath))
+
+ * Search separator backwards
+ nPosidirna := RAT(cseparator,sFullpath)
+
+ IF nPosidirna == 1
+ * Special case:  /name  or  \name
+ *   is "root" ==> directory separator
+    sFilePath := cseparator
+ ELSE
+     IF nPosidirna != 0
+       sFilePath := SUBSTR(sFullpath,1,nPosidirna - 1)
+     ELSE
+       * Special case:
+       * recent directory (only filename)
+       * or only drive letter
+       * for example C:name
+       * ==> set directory with "cd".   
+       IF SUBSTR(sFullpath,2,1) == ":"
+         * Only drive letter with ":" (for example C: )
+         sFilePath := SUBSTR(sFullpath,1,2)
+       ELSE
+        sFilePath = "."
+       ENDIF
+     ENDIF
+ ENDIF
+ RETURN sFilePath
+
+* ================================= *
+FUNCTION hwg_CleanPathname ( pSwithdbl )
+* ================================= *
+ LOCAL sSwithdbl , bready , cseparator
+ * avoid crash
+ IF PCOUNT() == 0
+   RETURN ""
+ ENDIF
+ IF EMPTY(pSwithdbl)
+   RETURN ""
+ ENDIF
+ cseparator = hwg_GetDirSep()
+ bready := .F.
+ sSwithdbl = ALLTRIM(pSwithdbl)
+ DO WHILE .NOT. bready
+ * Loop until
+ * multi separators (for example "///") are reduced to "/"
+  sSwithdbl := STRTRAN(sSwithdbl , cseparator + cseparator , cseparator)
+ * Done, if // does not apear any more
+  IF AT(cseparator + cseparator, sSwithdbl) == 0
+    bready := .T.
+  ENDIF
+ ENDDO
+ RETURN sSwithdbl
+
+
 * ============== EOF of hmisc.prg =================
  

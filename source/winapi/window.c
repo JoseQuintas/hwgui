@@ -1497,3 +1497,15 @@ HB_FUNC( HWG_EXITPROC )
    }
 
 }
+
+/* 
+   hwg_SetApplocale()
+   GTK only, for WinAPI empty function body
+   for compatibility purpose 
+*/   
+HB_FUNC( HWG_SETAPPLOCALE )
+{
+}
+
+/*  ----------------------- EOF of window.c ------------------------ */
+

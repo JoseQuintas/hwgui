@@ -1513,24 +1513,29 @@ HB_FUNC( HWG_SHOWCURSOR )
   GdkCursor *cursor;
   GdkWindow *win; 
 
-  int csrtype;  
+  /* long csrtype; */   
   
   modus = hb_parl( 1 );
 
-  csrtype = ( HB_ISNIL(3) ) ? 0 : hb_parni(3) ;
+  /* csrtype = ( HB_ISNIL(3) ) ? 0 : hb_parnl(3) ; */
   
   
   if (modus)
   /* show cursor */
   {
+   cursor = gdk_cursor_new(GDK_ARROW);
+  /*
+  crashes on LINUX, works best on GTK development environment on Windows
   cursor = gdk_cursor_new(csrtype);
-  rvalue = 0;
+  */
+ 
+   rvalue = 0;
   }
   else  
   {
   /* hide cursor */
-  cursor = gdk_cursor_new(GDK_BLANK_CURSOR);
-  rvalue = -1;
+   cursor = gdk_cursor_new(GDK_BLANK_CURSOR);
+   rvalue = -1;
   }
   win = gtk_widget_get_window( ( GtkWidget * ) HB_PARHANDLE( 2 )  ) ; 
   gdk_window_set_cursor( win , cursor); 
@@ -1539,7 +1544,7 @@ HB_FUNC( HWG_SHOWCURSOR )
 
 HB_FUNC( HWG_GETCURSORTYPE )
 {
-  hb_retni( (int) gdk_cursor_get_type );
+  hb_retnl( (long) gdk_cursor_get_type );
 }  
 
 /* ====================== EOF of control.c ======================= */

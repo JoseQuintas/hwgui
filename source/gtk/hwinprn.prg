@@ -311,7 +311,10 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    ::x := ::nLeft * ::oPrinter:nHRes
    ::y += ::nLineHeight + ::nLined
    IF nAlign == 1 .AND. ::x + aBmpSize[2] < ::oPrinter:nWidth 
-     ::x += ROUND( (::oPrinter:npWidth - ::x - aBmpSize[1] ) / 2, 0) 
+     ::x += ROUND( (::oPrinter:npWidth - ::x - aBmpSize[1] ) / 2, 0)
+  * HKrzak 2020-10-27 
+   ELSEIF nAlign == 2
+     ::x += ROUND( (::oPrinter:npWidth - ::x - aBmpSize[1]), 0) 
    ENDIF
    IF ::lFirstLine
       ::lFirstLine := .F.
@@ -333,6 +336,17 @@ METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn
    IF ! ::lDocStart
       ::StartDoc()
    ENDIF
+   
+* HKrzak.Start 2020-10-25
+* Bug Ticket #64
+IF cLine != Nil .AND. VALTYPE(cLine) == "N"
+     ::y += ::nLineHeight * cLine
+     IF ::y < 0
+       ::y := 0
+     ENDIF
+   ENDIF
+* HKrzak.End   
+
 
 #ifdef __GTK__
    IF ::y + 3 * ( ::nLineHeight + ::nLined ) > ::oPrinter:nHeight
@@ -341,6 +355,14 @@ METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn
 #endif
       ::NextPage()
    ENDIF
+
+* HKrzak.Start 2020-10-25
+* Bug Ticket #64
+   IF cLine != Nil .AND. VALTYPE(cLine) == "N"
+     RETURN NIL
+   ENDIF
+* HKrzak.End
+
    ::x := ::nLeft * ::oPrinter:nHRes
    IF ::lFirstLine
       ::lFirstLine := .F.

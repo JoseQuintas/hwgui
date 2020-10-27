@@ -359,13 +359,28 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
       oWinPrn:PrintLine( Padl( i,3 ) + " --------" )
    NEXT
    
+   * Test 10 lines forward
+   oWinPrn:NextPage()
+   oWinPrn:PrintLine(10)
+   oWinPrn:PrintLine("Line 11")
+   oWinPrn:PrintLine()
+   oWinPrn:PrintLine("Line 13")
+   
+   
    * Print a bitmap in several ways
    oWinPrn:NextPage()
    oWinPrn:PrintLine("From file >hwgui.bmp<")
    oWinPrn:PrintBitmap( cImageDir + "hwgui.bmp" )
+
    * astro.bmp   
    oWinPrn:PrintLine("From Hex value")
    oWinPrn:PrintBitmap( oBitmap1 , , "astro")
+  /*
+   oWinPrn:PrintLine("Center align")
+   oWinPrn:PrintBitmap( oBitmap1 , 1 , "astro")
+   oWinPrn:PrintLine("Right align")
+   oWinPrn:PrintBitmap( oBitmap1 , 2 , "astro")
+ */   
    // oWinPrn:PrintLine("From Hex value, size x 4")
    // oWinPrn:PrintBitmap( oBitmap2 , , "astro")
 

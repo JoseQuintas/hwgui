@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-10-27 23:15 UTC+0100 Wilfried Brunken DF7BE
+  * samples/gtk_samples/winprn.prg
+  * samples/winprn.prg
+  * source/gtk/hwinprn.prg
+  * source/winapi/hwinprn.prg
+    ! Ticket #64:
+    ! Extensions for WINPRN class 
+    ! delivered by HKrzak (TNX).
+    ! Works best on WinAPI,
+    ! but crashes on LINUX/GTK,
+    ! see post to ticket.
+    ! (To be continued for GTK).
+  * todo.txt
+    ! List of "Windows only" functions
+    ! to be ported to GTK
+     
+
 2020-10-23 14:30 UTC+0200 Wilfried Brunken DF7BE
   *  doc/hwgdoc_functions.html
   *  source/gtk/control.c

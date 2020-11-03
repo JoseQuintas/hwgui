@@ -281,13 +281,14 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
       * xBitmap is a bitmap object
       cImageName := IIF(EMPTY (cBitmapName), "" , cBitmapName)
       * Store into a temporary file
-      xBitmap:OBMP2FILE( cTmp , cBitmapName )
+      xBitmap:OBMP2FILE( cTmp , cImageName , "bmp" )
       hBitmap := hwg_Openbitmap( cTmp , ::oPrinter:hDC )
-       hwg_msginfo(hb_valtostr(hBitmap))
+      // hwg_msginfo(hb_valtostr(hBitmap))
       IF hb_ValToStr(hBitmap) == "0x00000000"
         RETURN NIL
       ENDIF
       aBmpSize  := hwg_Getbitmapsize( hBitmap )
+      cImageName := IIF(EMPTY (cBitmapName), xBitmap, cBitmapName)
       FERASE(cTmp)
      ELSE
       * from file 
@@ -311,15 +312,16 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    ::x := ::nLeft * ::oPrinter:nHRes
    ::y += ::nLineHeight + ::nLined
    IF nAlign == 1 .AND. ::x + aBmpSize[2] < ::oPrinter:nWidth 
-     ::x += ROUND( (::oPrinter:npWidth - ::x - aBmpSize[1] ) / 2, 0)
+     ::x += ROUND( (::oPrinter:nWidth - ::x - aBmpSize[1] ) / 2, 0)
   * HKrzak 2020-10-27 
    ELSEIF nAlign == 2
-     ::x += ROUND( (::oPrinter:npWidth - ::x - aBmpSize[1]), 0) 
+     ::x += ROUND( (::oPrinter:nWidth - ::x - aBmpSize[1]), 0) 
    ENDIF
    IF ::lFirstLine
       ::lFirstLine := .F.
    ENDIF
    * Paint bitmap
+   // hwg_msginfo(STR(::x) + CHR(10) + STR(::y) + CHR(10) + STR(aBmpSize[1]) + CHR(10) +  STR(aBmpSize[2]) )
    ::oPrinter:Bitmap( ::x, ::y, ::x + aBmpSize[1], ::y + aBmpSize[2],, hBitmap, cImageName )
         
    i := aBmpSize[2] - ::nLineHeight

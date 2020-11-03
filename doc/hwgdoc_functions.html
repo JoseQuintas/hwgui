@@ -1327,7 +1327,21 @@
 
    <br><strong class="subhead"><a name="Functions7" href="hwgdoc.html#_Functions7">
    5.7.  Windows registry.</a></strong><br>
-   <p></p>
+   <p>
+   <br> 
+   Comment for multi platform programs:<br>
+   It is not a good idea, to store program settings in the registry.<br>
+   Use configuration files instead, following formats are possible:<br>
+   - &nbsp;XML files (best choice, strictly recommended for new applications),<br>
+   - &nbsp;Ini files (*.ini), see comment for function Hwg_WriteIni(),<br>
+   - &nbsp;Clipper MEM files, are supported by Harbour of course,<br>
+   - &nbsp;Pure text files.<br>
+   <br>
+   The registry functions can be useful for writing a multi platform setup program<br>
+   with HWGUI.<br>
+   Use the compiler switch "#ifndef __GTK__" to hide the registry functions on
+   non Windows systems.<br> 
+   </p>
 
    <br><strong class="subhead"> hwg_RegCreateKey( handle, cKeyName )</strong> (Windows only)
    <p></p>

@@ -312,10 +312,10 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    ::x := ::nLeft * ::oPrinter:nHRes
    ::y += ::nLineHeight + ::nLined
    IF nAlign == 1 .AND. ::x + aBmpSize[2] < ::oPrinter:nWidth 
-     ::x += ROUND( (::oPrinter:npWidth - ::x - aBmpSize[1] ) / 2, 0)
+     ::x += ROUND( (::oPrinter:nWidth - ::x - aBmpSize[1] ) / 2, 0)
    * HKrzak 2020-10-27 
    ELSEIF nAlign == 2
-     ::x += ROUND( (::oPrinter:npWidth - ::x - aBmpSize[1]), 0)
+     ::x += ROUND( (::oPrinter:nWidth - ::x - aBmpSize[1]), 0)
    ENDIF
    IF ::lFirstLine
       ::lFirstLine := .F.

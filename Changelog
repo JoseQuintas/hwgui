@@ -8,6 +8,19 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-11-03 19:00 UTC+0100 Wilfried Brunken DF7BE
+  * source/gtk/draw.c
+  * source/gtk/hwinprn.prg
+  * source/winapi/hwinprn.prg
+    ! Ticket #64 (to be continued)
+    ! See comment to ticket.
+  * doc/hwgdoc_functions.html
+    ! Additional comment in chapter
+    ! "5.7.  Windows registry" for
+    ! multi platform usage.
+
+
+
 2020-10-27 23:15 UTC+0100 Wilfried Brunken DF7BE
   * samples/gtk_samples/winprn.prg
   * samples/winprn.prg

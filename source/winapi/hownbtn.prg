@@ -4,7 +4,7 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * HOwnButton class, which implements owner drawn buttons
  *
- * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
 
@@ -50,7 +50,7 @@ CLASS HOwnButton INHERIT HControl
    METHOD MUp()
    METHOD Press()   INLINE ( ::lPress := .T. , ::MDown() )
    METHOD RELEASE()
-   METHOD END()
+   METHOD End()
    METHOD Enable()
    METHOD Disable()
 
@@ -72,10 +72,10 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
    ::lflat   := iif( lflat == Nil, .F. , lflat )
    ::bClick  := bClick
    ::state   := OBTN_INIT
-   ::nOrder  := iif( oWndParent == nil, 0, Len( oWndParent:aControls ) )
+   ::nOrder  := Iif( oWndParent == nil, 0, Len( oWndParent:aControls ) )
 
    ::title   := cText
-   ::tcolor  := iif( color == Nil, hwg_Getsyscolor( COLOR_BTNTEXT ), color )
+   ::tcolor  := Iif( color == Nil, hwg_Getsyscolor( COLOR_BTNTEXT ), color )
    IF bColor != Nil
       ::bcolor := bcolor
       ::brush  := HBrush():Add( bcolor )
@@ -93,6 +93,7 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
    ENDIF
    IF bmp != Nil
       IF ValType( bmp ) == "O"
+         * Valid bitmap object
          ::oBitmap := bmp
       ELSE
          ::oBitmap := iif( ( lResour != Nil .AND. lResour ) .OR. ValType( bmp ) == "N", ;
@@ -122,6 +123,7 @@ METHOD Activate CLASS HOwnButton
          hwg_Enablewindow( ::handle, .F. )
          ::Disable()
       ENDIF
+
    ENDIF
 
    RETURN Nil
@@ -149,6 +151,13 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
    ELSEIF msg == WM_LBUTTONDOWN
       h := hwg_Setfocus( ::handle )
       ::MDown()
+
+   ELSEIF msg == WM_LBUTTONDBLCLK
+           /* Asmith 2017-06-06 workaround for touch terminals */
+           IF ::bClick != Nil
+                 Eval( ::bClick, Self )
+           ENDIF
+
    ELSEIF msg == WM_LBUTTONUP
       ::MUp()
       IF hwg_Isptreq( ::handle, hwg_Getfocus() ) .AND. !Empty( h )
@@ -156,7 +165,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       ENDIF
       h := Nil
    ELSEIF msg == WM_DESTROY
-      ::END()
+      ::End()
    ELSEIF msg == WM_SETFOCUS
       IF ! Empty( ::bGetfocus )
          Eval( ::bGetfocus, Self, msg, wParam, lParam )
@@ -290,9 +299,9 @@ METHOD DrawItems( hDC ) CLASS HOwnButton
          ::widthb := ::oBitmap:nWidth
          ::heightb := ::oBitmap:nHeight
       ENDIF
-      x1 := iif( ::xb != Nil .AND. ::xb != 0, ::xb, ;
+      x1 := Iif( ::xb != Nil .AND. ::xb != 0, ::xb, ;
          Round( ( ::nWidth - ::widthb ) / 2, 0 ) )
-      y1 := iif( ::yb != Nil .AND. ::yb != 0, ::yb, ;
+      y1 := Iif( ::yb != Nil .AND. ::yb != 0, ::yb, ;
          Round( ( ::nHeight - ::heightb ) / 2, 0 ) )
       IF ::lEnabled
          IF ::oBitmap:ClassName() == "HICON"
@@ -404,9 +413,9 @@ METHOD RELEASE()  CLASS HOwnButton
 
    RETURN Nil
 
-METHOD END()  CLASS HOwnButton
+METHOD End()  CLASS HOwnButton
 
-   ::Super:END()
+   ::Super:End()
    ::oFont := Nil
    IF ::oBitmap != Nil
       ::oBitmap:Release()
@@ -435,3 +444,6 @@ METHOD Disable() CLASS HOwnButton
    hwg_Enablewindow( ::handle, .F. )
 
    RETURN Nil
+   
+* ====================== EOF of hownbtn.prg ===========================
+   

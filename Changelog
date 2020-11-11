@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2020-11-11 21:15 UTC+0100 Wilfried Brunken DF7BE
+  * Readme.txt (New)
+  * doc/port.txt (New)
+    ! Added main Readme and a litte
+    ! port guide from Clipper
+    ! Summer 1987 to HWGUI
+
 2020-11-09 23:20 UTC+0100 Wilfried Brunken DF7BE
   *  source/gtk/hownbtn.prg
   *  source/winapi/hownbtn.prg

@@ -1,0 +1,474 @@
+
+port.txt
+
+Copyright (c) 2020 DF7BE Wilfried Brunken
+Creative Commons License CC BY-SA 2.0 de
+(for this file)
+
+ $Id$
+
+ 
+A little guide to port old Clipper programs to HWGUI
+____________________________________________________
+
+
+Contents
+========
+
+1.    Preface
+1.1.  Recommended open source programs for developer's environment
+2.    Port to Harbour
+3.    Special issues for port process
+4.    HWGUI port
+4.1   National language support
+4.1.1 Quick and dirty method
+4.1.2 Language files
+5.    Store program settings
+6.    Internet link
+
+
+1. Preface
+~~~~~~~~~~
+
+Lead your old Clipper program into the future with Harbour and HWGUI.
+This file contains my experience to port my old application "CLLOG" [1]
+compiled with Clipper Summer 1987 running on MS-DOS to HWGUI for
+Windows and LINUX. My project started as an open source application 
+in the year 1995. You find the old Clipper code archived in
+the "Files" tab in directory "v1.x_DOS".
+
+I hope, my tips in this description helps you to do the same with maximal effort.
+In the 1980's and 1990's years of the previous millenium the
+Clipper programming was very popular. The advantages were:
+- The programming language is easy to learn,
+- mighty commands and functions allow programming with low effort,
+  allows best performance for litte and medium companies,
+- Clipper programs handle "big data" by quick search using
+  index files with effective memory usage.
+- C modules can be added to a Clipper program.
+
+But an MS-DOS program has limitations in available memory and number of file handles.
+Forget them with Harbour and HWGUI !
+Feel free to extend your program with a lot of new features.
+
+Harbour has a lot of extended functions, you can use them in Harbour and HWGUI applications,
+for example:
+- Multithreading
+- RS232
+- Internet (sockets) functions
+and many more.
+ 
+
+Port was done in 2 big steps:
+For best success, it is a good idea to port your program first to Harbour as a
+console or terminal application for a good preparation for the following HWGUI port.
+This is a recommended method and an intermediate step to detect incompatible code, before you
+start with HWGUI. 
+
+I wish good luck.
+
+MNI TNX for using HWGUI.
+73 es 55 de
+DF7BE, Wilfried
+
+
+
+1.1. Recommended open source programs for developer's environment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(For Windows 32 and 64 bit) 
+
+   - Notepad++ : Editor with a lot of functions.
+      Search for file "xbase.xml" or "harbour.xml" and import the programming language for
+      syntax highlightning of Harbour source code.
+      (Supports UTF-8, line endings for Windows/Dos, UNIX and MacOs)
+
+   - 7zip      : Archiver for many formats, e.g. ZIP, tar.gz ...
+
+   - WinMerge  : A mighty diff and merge tool.
+   
+
+2. Port to Harbour
+~~~~~~~~~~~~~~~~~~
+
+Harbour is 100% Clipper compatible (if only pure Clipper code used).
+Harbour understands the old Clipper S'87 syntax.
+Only a few new lines are added in the main section of CLLOG and the program runs
+normal.
+Here the necessary modifications:
+
+1.) The main procedure has the name of the programm file (for example):
+PROCEDURE log   && log.prg
+Must be modified to:
+PROCEDURE MAIN
+
+2.) Add:
+#ifdef __PLATFORM__WINDOWS
+REQUEST HB_GT_WIN_DEFAULT
+#endif
+
+3.) Add more settings:
+(This sample for german language, change entries according to your language)
+
+REQUEST HB_LANG_DE
+HB_LANGSELECT("DE")
+&& Codepage 850/858
+REQUEST HB_CODEPAGE_DE858
+set(_SET_CODEPAGE,"DE858")
+SETMODE(25,80)
+
+The last line sets the screen mode equivalent to the previous
+DOS screen (25 lines and 80 columns).
+The codepage CP858 is the same CP850 with only one difference:
+One character is exchanged with the Euro currency sign.
+
+4.) Make scripts:
+The origin method suggested by the Harbour community for adding
+other modules and compile them all is to write *.hb? files for the hbmk2 utility.
+Another working method is to insert the external source modules with command
+SET PROCEDURE TO ...
+into the main function and start compiling by running the hbmk2 utility
+with the main program file name (possible without extension *.prg) as the only
+parameter.
+
+
+3. Special issues for the port process
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you have ported your old Clipper to Harbour
+(means it runs in the same way as the previous DOS application)
+then you can start the next step: the port to HWGUI.
+
+Here are some important issues mentioned.
+
+1.) Assembler modules:
+Must be removed and ported to Harbour or C.
+Try to look for extensions of Harbour, if it is possible to substitute the
+function. In CLLOG, only one assembler module increases the number of available
+file handle. I removed it complete, because Harbour can serve much more available handles.
+Try to search in the Internet for a solution.  
+
+2.) Mouse support
+In most cases, external libraries are linked to the program (assembler based ?).
+Remove all mouse routines. HWGUI has (as a GUI library)
+implicit integration of mouse support. Because this first step is done only for
+evaluation and preparation for HWGUI, it is OK to control the program by
+keyboard action.
+
+3.) C modules
+The calling convention differs:
+
+CLIPPER myfunc()
+{
+ ...
+}
+
+In Harbour:
+HB_FUNC ( MYFUNC )
+{
+ ...
+}
+
+For handling parameter and return value you find a lot of samples
+in the HWGUI source code files.
+
+
+4.) Printing
+
+Clipper and Harbour printing functions send their data directly to the parallel printer port
+(LPTx). In general, in the Clipper program you have to send printer control sequences 
+dependent of the used printer model. In CLLOG, i used a printer database
+to support more printer models.
+
+Because recent computer systems have no printer interfaces any more, it is strictly recommended,
+to use the Winprn class for Windows and Linux/GTK for all printing actions. The Winprn class contains a good
+print preview dialog. If you have a valid printer driver for your printer model installed,
+your printing job is done easy (printer connection via USB or LAN). 
+
+For evaluation purposes, you can redirect the printer output in the Harbour console program into a
+normal file and look for the result with a text editor.
+
+
+5.) Help system
+The recent style to serve help information is to set links into the Internet.
+
+In old Clipper programs you set: 
+SET KEY -1 TO help  && F1
+The HELP function was called with 3 parameters:
+- procedure name
+- source line
+- variable name
+Pressing the F1 key, the corresponding help information was searched in a help
+database an displayed in a extra window.
+This works not on HWGUI.
+My workaround is, that i created a help button in every dialog
+and calls the help function on click by setting the parameters manually
+corresponding to the dialog:
+@ <x>,<y> BUTTON obutton3 CAPTION "Help"  SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK { ||  HELP("ADIFSEL",PROCLINE(),"ADIFSEL") } 
+So the help information is displayed context sensitive.
+I use the same help database for the console and HWGUI program.
+
+The Window help system (with the help compiler for *.hlp files) is outdated,
+because support ended.
+
+Instead of a help database you can store the help information in
+XML or text files.
+ 
+ 
+ 
+6.) UNIX/LINUX
+- File names are case sensitive.
+For example 
+"Readme.txt" is not the same file as "readme.txt".
+Think about it, if using names of
+normal files, databases, labels, reports and so on.
+We recommend to use only file names in lower case.
+
+- LINUX uses UTF-8.
+Harbour and HWGUI have also full UTF-8 support,
+and codepage mapping is possible for databases and national language support on
+Windows AND LINUX !
+
+For example:
+REQUEST HB_LANG_DE
+* Data Codepage (in DBFs)
+REQUEST HB_CODEPAGE_DE858
+* Windows codepage 
+REQUEST HB_CODEPAGE_DEWIN
+
+IF hwg__isUnicode()
+ REQUEST HB_CODEPAGE_UTF8
+  set(_SET_CODEPAGE,"UTF8")
+ hb_cdpSelect("UTF8")
+ELSE
+ set(_SET_CODEPAGE,"DE858")
+ hb_cdpSelect("DEWIN")
+ENDIF 
+
+Open a DBF file with old codepage:
+(Variable "pDataCP" contains the name of the codepage, for example "DE858")
+USE logbuch codepage (pDataCP)
+
+
+
+6.) Optimizing source code
+On Clipper S'87, some commands and functions are not contained in this language set.
+So substitute them to newer commands.
+- PRIVATE variables
+  LOCAL was not understood by S'87, almost PRIVATE is used instead,
+  if the variable must only be valid within a function.
+  Try to modify them to LOCAL. The following RELEASE command can
+  also be removed for those variables.
+- PUBLIC variables:
+  In some cases, public variables are used in only one source module,
+  declare them as STATIC at the beginnung of the module code.   
+- Assignment of variables
+  Set "=" to ":="
+
+
+4. HWGUI port
+~~~~~~~~~~~~~~
+This is the part with a lot of work to to.
+
+Use sample program "dbview.prg" as a template for your program.
+Now you can extend it with the parts of your code modified for Harbour
+and from the HWGUI samples and the tutorial.
+Read file "samples\Readme.txt" with information for beginners.
+
+Think about, that the logical flow of GUI programs differs.
+
+Create new forms with the HWGUI designer (in directory "utils").
+
+Add resources (icons and images) with the "Binary Container manager" or by hex values.
+
+Add printing function with the HWINPRN class. See sample program "winprn.prg".
+
+Because of no memory limitation, add more features. 
+In CLLOG, some features are realized at the beginning of the project as external programs.
+This is not easy to handle for the user, so they are now integrated into the HWGUI main program.
+
+
+4.1 National language support
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+It is no problem, so support several languages. Here some suggestions
+for realizing.
+
+
+4.1.1 Quick and dirty method
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+I my application CLLOG, i desired to support only
+two languages: English and German. So message text's of both languages can be set static in the 
+program code.
+The only few special characters must be handled in extra routines:
+Umlaute (ÄÖÜäöü), the sharp "S" (ß), the Euro Currency sign (€) and the greek micro (µ) as a
+symbol for parts of a million from the SI system, the degree sign (°), the rest is pure ASCII.
+The greek mocro (µ) must not handled extra, it is the same code in Windows and UTF-8(0xb5). 
+The special characters must be handled different for Windows Codepage and UTF-8.
+- For every special character i declared a PUBLIC variable containing the character.
+  PUBLIC CAGUML, COGUML , CUGUML , CAKUML, COKUML , CUKUML , CSZUML , EURO, GRAD_ZEICH
+  *      Ä       Ö        Ü        ä       ö        ü        ß        €     ° 
+- In the next step these variables must be initialized:
+  (Use for coding a text editor with codepage UTF-8 activated)
+  IF hwg__isUnicode()
+   CAGUML := "Ä"
+   COGUML := "Ö"
+   CUGUML := "Ü"
+   CAKUML := "ä"
+   COKUML := "ö"
+   CUKUML := "ü"
+   CSZUML := "ß"
+   EURO   := "€"
+   GRAD_ZEICH := "°"
+  ELSE && Windows
+   CAGUML := CHR(196)
+   COGUML := CHR(214)
+   CUGUML := CHR(220)
+   CAKUML := CHR(228)
+   COKUML := CHR(246)
+   CUKUML := CHR(252)
+   CSZUML := CHR(223)
+   EURO   := CHR(128)   
+   GRAD_ZEICH := CHR(248)  
+  ENDIF
+
+- Declare a PUBLIC array containing all messages of the program in the main section:
+  PUBLIC aMsgText
+
+- Write a function filling the array with messages of all texts for every supported language:
+
+In English:
+FUNCTION INITARRTXT_EN
+   aMsgText := {}
+   * Now fill array with all messages
+   /* 1   */ AAdd(aMsgText, "Yes")
+   /* 2   */ AAdd(aMsgText, "No")
+   /* 3   */ AAdd(aMsgText, "New")
+   /* 4   */ AAdd(aMsgText, "Close")
+      .
+      .
+      .
+   /* nnn   */ AAdd(aMsgText, "...")
+
+RETURN NIL
+
+In German:
+FUNCTION INITARRTXT_DE
+
+  aMsgText := {}
+
+   /* 1   */ AAdd(aMsgText, "Ja")
+   /* 2   */ AAdd(aMsgText, "Nein")
+   /* 3   */ AAdd(aMsgText, "Neu")
+   /* 4   */ AAdd(aMsgText, "Schlie" + CSZUML + "en")
+      .
+      .
+      .
+   /* nnn   */ AAdd(aMsgText, "...")
+
+RETURN NIL 
+
+- Call one of this functions in your initializing sequence of your programm
+  depending on the desired language setting.
+
+- Get the recent message text by access to the array (For example "Close"):
+   cMessage := aMsgText[4]
+
+Also you can modify the messages of some internal dialogs like the print review
+of the HPRINTER class. Look into sample program "winprn.prg".
+
+You find the DATA attributes for this messages in the
+HWGUI class documentation (doc\hwgdoc_classes.html).
+
+For example "HWinPrn":
+
+METHODS
+SetLanguage(apTooltips, apBootUser)
+
+// --- International Language Support for internal dialogs --
+ aTooltips                (RW) INIT {}  // Array with tooltips messages for print preview dialog
+ aBootUser                (RW) INIT {}  // Array with control  messages for print preview dialog  (optional usage)
+
+For valid entries look into the source code of the class
+(source\winapi\hwinprn.prg and source\winapi\hprinter.prg):
+
+METHOD SetLanguage(apTooltips, apBootUser) CLASS HWinPrn
+...
+ ::aTooltips := hwg_HPrinter_LangArray_EN()
+
+source\winapi\hprinter.prg:
+
+FUNCTION hwg_HPrinter_LangArray_EN()
+/* Returns array with captions for titles and controls of print preview dialog
+  in default language english.
+  Use this code snippet as template to set to your own desired language. */
+  LOCAL aTooltips
+  aTooltips := {}
+
+  /* 1  */ AAdd(aTooltips,"Exit Preview")
+  /* 2  */ AAdd(aTooltips,"Print file")
+  /* 3  */ AAdd(aTooltips,"First page")
+  ...
+
+Overwrite the messages of the print preview with german text's  
+(samples\winprn.prg) by calling this function:
+
+FUNCTION hwg_HPrinter_LangArray_DE()
+* ============ German ==============
+....
+Copy this function with a new name and
+translate the message to your language:
+
+FUNCTION hwg_HPrinter_LangArray_RU()
+* ============ Russian ============== 
+
+
+In most cases, the setting is immedeately active after the new setting is done.
+For the main menu (here i reach the dialag for language selection) it is
+necessary to restart the program to see the main menu in the selected language.  
+
+
+4.1.2 Language files
+~~~~~~~~~~~~~~~~~~~~
+The best way to store messages for different languages is by using values 
+stored in XML files.
+For every language you need a pair of language, for Windows and UTF-8.
+Select them dependent of the return value of function hwg__isUnicode().
+With the Notepad++ editor, you can preset the used codepage before
+start editing first ("ANSI" for Windows or "UTF-8 without BOM").
+
+It is strictliy recommended, to load first the text in english language
+as described in the "Quick and dirty method" in static code. If a language file 
+is not readable because of a file error, the message are displayed and the control
+of the program is available.
+
+Load the language file for your desired language and overwrite
+the message array "aMsgText" and optional for the internal HWGUI dialogs
+by extracts them from the XML language file.
+The class HXMLDoc of HWGUI supports reading and writing values in XML files.
+See sample program C:\hwgui\hwgui\samples\xmltree.prg and utilities
+utils\editor\editor.prg
+utils\tutorial\hwgrun.prg
+utils\tutorial\tutor.prg
+utils\debugger\hwgdebug.prg
+
+
+5. Store program settings
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Old Clipper programs use the storing of program settings in Clipper mem files.
+This works best with Harbour and HWGUI.
+But it better to store them in XML files
+(see previous chapter "Language files").
+
+
+
+6. Internet link
+~~~~~~~~~~~~~~~~
+
+[1] Projekt site CLLOG at Sourceforge:
+https://sourceforge.net/projects/cllog/
+
+A lot of inline comments are in german language.
+We add translations to english during the developing process step by step.
+ 
+======================= EOF of port.txt ========================================

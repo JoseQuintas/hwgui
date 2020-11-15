@@ -8,6 +8,36 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-11-15 17:45 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_commands.html
+    ! Ticket #57:
+    ! Different behavior of hotkey marked with "&"
+    ! for GTK/LINUX and WinAPI described
+    ! in MENU command section.
+  * samples/gtk_samples/winprn.prg
+  * source/gtk/hprinter.prg
+  * source/gtk/hwinprn.prg
+    ! Ticket #64:
+    ! Print of bitmaps now solved,
+    ! because of a bug in GTK
+    ! the function 
+    ! gdk_pixbuf_save() does not
+    ! store the bitmap correct.
+    ! From hex value store
+    ! in temporary file with
+    ! hb_memowrit().
+    ! At offsets 0x26 and 0x2a 
+    ! the solution in pixels per meter
+    ! is stored: for astro.bmp 0xc4 0x0e = 3780
+    ! But is set to 0x0 !
+    ! Also the size is not correct:
+    ! The copy has more bytes.
+    ! But to do :
+    ! The PrintLine() method show no text, but
+    ! PrintLine(10) works.  
+    ! (To be continued for GTK)
+  * test/gtk_test/bol.prg
+    ! Test program for Ticket #69 by Alain Aupaix 
 
 2020-11-15 10:30 UTC+0100 Wilfried Brunken DF7BE
   * test/gtk_test/status.prg

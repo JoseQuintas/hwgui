@@ -343,6 +343,10 @@ METHOD Bitmap( x1, y1, x2, y2, nOpt, hBitmap, cImageName ) CLASS HPrinter
       LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
       iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + cImageName + crlf
 
+      // hwg_WriteLog( "Printer:Bitmap " + "img," + LTrim( Str( x1 ) ) + "," + LTrim( Str( y1 ) ) + "," + ;
+      LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
+      iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + cImageName + crlf )
+
    RETURN Nil
 
 METHOD StartDoc( lPreview, cScriptFile ) CLASS HPrinter

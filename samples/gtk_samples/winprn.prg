@@ -105,7 +105,8 @@ Function Main
  PUBLIC aMainMenu , aLanguages , aPriCharSets , att_priprev, clangset, cIniFile, cTitle
  PUBLIC nPrCharset, nchrs , cImageDir
  PUBLIC cHexAstro , cValAstro , oBitmap1 , oBitmap2
-
+ PUBLIC ctempfile
+ 
    /* Names of supported languages, use only ANSI charset, displayed in language selection dialog */ 
    aLanguages := { "English", "Deutsch" }
    //   cIniFile := "language.ini"
@@ -142,6 +143,10 @@ Function Main
  * astro.bmp
  oBitmap1 := HBitmap():AddString( "astro", cValAstro )  && original size (Width x Height): 107 x 90 Pixel
  
+ * Write hex value of astro.bmp into temporary file for GTK
+ ctempfile := hwg_CreateTempfileName( , ".bmp")
+ hb_memowrit( ctempfile , cValAstro )
+ 
  // not working yet:
  // oBitmap2 := HBitmap():AddString( "astro", cValAstro , 428 , 360) && resized x 4
  
@@ -170,8 +175,8 @@ Function Main
 
    ACTIVATE WINDOW oMainWindow
  
- 
- 
+ * Erase the temporary file from astro.bmp
+ FERASE(ctempfile)
  
 RETURN NIL
 
@@ -371,19 +376,23 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:NextPage()
    oWinPrn:PrintLine("From file >hwgui.bmp<")
    oWinPrn:PrintBitmap( cImageDir + "hwgui.bmp" )
-
    * astro.bmp   
-   oWinPrn:PrintLine("From Hex value")
-   oWinPrn:PrintBitmap( oBitmap1 , , "astro")
-  /*
-   oWinPrn:PrintLine("Center align")
-   oWinPrn:PrintBitmap( oBitmap1 , 1 , "astro")
-   oWinPrn:PrintLine("Right align")
-   oWinPrn:PrintBitmap( oBitmap1 , 2 , "astro")
- */   
+//   oWinPrn:PrintLine("From Hex value")
+//   oWinPrn:PrintBitmap( oBitmap1 , , "astro")
+//   oWinPrn:PrintLine("Center align")
+//   oWinPrn:PrintBitmap( oBitmap1 , 1 , "astro")
+//   oWinPrn:PrintLine("Right align")
+//   oWinPrn:PrintBitmap( oBitmap1 , 2 , "astro")   
    // oWinPrn:PrintLine("From Hex value, size x 4")
    // oWinPrn:PrintBitmap( oBitmap2 , , "astro")
-
+   oWinPrn:PrintLine(10)
+// TO-DO: This line is not visible.
+   oWinPrn:PrintLine("astro from hex value via temporary file")
+// The rest is OK
+   oWinPrn:PrintBitmap(ctempfile)
+   oWinPrn:PrintBitmap(ctempfile , 1 )
+   oWinPrn:PrintBitmap(ctempfile , 2 )
+   
    oWinPrn:End()
 
 Return Nil

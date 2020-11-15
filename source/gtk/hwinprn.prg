@@ -262,7 +262,7 @@ METHOD NextPage() CLASS HWinPrn
  */   
 METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
 
-   LOCAL i , cTmp
+   LOCAL i , cTmp , bfromobj
    LOCAL oBitmap, hBitmap, aBmpSize , cImageName
 
    IF ! ::lDocStart
@@ -273,14 +273,27 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
      nAlign := 0  // 0 - left, 1 - center, 2 - right
    ENDIF
 
+   bfromobj := .F.
+
    cTmp := hwg_CreateTempfileName( , ".bmp")   
    
    // IF VALTYPE( xBitmap ) == "C" && does not work on GTK
  
      IF ! hb_fileexists( xBitmap )
       * xBitmap is a bitmap object
+      bfromobj := .T.
       cImageName := IIF(EMPTY (cBitmapName), "" , cBitmapName)
       * Store into a temporary file
+      /* DF7BE:
+        Bug in GTK: gdk_pixbuf_save(pixbuff,handle,"bmp",&error,cFile,contents_encode,NULL)
+        set the value of printer resolution (pixels per meter) to zero.
+        For example: astro.bmp
+        Offsets / values
+        26 / c4 0e
+        2a / c4 0e = 3780 dec.
+        New function OBMP2FILE2( cTmp , cImageName ) saves the bmp object
+        correct to file.    
+      */
       xBitmap:OBMP2FILE( cTmp , cImageName , "bmp" )
       hBitmap := hwg_Openbitmap( cTmp , ::oPrinter:hDC )
       // hwg_msginfo(hb_valtostr(hBitmap))
@@ -289,7 +302,7 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
       ENDIF
       aBmpSize  := hwg_Getbitmapsize( hBitmap )
       cImageName := IIF(EMPTY (cBitmapName), xBitmap, cBitmapName)
-      FERASE(cTmp)
+      // FERASE(cTmp)
      ELSE
       * from file 
       hBitmap := hwg_Openbitmap( xBitmap, ::oPrinter:hDC )
@@ -322,8 +335,14 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    ENDIF
    * Paint bitmap
    // hwg_msginfo(STR(::x) + CHR(10) + STR(::y) + CHR(10) + STR(aBmpSize[1]) + CHR(10) +  STR(aBmpSize[2]) )
-   ::oPrinter:Bitmap( ::x, ::y, ::x + aBmpSize[1], ::y + aBmpSize[2],, hBitmap, cImageName )
-        
+
+   IF bfromobj
+   /* from object: need to read from temporary file */
+    ::oPrinter:Bitmap( ::x, ::y, ::x + aBmpSize[1], ::y + aBmpSize[2],, hBitmap, cTmp )
+    FERASE(cTmp)
+   ELSE
+    ::oPrinter:Bitmap( ::x, ::y, ::x + aBmpSize[1], ::y + aBmpSize[2],, hBitmap, cImageName )
+   ENDIF     
    i := aBmpSize[2] - ::nLineHeight
    IF i > 0
      ::Y +=  i 

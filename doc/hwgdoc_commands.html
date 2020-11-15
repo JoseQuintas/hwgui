@@ -171,7 +171,21 @@
     <pre class="code">
       MENU [ OF &lt;oWnd&gt; ] [ ID &lt;nId&gt; ] [ TITLE &lt;cTitle&gt; ]
     </pre>
-
+    <p>
+    Some hints to usage of hotkeys in menu's and submenu's<br>
+    (Letter marked with "&" character in MENUITEM caption):<br> 
+    The behavior is a little different between WinAPI and GTK/LINUX:<br>
+    LINUX:<br>
+    Press the "Alt" key (not the "AltGr" key) and hold it while pressing the<br>
+    letter for the submenu (==> the & mark).<br>
+    The activated Alt mode is marked by an underline of the menu letter<br>
+    (during Alt key is pressed).<br>
+    After the submenu is opened, release the "Alt" key ann press the letter of the<br>
+    desired submenu.<br>
+    WinAPI:<br>
+    On Windows, the Alt key can be pressed once before selecting<br>
+    the menu or submenu with the hotkey.<br>
+    </p>
     <br><a name="Commands2-2" href="#_Commands2-2">4.2.2.  ENDMENU</a>
     <p></p>
     <pre class="code">

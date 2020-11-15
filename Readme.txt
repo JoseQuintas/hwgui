@@ -29,7 +29,7 @@ First steps
 ~~~~~~~~~~~
 
 - License information see file
-  "license.txt"
+  "license.txt".
 
 - Release notes in file
   "whatsnew.txt".
@@ -62,7 +62,7 @@ First steps
   HWGUI code needs some work before it is
   ready for insert in your source code.
   Creating a checkbox, the designer crashes, if
-  writing to *.prg file.
+  writing form to *.prg file.
   A suitable workaround is, to create a static text element
   starting with "X ..." and modify the generated source code,
   so it is now a checkbox command (for example):

@@ -9,6 +9,13 @@
 */
 
 
+2020-11-15 10:30 UTC+0100 Wilfried Brunken DF7BE
+  * test/gtk_test/status.prg
+    ! Ticket #70 
+  * Readme.txt
+  * doc/port.txt
+    ! Little corrections.       
+
 2020-11-11 21:15 UTC+0100 Wilfried Brunken DF7BE
   * Readme.txt (New)
   * doc/port.txt (New)

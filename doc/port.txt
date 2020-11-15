@@ -142,8 +142,8 @@ Here are some important issues mentioned.
 
 1.) Assembler modules:
 Must be removed and ported to Harbour or C.
-Try to look for extensions of Harbour, if it is possible to substitute the
-function. In CLLOG, only one assembler module increases the number of available
+Try to look for extensions of Harbour, if it is possible to substitute these
+functions. In CLLOG, only one assembler module increases the number of available
 file handle. I removed it complete, because Harbour can serve much more available handles.
 Try to search in the Internet for a solution.  
 
@@ -168,7 +168,7 @@ HB_FUNC ( MYFUNC )
  ...
 }
 
-For handling parameter and return value you find a lot of samples
+For handling parameters and return values you find a lot of samples
 in the HWGUI source code files.
 
 
@@ -180,8 +180,7 @@ dependent of the used printer model. In CLLOG, i used a printer database
 to support more printer models.
 
 Because recent computer systems have no printer interfaces any more, it is strictly recommended,
-to use the Winprn class for Windows and Linux/GTK for all printing actions. The Winprn class contains a good
-print preview dialog. If you have a valid printer driver for your printer model installed,
+to use the Winprn class for Windows and Linux/GTK for all printing actions. The Winprn class contains a good print preview dialog. If you have a valid printer driver for your printer model installed,
 your printing job is done easy (printer connection via USB or LAN). 
 
 For evaluation purposes, you can redirect the printer output in the Harbour console program into a
@@ -197,9 +196,9 @@ The HELP function was called with 3 parameters:
 - procedure name
 - source line
 - variable name
-Pressing the F1 key, the corresponding help information was searched in a help
-database an displayed in a extra window.
-This works not on HWGUI.
+Pressing the F1 key, the corresponding help information was searched in the help
+database an displayed in an extra window.
+This works not so on HWGUI.
 My workaround is, that i created a help button in every dialog
 and calls the help function on click by setting the parameters manually
 corresponding to the dialog:
@@ -226,11 +225,11 @@ normal files, databases, labels, reports and so on.
 We recommend to use only file names in lower case.
 
 - LINUX uses UTF-8.
-Harbour and HWGUI have also full UTF-8 support,
+Harbour and HWGUI have also full UTF-8 support
 and codepage mapping is possible for databases and national language support on
 Windows AND LINUX !
 
-For example:
+For example (for german language):
 REQUEST HB_LANG_DE
 * Data Codepage (in DBFs)
 REQUEST HB_CODEPAGE_DE858
@@ -262,8 +261,9 @@ So substitute them to newer commands.
   also be removed for those variables.
 - PUBLIC variables:
   In some cases, public variables are used in only one source module,
-  declare them as STATIC at the beginnung of the module code.   
-- Assignment of variables
+  declare them as STATIC at the beginnung of the module code 
+  (before starting with functions and procedures).   
+- Assignment of variables:
   Set "=" to ":="
 
 
@@ -276,9 +276,10 @@ Now you can extend it with the parts of your code modified for Harbour
 and from the HWGUI samples and the tutorial.
 Read file "samples\Readme.txt" with information for beginners.
 
-Think about, that the logical flow of GUI programs differs.
+Think about, that the logical flow of GUI programs differs from the
+console programs.
 
-Create new forms with the HWGUI designer (in directory "utils").
+Create new forms with the HWGUI designer (in directory "utils\designer").
 
 Add resources (icons and images) with the "Binary Container manager" or by hex values.
 
@@ -300,12 +301,12 @@ for realizing.
 I my application CLLOG, i desired to support only
 two languages: English and German. So message text's of both languages can be set static in the 
 program code.
-The only few special characters must be handled in extra routines:
+These only few special characters must be handled in extra routines:
 Umlaute (ÄÖÜäöü), the sharp "S" (ß), the Euro Currency sign (€) and the greek micro (µ) as a
 symbol for parts of a million from the SI system, the degree sign (°), the rest is pure ASCII.
 The greek mocro (µ) must not handled extra, it is the same code in Windows and UTF-8(0xb5). 
 The special characters must be handled different for Windows Codepage and UTF-8.
-- For every special character i declared a PUBLIC variable containing the character.
+- For every special character i declared a PUBLIC variable containing each character:
   PUBLIC CAGUML, COGUML , CUGUML , CAKUML, COKUML , CUKUML , CSZUML , EURO, GRAD_ZEICH
   *      Ä       Ö        Ü        ä       ö        ü        ß        €     ° 
 - In the next step these variables must be initialized:
@@ -369,7 +370,8 @@ FUNCTION INITARRTXT_DE
 RETURN NIL 
 
 - Call one of this functions in your initializing sequence of your programm
-  depending on the desired language setting.
+  depending on the desired language setting (store program setting for 
+  language section in XML, text , ini or MEM files) .
 
 - Get the recent message text by access to the array (For example "Close"):
    cMessage := aMsgText[4]
@@ -421,7 +423,9 @@ translate the message to your language:
 
 FUNCTION hwg_HPrinter_LangArray_RU()
 * ============ Russian ============== 
+....
 
+See detailed instructions in the inline comment of sample program "winprn.prg".
 
 In most cases, the setting is immedeately active after the new setting is done.
 For the main menu (here i reach the dialag for language selection) it is
@@ -432,7 +436,7 @@ necessary to restart the program to see the main menu in the selected language.
 ~~~~~~~~~~~~~~~~~~~~
 The best way to store messages for different languages is by using values 
 stored in XML files.
-For every language you need a pair of language, for Windows and UTF-8.
+For every language you need a pair of language files, for Windows and UTF-8.
 Select them dependent of the return value of function hwg__isUnicode().
 With the Notepad++ editor, you can preset the used codepage before
 start editing first ("ANSI" for Windows or "UTF-8 without BOM").
@@ -440,7 +444,7 @@ start editing first ("ANSI" for Windows or "UTF-8 without BOM").
 It is strictliy recommended, to load first the text in english language
 as described in the "Quick and dirty method" in static code. If a language file 
 is not readable because of a file error, the message are displayed and the control
-of the program is available.
+of the program is nevertheless available.
 
 Load the language file for your desired language and overwrite
 the message array "aMsgText" and optional for the internal HWGUI dialogs
@@ -450,7 +454,7 @@ See sample program C:\hwgui\hwgui\samples\xmltree.prg and utilities
 utils\editor\editor.prg
 utils\tutorial\hwgrun.prg
 utils\tutorial\tutor.prg
-utils\debugger\hwgdebug.prg
+utils\debugger\hwgdebug.prg .
 
 
 5. Store program settings

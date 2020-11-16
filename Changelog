@@ -8,6 +8,14 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-11-16 17:45 UTC+0100 Wilfried Brunken DF7BE
+  * doc/HWGUI_dev.txt
+  * test/gtk_test/hexdump.prg
+    ! Afterglow Tickets #70,#69,#27:
+    ! Collection free format texts outside official docs
+    ! (hope helpful for all developers of HWGUI and
+    !  HWGUI applications) 
+
 2020-11-15 17:45 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html
     ! Ticket #57:

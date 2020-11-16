@@ -1,0 +1,182 @@
+HWGUI collection of hints and FAQ for developers
+------------------------------------------------
+
+Created 2020-11-16 by DF7BE.
+
+ $Id$
+
+
+Please add new entires with date (YYYY-MM-DD) and Sourceforge.net
+userid.
+
+
+Contents:
+---------
+1. Preface
+2. FAQ
+3. Tickets
+4. Hints
+
+
+1. Preface
+----------
+
+The intention of this document is a free formatted collection of texts from 
+cases, tickets, FAQ's, hints and logbook during development of HWGUI and
+applications for HWGUI, outside the official documents in directory doc and the
+Changelog, Readme's an so on and the HWGUI discussion forum.
+I hope, some items in this file are useful for all HWGUI developers of HWGUI programs
+and the HWGUI developer's team.
+
+
+2. FAQ
+------
+
+
+3. Tickets
+----------
+
+Bug #70: Status not updated (GTK/LINUX)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Programs:
+test/gtk_test/status.prg
+
+-    oStatus is updated in newlang()
+-    oStatus is not updated in CreateLang()
+
+It is a bug in GTK.
+First i tried your sample program with WinAPI,
+and it works (except the sizes and positions
+of the dialog windows and control elements).
+I retraced the bug also on the GTK cross
+develpoment environment on Windows (to be shure,
+that the bug is in GTK).
+
+It seems, that the FOR ... NEXT loop
+in function CreateLang()
+freezes the activity of the parent dialog,
+so it is not ready to receive the
+SetText order. After leaving the loop,
+the last "four" is displayed.
+
+With commit of r2902 in directory "test/gtk_test" i committed
+your modified sample with a workaround with the usage of the the
+timer function feature of HWGUI and it works on my
+Ubuntu 16 system.
+
+
+Bug #69: A curious bug, I found sometimes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Program: test/gtk_test/bol.prg
+Error compiling:
+hb_gt_ForceLink_HB_GT_TRM': gtsys.c:(.text+0x1): Nicht definierter Verweis auf HB_FUN_HB_GT_TRM'
+collect2: error: ld returned 1 exit status
+(missing symbol).
+
+Referenced to early tickets, the reason is:
+The program needs an INIT of the main window.
+It not necessary to say "ACTIVATE WINDOW ..."
+To terminate the program, i said at the end:
+"oWinMain:Close()".
+
+Reference: Support request #27
+Ignore GTK message if program terminates.
+ 
+
+Support request #27: dialogs without main window (GTK/LINUX)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(and multithread support, with "gtwvg")
+Programs:
+- test/gtk_test/hexdump.prg
+- test/Ticket27.prg
+ 
+In the appended posted sample, i use a trick:
+I created a main window, but don't activate it.
+After all function calls i close the main windows
+and the program terminates (a pointer to the object of the main window).
+At the end of program the following message appeared:
+(hexdump:4307): Gtk-CRITICAL **: 22:27:25.254: IA__gtk_main_quit: assertion 'main_loops != NULL' failed
+==> Ignore this message.
+
+Reference:
+"Harbour for beginners", chapter "3.11 Multithreading".
+( http://www.kresin.ru/en/hrbfaq.html )
+
+
+Contents of "test.prg":
+.......................
+#include "hwgui.ch"
+
+CLASS HWVG INHERIT HControl
+
+   DATA winclass Init "HWVG"
+   DATA nGT
+   DATA hWnd
+   METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      bInit, bSize, bPaint, bcolor, oStyle )
+   METHOD onEvent()  INLINE { || Nil }
+   METHOD Init()     INLINE { || Nil }
+   METHOD Paint()    INLINE { || Nil }
+   METHOD Release()  INLINE { || Nil }
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+      bInit, bSize, bPaint, bcolor, oStyle ) CLASS HPanel
+   LOCAL oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
+
+   hb_gtReload( "WVG" )
+   ::nGT  := hb_gtSelect() // hook events for keyboard/mouse/others
+   ::hWnd := hb_gtInfo( HB_GTI_WINHANDLE )
+   // set size
+   // set parent
+
+   RETURN Self
+
+
+
+Contents of "test.prg" in archive "test.zip":
+.............................................
+Contens 
+#include "wvgparts.ch"
+#include "hbgtwvg.ch"
+#include "wvtwin.ch"
+
+ANNOUNCE HB_GTSYS
+REQUEST HB_GT_WVG_DEFAULT
+
+FUNCTION Main()
+
+   LOCAL nCont
+
+   FOR nCont = 1 TO 5
+      hb_ThreadStart( { || Test() } )
+   NEXT
+   hb_ThreadWaitForAll()
+
+   RETURN Nil
+
+FUNCTION Test()
+
+   LOCAL cTexto := Space(20), cTexto2 := Space(20), GetList := {}
+
+   hb_gtReload( "WVG" )
+   SetMode( 25, 80 )
+   SetColor( "W/B" )
+   CLS
+   @ 12, 20 GET cTexto
+   @ 14, 20 GET cTexto2
+   READ
+
+   RETURN Nil
+
+ 
+
+4. Hints
+--------
+
+ 
+
+
+======================= EOF of HWGUI_dev.txt ======================== 
+

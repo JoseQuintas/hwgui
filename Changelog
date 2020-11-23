@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+
+2020-11-23 17:35 UTC+0100 Wilfried Brunken DF7BE
+  * samples/gtk_samples/winprn.prg
+  * source/gtk/hprinter.prg
+  * source/gtk/hwinprn.prg
+    ! Ticket #64:
+    ! To be continued for LINUX/GTK
+    ! First anaylsis, some litle fixes
+    ! Adding inline comments.
+    ! For details see comment to ticket.
+
 2020-11-16 17:45 UTC+0100 Wilfried Brunken DF7BE
   * doc/HWGUI_dev.txt
   * test/gtk_test/hexdump.prg

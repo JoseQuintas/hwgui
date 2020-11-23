@@ -329,6 +329,10 @@ METHOD Say( cString, x1, y1, x2, y2, nOpt, oFont ) CLASS HPrinter
       LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
       iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + hb_StrToUtf8( cString, ::cdpIn ) + crlf
 
+    // hwg_WriteLog( "Printer:Txt " + "txt," + LTrim( Str( x1 ) ) + "," + LTrim( Str( y1 ) ) + "," + ;
+    //  LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
+    //  iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + hb_StrToUtf8( cString, ::cdpIn ) + crlf )
+  
    RETURN Nil
 
 METHOD Bitmap( x1, y1, x2, y2, nOpt, hBitmap, cImageName ) CLASS HPrinter
@@ -343,9 +347,9 @@ METHOD Bitmap( x1, y1, x2, y2, nOpt, hBitmap, cImageName ) CLASS HPrinter
       LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
       iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + cImageName + crlf
 
-      // hwg_WriteLog( "Printer:Bitmap " + "img," + LTrim( Str( x1 ) ) + "," + LTrim( Str( y1 ) ) + "," + ;
-      LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
-      iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + cImageName + crlf )
+    // hwg_WriteLog( "Printer:Bitmap " + "img," + LTrim( Str( x1 ) ) + "," + LTrim( Str( y1 ) ) + "," + ;
+    //    LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
+    //  iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + cImageName + crlf )
 
    RETURN Nil
 
@@ -427,6 +431,8 @@ METHOD SaveScript( cScriptFile ) CLASS HPrinter
    ENDIF
 
    IF !Empty( cScriptFile )
+      // hwg_MsgInfo("Scriptfile=" + cScriptFile )
+      // Default scriptfile is "temp_a2.ps"
       han := FCreate( cScriptFile )
       FWrite( han, "job," + ;
             LTrim( Str(Iif(::lmm,::nWidth*::nHRes,::nWidth) ) ) + "," + ;

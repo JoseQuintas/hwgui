@@ -385,13 +385,13 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 //   oWinPrn:PrintBitmap( oBitmap1 , 2 , "astro")   
    // oWinPrn:PrintLine("From Hex value, size x 4")
    // oWinPrn:PrintBitmap( oBitmap2 , , "astro")
-   oWinPrn:PrintLine(10)
 // TO-DO: This line is not visible.
    oWinPrn:PrintLine("astro from hex value via temporary file")
 // The rest is OK
    oWinPrn:PrintBitmap(ctempfile)
    oWinPrn:PrintBitmap(ctempfile , 1 )
    oWinPrn:PrintBitmap(ctempfile , 2 )
+   oWinPrn:PrintLine("--------------------")
    
    oWinPrn:End()
 

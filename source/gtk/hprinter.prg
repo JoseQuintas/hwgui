@@ -683,6 +683,11 @@ METHOD PrintDoc()
    IF !Empty( ::cPrinterName ) .AND. ( cExt := Lower( FilExten( ::cPrinterName ) ) ) $ "pdf;ps;png;svg;"
       nOper := iif( cExt == "pdf", 1, iif( cExt == "ps",2,iif( cExt == "png",3,4 ) ) )
    ENDIF
+   /*
+     nOper:
+     0 - printer, 1 - pdf, 2 - ps, 3 - png, 4 - svg
+   */
+   // hwg_msginfo("nOper=" + STR(nOper) )
    hwg_gp_Print( ::hDC, ::aPages, Len( ::aPages ), nOper, ::cPrinterName )
 
    RETURN Nil

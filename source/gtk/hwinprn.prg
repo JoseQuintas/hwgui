@@ -31,7 +31,7 @@
   all collected records in the array
   are written in a script file with default filename "temp_a2.ps". 
   This script builds the complete layout of the printing job in background.
-  After this, the layout is diplayed in the print preview dialag, the last step
+  After this, the layout is diplayed in the print preview dialog, the last step
   is send the data to the printer device.
 
   Sample for the page 7 created by sample program "winprn.prg":
@@ -47,6 +47,13 @@
 
    The record secription (not valid for all types):
    <type>,<x1>,<y1>,<x2>,<y2>,nOpt,<value> CRLF
+
+   The layout is generated in function hwg_gp_Print() in hprinter.prg.
+   This function is implemented in wprint.c using
+   the features of the Cairo graphic library.
+   Function draw_page() interprets the values of the array and
+   builds the pixbuffer for one page.
+ 
 
 */
 
@@ -105,6 +112,7 @@ CLASS HWinPrn
    METHOD PrintLine( cLine, lNewLine )
    METHOD PrintBitmap( xBitmap, nAlign , cImageName )
    METHOD PrintText( cText )
+   METHOD SetY( nYvalue )
    METHOD PutCode( cText )
    METHOD EndDoc()
    METHOD END()
@@ -242,6 +250,16 @@ METHOD SetDefaultMode() CLASS HWinPrn
    ::SetMode( .F., .F. , 6, .F. , .F. , .F. , 0 , 0 )
 
    RETURN Nil
+
+
+METHOD SetY( nYvalue ) CLASS HWinPrn
+
+  IF nYvalue == NIL
+   nYvalue := 0
+  ENDIF
+  ::Y := nYvalue
+  
+ RETURN nYvalue
 
 
 METHOD StartDoc( lPreview, cMetaName ) CLASS HWinPrn

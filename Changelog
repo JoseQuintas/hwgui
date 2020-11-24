@@ -9,6 +9,17 @@
 */
 
 
+2020-11-24 16:00 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * samples/gtk_samples/winprn.prg
+  * source/gtk/hprinter.prg
+  * source/gtk/hwinprn.prg
+  * source/winapi/hwinprn.prg
+    ! Ticket #64: (LINUX/GTK)
+    ! Final analysis, bug in Cairo.
+    ! A workaround implemented.
+    ! For details see inline comments
+    ! and comment to ticket. 
 
 2020-11-23 17:35 UTC+0100 Wilfried Brunken DF7BE
   * samples/gtk_samples/winprn.prg

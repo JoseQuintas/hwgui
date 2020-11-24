@@ -75,6 +75,7 @@ CLASS HWinPrn
    METHOD PrintLine( cLine, lNewLine )
    METHOD PrintBitmap( xBitmap, nAlign , cImageName )
    METHOD PrintText( cText )
+   METHOD SetY( nYvalue )
    METHOD PutCode( cText )
    METHOD EndDoc()
    METHOD END()
@@ -212,6 +213,16 @@ METHOD SetDefaultMode() CLASS HWinPrn
    ::SetMode( .F., .F. , 6, .F. , .F. , .F. , 0 , 0 )
 
    RETURN Nil
+
+
+METHOD SetY( nYvalue ) CLASS HWinPrn
+
+  IF nYvalue == NIL
+   nYvalue := 0
+  ENDIF
+  ::Y := nYvalue
+  
+ RETURN nYvalue
 
 
 METHOD StartDoc( lPreview, cMetaName ) CLASS HWinPrn

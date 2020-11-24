@@ -1734,6 +1734,7 @@
       PrintLine( cLine,lNewLine )
       PrintBitmap( xBitmap, nAlign , cBitmapName ) 
       PrintText( cText )
+      SetY( nYvalue )
       PutCode( cText )
       EndDoc()
       End()
@@ -1758,7 +1759,13 @@
    <BR>
    National Language Support for Print Preview Dialog:<BR>
    Detailed instructions in inline comment lines of sample program "winprn.prg".<BR>
-   Here you find also instructions for National Language Support of the preview dialog. 
+   Here you find also instructions for National Language Support of the preview dialog.<BR>
+   <BR>
+   Bug in Cairo graphical library (instructions for LINUX/GTK):<BR>
+   Inserting bitmaps into a document to print, it is necessary to add at first<BR>
+   the text lines, and than the bitmap images (exact in this order).<BR>
+   For deatils, see inline comment of sample program <BR>
+   "samples/gtk_samples/winprn.prg".<BR>  
    </p>
 
    <br><strong class="subhead"><a name="Classes19" href="#_Classes19">

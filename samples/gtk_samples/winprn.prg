@@ -12,7 +12,7 @@
 */
 
     * Status:
-    *  WinAPI   :  Yes
+    *  WinAPI   :  Yes ==> Special problem bitmaps, see inline comment.
     *  GTK/Linux:  Yes
     *  GTK/Win  :  No   (Compilable, but no print preview visible, don't matter, because not recommended)
     *
@@ -51,7 +51,7 @@
     (Main menu appeared in selected language only after restart, so store language setting in ini file)
   - Added PrintBitmap
 
-    Special hints for test and development without printer uaage:
+    Special hints for test and development without printer usage:
     Windows 10: You can install a virtual printer driver named "Print to PDF" to redirect the printer data.
     LINUX: The Printer dialog of the system allows redirection into a PDF file.
 */
@@ -371,27 +371,127 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:PrintLine()
    oWinPrn:PrintLine("Line 13")
    
-   
+  
+   /*
+    =============================
+    Error handling in GTK/Cairo:
+    =============================
+    The symptom is, that after a bitmap is displayed,
+    in all text lines following the the first insertion of a bitmap,
+    the text is not displayed.
+    Referred to sample program "winprn.prg", on page 7
+    the first text "From file >hwgui.bmp<" is visible,
+    after the first bitmap "./../image/hwgui.bmp" all
+    following texts ("astro from hex value via temporary file" and
+    "--------------------") are blank.
+    Line feed with PrintLine(10) works OK.
+
+    So the workaround is:
+    First insert all text lines, after
+    this, insert all images.
+    To set the position of the image in the document,
+    use method SetY(n) to preset the position of the
+    image, than say oWinPrn:PrintBitmap(...).
+    Get the Y position by inserting:
+    hwg_MsgInfo(STR(oWinPrn:y) ) 
+    Repeat this for every bitmap.
+    
+    That is done here in the following program lines.
+
+    Also this does not work on GTK:
+     oWinPrn:PrintBitmap( oBitmap1 )
+    (read bitmap from object)
+
+    This workaround is: 
+ 
+    In main section:
+    * Fill variables with hex values
+    Init_Hexvars()
+
+    * Convert to binary.
+    cValAstro := hwg_cHex2Bin ( cHexAstro )
+
+    * Write hex value of astro.bmp into temporary file
+    ctempfile := hwg_CreateTempfileName( , ".bmp")
+    hb_memowrit( ctempfile , cValAstro )
+
+    ...
+
+    * Erase the temporary file from astro.bmp
+    FERASE(ctempfile)
+
+    ...
+
+    Insert bitmap into print cache:
+    oWinPrn:SetY(nnn) 
+    oWinPrn:PrintBitmap( ctempfile )
+
+    Check with WinAPI:
+    The method SetY() does not work in the same way.
+    For multi platform application
+    use the compiler switch 
+    #ifdef __GTK__
+    to activate special adapted code.
+    See also same sample for WinAPI.
+
+   */
+ 
    * Print a bitmap in several ways
-   oWinPrn:NextPage()
-   oWinPrn:PrintLine("From file >hwgui.bmp<")
-   oWinPrn:PrintBitmap( cImageDir + "hwgui.bmp" )
-   * astro.bmp   
-//   oWinPrn:PrintLine("From Hex value")
-//   oWinPrn:PrintBitmap( oBitmap1 , , "astro")
-//   oWinPrn:PrintLine("Center align")
+   oWinPrn:NextPage() && Text height is 12
+   oWinPrn:PrintLine("From file >hwgui.bmp<")  && hwgui.bmp height = 160
+/* Get Y position */
+//   hwg_MsgInfo(STR(oWinPrn:y) ) 
+//   oWinPrn:PrintBitmap( cImageDir + "hwgui.bmp" )
+/* Move forward up to the height of bitmap (0 + 160)  */
+
+
+   oWinPrn:SetY(172)  && 160 + 12
+   * astro.bmp height = 90
+
+/* Handled by workaround */
+
+
+// Before workaround: This line is not visible.   
+   // oWinPrn:PrintLine("From Hex value")
+   oWinPrn:PrintLine("astro from hex value via temporary file")
+   // hwg_MsgInfo(STR(oWinPrn:y) )  && 184
+   oWinPrn:SetY(274)   && 184 + 90  
+//   oWinPrn:PrintBitmap( oBitmap1 ,   , "astro")
+   oWinPrn:PrintLine("Center align")
+   // hwg_MsgInfo(STR(oWinPrn:y) )
+   oWinPrn:SetY(376)   && 286 + 90 
 //   oWinPrn:PrintBitmap( oBitmap1 , 1 , "astro")
-//   oWinPrn:PrintLine("Right align")
+   oWinPrn:PrintLine("Right align")
+//   hwg_MsgInfo(STR(oWinPrn:y) )
 //   oWinPrn:PrintBitmap( oBitmap1 , 2 , "astro")   
    // oWinPrn:PrintLine("From Hex value, size x 4")
    // oWinPrn:PrintBitmap( oBitmap2 , , "astro")
-// TO-DO: This line is not visible.
-   oWinPrn:PrintLine("astro from hex value via temporary file")
+   
 // The rest is OK
-   oWinPrn:PrintBitmap(ctempfile)
-   oWinPrn:PrintBitmap(ctempfile , 1 )
-   oWinPrn:PrintBitmap(ctempfile , 2 )
+
+
+
+   oWinPrn:SetY(490)  && 388 + 90
    oWinPrn:PrintLine("--------------------")
+
+   * Workaround:
+   * Insert bitmaps after text lines.
+
+   oWinPrn:SetY(12)
+   oWinPrn:PrintBitmap( cImageDir + "hwgui.bmp" )
+   oWinPrn:SetY(184)
+   oWinPrn:PrintBitmap( ctempfile )
+//   oWinPrn:PrintBitmap( oBitmap1 ,   , "astro")   && Does not work
+   oWinPrn:SetY(286)
+//   oWinPrn:PrintBitmap( oBitmap1 , 1 , "astro")
+   oWinPrn:PrintBitmap( ctempfile , 1 )
+   oWinPrn:SetY(388)
+//   oWinPrn:PrintBitmap( oBitmap1 , 2 , "astro")
+   oWinPrn:PrintBitmap( ctempfile , 2 )  
+
+   * All okay on next page ?
+   oWinPrn:NextPage()
+   oWinPrn:PrintLine("Page 8")
    
    oWinPrn:End()
 

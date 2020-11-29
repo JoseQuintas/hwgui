@@ -6,6 +6,14 @@
  * Copyright 2014 Alexander Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  */
+ 
+/* Modifications by DF7BE:
+  - Selection of charset at start of program:
+    0   : ISO8859-15 (western countries with Euro currency sign)
+    204 : Russian
+
+   On LINUX always use of UTF-8 , so the selection menu is suppressed
+*/  
 
 #include "hwgui.ch"
 #include "hxml.ch"
@@ -28,6 +36,8 @@ REQUEST HB_CODEPAGE_UTF8
 
 REQUEST HB_CODEPAGE_RU1251
 REQUEST HB_CODEPAGE_RU866
+REQUEST HB_CODEPAGE_DE858  && With Euro currency sign
+REQUEST HB_CODEPAGE_DEWIN  && ----  "   -------------
 
 #define MENU_RULER       1901
 #define MENU_IMAGE       1902
@@ -133,28 +143,53 @@ FUNCTION Main ( fName )
    LOCAL aComboSiz := { "50%", "60%", "80%", "90%", cComboSizDef, "110%", "120%", "130%", "140%", "150%", "160%", "180%", "200%", "240%", "280%" }
    LOCAL x1
    LOCAL obtn
+   LOCAL result, csel , nchrs
+   LOCAL aCharset := { "ISO8859@Euro (0)" , "Russian (204)" }
 
    PRIVATE handcursor, cIniPath := FilePath( hb_ArgV( 0 ) )
 
+   csel := ""
+   nchrs := 0
+   
    ReadIni( cIniPath )
 
    IF hwg__isUnicode()
       hb_cdpSelect( "UTF8" )
+   ELSE
+     hb_cdpSelect("DEWIN") && Also OK for other western countries and Russia
    ENDIF
+ 
 
-#ifndef __PLATFORM__WINDOWS
-   PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 13
-   PREPARE FONT oFontP NAME "Sans" WIDTH 0 HEIGHT 12
-#else
-   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 204
-   PREPARE FONT oFontP NAME "Courier New" WIDTH 0 HEIGHT - 15
-#endif
+ 
+
    oBrush1 := HBrush():Add( 16777215 )
 
    oStyle1 := HStyle():New( {CLR_LBLUE,CLR_LBLUE3}, 1 )
    oStyle2 := HStyle():New( {CLR_LBLUE}, 1,, 3, CLR_BLACK )
    oStyle3 := HStyle():New( {CLR_LBLUE1}, 1,, 2, CLR_LBLUE0 )
 
+   
+#ifdef __PLATFORM__WINDOWS
+  * Ask for charset
+  result := __frm_CcomboSelect(aCharset,"Character Set","Please Select a Character Set", ;
+   200 , "OK" , "Cancel", "Help" , "Need Help : " , "HELP !" , nchrs , .F.)
+ IF result != 0
+  * set to new value, if modified
+  nchrs := result /* Position in COMBOBOX */
+  csel := aCharset[result] 
+  hwg_MsgInfo("Character Set is now: " + ALLTRIM(STR(nchrs - 1 )) + " Name: " + csel , ;
+          "Character Set")
+  oFont := Select_font(nchrs - 1 )    && ncharset 0 = ISO8859-15, 1 = 206 (Russian)
+ ELSE
+  * Cancel: use default charset
+  oFont := Select_font(0)
+ ENDIF 
+#else
+  oFont := Select_font(0) && irrelvant for UTF-8
+#endif 
+
+   
+   
    INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
       AT 200, 0 SIZE 600, 300 FONT oFont
 
@@ -169,7 +204,11 @@ FUNCTION Main ( fName )
    *    @ 0,272 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1)}
    *
    * old: ON SIZE {|o,x|o:Move(,,x)
- 
+   
+   
+   
+   
+//#ifndef __PLATFORM__WINDOWS
 #ifdef __GTK__
    * LINUX and GTK cross development environment
    @ 80, 0 PANEL oToolBar SIZE oMainWindow:nWidth-80 , 30 STYLE SS_OWNERDRAW ;
@@ -376,8 +415,7 @@ FUNCTION OpenFile( fname, lAdd )
    ENDIF
    IF Empty( fname )
 
-* or #ifdef __GTK__ ?
-#ifndef __PLATFORM__WINDOWS
+#ifdef __GTK__
       fname := hwg_SelectfileEx( ,, { { "HwGUI Editor files", "*.hwge" }, { "All files", "*" } } )
 #else
       fname := hwg_Selectfile( { "HwGUI Editor files","All files" }, { "*.hwge","*.*" }, Curdir() )
@@ -2297,7 +2335,7 @@ STATIC FUNCTION WriteIni( cPath )
    RETURN Nil
 
 
-STATIC FUNCTION Help()
+STATIC FUNCTION Help(cHTopic , nPROCLINE , cHVar)
 
    LOCAL oEdit
    STATIC oDlgHelp
@@ -2366,13 +2404,146 @@ STATIC FUNCTION About()
    hced_Setfocus( oEdit:hEdit )
 
    RETURN Nil
-   
+ 
+* ========================================== 
 STATIC FUNCTION GetVal_nTop
 * or #ifdef __GTK__ ?
+* ==========================================
 #ifndef __PLATFORM__WINDOWS
    RETURN 10
 #else
    RETURN 40
 #endif
+
+* ==========================================
+STATIC FUNCTION Select_font( ncharset )
+* Sets the charset for used font.
+* ncharset : 0 = ISO8859-15 (Default), 1 = 206 (Russian)
+* Ignored on LINUX/UNIX, UTF-8 used instead forever
+* ==========================================
+LOCAL oFont
+IF ncharset == NIL
+  ncharset := 0
+ENDIF
+#ifndef __PLATFORM__WINDOWS
+   PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 13
+   PREPARE FONT oFontP NAME "Sans" WIDTH 0 HEIGHT 12
+#else
+ IF ncharset == 0
+   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 0 
+ ELSE
+   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 204
+ ENDIF  
+   PREPARE FONT oFontP NAME "Courier New" WIDTH 0 HEIGHT - 15
+#endif
+RETURN oFont
+
+* ==========================================
+FUNCTION __frm_CcomboSelect(apItems, cpTitle, cpLabel, npOffset, cpOK, cpCancel, cpHelp , cpHTopic , cpHVar , npreset , lHelp)
+* Common Combobox Selection
+* One combobox flexible.
+* Parameters: (Default values in brackets)
+* apItems  : Array with items (empty)
+* cpTitle  : Title for dialog ("Select Item")
+* cpLabel  : Headline         ("Select Item")
+* npOffset : Number of pixels for windows size offset, y axis (0)
+*            recommended value: depends of number of items:
+*            npOffset = (n - 1) * 30 (not exact)
+* cpOK     : Button caption   ("OK")
+* cpCancel : Button caption   ("Cancel")
+* cpHelp   : Button caption   ("Help")
+* cpHTopic : HELP() : Topic   ("") 
+* cpHVar   : HELP() : Variable Name ("")
+* npreset  : Preser position (1)
+* lHelp    : Call help function HELP() (.F.) 
+*
+* Sample call :
+*
+* LOCAL result,acItems
+* acItems := {"One","Two","Three"} 
+* result := __frm_CcomboSelect(acItems,"Combo selection","Please Select an item", ;
+*  0 , "OK" , "Cancel", "Help" , "Need Help : " , "HELP !" )
+* returns: index number of item, if cancel: 0
+* ============================================ 
+LOCAL oDlgcCombo1
+LOCAL aITEMS , cTitle, cLabel, nOffset, cOK, cCancel, cHelp , cHTopic , cHVar
+LOCAL oLabel1, oCombobox1, oButton1, oButton2, oButton3 , nType , yofs, bcancel ,nRetu
+
+* Parameter check
+ cTitle  := "Select Item"
+ cLabel  := "Select Item"
+ nOffset := 0
+ cOK     := "OK"
+ cCancel := "Cancel"
+ cHelp   := "Help"
+ cHTopic := ""
+ cHVar   := ""
+ nRetu   := 0
+ 
+aITEMS := {}
+IF .NOT. apItems == NIL
+ aITEMS := apItems
+ENDIF 
+IF .NOT. cpTitle == NIL
+ cTitle := cpTitle
+ENDIF
+IF .NOT. cpLabel == NIL
+ cLabel :=  cpLabel
+ENDIF
+IF .NOT. npOffset == NIL
+ nOffset :=  npOffset
+ENDIF
+IF .NOT. cpOK == NIL
+ cOK  :=  cpOK
+ENDIF
+IF .NOT. cpCancel == NIL
+ cCancel :=  cpCancel 
+ENDIF
+IF .NOT. cpHelp == NIL
+ cHelp :=  cpHelp
+ENDIF
+IF .NOT. cpHTopic == NIL
+ cHTopic  := cpHTopic
+ENDIF
+IF .NOT. cpHVar == NIL
+ cHVar  := cpHVar
+ENDIF
+nType := 1
+IF .NOT. npreset == NIL
+ nType := npreset
+ENDIF
+IF lHelp == NIL
+ lHelp := .F.
+ENDIF 
+bcancel := .T.
+yofs := nOffset + 120
+* y positions of elements:
+* Label1       : 44  
+* Buttons      : 445  : ==> yofs   
+* Combobox     : 84   : 
+* Dialog size  : 565  : ==> yofs + 60
+*
+  INIT DIALOG oDlgcCombo1 TITLE cTitle ;
+    AT 578,79 SIZE 516, yofs + 80;
+     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+
+
+   @ 67,44 SAY oLabel1 CAPTION cLabel SIZE 378,22 ;
+        STYLE SS_CENTER   
+   @ 66,84 GET COMBOBOX oCombobox1 VAR nType ITEMS aITEMS SIZE 378,96   
+   @ 58 , yofs  BUTTON oButton1 CAPTION cOK SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK { || nRetu := nType , bcancel := .F. , oDlgcCombo1:Close() }  
+   @ 175, yofs  BUTTON oButton2 CAPTION cCancel SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK { || oDlgcCombo1:Close() }
+   IF lHelp
+   @ 375, yofs  BUTTON oButton3 CAPTION cHelp SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK { || HELP( cHTopic ,PROCLINE(), cHVar ) }
+   ENDIF
+
+   ACTIVATE DIALOG oDlgcCombo1
+* RETURN oDlgcCombo1:lresult
+RETURN nRetu
+
+
 
 * ================== EOF of editor.prg =======================

@@ -54,6 +54,11 @@
  * If you do not wish that, delete this exception notice.
  *
  */
+ 
+/* Modifications by DF7BE:
+ - Bugfix: AltGr key ignored, so very important characters like
+   \@µ~{}[] and Euro Currency sign are not reached.   
+*/
 
 #include "hbclass.ch"
 #include "hwgui.ch"
@@ -395,6 +400,7 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    LOCAL n, nPages, arr, lRes := - 1, x, aPointC[P_LENGTH]
+   LOCAL n1 , n2, lctrls
 
    ::PCopy( ::aPointC, aPointC )
    IF ::bOther != Nil
@@ -413,8 +419,45 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    ELSEIF msg == WM_CHAR
       // If not readonly mode and Ctrl key isn't pressed
       x := hwg_GetKeyboardState( lParam )
-      n := Iif( Asc( SubStr(x,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(x,0x11,1 ) ) >= 128,FSHIFT,0 ) )
-      IF n != FCONTROL
+
+      /*
+      ================================================================================ 
+      DF7BE : Handle AltGr key for ~, greek micro and Euro currency sign ( and more )
+      ================================================================================
+      */
+
+      // hwg_writelog(x)
+      && 
+      n :=  Iif( Asc( SubStr(x,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(x,0x11,1 ) ) >= 128,FSHIFT,0 ) )
+      &&                       18dec                                          17dec
+      n1 := Iif( Asc( SubStr(x,19,1 ) ) >= 128, FCONTROL, 0 )
+      n2 := Iif( Asc( SubStr(x,18,1 ) ) >= 128, FSHIFT ,0 )
+      /*
+        Keyboard buffer x has fixed length of 256 ( 0 ... 255 )  
+        FSHIFT=4,FCONTROL=8,FALT=16=0x10
+        Table: values for Ctrl and AltGr key
+        Position in keyboard buffer: 18 +  19 
+        AltGr + Euro : 81 + 81 (Euro currency sign)
+        AltGr + ~    : 80 + 80 (Tilde)
+        AltGr + mu   : 81 + 81 (Greek micro) 
+        AltGr + \    : 81 + 80 (Backslash)
+        Logical assignment:
+         AltGr + character pressed : n1 ==  FCONTROL  and n2 == FSHIFT  ==> lctrls := .T.
+         Ctrl pressed              : n1 ==  FCONTROL  and n2 == 0       ==> lctrls := .F.
+      */ 
+      lctrls := .F.  
+       
+      IF n != FCONTROL 
+       lctrls := .T.
+      ENDIF
+
+      IF ( n1 ==  FCONTROL) .AND. ( n2 == FSHIFT )
+       lctrls := .T.
+      ENDIF
+  
+      // hwg_writelog("n1=" + STR(n1) + " n2=" + STR(n2) )
+      // IF n != FCONTROL
+      IF lctrls   && Ctrl or AltGr key
 #ifdef __GTK__
          x := wParam
 #else

@@ -8,6 +8,22 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-11-29 15:10 UTC+0100 Wilfried Brunken DF7BE
+  * samples\test_bot.prg
+  * source\common\editor\hcedit.prg 
+  * utils\editor\editor.prg
+    !
+    ! Class HCEDIT:
+    ! Bugfix: AltGr key ignored, so very important characters like
+    ! \@µ~{}[] and Euro Currency sign are not reached.
+    ! test_bot.prg:
+    ! Remove some comment line to display
+    ! keydown codes.
+    ! editor.prg:
+    ! Charset could be seleted:
+    ! 0   : ISO8859-15 (western countries with Euro currency sign)
+    ! 204 : Russian
+    ! Also as test for bugfix in Class HCEDIT.
 
 2020-11-24 16:00 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html

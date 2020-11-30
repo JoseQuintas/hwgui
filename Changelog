@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-11-30 18:55 UTC+0100 Wilfried Brunken DF7BE
+  * test/hgt/hgt.prg
+  * test/hgt/test.prg
+  * test/hgt/test.hbp
+  * test/hgt/teste.png
+    ! Test program for class HGT for combined usage
+    ! of HWGUI control elements in 
+    ! Harbour gtwvg programs.
+    ! Delivered by José M. C. Quintas (TNX)
+
+
 2020-11-29 15:10 UTC+0100 Wilfried Brunken DF7BE
   * samples\test_bot.prg
   * source\common\editor\hcedit.prg 

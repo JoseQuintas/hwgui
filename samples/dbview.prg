@@ -57,13 +57,17 @@ Static dbv_cLocate, dbv_nRec, dbv_cSeek
 Function Main
 Local oWndMain, oPanel
 Memvar oBrw, oFont
-Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
+Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname , nBrwCharset
+
+nBrwCharset := 0
 
 * Best default index format is NTX
    RDDSETDEFAULT( "DBFNTX" )
 *  RDDSETDEFAULT( "DBFCDX" )
    
-   oFont := HFont():Add( "Courier",0,-14 )
+   oFont := HFont():Add( "Courier",0,-14, , 0 )
+   
+   
    INIT WINDOW oWndMain MAIN TITLE "Dbf browse" AT 200,100 SIZE 300,300
 
    * Attention ! Menu Structure errors were not be detected by the Harbour compiler.
@@ -149,6 +153,8 @@ Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname
       STYLE WS_VSCROLL + WS_HSCROLL  ;
       FONT oFont                     ;
       ON SIZE {|o,x,y|o:Move(,,x-1,y-28)}
+
+   oBrw:nHCCharset := nBrwCharset  && Set to 204 for Russian
       
    oBrw:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
 
@@ -174,7 +180,7 @@ Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
    ENDIF
    IF !Empty( fname )
       close all
-      
+ 
       IF DataCP != Nil
          use (fname) new codepage (DataCP)
          currentCP := DataCP
@@ -190,6 +196,7 @@ Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
       Ains( oBrw:aColumns,1 )
       oBrw:aColumns[1] := HColumn():New( "*",{|v,o|Iif(Deleted(),'*',' ')},"C",1,0 )
       oBrw:active := .T.
+      oBrw:nHCCharset := nBrwCharset 
       oBrw:Refresh()
       oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
       oSay2:SetText( "" )
@@ -213,6 +220,7 @@ Memvar oBrw, oFont
 
       oFont := oBrwFont
       oBrw:oFont := oFont
+      oBrw:nHCCharset := nBrwCharset
       oBrw:ReFresh()
    ENDIF
    
@@ -220,7 +228,10 @@ Return Nil
 
 Static Function SetDataCP( cp )
 Memvar DataCP
-
+   nBrwCharset := 0
+   IF cp == "RUKOI8" .OR. cp == "RU1251" .OR. cp == "RU866"
+     nBrwCharset := 204
+   ENDIF  
    DataCP := cp
 Return Nil
 

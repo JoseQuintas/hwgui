@@ -402,6 +402,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    LOCAL n, nPages, arr, lRes := - 1, x, aPointC[P_LENGTH]
    LOCAL n1 , n2, lctrls
 
+   //hwg_writelog(STR(msg) )
    ::PCopy( ::aPointC, aPointC )
    IF ::bOther != Nil
       IF ( n := Eval( ::bOther,Self,msg,wParam,lParam ) ) != - 1
@@ -418,6 +419,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 
    ELSEIF msg == WM_CHAR
       // If not readonly mode and Ctrl key isn't pressed
+      // DF7BE: Message WM_CHAR not sent on LINUX/GTK, key codes handled in method OnKeyDown
       x := hwg_GetKeyboardState( lParam )
 
       /*
@@ -1184,21 +1186,49 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
 
 #define FBITCTRL   4
 #define FBITSHIFT  3
+#define FBITALT    9
+#define FBITALTGR  65027
+
 
 METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    LOCAL cLine, lUnsel := .T., lInvAll := .F., n, l, ntmp1, ntmp2
    LOCAL nLine, nDocWidth := ::nDocWidth
+   LOCAL ln1 , ln2, ln3, ln4
 
    // Store for last key (needed by memo edit)
    ::nLastKey := nKeyCode
+   /*
+    Shift L: 65505 = 0xFFE1
+    Shift R: 65506 = 0xFFE2
+    Ctrl   : 65207 = 0xFEB7
+    Alt    : 65513 = 0xFFE9
+    AltGr  : 65027 = 0xFE03
+
+    AltGr + Euro : keydown:      65027 /          0 FFFF
+    AltGr + ~    : keydown:         -1 /          0 TTTT
+   
+   */
 
    IF nCtrl == Nil
       cLine := hwg_Getkeyboardstate( lParam )
       nCtrl := Iif( Asc( SubStr(cLine,0x12,1 ) ) >= 128, FCONTROL, 0 ) + ;
             Iif( Asc(SubStr(cLine,0x11,1 ) ) >= 128,FSHIFT,0 )
+
    ENDIF
 
-   //hwg_writelog( "keydown: " + str(nKeyCode) + " / " + str(nctrl) +" "+Iif(hwg_checkBit( nctrl,FBITSHIFT ),"T","F")+Iif(hwg_checkBit( nctrl,FBITCTRL ),"T","F") )
+   ln1 := Iif(hwg_checkBit( nKeyCode, FBITSHIFT ) , .T., .F. )
+   ln2 := Iif(hwg_checkBit( nKeyCode, FBITCTRL  ) , .T., .F. )
+   ln3 := Iif(hwg_checkBit( nKeyCode, FBITALT   ) , .T., .F. )
+   ln4 := Iif(hwg_checkBit( nKeyCode, FBITALTGR ) , .T., .F. )
+   
+
+   /*
+      Output of this command: 
+                     ln1   ln2, ln3 ln4
+      nKeyCode nctrl Shift Ctrl Alt AltGr
+   */ 
+   // hwg_writelog( "keydown: " + str(nKeyCode) + " / " + str(nctrl) +" "+Iif(hwg_checkBit( nKeyCode,FBITSHIFT ),"T","F")+Iif(hwg_checkBit( nKeyCode, FBITCTRL ),"T","F") + Iif(hwg_checkBit( nKeyCode, FBITALT), "T","F" ) + Iif(hwg_checkBit( nKeyCode, FBITALTGR) ,"T","F") )
+
 
    ::lSetFocus := .T.
    IF ::bKeyDown != Nil .AND. ( nLine := Eval( ::bKeyDown, Self, nKeyCode, nCtrl, 0 ) ) != -1
@@ -1216,7 +1246,15 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          Ascan( { VK_RIGHT, VK_LEFT, VK_HOME, VK_END, VK_DOWN, VK_UP, VK_PRIOR, VK_NEXT }, nKeyCode ) != 0
       ::PCopy( ::aPointC, ::aPointM1 )
    ENDIF
+   /* ===== Handle special keys ===== */
+#ifdef __GTK__
+   IF (nKeyCode == -1) .AND. ln1 .AND. ln2 .AND. ln3 .AND. ln4  // AltGr + ~ (Tilde)
+       ::putChar( 126 )  && nKeyCode
+   ELSEIF nKeyCode == VK_RIGHT
+#else 
+// Cursor right : This block catches AltGr + ~ (Tilde) , so ignored, Bug fixed (DF7BE)
    IF nKeyCode == VK_RIGHT
+#endif   
       n := Iif( hwg_checkBit( nctrl,FBITCTRL ), ::aLines[nLine,AL_NCHARS] - ::nPosC, 1 )
       l := .F.
       DO WHILE --n >= 0
@@ -1251,7 +1289,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
             ::aLines[nLine,AL_Y2] )
       ENDIF
 
-   ELSEIF nKeyCode == VK_LEFT
+   ELSEIF nKeyCode == VK_LEFT  // Cursor left
       n := Iif( hwg_checkBit( nctrl,FBITCTRL ), ::nPosC, 1 )
       ntmp1 := ntmp2 := ::nPosC
       l := .F.
@@ -1287,7 +1325,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == VK_HOME
+   ELSEIF nKeyCode == VK_HOME  // Home
       IF ::nPosF > 1 .OR. ::nShiftL > 0
          ::nPosF := 1
          ::nShiftL := 0
@@ -1301,7 +1339,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == VK_END
+   ELSEIF nKeyCode == VK_END   // End
       IF ::lWrap .AND. ::nDocFormat > 0 .AND. ::nShiftL+::nClientWidth < nDocWidth
          ::nShiftL := nDocWidth - ::nClientWidth
          lInvAll := .T.
@@ -1318,7 +1356,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
-   ELSEIF nKeyCode == VK_UP
+   ELSEIF nKeyCode == VK_UP     // Cursor up
       ::LineUp()
       IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
@@ -1328,7 +1366,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
                ::aLines[::nLineC+1,AL_Y2] )
          ENDIF
       ENDIF
-   ELSEIF nKeyCode == VK_DOWN
+   ELSEIF nKeyCode == VK_DOWN   // Cursor down
       ::LineDown()
       IF hwg_checkBit( nctrl,FBITSHIFT ) .AND. ::nLineC > 1
          ::PCopy( ::aPointC, ::aPointM2 )
@@ -1358,14 +1396,14 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          lUnSel := .F.
          lInvAll := .T.
       ENDIF
-   ELSEIF nKeyCode == VK_DELETE
+   ELSEIF nKeyCode == VK_DELETE   // Delete
       IF hwg_checkBit( nctrl,FBITSHIFT ) .AND. !Empty( ::aPointM2[P_Y] )
          cLine := ::GetText( ::aPointM1, ::aPointM2 )
          hwg_Copystringtoclipboard( cLine )
       ENDIF
       ::putChar( 7 )   // for to not interfere with '.'
 
-   ELSEIF nKeyCode == VK_INSERT
+   ELSEIF nKeyCode == VK_INSERT   // Insert
       IF nCtrl == 0
          ::lInsert := !::lInsert
          lUnSel := .F.
@@ -1376,7 +1414,6 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
             hwg_Copystringtoclipboard( cLine )
          ENDIF
          lUnSel := .F.
-
       ELSEIF hwg_checkBit( nctrl,FBITSHIFT )
          IF !::lReadOnly .AND. !::lNoPaste
             cLine := hwg_Getclipboardtext()
@@ -1388,6 +1425,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
                ::nHeight )
          ENDIF
       ENDIF
+
    ELSEIF ( nKeyCode == 89 .OR. nKeyCode == 121 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'Y'
       IF ::lWrap //.AND. ::aWrap[::nLineF+nLine-1] != Nil
          //::DelText( {::aWrap[nLine-1],::nLineF+nLine-1}, {1,::nLineF+nLine-1} )

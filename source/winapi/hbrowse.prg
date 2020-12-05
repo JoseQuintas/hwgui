@@ -214,6 +214,7 @@ CLASS HBrowse INHERIT HControl
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
    DATA aSelected                              // An array of selected records numbers
    DATA nPaintRow, nPaintCol                   // Row/Col being painted
+   DATA nHCCharset INIT -1                     // Charset for MEMO EDIT -1: set default value
    // --- International Language Support for internal dialogs ---
    DATA cTextTitME INIT "Memo Edit"   
    DATA cTextClose INIT "Close"   // Button 
@@ -1821,10 +1822,26 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
    LOCAL oComboFont, oCombo
    LOCAL oGet1, owb1, owb2
-   LOCAL oEdit,mvarbuff,bMemoMod    && DF7BE
+   LOCAL oEdit,mvarbuff,bMemoMod, oHCfont    && DF7BE
+   LOCAL apffrarr, nchrs
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
+   
+   /* Preset charset for displaying special characters of other languages 
+      for example Russian ::nHCCharset = 204   */
+     nchrs := ::nHCCharset
+     apffrarr := ::oFont:Props2Arr()
+     IF ::nHCCharset == -1
+      nchrs := apffrarr[5]
+     ENDIF
+     oHCfont := HFont():Add(apffrarr[1],apffrarr[2] ,apffrarr[3]  , apffrarr[4] , nchrs , ;
+     apffrarr[6]  , apffrarr[7], apffrarr[8] ) 
+//        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
+//        1         2       3         4         5           6          7             8  
 
+
+   // hwg_WriteLog(oHCfont:PrintFont() )
+   
    oColumn := ::aColumns[fipos]
    IF ::bEnter == Nil .OR. ;
          ( ValType( lRes := Eval( ::bEnter, Self, fipos, ::nCurrent ) ) == 'L' .AND. !lRes )
@@ -1936,8 +1953,13 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                 mvarbuff := ::varbuf  && DF7BE: inter variable avoids crash at store
 *               @ 10, 10 GET oGet1 SIZE oModDlg:nWidth - 20, 240 FONT ::oFont Style WS_VSCROLL + WS_HSCROLL + ES_MULTILINE VALID oColumn:bValid
 
+               /* DF7BE 2020-12-02:
+                  Prepare for correct display of Euro currency sign in Memo edit
+                  by using charset 0 (ISO8859-15)
+                */ 
                @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
-                    FONT ::oFont
+                    FONT  oHCfont && ::oFont
+
                * ::varbuf ==> mvarbuff, oGet1 ==> oEdit (DF7BE)         
                @ 010, 252 ownerbutton owb2 TEXT ::cTextSave size 80, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
                @ 100, 252 ownerbutton owb1 TEXT ::cTextClose size 80, 24 ON CLICK { ||oModDlg:close() }

@@ -8,6 +8,34 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-05 12:05 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * doc/image/WrongEuro.png (New)
+  * samples/dbview.prg
+  * source/common/editor/hcedit.prg
+  * source/gtk/drawwidg.prg
+  * source/gtk/hbrowse.prg
+  * source/winapi/drawwidg.prg
+  * source/winapi/hbrowse.prg
+  * utils/editor/editor.hbp
+  * utils/editor/editor_linux.hbp (deleted)
+
+    ! Ticket #72: Common utils/editor/editor.hbp
+    ! for WinAPI and LINUX. So editor_linux.hbp deleted.
+    ! Internal Bugfix:
+    ! Class HCEDIT: Ingored ~ (Tilde) on GTK/LINUX
+    ! WinAPI: in MEMOEDIT of HBROWSE:
+    ! Euro currency was displayed as single bar,
+    ! if entered via AltGr + E, but was stored correct 
+    ! in database, see sample samples/dbview.prg.
+    ! Editor: Charset was fixed set to russian, now
+    ! selection menu at start. Now ~ and Euro currency
+    ! correct displayed and stored in file. 
+    ! Documentation:
+    ! - Added some description for class HFONT
+    ! - Class HBROWSE: Bug info for € sign.
+     
+
 2020-11-30 18:55 UTC+0100 Wilfried Brunken DF7BE
   * test/hgt/hgt.prg
   * test/hgt/test.prg

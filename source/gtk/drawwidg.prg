@@ -35,8 +35,11 @@ CLASS HFont INHERIT HObject
 
    METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle, lLinux )
    METHOD Select( oFont )
+   METHOD Props2Arr()
+   METHOD PrintFont()
    METHOD Release()
    METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight )
+   // METHOD AddC( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle )
 
 ENDCLASS
 
@@ -131,6 +134,67 @@ METHOD Release() CLASS HFont
    ENDIF
 
    RETURN Nil
+
+
+/* DF7BE: For debugging purposes */   
+METHOD PrintFont()  CLASS HFont   
+//        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
+// Type:  C         N       N         N         N           N          N             N
+// - 9999 means NIL
+
+   LOCAL fontName , nWidth , nHeight , fnWeight , fdwCharSet , fdwItalic , fdwUnderline , fdwStrikeOut
+
+   fontName     := iif( ::name == NIL , "<Empty>", ::name )
+   nWidth       := iif( ::width == Nil, - 9999 , ::width )
+   nHeight      := iif( ::height == NIL , - 9999 , ::height )
+   fnWeight     := iif( ::weight == Nil, - 9999 , ::weight )
+   fdwCharSet   := iif( ::CharSet == Nil, - 9999 , ::CharSet )
+   fdwItalic    := iif( ::Italic == Nil, - 9999 , ::Italic )
+   fdwUnderline := iif( ::Underline == Nil, - 9999 , ::Underline )
+   fdwStrikeOut := iif( ::StrikeOut == Nil, - 9999 , ::StrikeOut )
+ 
+
+ 
+ 
+RETURN "Font Name=" + fontName + " Width=" + ALLTRIM(STR(nWidth)) + " Height=" + ALLTRIM(STR(nHeight)) + ;
+       " Weight=" + ALLTRIM(STR(fnWeight)) + " CharSet=" + ALLTRIM(STR(fdwCharSet)) + ;
+       " Italic=" + ALLTRIM(STR(fdwItalic)) + " Underline=" + ALLTRIM(STR(fdwUnderline)) + ;
+       " StrikeOut=" + ALLTRIM(STR(fdwStrikeOut))
+
+
+/* 
+  Returns an array with font properties (for creating a copy of a font entry)
+  Copy sample
+   apffrarr := oFont1:Props2Arr()
+   oFont2 := HFont():Add( apffrarr[1], apffrarr[2], apffrarr[3], apffrarr[4], apffrarr[5], ;
+                apffrarr[6], apffrarr[7], apffrarr[8] )
+ */
+METHOD Props2Arr() CLASS HFont
+//        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
+//        1         2       3         4         5           6          7             8  
+   LOCAL fontName , nWidth , nHeight , fnWeight , fdwCharSet , fdwItalic , fdwUnderline , fdwStrikeOut
+   LOCAL aFontprops := {}
+
+   fontName     := iif( ::name == NIL , "<Empty>", ::name )
+   nWidth       := iif( ::width == Nil, - 9999 , ::width )
+   nHeight      := iif( ::height == NIL , - 9999 , ::height )
+   fnWeight     := iif( ::weight == Nil, - 9999 , ::weight )
+   fdwCharSet   := iif( ::CharSet == Nil, - 9999 , ::CharSet )
+   fdwItalic    := iif( ::Italic == Nil, - 9999 , ::Italic )
+   fdwUnderline := iif( ::Underline == Nil, - 9999 , ::Underline )
+   fdwStrikeOut := iif( ::StrikeOut == Nil, - 9999 , ::StrikeOut )
+   
+   AADD (aFontprops, fontName)  && C
+   AADD (aFontprops, nWidth)    && all other of type N 
+   AADD (aFontprops, nHeight)
+   AADD (aFontprops, fnWeight)
+   AADD (aFontprops, fdwCharSet)
+   AADD (aFontprops, fdwItalic)
+   AADD (aFontprops, fdwUnderline)
+   AADD (aFontprops, fdwStrikeOut)
+
+ RETURN aFontprops
+
 
 METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS HFont
    LOCAL  weight, Italic, Underline, StrikeOut
@@ -835,6 +899,25 @@ FUNCTION hwg_SetResContainer( cName )
    ENDIF
 
    RETURN
+
+/*
+   DF7BE: only needed for WinAPI, on GTK/LINUX charset is UTF-8 forever.
+   All other attributes are not modified.
+ */   
+FUNCTION hwg_FontSetCharset ( oFont, nCharSet  )
+   LOCAL i, nlen := Len( oFont:aFonts )
+   
+   IF nCharSet == NIL .OR. nCharSet == -1 
+    RETURN oFont
+   ENDIF
+   
+   oFont:charset := nCharSet
+   
+ FOR i := 1 TO nlen
+        oFont:aFonts[ i ]:CharSet := nCharSet
+ NEXT
+  
+RETURN oFont
    
 * ====================== EOF of drawwidg.prg ==========================
    

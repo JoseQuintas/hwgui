@@ -197,6 +197,9 @@ CLASS HBrowse INHERIT HControl
    DATA lBtnDbl   INIT .F.
    DATA nCursor   INIT 0
    DATA lSetAdj   INIT .F.
+   DATA nHCCharset INIT -1                     // Charset for MEMO EDIT -1: set default value
+                                               // For compatibiltity purposes, do not modify
+                                               // with UTF-8
    // --- International Language Support for internal dialogs ---
    DATA cTextTitME INIT "Memo Edit"
    DATA cTextClose INIT "Close"   // Button

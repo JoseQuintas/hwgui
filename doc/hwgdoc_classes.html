@@ -11,6 +11,8 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
+ ! 2020-12-05        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
+ +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
  +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-05-06        ! Wilfried Brunken, DF7BE         ! Clipper style Alert() replacement          !
@@ -398,6 +400,9 @@
       aRelation
       lResizing
       lCtrlPress
+      DATA nHCCharset INIT -1      Charset for MEMO EDIT, -1 for use default
+                                   For compatibiltity purposes, do not modify
+                                   with UTF-8
       --- International Language Support for internal dialogs ---
       cTextTitME              (RW) "Memo Edit"   
       cTextClose              (RW) "Close"   // Button 
@@ -445,6 +450,17 @@
       onEvent( msg, wParam, lParam ) 
       End()
    </pre>
+   <p>
+   <br>
+   Bug information:<br>
+   MEMO EDIT on WinAPI:<br>
+   Euro currency was displayed as single bar
+   , <img src="./image/WrongEuro.png" align=center wborder=0 alt="Wrong Euro Display MEMO EDIT"><br>
+   if entered via AltGr + E, but was stored correct<br> 
+   in database, see sample samples/dbview.prg.<br>
+   The bug is located in file hcedit_w.c, will be fixed as soon as possible.<br>
+   Works best on LINUX/GTK.<br>
+   </p>
 
    <br><strong class="subhead"><a name="Classes3_3_2" href="#_Classes3_3_2">
    HPanel</a></strong> 
@@ -1390,9 +1406,63 @@
       Add( fontName, nWidth, nHeight ,fnWeight, fdwCharSet, fdwItalic,
          fdwUnderline, fdwStrikeOut, nHandle )
       Select( oFont )
+      Props2Arr()
+      PrintFont()
       SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight )
       Release()
    </pre>
+   <p>
+   A font is defined by the following 8 properties:<br>
+   <br>
+   &nbsp;1.)&nbsp;Fontname<br>
+   &nbsp;2.)&nbsp;Width<br>
+   &nbsp;3.)&nbsp;Height<br>
+   &nbsp;4.)&nbsp;Weight<br>
+   &nbsp;5.)&nbsp;CharSet<br>
+   &nbsp;6.)&nbsp;Italic<br>
+   &nbsp;7.)&nbsp;Underline<br>
+   &nbsp;8.)&nbsp;StrikeOut<br>
+   <br>
+   The Fontname is of type C, the other ones are of type N.<br>
+   Some values could be negative.<br>
+   The properties Italic, Underline and StrikeOut are origin of type L,<br>
+   but they are representated as numeric values in the form<br>
+   1 = .T., 0 = .F.<br>
+   <br>
+   CharSet:<br>
+   For list of valid character sets see include file:<br>
+   include\prncharsets.ch<br>
+   On systems with UTF-8 support like LINUX, the charset may not be set.<br>
+   <br>
+   METHOD PrintFont()<br>
+   Returns a string with font properties, helpful for debugging purposes.<br>
+   Sample return value:<br>
+   Font Name=Courier Width=0 Height=-14 Weight=0 CharSet=0 Italic=0 Underline=0 StrikeOut=0<br>
+   A numerical value of -9999 means "NIL".<br>
+   Sample for writing the properties of font "oHCfont" into a log file:<br>
+   hwg_WriteLog(oHCfont:PrintFont() )<br>
+   <br>
+   METHOD Props2Arr():<br>
+   returns an array of 8 elements with the proprties in order listed above.<br>
+   If you want to copy a font with unknown properties and modify only one<br>
+   property, this method is very helpful, for example:<br>
+   &nbsp;&nbsp;apffrarr := ::oFont1:Props2Arr()<br>
+   &nbsp;&nbsp;oFont2 := HFont():Add(apffrarr[1],apffrarr[2] ,apffrarr[3]  , apffrarr[4] , 204, ;<br>
+   &nbsp;&nbsp;apffrarr[6]  , apffrarr[7], apffrarr[8] )<br>
+   This changes the font character set of "oFont2" to Russian, the rest is preserved.<br>
+   <br>
+   The Method Select(oFont) calls the OS system dialog for selecting a new font.<br>
+   Think about, that the design of the font selection dialog differs between<br>
+   WinAPI and LINUX/GTK.<br>
+   Example:<br> 
+   &nbsp;&nbsp;oBrwFont := HFont():Select(oFont)<br> 
+   &nbsp;&nbsp;oFont := oBrwFont<br>
+   &nbsp;&nbsp;oBrw:oFont := oFont<br>
+   Modification of a font for the HBROWSE class<br>
+   (see sample program "samples\dbview.prg", Function ChangeFont() ).<br>
+   <br>
+   </p>
+
 
    <br><strong class="subhead"><a name="Classes8" href="#_Classes8">
    HPen</a></strong> 

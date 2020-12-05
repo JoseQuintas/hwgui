@@ -2,12 +2,18 @@
 # $Id$
 #
 
-# Only for WinAPI
+# Make script for HWGUI editor using hbmk2 utility
 
 -n -w
 
 -oeditor
+
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+-L../..
 -lhbct
+{linux}-lm
 
 editor.prg
 hcediext.prg

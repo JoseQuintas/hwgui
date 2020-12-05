@@ -1,0 +1,20 @@
+#
+# $Id$
+#
+
+# Modify "sample" ( 2 x ) to the name of program to compile
+
+-b
+-n -w
+
+#-L../..
+-L..
+hwgui.hbc
+
+-osample
+
+sample.prg
+
+
+# ===================== EOF of sample.hbp ====================
+

@@ -33,6 +33,8 @@ For beginners:
     bldpc.bat       Pelles C Compiler 
     bldvc.bat       Microsoft Visual C  
     hbmk.bat        Using hbmk2 utility
+    sample.hbp      Sample skript for hbmk2 utility, modify to your own needs
+                    (works for Windows and LINUX) 
 
     For Compiler support look into text files of directory:
      samples/dev/compiler

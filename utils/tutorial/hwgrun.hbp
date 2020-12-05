@@ -1,4 +1,20 @@
-#Initial of tutor.hbp
-hwgrun.prg
-..\..\hwgui.hbc
+#Initial of hwgrun.hbp
+#
+# $Id: hwgrun_linux.hbp 2861 2020-07-04 10:49:11Z df7be $
+#
+
 -n -w
+
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-L../..
+hwgui.hbc
+
+-ohwgrun
+
+hwgrun.prg
+
+# ===================== EOF of hwgrun.hbp ===============

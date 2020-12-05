@@ -4,10 +4,16 @@
 
 -n -w
 
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-L../..
+hwgui.hbc
+
 -otutor
 
 tutor.prg
-
-..\..\hwgui.hbc
 
 # ============== EOF of tutor.hbp =============

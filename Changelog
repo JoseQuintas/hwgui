@@ -8,6 +8,31 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-05 21:50 UTC+0100 Wilfried Brunken DF7BE
+  * samples/Readme.txt
+  * samples/gtk_samples/Readme.txt
+  * samples/gtk_samples/sample.hbp (New)
+  * samples/sample.hbp (New)
+  * utils/bincnt/bincnt.hbp
+  * utils/bincnt/file2hex.hbp
+  * utils/dbc/dbchw.hbp
+  * utils/debugger/hwgdebug.hbp
+  * utils/designer/designer.hbp
+  * utils/tutorial/hwgrun.hbp
+  * utils/tutorial/tutor.hbp
+  * samples/gtk_samples/gtk_sample.hbp (Deleted)
+  * utils/bincnt/bincnt_linux.hbp (Deleted)
+  * utils/dbc/dbc_linux.hbp (Deleted)
+  * utils/debugger/debugger_linux.hbp (Deleted)
+  * utils/designer/designer_linux.hbp (Deleted)
+  * utils/tutorial/hwgrun_linux.hbp (Deleted)
+  * utils/tutorial/tutor_linux.hbp (Deleted)
+    ! Ticket #72: hbp files for compile with hbmk2
+    ! for Windows and LINUX working 
+    ! delivered by José M. C. Quintas (TNX)
+    ! Tested all under Windows 10 and Ubuntu LINUX 16.04 LTS.
+  
+
 2020-12-05 12:05 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * doc/image/WrongEuro.png (New)

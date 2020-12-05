@@ -15,6 +15,8 @@ Created by DF7BE
      - bldgw.bat     old version for MinGW, better use hwmingnw.bat !
      - hwmingnw.bat  GTK/Windows (Cross development environment,
        read instructions for use in file samples\dev\MingW-GTK\Readme.txt)
+     - sample.hbp    Sample skript for hbmk2 utility, modify to your own needs
+                     (works for Windows and LINUX) 
 
 3.) List of GTK sample programs
 

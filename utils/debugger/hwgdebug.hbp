@@ -2,6 +2,19 @@
 # $Id$
 #
 
-..\..\hwgui.hbc
 -n -w
+
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-L../..
+hwgui.hbc
+
+-ohwgdebug
+
 hwgdebug.prg
+
+
+# ================= EOF of hwgdebug.hbp ====================

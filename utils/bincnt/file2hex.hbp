@@ -2,12 +2,18 @@
 # $Id$
 #
 
-file2hex.prg
--ofile2hex
 -n -w
--static
--d__LINUX__ -d__GTK__
 
-../../hwgui.hbc
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
 
-# ==================== EOF of a.hbp ===============
+-L../..
+hwgui.hbc
+
+-ofile2hex
+
+file2hex.prg
+
+
+# ==================== EOF of file2hex.hbp ===============

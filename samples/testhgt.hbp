@@ -1,0 +1,21 @@
+#
+# Compile script for test program with gtwvg
+# $Id$
+
+# Harbour GTWVG is Windows only
+# {linux}-static
+# {linux}-d__LINUX__
+# {linux}-d__GTK__
+
+-mt
+-n -w
+testhgt.prg
+
+#-L..\..\lib
+#-L..\..
+-L..
+hwgui.hbc
+hbwin.hbc
+-lgtwvg
+
+# ============= EOF of test.hbp ====================

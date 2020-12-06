@@ -8,6 +8,17 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-06 21:50 UTC+0100 Wilfried Brunken DF7BE
+  * samples/testhgt.hbp (New)
+  * samples/testhgt.prg (New)
+  * samples/Readme.txt
+  * doc/hwgdoc_commands.html
+    ! Ticket #27: Simplified sample
+    ! Harbour gtwvg usage suggested
+    ! by José M. C. Quintas,
+    ! but Harbour gtwvg is Windows only
+    ! Docu: SHADEBUTTON is Windows only
+
 2020-12-05 21:50 UTC+0100 Wilfried Brunken DF7BE
   * samples/Readme.txt
   * samples/gtk_samples/Readme.txt

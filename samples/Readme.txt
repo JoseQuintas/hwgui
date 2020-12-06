@@ -103,7 +103,7 @@ For beginners:
  hole.prg   2) 4)   N                 MS Agent Control
  icons.prg          Y                 Icons and background bitmaps
  iesample.prg 2) 5) N                 Sample of ActiveX container for the IE browser object. 
- modtitle.prg       N                 Sample for modifying a main window title in HWGUI
+ modtitle.prg       Y                 Sample for modifying a main window title in HWGUI
  nice.prg           N                 Demo of NICEBUTTON
  nice2.prg          N  #      -       Seems to be outdated, starts only in background, kill with Task Manager
  progbars.prg  12)  Y                 Progress bar
@@ -120,6 +120,7 @@ Testado.prg         N                 Test program sample for ADO Browse (TNX It
  testget1.prg       N                 Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
  testget2.prg       N                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
  testfunc.prg       Y         Y       Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button. 
+ testhgt.prg        N                 class HGT for combined usage of HWGUI control elements in Harbour gtwvg programs in multithread mode.
  testhmonth.prg     Y         Y       Calendar, Datepicker, TOOLTIP
  testimage.prg      Y                 Displaying images and usage of FreeImage library (IMAGE, BITMAP).
  testini.prg        N                 Use INI file: create and read 

@@ -11,6 +11,12 @@
 -b
 -n -w
 
+# Special parameters for LINUX/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
 # Use -mt for multithread program
 #-mt
 

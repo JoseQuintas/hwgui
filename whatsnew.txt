@@ -31,6 +31,11 @@ For the next release build done:
     Also need to deliver build scripts for utils and contrib libraries.
 [+] Sample database with one field of every type.
 [+] Ressources can be inserted into exe file by hex values.
+[+] Sample program added: 
+    Class HGT for combined usage of HWGUI control elements in 
+    Harbour gtwvg programs in multithread mode. (testhgt.prg),
+    (Windows only), TNX José M. C. Quintas.
+[+] Test program for multithread demo in "test"
 
 
 

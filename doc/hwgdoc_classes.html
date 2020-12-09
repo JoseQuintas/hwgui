@@ -11,7 +11,7 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
- ! 2020-12-05        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
+ ! 2020-12-09        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
  +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
  +-------------------!---------------------------------!--------------------------------------------+
@@ -71,6 +71,9 @@
              <li><a name="_Classes3_3_2_2" href="#Classes3_3_2_2">HPanelHea</a>
            </ul>
            <li><a name="_Classes3_3_3" href="#Classes3_3_3">HOwnButton</a>
+           <li><a name="_Classes3_3_3_1" href="#Classes3_3_3_1">HShadeButton</a> (WinAPI version only)
+           <li><a name="_Classes3_3_3_2" href="#Classes3_3_3_2">HNiceButton</a> (WinAPI version only)
+
            <li><a name="_Classes3_3_4" href="#Classes3_3_4">HSplitter</a>
            <li><a name="_Classes3_3_5" href="#Classes3_3_5">HStatus</a>
            <li><a name="_Classes3_3_6" href="#Classes3_3_6">HStatic</a>
@@ -563,6 +566,63 @@
      Disable()
    </pre>
 
+    <br><strong class="subhead"><a name="Classes3_3_3_1" href="#_Classes3_3_3_1">
+    HShadeButton</a></strong>
+   <p>(Windows only)<br>
+   <pre class="code">DATA 
+     hShade
+   </pre>
+   <pre class="code">METHODS
+       New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
+                   bInit, bSize, bPaint, bClick, lflat,              ;
+                   cText, color, font, xt, yt,                       ;
+                   bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
+                   cTooltip, lEnabled, shadeID, palette,         ;
+                   granularity, highlight, coloring, shcolor )
+       Paint()
+       END()   
+   </pre> 
+
+   <br><strong class="subhead"><a name="Classes3_3_3_2" href="#_Classes3_3_3_2">
+   HNiceButton</a></strong>
+   <p>(Windows only)<br>   
+   <pre class="code">DATA
+       winclass INIT "NICEBUTT"
+
+       TEXT, id, nTop, nLeft, nwidth, nheight
+       CLASSDATA oSelected INIT Nil
+       State INIT 0
+       ExStyle
+       bClick, cTooltip
+       lPress INIT .F.
+       r INIT 30
+       g INIT 90
+       b INIT 90
+       lFlat
+       nOrder   
+   </pre>
+   <pre class="code">METHODS
+       New( oWndParent, nId, nStyle, nStyleEx, nLeft, nTop, nWidth, nHeight, ;
+                    bInit, bClick, ;
+                    cText, cTooltip, r, g, b )
+       Redefine( oWndParent, nId, nStyleEx, ;
+                    bInit, bClick, ;
+                    cText, cTooltip, r, g, b )
+
+       Activate()
+       INIT()
+       Create( )
+       Size( )
+       Moving( )
+       Paint()
+       MouseMove( wParam, lParam )
+       MDown()
+       MUp()
+       Press() INLINE( ::lPress := .T., ::MDown() )
+       RELEASE()
+       END ()   
+   </pre>    
+   
    <br><strong class="subhead"><a name="Classes3_3_4" href="#_Classes3_3_4">
    HSplitter</a></strong> 
    <pre class="code">DATA

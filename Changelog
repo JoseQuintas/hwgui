@@ -8,6 +8,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-09 16:50 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * include/hwingui.h
+  * samples/dev/env/pfad.bat
+  * samples/sample.hbp
+  * whatsnew.txt
+    ! Ticket #67
+    ! (include\hwingui.h)
+    ! #define WINVER  0x0500 changed to 0x0502 
+    ! Adapted path for MinGW32 (internal):
+    ! C:\MinGW32
+    ! Docu updated for:
+    ! SHADEBUTTON and NICEBUTTON,
+    ! classes HShadeButton and HNiceButton
+    ! (Windows only).
+    ! Ticket #72: (Remarks by Oleksii Myronenko)
+    ! Inline descriptive comments for alternative usage of
+    ! hbc parameters (sample.hbp). 
+
+
 2020-12-06 21:50 UTC+0100 Wilfried Brunken DF7BE
   * samples/testhgt.hbp (New)
   * samples/testhgt.prg (New)

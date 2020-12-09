@@ -11,7 +11,9 @@
    #define _WIN32_IE      0x0501
 #endif
 #ifndef WINVER
-    #define WINVER  0x0500
+/* Ticket #67 */
+   /* #define WINVER  0x0500 */
+    #define WINVER  0x0502
 #endif
 
 #include <windows.h>

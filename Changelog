@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-13 12:00 UTC+0100 Wilfried Brunken DF7BE
+  *  doc/hwgdoc_classes.html
+  *  doc/hwgdoc_commands.html
+  *  samples/Readme.txt
+    ! Ticket #64:
+    ! Ticket is done, so ready for close
+    ! Descriptive instructions added in docu.
+    ! One write error fiexed
+
 2020-12-09 16:50 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_commands.html

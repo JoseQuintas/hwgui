@@ -38,7 +38,7 @@ For beginners:
 
     For Compiler support look into text files of directory:
      samples/dev/compiler
-     samples/dev/env        (Envirinment scripts for Windows)
+     samples/dev/env        (Environment scripts for Windows)
      samples/dev/MinGW64
      samples/dev/MingW-GTK  (Cross Development Environment for GTK on Windows)
 

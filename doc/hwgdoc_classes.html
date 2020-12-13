@@ -11,7 +11,7 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
- ! 2020-12-09        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
+ ! 2020-12-13        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
  +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
  +-------------------!---------------------------------!--------------------------------------------+
@@ -1887,6 +1887,7 @@
    <BR>
      <img src="./image/Win10_PR2PDF_FSel.png" align=center wborder=0 alt="System dialog for printer selection"> 
    <BR>
+   <BR>
    National Language Support for Print Preview Dialog:<BR>
    Detailed instructions in inline comment lines of sample program "winprn.prg".<BR>
    Here you find also instructions for National Language Support of the preview dialog.<BR>
@@ -1894,9 +1895,78 @@
    Bug in Cairo graphical library (instructions for LINUX/GTK):<BR>
    Inserting bitmaps into a document to print, it is necessary to add at first<BR>
    the text lines, and than the bitmap images (exact in this order).<BR>
-   For deatils, see inline comment of sample program <BR>
-   "samples/gtk_samples/winprn.prg".<BR>  
+   For deatils, see inline comments of sample program <BR>
+   "samples/gtk_samples/winprn.prg".<BR>
+   More description in following text block.<BR> 
    </p>
+
+
+   <p></p>
+   <pre class="code">Error handling in GTK/Cairo at printing bitmaps:
+
+   Because of a bug in the graphical library "Cairo",
+   here the workaround to use the METHOD PrintBitMap in WinAPI and LINUX/GTK.
+   But it is necessary, to differ code for WinAPI and GTK
+   with the compiler switch "#ifdef __GTK__".
+   A new METHOD SetY( nYvalue ) is added to the HWINPRN class.
+
+   The symptom is, that after a bitmap is displayed,
+   in all text lines following the first insertion of a bitmap,
+   the text is not displayed.
+   Referred to sample program "winprn.prg" for WinAPI, on printout page 7
+   the first text "From file >hwgui.bmp<" is visible,
+   after the first bitmap "./../image/hwgui.bmp" all following texts
+   ("astro from hex value via temporary file" and
+    "--------------------") are blank.
+   Line feed with method PrintLine(10) works OK.
+
+   So the workaround for LINUX/GTK is (see samples/gtk_sample/winprn.prg):
+   First insert all text lines, after this, insert all images.
+   To set the position of the image in the document,
+   use method SetY(n) to preset the position of the
+   image, than say oWinPrn:PrintBitmap(...).
+   For your designing work of the page to print, get the Y position by inserting:
+   hwg_MsgInfo(STR(oWinPrn:y) ) and remove all this commands, if you are ready.
+   Repeat this for every bitmap to get the correct line.
+
+   That is done here in the following program lines in the sample program.
+
+   Also this does not work on GTK:
+   oWinPrn:PrintBitmap( oBitmap1 )
+   (read bitmap from object)
+
+   This workaround is:
+
+   In main section:
+   * Fill variables with hex values
+   Init_Hexvars()
+
+   * Convert to binary.
+    cValAstro := hwg_cHex2Bin ( cHexAstro )
+
+   * Write hex value of astro.bmp into temporary file
+    ctempfile := hwg_CreateTempfileName( ,".bmp")
+    hb_memowrit( ctempfile ,cValAstro )
+
+...
+
+   * Erase the temporary file from astro.bmp
+   FERASE(ctempfile)
+
+...
+
+   * Insert bitmap into print cache:
+   oWinPrn:SetY(nnn)
+   oWinPrn:PrintBitmap( ctempfile )
+
+   Check with WinAPI:
+   The method SetY() does not work in the same way.
+   For multi platform applications use the compiler switch
+   #ifdef __GTK__ 
+   to activate special adapted code.
+   See also same sample for WinAPI.
+  </pre>
+
 
    <br><strong class="subhead"><a name="Classes19" href="#_Classes19">
    HFormTmpl</a></strong> 

@@ -1425,6 +1425,12 @@
      <li> n == 3:  returns a logical value, which tells, if this is a UNICODE build,
      <li> n is omitted: returns a string with full information. 
    </ul>
+   <p><b>Instructions for programmer, who publishes a new HWGUI release:</b><br>
+    Set release and build number in this include file before a new release is created:<br>
+    include\guilib.ch<br>
+    Reset the values of HWG_VERSION to "Code Snapshot" and<br>
+    HWG_BUILD to 0 after publification of a new HWGUI release.<br>
+   </p>
 
    <br><strong class="subhead"> hwg_WriteLog( cText [, fname] )</strong> 
    <br>Adds a text to a file, the functions is intended for debugging purposes.

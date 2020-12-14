@@ -165,6 +165,25 @@
        <li><a name="_Commands2-6" href="#Commands2-5">4.2.6.  CONTEXT MENU</a>
        <li><a name="_Commands2-7" href="#Commands2-6">4.2.7.  ACCELERATOR</a>
      </ul>
+    <p><b>Additional instructions for menus:</b><br>
+     Structure errors in menu command blocks are not recognized by the Harbour compiler.<br>
+     At run time, in case of those error(s) the menu disappeared.<br>
+     Check the structure manually.<br>
+     <br>
+     LINUX/GTK: Submenus are mandatory.<br>
+     If a main menu point is standalone, the action of this menu is not reachable.<br>
+     You see only an empty sub menu "Aktivieren" (german, means "Activate"),<br>
+     here the screenshot from Ubuntu LINUX:<br>
+     <img src="./image/GTK_without_submenu.jpg" align=center wborder=0 alt="System menu without submenu">
+     <br>
+     Add a submenu point for multi platform programs, for example:<br>
+     MENU OF oMainWindow<br>
+     &nbsp;MENU TITLE "&Exit"<br>
+     &nbsp;&nbsp; MENUITEM "&Quit" ACTION hwg_EndWindow()<br>
+     &nbsp;ENDMENU<br>
+     &nbsp;MENU TITLE "&Dialog"<br>
+     ... 
+    </p>
 
     <br><a name="Commands2-1" href="#_Commands2-1">4.2.1.  MENU</a>
     <p></p>
@@ -565,6 +584,18 @@
          [ LAST &lt;bLast&gt; ]
          [ FOR &lt;bFor&gt; ]
     </pre>
+    <p>
+    <b>Additional instructions for filter usage:</b><br>
+    The Harbour filter command "SET FILTER TO ..." can be normally used with the common<br>
+    BROWSE command for databases. Use it with no trouble inside an active browse window.<br>
+    After modifiying or deleting a filter setting, refresh the browse list with oBrw:Refresh() and<br>
+    you see the browse list with the new filter setting.<br>
+    Need more examples ?<br>
+    Look at project "CLLOG" on Sourceforge (with search project function).<br>
+    There you find many settings for "SET FILTER TO ..." and an editor for filter files as<br>
+    a Harbour console or terminal application.<br>
+    </p>
+    
 
     <br><a name="Commands3-15" href="#_Commands3-15">4.3.15.  ADD COLUMN</a>
     <p></p>
@@ -1254,6 +1285,12 @@
     	 [ FONT &lt;oFont&gt; ] 
     	 [ TOOLTIP &lt;ctoolt&gt; ]
     </pre>
+    <p>
+    <b>Additional instructions for GET:</b><br>
+    VALID: use always a block term, otherwise the GET command crashes with EVAL error,<br>
+    for example:<br>
+    11,22 GET cVar VALID { | | valid_func(cVar) }<br>
+    </p>
 
     <br><a name="Commands4-3" href="#_Commands4-3">4.4.3.  @ &lt;x&gt;,&lt;y&gt; GET CHECKBOX</a>
     <p></p>

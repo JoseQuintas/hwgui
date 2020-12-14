@@ -1,3 +1,22 @@
+/*
+ *$Id$
+ *
+ * HWGUI - Harbour Win32 and Linux (GTK) GUI library
+ * testbrw.prg - another browsing sample (array)
+ *
+ * Copyright 2005 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
+ */
+    * Status:
+    *  WinAPI   :  No
+    *  GTK/Linux:  No
+    *  GTK/Win  :  No
+
+* -------------------------
+* Sample crashes, will be
+* fixed as soon as possible
+* -------------------------
+
 #include "windows.ch"
 #include "guilib.ch"
 
@@ -7,9 +26,14 @@ Local oMainWindow
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150
 
+   * GTK: Submenus required, otherwise only display "Activate"
    MENU OF oMainWindow
-      MENUITEM "&Exit" ACTION hwg_EndWindow()
-      MENUITEM "&Dialog" ACTION DlgGet()
+    MENU TITLE "&Exit"
+      MENUITEM "&Quit" ACTION hwg_EndWindow()
+    ENDMENU
+    MENU TITLE "&Dialog"
+      MENUITEM "&Start Browse" ACTION DlgGet()
+    ENDMENU
    ENDMENU
 
    ACTIVATE WINDOW oMainWindow
@@ -58,3 +82,6 @@ Static Function BrwKey( oBrw, key )
       oBrw:RefreshLine()
    ENDIF
 Return .T.
+
+* ========================== EOF of testbrw.prg ==========================
+

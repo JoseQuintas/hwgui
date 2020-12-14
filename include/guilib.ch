@@ -1,10 +1,21 @@
 /*
  *$Id$
  */
-#define HWG_VERSION         "2.22"
-#define HWG_BUILD               4
-#define	WND_MAIN		        1
-#define	WND_MDI 		        2
+/*
+  ========== Define HWGUI release version ============
+*/ 
+/* Modify version only for release build, otherwise activate "Code Snapshot" */ 
+#define HWG_VERSION            "Code Snapshot"
+/* For note of latest official release version number */  
+// #define HWG_VERSION         "2.22"
+/* Set build number to 0 for Code Snapshot, otherwise start count with 1 for every new release */
+#define HWG_BUILD               0
+/* For note of latest official release build */
+// #define HWG_BUILD               4
+/* ----- End of HWGUI version definition ----- */
+
+#define	WND_MAIN                1
+#define	WND_MDI                 2
 #define WND_MDICHILD            3
 #define WND_CHILD               4
 #define	WND_DLG_RESOURCE       10

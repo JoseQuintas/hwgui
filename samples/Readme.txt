@@ -115,7 +115,7 @@ For beginners:
 Testado.prg         N                 Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)
  testalert.prg      N                 Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
  test_bot.prg       N                 bOther Test: Press key, after key up the scan code is displayed.
- testbrw.prg        N                 Another BROWSE test
+ testbrw.prg        N  #              Another BROWSE test (crashes with no PROPS2ARR at ENTER o click)
  testchild.prg      N  #      -       Create a child windows; child window not created ! command seems to be outdated.
  testget1.prg       N                 Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
  testget2.prg       N                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number

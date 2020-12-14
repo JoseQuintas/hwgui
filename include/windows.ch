@@ -23,7 +23,6 @@
    #define WM_CLOSE                        16   // 0x0010
 
    #define WM_ERASEBKGND                   20   // 0x0014
-   #define WM_ENDSESSION                   22   // 0x0016
    #define WM_ACTIVATEAPP                  28
    #define WM_GETMINMAXINFO                36   // 0x0024
    #define WM_NEXTDLGCTL                   40   // 0x0028
@@ -65,6 +64,7 @@
    #define WM_INITMENUPOPUP                279    //= $0117
    #define WM_MENUSELECT                   287    //= $011F
 #endif
+#define WM_ENDSESSION                   22   // 0x0016
 #define WM_MENUCHAR                     288    //= $0120
 
 #define WM_ENTERIDLE                    289
@@ -1245,7 +1245,6 @@
    #define TBN_DROPDOWN            (TBN_FIRST - 10)
    #define TBN_GETINFOTIPA         (TBN_FIRST - 18)
    #define TBN_HOTITEMCHANGE       (TBN_FIRST - 13)
-   #define TBN_GETINFOTIP          TBN_GETINFOTIPA
    #define NM_FIRST                0
    #define NM_TOOLTIPSCREATED      (NM_FIRST-19)   // notify of when the tooltips window is create
    #define NM_CUSTOMDRAW           (NM_FIRST-12)
@@ -1264,6 +1263,7 @@
    #define TB_SETHOTIMAGELIST      (WM_USER + 52)
    #define TB_GETHOTIMAGELIST      (WM_USER + 53)
 #endif
+#define TBN_GETINFOTIP          TBN_GETINFOTIPA
 
 //--------------
 // Font Weights
@@ -1614,18 +1614,16 @@ Up-Down const defines
 /*
 Check button
 */
-#ifdef HBWINCH
+#ifndef WVTWINLG_CH
    #define BST_UNCHECKED      0x0000
    #define BST_CHECKED        0x0001
    #define BST_INDETERMINATE  0x0002
    #define BST_PUSHED         0x0004
    #define BST_FOCUS          0x0008
-#endif
 
 /*
 ListBox
 */
-#ifndef WVTWINLG_CH
    #define LBN_SELCHANGE        1
    #define LBN_DBLCLK           2
    #define LBN_SELCANCEL        3

@@ -8,6 +8,20 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-17 18:30 UTC+0100 Wilfried Brunken DF7BE
+  * hwgui/contrib/ext_controls/hbrowsex.prg
+  * hwgui/doc/hwgdoc_classes.html
+  * hwgui/doc/hwgdoc_commands.html
+  * hwgui/samples/grid_4.prg
+  * hwgui/todo.txt
+  * hwgui/utils/editor/editor.hbp
+    ! Ticket #72: editor.hbp by O. Myronenko
+    ! grid_4.prg : Little preparations for GTK port
+    ! Docu: GRID command / class HGRID
+    ! Port to GTK in to-do.txt
+    ! Mark for Windows only
+
+
 2020-12-17 10:30 UTC+0100 Wilfried Brunken DF7BE
   * include/windows.ch
   * samples/testfunc.prg

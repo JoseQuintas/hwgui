@@ -6,14 +6,12 @@
 
 -n -w
 
--oeditor
-
 {linux}-static
 {linux}-d__LINUX__
 {linux}-d__GTK__
--L../..
--lhbct
 {linux}-lm
+
+hbct.hbc
 
 editor.prg
 hcediext.prg

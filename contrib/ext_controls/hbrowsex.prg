@@ -41,7 +41,9 @@
    REQUEST Eof
    REQUEST Bof
 
-#define HDM_GETITEMCOUNT    4608
+   /* Moved to windows.ch */
+   //#define HDM_GETITEMCOUNT    4608
+   
 #define RT_MANIFEST         24
 
    STATIC ColSizeCursor := 0

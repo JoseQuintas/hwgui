@@ -70,8 +70,14 @@ Documentation:
   (Alexander Kresin)
   
 =========================================================
-Create list with Windows only function 
+Create list with Windows only functions and commands 
 to use as a task list for port this functions to GTK.
+
+List of commands to port
+2020-12-17
+
+GRID / HGRID class
+
 ==>
 2020-10-27 (DF7BE)
 List of "Windows only" functions

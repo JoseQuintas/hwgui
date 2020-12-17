@@ -10,6 +10,11 @@
  *
 */
 
+    * Status:
+    *  WinAPI   :  Yes
+    *  GTK/Linux:  No
+    *  GTK/Win  :  No
+
 #include "windows.ch"
 #include "guilib.ch"
 #include "common.ch"
@@ -30,8 +35,12 @@ Function Main()
              SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
                 MENU OF oMain
-                        MENUITEM "&Exit" ACTION oMain:Close()
-                        MENUITEM "&Open File" ACTION FileOpen()                        
+                    MENU TITLE "&Exit"
+                        MENUITEM "&Quit" ACTION oMain:Close()
+                    ENDMENU
+                    MENU TITLE "&Open"
+                        MENUITEM "&Open File" ACTION FileOpen()
+                    ENDMENU                        
                 ENDMENU
 
         ACTIVATE WINDOW oMain
@@ -47,7 +56,7 @@ Function Test()
              STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
              
                 
-             @ 10,10 GRID oGrid OF oForm SIZE 680,375;
+            @ 10,10 GRID oGrid OF oForm SIZE 680,375;
                      ITEMCOUNT Lastrec() ;
                      ON DISPINFO {|oCtrl, nRow, nCol| OnDispInfo( oCtrl, nRow, nCol ) } ;
                      NOGRIDLINES
@@ -69,9 +78,13 @@ Return result
 
 Function FileOpen()
         Local fname
+
         fname := hwg_Selectfile( "Select File", "*.*")
-    
+  
         Zap
         APPEND FROM (fname) SDF
 Return Test()
+
+
+* =========================== EOF of grid_4.prg ============================
 

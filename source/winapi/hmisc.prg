@@ -17,6 +17,16 @@
 #include "hbclass.ch"
 #include "guilib.ch"
 
+* ================================= *
+FUNCTION hwg_IsLeapYear ( nyear )
+* nyear : a year to check for leap year
+* returns:
+* .T. a leap year
+* ================================= *
+RETURN ( ( (nyear % 4)  == 0 );
+       .AND. ( ( nyear % 100 ) != 0 ) ;
+       .OR.  ( ( nyear % 400 ) == 0 ) )
+
 FUNCTION hwg_isWindows()
 #ifndef __PLATFORM__WINDOWS
  RETURN .F.

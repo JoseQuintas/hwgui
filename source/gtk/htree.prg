@@ -20,7 +20,8 @@
 #define SB_CTL              2
 #define SB_BOTH             3
 #endif
-#define HDM_GETITEMCOUNT    4608
+ /* Moved to windows.ch */
+ // #define HDM_GETITEMCOUNT    4608
 
 #define  CLR_WHITE      16777215
 #define  CLR_MGREEN      8421440

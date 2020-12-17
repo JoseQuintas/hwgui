@@ -2073,6 +2073,23 @@
    Output format is: HH:MM:SS (same as TIME() ).<br>
    <p></p>
 
+   <br><strong class="subhead"> hwg_IsLeapYear ( nyear )</strong><br>
+   nyear : a year to check for leap year.<br>
+   returns: .T. , if nyear is a leap year,<br>
+   so that the month February has 29 instead of 28 days.<br>
+   <br>
+   The function concerns to the leap year rules of the Gregorian calendar,<br>
+   valid for all years above 1582. Before this year, the "Julian calendar"<br>
+   was used, it had an error about 10 days for the difference against the<br>
+   solar year. With the invention of the Gregorian calendar, created by Pope Gregory XIII,<br>
+   this error was fixed. So leap years are 1600 and 2000,<br>
+   non leap years are 1700, 1800, 1900 and 2100.<br>
+   For the Julian calendar the leap year rule is very simple:<br>
+   &nbsp;IF (nyear % 4)  == 0 ) ...<br>
+   If you have a date variable, use the Harbour function YEAR(d)<br>
+   to extract the year as a numerical value from a date.<br>
+   <p></p>
+
    <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)
    <p></p>
 

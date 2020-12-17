@@ -993,6 +993,19 @@
          [ NOTODAYCIRCLE ] 
          [ WEEKNUMBERS ]
     </pre>
+    <p><br>
+     Year range:<br>
+     - The initial value for MONTHCALENDAR must be delivered of type D.<br>
+     &nbsp;So the range from 0 ... 99 was modified to the setting of "SET CENTURY TO ...".<br>
+     - WinAPI: 1601 ... 9999<br>
+     - LINUX/GTK: If the month calender is displayed, you can scroll to years out of some limits.<br>
+     &nbsp; Values greater than 9999 or negative year values are accepted.<br>
+     &nbsp; The leap year rules are processed concerning the rules of the Gregorian calendar,<br>
+     &nbsp; but for all years.<br> 
+     &nbsp; So it make sense, to check the range from 1582 ... 9999 by<br>
+     &nbsp; range check for entry fields (for example for VALID functions in GET or simular commands).<br>
+     &nbsp; For details about the leap year rules see description of function hwg_IsLeapYear().<br>
+    </p>
 
     <br><a name="Commands3-37" href="#_Commands3-37">4.3.37.  @ &lt;x&gt;,&lt;y&gt; LISTBOX</a>
     <p></p>

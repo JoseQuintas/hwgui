@@ -2,11 +2,7 @@
  *$Id$
  */
 
-// uncomment next line if using together with GTWVG
-// or use Harbour compiler option -dWVTWINLG_CH
-//#define WVTWINLG_CH // wvtwinlg
-
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define WM_CREATE                       1
    #define WM_DESTROY                      2
    #define WM_MOVE                         3
@@ -71,7 +67,7 @@
 #define WM_CHANGEUISTATE                295   //0x127
 #define WM_UPDATEUISTATE                296   //0x128
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define WM_CTLCOLORMSGBOX               306     // 0x0132
    #define WM_CTLCOLOREDIT                 307     // 0x0133
    #define WM_CTLCOLORLISTBOX              308     // 0x0134
@@ -126,7 +122,7 @@
 /*
  * Dialog Box Command IDs
  */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define IDOK                1
    #define IDCANCEL            2
    #define IDABORT             3
@@ -180,7 +176,7 @@
 /*
  * Combo Box messages
  */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define CB_GETEDITSEL               320
    #define CB_LIMITTEXT                321
    #define CB_SETEDITSEL               322
@@ -341,7 +337,7 @@
 /*
  * Window Styles
  */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define WS_OVERLAPPED       0
    #define WS_POPUP            2147483648 // 0x80000000L
    #define WS_CHILD            1073741824 // 0x40000000L
@@ -396,7 +392,7 @@
 /*
  * Static Control Constants
  */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define SS_LEFT                   0    // 0x00000000L
    #define SS_CENTER                 1    // 0x00000001L
    #define SS_RIGHT                  2    // 0x00000002L
@@ -458,7 +454,7 @@
 
 #define BCM_SETNOTE         5641     // 0x00001609
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define IDC_ARROW           32512
    #define IDC_IBEAM           32513
    #define IDC_WAIT            32514
@@ -481,7 +477,7 @@
 #define MK_XBUTTON2         64      // 0x0040
 
 /* Ternary raster operations */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define SRCCOPY             13369376   /* 0x00CC0020  dest = source          */
    #define SRCPAINT            0          /* 0x00EE0086  dest = source OR dest  */
    #define SRCAND              8913094    /* 0x008800C6  dest = source AND dest */
@@ -509,7 +505,7 @@
 #define PSN_WIZFINISH           -208   // (PSN_FIRST-8)
 #define PSN_QUERYCANCEL         -209   // (PSN_FIRST-9)
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TCN_FIRST               -550       // tab control
    #define TCN_SELCHANGE           -551   //(TCN_FIRST - 1)
    #define TCN_SELCHANGING         -552   //(TCN_FIRST - 2)
@@ -523,7 +519,7 @@
 #define TCN_KILLFOCUS           -552
 #define TCN_KEYDOWN             -550   //(TCN_FIRST - 0)
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TCM_FIRST               4864     // Tab control messages
 #endif
 #define TCM_SETIMAGELIST        4867     // (TCM_FIRST + 3)
@@ -538,7 +534,7 @@
 /*
  * Combo Box styles
  */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define CBS_SIMPLE            1        // 0x0001L
    #define CBS_DROPDOWN          2        // 0x0002L
    #define CBS_DROPDOWNLIST      3        // 0x0003L
@@ -627,7 +623,7 @@
 #define OBM_OLD_ZOOM        32756
 #define OBM_OLD_RESTORE     32755
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TCS_SCROLLOPPOSITE      1       // 0x0001   // assumes multiline tab
    #define TCS_BOTTOM              2       // 0x0002
    #define TCS_RIGHT               2       // 0x0002
@@ -674,7 +670,7 @@
 #define EM_CANREDO   EM_CANUNDO      // 0x00C6
 #define EM_REDO      EM_UNDO         // 0x00C7
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define EM_FMTLINES             200     // 0x00C8
    #define EM_LINEFROMCHAR         201     // 0x00C9
    #define EM_SETTABSTOPS          203     // 0x00CB
@@ -699,7 +695,7 @@
 #define ENM_SELCHANGE          524288   // 0x00080000
 #define ENM_PROTECTED          0x00200000
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define IMAGE_BITMAP        0
    #define IMAGE_ICON          1
    #define IMAGE_CURSOR        2
@@ -720,7 +716,7 @@
 #endif
 
 /* Stock Logical Objects */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define WHITE_BRUSH         0
    #define LTGRAY_BRUSH        1
    #define GRAY_BRUSH          2
@@ -913,7 +909,7 @@
 
 #else
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define  VK_RIGHT         0x27
    #define  VK_LEFT          0x25
    #define  VK_HOME          0x24
@@ -973,7 +969,7 @@
 #endif
 #endif
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define VK_SPACE          0x20
    #define VK_SNAPSHOT       0x2C
 #endif
@@ -993,7 +989,7 @@
  */
 
 #define VK_SLEEP          0x5F
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define SW_HIDE             0
    #define SW_SHOWNORMAL       1
    #define SW_NORMAL           1
@@ -1028,7 +1024,7 @@
 #define WIN_CHARPIX_W    8
 #define VID_CHARPIX_H   14
 #define VID_CHARPIX_W    8
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define CS_VREDRAW                 1  // 0x0001
    #define CS_HREDRAW                 2  // 0x0002
 #endif
@@ -1037,7 +1033,7 @@
 /*
  * Listbox Styles
  */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define LBS_NOTIFY            0x0001
    #define LBS_SORT              0x0002
    #define LBS_NOREDRAW          0x0004
@@ -1060,7 +1056,7 @@
 /*
  * Listbox messages
  */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define LB_ADDSTRING            0x0180
    #define LB_INSERTSTRING         0x0181
    #define LB_DELETESTRING         0x0182
@@ -1130,13 +1126,13 @@
 #define TBM_GETTICPOS           (WM_USER+15)
 #define TBM_GETNUMTICS          (WM_USER+16)
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define CW_USEDEFAULT           2147483648          // 0x80000000
    #define CCM_FIRST               0x2000      // Common control shared messages
    #define CCM_LAST                (CCM_FIRST + 0x200)
 #endif
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define CCM_SETBKCOLOR          (CCM_FIRST + 1) // lParam is bkColor
    #define PBM_SETBARCOLOR         (WM_USER+9)             // lParam = bar color
    #define PBM_SETBKCOLOR          CCM_SETBKCOLOR  // lParam = bkColor
@@ -1150,7 +1146,7 @@
 #define WM_CTLCOLOR     0x0019
 #define WM_CTLCOLOR_REFLECT  WM_CTLCOLOR+WM_REFLECT_BASE
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define MM_TEXT             1
    #define MM_LOMETRIC         2
    #define MM_HIMETRIC         3
@@ -1185,7 +1181,7 @@
 
 
 // States for tool Buttons
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TBSTATE_CHECKED         0x01
    #define TBSTATE_PRESSED         0x02
    #define TBSTATE_ENABLED         0x04
@@ -1195,7 +1191,7 @@
 #endif
 
 // Styles for button
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TBSTYLE_BUTTON          0x0000
    #define TBSTYLE_SEP             0x0001
    #define TBSTYLE_CHECK           0x0002
@@ -1210,7 +1206,7 @@
    #define BTNS_WHOLEDROPDOWN      0x0080
 #endif
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TB_ENABLEBUTTON         (WM_USER + 1)
    #define TB_HIDEBUTTON           (WM_USER + 4)
    #define TB_SETSTATE             (WM_USER + 17)
@@ -1232,7 +1228,7 @@
 #define TTN_SHOW                (TTN_FIRST - 1)
 #define TTN_POP                 (TTN_FIRST - 2)
 #define TTN_GETDISPINFO         TTN_GETDISPINFOA
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TB_SETTOOLTIPS          (WM_USER + 36)
    #define TBSTYLE_DROPDOWN        0x0008
    #define BTNS_DROPDOWN           TBSTYLE_DROPDOWN
@@ -1268,7 +1264,7 @@
 //--------------
 // Font Weights
 //--------------
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define FW_DONTCARE    0
    #define FW_THIN        100
    #define FW_EXTRALIGHT  200
@@ -1301,7 +1297,7 @@
 #define PGF_SCROLLLEFT      4
 #define PGF_SCROLLRIGHT     8
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define CCS_TOP                 0x00000001
    #define CCS_NOMOVEY             0x00000002
    #define CCS_BOTTOM              0x00000003
@@ -1315,7 +1311,7 @@
    #define CCS_NOMOVEX             (CCS_VERT + CCS_NOMOVEY)
 #endif
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TBSTYLE_AUTOSIZE        0x0010  // obsolete; use BTNS_AUTOSIZE instead
    #define TBSTYLE_NOPREFIX        0x0020  // obsolete; use BTNS_NOPREFIX instead
    #define TBSTYLE_TOOLTIPS        0x0100
@@ -1343,14 +1339,14 @@
 #define LVNI_TOLEFT             0x0400
 #define LVNI_TORIGHT            0x0800
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define HWND_TOP                  0
    #define HWND_BOTTOM               1
    #define HWND_TOPMOST             -1
    #define HWND_NOTOPMOST           -2
 #endif
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define SWP_NOSIZE          0x0001
    #define SWP_NOMOVE          0x0002
    #define SWP_NOZORDER        0x0004
@@ -1371,7 +1367,7 @@
 #define MCN_SELCHANGE (MCN_FIRST + 1)
 #define MCN_SELECT (MCN_FIRST + 4)
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define RBS_TOOLTIPS        0x0100
    #define RBS_VARHEIGHT       0x0200
    #define RBS_BANDBORDERS     0x0400
@@ -1399,7 +1395,7 @@
 #define ODS_CHECKED         0x0008
 #define ODS_FOCUS           0x0010
 #define ODS_NOFOCUSRECT     0x0200
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define BM_CLICK            0x00F5
    #define BM_GETIMAGE         0x00F6
    #define BM_SETIMAGE         0x00F7
@@ -1410,7 +1406,7 @@
    #define BM_SETSTYLE         0x00F4
 #endif
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define BS_TEXT             0x00000000
    #define BS_ICON             0x00000040
    #define BS_BITMAP           0x00000080
@@ -1434,7 +1430,7 @@
 #define PBS_DISABLED  4
 #define PBS_DEFAULTED 5
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define PBS_SMOOTH       1
    #define PBS_VERTICAL     4
    #define PBS_MARQUEE      8
@@ -1503,7 +1499,7 @@
 
 #define WM_THEMECHANGED     0x031
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define TPM_LEFTALIGN       0x0000
    #define TPM_CENTERALIGN     0x0004
    #define TPM_RIGHTALIGN      0x0008
@@ -1525,7 +1521,7 @@
 #define ODA_SELECT      0x0002
 #define ODA_FOCUS       0x0004
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define WM_NCMOUSEMOVE                  0x00A0
    #define WM_NCLBUTTONDOWN                0x00A1
    #define WM_NCLBUTTONUP                  0x00A2
@@ -1546,7 +1542,7 @@
 #define LVN_FIRST               -100       // listview
 
 #define LVN_COLUMNCLICK         (LVN_FIRST-8)
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define HOLLOW_BRUSH            NULL_BRUSH
    #define TTM_SETMAXTIPWIDTH      (WM_USER + 24)
 #endif
@@ -1554,7 +1550,7 @@
 #define _SRCCOPY                0x00CC0020 /* dest = source                   */
 #define _SRCPAINT               0x00EE0086 /* dest = source OR dest           */
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define CB_SETDROPPEDWIDTH      0x0160
 
    #define DLGC_WANTARROWS      0x0001      /* Control wants arrow keys         */
@@ -1587,7 +1583,7 @@ Ancestor() const defines
 /*
 Brush fill Styles
 */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define HS_HORIZONTAL    0
    #define HS_VERTICAL      1
    #define HS_BDIAGONAL     2
@@ -1614,7 +1610,7 @@ Up-Down const defines
 /*
 Check button
 */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define BST_UNCHECKED      0x0000
    #define BST_CHECKED        0x0001
    #define BST_INDETERMINATE  0x0002
@@ -1638,7 +1634,7 @@ ListBox
 /*
 ComboBox
 */
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define CBN_SELCHANGE       1
    #define CBN_DBLCLK          2
    #define CBN_SETFOCUS        3
@@ -1656,7 +1652,7 @@ ComboBox
 
 #define SM_CXFIXEDFRAME 7
 #define SM_CYFIXEDFRAME 8
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define SM_CXSCREEN 0
    #define SM_CYSCREEN 1
    #define SM_CXVSCROLL 2
@@ -1691,11 +1687,11 @@ ComboBox
    #define SM_CYSIZE 31
 #endif
 #define SM_CXSIZEFRAME 32
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define SM_CXFRAME 32
 #endif
 #define SM_CYSIZEFRAME 33
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define SM_CYFRAME 33
    #define SM_CXMINTRACK 34
    #define SM_CYMINTRACK 35
@@ -1751,7 +1747,7 @@ ComboBox
 #define SM_STARTER 88
 #define SM_SERVERR2 89
 
-#ifndef WVTWINLG_CH
+#ifndef HBMK_HAS_GTWVG
    #define OPAQUE 2
 #endif
 
@@ -1764,5 +1760,9 @@ ComboBox
 #define  TME_CANCEL            0x80000000
 #define  TME_HOVER             1
 #define  TME_LEAVE             2
+
+#ifndef HBMK_HAS_GTWVG
+ #define HDM_GETITEMCOUNT    4608
+#endif
 
 /* ======================= EOF of windows.ch ======================= */

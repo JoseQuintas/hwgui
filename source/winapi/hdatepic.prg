@@ -15,8 +15,11 @@
 #define DTN_DATETIMECHANGE    -759
 #define DTN_CLOSEUP           -753
 #define DTM_GETMONTHCAL       4104   // 0x1008
+
+#ifndef HBMK_HAS_GTWVG
 #define NM_KILLFOCUS          -8
 #define NM_SETFOCUS           -7
+#endif
 
 CLASS HDatePicker INHERIT HControl
 

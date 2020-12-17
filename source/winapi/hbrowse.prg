@@ -54,7 +54,8 @@ REQUEST DBGOTOP, DBGOTO, DBGOBOTTOM, DBSKIP, RECCOUNT, RECNO, EOF, BOF
 #define SB_BOTH             3
 #endif
 
-#define HDM_GETITEMCOUNT    4608
+ /* Moved to windows.ch */
+ // #define HDM_GETITEMCOUNT    4608
 
    // #define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys */
 

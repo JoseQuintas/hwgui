@@ -8,6 +8,23 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-17 10:30 UTC+0100 Wilfried Brunken DF7BE
+  * include/windows.ch
+  * samples/testfunc.prg
+  * samples/testhgt.hbp
+  * source/gtk/hbrowse.prg
+  * source/gtk/hmisc.prg
+  * source/gtk/htree.prg
+  * source/winapi/hbrowse.prg
+  * source/winapi/hdatepic.prg
+  * source/winapi/hmisc.prg
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+    ! Ticket #73: Corrections from José
+    ! New FUNCTION hwg_IsLeapYear()
+    ! Docu: Year range of MONTHCALENDAR
+
+
 2020-12-14 13:20 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html
   * doc/hwgdoc_functions.html

@@ -35,6 +35,7 @@
  hwg_CompleteFullPath()
  hwg_ShowCursor()
  hwg_GetCursorType() && GTK only
+ hwg_IsLeapYear ( nyear )
 
  Harbour functions:
  CurDir() 
@@ -59,7 +60,7 @@ LOCAL Testfunc, oFont , nheight
 
 LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
 LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
-LOCAL oButton18, oButton19 , oButton20 , oButton21 
+LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22  
 PUBLIC cDirSep := hwg_GetDirSep()
 PUBLIC bgtk , ndefaultcsrtype
 
@@ -168,7 +169,9 @@ SET DATE ANSI  && YY(YY).MM.TT
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
         { | | HIDE_CURSOR ( oFont , nheight , Testfunc) }
  
-
+   @ 25 ,200 BUTTON oButton22 CAPTION "hwg_IsLeapYear()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | TestLeapYear() } 
 
 /* Disable buttons for Windows only functions */
 #ifndef __PLATFORM__WINDOWS
@@ -306,6 +309,42 @@ LOCAL verz
  verz := hwg_CompleteFullPath(hwg_GetWindowsDir() )
 #endif
 RETURN verz
+
+
+FUNCTION TestLeapYear()
+LOCAL nyeart
+Local oTestLeapYear
+LOCAL oLabel1, oEditbox1, oButton1 , oButton2
+
+nyeart := YEAR( DATE() )  && Preset recent year
+
+ INIT DIALOG oTestLeapYear TITLE "hwg_IsLeapYear()" ;
+    AT 738,134 SIZE 516,336 NOEXIT ;
+     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+
+
+   @ 54,44 SAY oLabel1 CAPTION "Enter a year 1583 and higher"  SIZE 380,22   
+   @ 61,102 GET oEditbox1 VAR nyeart  SIZE 325,24 ;
+        STYLE WS_BORDER   PICTURE "9999"   
+   @ 63,181 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT   ;
+        ON CLICK { | | Res_LeapYear(nyeart) }
+   @ 200,181 BUTTON oButton2 CAPTION "Cancel"   SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT   ;
+        ON CLICK { | | oTestLeapYear:Close() }
+
+   ACTIVATE DIALOG oTestLeapYear
+
+
+
+RETURN NIL
+
+
+FUNCTION Res_LeapYear(nyeart)
+LOCAL cRet  
+ cRet := IIF(hwg_IsLeapYear(nyeart), "TRUE","FALSE") 
+ hwg_MsgInfo("Result of Res_LeapYear(" + ALLTRIM(STR(nyeart)) + ")=" + cRet , "hwg_IsLeapYear()" )
+RETURN NIL
 
 
 * ============================== EOF of testfunc.prg ==============================

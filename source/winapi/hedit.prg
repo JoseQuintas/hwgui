@@ -1141,3 +1141,22 @@ FUNCTION hwg_Len( cString )
 #else
    RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Len( cString ), Len( cString ) )
 #endif
+
+FUNCTION hwg_GET_Helper(cp_get)
+ 
+LOCAL c_get 
+
+  c_get := cp_get
+
+#ifdef __GTK__  
+  IF EMPTY(c_get)
+    c_get := ""
+  ELSE
+    c_get := RTRIM(c_get)
+  ENDIF
+#endif
+
+RETURN c_get
+
+* ================================= EOF of hedit.prg ===============================
+

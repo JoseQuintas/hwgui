@@ -130,7 +130,7 @@ Testado.prg         N                 Test program sample for ADO Browse (TNX It
  testspli.prg       Y                 Split windows
  testtray.prg       N  #              Tray Message: No exported method: HANDLE
  testtree.prg       Y                 Tree view control
- testxml.prg        N                 reading/writing XML file and handling menu items while run-time (testxml.xml)
+ testxml.prg        Y                 reading/writing XML file and handling menu items while run-time (testxml.xml)
  trackbar.prg       N                 Trackbar demo, horizontal und vertical.
  tstcombo.prg       N                 Test Combobox (crashes on GTK)
  tstprdos.prg 3)    N                 Print on LPT, outdated, see 3)

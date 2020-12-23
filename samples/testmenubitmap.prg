@@ -19,8 +19,21 @@
  * Error BASE/1004  No exported method: HANDLE
  * Called from ->HANDLE(0)
  * Called from source\winapi/menu.prg->HWG_DEFINEMENUITEM(250)
- * Called from testmenubitmap.prg->MAIN(48) 
+ * Called from testmenubitmap.prg->MAIN(48)
+
+ * For GTK test copy sample program to directory samples\gtk_samples 
 */
+
+    * Status:
+    *  WinAPI   :  Yes
+    *  GTK/Linux:  No
+    *  GTK/Win  :  No
+
+*   Need to port functions HWG_INSERTBITMAPMENU() and
+*   HWG__INSERTBITMAPMENU() to GTK
+*   Source files : menu_c.c and menu.prg 
+*   (source\winapi\menu.prg)
+
 
 #include "windows.ch"
 #include "guilib.ch"
@@ -28,15 +41,22 @@
  
 Function Main
 Local oMain
-Local cbmpexit, cbmpnew, cbmpopen, cbmplogo, bbmperror 
+Local cbmpexit, cbmpnew, cbmpopen, cbmplogo, bbmperror , cimagepath
 Private oMenu
 
  bbmperror := .F.
+ 
+
  * Use relative paths
- cbmpexit := "..\image\exit_m.bmp"
- cbmpnew  := "..\image\new_m.bmp"
- cbmpopen := "..\image\open_m.bmp"
- cbmplogo := "..\image\logo.bmp"
+#ifdef __GTK__
+  cimagepath := ".." + hwg_GetDirSep() + ".." + hwg_GetDirSep() + "image" + hwg_GetDirSep()
+#else
+  cimagepath := "..\image\"
+#endif 
+ cbmpexit := cimagepath + "exit_m.bmp"
+ cbmpnew  := cimagepath + "new_m.bmp"
+ cbmpopen := cimagepath + "open_m.bmp"
+ cbmplogo := cimagepath + "logo.bmp"
  * Check for existing bitmaps
  IF .NOT. FILE(cbmpexit)
   hwg_MsgStop("Error: File not exists: " + cbmpexit, "Bitmap error")
@@ -84,4 +104,5 @@ Function Test()
 hwg_Msginfo("Test")
 Return Nil
 
+* ======================== EOF of testmenubitmap.prg ======================
  

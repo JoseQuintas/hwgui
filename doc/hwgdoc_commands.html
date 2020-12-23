@@ -1303,6 +1303,15 @@
     VALID: use always a block term, otherwise the GET command crashes with EVAL error,<br>
     for example:<br>
     11,22 GET cVar VALID { | | valid_func(cVar) }<br>
+    <br>
+    For fixing a special GET problem on GTK look for function hwg_GET_Helper() in the<br>
+    function documentation.<br>
+    There you find the description of the symptom and the instructions for fix.<br>
+    <br>
+    Another special problem:<br>
+    If your dialog uses in the last GET command a PICTURE clause,<br>
+    the dialog is closed immediately, if the end of field is filled and reached.<br>
+    To avoid this, use the NOEXIT close in INIT DIALOG command.<br>
     </p>
 
     <br><a name="Commands4-3" href="#_Commands4-3">4.4.3.  @ &lt;x&gt;,&lt;y&gt; GET CHECKBOX</a>

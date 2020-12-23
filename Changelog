@@ -8,6 +8,32 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-23 10:50 UTC+0100 Wilfried Brunken DF7BE
+  * contrib/hwg_extctrl.hbp
+    ! Ticket #74: See post to ticket
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    ! New function hwg_GET_Helper(),
+    ! Handles a problem with GET on GTK.
+  * samples/Readme.txt
+  * samples/testxml.prg
+  * samples/testxml.xml
+    ! Ready for GTK, codepage
+    ! changed to Win 1251,
+    ! but russian always possible 
+  * samples/testmenubitmap.prg
+    ! Preparation for GTK, added
+    ! hints for port to GTK.
+  * doc/hwgdoc.html
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+  * doc/image/NPP_Set_Wincp1252.png (New)
+    ! Docu updated
+
+
+
+
 2020-12-17 18:30 UTC+0100 Wilfried Brunken DF7BE
   * hwgui/contrib/ext_controls/hbrowsex.prg
   * hwgui/doc/hwgdoc_classes.html

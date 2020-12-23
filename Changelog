@@ -9,6 +9,14 @@
 */
 
 2020-12-23 10:50 UTC+0100 Wilfried Brunken DF7BE
+  * contrib/ext_controls/theme.c
+  * include/incomp_pointer.h (New)
+    ! Ticket #74: Solution with new include:
+    ! Suppress warning if a function pointer is cast
+    ! to an incompatible function pointer
+    ! for GCC >= 8.1.x (MinGW64) 
+
+2020-12-23 10:50 UTC+0100 Wilfried Brunken DF7BE
   * contrib/hwg_extctrl.hbp
     ! Ticket #74: See post to ticket
   * source/gtk/hedit.prg

@@ -16,6 +16,9 @@
 #endif
 #include "hbapiitm.h"
 
+/* Tickets #74,36,41 */
+#include "incomp_pointer.h"
+
 //#include <tmschema.h>
 #ifndef BS_TYPEMASK
 #define BS_TYPEMASK SS_TYPEMASK
@@ -2045,4 +2048,6 @@ HB_FUNC( HWG_GETWINDOWTHEME )
    else
       HB_RETHANDLE ( 0 );
 }
+
+/* ========================= EOF of theme.c ============================= */
 

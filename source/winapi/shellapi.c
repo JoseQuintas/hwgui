@@ -14,6 +14,8 @@
 #include "hbapi.h"
 #include "hbapiitm.h"
 
+#include "incomp_pointer.h"
+
 #define  ID_NOTIFYICON   1
 #define  WM_NOTIFYICON   WM_USER+1000
 
@@ -165,3 +167,5 @@ HB_FUNC( HWG_SHELLEXECUTE )
    hb_strfree( hDirectory );
 #endif
 }
+
+/* ======================== EOF of shellapi.c ========================= */

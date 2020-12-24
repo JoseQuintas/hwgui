@@ -19,6 +19,8 @@
 #include "hbfast.h"
 #endif
 
+#include "incomp_pointer.h"
+
 #if !defined( GetDefaultPrinter ) && defined( __DMC__ )
 BOOL WINAPI GetDefaultPrinterA( LPSTR, LPDWORD );
 BOOL WINAPI GetDefaultPrinterW( LPWSTR, LPDWORD );
@@ -652,3 +654,5 @@ HB_FUNC( HWG_SETDOCUMENTPROPERTIES )
    }
    hb_retl( Result );
 }
+
+/* ======================== EOF of wprint.c ============================= */

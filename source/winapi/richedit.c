@@ -23,6 +23,8 @@
 #include "hbstack.h"
 #include "hbdate.h"
 
+#include "incomp_pointer.h"
+
 LRESULT APIENTRY RichSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
 

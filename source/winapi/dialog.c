@@ -21,6 +21,8 @@
 #include "hbapiitm.h"
 #include "hbvm.h"
 
+#include "incomp_pointer.h"
+
 #define  WM_PSPNOTIFY         WM_USER+1010
 
 static LRESULT CALLBACK s_ModalDlgProc( HWND, UINT, WPARAM, LPARAM );

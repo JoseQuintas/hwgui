@@ -28,6 +28,8 @@
 #include <float.h>
 #include <limits.h>
 
+#include "incomp_pointer.h"
+
 #define  FIRST_MDICHILD_ID     501
 #define  WND_MDICHILD          3
 

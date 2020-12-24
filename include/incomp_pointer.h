@@ -15,6 +15,8 @@
 #if (__GNUC__ > 8) || ((__GNUC__ == 8 ) && (__GNUC_MINOR__ >= 1 ))
 #pragma GCC diagnostic ignored "-Wcast-function-type"
 #pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wpointer-to-int-cast"
 #endif
 #endif
 

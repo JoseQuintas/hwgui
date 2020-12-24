@@ -19,6 +19,8 @@
 #include "hbstack.h"
 #include "hbinit.h"
 
+#include "incomp_pointer.h"
+
 HMODULE hModule;
 
 HB_FUNC( HWG_GETRESOURCES )

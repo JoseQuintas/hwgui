@@ -18,6 +18,8 @@
 #include "hbvm.h"
 #include "hbstack.h"
 
+#include "incomp_pointer.h"
+
 /*
  * Regcreatekey( handle, cKeyName ) --> handle
 */
@@ -110,4 +112,6 @@ HB_FUNC( HWG_REGGETVALUE )
    else
       hb_ret();
 }
+
+/* ============================== EOF of registry.c ============================ */
 

@@ -8,6 +8,29 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-24 08:30 UTC+0100 Wilfried Brunken DF7BE
+  * include/incomp_pointer.h
+  * source/winapi/control.c
+  * source/winapi/dialog.c
+  * source/winapi/draw.c
+  * source/winapi/freeimg.c
+  * source/winapi/misc.c
+  * source/winapi/nice.c
+  * source/winapi/registry.c
+  * source/winapi/resource.c
+  * source/winapi/richedit.c
+  * source/winapi/shellapi.c
+  * source/winapi/window.c
+  * source/winapi/wprint.c
+    ! Tickets: #74, #36, #40
+    ! MinGW64 support:
+    ! Suppress warnings,
+    ! now build all libs without
+    ! warn messages.  
+  * image/Datepick_Button.bmp (New)
+    ! Preparation for DATEPCKER
+    ! port to GTK.
+
 2020-12-23 10:50 UTC+0100 Wilfried Brunken DF7BE
   * contrib/ext_controls/theme.c
   * include/incomp_pointer.h (New)

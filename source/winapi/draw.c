@@ -20,6 +20,8 @@
 
 #include "math.h"
 
+#include "incomp_pointer.h"
+
 #if defined( __BORLANDC__ ) && __BORLANDC__ == 0x0550
 #ifdef __cplusplus
 extern "C"

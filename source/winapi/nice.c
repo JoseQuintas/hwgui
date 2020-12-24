@@ -15,6 +15,8 @@
 #include "hbvm.h"
 #include "hbstack.h"
 
+#include "incomp_pointer.h"
+
 #ifndef GRADIENT_FILL_RECT_H
 
 #define GRADIENT_FILL_RECT_H 0

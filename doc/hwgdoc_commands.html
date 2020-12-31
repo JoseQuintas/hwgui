@@ -1311,7 +1311,29 @@
     Another special problem:<br>
     If your dialog uses in the last GET command a PICTURE clause,<br>
     the dialog is closed immediately, if the end of field is filled and reached.<br>
-    To avoid this, use the NOEXIT close in INIT DIALOG command.<br>
+    To avoid this, use the NOEXIT clause in INIT DIALOG command.<br>
+    <br>
+    Important:<br>
+    To avoid side effects while entering characters only reachable by "AltGr" key<br>
+    (for example on german keyboard layout: ~&micro;@{[]}\),<br>
+    be shure that the size of the GET control field (X value of SIZE parameter)<br>
+    is big enough to display all characters of edit field.<br>
+    The symptom is, that the character is ignored and on Windows<br>
+    a ding sound appears.<br>
+    Scrolling feature with PICTURE "@Snn" is not supported.<br>
+    On GTK, it is possible, that the complete modified value<br>
+    is not stored in the variable.<br>
+    For test of display length, enter a number string like<br>
+    "12345678901234567890 ...." with the desired length in C type fields.<br>
+    Add a security reserve of 5 ... 10%.<br>
+    For empty fields initialize the variables with empty values<br>
+    like these examples before use of the GET command:<br>
+    cField := SPACE(30)<br>
+    dField := CTOD("") or better with todays date : dField := DATE()<br>
+    nField := 0<br>
+    lField := .F.<br>
+    For editing MEMO type fields use the HCEDIT class.<br>
+    <br>  
     </p>
 
     <br><a name="Commands4-3" href="#_Commands4-3">4.4.3.  @ &lt;x&gt;,&lt;y&gt; GET CHECKBOX</a>

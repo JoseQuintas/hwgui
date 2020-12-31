@@ -31,12 +31,18 @@
       create it with CHARSET clause: 0 for windows1252 and
       204 for windows1251 russian.
   
-   To fix as soon as possible:
+   Fix as soon as possible:
+   Symtom:
    GET ignores here keys only reachable together with "AltGr" key like
    ~{[]}@| !
-   (Side effect of class XMLDoc ?)    
+   Reason:
+   The  X Size of the GET control must big enough to display all
+   characters of the variable.
+   More description look at command documentation vor @ <x>,<y> GET ...   
 */
 
+* reduced from 100:
+#define CINFOLEN 40
 
 REQUEST HB_LANG_DE 
 REQUEST HB_CODEPAGE_DEWIN
@@ -122,10 +128,10 @@ Local oGet1, oGet2
       NEXT
       * Trim variables for GET 
       cName := PADR(cName, 30)
-      cInfo := PADR(cInfo, 100)
+      cInfo := PADR(cInfo, CINFOLEN)
    ELSE
       cName := Space(30)
-      cInfo := Space(100)
+      cInfo := Space(CINFOLEN)
       oItemFont := oFont
    ENDIF
    
@@ -134,7 +140,7 @@ Local oGet1, oGet2
    
 
    INIT DIALOG oDlg TITLE Iif( nItem==0,"New item","Change item" )  ;
-   AT 210,10  SIZE 300,150 FONT oFont
+   AT 210,10  SIZE 700,150 FONT oFont  && old SIZE 300,150
 
    @ 20,20 SAY "Name:" SIZE 60, 22
    
@@ -142,13 +148,14 @@ Local oGet1, oGet2
    @ 80,20 GET cName SIZE 150, 26    STYLE WS_BORDER
    */    
    
-   @ 80,20 GET oGet1 VAR cName SIZE 150, 26 ;
+   @ 80,20 GET oGet1 VAR cName SIZE 500, 26 ;  && old SIZE 150, 26
      STYLE WS_BORDER
 
-   @ 240,20  BUTTON "Font" SIZE 40, 32 ON CLICK {||oFontNew:=HFont():Select(oItemFont)}
+   * Old position: 240,20
+   @ 600,15  BUTTON "Font" SIZE 40, 32 ON CLICK {||oFontNew:=HFont():Select(oItemFont)}
 
    @ 20,50 SAY "Info:" SIZE 60, 22
-   @ 80,50 GET oGet2 VAR cInfo SIZE 150, 26 ;
+   @ 80,50 GET oGet2 VAR cInfo SIZE 550, 26 ;  && old SIZE 150, 26
      STYLE WS_BORDER
 
    @ 20,110  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}

@@ -112,7 +112,7 @@ For beginners:
  shadebtn.prg       N                 Shade buttons
  stretch.prg        Y  #              Sample for resizing bitmaps (background), some bugs (as test program) 
  tab.prg            N  #      -       missing function(s): hb_enumIndex(), resource DIALOG_1 not working
-Testado.prg         N                 Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)
+ Testado.prg        N                 Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)
  testalert.prg      N                 Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
  test_bot.prg       N                 bOther Test: Press key, after key up the scan code is displayed.
  testbrw.prg        N  #              Another BROWSE test (crashes with no PROPS2ARR at ENTER o click)

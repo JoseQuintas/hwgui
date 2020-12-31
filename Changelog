@@ -8,6 +8,18 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2020-12-31 16:50 UTC+0100 Wilfried Brunken DF7BE
+  * include/incomp_pointer.h
+    ! Ticket #74:
+    ! One left warning with GCC 9 fixed. 
+  * samples/testxml.prg
+    ! Fixing and decribing the fix for
+    ! obscure behavior of GET.
+  * doc/hwgdoc_commands.html
+  * whatsnew.txt
+  * samples/Readme.txt
+    ! Docu updated.
+
 2020-12-24 08:30 UTC+0100 Wilfried Brunken DF7BE
   * include/incomp_pointer.h
   * source/winapi/control.c

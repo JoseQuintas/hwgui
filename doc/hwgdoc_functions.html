@@ -2192,11 +2192,14 @@
    <p></p>
 
 
-   <br><strong class="subhead"> hwg_GET_Helper(cp_get)</strong>
+   <br><strong class="subhead"> hwg_GET_Helper(cp_get,nlen)</strong>
    <br> 
    Fixes a special problem<br> 
    of GET command.<br>
    (only for C type fields)<br>
+   nlen : Set the lenght of the C type field,<br>
+   otherwise the extension of the edited field<br>
+   is not possible.<br>
    <br>
    GTK:<br>
    The Cursor is located at end of<br>
@@ -2211,7 +2214,7 @@
    Here the strategy with the use of<br>
    this function:<br>
    <br> 
-   1.) Shorten filled fields with RTRIM().<br> 
+   1.) Shorten filled fields with RTRIM() or PADR().<br> 
    2.) Field filled with blanks:<br>
    &nbsp;&nbsp;&nbsp;&nbsp;Test with EMPTY(), then return empty string ""<br>
    3.) Use this function before INIT DIALOG on all<br>

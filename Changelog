@@ -8,6 +8,16 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-01-03 08:58 UTC+0100 Wilfried Brunken DF7BE
+  *  samples/testxml.prg
+  *  source/gtk/hedit.prg
+  *  source/winapi/hedit.prg
+  *  doc/hwgdoc_functions.html
+    ! Internal bugfix for GET on GTK:
+    ! Continued of 2020-12-23 10:50.
+    ! Extension of existing string fixed.
+    ! Docu updated. 
+
 2020-12-31 16:50 UTC+0100 Wilfried Brunken DF7BE
   * include/incomp_pointer.h
     ! Ticket #74:

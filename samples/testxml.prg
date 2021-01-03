@@ -135,8 +135,8 @@ Local oGet1, oGet2
       oItemFont := oFont
    ENDIF
    
-    cName := hwg_GET_Helper(cName)
-    cInfo := hwg_GET_Helper(cInfo)
+    cName := hwg_GET_Helper(cName,30)
+    cInfo := hwg_GET_Helper(cInfo,CINFOLEN)
    
 
    INIT DIALOG oDlg TITLE Iif( nItem==0,"New item","Change item" )  ;

@@ -998,7 +998,7 @@ FUNCTION hwg_Len( cString )
    RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Len( cString ), Len( cString ) )
 
 
-FUNCTION hwg_GET_Helper(cp_get)
+FUNCTION hwg_GET_Helper(cp_get,nlen)
  
 LOCAL c_get 
 
@@ -1008,7 +1008,11 @@ LOCAL c_get
   IF EMPTY(c_get)
     c_get := ""
   ELSE
+   IF nlen == NIL
     c_get := RTRIM(c_get)
+   ELSE
+    c_get := PADR(c_get,nlen)
+   ENDIF
   ENDIF
 #endif
 

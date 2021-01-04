@@ -8,6 +8,12 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-01-04 15:40 UTC+0100 Wilfried Brunken DF7BE
+  * include/windows.ch
+  * samples/testhgt.hbp
+    ! Ticket #73:
+    ! New mods by José M. C. Quintas 
+
 2021-01-03 08:58 UTC+0100 Wilfried Brunken DF7BE
   *  samples/testxml.prg
   *  source/gtk/hedit.prg

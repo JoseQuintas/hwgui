@@ -1613,7 +1613,7 @@ Up-Down const defines
 /*
 Check button
 */
-#ifdef HBWINCH
+#ifndef HBWINCH
    #define BST_UNCHECKED      0x0000
    #define BST_CHECKED        0x0001
    #define BST_INDETERMINATE  0x0002

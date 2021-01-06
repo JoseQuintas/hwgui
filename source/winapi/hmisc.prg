@@ -405,6 +405,13 @@ FUNCTION hwg_CleanPathname ( pSwithdbl )
  ENDDO
  RETURN sSwithdbl
 
+* ================================= * 
+FUNCTION hwg_Array_Len(ato_check)
+* ================================= *
+IF ato_check == NIL
+ RETURN 0
+ENDIF 
+RETURN IIF(EMPTY(ato_check), 0 , LEN(ato_check)  )
 
 * ============== EOF of hmisc.prg =================
  

@@ -1534,6 +1534,28 @@
    <br><strong class="subhead"> hwg_Left( cString, nLen )</strong> 
    <br><strong class="subhead"> hwg_Len( cString )</strong> 
    <p></p>
+   <br><strong class="subhead"> hwg_Array_Len(ato_check)</strong> 
+   <p>
+      Returns the number of elements of an array.<br>
+      Fixes the following problem:<br>
+      LEN(array) crashes with<br> 
+      "Argument error", if array initialized<br>
+      with empty value: array := {}<br>
+      In this case, this function<br>
+      returns correctly 0.<br> 
+      Also returns 0, if array is NIL.<br>
+      Example:<br>
+      To create and fill an array the following<br>
+      example sequence is most suitable:<br>
+      &nbsp;LOCAL anewarray<br>
+      &nbsp;anewarray := {}<br>
+      &nbsp;AADD(anewarray,"One")<br>
+      &nbsp;AADD(anewarray,"Two")<br>
+      Now get the length:<br>
+      &nbsp;anewarray := {}<br>
+      &nbsp;? LEN(anewarray)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; && crashes here<br>
+      &nbsp;? ARRAY_LEN(anewarray) &nbsp;&nbsp; && 0<br>
+   </p>
 
    <br><strong class="subhead"> hwg__isUnicode()</strong> 
    <p>Returns .T., if program is running with UTF-8 support.<BR>

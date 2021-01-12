@@ -8,6 +8,27 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2021-01-12 11:05 UTC+0100 Wilfried Brunken DF7BE
+  * samples/iesample.hbp (New)
+  * samples/iesample.prg 
+  * samples/bldmingw.bat
+  * samples/bldmingw64.bat
+    ! Ticket #34:
+    ! Some compile error fixed. So creator of ticket can make
+    ! experiments. Info added, that support for
+    ! ActiveX ended and feature is outdated.
+  * samples/simpleedit.prg (New)
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+  * samples/Readme.txt
+  * doc/hwgdoc_functions.html
+    ! Functions added:
+    ! hwg_MemoEdit() and hwg_MemoCmp() with
+    ! sample program simpleedit.prg.
+    ! Docu updated.
+
+
 2021-01-06 13:40 UTC+0100 Wilfried Brunken DF7BE
   * include/windows.ch
    ! Ticket #73:

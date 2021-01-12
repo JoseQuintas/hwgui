@@ -47,6 +47,10 @@ if exist %HWGUI_INSTALL%\lib\libhwg_qhtm.a (
 SET HWGUI_LIBS=%HWGUI_LIBS% -lhwg_qhtm
 )
 
+if exist %HWGUI_INSTALL%\lib\libhbactivex.a (
+SET HWGUI_LIBS=%HWGUI_LIBS% -lhbactivex
+)
+
 %HRB_EXE% %PRGNAME%.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include %2
 gcc %MINGW_ARCH% -I. -I%HRB_DIR%\include -Wall -c %PRGNAME%.c -o%PRGNAME%.o
 

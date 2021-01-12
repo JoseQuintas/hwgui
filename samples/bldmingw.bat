@@ -39,6 +39,10 @@ if exist %HWGUI_INSTALL%\lib\libhwg_qhtm.a (
 SET HWGUI_LIBS=%HWGUI_LIBS% -lhwg_qhtm
 )
 
+if exist %HWGUI_INSTALL%\lib\libhbactivex.a (
+SET HWGUI_LIBS=%HWGUI_LIBS% -lhbactivex
+)
+
 REM -trace : see commands for debugging
 REM hbmk2 %1 hwgui_xp.rc %HBWINBC% -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWGUI_LIBS%
 

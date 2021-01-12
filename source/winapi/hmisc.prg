@@ -413,5 +413,81 @@ IF ato_check == NIL
 ENDIF 
 RETURN IIF(EMPTY(ato_check), 0 , LEN(ato_check)  )
 
+FUNCTION hwg_MemoCmp(mmemo1,mmemo2)
+LOCAL nnum , nlen1 , nlen2 , lende
+nnum := 1
+lende := .T.
+nlen1 := LEN(mmemo1)
+nlen2 := LEN(mmemo2)
+IF nlen1 != nlen2
+ RETURN .F.
+ENDIF
+DO WHILE ( nnum <= nlen1 ) .AND. lende
+ IF SUBSTR(mmemo1,nnum,1) != SUBSTR(mmemo2,nnum,1) 
+   lende := .F.
+ ENDIF
+ nnum := nnum + 1
+ENDDO
+
+RETURN lende
+
+
+FUNCTION hwg_MemoEdit(mpmemo , cTextTitME , cTextSave ,  cTextClose , ;
+ cTTSave , cTTClose , oHCfont )
+
+LOCAL mvarbuff , varbuf , oModDlg , oEdit , owb1 , owb2 , bMemoMod
+
+ IF cTextTitME == NIL
+   cTextTitME := "Memo Edit"
+ ENDIF
+
+ IF cTextSave == NIL
+  cTextSave := "Save"
+ ENDIF
+
+ IF cTextClose == NIL
+  cTextClose := "Close"
+ ENDIF
+
+ IF cTTSave == NIL
+  cTTSave := "Save modifications and close"
+ ENDIF
+
+ IF cTTClose == NIL
+  cTTClose := "Close without saving modifications"
+ ENDIF
+
+   mvarbuff := mpmemo
+   varbuf   := mpmemo
+   
+   INIT DIALOG oModDlg title cTextTitME AT 0, 0 SIZE 400, 300 ON INIT { |o|o:center() }
+
+   IF oHCfont == NIL
+    @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240   
+   ELSE
+    @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
+       FONT  oHCfont
+   ENDIF
+
+   @ 10, 252  ownerbutton owb2 TEXT cTextSave size 80, 24 ;
+      ON Click { || mvarbuff := oEdit , omoddlg:Close(), oModDlg:lResult := .T. } ;
+      TOOLTIP cTTSave
+   @ 100, 252 ownerbutton owb1 TEXT cTextClose size 80, 24 ON CLICK { ||oModDlg:close() } ;
+      TOOLTIP cTTClose
+
+   oEdit:SetText(mvarbuff)
+
+   ACTIVATE DIALOG oModDlg
+
+   * is modified ? (.T.)
+   bMemoMod := oEdit:lUpdated
+   IF bMemoMod
+   * write out edited memo field
+     varbuf := oEdit:GetText()
+   ENDIF
+
+RETURN varbuf
+
+
 * ============== EOF of hmisc.prg =================
- 
+

@@ -110,6 +110,7 @@ For beginners:
  propsh.prg         N                 Property sheet, INIT DIALOG aDlg1 FROM RESOURCE not working.
  pseudocm.prg       Y                 Pseudo context menu
  shadebtn.prg       N                 Shade buttons
+ simpleedit.prg     Y                 Simple text editor demonstrating hwg_Memoedit() and hwg_MemoCmp()
  stretch.prg        Y  #              Sample for resizing bitmaps (background), some bugs (as test program) 
  tab.prg            N  #      -       missing function(s): hb_enumIndex(), resource DIALOG_1 not working
  Testado.prg        N                 Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)

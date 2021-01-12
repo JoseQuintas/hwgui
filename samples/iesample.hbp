@@ -1,0 +1,25 @@
+#
+# $Id$
+#
+
+
+# Only for compile of sample program
+# iesample.hbp
+# needed additional contrib library
+
+
+-b
+-n -q0 -w -es2
+
+-lhbactivex
+#-L../..
+-L..
+hwgui.hbc
+
+-osample
+
+iesample.prg
+
+
+# ===================== EOF of iesample.hbp ====================
+

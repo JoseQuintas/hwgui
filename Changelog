@@ -8,6 +8,15 @@
    2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-01-13 23:15 UTC+0100 Wilfried Brunken DF7BE
+  * include/qcolor.ch
+  * samples/gtk_samples/colors.sh
+  * samples/gtk_samples/image/qoutcolor.prg_output.png
+  * samples/gtk_samples/qoutcolor.prg
+    ! Ticket #35:
+    ! Files to colorize qout() 
+    ! TNX Alain Aupeix. 
+
 
 2021-01-12 11:05 UTC+0100 Wilfried Brunken DF7BE
   * samples/iesample.hbp (New)

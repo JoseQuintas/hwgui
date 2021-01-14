@@ -19,24 +19,24 @@
 
 Static oMain, oForm, oFont, oBar := Nil
 Static n :=0
-Function Main()
+Function Main(included)
 
         INIT WINDOW oMain MAIN TITLE "Progress Bar Sample" ;
-        SIZE 200, 100
+        SIZE 300, 100 AT 0,0
 
         MENU OF oMain
          MENU TITLE "&Exit"
              MENUITEM "&Quit" ACTION oMain:Close()
          ENDMENU
          MENU TITLE "&Demo"
-             MENUITEM "&Test" ACTION Test()
+             MENUITEM "&Test" ACTION Test(included)
          ENDMENU
         ENDMENU
 
         ACTIVATE WINDOW oMain && MAXIMIZED && DF7BE: Progbar is otherwise hidden.
 Return Nil
 
-Function Test()
+Function Test(included)
 
 Local cMsgErr := "Bar doesn't exist"
 
@@ -44,18 +44,30 @@ Local cMsgErr := "Bar doesn't exist"
 
         INIT DIALOG oForm CLIPPER NOEXIT TITLE "Progress Bar Demo";
              FONT oFont ;
-             AT 0, 0 SIZE 700, 425 ;
-             STYLE DS_CENTER + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
+             AT 200, 200 SIZE 200, 200 ;
+             STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
              ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
 
-             @ 300, 395 BUTTON 'Reset Bar'   SIZE 75,25 ;
-                ON CLICK {|| IIF(oBar == NIL , .T. , RES_PROGBAR ( obar ) ) }
+             if included == NIL
+                @ 300, 395 BUTTON 'Create Bar' SIZE 75,25 ;
+                   ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 20, 100 ) }
+                * Attention !
+                * Do not Create a second progress bar. Close recent Progbar before creating a new one.
+                * To bypass the hidden toolbar, use wmctrl to place the toolbar on top ...
+                * sudo apt install wmctrl 
+             else
+                @ 150,110 say "Testing ..." 
+                @ 150,150 PROGRESSBAR oBar SIZE 100, 20 BARWIDTH 10 QUANTITY 100
+             endif
 
              @ 380, 395 BUTTON 'Step Bar'   SIZE 75,25 ;
-                ON CLICK {|| n+=100,Iif(oBar==Nil,hwg_Msgstop(cMsgErr),oBar:Set(,n/100)) }
+                ON CLICK {|| n+=100,Iif(oBar==Nil,hwg_Msgstop(cMsgErr),oBar:Set(,n/100)),hb_run("wmctrl -a 'Testing ...'"),iif(n/100 == 100,RES_PROGBAR ( obar ),"") }
 
-             @ 460, 395 BUTTON 'Create Bar' SIZE 75,25 ;
-                ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",500,700,,, 10, 100 ) }
+             @ 460, 395 BUTTON 'Reset Bar'   SIZE 75,25 ;
+                ON CLICK {|| IIF(oBar == NIL , .T. , RES_PROGBAR ( obar ) ) }
+
+             * @ 460, 395 BUTTON 'Create Bar' SIZE 75,25 ;
+             *   ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",500,700,,, 10, 100 ) }
              * Attention !
              * Do not Create a second progress bar. Close recent Progbar before creating a new one.
              * Please set parameters nTop and nLeft forever, it could be possible,
@@ -75,6 +87,7 @@ FUNCTION RES_PROGBAR ( opbar )
  n := 0
  opBar:Reset()
  * opBar:Set(,0 )
+ hb_run("wmctrl -a 'Testing ...'")
 RETURN .F. 
 
 

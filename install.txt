@@ -154,11 +154,14 @@
   
    sudo apt-get install build-essential linux-headers-generic dkms
    sudo apt-get install libgtk2.0-dev
+   sudo apt install wmctrl  *1)
    
    Ubuntu 18:
    
    sudo apt-get install linux-headers-generic
    sudo apt-get install libgtk2.0-dev
+   sudo apt install wmctrl  *1)
+   
  
   
    Optional for all distributions (resolve dependencies), install them, if needed:
@@ -170,7 +173,9 @@
   
   To avoid the Gtk-WARNING "Unable to locate theme engine in module_path: "adwaita":
     sudo apt-get install gnome-themes-standard
-    
+   
+   *1) This is necessary for set focus on progress bars, see sample program
+       "samples/gtk_samples/progbars.prg". 
 
 
   1.) You need some entries in the .profile in the home directory of the desired

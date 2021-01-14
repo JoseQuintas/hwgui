@@ -9,6 +9,15 @@
 */
 
 2021-01-13 23:15 UTC+0100 Wilfried Brunken DF7BE
+  * install.txt
+  * samples/gtk_samples/Readme.txt
+  * samples/gtk_samples/progbars.prg
+    ! Ticket #35:
+    ! Progbars doesn't work under Linux
+    ! Now best work with external command "wmctrl".
+    ! TNX Alain Aupeix. 
+
+2021-01-13 23:15 UTC+0100 Wilfried Brunken DF7BE
   * include/qcolor.ch
   * samples/gtk_samples/colors.sh
   * samples/gtk_samples/image/qoutcolor.prg_output.png

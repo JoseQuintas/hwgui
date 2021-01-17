@@ -18,8 +18,44 @@
 
 /*
   === LINUX only ===
-  On windows, the QOUT output's are supressed by the WinAPI.
-  Do not use this feature on multi platform applications.  
+  On Windows, the QOUT output's are supressed by the WinAPI.
+  Do not use this feature on multi platform applications.
+
+  Little sample for creating and running a bash script
+  from a prg:
+  ctxt="#!/bin/bash"+chr(10)+chr(10)+ ;
+           "echo -e ${gCya}"+_("Installing the yelp help of") +; 
+           "${gGre}hwmake${noColor}"+chr(10)+ ;
+           'echo ""'+chr(10)+ ;
+           "sudo mkdir /usr/share/help/fr/hwmake 2>/dev/null"+chr(10)+ ;
+           "sudo cp * /usr/share/help/"+left(clanguage,2)+"/hwmake"+chr(10)+ ;
+           'echo ""'+chr(10)+ ;
+           "echo -e ${gGre}"+_("Press a key to continue...")+"${nocolor}"+chr(10)+ ;
+           "read"+chr(10)
+  hb_memowrit("../instyelp",ctxt)
+  hb_run("sh -c 'chmod +x ../instyelp'")
+  hb_run(cterminal+" -x "+cspath+"/Documentation/yelp/instyelp")
+
+  Before this, the environment variables must be set by script "colors.sh":
+
+  . ./colors.sh
+  or
+  . <path>/colors.sh
+
+  This writes the environment values into the active shell.
+  
+  Add this command to your .profile of your userid running the
+  script and the standard settings of colors are available for
+  all scripts running on this userid. 
+  
+  Additional unstructions for UNIX with the Bourne shell:
+  The setting of an environment variable must be splitted in two
+  commands, for example:
+
+  #!/bin/sh
+  bBla='\033[40m'
+  export bBla
+  
 */
 
 

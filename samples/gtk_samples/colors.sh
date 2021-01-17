@@ -8,9 +8,25 @@
 # $Id$
 
 # Shell script setting and exporting shell variables with
-# color definitions
+# color definitions.
+#
 # Call specification:
+#
+# Set and export variables before usage:
 # . ./colors.sh
+#
+# Sample commands:
+# echo -e ${bGre}Test
+# echo -e ${noClor}Test
+# echo -e ${fMag}${bCya}Test
+#
+# Print version and date of script:
+# ./colors.sh -v
+# This writes the environment values into the active shell.
+#
+# For more instructions of usage see sample
+# program: samples/gtk_samples/progbars.prg
+
 
 version=1.10
 datvers=2018-01-28

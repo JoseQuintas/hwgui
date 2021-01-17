@@ -8,6 +8,9 @@
  * www - http://www.kresin.ru
  * Copyright 2004 Rodrigo Moreno <rodrigo_moreno@yahoo.com>
  *
+ * With extensions by Alain Aupeix 
+ * (TNX)
+ *
 */
 
     * Status:
@@ -15,11 +18,26 @@
     *  GTK/Linux:  Yes
     *  GTK/Win  :  Yes
 
+/*
+  No more parameter when launching, the choice is made in Demo menu
+  Four choices:
+  - External manual progbar
+  - External automatic progbar
+  - Internal manual progbar
+  - Internal automatic progbar
+*/
+
+
 #include "hwgui.ch"
 
+memvar n, cMsgErr, isdemo
 Static oMain, oForm, oFont, oBar := Nil
-Static n :=0
-Function Main(included)
+
+// ============================================================================
+Function Main()
+// ============================================================================
+
+public isdemo:=.f.
 
         INIT WINDOW oMain MAIN TITLE "Progress Bar Sample" ;
         SIZE 300, 100 AT 0,0
@@ -29,16 +47,24 @@ Function Main(included)
              MENUITEM "&Quit" ACTION oMain:Close()
          ENDMENU
          MENU TITLE "&Demo"
-             MENUITEM "&Test" ACTION Test(included)
+            MENUITEM "Manual &External progbar" ACTION iif(!isdemo,(isdemo=.t.,Test("ManExt")),"")
+            MENUITEM "&Automatic External progbar" ACTION iif(!isdemo,(isdemo=.t.,Test("AutoExt")),"")
+            SEPARATOR
+            MENUITEM "Manual &Internal progbar" ACTION iif(!isdemo,(isdemo=.t.,Test("ManInt")),"")
+            MENUITEM "Aut&omatic Internal progbar" ACTION iif(!isdemo,(isdemo=.t.,Test("AutoInt")),"")
          ENDMENU
         ENDMENU
 
         ACTIVATE WINDOW oMain && MAXIMIZED && DF7BE: Progbar is otherwise hidden.
+
 Return Nil
 
+// ============================================================================
 Function Test(included)
-
-Local cMsgErr := "Bar doesn't exist"
+// ============================================================================
+local oTimer, oCreate
+Public cMsgErr := "Bar doesn't exist"
+public n :=0
 
         PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
 
@@ -48,47 +74,83 @@ Local cMsgErr := "Bar doesn't exist"
              STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
              ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
 
-             if included == NIL
-                @ 300, 395 BUTTON 'Create Bar' SIZE 75,25 ;
-                   ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 20, 100 ) }
-                * Attention !
-                * Do not Create a second progress bar. Close recent Progbar before creating a new one.
-                * To bypass the hidden toolbar, use wmctrl to place the toolbar on top ...
-                * sudo apt install wmctrl 
-             else
-                @ 150,110 say "Testing ..." 
-                @ 150,150 PROGRESSBAR oBar SIZE 100, 20 BARWIDTH 10 QUANTITY 100
-             endif
+             do case
+                case included == NIL .or. included == "ManExt" .or.included == "AutoExt"
+                     @ 290, 395 BUTTON oCreate CAPTION 'Create Bar' SIZE 85,25 ;
+                        ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 20, 100 ),iif(included == "AutoExt",SetTimer(oForm,@oTimer),""),oCreate:hide()}
+                     * Attention !
+                     * To bypass the hidden toolbar, use wmctrl to place the toolbar on top ...
+                     * sudo apt install wmctrl
+                     * Next advise no more possible, because after creating progbar, oCreate is hidden 
+                     * Do not Create a second progress bar. Close recent Progbar before creating a new one.
+                case included == "ManInt" .or. included == "AutoInt" 
+                     @ 150,110 say "Testing ..." SIZE 200,32
+                     @ 150,150 PROGRESSBAR oBar SIZE 100, 20 BARWIDTH 10 QUANTITY 100
+                     @ 290, 395 BUTTON oCreate CAPTION 'Create Bar' SIZE 85,25 ;
+                       ON CLICK {||oBar:show(),oCreate:hide(),iif(included == "AutoInt",SetTimer(oForm,@oTimer),"")}
+                     oCreate:hide()
+                     if included == "AutoInt"
+                        SetTimer(oForm,@oTimer)
+                     endif
+             endcase
 
              @ 380, 395 BUTTON 'Step Bar'   SIZE 75,25 ;
                 ON CLICK {|| n+=100,Iif(oBar==Nil,hwg_Msgstop(cMsgErr),oBar:Set(,n/100)),hb_run("wmctrl -a 'Testing ...'"),iif(n/100 == 100,RES_PROGBAR ( obar ),"") }
 
              @ 460, 395 BUTTON 'Reset Bar'   SIZE 75,25 ;
-                ON CLICK {|| IIF(oBar == NIL , .T. , RES_PROGBAR ( obar ) ) }
+                ON CLICK {|| IIF(oBar == NIL , .T. , RES_PROGBAR(oBar)),n:=0 }
 
-             * @ 460, 395 BUTTON 'Create Bar' SIZE 75,25 ;
-             *   ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",500,700,,, 10, 100 ) }
-             * Attention !
-             * Do not Create a second progress bar. Close recent Progbar before creating a new one.
-             * Please set parameters nTop and nLeft forever, it could be possible,
-             * that the box with the progress bar is hidden by the calling window.
-             * Calling window is in foreground, the box with the progress bar
-             * becomes visible if moved. 
-             @ 540, 395 BUTTON 'Close Bar'  SIZE 75,25 ;
-                ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),(oBar:Close(),oBar:=Nil)) }
-
-             @ 620, 395 BUTTON 'Close'      SIZE 75,25 ON CLICK {|| oForm:Close() }
+             if right(included,3) == "Ext"
+                @ 540, 395 BUTTON 'Close Bar'  SIZE 75,25 ;
+                   ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),(iif(left(included,4)== "Auto",oTimer:End(),""),oBar:close(),oBar:=Nil,n:=0,oCreate:show())) }
+             else
+                @ 540, 395 BUTTON 'Close Bar'  SIZE 75,25 ;
+                   ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),(iif(left(included,4)== "Auto",oTimer:End(),""),RES_PROGBAR(oBar),oBar:hide(),n:=0,oCreate:show())) }
+             endif
+             @ 620, 395 BUTTON 'Close'      SIZE 75,25 ON CLICK {|| isdemo:=.f.,oForm:Close() }
 
         ACTIVATE DIALOG oForm
+        if left(included,4)== "Auto"
+           oTimer:End()
+        endif
 
 Return Nil
 
+// ============================================================================
 FUNCTION RES_PROGBAR ( opbar )
+// ============================================================================
+
  n := 0
  opBar:Reset()
  * opBar:Set(,0 )
+
  hb_run("wmctrl -a 'Testing ...'")
+
 RETURN .F. 
 
+// ============================================================================
+Static Function SetTimer( oDlg,oTimer )
+// ============================================================================
+
+SET TIMER oTimer OF oDlg VALUE 1000 ACTION {||TimerFunc()}
+
+Return Nil
+
+// ============================================================================
+Static Function TimerFunc()
+// ============================================================================
+
+n+=100
+if oBar==Nil
+   hwg_Msgstop(cMsgErr)
+else
+   oBar:Set(,n/100)
+   hb_run("wmctrl -a 'Testing ...'")
+   if n/100 == 100
+      RES_PROGBAR ( obar )
+   endif
+endif   
+
+Return Nil
 
 * ====================== EOF of progbars.prg ========================

@@ -5,14 +5,31 @@
 /* Use this format for the entry headers:
    YYYY-MM-DD HH:MM UTC[-|+]hhmm Your Full Name <your_email@address>
    For example:
-   2002-12-01 23:12 UTC+0100 Foo Bar <foo.bar@foobar.org>
+   2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
+
+2021-01-17 23:15 UTC+0100 Wilfried Brunken DF7BE
+  * samples/gtk_samples/colors.sh
+  * samples/gtk_samples/progbars.prg
+  * samples/gtk_samples/qoutcolor.prg
+    ! Ticket #35: (Colors for qout() )
+    ! Instructions and sample added in inline 
+    ! comments posted by Alain Aupeix (TNX).
+    ! Ticket #52:
+    ! (Progbars doesn't work under Linux)
+    ! Extensions by Alain Aupeix (TNX):
+    !   Four choices in Demo menu:
+    !   - External manual progbar
+    !   - External automatic progbar
+    !   - Internal manual progbar
+    !   - Internal automatic progbar
+    ! Checked under Ubuntu LINUX 1604 LTS. 
 
 2021-01-13 23:15 UTC+0100 Wilfried Brunken DF7BE
   * install.txt
   * samples/gtk_samples/Readme.txt
   * samples/gtk_samples/progbars.prg
-    ! Ticket #35:
+    ! Ticket #52:
     ! Progbars doesn't work under Linux
     ! Now best work with external command "wmctrl".
     ! TNX Alain Aupeix. 

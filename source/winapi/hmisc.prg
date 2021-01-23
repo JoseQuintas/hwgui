@@ -489,5 +489,160 @@ LOCAL mvarbuff , varbuf , oModDlg , oEdit , owb1 , owb2 , bMemoMod
 RETURN varbuf
 
 
+* ~~~~~~~~~~~~~~~~~~~~~~~~
+* === Unit conversions ===
+* ~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ===== Temperature conversions ==============
+
+FUNCTION hwg_TEMP_C2F( T )
+RETURN (T * 1.8) + 32.0
+
+FUNCTION hwg_TEMP_C2K( T )
+RETURN T + 273.15
+
+FUNCTION hwg_TEMP_C2RA( T )
+RETURN (T * 1.8) + 32.0 + 459.67
+
+FUNCTION hwg_TEMP_C2R( T )
+RETURN T * 0.8
+
+FUNCTION hwg_TEMP_K2C( T )
+RETURN T - 273.15
+
+FUNCTION hwg_TEMP_K2F( T )
+RETURN (T * 1.8) - 459.67
+
+FUNCTION hwg_TEMP_K2RA( T )
+RETURN T * 1.8
+
+FUNCTION hwg_TEMP_K2R( T )
+RETURN ( T - 273.15 ) * 0.8
+
+FUNCTION hwg_TEMP_F2C( T )
+RETURN ( T - 32.0) / 1.8
+
+FUNCTION hwg_TEMP_F2K( T )
+RETURN ( T + 459.67) / 1.8
+
+FUNCTION hwg_TEMP_F2RA( T )
+RETURN T + 459.67
+
+FUNCTION hwg_TEMP_F2R( T )
+RETURN ( T - 32.0 ) / 2.25
+
+FUNCTION hwg_TEMP_RA2C( T )
+RETURN ( T - 32.0 - 459.67) / 1.8
+
+FUNCTION hwg_TEMP_RA2F( T )
+RETURN  T - 459.67
+
+FUNCTION hwg_TEMP_RA2K( T )
+RETURN T / 1.8
+
+FUNCTION hwg_TEMP_RA2R( T )
+RETURN ( T - 32.0 -459.67 ) / 2.25
+
+FUNCTION hwg_TEMP_R2C( T )
+RETURN T * 1.25
+
+FUNCTION hwg_TEMP_R2F( T )
+RETURN ( T * 2.25 ) + 32.0
+
+FUNCTION hwg_TEMP_R2K( T )
+RETURN ( T * 1.25 ) + 273.15
+
+FUNCTION hwg_TEMP_R2RA( T )
+RETURN ( T * 2.25 ) + 32.0 + 459.67
+
+* ===== End of temperature conversions ==============
+
+* ===== Other unit conversions =====================
+
+* in / cm
+
+FUNCTION hwg_INCH2CM( I )
+RETURN I * 2.54
+
+FUNCTION hwg_CM2INCH( cm )
+RETURN cm * 0.3937
+
+* feet / m
+
+FUNCTION  hwg_FT2METER( ft )
+RETURN ft * 0.3048
+
+FUNCTION hwg_METER2FT( m )  
+RETURN m * 3.2808
+
+* mile / km
+
+FUNCTION hwg_MILES2KM( mi ) 
+RETURN mi * 1.6093
+
+FUNCTION hwg_KM2MILES( km )
+RETURN  km * 0.6214
+
+* sqin / sq cm
+
+FUNCTION hwg_SQIN2SQCM( sqin )
+RETURN sqin * 6.4516
+
+FUNCTION hwg_SQCM2SQIN( sqcm ) 
+RETURN sqcm * 0.155
+
+* sqft / sq m
+
+FUNCTION hwg_SQFT2SQM( sqft ) 
+RETURN sqft * 0.0929
+
+FUNCTION hwg_SQM2SQFT( sqm ) 
+RETURN sqm * 10.7642
+
+* usoz / c.c. (Cubic cm)
+
+FUNCTION hwg_USOZ2CC( usoz )
+RETURN usoz * 29.574
+
+FUNCTION hwg_CC2USOZ( cc ) 
+RETURN cc * 0.0338
+
+* usgal / liter
+
+FUNCTION hwg_USGAL2L( usgal ) 
+RETURN usgal * 3.7854
+
+FUNCTION hwg_L2USGAL( l ) 
+RETURN l * 0.2642
+
+* lb / kg
+
+FUNCTION  hwg_LB2KG( lb )
+RETURN lb * 0.4536
+
+FUNCTION hwg_KG2LB( kg ) 
+RETURN kg * 2.2046
+
+* oz / g
+
+FUNCTION hwg_OZ2GR( oz ) 
+RETURN oz * 28.35
+
+FUNCTION hwg_GR2OZ( gr )
+RETURN gr * 0.0353
+
+* Nautical mile / km
+
+FUNCTION hwg_NML2KM(nml)
+RETURN nml * 1.852
+
+FUNCTION hwg_KM2NML(km)
+RETURN km * 0.5399568034557235
+
+
+* ===== End of unit conversions ==============
+
+
+
 * ============== EOF of hmisc.prg =================
 

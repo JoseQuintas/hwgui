@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, December 2020</td>
+    <td width="70%" align="center">Alexander S.Kresin, January 2021</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -32,6 +32,7 @@
      <li><a name="_Functions6" href="#Functions6">5.6.  Menu functions.</a>
      <li><a name="_Functions7" href="#Functions7">5.7.  Windows registry.</a>
      <li><a name="_Functions8" href="#Functions8">5.8.  Miscellaneous functions.</a>
+     <li><a name="_Functions8" href="#Functions81">5.8.1 Unit conversions.</a>
      <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
    </ul>
 
@@ -2303,7 +2304,112 @@
 
    <br><strong class="subhead"> hwg_Alert_GetWindow()</strong> (Windows only)
    <p>Internal: Needed by HAlert class</p>
+   
+   <br><strong class="subhead"><a name="Functions81" href="hwgdoc.html#_Functions81">
+   5.8.1 Unit conversions.</a></strong><br>
+   <p></p>
+   <br><strong class="subhead">Temperature  conversions</strong>
+   <p>Table: Temperatures equation list</p>   
+   <table>
+     <tr align=left><th>Celsius</th> <th>Kelvin</th> <th>Fahrenheit</th><th>Rankine</th><th>R&eacute;aumur</th><th>NOTE</th></tr>
+     <tr align=left><th>C</th>       <th>K</th>      <th>F</th>          <th>RA</th>      <th>R</th>          <th>&lt; Abbreviation in function name</th></tr>
+     <tr align=left></tr> 
+     <tr align=left><td>-273.15</td> <td>0</td>      <td>-459.67</td>    <td>0 </td>      <td>-218.52</td>    <td>Absolute zero point (0&deg; Kelvin)</td></tr>
+     <tr align=left><td>-17.78</td>  <td>255.37</td> <td>0</td>          <td>459.67</td>  <td>-14.22</td>     <td>0&deg; Fahrenheit</td></tr>
+     <tr align=left><td>-10</td>     <td>263.15</td> <td>14</td>         <td>473.67</td>  <td>-0</td>         <td>0&deg; R&eacute;aumur</td></tr>
+     <tr align=left><td>0</td>       <td>273.15</td> <td>32</td>         <td>491.67</td>  <td>0</td>          <td>Water freeze point</td></tr> 
+     <tr align=left><td>20</td>      <td>293.15</td> <td>59</td>         <td>527.67</td>  <td>16</td>         <td>Comfortable room temperature (20&deg; Celsius)</td></tr>
+     <tr align=left><td>37</td>      <td>310.15</td> <td>98.6</td>       <td>558.67</td>  <td>29.6</td>       <td>Human body temperature</td></tr>
+     <tr align=left><td>37.78</td>   <td>310.93</td> <td>100</td>        <td>559.67</td>  <td>30.22</td>      <td>100&deg; Fahrenheit</td></tr>
+     <tr align=left><td>100</td>     <td>373.15</td> <td>212</td>        <td>671.76</td>  <td>80</td>         <td>Water boiling</td></tr>
+     <tr align=left><td>125</td>     <td>398.15</td> <td>257</td>        <td>716.67</td>  <td>100</td>        <td>100&deg; R&eacute;aumur</td></tr>
+    </table>
 
+    <p>   
+    Building rule for function names<br>
+    for temperature conversion functions:<br>
+    hwg_TEMP_&lt;k1&gt;2&lt;k2&gt;<br>
+    k1,k2: Abbreviation see table above<br>
+    <br>
+    Constants in formulas:<br>
+    9/5 = 1.8<br>
+    9/4 = 2.25<br>
+    10/8 = 1.25<br>   
+   </p> 
+
+   <p>  
+    C=Celsius K=Kelvin F=Fahrenheit RA=Rankine R=R&eacute;aumur<br>
+    <br>
+    hwg_TEMP_C2F( T )<br>
+    hwg_TEMP_C2K( T )<br>
+    hwg_TEMP_C2RA( T )<br>
+    hwg_TEMP_C2R( T )<br>
+    hwg_TEMP_K2C( T )<br>
+    hwg_TEMP_K2F( T )<br>
+    hwg_TEMP_K2RA( T )<br>
+    hwg_TEMP_K2R( T )<br>
+    hwg_TEMP_F2C( T )<br>
+    hwg_TEMP_F2K( T )<br>
+    hwg_TEMP_F2RA( T )<br>
+    hwg_TEMP_F2R( T )<br>
+    hwg_TEMP_RA2C( T )<br>
+    hwg_TEMP_RA2F( T )<br>
+    hwg_TEMP_RA2K( T )<br>
+    hwg_TEMP_RA2R( T )<br>
+    hwg_TEMP_R2C( T )<br>
+    hwg_TEMP_R2F( T )<br>
+    hwg_TEMP_R2K( T )<br>
+    hwg_TEMP_R2RA( T )<br>
+   </p>
+   
+   <br><strong class="subhead">Other unit conversions</strong>   
+   <p>
+   A collection of important unit conversion functions for real life.<br>
+   (both directions)<br>
+   </p>
+   
+   <p>   
+    === in / cm ===<br>
+    hwg_INCH2CM( I )<br>
+    hwg_CM2INCH( cm )<br>
+    <br>
+    === feet / m ===<br>
+    hwg_FT2METER( ft )<br>
+    hwg_METER2FT( m )<br>
+    <br>
+    === mile / km ===<br>
+    hwg_MILES2KM( mi )<br>
+    hwg_KM2MILES( km )<br>
+    <br>
+    === sqin / sq cm ===<br>
+    hwg_SQIN2SQCM( sqin )<br>
+    hwg_SQCM2SQIN( sqcm )<br>
+    <br>
+    === sqft / sq m ===<br>
+    hwg_SQFT2SQM( sqft )<br>  
+    hwg_SQM2SQFT( sqm )<br>
+    <br>
+    === usoz / c.c. (Cubic cm) ===<br>
+    hwg_USOZ2CC( usoz )<br>
+    hwg_CC2USOZ( cc )<br>
+    <br>
+    === usgal / litre ===<br>
+    hwg_USGAL2L( usgal )<br> 
+    hwg_L2USGAL( l )<br>
+    <br>
+    === lb / kg ===<br>
+    hwg_LB2KG( lb )<br>
+    hwg_KG2LB( kg )<br>
+    <br>
+    === oz / g ===<br>
+    hwg_OZ2GR( oz )<br>  
+    hwg_GR2OZ( gr )<br>
+    <br>
+    === Nautical mile / km ===<br>
+    hwg_NML2KM(nml)<br>
+    hwg_KM2NML(km)<br>
+    </p>
+   
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>

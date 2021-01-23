@@ -8,6 +8,23 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-01-23 18:40 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * samples/Readme.txt
+  * samples/arraybrowse.prg (New)
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+  * test/hwmingnw_gtk.bat (New)
+  * test/testunitc.prg (New)
+    ! New functions for unit conversion added,
+    ! Docu updated.
+    ! New sample for BROWSE array,
+    ! HBROWSE class has some bugs, the new
+    ! sample works best without any crashes.
+    ! Build script for build test programs for
+    ! Windows GTK cross development environment.
+
+
 2021-01-17 23:15 UTC+0100 Wilfried Brunken DF7BE
   * samples/gtk_samples/colors.sh
   * samples/gtk_samples/progbars.prg

@@ -81,6 +81,7 @@ For beginners:
  Sample program     GTK   NLS MinGW64 Purpose
  =================  ===   === ======= =======
  a.prg              N         CN 9)   Some HWGUI basics (Open DBF's, GET's, ...)
+ arraybrowse.prg    Y                 Array BROWSE avoiding crashes because of bugs (see inline comments)
  bincnts.prg 10)    N  #              Usage of images from Binary container
  buildpelles.prg    N         Y       Build APP using Pelles C Compiler (*.bld file)
  colrbloc.prg       Y         Y       BROWSE: arrays and DBF's with colored lines and columns

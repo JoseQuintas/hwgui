@@ -12,10 +12,14 @@ LIB_DIR = lib
 SRC_DIR = source\winapi
 PROCMISC_DIR = source\common\procmisc
 EDITOR_DIR = source\common\editor
+XML_DIR = source\common\xml
+DBG_DIR = source\common\debug
+
 HARBOUR_EXE = $(HRB_EXE)
 CC_EXE = $(POCCMAIN)\BIN\POCC.EXE
 LIB_EXE = $(POCCMAIN)\BIN\POLIB.EXE
-HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
+# HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
+HARBOURFLAGS = -i$(INCLUDE_DIR) -gc0 -w -n
 CFLAGS = /Ze /I"INCLUDE" /I"$(HRB_DIR)\INCLUDE" /I"$(POCCMAIN)\INCLUDE" /I"$(POCCMAIN)\INCLUDE\WIN" /I"$(POCCMAIN)\INCLUDE\MSVC" /D"HB_STATIC_STARTUP" /c
 
 # Please Note that /Op and /Go requires POCC version 2.80 or later
@@ -70,7 +74,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
    $(OBJ_DIR)\misc.obj \
-   $(OBJ_DIR)\hmisc.o \
+   $(OBJ_DIR)\hmisc.obj \
    $(OBJ_DIR)\nice.obj \
    $(OBJ_DIR)\pager.obj \
    $(OBJ_DIR)\registry.obj \
@@ -135,6 +139,9 @@ $(PROCMISC_LIB) : $(PROCMISC_LIB_OBJS)
    $(LIB_EXE) /out:$@ $**
 
 $(XML_LIB) : $(XML_LIB_OBJS)
+   $(LIB_EXE) /out:$@ $**
+
+$(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
    $(LIB_EXE) /out:$@ $**
 
 # =======================
@@ -202,6 +209,19 @@ $(OBJ_DIR)\hcwindow.c  : $(SRC_DIR)\hcwindow.prg
 
 $(OBJ_DIR)\hcwindow.obj : $(OBJ_DIR)\hcwindow.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hmisc.c : $(SRC_DIR)\hmisc.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hmisc.obj : $(OBJ_DIR)\hmisc.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\barcode.c : $(SRC_DIR)\barcode.prg
+$(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\barcode.obj : $(OBJ_DIR)\barcode.c
+$(CC_EXE) $(CFLAGS) /Fo$@ $**
+
 
 $(OBJ_DIR)\hdatepic.c : $(SRC_DIR)\hdatepic.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
@@ -528,6 +548,12 @@ $(OBJ_DIR)\procscri.c : $(PROCMISC_DIR)\procscri.prg
 $(OBJ_DIR)\procscri.obj : $(OBJ_DIR)\procscri.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
+$(OBJ_DIR)\scrdebug.c : $(PROCMISC_DIR)\scrdebug.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\scrdebug.obj : $(OBJ_DIR)\scrdebug.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
 $(OBJ_DIR)\hcedit_w.obj : $(EDITOR_DIR)\hcedit_w.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
@@ -547,32 +573,32 @@ $(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
 # HBXML.LIB Dependencies
 # ========================
 
-$(OBJ_DIR)\hxmldoc.c : $(SRC_DIR)\xml\hxmldoc.prg
+$(OBJ_DIR)\hxmldoc.c : $(XML_DIR)\hxmldoc.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hxmldoc.obj : $(OBJ_DIR)\hxmldoc.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-$(OBJ_DIR)\xmlparse.obj : $(SRC_DIR)\xml\xmlparse.c
+$(OBJ_DIR)\xmlparse.obj : $(XML_DIR)\xmlparse.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 # ===========================
 # HWGDEBUG.LIB Dependencies
 # ===========================
 
-$(OBJ_DIR)\debugger.c : $(SRC_DIR)\xml\debugger.prg
+$(OBJ_DIR)\debugger.c : $(DBG_DIR)\debugger.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\debugger.obj : $(OBJ_DIR)\debugger.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-$(OBJ_DIR)\dbgconnect.c : $(SRC_DIR)\xml\dbgconnect.prg
+$(OBJ_DIR)\dbgconnect.c : $(DBG_DIR)\dbgconnect.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\dbgconnectr.obj : $(OBJ_DIR)\dbgconnect.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
-$(OBJ_DIR)\dbgdop.obj : $(SRC_DIR)\xml\dbgdop.c
+$(OBJ_DIR)\dbgdop.obj : $(DBG_DIR)\dbgdop.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 # ================== EOF of makefile.pc =====================

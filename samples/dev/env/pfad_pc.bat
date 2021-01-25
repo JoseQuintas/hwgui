@@ -12,11 +12,14 @@ SET GNU_MAKE=c:\make\bin
 REM Harbour
 REM Because Pelles C crashes at harbour build,
 REM try to build HWGUI application with Borland C build
-rem SET HB_PATH=C:\harbour-pc\core-master
 SET HB_PATH=C:\harbour-bcc\core-master
 SET HRB_EXE=%HB_PATH%\bin\win\bcc\harbour.exe
+rem SET HB_PATH=C:\harbour-pc\core-master
+REM Uncomment this, to use Harbour PellesC build, if bug is fixed
+REM SET HB_PATH=C:\harbour-pc\core-master
+REM SET HRB_EXE=%HB_PATH%\bin\win\bcc\harbour.exe
 REM
-rem SET HB_COMPILER=pocc
+SET HB_COMPILER=pocc
 SET HB_PLATFORM=win
 rem see above
 rem SET HRB_EXE=%HB_PATH%\bin\%HB_PLATFORM%\%HB_COMPILER%\harbour.exe

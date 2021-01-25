@@ -8,6 +8,18 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2021-01-25 17:20 UTC+0100 Wilfried Brunken DF7BE
+  * makefile.pc
+  * samples/dev/compiler/PellesC/PellesC.txt
+  * samples/dev/env/pfad_pc.bat
+    ! Ticket #75: PellesC support
+    ! Modifications by José M. C. Quintas 
+    ! + litte mods.
+    ! Seems to be error in C compiler
+    ! (Access violation building Harbour)
+ 
+
 2021-01-23 18:40 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * samples/Readme.txt

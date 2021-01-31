@@ -9,6 +9,19 @@
 */
 
 
+2021-01-31 18:40 UTC+0100 Wilfried Brunken DF7BE
+  * Changelog
+    ! Ticket #75: PellesC support
+    ! José M. C. Quintas reported in post of ticket,
+    ! that the user "Rajesh Mishra" sends the code modifications
+    ! to his fork. Please send MNI TNX to him.
+    ! José pleased to write this info the
+    ! Changelog
+  * doc/hwgdoc_functions.html
+  * samples/arraybrowse.prg
+    ! Additional information for
+    ! usage of function hwg_Createarlist()
+
 2021-01-25 17:20 UTC+0100 Wilfried Brunken DF7BE
   * makefile.pc
   * samples/dev/compiler/PellesC/PellesC.txt

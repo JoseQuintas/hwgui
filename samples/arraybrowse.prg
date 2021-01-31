@@ -23,6 +23,14 @@
   deleting lines.
   We will fix the bugs as soon as possible. 
   The HBROWSE class for DBF's is very stable.
+  
+  Sample for read out the edited array:
+
+  @ 360,410 BUTTON oBtn4 CAPTION "OK " SIZE 80,26 ;
+    ON CLICK { | | bCancel := .F. , ;
+    al_DOKs := oBrwArr:aArray , ;  
+    hwg_EndDialog() }
+ 
 */
 
    * Status:

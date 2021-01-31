@@ -1016,7 +1016,23 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_Createarlist( oBrw, arr )</strong> 
-   <p></p>
+   <p>
+    For BROWSE of arrays:<br>
+    Copies the array to browse into the<br>
+    browse object.<br> 
+    Usage see sample program "arraybrowse.prg".<br>
+    arr: an array with 2 dimensions, for example<br>
+    al_DOKs :=  { {"1"} , {"2"} , {"3"} , {"4"} }<br>
+    ...<br>
+    <br>
+    Sample for read out the edited array:<br>
+    <br>
+    @ 360,410 BUTTON oBtn4 CAPTION "OK " SIZE 80,26 ;<br> 
+    ON CLICK { | | bCancel := .F. , ;<br>
+    al_DOKs := oBrwArr:aArray , ;<br>  
+    hwg_EndDialog() }<br>
+   <br>
+   </p>
 
    <br><strong class="subhead"> hwg_CreateList( oBrw, lEditable )</strong> 
    <p></p>

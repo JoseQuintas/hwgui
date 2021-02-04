@@ -8,6 +8,15 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-04 09:40 UTC+0100 Wilfried Brunken DF7BE
+  * image/D.bmp
+  * image/D.ico
+  * image/W.bmp
+  * image/W.ico
+  * samples/icons2.prg
+  * samples/Readme.txt
+    ! Ticket #61: see post to ticket.
+
 
 2021-01-31 18:40 UTC+0100 Wilfried Brunken DF7BE
   * Changelog

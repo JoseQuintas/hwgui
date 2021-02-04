@@ -103,6 +103,7 @@ For beginners:
  hexbincnt.prg 11)  Y                 Handling of binary resources with hex values. 
  hole.prg   2) 4)   N                 MS Agent Control
  icons.prg          Y                 Icons and background bitmaps
+ icons2.prg         Y                 Icons and bitmaps using hex values
  iesample.prg 2) 5) N                 Sample of ActiveX container for the IE browser object. 
  modtitle.prg       Y                 Sample for modifying a main window title in HWGUI
  nice.prg           N                 Demo of NICEBUTTON

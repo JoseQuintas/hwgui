@@ -135,7 +135,7 @@ For beginners:
  testtree.prg       Y                 Tree view control
  testxml.prg        Y                 reading/writing XML file and handling menu items while run-time (testxml.xml)
  trackbar.prg       N                 Trackbar demo, horizontal und vertical.
- tstcombo.prg       N                 Test Combobox (crashes on GTK)
+ tstcombo.prg       Y                 Test Combobox, with preset and refresh.
  tstprdos.prg 3)    N                 Print on LPT, outdated, see 3)
  tstscrlbar.prg     N                 Scrollbar (GTK: Compilable, but no scroll function)
  tstsplash.prg 	    N                 SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.

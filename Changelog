@@ -8,6 +8,20 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-11 00:05 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+  * image/exclmk_trsp.bmp
+  * image/exclmk_trsp.png
+  * samples/tstcombo.prg
+    ! Ticket #36 Test with two relayed comboboxes:
+    ! tstcombo.prg ready for GTK, no runs best
+    ! as demo for help for ticket.
+    ! Docu updated:	
+    ! COMBOBOX ... EDIT not GTK, crashes
+    ! Litte correction. 
+
+
 2021-02-04 09:40 UTC+0100 Wilfried Brunken DF7BE
   * image/D.bmp
   * image/D.ico

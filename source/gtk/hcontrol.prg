@@ -357,6 +357,9 @@ METHOD Activate CLASS HStatic
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
          ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::extStyle, ::title )
+      IF hwg_BitAnd( ::style, SS_OWNERDRAW ) != 0
+         hwg_Setwindowobject( ::handle, Self )
+      ENDIF
       ::Init()
    ENDIF
 
@@ -465,7 +468,7 @@ METHOD Activate CLASS HButtonEX
       ELSE
          ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;
             ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::title, nil )
-      endif  
+      endif
       hwg_Setwindowobject( ::handle, Self )
       ::Init()
    ENDIF

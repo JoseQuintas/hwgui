@@ -92,9 +92,6 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
             ::nWidth  := ::oImage:nWidth
             ::nHeight := ::oImage:nHeight
          ENDIF
-         IF ::lTransp
-            ::oImage:Transparent( ::trcolor )
-         ENDIF
       ELSE
          RETURN Nil
       ENDIF
@@ -128,8 +125,13 @@ METHOD Paint() CLASS HSayBmp
    ENDIF
    IF ::oImage != Nil
       IF ::nZoom == Nil
-         hwg_Drawbitmap( hDC, ::oImage:handle, , ::nOffsetH, ;
-            ::nOffsetV, ::nWidth, ::nHeight )
+         IF ::lTransp
+            hwg_Drawtransparentbitmap( hDC, ::oImage:handle, ::nOffsetH, ;
+               ::nOffsetV, ::trColor, ::nWidth, ::nHeight )
+         ELSE
+            hwg_Drawbitmap( hDC, ::oImage:handle, , ::nOffsetH, ;
+               ::nOffsetV, ::nWidth, ::nHeight )
+         ENDIF
       ELSE
          hwg_Drawbitmap( hDC, ::oImage:handle, , ::nOffsetH, ;
             ::nOffsetV, ::oImage:nWidth * ::nZoom, ::oImage:nHeight * ::nZoom )

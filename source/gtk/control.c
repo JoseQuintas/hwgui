@@ -11,7 +11,7 @@
  *
  * Copyright 2008 Luiz Rafael Culik Guimaraes <luiz at xharbour.com.br >
  * www - http://sites.uol.com.br/culikr/
- 
+
 */
 
 #include "guilib.h"
@@ -494,7 +494,7 @@ HB_FUNC( HWG_COMBOPOPUP )
 
 /*
 HB_FUNC( HWG_COMBOGETEDIT )
-{  
+{
    hb_retptr( ( void * ) ( (GTK_ENTRY (GTK_BIN (HB_PARHANDLE( 1 ))->child)) ) );
 }
 */
@@ -896,7 +896,7 @@ HB_FUNC( HWG_CREATEPANEL )
          nHeight -= 12;
       gtk_widget_set_size_request( hCtrl, nWidth, nHeight );
    }
-   
+
    g_object_set_data( ( GObject * ) hCtrl, "fbox", ( gpointer ) fbox );
 
    temp = HB_PUTHANDLE( NULL, hbox );
@@ -1002,7 +1002,7 @@ HB_FUNC( HWG_SETTOOLTIPBALLOON )
      hwg_Settooltipballoon(.T.)
    as you like in your app, but the function call has no effect in GTK.
    In GTK, the tooltip is displayed in an rectangle.
-      
+
   */
 }
 
@@ -1154,7 +1154,7 @@ HB_FUNC( HWG_RESETPROGRESSBAR )
 {
    GtkWidget *widget = ( GtkWidget * ) HB_PARHANDLE( 1 );
 
- 
+
     gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( widget ), 0.0 );
     gtk_progress_bar_update( GTK_PROGRESS_BAR( widget ), 0.0 );
     while( gtk_events_pending(  ) )
@@ -1204,8 +1204,8 @@ HB_FUNC( HWG_CREATETOOLBAR )
 
 //   GtkFixed * box = getFixedBox( (GObject*) HB_PARHANDLE(1) );
 //   GtkWidget *tmp_image;
-//   GtkWidget *toolbutton1;   
-//   GtkWidget *toolbutton2;   
+//   GtkWidget *toolbutton1;
+//   GtkWidget *toolbutton2;
 //   gint tmp_toolbar_icon_size;
    GObject *handle = ( GObject * ) HB_PARHANDLE( 1 );
    GtkFixed *box = getFixedBox( handle );
@@ -1376,6 +1376,7 @@ void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 HB_FUNC( HWG_SETFGCOLOR )
 {
    GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
+   GtkStateType iType = (HB_ISNIL(3))? GTK_STATE_NORMAL : hb_parni(3);
 
    GtkWidget *label;
    HB_ULONG hColor = hb_parnl( 2 );
@@ -1394,8 +1395,8 @@ HB_FUNC( HWG_SETFGCOLOR )
    if( label )
    {
       GtkStyle * style = gtk_style_copy( gtk_widget_get_style( label ) );
-      hwg_parse_color( hColor, &(style->fg[GTK_STATE_NORMAL]) );
-      hwg_parse_color( hColor, &(style->text[GTK_STATE_NORMAL]) );
+      hwg_parse_color( hColor, &(style->fg[iType]) );
+      hwg_parse_color( hColor, &(style->text[iType]) );
       gtk_widget_set_style( label, style );
    }
 }
@@ -1509,17 +1510,17 @@ HB_FUNC( HWG_SHOWCURSOR )
 
   HB_BOOL modus ;
   int rvalue ;
- 
-  GdkCursor *cursor;
-  GdkWindow *win; 
 
-  /* long csrtype; */   
-  
+  GdkCursor *cursor;
+  GdkWindow *win;
+
+  /* long csrtype; */
+
   modus = hb_parl( 1 );
 
   /* csrtype = ( HB_ISNIL(3) ) ? 0 : hb_parnl(3) ; */
-  
-  
+
+
   if (modus)
   /* show cursor */
   {
@@ -1528,23 +1529,23 @@ HB_FUNC( HWG_SHOWCURSOR )
   crashes on LINUX, works best on GTK development environment on Windows
   cursor = gdk_cursor_new(csrtype);
   */
- 
+
    rvalue = 0;
   }
-  else  
+  else
   {
   /* hide cursor */
    cursor = gdk_cursor_new(GDK_BLANK_CURSOR);
    rvalue = -1;
   }
-  win = gtk_widget_get_window( ( GtkWidget * ) HB_PARHANDLE( 2 )  ) ; 
-  gdk_window_set_cursor( win , cursor); 
+  win = gtk_widget_get_window( ( GtkWidget * ) HB_PARHANDLE( 2 )  ) ;
+  gdk_window_set_cursor( win , cursor);
   hb_retni( rvalue );
-} 
+}
 
 HB_FUNC( HWG_GETCURSORTYPE )
 {
   hb_retnl( (long) gdk_cursor_get_type );
-}  
+}
 
 /* ====================== EOF of control.c ======================= */

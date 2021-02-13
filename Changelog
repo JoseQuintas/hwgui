@@ -8,6 +8,17 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-13 17:54 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/control.c
+    * Added third parameter to hwg_SetFgColor() -
+      integer value, which designates the GtkStateType, a state of control
+      (GTK_STATE_NORMAL by default) to change a color for.
+  * source/gtk/hcontrol.prg
+    * A small correction, which allows static comtrol with SS_OWNERDRAW style
+      to receive "draw" messages and process them, using the :bPaint codeblock.
+  * source/gtk/hsayimg.prg
+    ! Fixed bug with drawing transparent bitmap.
+
 2021-02-11 00:05 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html
   * doc/hwgdoc_functions.html

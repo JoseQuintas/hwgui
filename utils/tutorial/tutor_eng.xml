@@ -907,6 +907,234 @@ Local oDlg, oPanel, oFont, oStyleNormal, oStylePressed, oStyleOver
 
 Return Nil]]>
     </module>
+    <module name="Let create new control">
+      <![CDATA[// We create here a new control, which can be
+// used as a replacement for a track bar,
+// which has not gtk version.
+#include "hwgui.ch"
+#include "hbclass.ch"
+#define CLR_WHITE    0xffffff
+#define CLR_BLACK    0x000000
+#define CLR_BROWN_1  0x154780
+#define CLR_BROWN_3  0xaad2ff
+
+Function Test
+Local oDlg, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local bVolChange := {|o,n|
+      oSay:SetText( Ltrim(Str(oTrack:value)) )
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Track bar control"  ;
+         AT 210,10  SIZE 300,200 FONT oFont BACKCOLOR CLR_BROWN_1
+
+   @ 40, 20 SAY "Just drag the slider:" SIZE 220, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+
+   oTrack := HTrack():New( ,, 80, 50, 140, 28,,, CLR_WHITE, CLR_BROWN_1, 16 )
+   oTrack:bChange := bVolChange
+   oTrack:Value := 0.5
+
+   @ 80, 100 SAY oSay CAPTION "" SIZE 140, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
+
+Return Nil
+
+CLASS HTrack INHERIT HControl
+
+CLASS VAR winclass INIT "STATIC"
+
+   DATA lVertical
+   DATA oStyle
+   DATA nFrom, nTo, nCurr, nSize
+   DATA oPen1, oPen2, tColor2
+   DATA lCaptured   INIT .F.
+   DATA bEndDrag
+   DATA bChange
+
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+               bSize, bPaint, color, bcolor, nSize, oStyle )
+   METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
+   METHOD Init()
+   METHOD Paint()
+   METHOD Drag( xPos, yPos )
+   METHOD Value ( xValue ) SETGET
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+            bSize, bDraw, color, bcolor, nSize, oStyle ) CLASS HTrack
+
+   color := Iif( color == Nil, CLR_BLACK, color )
+   bColor := Iif( bColor == Nil, CLR_WHITE, bColor )
+   ::Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight,,, ;
+              bSize, bDraw,, color, bcolor )
+
+   ::title  := ""
+   ::lVertical := ( ::nHeight > ::nWidth )
+   ::nSize := Iif( nSize == Nil, 12, nSize )
+   ::nFrom  := Iif( ::lVertical, ::nHeight-1-Int(::nSize/2), Int(::nSize/2) )
+   ::nTo    := Iif( ::lVertical, Int(::nSize/2), ::nWidth-1-Int(::nSize/2) )
+   ::nCurr  := ::nFrom
+   ::oStyle := oStyle
+   ::oPen1 := HPen():Add( PS_SOLID, 1, color )
+
+   ::Activate()
+
+   RETURN Self
+
+METHOD Activate() CLASS HTrack
+   IF ! Empty( ::oParent:handle )
+#ifdef __PLATFORM__WINDOWS
+      ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
+                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+#else
+      ::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
+         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+#endif
+      ::Init()
+   ENDIF
+   RETURN Nil
+
+METHOD onEvent( msg, wParam, lParam ) CLASS HTrack
+
+   HB_SYMBOL_UNUSED( wParam )
+
+   IF msg == WM_MOUSEMOVE
+      IF ::lCaptured
+         ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      ENDIF
+
+   ELSEIF msg == WM_PAINT
+      ::Paint()
+
+   ELSEIF msg == WM_ERASEBKGND
+      IF ::brush != Nil
+         hwg_Fillrect( wParam, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
+         RETURN 1
+      ENDIF
+
+   ELSEIF msg == WM_LBUTTONDOWN
+      ::lCaptured := .T.
+      ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+
+   ELSEIF msg == WM_LBUTTONUP
+      ::lCaptured := .F.
+      IF ::bEndDrag != Nil
+         Eval( ::bEndDrag, Self )
+      ENDIF
+      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+
+   ELSEIF msg == WM_DESTROY
+      ::END()
+   ENDIF
+
+   RETURN - 1
+
+METHOD Init CLASS HTrack
+
+   IF ! ::lInit
+      ::Super:Init()
+      hwg_Setwindowobject( ::handle, Self )
+#ifdef __PLATFORM__WINDOWS
+      ::nHolder := 1
+      Hwg_InitWinCtrl( ::handle )
+#endif
+   ENDIF
+
+   RETURN Nil
+
+METHOD Paint() CLASS HTrack
+   LOCAL hDC, nHalf, x1, y1
+#ifdef __PLATFORM__WINDOWS
+   LOCAL pps
+#endif
+   IF ::bPaint != Nil
+      Eval( ::bPaint, Self )
+   ELSE
+#ifdef __PLATFORM__WINDOWS
+      pps := hwg_Definepaintstru()
+      hDC := hwg_Beginpaint( ::handle, pps )
+#else
+      hDC := hwg_Getdc( ::handle )
+#endif
+
+      IF ::tColor2 != Nil .AND. ::oPen2 == Nil
+         ::oPen2 := HPen():Add( PS_SOLID, 1, ::tColor2 )
+      ENDIF
+      IF ::oStyle == Nil
+         hwg_Fillrect( hDC, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
+      ELSE
+         ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )
+      ENDIF
+
+      nHalf := Int(::nSize/2)
+      hwg_Selectobject( hDC, ::oPen1:handle )
+      IF ::lVertical
+         x1 := Int(::nWidth/2)
+         IF ::nCurr + nHalf < ::nFrom
+            hwg_Drawline( hDC, x1, ::nTo, x1, ::nCurr+nHalf )
+         ENDIF
+         hwg_Rectangle( hDC, x1-nHalf, ::nCurr+nHalf, x1+nHalf, ::nCurr-nHalf )
+         IF ::nCurr - nHalf > ::nTo
+            IF ::oPen2 != Nil
+               hwg_Selectobject( hDC, ::oPen2:handle )
+            ENDIF
+            hwg_Drawline( hDC, x1, ::nCurr-nHalf, x1, ::nTo )
+         ENDIF
+      ELSE
+         y1 :=Int(::nHeight/2)
+         IF ::nCurr - nHalf > ::nFrom
+            hwg_Drawline( hDC, ::nFrom, y1, ::nCurr-nHalf, y1 )
+         ENDIF
+         hwg_Rectangle( hDC, ::nCurr-nHalf, y1-nHalf, ::nCurr+nHalf, y1+nHalf )
+         //hwg_Ellipse( hDC, ::nCurr-nHalf, y1-nHalf, ::nCurr+nHalf, y1+nHalf )
+         IF ::nCurr + nHalf < ::nTo
+            IF ::oPen2 != Nil
+               hwg_Selectobject( hDC, ::oPen2:handle )
+            ENDIF
+            hwg_Drawline( hDC, ::nCurr+nHalf+1, y1, ::nTo, y1 )
+         ENDIF
+      ENDIF
+
+#ifdef __PLATFORM__WINDOWS
+      hwg_Endpaint( ::handle, pps )
+#else
+      hwg_Releasedc( ::handle, hDC )
+#endif
+   ENDIF
+
+   RETURN Nil
+
+METHOD Drag( xPos, yPos ) CLASS HTrack
+   LOCAL nFrom, nTo, nCurr := ::nCurr
+
+   nFrom := Iif( ::nFrom == Nil, 1, ::nFrom )
+   nTo := Iif( ::nTo == Nil, Iif(::lVertical,::oParent:nWidth-1,::oParent:nHeight-1), ::nTo )
+   IF ::lVertical
+      ::nCurr := Min( Max( ::nTo, yPos ), ::nFrom )
+   ELSE
+      ::nCurr := Min( Max( ::nFrom, xPos ), ::nTo )
+   ENDIF
+   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+   IF nCurr != ::nCurr .AND. ::bChange != Nil
+      Eval( ::bChange, Self, ::Value )
+   ENDIF
+
+   RETURN Nil
+
+METHOD Value( xValue ) CLASS HTrack
+
+   IF xValue != Nil .AND. xValue >= 0 .AND. xValue <= 1
+      ::nCurr := xValue * Abs(::nTo - ::nFrom) + Iif( ::lVertical, -::nFrom, ::nFrom )
+   ELSE
+      xValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)
+   ENDIF
+
+   RETURN xValue]]>
+    </module>
   </chapter>
   <chapter name="Get system" >
     <module name="Dialog with various Gets" ver="win">

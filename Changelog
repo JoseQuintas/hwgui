@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-16 20:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/control.c
+    * Added handling of focus_in_event and focus_out_event for browse
+  * source/gtk/hdialog.prg
+    * A small bug fixed while centering a dialig with WND_NOTITLE style
+
 2021-02-15 14:20 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/tutorial/tutor_eng.xml
     * New module added, "Let create new control", which demonstrates,

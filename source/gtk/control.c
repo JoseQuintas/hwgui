@@ -639,13 +639,15 @@ HB_FUNC( HWG_CREATEBROWSE )
 
    gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
-         GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK );
+         GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK | GDK_FOCUS_CHANGE_MASK);
    set_event( ( gpointer ) area, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) area, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) area, "motion_notify_event", 0, 0, 0 );
    set_event( ( gpointer ) area, "key_press_event", 0, 0, 0 );
    set_event( ( gpointer ) area, "key_release_event", 0, 0, 0 );
    set_event( ( gpointer ) area, "scroll_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "focus_in_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "focus_out_event", 0, 0, 0 );
 
    // gtk_widget_show_all( hbox );
    all_signal_connect( ( gpointer ) area );

@@ -107,7 +107,7 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    ::lExitOnEnter := iif( lExitOnEnter == Nil, .T. , !lExitOnEnter )
    ::lExitOnEsc  := iif( lExitOnEsc == Nil, .T. , !lExitOnEsc )
 
-   IF hwg_BitAnd( ::style, DS_CENTER ) > 0
+   IF ::style > 0 .AND. hwg_BitAnd( ::style, DS_CENTER ) > 0
       ::nLeft := Int( ( hwg_Getdesktopwidth() - ::nWidth ) / 2 )
       ::nTop  := Int( ( hwg_Getdesktopheight() - ::nHeight ) / 2 )
    ENDIF

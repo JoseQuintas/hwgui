@@ -668,7 +668,7 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
  */  
 METHOD AddString( name, cVal , nWidth, nHeight) CLASS HIcon
  LOCAL cTmp    && , oreturn
- LOCAL i, aIconSize
+ LOCAL aIconSize
 
    IF nWidth == nil
       nWidth := 0
@@ -695,7 +695,7 @@ RETURN  Self   && oreturn
 
 
 METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
-   LOCAL i, aIconSize, cname := CutPath( name ), cCurDir,cFext
+   LOCAL i, aIconSize, cname := CutPath( name ), cCurDir
 
    IF nWidth == nil
       nWidth := 0
@@ -778,7 +778,7 @@ CLASS HStyle INHERIT HObject
    DATA aCorners
 
    METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap )
-   METHOD Draw( hDC, nTop, nLeft, nWidth, nHeight )
+   METHOD Draw( hDC, nTop, nLeft, nRight, nBottom )
 ENDCLASS
 
 METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle

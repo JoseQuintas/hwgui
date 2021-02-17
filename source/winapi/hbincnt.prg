@@ -54,7 +54,7 @@ CLASS HBinC
    METHOD Open( cName, lWr )
    METHOD Close()
    METHOD Add( cObjName, cType, cVal )
-   METHOD Del( cObjName, cType )
+   METHOD Del( cObjName )
    METHOD Pack()
    METHOD Exist( cObjName )
    METHOD Get( cObjName )

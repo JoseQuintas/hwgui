@@ -8,6 +8,20 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-17 23:25 UTC+0100 Wilfried Brunken DF7BE
+  * makefile.gcc
+  * source/winapi/drawwidg.prg
+  * source/winapi/guimain.prg
+  * source/winapi/hbincnt.prg
+  * source/winapi/hbrowse.prg
+  * source/winapi/hbrwflt.prg
+  * source/winapi/hcheck.prg
+  * source/winapi/hcombo.prg
+  * source/winapi/hcontrol.prg
+    ! Ticket #77: adjust to compile using -w3 -es2 
+    ! Files in "winapi.zip" posted by
+    ! José M. C. Quintas, see post to ticket.
+
 2021-02-16 20:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/control.c
     * Added handling of focus_in_event and focus_out_event for browse

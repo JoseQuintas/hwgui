@@ -26,10 +26,12 @@ CLASS HComboBox INHERIT HControl
    DATA  lEdit    INIT .F.
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, bGFocus, tcolor, bcolor, bValid )
+      aItems, oFont, bInit, bSize, bPaint, bChange, ctooltip, lEdit, lText, ;
+      bGFocus, tcolor, bcolor, bValid, nDisplay )
    METHOD Activate()
-   METHOD Redefine( oWnd, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bDraw, bChange, ctooltip, bGFocus )
-   METHOD Init( aCombo, nCurrent )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
+      bChange, ctooltip, bGFocus )
+   METHOD Init()
    METHOD Refresh( xVal )
    METHOD Setitem( nPos )
    METHOD GetValue( nItem )
@@ -90,7 +92,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HComboBox
+METHOD Activate() CLASS HComboBox
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createcombo( ::oParent:handle, ::id, ;
@@ -103,6 +105,7 @@ METHOD Activate CLASS HComboBox
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
       bChange, ctooltip, bGFocus ) CLASS HComboBox
 
+   (bGFocus)
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, bSize, bPaint, ctooltip )
 
    IF ::lText

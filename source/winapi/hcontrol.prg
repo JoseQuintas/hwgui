@@ -477,7 +477,7 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ENDIF
 RETURN Self
 
-METHOD Init CLASS HButton
+METHOD Init() CLASS HButton
 
    ::super:init()
    IF ::Title != NIL
@@ -529,7 +529,7 @@ CLASS HLine INHERIT HControl
 
    METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize )
    METHOD Activate()
-   METHOD Paint()
+   METHOD Paint( lpdis )
 
 ENDCLASS
 
@@ -556,7 +556,7 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize ) CLASS HLine
 
 RETURN Self
 
-METHOD Activate CLASS HLine
+METHOD Activate() CLASS HLine
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth,::nHeight )

@@ -226,17 +226,17 @@ CLASS HBrowse INHERIT HControl
       bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
       lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bRClick )
    METHOD InitBrw( nType )
-   METHOD Rebuild()
+   METHOD Rebuild( hDC )
    METHOD Activate()
    METHOD Init()
    METHOD DefaultLang()         // Reset of messages to default value English
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Redefine( lType, oWnd, nId, oFont, bInit, bSize, bPaint, bEnter, bGfocus, bLfocus )
+   METHOD Redefine( lType, oWndParent, nId, oFont, bInit, bSize, bPaint, bEnter, bGfocus, bLfocus )
    METHOD AddColumn( oColumn )
    METHOD InsColumn( oColumn, nPos )
    METHOD DelColumn( nPos )
    METHOD Paint( lLostFocus )
-   METHOD LineOut()
+   METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear )
    METHOD DrawHeader( hDC, nColumn, x1, y1, x2, y2 )
    METHOD HeaderOut( hDC )
    METHOD FooterOut( hDC )
@@ -308,7 +308,7 @@ METHOD DefaultLang() CLASS HBrowse
    ::cTextLockRec := "Can't lock the record!"
    RETURN Self   
 
-METHOD Activate CLASS HBrowse
+METHOD Activate() CLASS HBrowse
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createbrowse( ::oParent:handle, ::id, ;
@@ -320,7 +320,7 @@ METHOD Activate CLASS HBrowse
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
-   LOCAL aCoors, oParent, cKeyb, nCtrl, nPos, iParHigh, iParLow
+   LOCAL nPos, iParHigh, iParLow
 
    // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::active .AND. !Empty( ::aColumns )
@@ -449,7 +449,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
    RETURN - 1
 
-METHOD Init CLASS HBrowse
+METHOD Init() CLASS HBrowse
 
    IF !::lInit
       ::Super:Init()
@@ -581,14 +581,14 @@ METHOD InitBrw( nType )  CLASS HBrowse
 
    IF ::type == BRW_DATABASE
       ::alias   := Alias()
-      ::bSkip     :=  { |o, n| ( ::alias ) -> ( dbSkip( n ) ) }
+      ::bSkip     :=  { |o, n| (o), ( ::alias ) -> ( dbSkip( n ) ) }
       ::bGoTop    :=  { || ( ::alias ) -> ( DBGOTOP() ) }
       ::bGoBot    :=  { || ( ::alias ) -> ( dbGoBottom() ) }
       ::bEof      :=  { || ( ::alias ) -> ( Eof() ) }
       ::bBof      :=  { || ( ::alias ) -> ( Bof() ) }
       ::bRcou     :=  { || ( ::alias ) -> ( RecCount() ) }
       ::bRecnoLog := ::bRecno  := { ||( ::alias ) -> ( RecNo() ) }
-      ::bGoTo     := { |o, n|( ::alias ) -> ( dbGoto( n ) ) }
+      ::bGoTo     := { |o, n|(o), ( ::alias ) -> ( dbGoto( n ) ) }
 
    ELSEIF ::type == BRW_ARRAY
       ::bSkip   := { | o, n | ARSKIP( o, n ) }
@@ -696,9 +696,10 @@ METHOD Rebuild( hDC ) CLASS HBrowse
 
 METHOD Paint( lLostFocus )  CLASS HBrowse
 
-   LOCAL aCoors, i, oldAlias, l, tmp, nRows, x1
+   LOCAL aCoors, i, l, tmp, nRows, x1
    LOCAL pps, hDC, hDCReal
-   LOCAL oldBkColor, oldTColor
+
+   (lLostFocus)
 
    IF ::tcolor    == Nil ; ::tcolor    := 0 ; ENDIF
    IF ::bcolor    == Nil ; ::bcolor    := hwg_ColorC2N( "FFFFFF" ) ; ENDIF
@@ -1087,7 +1088,7 @@ METHOD FooterOut( hDC ) CLASS HBrowse
 
 METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
 
-   LOCAL x, x2, y1, y2, dx, i := 1, shablon, sviv, fldname, slen, xSize, nCol
+   LOCAL x, x2, y1, y2, i := 1, sviv, xSize, nCol
    LOCAL j, ob, bw, bh, hBReal
    LOCAL oldBkColor, oldTColor
    LOCAL oBrushLine := iif( lSelected, ::brushSel, ::brush )
@@ -1104,7 +1105,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
    IF ::nRecords > 0
       oldBkColor := hwg_Setbkcolor( hDC, iif( lSelected,::bcolorSel,::bcolor ) )
       oldTColor  := hwg_Settextcolor( hDC, iif( lSelected,::tcolorSel,::tcolor ) )
-      fldname := Space( 8 )
+      //fldname := Space( 8 )
       nCol := ::nPaintCol := iif( ::freeze > 0, 1, ::nLeftCol )
       ::nPaintRow := nstroka
 
@@ -1158,8 +1159,8 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                               bw := Int( ob:nWidth * ( ob:nHeight / ::height ) )
                               hwg_Drawbitmap( hDC, ob:handle, , x + ::aPadding[1], y1 + ::aPadding[2], bw, bh )
                            ELSE
-                              bh := ob:nHeight
-                              bw := ob:nWidth
+                              //bh := ob:nHeight
+                              //bw := ob:nWidth
                               hwg_Drawtransparentbitmap( hDC, ob:handle, x + ::aPadding[1], ;
                                  Int( ( ::height - ob:nHeight )/2 ) + y1 + ::aPadding[2] )
                            ENDIF
@@ -1578,7 +1579,7 @@ METHOD BOTTOM( lPaint ) CLASS HBrowse
 
 METHOD TOP() CLASS HBrowse
 
-   LOCAL minPos, maxPos, nPos
+   LOCAL minPos, maxPos
 
    hwg_Getscrollrange( ::handle, SB_VERT, @minPos, @maxPos )
 
@@ -1747,7 +1748,7 @@ METHOD ButtonUp( lParam ) CLASS HBrowse
 
 METHOD ButtonDbl( lParam ) CLASS HBrowse
 
-   LOCAL hBrw := ::handle, nLine
+   LOCAL nLine
    LOCAL ym := hwg_Hiword( lParam )
 
    nLine := iif( ym < ::y1, 0, Int( (ym - ::y1 ) / (::height + 1 ) ) + 1 )
@@ -1801,6 +1802,8 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
 
 METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
 
+   (nXPos)
+   (nYPos)
    IF Hwg_BitAnd( nKeys, MK_MBUTTON ) != 0
       IF nDelta > 0
          ::PageUp()
@@ -1822,7 +1825,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL fipos, lRes, x1, y1, fif, nWidth, lReadExit, rowPos
    LOCAL oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
    LOCAL oComboFont, oCombo
-   LOCAL oGet1, owb1, owb2
+   LOCAL owb1, owb2
    LOCAL oEdit,mvarbuff,bMemoMod, oHCfont    && DF7BE
    LOCAL apffrarr, nchrs
 
@@ -2180,7 +2183,7 @@ FUNCTION hwg_CREATEARLIST( oBrw, arr )
             oBrw:AddColumn( { , hwg_ColumnArBlock() } )
          NEXT
       ELSE
-         oBrw:AddColumn( { , { |value,o| o:aArray[ o:nCurrent ] } } )
+         oBrw:AddColumn( { , { |value,o| (value), o:aArray[ o:nCurrent ] } } )
       ENDIF
    ENDIF
    Eval( oBrw:bGoTop, oBrw )
@@ -2268,6 +2271,7 @@ FUNCTION hwg_HScrollPos( oBrw, nType, lEof, nPos )
    LOCAL minPos, maxPos, i, nSize := 0, nColPixel
    LOCAL nBWidth := oBrw:nWidth // :width is _not_ browse width
 
+   (lEof)
    hwg_Getscrollrange( oBrw:handle, SB_HORZ, @minPos, @maxPos )
 
    IF nType == SB_THUMBPOSITION
@@ -2296,7 +2300,7 @@ METHOD ShowSizes() CLASS HBrowse
    LOCAL cText := ""
 
    AEval( ::aColumns, ;
-      { | v, e | cText += ::aColumns[e]:heading + ": " + Str( Round( ::aColumns[e]:width/8,0 ) - 2  ) + Chr( 10 ) + Chr( 13 ) } )
+      { | v, e | (v), cText += ::aColumns[e]:heading + ": " + Str( Round( ::aColumns[e]:width/8,0 ) - 2 ) + Chr( 10 ) + Chr( 13 ) } )
    hwg_Msginfo( cText )
 
    RETURN Nil
@@ -2348,4 +2352,3 @@ FUNCTION hwg_getPaintCB( arr, nId )
 
 
 * ========================== EOF of hbrowse.prg ============================
-   

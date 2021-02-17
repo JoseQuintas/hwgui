@@ -24,9 +24,10 @@ CLASS HBrwflt INHERIT HBrowse
    DATA nLastRecordFilter INIT 0       // Save the last record of filter.
    DATA nFirstRecordFilter INIT 0      // Save the first record of filter.
 
-   METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
-      bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, lNoBorder, ;
-      lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, bFirst, bWhile, bFor, bRClick )
+METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
+      bInit, bSize, bPaint, bEnter, bGfocus, bLfocus, lNoVScroll, ;
+      lNoBorder, lAppend, lAutoedit, bUpdate, bKeyDown, bPosChg, lMultiSelect, ;
+      lDescend, bWhile, bFirst, bLast, bFor, bRClick )
 
    METHOD InitBrw()
    METHOD Refresh( lFull )
@@ -102,7 +103,7 @@ METHOD Refresh( lFull ) CLASS HBrwFlt
 
 STATIC FUNCTION FltSkip( oBrw, nLines, lDesc )
 
-   LOCAL n, r
+   LOCAL n
 
    IF nLines == NIL
       nLines := 1
@@ -175,13 +176,13 @@ STATIC FUNCTION FltGoBottom( oBrw )
 
 STATIC FUNCTION FltBOF( oBrw )
 
-   LOCAL lRet := .F. , cKey := "", nRecord := 0
+   LOCAL lRet := .F. , nRecord
    LOCAL xValue, xFirstValue
 
    IF Bof()
       lRet := .T.
    ELSE
-      cKey  := IndexKey()
+      // cKey  := IndexKey()
       nRecord := FltRecNo( oBrw )
 
       xValue := OrdKeyNo() //&(cKey)
@@ -201,13 +202,13 @@ STATIC FUNCTION FltBOF( oBrw )
 
 STATIC FUNCTION FltEOF( oBrw )
 
-   LOCAL lRet := .F. , cKey := "", nRecord := 0
+   LOCAL lRet := .F. , nRecord
    LOCAL xValue, xLastValue
 
    IF Eof()
       lRet := .T.
    ELSE
-      cKey := IndexKey()
+      // cKey := IndexKey()
       nRecord := FltRecNo( oBrw )
 
       xValue := OrdKeyNo()
@@ -228,7 +229,7 @@ STATIC FUNCTION FltEOF( oBrw )
 
 STATIC FUNCTION FltRecCount( oBrw )
 
-   LOCAL nRecord := 0, nCount := 0
+   LOCAL nRecord, nCount := 0
 
    nRecord := FltRecNo( oBrw )
    FltGoTop( oBrw )
@@ -244,9 +245,13 @@ STATIC FUNCTION FltRecCount( oBrw )
 
 STATIC FUNCTION FltGoTo( oBrw, nRecord )
 
+   (oBrw)
+
    RETURN dbGoto( nRecord )
 
 STATIC FUNCTION FltRecNo( oBrw )
+
+   (oBrw)
 
    RETURN RecNo()
 

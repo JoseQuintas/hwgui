@@ -248,19 +248,19 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
       @ addX/2, 10 BROWSE oBrw ARRAY SIZE width - addX, height - addY
       oBrw:aArray := arr
       IF ValType( arr[1] ) == "A"
-         oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent,1] },"C",nLen ) )
+         oBrw:AddColumn( HColumn():New( ,{ | value, o | ( value ), o:aArray[ o:nCurrent, 1 ] }, "C", nLen ) )
       ELSE
-         oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent] },"C",nLen ) )
+         oBrw:AddColumn( HColumn():New( ,{ | value, o | ( value ), o:aArray[ o:nCurrent ] }, "C", nLen ) )
       ENDIF
    ELSE
       @ addX/2, 10 BROWSE oBrw DATABASE SIZE width - addX, height - addY
-      oBrw:AddColumn( HColumn():New( ,{ |value,o|(o:alias ) -> (FieldGet(nField ) ) },"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{ | value, o | ( value ), ( o:alias ) -> ( FieldGet( nField ) ) }, "C", nLen ) )
    ENDIF
 
    oBrw:oFont  := oFont
    oBrw:bSize  := { |o, x, y|o:Move( ,, x - addX, y - addY ) }
    oBrw:bEnter := { |o|nChoice := o:nCurrent, hwg_EndDialog( o:oParent:handle ) }
-   oBrw:bKeyDown := { |o, key|iif( key == 27, ( hwg_EndDialog(oDlg:handle ), .F. ), .T. ) }
+   oBrw:bKeyDown := { | o, key | ( o ), iif( key == 27, ( hwg_EndDialog( oDlg:handle ), .F. ), .T. ) }
 
    oBrw:lDispHead := .F.
    IF clrT != Nil
@@ -278,7 +278,7 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
 
    IF cOk != Nil
       x1 := Int( width/2 ) - iif( cCancel != Nil, 90, 40 )
-      @ x1, height - 36 BUTTON cOk SIZE 80, 28 ON CLICK { ||nChoice := oBrw:nCurrent, hwg_EndDialog( oDlg:handle ) } ON SIZE {|o,x,y|o:Move( ,y-36 ) }
+      @ x1, height - 36 BUTTON cOk SIZE 80, 28 ON CLICK { ||nChoice := oBrw:nCurrent, hwg_EndDialog( oDlg:handle ) } ON SIZE { | o, x, y | ( x ), o:Move( , y - 36 ) }
       IF cCancel != Nil
          @ x1 + 100, height - 36 BUTTON cCancel SIZE 80, 28 ON CLICK { ||hwg_EndDialog( oDlg:handle ) } ON SIZE {|o,x,y|o:Move( x-100,y-36 ) }
       ENDIF
@@ -379,18 +379,17 @@ FUNCTION hwg_RefreshAllGets( oDlg )
 
 FUNCTION hwg_SelectMultipleFiles( cDescr, cTip, cIniDir, cTitle )
 
-   LOCAL aFiles, cRet, cFile, x, aFilter, cFilter := "", cItem, nAt, cChar, i
+   LOCAL aFiles, cFile, x, cFilter := "", cItem, nAt, cChar, i /* cRet */
    LOCAL hWnd := 0
    LOCAL nFlags := ""
-   LOCAL cPath := ""
+   LOCAL cPath
    LOCAL nIndex := 1
 
    cFilter += cDescr + Chr( 0 ) + cTip + Chr( 0 )
 
    cFile := Space( 32000 )
 
-
-   cRet := hwg_getopenfilename( hWnd, @cFile, cTitle, cFilter, nFlags, cIniDir, Nil, @nIndex )
+   /* cRet := */ hwg_getopenfilename( hWnd, @cFile, cTitle, cFilter, nFlags, cIniDir, Nil, @nIndex )
 
    nAt := At( Chr( 0 ) + Chr( 0 ), cFile )
 

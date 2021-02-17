@@ -22,7 +22,7 @@ CLASS HCheckButton INHERIT HControl
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
       bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus, lTransp, bLFocus )
    METHOD Activate()
-   METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus )
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, bGFocus )
    METHOD Init()
    METHOD Refresh()
    METHOD Disable()
@@ -61,7 +61,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HCheckButton
+METHOD Activate() CLASS HCheckButton
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;

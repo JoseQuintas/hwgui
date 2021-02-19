@@ -70,7 +70,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
 
 RETURN Self
 
-METHOD Activate CLASS HTrackBar
+METHOD Activate() CLASS HTrackBar
    IF !Empty( ::oParent:handle )
       ::handle := hwg_inittrackbar ( ::oParent:handle, ::id, ::style, ;
                                  ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
@@ -183,3 +183,4 @@ HB_FUNC( HWG_TRACKBARSETRANGE )
 
 #pragma ENDDUMP
 
+* ========================== EOF of htrackbr.prg =============================

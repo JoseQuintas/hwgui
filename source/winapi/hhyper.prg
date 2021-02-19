@@ -39,7 +39,7 @@ CLASS HStaticLink FROM HSTATIC
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
-   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
+   METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
    METHOD Activate()
    METHOD Init()
@@ -53,7 +53,7 @@ CLASS HStaticLink FROM HSTATIC
    METHOD OnClicked()
    METHOD SetLinkColor( sLinkColor )
    METHOD Paint()
-   METHOD OnMouseMove( nFlags, point )
+   METHOD OnMouseMove( nFlags, lParam )  && point
 
 ENDCLASS
 
@@ -113,10 +113,14 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    RETURN Self
 
+/* added: cCaption */
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )  CLASS HStaticLink
 
    LOCAL oPrevFont
+
+    * Parameters not used
+    HB_SYMBOL_UNUSED(lTransp)
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor )
@@ -160,7 +164,7 @@ METHOD Activate() CLASS HStaticLink
    ENDIF
 RETURN NIL
 
-METHOD Init CLASS HStaticLink
+METHOD Init() CLASS HStaticLink
 
    IF ! ::lInit
       ::nHolder := 1
@@ -303,3 +307,6 @@ METHOD Paint() CLASS HStaticLink
    hwg_Endpaint( ::handle, pps )
 
    RETURN 0
+   
+* ============================== EOF of hhyper.prg ================================
+   

@@ -42,7 +42,7 @@ CLASS HEdit INHERIT HControl
    METHOD Activate()
    METHOD Init()
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Redefine( oWnd, nId, vari, bSetGet, oFont, bInit, bSize, bGfocus, ;
+   METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, bGfocus, ;
       bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLength )
    METHOD SetGet( value ) INLINE Eval( ::bSetGet, value, self )
    METHOD Refresh()
@@ -111,7 +111,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HEdit
+METHOD Activate() CLASS HEdit
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createedit( ::oParent:handle, ::id, ;
@@ -137,8 +137,11 @@ METHOD Init()  CLASS HEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
-   LOCAL oParent := ::oParent, nPos, nctrl, cKeyb, cClipboardText
+   LOCAL oParent := ::oParent, nPos, cClipboardText
    LOCAL nexthandle
+   
+   * Not used variables
+   * nctrl, cKeyb
 
    IF ::bOther != Nil .AND. ( nPos := Eval( ::bOther, Self, msg, wParam, lParam ) ) != - 1
       RETURN nPos
@@ -570,7 +573,9 @@ STATIC FUNCTION IsEditable( oEdit, nPos )
    RETURN .F.
 
 STATIC FUNCTION KeyRight( oEdit, nPos )
-   LOCAL i, masklen, newpos, vari
+   LOCAL masklen, newpos
+   * Not used variables
+   * i, vari
 
    IF oEdit == Nil
       Return - 1
@@ -603,7 +608,9 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
    RETURN 0
 
 STATIC FUNCTION KeyLeft( oEdit, nPos )
-   LOCAL i
+   
+   * Not used
+   * LOCAL i
 
    IF oEdit == Nil
       Return - 1
@@ -716,8 +723,11 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
    RETURN cChar
 
 STATIC FUNCTION GetApplyKey( oEdit, cKey )
-   LOCAL nPos, nGetLen, nLen, vari, i, x, newPos, oParent
+   LOCAL nPos, nGetLen, nLen, vari, x, newPos, oParent
    LOCAL nDecimals, xTmp, lMinus := .F.
+   
+   * Not used variables
+   * i
 
    x := hwg_Sendmessage( oEdit:handle, EM_GETSEL, 0, 0 )
    IF hwg_Hiword( x ) != hwg_Loword( x )
@@ -1145,6 +1155,10 @@ FUNCTION hwg_Len( cString )
 FUNCTION hwg_GET_Helper(cp_get,nlen)
  
 LOCAL c_get 
+
+#ifndef __GTK__
+  HB_SYMBOL_UNUSED(nlen)
+#endif 
 
   c_get := cp_get
 

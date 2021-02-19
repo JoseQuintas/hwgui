@@ -39,8 +39,8 @@ CLASS HTab INHERIT HControl
    METHOD ShowPage( nPage )
    METHOD GetActivePage( nFirst, nEnd )
    METHOD Notify( lParam )
-   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
-      bSize, bPaint, ctooltip, tcolor, bcolor, lTransp )
+   METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
+      bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aItem )
 
    HIDDEN:
    DATA  nActive  INIT 0         // Active Page
@@ -83,7 +83,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    RETURN Self
 
-METHOD Activate CLASS HTab
+METHOD Activate() CLASS HTab
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createtabcontrol( ::oParent:handle, ::id, ;
@@ -319,8 +319,15 @@ METHOD Notify( lParam ) CLASS HTab
 
    Return - 1
 
+/* aItem and cCaption added */
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aItem )  CLASS hTab
+
+     * Parameters not used
+    HB_SYMBOL_UNUSED(cCaption)
+    HB_SYMBOL_UNUSED(lTransp)
+    HB_SYMBOL_UNUSED(aItem)
+  
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor )
@@ -330,3 +337,5 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::style := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
 
    RETURN Self
+
+* ============================ EOF of htab.prg ===========================

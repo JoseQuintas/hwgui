@@ -83,7 +83,7 @@ LOCAL nId := ::oParent:nChildId++
 
 RETURN nId
 
-METHOD INIT CLASS HControl
+METHOD INIT() CLASS HControl
 
    IF !::lInit
       IF ::tooltip != Nil
@@ -139,7 +139,7 @@ RETURN NIL
 METHOD onAnchor( x, y, w, h ) CLASS HControl
    LOCAL nAnchor, nXincRelative, nYincRelative, nXincAbsolute, nYincAbsolute
    LOCAL x1, y1, w1, h1, x9, y9, w9, h9
-   LOCAL nCxv, nCyh
+   // LOCAL nCxv, nCyh   && not used variables
 
    // hwg_writelog( "onAnchor "+::classname()+str(x)+"/"+str(y)+"/"+str(w)+"/"+str(h) )
    nAnchor := ::anchor
@@ -269,7 +269,7 @@ METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint ) CLASS
 
 RETURN Self
 
-METHOD Activate CLASS HStatus
+METHOD Activate() CLASS HStatus
 LOCAL aCoors
 
    IF !Empty( ::oParent:handle )
@@ -282,7 +282,7 @@ LOCAL aCoors
    ENDIF
 RETURN NIL
 
-METHOD Init CLASS HStatus
+METHOD Init() CLASS HStatus
    IF !::lInit
       ::Super:Init()
       IF !Empty( ::aParts )
@@ -292,6 +292,9 @@ METHOD Init CLASS HStatus
 RETURN  NIL
 METHOD Redefine( oWndParent,nId,cCaption,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,aParts )  CLASS hStatus
+   * Not used variables
+   (cCaption)
+   (lTransp)
 
    ::Super:New( oWndParent,nId,0,0,0,0,0,oFont,bInit, ;
                   bSize,bPaint,ctooltip,tcolor,bcolor )
@@ -311,7 +314,7 @@ CLASS HStatic INHERIT HControl
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
                cCaption, oFont, bInit, bSize, bPaint, cTooltip, tcolor, ;
                bColor, lTransp )
-   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
+   METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                     bSize, bPaint, cTooltip, tcolor, bColor, lTransp )
    METHOD Activate()
    METHOD Init()
@@ -350,6 +353,9 @@ RETURN Self
 
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                  bSize, bPaint, cTooltip, tcolor, bColor, lTransp ) CLASS HStatic
+   * Variables not used
+   (cCaption)
+   (lTransp)
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
               bSize, bPaint, cTooltip, tcolor, bColor )
@@ -368,7 +374,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 
 RETURN Self
 
-METHOD Activate CLASS HStatic
+METHOD Activate() CLASS HStatic
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
@@ -377,7 +383,7 @@ METHOD Activate CLASS HStatic
    ENDIF
 RETURN NIL
 
-METHOD Init CLASS HStatic
+METHOD Init() CLASS HStatic
    IF !::lInit
       ::Super:init()
       IF ::Title != NIL
@@ -426,8 +432,8 @@ CLASS HButton INHERIT HControl
                cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
                tcolor, bColor )
    METHOD Activate()
-   METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-                    tcolor, bColor )
+   METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
+                    tcolor, bColor, cCaption )
    METHOD Init()
 ENDCLASS
 
@@ -455,7 +461,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
 RETURN Self
 
-METHOD Activate CLASS HButton
+METHOD Activate() CLASS HButton
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createbutton( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
@@ -509,7 +515,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, ;
 
 RETURN Self
 
-METHOD Activate CLASS HGroup
+METHOD Activate() CLASS HGroup
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createbutton( ::oParent:handle, ::id, ::style, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight, ;

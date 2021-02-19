@@ -23,7 +23,8 @@ STATIC aScriptCurr
 STATIC nScriptSch := 0
 
 Function hwg_scrDebug( aScript, iscr )
-Local nFirst, i
+Local nFirst , i
+
 
    IF Len( aScript ) < 3
       Return .F.
@@ -48,7 +49,7 @@ Local nFirst, i
 #endif
       INIT DIALOG oDlgDebug TITLE ("Script Debugger - "+aScript[1]) AT 210,10 SIZE 500,300 ;
            FONT oDlgFont STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX ;
-           ON EXIT {|o|dlgDebugClose()}
+           ON EXIT {||dlgDebugClose()}  && |o| removed 
 
       MENU OF oDlgDebug
          MENUITEM "E&xit" ACTION oDlgDebug:Close()
@@ -62,29 +63,30 @@ Local nFirst, i
       ENDMENU
 
       @ 0,0 BROWSE oBrwData ARRAY SIZE 500,0 STYLE WS_BORDER + WS_VSCROLL ;
-          ON SIZE {|o,x,y|o:Move(,,x)}
+          ON SIZE {|o,x|o:Move(,,x)}  && |y| removed (o,x,y)
 
       oBrwData:aArray := aWatches
-      oBrwData:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,1]},"C",30,0 ) )
-      oBrwData:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,3]},"C",1,0 ) )
-      oBrwData:AddColumn( HColumn():New( "",{|v,o|o:aArray[o:nCurrent,4]},"C",60,0 ) )
+      oBrwData:AddColumn( HColumn():New( "",{|o|o:aArray[o:nCurrent,1]},"C",30,0 ) )  && |v,o| ==> v removed
+      oBrwData:AddColumn( HColumn():New( "",{|o|o:aArray[o:nCurrent,3]},"C",1,0 ) )   && === " ===
+      oBrwData:AddColumn( HColumn():New( "",{|o|o:aArray[o:nCurrent,4]},"C",60,0 ) )  && === " ===
       @ 0,4 BROWSE oBrwScript ARRAY SIZE 500,236    ;
           FONT oScrFont STYLE WS_BORDER+WS_VSCROLL+WS_HSCROLL ;
           ON SIZE {|o,x,y|o:Move(,,x,y-oSplit:nTop-oSplit:nHeight-64)}
 
       @ 0,0 SPLITTER oSplit SIZE 600,3 DIVIDE {oBrwData} FROM {oBrwScript} ;
-          ON SIZE {|o,x,y|o:Move(,,x)}
+          ON SIZE {|o,x|o:Move(,,x)}   && |o,x,y| ==> y removed
           
       oBrwScript:aArray := aScript[3]
 #ifdef __GTK__
       oBrwScript:rowCount := 5
-      oBrwScript:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==i_scr,'>',Iif(aBreakPoints!=Nil.AND.Ascan(aBreakPoints[2],oBrwScript:nCurrent)!=0,'*',' '))},"C",1,0 ) )      
+      && |v,o| ==> v removed
+      oBrwScript:AddColumn( HColumn():New( "",{|o|Iif(o:nCurrent==i_scr,'>',Iif(aBreakPoints!=Nil.AND.Ascan(aBreakPoints[2],oBrwScript:nCurrent)!=0,'*',' '))},"C",1,0 ) )      
 #else
-      oBrwScript:AddColumn( HColumn():New( "",{|v,o|Iif(o:nCurrent==i_scr,1,Iif(aBreakPoints!=Nil.AND.Ascan(aBreakPoints[2],oBrwScript:nCurrent)!=0,2,0))},"N",1,0 ) )
+      oBrwScript:AddColumn( HColumn():New( "",{|o|Iif(o:nCurrent==i_scr,1,Iif(aBreakPoints!=Nil.AND.Ascan(aBreakPoints[2],oBrwScript:nCurrent)!=0,2,0))},"N",1,0 ) )
       oBrwScript:aColumns[1]:aBitmaps := { { {|n|n==1},oBmpCurr },{ {|n|n==2},oBmpPoint } }
 #endif
-      oBrwScript:AddColumn( HColumn():New( "",{|v,o|Left(o:aArray[o:nCurrent],4)},"C",4,0 ) )
-      oBrwScript:AddColumn( HColumn():New( "",{|v,o|Substr(o:aArray[o:nCurrent],6)},"C",80,0 ) )
+      oBrwScript:AddColumn( HColumn():New( "",{|o|Left(o:aArray[o:nCurrent],4)},"C",4,0 ) )
+      oBrwScript:AddColumn( HColumn():New( "",{|o|Substr(o:aArray[o:nCurrent],6)},"C",80,0 ) )
 
       oBrwScript:bEnter:= {||AddBreakPoint()}
 
@@ -98,8 +100,8 @@ Local nFirst, i
       @ 10,10 BUTTON "Add" SIZE 100, 24 OF oPanel ON CLICK {||AddWatch()}
       @ 10,36 BUTTON "Calculate" SIZE 100, 24 OF oPanel ON CLICK {||Calculate()}
 #endif
-      @ 110,10 EDITBOX oEditExpr CAPTION "" SIZE 380,24 OF oPanel ON SIZE {|o,x,y|o:Move(,,x-120)}
-      @ 110,36 EDITBOX oEditRes CAPTION "" SIZE 380,24 OF oPanel ON SIZE {|o,x,y|o:Move(,,x-120)}
+      @ 110,10 EDITBOX oEditExpr CAPTION "" SIZE 380,24 OF oPanel ON SIZE {|o,x|o:Move(,,x-120)}  && o,x,y > o,x
+      @ 110,36 EDITBOX oEditRes  CAPTION "" SIZE 380,24 OF oPanel ON SIZE {|o,x|o:Move(,,x-120)}  && o,x,y > o,x
       
       ACTIVATE DIALOG oDlgDebug NOMODAL
 
@@ -108,10 +110,17 @@ Local nFirst, i
 
    IF aScriptCurr[4] != aScript[4]
       IF !Empty( aBreakPoints )
-         IF ( i := Ascan( aBreaks, {|a|a[1]==aBreakPoints[1]} ) ) == 0
+*         IF ( i := Ascan( aBreaks, {|a|a[1]==aBreakPoints[1]} ) ) == 0
+         i := Ascan( aBreaks, {|a|a[1]==aBreakPoints[1]} ) 
+         IF i == 0
             Aadd( aBreaks, aBreakPoints )
          ENDIF
-         IF ( i := Ascan( aBreaks, {|a|a[1]==aScript[4]} ) ) == 0
+
+* causes : Warning W0032  Variable 'I' is assigned but not used ...
+*        IF ( i := Ascan( aBreaks, {|a|a[1]==aScript[4]} ) ) == 0
+
+         i := Ascan( aBreaks, {|a|a[1]==aScript[4]} )
+         IF i == 0
             aBreakPoints := Nil
          ELSE
             aBreakPoints := aBreaks[i]
@@ -297,7 +306,10 @@ Local xRes, bOldError, lRes := .T., cType
 Return .T.
 
 STATIC FUNCTION MacroError( e )
-   BREAK
+   * Parameters not used
+   HB_SYMBOL_UNUSED(e)
+*   BREAK
+   * Warning W0028  Unreachable code
 RETURN .T.
 
 Function scrBreakPoint()

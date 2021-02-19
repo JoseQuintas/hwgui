@@ -68,7 +68,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
 //--------------------------------------------------------------------------//
 
-METHOD Activate CLASS HMonthCalendar
+METHOD Activate() CLASS HMonthCalendar
 
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_initmonthcalendar ( ::oParent:handle, ::id, ::style, ;

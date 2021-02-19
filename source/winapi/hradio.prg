@@ -114,7 +114,7 @@ CLASS HRadioButton INHERIT HControl
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
       bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor, lTransp )
    METHOD Activate()
-   METHOD Redefine( oWnd, nId, oFont, bInit, bSize, bPaint, bClick, lInit, ctooltip, tcolor, bcolor )
+   METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor )
    METHOD Value( lValue ) SETGET
 
 ENDCLASS
@@ -167,7 +167,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    RETURN Self
 
-METHOD Activate CLASS HRadioButton
+METHOD Activate() CLASS HRadioButton
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createbutton( ::oParent:handle, ::id, ;
@@ -177,6 +177,7 @@ METHOD Activate CLASS HRadioButton
 
    RETURN Nil
 
+/* Parameter lInit was removed a long time ago */
 METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip, tcolor, bcolor ) CLASS HRadioButton
 
    ::oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )

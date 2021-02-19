@@ -20,6 +20,7 @@
 REQUEST HB_GT_GUI_DEFAULT
 #endif
 
+
 STATIC aCustomEvents := { ;
       { WM_NOTIFY, WM_PAINT, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT, WM_CTLCOLORBTN, ;
       WM_COMMAND, WM_DRAWITEM, WM_SIZE, WM_DESTROY }, ;
@@ -29,12 +30,14 @@ STATIC aCustomEvents := { ;
       { |o, w, l| onCtlColor( o, w, l ) }                               , ;
       { |o, w, l| onCtlColor( o, w, l ) }                               , ;
       { |o, w, l| onCtlColor( o, w, l ) }                               , ;
-      { |o, w, l| onCommand( o, w ) }                                   , ;
+      { |o, w, l| onCommand( o, w , l ) }                               , ;
       { |o, w, l| onDrawItem( o, w, l ) }                               , ;
       { |o, w, l| onSize( o, w, l ) }                                   , ;
       { |o|     onDestroy( o ) }                                       ;
       } ;
       }
+
+
 
 CLASS HObject
 
@@ -246,6 +249,9 @@ METHOD OnError() CLASS HCustomWindow
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
    LOCAL iItem, oCtrl, nCode, res, n
+   
+   * Not used parameter
+   // (lParam)
 
    wParam := hwg_PtrToUlong( wParam )
    IF Empty( oCtrl := oWnd:FindControl( wParam ) )
@@ -323,8 +329,10 @@ STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
 
    RETURN - 1
 
-STATIC FUNCTION onCommand( oWnd, wParam )
+STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    LOCAL iItem, iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
+   
+   HB_SYMBOL_UNUSED(lParam)
 
    IF oWnd:aEvents != NIL .AND. ;
          ( iItem := Ascan( oWnd:aEvents, { |a| a[ 1 ] == iParHigh .AND. ;
@@ -338,9 +346,13 @@ STATIC FUNCTION onCommand( oWnd, wParam )
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL aControls := oWnd:aControls, oItem
+   
+    * Not used parameter
+   (wParam)   
 
    FOR EACH oItem IN aControls
       IF oItem:bSize != NIL
+         *  { |o, w, l| onSize( o, w, l ) }
          Eval( oItem:bSize, oItem, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       ENDIF
    NEXT
@@ -350,6 +362,7 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
 FUNCTION hwg_onTrackScroll( oWnd, msg, wParam, lParam )
 
    LOCAL oCtrl := oWnd:FindControl( , lParam )
+   
 
    IF oCtrl != NIL
       msg := hwg_Loword( wParam )

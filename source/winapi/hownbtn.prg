@@ -32,7 +32,7 @@ CLASS HOwnButton INHERIT HControl
 
    METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight, ;
       bInit, bSize, bPaint, bClick, lflat,              ;
-      cText, color, font, xt, yt, widtht, heightt,        ;
+      cText, color, ofont, xt, yt, widtht, heightt,        ;
       bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
       cTooltip, lEnabled, lCheck, bColor )
 
@@ -113,7 +113,7 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
 
    RETURN Self
 
-METHOD Activate CLASS HOwnButton
+METHOD Activate() CLASS HOwnButton
 
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
@@ -183,7 +183,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
 
    RETURN - 1
 
-METHOD Init CLASS HOwnButton
+METHOD Init() CLASS HOwnButton
 
    IF ! ::lInit
       ::nHolder := 1

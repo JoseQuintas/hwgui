@@ -80,7 +80,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HUpDown
+METHOD Activate() CLASS HUpDown
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createedit( ::oParent:handle, ::id, ;
@@ -118,7 +118,9 @@ METHOD Value( nValue ) CLASS HUpDown
    RETURN ::nValue
 
 METHOD Refresh()  CLASS HUpDown
-   LOCAL vari
+
+   * Variables not used
+   * LOCAL vari
 
    IF ::bSetGet != Nil
       ::nValue := Eval( ::bSetGet )
@@ -153,3 +155,5 @@ STATIC FUNCTION __Valid( oCtrl )
    ENDIF
 
    RETURN .T.
+
+* ======================================= EOF of hupdown.prg ==================================

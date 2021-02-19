@@ -8,6 +8,54 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-19 10:00 UTC+0100 Wilfried Brunken DF7BE
+  * makefile.gcc
+  * source/common/debug/dbgconnect.prg
+  * source/common/debug/debugger.prg
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hilight.prg
+  * source/common/procmisc/procscri.prg
+  * source/common/procmisc/scrdebug.prg
+  * source/common/xml/hxmldoc.prg
+  * source/winapi/halert.prg
+  * source/winapi/hanimat.prg
+  * source/winapi/hbrwflt.prg
+  * source/winapi/hcontrol.prg
+  * source/winapi/hcwindow.prg
+  * source/winapi/hdatepic.prg
+  * source/winapi/hdc.prg
+  * source/winapi/hdialog.prg
+  * source/winapi/hedit.prg
+  * source/winapi/hfrmtmpl.prg
+  * source/winapi/hgraph.prg
+  * source/winapi/hgrid.prg
+  * source/winapi/hhyper.prg
+  * source/winapi/hlistbox.prg
+  * source/winapi/hmisc.prg
+  * source/winapi/hmonthc.prg
+  * source/winapi/hnice.prg
+  * source/winapi/hownbtn.prg
+  * source/winapi/hpager.prg
+  * source/winapi/hpanel.prg
+  * source/winapi/hprinter.prg
+  * source/winapi/hprogres.prg
+  * source/winapi/hradio.prg
+  * source/winapi/hrect.prg
+  * source/winapi/hsayimg.prg
+  * source/winapi/hsplit.prg
+  * source/winapi/htab.prg
+  * source/winapi/htimer.prg
+  * source/winapi/htrackbr.prg
+  * source/winapi/htree.prg
+  * source/winapi/hupdown.prg
+  * source/winapi/hwindow.prg
+  * source/winapi/hwinprn.prg
+  * source/winapi/menu.prg
+  * source/winapi/video.prg 
+   ! Ticket #77: adjust to compile using -w3 -es2 
+   ! All WinAPI prg's ready and tested,
+   ! see post to ticket, to be continued (for GTK).
+
 2021-02-17 23:25 UTC+0100 Wilfried Brunken DF7BE
   * makefile.gcc
   * source/winapi/drawwidg.prg

@@ -53,10 +53,10 @@ CLASS HDC
    METHOD fillsolidrect( lpRect, clr )
    METHOD Fillrect( lpRect, clr )
    METHOD Selectcliprgn( pRgn )
-   METHOD Settextcolor( x )
+   METHOD Settextcolor( xColor )
    METHOD Setbkmode( xMode )
    METHOD Setbkcolor(  clr ) INLINE    hwg_Setbkcolor( ::m_hDC, clr )
-   METHOD Selectobject( xObject )
+   METHOD Selectobject( xMode )  && xObject
    METHOD Drawtext( strText, Rect, dwFlags )
    METHOD Createcompatibledc( x )
    METHOD Patblt( a, s, d, f, g ) INLINE hwg_Patblt( ::m_hDc, a, s, d, f, g )
@@ -311,3 +311,5 @@ METHOD END () CLASS HCLIENTDC
    ::m_hAttribDC := NIL
 
    RETURN NIL
+
+* ================================= EOF of hdc.prg ====================================

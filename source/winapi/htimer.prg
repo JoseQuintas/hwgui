@@ -28,7 +28,7 @@ CLASS HTimer INHERIT HObject
          Iif( x == 0, ::End(), hwg_SetTimer( ::oParent:handle,::id,x ) )
    */
    METHOD Interval( n ) SETGET
-   METHOD New( oParent, id, value, bAction, lOnce )
+   METHOD New( oParent, nId, value, bAction, lOnce )
    METHOD End()
 
 ENDCLASS
@@ -76,6 +76,10 @@ FUNCTION hwg_TimerProc( hWnd, idTimer ) //, time )
 
    LOCAL i := Ascan( HTimer():aTimers, { |o|o:id == idTimer } ), b
 
+    * Parameters not used
+    HB_SYMBOL_UNUSED(hWnd)
+
+
    IF i != 0
       b := HTimer():aTimers[i]:bAction
       IF HTimer():aTimers[i]:lOnce
@@ -100,3 +104,6 @@ FUNCTION hwg_ReleaseTimers()
    hwg_ReleaseTimers()
 
    RETURN
+
+* ====================================== EOF of htimer.prg =========================================
+   

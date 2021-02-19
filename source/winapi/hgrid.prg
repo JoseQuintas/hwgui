@@ -105,7 +105,7 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
 
    RETURN Self
 
-METHOD Activate CLASS HGrid
+METHOD Activate() CLASS HGrid
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Listview_create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 

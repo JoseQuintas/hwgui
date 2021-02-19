@@ -42,8 +42,8 @@ CLASS VAR winclass   INIT "STATIC"
    METHOD Activate()
    METHOD Init()
    METHOD CalcMinMax()
-   METHOD Paint()
-   METHOD Rebuild( aValues )
+   METHOD Paint(lpdis)
+   METHOD Rebuild( aValues , nType)
 
 ENDCLASS
 
@@ -62,7 +62,7 @@ METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    RETURN Self
 
-METHOD Activate CLASS HGraph
+METHOD Activate() CLASS HGraph
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )

@@ -29,7 +29,7 @@ CLASS HPager INHERIT HControl
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
                bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
-   METHOD Redefine( oWndParent, nId, oFont, bInit, ;
+   METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                     bSize, bPaint, ctooltip, tcolor, bcolor, lVert )
    METHOD SetScrollArea( nWidth, nHeight ) INLINE  ::m_nWidth := nWidth, ::m_nHeight := nHeight
    METHOD Activate()
@@ -87,7 +87,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    RETURN Self
 
 
-METHOD Activate CLASS HPager
+METHOD Activate() CLASS HPager
 
    IF ! Empty( ::oParent:handle )
 
@@ -98,7 +98,7 @@ METHOD Activate CLASS HPager
    ENDIF
    RETURN Nil
 
-METHOD INIT CLASS HPager
+METHOD INIT() CLASS HPager
 
    IF ! ::lInit
       ::Super:Init()
@@ -117,4 +117,5 @@ METHOD Notify( lParam ) CLASS HPager
 
    RETURN 0
 
+* ================================= EOF of hpager.prg ==================================
 

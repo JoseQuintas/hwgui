@@ -31,15 +31,16 @@ CLASS HXMLNode
    DATA cargo
 //   DATA aItems  INIT {}
 
-   METHOD New( cTitle, type, aAttr )
+   METHOD New( cTitle, type, aAttr, cValue )
    METHOD Add( xItem )
    METHOD GetAttribute( cName, cType, xDefault )
    METHOD SetAttribute( cName,cValue )
    METHOD DelAttribute( cName )
    METHOD Save( handle,level )
-   METHOD Find( cTitle,nStart )
+   METHOD Find( cTitle,nStart, block )
 ENDCLASS
 
+/* Added: cValue */
 METHOD New( cTitle, type, aAttr, cValue ) CLASS HXMLNode
 
    IF cTitle != Nil ; ::title := cTitle ; ENDIF
@@ -179,6 +180,7 @@ Local i, s := Space(level*2)+'<', lNewLine
    ENDIF
 Return ""
 
+/* Added: block */
 METHOD Find( cTitle,nStart,block ) CLASS HXMLNode
 Local i
 
@@ -210,7 +212,7 @@ Return Nil
 CLASS HXMLDoc INHERIT HXMLNode
 
    METHOD New( encoding )
-   METHOD Read( fname )
+   METHOD Read( fname, buffer )
    METHOD ReadString( buffer )  INLINE ::Read( ,buffer )
    METHOD Save( fname,lNoHeader )
    METHOD Save2String()  INLINE ::Save()
@@ -225,6 +227,7 @@ METHOD New( encoding ) CLASS HXMLDoc
 
 Return Self
 
+/* Added: buffer */
 METHOD Read( fname,buffer ) CLASS HXMLDoc
 Local han
 

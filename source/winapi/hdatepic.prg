@@ -67,7 +67,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HDatePicker
+METHOD Activate() CLASS HDatePicker
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createdatepicker( ::oParent:handle, ::id, ;

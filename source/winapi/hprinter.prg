@@ -499,7 +499,10 @@ METHOD StartDoc( lPreview, cScriptFile ) CLASS HPrinter
 
 METHOD EndDoc() CLASS HPrinter
 
-   LOCAL han, i, nRes := 0
+   LOCAL  nRes := 0
+   
+   * Variables not used
+   * i, han
 
    IF !::lUseMeta .AND. ::lPreview .AND. !Empty( ::cScriptFile )
       ::SaveScript()
@@ -513,7 +516,10 @@ METHOD EndDoc() CLASS HPrinter
 
 METHOD StartPage() CLASS HPrinter
 
-   LOCAL fname, nRes := 0
+   LOCAL nRes := 0
+   
+   * Variables not used
+   * fname 
 
    ::nPage ++
    IF ::lPreview
@@ -628,10 +634,13 @@ Default values in array aTooltips see
 FUNCTION hwg_HPrinter_LangArray_EN()
 */
 
-   LOCAL cmExit, cmPrint, cmDialog, cBootUser3, cBootUser4, cmTitle
-   LOCAL oDlg, oToolBar, oSayPage, oBtn, oCanvas, i, aPage := { }
+   LOCAL cmExit, cmPrint, cmDialog, cmTitle
+   LOCAL oDlg, oToolBar, oSayPage, oBtn, oCanvas, i, aPage && := { }
    LOCAL oFont := HFont():Add( "Times New Roman", 0, - 13, 700 )
    LOCAL lTransp := ( aBitmaps != Nil .AND. Len( aBitmaps ) > 9 .AND. aBitmaps[ 10 ] != Nil .AND. aBitmaps[ 10 ] )
+
+   * Variables not used   
+   * cBootUser3, cBootUser4
 
    aPage := Array( Len( ::aPages ) )
    FOR i := 1 TO Len( aPage )
@@ -643,8 +652,8 @@ FUNCTION hwg_HPrinter_LangArray_EN()
    cmExit         := "Exit"
    cmPrint        := "Print"
    cmDialog       := "Dialog"
-   cBootUser3     := "User Button"
-   cBootUser4     := "User Button"
+*   cBootUser3     := "User Button"
+*   cBootUser4     := "User Button"
    cmTitle        := "Print preview - " + ::cPrinterName
    
    /* Parameter cTitle preferred */
@@ -660,8 +669,8 @@ FUNCTION hwg_HPrinter_LangArray_EN()
       cmPrint    := aTooltips[ 11 ]   
       cmExit     := aTooltips[ 12 ]
       cmDialog   := aTooltips[ 13 ]
-      cBootUser3 := aTooltips[ 14 ]
-      cBootUser4 := aTooltips[ 15 ]
+ *     cBootUser3 := aTooltips[ 14 ]
+ *     cBootUser4 := aTooltips[ 15 ]
    ENDIF
  
    ::nZoom := 0

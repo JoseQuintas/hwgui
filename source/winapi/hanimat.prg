@@ -50,7 +50,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    RETURN Self
 
-METHOD Activate CLASS HAnimation
+METHOD Activate() CLASS HAnimation
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Animate_Create( ::oParent:handle, ::id, ::style, ;
                                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -99,3 +99,5 @@ METHOD Close() CLASS HAnimation
 METHOD Destroy() CLASS HAnimation
    hwg_Animate_Destroy( ::handle )
    RETURN Nil
+
+* ========================= EOF of hanimat.prg ===============================

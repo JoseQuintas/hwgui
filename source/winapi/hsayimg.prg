@@ -24,7 +24,7 @@ CLASS HSayImage INHERIT HControl
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
       bSize, ctooltip, bClick, bDblClick, bColor )
-   METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip, bClick, bDblClick )
+   METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip )
    METHOD Activate()
    METHOD END()  INLINE ( ::Super:END(), iif( ::oImage <> Nil, ::oImage:Release(), ::oImage := Nil ), ::oImage := Nil )
    METHOD onClick()
@@ -50,13 +50,14 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
 
    RETURN Self
 
+/* Parameters bClick, bDblClick were removed a long time ago */   
 METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip ) CLASS HSayImage
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize,, ctooltip )
 
    RETURN Self
 
-METHOD Activate CLASS HSayImage
+METHOD Activate() CLASS HSayImage
 
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
@@ -95,7 +96,7 @@ CLASS HSayBmp INHERIT HSayImage
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
       bSize, ctooltip, bClick, bDblClick, lTransp, nStretch, trcolor, bColor )
-   METHOD Redefine( oWndParent, nId, Image, lRes, bInit, bSize, ctooltip, lTransp )
+   METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp )
    METHOD Init()
    METHOD Paint( lpdis )
    METHOD ReplaceBitmap( Image, lRes )
@@ -131,6 +132,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    RETURN Self
 
+/* Image ==> xImage */   
 METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp ) CLASS HSayBmp
 
    ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
@@ -226,7 +228,7 @@ CLASS HSayIcon INHERIT HSayImage
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
       bSize, ctooltip, lOEM, bClick, bDblClick )
-   METHOD Redefine( oWndParent, nId, Image, lRes, bInit, bSize, ctooltip )
+   METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip )
    METHOD Init()
    METHOD REFRESH() INLINE hwg_Sendmessage( ::handle, STM_SETIMAGE, IMAGE_ICON, ::oImage:handle )
 
@@ -251,6 +253,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    RETURN Self
 
+
+/* Image ==> xImage */   
 METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip ) CLASS HSayIcon
 
    ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )

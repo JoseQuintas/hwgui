@@ -342,7 +342,12 @@ METHOD Alert(cMessage, acOptions) CLASS HAlert
         STYLE ALERTSTYLE ;
         FONT ::oFont ;
         ON INIT { |oWin| Hwg_Alert_CenterWindow(oWin:handle), Iif(!::lCloseButton, hwg_Alert_DisableCloseButton(oWin:handle), ), Iif(::Time > 0, ::SetupTimer(), ) } ;
+        ON EXIT { || Iif(!::Modal, ::ReleaseNonModalAlert(.F.), .T.) }
+
+/*
+        ON INIT { |oWin| Hwg_Alert_CenterWindow(oWin:handle), Iif(!::lCloseButton, hwg_Alert_DisableCloseButton(oWin:handle), ), Iif(::Time > 0, ::SetupTimer(), ) } ;
         ON EXIT { |oWin| Iif(!::Modal, ::ReleaseNonModalAlert(.F.), .T.) }
+*/
 
     @ 2 * nFontWidth, nFontHeight ICON ::oIcon
 
@@ -350,9 +355,10 @@ METHOD Alert(cMessage, acOptions) CLASS HAlert
             SAY ::oMessage CAPTION cMessage SIZE nMessageWidth, nMessageHeight + nFontHeight /*padding*/ STYLE /*WS_TABSTOP +*/ ::Align
 
     IF nOptions > 0
+        //  ON CLICK { |oCtl| ::nChoice := 1, .... 
         @ nButtonLeft, nFontHeight + max(nIconHeight, nMessageHeight) + nFontHeight ;
                 BUTTON acOptions[1] ID 100 SIZE nButtonWidth, 1.7 * nFontHeight ;
-                ON CLICK { |oCtl| ::nChoice := 1, Iif(::OptionActions != Nil, eval(::OptionActions[ 1 ] ), ), Hwg_EndDialog(::oDlg:handle) } ;
+                ON CLICK { || ::nChoice := 1, Iif(::OptionActions != Nil, eval(::OptionActions[ 1 ] ), ), Hwg_EndDialog(::oDlg:handle) } ;
                 STYLE WS_TABSTOP + BS_DEFPUSHBUTTON
         for i := 2 to nOptions
             @ nButtonLeft + (i - 1) * (nButtonWidth + nFontWidth), nFontHeight + max(nIconHeight, nMessageHeight) + nFontHeight ;
@@ -480,12 +486,12 @@ FUNCTION HWG_Alert_CenterWindow( hWnd )
 */
 
   LOCAL hWndParent   // handle to the Parent Window
-  LOCAL aChild [ 4 ] // Screen Coordinates of Child Window
   LOCAL nCWidth      // Width of Child Window
   LOCAL nCHeight     // Height of Child Window
-  LOCAL aParent[ 4 ] // Logical Coordinates of Parent Window
-  LOCAL aPoint [ 2 ] // Multiple Uses
-
+  LOCAL aParent      // Logical Coordinates of Parent Window  && [ 4 ]
+  LOCAL aPoint       // Multiple Uses                         && [ 2 ]
+  LOCAL aChild       // Screen Coordinates of Child Window    && [ 4 ]
+  
   aChild   := Hwg_GetWindowRect( hWnd )
   nCWidth  := aChild[ 3 ] - aChild[ 1 ]
   nCHeight := aChild[ 4 ] - aChild[ 2 ]

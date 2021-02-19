@@ -130,15 +130,19 @@ ENDCLASS
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, nBorder, nCurvature, ;
             nbStyle, nfStyle, tcolor, bcolor, bSize, bInit ) CLASS HShape
 
+   /* Variable Self is reserved and cannot be overwritten ! */
+   LOCAL oSelf
+
    nBorder := IIf( nBorder = Nil, 1, nBorder )
    nbStyle := IIf( nbStyle = Nil, PS_SOLID, nbStyle )
    nfStyle := IIf( nfStyle = Nil, BS_TRANSPARENT , nfStyle )
    nCurvature := nCurvature
 
-   Self := HDrawShape():New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bcolor,,, ;
+   /* old : Self := ... */
+   oSelf := HDrawShape():New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bcolor,,, ;
                              nBorder, nCurvature, nbStyle, nfStyle, bInit )
 
-   RETURN Self
+   RETURN oSelf
 
 //---------------------------------------------------------------------------
 
@@ -151,12 +155,14 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, nStyle, bSize, lnoBorder, bInit ) CLASS HContainer
 
+   LOCAL oSelf
+
    nStyle := IIf( nStyle = NIL, 3, nStyle )  // FLAT
    lnoBorder := IIf( lnoBorder = NIL, .F., lnoBorder )  // FLAT
 
-   Self := HDrawShape():New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize,,, nStyle, lnoBorder,,,,, bInit ) //,bClick, bDblClick)
+   oSelf := HDrawShape():New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize,,, nStyle, lnoBorder,,,,, bInit ) //,bClick, bDblClick)
 
-   RETURN Self
+   RETURN oSelf
 
 
 //---------------------------------------------------------------------------
@@ -171,11 +177,11 @@ CLASS VAR winclass   INIT "STATIC"
    DATA ntColor, nbColor
    DATA bClick, bDblClick
 
-   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, nStyle, ;
-               lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit, bClick, bDblClick )
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, ncStyle, ;
+               lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit )
 
    METHOD Activate()
-   METHOD Paint()
+   METHOD Paint(lpdis)
    METHOD SetColor( tcolor, bcolor )
    METHOD Curvature( nCurvature )
    // METHOD onClick()
@@ -183,7 +189,7 @@ CLASS VAR winclass   INIT "STATIC"
 
 ENDCLASS
 
-
+/* nStyle ==> ncStyle , removed: bClick, bDblClick */
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor, ncStyle, ;
             lnoBorder, nBorder, nCurvature, nbStyle, nfStyle, bInit ) CLASS HDrawShape
 
@@ -215,7 +221,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor
    RETURN Self
 
 //---------------------------------------------------------------------------
-METHOD Activate CLASS HDrawShape
+METHOD Activate() CLASS HDrawShape
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -299,3 +305,6 @@ FUNCTION hwg_Rect( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nST )
    ENDIF
 
    RETURN  HRect():New( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nST )
+
+* ================================== EOF of hrect.prg =====================================
+

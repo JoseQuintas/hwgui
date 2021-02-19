@@ -202,7 +202,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
   ELSE
    coutfield := ""  && collects out line
   ENDIF 
-  cccprint := ""   && collects printable char
+  // cccprint := ""   && collects printable char
   cccprline := ""  && collects printable chars
   ccchexline := "" && collects hex chars
   * loop over every byte in field

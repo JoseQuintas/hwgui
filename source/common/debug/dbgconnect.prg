@@ -95,12 +95,14 @@ Static nId1 := -1, nId2 := 0
 Function hwg_dbg_New()
    Local i, nPos, arr, cCmd, cDir, cFile := hb_Progname()
    Local cDebugger := "hwgdebug", cExe
-   Local hProcess, lRun
+   Local lRun
+   Local hProcess
 
    cBuffer := Space( 1024 )
 
    IF File( cDebugger+".info" ) .AND. ( handl1 := FOpen( cDebugger+".info", FO_READ ) ) != -1
-      IF ( i := FRead( handl1, @cBuffer, Len( cBuffer ) ) ) > 0
+      i := FRead( handl1, @cBuffer, Len( cBuffer ) )
+      IF i > 0
          arr := hb_aTokens( Left( cBuffer,i ), ;
                Iif( hb_At( Chr(13),cBuffer,1,i ) > 0, Chr(13)+Chr(10), Chr(10) ) )
          FOR i := 1 TO Len( arr )
@@ -122,7 +124,8 @@ Function hwg_dbg_New()
    IF File( cFile + ".d1" ) .AND. File( cFile + ".d2" )
    
       IF ( handl1 := FOpen( cFile + ".d1", FO_READ + FO_SHARED ) ) != -1
-         IF ( i := FRead( handl1, @cBuffer, Len( cBuffer ) ) ) > 0 .AND. ;
+         i := FRead( handl1, @cBuffer, Len( cBuffer ) )
+         IF ( i > 0 ) .AND. ;
                Left( cBuffer,4 ) == "init"
             handl2 := FOpen( cFile + ".d2", FO_READWRITE + FO_SHARED )
             IF handl2 != -1
@@ -139,7 +142,8 @@ Function hwg_dbg_New()
       cDir += Iif( Right( cDir,1 ) $ "\/", "", hb_OsPathSeparator() )
       IF File( cDir + cDebugger + ".d1" ) .AND. File( cDir + cDebugger + ".d2" )
          IF ( handl1 := FOpen( cDir + cDebugger + ".d1", FO_READ + FO_SHARED ) ) != -1
-            IF ( i := FRead( handl1, @cBuffer, Len( cBuffer ) ) ) > 0 .AND. ;
+            i := FRead( handl1, @cBuffer, Len( cBuffer ) )
+            IF ( i  > 0 ) .AND. ;
                   Left( cBuffer,4 ) == "init"
                handl2 := FOpen( cDir + cDebugger + ".d2", FO_READWRITE + FO_SHARED )
                IF handl2 != -1
@@ -176,7 +180,8 @@ Function hwg_dbg_New()
    IF Empty( cExe )
       cExe := cDebugger
    ENDIF
-   lRun := ( ( hProcess := hb_processOpen( cExe + ' -c"' + cFile + '"' ) ) > 0 )
+   hProcess := hb_processOpen( cExe + ' -c"' + cFile + '"' )
+   lRun := ( hProcess  > 0 )
 #endif
    IF !lRun
       hwg_dbg_Alert( cExe + " isn't available..." )
@@ -262,6 +267,9 @@ Local i, s := cPrgName + "," + Ltrim(Str(nLine)), nLen
 Return Nil
 
 Function hwg_dbg_Wait( nWait )
+
+     * Parameters not used
+    HB_SYMBOL_UNUSED(nWait)
 
    IF !lDebugRun ; Return Nil; ENDIF
 
@@ -386,6 +394,9 @@ Local arr := hb_aParams(), i, j, s := "", lConvert
 Return Nil
 
 Function hwg_dbg_Msg( cMessage )
+
+     * Parameters not used
+    HB_SYMBOL_UNUSED(cMessage)
 
    IF !lDebugRun ; Return Nil; ENDIF
 

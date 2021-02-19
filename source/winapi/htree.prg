@@ -83,7 +83,7 @@ CLASS HTreeNode INHERIT HObject
 
    METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages )
    METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages )
-   METHOD Delete()
+   METHOD Delete(lInternal)
    METHOD FindChild( h )
    METHOD GetText()  INLINE hwg_Treegetnodetext( ::oTree:handle, ::handle )
    METHOD SetText( cText ) INLINE hwg_Treesetitem( ::oTree:handle, ::handle, TREE_SETITEM_TEXT, cText )
@@ -264,7 +264,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    RETURN Self
 
-METHOD Init CLASS HTree
+METHOD Init() CLASS HTree
 
    IF ! ::lInit
       ::Super:Init()
@@ -275,7 +275,7 @@ METHOD Init CLASS HTree
 
    RETURN Nil
 
-METHOD Activate CLASS HTree
+METHOD Activate() CLASS HTree
 
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createtree( ::oParent:handle, ::id, ;

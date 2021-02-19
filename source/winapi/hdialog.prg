@@ -258,6 +258,10 @@ STATIC FUNCTION InitModalDlg( oDlg, wParam, lParam )
    LOCAL nReturn := 1
    LOCAL aCoors //, aRect
 
+  * Parameters not used
+    HB_SYMBOL_UNUSED(wParam)
+    HB_SYMBOL_UNUSED(lParam)
+
    IF ValType( oDlg:menu ) == "A"
       hwg__SetMenu( oDlg:handle, oDlg:menu[5] )
    ENDIF
@@ -332,9 +336,13 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
 
 FUNCTION onDlgCommand( oDlg, wParam, lParam )
 
+ 
    LOCAL iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
    LOCAL aMenu, i, hCtrl
 
+    * Parameters not used
+    HB_SYMBOL_UNUSED(lParam)
+   
    // WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF iParHigh == 0
       IF iParLow == IDOK
@@ -401,6 +409,12 @@ FUNCTION onDlgCommand( oDlg, wParam, lParam )
 STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
    LOCAL iParLow := hwg_Loword( wParam ), b
+   
+    * Parameters not used
+    HB_SYMBOL_UNUSED(lParam)   
+   
+     * Parameters not used
+    HB_SYMBOL_UNUSED(lParam)   
 
    IF oDlg:bActivate != Nil
       b := oDlg:bActivate
@@ -418,6 +432,10 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 STATIC FUNCTION onHelp( oDlg, wParam, lParam )
 
    LOCAL oCtrl, nHelpId, oParent
+
+     * Parameters not used
+    HB_SYMBOL_UNUSED(wParam)
+
 
    IF ! Empty( hwg_SetHelpFileName() )
       oCtrl := oDlg:FindControl( nil, hwg_Gethelpdata( lParam ) )
@@ -438,6 +456,10 @@ STATIC FUNCTION onHelp( oDlg, wParam, lParam )
 STATIC FUNCTION onPspNotify( oDlg, wParam, lParam )
 
    LOCAL nCode := hwg_Getnotifycode( lParam ), res := .T.
+
+     * Parameters not used
+    HB_SYMBOL_UNUSED(wParam)
+
 
    IF nCode == PSN_SETACTIVE
       IF oDlg:bGetFocus != Nil

@@ -75,7 +75,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    RETURN Self
 
-METHOD Activate CLASS HPanel
+METHOD Activate() CLASS HPanel
    LOCAL handle := ::oParent:handle
 
    IF !Empty( handle )
@@ -133,7 +133,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HPanel
 
    RETURN ::Super:onEvent( msg, wParam, lParam )
 
-METHOD Init CLASS HPanel
+METHOD Init() CLASS HPanel
 
    IF !::lInit
       IF ::bSize == Nil .AND. Empty( ::Anchor )
@@ -237,7 +237,7 @@ METHOD Release() CLASS HPanel
 
    RETURN Nil
 
-METHOD Hide CLASS HPanel
+METHOD Hide() CLASS HPanel
    LOCAL i
 
    IF ::lHide
@@ -264,7 +264,7 @@ METHOD Hide CLASS HPanel
 
    RETURN Nil
 
-METHOD Show CLASS HPanel
+METHOD Show() CLASS HPanel
    LOCAL i
 
    IF !::lHide
@@ -356,8 +356,13 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
       bColor := 0xeeeeee
    ENDIF
 
+/*   
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
-      oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
+      oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )   
+*/
+  
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
+      oWndParent:nWidth, nHeight, bInit, { |o,h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
    ::Anchor := ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
    ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )
@@ -608,3 +613,6 @@ STATIC FUNCTION fPaintBtn( oBtn )
    hwg_Endpaint( oBtn:handle, pps )
 
    RETURN Nil
+
+* =================================== EOF of hpanel.prg ======================================
+   

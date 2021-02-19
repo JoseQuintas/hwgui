@@ -318,7 +318,9 @@ METHOD GO() CLASS HBDebugger
 
 METHOD HandleEvent() CLASS HBDebugger
 
-   LOCAL nKey, p1, p2, p3, xResult, nAt
+   LOCAL nKey, p1, p2, p3, nAt
+   * Variables not used
+   * xResult
 
    DO WHILE .T.
 
@@ -768,7 +770,8 @@ STATIC FUNCTION SendRec( cAlias )
    IF Empty( cAlias )
       cAlias := Alias()
    ENDIF
-   IF Empty( cAlias ) .OR. ( i := Select( cAlias ) ) == 0
+   i := Select( cAlias )
+   IF Empty( cAlias ) .OR.  i == 0
       RETURN { "0", "", "0" }
    ENDIF
    af := ( cAlias ) -> ( dbStruct() )
@@ -859,7 +862,9 @@ STATIC FUNCTION SendObject( cObjName )
 #endif
 
 STATIC FUNCTION SendArray( cArrName, nFirst, nCount )
-   LOCAL arr, arrFrom, xValue, i, j := 3
+   LOCAL arr, arrFrom, i, j := 3
+   * Variables not used
+   * xValue
 
    arrFrom := t_oDebugger:GetExprValue( cArrName )
    IF ValType( arrFrom ) == "A"
@@ -884,13 +889,18 @@ STATIC FUNCTION SendArray( cArrName, nFirst, nCount )
    RETURN arr
 
    /* Check if a string starts with another string */
-
+   * Hint by DF7BE: Use AT()
+*  Warning W0034  STATIC Function 'STARTS' defined but never used
+/*
 STATIC FUNCTION starts( cLine, cStart )
 
    RETURN cStart == Left( cLine, Len( cStart ) )
+*/
 
    /* Strip path from filename */
-
+   * ==> Hint by DF7BE : Use hwg_basename()
+   * Warning W0034  STATIC Function 'STRIP_PATH' defined but never used
+/*   
 STATIC FUNCTION strip_path( cFileName )
 
    LOCAL cName
@@ -901,6 +911,7 @@ STATIC FUNCTION strip_path( cFileName )
    hb_FNameSplit( cFileName, NIL, @cName, @cExt )
 
    RETURN cName + cExt
+*/   
 
 FUNCTION __dbgValToStr( uVal )
 

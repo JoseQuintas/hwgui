@@ -250,11 +250,17 @@ METHOD onChange( oCtrl ) CLASS HListBox
 
 
 METHOD When( oCtrl ) CLASS HListBox
-   LOCAL res := .t., nSkip
+   LOCAL res := .t.
+   
+   * Variable not used
+   * nSkip
 
    HB_SYMBOL_UNUSED( oCtrl )
 
-    nSkip := IIf( hwg_Getkeystate( VK_UP ) < 0 .or. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
+*    nSkip := IIf( hwg_Getkeystate( VK_UP ) < 0 .or. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
+*    Warning W0027  Meaningless use of expression 'Numeric'   
+*   IIf( hwg_Getkeystate( VK_UP ) < 0 .or. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
+
    IF ::bSetGet != Nil
       Eval( ::bSetGet, ::value, Self )
    ENDIF
@@ -296,3 +302,5 @@ METHOD Valid( oCtrl ) CLASS HListBox
        hwg_GetSkip( ::oParent, ::handle, 1 )
    ENDIF
    RETURN .T.
+
+* ======================= EOF of hlistbox.prg ==================================

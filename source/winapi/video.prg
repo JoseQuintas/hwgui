@@ -23,7 +23,7 @@ CLASS TVideo FROM hControl
    DATA   cAviFile
 
    METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd, ;
-               bWhen, bValid, lNoBorder , nid ) CONSTRUCTOR
+               lNoBorder, nid ) CONSTRUCTOR
 
    METHOD ReDefine( nId, cFileName, oDlg, bWhen, bValid ) CONSTRUCTOR
 
@@ -35,6 +35,7 @@ ENDCLASS
 
 //----------------------------------------------------------------------------//
 
+/*  removed: bWhen , bValid */
 METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd, lNoBorder, nid ) CLASS TVideo
 
    DEFAULT nWidth TO 200, nHeight TO 200, cFileName TO "", ;

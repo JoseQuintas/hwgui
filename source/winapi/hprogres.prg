@@ -26,11 +26,11 @@ CLASS HProgressBar INHERIT HControl
    DATA  lPercent INIT .F.
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical )
-   METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, bInit, bSize, bPaint, ctooltip )
+   METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPercent )
    METHOD Init()
    METHOD Activate()
    METHOD Increment() INLINE hwg_Updateprogressbar( ::handle )
-   METHOD STEP()
+   METHOD STEP(cTitle)
    METHOD RESET( cTitle )
    METHOD SET( cTitle, nPos )
    METHOD SetLabel( cCaption )
@@ -60,6 +60,9 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit
    
 METHOD Redefine( oWndParent, nId,  maxPos, nRange, bInit, bSize, bPaint, ctooltip, nAnimation, lVertical )
 
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lVertical)
+
    ::Super:New( oWndParent,nId,0,0,0,0,0,,bInit, ;
                   bSize,bPaint,ctooltip,, )
    HWG_InitCommonControlsEx()
@@ -70,6 +73,11 @@ METHOD Redefine( oWndParent, nId,  maxPos, nRange, bInit, bSize, bPaint, ctoolti
    ::nLimit := iif( nRange != Nil, Int( ::nRange / ::maxPos ), 1 )  
     ::nAnimation := nAnimation
 return self    
+
+/*
+  Former definition was: 
+  METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, bInit, bSize, bPaint, ctooltip )
+*/
    
 METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPercent ) CLASS HProgressBar
 
@@ -107,7 +115,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPer
 
    RETURN Self
 
-METHOD Activate CLASS HProgressBar
+METHOD Activate() CLASS HProgressBar
 
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createprogressbar( ::oParent:handle, ::maxPos, ::style, ;
@@ -117,7 +125,7 @@ METHOD Activate CLASS HProgressBar
 
    RETURN Nil
 
-METHOD Init  CLASS HProgressBar
+METHOD Init()  CLASS HProgressBar
 
    IF ! ::lInit
       ::Super:Init()

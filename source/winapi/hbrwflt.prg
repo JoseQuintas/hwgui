@@ -245,13 +245,13 @@ STATIC FUNCTION FltRecCount( oBrw )
 
 STATIC FUNCTION FltGoTo( oBrw, nRecord )
 
-   (oBrw)
+   HB_SYMBOL_UNUSED(oBrw)
 
    RETURN dbGoto( nRecord )
 
 STATIC FUNCTION FltRecNo( oBrw )
 
-   (oBrw)
+   HB_SYMBOL_UNUSED(oBrw)
 
    RETURN RecNo()
 

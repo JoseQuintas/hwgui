@@ -128,7 +128,7 @@ CLASS HFormTmpl
 
    METHOD DefaultLang()   
    METHOD Read( fname, cId )
-   METHOD Show( nMode, params )
+   METHOD Show( nMode, p1, p2, p3 )  && p1 ... p3 : params
    METHOD ShowMain( params )   INLINE ::Show( 1, params )
    METHOD ShowModal( params )  INLINE ::Show( 2, params )
    METHOD Close()
@@ -231,10 +231,12 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
    LOCAL xProperty, block, nStyle, nExclude := 0, bColor := - 1
    LOCAL lMdi := .F.
    LOCAL lMdiChild := .F.
-   LOCAL lval := .F.
    LOCAL oIcon := Nil, cBitmap := nil
    LOCAL oBmp := NIL
    LOCAL bGetFo := { |o| HFormTmpl():oActive := o }
+   
+   * Not used variables
+   * LOCAL lval := .F.
 
    MEMVAR oDlg
    PRIVATE oDlg
@@ -718,8 +720,12 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
 #define TBS_NOTICKS                 16
 
 STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
-   LOCAL i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName, cCtrlName
+   LOCAL j, oCtrl, stroka, varname, xProperty,  cType, cPName, cCtrlName
    LOCAL nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
+   LOCAL i
+   * Not used variables
+   * block 
+
    MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop, oStyle, aStyles
    MEMVAR onInit, onSize, onPaint, onEnter, onGetfocus, onLostfocus, lNoVScroll, lAppend, lAutoedit, bUpdate, onKeyDown, onPosChg
    MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, trColor, bSetGet
@@ -732,7 +738,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          tmp_nSheet ++
          oParent:StartPage( Tabs[tmp_nSheet] )
          FOR i := 1 TO Len( oCtrlTmpl:aControls )
-            CreateCtrl( oParent, oCtrlTmpl:aControls[i], oForm )
+            CreateCtrl( oParent, oCtrlTmpl:aControls[ i ], oForm )
          NEXT
          oParent:EndPage()
       ENDIF
@@ -744,7 +750,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    IF ( i := At( "New(", stroka ) ) != 0
       i += 4
       DO WHILE .T.
-         IF ( j := hb_At( ",",stroka,i ) ) != 0 .OR. ( j := hb_At( ")",stroka,i ) ) != 0
+         IF ( j := hb_At( ",",stroka,i ) ) != 0 .OR. ( j := hb_At( ")", stroka, i ) ) != 0
             IF j - i > 0 .AND. !IsDigit(SubStr( stroka, i, 1 ))
                varname := SubStr( stroka, i, j - i )
                __mvPrivate( varname )
@@ -767,8 +773,8 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    nStyle := 0
 
    FOR i := 1 TO Len( oCtrlTmpl:aProp )
-      xProperty := hwg_hfrm_GetProperty( oCtrlTmpl:aProp[ i,2 ] )
-      cPName := oCtrlTmpl:aProp[ i,1 ]
+      xProperty := hwg_hfrm_GetProperty( oCtrlTmpl:aProp[ i , 2 ] )
+      cPName := oCtrlTmpl:aProp[ i , 1 ]
       IF cPName == "geometry"
          nLeft   := Val( xProperty[1] )
          nTop    := Val( xProperty[2] )
@@ -796,7 +802,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
       ELSEIF cPName == "styles"
          aStyles := {}
          FOR j := 1 TO Len( xProperty )
-            Aadd( aStyles, hwg_HstyleFromXML( xProperty[j] ) )
+            Aadd( aStyles, hwg_HstyleFromXML( xProperty[ j ] ) )
          NEXT
       ELSEIF cPName == "border"
          IF xProperty
@@ -837,8 +843,8 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          ELSEIF cPName == "anchor"
             __mvPut( "onsize", xProperty )
          ELSE
-            /* Assigning the value of the property to the variable with
-               the same name as the property */
+            // Assigning the value of the property to the variable with
+            //   the same name as the property 
             __mvPut( cPName, xProperty )
          ENDIF
 
@@ -855,17 +861,24 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          ENDIF
       ENDIF
    NEXT
+
    FOR i := 1 TO Len( oCtrlTmpl:aMethods )
-      IF ( cType := ValType( oCtrlTmpl:aMethods[ i,2 ] ) ) == "B"
-         __mvPut( oCtrlTmpl:aMethods[ i,1 ], oCtrlTmpl:aMethods[ i,2 ] )
+      IF ( cType := ValType( oCtrlTmpl:aMethods[ i , 2 ] ) ) == "B"
+         __mvPut( oCtrlTmpl:aMethods[ i , 1 ], oCtrlTmpl:aMethods[ i , 2 ] )
       ELSEIF cType == "A"
-         __mvPut( oCtrlTmpl:aMethods[ i,1 ], oCtrlTmpl:aMethods[ i,2,1 ] )
+         __mvPut( oCtrlTmpl:aMethods[ i , 1 ], oCtrlTmpl:aMethods[ i , 2 , 1 ] )
       ENDIF
    NEXT
 
    IF oCtrlTmpl:cClass == "combobox"
 #ifndef __GTK__
-      IF ( i := Ascan( oCtrlTmpl:aProp,{ |a|Lower(a[1] ) == "nmaxlines" } ) ) > 0
+      IF ( Ascan( oCtrlTmpl:aProp,{ |a|Lower(a[ 1 ] ) == "nmaxlines" } ) ) > 0
+   /* 
+    Warning W0032  Variable 'I' is assigned but not used in function 'CREATECTRL(874)'
+    1700
+    but "i" is really common used
+       IF ( i := Ascan( oCtrlTmpl:aProp,{ |a|Lower(a[ 1 ] ) == "nmaxlines" } ) ) > 0
+   */
          nHeight := nHeight * nMaxLines
       ELSE
          nHeight := nHeight * 4
@@ -893,11 +906,12 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
    ELSEIF oCtrlTmpl:cClass == "status" .OR. oCtrlTmpl:cClass == "toolbarbot"
       IF aParts != Nil
          FOR i := 1 TO Len( aParts )
-            aParts[i] := Val( aParts[i] )
+            aParts[ i ] := Val( aParts[ i ] )
          NEXT
       ENDIF
       onInit := { |o|o:Move( , , o:nWidth - 1 ) }
    ENDIF
+  
    oCtrl := &stroka
    IF cVarName != Nil
       oCtrl:cargo := cVarName
@@ -923,7 +937,7 @@ STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
          __mvPut( "tmp_nSheet", 0 )
       ENDIF
       FOR i := 1 TO Len( oCtrlTmpl:aControls )
-         CreateCtrl( Iif( oCtrlTmpl:cClass == "group" .OR. oCtrlTmpl:cClass == "radiogroup",oParent,oCtrl ), oCtrlTmpl:aControls[i], oForm )
+         CreateCtrl( Iif( oCtrlTmpl:cClass == "group" .OR. oCtrlTmpl:cClass == "radiogroup",oParent,oCtrl ), oCtrlTmpl:aControls[ i ], oForm )
       NEXT
       IF oCtrlTmpl:cClass == "radiogroup"
          HRadioGroup():EndGroup()
@@ -1660,7 +1674,9 @@ METHOD CLOSE() CLASS HRepTmpl
 STATIC FUNCTION ReadRepItem( oCtrlDesc, oContainer )
    LOCAL oCtrl := HRepItem():New( oContainer )
    LOCAL i, j, o, cName, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems, xProperty
-   LOCAL nPenWidth, nPenType
+   
+   * Not used variables
+   * LOCAL nPenWidth, nPenType
 
    oCtrl:cClass   := oCtrlDesc:GetAttribute( "class" )
    oCtrl:aProp    := aProp

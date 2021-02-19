@@ -19,8 +19,8 @@ EDITOR_DIR = source\common\editor
 HBXML_DIR    = source\common\xml
 HWGDEBUG_DIR = source\common\debug
 
-HARBOURFLAG = -d__WINDOWS__ $(HARBOURFLAGS)
-#HARBOURFLAG = -d__WINDOWS__ -w3 -es2 $(HARBOURFLAGS)
+#HARBOURFLAG = -d__WINDOWS__ $(HARBOURFLAGS)
+HARBOURFLAG = -d__WINDOWS__ -w3 -es2 $(HARBOURFLAGS)
 CFLAG = -Wall -O3 $(CFLAGS)
 
 all: \

@@ -245,12 +245,12 @@ CLASS HCEdit INHERIT HControl
    METHOD SetHili( xGroup, oFont, tColor, bColor )
    METHOD onEvent( msg, wParam, lParam )
    METHOD Paint( lReal )
-   METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap )
-   METHOD MarkLine( nLine, lReal, nSubLine )
+   METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight )
+   METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC )
    METHOD End()
    METHOD Convert( cPageIn, cPageOut )
    METHOD SetText( xText, cPageIn, cPageOut )
-   METHOD SAVE( cFileName )
+   METHOD SAVE( cFileName , cpSou )
    METHOD AddFont( oFont, name, width, height , weight, ;
       CharSet, Italic, Underline, StrikeOut )
    METHOD SetFont( oFont )
@@ -258,7 +258,7 @@ CLASS HCEdit INHERIT HControl
    METHOD onKeyDown( nKeyCode, lParam, nCtrl )
    METHOD PutChar( nKeyCode )
    METHOD LineDown()
-   METHOD LineUp()
+   METHOD LineUp(lChgPos)
    METHOD PageDown()
    METHOD PageUp()
    METHOD Top()
@@ -277,7 +277,7 @@ CLASS HCEdit INHERIT HControl
    METHOD SetPadding( nValue )
    METHOD SetBorder( nThick, nColor )
    METHOD Highlighter( oHili )
-   METHOD Scan()
+   METHOD Scan( nl1, nl2, hDC, nWidth, nHeight)
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
    METHOD Print( nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB )
    METHOD PrintLine( oPrinter, yPos, nL )
@@ -399,13 +399,20 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
-   LOCAL n, nPages, arr, lRes := - 1, x, aPointC[P_LENGTH]
+   LOCAL n, nPages, lRes := - 1, x, aPointC[P_LENGTH]
    LOCAL n1 , n2, lctrls
+   
+   * Variables not used
+   * arr   
 
    //hwg_writelog(STR(msg) )
    ::PCopy( ::aPointC, aPointC )
    IF ::bOther != Nil
-      IF ( n := Eval( ::bOther,Self,msg,wParam,lParam ) ) != - 1
+*  Warning W0032  Variable 'N' is assigned but not used in function ...
+*      IF ( n := Eval( ::bOther,Self,msg,wParam,lParam ) ) != - 1 
+*  Devide into 2 instructions:
+      n := Eval( ::bOther,Self,msg,wParam,lParam )
+      IF n != - 1  
          RETURN n
       ENDIF
    ENDIF
@@ -465,8 +472,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 #else
          x := hwg_PtrToUlong( wParam )
 #endif
-         IF ::bKeyDown != Nil .AND. ( n := Eval( ::bKeyDown, Self, x, n, 1 ) ) != -1
-            RETURN -1
+*         
+*        IF ::bKeyDown != Nil .AND. ( n := Eval( ::bKeyDown, Self, x, n, 1 ) ) != -1
+         IF ::bKeyDown != Nil  && .AND.
+          n := Eval( ::bKeyDown, Self, x, n, 1 ) 
+          IF n != -1    
+             RETURN -1
+          ENDIF
          ENDIF
          ::putChar( x )
       ENDIF
@@ -616,7 +628,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    ENDIF
 
    IF ::bAfter != Nil
-      IF ( n := Eval( ::bAfter,Self,msg,wParam,lParam ) ) != - 1
+*      IF ( n := Eval( ::bAfter,Self,msg,wParam,lParam ) ) != - 1
+      n := Eval( ::bAfter,Self,msg,wParam,lParam )
+      IF n != - 1
          RETURN n
       ENDIF
    ENDIF
@@ -624,9 +638,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    RETURN lRes
 
 METHOD Paint( lReal ) CLASS HCEdit
-   LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := ::nBoundT, yNew, i, n4Separ := ::n4Separ
+   LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := ::nBoundT, yNew, n4Separ := ::n4Separ
    LOCAL nDocWidth
    LOCAL hBitmap
+ 
+   * Variables not used 
+   * i
 
    IF Empty( ::nDocFormat )
       ::nDocWidth := nDocWidth := 0
@@ -750,6 +767,7 @@ METHOD Paint( lReal ) CLASS HCEdit
 
    RETURN Nil
 
+/* Added: nRight */
 METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdit
    LOCAL lReal := !Empty( hDC ), i, nPrinted, x1, x2, cLine, aLine, nTextLine := ::nLineF+nLine-1
    LOCAL nWCharF := Iif( ::lWrap.AND.nLine==1, ::nWCharF, ::nPosF ), nWSublF := Iif( ::lWrap.AND.nLine==1, ::nWSublF, 1 ), num := ::nLines+1
@@ -842,8 +860,10 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdit
 
    RETURN yPos
 
+/* Added: nWCharF, nLineC */
 METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC ) CLASS HCEdit
-   LOCAL nPos1, nPos2, x1, x2, bColor := 0, i, aStru, nL := ::nLineF + nLine - 1, P1, P2, aHili
+   LOCAL nPos1, nPos2, x1, x2, i, aStru, nL := ::nLineF + nLine - 1, P1, P2, aHili
+   LOCAL bColor && := 0
 
    hced_ClearAttr( ::hEdit )
 
@@ -1020,6 +1040,7 @@ METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
 
    RETURN Nil
 
+/* Added: cpSou */
 METHOD Save( cFileName, cpSou ) CLASS HCEdit
    LOCAL nHand, i, cLine
 
@@ -1193,7 +1214,9 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
 METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    LOCAL cLine, lUnsel := .T., lInvAll := .F., n, l, ntmp1, ntmp2
    LOCAL nLine, nDocWidth := ::nDocWidth
+#ifdef __GTK__
    LOCAL ln1 , ln2, ln3, ln4
+#endif   
 
    // Store for last key (needed by memo edit)
    ::nLastKey := nKeyCode
@@ -1216,10 +1239,12 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
 
    ENDIF
 
+#ifdef __GTK__
    ln1 := Iif(hwg_checkBit( nKeyCode, FBITSHIFT ) , .T., .F. )
    ln2 := Iif(hwg_checkBit( nKeyCode, FBITCTRL  ) , .T., .F. )
    ln3 := Iif(hwg_checkBit( nKeyCode, FBITALT   ) , .T., .F. )
    ln4 := Iif(hwg_checkBit( nKeyCode, FBITALTGR ) , .T., .F. )
+#endif   
    
 
    /*
@@ -1491,7 +1516,9 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    RETURN 0
 
 METHOD PutChar( nKeyCode ) CLASS HCEdit
-   LOCAL nLine, nPos, P1, x, y
+   LOCAL nLine, nPos
+   * Variables not used
+   * P1, x, y
 
    //hwg_writelog( "putchar: " + str(nKeyCode) )
    IF ::lReadOnly
@@ -1574,8 +1601,11 @@ METHOD LineDown() CLASS HCEdit
 
    RETURN Nil
 
+/* Added: lChgPos */   
 METHOD LineUp( lChgPos ) CLASS HCEdit
-   LOCAL y, i
+   LOCAL y
+   * Variables not used   
+   *   i
 
    IF lChgPos == Nil; lChgPos := .T.; ENDIF
 
@@ -2142,6 +2172,7 @@ METHOD Highlighter( oHili ) CLASS HCEdit
    ENDIF
    RETURN Nil
 
+/* Added:  nl1, nl2, hDC, nWidth, nHeight */   
 METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
    LOCAL lNested := ::lScan, aCoors, yPos, yNew, nLine, nLines, i, n1, n2
    LOCAL nDocWidth
@@ -2486,7 +2517,8 @@ Function hced_LineNum( oEdit, nL )
  *  SB_TEXT (4) - how many sublines after it
  */
 Static Function hced_SubLine( oEdit, nL, nOper )
-   LOCAL i, n := 0, nLine := oEdit:aLines[nL,AL_LINE]
+   LOCAL i, nLine := oEdit:aLines[nL,AL_LINE]
+   LOCAL n   && := 0
 
    nOper := Iif( Empty(nOper), 1, nOper )
    IF oEdit:SetWrap() .AND. !Empty( oEdit:aWrap[nLine] )

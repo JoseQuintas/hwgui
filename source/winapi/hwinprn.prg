@@ -73,10 +73,10 @@ CLASS HWinPrn
    METHOD StartDoc( lPreview, cMetaName )
    METHOD NextPage()
    METHOD PrintLine( cLine, lNewLine )
-   METHOD PrintBitmap( xBitmap, nAlign , cImageName )
+   METHOD PrintBitmap( xBitmap, nAlign , cBitmapName )
    METHOD PrintText( cText )
    METHOD SetY( nYvalue )
-   METHOD PutCode( cText )
+   METHOD PutCode( cLine )   && cText
    METHOD EndDoc()
    METHOD END()
 #ifdef __GTK__
@@ -120,6 +120,9 @@ METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
 METHOD SetLanguage(apTooltips, apBootUser) CLASS HWinPrn
 * NLS: Sets the message and control texts to print preview dialog
 * Are stored in arrays:   ::aTooltips[], ::aBootUser[]
+
+* Parameters not used
+ HB_SYMBOL_UNUSED(apBootUser)
 
 * Default settings (English)
   ::aTooltips := hwg_HPrinter_LangArray_EN()
@@ -274,7 +277,10 @@ METHOD NextPage() CLASS HWinPrn
 METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
 
    LOCAL i , cTmp
-   LOCAL oBitmap, hBitmap, aBmpSize , cImageName
+   LOCAL hBitmap, aBmpSize , cImageName
+   
+   * Variables not used
+   * oBitmap
 
    IF ! ::lDocStart
       ::StartDoc()

@@ -9,7 +9,7 @@
 */
 
 #include "fileio.ch"
-#define __WINDOWS__
+* #define __WINDOWS__
 
 #ifndef __PLATFORM__WINDOWS
    #define DEF_SEP      '/'
@@ -26,7 +26,7 @@ STATIC lDebugInfo := .F.
 STATIC lDebugger := .F.
 STATIC lDebugRun := .F.
 
-#ifndef __WINDOWS__
+#ifndef __PLATFORM__WINDOWS      // __WINDOWS__
 STATIC y__size := 0, x__size := 0
 #endif
 #define STR_BUFLEN  1024
@@ -76,7 +76,7 @@ LOCAL aFormCode, aFormName
             Aadd( aFormCode, SUBSTR( stroka, 2, i-2 ) )
             Aadd( aFormName, SUBSTR( stroka, i+1 ) )
          ELSEIF rejim == -1 .AND. LEFT( stroka, 9 ) == "#ENDBLOCK"
-#ifdef __WINDOWS__
+#ifdef __PLATFORM__WINDOWS  // __WINDOWS__
             i := hwg_WChoice( aFormName )
 #else
             i := FCHOICE( aFormName )
@@ -91,7 +91,7 @@ LOCAL aFormCode, aFormName
       ENDDO
       FCLOSE( han )
    ELSE
-#ifdef __WINDOWS__
+#ifdef __PLATFORM__WINDOWS   // __WINDOWS__
       hwg_Msgstop( fname + " can't be opened " )
 #else
       ALERT( fname + " can't be opened " )
@@ -148,7 +148,7 @@ LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
          ppScript( ,.F. )
       ENDIF
    ELSE
-#ifdef __WINDOWS__
+#ifdef __PLATFORM__WINDOWS  // __WINDOWS__
       hwg_Msgstop( "Can't open " + scrSource )
 #else
       WndOut( "Can't open " + scrSource )
@@ -344,11 +344,12 @@ Local cLine, lDebug := ( Len( rezArray ) >= 3 )
    ENDDO
 RETURN .T.
 
+
 STATIC FUNCTION MacroError( nm, e, stroka )
 
 Local n, cTitle
 
-#ifdef __WINDOWS__
+#ifdef __PLATFORM__WINDOWS  // __WINDOWS__
    IF nm == 1
       stroka := hwg_ErrMsg( e ) + Chr(10)+Chr(13) + "in" + Chr(10)+Chr(13) + ;
                       AllTrim(stroka)
@@ -383,7 +384,8 @@ Local n, cTitle
       Alert( "Script execution error:;"+stroka )
    ENDIF
 #endif
-   BREAK
+*   BREAK
+   * Warning W0028  Unreachable code
 RETURN .T.
 
 STATIC FUNCTION Fou_If( rezArray, tmpArray, prju )
@@ -422,7 +424,10 @@ RETURN .F.
 
 STATIC FUNCTION Fou_Do( rezArray, tmpArray )
 
-LOCAL i, j, iloop := 0, iPos, bOldError
+LOCAL i, j, iloop := 0, bOldError
+
+* Variables not used
+* iPos
 
    j := LEN( rezArray )
    FOR i := j TO 1 STEP - 1
@@ -512,7 +517,7 @@ PRIVATE iscr := 1, bOldError, doscr_RetValue := Nil
    BEGIN SEQUENCE
       IF lDebug .AND. lDebugger
          DO WHILE iscr > 0 .AND. iscr <= arlen
-#ifdef __WINDOWS__
+#ifdef __PLATFORM__WINDOWS // __WINDOWS__
             IF lDebugger
                lDebugRun := .F.
                hwg_scrDebug( aScript, iscr )
@@ -524,7 +529,7 @@ PRIVATE iscr := 1, bOldError, doscr_RetValue := Nil
             Eval( aScript[ 2, iscr ] )
             iscr ++
          ENDDO
-#ifdef __WINDOWS__
+#ifdef __PLATFORM__WINDOWS // __WINDOWS__
          hwg_scrDebug( aScript, 0 )
          IF lSetDebugger
             SetDebugger( .F. )
@@ -539,7 +544,7 @@ PRIVATE iscr := 1, bOldError, doscr_RetValue := Nil
    RECOVER
       WndOut()
       Errorblock( bOldError )
-#ifdef __WINDOWS__
+#ifdef __PLATFORM__WINDOWS // __WINDOWS__
       IF lDebug .AND. lDebugger
          hwg_scrDebug( aScript, 0 )
       ENDIF
@@ -606,7 +611,7 @@ Function RunScript( fname, scrname, args )
 Local scr := OpenScript( fname, scrname )
 Return Iif( scr==Nil, Nil, DoScript( scr, args ) )
 
-#ifdef __WINDOWS__
+#ifdef __PLATFORM__WINDOWS  // __WINDOWS__
 
 STATIC FUNCTION WndOut()
 
@@ -675,3 +680,5 @@ FUNCTION WndOpen( ysize, xsize )
    WndOut( "",, .T. )
 RETURN Nil
 #endif
+
+* ================================ EOF of procscri.prg =========================================

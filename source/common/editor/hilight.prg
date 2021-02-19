@@ -100,7 +100,7 @@ CLASS Hilight INHERIT HilightBase
 
    METHOD New( cFile, cSection, cCommands, cFuncs, cSComm, cMComm, lCase )
    METHOD Set( oEdit )
-   METHOD Do( nLine, lCheck )
+   METHOD Do( oEdit, nLine, lCheck )
    METHOD UpdSource( nLine )  INLINE  ( ::nDopChecked := nLine-1 )
    METHOD AddItem( nPos1, nPos2, nType )
 ENDCLASS
@@ -195,10 +195,14 @@ Return oHili
  *  lComm set it to .T., if a previous line was a part of an unclosed multiline comment
  *  lCheck - if .T., checks for multiline comments only
  */
+/* Added: oEdit */
 METHOD Do( oEdit, nLine, lCheck ) CLASS Hilight
 Local aText, cLine, nLen, nLenS, nLenM, i, lComm
 Local cs, cm
 Local nPos, nPos1, nPrev, cWord, c
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(oEdit)
 
    ::nItems := 0
    ::lMultiComm := .F.

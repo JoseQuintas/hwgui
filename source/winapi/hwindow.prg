@@ -76,7 +76,13 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
 
 STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
-   LOCAL iParLow := hwg_Loword( wParam ), b
+   LOCAL iParLow := hwg_Loword( wParam )
+   
+   * Variables not used
+   * b
+   
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lParam)
 
    IF iParLow > 0 .AND. oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )
@@ -149,7 +155,7 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
    DATA oEmbedded
    DATA bScroll
 
-   METHOD New( Icon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
+   METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, cAppName, oBmp, cHelp, ;
       nHelpId, bColor )
    METHOD AddItem( oWnd )
@@ -166,9 +172,15 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
 
 ENDCLASS
 
+
 METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId, bColor ) CLASS HWindow
+ 
+    * Parameters not used
+    HB_SYMBOL_UNUSED(clr)
+    HB_SYMBOL_UNUSED(cMenu)
+    HB_SYMBOL_UNUSED(cHelp)
 
    ::oDefaultParent := Self
    ::title    := cTitle
@@ -239,7 +251,7 @@ METHOD FindWindow( hWnd ) CLASS HWindow
 
    RETURN Iif( i == 0, Nil, ::aWindows[i] )
 
-METHOD GetMain CLASS HWindow
+METHOD GetMain() CLASS HWindow
 
    RETURN Iif( Len( ::aWindows ) > 0,              ;
       Iif( ::aWindows[1]:type == WND_MAIN, ;
@@ -248,6 +260,9 @@ METHOD GetMain CLASS HWindow
 
 METHOD EvalKeyList( nKey, bPressed ) CLASS HWindow
    LOCAL cKeyb, nctrl, nPos
+   
+    * Parameters not used
+    HB_SYMBOL_UNUSED(bPressed)   
 
    cKeyb := hwg_Getkeyboardstate()
    nctrl := Iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, ;
@@ -428,7 +443,7 @@ CLASS HMDIChildWindow INHERIT HWindow
       {|o,w,l|hwg_onWndSize( o, w, l ) },  ;
       {|o,w|onMdiNcActivate( o, w ) },     ;
       {|o,w|onSysCommand( o, w ) },        ;
-      {|o,w,l|onMdiCreate( o, l ) },       ;
+      {|o,l|onMdiCreate( o, l ) },       ;
       {|o|hwg_onDestroy( o ) }             ;
       } ;
       }
@@ -454,6 +469,11 @@ METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
    RETURN Self
 
 METHOD Activate( lShow, lMaximized, lMinimized, lCentered, bActivate ) CLASS HMDIChildWindow
+
+    * Parameters not used
+    HB_SYMBOL_UNUSED(lShow)
+    HB_SYMBOL_UNUSED(lMaximized)
+    HB_SYMBOL_UNUSED(lMinimized)
 
    hwg_CreateGetList( Self )
    // Hwg_CreateMdiChildWindow( Self )
@@ -558,11 +578,12 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
 
 FUNCTION hwg_ReleaseAllWindows( hWnd )
 
-   LOCAL oItem, iCont, nCont
+   LOCAL iCont, nCont
 
    //  Vamos mandar destruir as filhas
    // Destroi as CHILD's desta MAIN
 #ifdef __XHARBOUR__
+   LOCAL oItem
    FOR EACH oItem IN HWindow():aWindows
       IF oItem:oParent != Nil .AND. oItem:oParent:handle == hWnd
          hwg_Sendmessage( oItem:handle, WM_CLOSE, 0, 0 )
@@ -592,6 +613,9 @@ FUNCTION hwg_ReleaseAllWindows( hWnd )
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
    LOCAL iItem, iCont, aMenu, iParHigh, iParLow, nHandle
+   
+    * Parameters not used
+    HB_SYMBOL_UNUSED(lParam)
 
    wParam := hwg_PtrToUlong( wParam )
    IF wParam == SC_CLOSE
@@ -722,6 +746,9 @@ STATIC FUNCTION onNotifyIcon( oWnd, wParam, lParam )
    Return - 1
 
 STATIC FUNCTION onMdiCreate( oWnd, lParam )
+
+    * Parameters not used
+    HB_SYMBOL_UNUSED(lParam)
 
    hwg_InitControls( oWnd )
    IF oWnd:bInit != Nil

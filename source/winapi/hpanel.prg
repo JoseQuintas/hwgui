@@ -358,11 +358,12 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
 
 /*   
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
-      oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )   
+      oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
+    Block reverted to old value with HB_SYMBOL_UNUSED( w )  
 */
   
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
-      oWndParent:nWidth, nHeight, bInit, { |o,h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
+      oWndParent:nWidth, nHeight, bInit, { |o, w, h| HB_SYMBOL_UNUSED( w ) ,  o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
    ::Anchor := ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
    ::oFont := Iif( oFont == Nil, ::oParent:oFont, oFont )

@@ -443,7 +443,7 @@ CLASS HMDIChildWindow INHERIT HWindow
       {|o,w,l|hwg_onWndSize( o, w, l ) },  ;
       {|o,w|onMdiNcActivate( o, w ) },     ;
       {|o,w|onSysCommand( o, w ) },        ;
-      {|o,l|onMdiCreate( o, l ) },       ;
+      {|o,w,l| HB_SYMBOL_UNUSED( w ) , onMdiCreate( o, l ) },       ;
       {|o|hwg_onDestroy( o ) }             ;
       } ;
       }

@@ -8,6 +8,15 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-20 13:45 UTC+0100 Wilfried Brunken DF7BE
+  * source/winapi/halert.prg
+  * source/winapi/hpanel.prg
+  * source/winapi/hwindow.prg
+   ! Ticket #77: Blocks reverted to old
+   ! value with HB_SYMBOL_UNUSED( x ) for
+   ! unused variables for WinAPI,
+   ! see post to ticket.
+
 2021-02-20 10:00 UTC+0100 Wilfried Brunken DF7BE
   * source/common/procmisc/procscri.prg
   * source/common/procmisc/scrdebug.prg

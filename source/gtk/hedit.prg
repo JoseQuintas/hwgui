@@ -41,7 +41,7 @@ CLASS HEdit INHERIT HControl
    DATA bColorBlock
 
    METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bGfocus, bLfocus, ctoolt, tcolor, bcolor, cPicture, lNoBorder, nMaxLength )
+      oFont, bInit, bSize, bGfocus, bLfocus, ctoolt, tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -54,6 +54,7 @@ CLASS HEdit INHERIT HControl
 
 ENDCLASS
 
+/* Added: lPassword */
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bGfocus, bLfocus, ctoolt, ;
       tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword ) CLASS HEdit
@@ -100,7 +101,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HEdit
+METHOD Activate() CLASS HEdit
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createedit( ::oParent:handle, ::id, ;
@@ -112,7 +113,8 @@ METHOD Activate CLASS HEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
-   LOCAL oParent, nPos
+   LOCAL oParent
+   LOCAL nPos
 
    //hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent, Self, msg, wParam, lParam ) != 0
@@ -273,13 +275,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
          ENDIF
       ENDIF
 
+/*
    ELSE
 
+ 
       IF msg == WM_MOUSEWHEEL
          nPos := hwg_Hiword( wParam )
          nPos := iif( nPos > 32768, nPos - 65535, nPos )
       ENDIF
-
+*/
    ENDIF
 
    RETURN 0
@@ -436,7 +440,9 @@ STATIC FUNCTION IsEditable( oEdit, nPos )
    RETURN .F.
 
 STATIC FUNCTION KeyRight( oEdit, nPos )
-   LOCAL i, masklen, newpos, vari
+   LOCAL masklen, newpos 
+   * Variables not used
+   * i , vari
 
    IF oEdit == Nil
       RETURN 0
@@ -470,7 +476,8 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
    RETURN 1
 
 STATIC FUNCTION KeyLeft( oEdit, nPos )
-   LOCAL i
+   * Variables not used
+   * LOCAL i
 
    IF oEdit == Nil
       RETURN 0

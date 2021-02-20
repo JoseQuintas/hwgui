@@ -137,7 +137,7 @@ CLASS HFormTmpl
 
    METHOD DefaultLang()   
    METHOD Read( fname, cId )
-   METHOD Show( nMode, params )
+   METHOD Show( nMode, p1, p2, p3 )  && params
    METHOD ShowMain( params )   INLINE ::Show( 1, params )
    METHOD ShowModal( params )  INLINE ::Show( 2, params )
    METHOD Close()
@@ -234,17 +234,19 @@ METHOD Read( fname, cId ) CLASS HFormTmpl
 
    RETURN Self
 
+/* params ==> p1, p2, p3 */
 METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
    LOCAL i, j, i1, j1, cTemp, a1, cType, xRes
    LOCAL nLeft, nTop, nWidth, nHeight, cTitle, oFont, lClipper := .F. , lExitOnEnter := .F.
    LOCAL xProperty, block, nstyle
-   LOCAL lMdi := .F.
-   LOCAL lMdiChild := .F.
-   LOCAL lval := .F.
    LOCAL oIcon := Nil, cBitmap := nil
    LOCAL oBmp := NIL
    LOCAL bGetFo := { |o| HFormTmpl():oActive := o }
-
+   * Variables not used
+   * LOCAL lval := .F.
+   * LOCAL lMdi         && := .F.
+   * LOCAL lMdiChild    && := .F.
+   
    MEMVAR oDlg
    PRIVATE oDlg
 
@@ -272,8 +274,8 @@ METHOD Show( nMode, p1, p2, p3 ) CLASS HFormTmpl
          nStyle := xProperty
       ELSEIF ::aProp[ i,1 ] == "formtype"
          IF nMode == Nil
-            lMdi := At( "mdimain", Lower( xProperty ) ) > 0
-            lMdiChild := At( "mdichild", Lower( xProperty ) ) > 0
+            * lMdi := At( "mdimain", Lower( xProperty ) ) > 0
+            * lMdiChild := At( "mdichild", Lower( xProperty ) ) > 0
             nMode := Iif( Left( xProperty,3 ) == "dlg", 2, 1 )
          ENDIF
       ELSEIF ::aProp[ i,1 ] == "variables"
@@ -718,8 +720,11 @@ STATIC FUNCTION ReadCtrl( oCtrlDesc, oContainer, oForm )
 #define TBS_NOTICKS                 16
 
 STATIC FUNCTION CreateCtrl( oParent, oCtrlTmpl, oForm )
-   LOCAL i, j, oCtrl, stroka, varname, xProperty, block, cType, cPName, cCtrlName
+   LOCAL i, j, oCtrl, stroka, varname, xProperty, cType, cPName, cCtrlName
    LOCAL nCtrl := Ascan( aClass, oCtrlTmpl:cClass ), xInitValue, cInitName, cVarName
+   * Variables not used
+   * block   
+   
    MEMVAR oPrnt, nId, nInitValue, cInitValue, dInitValue, nStyle, nLeft, nTop, oStyle, aStyles
    MEMVAR onInit, onSize, onPaint, onEnter, onGetfocus, onLostfocus, lNoVScroll, lAppend, lAutoedit, bUpdate, onKeyDown, onPosChg
    MEMVAR nWidth, nHeight, oFont, lNoBorder, lTransp, trColor, bSetGet
@@ -1680,7 +1685,8 @@ METHOD CLOSE() CLASS HRepTmpl
 STATIC FUNCTION ReadRepItem( oCtrlDesc, oContainer )
    LOCAL oCtrl := HRepItem():New( oContainer )
    LOCAL i, j, o, cName, aProp := {}, aMethods := {}, aItems := oCtrlDesc:aItems, xProperty
-   LOCAL nPenWidth, nPenType
+   * Variables not used
+   * LOCAL nPenWidth, nPenType
 
    oCtrl:cClass   := oCtrlDesc:GetAttribute( "class" )
    oCtrl:aProp    := aProp

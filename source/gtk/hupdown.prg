@@ -70,7 +70,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
    RETURN Self
 
-METHOD Activate CLASS HUpDown
+METHOD Activate() CLASS HUpDown
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createupdowncontrol( ::oParent:handle, ;
@@ -82,7 +82,14 @@ METHOD Activate CLASS HUpDown
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HUpDown
-   LOCAL oParent := ::oParent, nPos
+
+   * Variables not used 
+   * LOCAL oParent := ::oParent
+   * LOCAL nPos
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(wParam)
+   HB_SYMBOL_UNUSED(lParam)
 
    //hwg_WriteLog( "UpDown: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF msg == WM_SETFOCUS
@@ -99,7 +106,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HUpDown
    RETURN 0
 
 METHOD Refresh()  CLASS HUpDown
-   LOCAL vari
+
+   * Variables not used
+   * LOCAL vari
 
    IF ::bSetGet != Nil
       ::nValue := Eval( ::bSetGet )
@@ -150,3 +159,6 @@ STATIC FUNCTION __Valid( oCtrl )
    ENDIF
 
    RETURN .T.
+
+* ============================ EOF of hupdown.prg ===============================
+   

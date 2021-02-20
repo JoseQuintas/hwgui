@@ -26,7 +26,9 @@
    #include "hbfast.h"
 #endif
 
+/* Suppress compiler warnings */
 #include "incomp_pointer.h"
+#include "warnings.h"
 
 #if defined(__BORLANDC__) || (defined(_MSC_VER) && !defined(__XCC__) || defined(__WATCOMC__) || defined(__DMC__) )
 HB_EXTERN_BEGIN

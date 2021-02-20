@@ -8,6 +8,58 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-20 17:45 UTC+0100 Wilfried Brunken DF7BE
+  *  hbxml.hbp
+  *  hwgdebug.hbp
+  *  hwgui.hbc
+  *  hwgui.hbp
+  *  hwguidyn.hbp
+  *  include/warnings.h (New)
+  *  procmisc.hbp
+  *  source/common/editor/hcedit.prg
+  *  source/common/procmisc/procscri.prg
+  *  source/common/xml/hxmldoc.prg
+  *  source/gtk/Makefile.linux
+  *  source/gtk/Makefile.mingw
+  *  source/gtk/drawwidg.prg
+  *  source/gtk/gtkmain.prg
+  *  source/gtk/hbincnt.prg
+  *  source/gtk/hbrowse.prg
+  *  source/gtk/hcheck.prg
+  *  source/gtk/hcombo.prg
+  *  source/gtk/hcontrol.prg
+  *  source/gtk/hcwindow.prg
+  *  source/gtk/hdialog.prg
+  *  source/gtk/hedit.prg
+  *  source/gtk/herrsys.prg
+  *  source/gtk/hfrmtmpl.prg
+  *  source/gtk/hgraph.prg
+  *  source/gtk/hhyper.prg
+  *  source/gtk/hmisc.prg
+  *  source/gtk/hmonthc.prg
+  *  source/gtk/hownbtn.prg
+  *  source/gtk/hpanel.prg
+  *  source/gtk/hprinter.prg
+  *  source/gtk/hprogres.prg
+  *  source/gtk/hradio.prg
+  *  source/gtk/hsayimg.prg
+  *  source/gtk/hsplit.prg
+  *  source/gtk/htab.prg
+  *  source/gtk/htimer.prg
+  *  source/gtk/htool.prg
+  *  source/gtk/htree.prg
+  *  source/gtk/hupdown.prg
+  *  source/gtk/hwindow.prg
+  *  source/gtk/hwinprn.prg
+  *  source/gtk/menu.prg
+  *  source/winapi/control.c
+   ! Ticket #77:
+   ! value with HB_SYMBOL_UNUSED( x ) for
+   ! unused variables for GTK,
+   ! see post to ticket.
+   ! Invalid characters in BOX command of procscri.prg
+   ! Warning for MinGW in control.c suppressed
+
 2021-02-20 13:45 UTC+0100 Wilfried Brunken DF7BE
   * source/winapi/halert.prg
   * source/winapi/hpanel.prg

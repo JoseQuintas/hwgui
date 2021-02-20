@@ -43,7 +43,7 @@ CLASS HGraph INHERIT HControl
    METHOD onEvent( msg, wParam, lParam )
    METHOD CalcMinMax()
    METHOD Paint()
-   METHOD Rebuild( aValues )
+   METHOD Rebuild( aValues, nType )
 
 ENDCLASS
 
@@ -62,7 +62,7 @@ METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    RETURN Self
 
-METHOD Activate CLASS HGraph
+METHOD Activate() CLASS HGraph
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
@@ -74,6 +74,10 @@ METHOD Activate CLASS HGraph
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HGraph
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(wParam)
+   HB_SYMBOL_UNUSED(lParam)
 
    IF msg == WM_PAINT
       ::Paint()
@@ -271,6 +275,7 @@ METHOD Paint() CLASS HGraph
 
    RETURN Nil
 
+/* Added:  nType */   
 METHOD Rebuild( aValues, nType ) CLASS HGraph
 
    ::aValues := aValues
@@ -283,3 +288,5 @@ METHOD Rebuild( aValues, nType ) CLASS HGraph
    ENDIF
 
    RETURN Nil
+
+* =============================== EOF of hgraph.prg =======================================

@@ -66,7 +66,7 @@ CLASS HDialog INHERIT HWindow
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
       bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor )
-   METHOD Activate( lNoModal )
+   METHOD Activate( lNoModal , lMaximized, lMinimized, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD AddItem( oWnd, lModal )
    METHOD DelItem( oWnd, lModal )
@@ -78,6 +78,9 @@ ENDCLASS
 
 METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
       bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor ) CLASS HDialog
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(nHelpId)
 
    ::oDefaultParent := Self
    ::xResourceID := xResourceID
@@ -115,6 +118,7 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
 
    RETURN Self
 
+/* Added: lMaximized, lMinimized, lCentered, bActivate */
 METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS HDialog
    LOCAL hParent, oWnd, aCoors, aRect
 
@@ -225,7 +229,8 @@ METHOD GetActive() CLASS HDialog
    // ------------------------------------
 
 STATIC FUNCTION InitModalDlg( oDlg )
-   LOCAL iCont
+   * Variables not used
+   * LOCAL iCont
 
    // hwg_WriteLog( str(oDlg:handle)+" "+oDlg:title )
    IF ValType( oDlg:menu ) == "A"
@@ -247,6 +252,9 @@ FUNCTION hwg_DlgCommand( oDlg, wParam, lParam )
 
    LOCAL iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
    LOCAL aMenu, i, hCtrl
+   
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lParam)   
 
    // hwg_WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF iParHigh == 0
@@ -307,6 +315,10 @@ FUNCTION hwg_DlgCommand( oDlg, wParam, lParam )
    RETURN 1
 
 STATIC FUNCTION onGetFocus( oDlg, w, l )
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(w)
+   HB_SYMBOL_UNUSED(l)   
 
    IF oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )

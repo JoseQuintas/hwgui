@@ -20,7 +20,7 @@
       { WM_PAINT, WM_COMMAND, WM_SIZE, WM_DESTROY }, ;
       { ;
       { |o, w|iif( o:bPaint != Nil, Eval( o:bPaint,o,w ), - 1 ) }, ;
-      { |o, w, l|onCommand( o, w ) },                ;
+      { |o, w|onCommand( o, w ) },                ;     && |o, w, l| ==> |o, w|
       { |o, w, l|onSize( o, w, l ) },                ;
       { |o|onDestroy( o ) }                          ;
       } ;
@@ -304,3 +304,6 @@ EXIT PROCEDURE Hwg_ExitProcedure
    Hwg_ExitProc()
 
    RETURN
+
+ * ========================================= EOF of hcwindow.prg ==========================================
+ 

@@ -29,7 +29,7 @@ CLASS HProgressBar INHERIT HControl
    DATA  nLimit
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit, bSize, bPaint, ctooltip )
-   METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, bInit, bSize, bPaint, ctooltip )
+   METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange , bExit )
    METHOD Activate()
    METHOD Increment() INLINE hwg_Updateprogressbar( ::handle )
    METHOD Step()
@@ -51,6 +51,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bInit
 
    RETURN Self
 
+/* Removed: bInit, bSize, bPaint, ctooltip */
 METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit ) CLASS HProgressBar
 
    // ::classname:= "HPROGRESSBAR"
@@ -86,7 +87,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit ) CLA
 
    RETURN Self
 
-METHOD Activate CLASS HProgressBar
+METHOD Activate() CLASS HProgressBar
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createprogressbar( ::oParent:handle, ::maxPos, ;
@@ -129,7 +130,7 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
    RETURN Nil
  
 
-METHOD RESET CLASS HProgressBar
+METHOD RESET() CLASS HProgressBar
  IF ::handle != NIL
     ::nCount := 0
     hwg_Resetprogressbar( ::handle )

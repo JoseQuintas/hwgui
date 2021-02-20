@@ -29,7 +29,7 @@ CLASS HTimer INHERIT HObject
          Iif( x == 0, .T., ::tag := hwg_SetTimer( ::id,x ) )
    */
    METHOD Interval( n ) SETGET
-   METHOD New( oParent, id, value, bAction, lOnce )
+   METHOD New( oParent, nId, value, bAction, lOnce )
    METHOD End()
 
 ENDCLASS
@@ -113,3 +113,5 @@ FUNCTION hwg_ReleaseTimers()
    hwg_ReleaseTimers()
 
    RETURN
+
+* ============================== EOF of htimer.prg =============================

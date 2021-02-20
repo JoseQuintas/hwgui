@@ -26,8 +26,9 @@ STATIC FUNCTION DefError( oError )
    LOCAL cMessage
    LOCAL cDOSError
 
-   LOCAL aOptions
-   LOCAL nChoice
+   * Variables not used
+   * LOCAL aOptions
+   * LOCAL nChoice
 
    LOCAL n
 
@@ -144,3 +145,5 @@ STATIC FUNCTION ErrorPreview( cMess )
 
    RETURN Nil
 
+* ====================================== EOF of herrsys.prg ===============================================
+   

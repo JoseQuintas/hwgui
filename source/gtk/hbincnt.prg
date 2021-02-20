@@ -54,7 +54,7 @@ CLASS HBinC
    METHOD Open( cName, lWr )
    METHOD Close()
    METHOD Add( cObjName, cType, cVal )
-   METHOD Del( cObjName, cType )
+   METHOD Del( cObjName )
    METHOD Pack()
    METHOD Exist( cObjName )
    METHOD Get( cObjName )
@@ -175,6 +175,7 @@ METHOD Add( cObjName, cType, cVal ) CLASS HBinC
 
    RETURN .T.
 
+/* Removed: cType */
 METHOD Del( cObjName ) CLASS HBinC
    LOCAL n
 
@@ -271,3 +272,6 @@ METHOD Exist( cObjName )  CLASS HBinC
 
    cObjName := Lower( cObjName )
    RETURN ( Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) ) != 0
+
+* ================================ EOF of hbincnt.prg ===================================================
+   

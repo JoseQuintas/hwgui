@@ -28,7 +28,7 @@ CLASS HSplitter INHERIT HControl
    DATA bEndDrag
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      bSize, bPaint, color, bcolor, aLeft, aRight, nFrom, nTo, oStyle )
+      bSize, bDraw, color, bcolor, aLeft, aRight, nFrom, nTo, oStyle )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -39,6 +39,7 @@ CLASS HSplitter INHERIT HControl
 
 ENDCLASS
 
+/* bPaint ==> bDraw */
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       bSize, bDraw, color, bcolor, aLeft, aRight, nFrom, nTo, oStyle ) CLASS HSplitter
 
@@ -100,7 +101,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
 
    Return - 1
 
-METHOD Init CLASS HSplitter
+METHOD Init() CLASS HSplitter
 
    IF !::lInit
       ::Super:Init()
@@ -193,3 +194,5 @@ METHOD DragAll( xPos, yPos ) CLASS HSplitter
    ::lMoved := .F.
 
    RETURN Nil
+
+* =============================== EOF of hsplit.prg =========================================

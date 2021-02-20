@@ -44,7 +44,7 @@ CLASS HTreeNode INHERIT HObject
 
    METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages )
    METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages )
-   METHOD DELETE()
+   METHOD DELETE(lInternal)
    METHOD GetText()  INLINE ::title
    METHOD SetText( cText ) INLINE ::title := cText
    METHOD getNodeIndex()
@@ -54,7 +54,12 @@ CLASS HTreeNode INHERIT HObject
 ENDCLASS
 
 METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages ) CLASS HTreeNode
-   LOCAL aItems, i, h, im1, im2, cImage, op, nPos
+
+   LOCAL aItems, i, h, op, nPos
+
+   * Variables not used
+   * LOCAL im1, im2, cImage
+   
 
    ::oTree := oTree
    ::oParent := oParent
@@ -228,7 +233,7 @@ CLASS HTree INHERIT HControl
    METHOD Refresh()
    METHOD END()
    METHOD Paint()
-   METHOD PaintNode( hDC, oNode, nLine )
+   METHOD PaintNode( hDC, oNode, nNode, nLine )
    METHOD ButtonDown( lParam )
    METHOD ButtonUp( lParam )
    METHOD ButtonDbl( lParam )
@@ -243,7 +248,14 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bClick, nBC ) CLASS HTree
-   LOCAL i, aBmpSize
+   LOCAL i 
+
+   * Variables not used
+   * LOCAL aBmpSize
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lEditLabels)
+   HB_SYMBOL_UNUSED(nBC)
 
    IF color == Nil; color := 0; ENDIF
    IF bcolor == Nil; bcolor := CLR_WHITE; ENDIF
@@ -268,7 +280,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    RETURN Self
 
-METHOD Init CLASS HTree
+METHOD Init() CLASS HTree
 
    IF ! ::lInit
       ::Super:Init()
@@ -276,7 +288,7 @@ METHOD Init CLASS HTree
 
    RETURN Nil
 
-METHOD Activate CLASS HTree
+METHOD Activate() CLASS HTree
 
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createbrowse( Self )
@@ -286,7 +298,10 @@ METHOD Activate CLASS HTree
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HTree
-   LOCAL aCoors, retValue := - 1
+
+   LOCAL retValue := - 1
+   * Variables not used
+   * LOCAL aCoors 
 
    IF ::bOther != Nil
       Eval( ::bOther, Self, msg, wParam, lParam )
@@ -401,8 +416,11 @@ METHOD Refresh() CLASS HTree
    RETURN Nil
 
 METHOD Paint() CLASS HTree
-   LOCAL pps, hDC
-   LOCAL aCoors, aMetr, x1, y1, x2, y2, oNode, nNode, nLine := 1
+   LOCAL hDC
+   LOCAL aCoors, aMetr, y1, y2, oNode, nNode, nLine := 1
+   * Variables not used
+   * LOCAL pps
+   * LOCAL x1, x2   
 
    hDC := hwg_Getdc( ::area )
 
@@ -426,9 +444,9 @@ METHOD Paint() CLASS HTree
 
    ::width := aMetr[ 2 ]
    ::height := aMetr[ 1 ]
-   x1 := aCoors[ 1 ] + 2
+   * x1 := aCoors[ 1 ] + 2
    y1 := aCoors[ 2 ] + 2
-   x2 := aCoors[ 3 ] - 2
+   * x2 := aCoors[ 3 ] - 2
    y2 := aCoors[ 4 ] - 2
 
    ::rowCount := Int( ( y2 - y1 ) / ( ::height + 1 ) )
@@ -451,6 +469,7 @@ METHOD Paint() CLASS HTree
 
    RETURN Nil
 
+/* Added: nNode */
 METHOD PaintNode( hDC, oNode, nNode, nLine ) CLASS HTree
    LOCAL y1 := ( ::height + 1 ) * ( nLine - 1 ) + 1, x1 := 10 + oNode:nLevel * ::nIndent
    LOCAL i, hBmp, aBmpSize, nTextWidth
@@ -533,6 +552,9 @@ METHOD ButtonDown( lParam )  CLASS HTree
    RETURN 0
 
 METHOD ButtonUp( lParam ) CLASS HTree
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lParam)
 
    RETURN 0
 
@@ -697,3 +719,5 @@ STATIC PROCEDURE ReleaseTree( aItems, lDelImages )
    NEXT
 
    RETURN
+
+* ============================== EOF of htree.prg ===============================================

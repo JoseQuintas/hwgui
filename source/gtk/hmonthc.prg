@@ -44,6 +44,11 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bChange, cTooltip, lNoToday, lNoTodayCircle, ;
       lWeekNumbers ) CLASS HMonthCalendar
 
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lNoToday)
+   HB_SYMBOL_UNUSED(lNoTodayCircle)
+   HB_SYMBOL_UNUSED(lWeekNumbers)
+
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       , , ctooltip )
 
@@ -57,7 +62,7 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    //--------------------------------------------------------------------------//
 
-METHOD Activate CLASS HMonthCalendar
+METHOD Activate() CLASS HMonthCalendar
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Initmonthcalendar ( ::oParent:handle, , ;
@@ -94,3 +99,5 @@ METHOD Value( dValue ) CLASS HMonthCalendar
    ENDIF
 
    Return ::dValue
+
+* ================================ EOF of hmonthc.prg ========================================

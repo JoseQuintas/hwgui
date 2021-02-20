@@ -10,7 +10,23 @@ libpaths=lib
 
 {win}gt=gtgui
 
-libs=hwgui procmisc hbxml hwgdebug
-{win&!allmingw&!watcom}libs=hbactivex
+{!hblib}libs=hwgui procmisc hbxml hwgdebug
+{win&!allmingw&!watcom&!hblib}libs=hbactivex
 
 {unix}ldflags+="`pkg-config --libs gtk+-2.0`"
+
+# Uncomment these two lines to build HwGUI in Unicode mode
+
+#PRGFLAGS=-DUNICODE -q -m -n
+#CFLAGS=-DUNICODE -DHWG_USE_POINTER_ITEM
+
+PRGFLAGS=-q -m -n -es2
+CFLAGS=-DHWG_USE_POINTER_ITEM
+
+# Activate for GCC > V8
+#-Wold-style-cast
+
+#"{unix}-cflag=`pkg-config --cflags gtk+-2.0`"
+
+# =============================== EOF of hwgui.hbc ====================================
+

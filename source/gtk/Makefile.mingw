@@ -47,8 +47,9 @@ vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC
 vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR)
 
 # -es2 ==> -es0 (Abbruch bei hbrowse.prg ohne Fehlermeldung)
+# Ticket #77: -w3 -es2 (vorher nur -es0)
 $(OBJ_DIR)/%.c : %.prg
-	$(HRB_EXE) -n -q -w -es0 $(HB_FLAGS) -I$(HRB_INC) -I$(INC_DIR) -d__GTK__ -o$@ $<
+	$(HRB_EXE) -n -q -w -w3 -es2 $(HB_FLAGS) -I$(HRB_INC) -I$(INC_DIR) -d__GTK__ -o$@ $<
 
 %.o : %.c
 	gcc $(CFLAGS) -c -I./ -I$(INC_DIR) -I$(HRB_INC) $(CFLAGS_GTK) -o $@ $<

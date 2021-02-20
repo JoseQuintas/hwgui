@@ -116,7 +116,7 @@ METHOD Activate() CLASS HStaticLink
 
 RETURN NIL
 
-METHOD Init CLASS HStaticLink
+METHOD Init() CLASS HStaticLink
 
    IF ! ::lInit
       hwg_Setwindowobject( ::handle, Self )
@@ -125,6 +125,9 @@ METHOD Init CLASS HStaticLink
    RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lParam)
 
    IF msg == WM_PAINT
       ::Paint()
@@ -168,7 +171,8 @@ METHOD SetHoverColor( cHoverColor ) CLASS HStaticLink
 
 METHOD OnClicked() CLASS HStaticLink
 
-   LOCAL nCtrlID
+   * Variables not used
+   * LOCAL nCtrlID
 
    ::GoToLinkUrl( ::m_csUrl )
 
@@ -227,3 +231,5 @@ METHOD Paint() CLASS HStaticLink
    hwg_Endpaint( ::handle, pps )
 
    RETURN 0
+
+* =============================== EOF of hhyper.prg =======================================

@@ -22,7 +22,7 @@ EDITOR_DIR=../common/editor
 SRC_DIR=./
 
 CFLAGS = -Wall -O3 -DHWG_USE_POINTER_ITEM
-HB_FLAGS = -d__LINUX__
+HB_FLAGS = -d__LINUX__ -w3 -es2
 
 vpath %.a $(LIB_DIR)
 vpath %.o $(OBJ_DIR)

@@ -34,7 +34,7 @@ CLASS HFont INHERIT HObject
    DATA nCounter   INIT 1
 
    METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle, lLinux )
-   METHOD Select( oFont )
+   METHOD Select( oFont , cTitle )
    METHOD Props2Arr()
    METHOD PrintFont()
    METHOD Release()
@@ -98,6 +98,7 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, ;
 
    RETURN Self
 
+/* Added: cTitle */
 METHOD Select( oFont, cTitle ) CLASS HFont
    LOCAL af := hwg_Selectfont( oFont, cTitle )
 
@@ -437,6 +438,12 @@ METHOD AddResource( name ) CLASS HBitmap
 
 METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize
+   
+    * Parameters not used
+    HB_SYMBOL_UNUSED(HDC)
+    HB_SYMBOL_UNUSED(lTransparent)
+    HB_SYMBOL_UNUSED(nWidth)
+    HB_SYMBOL_UNUSED(nHeight)
 
    For EACH i IN ::aBitmaps
       IF i:name == name
@@ -530,7 +537,9 @@ METHOD AddStandard( cId, nSize ) CLASS HBitmap
    RETURN Self
 
 METHOD AddWindow( oWnd, x1, y1, width, height ) CLASS HBitmap
-   LOCAL i, aBmpSize, handle := hwg_GetDrawing( oWnd:handle )
+   LOCAL aBmpSize, handle := hwg_GetDrawing( oWnd:handle )
+   * Variables not used
+   * i
 
    IF x1 == Nil .OR. y1 == Nil
       x1 := 0; y1 := 0; width := oWnd:nWidth - 1; height := oWnd:nHeight - 1
@@ -592,7 +601,16 @@ ENDCLASS
 
 METHOD AddResource( name , nWidth, nHeight , nFlags, lOEM ) CLASS HIcon
 * For compatibility to WinAPI the parameters nFlags and lOEM are dummys  
-   LOCAL lPreDefined := .F. , i , cTmp
+   LOCAL i , cTmp
+   
+   * Variables not used
+   * lPreDefined := .F.
+ 
+     * Parameters not used
+    HB_SYMBOL_UNUSED(nWidth)
+    HB_SYMBOL_UNUSED(nHeight)
+    HB_SYMBOL_UNUSED(nFlags)
+    HB_SYMBOL_UNUSED(lOEM) 
  
 /* 
    IF nWidth == nil
@@ -604,7 +622,7 @@ METHOD AddResource( name , nWidth, nHeight , nFlags, lOEM ) CLASS HIcon
 */
    IF ValType( name ) == "N"
       name := LTrim( Str( name ) )
-      lPreDefined := .T.
+      * lPreDefined := .T.
    ENDIF
 
    For EACH i IN ::aIcons

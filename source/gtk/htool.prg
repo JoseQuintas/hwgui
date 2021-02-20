@@ -33,12 +33,12 @@ CLASS HToolBar INHERIT HControl
    DATA Line
 
    METHOD New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,cCaption,oFont,bInit, ;
-                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp ,aItem)
+                  bSize,bPaint,ctooltip,tcolor,bcolor,lTransp,lVertical,aItem)
 
    METHOD Activate()
    METHOD INIT()
    METHOD REFRESH()
-   METHOD AddButton(a,s,d,f,g,h)
+   METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu)  && a,s,d,f,g,h
    METHOD onEvent( msg, wParam, lParam )
    METHOD EnableAllButtons()
    METHOD DisableAllButtons()
@@ -49,9 +49,13 @@ CLASS HToolBar INHERIT HControl
 
 ENDCLASS
 
-
+/* Added: lVertical */
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
                   bSize, bPaint, ctooltip, tcolor, bcolor, lTransp , lVertical, aItem ) CLASS hToolBar
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(cCaption)
+   HB_SYMBOL_UNUSED(lTransp)   
 
    Default  aItem to {}
    ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;
@@ -64,7 +68,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
 Return Self
 
-METHOD Activate CLASS hToolBar
+METHOD Activate() CLASS hToolBar
    IF !empty(::oParent:handle )
 
       ::handle := hwg_Createtoolbar(::oParent:handle )
@@ -73,15 +77,18 @@ METHOD Activate CLASS hToolBar
    ENDIF
 RETURN Nil
 
-METHOD INIT CLASS hToolBar
-Local n,n1
-Local aTemp
-Local hIm
-Local aButton :={}
-Local aBmpSize
+METHOD INIT() CLASS hToolBar
+Local n
+Local aButton := {}
 Local oImage
-Local nPos
 Local aItem
+* Variables not used
+* Local n1
+* Local aTemp
+* Local hIm
+* Local aBmpSize
+* Local nPos
+
    IF !::lInit
       ::Super:Init()
       For n := 1 TO len( ::aItem )
@@ -144,7 +151,12 @@ METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu) CLASS hToolBar
 RETURN Self
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HToolbar
-Local nPos
+
+   Local nPos
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lParam)
+
    IF msg == WM_LBUTTONUP
       nPos := ascan(::aItem,{|x| x[2] == wParam})
       if nPos>0
@@ -183,3 +195,5 @@ RETURN Self
 METHOD DisableButtons(n) class htoolbar
    hwg_Enablewindow( ::aItem[n, 11 ], .T. )
 RETURN Self
+
+* ================================== EOF of htool.prg ==================================

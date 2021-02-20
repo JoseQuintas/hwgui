@@ -32,7 +32,7 @@ CLASS HComboBox INHERIT HControl
       aItems, oFont, bInit, bSize, bPaint, bChange, cToolt, lEdit, lText, bGFocus, tcolor, bcolor, bValid )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Init( aCombo, nCurrent )
+   METHOD Init()
    METHOD Refresh( xVal )
    METHOD Setitem( nPos )
    METHOD GetValue( nItem )
@@ -80,12 +80,13 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    hwg_SetSignal( ::handle, "changed", CBN_SELCHANGE, 0, 0 )
 
    IF Left( ::oParent:ClassName(), 6 ) == "HPANEL" .AND. hwg_BitAnd( ::oParent:style, SS_OWNERDRAW ) != 0
-      ::oParent:SetPaintCB( PAINT_ITEM, { |o, h|iif( !::lHide,hwg__DrawCombo(h,::nLeft + ::nWidth - 22,::nTop,::nLeft + ::nWidth - 1,::nTop + ::nHeight - 1 ), .T. ) }, "hc" + LTrim( Str(::id ) ) )
+   *       ::oParent:SetPaintCB( PAINT_ITEM, { |o, h|iif( !::lHide,hwg__DrawCombo(h,::nLeft + ::nWidth - 22,::nTop,::nLeft + ::nWidth - 1,::nTop + ::nHeight - 1 ), .T. ) }, "hc" + LTrim( Str(::id ) ) )
+      ::oParent:SetPaintCB( PAINT_ITEM, { |h|iif( !::lHide,hwg__DrawCombo(h,::nLeft + ::nWidth - 22,::nTop,::nLeft + ::nWidth - 1,::nTop + ::nHeight - 1 ), .T. ) }, "hc" + LTrim( Str(::id ) ) )
    ENDIF
 
    RETURN Self
 
-METHOD Activate CLASS HComboBox
+METHOD Activate() CLASS HComboBox
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createcombo( ::oParent:handle, ::id, ;
@@ -99,6 +100,10 @@ METHOD Activate CLASS HComboBox
 METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
 
    LOCAL i
+   
+   * Parameters not used
+   HB_SYMBOL_UNUSED(wParam)
+   HB_SYMBOL_UNUSED(lParam)
 
    IF msg == EN_SETFOCUS
       IF ::bSetGet == Nil
@@ -129,8 +134,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
 
    RETURN 0
 
+/* Removed: aCombo, nCurrent */ 
 METHOD Init() CLASS HComboBox
-   LOCAL i
+   * Variables not used
+   * LOCAL i
 
    IF !::lInit
       ::Super:Init()
@@ -153,7 +160,9 @@ METHOD Init() CLASS HComboBox
    RETURN Nil
 
 METHOD Refresh( xVal ) CLASS HComboBox
-   LOCAL vari, i
+   LOCAL vari
+   * Variables not used
+   * LOCAL i
 
    IF xVal != Nil
       ::xValue := xVal
@@ -260,3 +269,6 @@ STATIC FUNCTION __When( oCtrl )
    ENDIF
 
    RETURN .T.
+   
+* ================================ EOF of hcombo.prg =============================================
+ 

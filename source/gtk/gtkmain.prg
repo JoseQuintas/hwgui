@@ -159,9 +159,9 @@ FUNCTION hwg_WChoice( arr, cTitle, nLeft, nTop, oFont, clrT, clrB, clrTSel, clrB
       ON CLICK { |o|nChoice := o:nCurrent, hwg_EndDialog( o:oParent:handle ) }
 
    IF ValType( arr[1] ) == "A"
-      oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent,1] },"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{ |o|o:aArray[o:nCurrent,1] },"C",nLen ) ) && |value,o| ==> |o|
    ELSE
-      oBrw:AddColumn( HColumn():New( ,{ |value,o|o:aArray[o:nCurrent] },"C",nLen ) )
+      oBrw:AddColumn( HColumn():New( ,{ |o|o:aArray[o:nCurrent] },"C",nLen ) )   && |value,o| ==> |o| 
    ENDIF
    hwg_CREATEARLIST( oBrw, arr )
    oBrw:lDispHead := .F.
@@ -280,3 +280,5 @@ FUNCTION HWG_ISWINDOWVISIBLE( handle )
    ENDIF
 
    RETURN .T.
+
+* ============================================= EOF of gtkmain.prg ==========================================

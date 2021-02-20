@@ -111,6 +111,9 @@ ENDCLASS
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, ;
       bInit, bSize, bPaint, bClick, ctoolt, tcolor, bcolor ) CLASS HRadioButton
 
+     * Parameters not used
+    HB_SYMBOL_UNUSED(bcolor)
+
    ::oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
    ::id      := iif( nId == Nil, ::NewId(), nId )
    ::title   := cCaption
@@ -147,12 +150,13 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ENDIF
 
    IF Left( ::oParent:ClassName(),6 ) == "HPANEL" .AND. hwg_BitAnd( ::oParent:style,SS_OWNERDRAW ) != 0
-      ::oParent:SetPaintCB( PAINT_ITEM, {|o,h|Iif(!::lHide,hwg__DrawRadioBtn(h,::nLeft,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1,hwg_isButtonChecked(::handle),::title),.T.)}, "rb"+Ltrim(Str(::id)) )
+      ::oParent:SetPaintCB( PAINT_ITEM, {|h|Iif(!::lHide,hwg__DrawRadioBtn(h,::nLeft,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1,hwg_isButtonChecked(::handle),::title),.T.)}, "rb"+Ltrim(Str(::id)) )
+*      ::oParent:SetPaintCB( PAINT_ITEM, {|o,h|Iif(!::lHide,hwg__DrawRadioBtn(h,::nLeft,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1,hwg_isButtonChecked(::handle),::title),.T.)}, "rb"+Ltrim(Str(::id)) )
    ENDIF
 
    RETURN Self
 
-METHOD Activate CLASS HRadioButton
+METHOD Activate() CLASS HRadioButton
    LOCAL groupHandle := ::oGroup:handle
 
    IF !Empty( ::oParent:handle )
@@ -166,6 +170,10 @@ METHOD Activate CLASS HRadioButton
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(wParam)
+   HB_SYMBOL_UNUSED(lParam)
 
    IF msg == WM_LBUTTONUP
       IF ::oGroup:bSetGet == Nil
@@ -194,3 +202,6 @@ STATIC FUNCTION __Valid( oCtrl )
    ENDIF
 
    RETURN .T.
+
+* =================================== EOF of hradio.prg =============================================
+   

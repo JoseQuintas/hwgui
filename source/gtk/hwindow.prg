@@ -45,6 +45,10 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 FUNCTION hwg_onMove( oWnd, wParam, lParam )
 
    LOCAL apos := hwg_getwindowpos( oWnd:handle )
+   
+   * Parameters not used
+   HB_SYMBOL_UNUSED(wParam)
+   HB_SYMBOL_UNUSED(lParam)   
 
    //hwg_WriteLog( "onMove: "+str(oWnd:nLeft)+" "+str(oWnd:nTop)+" -> "+str(hwg_Loword(lParam))+str(hwg_Hiword(lParam))+" "+str(apos[1])+" "+str(apos[2]) )
    oWnd:nLeft := apos[1] //hwg_Loword( lParam )
@@ -123,13 +127,13 @@ CLASS HWindow INHERIT HCustomWindow
    DATA tColorinFocus  INIT - 1
    DATA bColorinFocus  INIT - 1
    DATA aOffset
-   METHOD New( Icon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
+   METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, cAppName, oBmp, cHelp, nHelpId )
    METHOD AddItem( oWnd )
    METHOD DelItem( oWnd )
    METHOD FindWindow( hWnd )
    METHOD GetMain()
-   METHOD EvalKeyList( nKey )
+   METHOD EvalKeyList( nKey, nctrl )
    METHOD Center()   INLINE Hwg_CenterWindow( ::handle )
    METHOD RESTORE()  INLINE hwg_RestoreWindow( ::handle )
    METHOD Maximize() INLINE hwg_WindowMaximize( ::handle )
@@ -142,6 +146,11 @@ ENDCLASS
 METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId ) CLASS HWindow
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(clr)
+   HB_SYMBOL_UNUSED(cMenu)
+   HB_SYMBOL_UNUSED(cHelp)
 
    ::oDefaultParent := Self
    ::title    := cTitle
@@ -204,13 +213,14 @@ METHOD FindWindow( hWnd ) CLASS HWindow
 
    RETURN hwg_Getwindowobject( hWnd )
 
-METHOD GetMain CLASS HWindow
+METHOD GetMain() CLASS HWindow
 
    RETURN iif( Len( ::aWindows ) > 0,            ;
       iif( ::aWindows[1]:type == WND_MAIN, ;
       ::aWindows[1],                  ;
       iif( Len( ::aWindows ) > 1, ::aWindows[2], Nil ) ), Nil )
 
+/* Added: nctrl */
 METHOD EvalKeyList( nKey, nctrl ) CLASS HWindow
 
    LOCAL nPos
@@ -249,7 +259,7 @@ CLASS HMainWindow INHERIT HWindow
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId, bColor, nExclude )
-   METHOD Activate( lShow )
+   METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray()
 
@@ -260,6 +270,10 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
       cAppName, oBmp, cHelp, nHelpId, bColor, nExclude ) CLASS HMainWindow
 
     LOCAL  hbackground
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(nPos)
+   HB_SYMBOL_UNUSED(nExclude)
 
     IIF ( oBmp == NIL , hbackground := NIL , hbackground := oBmp:handle )
 
@@ -284,9 +298,15 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
 
    RETURN Self
 
+/* Added: lMaximize, lMinimize, lCentered, bActivate */
 METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate ) CLASS HMainWindow
 
-   LOCAL i, aCoors, aRect
+   LOCAL aCoors, aRect
+   * Variables not used
+   * LOCAL i
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lShow)
 
    hwg_CreateGetList( Self )
 
@@ -351,13 +371,22 @@ METHOD InitTray() CLASS HMainWindow
 
 FUNCTION hwg_ReleaseAllWindows( hWnd )
 
-   LOCAL oItem, iCont, nCont
+   * LOCAL oItem, iCont, nCont
+   
+   * Parameters not used
+   HB_SYMBOL_UNUSED(hWnd)
 
    return - 1
 
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
-   LOCAL iItem, iCont, aMenu, iParHigh, iParLow, nHandle
+   LOCAL iItem, iCont, aMenu, iParHigh, iParLow
+   * Variables not used
+   * LOCAL nHandle
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lParam)
+
 
    iParHigh := hwg_Hiword( wParam )
    iParLow := hwg_Loword( wParam )
@@ -381,6 +410,10 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    RETURN 0
 
 STATIC FUNCTION onGetFocus( oDlg, w, l )
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(w)
+   HB_SYMBOL_UNUSED(l)
 
    IF oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )

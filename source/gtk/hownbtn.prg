@@ -108,7 +108,7 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
 
    RETURN Self
 
-METHOD Activate CLASS HOwnButton
+METHOD Activate() CLASS HOwnButton
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
@@ -156,7 +156,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
 
    RETURN 0
 
-METHOD Init CLASS HOwnButton
+METHOD Init() CLASS HOwnButton
 
    LOCAL bColor
    IF !::lInit
@@ -250,7 +250,11 @@ METHOD Paint() CLASS HOwnButton
 
 METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
    LOCAL lEnter := ( hwg_BitAnd( wParam,16 ) > 0 )
-   LOCAL res := .F.
+   * Variables not used
+   * LOCAL res := .F.
+   
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lParam)   
 
    IF ::state != OBTN_INIT
       IF !lEnter .AND. !::lPress

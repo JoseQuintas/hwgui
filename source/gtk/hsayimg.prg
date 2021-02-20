@@ -40,7 +40,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
 
    RETURN Self
 
-METHOD Activate CLASS HSayImage
+METHOD Activate() CLASS HSayImage
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
@@ -73,6 +73,9 @@ ENDCLASS
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
       bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor, bColor ) CLASS HSayBmp
 
+   * Parameters not used
+   HB_SYMBOL_UNUSED(nStretch)
+
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, ;
          bInit, bSize, ctoolt, bClick, bDblClick, bColor )
 
@@ -100,7 +103,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    RETURN Self
 
-METHOD INIT CLASS HSayBmp
+METHOD INIT() CLASS HSayBmp
 
    IF !::lInit
       ::Super:Init()
@@ -110,6 +113,10 @@ METHOD INIT CLASS HSayBmp
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HSayBmp
+
+   * Parameters not used
+   HB_SYMBOL_UNUSED(wParam)
+   HB_SYMBOL_UNUSED(lParam)
 
    IF msg == WM_PAINT
       ::Paint()

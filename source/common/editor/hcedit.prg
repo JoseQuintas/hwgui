@@ -640,7 +640,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 METHOD Paint( lReal ) CLASS HCEdit
    LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := ::nBoundT, yNew, n4Separ := ::n4Separ
    LOCAL nDocWidth
+#ifndef __GTK__   
    LOCAL hBitmap
+#endif   
  
    * Variables not used 
    * i

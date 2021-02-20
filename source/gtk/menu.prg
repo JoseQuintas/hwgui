@@ -30,10 +30,11 @@ CLASS HMenu INHERIT HObject
    DATA aMenu
    METHOD New()  INLINE Self
    METHOD End()  INLINE Hwg_DestroyMenu( ::handle )
-   METHOD Show( oWnd, xPos, yPos, lWnd )
+   METHOD Show( oWnd )
 
 ENDCLASS
 
+/* Removed: xPos, yPos, lWnd */
 METHOD Show( oWnd ) CLASS HMenu
 
    IF !Empty( HWindow():GetMain() )
@@ -130,7 +131,9 @@ FUNCTION Hwg_GetSubMenuHandle( aMenu, nId )
 
 FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
 
-   LOCAL hMenu, nPos, aMenu, i, oBmp
+   LOCAL hMenu, nPos, aMenu
+   * Variables not used
+   * LOCAL i, oBmp
 
    IF nPosParent == Nil
       IF lPopup == Nil .OR. !lPopup
@@ -235,7 +238,14 @@ FUNCTION Hwg_EndMenu()
    RETURN .T.
 
 FUNCTION Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBitmap, lResource, lCheck )
-   LOCAL aMenu, i, oBmp, nFlag
+
+   LOCAL aMenu, i, nFlag
+   * Variables not used
+   * LOCAL oBmp
+   
+   * Parameters not used
+   HB_SYMBOL_UNUSED(lBitmap)
+   HB_SYMBOL_UNUSED(lResource)
 
    lCheck := iif( lCheck == Nil, .F. , lCheck )
    lDisabled := iif( lDisabled == Nil, .T. , !lDisabled )
@@ -287,7 +297,9 @@ FUNCTION Hwg_DefineAccelItem( nId, bItem, accFlag, accKey )
 
 STATIC FUNCTION hwg_Createacceleratortable( oWnd )
    LOCAL hTable := hwg__Createacceleratortable( oWnd:handle )
-   LOCAL i, nPos, aSubMenu, nKey, n
+   LOCAL i, nPos, aSubMenu, nKey
+   * Variables not used
+   * LOCAL n
 
    FOR i := 1 TO Len( _aAccel )
       IF ( aSubMenu := Hwg_FindMenuItem( oWnd:menu, _aAccel[i,3], @nPos ) ) != Nil
@@ -403,7 +415,9 @@ FUNCTION hwg_DeleteMenuItem( oWnd, nId )
    RETURN Nil
 
 FUNCTION hwg_gtk_convertkey( nKey )
-   LOCAL n
+
+   * Variables not used
+   * LOCAL n
 
    IF nKey >= 65 .AND. nKey <= 90
       nKey += 32
@@ -416,3 +430,5 @@ FUNCTION hwg_gtk_convertkey( nKey )
    ENDIF
 
    RETURN nKey
+
+* =============================== EOF of menu.prg ========================================

@@ -66,7 +66,7 @@ CLASS HPrinter INHERIT HObject
    METHOD DefaultLang()   
    METHOD SetMode( nOrientation, nDuplex )
    METHOD Recalc( x1, y1, x2, y2 )
-   METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline )
+   METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset )
    METHOD SetFont( oFont )
    METHOD AddPen( nWidth, style, color )
    METHOD SetPen( nWidth, style, color )
@@ -204,8 +204,12 @@ METHOD Recalc( x1, y1, x2, y2 ) CLASS HPrinter
 
    RETURN Nil
 
+/* Added: , nCharset */   
 METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset ) CLASS HPrinter
    LOCAL oFont
+   
+   * Parameters not used
+   HB_SYMBOL_UNUSED(nCharset)   
 
    IF ::lmm .AND. nHeight != Nil
       nHeight *= ::nVRes
@@ -337,6 +341,9 @@ METHOD Say( cString, x1, y1, x2, y2, nOpt, oFont ) CLASS HPrinter
 
 METHOD Bitmap( x1, y1, x2, y2, nOpt, hBitmap, cImageName ) CLASS HPrinter
 
+   * Parameters not used
+   HB_SYMBOL_UNUSED(hBitmap)
+
    IF y2 > ::nHeight
       RETURN Nil
    ENDIF
@@ -461,18 +468,22 @@ Default values in array aTooltips see
 FUNCTION hwg_HPrinter_LangArray_EN()
 */
 
-   LOCAL cmExit, cmPrint, cmDialog, cBootUser3, cBootUser4, cmTitle
-   LOCAL oDlg, oSayPage, oBtn, oCanvas, oTimer, i, nLastPage := Len( ::aPages ), aPage := { }
+   LOCAL cmExit, cmPrint, cmTitle
+   LOCAL oDlg, oSayPage, oBtn, oCanvas, i, nLastPage := Len( ::aPages ), aPage := { }
    LOCAL oFont := HFont():Add( "Times New Roman", 0, - 13, 700 )
    LOCAL lTransp := ( aBitmaps != Nil .AND. Len( aBitmaps ) > 9 .AND. aBitmaps[ 10 ] != Nil .AND. aBitmaps[ 10 ] )
-
+   * Variables not used
+   * LOCAL oTimer
+   * LOCAL cmDialog, cBootUser3, cBootUser4
+   
+   
    // Button and title default captions
    // "Print preview -", see above
    cmExit         := "Exit"
    cmPrint        := "Print"
-   cmDialog       := "Dialog"
-   cBootUser3     := "User Button"
-   cBootUser4     := "User Button"
+   * cmDialog       := "Dialog"
+   * cBootUser3     := "User Button"
+   * cBootUser4     := "User Button"
    cmTitle        := "Print preview"
    
    /* Parameter cTitle preferred */
@@ -487,9 +498,9 @@ FUNCTION hwg_HPrinter_LangArray_EN()
    IF aTooltips != Nil
       cmPrint    := aTooltips[ 11 ]
       cmExit     := aTooltips[ 12 ]
-      cmDialog   := aTooltips[ 13 ]
-      cBootUser3 := aTooltips[ 14 ]
-      cBootUser4 := aTooltips[ 15 ]
+      * cmDialog   := aTooltips[ 13 ]
+      * cBootUser3 := aTooltips[ 14 ]
+      * cBootUser4 := aTooltips[ 15 ]
    ENDIF
    FOR i := 1 TO nLastPage
       AAdd( aPage, Str( i, 4 ) + ":" + Str( nLastPage, 4 ) )

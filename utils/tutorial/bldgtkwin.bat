@@ -43,14 +43,15 @@ REM set HRB_DIR=C:\hmg.3.3.1\HARBOUR
 REM --- active settings ---
 REM using own build Harbour
 set GTK_INSTALL=C:/GTK
-set MINGW=C:\hmg.3.3.1\MINGW
+REM set MINGW=C:\hmg.3.3.1\MINGW
+SET MINGW=C:\MinGW32
 REM set HRB_DIR=C:\hmg.3.3.1\HARBOUR
 set HRB_DIR=C:\harbour\core-master
 SET HRB_EXE=%HRB_DIR%\bin\win\mingw\harbour
 set HRB_LIB_DIR=%HRB_DIR%\lib\win\mingw
 
 REM Installation path of HWGUI
-set HWGUI_INSTALL=C:\hwgui\hwgui-gtk\hwgui
+set HWGUI_INSTALL=C:\hwgui\hwgui-gtk
 REM =====================================
 
 
@@ -65,9 +66,9 @@ REM Libraries
 set HRB_LIB_DIR=%HRB_DIR%\lib\win\mingw
 if exist %HRB_LIB_DIR%\libhbvm.a goto hrb
 goto common
-set HRB_LIBS=-lvm -lrdd -lmacro -lpp -lrtl -lcodepage -llang -lcommon -ldbfntx  -ldbfcdx -ldbffpt -lhsx -lhbsix -lgtgui -lgtwin
+set HRB_LIBS=-lvm -lrdd -lmacro -lpp -lrtl -lcodepage -llang -lcommon -ldbfntx  -ldbfcdx -ldbffpt -lhsx -lhbsix -lgtgui -lgtwin -lgtcgi
 :hrb
-set HRB_LIBS=-lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhbcpage -lhblang -lhbcommon -lrddntx  -lrddcdx -lrddfpt -lhbsix -lgtgui -lgtwin -lhbcplr
+set HRB_LIBS=-lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhbcpage -lhblang -lhbcommon -lrddntx  -lrddcdx -lrddfpt -lhbsix -lgtgui -lgtwin -lhbcplr -lgtcgi
 :common
 REM set HRB_LIBS=-lhbdebug -lhbvm -lhbrtl -lgtcgi -lhbdebug -lhblang -lhbrdd -lhbmacro -lhbpp -lrddntx -lrddcdx -lrddfpt -lhbsix -lhbcommon -lhbcpage -lgtwin -lgtgui
 REM set HWGUI_LIBS=-lhbxml -lhwgdebug -lhwgui -lprocmisc -lpcre

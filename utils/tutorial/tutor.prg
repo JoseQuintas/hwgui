@@ -59,8 +59,9 @@ FUNCTION Main
    cHwgrunPath := FindHwgrun()
    ReadIni()
 
-* or #ifdef __GTK__ ?
-#ifndef __PLATFORM__WINDOWS
+
+* #ifndef __PLATFORM__WINDOWS
+#ifdef __GTK__
    oBmp := HBitmap():AddStandard( "gtk-go-forward" )
 #else
    oBmp := HBitmap():AddStandard( OBM_MNARROW )

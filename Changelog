@@ -8,6 +8,16 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-20 10:00 UTC+0100 Wilfried Brunken DF7BE
+  * source/common/procmisc/procscri.prg
+  * source/common/procmisc/scrdebug.prg
+   ! Ticket #77: adjust to compile using -w3 -es2
+   ! see post to ticket, to be continued.
+  * utils/tutorial/bldgtkwin.bat
+  * utils/tutorial/tutor.prg
+   ! Ticket #78:  Function fchoice() not found
+   ! Preparation for bugfixing, to be continued.
+
 2021-02-19 10:00 UTC+0100 Wilfried Brunken DF7BE
   * makefile.gcc
   * source/common/debug/dbgconnect.prg

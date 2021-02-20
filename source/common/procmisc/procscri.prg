@@ -42,9 +42,9 @@ REQUEST VERSION
 
 FUNCTION OpenScript( fname, scrkod )
 
-LOCAL han, stroka, scom, aScr, rejim := 0, i
-LOCAL strbuf := Space(STR_BUFLEN), poz := STR_BUFLEN+1
-LOCAL aFormCode, aFormName
+   LOCAL han, stroka, scom, aScr, rejim := 0, i
+   LOCAL strbuf := Space(STR_BUFLEN), poz := STR_BUFLEN+1
+   LOCAL aFormCode, aFormName
 
    scrkod := IIF( scrkod==Nil, "000", Upper(scrkod) )
    IF DEF_CH_SEP $ fname
@@ -98,12 +98,13 @@ LOCAL aFormCode, aFormName
 #endif
       RETURN Nil
    ENDIF
+
 RETURN aScr
 
 FUNCTION RdScript( scrSource, strbuf, poz, lppNoInit, cTitle )
 
-LOCAL han
-LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
+   LOCAL han
+   LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
 
    IF lppNoInit == Nil
       lppNoInit := .F.
@@ -158,15 +159,18 @@ LOCAL rezArray := Iif( lDebugInfo, { "", {}, {} }, { "", {} } )
       nLastError := - 1
       RETURN Nil
    ENDIF
+
 RETURN rezArray
 
 FUNCTION ppScript( stroka, lNew )
-STATIC s_pp
+
+   STATIC s_pp
 
    IF lNew != Nil
       s_pp := Iif( lNew, __pp_init(), Nil )
       RETURN Nil
    ENDIF
+
 RETURN __pp_process( s_pp, stroka )
 
 FUNCTION scr_GetFuncsList( strbuf )
@@ -192,8 +196,8 @@ FUNCTION scr_GetFuncsList( strbuf )
 
 STATIC FUNCTION COMPILESCR( han, strbuf, poz, rezArray, scrSource )
 
-LOCAL scom, poz1, stroka, strfull := "", bOldError, i, tmpArray := {}
-Local cLine, lDebug := ( Len( rezArray ) >= 3 )
+   LOCAL scom, poz1, stroka, strfull := "", bOldError, i, tmpArray := {}
+   LOCAL cLine, lDebug := ( Len( rezArray ) >= 3 )
 
    DO WHILE .T.
       cLine := RDSTR( han, @strbuf, @poz, STR_BUFLEN )
@@ -249,7 +253,7 @@ Local cLine, lDebug := ( Len( rezArray ) >= 3 )
             IF LEN( rezArray[2] ) == 0 .OR. ( i := VALTYPE( ATAIL( rezArray[2] ) ) ) == "C" ;
                     .OR. i == "A"
                IF Left( scom,2 ) == "LO"
-                  AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 7 ) ) )     
+                  AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 7 ) ) )
                ELSEIF Left( scom,2 ) == "PR"
                   AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 9 ) ) )
                ELSE
@@ -342,12 +346,13 @@ Local cLine, lDebug := ( Len( rezArray ) >= 3 )
          ENDIF
       ENDIF
    ENDDO
+
 RETURN .T.
 
 
 STATIC FUNCTION MacroError( nm, e, stroka )
 
-Local n, cTitle
+   LOCAL n, cTitle
 
 #ifdef __PLATFORM__WINDOWS  // __WINDOWS__
    IF nm == 1
@@ -384,13 +389,15 @@ Local n, cTitle
       Alert( "Script execution error:;"+stroka )
    ENDIF
 #endif
-*   BREAK
-   * Warning W0028  Unreachable code
+   IF .T. // because error compiling -w3 -es2
+      BREAK
+   ENDIF
+
 RETURN .T.
 
 STATIC FUNCTION Fou_If( rezArray, tmpArray, prju )
 
-LOCAL i, j, bOldError
+   LOCAL i, j, bOldError
 
    IF prju
       AADD( tmpArray, "JUMP" )
@@ -420,11 +427,12 @@ LOCAL i, j, bOldError
          RETURN .T.
       ENDIF
    NEXT
+
 RETURN .F.
 
 STATIC FUNCTION Fou_Do( rezArray, tmpArray )
 
-LOCAL i, j, iloop := 0, bOldError
+   LOCAL i, j, iloop := 0, bOldError
 
 * Variables not used
 * iPos
@@ -461,13 +469,14 @@ LOCAL i, j, iloop := 0, bOldError
          RETURN .T.
       ENDIF
    NEXT
+
 RETURN .F.
 
 FUNCTION DoScript( aScript, aParams )
 
-LOCAL arlen, stroka, varName, varValue, lDebug, lParam, j, lSetDebugger := .F.
-MEMVAR iscr, bOldError, aScriptt, doscr_RetValue
-PRIVATE iscr := 1, bOldError, doscr_RetValue := Nil
+   LOCAL arlen, stroka, varName, varValue, lDebug, lParam, j, lSetDebugger := .F.
+   MEMVAR iscr, bOldError, aScriptt, doscr_RetValue
+   PRIVATE iscr := 1, bOldError, doscr_RetValue := Nil
 
    IF Type( "aScriptt" ) != "A"
       PRIVATE aScriptt := aScript
@@ -558,7 +567,7 @@ RETURN m->doscr_RetValue
 
 FUNCTION CallFunc( cProc, aParams, aScript )
 
-LOCAL i := 1, RetValue := Nil
+   LOCAL i := 1, RetValue := Nil
 
    IF aScript == Nil
       aScript := m->aScriptt
@@ -578,11 +587,13 @@ FUNCTION EndScript( xRetValue )
 
    m->doscr_RetValue := xRetValue
    iscr := - 99
+
 RETURN Nil
 
 FUNCTION CompileErr( nLine )
 
    nLine := numlin
+
 RETURN nLastError
 
 FUNCTION Codeblock( string )
@@ -590,28 +601,35 @@ FUNCTION Codeblock( string )
    IF Left( string,2 ) == "{|"
       Return &( string )
    ENDIF
-RETURN &("{||"+string+"}")
+
+RETURN &( "{||" + string + "}" )
 
 FUNCTION SetDebugInfo( lDebug )
 
    lDebugInfo := Iif( lDebug==Nil, .T., lDebug )
+
 RETURN .T.
 
 FUNCTION SetDebugger( lDebug )
 
    lDebugger := Iif( lDebug==Nil, .T., lDebug )
+
 RETURN .T.
 
 FUNCTION SetDebugRun()
 
    lDebugRun := .T.
+
 RETURN .T.
 
-Function RunScript( fname, scrname, args )
-Local scr := OpenScript( fname, scrname )
-Return Iif( scr==Nil, Nil, DoScript( scr, args ) )
+FUNCTION RunScript( fname, scrname, args )
+
+   LOCAL scr := OpenScript( fname, scrname )
+
+RETURN Iif( scr==Nil, Nil, DoScript( scr, args ) )
 
 #ifdef __PLATFORM__WINDOWS  // __WINDOWS__
+
 
 STATIC FUNCTION WndOut()
 
@@ -621,10 +639,11 @@ STATIC FUNCTION WndOut()
 
 FUNCTION WndOut( sout, noscroll, prnew )
 
-LOCAL y1, x1, y2, x2, oldc, ly__size := (y__size != 0)
-STATIC w__buf
+   LOCAL y1, x1, y2, x2, oldc, ly__size := (y__size != 0)
+   STATIC w__buf
+
    IF sout == Nil .AND. !ly__size
-      Return Nil
+      RETURN Nil
    ENDIF
    IF y__size == 0
       y__size := 5
@@ -637,7 +656,7 @@ STATIC w__buf
    x1 := 41 - INT( x__size / 2 )
    y2 := y1 + y__size
    x2 := x1 + x__size
-   IF sout == Nil 
+   IF sout == Nil
       RESTSCREEN( y1, x1, y2, x2, w__buf )
       y__size := 0
    ELSE
@@ -648,15 +667,17 @@ STATIC w__buf
       ELSEIF noscroll = Nil
          SCROLL( y1 + 1, x1 + 1, y2 - 1, x2 - 1, 1 )
       ENDIF
-      @ y2 - 1, x1 + 2 SAY sout         
+      @ y2 - 1, x1 + 2 SAY sout
       SETCOLOR( oldc )
    ENDIF
+
 RETURN Nil
 
 FUNCTION WndGet( sout, varget, spict )
 
-LOCAL y1, x1, y2, x2, oldc
-LOCAL GetList := {}
+   LOCAL y1, x1, y2, x2, oldc
+   LOCAL GetList := {}
+
    WndOut( sout )
    y1   := 13 - INT( y__size / 2 )
    x1   := 41 - INT( x__size / 2 )
@@ -668,9 +689,10 @@ LOCAL GetList := {}
    ELSE
       x1 += LEN( sout ) + 1
    ENDIF
-   @ y2 - 1, x1 + 2 GET varget PICTURE spict        
+   @ y2 - 1, x1 + 2 GET varget PICTURE spict
    READ
    SETCOLOR( oldc )
+
 RETURN IIF( LASTKEY() = 27, Nil, varget )
 
 FUNCTION WndOpen( ysize, xsize )
@@ -678,6 +700,7 @@ FUNCTION WndOpen( ysize, xsize )
    y__size := ysize
    x__size := xsize
    WndOut( "",, .T. )
+
 RETURN Nil
 #endif
 

@@ -2,13 +2,14 @@
 # $Id$
 #
 
--n -w
+../../hwgui.hbc
+
+-w0
 
 -ohwmake
 
 hwmake.prg
 
-..\..\hwgui.hbc
 xhb.hbc
 
 # ============== EOF of hwmake.hbp =============

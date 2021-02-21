@@ -2,7 +2,9 @@
 # $Id: $
 #
 
--n -w
+..\..\hwgui.hbc
+
+-w
 
 -ohwreport
 
@@ -13,4 +15,6 @@ printrpt.prg
 repexec.prg
 repbuild.rc
 
-..\..\hwgui.hbc
+# =============================== EOF of hwreport.hbp =========================
+
+

@@ -11,8 +11,12 @@
 #include "repbuild.h"
 #include "repmain.h"
 
+#ifndef UDS_SETBUDDYINT
 #define UDS_SETBUDDYINT     2
+#endif
+#ifndef UDS_ALIGNRIGHT
 #define UDS_ALIGNRIGHT      4
+#endif
 
 Static aPenStyles := { "SOLID","DASH","DOT","DASHDOT","DASHDOTDOT" }
 Static aVariables := { "Static", "Variable" }

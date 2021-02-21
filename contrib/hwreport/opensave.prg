@@ -12,7 +12,8 @@
 #include "repmain.h"
 #include "fileio.ch"
 
-#define SB_VERT         1
+* Removed
+* #define SB_VERT         1
 
 Memvar aPaintRep , mypath,aitemtypes
 

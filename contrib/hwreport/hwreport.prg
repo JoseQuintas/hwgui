@@ -13,7 +13,9 @@
 #include "repbuild.h"
 #include "repmain.h"
 
+#ifndef SB_VERT
 #define SB_VERT         1
+#endif
 #define IDCW_STATUS  2001
 
 Static nAddItem := 0, nMarkerType := 0

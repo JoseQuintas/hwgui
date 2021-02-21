@@ -94,7 +94,9 @@ FUNCTION FIND_Z( stroka, symb )
 
    RETURN poz
 
-#ifdef __WINDOWS__
+*  -- #ifdef __WINDOWS__  -- 
+#ifndef __PLATFORM__WINDOWS   
+
 
 FUNCTION Fchoice()
 

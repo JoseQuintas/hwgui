@@ -28,6 +28,8 @@
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
+/* Avoid warnings from GCC */
+#include "warnings.h"
 
 
 #define SS_CENTER           1

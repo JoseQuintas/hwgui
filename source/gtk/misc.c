@@ -30,6 +30,8 @@
 #if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
 #include <windows.h>
 #endif
+/* Avoid warnings from GCC */
+#include "warnings.h"
 
 static GtkClipboard* clipboard = NULL;
 

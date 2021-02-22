@@ -22,6 +22,7 @@
 #include "missing.h"
 
 #include "incomp_pointer.h"
+#include "warnings.h"
 
 
 void hwg_writelog( const char * sFile, const char * sTraceMsg, ... )

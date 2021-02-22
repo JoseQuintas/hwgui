@@ -8,6 +8,16 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-22 23:40 UTC+0100 Wilfried Brunken DF7BE
+  * include/warnings.h
+  * source/common/procmisc/procscri.prg
+  * source/gtk/control.c
+  * source/gtk/misc.c
+  * source/winapi/misc.c
+  ! Ticket #77: see post to ticket,
+  ! to be continued.
+
+
 2021-02-22 18:04 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/control.c
     * hwg_setFgColor() and hwg_setBgColor() changed. They use now 

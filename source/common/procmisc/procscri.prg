@@ -249,7 +249,7 @@ Local cLine, lDebug := ( Len( rezArray ) >= 3 )
             IF LEN( rezArray[2] ) == 0 .OR. ( i := VALTYPE( ATAIL( rezArray[2] ) ) ) == "C" ;
                     .OR. i == "A"
                IF Left( scom,2 ) == "LO"
-                  AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 7 ) ) )     
+                  AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 7 ) ) )
                ELSEIF Left( scom,2 ) == "PR"
                   AADD( rezArray[2], " "+ALLTRIM( SUBSTR( stroka, 9 ) ) )
                ELSE
@@ -347,7 +347,7 @@ RETURN .T.
 
 STATIC FUNCTION MacroError( nm, e, stroka )
 
-Local n 
+Local n
 
 #ifdef __PLATFORM__WINDOWS  // __WINDOWS__
 
@@ -469,7 +469,9 @@ FUNCTION DoScript( aScript, aParams )
 
 LOCAL arlen, stroka, varName, varValue, lDebug, lParam, j
  * Variables not used
- * LOCAL lSetDebugger := .F.
+#ifdef __PLATFORM__WINDOWS
+LOCAL lSetDebugger := .F.
+#endif
 MEMVAR iscr, bOldError, aScriptt, doscr_RetValue
 PRIVATE iscr := 1, bOldError, doscr_RetValue := Nil
 
@@ -641,7 +643,7 @@ STATIC w__buf
    x1 := 41 - INT( x__size / 2 )
    y2 := y1 + y__size
    x2 := x1 + x__size
-   IF sout == Nil 
+   IF sout == Nil
       RESTSCREEN( y1, x1, y2, x2, w__buf )
       y__size := 0
    ELSE
@@ -662,13 +664,13 @@ STATIC w__buf
  0xb3 = 179
  0x20 = 32
  0x22 = "
-*/ 
+*/
          @ y1, x1, y2, x2 BOX ;
          CHR(218) + CHR(196) + CHR(191) + CHR(179) + CHR(217) + CHR(196) + CHR(192) + CHR(179) + CHR(32)
       ELSEIF noscroll = Nil
          SCROLL( y1 + 1, x1 + 1, y2 - 1, x2 - 1, 1 )
       ENDIF
-      @ y2 - 1, x1 + 2 SAY sout         
+      @ y2 - 1, x1 + 2 SAY sout
       SETCOLOR( oldc )
    ENDIF
 RETURN Nil
@@ -688,7 +690,7 @@ LOCAL GetList := {}
    ELSE
       x1 += LEN( sout ) + 1
    ENDIF
-   @ y2 - 1, x1 + 2 GET varget PICTURE spict        
+   @ y2 - 1, x1 + 2 GET varget PICTURE spict
    READ
    SETCOLOR( oldc )
 RETURN IIF( LASTKEY() = 27, Nil, varget )

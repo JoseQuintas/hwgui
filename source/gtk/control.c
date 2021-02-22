@@ -1382,6 +1382,7 @@ HB_FUNC( HWG_SETFGCOLOR )
 
    GtkWidget *label;
    HB_ULONG hColor = hb_parnl( 2 );
+   GdkColor color;
 
    if( GTK_IS_BUTTON( hCtrl ) )
    {
@@ -1396,10 +1397,14 @@ HB_FUNC( HWG_SETFGCOLOR )
 
    if( label )
    {
+      /*
       GtkStyle * style = gtk_style_copy( gtk_widget_get_style( label ) );
       hwg_parse_color( hColor, &(style->fg[iType]) );
       hwg_parse_color( hColor, &(style->text[iType]) );
       gtk_widget_set_style( label, style );
+      */
+      hwg_parse_color( hColor, &color );
+      gtk_widget_modify_fg( label, iType, &color );
    }
 }
 
@@ -1407,11 +1412,17 @@ HB_FUNC( HWG_SETBGCOLOR )
 {
    GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
    HB_ULONG hColor = hb_parnl( 2 );
-   GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
+   GdkColor color;
 
+   /*
+   GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
    hwg_parse_color( hColor, &(style->bg[GTK_STATE_NORMAL]) );
    hwg_parse_color( hColor, &(style->base[GTK_STATE_NORMAL]) );
    gtk_widget_set_style( hCtrl, style );
+   */
+   hwg_parse_color( hColor, &color );
+   gtk_widget_modify_bg( hCtrl, GTK_STATE_NORMAL, &color );
+
 }
 
 #else

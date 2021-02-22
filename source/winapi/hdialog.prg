@@ -63,7 +63,7 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
    IF nStyle == Nil
       ::style := WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX
    ELSEIF nStyle < 0 .AND. nStyle > -0x1000
-      ::style := WS_POPUP
+      ::style := WS_POPUP + WS_VISIBLE
       IF hwg_Bitand( Abs(nStyle), Abs(WND_NOTITLE) ) = 0
          ::style += WS_CAPTION
       ENDIF

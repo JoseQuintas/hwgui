@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-22 18:04 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/control.c
+    * hwg_setFgColor() and hwg_setBgColor() changed. They use now 
+      gtk_widget_modify_fg() and gtk_widget_modify_bg() instead of
+      gtk_widget_set_style() for to not touch font information.
+  * source/gtk/hdialog.prg
+    * A small bug fixed with a nonmodal dialog with WND_NOTITLE style
+
 2021-02-21 14:50 UTC+0100 Wilfried Brunken DF7BE
   * contrib/hwmake/hwmake.hbp
   * contrib/hwreport/hwreport.hbp

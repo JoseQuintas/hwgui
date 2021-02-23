@@ -66,6 +66,9 @@
 #include "gtk/gtk.h"
 #include "hwgtk.h"
 
+/* Avoid warnings from GCC */
+#include "warnings.h"
+
 typedef struct
 {
    long fg;                 // foreground colour
@@ -1018,3 +1021,6 @@ HB_FUNC( HCED_X2COLOR )
    sscanf( hb_parc(1),"#%2X%2X%2X", &i1, &i2, &i3 );
    hb_retnl( i3*65536 + i2*256 + i1 );
 }
+
+/* ========================= EOF of hcedit_l.c =========================== */
+

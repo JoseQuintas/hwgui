@@ -18,7 +18,8 @@
 
 
 #if defined(__GNUC__) && !defined(__INTEL_COMPILER) && !defined(__clang__)
-#pragma GCC diagnostic ignored "-Wpragmas" 
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wold-style-cast" 
 #pragma GCC diagnostic ignored "-Wunused-parameter"
 #pragma GCC diagnostic ignored "-Wmissing-field-initializers"
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"

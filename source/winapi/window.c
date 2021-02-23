@@ -28,6 +28,8 @@
 #include <float.h>
 #include <limits.h>
 
+/* Avoid warnings from GCC */
+#include "warnings.h"
 #include "incomp_pointer.h"
 
 #define  FIRST_MDICHILD_ID     501

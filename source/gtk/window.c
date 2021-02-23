@@ -22,6 +22,10 @@
 #include "hbapicls.h"
 #endif
 #include "hwgtk.h"
+
+/* Avoid warnings from GCC */
+#include "warnings.h"
+
 #define WM_MOVE                           3
 #define WM_SIZE                           5
 #define WM_SETFOCUS                       7

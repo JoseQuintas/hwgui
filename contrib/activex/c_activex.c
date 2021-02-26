@@ -51,6 +51,12 @@
 #define hb_dynsymSymbol( pDynSym )        ( ( pDynSym )->pSymbol )
 #endif
 
+/*  Suppress warnings  for GCC */
+#if defined(__GNUC__) && !defined(__INTEL_COMPILER) && !defined(__clang__)
+#pragma GCC diagnostic ignored "-Wpragmas"
+#pragma GCC diagnostic ignored "-Wsign-compare"
+#endif
+
 PHB_SYMB s___GetMessage = NULL;
 
 typedef HRESULT( WINAPI * LPAtlAxWinInit ) ( void );

@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left">&nbsp;</td>
-    <td width="70%" align="center">Alexander S.Kresin, December 2020</td>
+    <td width="70%" align="center">Alexander S.Kresin, February 2021</td>
     <td width="15%" align="right"><a href="hwgdoc_commands.html">next</a></td>
   </tr>
 </table>
@@ -46,6 +46,7 @@
          <li><a name="_Using8" href="#Using8">3.8.  GET-system</a>
          <li><a name="_Using9" href="#Using9">3.9.  Inside HwGUI</a>
          <li><a name="_Using10" href="#Using10">3.10.  Using the UNICODE</a>
+         <li><a name="_Using11" href="#Using11">3.11.  Handling resources</a>
       </ul>
       <li><a name="_Commands" href="hwgdoc_commands.html#Commands">4.  Commands</a>
       <ul>
@@ -465,7 +466,7 @@
     HEdit, HStaticLink, HOwnButton, HPanel, HRichEdit, HSplitter, HTab,
     HTrackBar.<br>
     The second - all other controls, such as HStatic, HStatus, HButton,
-    HGroup, HCheckButton, etc.
+    HGroup, HCheckButton, etc.</p>
     <p>Handling of messages for the first group is implemented in the
     following way:<br>
     Window ( control ) creation functions stores the pointer to the
@@ -485,7 +486,7 @@
     for this object.<br>
     The :onEvent method may process the message itself, or pass it to the
     super method, or, returning -1, pass it to the default Windows API
-    procedure.
+    procedure.</p>
     <p> For example, the HStatic and HStatus are a second
      group controls, i.e. messages to this control aren't processed by HwGUI -
      that's why Windows doesn't process notifications, messages for it
@@ -499,10 +500,50 @@
      for example, the HPanel. Hpanel is a general purpose control, which
      I use and recommend you to use for such purposes.
     </blockquote>
+    </p>
 
     <br><strong class="subhead"><a name="Using10" href="#_Using10">
     3.10.  Using the Unicode</a></strong><br><br>
     <p></p>
+
+    <br><strong class="subhead"><a name="Using11" href="#_Using11">
+    3.11.  Handling resources</a></strong><br><br>
+
+    <p>
+    Resources in GUI applications means:<br>
+    <blockquote>
+    1.) Icons and images<br>
+    2.) Forms<br>
+    </blockquote>
+    Most development tools for GUI programs (like Micosoft Visual C/C++)
+    contain a tool for handling and designing resources.<br>
+    You can desingn forms adding typical windows elements for display
+    (text, images, icons), control's (button's, radio buttons, ...) or
+    for editing.<br>
+    The designed resources are stored in a resource file, in most cases
+    with file ending ".rc" and were compiled into the exe file.<br>
+    This feature is supported by HWGUI, but the resource files are not
+    compatible between the various development tools.<br><br>
+    For multi platform purposes here the description of the strategy with HWGUI:<br><br>
+    To desingn forms use the HWGUI utility "HWGUI Designer".<br>
+      The design is stored in an XML file. It can be read at run time (look at source of utils and samples)
+      or the form can also stored as HWGUI source file (*.prg).<br>
+    Copy the generated code into the source code of your application.<br>
+    But because of bugs in this function corrections of the generated code is needed.<br>
+    Known bugs:<br>
+    <blockquote>
+    - Check the generated list of object variables of control elements in the LOCAL declaration section.
+      Add missing variables.<br>
+    - If a form contains a checkbox definition, the HWGUI designer crashes at storing of prg file.<br>
+      The workaround is, to store the checkbox as a static text, starting with "X".
+      Modfiy the command , but the position and size can be copied.
+    </blockquote>
+    <br>
+    For details read the chapter <a name="_Util1" href="hwgdoc_misc.html#Util1">7.1.  Designer</a><br>
+    <br>
+    A good editor for icons is "Greenfish Icon Editor Pro" (free and open source).
+    <br><br>
+    </p>
 
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

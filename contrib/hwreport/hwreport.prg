@@ -8,10 +8,36 @@
  * www - http://kresin.belgorod.su
 */
 
+/*
+  DF7BE: (started 2021-02-25)
+  Port from Borland res file "repbuild.rc" (not compatible with MinGW windres compiler and LINUX/GTK)
+  to HWGUI commands, Version 1.2
+  Make also ready for GTK.
+  
+  Hint for port to HWGUI commands:
+                                               ID
+                                               !    ?
+                                               !    !   ? 
+                                               !    !   !    ? 
+                                               !    !   !    !
+                                               v    v   v    v 
+  AboutDlg DIALOG LOADONCALL FIXED DISCARDABLE 100, 63, 111, 96
+  
+  * Dialogs done:
+  - Icon
+  - Dialog "About"
+  
+*/
+
 #include "windows.ch"
 #include "guilib.ch"
 #include "repbuild.h"
 #include "repmain.h"
+* #include "hwgui.ch"
+#include "common.ch"
+#ifdef __XHARBOUR__
+   #include "ttable.ch"
+#endif
 
 #ifndef SB_VERT
 #define SB_VERT         1
@@ -32,11 +58,16 @@ Memvar oPenBorder, oFontSmall, oFontStandard, lastFont
 Memvar aItemTypes
 
 Function Main()
-Local oMainWindow, aPanel, oIcon := HIcon():AddResource("ICON_1")
+Local oMainWindow, aPanel, oIcon , cVal_Ico
 Public mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
 Public aPaintRep := Nil
 Public oPenBorder, oFontSmall, oFontStandard, lastFont := Nil
 Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
+
+* Icon from hex value "ICON_1"
+cVal_Ico := hwg_cHex2Bin(hwreport_icon_hex())
+oIcon := HIcon():AddString( "ICON_1" , cVal_Ico )
+
 
    SET DECIMALS TO 4
    crossCursor := hwg_Loadcursor( IDC_CROSS )
@@ -110,15 +141,57 @@ Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
 Return Nil
 
 Function About
-Local aModDlg, oFont
+Local aModDlg, oOBtn , oGroup1 , oGroup2
+Local oFont , oFont2 , oFont3
+Local oSay1, oSay2, oSay3, oSay4
 
-   INIT DIALOG aModDlg FROM RESOURCE "ABOUTDLG"
-   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 ITALIC UNDERLINE
+/*
+ GROUPBOX "", -1, 14, 0, 84, 37, BS_GROUPBOX
+ GROUPBOX "", -1, 20, 39, 75, 18, BS_GROUPBOX
+ CTEXT "Visual report Builder", -1, 18, 16, 78, 8
+                   Id   xat    yat
+ CTEXT "HWREPORT", 101, 30, 7, 52, 8
+                            xsize  ysize
+ CTEXT "version 1.1", -1, 25, 26, 66, 8
+ CTEXT  -1, 22, 45, 72, 7
+ CONTROL "", IDC_OWNB1, "OWNBTN", 0 | WS_CHILD | WS_VISIBLE, 22, 66, 72, 20
+*/
 
-   REDEFINE SAY "HWREPORT" OF aModDlg ID 101 COLOR hwg_ColorC2N("0000FF")
+
+   PREPARE FONT oFont  NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 ITALIC UNDERLINE
+   PREPARE FONT oFont2 NAME "MS Shell Dlg"  WIDTH 0 HEIGHT 9
+   PREPARE FONT oFont3 NAME "Arial" WIDTH 0 HEIGHT -11
+
+   * FROM RESOURCE "ABOUTDLG"   && 100, 63, 111, 96
+   INIT DIALOG aModDlg TITLE "About" AT 100, 111 SIZE 169 , 158  && 184 , 200 ;
+   * FONT oFont2
+
+
+   @ 45, 12 SAY oSay1 CAPTION "HWREPORT" SIZE 72, 30 OF oGroup1 ;
+            STYLE SS_CENTER COLOR hwg_ColorC2N("0000FF") FONT oFont3
+
+   @ 31, 28  SAY oSay2 CAPTION "Visual report Builder" SIZE 100, 30 OF oGroup1 ;
+            STYLE SS_CENTER FONT oFont3
+
+   @ 45, 44  SAY oSay3 CAPTION "version 1.1" SIZE 72, 30 OF oGroup1 ;
+            STYLE SS_CENTER FONT oFont3
+
+   @ 27, 80  SAY oSay4 CAPTION "Alexander Kresin" SIZE 110, 30 OF oGroup2 ;
+            STYLE SS_CENTER FONT oFont3
+   
+*     Causes Warning W0001  Ambiguous reference 'FONT' ----!  ==> REDEFINE ... 
+   @ 32,110 OWNERBUTTON oOBtn ID IDC_OWNB1 SIZE 109,32 ; && FONT oFont 
+     FLAT TEXT "Close" ;
+     COLOR hwg_ColorC2N("0000FF") ;
+     ON CLICK {|| hwg_EndDialog( hwg_GetModalHandle() )}
+
    REDEFINE OWNERBUTTON OF aModDlg ID IDC_OWNB1 ON CLICK {|| hwg_EndDialog( hwg_GetModalHandle() )} ;
        FLAT TEXT "Close" COLOR hwg_ColorC2N("0000FF") FONT oFont
 
+  @ 20,1  GROUPBOX oGroup1 CAPTION ""  SIZE 124,62 
+  
+  @ 26,68 GROUPBOX oGroup2 CAPTION ""  SIZE 112,30
+  
    aModDlg:Activate()
 Return Nil
 
@@ -730,3 +803,58 @@ Static Function WriteItemInfo( aItem )
           +Ltrim(Str(aItem[ITEM_Y1]))+", cx: "+Ltrim(Str(aItem[ITEM_WIDTH])) ;
           +", cy: "+Ltrim(Str(aItem[ITEM_HEIGHT])) )
 Return Nil
+
+
+* Returns the Hex value of icon 
+FUNCTION hwreport_icon_hex()
+RETURN ;
+"00 00 01 00 01 00 20 20 10 00 01 00 04 00 E8 02 " + ;
+"00 00 16 00 00 00 28 00 00 00 20 00 00 00 40 00 " + ;
+"00 00 01 00 04 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 FF FF " + ;
+"00 00 FF FF FF 00 C0 C0 C0 00 00 00 00 00 00 00 " + ;
+"FF 00 00 00 80 00 00 80 80 00 80 00 00 00 80 80 " + ;
+"00 00 80 80 80 00 00 80 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 88 88 " + ;
+"88 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88 " + ;
+"88 88 88 88 88 88 88 88 88 88 88 88 88 88 88 88 " + ;
+"82 28 22 28 88 88 88 88 88 8A 18 88 88 88 88 86 " + ;
+"68 88 88 88 88 88 88 88 88 88 88 88 82 88 88 88 " + ;
+"88 88 88 88 88 88 03 38 88 88 88 A8 81 88 88 88 " + ;
+"88 88 03 83 30 13 33 30 88 88 88 88 88 88 88 88 " + ;
+"88 88 33 01 03 33 33 30 88 88 88 88 88 88 88 88 " + ;
+"88 33 13 13 33 33 33 38 18 88 88 88 88 88 88 88 " + ;
+"83 33 33 33 33 33 33 38 88 88 88 88 88 88 88 88 " + ;
+"33 33 33 33 33 33 33 37 88 88 88 88 88 88 88 82 " + ;
+"33 33 33 33 32 23 33 37 88 88 88 88 88 88 88 83 " + ;
+"33 33 33 33 33 33 33 33 88 88 88 88 88 89 00 03 " + ;
+"33 33 33 33 33 33 33 33 70 00 00 00 00 00 00 03 " + ;
+"33 22 12 13 11 33 33 33 32 00 00 00 00 00 00 02 " + ;
+"33 33 33 33 33 33 33 33 33 00 00 00 00 00 00 00 " + ;
+"03 11 11 12 00 00 12 77 33 20 00 01 11 00 00 10 " + ;
+"03 22 22 62 00 10 00 00 23 30 00 00 10 00 00 00 " + ;
+"03 35 55 22 00 00 00 00 00 00 00 00 00 00 00 10 " + ;
+"00 04 44 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 03 11 00 00 00 00 00 11 11 11 11 01 00 00 00 " + ;
+"00 03 22 00 11 11 10 11 11 11 11 11 11 10 00 00 " + ;
+"00 00 20 00 01 11 10 00 11 10 11 11 01 10 00 00 " + ;
+"00 01 20 00 00 00 10 10 11 11 11 10 11 10 01 11 " + ;
+"11 12 10 00 00 01 00 01 01 11 11 01 01 00 01 02 " + ;
+"02 21 00 00 00 00 00 00 11 11 11 00 10 00 01 10 " + ;
+"10 11 00 00 00 00 00 01 11 11 11 00 00 00 01 11 " + ;
+"11 00 00 00 00 00 01 11 11 11 00 00 00 00 00 10 " + ;
+"00 00 00 00 00 00 11 00 11 10 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 01 11 11 10 00 00 00 00 00 01 " + ;
+"01 10 00 00 00 00 00 00 11 10 00 00 00 00 00 11 " + ;
+"11 11 10 00 00 00 00 00 01 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+
+* ===================================== EOF of hwreport.prg ========================================

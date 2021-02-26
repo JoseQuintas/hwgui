@@ -8,6 +8,41 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2021-02-26 11:20 UTC+0100 Wilfried Brunken DF7BE
+  * contrib/activex/c_activex.c
+   ! Ticket #77:
+   ! Suppress warning "-Wsign-compare".
+   ! Feature "ActiveX" is outdated and can not
+   ! be compiled on Windows 10.
+  * contrib/hwreport/bldmngw.bat
+  * contrib/hwreport/hwreport.prg
+   ! Ticket #41: 
+   ! Borland resource files are not compatible to
+   ! MinGW with windres compiler and GTK/LINUX.
+   ! Started with icon and dialog "About" in "hwreport" as example
+   ! from port of Borland res file "repbuild.rc"
+   ! to HWGUI commands, only manual possible, needs some time.
+   ! The values for positions and sizes of elements are not plausible.
+   ! Some hints to this item added in HWGUI docu.
+   ! To be continued.
+  * contrib/obj (New)
+  * contrib/obj/empty.txt (New)
+   ! Hold empty directory for build of contrib.
+  * doc/hwgdoc.html
+  * doc/hwgdoc_functions.html
+   ! New chapter "3.11. Handling resources"
+  * samples/Readme.txt
+  * samples/menumod.prg (New)
+   ! New samples for Ticket #37
+   ! as template for experiments, see post to
+   ! ticket.
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+   ! New functions hwg_KEYESCCLDLG() and hwg_ShowHelp()
+   ! as preparation for hwlabel feature. Docu updated
+
+
 2021-02-23 09:30 UTC+0100 Wilfried Brunken DF7BE
   * hwgui.hbc
   * include/warnings.h

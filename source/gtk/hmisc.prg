@@ -642,6 +642,63 @@ RETURN km * 0.5399568034557235
 
 * ===== End of unit conversions ==============
 
+* ================================= *
+FUNCTION hwg_KEYESCCLDLG (odlg)
+* ================================= *
+ odlg:Close()
+RETURN NIL 
+
+* ================================= *
+FUNCTION hwg_ShowHelp(cHelptxt,cTitle,cClose,opFont,blmodus)
+* Shows a help window
+* ================================= *
+ LOCAL oDlg , oheget
+
+* T: not modal (default is .F.)
+ IF blmodus == NIL 
+  blmodus := .F.
+ ENDIF
+ 
+ IF cTitle == NIL
+  cTitle := "No title for help window"
+ ENDIF
+
+IF cHelptxt == NIL
+ cHelptxt := "No help available"
+ENDIF
+
+IF cClose == NIL
+ cClose := "Close"
+ENDIF 
+ 
+IF opFont == NIL
+#ifdef __PLATFORM__WINDOWS
+   PREPARE FONT opFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
+#else
+   PREPARE FONT opFont NAME "Sans" WIDTH 0 HEIGHT 12 
+#endif
+ENDIF 
+
+  
+   INIT DIALOG oDlg TITLE cTitle ;
+        AT 204,25 SIZE 777, 440 FONT opFont
+
+   SET KEY 0,VK_ESCAPE TO hwg_KEYESCCLDLG(oDlg)
+   @ 1,3 GET oheget VAR cHelptxt SIZE 772,384 NOBORDER ;
+      STYLE WS_VSCROLL + ES_AUTOHSCROLL + ES_MULTILINE + ES_READONLY + WS_BORDER + ES_NOHIDESEL
+
+   @ 322,402 BUTTON cClose SIZE 100,32 ; 
+    ON CLICK {||oDlg:Close() }
+
+   IF blmodus  
+    ACTIVATE DIALOG oDlg NOMODAL
+   ELSE
+    ACTIVATE DIALOG oDlg
+   ENDIF
+
+ SET KEY 0,VK_ESCAPE TO  
+RETURN NIL
+
 
 
 * ============== EOF of hmisc.prg =================

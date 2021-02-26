@@ -1292,7 +1292,16 @@
    <p></p>
 
    <br><strong class="subhead"> Hwg_FindMenuItem( aMenu, nId, nPos )</strong> 
-   <p></p>
+   <p>
+    Searches menu item with id "nId" in an menu array "aMenu" inclusive<br>
+    all submenus (recursive search).<br> 
+    Returns the array with match of nId, if no match NIL.<br>
+    nPos returns via call by reference the position in the menu found:<br>
+    For example:<br> 
+    &nbsp;&nbsp;&nbsp;LOCAL nPos<br>
+    &nbsp;&nbsp;&nbsp;nPos := 1<br>
+    &nbsp;&nbsp;&nbsp;Hwg_FindMenuItem( aMenu[ 1,nPos ] , nId, @nPos1 )<br>   
+   </p>
 
    <br><strong class="subhead"> hwg_CheckMenuItem( xWnd, nId, lValue )</strong> 
    <br>Checks or unchecks a menu item
@@ -1334,7 +1343,15 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_GetMenuCaption( xWnd, nId )</strong> 
-   <p></p>
+   <p>
+   &lt;not available&gt; <br>
+   Returns the caption (string) of a menu item defined by the id of a menu item<br>
+    <ul>
+     <li> xWnd - it may be a handle of a window - menu owner, or a context menu object,
+                 if it is an empty value (Nil), the main window menu is used;
+     <li> nId - id of a menu item.
+   </ul>
+   </p>
 
    <br><strong class="subhead"> hwg_DrawMenuBar( hWnd )</strong> 
    <p></p>
@@ -2270,8 +2287,52 @@
    (2 Bytes String)<br>
 
    <p></p>
+   <br><strong class="subhead"> hwg_KEYESCCLDLG (odlg)</strong>
+   <br>Simple helper function, closes dialog at ESC key<br>
+   For the cases with usage of INIT DIALOG ... NOEXIT, which blocks the close of dialog by
+   pressing the ESC key.<br>
+   <br>
+   Sample:<br>
+   FUNCTION xyz<br> 
+   LOCAL oDlg,lCancel<br>
+   lCancel := .T.<br>  
+   INIT DIALOG oDlg ...<br>
+   SET KEY 0,VK_ESCAPE TO hwg_KEYESCCLDLG(oDlg)<br>
+   ....<br>
+   @ 122,402 BUTTON "Action"  SIZE 100,32 ;<br>   
+   ON CLICK {|| lCancel := .F. , oDlg:Close() }<br>
+   ....<br>
+   @ 322,402 BUTTON "Close"  SIZE 100,32 ;<br>   
+   ON CLICK {|| oDlg:Close() }<br>
+   ....<br>
+   ACTIVATE DIALOG oDlg<br>
+   SET KEY 0,VK_ESCAPE TO<br>
+   IF .NOT. lCancel<br>
+   &nbsp;&nbsp; * Not ESC pressed or not cancelled<br>
+   &nbsp;&nbsp; * ==&gt; ... and action<br>   
+   &nbsp;&nbsp; ....<br>
+   ENDIF<br>
+   RETURN NIL<br>  
+  
+   <p></p>
+   <br><strong class="subhead"> hwg_ShowHelp(cHelptxt,cTitle,cClose,opFont,blmodus)</strong>
+   <br>Shows help window<br>
+   (Useful for static help texts)<br>
+   <br>
+   cHelptxt: Character variable with multiline help text,<br>
+   complete every line with CHR(10).<br> 
+   cTitle  : The title of the help window<br>
+   cClose  : Set text for "Close" button in your language, defaukt is "Close".<br>
+   opFont : Additional font setting<br> 
+   blmodus : .T.: not modal (default is .F.)<br>
+   <br>
+   Sample:<br>
+   cHelptxt := "Line 1 of help" + CHR(10) + ;<br>
+   "Line 2 of help" + CHR(10) + ;<br>
+   "Line 3 of help"<br>
+   hwg_ShowHelp(cHelptxt,"Title of help",.T.)<br>
 
-
+   <p></p>
    <br><strong class="subhead"> hwg_GET_Helper(cp_get,nlen)</strong>
    <br> 
    Fixes a special problem<br> 
@@ -2425,7 +2486,9 @@
     hwg_NML2KM(nml)<br>
     hwg_KM2NML(km)<br>
     </p>
-   
+
+
+<br><br>   
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>

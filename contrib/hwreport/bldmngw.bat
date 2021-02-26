@@ -4,6 +4,8 @@ REM $Id$
 REM by DF7BE
 REM 2020-07-01
 
+REM Port from Borland resources to MinGW
+
 REM before use, set environment with script:
 REM ..\..\samples\dev\env\pfad.bat
 
@@ -27,6 +29,8 @@ SET HWG_LIBS=-lhwgui -lprocmisc -lhbxml -lhwgdebug
 
 REM %XHB%
 
-hbmk2 hwreport2.hbp repbuild2.rc -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWG_LIBS% -gui
+REM Resource file not compatible for windres of GCC and multi platform purposes
+REM hbmk2 hwreport2.hbp repbuild2.rc -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWG_LIBS% -gui
+hbmk2 hwreport2.hbp -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWG_LIBS% -gui
 
 REM ======= EOF of bldmngw.bat =========

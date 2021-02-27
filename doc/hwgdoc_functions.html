@@ -1624,10 +1624,10 @@
       example sequence is most suitable:<br>
       &nbsp;LOCAL anewarray<br>
       &nbsp;anewarray := {}<br>
-      &nbsp;AADD(anewarray,"One")<br>
-      &nbsp;AADD(anewarray,"Two")<br>
+      &nbsp;* --- let array empty for test<br>
+      &nbsp;* AADD(anewarray,"One")<br>
+      &nbsp;* AADD(anewarray,"Two")<br>
       Now get the length:<br>
-      &nbsp;anewarray := {}<br>
       &nbsp;? LEN(anewarray)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; && crashes here<br>
       &nbsp;? ARRAY_LEN(anewarray) &nbsp;&nbsp; && 0<br>
    </p>
@@ -2320,17 +2320,20 @@
    (Useful for static help texts)<br>
    <br>
    cHelptxt: Character variable with multiline help text,<br>
-   complete every line with CHR(10).<br> 
+   complete every line with CHR(13) + CHR(10).<br> 
    cTitle  : The title of the help window<br>
    cClose  : Set text for "Close" button in your language, defaukt is "Close".<br>
    opFont : Additional font setting<br> 
    blmodus : .T.: not modal (default is .F.)<br>
    <br>
-   Sample:<br>
-   cHelptxt := "Line 1 of help" + CHR(10) + ;<br>
-   "Line 2 of help" + CHR(10) + ;<br>
+   Sample: (display not modal)<br>
+   LOCAL lf := CHR(13) + CHR(10)<br>
+   cHelptxt := "Line 1 of help" + lf + ;<br>
+   "Line 2 of help" + lf + ;<br>
    "Line 3 of help"<br>
-   hwg_ShowHelp(cHelptxt,"Title of help",.T.)<br>
+   hwg_ShowHelp(cHelptxt,"Title of help",,,.T.)<br>
+   <br>
+   Additional instructions see sample program "helpstatic.prg".<br>
 
    <p></p>
    <br><strong class="subhead"> hwg_GET_Helper(cp_get,nlen)</strong>

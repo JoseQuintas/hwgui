@@ -8,6 +8,15 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-02-27 12:20 UTC+0100 Wilfried Brunken DF7BE
+  * Changelog
+  * doc/hwgdoc_functions.html
+  * samples/helpstatic.prg
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+   ! Some corrections for functions
+   ! hwg_Array_Len() and hwg_ShowHelp().
+
 
 2021-02-26 11:20 UTC+0100 Wilfried Brunken DF7BE
   * contrib/activex/c_activex.c

@@ -673,7 +673,7 @@ ENDIF
  
 IF opFont == NIL
 #ifdef __PLATFORM__WINDOWS
-   PREPARE FONT opFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
+   PREPARE FONT opFont NAME "Courier" WIDTH 0 HEIGHT -16
 #else
    PREPARE FONT opFont NAME "Sans" WIDTH 0 HEIGHT 12 
 #endif

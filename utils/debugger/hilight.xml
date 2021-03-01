@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<hilight>
+  <module type="prg" >
+    <keywords> and case class data do else elseif end endcase enddo endif exit for func function get if local loop method next or private proc procedure prompt public request return say set seek skip static use while </keywords>
+    <functions> aadd abs adel aeval afill ains alert alias alltrim array asc ascan asize asort at bof chr col ctod curdir date day dtoc dtos empty eof eval fclose fcreate ferase file fopen found fread fseek fwrite isalpha isdigit islower left recno right set str stuff substr updated upper val valtype year </functions> 
+    <single_line_comment> // </single_line_comment>
+    <multi_line_comment> /* */ </multi_line_comment>
+  </module>
+  <module type="bat" >
+    <keywords> set echo del  </keywords>
+    <single_line_comment> rem </single_line_comment>
+  </module>
+</hilight>
+

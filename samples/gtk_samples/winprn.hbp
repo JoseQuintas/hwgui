@@ -1,0 +1,14 @@
+#
+# $Id$
+#
+
+winprn.prg
+-owinprn
+-n -w
+-lm
+-static
+-d__LINUX__ -d__GTK__
+
+../../hwgui.hbc
+
+# ==================== EOF of winprn.hbp ===============

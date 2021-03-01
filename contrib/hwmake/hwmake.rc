@@ -1,0 +1,6 @@
+BUILD  BITMAP ..\..\image\next.bmp
+EXIT   BITMAP ..\..\image\door.bmp
+NEW    BITMAP ..\..\image\new.bmp
+SAVE   BITMAP ..\..\image\save.bmp
+OPEN   BITMAP ..\..\image\op_fl.bmp
+PIN    ICON   ..\..\image\ok.ico

@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="report">
+  <style>
+    <property name="Geometry">{524,120,1271,753}</property>
+    <property name="Caption">[Form1]</property>
+    <property name="Paper Size">[A4]</property>
+    <property name="Orientation">[Portrait]</property>
+    <property name="Duplex">[No]</property>
+    <property name="Font">
+      <font name="Arial" width="0" height="-13M2.17"/>
+    </property>
+    <property name="FontH">2.17</property>
+  </style>
+  <method name="onRepInit">
+    <![CDATA[use ("..\..\..\contrib\hwreport\test.dbf")
+]]>
+  </method>
+  <method name="onRepExit">
+    <![CDATA[dbCloseArea()
+]]>
+  </method>
+  <part class="area">
+    <style>
+      <property name="Geometry">{0.0,0.0,209.0,30.0,208.8,29.8}</property>
+      <property name="AreaType">[DocHeader]</property>
+    </style>
+    <part class="label">
+      <style>
+        <property name="Geometry">{20.1,3.2,116.0,9.8,136.0,12.9}</property>
+      </style>
+      <method name="Expression">
+        <![CDATA[return "This is the DOC HEADER"
+]]>
+      </method>
+    </part>
+  </part>
+  <part class="area">
+    <style>
+      <property name="Geometry">{0.0,30.5,209.0,13.2,208.8,43.5}</property>
+      <property name="AreaType">[PageHeader]</property>
+      <property name="VarOffset">.T.</property>
+    </style>
+    <part class="label">
+      <style>
+        <property name="Geometry">{23.5,32.2,51.7,4.5,75.0,36.5}</property>
+        <property name="Caption">[This is the PAGE HEADER ]</property>
+      </style>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{74.3,32.3,38.3,4.0,112.5,36.2}</property>
+      </style>
+      <method name="Expression">
+        <![CDATA[return "on page "+str(oReport:oPrinter:npage)
+]]>
+      </method>
+    </part>
+    <part class="box">
+      <style>
+        <property name="Geometry">{16.8,37.3,120.3,5.7,137.0,42.8}</property>
+      </style>
+      <part class="vline" options="embed">
+        <style>
+          <property name="Geometry">{52.5,37.5,0.5,5.3,52.8,42.7}</property>
+        </style>
+      </part>
+      <part class="vline" options="embed">
+        <style>
+          <property name="Geometry">{79.8,37.5,0.5,5.3,80.2,42.7}</property>
+        </style>
+      </part>
+      <part class="vline" options="embed">
+        <style>
+          <property name="Geometry">{107.0,37.5,0.5,5.3,107.3,42.7}</property>
+        </style>
+      </part>
+      <part class="label">
+        <style>
+          <property name="Geometry">{25.3,38.5,20,3.8,45.2,42.2}</property>
+          <property name="Caption">[Name]</property>
+        </style>
+      </part>
+      <part class="label">
+        <style>
+          <property name="Geometry">{55.3,38.5,20,3.8,75.2,42.2}</property>
+          <property name="Caption">[Surname]</property>
+        </style>
+      </part>
+      <part class="label">
+        <style>
+          <property name="Geometry">{82.7,38.5,20,3.8,102.5,42.2}</property>
+          <property name="Caption">[Date]</property>
+        </style>
+      </part>
+      <part class="label">
+        <style>
+          <property name="Geometry">{110.0,38.5,20,3.8,129.8,42.2}</property>
+          <property name="Caption">[Number]</property>
+        </style>
+      </part>
+    </part>
+  </part>
+  <part class="area">
+    <style>
+      <property name="Geometry">{0.5,44.2,199.5,217.2,199.8,261.2}</property>
+      <property name="AreaType">[Table]</property>
+      <property name="VarOffset">.T.</property>
+    </style>
+    <method name="onNextLine">
+      <![CDATA[dbskip()
+lLastCycle := EOF()
+]]>
+    </method>
+    <part class="label">
+      <style>
+        <property name="Geometry">{24.5,45.0,27.0,4.5,51.3,49.3}</property>
+      </style>
+      <method name="Expression">
+        <![CDATA[return first
+]]>
+      </method>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{52.8,45.0,25.7,4.5,78.3,49.3}</property>
+      </style>
+      <method name="Expression">
+        <![CDATA[return last
+]]>
+      </method>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{80.5,45.0,26.5,4.5,106.8,49.3}</property>
+      </style>
+      <method name="Expression">
+        <![CDATA[return dtoc(hiredate)
+]]>
+      </method>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{108.2,45.0,26.7,4.5,134.7,49.3}</property>
+      </style>
+      <method name="Expression">
+        <![CDATA[return str(age)
+]]>
+      </method>
+    </part>
+  </part>
+  <part class="area">
+    <style>
+      <property name="Geometry">{0.0,261.6,199.8,22.3,199.6,283.8}</property>
+      <property name="AreaType">[DocFooter]</property>
+      <property name="VarOffset">.T.</property>
+    </style>
+    <part class="label">
+      <style>
+        <property name="Geometry">{29.8,266.9,161.0,10.0,190.6,276.7}</property>
+        <property name="Justify">[Center]</property>
+      </style>
+      <method name="Expression">
+        <![CDATA[return "This is DOC FOOTER"+chr(13)+"Created with HWGUI Report Designer"
+]]>
+      </method>
+    </part>
+  </part>
+</part>

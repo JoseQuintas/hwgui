@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{318,62,502,495}</property>
+    <property name="Caption">[Barcode]</property>
+    <property name="Font">
+      <font name="Verdana" width="0" height="-13" weight="400"/>
+    </property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.T.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="Variables">
+{oBc,nxLeft,nxTop,nxWidth,nxHeight,nBarcodeType,lHorz,lTransparent,nPinxWidth,nColText,nColPane,cData,oFont,oPrinter,oFormSample1,}    </property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.T.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.F.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.T.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <method name="onFormInit">
+    <![CDATA[ nxWidth:=210
+ nxHeight:=42
+ nxLeft:=149
+ nxTop:=43
+ nBCodeType:=8
+ lHorz:= .t.
+ lTransparent:= .f.
+ nPinxWidth := 1
+ nColText :=0
+ cData:="1234567890123"
+ nColPane:=hwg_ColorRgb2N( 255, 255, 255 )
+]]>
+  </method>
+  <method name="onDlgInit">
+    <![CDATA[hwg_RefreshAllGets(oDlg)]]>
+  </method>
+  <part class="menu">
+    <style>
+      <property name="Geometry">{14,10,0,0}</property>
+      <property name="Name">[oMenu1]</property>
+      <property name="atree">
+        <item name="Sample" id="32000">
+          <item name="Buat Daftar Harga Barang" id="32001">
+            <![CDATA[]]>
+          </item>
+          <item name="-" id="32003"/>
+          <item name="Exit" id="32002">
+            <![CDATA[hwg_EndDialog()]]>
+          </item>
+        </item>
+      </property>
+    </style>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{28,0,28,28}</property>
+      <property name="Name">[oOwnerbutton3]</property>
+      <property name="Caption">[]</property>
+      <property name="Flat">.T.</property>
+      <property name="BtnBitmap">[smGrid]</property>
+      <property name="lResource">.T.</property>
+      <property name="ToolTip">[Sample]</property>
+    </style>
+  </part>
+  <part class="group">
+    <style>
+      <property name="Geometry">{23,29,440,72}</property>
+      <property name="Name">[oGroup3]</property>
+      <property name="Caption">[Barcode result]</property>
+    </style>
+  </part>
+  <part class="group">
+    <style>
+      <property name="Geometry">{23,113,444,90}</property>
+      <property name="Name">[oGroup2]</property>
+      <property name="Caption">[Data amp;amp; Type]</property>
+    </style>
+    <part class="editbox">
+      <style>
+        <property name="Geometry">{161,137,287,24}</property>
+        <property name="Name">[oEB2]</property>
+        <property name="varName">[cData]</property>
+      </style>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{41,141,96,22}</property>
+        <property name="Name">[oLabel2]</property>
+        <property name="Caption">[Data/Testing]</property>
+      </style>
+    </part>
+    <part class="combobox">
+      <style>
+        <property name="Geometry">{161,168,288,24}</property>
+        <property name="Name">[oCB2]</property>
+        <property name="Items">
+{1 - Code 39,2 - Code 39 Check,3 - Code 128 Auto,4- Code 128 A,5 - Code 128 B,6 - Code 128 C,7 - EAN 8,8 - EAN 13,9 - UPCA,10 - CODABAR,11 - SUPLEMENTOS,12 - INDUST25,13 - INDUST25 CHECK,14 - INTER 25,15 - INTER 25 CHECK,16 - MATRIX 25,17 - MATRIX 25 CHECK}        </property>
+        <property name="nMaxLines">15</property>
+        <property name="varName">[nBCodeType]</property>
+      </style>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{40,170,95,22}</property>
+        <property name="Name">[oLabel5]</property>
+        <property name="Caption">[Barcode Type]</property>
+      </style>
+    </part>
+  </part>
+  <part class="group">
+    <style>
+      <property name="Geometry">{17,214,454,168}</property>
+      <property name="Name">[oGroup1]</property>
+      <property name="Caption">[Barcode Parameter]</property>
+    </style>
+    <part class="checkbox">
+      <style>
+        <property name="Geometry">{281,235,68,22}</property>
+        <property name="Name">[oCheckbox3]</property>
+        <property name="Caption">[Horizontal]</property>
+        <property name="varName">[lHorz]</property>
+      </style>
+    </part>
+    <part class="updown">
+      <style>
+        <property name="Geometry">{143,243,86,24}</property>
+        <property name="Name">[oUD1]</property>
+        <property name="varName">[nxLeft]</property>
+      </style>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{36,245,52,22}</property>
+        <property name="Name">[oLabel8]</property>
+        <property name="Caption">[Left]</property>
+      </style>
+    </part>
+    <part class="checkbox">
+      <style>
+        <property name="Geometry">{281,258,120,22}</property>
+        <property name="Name">[oCheckbox2]</property>
+        <property name="Caption">[Transparans]</property>
+        <property name="varName">[lTransparent]</property>
+      </style>
+    </part>
+    <part class="updown">
+      <style>
+        <property name="Geometry">{143,272,86,24}</property>
+        <property name="Name">[oUD2]</property>
+        <property name="varName">[nxTop]</property>
+      </style>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{36,273,48,22}</property>
+        <property name="Name">[oLabel9]</property>
+        <property name="Caption">[Top]</property>
+      </style>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{266,284,74,22}</property>
+        <property name="Name">[oLabel3]</property>
+        <property name="Caption">[Pin width]</property>
+      </style>
+    </part>
+    <part class="updown">
+      <style>
+        <property name="Geometry">{363,286,40,24}</property>
+        <property name="Name">[oUD5]</property>
+        <property name="varName">[nPinxWidth]</property>
+        <property name="3DLook">.T.</property>
+        <property name="ToolTip">[Lebar tiap garis]</property>
+      </style>
+    </part>
+    <part class="updown">
+      <style>
+        <property name="Geometry">{143,302,86,24}</property>
+        <property name="Name">[oUD3]</property>
+        <property name="varName">[nxWidth]</property>
+      </style>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{34,306,80,22}</property>
+        <property name="Name">[oLabel10]</property>
+        <property name="Caption">[Width]</property>
+      </style>
+    </part>
+    <part class="button">
+      <style>
+        <property name="Geometry">{263,311,80,23}</property>
+        <property name="Name">[oButton4]</property>
+        <property name="Caption">[Bar Color]</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[nColText:=hwg_ChooseColor(nColText)
+hwg_RefreshAllGets(oDlg)]]>
+      </method>
+    </part>
+    <part class="editbox">
+      <style>
+        <property name="Geometry">{363,313,89,25}</property>
+        <property name="Name">[oEditbox1]</property>
+        <property name="cInitValue">[0]</property>
+        <property name="varName">[nColText]</property>
+      </style>
+    </part>
+    <part class="updown">
+      <style>
+        <property name="Geometry">{143,331,86,24}</property>
+        <property name="Name">[oUD3]</property>
+        <property name="varName">[nxHeight]</property>
+      </style>
+    </part>
+    <part class="label">
+      <style>
+        <property name="Geometry">{34,334,80,22}</property>
+        <property name="Name">[oLabel11]</property>
+        <property name="Caption">[Heigth]</property>
+      </style>
+    </part>
+    <part class="button">
+      <style>
+        <property name="Geometry">{263,339,80,23}</property>
+        <property name="Name">[oButton3]</property>
+        <property name="Caption">[Back Color]</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[//hwg_Msginfo(str(hwg_Getsyscolor(15)))
+nColPane:=hwg_ChooseColor(nColPane)
+hwg_RefreshAllGets(oDlg)
+]]>
+      </method>
+    </part>
+    <part class="editbox">
+      <style>
+        <property name="Geometry">{363,340,92,25}</property>
+        <property name="Name">[oEditbox3]</property>
+        <property name="cInitValue">[0]</property>
+        <property name="varName">[nColPane]</property>
+      </style>
+    </part>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{229,393,28,28}</property>
+      <property name="Name">[oOwnerbutton1]</property>
+      <property name="Caption">[]</property>
+      <property name="BtnBitmap">[smPrinter]</property>
+      <property name="lResource">.T.</property>
+      <property name="ToolTip">[Print]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[DT_CENTER:=1
+   oPrinter:=HPrinter():New(, .T.)
+   oFont:=oPrinter:AddFont( "Times New Roman",10 ) 
+   oPrinter:StartDoc( .T. )
+   oPrinter:StartPage()
+   oPrinter:SetFont( oFont )
+ 
+   oBC:=Barcode():New( oPrinter:hDC , alltrim(cData) , nxLeft, nxTop, nxWidth, nxHeight, nBCodeType,nColText, nColPane, lHorz,lTransparent, nPinxWidth)
+   oBc:showBarcode()
+
+   oPrinter:EndPage()
+   oPrinter:EndDoc()
+   oPrinter:Preview()]]>
+    </method>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{266,393,80,32}</property>
+      <property name="Name">[oButton2]</property>
+      <property name="Caption">[Clear]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[//hwg_Invalidaterect(oDlg:handle,0)
+//hwg_Postmessage(oDlg:handle,15,0,0, 
+hwg_Redrawwindow( oDlg:handle, 4 + 1 + 2 + 256 )]]>
+    </method>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{354,393,80,32}</property>
+      <property name="Name">[oButton1]</property>
+      <property name="Caption">[Display]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[oBC:=Barcode():New( hwg_Getdc( oDlg:handle) , alltrim(cData) , nxLeft, nxTop, nxWidth, nxHeight, nBCodeType,nColText, nColPane, lHorz,lTransparent, nPinxWidth)
+oBc:showBarcode()
+//hwg_Drawtext(hwg_Getdc( oDlg:handle), alltrim(cData),nxLeft-5, nxTop+nxHeight-12,nxLeft+nxWidth,nxTop+nxHeight, 0)
+hwg_Setfocus(oEB2:handle)
+//hwg_Setbkcolor(oDlg:handle,0)
+
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{440,393,28,28}</property>
+      <property name="Name">[oOwnerbutton2]</property>
+      <property name="Caption">[]</property>
+      <property name="BtnBitmap">[smExit]</property>
+      <property name="lResource">.T.</property>
+      <property name="ToolTip">[Exit]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[hwg_EndDialog()]]>
+    </method>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{16,401,130,16}</property>
+      <property name="Name">[oLabel6]</property>
+      <property name="Caption">[(c) 2006 Richard Roesnadi]</property>
+      <property name="font">
+        <font name="Impact" width="0" height="-11" weight="400"/>
+      </property>
+    </style>
+  </part>
+</part>

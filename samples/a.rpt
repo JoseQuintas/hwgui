@@ -1,0 +1,26 @@
+#REPORT simple
+FORM;210;297;735
+TEXT;HwGUI printing simple sample;150;66;447;29;2;Courier New,0,-23,700,204,255,0,0;0
+HLINE;194;107;359;4;0,1,0
+VLINE;564;154;4;191;0,1,0
+BOX;590;171;88;138;0,1,0
+TEXT;I don't know, what to write here :), so don't;79;174;459;20;0;Courier New,0,-17,400,204,0,0,0;0
+TEXT;314085;606;178;50;16;2;Arial,0,-13,0,0,0,0,0;0
+HLINE;602;197;60;4;0,1,0
+TEXT; worry about the hidden sense of this text !;49;206;498;20;0;Courier New,0,-17,400,204,0,0,0;0
+TEXT;Roger N.;607;207;50;17;0;Arial,0,-13,0,0,0,0,0;0
+HLINE;604;228;60;4;0,1,0
+BITMAP;..\image\Logo.bmp;600;241;68;61
+TEXT;06/14/2002;603;323;69;17;0;Arial,0,-13,0,0,0,0,0;0
+BOX;113;383;516;122;0,1,0
+TEXT;Ok, that's a table !;189;389;371;22;2;Courier New,0,-20,400,204,0,0,0;0
+BOX;113;415;123;33;0,1,0
+BOX;113;415;516;33;0,1,0
+BOX;514;415;115;33;0,1,0
+BOX;113;447;123;58;0,1,0
+BOX;514;447;115;58;0,1,0
+#ENDREP 
+
+
+
+

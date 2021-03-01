@@ -1,0 +1,819 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{305,122,680,535}</property>
+    <property name="Caption">[Find Annuity]</property>
+    <property name="Font">
+      <font name="Verdana" width="0" height="-12" weight="400"/>
+    </property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.T.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="Variables">{aIHK,aData,fname,lFixed,oB,lTahun,lIndonesia}</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.T.</property>
+    <property name="Maximizebox">.T.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.T.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <method name="common">
+    <![CDATA[Function GetA_ofPAn
+parameters P,i,n,A,lPost
+
+  lPost:=iif(lPost==NIL,.t.,lPost)
+  if (lPost) 
+	 A:= P * (i/100) / (1 - (1+i/100)^(-n))
+  else       
+	 A:= P * (i/100) / (1 - (1+i/100)^(-n)) / (1+i/100)
+  endif
+
+ Return A
+endfunc
+
+
+
+FUNCTION ABROWSE2EXCEL
+
+   oExcel := CreateObject( "Excel.Application" )
+   oExcel:WorkBooks:Add()
+   oAS := oExcel:ActiveSheet()
+   oAS:Cells:Font:Name := "vERDANA"
+   oAS:Cells:Font:Size := 10
+
+   oExcel:Visible := .T.
+
+
+   //oAS:Columns( 2 ):HorizontalAlignment := -4152
+
+   oAS:Cells( 3, 1 ):Value := "PRESENT VALUE : "+alltrim(trans(nPV,"@EZ 999,999,999,999.99"))
+   oAS:Cells( 4, 1 ):Value := "INTEREST      : "+str(val(iPa),7,2)+" %pa   |"+str(val(iPm),9,2)+" %pm"
+   oAS:Cells( 5, 1 ):Value := "PERIOD        : "+str(nUD,5)+" "+oB:aColumns[1]:heading
+   oAS:Cells( 6, 1 ):Value := "ANNUITY       : "+TRANS(nA,"@ez 999,999,999,999.99")
+
+
+   nC:= len(oB:aColumns)
+   i:=0
+   do while ++i<=nC
+     oAS:Cells(8,i):Value:=oB:aColumns[i]:heading
+   enddo
+
+aSum:={0,0,0,0,0,0,0,0}
+
+ b:=0
+ nC:=len(aData)
+  do while ++b<=nC
+       oAS:Cells(8+b,1):Value:= aData[b,1]
+       oAS:Cells(8+b,2):Value:= aData[b,2]
+       oAS:Cells(8+b,3):Value:= aData[b,3]
+       oAS:Cells(8+b,4):Value:= aData[b,4]
+       oAS:Cells(8+b,5):Value:= aData[b,5]
+       oAS:Cells(8+b,6):Value:= aData[b,6]
+       oAS:Cells(8+b,7):Value:= aData[b,7]
+       oAS:Cells(8+b,8):Value:= aData[b,8]
+
+   aSum[1]:=aSum[1]+ aData[b,4]
+   aSum[2]:=aSum[2]+ aData[b,5]
+   aSum[3]:=aSum[3]+ aData[b,7]
+   aSum[4]:=aSum[4]+ aData[b,8]
+
+  enddo
+
+  oAS:Range( "A9:A"+ALLTRIM(STR(9+nC))):NumberFormat := "###.###.###"
+  oAS:Range( "B9:B"+ALLTRIM(STR(9+nC))):NumberFormat := "###.###.##0,00"
+  oAS:Range( "C9:C"+ALLTRIM(STR(9+nC))):NumberFormat := "###.###.##0,00"
+  oAS:Range( "D9:D"+ALLTRIM(STR(9+nC))):NumberFormat := "###.###.##0,00"
+  oAS:Range( "E9:E"+ALLTRIM(STR(9+nC))):NumberFormat := "###.###.##0,00"
+  oAS:Range( "F9:F"+ALLTRIM(STR(9+nC))):NumberFormat := "###.###.##0,00"
+  oAS:Range( "G9:G"+ALLTRIM(STR(9+nC))):NumberFormat := "###.###.##0,00"
+  oAS:Range( "H9:H"+ALLTRIM(STR(9+nC))):NumberFormat := "###.###.##0,00"
+
+
+   //oAS:Columns( 1 ):AutoFit()
+   oAS:Columns( 2 ):AutoFit()
+   oAS:Columns( 3 ):AutoFit()
+   oAS:Columns( 4 ):AutoFit()
+   oAS:Columns( 5 ):AutoFit()
+   oAS:Columns( 6 ):AutoFit()
+   oAS:Columns( 7 ):AutoFit()
+   oAS:Columns( 8 ):AutoFit()
+
+   oAS:Cells( 1, 1 ):Value := "RICHARD'S FINANCIAL TOOL - FIND ANNUITY"
+   oAS:Cells( 1, 1 ):Font:Size := 15
+
+   oAS:Range( "A1:H1" ):HorizontalAlignment := 7
+   oAS:Range( "A3:E3" ):HorizontalAlignment := 1
+   oAS:Range( "A4:E4" ):HorizontalAlignment := 2
+   oAS:Range( "A5:E5" ):HorizontalAlignment := 2
+   oAS:Range( "A6:E6" ):HorizontalAlignment := 2
+
+
+   nC+=2
+   oAS:Cells( 10+nc,1 ):Value := "IHK 1.0 (c) Richard Roesnadi, Jakarta - Indonesia"
+   oAS:Cells( 10+nC,1 ):Font:Size := 8
+   oAS:Cells( 10+nC,1 ):Font:Name := "Arial"
+   oAS:Cells( 11+nc,1 ):Value := "email: xbasemaster@hotmail.com  Tel.(021)93369176"
+   oAS:Cells( 11+nC,1 ):Font:Size := 8
+   oAS:Cells( 11+nC,1 ):Font:Name := "Arial"
+   oAS:Cells( 12+nc,1 ):Value     := "DOS/Window Programming Services"
+   oAS:Cells( 12+nC,1 ):Font:Size := 8
+   oAS:Cells( 12+nC,1 ):Font:Name := "Arial"
+
+
+   oAS:Cells( 1, 1 ):Select()
+
+
+
+ENDFUNC
+
+
+FUNCTION ABRW2TXT
+//aSession:= saveSession()
+n:=len(aData)
+IF n<=1
+   hwg_Msginfo("Isi Field terlebih dulu")
+   RETURN .F.
+ENDIF
+
+aSum:={0,0,0,0,0,0,0,0}
+
+//Set(6,'GETENV("DBF")')
+Set(11,"ON")
+Set(8,"OFF")
+Set(24,"c:\laporan.txt",.F.)
+Set(23,"ON")
+
+? "RICHARD'S FINANCIAL TOOL"
+?
+? "PRESENT VALUE : Rp "+ alltrim(trans(nPV,"@EZ 999,999,999,999.99"))
+? "INTEREST      : "+ str(val(iPa),7,2)+" %pa   |"+str(val(iPm),9,2)+" %pm"
+? "PERIOD        : "+ str(nUD,5)+" "+oB:aColumns[1]:heading
+? "ANNUITY       : Rp "+ alltrim(trans(nA,"@EZ 999,999,999,999.99"))
+?
+?
+ nC:= len(oB:aColumns)
+ i:=0
+
+    ?? oB:aColumns[1]:heading+"   "
+    ?? oB:aColumns[2]:heading+"  "
+    ?? oB:aColumns[3]:heading+"        "
+    ?? oB:aColumns[4]:heading+"   "
+    ?? oB:aColumns[5]:heading+"    "
+    ?? oB:aColumns[6]:heading+"    "
+    ?? oB:aColumns[7]:heading+"    "
+    ?? oB:aColumns[8]:heading+"    "
+
+? "======================================================================================================="
+  b:=0
+  n:=len(aData)
+  //nC:=len(aData[1])
+
+  do while ++b<=n
+       ?  Str(aData[b,1],5)+" "
+       ??  TRANS(aData[b,2],"@EZ 999,999,999.99")+" "
+       ??  TRANS(aData[b,3],"@EZ 999.99")+"% "
+       ??  TRANS(aData[b,4],"@EZ 999,999,999.99")+" "
+       ??  TRANS(aData[b,5],"@EZ 999,999,999.99")+" "
+       ??  TRANS(aData[b,6],"@EZ 999,999,999.99")+" "
+       ??  TRANS(aData[b,7],"@EZ 999,999,999.99")+" "
+       ??  TRANS(aData[b,8],"@EZ 999,999,999.99")+" "
+
+   aSum[1]:=aSum[1]+ aData[b,4]
+   aSum[2]:=aSum[2]+ aData[b,5]
+   aSum[3]:=aSum[3]+ aData[b,7]
+   aSum[4]:=aSum[4]+ aData[b,8]
+  enddo
+? "======================================================================================================="
+
+       ? padl("JUMLAH Rp",29)
+       ??  TRANS(aSum[1],"@EZ 999,999,999.99")+" "
+       ??  TRANS(aSum[2],"@EZ 999,999,999.99")+" "
+       ??  space(15)
+       ??  TRANS(aSum[3],"@EZ 999,999,999.99")+" "
+       ??  TRANS(aSum[4],"@EZ 999,999,999.99")+" "
+?
+
+? "(c)2006 Richard Roesnadi"
+? "VP PT.Informasitika Maju Bersama, Jakarta - Web/Software Consultant"
+
+Set(23,"OFF")
+Set(24,"")
+__Run("notepad c:\laporan.txt")
+//dbCloseAll()
+//RestSession(aSession)
+ENDFUNC
+
+]]>
+  </method>
+  <method name="onFormInit">
+    <![CDATA[nPV:=0
+nFV:=0
+nI:=0
+nA:=0
+nN:=1
+lFixed:= .f.
+hwg_SetColorinFocus(.T.)
+]]>
+  </method>
+  <method name="onDlgInit">
+    <![CDATA[hwg_WriteStatus(oDlg,1," I.H.K 1.01a", .t.)
+//hwg_WriteStatus(oDlg,2, rich_tgln(date(),"H P, D M Y"), .t.)
+hwg_WriteStatus(oDlg,2, DTOC(date()), .t.)
+hwg_WriteStatus(oDlg,4," (c)2006 Richard Roesnadi", .t.)
+hwg_Setfocus(oPv:handle)
+]]>
+  </method>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{141,11,152,24}</property>
+      <property name="Name">[oPv]</property>
+      <property name="Justify">[Right]</property>
+      <property name="cPicture">[@E 999,999,999,999.99]</property>
+      <property name="varName">[nPV]</property>
+      <property name="ToolTip">[isi Nilai Kontan]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{24,12,95,22}</property>
+      <property name="Name">[oLabel1]</property>
+      <property name="Caption">[Present Value]</property>
+      <property name="font">
+        <font name="Verdana" width="0" height="-13" weight="400"/>
+      </property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{120,13,11,22}</property>
+      <property name="Name">[oLabel7]</property>
+      <property name="Caption">[*]</property>
+      <property name="TextColor">255</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{518,18,54,24}</property>
+      <property name="Name">[oPm]</property>
+      <property name="Justify">[Right]</property>
+      <property name="cPicture">[]</property>
+      <property name="varName">[iPm]</property>
+      <property name="ToolTip">[Tingkat Bunga per bulan]</property>
+    </style>
+    <method name="onLostFocus">
+      <![CDATA[iPa:=trans(val(iPm)*12,"99,999.99")
+oPa:refresh()
+return .t.
+]]>
+    </method>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{478,19,33,22}</property>
+      <property name="Name">[oLabel6]</property>
+      <property name="Caption">[%pa]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{575,19,54,22}</property>
+      <property name="Name">[oLabel5]</property>
+      <property name="Caption">[%pm]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{329,20,67,22}</property>
+      <property name="Name">[oLabel4]</property>
+      <property name="Caption">[Interest]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{419,20,56,24}</property>
+      <property name="Name">[oPa]</property>
+      <property name="Justify">[Right]</property>
+      <property name="cPicture">[]</property>
+      <property name="varName">[iPa]</property>
+      <property name="ToolTip">[Tingkat Bunga PerTahun]</property>
+    </style>
+    <method name="onLostFocus">
+      <![CDATA[iPm:= trans(Val(iPa)/12,"9,999.99")
+oPm:refresh()
+return .t.
+]]>
+    </method>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{399,21,11,22}</property>
+      <property name="Name">[oLabel8]</property>
+      <property name="Caption">[*]</property>
+      <property name="TextColor">255</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{23,41,93,22}</property>
+      <property name="Name">[oLabel2]</property>
+      <property name="Caption">[Future Value]</property>
+      <property name="font">
+        <font name="Verdana" width="0" height="-13" weight="400"/>
+      </property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{141,41,152,24}</property>
+      <property name="Name">[oFV]</property>
+      <property name="Justify">[Right]</property>
+      <property name="cPicture">[999,999,999,999.99]</property>
+      <property name="varName">[nFV]</property>
+      <property name="ToolTip">[Nilai Akhir]</property>
+    </style>
+    <method name="onInit">
+      <![CDATA[oFV:disable()]]>
+    </method>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{419,47,153,24}</property>
+      <property name="Name">[oA]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-16" weight="700"/>
+      </property>
+      <property name="Justify">[Right]</property>
+      <property name="cPicture">[999,999,999,999.99]</property>
+      <property name="varName">[nA]</property>
+      <property name="ToolTip">[Angsuran]</property>
+    </style>
+    <method name="onInit">
+      <![CDATA[oA:disable()]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{327,49,69,25}</property>
+      <property name="Name">[oBtnA]</property>
+      <property name="Caption">[Annuity]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-13" weight="700"/>
+      </property>
+      <property name="TextColor">4545276</property>
+      <property name="ToolTip">[Untuk mendapatkan hasilnya..]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[Private iVal, i, aSum,z,y,w,pkt
+
+if (nPV==0  .OR. val(iPa)==0  .OR. Val(iPm)==0  )
+  hwg_Msgstop("Field * harus diisi","Perhatian")
+else
+
+// FindAnnuity()
+
+aData:={}
+iVal:=iif(xBT==1, Val(iPM), Val(iPA))
+oB:aColumns[1]:heading:=iif(xBT==1, "Bulan", "Tahun")
+
+//nA:= GetA_ofPAN( nPV, iVal, nUD,0)
+nA:=  (nPv * (iVal/100)) / ((1 - (1+iVal/100)^(-nUD)))
+
+//nFv:= PinF(nPv, iVal,nUD,0)
+nFv:= nPv*( (1+iVal/100)^nUD)
+
+aSum:={0,0,0,0}
+aadd(aData,{STR(0,5),;
+          nPV,;
+         iVal,;
+            0,;
+            0,;
+          nPV,;
+            0,;
+            0})
+
+ i:=1
+
+//Function GetF_ofSim(P,i,n)    // Return  Future
+//  Return nA * (1+iVal/100)^(nUD-i)
+ DO WHILE i<=nUD
+
+ aadd(aData,  {STR(i,5),;
+        aData[i,6],;
+        iVal,;
+        iVal*aData[i,6]/100,;
+        nA,;
+        aData[i,6]+( iVal*aData[i,6]/100)-nA,;
+        (nA/(1+iVal/100)^i),;
+        nA*((1+iVal/100)^(nUD-i)) })
+   i++
+   aSum[1]:=aSum[1]+ aData[i,4]
+   aSum[2]:=aSum[2]+ nA
+   aSum[3]:=aSum[3]+ aData[i,7]
+   aSum[4]:=aSum[4]+ aData[i,8]
+
+ ENDDO
+
+oB:aArray:=aData
+oB:aColumns[4]:footing:=trans(aSum[1],"@EZ 99,999,999,999.99")
+oB:aColumns[5]:footing:=trans(aSum[2],"@EZ 99,999,999,999.99")
+oB:aColumns[7]:footing:=trans(aSum[3],"@EZ 99,999,999,999.99")
+oB:aColumns[8]:footing:=trans(aSum[4],"@EZ 99,999,999,999.99")
+oB:refresh()
+hwg_WriteStatus(oDlg,3," Result Annuity : Rp"+trans(nA, "@EZ 999,999,999,999.999999"))
+hwg_RefreshAllGets(oDlg)
+
+endif
+return .t.]]>
+    </method>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{116,67,12,22}</property>
+      <property name="Name">[oLabel9]</property>
+      <property name="Caption">[*]</property>
+      <property name="TextColor">255</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{25,69,54,22}</property>
+      <property name="Name">[oLabel3]</property>
+      <property name="Caption">[Period]</property>
+    </style>
+  </part>
+  <part class="updown">
+    <style>
+      <property name="Geometry">{142,70,64,22}</property>
+      <property name="Name">[oPeriod]</property>
+      <property name="nInitValue">12</property>
+      <property name="nUpper">1000</property>
+      <property name="varName">[nUD]</property>
+    </style>
+    <method name="onSize">
+      <![CDATA[findAnnuity()]]>
+    </method>
+  </part>
+  <part class="combobox">
+    <style>
+      <property name="Geometry">{215,71,79,24}</property>
+      <property name="Name">[oCBPeriod]</property>
+      <property name="Items">{Monthly,Year}</property>
+      <property name="varName">[xBT]</property>
+    </style>
+    <method name="onInit">
+      <![CDATA[oCBPeriod:bChangeSel:= {|a,b,c|  if(valtype(a)="N" .and. oB:aColumns[1]:heading<>{"Bulan","Tahun"}[xBT], eval(oBtnA:bClick),)  }
+]]>
+    </method>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{331,78,322,22}</property>
+      <property name="Name">[oLJudul]</property>
+      <property name="Caption">[&lt;new&gt;]</property>
+    </style>
+  </part>
+  <part class="line">
+    <style>
+      <property name="Geometry">{24,104,635,2}</property>
+      <property name="Name">[oLine1]</property>
+    </style>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{641,118,36,44}</property>
+      <property name="Name">[oBtn1]</property>
+      <property name="Caption">[New]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-11" weight="400"/>
+      </property>
+      <property name="TextTop">27</property>
+      <property name="BtnBitmap">[NEW24X24.JPG]</property>
+      <property name="BmpTop">3</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[aData:={}
+oB:aArray:=aData
+oB:aColumns[4]:footing:=""
+oB:aColumns[5]:footing:=""
+oB:aColumns[7]:footing:=""
+oB:aColumns[8]:footing:=""
+oB:refresh()
+nPV:=0
+nFV:=0
+nA:=0
+iPa:=""
+iPm:=""
+hwg_RefreshAllGets(oDlg)
+]]>
+    </method>
+  </part>
+  <part class="browse">
+    <style>
+      <property name="Geometry">{14,120,610,346}</property>
+      <property name="Name">[oB]</property>
+      <property name="BrwType">[Array]</property>
+    </style>
+    <method name="onInit">
+      <![CDATA[private oC
+aData:={}
+oB:aArray:=aData
+oB:Freeze:=2
+oC:=HColumN():New("Month", {|v,o,n| iif( v==NIL, aData[o:nCurrent,1], aData[o:nCurrent,1]:=v) },"C",6,0, .f.,4,4)
+oB:AddColumn(oC)
+oC:=HColumN():New("Loans (Rp)" , {|v,o,n| iif( v==NIL, aData[o:nCurrent,2], aData[o:nCurrent,2]:=v) },"N",14,0, .f.,4,2,"@ez 99,999,999,999.99")
+oC:Footing:="Amount Rp"
+oB:AddColumn(oC)
+oC:=HColumN():New("i%", {|v,o,n| iif( v==NIL, aData[o:nCurrent,3], aData[o:nCurrent,3]:=v) },"N",8,0, .f.,4,2,"@ez 999,999.99")
+oB:AddColumn(oC)
+oC:=HColumN():New("Interest (Rp)", {|v,o,n| iif( v==NIL, aData[o:nCurrent,4], aData[o:nCurrent,4]:=v) },"N",12,0, .f.,4,2,"@EZ 99,999,999,999.99")
+oB:AddColumn(oC)
+oC:=HColumN():New("Annuity (Rp)", {|v,o,n| iif( v==NIL, aData[o:nCurrent,5], aData[o:nCurrent,5]:=v) },"N",14,0, .f.,4,2,"@EZ 99,999,999,999.99")
+oC:Footing:=""
+oB:AddColumn(oC)
+oC:=HColumN():New("Balance (Rp)", {|v,o,n| iif( v==NIL, aData[o:nCurrent,6], aData[o:nCurrent,6]:=v) },"N",14,0, .f.,4,2,"@EZ 99,999,999,999.99")
+oB:AddColumn(oC)
+oC:=HColumN():New("NK.Angsuran", {|v,o,n| iif( v==NIL, aData[o:nCurrent,7], aData[o:nCurrent,7]:=v) },"N",14,0, .f.,4,2,"@EZ 99,999,999,999.99")
+oB:AddColumn(oC)
+oC:=HColumN():New("NA.Angsuran", {|v,o,n| iif( v==NIL, aData[o:nCurrent,8], aData[o:nCurrent,8]:=v) },"N",14,0, .f.,4,2,"@EZ 99,999,999,999.99")
+oB:AddColumn(oC)]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{641,166,36,44}</property>
+      <property name="Name">[oBtn2]</property>
+      <property name="Caption">[Open]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-11" weight="400"/>
+      </property>
+      <property name="TextTop">27</property>
+      <property name="BtnBitmap">[OPEN.JPG]</property>
+      <property name="lResource">.T.</property>
+      <property name="BmpTop">5</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[fname:=hwg_selectFile("Find Anuity (*.FA)","*.FA")
+if empty(fname)
+ return
+endif
+aSum:={0,0,0,0}
+aSave:=RestArray(@fname)
+oLJudul:setText(fname)
+nPV:=aSave[1]
+nFV:=aSave[2]
+iPa:=aSave[3]
+ipm:=aSave[4]
+nUD:=aSave[5]
+ nA:=aSave[6]
+//aData:=aSave[7]
+//oB:aArray:=aData
+// n:=len(aData)
+// i:=0
+//do while ++i<=n
+//   aSum[1]+= aData[i,4]
+//   aSum[2]+= aData[i,5]
+//   aSum[3]+= aData[i,7]
+//   aSum[4]+= aData[i,8]
+//enddo
+hwg_RefreshAllGets(oDlg)
+findAnnuity()
+
+//oB:aColumns[4]:footing:=trans(aSum[1],"@EZ 99,999,999,999.99")
+//oB:aColumns[5]:footing:=trans(aSum[2],"@EZ 99,999,999,999.99")
+//oB:aColumns[7]:footing:=trans(aSum[3],"@EZ 99,999,999,999.99")
+//oB:aColumns[8]:footing:=trans(aSum[4],"@EZ 99,999,999,999.99")
+//oB:refresh()
+//oPV:refresh()
+//oFV:refresh()
+//oPa:refresh()
+//oPm:refresh()
+//oA:refresh()
+//oPeriod:refresh()
+
+
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{643,216,36,44}</property>
+      <property name="Name">[oBtn3]</property>
+      <property name="Caption">[Save]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-11" weight="400"/>
+      </property>
+      <property name="TextTop">27</property>
+      <property name="BtnBitmap">[SAVE.JPG]</property>
+      <property name="BmpTop">5</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[
+if nPV==0
+ hwg_Msginfo("Belum ada yang Hasil..")
+ return .f.
+endif
+iif(empty(fname),fname:="*.FA")
+fname:=hwg_Savefile("*.FA","Find Annuity (*.FA)",@fname, curdir())
+fname:= strtran(strtran(fName,".FA",""),".FA","")+".FA"
+aSave:={nPV,nFV,iPa,ipm,nUD,nA,aData}
+SaveArray(@aSave,@fName)]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{642,265,36,44}</property>
+      <property name="Name">[oBtn4]</property>
+      <property name="Caption">[Print]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-11" weight="400"/>
+      </property>
+      <property name="TextTop">27</property>
+      <property name="BtnBitmap">[PRINTer.jpg]</property>
+      <property name="BmpTop">3</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[//HRepTmpl():Read("a.xml"):print(,.t.)
+ABRW2TXT()
+
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{643,315,36,44}</property>
+      <property name="Name">[oBtn5]</property>
+      <property name="Caption">[Setup]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-11" weight="400"/>
+      </property>
+      <property name="TextTop">27</property>
+      <property name="BtnBitmap">[SETUP.JPG]</property>
+      <property name="BmpTop">5</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[hwg_Msginfo("Reserved (Next Version)")
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{643,366,36,44}</property>
+      <property name="Name">[oBtn6]</property>
+      <property name="Caption">[Help]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-11" weight="400"/>
+      </property>
+      <property name="TextTop">27</property>
+      <property name="BtnBitmap">[HELP.jpg]</property>
+      <property name="BmpTop">5</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[hwg_Msginfo("1.Entry Present Value (nilai kontan)"+chr(13)+"2.Entry Interest (bunga %) pa=pertahun pm=per bulan"+chr(13)+"3.Entry Period (periode/jangka waktu)"+chr(13)+"Then"+chr(13)+"Click Annuity Button","Hint:Find annuity/cari angsuran")
+
+]]>
+    </method>
+  </part>
+  <part class="bitmap">
+    <style>
+      <property name="Geometry">{152,397,0,0}</property>
+      <property name="Name">[oBitmap1]</property>
+      <property name="Bitmap">[Print24x24.png]</property>
+    </style>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{643,414,36,45}</property>
+      <property name="Name">[oBtn7]</property>
+      <property name="Caption">[Exit]</property>
+      <property name="font">
+        <font name="" width="0" height="-12" weight="400"/>
+      </property>
+      <property name="TextTop">27</property>
+      <property name="BtnBitmap">[CLOSE.jpg]</property>
+      <property name="BmpTop">5</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[hwg_EndDialog(oDlg:handle)]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{292,470,36,38}</property>
+      <property name="Name">[oOwnerbutton1]</property>
+      <property name="Caption">[]</property>
+      <property name="BtnBitmap">[smExcel.bmp]</property>
+      <property name="ToolTip">[Export to Excel]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[ABROWSE2EXCEL(oB)]]>
+    </method>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,471,11,22}</property>
+      <property name="Name">[oLabel10]</property>
+      <property name="Caption">[*]</property>
+      <property name="TextColor">255</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{44,474,80,21}</property>
+      <property name="Name">[oLabel11]</property>
+      <property name="Caption">[Required]</property>
+      <property name="font">
+        <font name="" width="0" height="-12" weight="700"/>
+      </property>
+    </style>
+  </part>
+  <part class="checkbox">
+    <style>
+      <property name="Geometry">{481,476,138,22}</property>
+      <property name="Name">[oCB]</property>
+      <property name="Caption">[Bahasa Indonesia]</property>
+      <property name="varName">[lIndonesia]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[//hwg_Msginfo( iif(lIndonesia,"Indonesia","English") )
+if lIndonesia
+ oLabel1:SetText("Nilai Kontan")
+ oLabel2:SetText("Nilai Akhir")
+ oLabel3:SetText("Periode")
+ oLabel4:SetText("Bunga")
+ oLabel6:SetText("%TH")
+ oLabel5:SetText("%Bln")
+ oLabel11:SetText("Harus diisi")
+ 
+ oBtnA:title:="Angsuran"
+ oBtn1:title:="Baru"
+ oBtn2:title:="Buka"
+ oBtn3:title:="Rekam"
+ oBtn4:title:="Cetak"
+ oBtn5:title:="Setel"
+ oBtn6:title:="bantu"
+ oBtn7:title:="keluar"
+
+ oB:aColumns[1]:Heading:="Bulan"
+ oB:aColumns[2]:Heading:="Pinjaman (Rp)"
+ oB:aColumns[2]:Footing:="JUMLAH (Rp)"
+ oB:aColumns[4]:Heading:="Bunga (Rp)"
+ oB:aColumns[5]:Heading:="Angsuran (Rp)"
+ oB:aColumns[6]:Heading:="Saldo (Rp)"
+
+ hwg_Setwindowtext(oDlg:handle,"Mencari Angsuran")
+
+else
+ oLabel1:SetText("Present Value")
+ oLabel2:SetText("Future Value")
+ oLabel3:SetText("Period")
+ oLabel4:SetText("Interest")
+ oLabel6:SetText("%pa")
+ oLabel5:SetText("%pm")
+ oLabel11:SetText("Required")
+ oBtnA:title:="Annuity"
+ oBtn1:title:="New"
+ oBtn2:title:="Open"
+ oBtn3:title:="Save"
+ oBtn4:title:="Print"
+ oBtn5:title:="Setup"
+ oBtn6:title:="Help"
+ oBtn7:title:="Exit"
+ oB:aColumns[1]:Heading:="Month"
+ oB:aColumns[2]:Heading:="Loans (Rp)"
+ oB:aColumns[2]:Footing:="AMOUNT (Rp)"
+ oB:aColumns[4]:Heading:="Interest (Rp)"
+ oB:aColumns[5]:Heading:="Annuity (Rp)"
+ oB:aColumns[6]:Heading:="Balance (Rp)"
+ hwg_Setwindowtext(oDlg:handle,"Find Annuity")
+
+endif
+
+ hwg_Redrawwindow(oBtnA:handle,5)
+ hwg_Redrawwindow(oBtn1:handle,5)
+ hwg_Redrawwindow(oBtn2:handle,5)
+ hwg_Redrawwindow(oBtn3:handle,5)
+ hwg_Redrawwindow(oBtn4:handle,5)
+ hwg_Redrawwindow(oBtn5:handle,5)
+ hwg_Redrawwindow(oBtn6:handle,5)
+ hwg_Redrawwindow(oBtn7:handle,5)
+ oB:Refresh()
+return .t.]]>
+    </method>
+  </part>
+  <part class="status">
+    <style>
+      <property name="Geometry">{0,513,680,22}</property>
+      <property name="Name">[oStatus1]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-11" weight="400"/>
+      </property>
+      <property name="aParts">{90,150,250,200,0}</property>
+    </style>
+  </part>
+</part>

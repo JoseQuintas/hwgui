@@ -1,0 +1,77 @@
+Special Instructions for Borland C compiler (32 bit)
+====================================================
+
+Created by DF7BE
+
+   $Id$
+
+Valid for Version :
+Borland C++ 5.82 for Win32
+
+Tested with Windows 10, 64 bit (x86_64)
+
+
+Prerequisites
+=============
+
+You need GNU make, install it in c:\make.
+The binary "make.exe" must be found in subdir "bin".
+The make utility make does not understand GNU make syntax,
+so this appears at the beginning in the value of PATH.
+
+
+Installation directories of Borland C:
+======================================
+(only need for a "portable" installation)
+
+Install it in C:\bcc (create directory by hand).
+
+
+ <DIR>  Bin
+ <DIR>  include
+ <DIR>  Lib
+ license.txt
+ readme.txt
+ 
+Set Environment for all following steps   
+=======================================
+
+Modify script to your own needs.
+
+Call environment script:
+samples\dev\env\pfad_bc.bat
+
+ 
+Build Harbour
+=============
+
+Default installation directory is: C:\harbour-bcc\core-master
+
+Truobleshooting:
+bin/win/bcc/hbpp.exe needs unicows.dll , outdated
+Delete directory C:\harbour-bcc\core-master\lib\3rd\win\bcc (only subdirectory bcc)
+before build of harbour with "make"
+
+Some Warnings of this can be ignored. 
+TLIB 4.5 Copyright (c) 1987, 1998 Borland International
+Warning: '<symbol>' not found in library
+
+
+Build HWGUI
+===========
+- Modify "make_b32.bat" to your own needs.
+- Start by enter 
+  make_b32.bat
+
+  
+Build a HWGUI sample 
+====================
+(in directory "samples")
+  
+hbmk.bat dbview.prg
+
+Use this script as a sample to build your own app.
+
+
+* =================== EOF of Borland-C.txt ======================
+ 

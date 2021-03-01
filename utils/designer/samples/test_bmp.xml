@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{465,68,500,434}</property>
+    <property name="Caption">[Menu &amp; Resource\bmp]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <method name="onDlgInit">
+    <![CDATA[hwg_WriteStatus(oDlg,1,"Demo Using Resource\bmp\*.bmp", .t.)
+hwg_WriteStatus(oDlg,2,"HwGUI Designer", .t.)
+
+]]>
+  </method>
+  <part class="menu">
+    <style>
+      <property name="Geometry">{15,25,0,0}</property>
+      <property name="Name">[oMenu1]</property>
+      <property name="atree">
+        <item name="File" id="32000">
+          <item name="New" id="32001">
+            <![CDATA[hwg_Msginfo("Call for New ")]]>
+          </item>
+          <item name="-" id="32002"/>
+          <item name="Exit" id="32003">
+            <![CDATA[oDlg:Close()]]>
+          </item>
+        </item>
+      </property>
+    </style>
+  </part>
+  <part class="toolbar">
+    <style>
+      <property name="Geometry">{0,3,498,50}</property>
+      <property name="Name">[oToolbar1]</property>
+    </style>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{12,12,23,28}</property>
+        <property name="Name">[oOwnerbutton1]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smNew]</property>
+        <property name="lResource">.T.</property>
+      </style>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{42,13,25,28}</property>
+        <property name="Name">[oOwnerbutton3]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smOpen]</property>
+        <property name="lResource">.T.</property>
+      </style>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{75,13,24,28}</property>
+        <property name="Name">[oOwnerbutton2]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smCut]</property>
+        <property name="lResource">.T.</property>
+      </style>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{182,13,23,28}</property>
+        <property name="Name">[oOwnerbutton5]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smInfo]</property>
+        <property name="lResource">.T.</property>
+      </style>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{104,14,24,28}</property>
+        <property name="Name">[oOwnerbutton7]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smSave]</property>
+        <property name="lResource">.T.</property>
+      </style>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{213,14,23,28}</property>
+        <property name="Name">[oOwnerbutton4]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smPrinter]</property>
+        <property name="lResource">.T.</property>
+      </style>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{463,14,23,28}</property>
+        <property name="Name">[oOwnerbutton6]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smExit]</property>
+        <property name="lResource">.T.</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[Parameters oDlg,nId
+oDlg:Close()]]>
+      </method>
+    </part>
+  </part>
+  <part class="page">
+    <style>
+      <property name="Geometry">{12,55,483,333}</property>
+      <property name="Name">[oPage1]</property>
+      <property name="Tabs">{Browse,Tree,Calendar}</property>
+    </style>
+    <part class="PageSheet" page="1">
+      <part class="browse">
+        <style>
+          <property name="Geometry">{23,90,453,236}</property>
+          <property name="Name">[oBrowse1]</property>
+        </style>
+      </part>
+      <part class="ownerbutton">
+        <style>
+          <property name="Geometry">{267,343,96,28}</property>
+          <property name="Name">[oOwnerbutton8]</property>
+          <property name="Caption">[Save]</property>
+          <property name="BtnBitmap">[smOK]</property>
+          <property name="lResource">.T.</property>
+          <property name="BmpLeft">5</property>
+        </style>
+      </part>
+      <part class="ownerbutton">
+        <style>
+          <property name="Geometry">{375,344,96,28}</property>
+          <property name="Name">[oOwnerbutton9]</property>
+          <property name="Caption">[Cancel]</property>
+          <property name="BtnBitmap">[smCancel]</property>
+          <property name="lResource">.T.</property>
+          <property name="BmpLeft">5</property>
+        </style>
+      </part>
+    </part>
+    <part class="PageSheet" page="2">
+      <part class="tree">
+        <style>
+          <property name="Geometry">{24,95,282,240}</property>
+          <property name="Name">[oTree1]</property>
+        </style>
+        <method name="onInit">
+          <![CDATA[Parameters oCtrl
+
+n1:=oCtrl:AddNode("1")
+ n1:AddNode("1.1")
+ n1:AddNode("1.2")
+ n1:AddNode("1.3")
+
+n2:=oCtrl:AddNode("2")
+ n2:AddNode("2.1")
+ n2:AddNode("2.2")
+ n2:AddNode("2.3")
+]]>
+        </method>
+      </part>
+      <part class="ownerbutton">
+        <style>
+          <property name="Geometry">{345,300,96,28}</property>
+          <property name="Name">[oOwnerbutton10]</property>
+          <property name="Caption">[Config]</property>
+          <property name="BtnBitmap">[smConfig]</property>
+          <property name="lResource">.T.</property>
+          <property name="BmpLeft">5</property>
+        </style>
+      </part>
+    </part>
+    <part class="PageSheet" page="3">
+      <part class="monthcalendar">
+        <style>
+          <property name="Geometry">{76,106,267,195}</property>
+          <property name="Name">[oMonthcalendar1]</property>
+        </style>
+      </part>
+    </part>
+  </part>
+  <part class="status">
+    <style>
+      <property name="Geometry">{0,412,500,22}</property>
+      <property name="Name">[oStatus1]</property>
+      <property name="aParts">{300,100,0}</property>
+    </style>
+  </part>
+</part>

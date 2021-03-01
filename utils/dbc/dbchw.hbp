@@ -1,0 +1,28 @@
+#
+# $Id$
+#
+
+-n -w
+
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-L../..
+hwgui.hbc
+
+-odbchw
+
+dbchw.prg
+commands.prg
+modistru.prg
+move.prg
+view.prg
+procs_c.c
+{win}dbchw.rc
+
+
+# =================== EOF of dbchw.hbp ===============
+ 
+

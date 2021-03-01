@@ -1,0 +1,23 @@
+#
+# $Id$
+#
+
+# Make script for HWGUI editor using hbmk2 utility
+
+-n -w
+
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+{linux}-lm
+
+hbct.hbc
+
+editor.prg
+hcediext.prg
+calc.prg
+
+..\..\hwgui.hbc
+
+# --------------------- EOF of editor.hbp -------------------------
+

@@ -1,0 +1,199 @@
+# makefile for Borland C/C++ 32 bits
+# Building of contrib libs for HwGUI
+
+# ---------------------------------------------------------------
+# "echo." intentionally used instead of "echo", to avoid conflicts
+# with external commands named echo.
+# using macros for ECHO and DEL to allow overiding such as:
+#
+#    set ECHO=cmd /c echo
+#    set DEL=cmd /c del
+#
+# The above might be needed on Windows 2000 and XP.
+# The macros are referenced in makefile.bc
+# ---------------------------------------------------------------
+
+.AUTODEPEND
+
+!if !$d(ECHO)
+   ECHO = echo.
+!endif
+!if !$d(DEL)
+   DEL = del
+!endif
+
+HRB_DIR = $(HB_PATH)
+INCLUDE_DIR = ..\include;$(HRB_DIR)\include
+HARBOUR_EXE = $(HRB_DIR)\bin\harbour.exe
+
+CC = bcc32
+LINKER = TLIB
+
+BIN_DIR  = $(HRB_DIR)\bin
+LIB_DIR  = ..\lib
+
+# This is needed, otherwise the libs may overflow when
+# debug info is requested with -v -y
+# if debug info is requested, set ARFLAGS to /P64 in your environment
+!if !$d(ARFLAGS)
+    ARFLAGS = /0
+!endif
+
+#
+# Directory macros. These should never have to change.
+#
+HWGQHTM_DIR  = qhtm
+ACTIVEX_DIR  = activex
+EXTCONTROLS_DIR  = ext_controls
+
+#
+# C compiler definition and C flags. These should never have to change.
+#
+
+#CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__
+CFLAGS               = -I$(INCLUDE_DIR) -d $(C_USR) $(CFLAGS) -D__WIN32__ -DHWG_USE_POINTER_ITEM
+!if $d(HB_MULTI_GT)
+CFLAGS               = $(CFLAGS) -DHB_MULTI_GT
+!endif
+
+CLIBFLAGS            = -c $(CFLAGS) $(CLIBFLAGS)
+CLIBFLAGSDEBUG       = -v $(CLIBFLAGS)
+HARBOURFLAGS         = -i$(INCLUDE_DIR) -n -q0 -w -es2 -gc0 $(PRG_USR) $(HARBOURFLAGS)
+LDFLAGS              = $(LDFLAGS)
+
+CC_CMD = $(CC) $(CLIBFLAGS) -o$@ $**
+CC_CMD_DLL = $(CC) $(CLIBFLAGS) -DHB_EXEMEM_USED -o$@ $**
+HB_CMD = $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+#
+# Macros to access our library names
+#
+
+HWGQHTM_LIB  =   $(LIB_DIR)\hwg_qhtm.lib
+ACTIVEX_LIB  =   $(LIB_DIR)\hbactivex.lib
+EXTCONTROLS_LIB  =   $(LIB_DIR)\hwg_extctrl.lib
+
+#
+# Rules
+#
+
+#
+# HWG_QHTM.LIB rules
+#
+
+HWGQHTM_LIB_OBJS = \
+   $(OBJ_DIR)\hwg_qhtm.obj \
+   $(OBJ_DIR)\hqhtm.obj
+
+#
+# HBACTIVEX.LIB rules
+#
+ACTIVEX_LIB_OBJS = \
+   $(OBJ_DIR)\htmlcore.obj \
+   $(OBJ_DIR)\htmlfunc.obj \
+   $(OBJ_DIR)\hhtml.obj \
+   $(OBJ_DIR)\c_activex.obj \
+   $(OBJ_DIR)\h_activex.obj
+
+#
+# HWG_EXTCTRL.LIB rules
+#
+
+EXTCONTROLS_LIB_OBJS = \
+   $(OBJ_DIR)\hctrlex.obj \
+   $(OBJ_DIR)\hbrowsex.obj \
+   $(OBJ_DIR)\hcomboex.obj \
+   $(OBJ_DIR)\hgridex.obj \
+   $(OBJ_DIR)\hrectex.obj \
+   $(OBJ_DIR)\theme.obj
+
+#
+# Our default target
+#
+
+PROJECT = \
+   $(PROJECT) \
+
+!if "$(_QHTM_)" == "ON"
+PROJECT = \
+   $(PROJECT) \
+   $(HWGQHTM_LIB)
+!endif
+
+!if "$(_ACTIVEX_)" == "ON"
+PROJECT = \
+   $(PROJECT) \
+   $(ACTIVEX_LIB)
+!endif
+
+!if "$(_EXTCONTROLS_)" == "ON"
+PROJECT = \
+   $(PROJECT) \
+   $(EXTCONTROLS_LIB)
+!endif
+
+ALL: $(PROJECT)
+
+#
+# Library dependencies and build rules
+#
+
+
+$(HWGQHTM_LIB) : $(HWGQHTM_LIB_OBJS)
+    IF EXIST "$(HWGQHTM_LIB)" $(DEL) "$(HWGQHTM_LIB)" > NUL
+    $(LINKER) "$(HWGQHTM_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(ACTIVEX_LIB) : $(ACTIVEX_LIB_OBJS)
+    IF EXIST "$(ACTIVEX_LIB)" $(DEL) "$(ACTIVEX_LIB)" > NUL
+    $(LINKER) "$(ACTIVEX_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+
+$(EXTCONTROLS_LIB) : $(EXTCONTROLS_LIB_OBJS)
+    IF EXIST "$(EXTCONTROLS_LIB)" $(DEL) "$(EXTCONTROLS_LIB)" > NUL
+    $(LINKER) "$(EXTCONTROLS_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+.c.obj:
+    $(CC_CMD)
+
+#
+# HWG_QHTM.LIB dependencies
+#
+
+{$(HWGQHTM_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(HWGQHTM_DIR)}.c{$(OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+#
+# ACTIVEX.LIB dependencies
+#
+
+{$(ACTIVEX_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(ACTIVEX_DIR)}.c{$(OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+
+#
+# HWG_EXTCTRL.LIB dependencies
+#
+
+{$(EXTCONTROLS_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(EXTCONTROLS_DIR)}.c{$(OBJ_DIR)}.obj:
+   $(CC_CMD)

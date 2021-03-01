@@ -1,0 +1,705 @@
+                      HWGUI - Harbour Win32 GUI library
+                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+                       What's new in the last version
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+                                   $Id$
+
+Recent code snapshot
+~~~~~~~~~~~~~~~~~~~~
+*) Task partially done, to be continued.
+
+For the next release build done:
+
+1.) Bugfixing:
+
+[!] Lot of bugs fixed (see Changelog).
+[!] Compiler warnings MinGW 64 bit fixed.
+[!] More sample programs are running now.
+[!] Build scripts for many compilers updated.
+[!] Better improvement for build with hbmk2 utility.
+
+2.) New features and functions
+
+[+] Cross development environment for GTK on Windows (32bit),
+    develop and test GTK functions on Windows for *NIX targets.
+[+] National Language Support (NLS) for internal HWGUI dialogs added. *)
+[+] Added some special helpful standalone functions (Get UTC time and date, ...).
+[*] Some "Windows only" functions ported to GTK, improvement for GTK. 
+[+] Support for MinGW64.
+[+] Missing build scripts for MinGW64 added.
+[+] Sample database with one field of every type.
+[+] Ressources can be inserted into exe file by hex values.
+[+] Sample program added: 
+    Class HGT for combined usage of HWGUI control elements in 
+    Harbour gtwvg programs in multithread mode. (testhgt.prg),
+    (Windows only), TNX José M. C. Quintas.
+[+] Test program for multithread demo in "test".
+[+] Some more sample programs added.
+[+] Documentation extended.
+[+] Usage of custom created mouse cursor by *.cur files.
+[!] Removed resource files for BCC for multi platform use, converted to HWGUI commands. 
+
+
+HWGUI 2.22 build 4 ( 26.04.2019 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[!] Fixes.
+
+HWGUI 2.22 build 3 ( 26.02.2019 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Added fourth parameter to hwg_SelectFileEx() - logical bMulti, which allows multiply files selection
+[*] hwg_Version(4) now returns 0 for winapi version and 1 for gtk.
+[*] Few Debugger and Designer enhancements.
+[!] Fixes, corrections.
+
+HWGUI 2.22 build 2 ( 23.12.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Designer: splitter, top panel, status panel, static link controls added.
+    Grid implemented.
+[*] GTK3 support mostly implemented.
+[!] Fixes, corrections.
+
+HWGUI 2.22 build 1 ( 13.12.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] HGraph: :aColors, :aPens added to draw graphs with different colors.
+[+] hwg_SaveBitmap( cFileName, hBitmap ) function added.
+[+] New class added, HPanelHea, and appropiate command ADD HEADER PANEL as a
+    customizable alternative for a window title bar.
+[+] HPanel: new variable added :lDragWin. If .t., dragging the panel you move the window.
+[+] New cross-platform window styles added: WND_NOTITLE, WND_NOSYSMENU, WND_NOSIZEBOX.
+[+] HSTYLE clause added to the @ ... SPLITTER command.
+[+] :lResizable logical variable added to HColumn.
+[+] :oStyleFoot, :oStyleCell added to HBrowse and HColumn.
+[*] :FindControl() can now look for an :objname, passed as a first parameter.
+[*] HBrowse: if you set the negative column length, it is interpreted as a width in pixels.
+[*] Designer: added support for Anchor, HStyle, AStyles.
+[!] Fixes, corrections, Gtk/Winapi versions compatibility improvements.
+
+HWGUI 2.21 build 6 ( 15.11.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] HIcon():AddFile() automatically adds file extension (ico or png) if it isn't defined.
+[*] Added support of the icon in a main window for Designer's forms.
+[!] Fixes, corrections.
+
+HWGUI 2.21 build 5 ( 02.11.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Now you may define a negative size value of a window or dialog, this mean that
+    absolute value of the size is the size of client area, not a whole window rectangle.
+[+] ON CLICK, ON DBLCLICK clauses added to @...BITMAP and @...ICON commands.
+[*] compatibility of gtk and winapi versions improved.
+[!] Few important fixes.
+
+HWGUI 2.21 build 4 ( 19.10.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] XML parsing procedure catch more errors and doesn't hang on them now.
+[*] HTree, HTreeNode: bAction is renamed to bClick.
+[+] nBorder variable added to HSayBmp class to draw the border, if needed.
+[+] cFormName variable added to the HRepTmpl class to keep the path and name
+[!] Few bugs and compile time warnings fixed.
+
+HWGUI 2.21 build 3 ( 05.09.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] HSTYLES clause added to OWNERBUTTON command instead of STYLE
+[*] :objname class variable moved to HObject class
+[!] Few bugs fixed.
+
+HWGUI 2.21 build 1 ( 31.08.2018 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] HSTYLE clause added to @ ... PANEL and ADD TOP PANEL commands
+[*] GTK version: improved compatibility with winapi version.
+[!] Bug fixes, cleanup and improvements
+
+HWGUI 2.20 build 3 ( 17.09.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Documentation files synhronized with actual state.
+[!] Few bugs fixed.
+
+HWGUI 2.20 build 2 ( 12.09.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+This is a bug fix release
+[*] Styles added to the Tutorial and Dbc to make them a bit more nice.
+[*] Hwreport moved from utils/ to contrib/ directory.
+[!] Few bugs fixed
+
+HWGUI 2.20 build 1 ( 09.09.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] HBitmap():AddStandard( cId ) method added for GTK version. Now it is possible to use
+    stock icons in GTK version as predefined bitmaps in WinAPI.
+[+] :nRowHeight variable added to HBrowse to set row height.
+[+] :aPaintCB variable and SetPaintCB( nId, block, cId ) method added to
+    HPanel to support user defined codeblocks for painting.
+[+] :aPaintCB variable and SetPaintCB( nId, block, cId ) method added to
+    HColumn to support user defined codeblocks for painting browse items
+    ( header, lines, footers )
+[*] Color in Focus handling has been changed for HEdit.
+[*] Double buffering implemented for HBrowse in Windows version, logical :lBuffering
+    variable ( default value is .F. ) added to HBrowse to handle buffering.
+[*] HBrowse cleaned, a part of a code, related to filtering, moved to
+    a new HBrwFlt class, New command added for this class: @ ... BROWSE ... FILTER.
+[*] Changed a list of parameters, passed to some codeblocks for unification.
+[*] ON DRAW changed to ON PAINT for OWNERBUTTON and SHADEBUTTON
+[-] ON PAINT clause deleted from EDITBOX and RICHEDIT commands.
+[-] hwg_ParentGetDialog() removed, hwg_getParentForm() should be used instead.
+[+] :oStyleHead variable added to HBrowse and HColumn classes: It is possible
+    now to have styled browse headers.
+[+] :Draw( hDC, nWidth, nHeight ) method added to HStyle to draw styled control.
+[+] New class added HPanelSts, inherited from HPanel to implement STATUS PANEL.
+[+] Two commands added: ADD TOP PANEL, ADD STATUS PANEL.
+[+] BACKCOLOR added as preferrable alternative for COLOR clause in INIT WINDOW,
+    INIT DIALOG commands.
+[*] Tutorial extended with new chapters and modules.
+[!] Many bug fixes and improvements
+
+
+HWGUI 2.19 build 6 ( 01.02.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    This is a bug fix release - The Designer was partially broken, because
+    of some changes in release 5 core code.
+[*] Small Designer improvements
+[!] Bug fixes.
+
+HWGUI 2.19 build 5 ( 21.01.2016 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Rich syntax text editor extended ( access control to paragraphs and spans,
+    copy/paste the text with formatting info, search, etc. )
+[*] COLOR clause added to the @ ... BITMAP command to set the transparency color
+[*] ONCE clause added to SET TIMER function - use it when you need to
+    run the timer procedure one time only
+[*] HWonButton: new variable added - :aRadius - an array ( empty by default ) of 4
+    values - radiuses of corners, if you need rounded button.
+[*] hwg_DrawGradient(): added support for rounded corners and other types of
+    gragient ( diagonal, radial )
+[!] Many bug fixes and improvements
+
+HWGUI 2.19 build 4 ( 25.06.2015 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Rich syntax text editor significantly extended
+[*] New modules added to the tutorial
+[+] HStyle class added, :aStyle variable added to HOwnButton class to draw
+    3-state gradient buttons
+[*] HSplitter class enhanced
+[+] hwg_getFontsList() function added
+[+] hwg_ColorN2C() and hwg_ColorN2RGB() functions added
+[*] hwg_VColor() renamed to hwg_ColorC2N(), hwg_RGB() - to hwg_ColorRGB2N(),
+[+] hwg_drawGradient() function added for both gtk and winapi versions
+[!] Some bug fixes and many improvements
+
+
+HWGUI 2.19 build 3 ( 08.05.2015 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] Rich syntax text editor has been added to utils
+[*] Improved compatibility with 2.17 version.
+[!] Some bug fixes and improvements
+
+HWGUI 2.19 build 2 ( 27.01.2015 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] :Enabled() SETGET method is introduced for all controls (HControl class),
+    :isEnabled() has been removed.
+[*] :GetValue(), :SetValue() methods was removed and new :Value SETGET method is
+    introduced instead for those controls, which may input from the user.
+[*] Improved compatibility with 2.17 version.
+[!] Some bug fixes
+
+HWGUI 2.19 ( 20.12.2014 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Real Unicode (utf-8) support.
+[*] Binary containers added as a crossplatform alternative for resources ( rc files ).
+[*] A virtual printer ".buffer" added. It allows to create a print
+    metafile and preview it if no one printer is installed
+[*] Many improvements in utils ( dbc, debugger, designer, tutorial ).
+[*] GTK version: significantly extended, improved compatibility with winapi version.
+[*] Improved compatibility with 2.17 version.
+[!] Some bug fixes, as usual
+
+
+HWGUI 2.18 build 2 ( 03.04.2014 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] The debugger: array inspector, object inspector, commands support
+    has been added.
+[+] Duplex printing support added.
+[*] The editor and the tutorial are gtk compatible now
+[*] Processing of hot keys is implemented via hook procedures in both
+    winapi and gtk versions and works for any control now.
+    SET KEY GLOBAL command added.
+[*] Combobox control can accept now multidimensional arrays.
+[*] Improved compatibility with 2.17 version.
+[!] Some bug fixes
+
+HWGUI 2.18 ( 19.07.2013 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] There was a lot of changes since last release, I can't now make
+    a well structured list of them, maybe, later ...
+    For now, see the Changelog.
+
+HWGUI 2.16 ( 14.09.2006 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] Native Win32 Toolbar, extended Grid control (HGridEX) has been added.
+
+[*] GTK's HBrowse, HPanel and HOwnButton synchronized with Win32 version.
+
+[!] Three class variables in HBrowse has been renamed for better readability:
+       kolz  --> nRecords
+       tekzp --> nCurrent
+       msrec --> aArray
+    so you need to make search and replace in your programs to rename them.
+
+[*] Many bug fixes and enhancements in both GTK and Win32 versions - 
+    see Changelog for details.
+
+HWGUI 2.15 ( 07.06.2006 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] Linux GTK version of HwGUI has been implemented. It haven't yet all
+    functionality of the Windows version, but most of the main subsystems
+    ( GET system, browse, printing, ... ) are ready to use.
+
+[+] Some new classes has been added, including HWinPrn.
+    New functions has been added. See Changelog for the details.
+
+[*] Important changes and fixes in core functions.
+
+[!] Many bug fixes and enhancements - see Changelog for details.
+
+HWGUI 2.14 ( 14.12.2004 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[*] An important Designer enhancement - it can be used to build reports.
+    Now it is the main HwGUI Report Builder instead of HWReport.
+    New classes are added - HRepItem,HRepTmpl, which provides printing
+    using the reports, created with the Designer.
+
+[+] OpenImage( cFileName,lString ) function has been added - it reads some
+      picture files ( jpeg, gif ) and converts them to the HBitmap structure,
+      so the HBitmap():AddFile( cFileName ) can load now jpeg and gif files,
+      @ x,y BITMAP command now works with jpeg and gif, too.
+
+[*] Important HPrinter enhancements:
+    - New parameter added to the HPrinter():New() method - lmm - if it is TRUE,
+      all subsequent printer operations accept coordinates as millimeters ;
+    - New commands has been added:
+       INIT PRINTER <oPrinter> [ NAME <cPrinter> ] [ <lPixel: PIXEL> ]
+       INIT DEFAULT PRINTER <oPrinter> [ <lPixel: PIXEL> ]
+      By default ( if the PIXEL clause isn't used, all subsequent printer
+      operations accept coordinates as millimeters ;
+    - New method for HPrinter has been implemented - SetMode( nOrientation )
+      to change the orientation:
+         portrait(nOrientation==1) / landscape(nOrientation==2) ;
+    - New variable nPage and automatic handling of pages numbers has been added ;
+    - HPrinter():Preview() method and related functions are extended:
+      Zoom buttons, trackbars for preview image repositioning has been added.
+      New parameters added - optional arrays for button's bmps and tooltips.
+
+[*] Richedit related code is changed to support the Richedit 2.0.
+
+[*] HTrackbar is modified to allow user defined sliders.
+
+[*] Internal messages processing has been changed. Now the callback *WndProc
+    functions calls onEvent() method instead of appropriate Def* function.
+    This allow to subclass window, dialog and control classes and, defining new
+    onEvent() methods for them, to change the default messages processing.
+    The HWindow() class is now a parent class for HMainWindow(), HMDIChildWindow()
+    and HChildWIndow() classes.
+
+[*] Many bug fixes and enhancements - see Changelog for details.
+
+
+HWGUI 2.13 ( 22.07.2004 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] New controls - classes and appropriate commands has been added - 
+    see Changelog for details.
+
+[+] Support for Pelles C and Open Watcom C compilers has been added.
+
+[*] The Designer is fully rewritten.
+
+[*] Many bug fixes and enhancements - see Changelog for details.
+
+
+HWGUI 2.12 ( 04.04.2004 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] New classes and functions has been added - see Changelog for details.
+
+[-] A lot of bugs fixed.
+
+HWGUI 2.11 ( 15.10.2003 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[*] It became possible now to create the toolbar ( panel ) and the status window
+    for the MDI main ( frame ) window ( see samples/a.prg ).
+
+[*] MDI child windows creating is changed - now you can define style for them,
+    the default is WS_VISIBLE + WS_OVERLAPPEDWINDOW + WS_MAXIMIZE.
+
+[+] New functions has been added:
+
+       Tree_HitTest( hTree [, x, y ] ) - returns the tree item, placed in 
+                                         x,y coordinates ( or cursor position )
+       ScreenToClient( x,y ) - converts the point coordinates from absolute
+                               to window client area relative
+       ProcessMessage()
+
+[+] HDialog: new variable added - bActivate - it is a codeblock, which is executed
+    one time - after the dialog is being activated.
+
+[+] HTree: new variable added - bRClick - it is a codeblock, which is executed
+    after the mouse right click on the tree item.
+
+[*] HMenu:Show() is changed, now 2-th and 3-th parameters are optional, the
+    method takes cursor position if they are omitted.
+
+[*] Enablemenuitem() is changed - now the first parameter is a menu handle.
+
+[-] Few bugs fixed.
+
+
+HWGUI 2.10 ( 22.09.2003 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] HFreeImage class added - implementations of wrappers to FreeImage library
+    ( http://freeimage.sourceforge.net/ ), which allows to load, draw and save
+    files in different graphic formats - BMP, JPEG, PNG, MNG, etc.
+    See samples/viewer how to use it.
+
+[+] Added new class HSayImage as a custom class for image controls, and HSayBmp,
+    HSayIcon, HSayFImage - child classes, which implements static controls,
+    displaying bitmap, icon, graphic file appropriately.
+
+[+] New commands added:
+       @ x,y IMAGE ...   - display graphic file via FreeImage library
+       @ x,y ICON ...
+
+[+] Added function Window2Bitmap(hWnd,lFull) to convert the area of a window
+    to a bitmap. Appropriate method ::AddWindow(hWnd,lFull) added to HBitmap class.
+
+[*] Metafiles implementation fixed, preview possibilities added to HPrinter class,
+    HwReport changed to use preview possibilities of HPrinter. Another example of
+    print preview ypu may find in samples/a.prg, PrnTest() function.
+
+[*] 'ICON' clause added to INIT DIALOG command, oIcon variable - to HDialog class.
+
+[*] 'TRANSPARENT' clause is added to '@ x,y OWNERBUTTON' command, which
+    forces the bitmap to be painted as transparent.
+
+[*] A number of warnings and bugs fixed by Lorenzo Fiorini.
+
+[*] Documentation  extended.
+
+[-] Few bugs fixed.
+
+
+HWGUI 2.09 ( 08.09.2003 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+]  Encryption module added ( procmisc/Blowfish.c ) - Harbour's
+     implementation of Blowfish algorithm:
+        bf_Encrypt( cString, cKey )
+        bf_Decrypt( cString, cKey )
+
+[+]  New makefiles for MINGW compiler added: makemngw.bat, makefile.gcc instead
+     of old files - now they aren't depend on Harbour config files.
+
+[*]  Some other changes:
+        HRadioGroup: new method is added - SetValue( nValue ),
+        the command 'GET RADIOGROUP' is changed to 
+        'GET RADIOGROUP [ <ogr> VAR ] <vari>' ;
+        HTree: new variable added - bExpand, this codeblock should return .F.
+        to prevent expanding or collapsing    ;
+        Handling of WM_MOVE added to DefWndProc() - window coordinates are updated
+        now after moving.
+        mciSendString( cCommand, @cResult, hWindow ) function added ;
+        GetCurrentDir() function added - it returns path with drive name ;
+
+[*]  Few fixes from Ron Pinkas and Luiz Rafael Culik for better xHarbour
+     compatibility.
+
+[-]  Some bug fixes.
+
+HWGUI 2.08 ( 08.07.2003 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] New class HSplitter is added, which implements Splitter control.
+    Appropriate command is added:
+       @ x,y SPLITTER
+
+[+] Added possibility to draw window background with a bitmap.
+
+[+] New functions are added:
+     DrawIcon( hDC,x,y,hIcon ), DrawTransparentBitmap( hDC,hBitmap,x,y), 
+     Array2String( array ), String2Array( cString ),
+     SetWindowObject( hWnd,oWnd ), GetWindowObject( hWnd ),
+     SetCapture( hWnd ), ReleaseCapture(),
+     RegSetBinary( handle, cKeyName, cKeyValue ),
+     PlaySound( cFilename, lSync, lLoop ),
+     re_SetCharFormat(), re_SetDefault(),
+     re_CharFromPos( hEdit,xPos,yPos ), re_GetTextRange( hEdit, n1, n2 ) 
+     DrawEdge( hDC,x1,y1,x2,y2,nFlag,nBorder ),
+     ShellExecute( cFile, cOperation, cParams, cDir, nFlag )
+
+[+]  Keyboard accelerators are implemented:
+        New clause 'ACCELERATOR accFlag,accKey' is added to 'MENUITEM' command
+
+[*]  HTree class is extended:
+       Labels editing possibility added to TreeView, appropriate clause
+       'EDITABLE' added to '@ x,y TREE' command ;
+       New clause added to 'INSERT NODE' command: 'BEFORE <oNext>' ;
+       New methods are added: Delete(), Clean() ;
+
+[*]  HRichEdit class is extended.
+
+[*]  HCustomWindow class: new method DelControl( oCtrl ) added.
+
+[*]  Added parameter 'oFont' to SelectFont() and HFont():Select(), it allows
+     to use oFont as init value in the dialog box.
+
+[*]  GET system now is more Clipper compatible.
+
+[-]  Some bug fixes.
+
+HWGUI 2.07 ( 21.05.2003 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] New classes Htree, HtreeNode are added, which implements TreeView control.
+    Appropriate commands are added:
+       @ x,y TREE ...
+       INSERT NODE ...
+    Look at samples/testtree.prg.
+
+[+] HTimer class is added.
+
+[+] New method InitTray() is added to HWindow class.
+    Look at samples/testtray.prg.
+
+[+] Tcolor, bcolor variables are added to HColumn class, they allows to set
+    a color for specific column in browse.
+
+[+] SetTransparentMode() function added - following TextOut() will draw text
+    in transparent mode.
+
+[+] HIcon class is added.
+
+[!] Now in ICON clause of INIT WINDOW command you should use previously 
+    created oIcon object, not the icon handle.
+
+[-] Some bug fixes.
+
+
+HWGUI 2.06 ( 15.11.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[-] A lot of fixes.
+
+[+] Support of mingw32 compiler is added - thanks to Lorenzo Fiorini for
+    this contribution.
+
+[!] Class hWGUIControl is removed, all it's child classes are
+    inherited now from HControl.
+
+[+] New variables and methods are added to the HBrowse class:
+
+     bPosChanged, this user defined codeblock is evaluated after each 
+          selection change in browse ;
+     lAutoEdit, compatible with TSBrowse class for Fivewin ;
+     lAppable - allows to add rows to the browse ;
+     lUpdated - shows, was some cell of a browse updated ;
+     lAppended - shows, was there a row appended in browse ;
+     method Append().
+
+[+]  New method is added to HStatic: SetValue().
+
+[+]  New method is added to HEdit: SetGet().
+
+[+]  New methods are added to HControl:  Show() and Hide.
+
+[+]  Added new command for adding columns to browse:
+             ADD COLUMN ...
+
+[+]  New methods are added to HTab: SetTab( n ) and GetActivePage()
+
+
+HWGUI 2.05 ( 15.09.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] Added interface to QHTM library, which allows to display and print
+    HTML content in your application.
+    This interface includes a set of commands and functions, see details
+    in documentation and sample: samples/qhtm/qhtmtest.prg.
+
+[+] Added new commands to display bitmaps:
+
+    @ <x>,<y> BITMAP ...
+    REDEFINE BITMAP ...
+
+[!] Fixed few bugs in HBrowse class and GET system
+
+[*] Further Designer improvements.
+
+
+HWGUI 2.04 ( 05.08.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] Added Tab control, appropriate class HTab and commands:
+
+      @ <x>,<y> TAB ...
+
+      BEGIN PAGE <cPage> OF <oTab>
+      END PAGE OF <oTab>
+
+[+] Added class HUpDown and commands for Up-down control:
+
+      @ <x>,<y> UPDOWN ...
+      @ <x>,<y> GET UPDOWN ...
+
+[+] Added two new controls: vertical line and horizontal line, appropriate
+    class HDivider and command:
+
+     @ <x>,<y> LINE [ <oLine> ] ...
+
+[+] Added few functions, which allows to check, if another copy of this program
+    is running and to activate that copy, if so. See sample of using in 
+    samples/designer/designer.prg
+
+[*] Some modifications in HBrowse, contributed by WHT.
+
+[!] Solved problems with menu under Win95.
+
+[*] It's became possible to create property sheets without resources.
+
+[*] Dialog creation routines are improved.
+
+[*] Further Designer improvements - new interface, new controls, possibilty
+    to write/read from *.rc files, ...
+
+
+HWGUI 2.03 ( 25.07.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[!] Fixed bug with Property Sheets handling, introduced in previous release.
+
+[!] Fixed bug in GET system.
+
+[+] Added possibility to create context menus.
+    New command:
+      CONTEXT MENU <oMenu>
+
+    New class HMenu.
+
+[*] Forms Designer improved.
+
+
+HWGUI 2.02 ( 23.07.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[*] GET system implementation is much extended.
+    Look at the sample testget2.prg.
+    PICTURE clause is added to GET commands - and it works as in Clipper.
+    Editing of GET items became more close to Clipper's ( handling of Insert
+    key, ReadExit() using ).
+
+    It is not necessary now to designate in GET command ( and in other
+    control definition commands ) the parent window and Control's ID - so
+    commands became simpler and more close to Clipper's.
+
+    New clause is added to DIALOG definition - 'CLIPPER'. If DIALOG is defined
+    with this clause, you can move between GET's with ENTER key.
+
+[+] HBrowse: added possibility to display bitmaps in columns.
+    You can now define a codeblock for keys handling:
+         
+        oBrw:bKeyDown := {|oBrw,key|MyFunction(oBrw,key)}
+
+    Look at the sample a.prg, function OpenAbout().
+
+[+] Added new function which calls the standard dialog to choose color:
+    Hwg_ChooseColor().
+
+[+] Starting implementation of HGraph class - look at the sample graph.prg.
+
+[+] Starting implementation of a new HwGUI application - forms designer,
+    look at samples/designer.
+
+[!] Few bugs fixed.
+
+
+HWGUI 2.01 ( 05.07.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] Starting implementation of Get system.
+    New commands added:
+
+    @ <x>,<y> GET ... 
+    REDEFINE GET  ...
+    @ <x>,<y> GET CHECKBOX ...
+    REDEFINE GET CHECKBOX ...
+    @ <x>,<y> GET COMBOBOX ...
+    REDEFINE GET COMBOBOX ...
+    @ <x>,<y> GET DATEPICKER ...
+    GET RADIOGROUP ...
+
+[+] DatePicker control added: new command, new class.
+
+[+] New method added to HControl class: SetColor(), it allows to change
+    the control's colors 'on the fly'.
+
+[-] Some fixes in HBrowse class, dialog creating functions, ...
+
+
+
+HWGUI 2.0 final ( 26.06.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[+] Added new class: HPrinter, all printing related code is rewritten to use
+    this class.
+
+[+] Makefiles for Visual C are added ( thanks to Robert Arseniuk ), some changes
+    for this compiler are done - now HwGUI can be built with VC, too.
+
+[*] New clauses are added to most of control creating commands:
+      COLOR
+      BACKCOLOR
+    They allows to define colors of these controls.
+
+[-] Few bugs fixed.
+
+
+HWGUI 2.0 beta 2 ( 14.06.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Font, pen, brush and bitmap handling functions are rewritten as classes.
+
+[+] FONT clause is added to all windows and controls creation commands, oFont
+    variable is added to appropriate classes.
+
+[+] TOOLTIP clause is added to all control creation commands.
+
+[+] @ x,y GROUP ... command and HGroup class are added
+
+[+] @ x,y RADIOBUTTON ..., REDEFINE RADIOBUTTON ..., RADIOGROUP, END RADIOGROUP
+    commands are added, HRadioButton class is added.
+
+[+] New clause 'FROM RESOURCE' is added to the owner button creation commands
+    ( BITMAP section ) - it is possible now to load bitmaps both from the bmp
+    file or from resource.
+
+[*] Now it is possible co create modeless dialogs without resources, too.
+
+[*] Documentation is extended.
+
+[-] Few bugs fixed.
+
+HWGUI 2.0 beta ( 04.06.2002 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[!] HwGUI is now OOP based. See classes hierarchy and description in 
+    documentation ( doc/hwgdoc.htm ).
+
+[!] New commands are added, some are removed, see documentation 
+    ( doc/hwgdoc.htm ) for details.
+    Most new commands are designed for creating controls without using
+    resources ( *.rc file ).
+
+[+] Added possibility to design menu from the program, without resource file.
+
+{+} Property sheets are added.
+
+[*] Documentation is extended.
+
+[-] Few bugs fixed.

@@ -1,0 +1,25 @@
+#
+# $Id$
+#
+
+-n -w
+
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-L../../
+hwgui.hbc
+
+-odesigner
+
+designer.prg
+hctrl.prg
+hformgen.prg
+inspect.prg
+editor.prg
+
+designer.rc
+
+# ============== EOF of designer.hbp ====================

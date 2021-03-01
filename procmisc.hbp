@@ -1,0 +1,24 @@
+#
+# $Id$
+#
+
+hwgui.hbc
+
+-hblib
+
+-olib/procmisc
+
+-w
+# Uncomment these two lines to build HwGUI in Unicode mode
+#-prgflag=-DUNICODE
+#-cflag=-DUNICODE
+# -cflag=-DHWG_USE_POINTER_ITEM
+# "{unix}-cflag=`pkg-config --cflags gtk+-2.0`"
+
+source/common/procmisc/*.c
+source/common/procmisc/*.prg
+{win}source/common/editor/hcedit_w.c
+{unix}source/common/editor/hcedit_l.c
+source/common/editor/*.prg
+
+# ======================= EOF of procmisc.hbp ====================================

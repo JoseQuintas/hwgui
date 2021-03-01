@@ -1,0 +1,20 @@
+#
+# $Id: $
+#
+
+..\..\hwgui.hbc
+
+-w
+
+-ohwreport
+
+hwreport.prg
+opensave.prg
+propert.prg
+printrpt.prg
+repexec.prg
+repbuild.rc
+
+# =============================== EOF of hwreport.hbp =========================
+
+

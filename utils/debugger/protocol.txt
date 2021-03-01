@@ -1,0 +1,108 @@
+  $Id$
+
+  The debugger protocol version 3
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+     Debugger and debugged program exchange messages via files. Debugger writes
+  his messages to a file with extension .d1, the debugged program - .d2.
+  Each message consists of elements, separated by commas.
+  First element is usually an identificator, last two - the same identificator
+  and a completive "!" symbol.
+
+  Following are the commands, which debugger sends to debugged program
+  to move on: go, step, goto, traceover, nextRoutine:
+
+  <id>,cmd,go,<id>,!
+  <id>,cmd,step,<id>,!
+  <id>,cmd,to,<cPrgName>,<nLine>,<id>,!
+  <id>,cmd,trace,<id>,!
+  <id>,cmd,nextr,<id>,!
+
+  After stopping the program ( on next line, on breakpoint, etc. ) it sends
+  to a debugger the following message:
+
+                                   =>    a<id2>,<cPrgName>,<nLine>[,ver,<nProtoVer>][stack,<nStackDepth>,<cModule>,<cFunc>,<nLine>,...][valuelocal|valuepriv|valuepubl|valuestatic,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...][valuewatch,<nWatches>,<HEX(cValue)>,...],<id2>,!
+
+  You see, there is a "a" symbol before the <id2>. Version number is sent in
+  a first message only, the following groups of elements ( stack, locals and
+  watches ) are sent if were requested.
+
+  The "exit" command informs debugged program that debugging is stopped and
+  it shouldn't call the debugger anymore, the "quit" command force the 
+  debugged program to terminate. Both commands don't need an answer:
+
+  <id>,cmd,exit,<id>,!
+  <id>,cmd,quit,<id>,!
+
+
+  Following is a group of commands, which debugger sends to request some info
+  or to set some mode. All this commands demands immediate answer. The answer
+  must begin with the "b" symbol and <id>, which must be the same, as in
+  debugger command. HEX() means here, that the appropriate item must be sent
+  in hexademical form ( each character converted to two-bytes hex number ).
+  If the debugged program can't recognize the command, it sends:
+
+                                                    e<id>
+
+  Below are commands and answers.
+
+  Calculate an expression cexp:
+  <id>,exp,<HEX(cexp)>,<id>,!                 =>    b<id>,value,<HEX(cResult)>,<id>,!
+
+  View the stack:
+  <id>,view,stack,on,<id>,!                   =>    b<id>,stack,<nStackDepth>,<cModule>,<cFunc>,<nLine>,...,<id>,!
+
+  Shut off viewing the stack:
+  <id>,view,stack,off,<id>,!                  =>    b<id>,ok,<id>,!
+
+  View the local vars:
+  <id>,view,local,on,<id>,!                   =>    b<id>,valuelocal,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...,<id>,!
+
+  View the private vars:
+  <id>,view,priv,on,<id>,!                    =>    b<id>,valuepriv,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...,<id>,!
+
+  View the public vars:
+  <id>,view,publ,on,<id>,!                    =>    b<id>,valuepubl,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...,<id>,!
+
+  View the static vars:
+  <id>,view,static,on,<id>,!                  =>    b<id>,valuestatic,<nVars>,<HEX(cVarName)>,<HEX(cVarType)>,<HEX(cVarValue)>,...,<id>,!
+
+  Shut off viewing the local vars:
+  <id>,view,local,off,<id>,!                  =>    b<id>,ok,<id>,!
+
+  View the watches:
+  <id>,view,watch,on,<id>,!                   =>    b<id>,valuewatch,<nWatches>,<HEX(cValue)>,...,<id>,!
+
+  Shut off viewing the watches:
+  <id>,view,watch,off,<id>,!                  =>    b<id>,ok,<id>,!
+
+  Add watch:
+  <id>,watch,add,<HEX(cexp)>,<id>,!           =>    b<id>,
+
+  Delete watch:
+  <id>,watch,del,<nWatch>,<id>,!              =>    b<id>,
+
+  View workareas:
+  <id>,view,areas,<id>,!                      =>    b<id>,valueareas,<nAreas>,<HEX(nItemsPerArea)>,<HEX(Alias)>,<HEX(nArea)>,<HEX(rddName)>,<HEX(reccount)>,<HEX(recno)>,<HEX(bof)>,<HEX(eof)>,<HEX(found)>,<HEX(deleted)>,<HEX(dbfilterHEX(>,<HEX(ordname)>,<HEX(ordkey)>,...,<id>,!
+
+  Inspect record:
+  <id>,insp,rec,<cAlias>,<id>,!               =>    b<id>,valuerec,<nFields>,<HEX(cAlias)>,<HEX(nRecno)>,<HEX(fieldname)>,<HEX(fieldtype)>,<HEX(fieldvalue)>,...,<id>,!
+
+  Inspect object:
+  <id>,insp,obj,<cVarName>,<id>,!             =>    b<id>,valueobj,<nItems>,<HEX(name)>,<HEX(type)>,<HEX(value)>,...,<id>,!
+
+  Inspect array:
+  <id>,insp,arr,<cVarName>,<nFirst>,<nItems>,<id>,!  =>    b<id>,valuearr,<nItems>,<HEX(nFirst)>,<HEX(nArrLen)>,<HEX(type)>,<HEX(value)>,...,<id>,!
+
+  Add breakpoint:
+  <id>,brp,add,<cPrgName>,<nLine>,<id>,!      =>    b<id>,line,<nLine>,<id>,!
+                                       (Wrong line) b<id>,err,<id>,!
+
+  Delete breakpoint:
+  <id>,brp,del,<cPrgName>,<nLine>,<id>,!      =>    b<id>,ok,<nLine>,<id>,!
+                                       (Wrong line) b<id>,err,<id>,!
+
+
+  If the debugged program terminates, it send to debugger the following:
+
+                                                    quit,quit,!

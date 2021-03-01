@@ -1,0 +1,1456 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<init>
+  <chapter name="Introduction" >
+    <comment>
+      <![CDATA[    Hello!
+
+     Here is a HwGUI interactive tutorial, interactive - because you
+can not only read the code and comments, but execute it. Moreover,
+you can edit the code and then execute it immedeately to see the
+results of your changes.
+
+     The tutorial is very simple to navigate, it has minimum of tools.
+Just click on a tree node to see appropriate content is a text editor.
+If this is a code fragment, double clicking on this tree node or 
+clicking on a button, which is in a right top corner of a window above
+the editor will execute this code. That's all.
+
+     There is a configuration file, tutor.xml, which, possible, you
+will need to tune.
+     It contains a tag with a path to HwGUI directory:
+     
+     <hwgui_dir path="..\.." />
+
+     This path is needed for internal compiler to find the HwGUI 
+include/ directory with header file hwgui.ch, if the path is wrong,
+you will get a message "compile error", when you will try to execute
+a code. By default it is set to "..\.." due to the default location
+of this program ( hwgui\utils\tutorial ). If you for some reason
+decide to change this location, you will need to change this path.
+     Yet another tag, which you, probably, may want to change is:
+
+     <tutorial file="tutor_eng.xml" />
+
+     This is a name of a file with tutorial content. The default
+file above "tutor_eng.xml" is an English language version. If there
+is some other with a language of your choice, edit that tag.
+
+     Thanks for your attention.
+     HwGUI team.
+      ]]>
+    </comment>
+  </chapter>
+  <chapter name="Getting started" >
+    <module name="Just a main window" >
+      <![CDATA[// Every HwGUI application must include hwgui.ch header file
+#include "hwgui.ch"
+Function Test
+   Local oMain
+
+   // Most of GUI applications creates the main window:
+   INIT WINDOW oMain MAIN TITLE "My First HwGUI sample" AT 100, 100 SIZE 400, 300
+
+   /*   Here you can place definitions of menu and window controls
+    *   Then the window must be activated - it appears on the screen
+    *   and the application goes to the main loop of handling messages.
+    */
+   ACTIVATE WINDOW oMain
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Window with a menu" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+   Local oMain
+
+   INIT WINDOW oMain MAIN TITLE "My Second HwGUI sample" AT 100, 100 SIZE 400, 300
+
+   // Menu should be defined between the INIT WINDOW and ACTIVATE WINDOW
+   MENU OF oMain
+      MENU TITLE "&File"
+
+         /* "&Message" - the title of menu item, '&' defines the letter after it
+            as a hot key, used with 'Alt' key to activate this item.
+            ACTION clause defines the code, aasociated with this menu item.
+            In the following item it is hwg_Msginfo() - HwGUI function, which is used
+            for a popup message dialog box */
+         MENUITEM "&Message" ACTION hwg_Msginfo( "Just a test", "Message" )
+
+         // The following command creates a horizontal line, which separates groups
+         // of menu items
+         SEPARATOR
+
+         // :Close() method, called for a main window, teminates the application.
+         MENUITEM "&Exit" ACTION oMain:Close()
+
+      ENDMENU
+      MENU TITLE "&Help"
+         MENUITEM "&About" ACTION hwg_Msginfo( HwG_Version(), "About" )
+      ENDMENU
+   ENDMENU
+
+   ACTIVATE WINDOW oMain
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Add controls to the window" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+Local oMain, oFont
+Local aCombo := {"First","Second" }
+
+   // This creates a font object ( oFont ) to use it for windows and controls
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   /* We see here, how the oFont may be used;
+      ON EXIT clause defines a codeblock, which is called while window closing,
+      this codeblock must return .T. to allow closing, or .F. to prevent it.
+      hwg_MsgYesNo() - HwGUI function, which creates popup dialog box with "Yes"
+      and "No" buttons */
+   INIT WINDOW oMain TITLE "Example" ;
+      SIZE 420,180 FONT oFont ;
+      ON EXIT {||hwg_MsgYesNo("Really want to quit ?")}
+
+   // Add few controls to the window
+
+   @ 20,10 EDITBOX "Hello, World!" SIZE 200,26
+
+   @ 270,10 COMBOBOX aCombo SIZE 100, 28 TOOLTIP "Combobox"
+
+   @ 120,60 BUTTON "Close" SIZE 150,30 ON CLICK {||oMain:Close()}
+
+   MENU OF oMain
+      MENUITEM "About" ACTION hwg_MsgInfo("First HwGUI Application")
+   ENDMENU
+
+   ACTIVATE WINDOW oMain
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Maximize/minimize/..." >
+      <![CDATA[/* Here is a demonstration, how to change a window location on the screen,
+ * using methods of the class HWindow */
+#include "hwgui.ch"
+Function Test
+Local oMain
+ 
+  INIT WINDOW oMain MAIN TITLE "Maximized"
+        
+  MENU OF oMain
+    MENU TITLE "&Action"
+       // Note a hwg_SetWindowText() HwGUI function, which changes a window title
+       MENUITEM "&Maximize" ACTION ( oMain:Maximize(), hwg_SetWindowText(oMain:handle,"Maximized") )
+       MENUITEM "&Minimize" ACTION ( oMain:Minimize(), hwg_SetWindowText(oMain:handle,"Minimized") )
+       MENUITEM "&Restore"  ACTION ( oMain:Restore(), hwg_SetWindowText(oMain:handle,"Restored") )
+       MENUITEM "&Center"   ACTION ( oMain:Center(), hwg_SetWindowText(oMain:handle,"Centered") )
+       MENUITEM "&Move"     ACTION ( oMain:Move( 400,200,200,100 ), hwg_SetWindowText(oMain:handle,"Moved") )
+       SEPARATOR
+       MENUITEM "&Exit"     ACTION oMain:Close()
+    ENDMENU
+  ENDMENU
+
+  // The window is actived maximized
+  ACTIVATE WINDOW oMain MAXIMIZED
+ 
+Return Nil
+      ]]>
+    </module>
+    <module name="Mdi window" ver="win">
+      <![CDATA[#include "hwgui.ch"
+Function Test
+   Local oMain
+
+   /* MENUPOS clause sets the submenu, where items with child windows names
+      will appear. It is set by position, starting with 0. */
+   INIT WINDOW oMain MDI TITLE "MDI window" AT 100, 100 SIZE 400, 300 ;
+         MENUPOS 1
+
+   MENU OF oMain
+      MENU TITLE "&File"
+         MENUITEM "&Create Child" ACTION CreateChildWindow()
+         SEPARATOR
+         MENUITEM "&Exit" ACTION oMain:Close()
+      ENDMENU
+      MENU TITLE "&Windows"
+         // Rearrange child windows
+         MENUITEM "&Tile" ACTION hwg_Sendmessage(HWindow():GetMain():handle,WM_MDITILE,MDITILE_HORIZONTAL,0)
+      ENDMENU
+      MENU TITLE "&Help"
+         MENUITEM "&About" ACTION hwg_Msginfo( HwG_Version(), "About" )
+      ENDMENU
+   ENDMENU
+
+   ACTIVATE WINDOW oMain
+  
+Return Nil
+
+Function CreateChildWindow
+Local oChildWnd
+
+   INIT WINDOW oChildWnd MDICHILD TITLE "Child "+Time()
+
+     // Here may be any controls...
+   oChildWnd:Activate()
+Return Nil
+      ]]>
+    </module>
+    <module name="Modal dialog" >
+      <![CDATA[/* A dialog box is a temporary window an application creates to
+get user input. An application typically uses dialog boxes to prompt the user
+for some information. A dialog box usually contains one or more controls,
+with which the user enters text and chooses options.
+A modal dialog box becomes active after creation and neither the
+user nor the application can make the owner window active until this dialog
+box is destroyed. */
+#include "hwgui.ch"
+Function Test
+   Local oDlg, oFont, oEdit1
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   INIT DIALOG oDlg TITLE "Modal dialog" AT 100, 100 SIZE 300, 150 FONT oFont
+
+   @ 100,100 BUTTON "Close" SIZE 100,30 ;
+         ON CLICK {|| oDlg:Close() }
+
+   ACTIVATE DIALOG oDlg
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Modeless dialog" >
+      <![CDATA[// Modeless dialog doesn't prevent any other window to become active.
+#include "hwgui.ch"
+Function Test
+   Local oDlg, oFont, oEdit1
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   INIT DIALOG oDlg TITLE "Modeless dialog" AT 100, 100 SIZE 300, 150 FONT oFont
+
+   @ 20,20 SAY "Input: " SIZE 60, 24
+   // The ON SIZE clause in EDITBOX definition handles the control's
+   //  behaviour while the parent window resizing. More details will be later.
+   @ 80,20 EDITBOX oEdit1 CAPTION "" SIZE 200,26 ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 100,100 BUTTON "Close" SIZE 100,30 ;
+         ON CLICK {|| hwg_MsgInfo( oEdit1:value, "Edit value" ), oDlg:Close() }
+
+   // You see, we add here a magic word NOMODAL
+   ACTIVATE DIALOG oDlg NOMODAL
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Base controls" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+   Local oDlg, oFont, oEdit1, oCheck1, oCheck2, oCombo, oUpd
+   Local nChoic := 1, aCombo := { "First","Second" }, cr := Chr(13)+Chr(10)
+   // Retrieve data from controls while closing the dialog box
+   Local bExit := {|| hwg_MsgInfo( oEdit1:value + cr + ;
+      "Check1: " + Iif( oCheck1:Value,"On","Off" ) + ;
+      "  Check2: " + Iif( oCheck2:Value,"On","Off" ) + cr + ;
+      "Radio: "  + Str(nChoic,1) + cr + ;
+      "Combo: " + aCombo[oCombo:Value] + cr + ;
+      "UpDown: " + Ltrim(Str(oUpd:Value)) ;
+      , "Edit value" ), oDlg:Close() }
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   INIT DIALOG oDlg TITLE "Base controls" AT 100, 100 SIZE 300, 260 FONT oFont
+
+   // SAY is a Label control, we've seen is already
+   @ 20,20 SAY "Input: " SIZE 60, 24
+
+   // EDITBOX - an Edit control, designed to input some text
+   @ 80,20 EDITBOX oEdit1 CAPTION "" SIZE 200,26 ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   // Just a rectangle with a label to group few other controls
+   // Below are checkboxex, sure, you know what it is
+   @ 10,50 GROUPBOX "CheckGroup"  SIZE 130, 76
+
+   @ 28,70 CHECKBOX oCheck1 CAPTION "Check 1" SIZE 90, 20
+   @ 28,92 CHECKBOX oCheck2 CAPTION "Check 2" SIZE 90, 20
+
+   @ 150,50 GROUPBOX "RadioGroup"  SIZE 130, 76
+
+   // RADIOGROUP ... END RADIOGROUP is a virtual control, which unites
+   // a group of radiobuttons. SELECTED clause sets, which one of the
+   // radiobuttons is selected at start.
+   RADIOGROUP
+   @ 168,70 RADIOBUTTON "Radio 1" SIZE 90, 20 ON CLICK {||nChoic := 1}
+   @ 168,92 RADIOBUTTON "Radio 2" SIZE 90, 20 ON CLICK {||nChoic := 2}
+   END RADIOGROUP SELECTED 1
+
+   // Combo box is a well known control, which combines much of the 
+   // functionality of a list box and an edit control. 
+   @ 20,150 COMBOBOX oCombo ITEMS aCombo SIZE 100, 28
+
+   // An up-down control is an edit control, combined with a pair of
+   // arrow buttons that the user can click to increment or decrement
+   // an edit control value.
+   @ 168,150 UPDOWN oUpd INIT 10 RANGE -10,50 SIZE 50,28 STYLE WS_BORDER
+
+   // A line, static control, which separates one part of a box from other
+   @ 20, 190 LINE LENGTH 260
+
+   @ 100,220 BUTTON "Close" SIZE 100,30 ON CLICK bExit
+
+   ACTIVATE DIALOG oDlg
+  
+Return Nil
+      ]]>
+    </module>
+    <module name="Standard dialogs" >
+      <![CDATA[/* This sample demonstrates few ready to use dialog boxes */
+#include "hwgui.ch"
+Function Test
+   Local oDlg, oFont, oFontSay, oFontC
+   Local nChoic, cRes, arr := {"White","Blue","Green","Red"}
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+   PREPARE FONT oFontSay NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 WEIGHT 700
+   PREPARE FONT oFontC NAME "Georgia" WIDTH 0 HEIGHT -15
+
+   INIT DIALOG oDlg TITLE "Standard dialogs" AT 100, 100 SIZE 340, 300 FONT oFont
+
+   @ 20,12 SAY "Press any button to see a dialog" SIZE 260, 24 ;
+         FONT oFontSay COLOR 8404992
+
+   @ 20,50 BUTTON "hwg_MsgInfo()" SIZE 180,28 ;
+      ON CLICK {||hwg_MsgInfo("Info dialog","Tutorial")}
+
+   @ 20,80 BUTTON "hwg_MsgStop()" SIZE 180,28 ;
+      ON CLICK {||hwg_MsgStop("Error message","Tutorial")}
+
+   @ 20,110 BUTTON "hwg_MsgYesNo()" SIZE 180,28 ;
+      ON CLICK {||oSay3:SetText( Iif( hwg_MsgYesNo("Do you like it?","Tutorial"), "Yes","No" ) )}
+   @ 230,110 SAY oSay3 CAPTION "" SIZE 80,24 COLOR 8404992
+
+   @ 20,140 BUTTON "hwg_MsgOkCancel()" SIZE 180,28 ;
+      ON CLICK {||hwg_MsgOkCancel("Confirm action","Tutorial")}
+
+   @ 20,170 BUTTON "hwg_MsgGet()" SIZE 180,28 ;
+      ON CLICK {||oSay5:SetText( Iif( (cRes := hwg_MsgGet("Input something","Tutorial")) == Nil, "", cRes ) )}
+   @ 230,170 SAY oSay5 CAPTION "" SIZE 80,24 COLOR 8404992
+
+   @ 20,200 BUTTON "hwg_WChoice()" SIZE 180,28 ;
+      ON CLICK {||oSay6:SetText( Iif( (nChoic := hwg_WChoice(arr,"Tutorial",,,oFontC,,,,,"Ok","Cancel")) == 0, "", arr[nChoic] ) )}
+   @ 230,200 SAY oSay6 CAPTION "" SIZE 80,24 COLOR 8404992
+
+   @ 20, 250 LINE LENGTH 300
+   @ 120,258 BUTTON "Close" SIZE 100,30 ON CLICK {||oDlg:Close()}
+
+   ACTIVATE DIALOG oDlg
+  
+Return Nil
+      ]]>
+    </module>
+  </chapter>
+  <chapter name="Controls" >
+    <module name="Panel and Ownerbuttons" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oPanel
+
+   INIT DIALOG oDlg TITLE "Panel and Ownerbuttons";
+         AT 0, 0 SIZE 320, 120 BACKCOLOR 12632256 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 0,0 PANEL oPanel SIZE 320,32 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 2,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Next")} ;
+       SIZE 32,26 FLAT ;
+       BITMAP "next.bmp" TRANSPARENT COLOR 12632256
+
+   @ 34,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Last")} ;
+       SIZE 32,26 FLAT ;
+       BITMAP "bottom.bmp" TRANSPARENT COLOR 12632256
+
+   @ 66,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("First")} ;
+       SIZE 32,26 FLAT ;
+       BITMAP "top.bmp" TRANSPARENT COLOR 12632256
+
+   @ 98,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Previous")} ;
+       SIZE 32,26 FLAT ;
+       BITMAP "previous.bmp" TRANSPARENT COLOR 12632256
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Progress bar" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBar
+
+   INIT DIALOG oDlg TITLE "Progress Bar Demo";
+         AT 0, 0 SIZE 320, 120 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 ) ;
+         ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
+
+   @ 20, 30 BUTTON 'Step' SIZE 80,28 ;
+         ON CLICK {|| Iif(oBar==Nil,.F.,oBar:Step() ) }
+   @ 120,30 BUTTON 'Create Bar' SIZE 80,28 ;
+         ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 10,10 ) }
+   @ 220,30 BUTTON 'Close' SIZE 80,28 ON CLICK {|| oDlg:Close() }
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Status window" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+Local oMainWindow, oPanel, oStatus
+
+   INIT WINDOW oMainWindow MAIN TITLE "Example" ;
+     AT 200,0 SIZE 420,240
+     
+   @ 20, 20 SAY "Press button to view current time in status bar" SIZE 380, 26 TRANSPARENT
+
+   @ 160,120 BUTTON "Get Time" ;
+        SIZE 100, 32 ON CLICK {||oStatus:SetText(Time())}
+
+   ADD STATUS oStatus TO oMainWindow
+
+   ACTIVATE WINDOW oMainWindow
+
+return nil
+      ]]>
+    </module>
+    <module name="Combobox and ON CHANGE event" >
+      <![CDATA[#include "hwgui.ch"
+Function Test
+Local oDlg, oCombo1, oCombo2
+Local aCombo1 := { "First","Second" }, aCombo2 := { "White","Black" }, ;
+      aCombo3 := { "Yellow","Green" }
+Local bCombo1 := {||
+   IF oCombo1:Value == 1
+      oCombo2:aItems := aCombo2
+   ELSE
+      oCombo2:aItems := aCombo3
+   ENDIF
+   oCombo2:Refresh()
+   Return .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Example" ;
+     AT 200,0 SIZE 400,200
+
+   @ 20,20 COMBOBOX oCombo1 ITEMS aCombo1 SIZE 100, 25 ON CHANGE bCombo1
+
+   @ 150,20 COMBOBOX oCombo2 ITEMS aCombo2 SIZE 100, 25
+     
+   @ 150,120 BUTTON "Close" OF oDlg ;
+        SIZE 100, 32 ON CLICK {||oDlg:Close()}
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Browse" >
+      <![CDATA[/* This is a very basic sample of using browse.
+Hwg_WChoice() do the same and more */
+#include "hwgui.ch"
+Function Test()
+Local oDlg, oBrw
+Local aSample := { {"Alex",17,1200}, {"Victor",42,1600}, {"John",31,1000} }
+
+   INIT DIALOG oDlg TITLE "Browse array";
+         AT 0, 0 SIZE 300, 230 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 10,20 BROWSE oBrw ARRAY SIZE 280,140 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+
+   // hwg_CreateArList() sets the array to browse and creates columns
+   // You may use oBrw:AddColumn( HColumn():New(...) ) instead to set
+   // columns with necessary options.
+   hwg_CreateArList( oBrw, aSample )
+
+   // In case of using hwg_CreateArList() you may set some columns options later,
+   // for example:
+   oBrw:aColumns[1]:heading := "Name"
+   oBrw:aColumns[2]:heading := "Age"
+
+   @ 100,180 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:Close() } ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+
+   ACTIVATE DIALOG oDlg
+Return Nil
+      ]]>
+    </module>
+    <module name="TreeView" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oTree, oSay
+
+   INIT DIALOG oDlg TITLE "Tree";
+         AT 0, 0 SIZE 300, 220 ;
+         FONT HFont():Add( "MS Sans Serif",0,-15 ) ;
+         ON INIT {||BuildTree( oTree, oSay )}
+
+   @ 80,20 TREE oTree SIZE 140,120 EDITABLE
+
+   @ 80,160 SAY oSay CAPTION "..." SIZE 140, 24 STYLE SS_CENTER
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+
+Static Function BuildTree( oTree, oSay )
+Local oItem 
+
+   INSERT NODE "First" TO oTree ON CLICK {||oSay:SetText("First")}
+   INSERT NODE "Second" TO oTree ON CLICK {||oSay:SetText("Second")}
+   INSERT NODE oItem CAPTION "Third" TO oTree ON CLICK {||oSay:SetText("Third")}
+   INSERT NODE "Third-1" TO oItem ON CLICK {||oSay:SetText("Third-1")}
+   INSERT NODE "Forth" TO oTree ON CLICK {||oSay:SetText("Forth")}
+Return Nil
+      ]]>
+    </module>
+    <module name="Splitter" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oSplitV, oSplitH, oEdit1, oEdit2, oEdit3
+
+   INIT DIALOG oDlg TITLE "Splitters";
+         AT 0, 0 SIZE 380, 260 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 20,10 EDITBOX oEdit1 CAPTION "First edit control" SIZE 140,100 STYLE ES_MULTILINE
+
+   @ 163,10 EDITBOX oEdit2 CAPTION "Second edit control" SIZE 200,100 ;
+         STYLE ES_MULTILINE ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   // This vertical splitter separates oEdit1 from oEdit2 and allows to move the border
+   // between them with the help of a mouse
+   @ 160,10 SPLITTER oSplitV SIZE 3,100 DIVIDE {oEdit1} FROM {oEdit2} LIMITS 100,300
+
+   @ 20,113 EDITBOX oEdit3 CAPTION "Example" SIZE 344,130 STYLE ES_MULTILINE ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+
+   // This horizontal splitter separates twp edot controls and vertical splitter
+   // from the third edit control
+   @ 20,110 SPLITTER oSplitH SIZE 344,3 DIVIDE {oEdit1,oEdit2,oSplitV} FROM {oEdit3} ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS LIMITS ,200
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Tab" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oTab
+// In WinAPI version we must have an hspace for controls in a tab control, because a top of the tab
+// is occupied by tabs. This hspace depend on the font size.
+Local nTop := Iif( "windows" $ Lower(Os()), 24, 0 )
+
+   INIT DIALOG oDlg TITLE "Tab control";
+         AT 0, 0 SIZE 380, 260 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 20, 20 TAB oTab ITEMS {} SIZE 340, 180 ;
+      ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   BEGIN PAGE "First" of oTab
+
+     @ 30, nTop+16 EDITBOX "Pyotr" SIZE 200, 26
+     @ 30, nTop+46 EDITBOX "Ilyich" SIZE 200, 26
+     @ 30, nTop+76 EDITBOX "Tchaikovsky" SIZE 200, 26
+     @ 30, nTop+106 EDITBOX "07/05/1840" SIZE 100, 26
+
+   END PAGE of oTab
+
+   BEGIN PAGE "Second" of oTab
+
+     @ 30, nTop+16 EDITBOX "Sergei" SIZE 200, 26
+     @ 30, nTop+46 EDITBOX "Vasilievich" SIZE 200, 26
+     @ 30, nTop+76 EDITBOX "Rachmaninoff" SIZE 200, 26
+     @ 30, nTop+106 EDITBOX "01/04/1873" SIZE 100, 26
+
+   END PAGE of oTab
+
+   @ 140,220 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:Close() } ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+  </chapter>
+  <chapter name="Advanced using of controls" >
+    <module name="Styled controls" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oTopPanel, oBtn1, oBtn2, oBtn3, oBrw, oBtnOk
+Local oStyleNormal, oStylePressed, oStyleOver
+Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"John",31,15000} }
+
+   oStyleNormal := HStyle():New( {16759929,16772062}, 1 )
+   oStylePressed := HStyle():New( {16759929}, 1,, 3, 0 )
+   oStyleOver := HStyle():New( {16759929}, 1,, 2, 12164479 )
+
+   INIT DIALOG oDlg TITLE "Styled controls" ;
+         AT 0, 0 SIZE 380, 320 BACKCOLOR 16772062 ;
+         FONT HFont():Add( "MS Sans Serif",0,-15 )
+
+   // A TOP PANEL is the same PANEL control, which we used in "Panel and Ownerbuttons"
+   // module, but it has predefined ON SIZE codeblock to be at the top of a window
+   ADD TOP PANEL oTopPanel TO oDlg HEIGHT 48 HSTYLE oStyleNormal
+
+   @ 0,0 OWNERBUTTON oBtn1 OF oTopPanel SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Date" ;
+         ON CLICK {||hwg_WriteStatus(oDlg,1,Dtoc(Date()),.T.)}
+       
+   @ 64,0 OWNERBUTTON oBtn2 OF oTopPanel SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Time" ;
+         ON CLICK {||hwg_WriteStatus(oDlg,2,Time(),.T.)}
+
+   @ 128,0 OWNERBUTTON oBtn3 OF oTopPanel SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Version" ;
+         ON CLICK {||hwg_WriteStatus(oDlg,3,hwg_Version(),.T.)}
+
+   @ 30,72 BROWSE oBrw ARRAY SIZE 320,140 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+   oBrw:oStyleHead := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
+   oBrw:aArray := aSample
+   oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
+   oBrw:AddColumn( HColumn():New( "Age",{|v,o|o:aArray[o:nCurrent,2]},"N",6,0 ) )
+   oBrw:AddColumn( HColumn():New( "Number",{|v,o|o:aArray[o:nCurrent,3]},"N",8,0 ) )
+
+   @ 128,240 OWNERBUTTON oBtnOk SIZE 100,32 ;
+         TEXT "Ok" ;
+         ON CLICK {||hwg_EndDialog()}
+   oBtnOk:aStyle := { HStyle():New( {0xffffff,0xdddddd}, 1,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 2,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 1,, 2, 8421440 ) }
+
+   // A STATUS PANEL is a subclass of a PANEL control, which may be used instead of
+   // a standard STATUS control
+   ADD STATUS PANEL TO oDlg HEIGHT 30 FONT oDlg:oFont ;
+      HSTYLE HStyle():New( {16770002,16772062}, 1,, 0.4, 16759929 ) PARTS 120,120,0
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Browse" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBrw, oBtnOk, oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 ), oPen
+Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"Pyotr",56,45500}, ;
+      {"Sergei",28,14800}, {"Ivan",26,21300} }
+Local bCol1 := {|o,h,x1,y1,x2,y2|
+   oStyle:Draw( h,x1,y1,x2,y2 )
+   RETURN Nil
+}
+Local bBack := {|o,h,x1,y1,x2,y2,n|
+   Local y := y1 + Int( (y2-y1)/2 )
+   // Draw a column header background
+   hwg_Fillrect( h, x1, y1, x2, y, oBrw:brush:handle )
+   oStyle:Draw( h, x1, y, x2, y2 )
+   IF n == 4
+      // While drawing the 4-th column header output a "Super header" for 3-th and 4-th columns
+      hwg_Settransparentmode( h, .T. )
+      hwg_Drawtext( h, "Some data", x1-oBrw:aColumns[3]:width, y1 + 2, x2, y-2, DT_CENTER )
+      hwg_Settransparentmode( h, .F. )
+   ENDIF
+   RETURN Nil
+}
+Local bDrawOrd := {|o,h,x1,y1,x2,y2|
+   IF o:cargo == 1
+      // if sorted ascending
+      hwg_Selectobject( h, oPen:handle )
+      hwg_DrawLine( h, x2-16, y2-14, x2-12, y2-8 )
+      hwg_DrawLine( h, x2-12, y2-8, x2-8, y2-14 )
+   ELSEIF o:cargo == 2
+      // if sorted descending
+      hwg_Selectobject( h, oPen:handle )
+      hwg_DrawLine( h, x2-16, y2-8, x2-12, y2-14 )
+      hwg_DrawLine( h, x2-12, y2-14, x2-8, y2-8 )
+   ENDIF
+   RETURN Nil
+}
+
+   oPen := HPen():Add( BS_SOLID, 2, 0 )
+
+   INIT DIALOG oDlg TITLE "Browse" ;
+         AT 0, 0 SIZE 380, 300 BACKCOLOR 0xeeeeee;
+         FONT HFont():Add( "MS Sans Serif",0,-15 )
+
+   @ 20,16 SAY "Press on a column head to change order" SIZE 340,24 ;
+         TRANSPARENT STYLE DT_CENTER COLOR 8404992
+   @ 20,40 BROWSE oBrw ARRAY SIZE 340,200 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+   oBrw:oStyleHead := oStyle
+   oBrw:bcolorSel := 0xeeeeee
+   oBrw:tcolorSel := 0
+   oBrw:aArray := aSample
+
+   // Increase Left, top and bottom padding
+   oBrw:aPadding[1] := oBrw:aPadding[2] := oBrw:aPadding[4] := 8
+   oBrw:aHeadPadding[2] := oBrw:aHeadPadding[4] := 4
+
+   //First column we draw ourselves, using the nCol1 codeblock, so we may to not set the
+   // column codeblock.
+   oBrw:AddColumn( HColumn():New( "",,"C",2,0 ) )
+   oBrw:aColumns[1]:setPaintCB( PAINT_LINE_ALL, bCol1 )
+
+   oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
+   oBrw:AddColumn( HColumn():New( ";Age",{|v,o|o:aArray[o:nCurrent,2]},"N",6,0 ) )
+   oBrw:AddColumn( HColumn():New( ";Salary",{|v,o|o:aArray[o:nCurrent,3]},"N",8,0 ) )
+
+   oBrw:aColumns[3]:cGrid := "W;WN"
+   oBrw:aColumns[4]:cGrid := "E;WEN"
+
+   // Add a codeblock to draw column hraders bacground
+   oBrw:aColumns[3]:setPaintCB( PAINT_HEAD_BACK, bBack )
+   oBrw:aColumns[4]:setPaintCB( PAINT_HEAD_BACK, bBack )
+
+   // Add a codeblock to draw the current order
+   oBrw:aColumns[2]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
+   oBrw:aColumns[3]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
+   oBrw:aColumns[4]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
+
+   // Set a codeblock to change order
+   oBrw:aColumns[2]:bHeadClick := oBrw:aColumns[3]:bHeadClick := ;
+      oBrw:aColumns[4]:bHeadClick := {|o,n|onHeadClick(o,n)}
+   // The :cargo variable exists in all HwGUI objects and isn't used by HwGUI itself.
+   // You may use it as you need in your programs.
+   // We use the column's :cargo here to keep info about the current order:
+   // 0 - not sorted by this column, 1 - sorted ascending, 2 - sorted descending
+   oBrw:aColumns[2]:cargo := oBrw:aColumns[3]:cargo := oBrw:aColumns[4]:cargo := 0
+
+   @ 128,260 OWNERBUTTON oBtnOk SIZE 100,32 ;
+         TEXT "Ok" ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS ;
+         ON CLICK {||hwg_EndDialog()}
+   oBtnOk:aStyle := { HStyle():New( {0xffffff,0xdddddd}, 1,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 2,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 1,, 2, 8421440 ) }
+
+   ACTIVATE DIALOG oDlg
+
+   oPen:Release()
+
+Return Nil
+
+Function onHeadClick( oBrw, nCol )
+Local no := Ascan( oBrw:aColumns, {|o|o:cargo>0}, 2 )
+
+   // no is an index of a column, used in sorting
+   IF no == 0
+      oBrw:aColumns[nCol]:cargo := 1
+   ELSEIF no == nCol
+      IF oBrw:aColumns[no]:cargo == 1
+         oBrw:aColumns[no]:cargo := 2
+      ELSE
+         oBrw:aColumns[no]:cargo := 1
+      ENDIF
+   ELSE
+      oBrw:aColumns[no]:cargo := 0
+      oBrw:aColumns[nCol]:cargo := 1
+   ENDIF
+
+   no := nCol
+   nCol --
+   IF oBrw:aColumns[no]:cargo == 1
+      oBrw:aArray := ASort( oBrw:aArray,,, {|z,y| z[nCol] < y[nCol] } )
+   ELSE
+      oBrw:aArray := ASort( oBrw:aArray,,, {|z,y| z[nCol] > y[nCol] } )
+   ENDIF
+   oBrw:Refresh()
+Return Nil
+      ]]>
+    </module>
+    <module name="Browse of bitmaps" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBrw, oBtnOk, i, oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
+Local aStock, aStockNames, oBitmap
+Local bCol2 := {|o,h,x1,y1,x2,y2|
+   Local oBmp
+   hwg_Fillrect( h, x1, y1, x2, y2, oBrw:brush:handle )
+   IF oBrw:nCurrent <= Len(oBrw:aArray) .AND. Valtype( oBrw:aArray[oBrw:nCurrent] ) == "O"
+      oBmp := oBrw:aArray[oBrw:nCurrent]
+      hwg_Drawbitmap( h, oBmp:handle,, x1+20, y1+4, oBmp:nWidth, oBmp:nHeight )
+   ENDIF
+   RETURN Nil
+}
+
+   // We will browse predefined bitmaps ( they are called "stock" in GTK ),
+   //   using a user-defined codeblock to paint a cell.
+   // Note, that the HBitmap():AddStandard() receives numerical id for WinAPI
+   //   and a string for GTK.
+   //
+   // or #ifndef __GTK__ ?
+   #ifdef __PLATFORM__WINDOWS
+      oBitmap := HBitmap():AddStandard( OBM_BTNCORNERS )
+      aStock := { OBM_BTNCORNERS, OBM_BTSIZE, ;
+         OBM_CHECK, OBM_CHECKBOXES, OBM_CLOSE, OBM_REDUCE, ;
+         OBM_COMBO, OBM_REDUCED, OBM_DNARROW, OBM_RESTORE, OBM_DNARROWD, OBM_RESTORED, ;
+         OBM_DNARROWI, OBM_RGARROW, OBM_LFARROW, OBM_RGARROWD, OBM_LFARROWD, OBM_RGARROWI, ;
+         OBM_LFARROWI, OBM_SIZE, OBM_MNARROW, OBM_UPARROW, OBM_UPARROWD, ;
+         OBM_UPARROWI, OBM_ZOOM, OBM_ZOOMD }
+      aStockNames := { "OBM_BTNCORNERS", "OBM_BTSIZE", ;
+         "OBM_CHECK", "OBM_CHECKBOXES", "OBM_CLOSE", "OBM_REDUCE", ;
+         "OBM_COMBO", "OBM_REDUCED", "OBM_DNARROW", "OBM_RESTORE", "OBM_DNARROWD", "OBM_RESTORED", ;
+         "OBM_DNARROWI", "OBM_RGARROW", "OBM_LFARROW", "OBM_RGARROWD", "OBM_LFARROWD", "OBM_RGARROWI", ;
+         "OBM_LFARROWI", "OBM_SIZE", "OBM_MNARROW", "OBM_UPARROW", "OBM_UPARROWD", ;
+         "OBM_UPARROWI", "OBM_ZOOM", "OBM_ZOOMD" }
+   #else
+      oBitmap := HBitmap():AddStandard( "gtk-ok" )
+      aStock := { "gtk-about", "gtk-add", "gtk-apply", "gtk-bold", "gtk-cancel", "gtk-cdrom", ;
+         "gtk-clear", "gtk-close", "gtk-color-picker", "gtk-convert", "gtk-connect", ;
+         "gtk-copy", "gtk-cut", "gtk-delete", "gtk-dialog-error", "gtk-dialog-info", ;
+         "gtk-dialog-question", "gtk-dialog-warning", "gtk-directory", "gtk-disconnect", ;
+         "gtk-dnd", "gtk-dnd-multiple", "gtk-edit", "gtk-execute", "gtk-file", "gtk-find", ;
+         "gtk-find-and-replace", "gtk-floppy", "gtk-fullscreen", "gtk-goto-bottom", ;
+         "gtk-goto-first", "gtk-goto-last", "gtk-goto-top", "gtk-go-back", "gtk-go-down", ;
+         "gtk-go-forward", "gtk-go-up", "gtk-harddisk", "gtk-help", "gtk-home", ;
+         "gtk-indent", "gtk-index", "gtk-info", "gtk-italic", "gtk-jump-to", ;
+         "gtk-justify-center", "gtk-justify-left", "gtk-justify-fill", "gtk-justify-right", ;
+         "gtk-leave-fullscreen", "gtk-media-forward", "gtk-media-next", "gtk-media-pause", ;
+         "gtk-media-play", "gtk-media-previous", "gtk-media-record", "gtk-media-rewind", ;
+         "gtk-media-stop", "gtk-missing-image", "gtk-network", "gtk-new", "gtk-no", "gtk-ok", "gtk-open", ;
+         "gtk-orientation-landscape", "gtk-orientation-portrait", "gtk-orientation-reverse-landscape", "gtk-orientation-reverse-portrait", ;
+         "gtk-page-setup", "gtk-paste", "gtk-preferences", "gtk-print", "gtk-print-error", ;
+         "gtk-print-paused", "gtk-print-preview", "gtk-print-report", "gtk-print-warning", "gtk-properties", ;
+         "gtk-quit", "gtk-redo", "gtk-refresh", "gtk-remove", "gtk-revert-to-saved", "gtk-save", "gtk-save-as", ;
+         "gtk-select-all", "gtk-select-color", "gtk-select-font", "gtk-sort-ascending", "gtk-sort-descending", ;
+         "gtk-spell-check", "gtk-stop", "gtk-strikethrough", "gtk-undelete", "gtk-underline", "gtk-undo", "gtk-unindent", ;
+         "gtk-yes", "gtk-zoom-100", "gtk-zoom-fit", "gtk-zoom-in", "gtk-zoom-out" }
+      aStockNames := aStock
+   #endif
+
+   INIT DIALOG oDlg TITLE "Browse of images" ;
+         AT 0, 0 SIZE 380, 360 BACKCOLOR 0xeeeeee;
+         FONT HFont():Add( "MS Sans Serif",0,-15 )
+
+   @ 20,20 BROWSE oBrw ARRAY SIZE 340,280 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+   oBrw:oStyleHead := oStyle
+   oBrw:bcolorSel := oBrw:htbColor := 0xeeeeee
+   oBrw:tcolorSel := oBrw:httColor := 0
+   oBrw:nRowHeight := 36
+   oBrw:aArray := Array( Len(aStock) )
+   FOR i := 1 TO Len( aStock )
+      oBrw:aArray[i] := HBitmap():AddStandard( aStock[i] )
+   NEXT
+
+   oBrw:AddColumn( HColumn():New( "Name",{|v,o|aStockNames[o:nCurrent]},"C",20,0 ) )
+   oBrw:AddColumn( HColumn():New( "Bitmap",,"C",10,0 ) )
+
+   oBrw:aColumns[2]:setPaintCB( PAINT_LINE_ALL, bCol2 )
+
+   @ 120,320 OWNERBUTTON oBtnOk SIZE 140,32 ;
+         TEXT "Ok" COORDINATES 80,0,0,0 ;
+         BITMAP oBitmap COORDINATES 40,0,0,0 ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS ;
+         ON CLICK {||hwg_EndDialog()}
+   oBtnOk:aStyle := { HStyle():New( {0xffffff,0xdddddd}, 1,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 2,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 1,, 2, 8421440 ) }
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Non-standard header" >
+      <![CDATA[// In this sample we will create a dialog with a customized
+// title bar. To do this, we create it without a standard title and add
+// a HEADER PANEL instead.
+#include "hwgui.ch"
+Function Test()
+Local oDlg, oPanel, oFont, oStyleNormal, oStylePressed, oStyleOver
+
+   oStyleNormal := HStyle():New( {0x7b7680,0x5b5760}, 1 )
+   oStylePressed := HStyle():New( {0x7b7680}, 1,, 2, 0xffffff )
+   oStyleOver := HStyle():New( {0x7b7680}, 1 )
+
+   // WND_NOTITLE style creates a dialog without the title bar
+   INIT DIALOG oDlg TITLE "" BACKCOLOR 0x3C3940 ;
+         AT 0, 0 SIZE 380, 300 STYLE WND_NOTITLE
+
+   PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 ITALIC
+
+   // Add a header panel with predefined buttons
+   ADD HEADER PANEL oPanel HEIGHT 32 TEXTCOLOR 0xFFFFFF BACKCOLOR 0x2F343F ;
+      FONT oFont TEXT "Header" COORS 20 BTN_CLOSE BTN_MAXIMIZE BTN_MINIMIZE
+
+   // Set colors of predefined buttons to correspond panel color.
+   // "btnClose" is a predefined name of a close button, "btnMax" and
+   // "btnMin" - of maximize and minimize buttons.
+   oPanel:SetSysbtnColor( 0xffffff, 0x7b7680 )
+
+   @ 140,260 OWNERBUTTON SIZE 100,32 TEXT "Close" COLOR 0xffffff ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS ;
+         ON CLICK {||hwg_EndDialog()}
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil]]>
+    </module>
+    <module name="Let create new control">
+      <![CDATA[// We create here a new control, which can be
+// used as a replacement for a track bar,
+// which has not gtk version.
+#include "hwgui.ch"
+#include "hbclass.ch"
+#define CLR_WHITE    0xffffff
+#define CLR_BLACK    0x000000
+#define CLR_BROWN_1  0x154780
+#define CLR_BROWN_3  0xaad2ff
+
+Function Test
+Local oDlg, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local bVolChange := {|o,n|
+      oSay:SetText( Ltrim(Str(oTrack:value)) )
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Track bar control"  ;
+         AT 210,10  SIZE 300,200 FONT oFont BACKCOLOR CLR_BROWN_1
+
+   @ 40, 20 SAY "Just drag the slider:" SIZE 220, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+
+   oTrack := HTrack():New( ,, 80, 50, 140, 28,,, CLR_WHITE, CLR_BROWN_1, 16 )
+   oTrack:bChange := bVolChange
+   oTrack:Value := 0.5
+
+   @ 80, 100 SAY oSay CAPTION "" SIZE 140, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
+
+Return Nil
+
+CLASS HTrack INHERIT HControl
+
+CLASS VAR winclass INIT "STATIC"
+
+   DATA lVertical
+   DATA oStyle
+   DATA nFrom, nTo, nCurr, nSize
+   DATA oPen1, oPen2, tColor2
+   DATA lCaptured   INIT .F.
+   DATA bEndDrag
+   DATA bChange
+
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+               bSize, bPaint, color, bcolor, nSize, oStyle )
+   METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
+   METHOD Init()
+   METHOD Paint()
+   METHOD Drag( xPos, yPos )
+   METHOD Value ( xValue ) SETGET
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+            bSize, bDraw, color, bcolor, nSize, oStyle ) CLASS HTrack
+
+   color := Iif( color == Nil, CLR_BLACK, color )
+   bColor := Iif( bColor == Nil, CLR_WHITE, bColor )
+   ::Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight,,, ;
+              bSize, bDraw,, color, bcolor )
+
+   ::title  := ""
+   ::lVertical := ( ::nHeight > ::nWidth )
+   ::nSize := Iif( nSize == Nil, 12, nSize )
+   ::nFrom  := Iif( ::lVertical, ::nHeight-1-Int(::nSize/2), Int(::nSize/2) )
+   ::nTo    := Iif( ::lVertical, Int(::nSize/2), ::nWidth-1-Int(::nSize/2) )
+   ::nCurr  := ::nFrom
+   ::oStyle := oStyle
+   ::oPen1 := HPen():Add( PS_SOLID, 1, color )
+
+   ::Activate()
+
+   RETURN Self
+
+METHOD Activate() CLASS HTrack
+   IF ! Empty( ::oParent:handle )
+#ifdef __PLATFORM__WINDOWS
+      ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
+                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+#else
+      ::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
+         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+#endif
+      ::Init()
+   ENDIF
+   RETURN Nil
+
+METHOD onEvent( msg, wParam, lParam ) CLASS HTrack
+
+   HB_SYMBOL_UNUSED( wParam )
+
+   IF msg == WM_MOUSEMOVE
+      IF ::lCaptured
+         ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      ENDIF
+
+   ELSEIF msg == WM_PAINT
+      ::Paint()
+
+   ELSEIF msg == WM_ERASEBKGND
+      IF ::brush != Nil
+         hwg_Fillrect( wParam, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
+         RETURN 1
+      ENDIF
+
+   ELSEIF msg == WM_LBUTTONDOWN
+      ::lCaptured := .T.
+      ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+
+   ELSEIF msg == WM_LBUTTONUP
+      ::lCaptured := .F.
+      IF ::bEndDrag != Nil
+         Eval( ::bEndDrag, Self )
+      ENDIF
+      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+
+   ELSEIF msg == WM_DESTROY
+      ::END()
+   ENDIF
+
+   RETURN - 1
+
+METHOD Init CLASS HTrack
+
+   IF ! ::lInit
+      ::Super:Init()
+      hwg_Setwindowobject( ::handle, Self )
+#ifdef __PLATFORM__WINDOWS
+      ::nHolder := 1
+      Hwg_InitWinCtrl( ::handle )
+#endif
+   ENDIF
+
+   RETURN Nil
+
+METHOD Paint() CLASS HTrack
+   LOCAL hDC, nHalf, x1, y1
+#ifdef __PLATFORM__WINDOWS
+   LOCAL pps
+#endif
+   IF ::bPaint != Nil
+      Eval( ::bPaint, Self )
+   ELSE
+#ifdef __PLATFORM__WINDOWS
+      pps := hwg_Definepaintstru()
+      hDC := hwg_Beginpaint( ::handle, pps )
+#else
+      hDC := hwg_Getdc( ::handle )
+#endif
+
+      IF ::tColor2 != Nil .AND. ::oPen2 == Nil
+         ::oPen2 := HPen():Add( PS_SOLID, 1, ::tColor2 )
+      ENDIF
+      IF ::oStyle == Nil
+         hwg_Fillrect( hDC, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
+      ELSE
+         ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )
+      ENDIF
+
+      nHalf := Int(::nSize/2)
+      hwg_Selectobject( hDC, ::oPen1:handle )
+      IF ::lVertical
+         x1 := Int(::nWidth/2)
+         IF ::nCurr + nHalf < ::nFrom
+            hwg_Drawline( hDC, x1, ::nTo, x1, ::nCurr+nHalf )
+         ENDIF
+         hwg_Rectangle( hDC, x1-nHalf, ::nCurr+nHalf, x1+nHalf, ::nCurr-nHalf )
+         IF ::nCurr - nHalf > ::nTo
+            IF ::oPen2 != Nil
+               hwg_Selectobject( hDC, ::oPen2:handle )
+            ENDIF
+            hwg_Drawline( hDC, x1, ::nCurr-nHalf, x1, ::nTo )
+         ENDIF
+      ELSE
+         y1 :=Int(::nHeight/2)
+         IF ::nCurr - nHalf > ::nFrom
+            hwg_Drawline( hDC, ::nFrom, y1, ::nCurr-nHalf, y1 )
+         ENDIF
+         hwg_Rectangle( hDC, ::nCurr-nHalf, y1-nHalf, ::nCurr+nHalf, y1+nHalf )
+         //hwg_Ellipse( hDC, ::nCurr-nHalf, y1-nHalf, ::nCurr+nHalf, y1+nHalf )
+         IF ::nCurr + nHalf < ::nTo
+            IF ::oPen2 != Nil
+               hwg_Selectobject( hDC, ::oPen2:handle )
+            ENDIF
+            hwg_Drawline( hDC, ::nCurr+nHalf+1, y1, ::nTo, y1 )
+         ENDIF
+      ENDIF
+
+#ifdef __PLATFORM__WINDOWS
+      hwg_Endpaint( ::handle, pps )
+#else
+      hwg_Releasedc( ::handle, hDC )
+#endif
+   ENDIF
+
+   RETURN Nil
+
+METHOD Drag( xPos, yPos ) CLASS HTrack
+   LOCAL nFrom, nTo, nCurr := ::nCurr
+
+   nFrom := Iif( ::nFrom == Nil, 1, ::nFrom )
+   nTo := Iif( ::nTo == Nil, Iif(::lVertical,::oParent:nWidth-1,::oParent:nHeight-1), ::nTo )
+   IF ::lVertical
+      ::nCurr := Min( Max( ::nTo, yPos ), ::nFrom )
+   ELSE
+      ::nCurr := Min( Max( ::nFrom, xPos ), ::nTo )
+   ENDIF
+   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+   IF nCurr != ::nCurr .AND. ::bChange != Nil
+      Eval( ::bChange, Self, ::Value )
+   ENDIF
+
+   RETURN Nil
+
+METHOD Value( xValue ) CLASS HTrack
+
+   IF xValue != Nil .AND. xValue >= 0 .AND. xValue <= 1
+      ::nCurr := xValue * Abs(::nTo - ::nFrom) + Iif( ::lVertical, -::nFrom, ::nFrom )
+   ELSE
+      xValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)
+   ENDIF
+
+   RETURN xValue]]>
+    </module>
+  </chapter>
+  <chapter name="Get system" >
+    <module name="Dialog with various Gets" ver="win">
+      <![CDATA[#include "hwgui.ch"
+Function DlgGet
+Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local cRes, oCombo, aCombo := { "First","Second" }
+Local oGet
+Local e1 := "Dialog from prg", c1 := .F., c2 := .T., r1 := 2, cm := 1
+Local upd := 12, d1 := Date()+1
+
+   INIT DIALOG oDlg TITLE "Get a value"  ;
+         AT 210,10  SIZE 300,300         ;
+         FONT oFont NOEXIT
+
+   SET KEY 0,VK_F3 TO hwg_Msginfo("F3")   
+
+   @ 20,10 SAY "Input something:" SIZE 260, 22
+   @ 20,35 GET oGet VAR e1  ;
+        STYLE WS_DLGFRAME   ;
+        SIZE 260, 26 COLOR hwg_ColorC2N("FF0000")
+
+   @ 20,70 GET CHECKBOX c1 CAPTION "Check 1" SIZE 90, 20
+   @ 20,95 GET CHECKBOX c2 CAPTION "Check 2" SIZE 90, 20 COLOR hwg_ColorC2N("0000FF")
+
+   @ 160,70 GROUPBOX "RadioGroup" SIZE 130, 75
+
+   GET RADIOGROUP r1
+   @ 180,90 RADIOBUTTON "Radio 1"  ;
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_ColorC2N("0000FF"),,.T.)}
+   @ 180,115 RADIOBUTTON "Radio 2" ;
+        SIZE 90, 20 ON CLICK {||oGet:SetColor(hwg_ColorC2N("FF0000"),,.T.)}
+   END RADIOGROUP
+
+   @ 20,120 GET COMBOBOX oCombo VAR cm ITEMS aCombo SIZE 100, 28
+
+   @ 20,170 GET UPDOWN upd RANGE 0,80 SIZE 50,30
+   @ 160,170 GET DATEPICKER d1 SIZE 80, 20
+
+   @ 20,240 BUTTON "Ok" ID IDOK  SIZE 100, 32
+   @ 180,240 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
+
+   IF oDlg:lResult
+      hwg_Msginfo( e1 + chr(10) + chr(13) +                           ;
+               "Check1 - " + Iif(c1,"On","Off") + chr(10) + chr(13) + ;
+               "Check2 - " + Iif(c2,"On","Off") + chr(10) + chr(13) + ;
+               "Radio: " + Str(r1,1) + chr(10) + chr(13) +            ;
+               "Combo: " + aCombo[cm] + chr(10) + chr(13) +           ;
+               "UpDown: "+Str(upd) + chr(10) + chr(13) +              ;
+               "DatePicker: "+Dtoc(d1)                                ;
+               ,"Results:" )
+   ENDIF
+Return Nil
+      ]]>
+    </module>
+    <module name="Dialog with text Gets" >
+      <![CDATA[#include "hwgui.ch"
+Function DlgGet()
+Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oTimer
+Local e1 := "Dialog from prg"
+Local e2 := Date()
+Local e3 := 10320.54
+Local e4:="11222333444455"
+Local e5 := 10320.54
+Local e6 := "Max Lenght = 15"
+Local e7 := "Password"
+
+   INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Get a value"  ;
+         AT 210,10  SIZE 300,320 FONT oFont
+
+   SET KEY FSHIFT,VK_F3 TO hwg_Msginfo("Shift-F3") 
+   SET KEY FCONTROL,VK_F3 TO hwg_Msginfo("Ctrl-F3") 
+   SET KEY 0,VK_F3 TO hwg_Msginfo("F3") 
+
+   hwg_SetColorinFocus( oDlg,, 13172680 )
+   
+   @ 20,10 SAY "Input something:" SIZE 260, 22
+
+   @ 20,35 GET e1 PICTURE "XXXXXXXXXXXXXXX" ;
+        SIZE 260, 26
+
+   @ 20,65 GET e6 MAXLENGTH 15 SIZE 260, 26
+
+   @ 20,95 GET e2  SIZE 260, 26
+
+   @ 20,125 GET e3  SIZE 260, 26
+
+   @ 20,155 GET e4 PICTURE "@R 99.999.999/9999-99" ;
+        SIZE 260, 26
+
+   @ 20,185 GET e5 PICTURE "@e 999,999,999.9999" ;
+        SIZE 260, 26
+
+   @ 20,215 GET e7 PASSWORD SIZE 260, 26
+
+   @  20,250  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
+   @ 180,250 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      hwg_Msginfo( e1 + chr(10) + chr(13) +   ;
+               e6 + chr(10) + chr(13) +       ;
+               Dtoc(e2) + chr(10) + chr(13) + ;
+               Str(e3) + chr(10) + chr(13) +  ;
+               e4 + chr(10) + chr(13) +       ;
+               Str(e5) + chr(10) + chr(13) +  ;
+               e7 + chr(10) + chr(13)         ;
+               ,"Results:" )
+   ENDIF
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Browse as a GET item" >
+      <![CDATA[#include "hwgui.ch"
+Function Test()
+Local oDlg, oBrw
+Local n1, s1 := "", s2 := ""
+Local aSample := { {"Alex",17}, {"Victor",42}, {"John",31} }
+
+   INIT DIALOG oDlg TITLE "Get data";
+         AT 0, 0 SIZE 320, 230 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 )
+
+   @ 10,20 BROWSE oBrw ARRAY SIZE 180,140 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_BOTTOMABS 
+
+   // Set aSample as an array to browse
+   oBrw:aArray := aSample
+
+   // Add two columns
+   oBrw:AddColumn( HColumn():New( "Name",{ |value,o|o:aArray[o:nCurrent,1] },"C",8 ) )
+   oBrw:AddColumn( HColumn():New( "Age",{ |value,o|o:aArray[o:nCurrent,2] },"N",4 ) )
+
+   // Set a codeblock to save current row position of a browse in a variable
+   // every time this positon is changed
+   oBrw:bPosChanged := {||n1 := oBrw:nCurrent}
+
+   // Increase the vertical padding in a browse cells
+   oBrw:aPadding[2] := oBrw:aPadding[4] := 4
+
+   @ 200,20 SAY "Input 1:" SIZE 100, 22
+   @ 200,44 GET s1 SIZE 100, 26 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+
+   @ 200,80 SAY "Input 2:" SIZE 100, 22
+   @ 200,104 GET s2 SIZE 100, 26 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+
+   @ 110,180 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:lResult:=.T.,oDlg:Close() } ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+
+   ACTIVATE DIALOG oDlg
+
+   IF oDlg:lResult
+      hwg_Msginfo( aSample[n1,1] + chr(10) + chr(13) + ;
+               "Input 1: " + s1 + chr(10) + chr(13) +  ;
+               "Input 2: " + s2 + chr(10) + chr(13),"Results:" )
+   ENDIF
+
+Return Nil
+      ]]>
+    </module>
+  </chapter>
+  <chapter name="Drawing" >
+    <module name="Draw panel and set colors" >
+      <![CDATA[#include "hwgui.ch"
+
+Function Colors
+
+   LOCAL oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN
+   LOCAL cColor := "000000", nColor := 0
+
+   INIT DIALOG oDlg TITLE "Colors"     ;
+        AT 0,0  SIZE 480,310 CLIPPER ON INIT {|| hwg_Settimer(oDlg,oPanel,oEditC,oUpR,oUpG,oUpB,oEditN)}
+       
+   @ 60, 20 PANEL oPanel SIZE 360, 120 STYLE SS_OWNERDRAW ON SIZE {||.t.}
+   oPanel:bPaint := {|o|ppaint(o,oEditN)}
+
+   @ 20, 180 SAY "html" SIZE 80,26
+   @ 20, 210 GET oEditC VAR cColor SIZE 80,26 PICTURE "XXXXXX"
+
+   @ 120,180 GROUPBOX "RGB" SIZE 210, 70
+
+   @ 140, 210 UPDOWN oUpR INIT 0 RANGE 0,255 SIZE 50,30
+   @ 200, 210 UPDOWN oUpG INIT 0 RANGE 0,255 SIZE 50,30
+   @ 260, 210 UPDOWN oUpB INIT 0 RANGE 0,255 SIZE 50,30
+
+   @ 350, 180 SAY "number" SIZE 80,26
+   @ 350, 210 GET oEditN VAR nColor SIZE 90,26 PICTURE "99999999"
+
+   @ 170, 260  BUTTON "Close" SIZE 140, 32 ON CLICK {||hwg_EndDialog()}
+
+   ACTIVATE DIALOG oDlg CENTER
+
+   Return Nil
+
+STATIC Function hwg_Settimer( oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN )
+
+   LOCAL oTimer
+   LOCAL cClr := "000000", nr1 := 0, ng1 := 0, nb1 := 0, nClr := 0
+   LOCAL bTimer := {||
+
+      LOCAL lRes := .F., cColor := Trim(oEditC:value), nColor := oEditN:value
+      LOCAL nr := oUpR:value, ng := oUpG:value, nb := oUpB:value
+
+      IF Len(cColor) == 6 .AND. !( cClr == cColor )
+         nColor := hwg_ColorC2N( cColor )
+         hwg_ColorN2RGB( nColor, @nr, @ng, @nb )
+
+         cClr := cColor
+         oUpR:value := nr1 := nr
+         oUpG:value := ng1 := ng
+         oUpB:value := nb1 := nb
+         oEditN:value := nClr := nColor
+         lRes := .T.
+      ELSEIF nr1 != nr .OR. ng1 != ng .OR. nb1 != nb
+         nColor := hwg_ColorRgb2N( nr, ng, nb )
+         cColor := hwg_ColorN2C( nColor )
+
+         oEditC:value := cClr := cColor
+         nr1 := nr
+         ng1 := ng
+         nb1 := nb
+         oEditN:value := nClr := nColor
+
+         lRes := .T.
+      ELSEIF nClr != nColor
+         cColor := hwg_ColorN2C( nColor )
+         hwg_ColorN2RGB( nColor, @nr, @ng, @nb )
+
+         oEditC:value := cClr := cColor
+         oUpR:value := nr1 := nr
+         oUpG:value := ng1 := ng
+         oUpB:value := nb1 := nb
+         nClr := nColor
+         lRes := .T.
+      ENDIF
+      IF lRes
+         hwg_Invalidaterect( oPanel:handle, 1 )
+      ENDIF
+      RETURN Nil
+   }
+
+   SET TIMER oTimer OF oDlg VALUE 500 ACTION bTimer
+Return Nil
+
+Function PPaint( oPanel, oEditN )
+
+   LOCAL pps, hDC, aCoors, obrush
+
+   pps    := hwg_Definepaintstru()
+   hDC    := hwg_Beginpaint( oPanel:handle, pps )
+   aCoors := hwg_Getclientrect( oPanel:handle )
+
+   obrush := HBrush():Add( oEditN:value )
+   hwg_Fillrect( hDC, 0, 0, aCoors[3], aCoors[4], obrush:handle )
+
+   hwg_Settransparentmode( hDC, .T. )
+   hwg_Settextcolor( hDC, 0 )
+   hwg_Drawtext( hDC, "Black", 10, 10, 80, 36 )
+
+   hwg_Settextcolor( hDC, 16777215 )
+   hwg_Drawtext( hDC, "White", 270, 10, 340, 36 )
+   hwg_Settransparentmode( hDC, .F. )
+
+   hwg_Endpaint( oPanel:handle, pps )
+   obrush:Release()
+
+   Return Nil
+      ]]>
+    </module>
+    <module name="Draw gradients" >
+      <![CDATA[#include "hwgui.ch"
+Function Gradients
+   Local oDlg, oPanel
+
+   INIT DIALOG oDlg TITLE "Gradients" ;
+         AT 0,0 SIZE 1000,500
+     
+   @ 0,0 PANEL oPanel SIZE 1000,450 STYLE SS_OWNERDRAW ON PAINT {||PPanel(oPanel)}
+
+   ACTIVATE DIALOG oDlg CENTER
+
+Return Nil
+
+Function PPanel( oPanel )
+   Local pps, hDC
+
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( oPanel:handle, pps )
+
+   hwg_drawGradient( hDC, 50, 20, 100, 160, 1, {0xFF, 0xFF00, 0xFF0000} )
+   hwg_drawGradient( hDC, 150, 20, 200, 160, 2, {0xFF, 0xFF00, 0xFF0000}, {0.1, 0.6, 0.9} )
+
+   hwg_drawGradient( hDC, 250, 20, 400, 70, 3, {0xFFFFFF, 0x0} )
+   hwg_drawGradient( hDC, 250, 110, 400, 160, 4, {0xFFFFFF, 0x0} )
+
+   hwg_drawGradient( hDC, 450, 20, 700, 160, 3, {0xFFFFFF, 0x3300, 0xFFFFFF}, {0, 0.8, 1} )
+
+   hwg_drawGradient( hDC, 730, 20, 900, 76, 1,  { hwg_ColorC2N("7FA40E"), hwg_ColorC2N("B7EF8E")},, {16,16,16,16} )
+   hwg_drawGradient( hDC, 730, 92, 900, 148, 1, { hwg_ColorC2N("255779"), hwg_ColorC2N("3E7492"), hwg_ColorC2N("A6C0CD")},, {16,16,16,16} )
+   
+   hwg_drawGradient( hDC, 50, 180, 149, 450, 1, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )   
+   hwg_drawGradient( hDC, 200,180, 299, 450, 2, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )   
+
+   hwg_drawGradient( hDC, 350, 180, 949, 280, 3, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )
+   hwg_drawGradient( hDC, 350, 300, 949, 400, 4, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )
+   hwg_drawGradient( hDC, 350, 420, 949, 450, 4, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8} )
+   
+   hwg_Endpaint( oPanel:handle, pps )
+
+Return Nil]]>
+    </module>
+  </chapter>
+</init>
+

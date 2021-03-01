@@ -1,0 +1,19 @@
+#
+# $Id$
+#
+
+-n -w
+
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-L../..
+hwgui.hbc
+
+-ofile2hex
+
+file2hex.prg
+
+
+# ==================== EOF of file2hex.hbp ===============

@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{382,265,424,301}</property>
+    <property name="Caption">[OLE EXCEL EXAMPLE]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <method name="common">
+    <![CDATA[FUNCTION TESTOLE1
+PRIVATE zObjxl,zWorkBooks,zCells2,zCells1,zCells3,zObjXlChart, intRotate, zRange
+PRIVATE zCharts
+zobjXL:=CreateOBJECT("Excel.Application") 
+zWorkbooks:=zobjXL:Workbooks:Add()
+zCells1:=zobjXL:Cells(1,1) 
+zCells1:Value:=5 
+
+zCells2:=zobjXL:Cells(1,2) 
+zCells2:Value:=10 
+
+zCells3:=zobjXL:Cells(1,3) 
+zCells3:Value:=15 
+
+zRange:=zobjXL:Range("A1:C1") 
+zRange:Select()
+zCharts := zobjXL:Charts()
+
+zobjXLchart := zCharts:Add() 
+//zobjXLchart := zCharts:creator() 
+zobjXL:Visible := .T.
+zobjXLchart:chartType := -4100 
+intRotate := 5 
+DO WHILE intRotate <= 180 
+ zobjXLchart:Rotation := intRotate 
+ intRotate+=5
+ENDDO 
+
+intRotate := 175
+DO WHILE intRotate>=0
+zobjXLchart:Rotation := intRotate 
+intRotate-=5
+ENDDO
+
+ENDFUNC]]>
+  </method>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{20,23,242,28}</property>
+      <property name="Name">[oOwnerbutton1]</property>
+      <property name="Caption">[OLE - CHART ANIMATE]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[TESTOLE1()]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{23,67,223,28}</property>
+      <property name="Name">[oOwnerbutton2]</property>
+      <property name="Caption">[SIMPLE PIE]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[private db,oApp,oWS,model,oCell,oTitle, oChart,oCharts, oFont
+DB := CreateObject("Excel.Application") 
+DB:Visible := .T. 
+DB:UserControl = .T.
+oAPP := DB:Workbooks
+oAPP:Add() 
+oWS := DB:Worksheets(1) 
+oWS:Activate 
+
+MODEL:=2
+
+IF MODEL==1
+oCell := oWS:Cells( 1, 1 ) 
+oCell:Value := "A" 
+oCell := oWS:Cells( 2, 1 ) 
+oCell:Value := "B" 
+oCell := oWS:Cells( 3, 1 ) 
+oCell:Value := "C" 
+oCell := oWS:Cells( 1, 2 ) 
+oCell:Value := 1 
+oCell := oWS:Cells( 2, 2 ) 
+oCell:Value := 2 
+oCell := oWS:Cells( 3, 2 ) 
+oCell:Value := 3 
+oCell := oWS:Cells( 1, 3 ) 
+oCell:Value := 4 
+oCell := oWS:Cells( 2, 3 ) 
+oCell:Value := .5 
+oCell := oWS:Cells( 3, 3 ) 
+oCell:Value := 2 
+oCell := oWS:Cells( 1, 4 ) 
+oCell:Value := 3 
+oCell := oWS:Cells( 2, 4 ) 
+oCell:Value := 4 
+oCell := oWS:Cells( 3, 4 ) 
+oCell:Value := 1 
+oCell := oWS:Range("A1:D3") 
+oFont := oCell:Font 
+oFont:Name := "Tahoma" 
+oFont:Size := 12 
+oFont:Bold := .T. 
+oCell:Select() 
+
+oCharts := DB:Charts 
+oCharts:Add() 
+oChart := DB:Charts(1) 
+oChart:Activate 
+oChart:HasTitle := .T.
+oTitle := oChart:ChartTitle 
+oTitle:Text = "Sample for Column Chart" 
+ENDIF
+
+IF MODEL==2
+oCell := oWS:Cells( 1, 1 ) 
+oCell:Value := "A" 
+oCell := oWS:Cells( 2, 1 ) 
+oCell:Value := .5 
+oCell := oWS:Cells( 1, 2 ) 
+oCell:Value := "B" 
+oCell := oWS:Cells( 2, 2 ) 
+oCell:Value := 53.5 
+oCell := oWS:Cells( 1, 3 ) 
+oCell:Value := "C" 
+oCell := oWS:Cells( 2, 3 ) 
+oCell:Value := 28.7 
+oCell := oWS:Cells( 1, 4 ) 
+oCell:Value := "D" 
+oCell := oWS:Cells( 2, 4 ) 
+oCell:Value := 10 
+oCell := oWS:Cells( 1, 5 ) 
+oCell:Value := "E" 
+oCell := oWS:Cells( 2, 5 ) 
+oCell:Value := 6.3 
+oCell := oWS:Range("A1:E2") 
+oFont := oCell:Font 
+oFont:Name := "Tahoma" 
+oFont:Size := 12 
+oFont:Bold := .T.
+ 
+oCell:Select() 
+oCharts := DB:Charts 
+oCharts:Add() 
+oChart := DB:Charts(1) 
+
+// 4=Line
+// 5=Pie
+oChart:ChartType :=5
+
+oChart:Activate 
+oChart:HasTitle := .T. 
+oTitle := oChart:ChartTitle 
+oTitle:Text := "Sample for Pie Chart" 
+ENDIF
+
+
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{28,122,217,28}</property>
+      <property name="Name">[oOwnerbutton3]</property>
+      <property name="Caption">[SIMPLE GRAPH]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[private oExcel, oChart
+
+oExcel := CreateObject("Excel.Application") 
+oExcel:Visible := .T.
+oExcel:Workbooks:add()
+oExcel:Range("A1"):value := 3 
+oExcel:Range("A2"):value := 8 
+oExcel:Range("A3"):Value := 12 
+
+
+oExcel:Range("B1"):value := 5 
+oExcel:Range("B2"):value := 2 
+oExcel:Range("B3"):Value := 8 
+
+oExcel:Range("A1:B3"):Select()
+oChart := oExcel:Charts:Add() 
+//oExcel:addchartAutoFormat()
+oChart:ChartType :=54
+oChart:hasdatatable :=1
+oChart:hastitle :=1
+oChart:name :="Grafik"
+oChart:ChartTitle:Characters:Text := "TESTING OLE FROM XHARBOUR"
+
+//oChart:Type := 54
+//"xl3DColumn"
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{35,179,259,28}</property>
+      <property name="Name">[oOwnerbutton4]</property>
+      <property name="Caption">[CREATE 2 SERIES XL GRAPH]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[pRIVATE DB,K oApp, OwS, OcHARTS
+
+DB:= CreateObject("Excel.Application")
+DB:Visible      := .T.
+DB:UserControl  := .T.
+oAPP            := DB:Workbooks
+oAPP:Add()
+oWS             := DB:Worksheets(1)
+oWS:Activate
+oCharts         := DB:Charts
+
+//Define Constants
+xlLine := 4
+
+// 1=Kolom  2=Baris/Row
+xlColumns := 1
+
+xlLocationAsNewSheet := 1
+xlCategory := 1
+xlValue := 2
+xlPrimary := 1
+
+oWS:Range("B2"):Select
+DB:ActiveCell:FormulaR1C1 := "SALES 1"
+oWS:Range("C2"):Select
+DB:ActiveCell:FormulaR1C1 := "SALES 2"
+
+oWS:Range("A3"):Select
+DB:ActiveCell:FormulaR1C1 := "Run1"
+oWS:Range("A4"):Select
+DB:ActiveCell:FormulaR1C1 := "Run2"
+oWs:Range("A5"):Select
+DB:ActiveCell:FormulaR1C1 := "Run3"
+oWs:Range("A6"):Select
+DB:ActiveCell:FormulaR1C1 := "Run4"
+oWs:Range("A7"):Select
+DB:ActiveCell:FormulaR1C1 := "Run5"
+oWs:Range("A8"):Select
+DB:ActiveCell:FormulaR1C1 := "Run6"
+oWs:Range("A9"):Select
+DB:ActiveCell:FormulaR1C1 := "Run7"
+oWs:Range("A10"):Select
+DB:ActiveCell:FormulaR1C1 := "Run8"
+oWs:Range("B3"):Select
+DB:ActiveCell:FormulaR1C1 := "2"
+oWs:Range("B4"):Select
+DB:ActiveCell:FormulaR1C1 := "9"
+oWs:Range("B5"):Select
+DB:ActiveCell:FormulaR1C1 := "4"
+oWs:Range("B6"):Select
+DB:ActiveCell:FormulaR1C1 := "5"
+oWs:Range("B7"):Select
+DB:ActiveCell:FormulaR1C1 := "3"
+oWs:Range("B8"):Select
+DB:ActiveCell:FormulaR1C1 := "8"
+oWs:Range("B9"):Select
+DB:ActiveCell:FormulaR1C1 := "5"
+oWs:Range("B10"):Select
+DB:ActiveCell:FormulaR1C1 := "8"
+oWs:Range("B3:B10"):Select
+
+oWs:Range("C3"):Select
+DB:ActiveCell:FormulaR1C1 := "5"
+oWs:Range("C4"):Select
+DB:ActiveCell:FormulaR1C1 := "4"
+oWs:Range("C5"):Select
+DB:ActiveCell:FormulaR1C1 := "7"
+oWs:Range("C6"):Select
+DB:ActiveCell:FormulaR1C1 := "2"
+oWs:Range("C7"):Select
+DB:ActiveCell:FormulaR1C1 := "1"
+oWs:Range("C8"):Select
+DB:ActiveCell:FormulaR1C1 := "9"
+oWs:Range("C9"):Select
+DB:ActiveCell:FormulaR1C1 := "3"
+oWs:Range("C10"):Select
+DB:ActiveCell:FormulaR1C1 := "7"
+oWs:Range("C3:C10"):Select
+
+
+oCharts:Add()
+DB:ActiveChart:ChartType :=  xlLine
+oSource := DB:Sheets("Sheet1"):Range("B3:C10")
+DB:ActiveChart:SetSourceData(Source:=oSource, PlotBy := xlColumns)
+DB:ActiveChart:SeriesCollection(1):XValues := "=Sheet1!R3C1:R10C1"
+
+
+//DB:ActiveChart:SeriesCollection(1):Name:=DB:Sheets("Sheet1"):Range("B2")
+//DB:ActiveChart:SeriesCollection(2):Name:=DB:Sheets("Sheet1"):Range("C2")
+
+
+
+//oSource := DB:Sheets("Sheet1"):Range("C3:C10")
+//DB:ActiveChart:SetSourceData(Source:=oSource, PlotBy := xlColumns+1)
+//DB:ActiveChart:SeriesCollection(2):XValues := "=Sheet1!R3C1:R10C1"
+//DB:ActiveChart:SeriesCollection(1):Name := "=Series Name 5.1"
+
+DB:ActiveChart:Location(Where:=xlLocationAsNewSheet, Name:="Graph1")
+DB:ActiveChart:HasTitle := .T.
+DB:ActiveChart:ChartTitle:Characters:Text := "Transfer rates - chart title"
+DB:ActiveChart:Axes(xlCategory, xlPrimary):HasTitle := .T.
+DB:ActiveChart:Axes(xlCategory, xlPrimary):AxisTitle:Characters:Text := "Test Identifier - x axis"
+DB:ActiveChart:Axes(xlValue, xlPrimary):HasTitle := .T.
+DB:ActiveChart:Axes(xlValue, xlPrimary):AxisTitle:Characters:Text := "Throughput in MB/sec y axis"
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{34,230,258,28}</property>
+      <property name="Name">[oOwnerbutton6]</property>
+      <property name="Caption">[CHANGE CURRENCY FORMAT]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[PRIVATE oXL
+oXL := CreateObject("Excel.Application")
+//If oXL == 0 Then Exit
+oXL:Visible          := .t.  
+oXL:ScreenUpdating   := .t.   
+oXL:UserControl      := .t.
+oXL:DisplayAlerts    := .f.
+nOld := oXL:SheetsInNewWorkbook()
+oXL:SheetsInNewWorkbook := 1 
+oXL:WorkBooks:Add()
+oXL:SheetsInNewWorkbook := nOld
+
+cUSA := "$#,##0.00;[Red]$#,##0.00"
+cUK := "£* #,##0.00_);[Red]£* (#,##0.00)" 
+cEuro := "\€* #,##0.00_);[Red]\€* (#,##0.00)" 
+
+oWS:=oXL:Activeworkbook:Worksheets(1)
+oWS:Activate()
+
+oWS:Cells(1,1):Value := "USA"
+oWS:Cells(1,2):Value := 80000
+oWS:Cells(1,2):NumberFormatLocal := cUSA
+oWS:Cells(1,3):Value := -80000
+oWS:Cells(1,3):NumberFormatLocal := cUSA
+
+
+oWS:Cells(3,1):Value := "UK"
+oWS:Cells(3,2):Value := 80000
+oWS:Cells(3,2):NumberFormatLocal := cUK
+oWS:Cells(3,3):Value := -80000
+oWS:Cells(3,3):NumberFormatLocal := cUK
+
+oWS:Cells(5,1):Value := "EURO"
+oWS:Cells(5,2):Value := 80000
+oWS:Cells(5,2):NumberFormatLocal := cEuro
+oWS:Cells(5,3):Value := -80000
+oWS:Cells(5,3):NumberFormatLocal := cEuro
+
+
+oWS:UsedRange:Columns:Autofit()
+
+
+]]>
+    </method>
+  </part>
+</part>

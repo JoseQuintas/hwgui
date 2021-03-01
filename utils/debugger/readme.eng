@@ -1,0 +1,181 @@
+                            Debugger for Harbour
+                                Version 2.02
+                            ~~~~~~~~~~~~~~~~~~~~
+
+         1. Introduction
+         2. How to build the application and run it with debugger
+         3. Use hwgdebug.info
+         4. Debug
+
+
+         1. Introduction
+
+         The debugger consists of two parts:
+
+  1) Library hwgdebug.lib, which should be linked to the application,
+     that you are going to debug, before the standard hbdebug.lib. Its
+     sources are in hwgui/source/debug, it is part of the HwGUI
+     project, but does not contain calls of HwGUI functions and classes and therefore
+     can be used with console applications, and GUI applications
+     built using any other GUI library.
+
+  2) the executable module hwgdebug.exe - actually, the debugger - standalone
+     ( in contrast to the standard, built-in debugged application )
+     GUI program written in Harbour+HwGUI. Its sources are in
+     hwgui/utils/debugger. HwGUI is a cross-platform
+     library, so, an executable can be built under Windows and under
+     other operating systems where GTK presents ( Linux, for example ).
+
+         The debugger connects to the debuggee through special
+  files that can be arranged in any convenient place. Therefore, the debugged
+  program may physically reside on a different computer and even be built
+  on another OS. Thus, we can, using the Windows version hwgdebug.exe at its
+  computer, to debug a program running on some other computer in the network under
+  Linux or, for example, OS2.
+
+         2. How to build the application and run it with debugger
+
+         An application is built in the same way as before, as with a standard
+  debugger. We add the -b option to the command line of the Harbour compiler
+  and add the debugger library to the list of libraries for the linker, only 
+  now it's not hbdebug.lib, but hwgdebug.lib.
+
+         There are several ways to run the application on debugging:
+
+  1) As before, simply run the application. At startup, it tries to find and
+     start the debugger. For this to happen, it must be located or in
+     working directory of the application, or somewhere in an accessible place 
+     ( pointed with the PATH environment variable ). You can specify the location
+     of the debugger in a special file hwgdebug.info but about it later. If 
+     the debugger is not found, the program displays a message 
+     "Hwgdebug isn't available..." and the work continue without the debugger.
+
+  2) Run debugger itself and then run the debugged application from it,
+     using the menu File/Debug program.
+
+  3) Start the debugger, specifying the name of the program being debugged and passed
+     parameters at the command prompt,
+     for example:
+
+         hwgdebug.exe c:\myapps\someapp.exe param1 param2 ...
+
+     In this case, as in the previous case, the application runs on debug immediately.
+
+  4) Start the debugger, specifying a command line option -w with the name of the
+     directory, which has read/write rights set for debugger and debugged program,
+     for example:
+
+         hwgdebug.exe h:\shared\
+
+     and then run separately the debuged program, where
+     should be a file hwgdebug.info indicating the same directory. Exactly
+     this mode allows you to debug a program remotely.
+
+
+         3. Use hwgdebug.info
+
+         In the working directory of the program being debugged, you can place a file
+  hwgdebug.info and to provide some options to start the debugger,
+  namely:
+
+         dir = d:/shared
+         Debugger = c:\tools\hwgdebug.exe
+         RunAtStart = On
+
+         Dir is the name of the directory for storing temporary files, which
+  connects program to a debugger, this directory must have read/write access
+  for program and debugger, it can be placed in any convenient place in the
+  network. Specify this setting is necessary when you start the debugger 
+  with the variant 4 ( see above ).
+
+         Debugger - path to the debugger and his name can be specified if it
+  location is not specified in the PATH, or if you want to use another
+  instance of the debugger.
+
+         RunAtStart - if this option is omitted or set to Off, debugging starts
+  with the first executable line of the program. If it is set to On,
+  it starts as a standard debugger - in-place program, where
+  pre-set Altd(2); Altd().
+
+
+         4. Debug
+
+         If the debugger and your program will run normally, they are
+  connected, and the program stopped ( on the first row or after the
+  Altd() ), in the header of the debugger window appears the name of the 
+  corresponding prg module and line number where was stopped, in the main
+  window of the debugger should appear the text of the prg. 
+  If the header prg name and line number are in a header, but the text window
+  is empty, this means that the prg isn't found ( it is located in a different
+  directory ) and you need to specify the path to it using the menu File/Set path.
+
+         The main functions of the debugger are the same as in the standard ( may, their
+  a little less at the moment ) and they work in a similar way:
+
+         Go, Step, Trace, To cursor, Next Routine, Animate, adding and
+  removing of breakpoints ( to do this, you can double-click on the relevant
+  line ), viewing Workareas - for them, there are the same shortcuts.
+
+         View variables ( local, private, public and static ), the adding of
+  the so-called Watch  - expressions, which values are calculated at each
+  iteration, view the call stack procedures ( double-clicking on any of them,
+  we switch window with the text of the program on this procedure ).
+
+         Record Inspector - view of the current record of the opened database,
+  to show it press Inspect button in the Workareas dialog window, or input
+  the command :record ( see below ).
+
+         Object inspector - view of the variables and methods of a chosen
+  object, to open it doubleclick ( or press Enter ) on appropriate line in
+  a Variables dialog window, in already opened Inspector, or input the command
+  :inspect ( see below ).
+
+         Array inspector - view of the variables and methods of a chosen
+  array, to open it doubleclick ( or press Enter ) on appropriate line in
+  a Variables dialog window, in already opened Inspector, or input the command
+  :inspect ( see below ).
+
+         Evaluation of expressions during debug - enter the expression in the
+  input window at the bottom of the main window of the debugger and click OK
+  or press ENTER - the result should appear in the window a little bit higher.
+  By using the buttons to the left of the OK or press Up, Down, you can move
+  through the list of previously typed expressions ( the result of the
+  corresponding expression for the moment when it run, will become the current
+  row in the window above. You may move through the results of expressions, 
+  if you double click on any line in the input window appears appropriate for 
+  this outcome expression.
+         In this window we can input special commands, they must begin with a
+  colon. By now, two commands are implemented:
+
+        :record [<cAlias>]
+        :inspect <cVarName>
+
+         The :record command opens the Record Inspector - the dialog box
+  with a list of fields of a current record of a database, determined with
+  an alias <cAlias>. If the alias isn't designated, the current workarea is
+  used.
+         The :inspect command opens the Object Inspector or Array Inspector,
+  depending on the type of a <cVarName> variable, - the dialog box with a list
+  of variables and methods of an object <cVarName>, or, respectively, of the array items.
+         It is possible to input only first letters of a command, even an one
+  letter. So, to view a current record of a current workarea, it's enough
+  to input :r.
+
+         Selecting a menu item "View/Selected var" or pressing F12 allows to
+   calculate the value of a variable, which name is under the cursor in the
+   program source window. If this variable is an array or object, the
+   appropriate Inspector is opened. If this is a function, it is copied into
+   the input window with the parameters for subsequent calculations.
+
+         Hwgdebug.xml is created in the same directory as the
+  executable hwgdebug.exe, when you do a menu item Options/Save Settings or
+  Options/Save Breakpoints.
+         For now the path to the source files, font and max number of tabs are
+  saved there ( and is read when you start the debugger ). Also, you may save
+  breakpoints and then load them.
+         In the same directory with the hwgdebug.exe should be yet another xml 
+  file - hilight.xml - configuration file for syntax highlighting.
+
+Alexander S.Kresin
+alex@kresin.ru
+http://www.kresin.ru

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{354,192,500,267}</property>
+    <property name="Caption">[FINANCIAL TOOL]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <part class="label">
+    <style>
+      <property name="Geometry">{5,8,487,48}</property>
+      <property name="Name">[oLabel1]</property>
+      <property name="Caption">[DEMO XML APPLICATION USING HWGUI]</property>
+      <property name="TextColor">16777215</property>
+      <property name="BackColor">4194368</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-19" weight="400"/>
+      </property>
+      <property name="Justify">[Center]</property>
+    </style>
+  </part>
+  <part class="group">
+    <style>
+      <property name="Geometry">{10,64,468,116}</property>
+      <property name="Name">[oGroup1]</property>
+    </style>
+    <part class="button">
+      <style>
+        <property name="Geometry">{27,86,162,32}</property>
+        <property name="Name">[oButton2]</property>
+        <property name="Caption">[FIND ANNUITY]</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[HFORMTMPL():READ("A.XML"):SHOWMODAL()
+]]>
+      </method>
+    </part>
+    <part class="button">
+      <style>
+        <property name="Geometry">{27,128,162,32}</property>
+        <property name="Name">[oButton1]</property>
+        <property name="Caption">[FIND FUTURE VALUE]</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[HFORMTMPL():READ("FIND_FV.XML"):SHOWMODAL()]]>
+      </method>
+    </part>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{443,198,28,28}</property>
+      <property name="Name">[oOwnerbutton1]</property>
+      <property name="Caption">[       ]</property>
+      <property name="BtnBitmap">[SMeXIT]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[hwg_EndDialog()]]>
+    </method>
+  </part>
+</part>

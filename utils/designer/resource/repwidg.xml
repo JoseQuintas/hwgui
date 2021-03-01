@@ -1,0 +1,326 @@
+<?xml version="1.0" ?>
+<widgetset>
+   <form>
+      <property name="Name" type="C" />
+      <property name="Caption" type="C" value="" />
+      <property name="Paper Size" type="C" value="A4" />
+      <property name="Orientation" type="C" value="Portrait" />
+      <property name="Duplex" type="C" value="No" />
+      <property name="Font" type="O" />
+      <property name="Variables" type="A" />
+      <property name="Left" type="N" value="" hidden="" />
+      <property name="Top" type="N" value="" hidden="" />
+      <property name="Width" type="N" value="" hidden="" />
+      <property name="Height" type="N" value="" hidden=""/>
+      <property name="FontH" type="N" value="0" hidden="" />
+      <method name="common" />
+      <method name="onRepInit" />
+      <method name="onRepExit" />
+   </form>
+   <set name="Standard">
+      <widget class="label" name="Static text" bmp="BMP_STATIC">
+         <paint>
+            <![CDATA[
+            Private pArray, nJust, nLines, i, dy, nFirst, ny
+            if Empty(oCtrl:title)
+              hwg_Fillrect( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,1 )
+              if oCtrl:GetProp("Border") == "True"
+                hwg_Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+              endif
+            else
+              pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="justify"}),6]
+              nJust := Ascan(pArray,oCtrl:GetProp("Justify"))-1
+              if oCtrl:GetProp( "Border" ) == "True"
+                hwg_Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+              endif
+              hwg_Settransparentmode( hDC,.T. )
+              if oCtrl:GetProp( "Multiline" ) == "True"
+                nLines := i := 1
+                do while ( i := hb_At( ";",oCtrl:title,i ) ) > 0
+                  i ++
+                  nLines ++
+                enddo
+                dy := oCtrl:nHeight / nLines
+                nFirst := i := ny := 1
+                do while ( i := hb_At( ";",oCtrl:title,i ) ) > 0
+                  hwg_Drawtext( hDC,Substr(oCtrl:title,nFirst,i-nFirst),2,2+ny,oCtrl:nWidth,ny+dy,nJust )
+                  i ++
+                  nFirst := i
+                  ny += dy
+                enddo
+                hwg_Drawtext( hDC,Substr(oCtrl:title,nFirst,Len(oCtrl:title)-nFirst+1),2,ny,oCtrl:nWidth,ny+dy,nJust )
+              else
+                hwg_Drawtext( hDC,oCtrl:title,2,2,oCtrl:nWidth,oCtrl:nHeight,nJust )
+              endif
+              hwg_Settransparentmode( hDC,.F. )
+            endif
+            ]]>
+         </paint>
+         <property name="Caption" type="C" value="Label" />
+         <property name="Multiline" type="L" value="False"/>
+         <property name="InRect" type="L" value="False"/>
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Right" type="N" value="0" />
+         <property name="Bottom" type="N" value="0" />
+         <property name="Font" type="O" />
+         <property name="Border" type="L" value="False"/>
+         <property name="Justify" type="C" value="Left"/>
+         <property name="PenType" type="C" value="SOLID" />
+         <property name="PenWidth" type="N" value="1" />
+         <property name="Width" type="N" value="20" hidden=""/>
+         <property name="Height" type="N" value="10" hidden=""/>
+         <property name="FontH" type="N" value="0" hidden="" />
+         <method name="onBegin" />
+         <method name="Expression" />
+         <method name="Condition" />
+         <method name="onEnd" />
+      </widget>
+      <widget class="box" name="Box" bmp="BMP_BOX">
+         <paint>
+            <![CDATA[
+            Private pArray, type, width
+            pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="pentype"}),6]
+            type := Ascan(pArray,oCtrl:GetProp("PenType"))-1
+            width := Val(oCtrl:GetProp("PenWidth"))
+            hwg_Selectobject( hDC, HPen():Get( type,width ):handle )
+            hwg_Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+            ]]>
+         </paint>
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Right" type="N" value="0" />
+         <property name="Bottom" type="N" value="0" />
+         <property name="PenType" type="C" value="SOLID" />
+         <property name="PenWidth" type="N" value="1" />
+         <property name="Width" type="N" value="80" hidden=""/>
+         <property name="Height" type="N" value="15" hidden=""/>
+         <method name="onBegin" />
+         <method name="Condition" />
+         <method name="onEnd" />
+      </widget>
+      <widget class="hline" name="Horizontal Line" bmp="BMP_RHLINE">
+         <paint>
+            <![CDATA[
+            Private pArray, type, width
+            pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="pentype"}),6]
+            type := Ascan(pArray,oCtrl:GetProp("PenType"))-1
+            width := Val(oCtrl:GetProp("PenWidth"))
+            hwg_Selectobject( hDC, HPen():Get( type,width ):handle )
+            hwg_Drawline( hDC,0,1,oCtrl:nWidth,1 )
+            ]]>
+         </paint>
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Right" type="N" value="0" />
+
+         <property name="PenType" type="C" value="SOLID" />
+         <property name="PenWidth" type="N" value="1" />
+         <property name="Width" type="N" value="80" hidden=""/>
+         <property name="Height" type="N" value="0.5" hidden=""/>
+         <property name="Bottom" type="N" value="0" hidden=""/>
+         <method name="onBegin" />
+         <method name="Condition" />
+         <method name="onEnd" />
+      </widget>
+      <widget class="vline" name="Vertical Line" bmp="BMP_RVLINE">
+         <paint>
+            <![CDATA[
+            Private pArray, type, width
+            pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="pentype"}),6]
+            type := Ascan(pArray,oCtrl:GetProp("PenType"))-1
+            width := Val(oCtrl:GetProp("PenWidth"))
+            hwg_Selectobject( hDC, HPen():Get( type,width ):handle )
+            hwg_Drawline( hDC,1,0,1,oCtrl:nHeight )
+            ]]>
+         </paint>
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Bottom" type="N" value="0" />
+         <property name="PenType" type="C" value="SOLID" />
+         <property name="PenWidth" type="N" value="1" />
+         <property name="Width" type="N" value="0.5" hidden=""/>
+         <property name="Height" type="N" value="80" hidden=""/>
+         <property name="Right" type="N" value="0" hidden=""/>
+         <method name="onBegin" />
+         <method name="Condition" />
+         <method name="onEnd" />
+      </widget>
+      <widget class="bitmap" name="Bitmap" bmp="BMP_BMP">
+         <paint>
+            <![CDATA[
+            if oCtrl:oBitmap != Nil
+              hwg_Drawbitmap( hDC,oCtrl:oBitmap:handle,,0,0,oCtrl:nWidth,oCtrl:nHeight )
+            else
+              hwg_Drawedge( hDC,0,0,oCtrl:nWidth,oCtrl:nHeight,5 )
+            endif
+            ]]>
+         </paint>
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Right" type="N" value="0" />
+         <property name="Bottom" type="N" value="0" />
+         <property name="Bitmap" type="C" value="" />
+         <property name="Width" type="N" value="20" hidden=""/>
+         <property name="Height" type="N" value="20" hidden=""/>
+         <method name="onBegin" />
+         <method name="Condition" />
+         <method name="onEnd" />
+      </widget>
+      <widget class="area" name="Print Area" bmp="BMP_AREA" container="Yes">
+         <paint>
+            <![CDATA[
+            Private oPen := HPen():Get( 4,1 )
+            if oPen == Nil
+               oPen := HPen():Add( 4,1 )
+            endif
+            hwg_Selectobject( hDC, oPen:handle )
+            hwg_Rectangle( hDC,0,0,oCtrl:nWidth-1,oCtrl:nHeight-1 )
+            ]]>
+         </paint>
+         <property name="Left" type="N" value="0" />
+         <property name="Top" type="N" value="0" />
+         <property name="Right" type="N" value="0" />
+         <property name="Bottom" type="N" value="0" />
+         <property name="AreaType" type="C" value="Fixed" />
+         <property name="VarOffset" type="L" value="False"/>
+         <property name="Width" type="N" hidden=""><![CDATA[ Ltrim(Str(HFormGen():oDlgSelected:oParent:nPWidth-1)) ]]></property>
+         <property name="Height" type="N" value="30" hidden=""/>
+         <method name="onBegin" />
+         <method name="Condition" />
+         <method name="onNextLine" />
+         <method name="onEnd" />
+      </widget>
+   </set>
+
+   <data>
+      <property name="Caption">
+         <code2><![CDATA[ oCtrl:title := Iif(value==Nil,"",value) ]]></code2>
+         <code3><![CDATA[ hwg_Setwindowtext( oCtrl:handle,oCtrl:title ) ]]></code3>
+      </property>
+      <property name="Left">
+         <code2><![CDATA[ oCtrl:nLeft := Iif(oCtrl:oParent:Classname=="HPANEL",Round(Val(value)*oCtrl:oParent:oParent:oParent:oParent:nKoeff,0),Val(value)) ]]></code2>
+         <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
+      </property>
+      <property name="Top">
+         <code2><![CDATA[ oCtrl:nTop := Iif(oCtrl:oParent:Classname=="HPANEL",Round( Val(value)*oCtrl:oParent:oParent:oParent:oParent:nKoeff,0 ),Val(value)) ]]></code2>
+         <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
+      </property>
+      <property name="Width">
+         <code2><![CDATA[ oCtrl:nWidth := Iif(oCtrl:oParent:Classname=="HPANEL",Round( Val(value)*oCtrl:oParent:oParent:oParent:oParent:nKoeff,0 ),Val(value)) ]]></code2>
+         <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
+      </property>
+      <property name="Height">
+         <code2><![CDATA[ oCtrl:nHeight := Iif(oCtrl:oParent:Classname=="HPANEL",Round( Val(value)*oCtrl:oParent:oParent:oParent:oParent:nKoeff,0 ),Val(value)) ]]></code2>
+         <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
+      </property>
+      <property name="Right">
+         <code2><![CDATA[ 
+             if Val(value) != 0
+               oCtrl:nWidth := Round(Val(value)*oCtrl:oParent:oParent:oParent:oParent:nKoeff,0)-oCtrl:nLeft+1
+               oCtrl:SetCoor( "Width",oCtrl:nWidth )
+             endif
+              ]]></code2>
+         <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
+      </property>
+      <property name="Bottom">
+         <code2><![CDATA[
+             if Val(value) != 0
+               oCtrl:nHeight := Round(Val(value)*oCtrl:oParent:oParent:oParent:oParent:nKoeff,0)-oCtrl:nTop+1
+               oCtrl:SetCoor( "Height",oCtrl:nHeight )
+             endif
+              ]]></code2>
+         <code3><![CDATA[ MoveCtrl( oCtrl ) ]]></code3>
+      </property>
+      <property name="TextColor" dlg="Color">
+         <code2><![CDATA[ oCtrl:tColor := Val( value ) ]]></code2>
+      </property>
+      <property name="BackColor" dlg="Color">
+         <code2><![CDATA[ oCtrl:SetColor(,Val(value)) ]]></code2>
+      </property>
+      <property name="Font" dlg="Font">
+         <code2><![CDATA[ 
+           Private hDC := hwg_Getdc( 0 ), aMetr, aTMetr, o
+           //Private hDC := hwg_Getdc( hwg_Getactivewindow() ), aMetr, aTMetr, o
+           oCtrl:oFont := value
+           hwg_Selectobject( hDC,value:handle )
+           aMetr := hwg_Getdevicearea( hDC )
+           aTMetr:= hwg_Gettextmetric( hDC )
+           o := Iif( oCtrl:Classname()=="HDIALOG",oCtrl:oParent,oCtrl )
+           o:SetProp( "FontH",Ltrim(Str((aTMetr[1]-aTMetr[5])*aMetr[4]/aMetr[2])) )
+           hwg_Releasedc( 0,hDC )
+          ]]></code2>
+         <code3><![CDATA[hwg_Setwindowfont( oCtrl:handle,oCtrl:oFont:handle,.T. ) ]]></code3>
+      </property>
+      <property name="Justify" array="Left,Center,Right">
+      </property>
+      <property name="Name">
+         <code_def><![CDATA[ CreateName( "Name",oCtrl ) ]]></code_def>
+      </property>
+      <property name="Bitmap">
+         <code2><![CDATA[
+            oCtrl:oBitmap := Iif( At(".",value)!=0,HBitmap():AddFile(value),Nil )
+            if oCtrl:oBitmap != Nil
+              oCtrl:nWidth := oCtrl:oBitmap:nWidth
+              oCtrl:nHeight := oCtrl:oBitmap:nHeight
+              oCtrl:SetCoor( "Height",oCtrl:nHeight )
+              oCtrl:SetCoor( "Width",oCtrl:nWidth )
+            endif
+          ]]></code2>
+      </property>
+      <property name="Icon">
+         <code2><![CDATA[
+            oCtrl:oBitmap := Iif( At(".",value)!=0,HIcon():AddFile(value),Nil )
+          ]]></code2>
+      </property>
+      <property name="Paper Size" array="A4,A3">
+         <code2><![CDATA[
+            Private oDlg := HFormGen():oDlgSelected
+            if oDlg != Nil
+              oDlg:oParent:SetPaper( value,oDlg:oParent:Getprop("Paper Size") )
+            endif
+          ]]></code2>
+      </property>
+      <property name="Orientation" array="Portrait,Landscape">
+         <code2><![CDATA[
+            Private oDlg := HFormGen():oDlgSelected
+            if oDlg != Nil
+              oDlg:oParent:SetPaper( oDlg:oParent:Getprop("Orientation"),value )
+            endif
+          ]]></code2>
+      </property>
+      <property name="Duplex" array="No,Vertical,Horizontal">
+         <code2><![CDATA[
+            Private oDlg := HFormGen():oDlgSelected
+            if oDlg != Nil
+              oDlg:oParent:SetPaper( oDlg:oParent:Getprop("Duplex"),value )
+            endif
+          ]]></code2>
+      </property>
+      <property name="PenType" array="SOLID,DASH,DOT,DASHDOT,DASHDOTDOT">
+         <code2><![CDATA[
+            Private oPen, pArray
+            pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="pentype"}),6]
+            if ( oPen := HPen():Get( Ascan(pArray,value)-1,Val(oCtrl:GetProp("PenWidth")) ) ) == Nil
+              oPen := HPen():Add( Ascan(pArray,value)-1,Val(oCtrl:GetProp("PenWidth")) )
+            endif
+          ]]></code2>
+      </property>
+      <property name="PenWidth">
+         <code2><![CDATA[
+            Private oPen,pArray
+            pArray := oDesigner:aDataDef[Ascan(oDesigner:aDataDef,{|a|a[1]=="pentype"}),6]
+            if ( oPen := HPen():Get( Ascan(pArray,oCtrl:GetProp("PenType"))-1,Val(value) ) ) == Nil
+              oPen := HPen():Add( Ascan(pArray,oCtrl:GetProp("PenType"))-1,Val(value) )
+            endif
+          ]]></code2>
+      </property>
+      <property name="AreaType" array="Fixed,Table,DocHeader,DocFooter,PageHeader,PageFooter">
+      </property>
+   </data>
+   <methods>
+      <method name="onRepInit" params="oDlg" />
+   </methods>
+   <temp>
+   </temp>
+</widgetset>

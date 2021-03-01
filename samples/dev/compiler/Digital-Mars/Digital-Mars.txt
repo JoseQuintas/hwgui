@@ -1,0 +1,85 @@
+Special Instructions for Digital-Mars C compiler
+================================================
+
+Created by DF7BE
+
+   $Id$
+
+
+
+Tested with Windows 10, 64 bit (x86_64).
+
+Digital Mars Compiler Version 8.42n
+Copyright (C) Digital Mars 2000-2004.  All Rights Reserved.
+Written by Walter Bright  www.digitalmars.com/ctg/sc.html
+DMC is a one-step program to compile and link C++, C and ASM files
+
+===========================================
+ Digital-Mars C compiler not supported by Harbour.
+ No support possible at this time.
+ All committed files have only
+ experimental status !
+===========================================
+
+
+
+
+
+Prerequisites
+=============
+
+You need GNU make, install it in c:\make.
+The binary "make.exe" must be found in subdir "bin".
+The make utility make does not understand GNU make syntax,
+so this appears at the beginning in the value of PATH.
+
+Installation
+============
+(only need for a "portable" installation from archive "dm857c.zip")
+
+Install it in c:\dm (create directory by hand).
+
+Installation files and directories of Digital-Mars:
+
+<DIR>          bin
+<DIR>          html
+<DIR>          images
+<DIR>          include
+<DIR>          lib
+<DIR>          stlport
+dmlogo.gif
+license.txt
+readme.html
+readme.txt
+v857
+VERSION
+
+
+Build Harbour
+=============
+
+Default installation directory is: c:\harbour-dm
+
+Build of Harbour not possible, need to create makefile 
+config\win\dmc.mk !!!
+(a reference to "dmc" is found in config\global.mk)
+
+
+
+Build HWGUI
+===========
+- Modify "make_dm.bat" to your own needs.
+- Start by enter 
+  make_dm.bat
+  
+
+Build a HWGUI sample 
+====================
+(in directory "samples")
+  
+hbmk.bat dbview.prg
+
+Use this script as a sample to build your own app.
+
+
+

@@ -1,0 +1,7 @@
+DBC ICON "dbc.ico"
+BMP_ABOUT BITMAP "dbc.bmp"
+TOP BITMAP "../../image/top.bmp"
+BOTTOM BITMAP "../../image/bottom.bmp"
+NEXT BITMAP "../../image/next.bmp"
+PREV BITMAP "../../image/previous.bmp"
+OPEN BITMAP "../../image/open.bmp"

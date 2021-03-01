@@ -1,0 +1,119 @@
+Special Instructions for Pelles C compiler
+==========================================
+
+Created by DF7BE
+
+   $Id$
+
+
+
+Tested with Windows 10, 64 bit (x86_64)
+Pelles ISO C Compiler, Version 10.00
+
+===========================================
+ Pelles C compiler has bugs (see Appendix).
+ No support possible at this time.
+ All committed files have only
+ experimental status !
+===========================================
+
+
+
+
+Installation
+============
+
+
+Install with setup.exe, 
+select installtion "Full"
+select as desitination folder "C:\PellesC"
+(no blanks in path name allowed for succesful build of Harbour, so
+the default installation path "C:\Program Files\PellesC" does not work).
+
+Check after installation for following directories:
+
+ Verzeichnis von C:\PellesC
+
+25.01.2021  13:33    <DIR>          .
+25.01.2021  13:33    <DIR>          ..
+25.01.2021  13:33    <DIR>          Bin
+25.01.2021  13:33    <DIR>          Include
+25.01.2021  13:33    <DIR>          Lib
+25.01.2021  13:33           121.873 uninst.exe 
+   
+   
+Prerequisites
+=============
+
+You need GNU make, install it in c:\make.
+The binary "make.exe" must be found in subdir "bin".
+   
+   
+Set Environment for all following steps   
+=======================================
+
+Modify script to your own needs.
+
+Call environment script:
+(samples\dev\env\pfad_pc.bat)
+
+- Start env script (for example with full path):
+  C:\hwgui\hwgui-pc\samples\dev\env\pfad_pc.bat
+  
+   
+Build Harbour
+=============
+
+Default installation directory is: 
+cd C:\Harbour-pc\core-master
+
+- Modify "make_pc.bat" to your own needs.
+
+
+Build of Harbour crashes, see appendix.
+
+
+
+Build HWGUI
+===========
+
+- Start by enter 
+  make_pc.bat
+  
+  
+
+Build a HWGUI sample 
+====================
+(in directory "samples")
+  
+hbmk.bat dbview.prg
+
+Use this script as a sample template to build your own app.
+
+Appendix:
+=========
+
+Error message building Harbour:
+
+:\harbour-pc\core-master>make
+....
+pocc.exe   -I. -IC:\PellesC\Include\Win -Ze -Go -MT -Ot  -DUNICODE -DSUPPORT_UTF -DSUPPORT_UCP -DHAVE_STDINT_H -DHAVE_CONFIG_H  -Fochartabs.obj -DPCRE_STATIC -c ../../../chartabs.c
+C:\harbour-pc\core-master\src\3rd\pcre\pcreinal.h(387): warning #2135: Static 'pcre_memmove' is not referenced.
+pocc.exe   -I. -IC:\PellesC\Include\Win -Ze -Go -MT -Ot  -DUNICODE -DSUPPORT_UTF -DSUPPORT_UCP -DHAVE_STDINT_H -DHAVE_CONFIG_H  -Fochartabs_dyn.obj -DHB_DYNLIB  -c ../../../chartabs.c
+C:\harbour-pc\core-master\src\3rd\pcre\pcreinal.h(387): warning #2135: Static 'pcre_memmove' is not referenced.
+pocc.exe   -I. -IC:\PellesC\Include\Win -Ze -Go -MT -Ot  -DUNICODE -DSUPPORT_UTF -DSUPPORT_UCP -DHAVE_STDINT_H -DHAVE_CONFIG_H  -Fopcrebyte.obj -DPCRE_STATIC -c ../../../pcrebyte.c
+C:\harbour-pc\core-master\src\3rd\pcre\pcreinal.h(387): warning #2135: Static 'pcre_memmove' is not referenced.
+pocc.exe   -I. -IC:\PellesC\Include\Win -Ze -Go -MT -Ot  -DUNICODE -DSUPPORT_UTF -DSUPPORT_UCP -DHAVE_STDINT_H -DHAVE_CONFIG_H  -Fopcrebyte_dyn.obj -DHB_DYNLIB  -c ../../../pcrebyte.c
+C:\harbour-pc\core-master\src\3rd\pcre\pcreinal.h(387): warning #2135: Static 'pcre_memmove' is not referenced.
+pocc.exe   -I. -IC:\PellesC\Include\Win -Ze -Go -MT -Ot  -DUNICODE -DSUPPORT_UTF -DSUPPORT_UCP -DHAVE_STDINT_H -DHAVE_CONFIG_H  -Fopcrecomp.obj -DPCRE_STATIC -c ../../../pcrecomp.c
+fatal error: Internal error: 'Access violation' at 0x00007ff7b6764081.
+make[4]: *** [pcrecomp.obj] Fehler 1
+make[3]: *** [descend] Fehler 2
+make[2]: *** [pcre] Fehler 2
+make[1]: *** [3rd] Fehler 2
+make: *** [src] Fehler 2
+
+C:\harbour-pc\core-master>
+
+
+* =================== EOF of PellesC.txt ==================

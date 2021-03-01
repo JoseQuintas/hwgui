@@ -1,0 +1,101 @@
+# $Id$
+# Building of libhwgui.a - Harbour Linux (GTK) GUI library
+
+# by default build Harbour platform native binaries
+# for xHarbour use HB_PREF=xhb
+ifeq ($(HB_PREF),)
+HB_PREF=hb
+endif
+
+INC_DIR = ../../include
+OBJ_DIR = ../../obj
+LIB_DIR = ../../lib
+
+PROCMISC_DIR=../common/procmisc
+XML_DIR=../common/xml
+
+CFLAGS = -W -Wall -O3 -DHWG_USE_POINTER_ITEM
+CFLAGS += `pkg-config --cflags gtk+-2.0`
+CFLAGS += -I$(INC_DIR)
+CFLAGS += $(C_USR)
+
+PRGFLAGS = -q -m -n -w -es2
+ifeq ($(findstring xhb,$(HB_PREF)),)
+PRGFLAGS += -kM
+endif
+PRGFLAGS += -I$(INC_DIR)
+PRGFLAGS += $(PRG_USR)
+
+vpath %.c $(PROCMISC_DIR):$(XML_DIR)
+vpath %.prg $(PROCMISC_DIR):$(XML_DIR)
+
+$(OBJ_DIR)/%.o : %.prg
+	$(HB_PREF)cmp $(PRGFLAGS) -o$@ $<
+
+$(OBJ_DIR)/%.o : %.c
+	$(HB_PREF)cc -c $(CFLAGS) -o $@ $<
+
+$(LIB_DIR)/%.a ::
+	ar rc $@ $^
+
+all: \
+   $(LIB_DIR)/libhwgui.a \
+   $(LIB_DIR)/libprocmisc.a \
+   $(LIB_DIR)/libhbxml.a
+
+$(LIB_DIR)/libhwgui.a : \
+   $(OBJ_DIR)/commond.o \
+   $(OBJ_DIR)/control.o \
+   $(OBJ_DIR)/draw.o \
+   $(OBJ_DIR)/drawtext.o \
+   $(OBJ_DIR)/window.o \
+   $(OBJ_DIR)/wprint.o \
+   $(OBJ_DIR)/menu_c.o \
+   $(OBJ_DIR)/message.o \
+   $(OBJ_DIR)/misc.o \
+   $(OBJ_DIR)/drawwidg.o \
+   $(OBJ_DIR)/herrsys.o \
+   $(OBJ_DIR)/gtkmain.o \
+   $(OBJ_DIR)/hbincnt.o \
+   $(OBJ_DIR)/hbrowse.o \
+   $(OBJ_DIR)/hcwindow.o \
+   $(OBJ_DIR)/hcheck.o \
+   $(OBJ_DIR)/hcombo.o \
+   $(OBJ_DIR)/hcontrol.o \
+   $(OBJ_DIR)/hdialog.o \
+   $(OBJ_DIR)/hedit.o \
+   $(OBJ_DIR)/hfrmtmpl.o \
+   $(OBJ_DIR)/hgraph.o \
+   $(OBJ_DIR)/hhyper.o \
+   $(OBJ_DIR)/hownbtn.o \
+   $(OBJ_DIR)/hpanel.o \
+   $(OBJ_DIR)/hprinter.o \
+   $(OBJ_DIR)/hradio.o \
+   $(OBJ_DIR)/hsayimg.o \
+   $(OBJ_DIR)/hsplit.o \
+   $(OBJ_DIR)/htab.o \
+   $(OBJ_DIR)/htimer.o \
+   $(OBJ_DIR)/htool.o \
+   $(OBJ_DIR)/htree.o \
+   $(OBJ_DIR)/hupdown.o \
+   $(OBJ_DIR)/hwindow.o \
+   $(OBJ_DIR)/hwinprn.o \
+   $(OBJ_DIR)/hmonthc.o \
+   $(OBJ_DIR)/menu.o \
+   $(OBJ_DIR)/hprogres.o \
+   $(OBJ_DIR)/inter.o    
+
+#   $(OBJ_DIR)/listbox.o \
+#   $(OBJ_DIR)/hlistbox.o
+
+$(LIB_DIR)/libprocmisc.a : \
+   $(OBJ_DIR)/procini.o \
+   $(OBJ_DIR)/procs7.o \
+   $(OBJ_DIR)/procscri.o
+
+$(LIB_DIR)/libhbxml.a : \
+   $(OBJ_DIR)/xmlparse.o \
+   $(OBJ_DIR)/hxmldoc.o
+
+clean:
+	@-(rm -fR obj/ lib/)

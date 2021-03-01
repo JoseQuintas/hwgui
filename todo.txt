@@ -1,0 +1,293 @@
+2020-08-21:
+
+Tasks by DF7BE
+ - Support request #15: GTK port for GET .... DATEPICKER
+ - LISTBOX port to GTK, if bug in GTK is fixed.
+ - Try to get all samples working.
+    List of sample programs with bug description follows.
+ - International language support for internal HWGUI dialogs.
+ - Feature "Clipper style Alert() replacement" delivered
+   by Alex Strickland port to GTK.
+ - Check for Digital Mars C compiler
+   (recent state: not supported by Harbour)
+
+List:  Samples not running or have bugs (Fix bugs, if time available, low priority):
+  1.) WinAPI
+      grid_5.prg     crashes, if click on button "Change": 
+                     Hint: commenting out this line without crash:
+                     //   ADD COLUMN TO GRIDEDIT aItems FIELD "Field_2" LABEL "Char" PICTURE "@!" //READONLY
+      nice2.prg      Seems to be outdated, starts only in background, kill with Task Manager
+      tab.prg        missing function(s): hb_enumIndex(), resource DIALOG_1 not working
+      testchild.prg  child window not created ! command seems to be outdated.
+      testtray.prg   No exported method: HANDLE
+      testrtf.prg    Created Rich text files are corrupted, see bug ticket #37 (text above).
+
+  2.) GTK
+      tstsplash.prg  works for WinAPI, but background for splash window on GTK empty:
+                     INIT DIALOG ... BACKGROUND BITMAP ...
+      a.prg          Browse problem with Char field
+      escrita.prg    LINUX: Text in toolbuttons not visible, OK on cross development GTK/Win
+      tstscrlbar.prg Compilable, but no scroll function
+
+
+some work for recover mouse cursor on GTK.
+- Fix crash, sample testfunc.prg (Cursor functions)
+- Add parameters for internal HWGUI dialogs like
+  hwg_msginfo() or printer preview to hide there
+  the mouse cursor. 
+
+
+some work for hwreport:
+
+missing functions _HB_FUN_OPENREPORT()
+HWG_WAITRUN(<file>),
+resource file only for Borland C.
+Lots of warnings about AMBIGIUOS REFERENCE
+some work for hwmake:
+Some bugs adding files and libs.
+Validation for class WinPrn.
+
+
+Add feature: Label utility.
+It is an important feature for business application for
+example to label envelopes of letters to customers.
+In CLLOG it is necessary for QSL cards.
+The label editor is almost implememented in Clipper
+utility RL.EXE, in S'87 as LABEL.EXE
+and is also supported by Harbour.
+The console version of CLLOG also supports label.
+There is also an label editor as console application
+available.
+This must be ported to HWGUI using the WinPrn class. 
+  
+
+Documentation:
+- A lot of functions with no describing text for usage and
+  purpose (all developers).
+- doc/hwgdoc_misc.html
+  Fill with contents for:
+  7.5 Dbc
+  (Alexander Kresin)
+  
+=========================================================
+Create list with Windows only functions and commands 
+to use as a task list for port this functions to GTK.
+
+List of commands to port
+2020-12-17
+
+GRID / HGRID class
+
+==>
+2020-10-27 (DF7BE)
+List of "Windows only" functions
+to be ported to GTK, if
+possible or make sense,
+or extend docu for simular
+substitute:
+(extracted from hwgdoc_functions.html)
+
+Urgent ports marked with *
+
+hwg_PrintSetup()
+* hwg_MsgNoYes()  
+* hwg_MsgRetryCancel()
+* hwg_MsgBeep() 
+hwg_ShellAbout()
+hwg_Box()
+hwg_Pie()
+hwg_DrawEdge() ==> hwg_gtk_DrawEdge() with subset of parameters ?
+hwg_Drawgraybitmap()
+* hwg_Drawicon() ==> draw bitmap ?
+hwg_CenterBitmap()
+* hwg_GetIconSize()
+hwg_GetsyscolorBrush()
+hwg_Createhatchbrush()
+hwg_SaveDC() 
+hwg_DeleteDC() 
+hwg_Restoredc() 
+hwg_CreateCompatibleBitmap() 
+hwg_Patblt()
+hwg_Setmapmode() 
+hwg_Setwindoworgex() 
+hwg_Setwindowextex() 
+hwg_Setviewportorgex() 
+hwg_Setviewportextex() 
+hwg_Setarcdirection() 
+hwg_Setrop2() 
+hwg_DrawFrameControl()
+hwg_WindowFromDC()
+hwg_Loadimage()
+hwg_Loadbitmap()
+hwg_GetPpsRect() 
+hwg_GetPpsErase() 
+hwg_GetUpdateRect()
+hwg_isWindow()
+hwg_FlashWindow()
+hwg_GetInstance()
+hwg_SetWindowStyle()
+hwg_GetWindowStyle() 
+hwg_SetWindowExStyle() 
+hwg_GetWindowExStyle() 
+hwg_FindWindow() 
+hwg_SetForegroundWindow()
+hwg_BringToTop() 
+hwg_ResetWindowPos()
+hwg_UpdateWindow()
+hwg_SendMessage() 
+hwg_PostMessage() 
+hwg_SetWindowFont() 
+hwg_GetLastError()
+hwg_ExitProcess()
+hwg_ChildWindowFromPoint() 
+hwg_WindowFromPoint() 
+hwg_GetFontDialogUnits()
+hwg_GetWindowPlacement() 
+hwg_ClearKeyboard()
+hwg_ShowProgress()
+hwg_trackbarsetrange()
+hwg_Setctrlfont()
+hwg_SetDatePicker()
+hwg_SetDatePickerNull()
+hwg_GetDatePicker()
+hwg_GetTimePicker()
+hwg_SetTabSize() ==> hwg_SetCurrentTab()
+hwg_GetTabHeight() 
+hwg_CreateImageList()
+hwg_DestroyImageList()
+hwg_Imagelist_Add()
+hwg_Imagelist_AddMasked()
+hwg_ImageList_GetImageCount()
+hwg_getAncestor()
+hwg_GetCursor() 
+* hwg_SetTooltipBalloon() ==> Dummy for GTK 
+hwg_GetTooltipBalloon() 
+hwg_SetDlgItemText()
+hwg_GetDlgItemText()
+hwg_GetEditText()
+hwg_CheckDlgButton()
+hwg_isDlgButtonChecked()
+hwg_ComboAddString()
+hwg_ComboInsertString()
+hwg_ComboSetString()
+hwg_ListboxAddString()
+hwg_ModifyStyle()
+hwg_re_SetCharFormat()
+hwg_re_SetDefault()
+hwg_re_CharFromPos()
+hwg_re_GetTextRange()
+hwg_re_GetLine()
+hwg_re_InsertText()
+hwg_re_FindText()
+hwg_re_SetZoom()
+hwg_re_ZoomOff()
+hwg_re_GetZoom()
+hwg_PrintRtf()
+hwg_SaveRichedit()
+hwg_LoadRichedit()
+Hwg_InsertBitmapMenu()
+Hwg_SetMenuItemBitmaps()
+hwg_IsCtrlShift()
+hwg_HdSerial()
+hwg_HdGetSerial()
+Hwg_GetIni()   ==> Remark for substitute
+Hwg_WriteIni() ==> Remark for substitute
+hwg_ShellNotifyIcon()
+hwg_ShellModifyIcon()
+Hwg_SetDlgResult()
+hwg_SetCapture()
+hwg_ReleaseCapture()
+hwg_GetStockObject()
+hwg_ClientToScreen()
+hwg_ScreenToClient()
+hwg_GetCursorPos()
+hwg_SetCursorPos()
+hwg_WinExec()
+hwg_Getkeystate()
+hwg_GetKeyNameText()
+hwg_Pts2Pix()
+hwg_GetSystemDir()
+hwg_Postquitmessage()
+hwg_GetNextDlgTabItem()
+hwg_SetScrollInfo()
+hwg_GetScrollRange()
+hwg_SetScrollRange()
+hwg_GetScrollPos()
+hwg_SetScrollPos() 
+hwg_ShowScrollBar()
+hwg_ScrollWindow()
+hwg_isCapslockActive()
+hwg_isNumlockActive()
+hwg_isScrolllockActive()
+* hwg_CreateDirectory()
+* hwg_RemoveDirectory()
+* hwg_SetCurrentDirectory()
+* hwg_DeleteFile() > Difference to command DELETE FILE ?
+hwg_GetFileAttributes()
+hwg_SetFileAttributes()
+hwg_GetComputerName()
+hwg_GetUserName()
+hwg_OutputDebugString()
+hwg_Getsystemmetrics()
+hwg_GetBackBrush()
+hwg_LastKey()
+hwg_ProcessRun()
+hwg_Alert() 
+hwg_Alert_DisableCloseButton()
+hwhwg_Alert_GetWindow()
+
+
+
+5.7. Windows registry.
+(At first opinion, this makes no sense to port)
+hwg_RegCreateKey()
+hwg_RegOpenKey()
+hwg_RegCloseKey()
+hwg_RegSetString()
+hwg_RegSetBinary()
+hwg_RegGetValue()
+
+
+=========================================================
+
+Individual mouse cursor from bitmap.
+A sample part for GTK:
+
+// blank cursor:
+  gchar bits[] = { 0 };
+  GdkColor color = { 0, 0, 0, 0 };
+  GdkPixmap *pixmap;
+  GdkCursor *cursor;
+  
+  pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1); // here direct from bitmap
+  cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
+  gdk_window_set_cursor(widget->window, cursor);  
+
+
+
+
+=========================================================
+Area: Rich Text Format (RTF)
+Special Task for Alexander Kresin and 
+mlacecilia, JIJA, TRM, JJA:
+Bug Ticket #37 and #38.
+
+
+=========================================================
+Old entries, must be checked (is bugfixing done ?)
+
+- MDICHILD,  the controls ENTER, TAB,... not functions how in DIALOG
+- MAIN MDI, background bitmap not function perfectly, only flick a bitmap and change for the default background color
+- DIALOG NOMODAL, always stay in a TOP, if you onpen a CHILD it go to DIALOG'S back, can't bring to FRONT
+- GET with AUTO_VSCROOL not function equal "@S"
+- change TITLE of DIALOG or WINDOW on the fly
+- possibilidade de um STYLE para que o objeto nao seje o proximo foco
+  in english:
+  possibility of a STYLE so that the object is not the next focus 
+- STYLE DT_VCENTER in SAY not function perfectly the back change to dark gray
+- CHILD possibility change de backgrond color
+- PANEL possibility change de backgrond color
+
+
+* ======== EOF of todo.txt =============================
+

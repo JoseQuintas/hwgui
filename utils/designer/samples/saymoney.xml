@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{309,214,552,213}</property>
+    <property name="Caption">[Say Money Sample]</property>
+    <property name="AlwaysOnTop">.F.</property>
+    <property name="AutoCenter">.T.</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="NoIcon">.F.</property>
+    <property name="lResource">.F.</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignment">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <method name="onFormInit">
+    <![CDATA[nValue:=0]]>
+  </method>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{136,10,158,24}</property>
+      <property name="Name">[oEditbox1]</property>
+      <property name="varName">[nValue]</property>
+      <property name="cPicture">[]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{25,11,80,22}</property>
+      <property name="Name">[oLabel2]</property>
+      <property name="Caption">[Value]</property>
+    </style>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{20,54,92,28}</property>
+      <property name="Name">[oOwnerbutton1]</property>
+      <property name="Caption">[SayDollar()]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[Olsay:SETTEXT(SAYDOLLAR(nValue))]]>
+    </method>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{137,57,281,82}</property>
+      <property name="Name">[oLSay]</property>
+      <property name="BackColor">8421504</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-13" weight="400" italic="255"/>
+      </property>
+    </style>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{21,85,92,28}</property>
+      <property name="Name">[oOwnerbutton2]</property>
+      <property name="Caption">[SayRupiah()]</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[Olsay:SETTEXT(SAYRUPIAH(nValue))]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{434,161,28,28}</property>
+      <property name="Name">[oOwnerbutton3]</property>
+      <property name="BtnBitmap">[smExit]</property>
+      <property name="lResource">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[hwg_EndDialog()]]>
+    </method>
+  </part>
+</part>

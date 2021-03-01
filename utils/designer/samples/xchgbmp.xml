@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{246,163,429,158}</property>
+    <property name="Caption">[Change Bitmap of OwnerButton]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="Variables">{nRB  }</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <part class="group">
+    <style>
+      <property name="Geometry">{8,9,298,64}</property>
+      <property name="Name">[oGroup1]</property>
+    </style>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{30,31,105,28}</property>
+        <property name="Name">[oOWN1]</property>
+        <property name="Caption">[   Open]</property>
+        <property name="BtnBitmap">[smOPen]</property>
+        <property name="lResource">.T.</property>
+        <property name="BmpLeft">3</property>
+      </style>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{206,31,28,28}</property>
+        <property name="Name">[oOwnerbutton2]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smClose]</property>
+        <property name="lResource">.T.</property>
+        <property name="BmpLeft">3</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[oOwn1:oBitmap:=HBitmap():addResource("smClose")
+oOwn1:title:="Close"
+hwg_Setcapture(oOwn1:handle)
+]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{249,31,28,28}</property>
+        <property name="Name">[oOwnerbutton3]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smNew]</property>
+        <property name="lResource">.T.</property>
+        <property name="BmpLeft">3</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[oOwn1:oBitmap:=HBitmap():addResource("smNew")
+oOwn1:title:="New"
+hwg_Setcapture(oOwn1:handle)
+]]>
+      </method>
+    </part>
+    <part class="ownerbutton">
+      <style>
+        <property name="Geometry">{165,32,28,28}</property>
+        <property name="Name">[oOwnerbutton1]</property>
+        <property name="Caption">[]</property>
+        <property name="BtnBitmap">[smOpen]</property>
+        <property name="lResource">.T.</property>
+        <property name="BmpLeft">3</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[oOwn1:oBitmap:=HBitmap():addResource("smOpen")
+oOwn1:title:="Open"
+hwg_Setcapture(oOwn1:handle)
+]]>
+      </method>
+    </part>
+  </part>
+  <part class="radiogroup">
+    <style>
+      <property name="Geometry">{315,20,84,101}</property>
+      <property name="Name">[oRadiogroup1]</property>
+      <property name="varName">[nRB]</property>
+    </style>
+    <part class="radiobutton">
+      <style>
+        <property name="Geometry">{324,39,66,22}</property>
+        <property name="Name">[oRadiobutton1]</property>
+        <property name="Caption">[Open]</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[eval(oOwnerbutton1:bclick)]]>
+      </method>
+    </part>
+    <part class="radiobutton">
+      <style>
+        <property name="Geometry">{325,61,68,22}</property>
+        <property name="Name">[oRadiobutton2]</property>
+        <property name="Caption">[Close]</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[eval(oOwnerbutton2:bclick)]]>
+      </method>
+    </part>
+    <part class="radiobutton">
+      <style>
+        <property name="Geometry">{325,86,64,22}</property>
+        <property name="Name">[oRadiobutton3]</property>
+        <property name="Caption">[New]</property>
+      </style>
+      <method name="onClick">
+        <![CDATA[eval(oOwnerbutton3:bclick)]]>
+      </method>
+    </part>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{9,85,291,35}</property>
+      <property name="Name">[oLabel1]</property>
+      <property name="Caption">
+[This is sample, How to change a bitmap of  owner button]      </property>
+    </style>
+  </part>
+</part>

@@ -1,0 +1,189 @@
+                             HWREPORT 1.0
+
+                         Visual Report Builder
+
+
+
+        1. Introduction
+
+	HWReport allows you create report forms for following using in
+    applications, built with Harbour + HWGui.
+        It provides intuitively clear way to design the desirable output form.
+
+        You create a blank form and put there static text, vertical or
+    horizontal lines, boxes, bitmaps and variables. You can define attributes
+    for these items - font, line style, line width, alignment, move items to
+    desired place, change its size.
+        You can allocate different areas with special markers - document header,
+    page header, list, page footer, document footer.
+        You can write scripts on pure Clipper for opening database files,
+    indexes, moving through records to get data for the report and assign these
+    scripts to the form items and markers. You can declare variables, which may
+    be used by all these scripts.
+
+        Result of your work can be saved in two formats:
+
+        - in *.rpt - text file, which includes description of a form and all
+          its items and can be loaded and executed by any your application, built
+          with Harbour + HWGui. One *.rpt file may include anu number of report
+          forms ;
+        - in *.prg file as a function - in this case this prg may be linked to
+          your application and you can print the report using this function.
+
+        2. Install
+
+        To build HWReport from sources, you should have hwgui.lib and procmisc.lib .
+   Probably, you will need to change HB_INSTALL variable in bldHWRep.bat and
+   bldexam.bat . Then simply run bldHWRep.bat to build HWReport.exe and
+   bldexam.bat - to build a small example application Example.exe.
+
+        Files in this package:
+
+        hwreport.prg
+        opensave.prg
+        printrpt.prg
+        propert.prg
+        repbuild.rc
+        repbuild.h     -     HWReport source files
+
+        bldHWRep.bat   -     bat file to build HWReport
+
+        repexec.prg    -     source file, which must be linked to any 
+                               application, which uses HwReport
+        example.prg    -     source file of example application
+        bldexam.bat    -     bat file to build example application
+        example.rpt    -     example report file
+
+        logo.bmp
+        test.dbf       -     data for example application
+
+        hwreport.txt   -     this file.
+
+        3. Menu
+
+        3.1. File
+
+        - New:   Creates a new blank form. Currently there is only one format -
+                 A4 Portrait ( 210x297mm ).
+
+        - Open:  Opens existing report. You need to choose the format ( *.rpt -
+                 report file or *.prg - program source ), file and write the
+                 report name ( for *.rpt file ) or function name ( for *.prg 
+                 file ).
+
+        - Close: Closes current report form.
+
+        - Save:  Saves current report.
+
+        - Save as: Saves current report in other file or with other name, other
+                 format.
+
+        - Print static: Print report without variables.
+
+        - Print full: Print full report. All databases should be accessible
+                 for this printing works right.
+
+        3.2. Items
+  
+          This submenu becomes accessible after you create new or open existing
+    report. You choose the item you want - and when you move mouse over the
+    form, its cursor changes to cross and you can place the item where you
+    need clicking the right mouse button. This item becomes selected and you
+    move it, resize, delete or set its attributes by double clicking on it.
+          With the same manner you can place the marker. Currently supported
+    types of markers are:
+          - Page Header: it may be needed, if you have multipage report, this 
+    header will be printed in the beginning of every page, with the exception
+    of a first page, where it is printed where it is placed in the form. The
+    'End of Page Header' marker does't exist, because 'Start Line' marker serves
+    as the end of Page Header.
+   
+          - Start Line: it is needed, when you have list of lines and it is
+    unknown at design time, how much lines. A bit complex explanation :), but
+    I hope, that you understand, what I mean.
+    It MUST PRESENT, if you have 'Page Header' marker.
+
+          - End Line: indicates the end of a line ( 'Start Line' was a beginning ).
+    It MUST PRESENT, if you have 'Start Line' marker.
+
+          - Page Footer: it may be needed, if you have multipage report, this 
+    footer will be printed in the end of every page.
+
+          - End of Page Footer: indicates the end of Page Footer.
+    It MUST PRESENT, if you have 'Page Footer' marker.
+
+          - Document Footer: the items after it will be printed at the end
+    of a report. In case of multipage report - only at the last page.
+
+    One of markers 'Page Footer' or 'Document Footer' MUST PRESENT, if you
+    have 'Start Line' marker.
+
+        If some of markers, which must present, are absent, you'll get a warning
+    while attempt to print it - and printing will not be done.
+
+        3.3. Options
+
+        - Form Options: Here you can define variables for following using in 
+                 scripts and assign them initial values. The syntax is the 
+                 same, as in Clipper's Local or Private statement with the
+                 only difference, that you don't need to write 'Local' or
+                 'Private' keyword.
+                       
+        - Preview: Switch on/off preview mode.
+
+        - Mouse limit: I understand that it isn't good name for this menu item,
+                 but I didn't invent other. When this item is On ( default ),
+                 you can't move an item in the form less than 2 pixels - it is
+                 made to prevent accidental moving of an item if your mouse
+                 isn't very precise. You can do precise move using the keyboard.
+
+        4. Item's properties
+
+        Double clicking on any item, you call dialog box, where you can set/get
+        item's attributes. 
+
+        For graphic objects this is line type and width.
+
+        For bitmaps - *.bmp file and size ( percentage of original ).
+
+        For text - caption, alignment, font and type - static or variable. If
+   the type is variable, in 'Caption' field you should write Clipper's
+   expression, which returns string representation of this variable. For both
+   static and variable type you can write script, which will be executed before
+   this item printing.
+
+        For Start Line (SL) and End Line (EL) markers you can define a script.
+   In case of SL this script will be executed one time, before the printing
+   of a list - so, it's a good place to set, for example, first record of the
+   records set, which should be printed. In case of EL this script will be
+   executed each time, where the line of a list is printed. Here should be
+   placed code for moving to the next record and checking of a list end - if
+   you are reached last line in the list, you should set predefined variable
+   'lLastCycle' to .T. .The simplest example is:
+        lLastCycle := Eof()
+
+        5. Printing from application
+
+        After you create the report form, you can print it from your application.
+
+        If the report is in *.rpt file, you need open it with the hwg_OpenReport()
+   function and then print with hwg_PrintReport():
+
+         IF hwg_OpenReport( fileName, reportName ) 
+            hwg_PrintReport( printerName )
+         ENDIF        
+
+   If you omit the printerName parameter, you will get standard dialog box for
+   choosing printer. If you pass empty string ( hwg_PrintReport( "" ) ), program
+   will print to the default printer. And, at least, if you pass real printer
+   name, defined in your system, it will be used.
+
+        If the report is in prg file, linked to your application, you need simply
+   call the function, where the the report is saved and then PrintReport():
+
+        MyReport()
+        hwg_PrintReport( printerName )
+
+ ----------------------------------------------------------------------------
+ * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
+ * www - http://www.geocities.com/alkresin/

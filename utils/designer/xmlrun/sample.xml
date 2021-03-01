@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{424,84,635,400}</property>
+    <property name="Caption">[Sample]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="Modal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <method name="onFormExit">
+    <![CDATA[dbCloseAll()
+hwg_Msginfo("On Form Exit.. returning <x>","hwGui XMLRUN Sample")]]>
+  </method>
+  <part class="browse">
+    <style>
+      <property name="Geometry">{14,24,601,311}</property>
+      <property name="Name">[oB1]</property>
+      <property name="font">
+        <font name="Arial" width="0" height="-12" weight="400"/>
+      </property>
+    </style>
+    <method name="onInit">
+      <![CDATA[RDDSETDEFAULT("SIXCDX")
+//RICHOPEN("album","artis")
+netuse("album","album", .f.,20)
+album->(ordSetFocus("artis"))
+
+//ob1:bPosChanged:={|self| RichScope("JOURNALS","IDTRANS", transact->idtrans,transact->idtrans+"zzzzz", .t.), oB2:refresh(), .t.}
+//  Generate For HBrowse init designer
+
+// ob1:bKeyDown   :={|self, wParam| }}
+// ob1:bUpdate    :={|self, nPos| }}
+// ob1:bLineOut   :={|self, lSelected| }}
+// ob1:bOther     :={|Self,msg,wParam,lParam| }}
+// ::lChanged ::freeze ::lSep3d
+// ::lEditable, ::lAppable, ::lAppMode, ::lAutoEdit, ::lUpdated, ::lAppended
+// oC:footing    oC:bHeadClick oC:bColorBlock, oC:lEditAble
+// oC:lSpandHead oC:lSpandFoot oC:cGrid
+
+cSeek:=""
+oB1:Alias:="album"
+//oB1:bKeyDown   :={|self, wParam| album->(ActionKeyBrowse(self, wparam,1)) , .t. }
+oB1:freeze:=1
+
+oC:=HColumn():New('KODE',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, album->kode, album->KODE:=SetVal)},"C",13,0,.F.,0,0,,,,,,)
+oC:bHeadClick:={||  ordsetfocus("kode"), oB1:refresh() }
+oC:cargo:={.T.,,'album->KODE','C',''}
+
+oB1:AddColumn(oC)
+oC:=HColumn():New('ALBUM',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, album->album, album->ALBUM:=SetVal)},"C",30,0,.F.,0,0,,,,,,)
+oC:bHeadClick:={||  ordsetfocus("album"), oB1:refresh() }
+oC:cargo:={.T.,,'album->ALBUM','C',''}
+
+oB1:AddColumn(oC)
+oC:=HColumn():New('ARTIS',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, album->artis, album->ARTIS:=SetVal)},"C",30,0,.F.,0,0,,,,,,)
+oC:bHeadClick:={||  ordsetfocus("artis"), oB1:refresh() }
+oC:cargo:={.T.,,'album->ARTIS','C',''}
+oB1:AddColumn(oC)
+
+oC:=HColumn():New('JENIS',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, album->jenis, album->JENIS:=SetVal)},"C",15,0,.F.,0,0,,,,,,)
+oC:bHeadClick:={||  ordsetfocus("jenis"), oB1:refresh() }
+oC:cargo:={.T.,,'album->JENIS','C',''}
+oB1:AddColumn(oC)
+oC:=HColumn():New('TGL.ORBIT',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, d2infstr(album->tgl_orbit), album->TGL_ORBIT:=SetVal)},"C",11,0,.F.,0,0,,,,,,)
+oC:cargo:={.T.,,'album->TGL_ORBIT','D',''}
+oB1:AddColumn(oC)
+oC:=HColumn():New('TGL.MULAI',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, d2infstr(album->tgl_mulai), album->TGL_MULAI:=SetVal)},"C",11,0,.F.,0,0,,,,,,)
+oC:cargo:={.T.,,'album->TGL_MULAI','D',''}
+oB1:AddColumn(oC)
+oC:=HColumn():New('RP.BELI',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_beli,"@EZ 99,999,999"), album->RP_BELI:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
+oC:cargo:={.F.,,'album->RP_BELI','N','@EZ 99,999,999'}
+oB1:AddColumn(oC)
+oC:=HColumn():New('RP.RETB',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_retb,"@EZ 99,999,999"), album->RP_RETB:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
+oC:cargo:={.F.,,'album->RP_RETB','N','@EZ 99,999,999'}
+oB1:AddColumn(oC)
+oC:=HColumn():New('RP.JUAL',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_jual,"@EZ 99,999,999"), album->RP_JUAL:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
+oC:cargo:={.F.,,'album->RP_JUAL','N','@EZ 99,999,999'}
+oB1:AddColumn(oC)
+oC:=HColumn():New('RP.RETJ',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_retj,"@EZ 99,999,999"), album->RP_RETJ:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
+oC:cargo:={.F.,,'album->RP_RETJ','N','@EZ 99,999,999'}
+oB1:AddColumn(oC)
+oC:=HColumn():New('RP.KONS',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_kons,"@EZ 99,999,999"), album->RP_KONS:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
+oC:cargo:={.F.,,'album->RP_KONS','N','@EZ 99,999,999'}
+oB1:AddColumn(oC)
+oC:=HColumn():New('RP.RETQ',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_retq,"@EZ 99,999,999"), album->RP_RETQ:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
+oC:cargo:={.F.,,'album->RP_RETQ','N','@EZ 99,999,999'}
+oB1:AddColumn(oC)
+oC:=HColumn():New('RP.MTSI',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_mtsi,"@EZ 99,999,999"), album->RP_MTSI:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
+oC:cargo:={.F.,,'album->RP_MTSI','N','@EZ 99,999,999'}
+oB1:AddColumn(oC)
+oC:=HColumn():New('RP.SLSH',{|SetVal,oBrowse,nColPos| IF(SetVal==NIL, trans(album->rp_slsh,"@EZ 99,999,999"), album->RP_SLSH:=SetVal)},"C",10,0,.F.,0,2,,,,,,)
+oC:cargo:={.F.,,'album->RP_SLSH','N','@EZ 99,999,999'}
+oB1:AddColumn(oC)
+oB1:bColorSel:= hwg_ColorRgb2N(3,23,133)
+oB1:tColorSel:= hwg_ColorRgb2N(255,255,255)
+//oB1:bOther:={|o,m,wp,lp| messagesBrowse(o,m,wp,lp)}
+//  {lDELETE, lAPPEND, bTEH ,lSEARCH, lEDIT}
+//oB1:cargo:={.T.,.T.,{|modus| aFTEH[1]:Show(modus)},.T.,.T.}
+//AADD(aBrow,{oB1,"album",{|| .f. },{|| .t.},})
+
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{569,356,38,28}</property>
+      <property name="Name">[oOwnerbutton1]</property>
+      <property name="Caption">[]</property>
+      <property name="BtnBitmap">[smExit2]</property>
+      <property name="lResource">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[Parameters oDlg,nId
+oDlg:Close()
+]]>
+    </method>
+  </part>
+</part>

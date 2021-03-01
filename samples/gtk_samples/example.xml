@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{125,145,508,144}</property>
+    <property name="Caption">[Example]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="Variables">{oForm1,oForm2,oForm3}</property>
+  </style>
+  <method name="onFormInit">
+    <![CDATA[oForm1 := HFormTmpl():Read( "testget2.xml" )]]>
+  </method>
+  <part class="menu">
+    <style>
+      <property name="Geometry">{-1,-1,0,0}</property>
+      <property name="Name">[oMenu1]</property>
+      <property name="atree">
+        <item name="Test" id="32000">
+          <item name="Test1" id="32001">
+            <![CDATA[oForm1:Show()]]>
+          </item>
+          <item name="-" id="32007"/>
+          <item name="Exit" id="32006">
+            <![CDATA[hwg_EndWindow()]]>
+          </item>
+        </item>
+        <item name="Help" id="32004">
+          <item name="About" id="32005">
+            <![CDATA[hwg_Msginfo("HwGUI forms example","")]]>
+          </item>
+        </item>
+      </property>
+    </style>
+  </part>
+</part>

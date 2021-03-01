@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<editor>
+  <font name="Courier New" width="0" height="-17" weight="400" charset="204"/>
+  <hilight>
+    <keywords>
+and do else elseif enddo endif exit function get if local loop or private procedure return say set seek skip use while
+    </keywords>
+    <functions>
+aadd abs adel aeval afill ains alert alias alltrim array asc ascan asize asort at bof chr col ctod curdir date day dtoc dtos empty eof eval fclose fcreate ferase file fopen found fread fseek fwrite isalpha isdigit islower left recno right set str stuff substr updated upper val valtype year
+    </functions>
+    <single_line_comment>//</single_line_comment>
+  </hilight>
+  <themes selected="Default">
+    <theme name="Default">
+      <normal tcolor="0" bcolor="16777215"/>
+      <command tcolor="0" bcolor="16777215" bold="True"/>
+      <comment tcolor="10485760" bcolor="16777215" italic="True"/>
+      <quote tcolor="32768" bcolor="16777215"/>
+      <number tcolor="10485760" bcolor="16777215"/>
+    </theme>
+    <theme name="Far">
+      <normal tcolor="16777088" bcolor="12124160"/>
+      <command tcolor="16777215" bcolor="12124160" bold="True"/>
+      <comment tcolor="12882032" bcolor="12124160" bold="True" italic="True"/>
+      <quote tcolor="65535" bcolor="12124160" bold="True"/>
+      <number tcolor="65280" bcolor="12124160"/>
+    </theme>
+    <theme name="Hacker">
+      <normal tcolor="16777215" bcolor="0"/>
+      <command tcolor="16777215" bcolor="0" bold="True"/>
+      <comment tcolor="32768" bcolor="0" italic="True"/>
+      <quote tcolor="65535" bcolor="0"/>
+      <number tcolor="32768" bcolor="0"/>
+    </theme>
+  </themes>
+</editor>

@@ -1,0 +1,29 @@
+Files in directory:
+
+    - designer.prg   -  Designer source files
+    - designer.rc
+    - editor.prg
+    - hctrl.prg
+    - hformgen.prg
+    - inspect.prg
+
+    - designer.iml   -  main Designer configuration file
+
+    - blddesig.bat   -  the .bat to compile Designer.exe
+    - bldlib.bat     -  the .bat to compile Designer.lib
+
+    - samples\example.prg    -  Sample source file, uses the testget1.xml and testget2.xml
+    - samples\bldexam.bat    -  the .bat to compile the sample
+
+    - samples\testget1.xml   -  sample forms, created with Designer
+    - samples\testget2.xml
+    - samples\testdbf1.xml
+    - samples\example.xml
+
+    - resource/f_hwgprg.prg   -  script for prg output
+    - resource/f_text.prg     -  script for old frm input
+    - resource/r_text.prg     -  script for old rpt input
+
+    - resource/widgets.xml    -  configuration file with the widgets set for forms.
+    - resource/repwidg.xml    -  configuration file with the widgets set for reports.
+

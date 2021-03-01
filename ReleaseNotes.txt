@@ -1,0 +1,5 @@
+Release Notes for HWGUI
+=======================
+You find the release notes in file "whatsnew.txt".
+--------------------------------------------------
+

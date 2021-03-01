@@ -1,0 +1,26 @@
+#
+# $Id$
+#
+
+hwgui.hbc
+
+-hbdynvm
+
+-shared
+
+-o{bcc}lib/hwguidyn-bcc
+
+-o{!bcc}lib/hwguidyn
+
+-w
+
+# -cflag=-DHWG_USE_POINTER_ITEM
+# "{unix}-cflag=`pkg-config --cflags gtk+-2.0`"
+-cflag={bcc}-a8
+-cflag=-D__EXPORT__
+
+@hwgui.hbm
+
+
+# ============================== EOF of hwguidyn.hbp ===================================
+

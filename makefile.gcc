@@ -1,0 +1,162 @@
+# $Id$
+# makefile for MINGW compiler
+# Building of libhwgui.a - Harbour Win32 GUI library
+
+HRB_DIR = $(HB_PATH)
+# older Harbour versions
+# HRB_EXE = $(HRB_DIR)\bin\harbour.exe
+# newer Harbour versions
+# For MinGW64 set HRB_EXE to bin\win\mingw64\harbour.exe 
+ifeq ($(HRB_EXE),)
+ HRB_EXE = $(HRB_DIR)\bin\win\mingw\harbour.exe
+endif 
+INC_DIR = include
+OBJ_DIR = obj
+LIB_DIR = lib
+SRC_DIR = source\winapi
+PROCMISC_DIR = source\common\procmisc
+EDITOR_DIR = source\common\editor
+HBXML_DIR    = source\common\xml
+HWGDEBUG_DIR = source\common\debug
+
+#HARBOURFLAG = -d__WINDOWS__ $(HARBOURFLAGS)
+HARBOURFLAG = -d__WINDOWS__ -w3 -es2 $(HARBOURFLAGS)
+CFLAG = -Wall -O3 $(CFLAGS)
+
+all: \
+   $(LIB_DIR)/libhwgui.a \
+   $(LIB_DIR)/libprocmisc.a \
+   $(LIB_DIR)/libhbxml.a \
+   $(LIB_DIR)/libhwgdebug.a
+
+$(LIB_DIR)/libhwgui.a : \
+   $(OBJ_DIR)/commond.o \
+   $(OBJ_DIR)/control.o \
+   $(OBJ_DIR)/cxshade.o \
+   $(OBJ_DIR)/dialog.o \
+   $(OBJ_DIR)/draw.o \
+   $(OBJ_DIR)/drawtext.o \
+   $(OBJ_DIR)/freeimg.o \
+   $(OBJ_DIR)/grid.o \
+   $(OBJ_DIR)/listbox.o \
+   $(OBJ_DIR)/media_c.o \
+   $(OBJ_DIR)/menu_c.o \
+   $(OBJ_DIR)/message.o \
+   $(OBJ_DIR)/misc.o \
+   $(OBJ_DIR)/hmisc.o \
+   $(OBJ_DIR)/nice.o \
+   $(OBJ_DIR)/pager.o \
+   $(OBJ_DIR)/registry.o \
+   $(OBJ_DIR)/resource.o \
+   $(OBJ_DIR)/richedit.o \
+   $(OBJ_DIR)/shellapi.o \
+   $(OBJ_DIR)/window.o \
+   $(OBJ_DIR)/wprint.o \
+   $(OBJ_DIR)/drawwidg.o \
+   $(OBJ_DIR)/herrsys.o \
+   $(OBJ_DIR)/guimain.o \
+   $(OBJ_DIR)/barcode.o \
+   $(OBJ_DIR)/hbincnt.o \
+   $(OBJ_DIR)/hbrowse.o \
+   $(OBJ_DIR)/hbrwflt.o \
+   $(OBJ_DIR)/hcheck.o \
+   $(OBJ_DIR)/hcombo.o \
+   $(OBJ_DIR)/hcontrol.o \
+   $(OBJ_DIR)/hcwindow.o \
+   $(OBJ_DIR)/hdatepic.o \
+   $(OBJ_DIR)/hdialog.o \
+   $(OBJ_DIR)/hedit.o \
+   $(OBJ_DIR)/hfreeimg.o \
+   $(OBJ_DIR)/hfrmtmpl.o \
+   $(OBJ_DIR)/hgraph.o \
+   $(OBJ_DIR)/hgrid.o \
+   $(OBJ_DIR)/htrackbr.o \
+   $(OBJ_DIR)/hanimat.o \
+   $(OBJ_DIR)/hlistbox.o \
+   $(OBJ_DIR)/hmonthc.o \
+   $(OBJ_DIR)/hnice.o \
+   $(OBJ_DIR)/hownbtn.o \
+   $(OBJ_DIR)/hpanel.o \
+   $(OBJ_DIR)/hpager.o \
+   $(OBJ_DIR)/hprinter.o \
+   $(OBJ_DIR)/hprogres.o \
+   $(OBJ_DIR)/hradio.o \
+   $(OBJ_DIR)/hrebar.o \
+   $(OBJ_DIR)/hriched.o \
+   $(OBJ_DIR)/hsayimg.o \
+   $(OBJ_DIR)/hshbtn.o \
+   $(OBJ_DIR)/hsplit.o \
+   $(OBJ_DIR)/htab.o \
+   $(OBJ_DIR)/htimer.o \
+   $(OBJ_DIR)/htool.o \
+   $(OBJ_DIR)/htree.o \
+   $(OBJ_DIR)/hrect.o \
+   $(OBJ_DIR)/hupdown.o \
+   $(OBJ_DIR)/hwindow.o \
+   $(OBJ_DIR)/hwinprn.o \
+   $(OBJ_DIR)/menu.o \
+   $(OBJ_DIR)/video.o \
+   $(OBJ_DIR)/tmci.o \
+   $(OBJ_DIR)/hhyper.o \
+   $(OBJ_DIR)/hdc.o \
+   $(OBJ_DIR)/halert.o \
+   $(OBJ_DIR)/hsplash.o
+	ar rc $@ $^
+
+$(LIB_DIR)/libprocmisc.a : \
+   $(OBJ_DIR)/procini.o \
+   $(OBJ_DIR)/procs7.o \
+   $(OBJ_DIR)/procscri.o \
+   $(OBJ_DIR)/scrdebug.o \
+   $(OBJ_DIR)/hcedit.o \
+   $(OBJ_DIR)/hcedit_w.o \
+   $(OBJ_DIR)/hilight.o
+	ar rc $@ $^
+
+$(LIB_DIR)/libhbxml.a : \
+   $(OBJ_DIR)/xmlparse.o \
+   $(OBJ_DIR)/hxmldoc.o
+	ar rc $@ $^
+
+$(LIB_DIR)/libhwgdebug.a : \
+   $(OBJ_DIR)/dbgdop.o \
+   $(OBJ_DIR)/dbgconnect.o \
+   $(OBJ_DIR)/debugger.o
+	ar rc $@ $^
+
+.prg.c:
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+.c.o:
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(SRC_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+$(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(PROCMISC_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+$(OBJ_DIR)/%.o : $(PROCMISC_DIR)/%.c
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(EDITOR_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+$(OBJ_DIR)/%.o : $(EDITOR_DIR)/%.c
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(HBXML_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+$(OBJ_DIR)/%.o : $(HBXML_DIR)/%.c
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(HWGDEBUG_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+$(OBJ_DIR)/%.o : $(HWGDEBUG_DIR)/%.c
+	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+

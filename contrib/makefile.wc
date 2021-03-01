@@ -1,0 +1,152 @@
+# $Id$
+# makefile for Open Watcom C compiler
+# Building of hwgui contrib libs - Harbour Win32 GUI library
+
+HRB_DIR = $(HB_PATH)
+INCLUDE_DIR = ../include;$(HRB_DIR)\include
+OBJ_DIR = obj
+LIB_DIR = ../lib
+QHTM_DIR = qhtm
+MISC_DIR = misc
+CTRL_DIR = ext_controls
+#C_DEFINES= -DHB_THREAD_SUPPORT
+#H_DEFINES= -DHB_THREAD_SUPPORT
+
+HARBOUR_EXE = HARBOUR
+CC_EXE = WPP386
+LIB_EXE = LIB386
+HARBOURFLAGS = -i$(INCLUDE_DIR) -n1 -q0 -w -es2 -gc0
+CFLAGS = -j -w3 -d0 -5 -fp5 -s -onaehtzr -oi+ -ei -zp8 -zq -zt0 -mf -bt=NT -i$(INCLUDE_DIR)
+
+!ifndef ECHO
+ECHO = echo.
+!endif
+!ifndef DEL
+DEL = del
+!endif
+
+
+# Support for ActiveX ended, outdated   
+#          $(LIB_DIR)\hwg_activex.a
+
+QHTM_LIB = $(LIB_DIR)\hwg_qhtm.lib
+MISC_LIB = $(LIB_DIR)\hwg_misc.lib
+CTRL_LIB = $(LIB_DIR)\hwg_extctrl.lib
+
+all: \
+           $(QHTM_LIB)\
+           $(MISC_LIB)\
+           $(CTRL_LIB)\
+
+
+QHTM_LIB_OBJS = \
+   $(OBJ_DIR)\hwg_qhtm.obj \
+   $(OBJ_DIR)\hqhtm.obj
+
+$(QHTM_LIB) : $(QHTM_LIB_OBJS)
+   $(LIB_EXE) /nologo /out:$@ $**
+
+MISC_LIB_OBJS = \
+  $(OBJ_DIR)\arr2str.obj \
+  $(OBJ_DIR)\blowfish.obj \
+  $(OBJ_DIR)\miscfunc.obj \
+  $(OBJ_DIR)\richtext.obj \
+  $(OBJ_DIR)\saymoney.obj
+  
+$(MISC_LIB) : $(MISC_LIB_OBJS)
+   $(LIB_EXE) /nologo /out:$@ $**
+
+CTRL_LIB_OBJS = \
+   $(OBJ_DIR)\theme.obj \
+   $(OBJ_DIR)\hbrowsex.obj \
+   $(OBJ_DIR)\hctrlex.obj \
+   $(OBJ_DIR)\hcomboex.obj \
+   $(OBJ_DIR)\hrectex.obj \
+   $(OBJ_DIR)\hgridex.obj
+
+$(CTRL_LIB) : $(CTRL_LIB_OBJS)
+   $(LIB_EXE) /nologo /out:$@ $**
+
+
+# ==========================
+# ! QHTM.LIB Dependencies  !
+# ==========================
+
+$(OBJ_DIR)\hqhtm.c : $(QHTM_DIR)\hqhtm.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hqhtm.obj : $(OBJ_DIR)\hqhtm.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hwg_qhtm.obj : $(QHTM_DIR)\hwg_qhtm.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+# ==========================
+# ! MISC.LIB Dependencies  !
+# ========================== 
+
+$(OBJ_DIR)\arr2str.obj : $(MISC_DIR)\arr2str.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\blowfish.obj : $(MISC_DIR)\blowfish.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\richtext.c : $(MISC_DIR)\richtext.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\richtext.obj : $(OBJ_DIR)\richtext.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\saymoney.c : $(MISC_DIR)\saymoney.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\saymoney.obj : $(OBJ_DIR)\saymoney.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\miscfunc.c : $(MISC_DIR)\miscfunc.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\miscfunc.obj : $(OBJ_DIR)\miscfunc.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+
+# ==========================
+# ! CTRL.LIB Dependencies  !
+# ==========================
+
+$(OBJ_DIR)\theme.obj : $(CTRL_DIR)\theme.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hbrowsex.c : $(CTRL_DIR)\hbrowsex.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hbrowsex.obj : $(OBJ_DIR)\hbrowsex.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hcomboex.c : $(CTRL_DIR)\hcomboex.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hcomboex.obj : $(OBJ_DIR)\hcomboex.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hctrlex.c : $(CTRL_DIR)\hctrlex.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hctrlex.obj : $(OBJ_DIR)\hctrlex.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hgridex.c : $(CTRL_DIR)\hgridex.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hgridex.obj : $(OBJ_DIR)\hgridex.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+
+$(OBJ_DIR)\hrectex.c : $(CTRL_DIR)\hrectex.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hrectex.obj : $(OBJ_DIR)\hrectex.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+
+# =================== EOF of makefile.wc ==================

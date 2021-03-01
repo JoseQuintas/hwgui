@@ -1,0 +1,67 @@
+*
+* MinGW64.txt
+*
+* $Id$
+*
+* 
+ Additional Information for MinGW64 port:
+ 
+ Troubleshooting port a HWGUI application to MinGW 64 bit (x86_64) compiler:
+ 
+
+ 1.) At program start the error message "0xc000007b" appreared. This is caused by mixed
+     object files (32 and 64 bit) in the exe file, and that does not work !
+     The linker (ld) does not detect, that the delivered object files are mixed.
+     Screenshot of message see file "starterr7b.png".
+     This is caused by different topics.
+ 
+ 2.) Resource compiler "windres":
+     - Hex values in .rc file not supported any more (see samples\a.rc).
+     - Backslash character "\" must be written as "\\".
+     - The option "-F pe-x86-64" create a 64 bit object file. If the error message
+       "0xc000007b" appreared at program start,
+       you use a manifest file with invalid values (for 32 bit).
+       First try to remove the inclusion of a manifest file.
+
+
+ 3.) Library "pcre" (Perl-Compatible Regular Expressions) is not ready for 64 bit !
+     It was realized, that some function calls of Harbour/HWGUI needed pcre. 
+     A list of this functions:
+     hb_ini*() of Harbour: src\rtl\hbini.prg
+     If you try to build your application and get the following unresolved symbols from libhbrtl.a
+     at linking, you used such a function:
+       - pcre_compile
+       - pcre_exec
+       - pcre_config
+       - pcre_stack_free
+       - pcre_stack_malloc
+       - pcre_free
+    It seems, that the linker ignores not used symbols, so that a lot of the sample programs are running
+    on 64 bit environment and the missing pcre library has no effect.
+    In application CLLOG, file "libini.prg", there is a workaround for this case
+    (Handling Windows like ini files for multi platform purposes).
+    Read instructions in comment line.
+ 
+ 4.) hbmk2 does not work properly, so that "0xc000007b" appears here again.
+     Use only script "bldmingw64.bat" for building a sample.
+
+ 5.) Build HWGUI:
+     Use only script "makemngw64.bat".
+     A lot of warnings appeared, ignore them, to fix them, it is a lot of work to to.
+     Referenced by commit of Luiz Rafael Culik <culikr@gmail.com> at 2020-05-12, r2840
+     we need some casts to add.
+     Sample: ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 )
+
+ 6.) Bug in BUTTON: BACKCOLOR has no effect, works best on 32 bit.
+ 
+ 
+ But in general, it is possible to port some applications to 64bit. See file "samples\Readme.txt".
+ 
+ ============= TO-DO ========================
+ - Add lot of casts for 64 bit in HWGUI source code
+ - Create ticket for PCRE group for port to 64bit.
+ - Check 64bit for Cross Development Environment
+ - Build scripts for other components (utils,contrib)
+ 
+ 
+ * ============= EOF of MinGW64.txt ==================

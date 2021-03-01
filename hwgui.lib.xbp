@@ -1,0 +1,35 @@
+CINI = 
+C_OUTPUTFOLDER = 
+DEFFILE = 
+INCLUDEFOLDERS = include
+LAUTORUN = 
+LDEBUG = .F.
+LGUI = .F.
+LIBFOLDERS = 
+LMT = .F.
+LPRG_CLASSICDEBUG = .F.
+LPRG_DEBUG = .F.
+LUSEDLL = .F.
+MAPFILE = 
+MYC_FLAGS =  
+MYDEFINES = HWG_USE_POINTER_ITEM
+MYLINK_FLAGS = 
+MYPRG_FLAGS = 
+MYRC_FLAGS = 
+MYSLY_FLAGS = 
+OUTPUTFOLDER = xbp
+PRG_OUTPUTFOLDER = 
+RC_OUTPUTFOLDER = 
+RUNARGUMENTS = 
+SLY_OUTPUTFOLDER = 
+STARTIN = 
+TARGETFOLDER = 
+
+[source\winapi\*.*]
+[source\common\procmisc\*.*]
+[source\common\xml\*.*]
+[source\common\editor\*.prg]
+[source\common\editor\hcedit_w.c]
+[contrib\misc\*.*]
+[contrib\ext_controls\*.prg]
+[contrib\ext_controls\*.c]

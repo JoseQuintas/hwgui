@@ -1,0 +1,19 @@
+#
+# $Id: hbactivex.hbp 1615 2011-02-18 13:53:35Z mlacecilia $
+#
+
+-inc
+
+-hblib
+-o../lib/hbactivex
+
+-n -q0 -w -es2
+
+-i../include
+
+-cflag=-DHWG_USE_POINTER_ITEM
+
+activex/*.c
+activex/*.prg
+
+#-stop{allmingw}

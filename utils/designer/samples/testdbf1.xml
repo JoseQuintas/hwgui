@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{324,277,516,272}</property>
+    <property name="Caption">[Tab Forneced]</property>
+    <property name="Font">
+      <font name="Arial" width="0" height="-15" weight="400" charset="204"/>
+    </property>
+    <property name="lClipper">.T.</property>
+    <property name="lExitOnEnter">.F.</property>
+  </style>
+  <method name="common">
+    <![CDATA[FUNCTION GetDisable
+  oEdit1:Disable()
+  oEdit2:Disable()
+  oEdit3:Disable()
+  oEdit4:Disable()
+  oEdit5:Disable()
+ENDFUNC
+
+FUNCTION GetEnable
+  oEdit1:Enable()
+  oEdit2:Enable()
+  oEdit3:Enable()
+  oEdit4:Enable()
+  oEdit5:Enable()
+ENDFUNC
+
+Function BtnDisable()
+  oBtn1:Disable()
+  oBtn2:Disable()
+  oBtn3:Enable()
+  oBtn4:Disable()
+  oBtn5:Disable()
+  oBtn6:Disable()
+  oBtn7:Disable()
+  oBtn8:Disable()
+  oBtn9:Disable()
+ENDFUNC
+
+Function BtnEnable()
+  oBtn1:Enable()
+ if !Eof()
+    oBtn2:Enable()
+ endif
+  oBtn3:Disable()
+  oBtn4:Enable()
+  oBtn5:Enable()
+  oBtn6:Enable()
+  oBtn7:Enable()
+  oBtn8:Enable()
+  oBtn9:Enable()
+ENDFUNC
+
+Function GetVars
+  m_Cod   :=TabDbf->Cod
+  m_Name    :=TabDbf->Name
+  m_Adress :=TabDbf->Adress
+  m_Fone :=TabDbf->Fone
+  m_e_Mail :=TabDbf->e_Mail
+  hwg_RefreshAllGets(oDlg)
+ENDFUNC
+
+]]>
+  </method>
+  <method name="onFormInit">
+    <![CDATA[Private dbfname := "forneced.dbf", indname := "forneced.ntx"
+if !File(dbfname)
+  dbCreate( dbfname, { ;
+      {"Cod", "C", 3, 0 }, ;
+      {"Name", "C",50, 0 }, ;
+      {"Adress", "C",50, 0 }, ;
+      {"Fone", "C",50, 0 }, ;
+      {"e_Mail  ", "C",30, 0 } } )
+endif
+Use (dbfname) Shared Alias TabDbf
+if !File(indname)
+   fLock()
+   Index on Cod to (indname)
+   Unlock
+else
+   OrdListAdd(indname)
+endif
+set order to 1
+go top
+]]>
+  </method>
+  <method name="onDlgInit">
+    <![CDATA[GetDisable()
+BtnEnable()
+if !eof()
+  GETVARS()
+endif]]>
+  </method>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{4,3,44,38}</property>
+      <property name="Name">[oBtn1]</property>
+      <property name="Caption">[New]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[GETENABLE()
+BTNDISABLE()
+go bottom
+dbSkip(1)
+GETVARS()
+hwg_Setfocus( oEdit1:handle )
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{48,3,44,38}</property>
+      <property name="Name">[oBtn2]</property>
+      <property name="Caption">[Edit]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[GETENABLE()
+oEdit1:Disable()
+BTNDISABLE()
+GETVARS()
+hwg_Setfocus( oEdit2:handle )]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{92,3,44,38}</property>
+      <property name="Name">[oBtn3]</property>
+      <property name="Caption">[Save]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[hwg_Setfocus(oEdit1:handle)
+if Eof()
+  if dbSeek( m_cod )
+     hwg_Msginfo( "The "+m_cod+" exists already !" )
+     go bottom
+     dbSkip(1)
+     return
+  endif
+  dbAppend()
+  TabDbf->Cod := m_cod
+else
+  Rlock()
+endif
+TabDbf->Name := m_Name
+TabDbf->Adress := m_Adress
+TabDbf->Fone := m_Fone
+TabDbf->e_Mail := m_e_Mail
+Unlock
+GETDISABLE()
+BTNENABLE()
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{136,3,44,38}</property>
+      <property name="Name">[oBtn4]</property>
+      <property name="Caption">[&lt;&lt;]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[dbSkip( -1 )
+GETVARS()
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{180,3,44,38}</property>
+      <property name="Name">[oBtn5]</property>
+      <property name="Caption">[&gt;&gt;]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[dbSkip(1)
+if Eof()
+  dbSkip(-1)
+endif
+GETVARS()
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{224,3,44,38}</property>
+      <property name="Name">[oBtn6]</property>
+      <property name="Caption">[[&lt;&lt;]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[go top
+GETVARS()
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{268,3,44,38}</property>
+      <property name="Name">[oBtn7]</property>
+      <property name="Caption">[&gt;&gt;]]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[go bottom
+GETVARS()
+]]>
+    </method>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{312,3,44,38}</property>
+      <property name="Name">[oBtn8]</property>
+      <property name="Caption">[Print]</property>
+      <property name="Flat">.T.</property>
+    </style>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{356,3,44,38}</property>
+      <property name="Name">[oBtn9]</property>
+      <property name="Caption">[Del]</property>
+      <property name="Flat">.T.</property>
+    </style>
+  </part>
+  <part class="ownerbutton">
+    <style>
+      <property name="Geometry">{400,3,44,38}</property>
+      <property name="Name">[oBtn10]</property>
+      <property name="Caption">[Close]</property>
+      <property name="Flat">.T.</property>
+    </style>
+    <method name="onClick">
+      <![CDATA[hwg_EndDialog()]]>
+    </method>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{2,60,60,22}</property>
+      <property name="Caption">[Cod]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{65,60,80,24}</property>
+      <property name="Name">[oEdit1]</property>
+      <property name="varName">[m_Cod]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{2,85,60,22}</property>
+      <property name="Caption">[Name]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{65,85,310,24}</property>
+      <property name="Name">[oEdit2]</property>
+      <property name="varName">[m_Name]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{2,110,60,22}</property>
+      <property name="Caption">[Address]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{65,110,310,24}</property>
+      <property name="Name">[oEdit3]</property>
+      <property name="varName">[m_Adress]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{2,135,60,22}</property>
+      <property name="Caption">[Phone]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{65,135,310,24}</property>
+      <property name="Name">[oEdit4]</property>
+      <property name="varName">[m_Fone]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{2,160,60,22}</property>
+      <property name="Caption">[Email]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{65,160,199,24}</property>
+      <property name="Name">[oEdit5]</property>
+      <property name="varName">[m_E_mail]</property>
+    </style>
+  </part>
+</part>

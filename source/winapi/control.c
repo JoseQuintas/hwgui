@@ -1170,6 +1170,24 @@ HB_FUNC( HWG_LOADCURSOR )
    hb_strfree( hStr );
 }
 
+/*       hwg_LoadCursorFromFile(ccurFname) */ 
+HB_FUNC( HWG_LOADCURSORFROMFILE )
+{
+   void * hStr;
+   HCURSOR hCursor;
+
+   LPCTSTR ccurFname = HB_PARSTR( 1, &hStr, NULL );
+
+   hCursor = LoadCursorFromFile(ccurFname);
+   if (hCursor == NULL )
+   /* in case of error return default cursor "Arrow" */
+      HB_RETHANDLE( LoadCursor( NULL, IDC_ARROW ) );
+   else
+      HB_RETHANDLE(hCursor);
+
+   hb_strfree( hStr );
+}
+
 HB_FUNC( HWG_SETCURSOR )
 {
    HB_RETHANDLE( SetCursor( ( HCURSOR ) HB_PARHANDLE( 1 ) ) );

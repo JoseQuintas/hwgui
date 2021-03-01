@@ -112,6 +112,9 @@
    correct path to your Harbour directory.
    Some samples in the directory samples are ready for LINUX/GTK, look into the Readme.txt file.
 
+   As alternative method use the hbmk2 utility, it works also at it's best.
+   Start the script "./make_hbmk.sh" to run the HWGUI build with hbmk2.
+
 
  
    3) Common instructions to build samples, utils and your application
@@ -131,18 +134,22 @@
   
 
    3.1) Resources
-   Resources means images and icons in GUI applications.
-   They could be loaded directly from an single image file
-   or compiled directly into the exe file.
-   If loading a lot of image files, you must deliver them all with your
+   Resources means forms, images and icons in GUI applications.
+   They could be loaded directly from an single image or resource file (*.rc)
+   and compiled directly into the exe file.
+   If loading a lot of image files at run time, you must deliver them all with your
    setup script. This is uncomfortable. You can use the Windows resource
    compiler utility (HWGUI supports this), but for multi platform programs
-   you must avoid the resource compiler.
-   But there are 2 alternatives:
-   1.) The Binary Container
-   2.) Hex value resources
+   you must avoid the resource compiler. With MinGW the source compiler is "windres.exe".
+   The resource compiler is not available on GTK/LINUX !
+   But there are alternatives:
+   1.) The Binary Container,
+   2.) Hex value resources,
+   3.) HWGUI designer for forms.
    Read more about this topic in file
-   "utils/bincnt/Readme.txt". 
+   "utils/bincnt/Readme.txt".
+   Creating and editing froms use the HWGUI utility "Designer"
+   in directory "utils/designer". 
   
 
  List of packages for Ubuntu Linux and LinuxMINT

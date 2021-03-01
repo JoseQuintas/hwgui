@@ -37,6 +37,8 @@ For the next release build done:
 [+] Test program for multithread demo in "test".
 [+] Some more sample programs added.
 [+] Documentation extended.
+[+] Usage of custom created mouse cursor by *.cur files.
+[!] Removed resource files for BCC for multi platform use, converted to HWGUI commands. 
 
 
 HWGUI 2.22 build 4 ( 26.04.2019 )

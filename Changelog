@@ -8,6 +8,36 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2021-03-01 11:00 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+   ! Updated.
+   ! hwg_LoadCursor(): Full description added.
+  * hwgui.hbc
+   ! libhbactivex removed, out of support.
+   ! Otherwise not compilable on Windows 10 with BCC.
+  * include/gtk.ch
+   ! 2 new defines added from recent GTK 2.
+  * make_hbmk.sh
+  * install.txt
+   ! Shell for build with hbmk2, txt updated.
+  * samples/cursor_7_16x16.cur
+   ! For experiments, cursor file with reduced size 16x16.
+  * samples/testspli.prg
+  * source/winapi/control.c
+  * samples/testspli.rc (Deleted)
+   ! New function hwg_LoadCursorFromFile().
+   ! BCC resource file removed, 
+   ! custom cursor from files splith.cur and splitv.cur for WinAPI.
+   ! Now ready for MinGW and GTK, use cursor from stock for GTK. 
+   ! To be continued: custom cursor from files for GTK.
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+   ! New FUNCTION hwg_PI().
+  * whatsnew.txt
+   ! Updated.
+
+
 2021-02-27 12:20 UTC+0100 Wilfried Brunken DF7BE
   * Changelog
   * doc/hwgdoc_functions.html

@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, February 2021</td>
+    <td width="70%" align="center">Alexander S.Kresin, March 2021</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -1159,7 +1159,63 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_LoadCursor( cursor )</strong> 
-   <p></p>
+   <p>
+   Loads a cursor from stock and returns its handle.<br>
+   <br>
+   GTK: Parameter "cursor" is a numeric value for identifying<br>
+   the standard cursor from stock.<br>
+   Allowed values are defined in HWGUI include file "gtk.ch" as<br>
+   GDK_* definitions, for example:<br>
+   GDK_ARROW Standard arrow<br>
+   GDK_SB_V_DOUBLE_ARROW Double pointed arrow pointing north and south<br>
+   GDK_SB_H_DOUBLE_ARROW Double pointed arrow pointing west and east<br>
+   Attention !<br>
+   Invalid value may cause crash or freeze of program.<br>
+   <br>  
+   WinAPI: Parameter "cursor" is a numerical value.
+   It is evaluated from a string for the second parameter of WinAPI function<br> 
+   "LoadCursor(hInstance,lpCursorName)"<br>
+   by macro<br>
+   MAKEINTRESOURCE(n) (used in HWGUI source file "control.c").<br>
+   The allowed values are defined in include "winuser.h"<br>
+   as IDC_* definitions, for example:<br>
+   &nbsp;IDC_ARROW  Standard arrow<br>
+   &nbsp;IDC_SIZENS Double pointed arrow pointing north and south<br>
+   &nbsp;IDC_SIZEWE Double pointed arrow pointing west and east<br>
+   (not the same cursors as described for GTK above)<br>
+   <br>
+   For setting of parameter for hwg_LoadCursor()<br>
+   look into the WinAPI include file "winuser.h"<br>
+   to get the numerical value, for example:<br>
+   &nbsp;IDC_ARROW  : 32512<br>
+   &nbsp;IDC_SIZENS : 32645<br> 
+   &nbsp;IDC_SIZEWE : 32644<br>
+   Invalid value loads the IDC_ARROW, it is the default cursor.<br>
+   <br>
+   To display the cursor, call functions<br> 
+   hwg_SetCursor() and hwg_ShowCursor().<br>
+   <br>
+   Use the compiler switch "#ifdef __GTK__" for<br>
+   use in multi platform applications.<br>
+   See sample program "testspli.prg".<br>
+   <br> 
+   </p>
+
+   <br><strong class="subhead"> hwg_LoadCursorFromFile(ccurFname)</strong>  (Windows only)
+   <p>
+   Loads a cursor from a "*.cur" type file and returns its handle.<br> 
+   ccurFname : Filename (and path) of cursor file name.<br> 
+   In case of errors the handle for default cursor "Arrow" is<br> 
+   returned.<br> 
+   Cursor files are created and edited with special
+   cursor editor programs.<br>
+   So it is possible to use customized cursor's in an HWGUI application.<br>
+   <br>
+   To display the cursor, call functions<br> 
+   hwg_SetCursor() and hwg_ShowCursor().<br>
+   <br>
+   We will realize this function for GTK as soon as possible.<br>
+   </p>
 
    <br><strong class="subhead"> hwg_SetCursor( cursor, hCtrl )</strong> 
    <p></p>
@@ -1749,8 +1805,9 @@
    <p></p>
 
    <br><strong class="subhead"> hwg_Sin( n )</strong> 
-   <br><strong class="subhead"> hwg_Cos( n )</strong> 
-   <br>Two mathematical functions.
+   <br><strong class="subhead"> hwg_Cos( n )</strong>
+   <br><strong class="subhead"> hwg_PI()</strong>  
+   <br>Three mathematical functions.
    <p></p>
 
    <br><strong class="subhead"> hwg_ClientToScreen( handle, x1, y1 )</strong> (Windows only)
@@ -1783,8 +1840,10 @@
 
    <br><strong class="subhead"> hwg_ShowCursor(lcursor , hwindow , ndefaultcsrtype)</strong>
    <p>
-   Hides or recovers the mouse cursor.<br>
-   This feature is helpful for computers with touchscreen.<br>
+   Hides or recovers (displays) the mouse cursor.<br>
+   No return value.<br>
+   <br> 
+   This feature is also helpful for computers with touchscreen.<br>
    The behavior on GTK and Windows differs.<br>
    First parameter: .F. hides the cursor, .T. recovers it.<br>
    Do not forget, that the mouse action is forever active, only you<br>

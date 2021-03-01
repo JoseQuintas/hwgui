@@ -11,7 +11,7 @@ libpaths=lib
 {win}gt=gtgui
 
 {!hblib}libs=hwgui procmisc hbxml hwgdebug
-{win&!allmingw&!watcom&!hblib}libs=hbactivex
+# {win&!allmingw&!watcom&!hblib}libs=hbactivex
 
 {unix}ldflags+="`pkg-config --libs gtk+-2.0`"
 

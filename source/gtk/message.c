@@ -16,6 +16,9 @@
 #include "gtk/gtk.h"
 #include "hwgtk.h"
 
+/* Avoid warnings from GCC */
+#include "warnings.h"
+
 extern GtkWidget * GetActiveWindow( void );
 
 static int MessageBox( const char * cMsg, const char * cTitle, int message_type, int button_type )

@@ -1217,6 +1217,27 @@
    We will realize this function for GTK as soon as possible.<br>
    </p>
 
+   <br><strong class="subhead"> hwg_LoadCursorFromFile(ccurFname,x,y)</strong>  (GTK only)
+   <p>
+   Loads a cursor from a "*.cur" type file and returns its handle.<br> 
+   This is the special version for GTK and has the additional parameters x and y.<br>
+   All other descriptions see WinAPI version of this function.<br>
+   <br> 
+   Uses the following GTK function for creating the cursor:<br>
+   GdkCursor* gdk_cursor_new_from_pixbuf(GdkDisplay *display,GdkPixbuf *pixbuf, gint x, gint y)<br>
+   <br>
+   The parameters x and y are mandatory.<br>
+   <br>
+   x: the horizontal offset of the 'hotspot' of the cursor<br>
+   y: the vertical offset of the 'hotspot' of the cursor<br>
+   <br>
+   We suggest, to try for x and y the half size value of pixels.<br>
+   The value of the resulting pixbuf (not the file size of the *.cur file)<br>
+   may not exceed 4095 bytes.<br>
+   <br>
+   For details read the GTK 2 reference.<br>
+   </p>
+
    <br><strong class="subhead"> hwg_SetCursor( cursor, hCtrl )</strong> 
    <p></p>
    <ul>

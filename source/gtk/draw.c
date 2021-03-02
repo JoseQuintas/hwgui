@@ -24,6 +24,9 @@
 
 #include <math.h>
 
+/* Avoid warnings from GCC */
+#include "warnings.h"
+
 extern GtkWidget * hMainWindow;
 extern GtkFixed *getFixedBox( GObject * handle );
 

@@ -19,10 +19,13 @@
 
 /*
  Modifications by DF7BE:
- - Removed Borland rersource file,
+ - Removed Borland resource file,
    substituded by HWGUI commands,
+   now ready for multi platform
  - Cursor files by hex value
    (prepared for GTK)
+   but needed to implement as next
+ - Custom cursor from file 
  
  Contents of deleted rc file "testspli.rc":
  VSPLIT CURSOR "SPLITV.cur"
@@ -60,7 +63,9 @@ Local oMainWindow, oFont, oSplitV, oSplitH, oEdit1, oEdit2
 
    @ 160,10 SPLITTER oSplitV SIZE 3,100 DIVIDE {oTree} FROM {oEdit1} LIMITS 100,300
 #ifdef __GTK__   
-   oSplitV:hCursor := hwg_Loadcursor( GDK_SB_H_DOUBLE_ARROW  )  && "VSPLIT"
+*   oSplitV:hCursor := hwg_Loadcursor( GDK_SB_H_DOUBLE_ARROW  )  && "VSPLIT"
+*   oSplitV:hCursor := hwg_LoadCursorFromFile("transistor.cur",7,7)   && Test
+   oSplitV:hCursor := hwg_LoadCursorFromFile("splitv.cur",16,16)   
 #else
 *   oSplitV:hCursor := hwg_Loadcursor( 32644 )  && IDC_SIZEWE from stock optional
    oSplitV:hCursor := hwg_LoadCursorFromFile("splitv.cur")
@@ -70,7 +75,8 @@ Local oMainWindow, oFont, oSplitV, oSplitH, oEdit1, oEdit2
 
    @ 20,110 SPLITTER oSplitH SIZE 344,3 DIVIDE {oTree,oEdit1,oSplitV} FROM {oEdit2} LIMITS ,220
 #ifdef __GTK__   
-   oSplitH:hCursor := hwg_Loadcursor( GDK_SB_V_DOUBLE_ARROW  )  && "HSPLIT"
+*   oSplitH:hCursor := hwg_Loadcursor( GDK_SB_V_DOUBLE_ARROW  )  && "HSPLIT"
+   oSplitH:hCursor := hwg_LoadCursorFromFile("splith.cur",16,16)
 #else
 *   oSplitH:hCursor := hwg_Loadcursor( 32645 ) && IDC_SIZENS from stock optional
    oSplitH:hCursor := hwg_LoadCursorFromFile("splith.cur") 

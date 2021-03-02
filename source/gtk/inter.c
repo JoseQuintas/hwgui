@@ -27,6 +27,9 @@
 
 #include <malloc.h>
 
+/* Avoid warnings from GCC */
+#include "warnings.h"
+
 /* For GTK Windows cross development environment by DF7BE */
 #if defined(_WIN32) || defined(_WIN64) || defined(__MINGW32__) || defined(__MINGW64__)
 /* Type conflict GtkWidget *GetActiveWindow  ==> do not include gtk/gtk.h */

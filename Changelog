@@ -9,6 +9,27 @@
 */
 
 
+2021-03-02 15:30 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * whatsnew.txt
+   ! Docu updated.
+  * make_hbmk.bat (New)
+   ! Call simply this bat for compile with hbmk2 on Win.
+  * samples/testspli.prg
+  * samples/transistor.cur (New)
+   ! Ticket 32: hwg_LoadCursorFromFile() port to GTK.
+   ! New cur file for test and experiments.
+  * source/gtk/commond.c
+  * source/gtk/control.c
+  * source/gtk/draw.c
+  * source/gtk/drawtext.c
+  * source/gtk/inter.c
+  * source/gtk/menu_c.c
+  * source/gtk/message.c
+  * source/gtk/wprint.c
+   ! Ticket 77: Warnings with GCC 10 on LINUX. 
+
+
 2021-03-01 11:00 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
    ! Updated.

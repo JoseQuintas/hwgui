@@ -14,8 +14,9 @@ For the next release build done:
 1.) Bugfixing:
 
 [!] Lot of bugs fixed (see Changelog).
-[!] Compiler warnings MinGW 64 bit fixed.
+[!] Compiler warnings MinGW 64 bit and for GCC 10 on LINUX fixed.
 [!] More sample programs are running now.
+[!] More sample programs ready for GTK.
 [!] Build scripts for many compilers updated.
 [!] Better improvement for build with hbmk2 utility.
 

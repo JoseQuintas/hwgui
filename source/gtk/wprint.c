@@ -19,6 +19,9 @@
 #include "cairo-ps.h"
 #include "cairo-svg.h"
 
+/* Avoid warnings from GCC */
+#include "warnings.h"
+
 #define DT_CENTER                   1
 #define DT_RIGHT                    2
 #define DT_VCENTER                  4
@@ -683,4 +686,7 @@ HB_FUNC( HWG_GP_RELEASE )
 {
    g_object_unref (G_OBJECT (hb_parnl(1)));
 }
+
+/* ================================== EOF of wprint.c ================================== */
+
 

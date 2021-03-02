@@ -26,6 +26,9 @@
 #include "hbfast.h"
 #endif
 
+/* Avoid warnings from GCC */
+#include "warnings.h"
+
 extern void hwg_parse_color( HB_ULONG ncolor, GdkColor * pColor );
 extern void hwg_setcolor( cairo_t * cr, long int nColor );
 extern GtkWidget * GetActiveWindow( void );

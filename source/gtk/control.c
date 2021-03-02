@@ -1066,6 +1066,29 @@ HB_FUNC( HWG_LOADCURSOR )
       HB_RETHANDLE( gdk_cursor_new( ( GdkCursorType ) hb_parni( 1 ) ) );
 }
 
+/* Added by DF7BE:
+       hwg_LoadCursorFromFile(ccurFname,x,y)
+*/ 
+HB_FUNC( HWG_LOADCURSORFROMFILE )
+{
+   GdkPixbuf  *handle;
+   GdkPixbuf  *pHandle;
+   GdkCursor  *cursor;
+   GdkDisplay *display = gdk_display_get_default();
+   
+   if( HB_ISCHAR( 1 ) )
+   {
+      handle = gdk_pixbuf_new_from_file( hb_parc( 1 ), NULL );
+      pHandle = alpha2pixbuf( handle, 4095 );   /* 16777215 = 2^24 -1 (old value)  cursor are small */
+      /* Returns handle to GdkCursor */
+      cursor = gdk_cursor_new_from_pixbuf(display, pHandle, hb_parni( 2 ) , hb_parni( 3 ) );
+      /* g_free(pHandle);   core dump with invalid pointer */
+      HB_RETHANDLE(cursor);
+   }
+   else
+      HB_RETHANDLE( gdk_cursor_new( ( GdkCursorType ) GDK_ARROW ) );
+}
+
 /*
  Hwg_SetCursor(objecthandle , areahandle )
  area : for example return value of Select() in HBROWSE

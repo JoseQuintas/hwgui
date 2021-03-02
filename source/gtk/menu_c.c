@@ -18,6 +18,10 @@
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
+
+/* Avoid warnings from GCC */
+#include "warnings.h"
+
 #define  FLAG_DISABLED   1
 #define  FLAG_CHECK      2
 
@@ -228,3 +232,6 @@ HB_FUNC( HWG__DELETEMENU )
 HB_FUNC( HWG_DRAWMENUBAR )
 {
 }
+
+/* =========================== EOF of menu_c.c ================================== */
+

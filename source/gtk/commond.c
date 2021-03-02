@@ -18,6 +18,8 @@
 #ifdef __XHARBOUR__
 #include "hbfast.h"
 #endif
+/* Avoid warnings from GCC */
+#include "warnings.h"
 
 extern GtkWidget * GetActiveWindow( void );
 extern void hwg_set_modal( GtkWindow * hDlg, GtkWindow * hParent );

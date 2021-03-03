@@ -921,7 +921,20 @@ FUNCTION hwg_FontSetCharset ( oFont, nCharSet  )
         oFont:aFonts[ i ]:CharSet := nCharSet
  NEXT
   
-RETURN oFont   
+RETURN oFont 
+
+FUNCTION hwg_LoadCursorFromString(cVal, nx , ny)
+LOCAL cTmp , hCursor
+* Parameter x and y not used on WinApi
+ HB_SYMBOL_UNUSED( nx )
+ HB_SYMBOL_UNUSED( ny )
+
+ * Write contents into temporary file
+ hb_memowrit( cTmp := hwg_CreateTempfileName( , ".cur") , cVal )
+ * Load cursor from temporary file
+ hCursor := hwg_LoadCursorFromFile( cTmp ) && for GTK add parameters nx, ny
+ FERASE(cTmp)
+RETURN hCursor  
 
 * ======================== EOF of drawwidg.prg =========================
    

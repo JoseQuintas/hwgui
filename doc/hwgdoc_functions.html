@@ -1214,7 +1214,8 @@
    To display the cursor, call functions<br> 
    hwg_SetCursor() and hwg_ShowCursor().<br>
    <br>
-   We will realize this function for GTK as soon as possible.<br>
+   Use the compiler switch "#ifdef __GTK__" for<br>
+   use in multi platform applications.<br>
    </p>
 
    <br><strong class="subhead"> hwg_LoadCursorFromFile(ccurFname,x,y)</strong>  (GTK only)
@@ -1236,6 +1237,30 @@
    may not exceed 4095 bytes.<br>
    <br>
    For details read the GTK 2 reference.<br>
+   <br>
+   Use the compiler switch "#ifdef __GTK__" for<br>
+   use in multi platform applications.<br>
+   </p>
+
+   <br><strong class="subhead"> hwg_LoadCursorFromString(cVal, nx , ny)</strong>
+   <p>
+   Loads a cursor from a binary variable and returns its handle.<br>
+   It is an equivalent to functions "hwg_LoadCursorFromFile()" for WinAPI and GTK.<br>
+   For details look to the descriptions of this functions.<br>
+   Parameters nx and ny are ignored on WinAPI, but set them for multi platform applications.<br>
+   <br>
+   Strategy:<br>
+   <blockquote>
+     1) Create the *.cur file with an suitable cursor editor.<br>
+     2) Create an hex value from this file with utility "file2hex.prg"<br>
+          in directory "utils\bincnt".<br>
+     3) In your program, convert the hex values into binary with function "hwg_cHex2Bin()".<br>
+        Create the handle of cursor by calling function "hwg_LoadCursorFromString()".<br> 
+     4) To display the cursor, call functions hwg_SetCursor() and hwg_ShowCursor().<br>
+</blockquote>  
+<br>
+See sample program "testspli.prg" for details.<br>
+
    </p>
 
    <br><strong class="subhead"> hwg_SetCursor( cursor, hCtrl )</strong> 

@@ -2427,7 +2427,7 @@ See sample program "testspli.prg" for details.<br>
    cHelptxt: Character variable with multiline help text,<br>
    complete every line with CHR(13) + CHR(10).<br> 
    cTitle  : The title of the help window<br>
-   cClose  : Set text for "Close" button in your language, defaukt is "Close".<br>
+   cClose  : Set text for "Close" button in your language, default is "Close".<br>
    opFont : Additional font setting<br> 
    blmodus : .T.: not modal (default is .F.)<br>
    <br>
@@ -2480,6 +2480,24 @@ See sample program "testspli.prg" for details.<br>
    <br>   
    For usage see sample program "samples/testxml.prg".<br>
    <p></p>
+
+   <br><strong class="subhead"> hwg_StrDebNIL(xParchk)</strong>
+   <p>
+   For debugging purposes:<br>
+   Returns string "NIL" or "not NIL",<br>
+   if parameter xParchk is NIL or not.<br>
+   For usage in combination with hwg_WriteLog() to<br>
+   write value(s) into a log file.<br> 
+   </p>
+
+   <br><strong class="subhead"> hwg_StrDebLog(ltoCheck)</strong>
+   <p>
+   For debugging purposes:<br>
+   Returns string ".T." or ".F.",<br>
+   if logical parameter ltoCheck is true or false.<br> 
+   For usage in combination with hwg_WriteLog() to<br>
+   write value(s) into a log file.<br>
+   </p>
 
    <br><strong class="subhead"> hwg_Alert</strong> (Windows only)
    <p></p>

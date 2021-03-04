@@ -705,5 +705,27 @@ FUNCTION hwg_PI()
 * high accuracy  
 RETURN 3.141592653589793285
 
+* =======================================================
+FUNCTION hwg_StrDebNIL(xParchk)
+* =======================================================
+LOCAL cres
+  IF xParchk == NIL
+   cres := "NIL"
+  ELSE
+   cres := "not NIL" 
+  ENDIF
+RETURN cres
+
+* =======================================================
+FUNCTION hwg_StrDebLog(ltoCheck)
+* =======================================================
+LOCAL cres
+ IF ltoCheck
+   cres := ".T."
+  ELSE
+   cres := ".F." 
+  ENDIF
+RETURN cres 
+
 * ============== EOF of hmisc.prg =================
 

@@ -10,6 +10,8 @@ Tasks by DF7BE
    by Alex Strickland port to GTK.
  - Check for Digital Mars C compiler
    (recent state: not supported by Harbour)
+ - Check for Pelles C compiler
+   (recent state: not supported by Harbour)
 
 List:  Samples not running or have bugs (Fix bugs, if time available, low priority):
   1.) WinAPI
@@ -31,7 +33,6 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
 
 
 some work for recover mouse cursor on GTK.
-- Fix crash, sample testfunc.prg (Cursor functions)
 - Add parameters for internal HWGUI dialogs like
   hwg_msginfo() or printer preview to hide there
   the mouse cursor. 
@@ -249,24 +250,6 @@ hwg_RegGetValue()
 
 
 =========================================================
-
-Individual mouse cursor from bitmap.
-A sample part for GTK:
-
-// blank cursor:
-  gchar bits[] = { 0 };
-  GdkColor color = { 0, 0, 0, 0 };
-  GdkPixmap *pixmap;
-  GdkCursor *cursor;
-  
-  pixmap = gdk_bitmap_create_from_data(NULL, bits, 1, 1); // here direct from bitmap
-  cursor = gdk_cursor_new_from_pixmap(pixmap, pixmap, &color, &color, 0, 0);
-  gdk_window_set_cursor(widget->window, cursor);  
-
-
-
-
-=========================================================
 Area: Rich Text Format (RTF)
 Special Task for Alexander Kresin and 
 mlacecilia, JIJA, TRM, JJA:
@@ -278,9 +261,8 @@ Old entries, must be checked (is bugfixing done ?)
 
 - MDICHILD,  the controls ENTER, TAB,... not functions how in DIALOG
 - MAIN MDI, background bitmap not function perfectly, only flick a bitmap and change for the default background color
-- DIALOG NOMODAL, always stay in a TOP, if you onpen a CHILD it go to DIALOG'S back, can't bring to FRONT
+- DIALOG NOMODAL, always stay in a TOP, if you open a CHILD it go to DIALOG'S back, can't bring to FRONT
 - GET with AUTO_VSCROOL not function equal "@S"
-- change TITLE of DIALOG or WINDOW on the fly
 - possibilidade de um STYLE para que o objeto nao seje o proximo foco
   in english:
   possibility of a STYLE so that the object is not the next focus 

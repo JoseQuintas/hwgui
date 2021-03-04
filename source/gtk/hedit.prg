@@ -98,31 +98,40 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       hwg_SetSignal( ::handle, "paste-clipboard", WM_PASTE, 0, 0 )
       hwg_SetSignal( ::handle, "copy-clipboard", WM_COPY, 0, 0 )
    ENDIF
+   
+//   ::aColorOld[1] := iif( tcolor = Nil, 0, ::tcolor )
+//   ::aColorOld[2] := ::bcolor
 
    RETURN Self
 
 METHOD Activate() CLASS HEdit
-
+  
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createedit( ::oParent:handle, ::id, ;
          ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       hwg_Setwindowobject( ::handle, Self )
       ::Init()
    ENDIF
-
+   
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent
    LOCAL nPos
 
-   //hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   // hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   
    IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent, Self, msg, wParam, lParam ) != 0
       RETURN 0
    ENDIF
 
-   IF msg == WM_SETFOCUS
+   IF msg == WM_SETFOCUS   && msg = 7
       oParent := hwg_getParentForm( Self )
+
+      // hwg_WriteLog("Edit: " + hwg_StrDebLog(lColorinFocus) + " " + ;
+      //   Str(oParent:tColorinFocus,10) + " " + Str(oParent:bColorinFocus,10) + " " + ;
+      //   hwg_StrDebNIL(::bColorBlock) ) 
+
       IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
          ::aColorOld[1] := ::tcolor
          ::aColorOld[2] := ::bcolor

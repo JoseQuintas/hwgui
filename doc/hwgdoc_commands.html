@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
-      <td width="70%" align="center">Alexander S.Kresin, February 2021</td>
+      <td width="70%" align="center">Alexander S.Kresin, March 2021</td>
       <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
     </tr>
   </table>
@@ -1313,14 +1313,17 @@
     the dialog is closed immediately, if the end of field is filled and reached.<br>
     To avoid this, use the NOEXIT clause in INIT DIALOG command.<br>
     <br>
-    Important:<br>
+    <b>Important:</b><br>
+    <br>
     To avoid side effects while entering characters only reachable by "AltGr" key<br>
-    (for example on german keyboard layout: ~&micro;@{[]}\),<br>
+    (&nbsp;for example on german keyboard layout: ~&micro;@{[]}\&euro;&nbsp;),<br>
     be shure that the size of the GET control field (X value of SIZE parameter)<br>
     is big enough to display all characters of edit field.<br>
     The symptom is, that the character is ignored and on Windows<br>
     a ding sound appears.<br>
+    <br>
     Scrolling feature with PICTURE "@Snn" is not supported.<br>
+    <br>
     On GTK, it is possible, that the complete modified value<br>
     is not stored in the variable.<br>
     For test of display length, enter a number string like<br>
@@ -1333,7 +1336,15 @@
     nField := 0<br>
     lField := .F.<br>
     For editing MEMO type fields use the HCEDIT class.<br>
-    <br>  
+    <br> 
+    <b>Parameters COLOR and BACKCOLOR for GTK,<br>
+    (Color setting for foreground (text color) and background):</b><br>
+    <br>
+    In GET entry fields the colors can not be modified.<br>
+    See GTK 2 reference for gtk_entry_* class.<br>
+    There are no parameters "color" explained.<br>
+    Sorry, we must wait, if this feature is realized in future versions of GTK.<br>
+    <br> 
     </p>
 
     <br><a name="Commands4-3" href="#_Commands4-3">4.4.3.  @ &lt;x&gt;,&lt;y&gt; GET CHECKBOX</a>

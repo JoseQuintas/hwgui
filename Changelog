@@ -8,6 +8,22 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-03-04 09:45 UTC+0100 Wilfried Brunken DF7BE
+  *  doc/hwgdoc.html
+  *  doc/hwgdoc_commands.html
+  *  doc/hwgdoc_functions.html
+  *  source/gtk/hedit.prg
+  *  source/gtk/hmisc.prg
+  *  source/winapi/hmisc.prg
+  *  test/ticket79.prg (New)
+  *  todo.txt
+   ! Ticket #79: Because GTK class gtk_entry_*
+   ! does not support color setting, this ticket 
+   ! can be closed. A hint in command docu added.
+   ! See post to ticket.
+   ! New functions hwg_StrDebNIL() and hwg_StrDebLog()
+   ! for debugging purposes. 
+   ! Docu updated, little corrections.
 
 2021-03-03 09:10 UTC+0100 Wilfried Brunken DF7BE
   * samples/testspli.prg

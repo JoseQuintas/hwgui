@@ -8,6 +8,15 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2021-03-04 11:55 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_commands.html
+  * doc/image/ticket79gtk_win.png (New)
+  * doc/image/ticket79linux.png (New)
+  * doc/image/ticket79win.png (New)
+   ! Ticket #79 afterglow:
+   ! Added screenshots in docu.
+
 2021-03-04 09:45 UTC+0100 Wilfried Brunken DF7BE
   *  doc/hwgdoc.html
   *  doc/hwgdoc_commands.html

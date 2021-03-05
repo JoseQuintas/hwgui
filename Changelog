@@ -8,6 +8,26 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-03-05 11:00 UTC+0100 Wilfried Brunken DF7BE
+  * install.txt
+  * samples/a.prg
+  * samples/a.rc (Deleted)
+  * samples/bld.bat
+  * samples/nice.h (Deleted)
+  * samples/nice.prg
+  * samples/nice.rc (Deleted)
+  * samples/nice2.prg
+  * samples/Readme.txt
+   ! Samples: 
+   ! Internal bugfix for BCC build script:
+   ! Fatal: Unable to open file 'UUID.LIB'
+   ! Port of Borland rc files to HWGUI commands started,
+   ! so not needed rc and h files deleted, preparation as port
+   ! to GTK/LINUX, if possible.
+   ! Running samples on WinAPI with MinGW: nice.prg , a.prg.
+   ! nice2.prg freezes, need to be fixed. 
+   ! (to be continued)  
+
 
 2021-03-04 11:55 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html

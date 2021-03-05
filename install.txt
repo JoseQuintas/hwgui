@@ -148,7 +148,7 @@
    3.) HWGUI designer for forms.
    Read more about this topic in file
    "utils/bincnt/Readme.txt".
-   Creating and editing froms use the HWGUI utility "Designer"
+   Creating and editing forms use the HWGUI utility "Designer"
    in directory "utils/designer". 
   
 

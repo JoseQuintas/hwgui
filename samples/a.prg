@@ -6,6 +6,11 @@
  * www - http://kresin.belgorod.su
 */
 
+  * Status:
+    *  WinAPI   :  Yes
+    *  GTK/Linux:  No
+    *  GTK/Win  :  NO
+
 #include "windows.ch"
 #include "guilib.ch"
 
@@ -13,8 +18,11 @@
 // REQUEST HB_CODEPAGE_RU1251
 
 function Main
+
+PRIVATE cdirSep := hwg_GetDirSep()
+
 Private oMainWindow, oPanel
-Private oFont := Nil, cImageDir := "..\image\"
+Private oFont := Nil, cImageDir := ".." + cdirSep + "image" + cdirSep
 Private nColor, oBmp2
 
    // hb_SetCodepage( "RU1251" )
@@ -154,7 +162,7 @@ Return Nil
 function OpenAbout
 Local oModDlg, oFontBtn, oFontDlg, oBrw
 Local aSample := { {.t.,"Line 1",10}, {.t.,"Line 2",22}, {.f.,"Line 3",40} }
-Local oBmp, oIcon := HIcon():AddFile("image\PIM.ICO")
+Local oBmp, oIcon := HIcon():AddFile( ".." + cdirSep +  "image" + cdirSep + "exclmk_trsp.ico")   && PIM.ICO was deleted
 Local oSay
 
    PREPARE FONT oFontDlg NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
@@ -166,7 +174,8 @@ Local oSay
    ON EXIT {||oBmp2 := HBitmap():AddWindow(oBrw),.T.} ;
    FONT oFontDlg
 
-   @ 30,10 BITMAP "..\image\astro.jpg" SIZE 100,90 TRANSPARENT ON CLICK {||hwg_MsgInfo("onclick")}
+   @ 30,10 BITMAP ".." + cdirSep + "image"+ cdirSep + "astro.jpg" ;
+     SIZE 100,90 TRANSPARENT ON CLICK {||hwg_MsgInfo("onclick")}
 
    @ 20,110 SAY "Sample Dialog"       ;
        SIZE 130, 22 STYLE SS_CENTER  ;
@@ -241,12 +250,12 @@ Return .T.
 
 Function FileOpen
 Local oModDlg, oBrw
-Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
+Local mypath := cdirSep + CURDIR() + IIF( EMPTY( CURDIR() ), "", cdirSep )
 Local fname := hwg_Selectfile( "xBase files( *.dbf )", "*.dbf", mypath )
 Local nId
 
    IF !Empty( fname )
-      mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
+      mypath := cdirSep + CURDIR() + IIF( EMPTY( CURDIR() ), "", cdirSep )
       // use &fname new codepage RU866
       use &fname new
       nId := 111
@@ -505,3 +514,6 @@ Local hDC := hwg_Getdc( 0 ), aMetr, oFont
    hwg_Releasedc( 0,hDC )
 
 Return Nil
+
+* ============================ EOF of a.prg =================================
+

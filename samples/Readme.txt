@@ -77,6 +77,14 @@ For beginners:
     Y: Run OK, W: compiled with warnings, -: not (yet) tested ,
     C: can not be compiled , N: error at runtime
 
+5.) Some of this samples use resource files (*.rc) from the Borland Resource Workshop.
+    The port of this files to HWGUI commands for multi platform usage is under construction.
+    It is strictly recommended, for new applications avoiding the usage of any resource files.
+ 
+    Creating and editing forms use the HWGUI utility "Designer"
+    in directory "utils/designer".
+ 
+
 
  Sample program     GTK   NLS MinGW64 Purpose
  =================  ===   === ======= =======

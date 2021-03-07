@@ -8,6 +8,21 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-03-06 08:10 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_commands.html
+  * include/guilib.ch
+  * samples/Readme.txt
+  * samples/tab.prg
+  * samples/tab.rc (Deleted)
+  * samples/tab.rh (Deleted)
+  * todo.txt
+
+   ! Sample tab.prg port from BCC resources to HWGUI
+   ! commands, now ready for GTK.
+   ! REDEFINE TAB has bugs, mentioned in docu.
+   ! Definition of REDEFINE TAB in guilib.ch updated:
+   ! removed [ ON CHANGE <bChange> ]
+
 2021-03-05 11:00 UTC+0100 Wilfried Brunken DF7BE
   * install.txt
   * samples/a.prg

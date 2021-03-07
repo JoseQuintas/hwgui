@@ -1749,9 +1749,10 @@ Added by Marcos Antonio Gambeta
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON PAINT <bDraw> ]       ;
-            [ ON CHANGE <bChange> ]    ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
           => ;
-    [<oTab> := ] Htab():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,<bChange> );
+    [<oTab> := ] Htab():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, ,<color>,<bcolor>, , );
     [; hwg_SetCtrlName( <oTab>,<(oTab)> )]
 
 
@@ -1845,3 +1846,5 @@ Added by Marcos Antonio Gambeta
     [<oTEdit> :=] HCEdit():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>, ;
        <oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor>,<bGfocus>,<bLfocus>, ;
        <.lNoVScr.>,<.lNoBord.> )
+
+/* ================= EOF of guilib.ch ==================== */

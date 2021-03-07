@@ -116,14 +116,14 @@ For beginners:
  menumod.prg        Y                 Handling menu items while run-time in dialogs.
  modtitle.prg       Y                 Sample for modifying a main window title in HWGUI
  nice.prg           N                 Demo of NICEBUTTON
- nice2.prg          N  #      -       Seems to be outdated, starts only in background, kill with Task Manager
+ nice2.prg          N  #      -       Demo of NICEBUTTON (2), starts only in background, kill with Task Manager
  progbars.prg  12)  Y                 Progress bar
- propsh.prg         N                 Property sheet, INIT DIALOG aDlg1 FROM RESOURCE not working.
+ propsh.prg         N  #              Property sheet, freezes at hwg_PropertySheet()
  pseudocm.prg       Y                 Pseudo context menu
  shadebtn.prg       N                 Shade buttons
  simpleedit.prg     Y                 Simple text editor demonstrating hwg_Memoedit() and hwg_MemoCmp()
  stretch.prg        Y  #              Sample for resizing bitmaps (background), some bugs (as test program) 
- tab.prg            N  #      -       missing function(s): hb_enumIndex(), resource DIALOG_1 not working
+ tab.prg            Y  #      -       Sample for Tabs
  Testado.prg        N                 Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)
  testalert.prg      N                 Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
  test_bot.prg       N                 bOther Test: Press key, after key up the scan code is displayed.

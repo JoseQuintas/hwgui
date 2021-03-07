@@ -19,10 +19,10 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
                      Hint: commenting out this line without crash:
                      //   ADD COLUMN TO GRIDEDIT aItems FIELD "Field_2" LABEL "Char" PICTURE "@!" //READONLY
       nice2.prg      Seems to be outdated, starts only in background, kill with Task Manager
-      tab.prg        missing function(s): hb_enumIndex(), resource DIALOG_1 not working
       testchild.prg  child window not created ! command seems to be outdated.
       testtray.prg   No exported method: HANDLE
       testrtf.prg    Created Rich text files are corrupted, see bug ticket #37 (text above).
+      propsh.prg     hwg_PropertySheet() freezes. 
 
   2.) GTK
       tstsplash.prg  works for WinAPI, but background for splash window on GTK empty:
@@ -30,6 +30,7 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
       a.prg          Browse problem with Char field
       escrita.prg    LINUX: Text in toolbuttons not visible, OK on cross development GTK/Win
       tstscrlbar.prg Compilable, but no scroll function
+
 
 
 some work for recover mouse cursor on GTK.
@@ -42,7 +43,7 @@ some work for hwreport:
 
 missing functions _HB_FUN_OPENREPORT()
 HWG_WAITRUN(<file>),
-resource file only for Borland C.
+resource file only for Borland C. 
 Lots of warnings about AMBIGIUOS REFERENCE
 some work for hwmake:
 Some bugs adding files and libs.

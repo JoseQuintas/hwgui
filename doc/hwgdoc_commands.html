@@ -285,6 +285,7 @@
        <li><a name="_Commands3-20" href="#Commands3-21">4.3.21. @ &lt;x&gt;,&lt;y&gt; DATEPICKER</a>
        <li><a name="_Commands3-21" href="#Commands3-22">4.3.22.  @ &lt;x&gt;,&lt;y&gt; UPDOWN</a>
        <li><a name="_Commands3-22" href="#Commands3-23">4.3.23.  @ &lt;x&gt;,&lt;y&gt; TAB</a>
+       <li><a name="_Commands3-22" href="#Commands3-23-1">4.3.23.1 REDEFINE TAB</a>
        <li><a name="_Commands3-23" href="#Commands3-24">4.3.24.  BEGIN PAGE</a>
        <li><a name="_Commands3-24" href="#Commands3-25">4.3.25.  END PAGE, ENDPAGE</a>
        <li><a name="_Commands3-25" href="#Commands3-26">4.3.26.  @ &lt;x&gt;,&lt;y&gt; TREE</a>
@@ -765,7 +766,10 @@
     </pre>
 
     <br><a name="Commands3-23" href="#_Commands3-23">4.3.23.  @ &lt;x&gt;,&lt;y&gt; TAB</a>
-    <p></p>
+    <p>
+    The setting of colors not yet available (see REDEFINE TAB)<br>
+    The background color of a tab is forever white.<br> 
+    </p>
     <pre class="code">
     @ &lt;x&gt;,&lt;y&gt; TAB [ &lt;oTab&gt; ITEMS ] &lt;aTabs&gt;
     	 [ OF &lt;oWnd&gt; ] 
@@ -782,6 +786,24 @@
     	 [ ON LOSTFOCUS &lt;bLfocus&gt; ] 
     	 [ BITMAP &lt;aBmp&gt; [ FROM RESOURCE] [ BITCOUNT &lt;nBC&gt; ] ]
     </pre>
+
+
+   <br><a name="Commands3-23-1" href="#_Commands3-23-1">4.3.23.1. REDEFINE TAB</a>
+    <p>&lt;under construction&gt;<br>
+    This command has bugs and may not be used !<br>
+    </p>
+    <pre class="code">
+    REDEFINE TAB  &lt;oTab&gt;               ;
+            [ OF &lt;oWnd&gt; ]              ;
+            ID &lt;nId&gt;                   ;
+            [ ON INIT &lt;bInit&gt; ]        ;
+            [ ON SIZE &lt;bSize&gt; ]        ;
+            [ ON PAINT &lt;bDraw&gt; ]       ;
+            [ ON CHANGE &lt;bChange&gt; ]    ;
+            [ COLOR &lt;color&gt; ]          ;
+            [ BACKCOLOR &lt;bcolor&gt; ]     ;
+    </pre>
+
 
     <br><a name="Commands3-24" href="#_Commands3-24">4.3.24.  BEGIN PAGE</a>
     <p></p>

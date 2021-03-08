@@ -8,6 +8,47 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-03-00 00:40 UTC+0100 Wilfried Brunken DF7BE
+  * contrib/hwreport/hwreport.hbp
+  * contrib/hwreport/repbuild.rc
+  * contrib/hwreport/repbuild2.rc
+  * contrib/misc/richtext.prg
+  * hwgui.hbc
+  * samples/allhbp.hbp (New)
+  * samples/gtk_samples/GetWinVers.hbp
+  * samples/gtk_samples/a.hbp
+  * samples/gtk_samples/a.prg
+  * samples/gtk_samples/dbview.hbp
+  * samples/gtk_samples/escrita.hbp
+  * samples/gtk_samples/example.hbp
+  * samples/gtk_samples/graph.hbp
+  * samples/gtk_samples/progbars.hbp
+  * samples/gtk_samples/pseudocm.hbp
+  * samples/gtk_samples/sample.hbp
+  * samples/gtk_samples/testget2.hbp
+  * samples/gtk_samples/winprn.hbp
+  * source/common/debug/dbgconnect.prg
+  * source/common/procmisc/deleted_hb.prg (New)
+  * test/hgt/hgt.prg
+  * test/hgt/test.hbp
+  * test/hgt/test.prg
+  * utils/editor/editor.hbp
+  * utils/editor/editor.prg
+  * utils/tutorial/hwgrun.prg
+   ! Ticket #77: Delivered by José M. C. Quintas (TNX):
+   ! (More info see post to ticket)
+   ! More files changed.
+   ! - hbc include some windows libs
+   ! - XHarbour compatibitily and unify to hb_Eol()/hb_PS()
+   ! - allhbp.hbp to compile all samples
+   ! - -stop{win} to do not compile linux on windows
+   ! - same order on hbp files
+   ! - delete hgt on test/, once it is on samples
+   ! - note about harbour 3.4 do not have some codepages
+   ! - zip contain changed files on linux format and original folders ==> hwgui.zip
+   ! Extract by DF7BE : After little modifications runs OK on Win 10
+   ! with MinGW32, needs little work on LINUX. More details see post.
+
 2021-03-06 08:10 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html
   * include/guilib.ch
@@ -16,12 +57,12 @@
   * samples/tab.rc (Deleted)
   * samples/tab.rh (Deleted)
   * todo.txt
-
    ! Sample tab.prg port from BCC resources to HWGUI
    ! commands, now ready for GTK.
    ! REDEFINE TAB has bugs, mentioned in docu.
    ! Definition of REDEFINE TAB in guilib.ch updated:
    ! removed [ ON CHANGE <bChange> ]
+
 
 2021-03-05 11:00 UTC+0100 Wilfried Brunken DF7BE
   * install.txt

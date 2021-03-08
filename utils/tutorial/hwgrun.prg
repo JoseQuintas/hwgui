@@ -41,10 +41,10 @@ FUNCTION _APPMAIN( cFileName, cPar1, cPar2, cPar3, cPar4, cPar5, cPar6, cPar7, c
    LOCAL tHrb, tPrg
 
    IF Empty( cFileName )
-      hwg_Msginfo( "Harbour Runner - HwGUI version" + HB_OSNewLine() +;
-              "Copyright 1999-2020, http://www.harbour-project.org" + HB_OSNewLine() +;
-              Version() + ",  " + hwg_Version() + HB_OSNewLine() +;
-              HB_OSNewLine() +;
+      hwg_Msginfo( "Harbour Runner - HwGUI version" + hb_Eol() +;
+              "Copyright 1999-2020, http://www.harbour-project.org" + hb_Eol() +;
+              Version() + ",  " + hwg_Version() + hb_Eol() +;
+              hb_Eol() +;
               "Syntax:  hwgrun <hrbfile[.hrb]> [parameters]" )
 
    ELSE

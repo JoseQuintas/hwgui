@@ -1,3 +1,4 @@
+#include "afxres.h"
 #include "repbuild.h"
 
 DLG_NEWREP DIALOG 6, 15, 162, 119
@@ -124,7 +125,7 @@ FONT 9, "MS Shell Dlg"
  CONTROL "", IDC_OWNB1, "OWNBTN", 0 | WS_CHILD | WS_VISIBLE, 22, 66, 72, 20
 }
 
-ICON_1 ICON 
+ICON_1 ICON
 {
  '00 00 01 00 01 00 20 20 10 00 00 00 00 00 E8 02'
  '00 00 16 00 00 00 28 00 00 00 20 00 00 00 40 00'

@@ -5,6 +5,8 @@
 # Modify "sample" ( 2 x ) to the name of program to compile
 
 #-b
+-stop={win}
+
 -n -w
 
 #-L../..

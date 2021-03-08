@@ -43,8 +43,6 @@
 #include "windows.ch"
 
 #include "richtext.ch"
-#define CRLF hb_osnewline()
-
 CLASS RichText
 
    DATA cFileName, hFile
@@ -130,8 +128,8 @@ CLASS RichText
    METHOD NewFont( nFontNumber )
    METHOD SetFontSize( nFontSize )
    METHOD SetFontColor( nFontColor )
-   METHOD NewLine() INLINE FWrite( ::hFile, CRLF ), ::TextCode( "par" )
-   METHOD NewPage() INLINE ::TextCode( "page" + CRLF )
+   METHOD NewLine() INLINE FWrite( ::hFile, hb_Eol() ), ::TextCode( "par" )
+   METHOD NewPage() INLINE ::TextCode( "page" + hb_Eol() )
    METHOD NumPage() INLINE ::TextCode( "chpgn" )
    METHOD CurrDate( cFormat )
    // General service methods

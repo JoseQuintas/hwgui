@@ -2,13 +2,17 @@
 # $Id$
 #
 
-progbars.prg
--oprogbars
+-stop={win}
+
+../../hwgui.hbc
+
 -n -w
 -lm
 -static
 -d__LINUX__ -d__GTK__
 
-../../hwgui.hbc
+-oprogbars
+
+progbars.prg
 
 # ==================== EOF of progbars.hbp ===============

@@ -1,3 +1,4 @@
+#include "afxres.h"
 #include "repbuild.h"
 
 DLG_NEWREP DIALOG 6, 15, 162, 119

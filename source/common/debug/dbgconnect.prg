@@ -122,7 +122,7 @@ Function hwg_dbg_New()
    ENDIF
 
    IF File( cFile + ".d1" ) .AND. File( cFile + ".d2" )
-   
+
       IF ( handl1 := FOpen( cFile + ".d1", FO_READ + FO_SHARED ) ) != -1
          i := FRead( handl1, @cBuffer, Len( cBuffer ) )
          IF ( i > 0 ) .AND. ;
@@ -132,14 +132,14 @@ Function hwg_dbg_New()
                lDebugRun := .T.
                Return Nil
             ENDIF
-         ENDIF      
+         ENDIF
          FClose( handl1 )
       ENDIF
-    
+
    ENDIF
 
    IF !Empty( cDir)
-      cDir += Iif( Right( cDir,1 ) $ "\/", "", hb_OsPathSeparator() )
+      cDir += Iif( Right( cDir,1 ) $ "\/", "", hb_PS() )
       IF File( cDir + cDebugger + ".d1" ) .AND. File( cDir + cDebugger + ".d2" )
          IF ( handl1 := FOpen( cDir + cDebugger + ".d1", FO_READ + FO_SHARED ) ) != -1
             i := FRead( handl1, @cBuffer, Len( cBuffer ) )
@@ -194,7 +194,7 @@ Function hwg_dbg_New()
          hwg_dbg_Alert( "Can't open connection..." )
       ENDIF
    ENDIF
-   
+
 Return Nil
 
 Static Function hwg_dbg_Read()

@@ -2,13 +2,17 @@
 # $Id$
 #
 
-graph.prg
--ograph
+-stop={win}
+
+../../hwgui.hbc
+
 -n -w
 -lm
 -static
 -d__LINUX__ -d__GTK__
 
-../../hwgui.hbc
+-ograph
+
+graph.prg
 
 # ==================== EOF of graph.hbp ===============

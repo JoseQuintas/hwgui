@@ -2,6 +2,7 @@
 # $Id$
 #
 
+-stop={win}
 winprn.prg
 -owinprn
 -n -w

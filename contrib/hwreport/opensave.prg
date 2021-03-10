@@ -6,11 +6,20 @@
  * www - http://kresin.belgorod.su
 */
 
+* Modifications by DF7BE:
+* Port of Borland C resources to HWGUI commands
+
 #include "windows.ch"
 #include "guilib.ch"
 #include "repbuild.h"
 #include "repmain.h"
 #include "fileio.ch"
+#ifdef __XHARBOUR__
+   #include "ttable.ch"
+#endif
+#ifdef __GTK__
+#include "gtk.ch"
+#endif
 
 * Removed
 * #define SB_VERT         1
@@ -19,6 +28,8 @@ Memvar aPaintRep , mypath,aitemtypes
 
 Function FileDlg( lOpen )
 Local oDlg
+LOCAL oGroup1, oRadiobutton1, oRadiobutton2,  oEditbox1, oLabel1, oEditbox2
+LOCAL oButton1, oButton2 , oButton3
 
    IF !lOpen .AND. ( aPaintRep == Nil .OR. Empty( aPaintRep[FORM_ITEMS] ) )
       hwg_Msgstop( "Nothing to save" )
@@ -26,13 +37,44 @@ Local oDlg
    ELSEIF lOpen
       CloseReport()
    ENDIF
+ 
+  * FROM RESOURCE "DLG_FILE"  FONT 8, "MS Sans Serif"
+  * STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE  
+  INIT DIALOG oDlg TITLE "Open report" ;
+    AT 608,359 SIZE 426,250 ;
+     ON INIT {|| InitOpen(lOpen) } ;
+     STYLE DS_MODALFRAME+WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU
 
-   INIT DIALOG oDlg FROM RESOURCE "DLG_FILE" ON INIT {|| InitOpen(lOpen) }
+//        ON 0,IDOK         ACTION {|| EndOpen(lOpen)}  ;
+ 
    DIALOG ACTIONS OF oDlg ;
-        ON 0,IDOK         ACTION {|| EndOpen(lOpen)}  ;
         ON BN_CLICKED,IDC_RADIOBUTTON1 ACTION {||hwg_Setdlgitemtext(oDlg:handle,IDC_TEXT1,"Report Name:")} ;
         ON BN_CLICKED,IDC_RADIOBUTTON2 ACTION {||hwg_Setdlgitemtext(oDlg:handle,IDC_TEXT1,"Function Name:")} ;
         ON BN_CLICKED,IDC_BUTTONBRW ACTION {||BrowFile(lOpen)}
+
+   @ 36,23 RADIOBUTTON oRadiobutton1  ;
+           CAPTION "Report file"    OF oGroup1  SIZE 136,22  ;  && IDC_RADIOBUTTON1 
+           ID IDC_RADIOBUTTON1   
+   @ 36,47 RADIOBUTTON oRadiobutton2  ; 
+           CAPTION "Program source" OF oGroup1 SIZE 137,22 ; && IDC_RADIOBUTTON2
+           ID IDC_RADIOBUTTON2
+   
+   @ 29,8 GROUPBOX oGroup1 CAPTION ""  SIZE 153,72 
+   
+   @ 24,91 EDITBOX oEditbox1 CAPTION ""  SIZE 269,24 ID IDC_EDIT1 ;     && IDC_EDIT1
+        STYLE ES_AUTOHSCROLL+WS_BORDER+WS_TABSTOP
+
+   @ 28,126 SAY oLabel1 CAPTION "Report name:"  SIZE 144,22             && IDC_TEXT1
+   @ 61,153 EDITBOX oEditbox2 CAPTION ""  SIZE 96,24 ID IDC_EDIT2;      && IDC_EDIT2
+        STYLE WS_BORDER 
+
+   @ 26,200 BUTTON oButton2 CAPTION "OK"  SIZE 80,32 ;        && IDOK , DEFPUSHBUTTON
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK {|| EndOpen(lOpen)}   
+   @ 298,200 BUTTON oButton3 CAPTION "Cancel"  SIZE 80,32 ;   && IDCANCEL
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK {|| oDlg:Close() }
+  @ 309,89 BUTTON oButton1 CAPTION "Browse" SIZE 80,27 ;      && IDC_BUTTONBRW
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK {||BrowFile(lOpen)}
+
    oDlg:Activate()
 
 Return Nil
@@ -55,6 +97,7 @@ Local fname, s1, s2
       s2 := "*.prg"
    ENDIF
    IF lOpen
+   // GTK
       fname := hwg_SelectFile( s1, s2,mypath )
    ELSE
       fname := hwg_SaveFile( s2,s1,s2,mypath )
@@ -525,3 +568,5 @@ Local lastC := Chr(10), cQuote, lFirst := .T.
       ENDIF
    ENDIF
 Return Nil
+
+* ================================= EOF of opensave.prg ===================================

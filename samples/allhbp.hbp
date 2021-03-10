@@ -11,10 +11,10 @@
 # Basic HWGUI libraries
 ../hwgui.hbp
 ../procmisc.hbp
- ../hbxml.hbp
- ../hwgdebug.hbp
+../hbxml.hbp
+../hwgdebug.hbp
 
-# Only for Borland C compiler
+# Only for Borland C compiler / MinGW
 ../hwguidyn.hbp
 
 
@@ -29,10 +29,7 @@
 #../contrib/hwg_qhtm.hbp
 #
 ../contrib/hwmake/hwmake.hbp
-
-# Under construction, port from Borland resources to MinGW and LINUX/GTK neede, be patient ! 
-#../contrib/hwreport/hwreport.hbp
-#../contrib/hwreport/hwreport2.hbp
+../contrib/hwreport/hwreport.hbp
 # --- Outdated --- 
 # ../samples/iesample.hbp
 ../samples/testhgt.hbp

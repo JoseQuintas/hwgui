@@ -2,7 +2,6 @@
 # $Id: $
 #
 
--stop={mingw}
 
 ..\..\hwgui.hbc
 
@@ -15,7 +14,7 @@ opensave.prg
 propert.prg
 printrpt.prg
 repexec.prg
-repbuild.rc
+
 
 # =============================== EOF of hwreport.hbp =========================
 

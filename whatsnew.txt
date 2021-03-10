@@ -22,6 +22,7 @@ For the next release build done:
 
 2.) New features and functions
 
+[+] Easier build of libraries, utils, contrib's and samples with exrended set of *.hbp files.
 [+] Cross development environment for GTK on Windows (32bit),
     develop and test GTK functions on Windows for *NIX targets.
 [+] National Language Support (NLS) for internal HWGUI dialogs added. *)

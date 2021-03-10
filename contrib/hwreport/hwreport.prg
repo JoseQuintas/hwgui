@@ -12,7 +12,6 @@
   DF7BE: (started 2021-02-25)
   Port from Borland res file "repbuild.rc" (not compatible with MinGW windres compiler and LINUX/GTK)
   to HWGUI commands, Version 1.2
-  Make also ready for GTK.
   
   Hint for port to HWGUI commands:
                                                ID
@@ -23,9 +22,11 @@
                                                v    v   v    v 
   AboutDlg DIALOG LOADONCALL FIXED DISCARDABLE 100, 63, 111, 96
   
-  * Dialogs done:
-  - Icon
-  - Dialog "About"
+  The sizes and positions are not plausible,
+  so forms created new with the HWGUI designer.
+
+  At bottom of this file the contents of the rc file is added as an inline comment
+  for archive purposes.  
   
 */
 
@@ -37,6 +38,9 @@
 #include "common.ch"
 #ifdef __XHARBOUR__
    #include "ttable.ch"
+#endif
+#ifdef __GTK__
+#include "gtk.ch"
 #endif
 
 #ifndef SB_VERT
@@ -56,12 +60,15 @@ Memvar mypath
 Memvar aPaintRep
 Memvar oPenBorder, oFontSmall, oFontStandard, lastFont
 Memvar aItemTypes
+Memvar cDirSep, oFontDlg
 
 Function Main()
 Local oMainWindow, aPanel, oIcon , cVal_Ico
-Public mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
+
+PUBLIC cDirSep := hwg_GetDirSep()
+Public mypath := cDirSep + CURDIR() + IIF( EMPTY( CURDIR() ), "", cDirSep )
 Public aPaintRep := Nil
-Public oPenBorder, oFontSmall, oFontStandard, lastFont := Nil
+Public oPenBorder, oFontSmall, oFontStandard, oFontDlg , lastFont := Nil
 Public aItemTypes := { "TEXT","HLINE","VLINE","BOX","BITMAP","MARKER" }
 
 * Icon from hex value "ICON_1"
@@ -78,8 +85,9 @@ oIcon := HIcon():AddString( "ICON_1" , cVal_Ico )
    oPenDivider := HPen():Add( PS_DOT,1,hwg_ColorC2N("C0C0C0") )
    oFontSmall := HFont():Add( "Small fonts",0,-8 )
    oFontStandard := HFont():Add( "Arial",0,-13,400,204 )
+   oFontDlg   := HFont():Add( "MS Sans Serif" , 0 , -8 )  
 
-   INIT WINDOW oMainWindow MAIN TITLE "Visual Report Builder"  ;
+   INIT WINDOW oMainWindow MAIN TITLE "Visual Report Builder (MinGW)"  ;
        ICON oIcon COLOR COLOR_3DSHADOW                         ;
        ON PAINT {|o|PaintMain(o)} ON EXIT {||CloseReport()}    ;
        ON OTHER MESSAGES {|o,m,wp,lp|MessagesProc(o,m,wp,lp)}
@@ -197,10 +205,30 @@ Return Nil
 
 Static Function NewReport( oMainWindow )
 Local oDlg
+LOCAL oRadiobutton1 , oRadiobutton2 , oGroup1 , oButton1 , oButton2
 
-   INIT DIALOG oDlg FROM RESOURCE "DLG_NEWREP" ON INIT {||hwg_Checkradiobutton( oDlg:handle,IDC_RADIOBUTTON1,IDC_RADIOBUTTON2,IDC_RADIOBUTTON1)}
+   * FROM RESOURCE "DLG_NEWREP"
+   INIT DIALOG oDlg AT 468,267 SIZE 259,256  ;
+   STYLE DS_MODALFRAME+WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU ;
+   ON INIT {||hwg_Checkradiobutton( oDlg:handle,IDC_RADIOBUTTON1,IDC_RADIOBUTTON2,IDC_RADIOBUTTON1)}
    DIALOG ACTIONS OF oDlg ;
         ON 0,IDOK  ACTION {|| EndNewrep(oMainWindow,oDlg)}
+
+   @ 30,36 RADIOBUTTON oRadiobutton1 ;
+   CAPTION "A4 portrait ( 210x297 )" OF oGroup1 ;
+   ID IDC_RADIOBUTTON1 SIZE 181,22   
+   
+   @ 30,64 RADIOBUTTON oRadiobutton2 ;
+   CAPTION "A4 landscape ( 297x210 )" OF oGroup1 ;
+   ID IDC_RADIOBUTTON2 SIZE 187,22 
+   
+   @ 26,13 GROUPBOX oGroup1 CAPTION "Page size"  SIZE 197,101 
+   
+   @ 25,144 BUTTON oButton1 CAPTION "OK" ID IDOK  SIZE 73,27 ;
+        STYLE WS_TABSTOP+BS_FLAT   
+   @ 145,144 BUTTON oButton2 CAPTION "Cancel" ID IDCANCEL SIZE 73,27 ;
+        STYLE WS_TABSTOP+BS_FLAT 
+
 
    oDlg:Activate()
 
@@ -856,5 +884,141 @@ RETURN ;
 "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
 "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
 "00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+
+/*
+ Contents of file repbuild.rc copied here for archive purposes
+ 
+include "repbuild.h"
+
+DLG_NEWREP DIALOG 6, 15, 162, 119
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "New report"
+FONT 8, "MS Sans Serif"
+{
+ DEFPUSHBUTTON "OK", IDOK, 12, 96, 50, 14
+ PUSHBUTTON "Cancel", IDCANCEL, 98, 96, 50, 14
+ GROUPBOX "Page size", IDC_GROUPBOX1, 10, 10, 139, 63, BS_GROUPBOX
+ CONTROL "A4 portrait ( 210x297 )", IDC_RADIOBUTTON1, "BUTTON", BS_AUTORADIOBUTTON, 15, 25, 85, 9
+ CONTROL "A4 landscape ( 297x210 )", IDC_RADIOBUTTON2, "BUTTON", BS_AUTORADIOBUTTON, 15, 39, 85, 10
+}
+
+DLG_FILE DIALOG 6, 15, 197, 142
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION ""
+FONT 8, "MS Sans Serif"
+{
+ GROUPBOX "", IDC_GROUPBOX4, 17, 10, 82, 34, BS_GROUPBOX
+ CONTROL "Report file", IDC_RADIOBUTTON1, "BUTTON", BS_AUTORADIOBUTTON, 23, 19, 60, 9
+ CONTROL "Program source", IDC_RADIOBUTTON2, "BUTTON", BS_AUTORADIOBUTTON, 23, 31, 60, 9
+ EDITTEXT IDC_EDIT1, 13, 54, 149, 12, ES_AUTOHSCROLL | WS_BORDER | WS_TABSTOP
+ PUSHBUTTON "Browse", IDC_BUTTONBRW, 162, 53, 25, 14
+ EDITTEXT IDC_EDIT2, 39, 88, 47, 12
+ LTEXT "Report name:", IDC_TEXT1, 17, 76, 60, 8
+ DEFPUSHBUTTON "OK", IDOK, 12, 116, 50, 14
+ PUSHBUTTON "Cancel", IDCANCEL, 132, 116, 50, 14
+}
+
+DLG_STATIC DIALOG 7, 14, 232, 208
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Text"
+FONT 8, "MS Sans Serif"
+{
+ LTEXT "Caption:", -1, 12, 8, 38, 8
+ EDITTEXT IDC_EDIT1, 15, 22, 206, 12, ES_AUTOHSCROLL | WS_BORDER | WS_TABSTOP
+ GROUPBOX "Alignment", IDC_GROUPBOX1, 15, 41, 48, 48, BS_GROUPBOX
+ CONTROL "Left", IDC_RADIOBUTTON1, "BUTTON", BS_AUTORADIOBUTTON, 19, 53, 28, 8
+ CONTROL "Right", IDC_RADIOBUTTON2, "BUTTON", BS_AUTORADIOBUTTON, 19, 65, 28, 8
+ CONTROL "Center", IDC_RADIOBUTTON3, "BUTTON", BS_AUTORADIOBUTTON, 19, 77, 28, 8
+ GROUPBOX "Font", IDC_GROUPBOX3, 82, 41, 70, 48, BS_GROUPBOX
+ PUSHBUTTON "Change", IDC_PUSHBUTTON1, 89, 70, 41, 14
+ LTEXT "", IDC_TEXT1, 88, 52, 60, 11
+ EDITTEXT IDC_EDIT3, 16, 108, 206, 65, ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_TABSTOP | WS_DLGFRAME
+ LTEXT "Script:", -1, 16, 97, 28, 8
+ COMBOBOX IDC_COMBOBOX3, 174, 54, 43, 33, CBS_DROPDOWNLIST | WS_TABSTOP
+ LTEXT "Type:", -1, 172, 44, 24, 8
+ DEFPUSHBUTTON "OK", IDOK, 14, 188, 50, 14
+ PUSHBUTTON "Cancel", IDCANCEL, 167, 188, 50, 14
+}
+
+DLG_LINE DIALOG 11, 21, 139, 108
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Line"
+FONT 8, "MS Sans Serif"
+{
+ DEFPUSHBUTTON "OK", IDOK, 12, 82, 50, 14
+ PUSHBUTTON "Cancel", IDCANCEL, 76, 82, 50, 14
+ COMBOBOX IDC_COMBOBOX1, 11, 18, 49, 43, CBS_DROPDOWNLIST | WS_TABSTOP
+ LTEXT "Line width:", -1, 9, 46, 39, 8
+ EDITTEXT IDC_EDIT1, 46, 45, 12, 12
+ LTEXT "Type:", -1, 9, 6, 32, 8
+ COMBOBOX IDC_COMBOBOX2, 83, 45, 49, 33, CBS_DROPDOWNLIST | WS_TABSTOP
+ LTEXT "Fill:", -1, 82, 35, 32, 8
+}
+
+DLG_BITMAP DIALOG 6, 15, 163, 147
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Bitmap"
+FONT 8, "MS Sans Serif"
+{
+ DEFPUSHBUTTON "OK", IDOK, 12, 123, 50, 14
+ PUSHBUTTON "Cancel", IDCANCEL, 97, 123, 50, 14
+ EDITTEXT IDC_EDIT1, 8, 14, 122, 12
+ PUSHBUTTON "Browse", IDC_BUTTONBRW, 130, 13, 27, 14
+ GROUPBOX "Bitmap size", IDC_GROUPBOX3, 20, 33, 120, 71, BS_GROUPBOX
+ LTEXT "Bitmap file:", -1, 15, 6, 41, 8
+ LTEXT "0x0", IDC_TEXT1, 79, 45, 25, 8
+ LTEXT "0x0", IDC_TEXT2, 78, 59, 26, 8
+ RTEXT "Percentage of original %", -1, 25, 78, 76, 8
+ EDITTEXT IDC_EDIT3, 106, 77, 25, 15
+ LTEXT "Original size:", -1, 25, 45, 47, 8
+ LTEXT "New size", -1, 25, 59, 45, 8
+ LTEXT "pixels", -1, 110, 45, 25, 8
+ LTEXT "pixels", -1, 110, 59, 25, 8
+}
+
+DLG_MARKL DIALOG 6, 15, 194, 115
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Start line"
+FONT 8, "MS Sans Serif"
+{
+ DEFPUSHBUTTON "OK", IDOK, 14, 89, 50, 14
+ PUSHBUTTON "Cancel", IDCANCEL, 126, 89, 50, 14
+ LTEXT "", IDC_TEXT1, 10, 11, 50, 8
+ EDITTEXT IDC_EDIT1, 12, 22, 170, 47, ES_MULTILINE | ES_AUTOVSCROLL | ES_AUTOHSCROLL | ES_WANTRETURN | WS_TABSTOP | WS_DLGFRAME
+}
+
+DLG_MARKF DIALOG 6, 15, 134, 119
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "Marker"
+FONT 8, "MS Sans Serif"
+{
+ DEFPUSHBUTTON "OK", IDOK, 12, 96, 50, 14
+ PUSHBUTTON "Cancel", IDCANCEL, 72, 96, 50, 14
+ GROUPBOX "Type of a footer position", IDC_GROUPBOX1, 16, 13, 93, 51, BS_GROUPBOX
+ CONTROL "Fixed", IDC_RADIOBUTTON1, "BUTTON", BS_AUTORADIOBUTTON, 21, 28, 68, 12
+ CONTROL "Dependent on list", IDC_RADIOBUTTON2, "BUTTON", BS_AUTORADIOBUTTON, 21, 46, 68, 12
+}
+
+
+AboutDlg DIALOG LOADONCALL FIXED DISCARDABLE 100, 63, 111, 96
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 9, "MS Shell Dlg"
+{
+ GROUPBOX "", -1, 14, 0, 84, 37, BS_GROUPBOX
+ GROUPBOX "", -1, 20, 39, 75, 18, BS_GROUPBOX
+ CTEXT "Visual report Builder", -1, 18, 16, 78, 8
+ CTEXT "HWREPORT", 101, 30, 7, 52, 8
+ CTEXT "version 1.1", -1, 25, 26, 66, 8
+ CTEXT "Alexander Kresin, 2001", -1, 22, 45, 72, 7
+ CONTROL "", IDC_OWNB1, "OWNBTN", 0 | WS_CHILD | WS_VISIBLE, 22, 66, 72, 20
+}
+
+ICON_1 ICON 
+{
+.... ==> extracted from exe file.
+} 
+ 
+*/
 
 * ===================================== EOF of hwreport.prg ========================================

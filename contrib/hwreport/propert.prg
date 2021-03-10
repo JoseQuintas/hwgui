@@ -14,6 +14,7 @@
 #ifndef UDS_SETBUDDYINT
 #define UDS_SETBUDDYINT     2
 #endif
+
 #ifndef UDS_ALIGNRIGHT
 #define UDS_ALIGNRIGHT      4
 #endif
@@ -21,6 +22,8 @@
 Static aPenStyles := { "SOLID","DASH","DOT","DASHDOT","DASHDOTDOT" }
 Static aVariables := { "Static", "Variable" }
 memvar apaintrep, mypath
+Memvar cDirSep, oFontDlg
+
 Function LButtonDbl( xPos, yPos )
 Local i, aItem
 
@@ -52,11 +55,63 @@ Return Nil
 Static Function StaticDlg( aItem )
 Local aModDlg
 
-   INIT DIALOG aModDlg FROM RESOURCE  "DLG_STATIC" ON INIT {|| InitStatic(aItem) }
+LOCAL oLabel1, oLabel2, oLabel3, oLabel4
+LOCAL oEditbox1, oEditbox2, oRadiogroup1, oGroup1   
+LOCAL oRadiobutton1 ,oRadiobutton2, oRadiobutton3, oButton1, oButton2, oButton3
+LOCAL oCombobox1
+
+   * FROM RESOURCE  "DLG_STATIC"
+   INIT DIALOG aModDlg  TITLE "Text" ;
+   AT 689,151 SIZE 516,481 ;
+   FONT oFontDlg ;
+   STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE+DS_MODALFRAME+WS_POPUP+WS_CAPTION ;
+   ON INIT {|| InitStatic(aItem) }
+   
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndStatic(aItem)}  ;
         ON BN_CLICKED,IDC_PUSHBUTTON1 ACTION {||SetItemFont(aItem)}
-   REDEFINE COMBOBOX aVariables OF aModDlg ID IDC_COMBOBOX3 INIT aItem[ITEM_VAR]+1
+
+*   REDEFINE COMBOBOX aVariables OF aModDlg ID IDC_COMBOBOX3 INIT aItem[ITEM_VAR]+1
+   
+
+   @ 14,6 SAY oLabel1 CAPTION "Caption:"  SIZE 80,22   
+   @ 20,33 EDITBOX oEditbox1 CAPTION "" ID IDC_EDIT1 SIZE 425,24 ;
+        STYLE WS_BORDER 
+
+   @ 20,70 GROUPBOX "Alignment" ID IDC_GROUPBOX1 SIZE 100,108  
+   
+  RADIOGROUP
+   @ 28,93 RADIOBUTTON oRadiobutton1 CAPTION "Left" ID IDC_RADIOBUTTON1 OF oRadiogroup1  SIZE 80,22   
+   @ 28,118 RADIOBUTTON oRadiobutton2 CAPTION "Right" ID IDC_RADIOBUTTON2 OF oRadiogroup1  SIZE 76,22   
+   @ 28,145 RADIOBUTTON oRadiobutton3 CAPTION "Center" ID IDC_RADIOBUTTON3 OF oRadiogroup1  SIZE 83,22   
+  END RADIOGROUP SELECTED 1
+
+   @ 173,92 SAY oLabel2 CAPTION "" ID IDC_TEXT1 OF oGroup1  SIZE 147,22 && "MS Sans"  
+   
+   @ 208,142 BUTTON oButton1 CAPTION "Change" ID IDC_PUSHBUTTON1 OF oGroup1  SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT 
+
+   @ 167,70 GROUPBOX oGroup1 CAPTION "Font" ID IDC_GROUPBOX3 SIZE 161,108
+   
+   @ 354,78 SAY oLabel3 CAPTION "Type:"  SIZE 80,22 
+   
+   @ 350,113 COMBOBOX oCombobox1 ITEMS aVariables ID IDC_COMBOBOX3 SIZE 92,96  ;
+        STYLE CBS_DROPDOWNLIST+WS_TABSTOP ;
+        ON INIT { || aItem[ITEM_VAR] := aItem[ITEM_VAR] + 1 }
+
+   @ 22,185 SAY oLabel4 CAPTION "Script:"  SIZE 80,22 
+   
+   @ 23,211 EDITBOX oEditbox2 CAPTION "" ID IDC_EDIT3 SIZE 457,139 ;
+        STYLE ;
+        WS_BORDER+ES_AUTOHSCROLL+WS_TABSTOP+ES_MULTILINE+ES_AUTOVSCROLL+ES_WANTRETURN+WS_DLGFRAME
+
+   @ 25,370 BUTTON oButton2 CAPTION "OK" ID IDOK  SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT
+
+   @ 390,372 BUTTON oButton3 CAPTION  "Cancel" ID IDCANCEL  SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT      
+   
+   
    aModDlg:Activate()
 
 Return Nil
@@ -99,11 +154,44 @@ Return .T.
 Static Function LineDlg( aItem )
 Local aModDlg
 Local oPen := aItem[ITEM_PEN]
+LOCAL oLabel1, oLabel2, oLabel3, oEditbox1 
+LOCAL oCombobox1, oCombobox2, oButton1, oButton2 
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_LINE" ON INIT {|| InitLine(aItem) }
+   * FROM RESOURCE "DLG_LINE"
+   INIT DIALOG aModDlg TITLE "Line" ;
+     AT 437,255 SIZE 292,238 ;
+     FONT oFontDlg ;
+     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE+DS_MODALFRAME+WS_POPUP+WS_CAPTION  ;
+     ON INIT {|| InitLine(aItem) }
+   
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndLine(aItem)}
-   REDEFINE COMBOBOX aPenStyles OF aModDlg ID IDC_COMBOBOX1 INIT oPen:style+1
+
+   * REDEFINE COMBOBOX aPenStyles OF aModDlg ID IDC_COMBOBOX1 INIT oPen:style+1
+   
+   @ 15,5   SAY oLabel1 CAPTION "Type:"        SIZE 49,22
+   @ 19,90  SAY oLabel2 CAPTION "Line width:"  SIZE 80,22
+   @ 150,62 SAY oLabel3 CAPTION "Fill:"        SIZE 80,22   
+   
+   @ 24,33 COMBOBOX oCombobox1  ITEMS aPenStyles ID IDC_COMBOBOX1 SIZE 78,96 ;
+     STYLE CBS_DROPDOWNLIST+WS_TABSTOP ;
+     ON INIT {|| oPen:style+1 } 
+   
+  
+   @ 109,90 EDITBOX oEditbox1 CAPTION "" ID IDC_EDIT1 SIZE 16,24 ;
+        STYLE WS_BORDER
+
+   @ 154,90 COMBOBOX oCombobox2  ITEMS {} ID IDC_COMBOBOX2 SIZE 87,96 ;
+        STYLE CBS_DROPDOWNLIST+WS_TABSTOP
+
+   @ 27,135 BUTTON oButton1 CAPTION "OK" ID IDOK  SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT   
+   
+   @ 152,134 BUTTON oButton2 CAPTION "Cancel" ID IDCANCEL SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT 
+
+   
+   
    aModDlg:Activate()
 
 Return Nil
@@ -133,15 +221,57 @@ Local oPen := aItem[ITEM_PEN]
    hwg_EndDialog( hDlg )
 Return .T.
 
+
 Function BitmapDlg( aItem )
 Local aModDlg, res := .T.
+LOCAL oLabel1, oLabel2, oLabel3, oLabel4, oLabel5, oLabel6, oLabel7, oLabel8
+LOCAL oEditbox1, oGroup1 , oUpdown1, oButton1, oButton2, oButton3
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_BITMAP" ON INIT {|| InitBitmap(aItem) }
+   * FROM RESOURCE "DLG_BITMAP"
+   INIT DIALOG aModDlg  TITLE "Bitmap" ;
+    AT 494,130 SIZE 358,343 ;
+    FONT oFontDlg ;
+    STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE+DS_MODALFRAME+WS_POPUP+WS_VISIBLE+WS_CAPTION ;
+    ON INIT {|| InitBitmap(aItem) }
+   
+   
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndBitmap(aItem)}  ;
         ON 0,IDCANCEL     ACTION {|| res := .F.,hwg_EndDialog( hwg_GetModalHandle() )} ;
         ON BN_CLICKED,IDC_BUTTONBRW ACTION {||OpenBmp(aItem,hwg_SelectFile("Bitmap files( *.bmp )", "*.bmp",mypath))} ;
         ON EN_CHANGE,IDC_EDIT3 ACTION {||UpdateProcent(aItem)}
+
+   @ 49,10 SAY oLabel1 CAPTION "Bitmap file:"  SIZE 80,22
+   
+   @ 9,39 EDITBOX oEditbox1 CAPTION "" ID IDC_EDIT1 SIZE 238,24 ;
+        STYLE WS_BORDER 
+
+   @ 265,39 BUTTON oButton1 CAPTION "Browse" ID IDC_BUTTONBRW  SIZE 56,24 ;
+        STYLE WS_TABSTOP+BS_FLAT
+
+   @ 20,115 SAY oLabel2 CAPTION "Original size:" OF oGroup1  SIZE 102,22   
+   @ 214,117 SAY oLabel4 CAPTION "pixels" OF oGroup1  SIZE 52,22   
+    
+   @ 214,147 SAY oLabel5 CAPTION "pixels" OF oGroup1  SIZE 52,22   
+   @ 20,148 SAY oLabel3 CAPTION "New size:" OF oGroup1  SIZE 80,22 
+
+   @ 131,118 SAY oLabel6 CAPTION "0x0" ID IDC_TEXT1 OF oGroup1  SIZE 63,22   
+   @ 131,149 SAY oLabel7 CAPTION "0x0" ID IDC_TEXT2 OF oGroup1  SIZE 63,22 
+
+   * Range 1 ... 500 % Start 100   
+   @ 207,183 UPDOWN oUpdown1 INIT 100 RANGE 1,500 OF oGroup1 ID IDC_EDIT3 SIZE 60,24
+   
+   @ 20,186 SAY oLabel8 CAPTION "Percentage of original %" OF oGroup1  SIZE 161,22
+   
+   @ 12,86 GROUPBOX oGroup1 CAPTION "Bitmap size" ID IDC_GROUPBOX3 SIZE 283,137
+   
+   @ 15,240 BUTTON oButton2 CAPTION "OK" ID IDOK SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT   
+   @ 197,240 BUTTON oButton3 CAPTION "Cancel" ID IDCANCEL  SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT
+
+* EDITTEXT IDC_EDIT3 ?
+
    aModDlg:Activate()
 
 Return res
@@ -200,11 +330,31 @@ Return .T.
 
 Function MarkLDlg( aItem )
 Local aModDlg
+LOCAL oLabel1, oEditbox1, oButton1, oButton2
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_MARKL" ON INIT {|| InitMarkL(aItem) }
+   * FROM RESOURCE "DLG_MARKL"
+   INIT DIALOG aModDlg TITLE "Start line" ;
+    AT 399,212 SIZE 382,275 ;
+    FONT oFontDlg ;
+    STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE+DS_MODALFRAME+WS_POPUP+WS_CAPTION ; 
+    ON INIT {|| InitMarkL(aItem) }
+   
+   
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndMarkL(aItem)}  ;
         ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() )}
+
+   * @ 20,13 SAY oLabel1 CAPTION "Script:" SIZE 80,22 
+   * LTEXT "", IDC_TEXT1
+   @ 20, 13 SAY oLabel1 CAPTION "" ID IDC_TEXT1 SIZE 80,22  && Scrpit
+   
+   @ 26,41 EDITBOX oEditbox1 CAPTION "" ID IDC_EDIT1 SIZE 316,113 ;
+        STYLE WS_BORDER+ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN+WS_TABSTOP+WS_DLGFRAME    
+   @ 26,168 BUTTON oButton1 CAPTION "OK" ID IDOK  SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT   
+   @ 249,168 BUTTON oButton2 CAPTION "Cancel" ID IDCANCEL SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT   
+
    aModDlg:Activate()
 
 Return Nil
@@ -226,11 +376,31 @@ Return .T.
 
 Function MarkFDlg( aItem )
 Local aModDlg
+LOCAL oRadiogroup1, oRadiobutton1, oRadiobutton2, oButton1, oButton2
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_MARKF" ON INIT {|| InitMarkF(aItem) }
+   * FROM RESOURCE "DLG_MARKF"
+   INIT DIALOG aModDlg  TITLE "Marker" ;
+    AT 44,80 SIZE 268,220 ;
+    FONT oFontDlg ;
+    STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE+DS_MODALFRAME+WS_POPUP+WS_CAPTION ;
+    ON INIT {|| InitMarkF(aItem) }
+   
+   
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndMarkF(aItem)}  ;
         ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() )}
+
+   @ 26,18 GROUPBOX "Type of a footer position" ID IDC_GROUPBOX1 SIZE 207,80   
+  RADIOGROUP
+   @ 35,39 RADIOBUTTON oRadiobutton1 CAPTION "Fixed"             OF oRadiogroup1 ID IDC_RADIOBUTTON1 SIZE 185,22   
+   @ 35,66 RADIOBUTTON oRadiobutton2 CAPTION "Dependent on list" OF oRadiogroup1 ID IDC_RADIOBUTTON2 SIZE 182,22   
+  END RADIOGROUP SELECTED 1
+
+   @ 24,115 BUTTON oButton1 CAPTION "OK" ID IDOK  SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT   
+   @ 144,115 BUTTON oButton2 CAPTION "Cancel" ID IDCANCEL SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT  
+
    aModDlg:Activate()
 
 Return Nil
@@ -250,11 +420,31 @@ Return .T.
 
 Function FormOptions()
 Local aModDlg
+LOCAL oLabel1, oEditbox1, oButton1, oButton2
 
-   INIT DIALOG aModDlg FROM RESOURCE "DLG_MARKL" ON INIT {|| InitFOpt() }
+   * FROM RESOURCE "DLG_MARKL"
+   INIT DIALOG aModDlg   ;  && TITLE ???
+   AT 399,212 SIZE 382,275 ;
+   FONT oFontDlg ;
+   STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE+DS_MODALFRAME+WS_POPUP+WS_CAPTION ;    
+   ON INIT {|| InitFOpt() }
+   
    DIALOG ACTIONS OF aModDlg ;
         ON 0,IDOK         ACTION {|| EndFOpt()}  ;
         ON 0,IDCANCEL     ACTION {|| hwg_EndDialog( hwg_GetModalHandle() )}
+
+   @ 20,13 SAY oLabel1 CAPTION "Script:" SIZE 80,22 
+   * LTEXT "", IDC_TEXT1
+   @ 120, 13 SAY oLabel1 CAPTION "" ID IDC_TEXT1 SIZE 80,22
+   
+   @ 26,41 EDITBOX oEditbox1 CAPTION "" ID IDC_EDIT1 SIZE 316,113 ;
+        STYLE WS_BORDER+ES_MULTILINE+ES_AUTOVSCROLL+ES_AUTOHSCROLL+ES_WANTRETURN+WS_TABSTOP+WS_DLGFRAME    
+   @ 26,168 BUTTON oButton1 CAPTION "OK" ID IDOK  SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT   
+   @ 249,168 BUTTON oButton2 CAPTION "Cancel" ID IDCANCEL SIZE 80,24 ;
+        STYLE WS_TABSTOP+BS_FLAT
+
+
    aModDlg:Activate()
 
 Return Nil
@@ -274,3 +464,4 @@ Local hDlg := hwg_GetModalHandle()
    hwg_EndDialog( hDlg )
 Return .T.
 
+* ============================= EOF of propert.prg ==============================

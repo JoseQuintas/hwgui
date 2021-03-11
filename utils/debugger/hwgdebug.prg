@@ -2019,12 +2019,23 @@ STATIC FUNCTION ShowObject( arr, n )
 
 STATIC FUNCTION InspectArray( cArrName )
    LOCAL oDlg, oBrw, i
+   
+   /* Bugfix Ticket #80:
+       this old line causes crash press button "Refresh" in array inspector:
+       n2 := n1 + oBrw:rowCount - 1
+       oBrw:rowCount return 13, but must be 4 !
+   */
+   
+   /* hwg_WriteLog("n1=" + ALLTRIM(STR(n1)) +  " n2=" + ALLTRIM(STR(n2)) + " oBrw:rowCount=" + ;
+          ALLTRIM(STR(oBrw:rowCount)) )
+   */
+   
    LOCAL bRefresh := { ||
    LOCAL n1, n2, lRefr := .F.
 
    IF nMode == MODE_INPUT
       n1 := oBrw:nCurrent - oBrw:rowPos + 1
-      n2 := n1 + oBrw:rowCount - 1
+      n2 := n1 + Min( oBrw:rowCount, Len( oBrw:aArray ) ) - 1
       IF !oDlg:cargo[2]
          lRefr := .T.
       ELSE

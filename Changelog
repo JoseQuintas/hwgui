@@ -9,6 +9,17 @@
 */
 
 
+2021-03-12 11:00 UTC+0100 Wilfried Brunken DF7BE
+  * hwguidyn.hbp
+  * samples/a.hbp (New)
+  * samples/a.prg
+  * samples/allhbp.hbp
+  * samples/dbview.hbp (New)
+  * samples/nice.hbp  (New)
+  ! Ticket #77:
+  ! Started project hbcontainer with "allhbp.hbp",
+  ! first state, to be continued. For details see post to ticket,
+
 2021-03-11 14:30 UTC+0100 Wilfried Brunken DF7BE
   * utils/debugger/hwgdebug.prg
    ! Bugfix Ticket #80

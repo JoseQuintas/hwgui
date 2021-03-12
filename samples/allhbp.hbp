@@ -3,21 +3,27 @@
 #
 # $Id$
 #
-# File for hbmk2 utility for building all sample programs and contrib's
+# File for hbmk2 utility for building:
+# - HWGUI
+# - Utils 
+# - All sample programs and contrib's
 #
 
 -hbcontainer
 
+#
 # Basic HWGUI libraries
+#
 ../hwgui.hbp
 ../procmisc.hbp
 ../hbxml.hbp
 ../hwgdebug.hbp
-
-# Only for Borland C compiler / MinGW
+#
+# Only for MinGW and Borland C compiler
 ../hwguidyn.hbp
-
-
+#
+# Contrib
+#
 # ----- Out of support , not for Windows 7 and higher , outdated -----
 # See Readme.txt in directory "samples"
 # - MS Agent
@@ -29,22 +35,97 @@
 #../contrib/hwg_qhtm.hbp
 #
 ../contrib/hwmake/hwmake.hbp
+
+# Under construction, MinGW OK, LINUX/GTK port needed ! 
 ../contrib/hwreport/hwreport.hbp
+#
+# Samples WinAPI and LINUX/GTK
+#
+../samples/a.prg
+#../samples/arraybrowse.prg
+#../samples/bincnts.prg
+#../samples/buildpelles.prg
+#../samples/colrbloc.prg
+../samples/dbview.prg
+#../samples/demodbf.prg
+#../samples/demohlist.prg
+#../samples/demohlistsub.prg
+#../samples/fileselect.prg
+#../samples/getupdown.prg
+#../samples/GetWinVers.prg
+#../samples/graph.prg
+#../samples/grid_1.prg
+#../samples/grid_2.prg
+#../samples/grid_3.prg
+#../samples/grid_4.prg
+#../samples/grid_5.prg
+#../samples/hello.prg
+#../samples/helpdemo.prg
+#../samples/helpstatic.prg
+#../samples/hexbincnt.prg
+#../samples/hole.prg
+#../samples/icons.prg
+#../samples/icons2.prg
+#../samples/menumod.prg
+#../samples/modtitle.prg
+#../samples/progbars.prg
+#../samples/propsh.prg
+#../samples/pseudocm.prg
+#../samples/shadebtn.prg
+#../samples/simpleedit.prg
+#../samples/stretch.prg
+#../samples/tab.prg
+#../samples/Testado.prg
+#../samples/testalert.prg
+#../samples/testbrw.prg
+#../samples/testchild.prg
+#../samples/testfunc.prg
+#../samples/testget1.prg
+#../samples/testget2.prg
+#../samples/testhmonth.prg
+#../samples/testimage.prg
+#../samples/testini.prg
+#../samples/testmenubitmap.prg
+#../samples/testrtf.prg
+#../samples/testsdi.prg
+#../samples/testspli.prg
+#../samples/testtray.prg
+#../samples/testtree.prg
+#../samples/testxml.prg
+#../samples/test_bot.prg
+#../samples/trackbar.prg
+#../samples/tstcombo.prg
+#../samples/tstprdos.prg
+#../samples/tstscrlbar.prg
+#../samples/tstsplash.prg
+#../samples/TwoListbox.prg
+#../samples/TwoLstSub.prg
+#../samples/winprn.prg
+#../samples/xmltree.prg
+#
+# Samples WinAPI only
+#
+../samples/nice.prg
+#../samples/nice2.prg
 # --- Outdated --- 
 # ../samples/iesample.hbp
+#
 ../samples/testhgt.hbp
+#
 # LINUX/GTK
-{linux}../samples/gtk_samples/a.hbp
-{linux}../samples/gtk_samples/dbview.hbp
-{linux}../samples/gtk_samples/escrita.hbp
-{linux}../samples/gtk_samples/example.hbp
-{linux}../samples/gtk_samples/GetWinVers.hbp
-{linux}../samples/gtk_samples/graph.hbp
-{linux}../samples/gtk_samples/progbars.hbp
-{linux}../samples/gtk_samples/pseudocm.hbp
-{linux}../samples/gtk_samples/sample.hbp
-{linux}../samples/gtk_samples/testget2.hbp
-{linux}../samples/gtk_samples/winprn.hbp
+#
+../samples/gtk_samples/a.hbp
+../samples/gtk_samples/dbview.hbp
+../samples/gtk_samples/escrita.hbp
+../samples/gtk_samples/example.hbp
+../samples/gtk_samples/GetWinVers.hbp
+../samples/gtk_samples/graph.hbp
+../samples/gtk_samples/progbars.hbp
+../samples/gtk_samples/pseudocm.hbp
+../samples/gtk_samples/sample.hbp
+../samples/gtk_samples/testget2.hbp
+../samples/gtk_samples/winprn.hbp
+# Utils
 ../utils/bincnt/bincnt.hbp
 ../utils/bincnt/file2hex.hbp
 ../utils/dbc/dbchw.hbp

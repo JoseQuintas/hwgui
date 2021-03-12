@@ -229,7 +229,7 @@ Return Nil
 Static Function About2()
 
    IF oBmp2 == Nil
-      Return
+      Return NIL
    ENDIF
 
    INIT DIALOG oModDlg TITLE "About2"   ;
@@ -406,6 +406,8 @@ hwg_Shellexecute("rundll32.exe", "open", ;
             "&subject=Ref%20:" + ;
             "&body=This%20is%20test%20.", , 1)
 
+RETURN NIL
+
 Function TestTab()
 
 Local oDlg, oTAB
@@ -468,6 +470,8 @@ oCombo := HComboBox():New(ostatus,,,,65536,0,2,200,20,aCombo,,,,,,,.F.,.F.,,,)
 @ 10, 60  BUTTON "Test" SIZE 100, 32 ON CLICK {|| MudeProg(oBar) }
 
    oDlg:Activate()
+   
+RETURN NIL   
 
 Function MudeProg(ostatus)
 Local ct:=1

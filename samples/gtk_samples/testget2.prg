@@ -10,6 +10,8 @@
 
 #include "hwgui.ch"
 
+MEMVAR oSayT
+
 Function Main
 Local oMainWindow
 * Private var1 := 10320.54  && DF7BE: not used

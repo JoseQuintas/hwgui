@@ -166,7 +166,7 @@ For beginners:
  TwoListbox.prg     N                 Sample for select and move items between two listboxes.
  TwoLstSub.prg      Y                 Multi platform substitute for two listboxes by BROWSE windows.
  winprn.prg  3) 8)  Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)
- xmltree.prg        Y          YW     Show XML-Tree: compiles with warnings, but runs. Open "testxml.xml" for test.
+ xmltree.prg        Y          YW     Show XML-Tree: Open "testxml.xml" for test.
 
 
  1) Sample program needs extra libraries of HWGUI, build them in directory "contrib".

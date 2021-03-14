@@ -96,6 +96,12 @@ REQUEST HB_CODEPAGE_DEWIN
 REQUEST HB_CODEPAGE_UTF8
 #endif
 
+ MEMVAR aMainMenu , aLanguages , aPriCharSets , att_priprev, clangset, cIniFile, cTitle
+ MEMVAR nPrCharset, nchrs , cImageDir
+ MEMVAR cHexAstro , cValAstro , oBitmap1 , oBitmap2
+ MEMVAR ctempfile
+
+
 * ---------------------------------------------
 Function Main
 * ---------------------------------------------
@@ -637,8 +643,7 @@ FUNCTION hwg_HPrinter_LangArray_DE()
 RETURN aTooltips
 
 * ==========================================
-FUNCTION __frm_CcomboSelect
- PARAMETERS apItems, cpTitle, cpLabel, npOffset, cpOK, cpCancel, cpHelp , cpHTopic , cpHVar , npreset
+FUNCTION __frm_CcomboSelect(apItems, cpTitle, cpLabel, npOffset, cpOK, cpCancel, cpHelp , cpHTopic , cpHVar , npreset )
 * Common Combobox Selection
 * One combobox flexible.
 * Parameters: (Default values in brackets)
@@ -774,8 +779,7 @@ RETURN aps
  
  
 * --------------------------------------------
-FUNCTION HELP
- PARAMETERS cTopic,nproc,cvar 
+FUNCTION HELP(cTopic,nproc,cvar)
 * Display help window
 * --------------------------------------------
  hwg_MsgInfo(cTopic + " Line Number :" + ALLTRIM(STR(nproc)),cvar)

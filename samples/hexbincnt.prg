@@ -56,6 +56,9 @@
 
 #include "hwgui.ch"
 
+MEMVAR cHexAstro , cHexok , cHexopen , cHexexit , cHexdoor , cHexnext    && Hex dumps 
+MEMVAR cValAstro , cValok , cValopen , cValexit , cValdoor , cValnext    && Resource contents
+
 FUNCTION Main
 
 LOCAL cImageDir, cppath , oIcon, oBitmap , oToolbar , oFileOpen , oQuit , oMainW , oFontMain

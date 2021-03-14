@@ -132,6 +132,18 @@
     hbmk2 <main.prg> <main.rc> -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib -lhwgui -lprocmisc -lhbxml -lhwgdebug -gui
    (-gui option only for windows necessary, for LINUX add options -d__LINUX__ -d__GTK__ , no *.rc files )
   
+    All simple "all build":
+    (for use with hbmk2 utility):
+
+    cd samples
+    hbmk2 allhbp.hbp  
+
+   Builds on one call:
+    - HWGUI basic libraries
+    - Contrib libraries (directory "contrib")
+    - Utilities (directory "utils")
+    - Sample programs (directory "samples" and "samples/gtk_samples", depends on OS)
+
 
    3.1) Resources
    Resources means forms, images and icons in GUI applications.

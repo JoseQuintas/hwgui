@@ -9,6 +9,114 @@
 */
 
 
+2021-03-14 11:20 UTC+0100 Wilfried Brunken DF7BE
+  * install.txt
+  * contrib/hwg_misc.hbp (New)
+  * contrib/hwmake/hwmake.hbp
+  * contrib/hwreport/example.hbp (New)
+  * contrib/hwreport/example.prg
+  * contrib/hwreport/hwmingnw.bat (New)
+  * contrib/hwreport/hwreport.hbp
+  * samples/allhbp.hbp
+  * samples/GetWinVers.hbp (New)
+  * samples/Readme.txt
+  * samples/Testado.hbp (New)
+  * samples/TwoListbox.hbp (New)
+  * samples/TwoListbox.prg
+  * samples/TwoLstSub.hbp (New)
+  * samples/TwoLstSub.prg
+  * samples/a.hbp
+  * samples/a.prg
+  * samples/arraybrowse.hbp (New)
+  * samples/arraybrowse.prg
+  * samples/bincnts.hbp (New)
+  * samples/buildpelles.hbp
+  * samples/buildpelles.prg
+  * samples/colrbloc.hbp (New)
+  * samples/colrbloc.prg
+  * samples/dbview.hbp
+  * samples/dbview.prg
+  * samples/demodbf.hbp (New)
+  * samples/demodbf.prg
+  * samples/demohlist.hbp (New)
+  * samples/demohlistsub.hbp (New)
+  * samples/fileselect.hbp (New)
+  * samples/fileselect.prg
+  * samples/getupdown.hbp (New)
+  * samples/getupdown.prg
+  * samples/graph.hbp (New)
+  * samples/grid_1.hbp (New)
+  * samples/grid_4.hbp (New)
+  * samples/grid_5.hbp (New)
+  * samples/grid_5.prg
+  * samples/gtk_samples/dbview.prg
+  * samples/hello.hbp (New)
+  * samples/hello.prg
+  * samples/helpstatic.hbp (New)
+  * samples/helpstatic.prg
+  * samples/hexbincnt.hbp (New)
+  * samples/hexbincnt.prg
+  * samples/icons.hbp (New)
+  * samples/icons.prg
+  * samples/icons2.hbp (New)
+  * samples/icons2.prg
+  * samples/menumod.hbp (New)
+  * samples/menumod.prg
+  * samples/modtitle.hbp (New)
+  * samples/modtitle.prg
+  * samples/progbars.hbp (New)
+  * samples/propsh.hbp (New)
+  * samples/pseudocm.hbp (New)
+  * samples/pseudocm.prg
+  * samples/shadebtn.hbp (New)
+  * samples/simpleedit.hbp (New)
+  * samples/tab.hbp (New)
+  * samples/tab.prg
+  * samples/testalert.hbp (New)
+  * samples/testbrw.hbp (New)
+  * samples/testbrw.prg
+  * samples/testchild.hbp (New)
+  * samples/testfunc.hbp (New)
+  * samples/testfunc.prg
+  * samples/testget1.hbp (New)
+  * samples/testget2.hbp (New)
+  * samples/testget2.prg
+  * samples/testhgt.hbp
+  * samples/testhmonth.hbp (New)
+  * samples/testimage.hbp (New)
+  * samples/testini.hbp (New)
+  * samples/testmenubitmap.hbp (New)
+  * samples/testrtf.hbp (New)
+  * samples/testrtf.prg
+  * samples/testsdi.hbp (New)
+  * samples/testsdi.prg
+  * samples/testspli.hbp (New)
+  * samples/testtray.hbp (New)
+  * samples/testtree.hbp (New)
+  * samples/testxml.hbp (New)
+  * samples/testxml.prg
+  * samples/trackbar.hbp (New)
+  * samples/tstcombo.hbp (New)
+  * samples/tstscrlbar.hbp (New)
+  * samples/tstsplash.hbp (New)
+  * samples/winprn.hbp (New)
+  * samples/winprn.prg
+  * samples/xmltree.hbp (New)
+  * samples/xmltree.prg
+  ! Ticket #77:
+  ! Project "hbcontainer" finished, started by José M. Quintas (TNX):
+  ! Warnings fixed, in most cases "Ambiguous reference".
+  ! Now compile HWGUI basic libs, contribs and samples with call of
+  ! only one hbp file "allhbp.hbp".
+  ! But some samples needs some work (see further comments in Readme.txt of "samples")
+  ! and for LINUX (do as soon as possible).
+  ! hwreport:
+  ! *.hbp and *.bat files for Windows and GTK cross development environment created
+  ! (preparation as port to LINUX/GTK).
+  ! Sample program crashes at print start
+  ! (To be continued)
+
+
 2021-03-12 11:00 UTC+0100 Wilfried Brunken DF7BE
   * hwguidyn.hbp
   * samples/a.hbp (New)

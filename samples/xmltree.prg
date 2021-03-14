@@ -1,6 +1,8 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+MEMVAR oFont
+
 Function Main
 Local oMainWindow
 Private oFont := HFont():Add( "MS Sans Serif",0,-13 )
@@ -102,6 +104,7 @@ Return Nil
 #include "hbstack.h"
 #include "item.api"
 
+
 #ifdef OS_UNIX_COMPATIBLE
 
 #include <iconv.h>
@@ -172,7 +175,7 @@ static char * utfConvert( char * psz1, short int b2Utf, short int bKoi )
 
 #include <windows.h>
 
-static char * utfConvert( char * psz1, short int b2Utf, short int bAnsi )
+static char * utfConvert( const char * psz1, short int b2Utf, short int bAnsi )
 {
    LPWSTR pszUni;
    UINT codePage = (bAnsi)? CP_ACP : CP_OEMCP;

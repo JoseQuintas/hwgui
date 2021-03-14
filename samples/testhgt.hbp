@@ -2,7 +2,11 @@
 # Compile script for test program with gtwvg
 # $Id$
 
+
 # Harbour GTWVG is Windows only
+
+-stop={linux}
+
 # {linux}-static
 # {linux}-d__LINUX__
 # {linux}-d__GTK__

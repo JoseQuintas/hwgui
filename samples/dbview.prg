@@ -54,9 +54,11 @@ REQUEST ORDKEYCOUNT
 Static aFieldTypes := { "C","N","D","L" }
 Static dbv_cLocate, dbv_nRec, dbv_cSeek
 
+Memvar oBrw, oFont , oSay1, oSay2, nBrwCharset
+
 Function Main
 Local oWndMain, oPanel
-Memvar oBrw, oFont
+
 Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname , nBrwCharset
 
 nBrwCharset := 0

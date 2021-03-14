@@ -11,6 +11,15 @@
 
 #include "windows.ch"
 #include "guilib.ch"
+
+MEMVAR Form_Main , oDir
+MEMVAR Gt_Cod, Gt_Name, Gt_Adress, Gt_Fone, Gt_e_Mail
+MEMVAR oCod, oName, oAdress, oFone, oe_Mail 
+MEMVAR oOper
+MEMVAR oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDelete, oBotClose, oBotPrint
+// MEMVAR COD  && contains a database name, but nowhere initialized ??
+// why "demodbf.prg(313) Warning W0001  Ambiguous reference 'COD'" ??
+
  
 *---------------------------------------------------------------------------------------
 Function Main
@@ -18,9 +27,13 @@ Function Main
 Local oFontBtn
 Local oFont := Nil
 Local nColor, oSplah
+LOCAL cDirSep
+
 Private Form_Main
 
-Public oDir := "\"+Curdir()+"\"
+cDirSep := hwg_GetDirSep()
+
+Public oDir := cDirSep + Curdir() + cDirSep
 
 SET DELETE ON
 SET DATE BRIT
@@ -53,6 +66,7 @@ return nil
 Function Cadastro()   
 *---------------------------------------------------------------------------------------
 Local Tel_Ferramentas, oPanel, oFontBtn, Titulo:="Tab Forneced"
+
 Private Gt_Cod, Gt_Name, Gt_Adress, Gt_Fone, Gt_e_Mail
 Private oCod, oName, oAdress, oFone, oe_Mail //Declaracao das variaveis de tabela
 Private oOper:=1

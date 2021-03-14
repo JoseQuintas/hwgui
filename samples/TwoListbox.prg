@@ -29,13 +29,15 @@
 
 #include "hwgui.ch"
 #include "common.ch"
-#include "windows.ch"
+// #include "windows.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
 #ifdef __XHARBOUR__
    #include "ttable.ch"
 #endif
+
+MEMVAR  oItems1w, oItems2w
 
 * --------------------------------------------
 Function Main
@@ -90,7 +92,7 @@ FUNCTION Teste
 * --------------------------------------------
 Local _frm_2listboxsel
 
-LOCAL oLabel1, oListbox1, oListbox2, oButton1, oButton2, oButton3, oButton4
+LOCAL oLabel1, oListbox1, oListbox2, oButton1, oButton2, oButton3, oButton4 , oButton5
 LOCAL oButton6, oButton7, oFont, oItemsR
 LOCAL oItems1, oItems2
 PRIVATE  oItems1w, oItems2w

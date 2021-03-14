@@ -1,0 +1,24 @@
+#
+# $Id$
+#
+
+-stop={linux}
+
+# Special parameters for LINUX/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+hbwin.hbc
+
+../hwgui.hbc
+
+-n
+-w
+
+-oTestado
+
+Testado.prg
+
+# ==================== EOF of Testado.hbp ===============

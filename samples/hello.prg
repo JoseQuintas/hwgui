@@ -1,6 +1,8 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+MEMVAR aGetsTab
+
 Function Main
 Local oMainWindow, oBtn, aCombo := {"First","Second" }, cTool := "Example", oFont
 Local aTabs := { "A","B","C","D","E","F","G","H","I","J","K","L","M","N" }, oTab
@@ -100,4 +102,4 @@ Local oDlg1, oDlg2
 
    hwg_PropertySheet( hwg_Getactivewindow(), { oDlg1, oDlg2 }, "Sheet Example",210,10,300,300 )
 
-Return
+Return NIL

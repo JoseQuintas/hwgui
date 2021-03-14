@@ -8,6 +8,8 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+MEMVAR var1 , oSayT
+
 Function Main
 Local oMainWindow
 Private var1 := 10320.54

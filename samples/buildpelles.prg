@@ -10,12 +10,20 @@
 
 #include "windows.ch"
 #include "guilib.ch"
+
 #DEFINE  ID_EXENAME     10001
 #DEFINE  ID_LIBFOLDER   10002
 #DEFINE  ID_INCFOLDER   10003
 #DEFINE  ID_PRGFLAG     10004
 #DEFINE  ID_CFLAG       10005
 #DEFINE  ID_PRGMAIN     10006
+
+MEMVAR oDirec , lSaved
+MEMVAR oBrowse1, oBrowse2, oBrowse3
+MEMVAR oDlg
+MEMVAR oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, oLabel3, oButton3, oPrgFlag, oLabel4, oCFlag, oLabel5, oButton2, oMainPrg, oLabel6, oTab
+MEMVAR oBrowse4
+
 FUNCTION Main
 Local oFont
 Local aBrowse1, aBrowse2, aBrowse3, aBrowse4
@@ -27,6 +35,9 @@ Local vGt4:=Space(80)
 Local vGt5:=Space(80)
 Local vGt6:=Space(80)
 Local aFiles1:={""}, aFiles2:={""}, aFiles3:={""}, aFiles4:={""}
+
+PRIVATE oBrowse4
+
 Private oDirec:=DiskName()+":\"+CurDir()+"\"
 If !File(oDirec+"BuildPelles.Ini")
   Hwg_WriteIni( 'Config', 'Dir_HwGUI', "C:\HwGUI", oDirec+"BuildPelles.Ini" )
@@ -72,7 +83,7 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
    END PAGE of oTAB
    BEGIN PAGE "Prg (Files)" of oTAB
       @ 21,29 BROWSE oBrowse1 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse1,"*.prg")};
- 	            STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
+              STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
       hwg_CREATEARLIST(oBrowse1,aFiles1)
       obrowse1:acolumns[1]:heading := "File Names"
       obrowse1:acolumns[1]:length := 50
@@ -84,7 +95,7 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
    END PAGE of oTAB
    BEGIN PAGE "C (Files)" of oTAB
       @ 21,29 BROWSE oBrowse2 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse2, "*.c")};
- 	            STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
+             STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
       hwg_CREATEARLIST(oBrowse2,aFiles2)
       obrowse2:acolumns[1]:heading := "File Names"
       obrowse2:acolumns[1]:length := 50
@@ -95,7 +106,7 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
    END PAGE of oTAB
    BEGIN PAGE "Lib (Files)" of oTAB
       @ 21,29 BROWSE oBrowse3 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse3, "*.lib")};
- 	            STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
+               STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
       hwg_CREATEARLIST(oBrowse3,aFiles3)
       obrowse3:acolumns[1]:heading := "File Names"
       obrowse3:acolumns[1]:length := 50
@@ -106,7 +117,7 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
    END PAGE of oTAB
    BEGIN PAGE "Resource (Files)" of oTAB
       @ 21,29 BROWSE oBrowse4 ARRAY of oTAB ON CLICK {||SearchFile(oBrowse3, "*.rc")};
- 	            STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
+              STYLE WS_VSCROLL + WS_HSCROLL   SIZE 341,170  
       hwg_CREATEARLIST(oBrowse4,aFiles4)
       obrowse4:acolumns[1]:heading := "File Names"
       obrowse4:acolumns[1]:length := 50
@@ -119,10 +130,10 @@ PRIVATE oButton1, oExeName, oLabel1, oLibFolder, oButton4, oLabel2, oIncFolder, 
    @ 419, 20 BUTTON oButton1 CAPTION "Build" on Click {||BuildApp()} SIZE 78,52  
    @ 419, 80 BUTTON oButton2 CAPTION "Exit" on Click {||hwg_EndDialog()}  SIZE 78,52  
    @ 419,140 BUTTON oButton3 CAPTION "Open" on Click {||ReadBuildFile()}  SIZE 78,52  
-   @ 419,200 BUTTON oButton4 CAPTION "Save" on Click {||SaveBuildFile()}   SIZE 78,52  
+   @ 419,200 BUTTON oButton4 CAPTION "Save" on Click {||SaveBuildFile()}  SIZE 78,52  
 
    ACTIVATE DIALOG oDlg
-RETURN
+RETURN NIL
 
 Static Function SearchFile(oBrow, oFile)
 Local oTotReg:={}, i
@@ -146,18 +157,21 @@ Return Nil
 Static Function SearchFileName(nName, oGet, oFile)
 Local oTextAnt:=oGet:GetText()
 Local fFile:=hwg_Selectfile(nName+" ("+oFile+")", oFile,,,.T. ) 
+
 If !Empty(oTextAnt)
    fFile:=oTextAnt //
 endif   
 oGet:SetText(fFile)
 oGet:Refresh()
+
 Return Nil
 
 
 Function ReadBuildFile()
 Local oLibFiles, oBr1:={}, oBr2:={}, oBr3:={}, oBr4:={}, oSel1, oSel2, oSel3, i, oSel4
 Local aPal:=""
-Local oFolderFile:=hwg_Selectfile("HwGUI File Build (*.bld)", "*.bld" ) 
+Local oFolderFile:=hwg_Selectfile("HwGUI File Build (*.bld)", "*.bld" )
+ 
 if empty(oFolderFile); Return Nil; Endif
    
 oExeName:SetText( Hwg_GetIni( 'Config', 'ExeName' , , oFolderFile ))
@@ -273,12 +287,19 @@ If hwg_Msgyesno("Yes Compile to BAT, No compile to PoMake")
    BuildBat()
 Else
    BuildPoMake()
-EndIf   
+EndIf
+
+RETURN NIL   
 
 Function BuildBat()
+
 Local voExeName, voLibFolder, voIncFolder, voPrgFlag, voCFlag, voPrgMain, voPrgFiles, voCFiles,voResFiles
 Local oLibFiles, CRF:=CHR(13)+CHR(10), oName, oInc, lName, gDir
 Local oArq:=fCreate("Hwg_Build.bat"),i, vHwGUI, vHarbour, vPelles
+LOCAL voLibFiles
+
+LOCAL g
+
 If File(oDirec+"BuildPelles.Ini")
    vHwGUI:=Hwg_GetIni( 'Config', 'DIR_HwGUI' , , oDirec+"BuildPelles.Ini" )
    vHarbour:=Hwg_GetIni( 'Config', 'DIR_HARBOUR' , , oDirec+"BuildPelles.Ini")
@@ -467,6 +488,8 @@ Function BuildPoMake()
 Local voExeName, voLibFolder, voIncFolder, voPrgFlag, voCFlag, voPrgMain, voPrgFiles, voCFiles,voResFiles
 Local oLibFiles, CRF:=CHR(13)+CHR(10), oName, oInc, lName, gDir
 Local oArq:=fCreate("Makefile.pc"),i, vHwGUI, vHarbour, vPelles
+LOCAL voLibFiles
+
 
 If File(oDirec+"BuildPelles.Ini")
    vHwGUI:=Hwg_GetIni( 'Config', 'DIR_HwGUI' , , oDirec+"BuildPelles.Ini" )

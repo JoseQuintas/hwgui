@@ -1,0 +1,22 @@
+#
+# $Id$
+#
+
+-stop={linux}
+
+# Special parameters for LINUX/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+../hwgui.hbc
+
+-n
+-w
+
+-obuildpelles
+
+buildpelles.prg
+
+# ==================== EOF of buildpelles.hbp ===============

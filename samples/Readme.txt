@@ -42,6 +42,20 @@ For beginners:
      samples/dev/MinGW64
      samples/dev/MingW-GTK  (Cross Development Environment for GTK on Windows)
 
+    Start compile using *.hbp files:
+     hbmk2 <filename>.hbp
+
+
+     <prgname>.hbp   For hbmk2 utility, one file for every sample program.
+
+     allhbp.hbp      All builds:
+                     Builds on one call:
+                     - HWGUI basic libraries
+                     - Contrib libraries (directory "contrib")
+                     - Utilities (directory "utils")
+                     - Sample programs (directory "samples" and "samples/gtk_samples")
+
+
 
 3.) Sample Database
     Contains 150 records with fields every type, open with a.prg or dbview.prg
@@ -105,9 +119,10 @@ For beginners:
  grid_2.prg 2)      N         -       Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
  grid_3.prg 2)      N         -       Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
  grid_4.prg         N         Y       File Viewer
- grid_5.prg         N  #      -       Grid Editor  (crashes, if click on button "Change") 
+ grid_5.prg         N  #      -       Grid Editor  (crashes, if click on button "Insert","Change","Delete") 
  hello.prg          N                 Some elements: Edit field, tabs, tree view, combobox, ...
  helpdemo.prg 6) 7) N                 Context help using windows help (Shellexecute crashes)
+ helpstatic.prg     Y                 Static help text
  hexbincnt.prg 11)  Y                 Handling of binary resources with hex values. 
  hole.prg   2) 4)   N                 MS Agent Control
  icons.prg          Y                 Icons and background bitmaps
@@ -127,7 +142,7 @@ For beginners:
  Testado.prg        N                 Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)
  testalert.prg      N                 Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
  test_bot.prg       N                 bOther Test: Press key, after key up the scan code is displayed.
- testbrw.prg        N  #              Another BROWSE test (crashes with no PROPS2ARR at ENTER o click)
+ testbrw.prg        N  #              Another BROWSE test (crashes with no PROPS2ARR at ENTER or click)
  testchild.prg      N  #      -       Create a child windows; child window not created ! command seems to be outdated.
  testget1.prg       N                 Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
  testget2.prg       N                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number

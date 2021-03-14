@@ -9,7 +9,7 @@
 
 /*
  DF7BE: This sample does not work:
- Error: Unresolved external '_HB_FUN_OPENREPORT'
+ Sample program freezes after start printing sample report !
 */
 
 #include "fileio.ch"
@@ -18,6 +18,8 @@
 #include "repmain.h"
 
 #define IDCW_PANEL   2001
+
+MEMVAR aTermMetr
 
 Function Main()
 Local oMainWindow, oPanel, oFont
@@ -54,7 +56,7 @@ PRIVATE aTermMetr := { 800 }
 Return Nil
 
 Static Function Print1
-   IF OpenReport( "example.rpt", "MyReport" ) 
+   IF hwg_OpenReport( "example.rpt", "MyReport" ) 
       hwg_PrintReport()
    ENDIF
 Return Nil
@@ -65,7 +67,7 @@ Static Function Print2
 Return Nil
 
 FUNCTION MyReport
-LOCAL aPaintRep
+LOCAL aPaintRep , cEnd
    cEnd:=Chr(13)+Chr(10)
    aPaintRep := { 210,297,0,0,0,{},,"MyReport",.F.,0,Nil }
    aPaintRep[11] := ;
@@ -108,4 +110,6 @@ LOCAL aPaintRep
    Aadd( aPaintRep[6], { 1,"End of report",522,932,160,20,0,0,HFont():Add( "MS Sans Serif",0,-13,0,0,0,0,0 ),0,0,Nil,0 } )
    hwg_RecalcForm( aPaintRep,735 )
 RETURN hwg_SetPaintRep( aPaintRep )
+
+* ============================= EOF of example.prg ================================
 

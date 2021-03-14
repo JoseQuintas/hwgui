@@ -50,6 +50,8 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+MEMVAR cImgTop , cImgBottom , cImgPrev, cImgNext
+
 ***********************
 FUNCTION Main()
 ***********************
@@ -125,6 +127,7 @@ LOCAL o_Obtn1, o_Obtn2, o_Obtn3, o_Obtn4
 LOCAL oTbar
 LOCAL nRec := 1
 LOCAL nLast := 0
+LOCAL nI , oDlg , oTbar1 , oLbl1 , oLbl2 , oBtn1
 
   lZebra := IF(lZebra == NIL, .F., lZebra)
   DBSELECTAR("TSTB")
@@ -337,7 +340,7 @@ LOCAL oTbar
 LOCAL nRec := 1
 LOCAL aArrayTst := Create_Array()
 LOCAL nLast := LEN(aArrayTst)
-LOCAL nI
+LOCAL nI , oDlg , oBtn1 , oLbl1 , oLbl2 , oTbar1
 
   lZebra := IF(lZebra == NIL, .F., lZebra)
   INIT DIALOG oDlg TITLE "Browse Array" ;

@@ -56,6 +56,8 @@ REQUEST HB_CODEPAGE_UTF8
 #include "guilib.ch"
 #include "hxml.ch"
 
+MEMVAR oXmlDoc, lIniChanged, nCurrentItem , oMainWindow, oFont
+
 Function Main
 Local oXmlNode
 Local i, j, fname := ""

@@ -17,6 +17,11 @@
 // REQUEST HB_CODEPAGE_RU866
 // REQUEST HB_CODEPAGE_RU1251
 
+MEMVAR oMainWindow, oPanel
+MEMVAR oFont , cImageDir , cdirSep
+MEMVAR nColor, oBmp2
+MEMVAR oProg
+
 function Main
 
 PRIVATE cdirSep := hwg_GetDirSep()
@@ -228,6 +233,8 @@ Return Nil
 
 Static Function About2()
 
+LOCAL oModDlg
+
    IF oBmp2 == Nil
       Return NIL
    ENDIF
@@ -337,6 +344,7 @@ Local cTitle := "Dialog from prg", cText := "Input something"
 Local oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
 Local cRes, aCombo := { "First","Second" }, oEdit, vard := "Monday"
 // Local aTabs := { "Monday","Tuesday","Wednesday","Thursday","Friday" }
+LOCAL oTab
 
    // o:bGetFocus := Nil
    INIT DIALOG oModDlg TITLE cTitle           ;
@@ -442,6 +450,8 @@ return nil
 
 FUNCTION ActiveTopMost( nHandle, lActive )
 
+LOCAL lSucess
+
     if lActive
        lSucess := hwg_Settopmost(nHandle)    // Set TopMost
     else
@@ -454,6 +464,7 @@ FUNCTION ActiveTopMost( nHandle, lActive )
 Function TestProgres()
 Local oDlg,ostatus,oBar
 Local cRes, aCombo := { "First","Second" }
+LOCAL oCombo
 Private oProg
 
 INIT DIALOG oDlg TITLE "Progress Bar"    ;

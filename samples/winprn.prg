@@ -51,7 +51,7 @@
     (Main menu appeared in selected language only after restart, so store language setting in ini file)
   - Added PrintBitmap
 
-    Special hints for test and development without printer uaage:
+    Special hints for test and development without printer usage:
     Windows 10: You can install a virtual printer driver named "Print to PDF" to redirect the printer data.
     LINUX: The Printer dialog of the system allows redirection into a PDF file.
 */
@@ -95,6 +95,10 @@ REQUEST HB_CODEPAGE_DEWIN
 * LINUX Codepage
 REQUEST HB_CODEPAGE_UTF8
 #endif
+
+MEMVAR aMainMenu , aLanguages , aPriCharSets , att_priprev, clangset, cIniFile, cTitle
+MEMVAR nPrCharset, nchrs , cImageDir
+MEMVAR cHexAstro , cValAstro , oBitmap1 , oBitmap2
 
 * ---------------------------------------------
 Function Main
@@ -525,8 +529,7 @@ FUNCTION hwg_HPrinter_LangArray_DE()
 RETURN aTooltips
 
 * ==========================================
-FUNCTION __frm_CcomboSelect
- PARAMETERS apItems, cpTitle, cpLabel, npOffset, cpOK, cpCancel, cpHelp , cpHTopic , cpHVar , npreset
+FUNCTION __frm_CcomboSelect(apItems, cpTitle, cpLabel, npOffset, cpOK, cpCancel, cpHelp , cpHTopic , cpHVar , npreset)
 * Common Combobox Selection
 * One combobox flexible.
 * Parameters: (Default values in brackets)
@@ -662,8 +665,7 @@ RETURN aps
  
  
 * --------------------------------------------
-FUNCTION HELP
- PARAMETERS cTopic,nproc,cvar 
+FUNCTION HELP(cTopic,nproc,cvar)
 * Display help window
 * --------------------------------------------
  hwg_MsgInfo(cTopic + " Line Number :" + ALLTRIM(STR(nproc)),cvar)

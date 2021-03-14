@@ -25,6 +25,15 @@
 #include "gtk.ch"
 #endif
 
+MEMVAR oMainWindow
+MEMVAR oObj_Window, oObj_Dialog
+MEMVAR cVal_Window, cVal_Dialog, oImg_Window, oImg_Dialog
+MEMVAR cCmd
+
+MEMVAR cHexDbmp , cHexDico , cHexWbmp , cHexWico
+MEMVAR cVal_WIco , cVal_Wbmp , cVal_DIco , cVal_Dbmp
+MEMVAR nMainX, nMainY
+
 * --------------------------------------------
 FUNCTION Main
 * --------------------------------------------

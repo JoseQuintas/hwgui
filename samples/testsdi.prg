@@ -11,6 +11,7 @@ Function Main
 Local oMainWindow
 Local oFont := HFont():Add( "MS Sans Serif",0,-13 )
 Local oTree, oSplit, oTab
+LOCAL oGet
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150 FONT oFont 

@@ -24,6 +24,8 @@
 #
 # Contrib
 #
+../contrib/hwg_misc.hbp
+#
 # ----- Out of support , not for Windows 7 and higher , outdated -----
 # See Readme.txt in directory "samples"
 # - MS Agent
@@ -38,81 +40,88 @@
 
 # Under construction, MinGW OK, LINUX/GTK port needed ! 
 ../contrib/hwreport/hwreport.hbp
+# Sample program freezes after start printing
+#../contrib/hwreport/example.hbp
 #
 # Samples WinAPI and LINUX/GTK
 #
-../samples/a.prg
-#../samples/arraybrowse.prg
-#../samples/bincnts.prg
-#../samples/buildpelles.prg
-#../samples/colrbloc.prg
+../samples/arraybrowse.prg
+../samples/colrbloc.prg
 ../samples/dbview.prg
-#../samples/demodbf.prg
-#../samples/demohlist.prg
-#../samples/demohlistsub.prg
-#../samples/fileselect.prg
-#../samples/getupdown.prg
-#../samples/GetWinVers.prg
-#../samples/graph.prg
-#../samples/grid_1.prg
-#../samples/grid_2.prg
-#../samples/grid_3.prg
-#../samples/grid_4.prg
-#../samples/grid_5.prg
-#../samples/hello.prg
-#../samples/helpdemo.prg
-#../samples/helpstatic.prg
-#../samples/hexbincnt.prg
-#../samples/hole.prg
-#../samples/icons.prg
-#../samples/icons2.prg
-#../samples/menumod.prg
-#../samples/modtitle.prg
-#../samples/progbars.prg
-#../samples/propsh.prg
-#../samples/pseudocm.prg
-#../samples/shadebtn.prg
-#../samples/simpleedit.prg
-#../samples/stretch.prg
-#../samples/tab.prg
-#../samples/Testado.prg
-#../samples/testalert.prg
-#../samples/testbrw.prg
-#../samples/testchild.prg
-#../samples/testfunc.prg
-#../samples/testget1.prg
-#../samples/testget2.prg
-#../samples/testhmonth.prg
-#../samples/testimage.prg
-#../samples/testini.prg
-#../samples/testmenubitmap.prg
-#../samples/testrtf.prg
-#../samples/testsdi.prg
-#../samples/testspli.prg
-#../samples/testtray.prg
-#../samples/testtree.prg
-#../samples/testxml.prg
-#../samples/test_bot.prg
-#../samples/trackbar.prg
-#../samples/tstcombo.prg
-#../samples/tstprdos.prg
-#../samples/tstscrlbar.prg
-#../samples/tstsplash.prg
-#../samples/TwoListbox.prg
-#../samples/TwoLstSub.prg
-#../samples/winprn.prg
-#../samples/xmltree.prg
+../samples/demodbf.prg
+../samples/demohlistsub.prg
+../samples/fileselect.prg
+../samples/getupdown.prg
+../samples/GetWinVers.prg
+../samples/graph.prg
+../samples/helpstatic.prg
+../samples/hexbincnt.prg
+../samples/icons.prg
+../samples/icons2.prg
+../samples/menumod.prg
+../samples/modtitle.prg
+../samples/progbars.prg
+../samples/pseudocm.prg
+../samples/simpleedit.prg
+../samples/stretch.prg
+../samples/tab.prg
+../samples/testfunc.prg
+../samples/testhmonth.prg
+../samples/testimage.prg
+../samples/testsdi.prg
+../samples/testspli.prg
+../samples/testtree.prg
+../samples/testxml.prg
+../samples/trackbar.prg
+../samples/tstcombo.prg
+../samples/TwoLstSub.prg
+../samples/winprn.prg
+../samples/xmltree.prg
 #
 # Samples WinAPI only
 #
+../samples/a.prg
+../samples/bincnts.prg
+../samples/buildpelles.prg
+../samples/demohlist.prg
+../samples/grid_1.prg
+../samples/grid_4.prg
+../samples/grid_5.prg
+../samples/hello.prg
 ../samples/nice.prg
-#../samples/nice2.prg
+../samples/shadebtn.prg
+../samples/test_bot.prg
+../samples/Testado.prg
+../samples/testalert.prg
+../samples/testbrw.prg
+../samples/testget1.prg
+../samples/testget2.prg
+../samples/testini.prg
+../samples/testmenubitmap.prg
+../samples/testrtf.prg
+../samples/tstscrlbar.prg
+../samples/tstsplash.prg
+../samples/TwoListbox.prg
+#
+# Programs not runable
+# ../samples/nice2.prg
+# ../samples/propsh.prg
+# ../samples/testchild.prg
+#../samples/testtray.prg
+#
+# use Postgres Library, you need to link libpq.lib and libhbpg.lib
+# ../samples/grid_2.prg
+# ../samples/grid_3.prg
+#
 # --- Outdated --- 
+# ../samples/helpdemo.prg
+# ../samples/hole.prg
 # ../samples/iesample.hbp
+# ../samples/tstprdos.prg
 #
 ../samples/testhgt.hbp
 #
-# LINUX/GTK
+# Samples LINUX/GTK
 #
 ../samples/gtk_samples/a.hbp
 ../samples/gtk_samples/dbview.hbp
@@ -125,7 +134,9 @@
 ../samples/gtk_samples/sample.hbp
 ../samples/gtk_samples/testget2.hbp
 ../samples/gtk_samples/winprn.hbp
+#
 # Utils
+#
 ../utils/bincnt/bincnt.hbp
 ../utils/bincnt/file2hex.hbp
 ../utils/dbc/dbchw.hbp

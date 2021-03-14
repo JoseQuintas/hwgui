@@ -11,14 +11,17 @@
 #include "guilib.ch"
 
 STATIC oMenuBrw, nrp
+MEMVAR aSample
 
 FUNCTION Main
    LOCAL oBmp
    LOCAL oBrw, Form_Main
+   // LOCAL oFontBtn 
 
    PUBLIC aSample := { { .T. ,"Line 1",10 }, { .T. ,"Line 2",22 }, { .F. ,"Line 3",40 } }
 
-   PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT - 12
+   // Not used
+   // PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT - 12
 
    INIT WINDOW Form_Main MAIN TITLE "HwGUI Sample Pseudo Context Menu in BROWSE" SIZE 360, 300
 
@@ -66,8 +69,7 @@ FUNCTION SUBMNU_BRW( nCol, nRow )
    ENDIF
    RETURN NIL
 
-FUNCTION st_f4
-   PARAMETERS n, c
+FUNCTION st_f4(n, c)
 
    hwg_MsgInfo( "This is the status window of Line " + AllTrim( Str(n ) ) + " : " + c, "Bingo !" )
 

@@ -2,6 +2,8 @@
 # $Id$
 #
 
+-stop{linux}
+
 -n -w
 
 {linux}-lm

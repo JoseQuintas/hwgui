@@ -8,6 +8,21 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-03-14 15:30 UTC+0100 Wilfried Brunken DF7BE
+  * samples/Readme.txt
+  * samples/allhbp.hbp
+  * samples/gtk_samples/dbview.hbp
+  * samples/gtk_samples/progbars.prg
+  * samples/gtk_samples/pseudocm.prg
+  * samples/gtk_samples/testget2.prg
+  * samples/gtk_samples/winprn.prg
+  * utils/dbc/dbchw.hbp
+  * utils/debugger/sample.hbp
+  ! Ticket #77:
+  ! Project "hbcontainer" for LINUX,
+  ! only one util (DBC) must be fixed,
+  ! the rest is OK.
+
 
 2021-03-14 11:20 UTC+0100 Wilfried Brunken DF7BE
   * install.txt

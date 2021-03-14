@@ -42,16 +42,21 @@ public isdemo:=.f.
         INIT WINDOW oMain MAIN TITLE "Progress Bar Sample" ;
         SIZE 300, 100 AT 0,0
 
+/*
+  iif(!isdemo,(isdemo=.t.,Test("AutoInt")),"")
+  causes 
+  Warning W0027  Meaningless use of expression 'Logical'
+*/
         MENU OF oMain
          MENU TITLE "&Exit"
              MENUITEM "&Quit" ACTION oMain:Close()
          ENDMENU
          MENU TITLE "&Demo"
-            MENUITEM "Manual &External progbar" ACTION iif(!isdemo,(isdemo=.t.,Test("ManExt")),"")
-            MENUITEM "&Automatic External progbar" ACTION iif(!isdemo,(isdemo=.t.,Test("AutoExt")),"")
+            MENUITEM "Manual &External progbar" ACTION _ISDEMO("ManExt")
+            MENUITEM "&Automatic External progbar" ACTION _ISDEMO("AutoExt")
             SEPARATOR
-            MENUITEM "Manual &Internal progbar" ACTION iif(!isdemo,(isdemo=.t.,Test("ManInt")),"")
-            MENUITEM "Aut&omatic Internal progbar" ACTION iif(!isdemo,(isdemo=.t.,Test("AutoInt")),"")
+            MENUITEM "Manual &Internal progbar" ACTION _ISDEMO("ManInt")
+            MENUITEM "Aut&omatic Internal progbar" ACTION _ISDEMO("AutoInt")
          ENDMENU
         ENDMENU
 
@@ -59,12 +64,31 @@ public isdemo:=.f.
 
 Return Nil
 
+
+FUNCTION _ISDEMO(ctext)
+ IF ! isdemo
+  isdemo = .T.
+ ELSE
+  Test(ctext)
+ ENDIF
+RETURN ""
+
 // ============================================================================
 Function Test(included)
 // ============================================================================
 local oTimer, oCreate
 Public cMsgErr := "Bar doesn't exist"
 public n :=0
+
+/*
+progbars.prg(102) Warning W0027  Meaningless use of expression 'String'
+progbars.prg(123) Warning W0027  Meaningless use of expression 'Logical'
+progbars.prg(127) Warning W0027  Meaningless use of expression 'String'
+progbars.prg(130) Warning W0027  Meaningless use of expression 'String'
+
+ use iif(<condition>,<action if true>, )
+                                      ^ let empty
+*/
 
         PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
 
@@ -77,7 +101,7 @@ public n :=0
              do case
                 case included == NIL .or. included == "ManExt" .or.included == "AutoExt"
                      @ 290, 395 BUTTON oCreate CAPTION 'Create Bar' SIZE 85,25 ;
-                        ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 20, 100 ),iif(included == "AutoExt",SetTimer(oForm,@oTimer),""),oCreate:hide()}
+                        ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 20, 100 ),iif(included == "AutoExt",SetTimer(oForm,@oTimer),),oCreate:hide()}
                      * Attention !
                      * To bypass the hidden toolbar, use wmctrl to place the toolbar on top ...
                      * sudo apt install wmctrl
@@ -95,17 +119,18 @@ public n :=0
              endcase
 
              @ 380, 395 BUTTON 'Step Bar'   SIZE 75,25 ;
-                ON CLICK {|| n+=100,Iif(oBar==Nil,hwg_Msgstop(cMsgErr),oBar:Set(,n/100)),hb_run("wmctrl -a 'Testing ...'"),iif(n/100 == 100,RES_PROGBAR ( obar ),"") }
+                ON CLICK {|| n+=100,Iif(oBar==Nil,hwg_Msgstop(cMsgErr),oBar:Set(,n/100)),hb_run("wmctrl -a 'Testing ...'"),iif(n/100 == 100,RES_PROGBAR ( obar ), ) }
 
              @ 460, 395 BUTTON 'Reset Bar'   SIZE 75,25 ;
-                ON CLICK {|| IIF(oBar == NIL , .T. , RES_PROGBAR(oBar)),n:=0 }
+                ON CLICK {|| IIF(oBar == NIL , , RES_PROGBAR(oBar) ) , n:=0 }
+             // IIF(oBar == NIL , .T. , RES_PROGBAR(oBar) )
 
              if right(included,3) == "Ext"
                 @ 540, 395 BUTTON 'Close Bar'  SIZE 75,25 ;
-                   ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),(iif(left(included,4)== "Auto",oTimer:End(),""),oBar:close(),oBar:=Nil,n:=0,oCreate:show())) }
+                   ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),(iif(left(included,4)== "Auto",oTimer:End(), ),oBar:close(),oBar:=Nil,n:=0,oCreate:show())) }
              else
                 @ 540, 395 BUTTON 'Close Bar'  SIZE 75,25 ;
-                   ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),(iif(left(included,4)== "Auto",oTimer:End(),""),RES_PROGBAR(oBar),oBar:hide(),n:=0,oCreate:show())) }
+                   ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),(iif(left(included,4)== "Auto",oTimer:End(), ),RES_PROGBAR(oBar),oBar:hide(),n:=0,oCreate:show())) }
              endif
              @ 620, 395 BUTTON 'Close'      SIZE 75,25 ON CLICK {|| isdemo:=.f.,oForm:Close() }
 
@@ -115,6 +140,7 @@ public n :=0
         endif
 
 Return Nil
+
 
 // ============================================================================
 FUNCTION RES_PROGBAR ( opbar )

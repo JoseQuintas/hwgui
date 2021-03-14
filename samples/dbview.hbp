@@ -11,7 +11,7 @@
 ../hwgui.hbc
 
 -n
-#-w
+-w
 
 -odbview
 

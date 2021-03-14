@@ -81,8 +81,8 @@ INIT WINDOW oFormMain MAIN APPNAME "Hwgui sample" ;
 RETURN NIL
 
 * Dialog with background
-FUNCTION Teste
-PARAMETERS cimgpfad
+FUNCTION Teste(cimgpfad)
+
  LOCAL oModDlg, obg
    obg := NIL 
    IF .NOT. FILE(cimgpfad + "astro.bmp")

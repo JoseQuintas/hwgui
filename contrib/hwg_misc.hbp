@@ -1,0 +1,23 @@
+#
+# $Id$
+#
+
+-inc
+
+-hblib
+-o../lib/hwg_misc
+
+-n -q0 -w -es2
+
+-i../include
+
+-cflag=-DHWG_USE_POINTER_ITEM
+
+misc/*.c
+misc/*.prg
+
+#-stop{allmingw}
+
+
+# ======================= EOF of hwg_misc.hbp ===========================
+

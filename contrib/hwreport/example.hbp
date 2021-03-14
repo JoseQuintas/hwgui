@@ -1,0 +1,24 @@
+#
+# $Id$
+#
+
+# Compiles the HWREPORT example program
+
+-stop={linux}
+
+# Special parameters for LINUX/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-n -w
+
+-oexample
+
+example.prg
+repexec.prg
+
+../../hwgui.hbc
+
+# ================ EOF of example.hbp ================

@@ -31,6 +31,7 @@
    more than one help windows with differnt items.
 */
 
+MEMVAR CAGUML, COGUML , CUGUML , CAKUML, COKUML , CUKUML , CSZUML , EURO
 
 #include "hwgui.ch"
 #ifdef __GTK__

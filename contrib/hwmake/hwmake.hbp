@@ -2,6 +2,8 @@
 # $Id$
 #
 
+-stop={linux}
+
 ../../hwgui.hbc
 
 -w0

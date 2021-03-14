@@ -13,6 +13,8 @@
 #include "windows.ch"
 #include "guilib.ch"
 
+MEMVAR aItems , oDialg
+
 FUNCTION Main()
 LOCAL oWinMain
 
@@ -38,7 +40,7 @@ RETURN NIL
 
 
 FUNCTION _menudialog
-LOCAL oFont , citem
+LOCAL oFont , citem , i
 
 PRIVATE oDialg
 

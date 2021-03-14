@@ -40,6 +40,7 @@ Local oMainWindow
 Return Nil
 
 Function DlgGet
+LOCAL oBmp
 Local oModDlg, oBrw1, oBrw2
 Local aSample1 := { {"Alex",17,2500}, {"Victor",42,2200}, {"John",31,1800}, ;
    {"Sebastian",35,2000}, {"Mike",54,2600}, {"Sardanapal",22,2350}, {"Sergey",30,2800}, {"Petr",42,2450} }

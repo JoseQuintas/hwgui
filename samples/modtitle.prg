@@ -16,17 +16,18 @@
 */
 
 /* === includes === */
-#include "hwgui.ch"
+// #include "hwgui.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
 #include "windows.ch"
 #include "guilib.ch"
 
+MEMVAR oWndMain
 
 /* Main Program */
 FUNCTION MAIN
-MEMVAR  oFont
+LOCAL  oFont
 PRIVATE oWndMain
 #ifndef __GTK__
       hwg_Settooltipballoon(.t.)

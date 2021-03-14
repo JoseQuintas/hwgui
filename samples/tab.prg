@@ -41,6 +41,8 @@
 
 #define IDC_1           101
 
+MEMVAR oFont
+
 FUNCTION Main()
 LOCAL oWinMain
 

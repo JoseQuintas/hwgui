@@ -1,0 +1,24 @@
+#
+# $Id$
+#
+
+-stop={linux}
+
+# Special parameters for LINUX/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-lhwg_misc
+
+../hwgui.hbc
+
+-n
+-w
+
+-otestrtf
+
+testrtf.prg
+
+# ==================== EOF of testrtf.hbp ===============

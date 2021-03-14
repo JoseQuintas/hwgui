@@ -190,7 +190,7 @@ RETURN NIL
 FUNCTION BrwArrayGetElem(oBrow,cgetf)
 * Edit window for element
 * Cancel: return empty string
-LOCAL clgetf  , lcancel
+LOCAL clgetf  , lcancel , oDlg
 LOCAL oLabel1, oLabel2, oGet1, oButton1, oButton2
 
 lcancel := .F.

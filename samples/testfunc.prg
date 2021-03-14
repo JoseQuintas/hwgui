@@ -45,7 +45,7 @@
 
 #include "hwgui.ch"
 #include "common.ch"
-#include "windows.ch"
+// #include "windows.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
@@ -53,19 +53,21 @@
    #include "ttable.ch"
 #endif
 
-
+MEMVAR cDirSep , bgtk , ndefaultcsrtype
 
 FUNCTION MAIN
 LOCAL Testfunc, oFont , nheight
 
 LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
 LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
-LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22  
+LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22
+
 PUBLIC cDirSep := hwg_GetDirSep()
 PUBLIC bgtk , ndefaultcsrtype
 
 * Detect GTK build
 bgtk := .F.
+
 #ifdef __GTK__
 bgtk := .T.
 #endif

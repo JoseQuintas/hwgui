@@ -11,6 +11,8 @@
 
 STATIC oPrinter,aSize:={280,220}
 
+MEMVAR oMainWindow, oPanel , oFont , nColor, oBmp2 , cDir
+
 function Main
 Private oMainWindow, oPanel
 Private oFont := Nil, cDir := "\"+Curdir()+"\"
@@ -38,6 +40,7 @@ return nil
 FUNCTION TestRtf()
 LOCAL cOutFile, oRtf, anchos, i
 LOCAL j, aMarca, lFormato := .F.
+LOCAL cTexto
 
    cOutFile := hwg_Savefile( "*.rtf","RTF files( *.rtf )","*.rtf" )
    IF Empty( cOutFile )
@@ -57,17 +60,17 @@ LOCAL j, aMarca, lFormato := .F.
    // Metodos nuevos que se han introducido
 
    BEGIN BOOKMARK oRTF ;
-	TEXT "Marcadores"
+     TEXT "Marcadores"
    END BOOKMARK oRTF
 
    // Cajas de Texto
 
    BEGIN TEXTBOX oRtf;
-	SIZE {9.0,0.30};     // Tamaño Caja de texto
-	TEXT "Cajas de Texto";
-	FONTNUMBER 2;
-	FONTSIZE 12 ;
-	APPEARANCE BOLD_ON+CAPS_ON;
+    SIZE {9.0,0.30} ;   // Tamaño Caja de texto
+    TEXT "Cajas de Texto";
+    FONTNUMBER 2;
+    FONTSIZE 12 ;
+    APPEARANCE BOLD_ON+CAPS_ON;
         INDENT 0
 
    END TEXTBOX oRtf
@@ -84,7 +87,7 @@ LOCAL j, aMarca, lFormato := .F.
         STYLE 2
 
    NEW PARAGRAPH oRTF TEXT "CON LETRAS DE COLORES";
-	APPEARANCE BOLD_OFF+ITALIC_OFF+CAPS_OFF;
+     APPEARANCE BOLD_OFF+ITALIC_OFF+CAPS_OFF;
         FONTNUMBER 2;
         FONTCOLOR 3;
         STYLE 1;
@@ -130,24 +133,24 @@ LOCAL j, aMarca, lFormato := .F.
    AFILL(aMarca,0)
    aMarca[7]:=25
    aMarca[9]:=25
-		DEFINE NEWTABLE oRTF ;              // Specify the RTF object
-			ALIGN CENTER ;                // Center table horizontally on page
-			FONTNUMBER 2 ;                // Use font #2 for the body rows
-			FONTSIZE 10 ;                  // Use 9 Pt. font for the body rows
-			CELLAPPEAR BOLD_OFF ;         // Normal cells unbolded
-			CELLHALIGN LEFT ;             // Text in normal cells aligned left
-			COLUMNS 9 ;      	    // Table has n Columns
-			CELLWIDTHS anchos ;        // Array of column widths
-			ROWHEIGHT .2 ;               // Minimum row height is .25"
-			CELLBORDERS SINGLE ;          // Outline cells with thin border
-			COLSHADE aMarca;               // Sombras en columnas
-			HEADERROWS 2;                // dos lineas de titulos
+        DEFINE NEWTABLE oRTF ;              // Specify the RTF object
+            ALIGN CENTER ;                  // Center table horizontally on page
+            FONTNUMBER 2 ;                  // Use font #2 for the body rows
+            FONTSIZE 10 ;                   // Use 9 Pt. font for the body rows
+            CELLAPPEAR BOLD_OFF ;           // Normal cells unbolded
+            CELLHALIGN LEFT ;               // Text in normal cells aligned left
+            COLUMNS 9 ;                     // Table has n Columns
+            CELLWIDTHS anchos ;             // Array of column widths
+            ROWHEIGHT .2 ;                  // Minimum row height is .25"
+            CELLBORDERS SINGLE ;            // Outline cells with thin border
+            COLSHADE aMarca;                // Sombras en columnas
+            HEADERROWS 2;                   // dos lineas de titulos
                         HEADER {"Sala","Generador","","","","","ACTIVIDAD",;
                         "NºEXPOSICIONES AÑO POR TUBO","CARGA DE TRABAJO mA. min/semana"},;
-			{"","Marca","Modelo","Tension Pico (kVp)","Intensidad (mA)",;
-			"Nº Tubos","","",""};       // Titulos. Cada linea es una matriz
-			HEADERSHADE 0;
-			HEADERFONTSIZE 10;
+            {"","Marca","Modelo","Tension Pico (kVp)","Intensidad (mA)",;
+            "Nº Tubos","","",""};       // Titulos. Cada linea es una matriz
+            HEADERSHADE 0;
+            HEADERFONTSIZE 10;
             HEADERHALIGN CENTER 
                                                       // 2,3 y 5,6 de la primera linea de titulos
                                                       // van a estar unidas en una sola.
@@ -155,27 +158,27 @@ LOCAL j, aMarca, lFormato := .F.
                         FOR i=1 TO 40
                                        IF i==6
    // Se puede cambiar el formato de una celda individual en tiempo de ejecucion.
-			                        aMarca[5]:=1500
-			                        aMarca[7]:=2500
-			                        aMarca[9]:=2500
-						DEFINE CELL FORMAT oRTF ;
-							CELLSHADE aMarca
-			                        lFormato:=.T.
-			                ELSEIF lFormato
-						DEFINE CELL FORMAT oRTF
-			                        lFormato:=.F.
-			                ENDIF
+                                    aMarca[5]:=1500
+                                    aMarca[7]:=2500
+                                    aMarca[9]:=2500
+                        DEFINE CELL FORMAT oRTF ;
+                            CELLSHADE aMarca
+                                 lFormato:=.T.
+                        ELSEIF lFormato
+                        DEFINE CELL FORMAT oRTF
+                              lFormato:=.F.
+                            ENDIF
 
                                 FOR j=1 TO 9
                                         if i==6 .AND. j==5
-						WRITE NEWCELL oRTF TEXT "sombra"
+                        WRITE NEWCELL oRTF TEXT "sombra"
                                         else
-						WRITE NEWCELL oRTF TEXT ""
+                        WRITE NEWCELL oRTF TEXT ""
                                         endif
                                 NEXT j
                         NEXT i
 
-		END TABLE oRTF
+        END TABLE oRTF
 
    CLOSE RTF oRtf
 
@@ -202,11 +205,11 @@ MEMVAR nom_hosp1,nom_hosp2,nom_ser
 MEMVAR cNomUser
 
 DEFINE RTF oRTF FILE cOutFile ;
-	FONTS "Times New Roman", "Arial", "Courier New" ;
-	FONTFAMILY "froman","fswiss","fmodern";
+    FONTS "Times New Roman", "Arial", "Courier New" ;
+    FONTFAMILY "froman","fswiss","fmodern";
         CHARSET 0,0,10;
-	FONTSIZE 12 ;
-	TWIPFACTOR 1440
+    FONTSIZE 12 ;
+    TWIPFACTOR 1440
 
 // Estilos. Despues de la definicion del oRtf
 
@@ -226,19 +229,19 @@ END ESTILOS oRTF
 
 // Informacion del documento.
 
-INFO oRTF TITLE "Prueba"; 			//Titulo
-	SUBJECT "Informe en RTF";               //Materia
-	AUTHOR "Jose Ignacio Jimenez Alarcon";  // Autor
-	MANAGER "Jose Ignacio Jimenez Alarcon" ;  //Director
-	COMPANY "Servicio Canario de Salud" ;     // Compañia
-	OPERATOR "Jose Ignacio Jimenez Alarcon"   // Operador
+INFO oRTF TITLE "Prueba";                      // Titulo
+    SUBJECT "Informe en RTF";                  // Materia
+    AUTHOR "Jose Ignacio Jimenez Alarcon";     // Autor
+    MANAGER "Jose Ignacio Jimenez Alarcon" ;   // Director
+    COMPANY "Servicio Canario de Salud" ;      // Compañia
+    OPERATOR "Jose Ignacio Jimenez Alarcon"    // Operador
 
 // Formato del documento. Se puede cambiar luego con el setup. Tiene
 // que ir siempre detras del bloque de informacion si existe
 DOCUMENT FORMAT oRtf;
-        TAB 0.5;        	// Tabuladores
-        LINE 1;         	// Linea Inicial
-        BACKUP;         	// Backup al grabar
+        TAB 0.5;                // Tabuladores
+        LINE 1;                 // Linea Inicial
+        BACKUP;                 // Backup al grabar
         DEFLANG 1034;           // Lenguaje del documento
         FOOTTYPE BOTH;          // Notas hwg_Pie de Pagina y Final Documento
         FOOTNOTES SECTION;      // Al final de la seccion
@@ -253,45 +256,45 @@ DOCUMENT FORMAT oRtf;
 oRTF:lTrimSpaces := .T.
 
 DEFINE PAGESETUP oRTF MARGINS 0.5, 0.5, 0.5, 0.5 ;
-	PAGEWIDTH (aSize[2]/25.4) ;
-	PAGEHEIGHT (aSize[1]/25.4);
-	TABWIDTH .5 ;
-	ALIGN TOP;
+    PAGEWIDTH (aSize[2]/25.4) ;
+    PAGEHEIGHT (aSize[1]/25.4);
+    TABWIDTH .5 ;
+    ALIGN TOP;
         LANDSCAPE
 
 BEGIN HEADER oRTF
 
-	DEFINE NEWTABLE oRTF ;              // Specify the RTF object
-		ALIGN LEFT ;                // Center table horizontally on page
-		FONTNUMBER 2 ;                // Use font #2 for the body rows
-		FONTSIZE 9 ;                  // Use 9 Pt. font for the body rows
-		CELLAPPEAR BOLD_OFF ;         // Normal cells unbolded
-		COLUMNS 3;      		// Table has n Columns
-		CELLWIDTHS {0.98,5.71,0.71};        // Array of column widths
-		ROWHEIGHT .2  ;              // Minimum row height is .25"
-		CELLBORDERS NONE           // Outline cells with thin border
+     DEFINE NEWTABLE oRTF ;           // Specify the RTF object
+        ALIGN LEFT ;                  // Center table horizontally on page
+        FONTNUMBER 2 ;                // Use font #2 for the body rows
+        FONTSIZE 9 ;                  // Use 9 Pt. font for the body rows
+        CELLAPPEAR BOLD_OFF ;         // Normal cells unbolded
+        COLUMNS 3;                    // Table has n Columns
+        CELLWIDTHS {0.98,5.71,0.71};  // Array of column widths
+        ROWHEIGHT .2  ;               // Minimum row height is .25"
+        CELLBORDERS NONE              // Outline cells with thin border
 
 
-	WRITE NEWCELL oRTF TEXT "";
+    WRITE NEWCELL oRTF TEXT "";
                 FONTNUMBER 2;
-		FONTSIZE 8 ;
-		ALIGN LEFT
+        FONTSIZE 8 ;
+        ALIGN LEFT
 
-	WRITE NEWCELL oRTF TEXT "Clase RichText";
+    WRITE NEWCELL oRTF TEXT "Clase RichText";
                 FONTNUMBER 2;
-		FONTSIZE 14 ;
+        FONTSIZE 14 ;
                 FONTCOLOR 2;                            // Colores
-		APPEARANCE BOLD_ON+CAPS_ON+ITALIC_ON ;
-		ALIGN CENTER
+        APPEARANCE BOLD_ON+CAPS_ON+ITALIC_ON ;
+        ALIGN CENTER
 
         WRITE NEWCELL oRtf TEXT ""
 
-	WRITE NEWCELL oRTF TEXT ""
-	WRITE NEWCELL oRTF TEXT ""
+        WRITE NEWCELL oRTF TEXT ""
+        WRITE NEWCELL oRTF TEXT ""
         WRITE NEWCELL oRtf TEXT ""
 
-	WRITE NEWCELL oRTF TEXT ""
-	WRITE NEWCELL oRTF TEXT ""
+        WRITE NEWCELL oRTF TEXT ""
+        WRITE NEWCELL oRTF TEXT ""
         WRITE NEWCELL oRtf TEXT ""
 
 END TABLE oRTF
@@ -299,19 +302,22 @@ END TABLE oRTF
 END HEADER oRTF
 
 BEGIN FOOTER oRTF
-	NEW PARAGRAPH oRTF TEXT "Pagina " ;
-                FONTNUMBER 2;
-		FONTSIZE 8 ;
-	        BORDER "TOP";
-		ALIGN LEFT
+    NEW PARAGRAPH oRTF TEXT "Pagina " ;
+        FONTNUMBER 2;
+        FONTSIZE 8 ;
+        BORDER "TOP";
+        ALIGN LEFT
         
 // Nuevo. Escribe en ese lugar el numero de pagina actual.
 
-	SETPAGE oRtf
+    SETPAGE oRtf
 
 END FOOTER oRTF
 
 RETURN oRTF
 **********************  END OF SetupRTF()  ***********************
+
+* ====================== EOF of testrtf.prg ===========================
+ 
 
 

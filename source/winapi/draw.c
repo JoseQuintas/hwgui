@@ -273,6 +273,32 @@ HB_FUNC( HWG_FILLRECT )
          HB_ISPOINTER( 6 ) ? ( HBRUSH )HB_PARHANDLE( 6 ) : ( HBRUSH )hb_parnl(6) );
 }
 
+/*
+ * hwg_Arc( hDC, xc, yc, radius, iAngleStart, iAngleEnd )
+ * Draws an arc with a center in xc, yc, with a radius from an angle
+ * iAngleStart to iAngleEnd. Angles are passed in degrees.
+ * 0 corresponds to the standard X axis, drawing direction is clockwise.
+ */
+HB_FUNC( HWG_ARC )
+{
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
+   int xc = hb_parni(2), yc = hb_parni(3);
+   int radius = hb_parni(4);
+   int iAngle1 = hb_parni(5), iAngle2 = hb_parni(6);
+   int x1, y1;
+
+   iAngle1 = iAngle2 - iAngle1;
+   iAngle2 = 360 - iAngle2;
+
+   x1 = xc + radius * cos( iAngle2 * M_PI / 180 );
+   y1 = yc - radius * sin( iAngle2 * M_PI / 180 );
+   MoveToEx( hDC, x1, y1, (LPPOINT) NULL );
+   AngleArc( hDC, xc, yc,
+      (DWORD) radius,
+      (FLOAT) iAngle2,
+      (FLOAT) iAngle1 );
+}
+
 HB_FUNC( HWG_ROUNDRECT )
 {
    hb_parl( RoundRect( ( HDC ) HB_PARHANDLE( 1 ),       // handle of device context

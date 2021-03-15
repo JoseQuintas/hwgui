@@ -193,6 +193,26 @@ HB_FUNC( HWG_FILLRECT )
    cairo_fill( hDC->cr );
 }
 
+/*
+ * hwg_Arc( hDC, xc, yc, radius, iAngleStart, iAngleEnd )
+ * Draws an arc with a center in xc, yc, with a radius from an angle
+ * iAngleStart to iAngleEnd. Angles are passed in degrees.
+ * 0 corresponds to the standard X axis, drawing direction is clockwise.
+ */
+HB_FUNC( HWG_ARC )
+{
+
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 );
+   gdouble radius = hb_parnd( 4 );
+   int iAngle1 = hb_parni(5), iAngle2 = hb_parni(6);
+
+   cairo_new_sub_path( hDC->cr );
+   cairo_arc( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
+   //cairo_close_path(hDC->cr);
+   cairo_stroke( hDC->cr );
+}
+
 HB_FUNC( HWG_ROUNDRECT )
 {
 

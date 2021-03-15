@@ -13,7 +13,8 @@
 -L../..
 hwgui.hbc
 
--ohwgrun
+# -o../../bin/hwgrun
+-o./hwgrun
 
 hwgrun.prg
 

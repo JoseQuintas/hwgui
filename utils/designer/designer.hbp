@@ -12,7 +12,7 @@
 -L../../
 hwgui.hbc
 
--odesigner
+-o./designer
 
 designer.prg
 hctrl.prg

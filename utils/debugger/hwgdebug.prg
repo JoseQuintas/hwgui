@@ -275,7 +275,9 @@ FUNCTION Main( ... )
    MENUITEM "Save &breakpoints" ACTION SaveBreaks()
    MENUITEM "&Load breakpoints" ACTION LoadBreaks()
    ENDMENU
-   MENUITEM "&About" ACTION About()
+   MENU TITLE "&?"
+    MENUITEM "&About" ACTION About()
+   ENDMENU
    ENDMENU
 
    @ 0, 0 TAB oTabMain ITEMS {} SIZE 600, 436 ON SIZE { |o, x, y|o:Move( , , x, y - 108 ) }

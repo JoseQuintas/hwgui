@@ -8,6 +8,37 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-03-15 10:00 UTC+0100 Wilfried Brunken DF7BE
+  * bin (New directory)
+  * bin/empty.txt (New)
+  * install.txt
+  * utils/bincnt/bincnt.hbp
+  * utils/bincnt/file2hex.hbp
+  * utils/dbc/dbchw.hbp
+  * utils/dbc/dbchw.prg
+  * utils/debugger/hwgdebug.hbp
+  * utils/debugger/hwgdebug.prg
+  * utils/designer/designer.hbp
+  * utils/editor/editor.hbp
+  * utils/tutorial/hwgrun.hbp
+  * utils/tutorial/tutor.hbp
+  ! Ticket #77:
+  ! Project "hbcontainer" for LINUX,
+  ! Now completed.
+  ! Protocol of run appended to post to ticket.
+  ! Some utils are now build in new directory "bin",
+  ! can be added into the PATH variable,
+  ! otherwise created in sample directory.
+  ! (bincnt  dbchw  file2hex  hwgdebug,
+  ! not designer and editor, because of existing app's)
+  !
+  ! Debugger Menu about on LINUX:
+  ! Added submenu "About", because of "Aktiviere".
+  ! TO-DO for debugger (severe bug on LINUX):
+  ! After loading a program for debug,
+  ! the menu points for debugging are not activated. 
+  ! (Main menues "View" and "Run")
+
 2021-03-15 09:41 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/draw.c
   * source/winapi/draw.c

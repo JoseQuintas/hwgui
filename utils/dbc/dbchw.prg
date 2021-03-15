@@ -1142,9 +1142,15 @@ FUNCTION FiClose
 
    RETURN Nil
 
+
+/*
+ This function is not used,
+ link error, duplicate definition in
+ source\common\procmisc\procscri.prg
 FUNCTION WndOut()
 
    RETURN Nil
+*/
 
 FUNCTION MsgSay( cText )
 

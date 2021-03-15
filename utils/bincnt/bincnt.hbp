@@ -12,7 +12,7 @@
 -L../..
 hwgui.hbc
 
--obincnt
+-o../../bin/bincnt
 
 bincnt.prg
 

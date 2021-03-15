@@ -12,7 +12,8 @@
 -L../..
 hwgui.hbc
 
--otutor
+#-o../../bin/tutor
+-o./tutor
 
 tutor.prg
 

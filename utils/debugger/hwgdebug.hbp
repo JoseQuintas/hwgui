@@ -12,7 +12,7 @@
 -L../..
 hwgui.hbc
 
--ohwgdebug
+-o../../bin/hwgdebug
 
 hwgdebug.prg
 

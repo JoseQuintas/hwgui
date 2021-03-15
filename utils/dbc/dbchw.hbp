@@ -2,7 +2,6 @@
 # $Id$
 #
 
--stop{linux}
 
 -n -w
 
@@ -14,7 +13,7 @@
 -L../..
 hwgui.hbc
 
--odbchw
+-o../../bin/dbchw
 
 dbchw.prg
 commands.prg

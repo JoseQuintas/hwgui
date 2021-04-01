@@ -140,7 +140,7 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       IF lNoModal == Nil .OR. !lNoModal
          ::lModal := .T.
          ::AddItem()
-         Hwg_DialogBox( hwg_Getactivewindow(), Self )
+         Hwg_DialogBox( hParent, Self )
       ELSE
          ::lModal  := .F.
          ::handle  := 0
@@ -153,7 +153,7 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       IF lNoModal == Nil .OR. !lNoModal
          ::lModal := .T.
          ::AddItem()
-         Hwg_DlgBoxIndirect( hwg_Getactivewindow(), Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
+         Hwg_DlgBoxIndirect( hParent, Self, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style )
       ELSE
          ::lModal  := .F.
          ::handle  := 0

@@ -8,6 +8,13 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-04-01 09:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/hwindow.prg
+  * source/winapi/hdialog.prg
+    ! Small fixes
+  * utils/tutorial/tutor_eng.xml
+    * "Standard dialogs" section extended
+
 2021-03-15 10:00 UTC+0100 Wilfried Brunken DF7BE
   * bin (New directory)
   * bin/empty.txt (New)

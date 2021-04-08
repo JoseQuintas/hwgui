@@ -8,6 +8,47 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2021-04-08 10:00 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_functions.html
+  * hwgui.hbm
+  * include/hwgextern.ch
+  * samples/Readme.txt
+  * samples/allhbp.hbp
+  * samples/htrack.hbp (new)
+  * samples/htrack.prg (new)
+  * source/gtk/Makefile.linux
+  * source/gtk/Makefile.mingw
+  * source/gtk/htrackbr.prg (new)
+  * source/winapi/htrackbr.prg
+  * utils/tutorial/tutor.prg
+  * utils/tutorial/tutor_eng.xml
+    ! Internal error turorial detected and fixed:
+    ! tutor_eng.xml:
+    ! Include fires "compile error":
+    ! #include "hbclass.ch"
+    ! Class HTRACK now part of HWGUI library.
+    ! A good idea as a substitute for Win only "HTRACKBAR",
+    ! moved from tutor, 
+    ! for multi platform usage.
+    ! HTRACK with new sample program.
+    ! Hint to find the implementation of HTRACK class
+    ! Class docu updated.
+    ! Ticket #82: fixed:
+    ! HWG_MSGNOYES() is Windows only
+    ! Runs on WinAPI, incl. GTK  
+    ! Additional instructions in inline comments
+    ! of tutor.prg.
+    ! Also tutor now runs on GTK cross development environment on Windows
+    ! ( use forever "#ifdef __GTK__" instead of "#ifdef __PLATFORM__WINDOWS" )
+    ! ==> the bugs also appeared here !
+    ! Description of new function hwg_Arc() from A. Kresin (r2963)
+    ! added to function documentation.
+    ! BROWSE class docu: description of non modal behavior
+    ! of UDF calls in subdialogs. 
+
+
 2021-04-01 09:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/hwindow.prg
   * source/winapi/hdialog.prg

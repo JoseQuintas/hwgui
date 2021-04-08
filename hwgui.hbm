@@ -124,6 +124,7 @@
 {unix}source/gtk/hwinprn.prg
 {unix}source/gtk/hprogres.prg
 {unix}source/gtk/hmonthc.prg
+{unix}source/gtk/htrackbr.prg
 {unix}source/gtk/hmisc.prg
 {unix}source/gtk/menu.prg
 

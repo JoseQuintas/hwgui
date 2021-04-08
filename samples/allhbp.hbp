@@ -56,6 +56,7 @@
 ../samples/graph.prg
 ../samples/helpstatic.prg
 ../samples/hexbincnt.prg
+../samples/htrack.prg
 ../samples/icons.prg
 ../samples/icons2.prg
 ../samples/menumod.prg

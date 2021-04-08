@@ -6,6 +6,35 @@
  * Copyright 2013 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  */
+ 
+ /*
+  Ticket #82 (missing symbols):
+  Additional instructions by DF7BE:
+  For extensions of the tutor it is necessary to
+  add all used symbols as an list for the EXTERNAL or REQUEST commands. 
+  
+  1.) Standalone functions of HWGUI (for example HWG_SAVEFILE() )
+      must be added in the header file hwgextern.ch
+      If missing in the HWGUI libs, the symbol was displayed
+      at making of tutor.prg
+      Look for differences between WinAPI and GTK set by
+      compiler switch "#ifdef __GTK__"
+  2.) Class names of HWGUI must be listed in the EXTERNAL's listed above.
+
+  The missing symbol was displayed in the error stack, if the
+  Run button is pressed, for example HWG_MSGNOYES():
+  
+  Error BASE/6101  Unknown or unregistered symbol: HWG_MSGNOYES
+  Called from HB_HRBRUN(0)
+  Called from RUNSAMPLE(292)
+  Called from (b)MAIN(82)
+  Called from HOWNBUTTON:MUP(296)
+  Called from HOWNBUTTON:ONEVENT(149)
+  Called from HWG_ACTIVATEMAINWINDOW(0)
+  Called from HMAINWINDOW:ACTIVATE(348)
+  Called from MAIN(116)
+  
+ */
 
 #include "hwgui.ch"
 #include "hwgextern.ch"
@@ -23,6 +52,7 @@ EXTERNAL DBFCDX, DBFFPT
 EXTERNAL FOPEN, FCLOSE, FSEEK, FREAD, FWRITE, FERASE
 EXTERNAL HB_BITAND, HB_BITSHIFT
 EXTERNAL ASORT, ASCAN
+EXTERNAL HTRACK
 
 #if defined (__HARBOUR__) && ( __HARBOUR__ - 0 >= 0x030000 )
 REQUEST HB_CODEPAGE_UTF8
@@ -253,6 +283,12 @@ STATIC FUNCTION NodeOut( oItem )
 
 STATIC FUNCTION RunSample( oItem )
    LOCAL cText := "", cLine, i, cHrb, lWnd := .F.
+   LOCAL cHrbCopts 
+
+   cHrbCopts := ""
+#ifdef __GTK__
+   cHrbCopts := cHrbCopts + "-d__GTK__"
+#endif   
 
    IF oItem != Nil .AND. !oItem:cargo[1]
       RETURN Nil
@@ -269,7 +305,7 @@ STATIC FUNCTION RunSample( oItem )
 #ifdef __XHARBOUR__
    FErase( "__tmp.hrb" )
    oText:Save( "__tmp.prg" )
-   IF hwg_RunConsoleApp( cHrb_bin_dir + "harbour " + "__tmp.prg -n -gh -I" + cHwg_include_dir + cHrb_inc_dir ) .AND. File( "__tmp.hrb" )
+   IF hwg_RunConsoleApp( cHrb_bin_dir + "harbour " + "__tmp.prg -n -gh " + cHrbCopts + " -I" + cHwg_include_dir + cHrb_inc_dir ) .AND. File( "__tmp.hrb" )
       IF !Empty( cHwgrunPath )
          hwg_RunApp( cHwgrunPath + "hwgrun __tmp.hrb" )
       ELSE
@@ -279,7 +315,12 @@ STATIC FUNCTION RunSample( oItem )
       hwg_MsgStop( "Compile error" )
    ENDIF
 #else
-   IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n","-I" + cHwg_include_dir + cHrb_inc_dir ) )
+
+#ifdef __GTK__
+   IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n", "-d__GTK__" , "-I" + cHwg_include_dir + cHrb_inc_dir ) )
+#else
+   IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n", "-I" + cHwg_include_dir + cHrb_inc_dir ) )
+#endif   
       IF lWnd
          IF !Empty( cHwgrunPath )
             hb_Memowrit( "__tmp.hrb", cHrb )
@@ -329,3 +370,7 @@ STATIC FUNCTION ChangeFont( oCtrl, n )
    oCtrl:SetFont( oFont )
 
    RETURN Nil
+   
+* ================================= EOF of tutor.prg ===============================
+
+   

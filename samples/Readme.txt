@@ -111,6 +111,7 @@ For beginners:
  demodbf.prg        Y         Y       Demo for Edit using command NOEXIT
  demohlist.prg      N         Y       Demo for listbox
  demohlistsub.prg   Y         Y       Multi platform substitute for listbox by BROWSE.
+ Dialogboxes.prg    Y                 Demonstrates few ready to use dialog boxes (extract from tutor)
  fileselect.prg     Y                 Sample for file selection menues
  getupdown.prg      Y                 Usage of @ <x> <y> GET UPDOWN ..
  GetWinVers.prg     Y                 Functions for get recenthwg_SaveFile() Windows version

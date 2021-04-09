@@ -8,6 +8,17 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-04-09 10:40 UTC+0100 Wilfried Brunken DF7BE
+  * samples/Dialogboxes.hbp (new)
+  * samples/Dialogboxes.prg (new)
+  * samples/Readme.txt
+  * source/gtk/gtkmain.prg
+    ! Internal error turorial detected and fixed:
+    ! Function hwg:WChoice() freezes on GTK
+    ! (Getting started, Standard dialogs)
+    ! New sample added (extract from tutor).
+
+
 2021-04-09 09:12 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hcwindow.prg
   * source/winapi/hcontrol.prg

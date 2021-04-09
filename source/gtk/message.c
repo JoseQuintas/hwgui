@@ -79,9 +79,9 @@ HB_FUNC( HWG_MSGEXCLAMATION )
    MessageBox( hb_parc(1), cTitle, GTK_MESSAGE_WARNING, GTK_BUTTONS_CLOSE );
 }
 
-#define IDCANCEL            2
-#define IDYES               6
-#define IDNO                7
+#define IDCANCEL            0
+#define IDYES               1
+#define IDNO                2
 
 HB_FUNC( HWG_MSGYESNOCANCEL )
 {

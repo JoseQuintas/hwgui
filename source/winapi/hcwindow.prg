@@ -82,6 +82,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD FindControl( nId, nHandle )
    METHOD Hide()              INLINE ( ::lHide := .T. , hwg_Hidewindow( ::handle ) )
    METHOD Show()              INLINE ( ::lHide := .F. , hwg_Showwindow( ::handle ) )
+   METHOD Refresh()
    METHOD Move( x1, y1, width, height )
    METHOD SetColor( tcolor, bColor, lRepaint )
    METHOD onEvent( msg, wParam, lParam )
@@ -154,6 +155,12 @@ METHOD Move( x1, y1, width, height ) CLASS HCustomWindow
       ::nHeight := height
    ENDIF
    hwg_Movewindow( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+
+   RETURN NIL
+
+METHOD Refresh() CLASS HCustomWindow
+
+   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
 
    RETURN NIL
 

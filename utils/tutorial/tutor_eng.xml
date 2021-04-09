@@ -980,6 +980,122 @@ Return Nil
 
 ]]>
     </module>
+    <module name="Graph">
+      <![CDATA[// Graph
+#include "hwgui.ch"
+
+#define CLR_BLACK   0xffffff
+#define CLR_BGRAY1  0x7b7680
+#define CLR_BGRAY2  0x5b5760
+#define CLR_DBROWN  0x2F343F
+#define CLR_GBROWN  0x3C3940
+#define CLR_GRAPH      65280
+
+FUNCTION Test
+
+   LOCAL oMain, oPaneHea, oPaneTop, oPaneBot, oGraph, oFont, oBtn1, oBtn2, oBtn3, nBtnWidth := 64
+   LOCAL oStyleNormal, oStylePressed, oStyleOver
+
+   PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 ITALIC
+
+   oStyleNormal := HStyle():New( {CLR_BGRAY1,CLR_BGRAY2}, 1 )
+   oStylePressed := HStyle():New( {CLR_BGRAY1}, 1,, 2, CLR_BLACK )
+   oStyleOver := HStyle():New( {CLR_BGRAY1}, 1 )
+
+   INIT DIALOG oMain TITLE "Graph" AT 200, 0 SIZE 400, 350 ;
+      BACKCOLOR CLR_GBROWN FONT oFont STYLE WND_NOTITLE + WND_NOSIZEBOX
+
+   ADD HEADER PANEL oPaneHea HEIGHT 32 TEXTCOLOR CLR_BLACK BACKCOLOR CLR_DBROWN ;
+      FONT oFont TEXT "Graphs" COORS 20 BTN_CLOSE BTN_MINIMIZE
+
+   oPaneHea:SetSysbtnColor( CLR_BLACK, CLR_BGRAY1 )
+
+   @ 0, 32 PANEL oPaneTop SIZE 400, 48 HSTYLE oStyleNormal ;
+      ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+
+   @ 0,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "1" ;
+         ON CLICK {||Graph1()}
+   @ 64,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "2" ;
+         ON CLICK {||Graph2()}
+
+   @ 332,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Exit" ;
+         ON CLICK {||hwg_EndDialog()}
+
+   @ 50, 100 GRAPH oGraph DATA Nil SIZE 300, 200 COLOR 65280
+
+   ADD STATUS PANEL oPaneBot TO oMain HEIGHT 32 HSTYLE oStyleNormal
+
+   @ Int((oMain:nWidth-nBtnWidth*3)/2),0 OWNERBUTTON oBtn1 OF oPaneBot SIZE nBtnWidth,32 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Dots" ;
+         ON CLICK {||SetGraph1(0)}
+
+   @ oBtn1:nLeft+nBtnWidth,0 OWNERBUTTON oBtn2 OF oPaneBot SIZE nBtnWidth,32 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Curve" ;
+         ON CLICK {||SetGraph1(1)}
+
+   @ oBtn2:nLeft+nBtnWidth,0 OWNERBUTTON oBtn3 OF oPaneBot SIZE nBtnWidth,32 ;
+         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Bars" ;
+         ON CLICK {||SetGraph1(2)}
+
+   ACTIVATE DIALOG oMain ON ACTIVATE {|| oBtn1:Hide(), oBtn2:Hide(), oBtn3:Hide() }
+
+   RETURN Nil
+
+STATIC FUNCTION Graph1
+
+   LOCAL oDlg, oGraph, i, aGraph := { {}, {} }
+
+   FOR i := - 40 TO 40
+      AAdd( aGraph[1], hwg_cos( i/10 ) )
+      AAdd( aGraph[2], hwg_sin( i/10 ) )
+   NEXT
+
+   oDlg := hwg_GetModalDlg()
+   oGraph := oDlg:oGraph
+   oGraph:nGraphs := 2
+   oGraph:aColors := { 255 }
+
+   oDlg:oPaneBot:oBtn1:Show()
+   oDlg:oPaneBot:oBtn2:Show()
+   oDlg:oPaneBot:oBtn3:Show()
+
+   oGraph:Rebuild( aGraph, 1 )
+
+   RETURN Nil
+
+STATIC FUNCTION SetGraph1( n )
+
+   LOCAL oGraph := hwg_GetModalDlg():oGraph
+
+   oGraph:nLineType := n
+   oGraph:Refresh()
+
+   RETURN Nil
+
+STATIC FUNCTION Graph2
+
+   LOCAL oDlg, oGraph, i, aGraph := { {} }
+
+   FOR i := 1 TO 8
+      AAdd( aGraph[1], i * i )
+   NEXT
+
+   oDlg := hwg_GetModalDlg()
+   oGraph := oDlg:oGraph
+   oGraph:nGraphs := 1
+
+   oDlg:oPaneBot:oBtn1:Hide()
+   oDlg:oPaneBot:oBtn2:Hide()
+   oDlg:oPaneBot:oBtn3:Hide()
+
+   oGraph:Rebuild( aGraph, 2 )
+
+   RETURN Nil
+]]>
+    </module>
   </chapter>
   <chapter name="Get system" >
     <module name="Dialog with various Gets" ver="win">

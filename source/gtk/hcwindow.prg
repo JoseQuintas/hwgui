@@ -1,7 +1,7 @@
 /*
  *$Id$
  *
- * HWGUI - Harbour Win32 GUI library source code:
+ * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HCustomWindow class
  *
  * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
@@ -67,6 +67,7 @@ CLASS HCustomWindow INHERIT HObject
    METHOD Hide() INLINE ( ::lHide := .T. , hwg_Hidewindow( ::handle ) )
    METHOD Show() INLINE ( ::lHide := .F. , hwg_Showwindow( ::handle ) )
    METHOD Move( x1, y1, width, height )
+   METHOD Refresh()
    METHOD Setcolor( tcolor, bcolor, lRepaint )
    METHOD onEvent( msg, wParam, lParam )
    METHOD End()
@@ -142,6 +143,12 @@ METHOD Move( x1, y1, width, height )  CLASS HCustomWindow
    ENDIF
 
    RETURN Nil
+
+METHOD Refresh() CLASS HCustomWindow
+
+   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+
+   RETURN NIL
 
 METHOD Setcolor( tcolor, bcolor, lRepaint ) CLASS HCustomWindow
 

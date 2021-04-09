@@ -8,6 +8,20 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-04-09 09:12 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/winapi/hcwindow.prg
+  * source/winapi/hcontrol.prg
+  * source/gtk/hcwindow.prg
+  * source/gtk/hcontrol.prg
+    * Refresh() method moved to HCustomWindow and uses RedrawWindow() call
+  * source/winapi/hgraph.prg
+  * source/gtk/hgraph.prg
+    * :nLineType and :nPointSize variables added to extend graph representation.
+  * source/winapi/message.c
+  * source/gtk/message.c
+    * hwg_MsgYesNoCancel() returns 1, 2 and 0 now.
+  * utils/tutorial/tutor_eng.xml
+    * "Graph" section added.
 
 2021-04-08 10:00 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html

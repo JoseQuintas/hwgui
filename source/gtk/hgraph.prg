@@ -19,6 +19,9 @@ CLASS HGraph INHERIT HControl
    DATA aSignX, aSignY               // Signs arrays for X and Y axes
    DATA nGraphs    INIT 1            // Number of lines in a line chart
    DATA nType                        // Graph type: 1 - line chart, 2 - bar histogram
+   DATA nLineType  INIT 1            // Connecting lines for ::nType == 1 (line chart):
+                                     //   0 - no lines, 1 - between poits, 2 - vertical
+   DATA nPointSize INIT 2            // A point width/height for ::nLineType == 1
    DATA lGridX     INIT .F.          // Should I draw grid lines for X axis
    DATA lGridY     INIT .F.          // Should I draw grid lines for Y axis
    DATA lGridXMid  INIT .T.          // Should I shift X axis grid line to a middle of a bar
@@ -30,7 +33,7 @@ CLASS HGraph INHERIT HControl
    DATA colorCoor INIT 0xffffff      // A color for signs
    DATA colorGrid INIT 0xaaaaaa      // A color for axes and grid lines
    DATA aColors                      // Colors for each line
-   DATA ymaxSet
+   DATA ymaxSet, yminSet
    DATA tbrush
    DATA aPens
    DATA oPen, oPenGrid
@@ -43,7 +46,7 @@ CLASS HGraph INHERIT HControl
    METHOD onEvent( msg, wParam, lParam )
    METHOD CalcMinMax()
    METHOD Paint()
-   METHOD Rebuild( aValues, nType )
+   METHOD Rebuild( aValues, nType, nLineType, nPointSize )
 
 ENDCLASS
 
@@ -94,6 +97,9 @@ METHOD CalcMinMax() CLASS HGraph
    ::xmax := ::xmin := ::ymax := ::ymin := 0
    IF !Empty( ::ymaxSet )
       ::ymax := ::ymaxSet
+   ENDIF
+   IF !Empty( ::yminSet )
+      ::ymin := ::yminSet
    ENDIF
    FOR i := 1 TO ::nGraphs
       nLen := Len( ::aValues[ i ] )
@@ -204,8 +210,16 @@ METHOD Paint() CLASS HGraph
                py1 := Round( y2 - ( Iif( l1, ::aValues[ i,j-1], ::aValues[ i,j-1,2 ] ) - ::ymin ) / ::scaleY, 0 )
                px2 := Round( x1 + ( Iif( l1, j, ::aValues[ i,j,1 ] ) - ::xmin ) / ::scaleX, 0 )
                py2 := Round( y2 - ( Iif( l1, ::aValues[ i,j ], ::aValues[ i,j,2 ] ) - ::ymin ) / ::scaleY, 0 )
-               IF px2 != px1 .OR. py2 != py1
-                  hwg_Drawline( hDC, px1, py1, px2, py2 )
+               IF px2 != px1
+                  IF ::nLineType == 0
+                     hwg_Rectangle( hDC, px1, py1, px1+::nPointSize-1, py1+::nPointSize-1 )
+                     hwg_Rectangle( hDC, px2, py2, px2+::nPointSize-1, py2+::nPointSize-1 )
+                  ELSEIF ::nLineType == 1
+                     hwg_Drawline( hDC, px1, py1, px2, py2 )
+                  ELSEIF ::nLineType == 2
+                     hwg_Drawline( hDC, px1, y0, px1, py1 )
+                     hwg_Drawline( hDC, px2, y0, px2, py2 )
+                  ENDIF
                ENDIF
             NEXT
          ELSEIF ::nType == 2
@@ -275,17 +289,22 @@ METHOD Paint() CLASS HGraph
 
    RETURN Nil
 
-/* Added:  nType */   
-METHOD Rebuild( aValues, nType ) CLASS HGraph
+METHOD Rebuild( aValues, nType, nLineType, nPointSize ) CLASS HGraph
 
    ::aValues := aValues
    IF nType != Nil
       ::nType := nType
    ENDIF
+   IF nLineType != Nil
+      ::nLineType := nLineType
+   ENDIF
+   IF nPointSize != Nil
+      ::nPointSize := nPointSize
+   ENDIF
    IF ::nType != 0
       ::CalcMinMax()
-      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ENDIF
+   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
 
    RETURN Nil
 

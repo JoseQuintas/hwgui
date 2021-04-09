@@ -53,7 +53,8 @@ HB_FUNC( HWG_MSGNOYES )
 
 HB_FUNC( HWG_MSGYESNOCANCEL )
 {
-   hb_retni( s_msgbox( MB_YESNOCANCEL | MB_ICONQUESTION ) );
+   int iResult = s_msgbox( MB_YESNOCANCEL | MB_ICONQUESTION );
+   hb_retni( (iResult==6)? 1 : ( (iResult==7)? 2 : 0 ) );
 }
 
 HB_FUNC( HWG_MSGEXCLAMATION )

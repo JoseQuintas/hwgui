@@ -181,7 +181,18 @@
    sudo apt-get install libgtk2.0-dev
    sudo apt install wmctrl  *1)
    
- 
+   Ubuntu 20.04.2.0 LTS:
+   
+   sudo apt-get install linux-headers-generic
+   sudo apt-get update -y
+   
+   For installation of GTK2 package you need the installation media, confirm
+   mount with <ENTER> key during installation:
+   sudo apt-get install -y libgtk2.0-dev
+
+   sudo apt install wmctrl  *1)
+   
+   
   
    Optional for all distributions (resolve dependencies), install them, if needed:
     sudo apt-get install libxmu-dev libxaw7-dev libxt-dev
@@ -225,6 +236,11 @@
    3.) Build HWGUI following instructions above.
 
    Now you should be able to build your application. 
+   
+   On Ubuntu 20.04.2.0 LTS some warnings like
+   "‘GTimeVal’ is deprecated:"
+   appeared, but dont care of them.
+   
 
 * =============== EOF of install.txt ====================
  

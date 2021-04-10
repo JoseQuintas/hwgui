@@ -8,13 +8,19 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2021-04-09 10:40 UTC+0100 Wilfried Brunken DF7BE
+
+2021-04-10 20:55 UTC+0200 Wilfried Brunken DF7BE
+  * install.txt
+    ! Additional instructions for
+    ! Ubuntu 20.04.2.0 LTS
+
+2021-04-09 10:40 UTC+0200 Wilfried Brunken DF7BE
   * samples/Dialogboxes.hbp (new)
   * samples/Dialogboxes.prg (new)
   * samples/Readme.txt
   * source/gtk/gtkmain.prg
     ! Internal error turorial detected and fixed:
-    ! Function hwg:WChoice() freezes on GTK
+    ! Function hwg_WChoice() freezes on GTK
     ! (Getting started, Standard dialogs)
     ! New sample added (extract from tutor).
 

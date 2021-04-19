@@ -211,8 +211,6 @@ HB_FUNC( HWG_BOX )
           );
 }
 
-
-
 HB_FUNC( HWG_DRAWLINE )
 {
    MoveToEx( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ), NULL );
@@ -299,28 +297,24 @@ HB_FUNC( HWG_ARC )
       (FLOAT) iAngle1 );
 }
 
+/*
+ * hwg_RoundRect( hDC, x1, y1, x2, y2, iRadiusH [, iRadiusV] )
+ */
 HB_FUNC( HWG_ROUNDRECT )
 {
+   int iWidth = hb_parni( 6 );
+   int iHeight = ( HB_ISNIL( 7 ) ) ? iWidth : hb_parni( 7 );
+
    hb_parl( RoundRect( ( HDC ) HB_PARHANDLE( 1 ),       // handle of device context
                hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner
                hb_parni( 3 ),   // y-coord. of bounding rectangle's upper-left corner
                hb_parni( 4 ),   // x-coord. of bounding rectangle's lower-right corner
                hb_parni( 5 ),   // y-coord. of bounding rectangle's lower-right corner
-               hb_parni( 6 ),   // width of ellipse used to draw rounded corners
-               hb_parni( 7 )    // height of ellipse used to draw rounded corners
+               iWidth * 2,      // width of ellipse used to draw rounded corners
+               iHeight * 2      // height of ellipse used to draw rounded corners
           ) );
 }
 
-/*
-HB_FUNC( HWG_REDRAWWINDOW )
-{
-   RedrawWindow( ( HWND ) HB_PARHANDLE( 1 ),    // handle of window
-         NULL,                  // address of structure with update rectangle
-         NULL,                  // handle of update region
-         ( UINT ) hb_parni( 2 ) // array of redraw flags
-          );
-}
-*/
 HB_FUNC( HWG_REDRAWWINDOW )
 {
    RECT rc;
@@ -1487,7 +1481,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
    int user_colors_num, colors_num, user_stops_num, user_radiuses_num, i, j, k;
    HDC hDC_mem = NULL;
    HBITMAP bmp = NULL;
-   HPEN hPen;
+   HPEN hPen, hPenOld;
    HBRUSH hBrush;
    TRIVERTEX vertex[(GRADIENT_MAX_COLORS-1)*2];
    GRADIENT_RECT gRect[GRADIENT_MAX_COLORS-1];
@@ -1606,7 +1600,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
          if( ( isV && stop_y[0] > y1 ) || ( isH && stop_x[0] > x1 ) )
          {
             hPen = CreatePen( PS_SOLID, 1, RGB(red[0], green[0], blue[0]) );
-            SelectObject( hDC_mem, hPen );
+            hPenOld = SelectObject( hDC_mem, hPen );
             hBrush = CreateSolidBrush( RGB(red[0], green[0], blue[0]) );
             SelectObject( hDC_mem, hBrush );
             if ( isV )
@@ -1614,13 +1608,14 @@ HB_FUNC( HWG_DRAWGRADIENT )
             else
                Rectangle( hDC_mem, x1, y1, stop_x[0], y2 + 1 );
 
+            SelectObject( hDC_mem, hPenOld );
             DeleteObject( hPen );
             DeleteObject( hBrush );
          }
          if ( ( isV && stop_y[colors_num-1] < y2 + 1 ) || ( isH && stop_x[colors_num-1] < x2 + 1 ) )
          {
             hPen = CreatePen( PS_SOLID, 1, RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
-            SelectObject( hDC_mem, hPen );
+            hPenOld = SelectObject( hDC_mem, hPen );
             hBrush = CreateSolidBrush( RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
             SelectObject( hDC_mem, hBrush );
             if ( isV )
@@ -1628,6 +1623,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
             else
                Rectangle( hDC_mem, stop_x[colors_num-1], y1, x2 + 1, y2 + 1 );
 
+            SelectObject( hDC_mem, hPenOld );
             DeleteObject( hPen );
             DeleteObject( hBrush );
          }
@@ -1654,13 +1650,14 @@ HB_FUNC( HWG_DRAWGRADIENT )
                cur_green = floor( green[i-1] + k * green_step + 0.5 );
                cur_blue = floor( blue[i-1] + k * blue_step + 0.5 );
                hPen = CreatePen( PS_SOLID, 1, RGB( cur_red, cur_green, cur_blue ) );
-               SelectObject( hDC_mem, hPen );
+               hPenOld = SelectObject( hDC_mem, hPen );
 
                MoveToEx( hDC_mem, j, (is_5_6)?y1:y2, NULL );
                LineTo( hDC_mem, j + x2-x1+1, (is_5_6)?y2:y1 );
                // LineTo doesn't draw the last pixel
                SetPixel( hDC_mem, j + x2-x1+1, (is_5_6)?y2:y1, RGB( cur_red, cur_green, cur_blue ) );
 
+               SelectObject( hDC_mem, hPenOld );
                DeleteObject( hPen );
             }
          }
@@ -1669,7 +1666,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
          if ( stop_x[0] > 2*x1-x2-1 ) // on the left
          {
             hPen = CreatePen( PS_SOLID, 1, RGB(red[0], green[0], blue[0]) );
-            SelectObject( hDC_mem, hPen );
+            hPenOld = SelectObject( hDC_mem, hPen );
             hBrush = CreateSolidBrush( RGB(red[0], green[0], blue[0]) );
             SelectObject( hDC_mem, hBrush );
 
@@ -1683,14 +1680,15 @@ HB_FUNC( HWG_DRAWGRADIENT )
             edge[3].y = ( is_5_6 ) ? y1 : y2;
             
             Polygon( hDC_mem, edge, 4 );
-            
+
+            SelectObject( hDC_mem, hPenOld ); 
             DeleteObject( hPen );
             DeleteObject( hBrush );
          }
          if ( stop_x[colors_num-1] < x2 ) // on the right
          {
             hPen = CreatePen( PS_SOLID, 1, RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
-            SelectObject( hDC_mem, hPen );
+            hPenOld = SelectObject( hDC_mem, hPen );
             hBrush = CreateSolidBrush( RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
             SelectObject( hDC_mem, hBrush );
 
@@ -1705,6 +1703,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
             
             Polygon( hDC_mem, edge, 4 );
 
+            SelectObject( hDC_mem, hPenOld );
             DeleteObject( hPen );
             DeleteObject( hBrush );
          }
@@ -1721,12 +1720,13 @@ HB_FUNC( HWG_DRAWGRADIENT )
          if ( stop_x[colors_num-1] < gr_radius )
          {
             hPen = CreatePen( PS_SOLID, 1, RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
-            SelectObject( hDC_mem, hPen );
+            hPenOld = SelectObject( hDC_mem, hPen );
             hBrush = CreateSolidBrush( RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
             SelectObject( hDC_mem, hBrush );
             
             Rectangle( hDC_mem, x1, y1, x2+1, y2+1);
 
+            SelectObject( hDC_mem, hPenOld );
             DeleteObject( hPen );
             DeleteObject( hBrush );
          }
@@ -1743,12 +1743,13 @@ HB_FUNC( HWG_DRAWGRADIENT )
                cur_green = floor( green[i] + k * green_step + 0.5 );
                cur_blue = floor( blue[i] + k * blue_step + 0.5 );
                hPen = CreatePen( PS_SOLID, 1, RGB( cur_red, cur_green, cur_blue ) );
-               SelectObject( hDC_mem, hPen );
+               hPenOld = SelectObject( hDC_mem, hPen );
                hBrush = CreateSolidBrush( RGB( cur_red, cur_green, cur_blue ) );
                SelectObject( hDC_mem, hBrush );
 
                Ellipse( hDC_mem, x_center - j, y_center - j, x_center + j+1, y_center + j+1 );
-       
+
+               SelectObject( hDC_mem, hPenOld ); 
                DeleteObject( hPen );
                DeleteObject( hBrush );
             }
@@ -1866,7 +1867,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
       hBrush = CreateSolidBrush( color );
    }
    
-   SelectObject( hDC, hPen );
+   hPenOld = SelectObject( hDC, hPen );
    SelectObject( hDC, hBrush );
    Polygon( hDC, polygon, polygon_len );
    
@@ -1883,6 +1884,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
          DeleteDC( hDC_mem );
    }
 
+   SelectObject( hDC, hPenOld );
    DeleteObject( hPen );
    DeleteObject( hBrush );
 

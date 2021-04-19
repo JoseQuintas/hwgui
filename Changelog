@@ -9,6 +9,13 @@
 */
 
 
+2021-04-19 11:52 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/hgraph.prg
+    * Synched with winapi version.
+  * source/winapi/draw.c
+    * hwg_RoundRect() seventh parameter has been made optional for compatibility with gtk version.
+    * Few fixes in hwg_DrawGradient()
+
 2021-04-10 20:55 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
     ! Additional instructions for

@@ -9,6 +9,24 @@
 */
 
 
+2021-04-20 11:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/hownbtn.prg
+  * source/winapi/hownbtn.prg
+    * SetTimer() method added and some other code to allow the ownerbutton
+      to do :bClick action multiple times while it is pressed.
+  * source/gtk/htimer.prg
+  * source/winapi/htimer.prg
+    * The timer procedure passes a parent window/control object.
+  * source/gtk/htrackbr.prg 
+  * source/winapi/htrackbr.prg
+    * Clenup and fixes.
+  * include/hwgextern.ch
+    * HTrack item added.
+  * utils/tutorial/tutor_eng.xml
+    * "Ownerbutton with timer" module added.
+    * "Let create new control" has been deleted since the HTrack code copied into HwGUI.
+      "Track bar" module added instead.
+
 2021-04-19 11:52 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/hgraph.prg
     * Synched with winapi version.

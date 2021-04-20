@@ -79,13 +79,12 @@ FUNCTION hwg_TimerProc( hWnd, idTimer ) //, time )
     * Parameters not used
     HB_SYMBOL_UNUSED(hWnd)
 
-
    IF i != 0
       b := HTimer():aTimers[i]:bAction
       IF HTimer():aTimers[i]:lOnce
          HTimer():aTimers[i]:End()
       ENDIF
-      Eval( b ) //, time )
+      Eval( b, HTimer():aTimers[i]:oParent )
    ENDIF
 
    RETURN Nil
@@ -100,7 +99,8 @@ FUNCTION hwg_ReleaseTimers()
 
    RETURN Nil
 
-   EXIT PROCEDURE CleanTimers
+EXIT PROCEDURE CleanTimers
+
    hwg_ReleaseTimers()
 
    RETURN

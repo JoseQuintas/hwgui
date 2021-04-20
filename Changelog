@@ -9,6 +9,11 @@
 */
 
 
+2021-04-20 13:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    ! Small fixes.
+
 2021-04-20 11:10 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/hownbtn.prg
   * source/winapi/hownbtn.prg

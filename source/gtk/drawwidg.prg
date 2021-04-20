@@ -786,7 +786,7 @@ CLASS HStyle INHERIT HObject
    DATA aCorners
 
    METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap )
-   METHOD Draw( hDC, nTop, nLeft, nRight, nBottom )
+   METHOD Draw( hDC, nLeft, nTop, nRight, nBottom )
 ENDCLASS
 
 METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
@@ -826,17 +826,17 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
 
    RETURN Self
 
-METHOD Draw( hDC, nTop, nLeft, nRight, nBottom ) CLASS HStyle
+METHOD Draw( hDC, nLeft, nTop, nRight, nBottom ) CLASS HStyle
 
    IF ::oBitmap == Nil
-      hwg_drawGradient( hDC, nTop, nLeft, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
+      hwg_drawGradient( hDC, nLeft, nTop, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
    ELSE
-      hwg_SpreadBitmap( hDC, ::oBitmap:handle, nTop, nLeft, nRight, nBottom )
+      hwg_SpreadBitmap( hDC, ::oBitmap:handle, nLeft, nTop, nRight, nBottom )
    ENDIF
 
    IF !Empty( ::oPen )
       hwg_Selectobject( hDC, ::oPen:handle )
-      hwg_Rectangle( hDC, nTop, nLeft, nRight-1, nBottom-1 )
+      hwg_Rectangle( hDC, nLeft, nTop, nRight-1, nBottom-1 )
    ENDIF
 
    RETURN Nil

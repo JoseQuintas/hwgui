@@ -83,7 +83,7 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, ;
    AAdd( ::aFonts, Self )
 
    RETURN Self
-   
+
 METHOD SELECT( oFont, nCharSet  ) CLASS HFont
    LOCAL af := hwg_Selectfont( oFont )
 
@@ -137,9 +137,9 @@ METHOD RELEASE() CLASS HFont
    ENDIF
 
    RETURN Nil
-   
-/* DF7BE: For debugging purposes */   
-METHOD PrintFont()  CLASS HFont   
+
+/* DF7BE: For debugging purposes */
+METHOD PrintFont()  CLASS HFont
 //        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
 // Type:  C         N       N         N         N           N          N             N
 // - 9999 means NIL
@@ -154,17 +154,17 @@ METHOD PrintFont()  CLASS HFont
    fdwItalic    := iif( ::Italic == Nil, - 9999 , ::Italic )
    fdwUnderline := iif( ::Underline == Nil, - 9999 , ::Underline )
    fdwStrikeOut := iif( ::StrikeOut == Nil, - 9999 , ::StrikeOut )
- 
 
- 
- 
+
+
+
 RETURN "Font Name=" + fontName + " Width=" + ALLTRIM(STR(nWidth)) + " Height=" + ALLTRIM(STR(nHeight)) + ;
        " Weight=" + ALLTRIM(STR(fnWeight)) + " CharSet=" + ALLTRIM(STR(fdwCharSet)) + ;
        " Italic=" + ALLTRIM(STR(fdwItalic)) + " Underline=" + ALLTRIM(STR(fdwUnderline)) + ;
        " StrikeOut=" + ALLTRIM(STR(fdwStrikeOut))
 
 
-/* 
+/*
   Returns an array with font properties (for creating a copy of a font entry)
   Copy sample
    apffrarr := oFont1:Props2Arr()
@@ -173,7 +173,7 @@ RETURN "Font Name=" + fontName + " Width=" + ALLTRIM(STR(nWidth)) + " Height=" +
  */
 METHOD Props2Arr() CLASS HFont
 //        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
-//        1         2       3         4         5           6          7             8  
+//        1         2       3         4         5           6          7             8
    LOCAL fontName , nWidth , nHeight , fnWeight , fdwCharSet , fdwItalic , fdwUnderline , fdwStrikeOut
    LOCAL aFontprops := {}
 
@@ -185,9 +185,9 @@ METHOD Props2Arr() CLASS HFont
    fdwItalic    := iif( ::Italic == Nil, - 9999 , ::Italic )
    fdwUnderline := iif( ::Underline == Nil, - 9999 , ::Underline )
    fdwStrikeOut := iif( ::StrikeOut == Nil, - 9999 , ::StrikeOut )
-   
+
    AADD (aFontprops, fontName)  && C
-   AADD (aFontprops, nWidth)    && all other of type N 
+   AADD (aFontprops, nWidth)    && all other of type N
    AADD (aFontprops, nHeight)
    AADD (aFontprops, fnWeight)
    AADD (aFontprops, fdwCharSet)
@@ -391,17 +391,17 @@ LOCAL i , hbmp
    hbmp := NIL
    * Search for bitmap in object
    FOR EACH i IN ::aBitmaps
-      IF i:name == name 
+      IF i:name == name
          hbmp := i:handle
       ELSE
         * not found
         RETURN NIL
       ENDIF
    NEXT
-   
+
    hwg_SaveBitMap(cfilename, hbmp )
 
-RETURN NIL 
+RETURN NIL
 
 METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
    LOCAL lPreDefined := .F. , i, aBmpSize
@@ -470,7 +470,7 @@ METHOD AddStandard( nId ) CLASS HBitmap
 
 METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize, cname := CutPath( name ), cCurDir
-   
+
    IF nWidth == nil
       nWidth := 0
    ENDIF
@@ -519,13 +519,13 @@ METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
 
 METHOD AddString( name, cVal , nWidth, nHeight ) CLASS HBitmap
    LOCAL oBmp, aBmpSize
-   
+
    IF nWidth == nil
       nWidth := 0
    ENDIF
    IF nHeight == nil
       nHeight := 0
-   ENDIF   
+   ENDIF
 
    For EACH oBmp IN ::aBitmaps
       IF oBmp:name == name
@@ -660,12 +660,12 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
 
    RETURN Self
 
-   
+
 
  /* Added by DF7BE
- name : Name of resource 
- cVal : Binary contents of *.ico file 
- */  
+ name : Name of resource
+ cVal : Binary contents of *.ico file
+ */
 METHOD AddString( name, cVal , nWidth, nHeight) CLASS HIcon
  LOCAL cTmp    && , oreturn
  LOCAL aIconSize
@@ -676,7 +676,7 @@ METHOD AddString( name, cVal , nWidth, nHeight) CLASS HIcon
    IF nHeight == nil
       nHeight := 0
    ENDIF
- 
+
  * Write contents into temporary file
  hb_memowrit( cTmp := hwg_CreateTempfileName( , ".ico") , cVal )
  * Load icon from temporary file
@@ -690,7 +690,7 @@ METHOD AddString( name, cVal , nWidth, nHeight) CLASS HIcon
 
   * oreturn := ::AddFile( name )
  FERASE(cTmp)
- 
+
 RETURN  Self   && oreturn
 
 
@@ -723,7 +723,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    IF Empty( cFext )
    #else
    IF Empty( hb_fNameExt( name ) )
-   #endif   
+   #endif
       name += ".ico"
    ENDIF
    ::handle := hwg_Loadimage( 0, name, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )
@@ -778,7 +778,7 @@ CLASS HStyle INHERIT HObject
    DATA aCorners
 
    METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap )
-   METHOD Draw( hDC, nTop, nLeft, nRight, nBottom )
+   METHOD Draw( hDC, nLeft, nTop, nRight, nBottom )
 ENDCLASS
 
 METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
@@ -818,18 +818,18 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
 
    RETURN Self
 
-METHOD Draw( hDC, nTop, nLeft, nRight, nBottom ) CLASS HStyle
+METHOD Draw( hDC, nLeft, nTop, nRight, nBottom ) CLASS HStyle
 
    LOCAL n
    IF ::oBitmap == Nil
-      hwg_drawGradient( hDC, nTop, nLeft, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
+      hwg_drawGradient( hDC, nLeft, nTop, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
    ELSE
-      hwg_SpreadBitmap( hDC, ::oBitmap:handle, nTop, nLeft, nRight, nBottom )
+      hwg_SpreadBitmap( hDC, ::oBitmap:handle, nLeft, nTop, nRight, nBottom )
    ENDIF
    IF !Empty( ::oPen )
       n := Int( ::nBorder/2 )
       hwg_Selectobject( hDC, ::oPen:handle )
-      hwg_Rectangle( hDC, nTop+n, nLeft+n, nRight-n, nBottom-n )
+      hwg_Rectangle( hDC, nLeft+n, nTop+n, nRight-n, nBottom-n )
    ENDIF
 
    RETURN Nil
@@ -903,25 +903,25 @@ EXIT PROCEDURE CleanDrawWidg
    ENDIF
 
    RETURN
-   
+
 /*
    DF7BE: only needed for WinAPI, on GTK/LINUX charset is UTF-8 forever.
    All other attributes are not modified.
- */   
+ */
 FUNCTION hwg_FontSetCharset ( oFont, nCharSet  )
    LOCAL i, nlen := Len( oFont:aFonts )
-   
-   IF nCharSet == NIL .OR. nCharSet == -1 
+
+   IF nCharSet == NIL .OR. nCharSet == -1
     RETURN oFont
    ENDIF
-   
+
    oFont:charset := nCharSet
-   
+
  FOR i := 1 TO nlen
         oFont:aFonts[ i ]:CharSet := nCharSet
  NEXT
-  
-RETURN oFont 
+
+RETURN oFont
 
 FUNCTION hwg_LoadCursorFromString(cVal, nx , ny)
 LOCAL cTmp , hCursor
@@ -934,7 +934,7 @@ LOCAL cTmp , hCursor
  * Load cursor from temporary file
  hCursor := hwg_LoadCursorFromFile( cTmp ) && for GTK add parameters nx, ny
  FERASE(cTmp)
-RETURN hCursor  
+RETURN hCursor
 
 * ======================== EOF of drawwidg.prg =========================
-   
+

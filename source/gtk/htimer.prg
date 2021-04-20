@@ -93,7 +93,7 @@ FUNCTION hwg_TimerProc( idTimer )
       IF HTimer():aTimers[i]:lOnce
          HTimer():aTimers[i]:End()
       ENDIF
-      Eval( b )
+      Eval( b, HTimer():aTimers[i]:oParent )
       RETURN 1
    ENDIF
 

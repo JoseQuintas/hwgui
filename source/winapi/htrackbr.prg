@@ -6,6 +6,9 @@
  *
  * Copyright 2004 Marcos Antonio Gambeta <marcos_gambeta@hotmail.com>
  * www - http://geocities.yahoo.com.br/marcosgambeta/
+ *
+ * HTrack class
+ * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
 */
 
 #include "windows.ch"
@@ -156,9 +159,8 @@ CLASS VAR winclass INIT "STATIC"
    DATA bEndDrag
    DATA bChange
 
-
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-               bSize, bDraw, color, bcolor, nSize, oStyle )
+               bSize, bPaint, color, bcolor, nSize, oStyle )
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
@@ -168,13 +170,13 @@ CLASS VAR winclass INIT "STATIC"
 
 ENDCLASS
 
-  METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-               bSize, bDraw, color, bcolor, nSize, oStyle ) CLASS HTrack
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+            bSize, bPaint, color, bcolor, nSize, oStyle ) CLASS HTrack
 
    color := Iif( color == Nil, CLR_BLACK, color )
    bColor := Iif( bColor == Nil, CLR_WHITE, bColor )
    ::Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight,,, ;
-              bSize, bDraw,, color, bcolor )
+              bSize, bPaint,, color, bcolor )
 
    ::title  := ""
    ::lVertical := ( ::nHeight > ::nWidth )
@@ -251,23 +253,23 @@ METHOD Init() CLASS HTrack
    RETURN Nil
 
 METHOD Paint() CLASS HTrack
-   LOCAL hDC, nHalf, x1, y1
-#ifndef __GTK__
-   LOCAL pps
-#endif
-   IF ::bPaint != Nil
-      Eval( ::bPaint, Self )
-   ELSE
+
+   LOCAL nHalf, x1, y1
 #ifdef __GTK__
-      hDC := hwg_Getdc( ::handle )
+   LOCAL hDC := hwg_Getdc( ::handle )
 #else
-      pps := hwg_Definepaintstru()
-      hDC := hwg_Beginpaint( ::handle, pps )
+   LOCAL pps := hwg_Definepaintstru()
+   LOCAL hDC := hwg_Beginpaint( ::handle, pps )
 #endif
 
-      IF ::tColor2 != Nil .AND. ::oPen2 == Nil
-         ::oPen2 := HPen():Add( PS_SOLID, 1, ::tColor2 )
-      ENDIF
+   IF ::tColor2 != Nil .AND. ::oPen2 == Nil
+      ::oPen2 := HPen():Add( PS_SOLID, 1, ::tColor2 )
+   ENDIF
+
+   IF ::bPaint != Nil
+      Eval( ::bPaint, Self, hDC )
+   ELSE
+
       IF ::oStyle == Nil
          hwg_Fillrect( hDC, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
       ELSE
@@ -289,12 +291,11 @@ METHOD Paint() CLASS HTrack
             hwg_Drawline( hDC, x1, ::nCurr-nHalf, x1, ::nTo )
          ENDIF
       ELSE
-         y1 :=Int(::nHeight/2)
+         y1 := Int(::nHeight/2)
          IF ::nCurr - nHalf > ::nFrom
             hwg_Drawline( hDC, ::nFrom, y1, ::nCurr-nHalf, y1 )
          ENDIF
          hwg_Rectangle( hDC, ::nCurr-nHalf, y1-nHalf, ::nCurr+nHalf, y1+nHalf )
-         //hwg_Ellipse( hDC, ::nCurr-nHalf, y1-nHalf, ::nCurr+nHalf, y1+nHalf )
          IF ::nCurr + nHalf < ::nTo
             IF ::oPen2 != Nil
                hwg_Selectobject( hDC, ::oPen2:handle )
@@ -302,51 +303,19 @@ METHOD Paint() CLASS HTrack
             hwg_Drawline( hDC, ::nCurr+nHalf+1, y1, ::nTo, y1 )
          ENDIF
       ENDIF
-
+   ENDIF
 #ifdef __GTK__
       hwg_Releasedc( ::handle, hDC )
 #else
       hwg_Endpaint( ::handle, pps )
 #endif
-   ENDIF
 
    RETURN Nil
 
-   
 METHOD Drag( xPos, yPos ) CLASS HTrack
+
    LOCAL nCurr := ::nCurr
-   
-    // UNUSED: LOCAL nFrom, nTo
 
-
-   // Fires warning
-   // nFrom := Iif( ::nFrom == Nil, 1, ::nFrom )
- 
-/* 
-     IF  ::nFrom == Nil
-      nFrom := 1
-     ELSE
-      nFrom := ::nFrom
-     ENDIF
-*/ 
-    // Fires warning 
-    // nTo := Iif( ::nTo == Nil, Iif(::lVertical,::oParent:nWidth-1,::oParent:nHeight-1), ::nTo )
-
-/*
-    IF ::nTo == Nil
- 
-      IF ::lVertical
-        nTo := ::oParent:nWidth-1  
-      ELSE
-        nTo := ::oParent:nHeight-1
-      ENDIF
-
-    ELSE
-     nTo := ::nTo
-    ENDIF
-  
-*/
-  
    IF ::lVertical
       ::nCurr := Min( Max( ::nTo, yPos ), ::nFrom )
    ELSE
@@ -363,16 +332,15 @@ METHOD Value( xValue ) CLASS HTrack
 
    IF xValue != Nil .AND. xValue >= 0 .AND. xValue <= 1
       ::nCurr := xValue * Abs(::nTo - ::nFrom) + Iif( ::lVertical, -::nFrom, ::nFrom )
+      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
       xValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)
    ENDIF
 
    RETURN xValue
-   
 
 
 #pragma BEGINDUMP
-
 
 #define _WIN32_IE      0x0500
 #define HB_OS_WIN_32_USED

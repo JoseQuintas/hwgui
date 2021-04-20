@@ -29,6 +29,8 @@ CLASS HOwnButton INHERIT HControl
    DATA trColor
    DATA lEnabled INIT .T.
    DATA nOrder
+   DATA oTimer
+   DATA nPeriod  INIT 0
 
    METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight, ;
       bInit, bSize, bPaint, bClick, lflat,              ;
@@ -44,6 +46,7 @@ CLASS HOwnButton INHERIT HControl
    METHOD MDown()
    METHOD MUp()
    METHOD Press()   INLINE ( ::lPress := .T. , ::MDown() )
+   METHOD SetTimer( nPeriod )
    METHOD RELEASE()
    METHOD End()
    METHOD Enable()
@@ -252,14 +255,21 @@ METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
    LOCAL lEnter := ( hwg_BitAnd( wParam,16 ) > 0 )
    * Variables not used
    * LOCAL res := .F.
-   
+
    * Parameters not used
-   HB_SYMBOL_UNUSED(lParam)   
+   HB_SYMBOL_UNUSED(lParam)
 
    IF ::state != OBTN_INIT
-      IF !lEnter .AND. !::lPress
-         ::state := OBTN_NORMAL
-         hwg_Redrawwindow( ::handle )
+      IF !lEnter
+         IF !Empty( ::oTimer )
+            OwnBtnTimerProc( Self, 2 )
+            ::oTimer:End()
+            ::oTimer := Nil
+         ENDIF
+         IF !::lPress
+            ::state := OBTN_NORMAL
+            hwg_Redrawwindow( ::handle )
+         ENDIF
       ENDIF
       IF lEnter .AND. ::state == OBTN_NORMAL
          ::state := OBTN_MOUSOVER
@@ -274,7 +284,10 @@ METHOD MDown()  CLASS HOwnButton
    IF ::state != OBTN_PRESSED
       ::state := OBTN_PRESSED
       hwg_Redrawwindow( ::handle )
-      
+      IF ::nPeriod > 0
+         ::oTimer := HTimer():New( Self,, ::nPeriod, {|o|OwnBtnTimerProc(o,1)} )
+         OwnBtnTimerProc( Self, 0 )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -292,10 +305,31 @@ METHOD MUp() CLASS HOwnButton
             ::Press()
          ENDIF
       ENDIF
-      IF ::bClick != Nil
-         Eval( ::bClick, Self )
+      IF !Empty( ::oTimer )
+         OwnBtnTimerProc( Self, 2 )
+         ::oTimer:End()
+         ::oTimer := Nil
+      ELSE
+         IF ::bClick != Nil
+            Eval( ::bClick, Self )
+         ENDIF
       ENDIF
       hwg_Redrawwindow( ::handle )
+   ENDIF
+
+   RETURN Nil
+
+METHOD SetTimer( nPeriod )  CLASS HOwnButton
+
+   IF nPeriod == Nil
+      IF !Empty( ::oTimer )
+         OwnBtnTimerProc( Self, 2 )
+         ::oTimer:End()
+         ::oTimer := Nil
+      ENDIF
+      ::nPeriod := 0
+   ELSE
+      ::nPeriod := nPeriod
    ENDIF
 
    RETURN Nil
@@ -316,6 +350,10 @@ METHOD End()  CLASS HOwnButton
       ::oBitmap:Release()
       ::oBitmap := Nil
    ENDIF
+   IF !Empty( ::oTimer )
+      ::oTimer:End()
+      ::oTimer := Nil
+   ENDIF
 
    RETURN Nil
 
@@ -335,6 +373,14 @@ METHOD Disable() CLASS HOwnButton
    hwg_Enablewindow( ::handle, .F. )
 
    RETURN Nil
-   
+
+STATIC FUNCTION OwnBtnTimerProc( oBtn, nType )
+
+   IF oBtn:bClick != Nil
+      Eval( oBtn:bClick, oBtn, nType )
+   ENDIF
+
+   RETURN Nil
+
 * ====================== EOF of hownbtn.prg ===========================
-   
+

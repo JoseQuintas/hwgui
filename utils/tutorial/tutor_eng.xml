@@ -618,6 +618,41 @@ Local nTop := Iif( "windows" $ Lower(Os()), 24, 0 )
 Return Nil
       ]]>
     </module>
+    <module name="Track bar">
+      <![CDATA[
+#include "hwgui.ch"
+
+#define CLR_WHITE    0xffffff
+#define CLR_BLACK    0x000000
+#define CLR_BROWN_1  0x154780
+#define CLR_BROWN_3  0xaad2ff
+
+Function Test
+Local oDlg, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local bVolChange := {|o,n| 
+      HB_SYMBOL_UNUSED( o )
+      HB_SYMBOL_UNUSED( n )
+      oSay:SetText( Ltrim(Str(oTrack:value)) )
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Track bar control"  ;
+         AT 210,10  SIZE 300,200 FONT oFont BACKCOLOR CLR_BROWN_1
+
+   @ 40, 20 SAY "Just drag the slider:" SIZE 220, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+
+   oTrack := HTrack():New( ,, 80, 50, 140, 28,,, CLR_WHITE, CLR_BROWN_1, 16 )
+   oTrack:bChange := bVolChange
+   oTrack:Value := 0.5
+
+   @ 80, 100 SAY oSay CAPTION "" SIZE 140, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
+
+Return Nil
+]]>
+    </module>
   </chapter>
   <chapter name="Advanced using of controls" >
     <module name="Styled controls" >
@@ -824,8 +859,6 @@ Local bCol2 := {|o,h,x1,y1,x2,y2|
    //   using a user-defined codeblock to paint a cell.
    // Note, that the HBitmap():AddStandard() receives numerical id for WinAPI
    //   and a string for GTK.
-   //
-   // or #ifndef __GTK__ ?
    #ifdef __PLATFORM__WINDOWS
       oBitmap := HBitmap():AddStandard( OBM_BTNCORNERS )
       aStock := { OBM_BTNCORNERS, OBM_BTSIZE, ;
@@ -935,37 +968,39 @@ Local oDlg, oPanel, oFont, oStyleNormal, oStylePressed, oStyleOver
 
 Return Nil]]>
     </module>
-    <module name="Let create new control">
-      <![CDATA[// We create here a new control, which can be
-// used as a replacement for a track bar,
-// which has not gtk version.
+    <module name="Ownerbuttons with a timer">
+      <![CDATA[//
 
 #include "hwgui.ch"
 
 #define CLR_WHITE    0xffffff
 #define CLR_BLACK    0x000000
-#define CLR_BROWN_1  0x154780
-#define CLR_BROWN_3  0xaad2ff
+#define CLR_GRAY_1   0xeeeeee
+#define CLR_GRAY_2   0xbbbbbb
 
 Function Test
-Local oDlg, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif",0,-13 )
-Local bVolChange := {|o,n| 
-      HB_SYMBOL_UNUSED( o )
-      HB_SYMBOL_UNUSED( n )
-      oSay:SetText( Ltrim(Str(oTrack:value)) )
-      RETURN .T.
-   }
+Local oDlg, oSay, oFont := HFont():Add( "MS Sans Serif",0,-24 )
+Local nSch := 10
 
-   INIT DIALOG oDlg TITLE "Track bar control"  ;
-         AT 210,10  SIZE 300,200 FONT oFont BACKCOLOR CLR_BROWN_1
+   INIT DIALOG oDlg TITLE "Ownerbuttons with a timer"  ;
+         AT 210,10 SIZE 220,140 BACKCOLOR CLR_GRAY_1
 
-   @ 40, 20 SAY "Just drag the slider:" SIZE 220, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+   @ 20, 20 SAY "Press and hold buttons:" SIZE 180, 22 STYLE SS_CENTER BACKCOLOR CLR_GRAY_1
 
-   oTrack := HTrack():New( ,, 80, 50, 140, 28,,, CLR_WHITE, CLR_BROWN_1, 16 )
-   oTrack:bChange := bVolChange
-   oTrack:Value := 0.5
+   @ 52,60 OWNERBUTTON oBtn1 SIZE 28, 28 TEXT "-" ;
+      ON CLICK {|o,n| Iif( n<2.AND.nSch>1, oSay:SetText(Ltrim(Str(--nSch))), .T. ) }
 
-   @ 80, 100 SAY oSay CAPTION "" SIZE 140, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+   @ 80, 60 SAY oSay CAPTION Ltrim(Str(nSch)) SIZE 60, 28 FONT oFont ;
+      STYLE SS_CENTER BACKCOLOR CLR_GRAY_2
+
+   @ 140,60 OWNERBUTTON oBtn2 SIZE 28, 28 TEXT "+" ;
+      ON CLICK {|o,n| Iif( n<2.AND.nSch<999, oSay:SetText(Ltrim(Str(++nSch))), .T. ) }
+
+   oBtn1:aStyle := oBtn2:aStyle := { HStyle():New( { CLR_WHITE, CLR_GRAY_2 }, 1,, 1 ), ;
+            HStyle():New( { CLR_WHITE, CLR_GRAY_2 }, 2,, 1 ), ;
+            HStyle():New( { CLR_WHITE, CLR_GRAY_2 }, 1,, 2, 8421440 ) }
+   oBtn1:SetTimer( 300 )
+   oBtn2:SetTimer( 300 )
 
    ACTIVATE DIALOG oDlg
    oFont:Release()

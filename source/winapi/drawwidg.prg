@@ -367,6 +367,7 @@ CLASS HBitmap INHERIT HObject
    DATA handle
    DATA name
    DATA nFlags
+   DATA nTransparent    INIT -1
    DATA nWidth, nHeight
    DATA nCounter   INIT 1
 
@@ -375,7 +376,7 @@ CLASS HBitmap INHERIT HObject
    METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight )
    METHOD AddString( name, cVal , nWidth, nHeight)
    METHOD AddWindow( oWnd, x1, y1, width, height )
-   METHOD Draw( hDC, x1, y1, width, height )  INLINE hwg_Drawbitmap( hDC, ::handle, SRCCOPY, x1, y1, width, height )
+   METHOD Draw( hDC, x1, y1, width, height )
    METHOD RELEASE()
    METHOD OBMP2FILE( cfilename , name )
 
@@ -562,6 +563,16 @@ METHOD AddWindow( oWnd, x1, y1, width, height ) CLASS HBitmap
    AAdd( ::aBitmaps, Self )
 
    RETURN Self
+
+METHOD Draw( hDC, x1, y1, width, height ) CLASS HBitmap
+
+   IF ::nTransparent < 0
+      hwg_Drawbitmap( hDC, ::handle,, x1, y1, width, height )
+   ELSE
+      hwg_Drawtransparentbitmap( hDC, ::handle, x1, y1, ::nTransparent )
+   ENDIF
+
+   RETURN Nil
 
 METHOD RELEASE() CLASS HBitmap
    LOCAL i, nlen := Len( ::aBitmaps )
@@ -820,16 +831,20 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
 
 METHOD Draw( hDC, nLeft, nTop, nRight, nBottom ) CLASS HStyle
 
-   LOCAL n
+   LOCAL n1, n2
    IF ::oBitmap == Nil
       hwg_drawGradient( hDC, nLeft, nTop, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
    ELSE
       hwg_SpreadBitmap( hDC, ::oBitmap:handle, nLeft, nTop, nRight, nBottom )
    ENDIF
    IF !Empty( ::oPen )
-      n := Int( ::nBorder/2 )
+      n2 := ::nBorder/2
+      n1 := Int( n2 )
+      IF n2 - n1 > 0.1
+         n2 := n1 + 1
+      ENDIF
       hwg_Selectobject( hDC, ::oPen:handle )
-      hwg_Rectangle( hDC, nLeft+n, nTop+n, nRight-n, nBottom-n )
+      hwg_Rectangle( hDC, nLeft+n1, nTop+n1, nRight-n2, nBottom-n2 )
    ENDIF
 
    RETURN Nil

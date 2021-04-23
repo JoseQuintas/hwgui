@@ -130,6 +130,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\pager.obj \
    $(OBJ_DIR)\hpager.obj \
    $(OBJ_DIR)\hrebar.obj \
+   $(OBJ_DIR)\hlenta.obj \
    $(OBJ_DIR)\hhyper.obj
 
 
@@ -534,6 +535,12 @@ $(OBJ_DIR)\hrebar.c : $(SRC_DIR)\hrebar.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hrebar.obj : $(OBJ_DIR)\hrebar.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hhlenta.c : $(SRC_DIR)\hlenta.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hlenta.obj : $(OBJ_DIR)\hlenta.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\hhyper.c : $(SRC_DIR)\hhyper.prg

@@ -131,6 +131,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hgrid.obj \
    $(OBJ_DIR)\grid.obj  \
    $(OBJ_DIR)\hdc.obj  \
+   $(OBJ_DIR)\hlenta.obj \
    $(OBJ_DIR)\hhyper.obj
 $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
    $(LIB_EXE) /out:$@ $**
@@ -518,6 +519,12 @@ $(OBJ_DIR)\hdc.c : $(SRC_DIR)\hdc.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hdc.obj : $(OBJ_DIR)\hdc.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hlenta.c : $(SRC_DIR)\hlenta.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hlenta.obj : $(OBJ_DIR)\hlenta.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\hhyper.c : $(SRC_DIR)\hhyper.prg

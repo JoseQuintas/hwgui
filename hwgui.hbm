@@ -80,6 +80,7 @@
 {win}source/winapi/printdos.prg
 {win}source/winapi/hdc.prg
 {win}source/winapi/hhyper.prg
+{win}source/winapi/hlenta.prg
 {win}source/winapi/hmisc.prg
 {win}source/winapi/halert.prg
 
@@ -109,6 +110,7 @@
 {unix}source/gtk/hfrmtmpl.prg
 {unix}source/gtk/hgraph.prg
 {unix}source/gtk/hhyper.prg
+{unix}source/gtk/hlenta.prg
 {unix}source/gtk/hownbtn.prg
 {unix}source/gtk/hpanel.prg
 {unix}source/gtk/hprinter.prg

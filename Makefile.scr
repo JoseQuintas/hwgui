@@ -121,6 +121,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/printdos.o \
    $(OBJ_DIR)/hdc.o \
    $(OBJ_DIR)/pager.o \
+   $(OBJ_DIR)/hlenta.o \
    $(OBJ_DIR)/hhyper.o \
 
 $(LIB_DIR)/libprocmisc.a : \

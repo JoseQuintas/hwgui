@@ -92,6 +92,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/hgraph.o \
    $(OBJ_DIR)/hhyper.o \
+   $(OBJ_DIR)/hlenta.o \
    $(OBJ_DIR)/hownbtn.o \
    $(OBJ_DIR)/hpanel.o \
    $(OBJ_DIR)/hprinter.o \

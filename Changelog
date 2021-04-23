@@ -9,6 +9,23 @@
 */
 
 
+2021-04-23 15:05 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + source/winapi/hlenta.prg
+  + source/gtk/hlenta.prg
+    + New control added, class HLenta.
+  * source/gtk/Makefile.linux
+  * source/gtk/Makefile.mingw
+  * source/gtk/Makefile.scr
+  * hwgui.hbm
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * Makefile.scr
+  * makefile.vc
+  * makefile.wc
+    * Makefiles updated.
+
 2021-04-23 13:35 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/drawwidg.prg
     * :nTransparent property added to HBitmap, :Draw() is changed to respect the

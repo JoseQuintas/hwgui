@@ -97,6 +97,7 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\printdos.obj \
    $(OBJ_DIR)\hdc.obj \
    $(OBJ_DIR)\hhyper.obj \
+   $(OBJ_DIR)\hlenta.obj \
    $(OBJ_DIR)\procini.obj \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj \

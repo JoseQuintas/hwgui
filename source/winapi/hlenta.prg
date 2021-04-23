@@ -1,4 +1,5 @@
 /*
+ * $Id: $
  * HWGUI - Harbour Win32 GUI library source code:
  * HLenta class
  *

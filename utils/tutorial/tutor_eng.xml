@@ -653,6 +653,37 @@ Local bVolChange := {|o,n|
 Return Nil
 ]]>
     </module>
+    <module name="Lenta">
+      <![CDATA[
+#include "hwgui.ch"
+
+#define CLR_WHITE       0xffffff
+#define CLR_BLACK       0x000000
+#define CLR_LIGHTGRAY_2 0xaaaaaa
+#define CLR_BROWN_1  0x154780
+#define CLR_BROWN_2     0x396eaa
+#define CLR_BROWN_3     0x6a9cd4
+#define CLR_BROWN_4     0x9dc7f6
+
+Function Test
+Local oDlg, oLenta, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local nz := 2
+Local aStyleLenta := { HStyle():New( { CLR_BROWN_3, CLR_BROWN_4 }, 1 ), ;
+      HStyle():New( { CLR_BROWN_2 }, 1,, 1, CLR_LIGHTGRAY_2 ) }
+
+   INIT DIALOG oDlg TITLE "Lenta control"  ;
+         AT 210,10  SIZE 300,200 FONT oFont BACKCOLOR CLR_BROWN_1
+
+   oLenta2 := HLenta():New( ,, 50, 30, 200, 28, oFont,,, {|o|nz:=o:nSelected},,, ;
+      { "1","2","3","4" }, 50, aStyleLenta )
+   oLenta2:Value := nz
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
+
+Return Nil
+]]>
+    </module>
   </chapter>
   <chapter name="Advanced using of controls" >
     <module name="Styled controls" >

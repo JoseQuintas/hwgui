@@ -374,14 +374,15 @@ CLASS HBitmap INHERIT HObject
    DATA handle
    DATA name
    DATA nWidth, nHeight
-   DATA nCounter   INIT 1
-   
+   DATA nTransparent    INIT -1
+   DATA nCounter        INIT 1  
 
    METHOD AddResource( name )
    METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight)
    METHOD AddString( name, cVal )
    METHOD AddStandard( cId, nSize )
    METHOD AddWindow( oWnd, x1, y1, width, height )
+   METHOD Draw( hDC, x1, y1, width, height )
    METHOD Release()
    METHOD OBMP2FILE( cfilename , name )
 
@@ -392,7 +393,7 @@ ENDCLASS
 */
 METHOD OBMP2FILE( cfilename , name ) CLASS HBitmap
 
-LOCAL i , hbmp
+   LOCAL i , hbmp
 
    hbmp := NIL
    * Search for bitmap in object
@@ -464,10 +465,8 @@ METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight ) CLASS HBitmap
       RETURN Nil
    ENDIF
 
-   RETURN Self
+   RETURN Self 
 
-   
-   
 METHOD AddString( name, cVal ) CLASS HBitmap
 /*
   Add name to resource container (array ::aBitmaps)
@@ -552,6 +551,16 @@ METHOD AddWindow( oWnd, x1, y1, width, height ) CLASS HBitmap
    AAdd( ::aBitmaps, Self )
 
    RETURN Self
+
+METHOD Draw( hDC, x1, y1, width, height ) CLASS HBitmap
+
+   IF ::nTransparent < 0
+      hwg_Drawbitmap( hDC, ::handle,, x1, y1, width, height )
+   ELSE
+      hwg_Drawtransparentbitmap( hDC, ::handle, x1, y1, ::nTransparent )
+   ENDIF
+   
+   RETURN Nil
 
 METHOD Release() CLASS HBitmap
    LOCAL i, nlen := Len( ::aBitmaps )

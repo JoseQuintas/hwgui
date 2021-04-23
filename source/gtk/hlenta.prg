@@ -1,5 +1,5 @@
 /*
- * $Id: $
+ * $Id$
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HLenta class
  *
@@ -43,7 +43,6 @@ CLASS VAR winclass INIT "PANEL"
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
-   METHOD onEvent( msg, wParam, lParam )
    METHOD Paint()
    METHOD Drag( xPos, yPos )
    METHOD Value( nValue ) SETGET

@@ -165,7 +165,21 @@ HB_FUNC( HWG_ELLIPSE )
    cairo_arc( hDC->cr, (double)x1+(x2-x1)/2, (double)y1+(y2-y1)/2, (double) (x2-x1)/2, 0, 6.28 );
    cairo_stroke( hDC->cr );
 }
+/*
+HB_FUNC( HWG_ARC )
+{
 
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 );
+   gdouble radius = hb_parnd( 4 );
+   int iAngle1 = hb_parni(5), iAngle2 = hb_parni(6);
+
+   cairo_new_sub_path( hDC->cr );
+   cairo_arc( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
+   //cairo_close_path(hDC->cr);
+   cairo_stroke( hDC->cr );
+}
+*/
 HB_FUNC( HWG_DRAWGRID )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);

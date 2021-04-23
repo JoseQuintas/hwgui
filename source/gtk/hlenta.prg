@@ -1,5 +1,6 @@
 /*
- * HWGUI - Harbour Win32 GUI library source code:
+ * $Id: $
+ * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HLenta class
  *
  * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>

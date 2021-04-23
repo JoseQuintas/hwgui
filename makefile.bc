@@ -178,7 +178,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\pager.obj \
    $(HWGUI_OBJ_DIR)\tmci.obj \
    $(HWGUI_OBJ_DIR)\video.obj \
-   $(HWGUI_OBJ_DIR)\hhlenta.obj \
+   $(HWGUI_OBJ_DIR)\hlenta.obj \
    $(HWGUI_OBJ_DIR)\hhyper.obj
 
 #

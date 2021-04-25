@@ -144,8 +144,8 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       h := hwg_Setfocus( ::handle )
    ELSEIF msg == WM_LBUTTONDBLCLK
            /* Asmith 2017-06-06 workaround for touch terminals */
-           IF ::bClick != Nil
-                 Eval( ::bClick, Self )
+           IF ::bClick != Nil .AND. Empty( ::oTimer )
+              Eval( ::bClick, Self )
            ENDIF
 
    ELSEIF msg == WM_LBUTTONUP

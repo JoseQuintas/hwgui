@@ -96,7 +96,9 @@ hwreport:
  for validation with modern computers without (outdated) parallel printer interface
  and platforms Windows and Linux.
 
- 
+gthwg:
+ GT library, based on HwGUI. Currently it is for winapi version only,
+ Linux GTK version will be later.
  
 2. Build scripts
 ----------------
@@ -115,6 +117,7 @@ Harbour make files:
  hbactivex.hbp
  hwg_extctrl.hbp
  hwg_qhtm.hbp
+ gthwg.hbp
 
  
 Other makefiles:
@@ -132,10 +135,11 @@ Other makefiles:
 Prerequisite is the successful build of Harbour and HWGUI
 (or working binary installations).
 
-Only these 3 libraries added in the "lib" directory:
+Only these 4 libraries added in the "lib" directory:
  libhwg_extctrl.a
  libhwg_misc.a
  libhwg_qhtm.a
+ libgthwg.a
  (file extension depends of the used compiler , e.g. ".lib")
 
 

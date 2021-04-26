@@ -8,6 +8,10 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-04-26 21:17 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  * include/windows.ch
+    ! Small fix
+
 2021-04-26 15:54 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + contrib/gthwg.hbp
   * contrib/makefile.bc

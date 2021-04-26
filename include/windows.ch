@@ -51,7 +51,7 @@
 
    #define WM_SYSKEYDOWN                   260    // 0x0104
    #define WM_SYSKEYUP                     261    // 0x0105
-   *#define WM_SYSCHAR                      = &H106
+   // #define WM_SYSCHAR                      = &H106
 
    #define WM_INITDIALOG                   272
    #define WM_COMMAND                      273

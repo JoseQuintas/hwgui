@@ -654,34 +654,183 @@ Return Nil
 ]]>
     </module>
     <module name="Lenta">
-      <![CDATA[
+      <![CDATA[// An adapted fragment from a "Sounds" program
+// http://www.kresin.ru/en/sounds.html
+// The Lenta control may be used as a replacement for a radiogroup or a combobox,
+// as a toolbar, etc.
+// Pay attention that it may be dragged if it content doesn't fit in it size.
 #include "hwgui.ch"
 
-#define CLR_WHITE       0xffffff
+#define LAD_KOL   4
+
 #define CLR_BLACK       0x000000
 #define CLR_LIGHTGRAY_2 0xaaaaaa
-#define CLR_BROWN_1  0x154780
+#define CLR_BROWN_1     0x154780
 #define CLR_BROWN_2     0x396eaa
 #define CLR_BROWN_3     0x6a9cd4
 #define CLR_BROWN_4     0x9dc7f6
+#define CLR_DLGBACK     0x154780
+
+STATIC oPane, oPen1, oPen2, aAccords, aAcco1, aAcco2, aCurrAccs, aCurrAcc, nAcc := 1
+STATIC aGradient := { CLR_BROWN_1 }
 
 Function Test
-Local oDlg, oLenta, oFont := HFont():Add( "MS Sans Serif",0,-13 )
-Local nz := 2
+Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local oPanel, oLenta1, oLenta2, oLenta3, i, s
 Local aStyleLenta := { HStyle():New( { CLR_BROWN_3, CLR_BROWN_4 }, 1 ), ;
       HStyle():New( { CLR_BROWN_2 }, 1,, 1, CLR_LIGHTGRAY_2 ) }
+Local pAccords := hb_Hash( "C","0-1-0-2-3,3-5-5-5-3-B3,8-8-9-10-10-8-B8", ;
+   "Cm","3-4-5-5-3-B3,8-8-8-10-10-8-B8", "C7","0-1-3-2-3,3-5-3-5-3-B3", ;
+   "D","2-3-2-0,2-3-2-4-5-B2,5-7-7-7-5-B5", "Dm","1-3-2-0,5-6-7-7-5-B5", ;
+   "D7","2-1-2-0,X-3-5-4-5", "E","0-0-1-2-2-0,0-0-1-2,7-9-9-9-7-B7", ;
+   "Em","0-0-0-2-2-0,7-8-9-9-7-B7", "E7","0-3-1-0-2-0", "F","1-1-2-3-3-1-B1", ;
+   "Fm","1-1-1-3-3-1-B1,4-6-5-3", "F7","1-1-2-1-3-1-B1", "G","3-0-0-0-2-3", ;
+   "Gm","3-3-3-5-5-3-B3,6-8-7-5", "G7","1-0-0-0-2-3", "A","0-2-2-2-0", ;
+   "Am","0-1-2-2-0,5-5-5-7-7-5-B5", "A7","0-2-0-2-0,5-5-6-5-7-5-B5", ;
+   "B","2-4-4-4-2-B2,7-7-8-9-9-7-B7", "Bm","2-3-4-4-2-B2", "B7","2-0-2-1-2" )
+LOCAL bLClick := {||
+   LOCAL s, n
+   IF oLenta1:nSelected > 0 .AND. oLenta2:nSelected > 0
+      s := aAcco1[oLenta1:nSelected] + aAcco2[oLenta2:nSelected]
+      IF ( n := hb_Ascan( aAccords, s,,, .T. ) ) > 0
+         s := pAccords[aAccords[n]]
+         oDlg:SetTitle( aAccords[n] )
+         aCurrAccs := Iif( Empty(s), {}, hb_ATokens( s, ',' ) )
+         FOR i := 1 TO Len( aCurrAccs )
+            aCurrAccs[i] := hb_ATokens( aCurrAccs[i],'-' )
+         NEXT
+         nAcc := 1
+         aCurrAcc := aCurrAccs[nAcc]
+         oLenta3:aItems := Iif( (n := Len(aCurrAccs))==3,{"1","2","3"},Iif(n==2,{"1","2"},{"1"}) )
+         oLenta3:Value := nAcc
+         oPane:Refresh()
+      ENDIF
+   ENDIF
+   RETURN .T.
+}
+LOCAL b3 := {|o|
+   nAcc:=o:nSelected
+   aCurrAcc := aCurrAccs[nAcc]
+   oPane:Refresh()
+   RETURN .T.
+}
+
+   oPen1 := HPen():Add( PS_SOLID, 1, CLR_BLACK )
+   oPen2 := HPen():Add( PS_SOLID, 2, CLR_BLACK )
+
+   aAccords := hb_HKeys( pAccords )
+   aAcco1 := {}
+   aAcco2 := {}
+   FOR i := 1 TO Len( aAccords )
+      s := Left( aAccords[i], 1 )
+      IF hb_Ascan( aAcco1, s, .T. ) == 0
+         AAdd( aAcco1, s )
+      ENDIF
+      s := Substr( aAccords[i], 2 )
+      IF hb_Ascan( aAcco2, s, .T. ) == 0
+         AAdd( aAcco2, s )
+      ENDIF
+   NEXT
 
    INIT DIALOG oDlg TITLE "Lenta control"  ;
-         AT 210,10  SIZE 300,200 FONT oFont BACKCOLOR CLR_BROWN_1
+         AT 210,10 SIZE 280,200 FONT oFont BACKCOLOR CLR_DLGBACK
 
-   oLenta2 := HLenta():New( ,, 50, 30, 200, 28, oFont,,, {|o|nz:=o:nSelected},,, ;
-      { "1","2","3","4" }, 50, aStyleLenta )
-   oLenta2:Value := nz
+   oLenta1 := HLenta():New( ,, 0, 4, 30, oDlg:nHeight-8, ;
+      oFont,,, bLClick,,, aAcco1, 30, aStyleLenta )
+   oLenta1:Value := 1
 
-   ACTIVATE DIALOG oDlg
+   oLenta2 := HLenta():New( ,, oLenta1:nWidth+2, 4, 38, oDlg:nHeight-8, ;
+      oFont,,, bLClick,,, aAcco2, 30, aStyleLenta )
+   oLenta2:Value := 1
+
+   @ 70, 4 PANEL oPane SIZE oDlg:nWidth-70, oDlg:nHeight-50 ;
+      STYLE SS_OWNERDRAW BACKCOLOR CLR_BROWN_3 ON SIZE {||.t.}
+   oPane:bPaint := {|| fPaint()}
+   oPane:oFont := oFont
+
+   oLenta3 := HLenta():New( ,, 100, oDlg:nHeight-40, 150, 28, oFont,,, b3,,, ;
+      { "1","2","3" }, 50, aStyleLenta )
+   oLenta3:Value := nAcc
+
+   ACTIVATE DIALOG oDlg ON ACTIVATE bLClick
+
    oFont:Release()
+   oPen1:Release()
+   oPen2:Release()
 
 Return Nil
+
+STATIC FUNCTION fPaint()
+
+   LOCAL o := oPane
+#ifdef __PLATFORM__UNIX
+   LOCAL hDC := hwg_Getdc( o:handle )
+#else
+   LOCAL pps    := hwg_Definepaintstru()
+   LOCAL hDC    := hwg_Beginpaint( o:handle, pps )
+#endif
+   LOCAL x1 := 50, y1 := 20, i, nMin, nMax, nLad, nBarre, nBarreLast
+
+   hwg_Fillrect( hDC, 0, 0, o:nWidth, o:nHeight, o:brush:handle )
+
+   hwg_Selectobject( hDC, o:oFont:handle )
+   hwg_SetTransparentMode( hDC, .T. )
+
+   IF !Empty( aCurrAcc )
+      nMin := 99; nMax := 1
+      nBarre := 0; nBarreLast := 0
+      FOR i := 1 TO Len( aCurrAcc )
+         IF Left( aCurrAcc[i],1 ) == "B"
+            nBarre := Val( Substr(aCurrAcc[i],2) )
+         ELSE
+            nMin := Min( nMin, Iif( (nLad := Val(aCurrAcc[i])) == 0, nMin, nLad ) )
+            nMax := Max( nMax, nLad )
+         ENDIF
+      NEXT
+      IF nMax <= 4
+         nMin := 1
+      ENDIF
+      hwg_Selectobject( hDC, oPen1:handle )
+      FOR i := 1 TO LAD_KOL
+         hwg_Drawtext( hDC, Ltrim(Str(nMin+i-1)), x1-20, y1+i*30-24, x1-4, y1+i*30-6, DT_LEFT )
+         hwg_Drawline( hDC, x1, y1+i*30, x1+100, y1+i*30 )
+      NEXT
+      FOR i := 1 TO 6
+         hwg_Drawline( hDC, x1+(i-1)*20, y1, x1+(i-1)*20, y1+120 )
+         IF i > Len( aCurrAcc ) .OR. aCurrAcc[i] > '9'
+            hwg_Drawtext( hDC, 'X', x1+(6-i)*20-6, 2, x1+(6-i)*20+8, y1, DT_LEFT )
+         ELSE
+            IF aCurrAcc[i] == '0'
+               hwg_Drawtext( hDC, 'O', x1+(6-i)*20-6, 2, x1+(6-i)*20+8, y1, DT_LEFT )
+            ELSE
+               nLad := Val( aCurrAcc[i] )
+               IF nBarre == nLad
+                  nBarreLast := i
+               ELSE
+                  nLad -= nMin
+                  hwg_drawGradient( hDC, x1+(6-i)*20-8, y1+nLad*30+8, x1+(6-i)*20+8, y1+nLad*30+24, 1, ;
+                     aGradient,, {8,8,8,8} )
+               ENDIF
+            ENDIF
+         ENDIF
+      NEXT
+      IF nBarreLast > 0
+         hwg_drawGradient( hDC, x1+(6-nBarreLast)*20-8, y1+(nBarre-nMin)*30+8, ;
+            x1+5*20+8, y1+(nBarre-nMin)*30+24, 1, aGradient,, {8,8,8,8} )
+      ENDIF
+      hwg_Selectobject( hDC, oPen2:handle )
+      hwg_Drawline( hDC, x1, y1, x1+100, y1 )
+      x1 += 140
+
+      hwg_SetTransparentMode( hDC, .F. )
+   ENDIF
+#ifdef __PLATFORM__UNIX
+   hwg_Releasedc( o:handle, hDC )
+#else
+   hwg_Endpaint( o:handle, pps )
+#endif
+
+   RETURN Nil
 ]]>
     </module>
   </chapter>

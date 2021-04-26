@@ -10,6 +10,7 @@ if not exist obj\b32 md obj\b32
 set _ACTIVEX_=ON
 set _QHTM_=ON
 set _EXTCONTROLS_=ON
+set _GTHWG_=ON
 make -l EXE_OBJ_DIR=obj\b32\bin OBJ_DIR=obj\b32 -fmakefile.bc %1 %2 %3 > make_b32.log
 rem if errorlevel 1 goto BUILD_ERR
 

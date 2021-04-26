@@ -45,6 +45,7 @@ LIB_DIR  = ..\lib
 HWGQHTM_DIR  = qhtm
 ACTIVEX_DIR  = activex
 EXTCONTROLS_DIR  = ext_controls
+GTHWG_DIR  = gthwg
 
 #
 # C compiler definition and C flags. These should never have to change.
@@ -72,6 +73,7 @@ HB_CMD = $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 HWGQHTM_LIB  =   $(LIB_DIR)\hwg_qhtm.lib
 ACTIVEX_LIB  =   $(LIB_DIR)\hbactivex.lib
 EXTCONTROLS_LIB  =   $(LIB_DIR)\hwg_extctrl.lib
+GTHWG_LIB  =   $(LIB_DIR)\gthwg.lib
 
 #
 # Rules
@@ -108,6 +110,15 @@ EXTCONTROLS_LIB_OBJS = \
    $(OBJ_DIR)\theme.obj
 
 #
+# GTHWG.LIB rules
+#
+
+GTHWG_LIB_OBJS = \
+   $(OBJ_DIR)\gt_hwg.obj \
+   $(OBJ_DIR)\gt_hwgui_w.obj
+
+
+#
 # Our default target
 #
 
@@ -131,6 +142,13 @@ PROJECT = \
    $(PROJECT) \
    $(EXTCONTROLS_LIB)
 !endif
+
+!if "$(_GTHWG_)" == "ON"
+PROJECT = \
+   $(PROJECT) \
+   $(GTHWG_LIB)
+!endif
+
 
 ALL: $(PROJECT)
 
@@ -159,6 +177,14 @@ $(ACTIVEX_LIB) : $(ACTIVEX_LIB_OBJS)
 $(EXTCONTROLS_LIB) : $(EXTCONTROLS_LIB_OBJS)
     IF EXIST "$(EXTCONTROLS_LIB)" $(DEL) "$(EXTCONTROLS_LIB)" > NUL
     $(LINKER) "$(EXTCONTROLS_LIB)" $(ARFLAGS) @&&!
++$(**: = &^
++)
+
+!
+
+$(GTHWG_LIB) : $(GTHWG_LIB_OBJS)
+    IF EXIST "$(GTHWG_LIB)" $(DEL) "$(GTHWG_LIB)" > NUL
+    $(LINKER) "$(GTHWG_LIB)" $(ARFLAGS) @&&!
 +$(**: = &^
 +)
 
@@ -197,3 +223,14 @@ $(EXTCONTROLS_LIB) : $(EXTCONTROLS_LIB_OBJS)
 
 {$(EXTCONTROLS_DIR)}.c{$(OBJ_DIR)}.obj:
    $(CC_CMD)
+
+#
+# GTHWG.LIB dependencies
+#
+
+{$(GTHWG_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(GTHWG_DIR)}.c{$(OBJ_DIR)}.obj:
+   $(CC_CMD)
+

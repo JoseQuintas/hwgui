@@ -8,6 +8,18 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-04-26 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + contrib/gthwg
+  + contrib/gthwg/gt_hwg.ch
+  + contrib/gthwg/gt_hwg.prg
+  + contrib/gthwg/gt_hwgui_w.c
+  + contrib/gthwg/tests
+  + contrib/gthwg/tests/test1.prg
+    * gthwg - a new GT library, based on HwGUI, added.
+  * contrib/make_b32.bat
+  * contrib/makefile.bc
+    * Make files for Borland C updated
+
 2021-04-26 10:40 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/tutorial/hwgrun.prg
   * utils/tutorial/tutor.prg

@@ -8,6 +8,13 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-04-26 15:54 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
+  + contrib/gthwg.hbp
+  * contrib/makefile.bc
+  * contrib/makefile.gcc
+  * contrib/Readme.txt
+    * Build files and readme has been updated due to GTHWG.
+
 2021-04-26 14:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   + contrib/gthwg
   + contrib/gthwg/gt_hwg.ch

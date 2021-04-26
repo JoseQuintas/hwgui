@@ -1,0 +1,17 @@
+#
+# $Id$
+#
+
+-inc
+
+-hblib
+-o../lib/gthwg
+
+-n -q0 -w -es2
+
+-i../include
+
+-cflag=-DHWG_USE_POINTER_ITEM
+
+gthwg/gt_hwg.prg
+gthwg/gt_hwgui_w.c

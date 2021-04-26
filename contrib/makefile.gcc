@@ -14,6 +14,7 @@ HWGQHTM_DIR  = qhtm
 EXTCONTROL_DIR  = ext_controls
 HWGACTIVEX_DIR  = activex
 HWGMISC_DIR = misc
+GTHWG_DIR  = gthwg
 
 HARBOURFLAG = -d__WINDOWS__ $(HARBOURFLAGS)
 CFLAGS = -Wall -O3 -march=pentium
@@ -21,7 +22,8 @@ CFLAGS = -Wall -O3 -march=pentium
 all: \
    $(LIB_DIR)/libhwg_misc.a \
    $(LIB_DIR)/libhwg_extctrl.a \
-   $(LIB_DIR)/libhwg_qhtm.a
+   $(LIB_DIR)/libhwg_qhtm.a \
+   $(LIB_DIR)/libgthwg.a
 
 # Support for ActiveX enden, outdated   
 #   $(LIB_DIR)/libhwg_activex.a
@@ -55,6 +57,11 @@ $(LIB_DIR)/libhwg_activex.a : \
    $(OBJ_DIR)/h_activex.o
 	ar rc $@ $^
 
+$(LIB_DIR)/libgthwg.a : \
+   $(OBJ_DIR)/gt_hwg.o \
+   $(OBJ_DIR)/gt_hwgui_w.o
+	ar rc $@ $^
+
 .prg.c:
 	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
 
@@ -84,6 +91,13 @@ $(OBJ_DIR)/%.c : $(EXTCONTROL_DIR)/%.prg
 
 $(OBJ_DIR)/%.o : $(EXTCONTROL_DIR)/%.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(GTHWG_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) -d__WINDOWS__ -o$@ $^
+
+$(OBJ_DIR)/%.o : $(GTHWG_DIR)/%.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
 
 # MS ActiveX seems to be outdated
 # mshtmhst.h needed

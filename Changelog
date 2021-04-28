@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2019-04-28 09:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 build 1
+  * whatsnew.txt
+    * Updated for v2.23 build 1
+
 2021-04-26 21:17 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * include/windows.ch
     ! Small fix

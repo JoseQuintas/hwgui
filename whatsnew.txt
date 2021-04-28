@@ -5,11 +5,8 @@
 
                                    $Id$
 
-Recent code snapshot
-~~~~~~~~~~~~~~~~~~~~
-*) Task partially done, to be continued.
-
-For the next release build done:
+HWGUI 2.23 build 1 ( 28.04.2021 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 1.) Bugfixing:
 
@@ -41,7 +38,11 @@ For the next release build done:
 [+] Documentation extended.
 [+] Usage of custom created mouse cursor by *.cur files.
 [!] Removed resource files for BCC for multi platform use, converted to HWGUI commands. 
+[+] GTHWG, new GT library, added to contribs.
+[+] HLenta class added.
+[*] HOwnButton, HGraph classes extended.
 
+    And many other fixes, improvements. See Changelog for more info.
 
 HWGUI 2.22 build 4 ( 26.04.2019 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -705,3 +706,5 @@ HWGUI 2.0 beta ( 04.06.2002 )
 [*] Documentation is extended.
 
 [-] Few bugs fixed.
+
+*) Task partially done, to be continued.

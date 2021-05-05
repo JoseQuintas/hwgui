@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-05 19:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcwindow.prg
+    * ANNOUNCE HB_GTSYS line deleted, because it isn't correct in fact and
+      create problems while linking sometimes. HB_GT_TRM() empty function added instead
+      for to not be forced to link gttrm.
+
 2021-04-28 09:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * HwGUI version is changed to 2.23 build 1

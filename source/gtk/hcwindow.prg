@@ -13,7 +13,7 @@
 #include "guilib.ch"
 #include "error.ch"
 
-   ANNOUNCE HB_GTSYS
+   //ANNOUNCE HB_GTSYS
    REQUEST HB_GT_CGI_DEFAULT
 
    STATIC aCustomEvents := { ;
@@ -298,6 +298,12 @@ FUNCTION hwg_GetItemByName( arr, cName )
 
    RETURN Nil
 
+FUNCTION HB_GT_TRM
+   RETURN Nil
+
+FUNCTION HB_GT_TRM_DEFAULT
+   RETURN Nil
+
 INIT PROCEDURE HWGINIT
 
    hwg_gtk_init()
@@ -313,4 +319,3 @@ EXIT PROCEDURE Hwg_ExitProcedure
    RETURN
 
  * ========================================= EOF of hcwindow.prg ==========================================
- 

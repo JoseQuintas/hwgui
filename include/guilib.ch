@@ -7,7 +7,7 @@
 /* Modify version only for release build, otherwise activate "Code Snapshot" */ 
 //#define HWG_VERSION            "Code Snapshot"
 /* For note of latest official release version number */  
-#define HWG_VERSION         "2.23"
+#define HWG_VERSION         "2.23 dev"
 /* Set build number to 0 for Code Snapshot, otherwise start count with 1 for every new release */
 //#define HWG_BUILD               0
 /* For note of latest official release build */

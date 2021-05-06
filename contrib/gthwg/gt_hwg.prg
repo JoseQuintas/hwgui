@@ -1,14 +1,12 @@
-/*
- * $Id$
- *
- * GTHWG, Video subsystem, based on HwGUI
- * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
- * www - http://www.kresin.ru
- */
-
 #include "hwgui.ch"
 
 #define MSG_USER_SIZE  0x502
+
+FUNCTION HB_GT_GUI
+   RETURN Nil
+
+FUNCTION HB_GT_GUI_DEFAULT
+   RETURN Nil
 
 FUNCTION gthwg_CreateMainWindow( oFont )
 
@@ -50,9 +48,9 @@ FUNCTION gthwg_CreatePane( oWnd, nLeft, nTop, nWidth, nHeight, oFont, bSize )
          o:Move( ,,, o:nHeight-nDelta )
          op:Move( ,,, h )
       ENDIF
-      //hwg_writelog( ltrim(str(w)) + " " + ltrim(str(h)) + " / " + ;
-      //   ltrim(str(op:nWidth)) + " " + ltrim(str(op:nHeight)) + " / " + ;
-      //   ltrim(str(o:nWidth)) + " " + ltrim(str(o:nHeight)) )
+      hwg_writelog( ltrim(str(w)) + " " + ltrim(str(h)) + " / " + ;
+         ltrim(str(op:nWidth)) + " " + ltrim(str(op:nHeight)) + " / " + ;
+         ltrim(str(o:nWidth)) + " " + ltrim(str(o:nHeight)) )
       RETURN -1
    }
 
@@ -75,7 +73,7 @@ FUNCTION gthwg_AddFont( cName, nHeight, nWidth, nWeight, nQuality, nCodepage )
       IF !Empty( oWnd := HWindow():GetMain() )
          oWnd:oFont := oFont
       ENDIF
-      //hwg_writelog( cName + " " + Str(nCodePage) + " " + Str(nHeight) + " " + Str(oFont:height) )
+      hwg_writelog( cName + " " + Str(nWidth) + " " + Str(oFont:width) + " / " + Str(nHeight) + " " + Str(oFont:height) )
       RETURN oFont:handle
    ENDIF
 

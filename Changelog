@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-06 13:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/gthwg/gt_hwg.prg
+    * hb_gt_gui() and hb_gt_gui_default() added to prevent gtgui to be default for mingw.
+  * contrib/gthwg/gt_hwgui_w.c
+    * Small changes.
+  * include/guilib.ch
+    * "dev" added to version number till a new build
+
 2021-05-05 19:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcwindow.prg
     * ANNOUNCE HB_GTSYS line deleted, because it isn't correct in fact and

@@ -1,34 +1,11 @@
 /*
- * $Id$
+ * Video subsystem, based on HwGUI ( Winapi version )
  *
- * GTHWG, Video subsystem, based on HwGUI ( Winapi version )
- *
- * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
- * www - http://www.kresin.ru
+ * Copyright 2019 Alexander S.Kresin <alex@kresin.ru>
  * based on
  * Video subsystem for Windows using GDI windows instead of Console
  *     Copyright 2003 Peter Rees <peter@rees.co.nz>
  *                    Rees Software & Systems Ltd
- *   Bcc ConIO Video subsystem by
- *     Copyright 2002 Marek Paliwoda <paliwoda@inteia.pl>
- *     Copyright 2002 Przemyslaw Czerpak <druzus@polbox.com>
- *   Video subsystem for Windows compilers
- *     Copyright 1999-2000 Paul Tucker <ptucker@sympatico.ca>
- *     Copyright 2002 Przemyslaw Czerpak <druzus@polbox.com>
- *
- * Copyright 2006 Przemyslaw Czerpak <druzus /at/ priv.onet.pl>
- *    Adopted to new GT API
- *
- * Copyright 1999 David G. Holm <dholm@jsd-llc.com>
- *    hb_gt_Tone()
- *
- * Copyright 2003-2004 Giancarlo Niccolai <gc@niccolai.ws>
- *         Standard xplatform GT Info system,
- *         Graphical object system and event system.
- *         hb_gtInfo() And GTO_* implementation.
- *
- * Copyright 2004 Mauricio Abre <maurifull@datafull.com>
- *         Cross-GT, multi-platform Graphics API
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -77,14 +54,29 @@
 
 #define HWG_DEFAULT_FONT_NAME  TEXT( "Courier New" )
 
+#define HB_GT_NAME            HWGUI
+
+#include "hbset.h"
+#include "hbgtcore.h"
+#include "hbinit.h"
+#include "hbapicdp.h"
+#include "hbapierr.h"
+#include "hbapiitm.h"
+#include "inkey.ch"
+#include "error.ch"
+#include "hbvm.h"
+#include "hbthread.h"
+#include "hbgfxdef.ch"
+#include "hbwinuni.h"
+/*
 #include "hbgtcore.h"
 #include "hbinit.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
 #include "hbwinuni.h"
+*/
 #include "gt_hwg.ch"
 
-#define HB_GT_NAME            HWGUI
 #define HWG_DEFAULT_ROWS         25
 #define HWG_DEFAULT_COLS         80
 #define HWG_DEFAULT_FONT_HEIGHT  20
@@ -1019,6 +1011,7 @@ static void gthwg_ResetWindowSize( PHB_GTHWG pHWG )
 
 static HB_BOOL gthwg_SetWindowSize( PHB_GTHWG pHWG, int iRows, int iCols )
 {
+   //hwg_writelog( NULL, "SetWindowSize-0\r\n" );
    if( HB_GTSELF_RESIZE( pHWG->pGT, iRows, iCols ) )
    {
       if( pHWG->COLS != iCols )
@@ -1034,7 +1027,6 @@ static HB_BOOL gthwg_SetWindowSize( PHB_GTHWG pHWG, int iRows, int iCols )
       pHWG->COLS = iCols;
       return HB_TRUE;
    }
-
    return HB_FALSE;
 }
 
@@ -1047,16 +1039,7 @@ static void gthwg_TextOut( PHB_GTHWG pHWG, HDC hdc, int col, int row, int iColor
    //hwg_writelog( NULL, "_TextOut-1\r\n" );
    xy = gthwg_GetXYFromColRow( pHWG, col, row );
    SetRect( &rClip, xy.x, xy.y, xy.x + cbString * pHWG->PTEXTSIZE.x, xy.y + pHWG->PTEXTSIZE.y );
-/*
-   if( ( pHWG->fontAttribute & HB_GTI_FONTA_CLRBKG ) != 0 )
-   {
-      HBRUSH hBrush = CreateSolidBrush( pHWG->COLORS[ ( iColor >> 4 ) & 0x0F ] );
-      FillRect( hdc, &rClip, hBrush );
-      DeleteObject( hBrush );
-   }
-   else {}
-*/
-      fuOptions |= ETO_OPAQUE;
+   fuOptions |= ETO_OPAQUE;
 
    /* set background color */
    SetBkColor( hdc, pHWG->COLORS[ ( iColor >> 4 ) & 0x0F ] );
@@ -1149,8 +1132,9 @@ LRESULT CALLBACK gthwg_WinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
       switch( message )
       {
          case WM_PAINT:
-            if( GetUpdateRect( hWnd, NULL, FALSE ) )
-               gthwg_PaintText( pHWG );
+            //if( HB_GTSELF_DISPCOUNT( pHWG->pGT ) == 0 )
+               if( GetUpdateRect( hWnd, NULL, FALSE ) )
+                  gthwg_PaintText( pHWG );
             SetFocus( hWnd );
             return 0;
 
@@ -1178,6 +1162,11 @@ LRESULT CALLBACK gthwg_WinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
          case WM_SYSCHAR:
             return gthwg_KeyEvent( pHWG, message, wParam, lParam );
 
+         case WM_MOUSEMOVE:
+         case WM_NCMOUSEMOVE:
+            gthwg_MouseEvent( pHWG, message, wParam, lParam );
+            return 0;
+
          case WM_RBUTTONDOWN:
          case WM_LBUTTONDOWN:
          case WM_RBUTTONUP:
@@ -1187,10 +1176,9 @@ LRESULT CALLBACK gthwg_WinProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM l
          case WM_MBUTTONDOWN:
          case WM_MBUTTONUP:
          case WM_MBUTTONDBLCLK:
-         case WM_MOUSEMOVE:
          case WM_MOUSEWHEEL:
-         case WM_NCMOUSEMOVE:
             gthwg_MouseEvent( pHWG, message, wParam, lParam );
+            SetFocus( hWnd );
             return 0;
 
          case WM_QUERYENDSESSION: /* check if we can shutdown or logoff */
@@ -1271,7 +1259,9 @@ HB_FUNC( GTHWG_SETWINDOW )
          wi.right - wi.left, wi.bottom - wi.top, SWP_NOSIZE | SWP_NOZORDER );
       iNewPosX = iNewPosY = -1;
    }
-   gthwg_SetWindowSize( pHWGMain, pHWGMain->ROWS, pHWGMain->COLS );
+
+   if( pHWGMain )
+      gthwg_SetWindowSize( pHWGMain, pHWGMain->ROWS, pHWGMain->COLS );
 
    //hwg_writelog( NULL, "_setwindow-2 %d\r\n", ((hWndMain)? 1:0) );
 }
@@ -1542,12 +1532,7 @@ static void hb_gt_hwg_Refresh( PHB_GT pGT )
       }
       if( pHWG->hWnd )
       {
-         if( hPaneMain )
-         {
-            SendNotifyMessage( pHWG->hWnd, WM_MY_UPDATE_CARET, 0, 0 );
-            hwg_doEvents();
-         }
-         else if( hWndMain )
+         if( hPaneMain || hWndMain )
          {
             SendNotifyMessage( pHWG->hWnd, WM_MY_UPDATE_CARET, 0, 0 );
             hwg_doEvents();
@@ -1890,7 +1875,7 @@ static HB_BOOL hb_gt_hwg_mouse_ButtonState( PHB_GT pGT, int iButton )
 
 static HB_BOOL hb_gt_FuncInit( PHB_GT_FUNCS pFuncTable )
 {
-
+   //hwg_writelog( NULL, "FuncInit\r\n" );
    pFuncTable->Init    = hb_gt_hwg_Init;
    pFuncTable->Exit    = hb_gt_hwg_Exit;
    pFuncTable->ReadKey = hb_gt_hwg_ReadKey;

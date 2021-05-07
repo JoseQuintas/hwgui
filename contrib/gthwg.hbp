@@ -11,7 +11,7 @@
 
 -i../include
 
--cflag=-DHWG_USE_POINTER_ITEM
+"{unix}-cflag=`pkg-config --cflags gtk+-2.0`"
 
 gthwg/gt_hwg.prg
 {unix}gthwg/gt_hwgui_l.c

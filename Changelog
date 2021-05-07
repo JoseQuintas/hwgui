@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-07 19:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/gthwg/gt_hwgui_l.c
+    ! Warnings fixed.
+  * contrib/gthwg.hbp
+    ! gtk2 headers added for Linux version
+
 2021-05-07 14:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwgui_l.c
     * "Destroy" signal handling added.

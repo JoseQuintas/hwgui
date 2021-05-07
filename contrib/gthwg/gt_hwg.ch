@@ -1,7 +1,8 @@
 /*
  * $Id$
  *
- * GTHWG, Video subsystem, based on HwGUI
+ * GTHWGUI, Video subsystem, based on HwGUI
+ *
  * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  */

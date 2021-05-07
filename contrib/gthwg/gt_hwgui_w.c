@@ -1,7 +1,10 @@
 /*
- * Video subsystem, based on HwGUI ( Winapi version )
+ * $Id$
+ * GTHWGUI, Video subsystem, based on HwGUI ( Winapi version )
  *
- * Copyright 2019 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
+ *
  * based on
  * Video subsystem for Windows using GDI windows instead of Console
  *     Copyright 2003 Peter Rees <peter@rees.co.nz>

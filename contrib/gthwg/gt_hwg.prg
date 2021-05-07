@@ -1,3 +1,11 @@
+/*
+ * $Id$
+ * GTHWGUI, Video subsystem, based on HwGUI
+ *
+ * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
+ */
+
 #include "hwgui.ch"
 
 #define MSG_USER_SIZE  0x502

@@ -12,14 +12,15 @@ OBJ_DIR = obj
 LIB_DIR = ../lib
 HWGQHTM_DIR  = qhtm
 EXTCONTROL_DIR  = ext_controls
-HWGACTIVEX_DIR  = activex
+GTHWG_DIR  = gthwg
 HWGMISC_DIR = misc
 
 HARBOURFLAG = -d__LINUX__ -d__GTK__ $(HARBOURFLAGS)
 CFLAGS = -Wall -O3
 
 all: \
-   $(LIB_DIR)/libhwg_misc.a
+   $(LIB_DIR)/libhwg_misc.a \
+   $(LIB_DIR)/libgthwg.a
 
 #   $(LIB_DIR)/libhwg_qhtm.a
 #   $(LIB_DIR)/libhwg_extctrl.a \
@@ -35,6 +36,11 @@ $(LIB_DIR)/libhwg_misc.a : \
   $(OBJ_DIR)/saymoney.o
 	ar rc $@ $^  
 
+$(LIB_DIR)/libgthwg.a : \
+   $(OBJ_DIR)/gt_hwg.o \
+   $(OBJ_DIR)/gt_hwgui_l.o
+	ar rc $@ $^
+
 #$(LIB_DIR)/libhwg_qhtm.a : \
 #   $(OBJ_DIR)/hqhtm.o \
 #   $(OBJ_DIR)/hwg_qhtm.o
@@ -46,14 +52,6 @@ $(LIB_DIR)/libhwg_misc.a : \
 #   $(OBJ_DIR)/hcomboex.o \
 #   $(OBJ_DIR)/hrectex.o \
 #   $(OBJ_DIR)/hgridex.o
-#	ar rc $@ $^
-
-#$(LIB_DIR)/libhwg_activex.a : \
-#   $(OBJ_DIR)/htmlcore.o \
-#   $(OBJ_DIR)/htmlfunc.o \
-#   $(OBJ_DIR)/hhtml.o \
-#   $(OBJ_DIR)/c_activex.o \
-#   $(OBJ_DIR)/h_activex.o
 #	ar rc $@ $^
 
 .prg.c:
@@ -73,6 +71,11 @@ $(OBJ_DIR)/%.c : $(HWGMISC_DIR)/%.prg
 $(OBJ_DIR)/%.o : $(HWGMISC_DIR)/%.c
 	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
+$(OBJ_DIR)/%.c : $(GTHWG_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+
+$(OBJ_DIR)/%.o : $(GTHWG_DIR)/%.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 #$(OBJ_DIR)/%.c : $(HWGQHTM_DIR)/%.prg
 #	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
@@ -89,9 +92,3 @@ $(OBJ_DIR)/%.o : $(HWGMISC_DIR)/%.c
 
 # MS ActiveX seems to be outdated
 # mshtmhst.h needed
-
-#$(OBJ_DIR)/%.c : $(HWGACTIVEX_DIR)/%.prg
-#	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
-
-#$(OBJ_DIR)/%.o : $(HWGACTIVEX_DIR)/%.c
-#	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^

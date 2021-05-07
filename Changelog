@@ -8,6 +8,17 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-07 11:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + contrib/gthwg/gt_hwgui_l.c
+    * Linux GTK version of GTHWG has been added
+  * contrib/gthwg/gt_hwg.ch
+  * contrib/gthwg/gt_hwg.prg
+  * contrib/gthwg/gt_hwgui_w.c
+    * Headers updated.
+  * contrib/gthwg.hbp
+  * contrib/makefile.linux
+    * Make files for Linux GTK version updated
+
 2021-05-06 13:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwg.prg
     * hb_gt_gui() and hb_gt_gui_default() added to prevent gtgui to be default for mingw.

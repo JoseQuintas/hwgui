@@ -122,6 +122,7 @@ HB_FUNC( HWG__SETMENU )
    GtkWidget * vbox = gtk_widget_get_parent( (GtkWidget*)box );
    gtk_box_pack_start( GTK_BOX (vbox), (GtkWidget*)HB_PARHANDLE(2), FALSE, FALSE, 0);
    gtk_box_reorder_child(GTK_BOX(vbox), (GtkWidget*)HB_PARHANDLE(2), 0);
+   gtk_widget_show( (GtkWidget*)HB_PARHANDLE(2) );
    hb_retl(1);
 }
 

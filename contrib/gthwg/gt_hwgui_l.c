@@ -1,9 +1,7 @@
 /*
- * $Id$
- * GTHWGUI, Video subsystem, based on HwGUI ( GTK Linux version )
+ * Video subsystem, based on HwGUI ( GTK Linux version )
  *
- * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
- * www - http://www.kresin.ru
+ * Copyright 2019 Alexander S.Kresin <alex@kresin.ru>
  */
 
 #include "hbapi.h"
@@ -460,21 +458,8 @@ static void cb_signal( GtkWidget *widget,gchar* data )
          widget = hWndMain;
       p3 = 0;
    }
-
-   gObject = g_object_get_data( (GObject*) widget, "obj" );
-
-   if( !pSym_onEvent )
-      pSym_onEvent = hb_dynsymFindName( "ONEVENT" );
-
-   if( pSym_onEvent && gObject )
-   {
-      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
-      hb_vmPush( ( PHB_ITEM ) gObject );
-      hb_vmPushLong( p1 );
-      hb_vmPushLong( p2 );
-      hb_vmPushLong( (HB_LONG) p3 );
-      hb_vmSend( 3 );
-   }
+   if( p1 == 2 )
+      hb_vmRequestQuit();
 }
 
 static void gthwg_set_signal( gpointer hWnd, char * cSignal, int p1 )

@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-07 14:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/gthwg/gt_hwgui_l.c
+    * "Destroy" signal handling added.
+  * source/gtk/menu_c.c
+    * hwg__SetMenu() modified to allow to add main menu after window is activated.
+
 2021-05-07 11:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + contrib/gthwg/gt_hwgui_l.c
     * Linux GTK version of GTHWG has been added

@@ -16,13 +16,14 @@ FUNCTION HB_GT_GUI
 FUNCTION HB_GT_GUI_DEFAULT
    RETURN Nil
 
-FUNCTION gthwg_CreateMainWindow( oFont )
+FUNCTION gthwg_CreateMainWindow( cTitle, oFont )
 
    LOCAL oWnd, oPane
-   LOCAL nStyle, x := 0, y := 0, width := 400, height := 200, cTitle := "gt_hwg"
+   LOCAL nStyle, x := 0, y := 0, width := 400, height := 200
    LOCAL bSize
 
-   oWnd := HMainWindow():New( 1,,, nStyle, x, y, width, height, cTitle,,, oFont,, {||gthwg_CloseWindow()}, ;
+   oWnd := HMainWindow():New( 1,,, nStyle, x, y, width, height, ;
+      Iif( Empty(cTitle),"gt_HwGUI",cTitle ),,, oFont,, {||gthwg_CloseWindow()}, ;
       ,,,,,,,,,, WS_THICKFRAME )
 
    gthwg_SetWindow( oWnd:handle, Iif( Empty(oFont), Nil, oFont:handle ) )
@@ -81,7 +82,7 @@ FUNCTION gthwg_AddFont( cName, nHeight, nWidth, nWeight, nQuality, nCodepage )
       IF !Empty( oWnd := HWindow():GetMain() )
          oWnd:oFont := oFont
       ENDIF
-      hwg_writelog( cName + " " + Str(nWidth) + " " + Str(oFont:width) + " / " + Str(nHeight) + " " + Str(oFont:height) )
+      //hwg_writelog( cName + " " + Str(nWidth) + " " + Str(oFont:width) + " / " + Str(nHeight) + " " + Str(oFont:height) )
       RETURN oFont:handle
    ENDIF
 

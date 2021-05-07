@@ -148,8 +148,6 @@ static HB_GT_FUNCS SuperTable;
 #define HB_GTSUPER   ( &SuperTable )
 #define HB_GTID_PTR  ( &s_GtId )
 
-static PHB_DYNS pSym_onEvent = NULL;
-
 static HB_LONG prevp2 = -1;
 
 static void gthwg_GetWindowRect( GtkWidget* hWnd, LPRECT lpRect )
@@ -179,6 +177,10 @@ static void gthwg_GetClientRect( GtkWidget* hWnd, LPRECT lpRect )
 
 static void gthwg_SetWindowPos( GtkWidget* hWnd, int left, int top, int width, int height, unsigned int uiFlags )
 {
+
+   HB_SYMBOL_UNUSED( hWnd );
+   HB_SYMBOL_UNUSED( left );
+   HB_SYMBOL_UNUSED( top );
    //gtk_window_move( GTK_WINDOW(hWnd), left, top );
    if( !(uiFlags & SWP_NOSIZE) )
    {
@@ -221,7 +223,7 @@ static int gthwg_GetDesktopHeight( void )
    return gdk_screen_height();
 }
 
-static void gthwg_InvalidateRect( GtkWidget* hWnd, LPRECT lpRect, int b )
+static void gthwg_InvalidateRect( GtkWidget* hWnd, LPRECT lpRect )
 {
    gtk_widget_queue_draw_area( hWnd, lpRect->left, lpRect->top,
       lpRect->right - lpRect->left + 1, lpRect->bottom - lpRect->top + 1 );
@@ -267,6 +269,10 @@ static HFONT gthwg_GetFont( char * lpFace, int iHeight, int iWidth, int iWeight,
    HWGUI_HDC hdc;
    int width, height, ih = iHeight;
 
+   HB_SYMBOL_UNUSED( iWeight );
+   HB_SYMBOL_UNUSED( iQuality );
+   HB_SYMBOL_UNUSED( iCodePage );
+
    ih -= 2;
    hdc.window = gtk_widget_get_window( hPaneMain );
    hdc.cr = gdk_cairo_create( hdc.window );
@@ -311,7 +317,7 @@ static HB_BOOL gthwg_SetMousePos( PHB_GTHWG pHWG, int iRow, int iCol )
 
 static void gthwg_ResetWindowSize( PHB_GTHWG pHWG )
 {
-   RECT  wi, ci;
+   RECT  wi;
    int   height = -1, width = -1;
 
    if( pHWG->hFont )
@@ -407,16 +413,6 @@ static HB_BOOL gthwg_GetCharFromInputQueue( PHB_GTHWG pHWG, int * iKey )
    return HB_FALSE;
 }
 
-static POINT gthwg_GetXYFromColRow( PHB_GTHWG pHWG, int col, int row )
-{
-   POINT xy;
-
-   xy.x = col * pHWG->PTEXTSIZE.x + pHWG->MarginLeft;
-   xy.y = row * pHWG->PTEXTSIZE.y + pHWG->MarginTop;
-
-   return xy;
-}
-
 static RECT gthwg_GetXYFromColRowRect( PHB_GTHWG pHWG, RECT colrow )
 {
    RECT xy;
@@ -443,10 +439,11 @@ static POINT gthwg_GetColRowFromXY( PHB_GTHWG pHWG, LONG x, LONG y )
    return colrow;
 }
 
-static void cb_signal( GtkWidget *widget,gchar* data )
+static void cb_signal( GtkWidget *widget, gchar* data )
 {
-   gpointer gObject;
    HB_LONG p1, p2, p3;
+
+   HB_SYMBOL_UNUSED( widget );
 
    sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
    if( !p1 )
@@ -469,132 +466,6 @@ static void gthwg_set_signal( gpointer hWnd, char * cSignal, int p1 )
    sprintf( buf,"%d 0 0", p1 );
    g_signal_connect( hWnd, cSignal, G_CALLBACK (cb_signal), g_strdup(buf) );
 }
-
-static void gthwg_TextOut( PHB_GTHWG pHWG, PHWGUI_HDC hdc, int col, int row, int iColor,  char * szText, UINT uiLen, int bCursor )
-{
-   UINT  x1, y1, x2, y2;
-
-   //hwg_writelog( NULL, "_TextOut-1\r\n" );
-
-   x1 = col * pHWG->PTEXTSIZE.x + pHWG->MarginLeft;
-   y1 = row * pHWG->PTEXTSIZE.y + pHWG->MarginTop;
-   x2 = x1 + uiLen * pHWG->PTEXTSIZE.x;
-   y2 = y1 + pHWG->PTEXTSIZE.y;
-
-   //hwg_writelog( NULL, "TextOut-1 %c%c%c%c %d\r\n", szText[0],szText[1],szText[2],szText[3], uiLen );
-   if( !(uiLen == 1) || *szText != ' ' )
-   {
-      pango_layout_set_text( hdc->layout, szText, -1 ); //uiLen );
-      pango_layout_set_width( hdc->layout, (x2-x1)*PANGO_SCALE );
-      pango_layout_set_justify( hdc->layout, 1 );
-   }
-
-   /* set background color */
-   hwg_setcolor( hdc->cr, pHWG->COLORS[ ( iColor >> 4 ) & 0x0F ] );
-   cairo_rectangle( hdc->cr, (gdouble)x1, (gdouble)y1, (gdouble)(x2-x1+1), (gdouble)(y2-y1) );
-   cairo_fill( hdc->cr );
-
-   /* set foreground color */
-   hwg_setcolor( hdc->cr, pHWG->COLORS[ iColor & 0x0F ] );
-   if( !(uiLen == 1) || *szText != ' ' )
-   {
-      cairo_move_to( hdc->cr, (gdouble)x1, (gdouble)y1 );
-      pango_cairo_show_layout( hdc->cr, hdc->layout );
-   }
-   if( bCursor >= 0 )
-   {
-      if( bCaretShow )
-      {
-         x1 = bCursor * pHWG->PTEXTSIZE.x + pHWG->MarginLeft;
-         x2 = x1 + pHWG->PTEXTSIZE.x;
-         //hwg_writelog( NULL, "TextOut-draw cursor %lu\r\n", iCaretMs );
-         if( HB_GTSELF_GETCURSORSTYLE( pHWG->pGT ) != SC_NONE )
-         {
-            cairo_rectangle( hdc->cr, (gdouble)x1+1, (gdouble)y2-2, (gdouble)(x2-x1-1), (gdouble)2 );
-            cairo_stroke( hdc->cr );
-         }
-      }
-   }
-}
-
-/*
-static void gthwg_PaintText( PHB_GTHWG pHWG, GdkRectangle *pArea )
-{
-   HWGUI_HDC   hdc;
-   int         iRow;
-   int         iColor, iOldColor = 0;
-   int iRowCurs, iColCurs, iStyle, bCursor = -1;
-   GdkRectangle area;
-   HB_BYTE     bAttr;
-   GtkAllocation alloc;
-   PHB_CODEPAGE cdp = hb_vmCDP();
-
-   memset( &hdc, 0, sizeof(HWGUI_HDC) );
-   hdc.widget = hPaneMain;
-   hdc.window = gtk_widget_get_window( hPaneMain );
-   hdc.cr = gdk_cairo_create( hdc.window );
-   hdc.layout = pango_cairo_create_layout( hdc.cr );
-   hdc.fcolor = hdc.bcolor = -1;
-
-   gtk_widget_get_allocation( hPaneMain, &alloc );
-   area.x = pArea->x / pHWG->PTEXTSIZE.x;
-   area.y = pArea->y / pHWG->PTEXTSIZE.y;
-   area.width = pArea->width / pHWG->PTEXTSIZE.x;
-   area.height = pArea->height / pHWG->PTEXTSIZE.y;
-
-   //hwg_writelog( NULL, "_PaintText-1 %d %d %d %s\r\n",(pHWG->hFont)? 1 : 0, alloc.width, alloc.height, hb_cdpID() );
-
-   if( pHWG->hFont )
-   {
-      hdc.hFont = ((PHWGUI_FONT)(pHWG->hFont))->hFont;
-      pango_layout_set_font_description( hdc.layout, hdc.hFont );
-   }
-
-   HB_GTSELF_GETSCRCURSOR( pHWG->pGT, &iRowCurs, &iColCurs, &iStyle );
-   for( iRow = area.y; iRow <= area.y+area.height; ++iRow )
-   {
-      int iCol, startCol, len;
-
-      iCol = startCol = area.x;
-      len = 0;
-
-      while( iCol < area.x+area.width )
-      {
-         HB_UCHAR uc;
-         if( ! HB_GTSELF_GETSCRUC( pHWG->pGT, iRow, iCol, &iColor, &bAttr, &uc, HB_TRUE ) )
-            break;
-         if( len == 0 )
-         {
-            iOldColor = iColor;
-         }
-         else //if( iColor != iOldColor )
-         {
-            gthwg_TextOut( pHWG, &hdc, startCol, iRow, iOldColor, pHWG->TextLine, ( UINT ) len, bCursor );
-            bCursor = -1;
-            iOldColor = iColor;
-            startCol = iCol;
-            len = 0;
-         }
-         hb_cdpStrToUTF8( cdp, &uc, 1, pHWG->TextLine, 5 );
-         len ++;
-         //pHWG->TextLine[ len++ ] = ( TCHAR ) uc;
-         if( iCol == iColCurs && iRow == iRowCurs )
-            bCursor = iCol;
-         iCol++;
-      }
-      if( len > 0 )
-         gthwg_TextOut( pHWG, &hdc, startCol, iRow, iOldColor, pHWG->TextLine, ( UINT ) len, bCursor );
-   }
-
-   if( hdc.layout )
-      g_object_unref( (GObject*) hdc.layout );
-
-   if( hdc.surface )
-      cairo_surface_destroy( hdc.surface );
-   cairo_destroy( hdc.cr );
-   //hwg_writelog( NULL, "_PaintText-10\r\n" );
-}
-*/
 
 static void gthwg_PaintText( PHB_GTHWG pHWG, GdkRectangle *pArea )
 {
@@ -1031,8 +902,6 @@ static HB_LONG gthwg_KeyConvert( HB_LONG ulKeyRaw, HB_LONG ulFlags )
 
 static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
 {
-   HB_LONG lRes;
-
    HB_LONG p1, p2, p3;
 
    //hwg_writelog( NULL, "cb_event-1 %d\r\n", event->type );
@@ -1135,7 +1004,7 @@ static void gthwg_set_event( gpointer handle, char * cSignal, long int p1, long 
 
 /* *********************************************************************** */
 
-static GtkWidget * gthwg_CreatePane( PHB_GTHWG pHWG, int iLeft, int iTop, int iWidth, int iHeight )
+static GtkWidget * gthwg_CreatePane( int iLeft, int iTop, int iWidth, int iHeight )
 {
    GtkWidget *hCtrl;
    GtkFixed *box;
@@ -1182,7 +1051,7 @@ HB_FUNC( GTHWG_CREATEPANEL )
 {
 
    hWndMain = hb_parptr( 1 );
-   HB_RETHANDLE( gthwg_CreatePane( pHWGMain, hb_parni(2), hb_parni(3), hb_parni(4), hb_parni(5) ) );
+   HB_RETHANDLE( gthwg_CreatePane( hb_parni(2), hb_parni(3), hb_parni(4), hb_parni(5) ) );
 }
 
 HB_FUNC( GTHWG_SETWINDOW )
@@ -1193,7 +1062,7 @@ HB_FUNC( GTHWG_SETWINDOW )
    gtk_widget_get_allocation( hWndMain, &alloc );
 
    //gthwg_CreatePane( pHWGMain, 0, 0, alloc.width, alloc.height );
-   gthwg_CreatePane( pHWGMain, 0, 0, 400, 200 );
+   gthwg_CreatePane( 0, 0, 10, 10 );
 
    //hwg_writelog( NULL, "_setwindow-1 %d\r\n", ((hWndMain)? 1:0) );
    gtk_widget_show_all( hWndMain );
@@ -1389,7 +1258,7 @@ static int hb_gt_hwg_ReadKey( PHB_GT pGT, int iEventMask )
          rect.left = pHWG->CaretCol;
          rect.right = pHWG->CaretCol + 1;
          rect = gthwg_GetXYFromColRowRect( pHWG, rect );
-         gthwg_InvalidateRect( pHWG->hWnd, &rect, FALSE );
+         gthwg_InvalidateRect( pHWG->hWnd, &rect );
          pHWG->CaretRow = iRow;
          pHWG->CaretCol = iCol;
 
@@ -1400,7 +1269,7 @@ static int hb_gt_hwg_ReadKey( PHB_GT pGT, int iEventMask )
          bCaretShow = 1;
          iCaretMs = hb_dateMilliSeconds();
          //hwg_writelog( NULL, "refresh-updCursor-1 %d %d\r\n", iRow, iCol );
-         gthwg_InvalidateRect( pHWG->hWnd, &rect, FALSE );
+         gthwg_InvalidateRect( pHWG->hWnd, &rect );
       }
       else
       {
@@ -1414,7 +1283,7 @@ static int hb_gt_hwg_ReadKey( PHB_GT pGT, int iEventMask )
             rect.right = pHWG->CaretCol + 1;
             rect = gthwg_GetXYFromColRowRect( pHWG, rect );
             //hwg_writelog( NULL, "refresh-updCursor-2 %d %d %d %d\r\n", iRow, iCol, pHWG->CaretRow, pHWG->CaretCol );
-            gthwg_InvalidateRect( pHWG->hWnd, &rect, FALSE );
+            gthwg_InvalidateRect( pHWG->hWnd, &rect );
          }
       }
 
@@ -1524,7 +1393,7 @@ static void hb_gt_hwg_Redraw( PHB_GT pGT, int iRow, int iCol, int iSize )
          rect = gthwg_GetXYFromColRowRect( pHWG, rect );
 
          //hwg_writelog( NULL, "_redraw-2\r\n" );
-         gthwg_InvalidateRect( pHWG->hWnd, &rect, FALSE );
+         gthwg_InvalidateRect( pHWG->hWnd, &rect );
          //hwg_writelog( NULL, "_redraw-3 %d %d %d %d\r\n", rect.top, rect.left, rect.bottom, rect.right );
       }
    }

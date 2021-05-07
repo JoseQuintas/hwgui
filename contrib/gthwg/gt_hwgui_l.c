@@ -1,7 +1,9 @@
 /*
- * Video subsystem, based on HwGUI ( GTK Linux version )
+ * $Id$
+ * GTHWGUI, Video subsystem, based on HwGUI ( GTK Linux version )
  *
- * Copyright 2019 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
  */
 
 #include "hbapi.h"

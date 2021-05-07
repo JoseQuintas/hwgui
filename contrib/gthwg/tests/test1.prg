@@ -58,7 +58,7 @@ FUNCTION Main
 
 STATIC FUNCTION CreateWindow()
 
-   LOCAL oWnd := gthwg_CreateMainWindow()
+   LOCAL oWnd := gthwg_CreateMainWindow( "GT HwGUI Test" )
 
    MENU OF oWnd
       MENU TITLE "&File"

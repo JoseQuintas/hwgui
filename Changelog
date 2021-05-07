@@ -8,6 +8,10 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-07 20:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/gthwg/gt_hwg.prg
+    * cTitle parameter added to gthwg_CreateWindow()
+
 2021-05-07 19:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwgui_l.c
     ! Warnings fixed.

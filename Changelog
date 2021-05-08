@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-08 09:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/gthwg/gt_hwg.prg
+    * hb_gt_cgi() and hb_gt_cgi_default() added to prevent gtcgi to be default for Linux GTK version.
+  * contrib/gthwg/gt_hwgui_l.c
+    * Small correction for Alt+ return codes.
+
 2021-05-07 20:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwg.prg
     * cTitle parameter added to gthwg_CreateWindow()

@@ -10,11 +10,19 @@
 
 #define MSG_USER_SIZE  0x502
 
+#ifdef __GTK__
+FUNCTION HB_GT_CGI
+   RETURN Nil
+
+FUNCTION HB_GT_CGI_DEFAULT
+   RETURN Nil
+#else
 FUNCTION HB_GT_GUI
    RETURN Nil
 
 FUNCTION HB_GT_GUI_DEFAULT
    RETURN Nil
+#endif
 
 FUNCTION gthwg_CreateMainWindow( cTitle, oFont )
 

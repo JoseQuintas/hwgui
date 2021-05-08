@@ -882,7 +882,7 @@ static HB_LONG gthwg_KeyConvert( HB_LONG ulKeyRaw, HB_LONG ulFlags )
    if( ulKey != 0 )
       ulKey = HB_INKEY_NEW_KEY( ulKey, ulFlags );
    else if( ulKeyRaw <= 127 )
-      if( ulFlags & (HB_KF_CTRL | HB_KF_ALT) && ulKeyRaw >= 97 && ulKeyRaw <= 122 )
+      if( ulFlags & HB_KF_CTRL && ulKeyRaw >= 97 && ulKeyRaw <= 122 )
          ulKey = HB_INKEY_NEW_KEY( ulKeyRaw-32, ulFlags );
       else
          ulKey = HB_INKEY_NEW_KEY( ulKeyRaw, ulFlags );

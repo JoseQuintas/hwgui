@@ -16,7 +16,6 @@ FUNCTION Main
    LOCAL nKey, nh, nw
    LOCAL cLogin := Space( 16 )
 
-   ANNOUNCE HB_GTSYS
    REQUEST HB_GT_HWGUI
    REQUEST HB_GT_HWGUI_DEFAULT
 

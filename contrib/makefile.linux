@@ -2,9 +2,9 @@
 # makefile for gcc compiler/Linux
 # Building of contrib libs - HWGUI
 
-# Modify path to Harbour to your own needs 
-# HRB_DIR = $(HB_PATH)
-HRB_DIR = $(HOME)/Harbour/core-master
+# Modify path to Harbour to your own needs
+ HRB_DIR = ../../
+#HRB_DIR = $(HOME)/Harbour/core-master
 
 HRB_EXE = $(HRB_DIR)/bin/linux/gcc/harbour
 INC_DIR = ../include
@@ -25,7 +25,7 @@ all: \
 #   $(LIB_DIR)/libhwg_qhtm.a
 #   $(LIB_DIR)/libhwg_extctrl.a \
 
-# Support for ActiveX enden, outdated   
+# Support for ActiveX enden, outdated
 #   $(LIB_DIR)/libhwg_activex.a
 
 $(LIB_DIR)/libhwg_misc.a : \
@@ -34,7 +34,7 @@ $(LIB_DIR)/libhwg_misc.a : \
   $(OBJ_DIR)/miscfunc.o \
   $(OBJ_DIR)/richtext.o \
   $(OBJ_DIR)/saymoney.o
-	ar rc $@ $^  
+	ar rc $@ $^
 
 $(LIB_DIR)/libgthwg.a : \
    $(OBJ_DIR)/gt_hwg.o \
@@ -75,7 +75,7 @@ $(OBJ_DIR)/%.c : $(GTHWG_DIR)/%.prg
 	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.o : $(GTHWG_DIR)/%.c
-	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include `pkg-config --cflags gtk+-2.0` -o $@ $^
 
 #$(OBJ_DIR)/%.c : $(HWGQHTM_DIR)/%.prg
 #	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^

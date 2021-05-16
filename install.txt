@@ -192,6 +192,11 @@
 
    sudo apt install wmctrl  *1)
    
+   If the following message after start of HWGUI application appeared:
+       Failed to load module "canberra-gtk-module"
+   install packages:
+       sudo apt-get install libcanberra-gtk-module ibcanberra-gtk3-module 
+   
    
   
    Optional for all distributions (resolve dependencies), install them, if needed:

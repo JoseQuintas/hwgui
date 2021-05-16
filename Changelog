@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-16 15:05 UTC+0200 Wilfried Brunken DF7BE
+  * install.txt
+    ! Additional instructions for
+    ! Ubuntu 20.04.2.0 LTS:
+    ! Missing "canberra-gtk-module".    
+
 2021-05-12 11:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwg.prg
     * hb_gt_win() and hb_gt_win_default() added to get rid off 'ANNOUNCE HB_GTSYS' declaration.

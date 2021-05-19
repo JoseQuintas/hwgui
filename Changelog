@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-19 15:10 UTC+0200 Wilfried Brunken DF7BE
+  * utils/dbc/dbchw.hbp
+  * utils/tutorial/hwgrun.hbp
+  * utils/tutorial/tutor.hbp
+    ! Ticket #90: tutor, dbchw error creating  
+    ! dbchw and tutor ready for OS freebsd 13.0:
+    ! The macro for unix has also effect on LINUX 
+
 2021-05-16 15:05 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
     ! Additional instructions for

@@ -8,6 +8,11 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-21 10:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htimer.prg
+  * source/winapi/htimer.prg
+    ! Bug fixed.
+
 2021-05-19 15:10 UTC+0200 Wilfried Brunken DF7BE
   * utils/dbc/dbchw.hbp
   * utils/tutorial/hwgrun.hbp

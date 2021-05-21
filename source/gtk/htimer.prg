@@ -86,14 +86,15 @@ METHOD End() CLASS HTimer
 
 FUNCTION hwg_TimerProc( idTimer )
 
-   LOCAL i := Ascan( HTimer():aTimers, { |o|o:id == idTimer } ), b
+   LOCAL i := Ascan( HTimer():aTimers, { |o|o:id == idTimer } ), b, oParent
 
    IF i != 0 .AND. ValType( HTimer():aTimers[i]:bAction ) == "B"
       b := HTimer():aTimers[i]:bAction
+      oParent := HTimer():aTimers[i]:oParent
       IF HTimer():aTimers[i]:lOnce
          HTimer():aTimers[i]:End()
       ENDIF
-      Eval( b, HTimer():aTimers[i]:oParent )
+      Eval( b, oParent )
       RETURN 1
    ENDIF
 

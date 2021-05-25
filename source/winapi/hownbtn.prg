@@ -156,10 +156,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       ::MDown()
 
    ELSEIF msg == WM_LBUTTONDBLCLK
-           /* Asmith 2017-06-06 workaround for touch terminals */
-           IF ::bClick != Nil
-                 Eval( ::bClick, Self )
-           ENDIF
+      /* Asmith 2017-06-06 workaround for touch terminals */
+      IF ::bClick != Nil .AND. Empty( ::oTimer )
+         Eval( ::bClick, Self, 0 )
+      ENDIF
 
    ELSEIF msg == WM_LBUTTONUP
       ::MUp()

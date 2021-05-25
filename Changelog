@@ -8,6 +8,11 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-25 15:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hownbtn.prg
+  * source/winapi/hownbtn.prg
+    ! Bug fixed.
+
 2021-05-21 10:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htimer.prg
   * source/winapi/htimer.prg

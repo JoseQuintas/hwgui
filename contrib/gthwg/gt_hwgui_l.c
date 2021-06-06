@@ -44,8 +44,6 @@ extern void hwg_setcolor( cairo_t * cr, long int nColor );
 #define LONG          long int
 #define OEM_CHARSET   255
 
-#define RGB(r,g,b)    ((COLORREF)(((BYTE)(r)|((WORD)((BYTE)(g))<<8))|(((DWORD)(BYTE)(b))<<16)))
-
 typedef struct tagRECT
 {
     gint    left;
@@ -69,23 +67,6 @@ extern GtkFixed *getFixedBox( GObject * handle );
 #define HWG_DEFAULT_FONT_HEIGHT  20
 #define HWG_DEFAULT_FONT_WIDTH   10
 #define HWG_DEFAULT_FONT_ATTR     0
-
-#define BLACK            RGB( 0x00, 0x00, 0x00 )
-#define BLUE             RGB( 0x00, 0x00, 0xAA )
-#define GREEN            RGB( 0x00, 0xAA, 0x00 )
-#define CYAN             RGB( 0x00, 0xAA, 0xAA )
-#define RED              RGB( 0xAA, 0x00, 0x00 )
-#define MAGENTA          RGB( 0xAA, 0x00, 0xAA )
-#define BROWN            RGB( 0xAA, 0x55, 0x00 )
-#define LIGHT_GRAY       RGB( 0xAA, 0xAA, 0xAA )
-#define GRAY             RGB( 0x55, 0x55, 0x55 )
-#define BRIGHT_BLUE      RGB( 0x55, 0x55, 0xFF )
-#define BRIGHT_GREEN     RGB( 0x55, 0xFF, 0x55 )
-#define BRIGHT_CYAN      RGB( 0x55, 0xFF, 0xFF )
-#define BRIGHT_RED       RGB( 0xFF, 0x55, 0x55 )
-#define BRIGHT_MAGENTA   RGB( 0xFF, 0x55, 0xFF )
-#define YELLOW           RGB( 0xFF, 0xFF, 0x55 )
-#define WHITE            RGB( 0xFF, 0xFF, 0xFF )
 
 #define AKEYS_LEN            128
 
@@ -1181,22 +1162,22 @@ static void hb_gt_hwg_Init( PHB_GT pGT, HB_FHANDLE hFilenoStdin, HB_FHANDLE hFil
 
    pHWG->TextLine = ( char * ) hb_xgrab( pHWG->COLS * sizeof( char ) );
 
-   pHWG->COLORS[ 0 ]       = BLACK;
-   pHWG->COLORS[ 1 ]       = BLUE;
-   pHWG->COLORS[ 2 ]       = GREEN;
-   pHWG->COLORS[ 3 ]       = CYAN;
-   pHWG->COLORS[ 4 ]       = RED;
-   pHWG->COLORS[ 5 ]       = MAGENTA;
-   pHWG->COLORS[ 6 ]       = BROWN;
-   pHWG->COLORS[ 7 ]       = LIGHT_GRAY;
-   pHWG->COLORS[ 8 ]       = GRAY;
-   pHWG->COLORS[ 9 ]       = BRIGHT_BLUE;
-   pHWG->COLORS[ 10 ]      = BRIGHT_GREEN;
-   pHWG->COLORS[ 11 ]      = BRIGHT_CYAN;
-   pHWG->COLORS[ 12 ]      = BRIGHT_RED;
-   pHWG->COLORS[ 13 ]      = BRIGHT_MAGENTA;
-   pHWG->COLORS[ 14 ]      = YELLOW;
-   pHWG->COLORS[ 15 ]      = WHITE;
+   pHWG->COLORS[ 0 ]       = 0x000000;   //BLACK
+   pHWG->COLORS[ 1 ]       = 0xAA0000;   //BLUE
+   pHWG->COLORS[ 2 ]       = 0x00AA00;   //GREEN
+   pHWG->COLORS[ 3 ]       = 0xAAAA00;   //CYAN
+   pHWG->COLORS[ 4 ]       = 0x0000AA;   //RED
+   pHWG->COLORS[ 5 ]       = 0xAA00AA;   //MAGENTA
+   pHWG->COLORS[ 6 ]       = 0x0055AA;   //BROWN
+   pHWG->COLORS[ 7 ]       = 0xAAAAAA;   //LIGHT_GRAY
+   pHWG->COLORS[ 8 ]       = 0x555555;   //GRAY
+   pHWG->COLORS[ 9 ]       = 0xFF5555;   //BRIGHT_BLUE
+   pHWG->COLORS[ 10 ]      = 0x55FF55;   //BRIGHT_GREEN
+   pHWG->COLORS[ 11 ]      = 0xFFFF55;   //BRIGHT_CYAN
+   pHWG->COLORS[ 12 ]      = 0x5555FF;   //BRIGHT_RED
+   pHWG->COLORS[ 13 ]      = 0xFF55FF;   //BRIGHT_MAGENTA
+   pHWG->COLORS[ 14 ]      = 0x55FFFF;   //YELLOW
+   pHWG->COLORS[ 15 ]      = 0xFFFFFF;   //WHITE
 
    pHWG->keyPointerIn      = 0;
    pHWG->keyPointerOut     = 0;

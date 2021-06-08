@@ -129,6 +129,9 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
    ::lResult := .F.
    ::AddItem( Self, !lNoModal )
 
+   IF ::oParent == Nil
+      ::oParent := hwg_GetModalDlg()
+   ENDIF
    IF !lNoModal
       hParent := iif( ::oParent != Nil .AND. __ObjHasMsg( ::oParent,"HANDLE" ) ;
          .AND. !Empty( ::oParent:handle ), ::oParent:handle, ;
@@ -252,9 +255,9 @@ FUNCTION hwg_DlgCommand( oDlg, wParam, lParam )
 
    LOCAL iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
    LOCAL aMenu, i, hCtrl
-   
+
    * Parameters not used
-   HB_SYMBOL_UNUSED(lParam)   
+   HB_SYMBOL_UNUSED(lParam)
 
    // hwg_WriteLog( Str(iParHigh,10)+"|"+Str(iParLow,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
    IF iParHigh == 0
@@ -318,7 +321,7 @@ STATIC FUNCTION onGetFocus( oDlg, w, l )
 
    * Parameters not used
    HB_SYMBOL_UNUSED(w)
-   HB_SYMBOL_UNUSED(l)   
+   HB_SYMBOL_UNUSED(l)
 
    IF oDlg:bGetFocus != Nil
       Eval( oDlg:bGetFocus, oDlg )
@@ -330,7 +333,7 @@ FUNCTION hwg_GetModalDlg
 
    LOCAL i := Len( HDialog():aModalDialogs )
 
-   RETURN iif( i > 0, HDialog():aModalDialogs[i], 0 )
+   RETURN iif( i > 0, HDialog():aModalDialogs[i], Nil )
 
 FUNCTION hwg_GetModalHandle
 

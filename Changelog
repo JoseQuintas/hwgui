@@ -8,6 +8,11 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-06-08 15:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdialog.prg
+  * source/winapi/hdialog.prg
+    * ::oParent is set to a parent modal dialog, if exist.
+
 2021-06-06 14:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwgui_l.c
     * Colors definition changed to satisfy some compilers

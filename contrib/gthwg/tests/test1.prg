@@ -13,7 +13,7 @@
 
 FUNCTION Main
 
-   LOCAL nKey, nh, nw
+   LOCAL nKey, nh, nw, GetList := {}
    LOCAL cLogin := Space( 16 )
 
    REQUEST HB_GT_HWGUI
@@ -27,18 +27,18 @@ FUNCTION Main
 
    CreateWindow()
 
-   //SetMode( 30,90 )
-   nw := hb_gtinfo( HB_GTI_DESKTOPWIDTH ) - 20
-   nh := hb_gtinfo( HB_GTI_DESKTOPHEIGHT ) - 84
-   hb_gtinfo( HB_GTI_FONTWIDTH, Int( nw / 80 ) )
-   hb_gtinfo( HB_GTI_FONTSIZE, Int( nh / 25 ) )
+   SetMode( 30,90 )
+   nw := Min( 1920, hb_gtinfo( HB_GTI_DESKTOPWIDTH ) ) - 20
+   nh := Min( 1080, hb_gtinfo( HB_GTI_DESKTOPHEIGHT ) ) - 84
+   hb_gtinfo( HB_GTI_FONTWIDTH, Int( nw / ( MaxCol() + 1 ) ) )
+   hb_gtinfo( HB_GTI_FONTSIZE, Int( nh / ( MaxRow() + 1 ) ) )
    //hwg_writelog( "gt: " + hb_gtVersion() + " " + hwg_version() )
 
    SetColor( "W+/B" )
    clear screen
    @ 0, 0, 24, 79 BOX "******** "
    @ 4,5 SAY "Test"
-   @ 23,1 SAY "---- " + Str( hb_gtinfo( HB_GTI_DESKTOPROWS ) )
+   @ 23,1 SAY "---- " + Str( MaxRow() + 1, 3 ) + " X " + Str( MaxCol() + 1, 3 ) + " Desktop:" + Str( hb_gtinfo( HB_GTI_DESKTOPROWS ), 3 )
    @ 23,70 SAY "----"
    @ 24,1 SAY "===="
    @ 24,70 SAY "===="

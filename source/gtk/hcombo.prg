@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 #ifndef CBN_SELCHANGE
 #define CBN_SELCHANGE       1
@@ -80,8 +79,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    hwg_SetSignal( ::handle, "changed", CBN_SELCHANGE, 0, 0 )
 
    IF Left( ::oParent:ClassName(), 6 ) == "HPANEL" .AND. hwg_BitAnd( ::oParent:style, SS_OWNERDRAW ) != 0
-   *       ::oParent:SetPaintCB( PAINT_ITEM, { |o, h|iif( !::lHide,hwg__DrawCombo(h,::nLeft + ::nWidth - 22,::nTop,::nLeft + ::nWidth - 1,::nTop + ::nHeight - 1 ), .T. ) }, "hc" + LTrim( Str(::id ) ) )
-      ::oParent:SetPaintCB( PAINT_ITEM, { |h|iif( !::lHide,hwg__DrawCombo(h,::nLeft + ::nWidth - 22,::nTop,::nLeft + ::nWidth - 1,::nTop + ::nHeight - 1 ), .T. ) }, "hc" + LTrim( Str(::id ) ) )
+      ::oParent:SetPaintCB( PAINT_ITEM, { |o,h|HB_SYMBOL_UNUSED(o),iif( !::lHide,hwg__DrawCombo(h,::nLeft + ::nWidth - 22,::nTop,::nLeft + ::nWidth - 1,::nTop + ::nHeight - 1 ), .T. ) }, "hc" + LTrim( Str(::id ) ) )
    ENDIF
 
    RETURN Self
@@ -100,7 +98,7 @@ METHOD Activate() CLASS HComboBox
 METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
 
    LOCAL i
-   
+
    * Parameters not used
    HB_SYMBOL_UNUSED(wParam)
    HB_SYMBOL_UNUSED(lParam)
@@ -134,10 +132,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HComboBox
 
    RETURN 0
 
-/* Removed: aCombo, nCurrent */ 
+/* Removed: aCombo, nCurrent */
 METHOD Init() CLASS HComboBox
-   * Variables not used
-   * LOCAL i
 
    IF !::lInit
       ::Super:Init()
@@ -160,9 +156,8 @@ METHOD Init() CLASS HComboBox
    RETURN Nil
 
 METHOD Refresh( xVal ) CLASS HComboBox
+
    LOCAL vari
-   * Variables not used
-   * LOCAL i
 
    IF xVal != Nil
       ::xValue := xVal
@@ -269,6 +264,6 @@ STATIC FUNCTION __When( oCtrl )
    ENDIF
 
    RETURN .T.
-   
+
 * ================================ EOF of hcombo.prg =============================================
- 
+

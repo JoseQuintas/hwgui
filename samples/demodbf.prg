@@ -4,7 +4,7 @@
  *
  * HwGUI by Alexander Kresin
  *
- * Copyright (c) 
+ * Copyright (c)
  * Data 01/07/2003 - Sandro Freire <sandrorrfreire@yahoo.com.br>
  *
  */
@@ -14,19 +14,18 @@
 
 MEMVAR Form_Main , oDir
 MEMVAR Gt_Cod, Gt_Name, Gt_Adress, Gt_Fone, Gt_e_Mail
-MEMVAR oCod, oName, oAdress, oFone, oe_Mail 
+MEMVAR oCod, oName, oAdress, oFone, oe_Mail
 MEMVAR oOper
 MEMVAR oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDelete, oBotClose, oBotPrint
 // MEMVAR COD  && contains a database name, but nowhere initialized ??
 // why "demodbf.prg(313) Warning W0001  Ambiguous reference 'COD'" ??
 
- 
+
 *---------------------------------------------------------------------------------------
 Function Main
 *---------------------------------------------------------------------------------------
-Local oFontBtn
+//Local oFontBtn
 Local oFont := Nil
-Local nColor, oSplah
 LOCAL cDirSep
 
 Private Form_Main
@@ -39,7 +38,7 @@ SET DELETE ON
 SET DATE BRIT
 SET CENT ON
 
-   PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
+//   PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
 
    INIT WINDOW Form_Main MAIN TITLE "HwGUI Harbour Win32 Gui"
 
@@ -49,7 +48,7 @@ SET CENT ON
          MENUITEM "&Demo for TAB DBF " ID 303 ACTION Cadastro()
          SEPARATOR
          MENUITEM "&Exit" ACTION {||dbCloseAll(), hwg_EndWindow()}
-      ENDMENU                                                                                            
+      ENDMENU
 
 
       MENU TITLE "&Help"
@@ -63,9 +62,9 @@ return nil
 
 
 *---------------------------------------------------------------------------------------
-Function Cadastro()   
+Function Cadastro()
 *---------------------------------------------------------------------------------------
-Local Tel_Ferramentas, oPanel, oFontBtn, Titulo:="Tab Forneced"
+Local Tel_Ferramentas, oFontBtn, Titulo:="Tab Forneced"
 
 Private Gt_Cod, Gt_Name, Gt_Adress, Gt_Fone, Gt_e_Mail
 Private oCod, oName, oAdress, oFone, oe_Mail //Declaracao das variaveis de tabela
@@ -126,7 +125,7 @@ Private oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDe
        SIZE 44,38 FLAT ;
        TEXT "Close"
 
-   
+
    Tel_Ferramentas:Activate()
 
 Return Nil
@@ -179,7 +178,7 @@ Function CreateGets()
 
 Return Nil
 
- 
+
 *---------------------------------------------------------------------------------------
 Function EditRecord()
 *---------------------------------------------------------------------------------------
@@ -206,7 +205,7 @@ Return Nil
 Function GetRefresh()
 *---------------------------------------------------------------------------------------
 
-Local oDlg:=hwg_GetModalHandle()
+//Local oDlg:=hwg_GetModalHandle()
 Gt_Cod:Refresh()
 Gt_Name:Refresh()
 Gt_Adress:Refresh()
@@ -256,7 +255,7 @@ CloseGets()
 oOper:=1
 Return Nil
 
- 
+
 *---------------------------------------------------------------------------------------
 Function SkipTab(oSalto)
 *---------------------------------------------------------------------------------------
@@ -270,7 +269,7 @@ Elseif oSalto=3
    Go Top
 Else
    Go Bottom
-Endif 
+Endif
 GetVars()
 GetRefresh()
 Return Nil
@@ -312,7 +311,7 @@ EndIf
 Use (vArq) Shared Alias TabDbf
 If !File(vInd1)
    fLock()
-   Index on Cod   to (vInd1)
+   Index on field->Cod   to (vInd1)
    Unlock
 Else
    Set Index to (vInd1)
@@ -338,4 +337,4 @@ Gt_Adress:Disable()
 Gt_Fone:Disable()
 Gt_e_Mail:Disable()
 Return Nil
- 
+

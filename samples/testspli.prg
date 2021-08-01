@@ -26,7 +26,7 @@
    (ready for GTK)
    but needed to implement as next
  - Custom cursor from file and hex value
- 
+
  Contents of deleted rc file "testspli.rc":
  VSPLIT CURSOR "SPLITV.cur"
  HSPLIT CURSOR "SPLITH.cur"
@@ -40,13 +40,14 @@
 #include "gtk.ch"
 #endif
 
+FUNCTION Main
 
-Function Main
-Local oMainWindow, oFont, oSplitV, oSplitH, oEdit1, oEdit2 , cVal_Wcur1 , cVal_Wcur2 
+   LOCAL oMainWindow, oFont, oSplitV, oSplitH, oEdit1, oEdit2 , cVal_Wcur1 , cVal_Wcur2
+   LOCAL oTree, oItem
 * Local cVal_Wcur3
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
-   
+
    * Convert hex values to binary
    cVal_Wcur1 := hwg_cHex2Bin( hex_splitv() )
    cVal_Wcur2 := hwg_cHex2Bin( hex_splith() )
@@ -68,35 +69,36 @@ Local oMainWindow, oFont, oSplitV, oSplitH, oEdit1, oEdit2 , cVal_Wcur1 , cVal_W
    @ 163,10 EDITBOX oEdit1 CAPTION "Hello, World!"  SIZE 200,100
 
    @ 160,10 SPLITTER oSplitV SIZE 3,100 DIVIDE {oTree} FROM {oEdit1} LIMITS 100,300
-#ifdef __GTK__   
+#ifdef __GTK__
 *   oSplitV:hCursor := hwg_Loadcursor( GDK_SB_H_DOUBLE_ARROW  )  && "VSPLIT"
 *   oSplitV:hCursor := hwg_LoadCursorFromFile("transistor.cur",7,7)   && Test
-*   oSplitV:hCursor := hwg_LoadCursorFromFile("splitv.cur",16,16) && Load from file  
+*   oSplitV:hCursor := hwg_LoadCursorFromFile("splitv.cur",16,16) && Load from file
 #else
 *   oSplitV:hCursor := hwg_Loadcursor( 32644 )  && IDC_SIZEWE from stock optional
 *   oSplitV:hCursor := hwg_LoadCursorFromFile("splitv.cur")  && Load from file
 #endif
-   oSplitV:hCursor := hwg_LoadCursorFromString(cVal_Wcur1, 16 , 16 ) && From hex value 
-*   oSplitV:hCursor := hwg_LoadCursorFromString(cVal_Wcur3, 16 , 16 ) && Test   
+   oSplitV:hCursor := hwg_LoadCursorFromString(cVal_Wcur1, 16 , 16 ) && From hex value
+*   oSplitV:hCursor := hwg_LoadCursorFromString(cVal_Wcur3, 16 , 16 ) && Test
 
    @ 20,113 EDITBOX oEdit2 CAPTION "Example"  SIZE 344,130
 
    @ 20,110 SPLITTER oSplitH SIZE 344,3 DIVIDE {oTree,oEdit1,oSplitV} FROM {oEdit2} LIMITS ,220
-#ifdef __GTK__   
+#ifdef __GTK__
 *   oSplitH:hCursor := hwg_Loadcursor( GDK_SB_V_DOUBLE_ARROW  )   && "HSPLIT"
 *   oSplitH:hCursor := hwg_LoadCursorFromFile("splith.cur",16,16)   && Load from file
 #else
 *   oSplitH:hCursor := hwg_Loadcursor( 32645 ) && IDC_SIZENS from stock optional
 *   oSplitH:hCursor := hwg_LoadCursorFromFile("splith.cur")  && Load from file
 #endif
-   oSplitH:hCursor := hwg_LoadCursorFromString(cVal_Wcur2, 16 , 16 ) && From hex value 
-   
+   oSplitH:hCursor := hwg_LoadCursorFromString(cVal_Wcur2, 16 , 16 ) && From hex value
+
    ACTIVATE WINDOW oMainWindow
 
-Return nil
+RETURN Nil
 
 FUNCTION hex_splith()
 * Hex value of splith.cur
+
 RETURN ;
 "00 00 02 00 01 00 20 20 00 00 0E 00 0C 00 30 01 " + ;
 "00 00 16 00 00 00 28 00 00 00 20 00 00 00 40 00 " + ;
@@ -123,6 +125,7 @@ RETURN ;
 
 FUNCTION hex_splitv()
 * Hex value of splitv.cur
+
 RETURN ;
 "00 00 02 00 01 00 20 20 00 00 10 00 0E 00 30 01 " + ;
 "00 00 16 00 00 00 28 00 00 00 20 00 00 00 40 00 " + ;
@@ -148,6 +151,7 @@ RETURN ;
 
 FUNCTION hex_transistor()
 * Hex value of transistor.cur
+
 RETURN ;
 "00 00 02 00 01 00 10 10 02 00 00 00 00 00 B0 00 " + ;
 "00 00 16 00 00 00 28 00 00 00 10 00 00 00 20 00 " + ;
@@ -165,4 +169,3 @@ RETURN ;
 
 
 * ================================ EOF of testspli.prg ===============================
-

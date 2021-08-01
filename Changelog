@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-07-01 16:12 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
+   + samples/readme2.txt
+   - samples/sample.hbp
+     ! Rename to permit compile samples hbmk2 *.hbp
+   * samples/demodbf.prg
+   * samples/testspli.prg
+     ! Adjust to compile using -w3
+
 2021-07-07 08:46 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcombo.prg
     ! Bug fixed
@@ -35,15 +43,15 @@
   * utils/dbc/dbchw.hbp
   * utils/tutorial/hwgrun.hbp
   * utils/tutorial/tutor.hbp
-    ! Ticket #90: tutor, dbchw error creating  
+    ! Ticket #90: tutor, dbchw error creating
     ! dbchw and tutor ready for OS freebsd 13.0:
-    ! The macro for unix has also effect on LINUX 
+    ! The macro for unix has also effect on LINUX
 
 2021-05-16 15:05 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
     ! Additional instructions for
     ! Ubuntu 20.04.2.0 LTS:
-    ! Missing "canberra-gtk-module".    
+    ! Missing "canberra-gtk-module".
 
 2021-05-12 11:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwg.prg
@@ -196,7 +204,7 @@
   * source/gtk/htimer.prg
   * source/winapi/htimer.prg
     * The timer procedure passes a parent window/control object.
-  * source/gtk/htrackbr.prg 
+  * source/gtk/htrackbr.prg
   * source/winapi/htrackbr.prg
     * Clenup and fixes.
   * include/hwgextern.ch
@@ -265,14 +273,14 @@
     ! #include "hbclass.ch"
     ! Class HTRACK now part of HWGUI library.
     ! A good idea as a substitute for Win only "HTRACKBAR",
-    ! moved from tutor, 
+    ! moved from tutor,
     ! for multi platform usage.
     ! HTRACK with new sample program.
     ! Hint to find the implementation of HTRACK class
     ! Class docu updated.
     ! Ticket #82: fixed:
     ! HWG_MSGNOYES() is Windows only
-    ! Runs on WinAPI, incl. GTK  
+    ! Runs on WinAPI, incl. GTK
     ! Additional instructions in inline comments
     ! of tutor.prg.
     ! Also tutor now runs on GTK cross development environment on Windows
@@ -281,7 +289,7 @@
     ! Description of new function hwg_Arc() from A. Kresin (r2963)
     ! added to function documentation.
     ! BROWSE class docu: description of non modal behavior
-    ! of UDF calls in subdialogs. 
+    ! of UDF calls in subdialogs.
 
 
 2021-04-01 09:00 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
@@ -319,7 +327,7 @@
   ! Added submenu "About", because of "Aktiviere".
   ! TO-DO for debugger (severe bug on LINUX):
   ! After loading a program for debug,
-  ! the menu points for debugging are not activated. 
+  ! the menu points for debugging are not activated.
   ! (Main menues "View" and "Run")
 
 2021-03-15 09:41 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
@@ -477,7 +485,7 @@
   *  contrib/hwreport/repbuild2.rc (Deleted)
   *  samples/allhbp.hbp
   *  todo.txt
-   ! Ticket #77: 
+   ! Ticket #77:
    ! hwreport: Port from Borland resource file
    ! HWGUI commands finished Runs with MinGW32. But
    ! some other bugs must be fixed.
@@ -551,15 +559,15 @@
   * samples/nice.rc (Deleted)
   * samples/nice2.prg
   * samples/Readme.txt
-   ! Samples: 
+   ! Samples:
    ! Internal bugfix for BCC build script:
    ! Fatal: Unable to open file 'UUID.LIB'
    ! Port of Borland rc files to HWGUI commands started,
    ! so not needed rc and h files deleted, preparation as port
    ! to GTK/LINUX, if possible.
    ! Running samples on WinAPI with MinGW: nice.prg , a.prg.
-   ! nice2.prg freezes, need to be fixed. 
-   ! (to be continued)  
+   ! nice2.prg freezes, need to be fixed.
+   ! (to be continued)
 
 
 2021-03-04 11:55 UTC+0100 Wilfried Brunken DF7BE
@@ -580,11 +588,11 @@
   *  test/ticket79.prg (New)
   *  todo.txt
    ! Ticket #79: Because GTK class gtk_entry_*
-   ! does not support color setting, this ticket 
+   ! does not support color setting, this ticket
    ! can be closed. A hint in command docu added.
    ! See post to ticket.
    ! New functions hwg_StrDebNIL() and hwg_StrDebLog()
-   ! for debugging purposes. 
+   ! for debugging purposes.
    ! Docu updated, little corrections.
 
 2021-03-03 09:10 UTC+0100 Wilfried Brunken DF7BE
@@ -616,7 +624,7 @@
   * source/gtk/menu_c.c
   * source/gtk/message.c
   * source/gtk/wprint.c
-   ! Ticket 77: Warnings with GCC 10 on LINUX. 
+   ! Ticket 77: Warnings with GCC 10 on LINUX.
 
 
 2021-03-01 11:00 UTC+0100 Wilfried Brunken DF7BE
@@ -637,9 +645,9 @@
   * source/winapi/control.c
   * samples/testspli.rc (Deleted)
    ! New function hwg_LoadCursorFromFile().
-   ! BCC resource file removed, 
+   ! BCC resource file removed,
    ! custom cursor from files splith.cur and splitv.cur for WinAPI.
-   ! Now ready for MinGW and GTK, use cursor from stock for GTK. 
+   ! Now ready for MinGW and GTK, use cursor from stock for GTK.
    ! To be continued: custom cursor from files for GTK.
   * source/gtk/hmisc.prg
   * source/winapi/hmisc.prg
@@ -666,7 +674,7 @@
    ! be compiled on Windows 10.
   * contrib/hwreport/bldmngw.bat
   * contrib/hwreport/hwreport.prg
-   ! Ticket #41: 
+   ! Ticket #41:
    ! Borland resource files are not compatible to
    ! MinGW with windres compiler and GTK/LINUX.
    ! Started with icon and dialog "About" in "hwreport" as example
@@ -714,7 +722,7 @@
 
 2021-02-22 18:04 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/control.c
-    * hwg_setFgColor() and hwg_setBgColor() changed. They use now 
+    * hwg_setFgColor() and hwg_setBgColor() changed. They use now
       gtk_widget_modify_fg() and gtk_widget_modify_bg() instead of
       gtk_widget_set_style() for to not touch font information.
   * source/gtk/hdialog.prg
@@ -845,8 +853,8 @@
   * source/winapi/hwindow.prg
   * source/winapi/hwinprn.prg
   * source/winapi/menu.prg
-  * source/winapi/video.prg 
-   ! Ticket #77: adjust to compile using -w3 -es2 
+  * source/winapi/video.prg
+   ! Ticket #77: adjust to compile using -w3 -es2
    ! All WinAPI prg's ready and tested,
    ! see post to ticket, to be continued (for GTK).
 
@@ -860,7 +868,7 @@
   * source/winapi/hcheck.prg
   * source/winapi/hcombo.prg
   * source/winapi/hcontrol.prg
-    ! Ticket #77: adjust to compile using -w3 -es2 
+    ! Ticket #77: adjust to compile using -w3 -es2
     ! Files in "winapi.zip" posted by
     ! José M. C. Quintas, see post to ticket.
 
@@ -895,9 +903,9 @@
     ! Ticket #36 Test with two relayed comboboxes:
     ! tstcombo.prg ready for GTK, no runs best
     ! as demo for help for ticket.
-    ! Docu updated:	
+    ! Docu updated:
     ! COMBOBOX ... EDIT not GTK, crashes
-    ! Litte correction. 
+    ! Litte correction.
 
 
 2021-02-04 09:40 UTC+0100 Wilfried Brunken DF7BE
@@ -928,11 +936,11 @@
   * samples/dev/compiler/PellesC/PellesC.txt
   * samples/dev/env/pfad_pc.bat
     ! Ticket #75: PellesC support
-    ! Modifications by José M. C. Quintas 
+    ! Modifications by José M. C. Quintas
     ! + litte mods.
     ! Seems to be error in C compiler
     ! (Access violation building Harbour)
- 
+
 
 2021-01-23 18:40 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
@@ -956,7 +964,7 @@
   * samples/gtk_samples/progbars.prg
   * samples/gtk_samples/qoutcolor.prg
     ! Ticket #35: (Colors for qout() )
-    ! Instructions and sample added in inline 
+    ! Instructions and sample added in inline
     ! comments posted by Alain Aupeix (TNX).
     ! Ticket #52:
     ! (Progbars doesn't work under Linux)
@@ -966,7 +974,7 @@
     !   - External automatic progbar
     !   - Internal manual progbar
     !   - Internal automatic progbar
-    ! Checked under Ubuntu LINUX 1604 LTS. 
+    ! Checked under Ubuntu LINUX 1604 LTS.
 
 2021-01-13 23:15 UTC+0100 Wilfried Brunken DF7BE
   * install.txt
@@ -975,7 +983,7 @@
     ! Ticket #52:
     ! Progbars doesn't work under Linux
     ! Now best work with external command "wmctrl".
-    ! TNX Alain Aupeix. 
+    ! TNX Alain Aupeix.
 
 2021-01-13 23:15 UTC+0100 Wilfried Brunken DF7BE
   * include/qcolor.ch
@@ -983,13 +991,13 @@
   * samples/gtk_samples/image/qoutcolor.prg_output.png
   * samples/gtk_samples/qoutcolor.prg
     ! Ticket #35:
-    ! Files to colorize qout() 
-    ! TNX Alain Aupeix. 
+    ! Files to colorize qout()
+    ! TNX Alain Aupeix.
 
 
 2021-01-12 11:05 UTC+0100 Wilfried Brunken DF7BE
   * samples/iesample.hbp (New)
-  * samples/iesample.prg 
+  * samples/iesample.prg
   * samples/bldmingw.bat
   * samples/bldmingw64.bat
     ! Ticket #34:
@@ -1026,7 +1034,7 @@
   * include/windows.ch
   * samples/testhgt.hbp
     ! Ticket #73:
-    ! New mods by José M. C. Quintas 
+    ! New mods by José M. C. Quintas
 
 2021-01-03 08:58 UTC+0100 Wilfried Brunken DF7BE
   *  samples/testxml.prg
@@ -1036,12 +1044,12 @@
     ! Internal bugfix for GET on GTK:
     ! Continued of 2020-12-23 10:50.
     ! Extension of existing string fixed.
-    ! Docu updated. 
+    ! Docu updated.
 
 2020-12-31 16:50 UTC+0100 Wilfried Brunken DF7BE
   * include/incomp_pointer.h
     ! Ticket #74:
-    ! One left warning with GCC 9 fixed. 
+    ! One left warning with GCC 9 fixed.
   * samples/testxml.prg
     ! Fixing and decribing the fix for
     ! obscure behavior of GET.
@@ -1068,7 +1076,7 @@
     ! MinGW64 support:
     ! Suppress warnings,
     ! now build all libs without
-    ! warn messages.  
+    ! warn messages.
   * image/Datepick_Button.bmp (New)
     ! Preparation for DATEPCKER
     ! port to GTK.
@@ -1079,7 +1087,7 @@
     ! Ticket #74: Solution with new include:
     ! Suppress warning if a function pointer is cast
     ! to an incompatible function pointer
-    ! for GCC >= 8.1.x (MinGW64) 
+    ! for GCC >= 8.1.x (MinGW64)
 
 2020-12-23 10:50 UTC+0100 Wilfried Brunken DF7BE
   * contrib/hwg_extctrl.hbp
@@ -1093,7 +1101,7 @@
   * samples/testxml.xml
     ! Ready for GTK, codepage
     ! changed to Win 1251,
-    ! but russian always possible 
+    ! but russian always possible
   * samples/testmenubitmap.prg
     ! Preparation for GTK, added
     ! hints for port to GTK.
@@ -1171,7 +1179,7 @@
   * whatsnew.txt
     ! Ticket #67
     ! (include\hwingui.h)
-    ! #define WINVER  0x0500 changed to 0x0502 
+    ! #define WINVER  0x0500 changed to 0x0502
     ! Adapted path for MinGW32 (internal):
     ! C:\MinGW32
     ! Docu updated for:
@@ -1180,7 +1188,7 @@
     ! (Windows only).
     ! Ticket #72: (Remarks by Oleksii Myronenko)
     ! Inline descriptive comments for alternative usage of
-    ! hbc parameters (sample.hbp). 
+    ! hbc parameters (sample.hbp).
 
 
 2020-12-06 21:50 UTC+0100 Wilfried Brunken DF7BE
@@ -1214,10 +1222,10 @@
   * utils/tutorial/hwgrun_linux.hbp (Deleted)
   * utils/tutorial/tutor_linux.hbp (Deleted)
     ! Ticket #72: hbp files for compile with hbmk2
-    ! for Windows and LINUX working 
+    ! for Windows and LINUX working
     ! delivered by José M. C. Quintas (TNX)
     ! Tested all under Windows 10 and Ubuntu LINUX 16.04 LTS.
-  
+
 
 2020-12-05 12:05 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
@@ -1237,15 +1245,15 @@
     ! Class HCEDIT: Ingored ~ (Tilde) on GTK/LINUX
     ! WinAPI: in MEMOEDIT of HBROWSE:
     ! Euro currency was displayed as single bar,
-    ! if entered via AltGr + E, but was stored correct 
+    ! if entered via AltGr + E, but was stored correct
     ! in database, see sample samples/dbview.prg.
     ! Editor: Charset was fixed set to russian, now
     ! selection menu at start. Now ~ and Euro currency
-    ! correct displayed and stored in file. 
+    ! correct displayed and stored in file.
     ! Documentation:
     ! - Added some description for class HFONT
     ! - Class HBROWSE: Bug info for € sign.
-     
+
 
 2020-11-30 18:55 UTC+0100 Wilfried Brunken DF7BE
   * test/hgt/hgt.prg
@@ -1253,14 +1261,14 @@
   * test/hgt/test.hbp
   * test/hgt/teste.png
     ! Test program for class HGT for combined usage
-    ! of HWGUI control elements in 
+    ! of HWGUI control elements in
     ! Harbour gtwvg programs.
     ! Delivered by José M. C. Quintas (TNX)
 
 
 2020-11-29 15:10 UTC+0100 Wilfried Brunken DF7BE
   * samples\test_bot.prg
-  * source\common\editor\hcedit.prg 
+  * source\common\editor\hcedit.prg
   * utils\editor\editor.prg
     !
     ! Class HCEDIT:
@@ -1285,7 +1293,7 @@
     ! Final analysis, bug in Cairo.
     ! A workaround implemented.
     ! For details see inline comments
-    ! and comment to ticket. 
+    ! and comment to ticket.
 
 2020-11-23 17:35 UTC+0100 Wilfried Brunken DF7BE
   * samples/gtk_samples/winprn.prg
@@ -1303,7 +1311,7 @@
     ! Afterglow Tickets #70,#69,#27:
     ! Collection free format texts outside official docs
     ! (hope helpful for all developers of HWGUI and
-    !  HWGUI applications) 
+    !  HWGUI applications)
 
 2020-11-15 17:45 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html
@@ -1317,13 +1325,13 @@
     ! Ticket #64:
     ! Print of bitmaps now solved,
     ! because of a bug in GTK
-    ! the function 
+    ! the function
     ! gdk_pixbuf_save() does not
     ! store the bitmap correct.
     ! From hex value store
     ! in temporary file with
     ! hb_memowrit().
-    ! At offsets 0x26 and 0x2a 
+    ! At offsets 0x26 and 0x2a
     ! the solution in pixels per meter
     ! is stored: for astro.bmp 0xc4 0x0e = 3780
     ! But is set to 0x0 !
@@ -1331,17 +1339,17 @@
     ! The copy has more bytes.
     ! But to do :
     ! The PrintLine() method show no text, but
-    ! PrintLine(10) works.  
+    ! PrintLine(10) works.
     ! (To be continued for GTK)
   * test/gtk_test/bol.prg
-    ! Test program for Ticket #69 by Alain Aupaix 
+    ! Test program for Ticket #69 by Alain Aupaix
 
 2020-11-15 10:30 UTC+0100 Wilfried Brunken DF7BE
   * test/gtk_test/status.prg
-    ! Ticket #70 
+    ! Ticket #70
   * Readme.txt
   * doc/port.txt
-    ! Little corrections.       
+    ! Little corrections.
 
 2020-11-11 21:15 UTC+0100 Wilfried Brunken DF7BE
   * Readme.txt (New)
@@ -1354,7 +1362,7 @@
   *  source/gtk/hownbtn.prg
   *  source/winapi/hownbtn.prg
     ! Ticket #64 (to be continued)
-    ! delivered by HKrzak (TNX). 
+    ! delivered by HKrzak (TNX).
 
 2020-11-03 19:00 UTC+0100 Wilfried Brunken DF7BE
   * source/gtk/draw.c
@@ -1375,7 +1383,7 @@
   * source/gtk/hwinprn.prg
   * source/winapi/hwinprn.prg
     ! Ticket #64:
-    ! Extensions for WINPRN class 
+    ! Extensions for WINPRN class
     ! delivered by HKrzak (TNX).
     ! Works best on WinAPI,
     ! but crashes on LINUX/GTK,
@@ -1384,7 +1392,7 @@
   * todo.txt
     ! List of "Windows only" functions
     ! to be ported to GTK
-     
+
 
 2020-10-23 14:30 UTC+0200 Wilfried Brunken DF7BE
   *  doc/hwgdoc_functions.html
@@ -1418,12 +1426,12 @@
     ! hwg_ShowCursor()
     ! hwg_GetCursorType() && GTK only
     ! Docu updated.
-    ! TO-DO: crashes on LINUX with 
+    ! TO-DO: crashes on LINUX with
     ! range overflow recovering the cursor.
     ! Works best on WinAPI and.
     ! GTK cross development environment on Windows.
     ! (to be continued).
-  * todo.txt 
+  * todo.txt
     ! Tasks added.
   * samples/Readme.txt
     ! Update for copy to
@@ -1472,14 +1480,14 @@
   * source/winapi/hwinprn.prg
   * doc/hwgdoc_classes.html
     ! Ticket #64, TNX HKrzak:
-    ! Recovered METHOD 
+    ! Recovered METHOD
     ! PrintBitmap() CLASS HWinPrn
     ! with extension for bitmap objects.
     ! To be continued for GTK:
     ! Y position calculation.
     ! Works correct on WinAPI.
   * Suggestions
-    ! Marked done tasks 
+    ! Marked done tasks
 
 2020-10-05 22:45 UTC+0200 Wilfried Brunken DF7BE
   * source/common/xml/hxmldoc.prg
@@ -1551,8 +1559,8 @@
     ! so also for documentation purposes.
     ! Parameter write:
     ! lTranparent ==> lTransparent
-  * samples/colrbloc.prg 
-    ! Now valid resources. 
+  * samples/colrbloc.prg
+    ! Now valid resources.
     ! (OWNERBUTTONs for skipping in browse list).
 
 
@@ -1568,11 +1576,11 @@
 2020-09-20 10:00 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/hwinprn.prg
   * source/winapi/hwinprn.prg
-    ! Files forgotten for r2883 from 2020-09-19. 
+    ! Files forgotten for r2883 from 2020-09-19.
 
 2020-09-19 09:30 UTC+0200 Wilfried Brunken DF7BE
   * samples\bldmingw.bat
-  * source\winapi\hbrowse.prg  
+  * source\winapi\hbrowse.prg
   * samples\Testado.prg (New)
   * doc/hwgdoc_commands.html
     ! Ticket #55 HBROWSE LineUp and LineDown (WinAPI)
@@ -1593,7 +1601,7 @@
     ! New method SetDefaultMode():
     ! should act like a "printer reset"
     ! (Set back to default values).
-    ! Docu updated.   
+    ! Docu updated.
 
 
 2020-09-13 10:51 UTC+0200 Wilfried Brunken DF7BE
@@ -1614,7 +1622,7 @@
   * utils/bincnt/file2hex.hbp
   * utils/bincnt/file2hex.prg
   * whatsnew.txt
-    ! Ticket #54. 
+    ! Ticket #54.
 
 2020-09-08 17:00 UTC+0200 Wilfried Brunken DF7BE
   * samples/gtk_samples/Readme.txt
@@ -1641,7 +1649,7 @@
     ! (To be continued)
     ! Now reset of progbar fixed, METHOD RESET() added.
     ! Docu: Missing part for CLASS HProgressBar added
-    
+
 
 
 2020-09-07 00:15 UTC+0200 Wilfried Brunken DF7BE
@@ -1657,17 +1665,17 @@
   * doc/hwgdoc_functions.html
   * doc/hwgdoc_misc.html
   * utils/bincnt/Readme.txt (New)
-    ! Task: New feature 
+    ! Task: New feature
     ! binary resources with Hex values
     ! (as multi platform substitute for
     !  for Windows resource compiler,
     ! compile resources into exe).
     ! Afterglow to Ticket #51.
     ! Added documentation for new functions
-    ! and instructions for bincnt and hex 
+    ! and instructions for bincnt and hex
     ! resources.
     ! Build script Tutorial for GTK Cross
-    ! development environment added.  
+    ! development environment added.
 
 
 2020-09-04 08:00 UTC+0200 Wilfried Brunken DF7BE
@@ -1675,8 +1683,8 @@
   * source/gtk/hprogres.prg
     ! Ticket #52:
     ! Progress bar, Bugfix for
-    ! LINUX, see comment 
-    ! to ticket. 
+    ! LINUX, see comment
+    ! to ticket.
 
 
 2020-08-25 21:15 UTC+0200 Wilfried Brunken DF7BE
@@ -1692,13 +1700,13 @@
     ! for GTK Cross development environment
     ! on Windows.
   * source/gtk/misc.c
-    ! Warning on LINUX fixed: 
+    ! Warning on LINUX fixed:
     ! misc.c:372:2: warning: this ‘if’ clause does not guard...
   * samples/gtk_samples/bincnts.prg
   * samples/gtk_samples/image/sample.bin
     ! Ticket #51:
     ! See post to ticket.
- 
+
 
 2020-08-24 14:55 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/tutorial/hwgrun.prg
@@ -1722,7 +1730,7 @@
    ! on LINUX/GTK. WinAPI ok.
    ! Added some inline comment for
    ! better understanding.
-   ! Details in post to ticket. 
+   ! Details in post to ticket.
 
 2020-08-22 18:30 UTC+0200 Wilfried Brunken DF7BE
   * source/winapi/hmisc.prg
@@ -1734,7 +1742,7 @@
    ! - hwg_CreateTempfileName()
    ! - hwg_CompleteFullPath()
    ! + sample extended for test.
-   ! Docu updated.  
+   ! Docu updated.
 
 2020-08-21 15:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * utils/tutorial/hwgrun.prg
@@ -1756,7 +1764,7 @@
   * samples/gtk_samples/image (New directory)
    ! Ticket #51:
    ! How to use image in container ?
-   ! 
+   !
    ! Sample with additional files
    ! added for retracing the error.
    ! (To be continued)
@@ -1818,18 +1826,18 @@
   * samples/Readme.txt
   * doc/hwgdoc_functions.html
     !
-    ! Fix bug: 
+    ! Fix bug:
     ! If file selection cancelled,
     ! crashes at IF ... == NIL or IF EMPTY(..),
     ! to handle this returning empty string.
     ! New sample demonstrates the usage
-    ! of: 
+    ! of:
     ! HWG_SELECTFOLDER()
     ! HWG_SELECTFILE()
     ! HWG_SELECTFILEEX()
     ! hwg_SaveFile()
     ! and also as testprogram for bugfix.
-    ! 
+    !
     ! Function docu updated
     !
     ! Readme's for samples updated.
@@ -1854,12 +1862,12 @@
     ! With new sample program for
     ! WinAPI and GTK.
     ! (to be continued)
-    ! 
+    !
     ! Docu for hwg_RunApp() extended
-    ! Pre setting of path to 
+    ! Pre setting of path to
     ! Harbour for non root installation.
     !
-  
+
 
 2020-07-16 06:25 UTC+0200 Wilfried Brunken DF7BE
   * contrib/makefile.linux
@@ -1882,7 +1890,7 @@
     !
 
 2020-07-04 12:50 UTC+0200 Wilfried Brunken DF7BE
-  * install.txt 
+  * install.txt
   * samples/gtk_samples/GetWinVers.hbp (New)
   * samples/gtk_samples/a.hbp (New)
   * samples/gtk_samples/build.sh
@@ -1896,7 +1904,7 @@
   * samples/gtk_samples/progbars.prg
   * samples/gtk_samples/pseudocm.hbp (New)
   * samples/gtk_samples/testget2.hbp (New)
-  * samples/gtk_samples/testget2.prg 
+  * samples/gtk_samples/testget2.prg
   * samples/gtk_samples/winprn.hbp (New)
   * utils/bincnt/bincnt.hbp (New)
   * utils/bincnt/bincnt_linux.hbp (New)
@@ -1956,8 +1964,8 @@
     ! some work for hwmake:
     ! Some bugs adding files and libs.
     !
-    ! Ticket #46: 
-    ! Build error 
+    ! Ticket #46:
+    ! Build error
     ! (to be continued)
 
 
@@ -1999,11 +2007,11 @@
     !  Program starts, but not tested.
     !  1 Icon and 1 bitmap missing, see inline comment of
     !  bldow.bat for substitutes.
-    ! hwreport: 
+    ! hwreport:
     !  hwreport.ico extracted from BCC exe
     !  (because rc file contains only not more
     !   allowed hex values)
-    ! example.prg can not be built: 
+    ! example.prg can not be built:
     ! Error: Unresolved external '_HB_FUN_OPENREPORT'
     ! repbuild2.rc (copy of repbuild.rc with mods)
     ! ressource compiler of OpenWatCom
@@ -2032,12 +2040,12 @@
   *  samples/dev/compiler/OpenWatcom/OpenWatcom.txt
    !
    ! Ticket #25: OpenWatCom C Compiler Support:
-   ! Now done.  
+   ! Now done.
    ! Added hrect.prg, pager.c, hpager.prg and hrebar.prg
    ! to makefile.wc
    ! missing.h: extra section with individual
    ! fixes.
-   ! 
+   !
 
 2020-06-19 13:42 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/gtk/menu.prg
@@ -2066,7 +2074,7 @@
    !
    ! Function HWG_GETUTCTIMEDATE():
    ! Format of output string corrected
-   ! in comment line and function docu 
+   ! in comment line and function docu
 
 2020-06-08 10:00 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
@@ -2085,7 +2093,7 @@
   * source\gtk\listbox.c
   * samples/Readme.txt
   * samples/dev/MinGW64/MinGW64.txt
-    ! 
+    !
     ! Task:
     ! Support for MinGW64
     ! (to be continued)
@@ -2106,7 +2114,7 @@
   * makefile.wc
   * samples\dev\env\pfad_pc.bat (New)
   * make_pc.bat
-  * makefile.pc 
+  * makefile.pc
   * samples\dev\compiler\Digital-Mars\Digital-Mars.txt (New)
   * samples/dev/compiler/PellesC/PellesC.txt (New)
   * samples\dev\env\pfad_dm.bat (New)
@@ -2122,10 +2130,10 @@
     ! but fails. Should use HWGUI build with
     ! same compiler of Harbour build, because
     ! generated C source is otherwise incompatible.
-    ! 
+    !
     ! Pelles C:
     ! Not possinble at this time,
-    ! Harbour build crashes with 
+    ! Harbour build crashes with
     ! "Access violation".
     !
     ! Digital Mars C:
@@ -2141,7 +2149,7 @@
   * samples/dev/compiler/OpenWatcom/OpenWatcom.txt
   * samples/dev/env/Readme.txt
   * whatsnew.txt
-    ! 
+    !
     ! Ticket #43, suggestion IMAGE ==> BITMAP
     ! (Itamar M. Lins Jr. Junior)  (TNX)
     ! OpenWatcom Support: Docu updated
@@ -2173,7 +2181,7 @@
     ! Internal: Check for Borland C
     ! Need for compatibilty check of
     ! modifications for MinGW64.
-    ! makefile.bc seems to be outdated, so 
+    ! makefile.bc seems to be outdated, so
     ! update necessary.
     ! Added TO-DO:
     ! Check for Digital Mars C.
@@ -2190,7 +2198,7 @@
     ! corrected.
     ! dbc, debugger, editor
     ! Set svn:executable on *.sh
-    ! 
+    !
 
 2020-05-30 23:40 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
@@ -2204,7 +2212,7 @@
 
 2020-05-29 09:10 UTC+0200 Wilfried Brunken DF7BE
   * install.txt
-  * samples\dev\env\pfad64.bat (New) 
+  * samples\dev\env\pfad64.bat (New)
   * samples\dev\env\pfad.bat (New)
   * samples\dev\env\Readme.txt (New)
   * samples\dev\MinGW64\MinGW64.txt (New)
@@ -2282,7 +2290,7 @@
   * include/guilib.h
     !added protection to avoid multiple include
   * source/common/editor/hcedit.prg
-    ! when compiling for xharbour disable utf 8 code page request 
+    ! when compiling for xharbour disable utf 8 code page request
   * source/common/editor/hcedit_w.c
     ! on ted_create function added (UINT_PTR) cast to (HMENU) to make 64 bits happy
   * source/winapi/control.c
@@ -2291,7 +2299,7 @@
   * source/winapi/media_c.c
     * (DWORD) ->( DWORD_PTR) to make 64bits happy
   * source/winapi/menu_c.c
-   ! some changes to make 64bits happy   
+   ! some changes to make 64bits happy
   * source/winapi/c_ipaddr.c (1 hit)
 	Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
   * source/winapi/grid.c (1 hit)
@@ -2300,17 +2308,17 @@
 	Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
   * source/winapi/nice.c (1 hit)
 	Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
-  * source/winapi/richedit.c (1 hit)   
+  * source/winapi/richedit.c (1 hit)
     Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
   * source/winapi/richedit.c
     * Cast all ( HMENU ) hb_parni( 2 ) to ( HMENU )( UINT_PTR ) hb_parni( 2 ) to make 64 bits happy
     * (DWORD) ->( DWORD_PTR) to make 64bits happy
-    
- 	
+
+
 2020-05-11 15:15 UTC-0300 Luiz Rafael Culik <culikr@gmail.com>
   * makefile.gcc
-    - -march=pentium 
-	
+    - -march=pentium
+
 2020-05-11 19:00 UTC+0200 Wilfried Brunken DF7BE
   * samples\winprn.prg
   * samples\gtk_samples\winprn.prg
@@ -2326,7 +2334,7 @@
   * makefile.vc
   * doc\image\Win10_PR2PDF_Dialog.png (New)
   * doc\image\Win10_PR2PDF_FSel.png (New)
-    ! 
+    !
     ! National language support for
     ! Print preview dialog in HCEDIT and PrintDos class.
     ! (Task to be continued)
@@ -2362,7 +2370,7 @@
   * source\winapi\halert.prg
   * samples\testalert.prg
   * makefile.vc
-    ! 
+    !
     ! National language support for
     ! Print preview dialog in HPRINTER class
     ! (Print preview dialog)
@@ -2371,7 +2379,7 @@
     ! hcontrol.prg:
     ! Ticket #23, mod reverted by suggestion of
     ! Maurizio la Cecilia
-    ! 
+    !
     ! Ticket #24 by Itamar M. Lins Jr. Junior:
     ! Alert() to hwg_Alert(), conflict.
     !
@@ -2428,8 +2436,8 @@
     ! - window.c: Function hwg__isUnicode() returns now 0
     !   on cross develop environment for Windows/GTK.
     !   (Windows is not UTF8)
-    ! - New functions hwg_GetLocaleInfoN(), 
-    !   hwg_GetUTCTimeDate() 
+    ! - New functions hwg_GetLocaleInfoN(),
+    !   hwg_GetUTCTimeDate()
     ! - Port of hwg_GetLocaleInfo() to GTK/(Win+LINUX).
     ! Function docu updated
     ! -Readme.txt: Hint to help system.
@@ -2437,7 +2445,7 @@
 2020-03-28 21:30 UTC+0200 Wilfried Brunken DF7BE
   * samples\demohlistsub.prg (New)
   * samples\TwoLstSub.prg (New)
-  * source\gtk\hlistbox.prg (New) 
+  * source\gtk\hlistbox.prg (New)
   * source\gtk\listbox.c (New)
   * samples\demohlist.prg
   * samples\Readme.txt
@@ -2526,7 +2534,7 @@
   * source\gtk\hbrowse.prg
   * samples\Readme.txt
     ! - HBROWSE.PRG, GTK only: "Close" button now dismiss modification,
-    !    "Save" button stores the modification. 
+    !    "Save" button stores the modification.
     ! - One TAB too much in Readme.txt.
 
 
@@ -2560,14 +2568,14 @@
     !   #ifndef __PLATFORM__WINDOWS ==> #ifdef __GTK__
     !   (prepare for multiplatform use)
     ! - hwgdoc_commands.html: at TOOLBUTTON correct:
-    !   <O< ;  ==> <oTool> 
+    !   <O< ;  ==> <oTool>
 
 2020-04-10 11:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\common\editor\hcedit.prg
     ! Fixed problem with pasting some kind of texts.
 
 2020-04-07 23:10 UTC+0200 Wilfried Brunken DF7BE
-  * include/hwgextern.ch 
+  * include/hwgextern.ch
   * samples/winprn.prg
   * samples/gtk_samples/winprn.prg
   * source/common/debug/dbgconnect.prg
@@ -2585,7 +2593,7 @@
     ! Modification tested with sample Winprn.prg and
     ! utils editor and tutorial, WinAPI and GTK/LinuxMINT.
     ! Details see posted report to above Ticket.
-    ! build.sh for editor now working. 
+    ! build.sh for editor now working.
 
 
 2020-04-06 22:00 UTC+0200 Wilfried Brunken DF7BE
@@ -2616,10 +2624,10 @@
 2020-04-04 15:00 UTC+0200 Wilfried Brunken DF7BE
   * source\common\editor\hcedit_w.c
   * samples\gtk_samples\build.sh
-  * samples\dbview.prg  
+  * samples\dbview.prg
   * samples\Readme.txt (New)
     ! - Feature request #22 from Alex Strickland:
-    !   Cast in hcedit_w.c  
+    !   Cast in hcedit_w.c
     !   Tested MingW+LinuxMINT, OK
     ! - Readme.txt: List of WinAPI samples
     !   with description and error status
@@ -2632,7 +2640,7 @@
 
 2020-04-03 00:30 UTC+0200 Wilfried Brunken DF7BE
   * samples\dbview.prg
-  * source\winapi\hbrowse.prg  
+  * source\winapi\hbrowse.prg
   * source\gtk\hbrowse.prg
   * source\gtk\control.c
   * source\winapi\misc.c
@@ -2641,7 +2649,7 @@
     ! hbrowse.prg (WinAPI):
     ! Translated spanish comments of WHT from
     ! spanish to english
-    ! 
+    !
     ! control.c:
     ! HWG_SETTOOLTIPBALLOON() added as empty
     ! function for compatibility purposes for GTK,
@@ -2652,7 +2660,7 @@
     !  hwg_getCentury()
     ! Returns the value of the recent century setting.
     !  Needed for fixing #18, function docu updated
-    ! 
+    !
     ! Task:
     ! #18 browse column/cell width:
     ! Fixed in file gtk\hbrowse.prg and misc.c
@@ -2673,7 +2681,7 @@
       hwg_keyToUtf8 issue.
 
 2020-03-28 23:30 UTC+0100 Wilfried Brunken DF7BE
-  * samples\gtk_samples\hwmingnw.bat  
+  * samples\gtk_samples\hwmingnw.bat
   * samples\dev\MingW-GTK\Readme.txt
   * samples/gtk_samples/sleep.c (deleted)
     ! After commit of r2819 by Alexander Kresin
@@ -2699,7 +2707,7 @@
     !
     ! hbrowse.prg:
     ! DATA oEdit
-    !  
+    !
     ! STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo)
     ! New parameter bmemo (.T. = store memo field)
     !
@@ -2723,19 +2731,19 @@
     ! window at run time.
     !
     ! In the future: if i create or modify a sample
-    ! program i will add the following status info: 
+    ! program i will add the following status info:
     ! * Status:
     ! *  WinAPI   :  Yes/No
     ! *  GTK/Linux:  Yes/No
     ! *  GTK/Win  :  Yes/No
-    ! 
+    !
 
 
 2020-03-19 10:50 UTC+0100 Wilfried Brunken DF7BE
   * samples\sample.dbf (New)
-  * samples\sample.dbt (New) 
+  * samples\sample.dbt (New)
   * source\gtk\hbrowse.prg
-    !  
+    !
     ! sample.dbf/t: sample database,
     ! Contains one field per type N C D L M
     ! Open it with sample programs (a.prg,dbview.prg,...)
@@ -2748,9 +2756,9 @@
     !   ::Refresh()
     !   hwg_Setfocus( ::area )
     ! Adding this 2 instructions, all the blank lines are repainted.
-    ! Feature copied (same in WinAPI): 
+    ! Feature copied (same in WinAPI):
     ! "<memo>" or "<MEMO>": lower case indicates empty memo field.
-    ! (A very helpful feature) 
+    ! (A very helpful feature)
     !
     ! HCEDIT for GTK in HBROWSE for GTK: Lines are truncated.
     ! Setting of STYLE ES_HSCROLL has no effect.
@@ -2764,13 +2772,13 @@
 
 
 2020-03-15 12:10 UTC+0100 Wilfried Brunken DF7BE
-  * source\winapi\hbrowse.prg  
+  * source\winapi\hbrowse.prg
   * source\gtk\hbrowse.prg
   * install.txt
   * doc\hwgdoc.html
   * doc\hwgdoc_classes.html
     !
-    ! install.txt: 
+    ! install.txt:
     ! Added package list for Ubuntu and LinuxMINT
     ! hwgdoc.htm:
     ! - Reference to install.txt
@@ -2787,14 +2795,14 @@
 2020-03-11 15:00 UTC+0100 Wilfried Brunken DF7BE
   * samples\dev\MingW-GTK\pfad.bat (New)
   * samples\dev\MingW-GTK\Readme.txt (New)
-  * samples\gtk_samples\hwmingnw.bat (New)  
+  * samples\gtk_samples\hwmingnw.bat (New)
   * samples\gtk_samples\sleep.c (New)
-  * source\gtk\Makefile.mingw (New)  
+  * source\gtk\Makefile.mingw (New)
   * source\gtk\build.bat
   * install.txt
-  * source\winapi\hbrowse.prg  
+  * source\winapi\hbrowse.prg
   * source\gtk\hbrowse.prg
-    !  
+    !
     ! Task:
     ! Cross develop environment on Windows for GTK
     ! (Develop GTK code for *NIX operating systems
@@ -2803,7 +2811,7 @@
     ! For normal use on Windows it is strictly recommended to build only the WinAPI
     ! edition of HWGUI and your application. The WinAPI functions are quite stable and
     ! effective.
-    ! Take the GTK build only for test- and development purposes ! 
+    ! Take the GTK build only for test- and development purposes !
     ! Also it is strictly recommended to check the modified GTK sources
     ! on Linux or another *NIX operating system before checking in into
     ! a source repository.
@@ -2819,7 +2827,7 @@
 
 2020-03-10 16:24 UTC+0100 Wilfried Brunken DF7BE
   * source\common\editor\hcedit.prg
-  * source\winapi\hbrowse.prg  
+  * source\winapi\hbrowse.prg
   * source\gtk\hbrowse.prg
     !
     ! Ticket #32 : Use HCEDIT instead of GET in Memoedit (GTK)
@@ -2841,7 +2849,7 @@
     !  (blanks, blank lines and lower/upper case without
     !   changing functionalaty, helps me to fix the bugs
     !   in the GTK edition), for example Iif() to iif(),
-    !  "i+1" to "i + 1". 
+    !  "i+1" to "i + 1".
     !
     ! TO-DO:
     ! ======
@@ -2851,7 +2859,7 @@
     !  - HCEDIT and Memo edit has problems with code page mapping
     !    (Test with german umlaute, sharp "S" and Euro currency sign).
     !  Others:
-    !  - Create new sample for demonstrating and 
+    !  - Create new sample for demonstrating and
     !    testing multi language support for internal HWGUI dialogs
     ! Hint:
     !  The Euro currency sign was now supported by Harbour for Codepage
@@ -2868,18 +2876,18 @@
     ! testmenubitmap.prg: See ticket #31: This example crashes, fixed with comments
 
 2020-01-12 16:00 UTC-0300 Luiz Rafael Culik <luiz@xharbour.com.br>
-  * source/winapi/drawwidg.prg 
+  * source/winapi/drawwidg.prg
     ! fix for xharbour
-	
+
 2019-12-16 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
   * samples/dbview.prg
   * samples/gtk_samples/dbview.prg
-    ! Fixes, suggested by Wilfried Brunken 
+    ! Fixes, suggested by Wilfried Brunken
 
 2019-12-14 09:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
-    ! Bug fixed, reported by Domenico d'Oria 
+    ! Bug fixed, reported by Domenico d'Oria
 
 2019-12-13 19:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
@@ -2900,7 +2908,7 @@
 
 2019-12-10 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
-    ! Bug fixed, reported by Wilfried Brunken 
+    ! Bug fixed, reported by Wilfried Brunken
 
 2019-12-10 13:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * makefile.vc
@@ -2926,7 +2934,7 @@
 
 2019-09-12 13:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hwindow.prg
-    ! Bug fixed, reported by Domenico d'Oria 
+    ! Bug fixed, reported by Domenico d'Oria
 
 2019-09-10 16:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/activex/htmlcore.c
@@ -3923,25 +3931,25 @@
     * Few bugs fixed, few new features implemented.
 
 2018-01-20 16:00 2018-01-19 17:36 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
-  * source/winapi/hlistbox.prg 
-    ! fixed error on valid method reported by Gianantonio 
+  * source/winapi/hlistbox.prg
+    ! fixed error on valid method reported by Gianantonio
   * include/hwg_extctrl.ch
     ! added  REDEFINE BUTTONEX command
   * contrib/ext_controls/hctrlex.prg
     ! fix to hbuttonex redefine method
-		
+
 2018-01-19 17:36 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
   * include/guilib.ch
     ! add missing REDEFINE progress command
   * source/winapi/hprogres.prg
-    ! add missing redefine method    
+    ! add missing redefine method
 
 2018-01-10 23:30 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
   * contrib/ext_controls/hcomboex.prg
     ! Some adjust to work with resource
   * include/hwg_extctrl.ch
     ! added  REDEFINE GET CHECKCOMBOBOX command
-        
+
 2018-01-09 17:36 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
   * contrib/ext_controls/hctrlex.prg
   * contrib/ext_controls/hcomboex.prg
@@ -3950,7 +3958,7 @@
     ! added missing CBN_KILLFOCUS event to redefine method
   * source/winapi/hbrowse.prg
     ! changed FldStr function to display timestamp fields
-         
+
 2017-10-20 14:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/htimer.prg
   * source/winapi/htimer.prg
@@ -3986,7 +3994,7 @@
 2017-02-06 20:16 UTC-0300  Luiz Rafael Culik (luiz at xharbour.com)
   * source/winapi/hcontrol.prg
   * Added Bclick assingment to hbutton redefine method
-   
+
 2017-01-11 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg
@@ -4266,7 +4274,7 @@
     * Some improvements
   + utils/tutorial/hwgrun.xml
     + Configuration file for hwgrun added
-  * utils/tutorial/tutor_eng.xml   
+  * utils/tutorial/tutor_eng.xml
 
 2016-09-09 12:48 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
@@ -4959,14 +4967,14 @@
 
 2015-09-28 18:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/winapi/draw.c
-    ! added defined to M_PI,M_PI_2,M_PI_4,M_TWOPI 
-    
+    ! added defined to M_PI,M_PI_2,M_PI_4,M_TWOPI
+
 2015-09-26 22:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/winapi/control.c
     ! fix HWG_TOOLBAR_LOADIMAGE to correct load image if image handle is an pointer reported by Pere
   * hwgui.lib.xbp
-    ! minor adjusts  
-    
+    ! minor adjusts
+
 2015-09-09 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwg_extctrl.ch
   * source/winapi/hcombo.prg
@@ -5055,11 +5063,11 @@
     * Pressing of F1..F12 doesn't affect current selecttion now.
   * utils/editor/editor.prg
   * utils/editor/hcediext.prg
-    * Some fixes and improvements    
+    * Some fixes and improvements
 
 2015-08-10 10:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/misc.c
-    * hwg_runapp() function is now compatible with winapi version - 
+    * hwg_runapp() function is now compatible with winapi version -
       it accepts the whole command line as one parameter
   * source/winapi/hwindow.prg
     ! Bug fixed
@@ -5152,7 +5160,7 @@
   * source/common/editor/hcedit_w.prg
     * hced_setBorderColor() function added
   * utils/editor/hcediext.prg
-  * utils/editor/editor.prg   
+  * utils/editor/editor.prg
   + utils/editor/editor.hwge
 
 2015-07-25 21:00 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
@@ -5161,8 +5169,8 @@
   * source/winapi/misc
     ! added hb_itemEqual for xharbour
   * source/common/editor/hcedit_w.c
-    ! removed #include "guilib.h" 
-        
+    ! removed #include "guilib.h"
+
 2015-07-15 15:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
   * source/winapi/hedit.prg
@@ -5557,7 +5565,7 @@
   * source/winapi/draw.c
     * hwg_drawGradient() added
       The code is provided by Eduard Gilman.
-  * include/hwgextern.ch  
+  * include/hwgextern.ch
     * hwg_drawGradient() added to the list
 
 2015-05-21 10:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
@@ -5724,9 +5732,9 @@
     ! changed calls to hb_version() to #ifdef __XHARBOUR)__ VERSION #ELSE#HB_VERSION() #ENDIF
   * source/common/editor/hcedit.prg
     ! changed rule for translate hb_hash to hash since parameter is optional
-  ! hwgui.lib.xbp  
+  ! hwgui.lib.xbp
     ! updated
-      
+
 2015-04-24 13:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     * :bAfter variable added - the codeblock, which executes in onEvent
@@ -5963,7 +5971,7 @@
   * utils/designer\inspect.prg
   * utils/designer\samples\testget2.xml
   * utils/tutorial\tutor_eng.xml
-    * All occurences of :SetValue(), :GetValue() are changed to use the :Value 
+    * All occurences of :SetValue(), :GetValue() are changed to use the :Value
 
 2015-01-18 12:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
@@ -6054,7 +6062,7 @@
     ! changed for xharbour HB_AT -> AT between __XHARBOUR__ defines
   * utils/hwreport/bldhwrep.bat
     ! added repexec.prg to dependencies
-        
+
 2014-12-25 21:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * utils/dbc/dbchw.prg
@@ -6070,7 +6078,7 @@
   * source/winapi/hfrmtmpl.prg
   * source/common/editor/hilight.prg
   * source/common/debug/debugger.prg
-    * Some changes for xHarbour compatibility, provided by Richard Roesnadi 
+    * Some changes for xHarbour compatibility, provided by Richard Roesnadi
 
 2014-12-25 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
@@ -6143,7 +6151,7 @@
   ! utils/dbc/build.sh
   ! utils/dbc/dbchw.prg
   ! utils/dbc/modistru.prg
-    ! Few fixes.  
+    ! Few fixes.
 
 2014-12-21 13:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
@@ -6204,7 +6212,7 @@
 2014-12-16 21:25 UTC+0100 Maurizio la Cecilia <m.lacecilia@gmail.com>
   * contrib/ext_controls/hbrowsex.prg
     * fixed missed constant #define RT_MANIFEST  24
-	
+
 2014-12-16 16:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hdialog.prg
     ! Fixed an old problem, when the VALID codeblock was called
@@ -6361,7 +6369,7 @@
     * The following two lines have been added:
       ANNOUNCE HB_GTSYS
       REQUEST HB_GT_CGI_DEFAULT
-      to eliminate the necessity to insert them in any application.    
+      to eliminate the necessity to insert them in any application.
   * source/winapi/hdialog.prg
     ! Few fixes for HWG_USE_POINTER_ITEM
   * source/winapi/hfreeimg.prg
@@ -6378,7 +6386,7 @@
 2014-10-29 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcombo.prg
     * The get variable of GET COMBOBOX is now initialized in :Init()
-  * source/gtk/window.c  
+  * source/gtk/window.c
     * hwg__isUnicode() functions has been added for compatibility with
       winapi version, it always returns .t.
   * source/gtk/gtkmain.prg
@@ -6440,10 +6448,10 @@
 2014-09-16 20:13 UTC-0300 Luiz Rafael Culik (luiz at xharbour.com)
   * source/hfreeimg.prg
     + Added refresh method to HSayFImage class
-    * Fixed method Paint when using no zoom on the image  
+    * Fixed method Paint when using no zoom on the image
   * hwgui.lib.xbp
-    ! updated to reflect new directories  
-  
+    ! updated to reflect new directories
+
 
 2014-07-25 15:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hfrmtmpl.prg
@@ -6604,14 +6612,14 @@
   + source/winapi/hbincnt.prg
     * New class added - HBinC, it is intended for keeping data
       in one special file ( HwGUI binary container ) instead of using many different
-      files. It is supposed to use it for images, but it may be used for any kind of data - 
+      files. It is supposed to use it for images, but it may be used for any kind of data -
       screen forms and reports, for example. All data, which goes with your
       application, may be placed now in one file. To manage it, I'll add a bit later
       a special utility.
   * include/guilib.ch
     * New command added: SET RESOURCES CONTAINER TO [<cName>], which is
       preprocessed to a new hwg_SetResContainer( cName ) function
-  * source/gtk/drawwidg.prg  
+  * source/gtk/drawwidg.prg
   * source/winapi/drawwidg.prg
       hwg_SetResContainer( cName ) function added. You may use it, or appropriate
       SET RESOURCES CONTAINER TO command to set a pre-prepared binary container
@@ -6791,7 +6799,7 @@
   * include/hwg_extctrl.ch
     + BROWSEEX command added
   * source/winapi/hbrowse.prg
-    * :AddColumn() and ::InsColumn() now accepts arrays to create 
+    * :AddColumn() and ::InsColumn() now accepts arrays to create
       a column. This is done to make more easy using of HBrowseEx and,
       possibly, other implementations of a browse.
 
@@ -6867,7 +6875,7 @@
       highlight object ( Hilight class or other ) for an editor
     * :SetHili() calls are removed from :Init() - they should be added
       in application code.
-    ! Some fixes     
+    ! Some fixes
   * source/common/xml/hxmldoc.prg
     ! Small fix
   * utils/debugger/hwgdebug.prg
@@ -6979,7 +6987,7 @@
   * include/guilib.ch
     * build number is increased to 2
     * INIT WINDOW ... MAIN
-         COLOR clause is renamed to SYSCOLOR ( it is followed by the system 
+         COLOR clause is renamed to SYSCOLOR ( it is followed by the system
          color value, COLOR_3DLIGHT, for example ).
          New COLOR clause added, it is the integer value, as for colors in controls
          EXCLUDE clause added, it is followed by the styles, which must be excluded
@@ -7145,7 +7153,7 @@
   * utils/hwreport/hwinprn.prg
   * utils/hwpeport/printrpt.prg
     * correction due to recent changes hwgui
-	
+
 2013-10-30 17:08 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>
   * source/winapi/hwinprn.prg
   * source/gtk/hwinprn.prg
@@ -7695,10 +7703,10 @@
   - samples/testget3.rc
   - samples/testget.rh
   - samples/grid_6.rc
-  - samples/grid_6.prg      
+  - samples/grid_6.prg
     - The above files deleted from samples/, because they didn't work normally
   * samples/hwgrun.prg
-    * Small changes. Now it is possible to execute HwGUI prgs directly, without 
+    * Small changes. Now it is possible to execute HwGUI prgs directly, without
       compiling to .hrb
 
 2013-06-27 16:15 UTC+0300 Alexander Kresin <alex@belacy.belgorod.su>

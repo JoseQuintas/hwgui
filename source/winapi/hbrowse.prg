@@ -217,8 +217,8 @@ CLASS HBrowse INHERIT HControl
    DATA nPaintRow, nPaintCol                   // Row/Col being painted
    DATA nHCCharset INIT -1                     // Charset for MEMO EDIT -1: set default value
    // --- International Language Support for internal dialogs ---
-   DATA cTextTitME INIT "Memo Edit"   
-   DATA cTextClose INIT "Close"   // Button 
+   DATA cTextTitME INIT "Memo Edit"
+   DATA cTextClose INIT "Close"   // Button
    DATA cTextSave  INIT "Save"
    DATA cTextLockRec INIT "Can't lock the record!"
 
@@ -302,11 +302,11 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
 
 
 METHOD DefaultLang() CLASS HBrowse
-   ::cTextTitME := "Memo Edit"   
-   ::cTextClose := "Close"   // Button 
+   ::cTextTitME := "Memo Edit"
+   ::cTextClose := "Close"   // Button
    ::cTextSave  := "Save"
    ::cTextLockRec := "Can't lock the record!"
-   RETURN Self   
+   RETURN Self
 
 METHOD Activate() CLASS HBrowse
 
@@ -322,7 +322,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
    LOCAL nPos, iParHigh, iParLow
 
-   // WriteLog( "Brw: "+Str(::handle,10)+"|"+Str(msg,6)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
+   //hwg_WriteLog( "Brw: " + Str(msg,6) +" "+Str(hwg_PtrToUlong(wParam),10)+" "+Str(hwg_PtrToUlong(lParam),10) )
    IF ::active .AND. !Empty( ::aColumns )
 
       IF ::bOther != Nil
@@ -1390,7 +1390,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
    LOCAL minPos, maxPos, nPos, colpos, btemp
 
    IF ::type == BRW_ARRAY
-       btemp := Eval( ::bSkip, Self, 1 ) == 0 .OR. Eval( ::bEof, Self )  
+       btemp := Eval( ::bSkip, Self, 1 ) == 0 .OR. Eval( ::bEof, Self )
    ELSE
        * DF7BE: Modification suggested by Itarmar M. Lins Jr.
        * (see sample program Testado.prg)
@@ -1462,7 +1462,7 @@ METHOD LINEUP() CLASS HBrowse
       Eval( ::bSkip, Self, - 1 )
       btemp := Eval( ::bBof, Self )
    ENDIF
-   
+
    IF btemp
       //Eval( ::bSkip, Self, - 1 )
       //IF Eval( ::bBof, Self ) itamar
@@ -1830,8 +1830,8 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL apffrarr, nchrs
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
-   
-   /* Preset charset for displaying special characters of other languages 
+
+   /* Preset charset for displaying special characters of other languages
       for example Russian ::nHCCharset = 204   */
      nchrs := ::nHCCharset
      apffrarr := ::oFont:Props2Arr()
@@ -1839,13 +1839,13 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
       nchrs := apffrarr[5]
      ENDIF
      oHCfont := HFont():Add(apffrarr[1],apffrarr[2] ,apffrarr[3]  , apffrarr[4] , nchrs , ;
-     apffrarr[6]  , apffrarr[7], apffrarr[8] ) 
+     apffrarr[6]  , apffrarr[7], apffrarr[8] )
 //        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
-//        1         2       3         4         5           6          7             8  
+//        1         2       3         4         5           6          7             8
 
 
    // hwg_WriteLog(oHCfont:PrintFont() )
-   
+
    oColumn := ::aColumns[fipos]
    IF ::bEnter == Nil .OR. ;
          ( ValType( lRes := Eval( ::bEnter, Self, fipos, ::nCurrent ) ) == 'L' .AND. !lRes )
@@ -1854,7 +1854,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
       ENDIF
       IF ::type == BRW_DATABASE
          IF Dbinfo(DBI_ISREADONLY)
-            RETURN Nil            
+            RETURN Nil
          ENDIF
          ::varbuf := ( ::alias ) -> ( Eval( oColumn:block,,Self,fipos ) )
       ELSE
@@ -1960,11 +1960,11 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                /* DF7BE 2020-12-02:
                   Prepare for correct display of Euro currency sign in Memo edit
                   by using charset 0 (ISO8859-15)
-                */ 
+                */
                @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
                     FONT  oHCfont && ::oFont
 
-               * ::varbuf ==> mvarbuff, oGet1 ==> oEdit (DF7BE)         
+               * ::varbuf ==> mvarbuff, oGet1 ==> oEdit (DF7BE)
                @ 010, 252 ownerbutton owb2 TEXT ::cTextSave size 80, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
                @ 100, 252 ownerbutton owb1 TEXT ::cTextClose size 80, 24 ON CLICK { ||oModDlg:close() }
                  * serve memo field for editing (DF7BE)
@@ -1973,16 +1973,17 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             ENDIF
          ENDIF
 
+         oModDlg:oParent := Self
          ACTIVATE DIALOG oModDlg
 * =========================================================================
 * DF7BE
-         IF type == "M" 
-          * is modified ? (.T.) 
+         IF type == "M"
+          * is modified ? (.T.)
           bMemoMod := oEdit:lUpdated
           IF bMemoMod
            * write out edited memo field
            ::varbuf := oEdit:GetText()
-          ENDIF 
+          ENDIF
          ENDIF
 * =========================================================================
          ::lEditing := .F.

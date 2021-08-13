@@ -8,6 +8,10 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-08-13 10:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hbrowse.prg
+    ! Small correction for dialog boxes in :Edit() method.
+
 2021-07-01 16:12 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
    + samples/readme2.txt
    - samples/sample.hbp

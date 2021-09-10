@@ -96,7 +96,8 @@ typedef struct
 
    int      ROWS;           /* number of displayable rows in window */
    int      COLS;           /* number of displayable columns in window */
-   char *   TextLine;
+   //char *   TextLine;
+   HB_USHORT *   TextLine;
    COLORREF COLORS[ 16 ];   /* colors */
 
    HB_BOOL  CaretExist;     /* HB_TRUE if a caret has been created */
@@ -342,8 +343,10 @@ static HB_BOOL gthwg_SetWindowSize( PHB_GTHWG pHWG, int iRows, int iCols )
    {
       if( pHWG->COLS != iCols )
       {
-         pHWG->TextLine = ( char* ) hb_xrealloc( pHWG->TextLine,
-                                                   iCols * sizeof( char ) );
+         //pHWG->TextLine = ( char* ) hb_xrealloc( pHWG->TextLine,
+         //                                          iCols * sizeof( char ) );
+         pHWG->TextLine = ( HB_USHORT* ) hb_xrealloc( pHWG->TextLine,
+                                                   iCols * sizeof( HB_USHORT ) );
       }
 
       pHWG->ROWS = iRows;
@@ -461,6 +464,7 @@ static void gthwg_PaintText( PHB_GTHWG pHWG, GdkRectangle *pArea )
    PHB_CODEPAGE cdp = hb_vmCDP();
    cairo_t * cr;
    PangoLayout * layout;
+   HB_BOOL fUtf8 = ( strncmp( cdp->id, "UTF", 3 ) == 0 );
 
    cr = gdk_cairo_create( gtk_widget_get_window( hPaneMain ) );
    if( !cr )
@@ -494,12 +498,26 @@ static void gthwg_PaintText( PHB_GTHWG pHWG, GdkRectangle *pArea )
       while( 1 )
       {
          HB_UCHAR uc;
+         HB_USHORT usChar;
          char buf[8];
          int i, iCharLen;
 
          if( iCol < iLastCol )
-            if( ! HB_GTSELF_GETSCRUC( pHWG->pGT, iRow, iCol, &iColor, &bAttr, &uc, HB_TRUE ) )
-               break;
+         {
+            if( fUtf8 )
+            {
+               if( ! HB_GTSELF_GETSCRCHAR( pHWG->pGT, iRow, iCol, &iColor, &bAttr, &usChar ) )
+                  break;
+               //if( !(usChar == 32) && !(usChar == 42) )
+               //   hwg_writelog( NULL, "_PaintText-2 %d %c\r\n", usChar, usChar );
+            }
+            else
+            {
+               if( ! HB_GTSELF_GETSCRUC( pHWG->pGT, iRow, iCol, &iColor, &bAttr, &uc, HB_TRUE ) )
+                  break;
+               usChar = (HB_USHORT) uc;
+            }
+         }
          if( len == 0 )
             iOldColor = iColor;
          else if( iColor != iOldColor || iCol == iLastCol )
@@ -520,7 +538,13 @@ static void gthwg_PaintText( PHB_GTHWG pHWG, GdkRectangle *pArea )
                if( *(pHWG->TextLine+i) != ' ' )
                {
                   x1 = (startCol+i) * pHWG->PTEXTSIZE.x + pHWG->MarginLeft;
-                  iCharLen = hb_cdpStrToUTF8( cdp, (pHWG->TextLine+i), 1, buf, 5 );
+                  if( fUtf8 )
+                     iCharLen = hb_cdpU16CharToUTF8( buf, *(pHWG->TextLine+i) );
+                  else
+                  {
+                     *buf = (char) *(pHWG->TextLine+i);
+                     iCharLen = hb_cdpStrToUTF8( cdp, buf, 1, buf, 5 );
+                  }
                   pango_layout_set_text( layout, buf, iCharLen );
                   cairo_move_to( cr, (gdouble)x1, (gdouble)y1 );
                   pango_cairo_show_layout( cr, layout );
@@ -533,7 +557,8 @@ static void gthwg_PaintText( PHB_GTHWG pHWG, GdkRectangle *pArea )
          }
          if( iCol == iLastCol )
             break;
-         pHWG->TextLine[ len++ ] = ( char ) uc;
+         //pHWG->TextLine[ len++ ] = ( char ) usChar;
+         pHWG->TextLine[ len++ ] = usChar;
          if( iCol == iColCurs && iRow == iRowCurs )
          {
             bCursor = iCol;
@@ -759,6 +784,7 @@ static HB_LONG gthwg_KeyConvert( HB_LONG ulKeyRaw, HB_LONG ulFlags )
 
    HB_LONG ulKey = 0;
 
+   //hwg_writelog( NULL, "_KeyConvert-1 %lu %x\r\n",ulKeyRaw,ulKeyRaw );
    switch( ulKeyRaw )
    {
       case GDK_Return:
@@ -863,21 +889,44 @@ static HB_LONG gthwg_KeyConvert( HB_LONG ulKeyRaw, HB_LONG ulFlags )
    if( ulKey != 0 )
       ulKey = HB_INKEY_NEW_KEY( ulKey, ulFlags );
    else if( ulKeyRaw <= 127 )
+   {
       if( ulFlags & HB_KF_CTRL && ulKeyRaw >= 97 && ulKeyRaw <= 122 )
          ulKey = HB_INKEY_NEW_KEY( ulKeyRaw-32, ulFlags );
       else
          ulKey = HB_INKEY_NEW_KEY( ulKeyRaw, ulFlags );
+   }
    else if( ulKeyRaw < 0xFE00 )
    {
-      char utf8char[8];
+      char utf8char[8], *ptr;
       char cdpchar[4];
       int iLen;
+      HB_BOOL fUtf8 = ( strncmp( hb_cdpID(), "UTF", 3 ) == 0 );
 
       iLen = g_unichar_to_utf8( gdk_keyval_to_unicode( ulKeyRaw ), utf8char );
       utf8char[iLen] = '\0';
-      hb_cdpUTF8ToStr( hb_vmCDP(), utf8char, iLen, cdpchar, 3 );
-      cdpchar[1] = '\0';
-      ulKey = HB_INKEY_NEW_KEY( ((unsigned int) *cdpchar) & 0xff, ulFlags ); // & 0xffff00ff;
+      //hwg_writelog( NULL, "_KeyConvert-2 %s %x\r\n",utf8char,ulKeyRaw  );
+      if( fUtf8 )
+      {
+         int n = 0;
+         HB_WCHAR wc = 0;
+         ptr = utf8char;
+         while( iLen )
+         {
+            if( ! hb_cdpUTF8ToU16NextChar( (unsigned char) *ptr, &n, &wc ) )
+               break;
+            if( n == 0 )
+               break;
+            ptr++;
+            iLen--;
+         }
+         ulKey = HB_INKEY_NEW_UNICODEF( ((unsigned int) wc), ulFlags );
+      }
+      else
+      {
+         hb_cdpUTF8ToStr( hb_vmCDP(), utf8char, iLen, cdpchar, 3 );
+         cdpchar[1] = '\0';
+         ulKey = HB_INKEY_NEW_KEY( ((unsigned int) *cdpchar) & 0xff, ulFlags );
+      }
    }
    //hwg_writelog( NULL, "Convert: %x %x\r\n",ulKeyRaw, ulKey );
    return ulKey;
@@ -1160,7 +1209,8 @@ static void hb_gt_hwg_Init( PHB_GT pGT, HB_FHANDLE hFilenoStdin, HB_FHANDLE hFil
    pHWG->ROWS = HWG_DEFAULT_ROWS;
    pHWG->COLS = HWG_DEFAULT_COLS;
 
-   pHWG->TextLine = ( char * ) hb_xgrab( pHWG->COLS * sizeof( char ) );
+   //pHWG->TextLine = ( char * ) hb_xgrab( pHWG->COLS * sizeof( char ) );
+   pHWG->TextLine = ( HB_USHORT * ) hb_xgrab( pHWG->COLS * sizeof( HB_USHORT ) );
 
    pHWG->COLORS[ 0 ]       = 0x000000;   //BLACK
    pHWG->COLORS[ 1 ]       = 0xAA0000;   //BLUE
@@ -1273,7 +1323,7 @@ static int hb_gt_hwg_ReadKey( PHB_GT pGT, int iEventMask )
       hwg_doEvents();
       fKey = gthwg_GetCharFromInputQueue( pHWG, &c );
       //if( fKey )
-      //   hwg_writelog( NULL, "_readkey-2 %d\r\n",c );
+      //   hwg_writelog( NULL, "_readkey-2 %d %x\r\n",c,c );
       return fKey ? c : 0;
    }
 

@@ -166,7 +166,7 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
       ::Minimize()
    ELSEIF !Empty( lMaximized )
       ::Maximize()
-   ELSEIF !Empty( lCentered )
+   ELSEIF !Empty( lCentered ) .OR. ( ::style > 0 .AND. hwg_BitAnd( ::style, DS_CENTER ) > 0 )
       ::Center()
    ELSEIF ::oParent != Nil .AND. __ObjHasMsg( ::oParent, "nLeft" )
       hwg_MoveWindow( ::handle, ::oParent:nLeft + ::nLeft, ::oParent:nTop + ::nTop )

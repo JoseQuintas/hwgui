@@ -8,6 +8,10 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-09-29 14:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdialog.prg
+    ! Small fix for DS_CENTER style option
+
 2021-09-10 10:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwgui_l.c
     * Updated for UTF8 codepage to be correctly displayed.

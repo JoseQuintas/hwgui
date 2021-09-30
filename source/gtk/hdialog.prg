@@ -127,11 +127,11 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
    IF lNoModal == Nil ; lNoModal := .F. ; ENDIF
    ::lModal := !lNoModal
    ::lResult := .F.
-   ::AddItem( Self, !lNoModal )
-
    IF ::oParent == Nil
       ::oParent := hwg_GetModalDlg()
    ENDIF
+   ::AddItem( Self, !lNoModal )
+
    IF !lNoModal
       hParent := iif( ::oParent != Nil .AND. __ObjHasMsg( ::oParent,"HANDLE" ) ;
          .AND. !Empty( ::oParent:handle ), ::oParent:handle, ;

@@ -947,6 +947,8 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
    {
       p1 = WM_KEYDOWN;
       p2 = ((GdkEventKey*)event)->keyval;
+      //hwg_writelog( NULL, "KeyDown-1 %ld\r\n", p2 );
+      /*
       if ( p2 == GDK_KEY_asciitilde  ||  p2 == GDK_KEY_asciicircum  ||  p2 == GDK_KEY_grave ||  p2 == GDK_KEY_acute ||  p2 == GDK_KEY_diaeresis || p2 == GDK_KEY_dead_acute ||	 p2 ==GDK_KEY_dead_tilde || p2==GDK_KEY_dead_circumflex || p2==GDK_KEY_dead_grave || p2 == GDK_KEY_dead_diaeresis)	
       {
          prevp2 = p2 ;
@@ -957,10 +959,11 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          p2 = ToKey(prevp2,(HB_LONG)p2);
          prevp2=-1;
       }
+      */
       p3 = ( ( ((GdkEventKey*)event)->state & GDK_SHIFT_MASK )? HB_KF_SHIFT : 0 ) |
            ( ( ((GdkEventKey*)event)->state & GDK_CONTROL_MASK )? HB_KF_CTRL : 0 ) |
            ( ( ((GdkEventKey*)event)->state & GDK_MOD1_MASK )? HB_KF_ALT : 0 );
-      //hwg_writelog( NULL, "KeyDown %lu %lu\r\n", p2, p3 );
+      //hwg_writelog( NULL, "KeyDown-2 %ld %ld\r\n", p2, p3 );
       if( p2 != -1 )
          gthwg_AddCharToInputQueue( pHWGMain, gthwg_KeyConvert( p2, p3 ) );
       return 0;

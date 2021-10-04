@@ -1,0 +1,4 @@
+-i/home/itamar/dev/hwgui-code/hwgui/include
+
+/home/itamar/dev/hwgui-code/hwgui/hwgui.hbc
+-lm

@@ -170,6 +170,12 @@ For beginners:
  winprn.prg  3) 8)  Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)
  xmltree.prg        Y          YW     Show XML-Tree: Open "testxml.xml" for test.
 
+Directories:
+============
+ MariaDb     2)     ?                 Sample CRUD DBF and MariaDb
+                                      Delivered by Itamar M. Lins Jr. (TNX !)
+                                      Attention, sample not checked by HWGUI developer team.
+
 
  1) Sample program needs extra libraries of HWGUI, build them in directory "contrib".
 

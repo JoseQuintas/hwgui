@@ -1,0 +1,7 @@
+-i/home/itamar/dev/hwgui-code/hwgui/include
+
+/home/itamar/dev/hwgui-code/hwgui/hwgui.hbc
+sddodbc.hbc
+-lm
+-n -w3
+hwgui_crud.prg

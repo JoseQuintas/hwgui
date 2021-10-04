@@ -79,7 +79,18 @@ hwmake:
    bld.bat  
  Build program with:
    bld.bat hwmake
- (Windows and Borland C Compiler only) 
+ (Windows and Borland C Compiler only)
+
+
+Project "HwMake"
+
+HWMake is a tool to build for HwGUI and Harbour applications or libs. 
+
+This tool was originally created from HwMake which came with HwGui, but was then only available for Windows. It was rewritten to work under Linux and has been greatly improved, in order to manage as many operations as possible to complete the creation and maintenance of applications or libs written in harbour/hwgui.
+
+You find this project at:
+https://sourceforge.net/projects/hwmake/
+ 
   
 
 

@@ -1,0 +1,3 @@
+incpaths=../../dev/hwgui-code/hwgui/include;
+libpaths=../../dev/hwgui-code/hwgui/lib;
+libs=hwgui procmisc

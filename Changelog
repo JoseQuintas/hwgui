@@ -8,6 +8,19 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-05-19 15:10 UTC+0200 Wilfried Brunken DF7BE
+  * samples/MariaDb/hbmk.hbm
+  * samples/MariaDb/hwgui_crud.prg
+  * samples/MariaDb/hwgui_crud.hbp
+  * samples/MariaDb/hwgui_crud.hbc
+  * samples/Readme.txt
+  * contrib/Readme.txt
+    ! Ticket #85 Sample CRUD DBF and MariaDb
+    ! Delivered by Itamar M. Lins Jr. (TNX !)
+    ! Support Request ticket #47:
+    ! Link to HwMake Linux added (delivered by Alain Aupeix, TNX)
+    ! Added as an extra project in Sourceforge.
+
 2021-10-02 17:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwgui_l.c
     ! Warnings fixed.

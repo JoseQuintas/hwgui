@@ -24,6 +24,8 @@ REQUEST DBSkip
 REQUEST DBGoTop
 REQUEST DBCloseArea
 
+MEMVAR aBitmaps
+
 FUNCTION hwg_ClonePaintRep( ar )
 
    aPaintRep := AClone( ar )
@@ -194,9 +196,9 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
    LOCAL lAddMode := .F., nYadd := 0, nEndList := 0
 
    MEMVAR lFirst, lFinish, lLastCycle, oFontStandard
-   PRIVATE lFirst := .T., lFinish := .T., lLastCycle := .F.
+   PRIVATE lFirst := .T., lFinish := .T., lLastCycle := .F., aBitmaps := {}
 
-   IF oPrinter:hDCPrn == Nil .OR. oPrinter:hDCPrn == 0
+   IF Empty( oPrinter:hDCPrn )
       RETURN .F.
    ENDIF
 
@@ -450,6 +452,10 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
          aPaintRep[ FORM_ITEMS, i, ITEM_STATE ] := Nil
       ENDIF
    NEXT
+   FOR i := 1 TO Len( aBitmaps )
+      hwg_Deleteobject( aBitmaps[i] )
+      aBitmaps[i] := Nil
+   NEXT
 
    RETURN .T.
 
@@ -491,11 +497,10 @@ FUNCTION hwg_PrintItem( oPrinter, aPaintRep, aItem, prnXCoef, prnYCoef, nYadd, l
       ELSEIF aItem[ ITEM_TYPE ] == TYPE_BOX
          oPrinter:Box( x1, y1, x2, y2, aItem[ ITEM_PEN ] )
       ELSEIF aItem[ ITEM_TYPE ] == TYPE_BITMAP
-         hBitmap := hwg_Openbitmap( aItem[ ITEM_CAPTION ], oPrinter:hDC )
-         // writelog( "hBitmap: "+str(hBitmap) )
-         oPrinter:Bitmap( x1, y1, x2, y2,, hBitmap )
-         hwg_Deleteobject( hBitmap )
-         // hwg_Drawbitmap( hDC, aItem[ITEM_BITMAP],SRCAND, x1, y1, x2-x1+1, y2-y1+1 )
+         Aadd( aBitmaps, hBitmap := hwg_Openbitmap( aItem[ ITEM_CAPTION ], oPrinter:hDC ) )
+         //hwg_writelog( "hBitmap: "+Iif(hBitmap==Nil,"Nil","Ok") )
+         oPrinter:Bitmap( x1, y1, x2, y2,, hBitmap, aItem[ ITEM_CAPTION ] )
+         //hwg_Deleteobject( hBitmap )
       ENDIF
    #endif
    RETURN Nil

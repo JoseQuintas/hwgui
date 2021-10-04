@@ -8,7 +8,20 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-2021-05-19 15:10 UTC+0200 Wilfried Brunken DF7BE
+2021-10-04 16:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/Readme.txt
+    * gthwg info updated
+  * contrib/hwreport/hwreport.prg
+  * contrib/hwreport/opensave.prg
+  * contrib/hwreport/printrpt.prg
+  * contrib/hwreport/propert.prg
+  * contrib/hwreport/repexec.prg
+  * contrib/hwreport/repbuild.h
+    * Fixes.
+    * Code changed in order to get rid of some outdated constructions and functions calls.
+      This is a work in progress.
+
+2021-10-04 15:10 UTC+0200 Wilfried Brunken DF7BE
   * samples/MariaDb/hbmk.hbm
   * samples/MariaDb/hwgui_crud.prg
   * samples/MariaDb/hwgui_crud.hbp

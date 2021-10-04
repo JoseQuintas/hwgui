@@ -4,8 +4,8 @@
  * Repbuild - Visual Report Builder
  * Main file
  *
- * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
- * www - http://kresin.belgorod.su
+ * Copyright 2001-2021 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
 */
 
 /*
@@ -141,6 +141,7 @@ oIcon := HIcon():AddString( "ICON_1" , cVal_Ico )
    hwg_Enablemenuitem( ,IDM_PRINT, .F., .T. )
    hwg_Enablemenuitem( ,IDM_PREVIEW, .F., .T. )
    hwg_Enablemenuitem( ,IDM_FOPT, .F., .T. )
+   hwg_Enablemenuitem( ,IDM_VIEW1, .F., .T. )
    hwg_Enablemenuitem( ,1, .F., .F. )
    hwg_Checkmenuitem( ,IDM_MOUSE2, .t. )
 
@@ -148,60 +149,26 @@ oIcon := HIcon():AddString( "ICON_1" , cVal_Ico )
 
 Return Nil
 
-Function About
-Local aModDlg, oOBtn , oGroup1 , oGroup2
-Local oFont , oFont2 , oFont3
-Local oSay1, oSay2, oSay3, oSay4
+STATIC FUNCTION About()
 
-/*
- GROUPBOX "", -1, 14, 0, 84, 37, BS_GROUPBOX
- GROUPBOX "", -1, 20, 39, 75, 18, BS_GROUPBOX
- CTEXT "Visual report Builder", -1, 18, 16, 78, 8
-                   Id   xat    yat
- CTEXT "HWREPORT", 101, 30, 7, 52, 8
-                            xsize  ysize
- CTEXT "version 1.1", -1, 25, 26, 66, 8
- CTEXT  -1, 22, 45, 72, 7
- CONTROL "", IDC_OWNB1, "OWNBTN", 0 | WS_CHILD | WS_VISIBLE, 22, 66, 72, 20
-*/
+   LOCAL oDlg
 
+   INIT DIALOG oDlg TITLE "About" ;
+      AT 0, 0 SIZE 400, 330 FONT HWindow():GetMain():oFont STYLE DS_CENTER
 
-   PREPARE FONT oFont  NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 ITALIC UNDERLINE
-   PREPARE FONT oFont2 NAME "MS Shell Dlg"  WIDTH 0 HEIGHT 9
-   PREPARE FONT oFont3 NAME "Arial" WIDTH 0 HEIGHT -11
+   @ 20, 40 SAY "HwReport" SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE
+   @ 20, 64 SAY "Version "+APP_VERSION SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE
+   @ 20, 100 SAY "Copyright 2001-2021 Alexander S.Kresin" SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE
+   @ 20, 124 SAY "http://www.kresin.ru" LINK "http://www.kresin.ru" SIZE 360,26 STYLE SS_CENTER
+   @ 20, 160 LINE LENGTH 360
+   @ 20, 180 SAY hwg_Version() SIZE 360,26 STYLE SS_CENTER COLOR CLR_DBLUE
 
-   * FROM RESOURCE "ABOUTDLG"   && 100, 63, 111, 96
-   INIT DIALOG aModDlg TITLE "About" AT 100, 111 SIZE 169 , 158  && 184 , 200 ;
-   * FONT oFont2
+   @ 150, 250 BUTTON "Close" SIZE 100, 32 ON CLICK { ||hwg_EndDialog() } ON SIZE ANCHOR_BOTTOMABS + ANCHOR_RIGHTABS + ANCHOR_LEFTABS
 
+   ACTIVATE DIALOG oDlg
 
-   @ 45, 12 SAY oSay1 CAPTION "HWREPORT" SIZE 72, 30 OF oGroup1 ;
-            STYLE SS_CENTER COLOR hwg_ColorC2N("0000FF") FONT oFont3
+   RETURN Nil
 
-   @ 31, 28  SAY oSay2 CAPTION "Visual report Builder" SIZE 100, 30 OF oGroup1 ;
-            STYLE SS_CENTER FONT oFont3
-
-   @ 45, 44  SAY oSay3 CAPTION "version 1.1" SIZE 72, 30 OF oGroup1 ;
-            STYLE SS_CENTER FONT oFont3
-
-   @ 27, 80  SAY oSay4 CAPTION "Alexander Kresin" SIZE 110, 30 OF oGroup2 ;
-            STYLE SS_CENTER FONT oFont3
-   
-*     Causes Warning W0001  Ambiguous reference 'FONT' ----!  ==> REDEFINE ... 
-   @ 32,110 OWNERBUTTON oOBtn ID IDC_OWNB1 SIZE 109,32 ; && FONT oFont 
-     FLAT TEXT "Close" ;
-     COLOR hwg_ColorC2N("0000FF") ;
-     ON CLICK {|| hwg_EndDialog( hwg_GetModalHandle() )}
-
-   REDEFINE OWNERBUTTON OF aModDlg ID IDC_OWNB1 ON CLICK {|| hwg_EndDialog( hwg_GetModalHandle() )} ;
-       FLAT TEXT "Close" COLOR hwg_ColorC2N("0000FF") FONT oFont
-
-  @ 20,1  GROUPBOX oGroup1 CAPTION ""  SIZE 124,62 
-  
-  @ 26,68 GROUPBOX oGroup2 CAPTION ""  SIZE 112,30
-  
-   aModDlg:Activate()
-Return Nil
 
 Static Function NewReport( oMainWindow )
 Local oDlg
@@ -769,6 +736,7 @@ Local hWnd := Hwindow():GetMain():handle
          hwg_Enablemenuitem( ,IDM_PRINT, .T., .T. )
          hwg_Enablemenuitem( ,IDM_PREVIEW, .T., .T. )
          hwg_Enablemenuitem( ,IDM_FOPT, .T., .T. )
+         hwg_Enablemenuitem( ,IDM_VIEW1, .T., .T. )
       ENDIF
    ELSEIF itemPressed > 0
       aPaintRep[FORM_ITEMS,itemPressed,ITEM_STATE] := STATE_SELECTED
@@ -805,6 +773,7 @@ Local i, aItem
             hwg_Enablemenuitem( ,IDM_PRINT, .F., .T. )
             hwg_Enablemenuitem( ,IDM_PREVIEW, .F., .T. )
             hwg_Enablemenuitem( ,IDM_FOPT, .F., .T. )
+            hwg_Enablemenuitem( ,IDM_VIEW1, .F., .T. )
          ENDIF
          hwg_Postmessage( hWnd, WM_PAINT, 0, 0 )
          EXIT

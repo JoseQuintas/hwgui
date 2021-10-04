@@ -108,8 +108,7 @@ hwreport:
  and platforms Windows and Linux.
 
 gthwg:
- GT library, based on HwGUI. Currently it is for winapi version only,
- Linux GTK version will be later.
+ GT library, based on HwGUI.
  
 2. Build scripts
 ----------------

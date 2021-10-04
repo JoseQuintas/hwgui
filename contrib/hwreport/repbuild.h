@@ -1,3 +1,9 @@
+
+#define  APP_VERSION     "1.1"
+
+#define  CLR_DBLUE    8404992
+#define  CLR_VDBLUE  10485760
+
 #define IDM_ABOUT      1000
 #define IDM_NEW        1001
 #define IDM_OPEN       1002

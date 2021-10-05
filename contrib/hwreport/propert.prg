@@ -66,19 +66,19 @@ STATIC FUNCTION StaticDlg( aItem )
    @ 14, 6 SAY "Caption:"  SIZE 80, 22
    @ 20, 33 EDITBOX oEdit1 CAPTION "" SIZE 425, 24 STYLE WS_BORDER
 
-   @ 20, 70 GROUPBOX "Alignment" ID IDC_GROUPBOX1 SIZE 100, 108
+   @ 20, 70 GROUPBOX "Alignment" SIZE 100, 108
    RADIOGROUP
-   @ 28, 93 RADIOBUTTON oRb1 CAPTION "Left" ID IDC_RADIOBUTTON1 SIZE 80, 22
-   @ 28, 118 RADIOBUTTON oRb2 CAPTION "Right" ID IDC_RADIOBUTTON2 SIZE 76, 22
-   @ 28, 145 RADIOBUTTON oRb3 CAPTION "Center" ID IDC_RADIOBUTTON3 SIZE 83, 22
+   @ 28, 93 RADIOBUTTON oRb1 CAPTION "Left"    SIZE 80, 22
+   @ 28, 118 RADIOBUTTON oRb2 CAPTION "Right"  SIZE 76, 22
+   @ 28, 145 RADIOBUTTON oRb3 CAPTION "Center" SIZE 83, 22
    END RADIOGROUP SELECTED Iif( aItem[ITEM_ALIGN] == 0, 1, Iif( aItem[ITEM_ALIGN] == 1, 2, 3 ) )
 
    @ 173, 92 SAY oLabel2 CAPTION "" SIZE 147, 22
 
-   @ 208, 142 BUTTON "Change" ID IDC_PUSHBUTTON1 SIZE 80, 24 ;
+   @ 208, 142 BUTTON "Change" SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK {|| SetItemFont( oModDlg,aItem ) }
 
-   @ 167, 70 GROUPBOX oGroup1 CAPTION "Font" ID IDC_GROUPBOX3 SIZE 161, 108
+   @ 167, 70 GROUPBOX "Font" SIZE 161, 108
 
    @ 354, 78 SAY "Type:"  SIZE 80, 22
 
@@ -91,7 +91,7 @@ STATIC FUNCTION StaticDlg( aItem )
    @ 23, 211 EDITBOX oEdit2 CAPTION "" SIZE 457, 139 ;
       STYLE WS_BORDER + ES_AUTOHSCROLL + WS_TABSTOP + ES_MULTILINE + ES_AUTOVSCROLL + ES_WANTRETURN + WS_DLGFRAME
 
-   @ 25, 370 BUTTON "OK" ID IDOK  SIZE 80, 24 ;
+   @ 25, 370 BUTTON "OK" SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK {|| EndStatic( oModDlg, aItem ) }
 
    @ 390, 372 BUTTON "Cancel" ID IDCANCEL  SIZE 80, 24 ;
@@ -170,7 +170,7 @@ STATIC FUNCTION LineDlg( aItem )
 
    @ 154, 90 COMBOBOX oCombo2  ITEMS {} SIZE 87, 96 STYLE CBS_DROPDOWNLIST + WS_TABSTOP
 
-   @ 27, 135 BUTTON "OK" ID IDOK  SIZE 80, 24 ;
+   @ 27, 135 BUTTON "OK" SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndLine( oModDlg, aItem ) }
 
    @ 152, 134 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 ;
@@ -195,10 +195,9 @@ STATIC FUNCTION InitLine( oDlg, aItem )
 STATIC FUNCTION EndLine( oDlg, aItem )
    LOCAL nWidth := Val( oDlg:oEdit1:Value )
    LOCAL cType := aPenStyles[oDlg:oCombo1:Value]
-   //hwg_Getdlgitemtext( hDlg, IDC_COMBOBOX1, 12 ), i
    LOCAL oPen := aItem[ITEM_PEN]
+   LOCAL i := Ascan( aPenStyles, cType )
 
-   i := Ascan( aPenStyles, cType )
    IF oPen:style != i - 1 .OR. oPen:width != nWidth
       oPen:Release()
       aItem[ITEM_PEN] := HPen():Add( i - 1, nWidth, 0 )
@@ -244,7 +243,7 @@ FUNCTION BitmapDlg( aItem )
 
    @ 20, 186 SAY "Percentage of original %" SIZE 161, 22
 
-   @ 15, 240 BUTTON "OK" ID IDOK SIZE 80, 24 ;
+   @ 15, 240 BUTTON "OK" SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndBitmap( oModDlg, aItem ) }
    @ 197, 240 BUTTON "Cancel" ID IDCANCEL  SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK { || res := .F., oModDlg:Close() }
@@ -323,7 +322,7 @@ FUNCTION MarkLDlg( aItem )
    @ 26, 41 EDITBOX oEdit1 CAPTION "" SIZE 316, 113 ;
       STYLE WS_BORDER + ES_MULTILINE + ES_AUTOVSCROLL + ES_AUTOHSCROLL + ES_WANTRETURN + WS_TABSTOP + WS_DLGFRAME
 
-   @ 26, 168 BUTTON "OK" ID IDOK  SIZE 80, 24 ;
+   @ 26, 168 BUTTON "OK" SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndMarkL( oModDlg, aItem ) }
    @ 249, 168 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT
@@ -359,11 +358,11 @@ FUNCTION MarkFDlg( aItem )
 
    @ 26, 18 GROUPBOX "Type of a footer position" SIZE 207, 80
    RADIOGROUP
-   @ 35, 39 RADIOBUTTON oRb1 CAPTION "Fixed"             OF oRadiogroup1 SIZE 185, 22
-   @ 35, 66 RADIOBUTTON oRb2 CAPTION "Dependent on list" OF oRadiogroup1 SIZE 182, 22
+   @ 35, 39 RADIOBUTTON oRb1 CAPTION "Fixed"             SIZE 185, 22
+   @ 35, 66 RADIOBUTTON oRb2 CAPTION "Dependent on list" SIZE 182, 22
    END RADIOGROUP SELECTED iif( aItem[ITEM_ALIGN] == 0, 1, 2 )
 
-   @ 24, 115 BUTTON "OK" ID IDOK  SIZE 80, 24 ;
+   @ 24, 115 BUTTON "OK" SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndMarkF( oModDlg, aItem ) }
    @ 144, 115 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 STYLE WS_TABSTOP + BS_FLAT
 
@@ -394,7 +393,7 @@ FUNCTION FormOptions()
    @ 26, 41 EDITBOX oEdit1 CAPTION "" SIZE 316, 113 ;
       STYLE WS_BORDER + ES_MULTILINE + ES_AUTOVSCROLL + ES_AUTOHSCROLL + ES_WANTRETURN + WS_TABSTOP + WS_DLGFRAME
 
-   @ 26, 168 BUTTON "OK" ID IDOK  SIZE 80, 24 ;
+   @ 26, 168 BUTTON "OK" SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndFOpt(oModDlg) }
    @ 249, 168 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT
@@ -412,7 +411,7 @@ STATIC FUNCTION InitFOpt( oDlg )
 
    RETURN .T.
 
-STATIC FUNCTION EndFOpt( aItem )
+STATIC FUNCTION EndFOpt( oDlg )
 
    aPaintRep[FORM_VARS] := oDlg:oEdit1:Value
    aPaintRep[FORM_CHANGED] := .T.

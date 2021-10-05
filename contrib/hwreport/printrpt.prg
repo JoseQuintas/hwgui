@@ -8,6 +8,7 @@
 
 #include "hwgui.ch"
 #include "repbuild.h"
+#include "repmain.h"
 
 MEMVAR aPaintRep, lAddMode, oFontStandard, aBitmaps
 

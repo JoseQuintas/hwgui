@@ -31,6 +31,6 @@ REM %XHB%
 
 REM Resource file not compatible for windres of GCC and multi platform purposes
 REM hbmk2 hwreport2.hbp repbuild2.rc -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWG_LIBS% -gui
-hbmk2 hwreport2.hbp -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib %HWG_LIBS% -gui
+hbmk2 hwreport.hbp -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib -L%HRB_LIB_DIR% %HWG_LIBS% -gui
 
 REM ======= EOF of bldmngw.bat =========

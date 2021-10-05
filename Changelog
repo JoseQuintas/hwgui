@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-05 10:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/hwreport/hwreport.prg
+  * contrib/hwreport/printrpt.prg
+  * contrib/hwreport/propert.prg
+  * contrib/hwreport/bldhwrep.bat
+  * contrib/hwreport/bldmngw.bat
+    * Fixes. HwReport builds and works now on Windows, it is needed some changes for GTK yet.
+
 2021-10-04 16:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/Readme.txt
     * gthwg info updated

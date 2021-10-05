@@ -25,8 +25,6 @@ set HWGUI_INSTALL=..\..
 
    bcc32 -c -O2 -tW -M -I%BCC_INCLUDE% -I%HRB_DIR%\include hwreport.c opensave.c propert.c printrpt.c repexec.c
 
-   brc32 -r repbuild.rc
-
 echo %BCC_LIB_DIR%\c0w32.obj + > b32.bc
 echo hwreport.obj + >> b32.bc
 echo opensave.obj + >> b32.bc
@@ -84,8 +82,7 @@ echo %HRB_LIB_DIR%\hbpcre.lib + >> b32.bc
 :common
 
 echo %BCC_LIB_DIR%\cw32.lib + >> b32.bc
-echo %BCC_LIB_DIR%\import32.lib, >> b32.bc
-echo repbuild.res >> b32.bc
+echo %BCC_LIB_DIR%\import32.lib >> b32.bc
 ilink32 -Gn -aa -Tpe -L%BCC_LIB_DIR% @b32.bc
 
 del *.tds
@@ -93,6 +90,5 @@ del *.c
 del *.map
 del *.obj
 del b32.bc
-del repbuild.res
 
 REM ====================== EOF of bldhwrep.bat =========================

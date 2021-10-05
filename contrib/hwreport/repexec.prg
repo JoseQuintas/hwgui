@@ -194,29 +194,44 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
    LOCAL poz := 0, stroka, varName, varValue, i
    LOCAL oFont
    LOCAL lAddMode := .F., nYadd := 0, nEndList := 0
+#ifdef __GTK__
+   LOCAL hDC := oPrinter:hDC
+#else
+   LOCAL hDC := oPrinter:hDCPrn
+#endif
 
    MEMVAR lFirst, lFinish, lLastCycle, oFontStandard
    PRIVATE lFirst := .T., lFinish := .T., lLastCycle := .F., aBitmaps := {}
 
-   IF Empty( oPrinter:hDCPrn )
+   IF Empty( hDC )
       RETURN .F.
    ENDIF
 
-   aPrnCoors := hwg_Getdevicearea( oPrinter:hDCPrn )
+   aPrnCoors := hwg_Getdevicearea( hDC )
    prnXCoef := ( aPrnCoors[ 1 ] / aPaintRep[ FORM_WIDTH ] ) / aPaintRep[ FORM_XKOEF ]
    prnYCoef := ( aPrnCoors[ 2 ] / aPaintRep[ FORM_HEIGHT ] ) / aPaintRep[ FORM_XKOEF ]
    // writelog( oPrinter:cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+" / "+str(aPaintRep[FORM_WIDTH])+" "+str(aPaintRep[FORM_HEIGHT])+str(aPaintRep[FORM_XKOEF])+" / "+str(prnXCoef)+str(prnYCoef) )
 
    IF Type( "oFontStandard" ) = "U"
+#ifdef __GTK__
+      PRIVATE oFontStandard := oPrinter:AddFont( "Arial", -13, .F., .F., .F., 204 )
+#else
       PRIVATE oFontStandard := HFont():Add( "Arial", 0, - 13, 400, 204 )
+#endif
    ENDIF
 
    FOR i := 1 TO Len( aPaintRep[ FORM_ITEMS ] )
       IF aPaintRep[ FORM_ITEMS, i, ITEM_TYPE ] == TYPE_TEXT
          oFont := aPaintRep[ FORM_ITEMS, i, ITEM_FONT ]
+#ifdef __GTK__
+         aPaintRep[ FORM_ITEMS, i, ITEM_STATE ] := oPrinter:AddFont( oFont:name, ;
+            Round( oFont:height * prnYCoef, 0 ), (oFont:weight>400), ;
+            (oFont:italic>0), .F., oFont:charset )
+#else
          aPaintRep[ FORM_ITEMS, i, ITEM_STATE ] := HFont():Add( oFont:name, ;
-                                                                oFont:width, Round( oFont:height * prnYCoef, 0 ), oFont:weight, ;
-                                                                oFont:charset, oFont:italic )
+            oFont:width, Round( oFont:height * prnYCoef, 0 ), oFont:weight, ;
+            oFont:charset, oFont:italic )
+#endif
       ENDIF
    NEXT
 

@@ -19,14 +19,19 @@ FUNCTION PrintRpt
    LOCAL aPrnCoors, prnXCoef, prnYCoef
    LOCAL i, aItem, aMetr, aTmetr, aPmetr, dKoef, pKoef
    LOCAL fontKoef, oFont
+#ifdef __GTK__
+   LOCAL hDC := oPrinter:hDC
+#else
+   LOCAL hDC := oPrinter:hDCPrn
+#endif
    PRIVATE lAddMode := .F.
    PRIVATE aBitmaps := {}
 
-   IF Empty( oPrinter:hDCPrn )
+   IF Empty( hDC )
       RETURN .F.
    ENDIF
 
-   aPrnCoors := hwg_GetDeviceArea( oPrinter:hDCPrn )
+   aPrnCoors := hwg_GetDeviceArea( hDC )
    prnXCoef := ( aPrnCoors[ 1 ] / aPaintRep[ FORM_WIDTH ] ) / aPaintRep[ FORM_XKOEF ]
    prnYCoef := ( aPrnCoors[ 2 ] / aPaintRep[ FORM_HEIGHT ] ) / aPaintRep[ FORM_XKOEF ]
    // writelog( str(aPrnCoors[1])+str(aPrnCoors[2])+" / "+str(prnXCoef)+str(prnYCoef)+" / "+str(aPaintRep[FORM_XKOEF]) )
@@ -38,8 +43,8 @@ FUNCTION PrintRpt
    dKoef := ( aMetr[1] - XINDENT ) / aTmetr[2]
    hwg_Releasedc( Hwindow():GetMain():handle, hDCwindow )
 
-   hwg_Selectobject( oPrinter:hDCPrn, oFontStandard:handle )
-   aPmetr := hwg_Gettextmetric( oPrinter:hDCPrn )
+   hwg_Selectobject( hDC, oFontStandard:handle )
+   aPmetr := hwg_Gettextmetric( hDC )
    pKoef := aPrnCoors[1] / aPmetr[2]
    fontKoef := pKoef / dKoef
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )

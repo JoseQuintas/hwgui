@@ -4,7 +4,7 @@
 
 # Compiles the HWREPORT example program
 
--stop={linux}
+#-stop={linux}
 
 # Special parameters for LINUX/GTK
 {linux}-lm

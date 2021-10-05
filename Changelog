@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-05 11:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/hwreport/example.prg
+  * contrib/hwreport/example.hbp
+    * The example compiles and works (not correctly, though) under GTK Linux.
+  * contrib/hwreport/printrpt.prg
+  * contrib/hwreport/repexec.prg
+    ! Few fixes.
+
 2021-10-05 10:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/hwreport/hwreport.prg
   * contrib/hwreport/printrpt.prg

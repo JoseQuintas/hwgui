@@ -151,7 +151,7 @@ FUNCTION CloseReport
          ENDIF
       NEXT
       aPaintRep := Nil
-      hwg_Showscrollbar( Hwindow():GetMain():handle, SB_VERT, .F. )
+      //hwg_Showscrollbar( Hwindow():GetMain():handle, SB_VERT, .F. )
       Hwindow():GetMain():Refresh()
       hwg_Enablemenuitem( , 1, .F. , .F. )
    ENDIF
@@ -159,7 +159,6 @@ FUNCTION CloseReport
    RETURN .T.
 
 FUNCTION SaveReport
-   LOCAL fname
 
    IF ( aPaintRep == Nil .OR. Empty( aPaintRep[FORM_ITEMS] ) )
       hwg_Msgstop( "Nothing to save" )
@@ -176,7 +175,7 @@ FUNCTION SaveReport
 STATIC FUNCTION OpenFile( fname, repName )
    LOCAL strbuf := Space( 512 ), poz := 513, stroka, nMode := 0
    LOCAL han := FOpen( fname, FO_READ + FO_SHARED )
-   LOCAL i, itemName, aItem, res := .T. , sFont
+   LOCAL itemName, aItem, res := .T.
    LOCAL lPrg := ( Upper( FilExten(fname ) ) == "PRG" ), cSource := "", vDummy, nFormWidth
 
    IF han <> - 1
@@ -476,7 +475,7 @@ STATIC FUNCTION WriteRep( han, repName )
    RETURN Nil
 
 STATIC FUNCTION WriteToPrg( han, repName )
-   LOCAL i, aItem, oPen, oFont, hDCwindow, aMetr, cItem, cQuote, cPen, cFont
+   LOCAL i, aItem, oPen, oFont, hDCwindow, aMetr, cItem, cQuote
 
    hDCwindow := hwg_Getdc( Hwindow():GetMain():handle )
    aMetr := hwg_GetDeviceArea( hDCwindow )
@@ -537,7 +536,7 @@ STATIC FUNCTION WriteToPrg( han, repName )
    RETURN Nil
 
 STATIC FUNCTION WriteScript( han, cScript, lPrg )
-   LOCAL poz := 0, stroka, i
+   LOCAL poz := 0, stroka
    LOCAL lastC := Chr( 10 ), cQuote, lFirst := .T.
 
    IF lPrg == Nil; lPrg := .F. ; ENDIF

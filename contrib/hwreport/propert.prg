@@ -116,10 +116,8 @@ STATIC FUNCTION InitStatic( oDlg, aItem )
 */
    oDlg:oEdit1:Value := aItem[ITEM_CAPTION]
    IF aItem[ITEM_SCRIPT] != Nil
-      //hwg_Setdlgitemtext( hDlg, IDC_EDIT3, aItem[ITEM_SCRIPT] )
       oDlg:oEdit2:Value := aItem[ITEM_SCRIPT]
    ENDIF
-   // SetComboBox( hDlg, IDC_COMBOBOX3, aVariables, aItem[ITEM_VAR]+1 )
    oDlg:oCombo:Value := aItem[ITEM_VAR]
    oDlg:oLabel2:SetText( oFont:name + "," + LTrim( Str(oFont:width ) ) + "," + LTrim( Str(oFont:height ) ) )
    hwg_Setfocus( oDlg:oEdit1:handle )
@@ -130,7 +128,6 @@ STATIC FUNCTION EndStatic( oDlg, aItem )
 
    aItem[ITEM_CAPTION] := oDlg:oEdit1:Value
    aItem[ITEM_ALIGN] := iif( oDlg:oRb1:Value, 0, iif( oDlg:oRb2:Value, 1, 2 ) )
-   //aItem[ITEM_VAR] := Ascan( aVariables, hwg_Getdlgitemtext( hDlg, IDC_COMBOBOX3, 12 ) ) - 1
    aItem[ITEM_VAR] := oDlg:oCombo:Value - 1
    aItem[ITEM_SCRIPT] := oDlg:oEdit2:Value
    aPaintRep[FORM_CHANGED] := .T.
@@ -183,9 +180,7 @@ STATIC FUNCTION LineDlg( aItem )
 STATIC FUNCTION InitLine( oDlg, aItem )
    LOCAL oPen := aItem[ITEM_PEN]
 
-   // SetComboBox( hDlg, IDC_COMBOBOX1, aPenStyles, aPen[1]+1 )
    IF aItem[ITEM_TYPE] != TYPE_BOX
-      //hwg_Sendmessage( hwg_Getdlgitem( hDlg,IDC_COMBOBOX2 ), WM_ENABLE, 0, 0 )
       oDlg:oCombo2:Disable()
    ENDIF
    oDlg:oEdit1:Value := Str( oPen:width,1 )
@@ -221,7 +216,7 @@ FUNCTION BitmapDlg( aItem )
 
    @ 49, 10 SAY "Bitmap file:"  SIZE 80, 22
 
-   @ 9, 39 EDITBOX oEdit1 CAPTION "" ID IDC_EDIT1 SIZE 238, 24 ;
+   @ 9, 39 EDITBOX oEdit1 CAPTION "" SIZE 238, 24 ;
       STYLE WS_BORDER
 
    @ 265, 39 BUTTON "Browse" SIZE 56, 24 ;
@@ -235,8 +230,8 @@ FUNCTION BitmapDlg( aItem )
    @ 214, 147 SAY "pixels" SIZE 52, 22
    @ 20, 148 SAY "New size:" SIZE 80, 22
 
-   @ 131, 118 SAY oLabel6 CAPTION "0x0" ID IDC_TEXT1 SIZE 63, 22
-   @ 131, 149 SAY oLabel7 CAPTION "0x0" ID IDC_TEXT2 SIZE 63, 22
+   @ 131, 118 SAY oLabel6 CAPTION "0x0" SIZE 63, 22
+   @ 131, 149 SAY oLabel7 CAPTION "0x0" SIZE 63, 22
 
    // Range 1 ... 500 % Start 100
    @ 207, 183 UPDOWN oUpdown1 INIT 100 RANGE 1, 500 SIZE 60, 24
@@ -283,16 +278,14 @@ STATIC FUNCTION UpdateProcent( oDlg, aItem )
    RETURN Nil
 
 STATIC FUNCTION InitBitmap( oDlg, aItem )
-   LOCAL aBmpSize, hUp
+   LOCAL aBmpSize
 
-   //hUp := hwg_Createupdowncontrol( hDlg, 120, UDS_ALIGNRIGHT + UDS_SETBUDDYINT, 0, 0, 12, 0, hwg_Getdlgitem( hDlg,IDC_EDIT3 ), 500, 1, 100 )
    IF aItem[ITEM_BITMAP] != Nil
       aBmpSize := hwg_Getbitmapsize( aItem[ITEM_BITMAP]:handle )
       oDlg:oEdit1:Value := aItem[ITEM_CAPTION]
       oDlg:oLabel6:SetText( LTrim( Str(aBmpSize[1] ) ) + "x" + LTrim( Str(aBmpSize[2] ) ) )
       oDlg:oLabel7:SetText( LTrim( Str(aItem[ITEM_WIDTH] ) ) + "x" + LTrim( Str(aItem[ITEM_HEIGHT] ) ) )
       oDlg:oUpdown1:Value := Round( aItem[ITEM_WIDTH] * 100/aBmpSize[1],0 )
-      //hwg_Setupdown( hUp, Round( aItem[ITEM_WIDTH] * 100/aBmpSize[1],0 ) )
    ENDIF
 
    RETURN .T.

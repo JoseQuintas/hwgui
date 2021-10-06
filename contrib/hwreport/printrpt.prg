@@ -17,7 +17,7 @@ FUNCTION PrintRpt
    LOCAL hDCwindow
    LOCAL oPrinter := HPrinter():New()
    LOCAL aPrnCoors, prnXCoef, prnYCoef
-   LOCAL i, aItem, aMetr, aTmetr, aPmetr, dKoef, pKoef
+   LOCAL i, aMetr, aTmetr, aPmetr, dKoef, pKoef
    LOCAL fontKoef, oFont
 #ifdef __GTK__
    LOCAL hDC := oPrinter:hDC

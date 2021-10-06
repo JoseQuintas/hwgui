@@ -235,19 +235,29 @@ STATIC FUNCTION EndNewrep( oDlg )
    RETURN Nil
 
 STATIC FUNCTION PaintMain( oWnd )
-   LOCAL pps, hDC, hWnd := oWnd:handle
+   LOCAL hWnd := oWnd:handle
    LOCAL x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, oldBkColor, aMetr, nWidth, nHeight, lPreview := .F.
    LOCAL n1cm, xt, yt
    LOCAL i
    LOCAL aCoors
    LOCAL step, kolsteps, nsteps
 
+#ifdef __GTK__
+   LOCAL hDC := hwg_Getdc( o:handle )
+#else
+   LOCAL pps := hwg_Definepaintstru()
+   LOCAL hDC := hwg_Beginpaint( oWnd:handle, pps )
+#endif
+
    IF aPaintRep == Nil
+#ifdef __GTK__
+     hwg_Releasedc( hWnd, hDC )
+#else
+     hwg_Endpaint( hWnd, pps )
+#endif
       Return - 1
    ENDIF
 
-   pps := hwg_Definepaintstru()
-   hDC := hwg_Beginpaint( hWnd, pps )
    aCoors := hwg_Getclientrect( hWnd )
 
    IF aPaintRep[FORM_XKOEFCONST] == 0
@@ -337,7 +347,12 @@ STATIC FUNCTION PaintMain( oWnd )
       hwg_Setscrollinfo( hWnd, SB_VERT, 1, nSteps + 1, 1, kolsteps + 1 )
    ENDIF
    */
+#ifdef __GTK__
+   hwg_Releasedc( hWnd, hDC )
+#else
    hwg_Endpaint( hWnd, pps )
+#endif
+
 
    RETURN 0
 

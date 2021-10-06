@@ -28,7 +28,7 @@ STATIC oDlg
 
 FUNCTION FileDlg( lOpen )
 
-   LOCAL oGroup1, oRb1, oRb2,  oEdit1, oLabel1, oEdit2
+   LOCAL oRb1, oRb2,  oEdit1, oLabel1, oEdit2
 
    IF !lOpen .AND. ( aPaintRep == Nil .OR. Empty( aPaintRep[FORM_ITEMS] ) )
       hwg_Msgstop( "Nothing to save" )
@@ -41,12 +41,13 @@ FUNCTION FileDlg( lOpen )
       AT 100, 100 SIZE 426, 250 ;
       ON INIT { || InitOpen( lOpen ) }
 
+   @ 29, 8 GROUPBOX ""  SIZE 153, 72
+   RADIOGROUP
    @ 36, 23 RADIOBUTTON oRb1  ;
-      CAPTION "Report file"    OF oGroup1  SIZE 136, 22 ON CLICK {||oLabel1:SetText( "Report Name:" )}
+      CAPTION "Report file"     SIZE 136, 22 ON CLICK {||oLabel1:SetText( "Report Name:" )}
    @ 36, 47 RADIOBUTTON oRb2  ;
-      CAPTION "Program source" OF oGroup1 SIZE 137, 22 ON CLICK {||oLabel1:SetText( "Function Name:" )}
-
-   @ 29, 8 GROUPBOX oGroup1 CAPTION ""  SIZE 153, 72
+      CAPTION "Program source"  SIZE 137, 22 ON CLICK {||oLabel1:SetText( "Function Name:" )}
+   END RADIOGROUP SELECTED 1
 
    @ 24, 91 EDITBOX oEdit1 CAPTION ""  SIZE 269, 24 ;
       STYLE ES_AUTOHSCROLL + WS_BORDER + WS_TABSTOP
@@ -69,7 +70,6 @@ FUNCTION FileDlg( lOpen )
 
 STATIC FUNCTION InitOpen( lOpen )
 
-   oDlg:oRb1:Value := .T.
    oDlg:SetTitle( Iif( lOpen,"Open report","Save report" ) )
    hwg_Setfocus( oDlg:oEdit1:handle )
 

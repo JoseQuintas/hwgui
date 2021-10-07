@@ -1,6 +1,10 @@
 
 #define  APP_VERSION     "1.1"
 
+#define  CLR_WHITE    0xffffff
+#define  CLR_GRAY     0xaaaaaa
+#define  CLR_LGRAY    0xeeeeee
+
 #define  CLR_DBLUE    8404992
 #define  CLR_VDBLUE  10485760
 

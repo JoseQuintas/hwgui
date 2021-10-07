@@ -14,8 +14,6 @@
 #include "fileio.ch"
 #include "common.ch"
 
-// #define __DEBUG__
-
 STATIC aPaintRep := Nil
 
 REQUEST DBUseArea
@@ -295,14 +293,8 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
       RETURN .F.
    ENDIF
 
-   #ifdef __DEBUG__
-      oPrinter:END()
-      // Writelog( "Startdoc" )
-      // Writelog( "Startpage" )
-   #else
-      oPrinter:StartDoc( lPreview )
-      oPrinter:StartPage()
-   #endif
+   oPrinter:StartDoc( lPreview )
+   oPrinter:StartPage()
 
    DO WHILE .T.
       iItem := 1
@@ -330,14 +322,9 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
                   // ENDIF
                   aItem[ ITEM_STATE ] := 1
                   IF ! ScriptExecute( aItem )
-                     #ifdef __DEBUG__
-                        // Writelog( "Endpage" )
-                        // Writelog( "Enddoc" )
-                     #else
-                        oPrinter:EndPage()
-                        oPrinter:EndDoc()
-                        oPrinter:END()
-                     #endif
+                     oPrinter:EndPage()
+                     oPrinter:EndDoc()
+                     oPrinter:END()
                      RETURN .F.
                   ENDIF
                   IF lLastCycle
@@ -353,29 +340,18 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
                   ENDIF
                NEXT
                IF ! ScriptExecute( aItem )
-                  #ifdef __DEBUG__
-                     // Writelog( "Endpage" )
-                     // Writelog( "Enddoc" )
-                  #else
-                     oPrinter:EndPage()
-                     oPrinter:EndDoc()
-                     oPrinter:END()
-                  #endif
+                  oPrinter:EndPage()
+                  oPrinter:EndDoc()
+                  oPrinter:END()
                   RETURN .F.
                ENDIF
                IF ! lLastCycle
                   nYadd += nLineHeight
-                  // Writelog( Str(nLineStartY)+" "+Str(nYadd)+" "+Str(nEndList) )
                   IF nLineStartY + nYadd + nLineHeight >= nEndList
                      // Writelog("New Page")
                      IF iPF == 0
-                        #ifdef __DEBUG__
-                           // Writelog( "Endpage" )
-                           // Writelog( "Startpage" )
-                        #else
-                           oPrinter:EndPage()
-                           oPrinter:StartPage()
-                        #endif
+                        oPrinter:EndPage()
+                        oPrinter:StartPage()
                         nYadd := 10 - IIf( nPHStart > 0, nPHStart, nLineStartY )
                         lAddMode := .T.
                         IF iPH == 0
@@ -399,13 +375,8 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
                   ENDIF
                NEXT
                IF ! lLastCycle
-                  #ifdef __DEBUG__
-                     // Writelog( "Endpage" )
-                     // Writelog( "Startpage" )
-                  #else
-                     oPrinter:EndPage()
-                     oPrinter:StartPage()
-                  #endif
+                  oPrinter:EndPage()
+                  oPrinter:StartPage()
                   nYadd := 10 - IIf( nPHStart > 0, nPHStart, nLineStartY )
                   lAddMode := .T.
                   IF iPH == 0
@@ -422,13 +393,8 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
          ELSE
             IF aItem[ ITEM_TYPE ] == TYPE_TEXT
                IF ! ScriptExecute( aItem )
-                  #ifdef __DEBUG__
-                     // Writelog( "Endpage" )
-                     // Writelog( "Enddoc" )
-                  #else
-                     oPrinter:EndPage()
-                     oPrinter:EndDoc()
-                  #endif
+                  oPrinter:EndPage()
+                  oPrinter:EndDoc()
                   oPrinter:END()
                   RETURN .F.
                ENDIF
@@ -449,16 +415,11 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
       ENDIF
    ENDDO
 
-   #ifdef __DEBUG__
-      // Writelog( "Endpage" )
-      // Writelog( "Enddoc" )
-   #else
-      oPrinter:EndPage()
-      oPrinter:EndDoc()
-      IF lPreview != Nil .AND. lPreview
-         oPrinter:Preview()
-      ENDIF
-   #endif
+   oPrinter:EndPage()
+   oPrinter:EndDoc()
+   IF lPreview != Nil .AND. lPreview
+      oPrinter:Preview()
+   ENDIF
    oPrinter:END()
 
    FOR i := 1 TO Len( aPaintRep[ FORM_ITEMS ] )
@@ -468,7 +429,9 @@ FUNCTION hwg_PrintReport( printerName, oPrn, lPreview )
       ENDIF
    NEXT
    FOR i := 1 TO Len( aBitmaps )
-      hwg_Deleteobject( aBitmaps[i] )
+      IF !Empty( aBitmaps[i] )
+         hwg_Deleteobject( aBitmaps[i] )
+      ENDIF
       aBitmaps[i] := Nil
    NEXT
 
@@ -483,41 +446,35 @@ FUNCTION hwg_PrintItem( oPrinter, aPaintRep, aItem, prnXCoef, prnYCoef, nYadd, l
 
    x2 := x1 + aItem[ ITEM_WIDTH ] - 1
    y2 := y1 + aItem[ ITEM_HEIGHT ] - 1
-   // writelog( Str(aItem[ITEM_TYPE])+": "+Iif(aItem[ITEM_TYPE]==TYPE_TEXT,aItem[ITEM_CAPTION],"")+str(x1)+str(y1)+str(x2)+str(y2) )
    x1 := Round( x1 * prnXCoef, 0 )
    y1 := Round( y1 * prnYCoef, 0 )
    x2 := Round( x2 * prnXCoef, 0 )
    y2 := Round( y2 * prnYCoef, 0 )
-   // writelog( "PrintItem-2: "+str(x1)+str(y1)+str(x2)+str(y2))
 
-   #ifdef __DEBUG__
-      // Writelog( Str(aItem[ITEM_TYPE])+": "+Str(x1)+" "+Str(y1)+" "+Str(x2)+" "+Str(y2)+" "+Iif(aItem[ITEM_TYPE] == TYPE_TEXT,aItem[ITEM_CAPTION]+Iif(aItem[ITEM_VAR]>0,"("+&( aItem[ITEM_CAPTION] )+")",""),"") )
-   #else
-      // Writelog( Str(aItem[ITEM_TYPE])+": "+Str(x1)+" "+Str(y1)+" "+Str(x2)+" "+Str(y2)+" "+Iif(aItem[ITEM_TYPE] == TYPE_TEXT,aItem[ITEM_CAPTION]+Iif(aItem[ITEM_VAR]>0,"("+&( aItem[ITEM_CAPTION] )+")",""),"") )
-      IF aItem[ ITEM_TYPE ] == TYPE_TEXT
-         IF aItem[ ITEM_VAR ] > 0
-            stroka := IIf( lCalc, &( aItem[ ITEM_CAPTION ] ), "" )
-         ELSE
-            stroka := aItem[ ITEM_CAPTION ]
-         ENDIF
-         IF ! Empty( aItem[ ITEM_CAPTION ] )
-            oPrinter:Say( stroka, x1, y1, x2, y2, ;
-                          IIf( aItem[ ITEM_ALIGN ] == 0, DT_LEFT, IIf( aItem[ ITEM_ALIGN ] == 1, DT_RIGHT, DT_CENTER ) ), ;
-                          aItem[ ITEM_STATE ] )
-         ENDIF
-      ELSEIF aItem[ ITEM_TYPE ] == TYPE_HLINE
-         oPrinter:Line( x1, Round( ( y1 + y2 ) / 2, 0 ), x2, Round( ( y1 + y2 ) / 2, 0 ), aItem[ ITEM_PEN ] )
-      ELSEIF aItem[ ITEM_TYPE ] == TYPE_VLINE
-         oPrinter:Line( Round( ( x1 + x2 ) / 2, 0 ), y1, Round( ( x1 + x2 ) / 2, 0 ), y2, aItem[ ITEM_PEN ] )
-      ELSEIF aItem[ ITEM_TYPE ] == TYPE_BOX
-         oPrinter:Box( x1, y1, x2, y2, aItem[ ITEM_PEN ] )
-      ELSEIF aItem[ ITEM_TYPE ] == TYPE_BITMAP
-         Aadd( aBitmaps, hBitmap := hwg_Openbitmap( aItem[ ITEM_CAPTION ], oPrinter:hDC ) )
-         //hwg_writelog( "hBitmap: "+Iif(hBitmap==Nil,"Nil","Ok") )
-         oPrinter:Bitmap( x1, y1, x2, y2,, hBitmap, aItem[ ITEM_CAPTION ] )
-         //hwg_Deleteobject( hBitmap )
+   IF aItem[ ITEM_TYPE ] == TYPE_TEXT
+      IF aItem[ ITEM_VAR ] > 0
+         stroka := IIf( lCalc, &( aItem[ ITEM_CAPTION ] ), "" )
+      ELSE
+         stroka := aItem[ ITEM_CAPTION ]
       ENDIF
-   #endif
+      IF ! Empty( aItem[ ITEM_CAPTION ] )
+         oPrinter:Say( stroka, x1, y1, x2, y2, ;
+                       IIf( aItem[ ITEM_ALIGN ] == 0, DT_LEFT, IIf( aItem[ ITEM_ALIGN ] == 1, DT_RIGHT, DT_CENTER ) ), ;
+                       aItem[ ITEM_STATE ] )
+      ENDIF
+   ELSEIF aItem[ ITEM_TYPE ] == TYPE_HLINE
+      oPrinter:Line( x1, Round( ( y1 + y2 ) / 2, 0 ), x2, Round( ( y1 + y2 ) / 2, 0 ), aItem[ ITEM_PEN ] )
+   ELSEIF aItem[ ITEM_TYPE ] == TYPE_VLINE
+      oPrinter:Line( Round( ( x1 + x2 ) / 2, 0 ), y1, Round( ( x1 + x2 ) / 2, 0 ), y2, aItem[ ITEM_PEN ] )
+   ELSEIF aItem[ ITEM_TYPE ] == TYPE_BOX
+      oPrinter:Box( x1, y1, x2, y2, aItem[ ITEM_PEN ] )
+   ELSEIF aItem[ ITEM_TYPE ] == TYPE_BITMAP
+      Aadd( aBitmaps, hBitmap := hwg_Openbitmap( aItem[ ITEM_CAPTION ], oPrinter:hDC ) )
+      //hwg_writelog( "hBitmap: "+Iif(hBitmap==Nil,"Nil","Ok") )
+      oPrinter:Bitmap( x1, y1, x2, y2,, hBitmap, aItem[ ITEM_CAPTION ] )
+      //hwg_Deleteobject( hBitmap )
+   ENDIF
+
    RETURN Nil
 
 STATIC FUNCTION ScriptExecute( aItem )
@@ -534,6 +491,3 @@ STATIC FUNCTION ScriptExecute( aItem )
       RETURN .T.
    ENDIF
    RETURN .T.
-
-
-

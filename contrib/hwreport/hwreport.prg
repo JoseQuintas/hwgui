@@ -56,6 +56,8 @@
    STATIC aInitialSize := { { 50,20 }, { 60,4 }, { 4,60 }, { 60,40 }, { 40,40 }, { 16,10 } }
    STATIC aMarkers := { "PH", "SL", "EL", "PF", "EPF", "DF" }
    STATIC oPenDivider, oPenLine
+   STATIC oBrushWhite, oBrushLGray, oBrushGray
+   STATIC lPreviewMode := .F.
 
    MEMVAR mypath
    MEMVAR aPaintRep
@@ -76,12 +78,23 @@ FUNCTION Main()
    oIcon := HIcon():AddString( "ICON_1" , hwg_cHex2Bin( hwreport_icon_hex() ) )
 
    SET DECIMALS TO 4
+#ifdef __GTK__
+   crossCursor := hwg_Loadcursor( GDK_CROSS )
+   horzCursor := hwg_Loadcursor( GDK_SIZING )
+   vertCursor := hwg_Loadcursor( GDK_HAND1 )
+#else
    crossCursor := hwg_Loadcursor( IDC_CROSS )
    horzCursor := hwg_Loadcursor( IDC_SIZEWE )
    vertCursor := hwg_Loadcursor( IDC_SIZENS )
+#endif
    oPenBorder := HPen():Add( PS_SOLID, 1, hwg_ColorC2N( "800080" ) )
    oPenLine   := HPen():Add( PS_SOLID, 1, hwg_ColorC2N( "000000" ) )
    oPenDivider := HPen():Add( PS_DOT, 1, hwg_ColorC2N( "C0C0C0" ) )
+
+   oBrushWhite := HBrush():Add( CLR_WHITE )
+   oBrushLGray := HBrush():Add( CLR_LGRAY )
+   oBrushGray  := HBrush():Add( CLR_GRAY )
+
    oFontSmall := HFont():Add( "Small fonts", 0, - 8 )
    oFontStandard := HFont():Add( "Arial", 0, - 13, 400, 204 )
    oFontDlg   := HFont():Add( "MS Sans Serif" , 0 , - 8 )
@@ -92,6 +105,7 @@ FUNCTION Main()
       ON EXIT {||CloseReport() }
 
    @ 0,0 PANEL oPanel SIZE oMainWindow:nWidth, oMainWindow:nHeight-24 ;
+      STYLE SS_OWNERDRAW ;
       ON PAINT {|o| PaintMain( o ) } ON SIZE {|o,x,y|o:Move( ,,x,y-24 )}
    oPanel:bOther := { |o, m, wp, lp|MessagesProc( o, m, wp, lp ) }
 
@@ -131,8 +145,8 @@ FUNCTION Main()
       ENDMENU
       MENU TITLE "&Options"
          MENUITEM "&Form options" ID IDM_FOPT ACTION FormOptions()
-         MENUITEM "&Preview" ID IDM_VIEW1 ACTION FPreview()
-         MENUITEM "&Mouse limit" ID IDM_MOUSE2 ACTION ( hwg_Checkmenuitem( ,IDM_MOUSE2,!hwg_Ischeckedmenuitem(,IDM_MOUSE2 ) ) )
+         MENUITEMCHECK "&Preview" ID IDM_VIEW1 ACTION FPreview()
+         MENUITEMCHECK "&Mouse limit" ID IDM_MOUSE2 ACTION ( hwg_Checkmenuitem( ,IDM_MOUSE2,!hwg_Ischeckedmenuitem(,IDM_MOUSE2 ) ) )
       ENDMENU
       MENUITEM "&About" ID IDM_ABOUT ACTION About()
    ENDMENU
@@ -182,8 +196,9 @@ STATIC FUNCTION About()
 STATIC FUNCTION FPreview()
 
    //hwg_Showscrollbar( oMainWindow:handle,SB_VERT,hwg_Ischeckedmenuitem(,IDM_VIEW1 ) )
-   hwg_Checkmenuitem( ,IDM_VIEW1,!hwg_Ischeckedmenuitem(,IDM_VIEW1 ) )
-   IF hwg_Ischeckedmenuitem(,IDM_VIEW1 )
+   lPreviewMode := !lPreviewMode
+   hwg_Checkmenuitem( ,IDM_VIEW1, lPreviewMode )
+   IF lPreviewMode
       DeselectAll()
    ENDIF
    Hwindow():GetMain():oPanel:Refresh()
@@ -236,17 +251,17 @@ STATIC FUNCTION EndNewrep( oDlg )
 
 STATIC FUNCTION PaintMain( oWnd )
    LOCAL hWnd := oWnd:handle
-   LOCAL x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, oldBkColor, aMetr, nWidth, nHeight, lPreview := .F.
+   LOCAL x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, oldBkColor, aMetr, nWidth, nHeight
    LOCAL n1cm, xt, yt
    LOCAL i
    LOCAL aCoors
-   LOCAL step, kolsteps, nsteps
+   LOCAL step, nsteps  //, kolsteps
 
 #ifdef __GTK__
-   LOCAL hDC := hwg_Getdc( o:handle )
+   LOCAL hDC := hwg_Getdc( hWnd )
 #else
    LOCAL pps := hwg_Definepaintstru()
-   LOCAL hDC := hwg_Beginpaint( oWnd:handle, pps )
+   LOCAL hDC := hwg_Beginpaint( hWnd, pps )
 #endif
 
    IF aPaintRep == Nil
@@ -265,8 +280,7 @@ STATIC FUNCTION PaintMain( oWnd )
       aPaintRep[FORM_XKOEFCONST] := ( aMetr[1] - XINDENT )/aPaintRep[FORM_WIDTH]
    ENDIF
 
-   IF hwg_Ischeckedmenuitem( , IDM_VIEW1 )
-      lPreview := .T.
+   IF lPreviewMode
       aPaintRep[FORM_Y] := 0
       IF aPaintRep[FORM_WIDTH] > aPaintRep[FORM_HEIGHT]
          nWidth := aCoors[3] - aCoors[1] - XINDENT
@@ -293,13 +307,12 @@ STATIC FUNCTION PaintMain( oWnd )
    n1cm := Round( aPaintRep[FORM_XKOEF] * 10, 0 )
    step := n1cm * 2
    nsteps := Round( aPaintRep[FORM_Y]/step, 0 )
+   hwg_Fillrect( hDC, 0, 0, LEFT_INDENT - 12, aCoors[4], oBrushLGray:handle )
 
-   hwg_Fillrect( hDC, 0, 0, aCoors[3], TOP_INDENT - 5, COLOR_HIGHLIGHTTEXT + 1 )
-   hwg_Fillrect( hDC, 0, 0, LEFT_INDENT - 12, aCoors[4], COLOR_3DLIGHT + 1 )
    i := 0
    hwg_Selectobject( hDC, oPenLine:handle )
-   hwg_Selectobject( hDC, iif( lPreview,oFontSmall:handle,oFontStandard:handle ) )
-   oldBkColor := hwg_Setbkcolor( hDC, hwg_Getsyscolor( COLOR_3DLIGHT ) )
+   hwg_Selectobject( hDC, iif( lPreviewMode,oFontSmall:handle,oFontStandard:handle ) )
+   oldBkColor := hwg_Setbkcolor( hDC, CLR_LGRAY )
    DO WHILE i <= aPaintRep[FORM_WIDTH]/10 .AND. i * n1cm < ( aCoors[3] - aCoors[1] - LEFT_INDENT )
       xt := x1 + i * n1cm
       hwg_Drawline( hDC, xt + Round( n1cm/4,0 ), 0, xt + Round( n1cm/4,0 ), 4 )
@@ -311,6 +324,7 @@ STATIC FUNCTION PaintMain( oWnd )
       ENDIF
       i ++
    ENDDO
+
    i := 0
    DO WHILE i <= aPaintRep[FORM_HEIGHT]/10 .AND. i * n1cm < ( aCoors[4] - aCoors[2] - TOP_INDENT )
       yt := y1 + i * n1cm
@@ -323,25 +337,29 @@ STATIC FUNCTION PaintMain( oWnd )
       ENDIF
       i ++
    ENDDO
-   hwg_Fillrect( hDC, LEFT_INDENT - 12, y1, x1, y2, COLOR_3DSHADOW + 1 )
-   hwg_Fillrect( hDC, x1, y1, x2, y2, COLOR_WINDOW + 1 )
-   hwg_Setbkcolor( hDC, hwg_Getsyscolor( COLOR_WINDOW ) )
+   hwg_Drawline( hDC, x1, TOP_INDENT-1, x2, TOP_INDENT-1 )
+
+   hwg_Fillrect( hDC, LEFT_INDENT - 12, y1, x1, y2, oBrushGray:handle )
+   hwg_Fillrect( hDC, x1, y1, x2, y2, oBrushWhite:handle )
+   //hwg_Setbkcolor( hDC, hwg_Getsyscolor( COLOR_WINDOW ) )
+   hwg_Setbkcolor( hDC, CLR_WHITE )
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] != TYPE_BITMAP
-         PaintItem( hDC, aPaintRep[FORM_ITEMS,i], aCoors, lPreview )
+         PaintItem( hDC, aPaintRep[FORM_ITEMS,i], aCoors, lPreviewMode )
       ENDIF
    NEXT
+
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_BITMAP
-         PaintItem( hDC, aPaintRep[FORM_ITEMS,i], aCoors, lPreview )
+         PaintItem( hDC, aPaintRep[FORM_ITEMS,i], aCoors, lPreviewMode )
       ENDIF
    NEXT
    hwg_Setbkcolor( hDC, oldBkColor )
-
+   /*
    kolsteps := Round( ( Round(aPaintRep[FORM_HEIGHT] * aPaintRep[FORM_XKOEF],0 ) - ;
       ( aCoors[4] - aCoors[2] - TOP_INDENT ) ) / step, 0 ) + 1
-   /*
-   IF lPreview
+
+   IF lPreviewMode
       hwg_Setscrollinfo( hWnd, SB_VERT, 1 )
    ELSE
       hwg_Setscrollinfo( hWnd, SB_VERT, 1, nSteps + 1, 1, kolsteps + 1 )
@@ -353,14 +371,13 @@ STATIC FUNCTION PaintMain( oWnd )
    hwg_Endpaint( hWnd, pps )
 #endif
 
-
    RETURN 0
 
-STATIC FUNCTION PaintItem( hDC, aItem, aCoors, lPreview )
+STATIC FUNCTION PaintItem( hDC, aItem, aCoors )
    LOCAL x1 := LEFT_INDENT + aItem[ITEM_X1], y1 := TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y]
    LOCAL x2 := x1 + aItem[ITEM_WIDTH] - 1, y2 := y1 + aItem[ITEM_HEIGHT] - 1
 
-   IF lPreview
+   IF lPreviewMode
       x1 := LEFT_INDENT + aItem[ITEM_X1] * aPaintRep[FORM_XKOEF]/aPaintRep[FORM_XKOEFCONST]
       x2 := LEFT_INDENT + ( aItem[ITEM_X1] + aItem[ITEM_WIDTH] - 1 ) * aPaintRep[FORM_XKOEF]/aPaintRep[FORM_XKOEFCONST]
       y1 := TOP_INDENT + aItem[ITEM_Y1] * aPaintRep[FORM_XKOEF]/aPaintRep[FORM_XKOEFCONST]
@@ -368,16 +385,16 @@ STATIC FUNCTION PaintItem( hDC, aItem, aCoors, lPreview )
    ENDIF
    IF y1 >= TOP_INDENT .AND. y1 <= aCoors[4]
       IF aItem[ITEM_STATE] == STATE_SELECTED .OR. aItem[ITEM_STATE] == STATE_PRESSED
-         hwg_Fillrect( hDC, x1 - 3, y1 - 3, x2 + 3, y2 + 3, COLOR_3DLIGHT + 1 )
+         hwg_Fillrect( hDC, x1 - 3, y1 - 3, x2 + 3, y2 + 3, oBrushLGray:handle )
          hwg_Selectobject( hDC, oPenBorder:handle )
          hwg_Rectangle( hDC, x1 - 3, y1 - 3, x2 + 3, y2 + 3 )
          hwg_Rectangle( hDC, x1 - 1, y1 - 1, x2 + 1, y2 + 1 )
       ENDIF
       IF aItem[ITEM_TYPE] == TYPE_TEXT
          IF Empty( aItem[ITEM_CAPTION] )
-            hwg_Fillrect( hDC, x1, y1, x2, y2, COLOR_3DSHADOW + 1 )
+            hwg_Fillrect( hDC, x1, y1, x2, y2, oBrushGray:handle )
          ELSE
-            hwg_Selectobject( hDC, iif( lPreview,oFontSmall:handle,aItem[ITEM_FONT]:handle ) )
+            hwg_Selectobject( hDC, iif( lPreviewMode,oFontSmall:handle,aItem[ITEM_FONT]:handle ) )
             hwg_Drawtext( hDC, aItem[ITEM_CAPTION], x1, y1, x2, y2, ;
                iif( aItem[ITEM_ALIGN] == 0, DT_LEFT, iif( aItem[ITEM_ALIGN] == 1,DT_RIGHT,DT_CENTER ) ) )
          ENDIF
@@ -392,7 +409,7 @@ STATIC FUNCTION PaintItem( hDC, aItem, aCoors, lPreview )
          hwg_Rectangle( hDC, x1, y1, x2, y2 )
       ELSEIF aItem[ITEM_TYPE] == TYPE_BITMAP
          IF aItem[ITEM_BITMAP] == Nil
-            hwg_Fillrect( hDC, x1, y1, x2, y2, COLOR_3DSHADOW + 1 )
+            hwg_Fillrect( hDC, x1, y1, x2, y2, oBrushGray:handle )
          ELSE
             hwg_Drawbitmap( hDC, aItem[ITEM_BITMAP]:handle, SRCAND, x1, y1, x2 - x1 + 1, y2 - y1 + 1 )
          ENDIF
@@ -571,7 +588,7 @@ STATIC FUNCTION MouseMove( wParam, xPos, yPos )
    LOCAL hWnd
    LOCAL aItem, i, dx, dy
 
-   IF aPaintRep == Nil .OR. hwg_Ischeckedmenuitem( , IDM_VIEW1 )
+   IF aPaintRep == Nil .OR. lPreviewMode
       RETURN .T.
    ENDIF
    itemBorder := 0
@@ -710,7 +727,7 @@ STATIC FUNCTION LButtonDown( xPos, yPos )
    LOCAL i, aItem, res := .F.
    LOCAL hWnd := Hwindow():GetMain():handle
 
-   IF aPaintRep == Nil .OR. hwg_Ischeckedmenuitem( , IDM_VIEW1 )
+   IF aPaintRep == Nil .OR. lPreviewMode
       RETURN .T.
    ENDIF
    IF nAddItem > 0
@@ -757,7 +774,7 @@ STATIC FUNCTION LButtonUp( xPos, yPos )
    LOCAL x1 := LEFT_INDENT, y1 := TOP_INDENT, x2, y2, aItem
    LOCAL hWnd := Hwindow():GetMain():handle
 
-   IF aPaintRep == Nil .OR. hwg_Ischeckedmenuitem( , IDM_VIEW1 )
+   IF aPaintRep == Nil .OR. lPreviewMode
       RETURN .T.
    ENDIF
    x2 := x1 + Round( aPaintRep[FORM_WIDTH] * aPaintRep[FORM_XKOEF], 0 ) - 1

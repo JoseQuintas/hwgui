@@ -17,12 +17,14 @@ FUNCTION PrintRpt
    LOCAL hDCwindow
    LOCAL oPrinter := HPrinter():New()
    LOCAL aPrnCoors, prnXCoef, prnYCoef
-   LOCAL i, aMetr, aTmetr, aPmetr, dKoef, pKoef
-   LOCAL fontKoef, oFont
+   LOCAL oFontStdPrn
+   LOCAL i, aMetr, aTmetr, dKoef
+   LOCAL oFont
 #ifdef __GTK__
    LOCAL hDC := oPrinter:hDC
 #else
    LOCAL hDC := oPrinter:hDCPrn
+   LOCAL fontKoef
 #endif
    PRIVATE lAddMode := .F.
    PRIVATE aBitmaps := {}
@@ -34,7 +36,8 @@ FUNCTION PrintRpt
    aPrnCoors := hwg_GetDeviceArea( hDC )
    prnXCoef := ( aPrnCoors[ 1 ] / aPaintRep[ FORM_WIDTH ] ) / aPaintRep[ FORM_XKOEF ]
    prnYCoef := ( aPrnCoors[ 2 ] / aPaintRep[ FORM_HEIGHT ] ) / aPaintRep[ FORM_XKOEF ]
-   // writelog( str(aPrnCoors[1])+str(aPrnCoors[2])+" / "+str(prnXCoef)+str(prnYCoef)+" / "+str(aPaintRep[FORM_XKOEF]) )
+   hwg_writelog( str(aPrnCoors[2])+" / "+str(prnYCoef)+" / "+str(aPaintRep[FORM_XKOEF])+" // "+;
+      str(aPaintRep[FORM_HEIGHT]) +" / "+str(oPrinter:nHeight)+" / "+str(oPrinter:nHeight/aPaintRep[FORM_HEIGHT]) )
 
    hDCwindow := hwg_Getdc( Hwindow():GetMain():handle )
    aMetr := hwg_GetDeviceArea( hDCwindow )
@@ -43,16 +46,29 @@ FUNCTION PrintRpt
    dKoef := ( aMetr[1] - XINDENT ) / aTmetr[2]
    hwg_Releasedc( Hwindow():GetMain():handle, hDCwindow )
 
-   hwg_Selectobject( hDC, oFontStandard:handle )
-   aPmetr := hwg_Gettextmetric( hDC )
-   pKoef := aPrnCoors[1] / aPmetr[2]
-   fontKoef := pKoef / dKoef
+#ifdef __GTK__
+   oFontStdPrn := oPrinter:AddFont( "Arial", -13, .F., .F., .F., 204 )
+#else
+   oFontStdPrn := HFont():Add( "Arial", 0, - 13, 400, 204 )
+#endif
+
+#ifndef __GTK__
+   hwg_Selectobject( hDC, oFontStdPrn:handle )
+   fontKoef := ( aPrnCoors[1] / hwg_Gettextmetric(hDC)[2] ) / dKoef
+#endif
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_TEXT
          oFont := aPaintRep[FORM_ITEMS,i,ITEM_FONT]
+#ifdef __GTK__
+         aPaintRep[ FORM_ITEMS, i, ITEM_STATE ] := oPrinter:AddFont( oFont:name, ;
+            Round( oFont:height * prnYCoef, 0 ), (oFont:weight>400), ;
+            (oFont:italic>0), .F., oFont:charset )
+#else
          aPaintRep[FORM_ITEMS,i,ITEM_STATE] := HFont():Add( oFont:name, ;
             oFont:width, Round( oFont:height * fontKoef, 0 ), oFont:weight, ;
             oFont:charset, oFont:italic )
+#endif
+         hwg_writelog( str(ofont:height)+" "+str(prnycoef)+" "+str(aPaintRep[ FORM_ITEMS, i, ITEM_STATE ]:height) )
       ENDIF
    NEXT
 
@@ -73,6 +89,10 @@ FUNCTION PrintRpt
    oPrinter:EndPage()
    oPrinter:EndDoc()
 
+   oPrinter:Preview()
+   oPrinter:End()
+
+   oFontStdPrn:Release()
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_TEXT
          aPaintRep[FORM_ITEMS,i,ITEM_STATE]:Release()
@@ -80,11 +100,10 @@ FUNCTION PrintRpt
       ENDIF
    NEXT
 
-   oPrinter:Preview()
-   oPrinter:End()
-
    FOR i := 1 TO Len( aBitmaps )
-      hwg_Deleteobject( aBitmaps[i] )
+      IF !Empty( aBitmaps[i] )
+         hwg_Deleteobject( aBitmaps[i] )
+      ENDIF
       aBitmaps[i] := Nil
    NEXT
 

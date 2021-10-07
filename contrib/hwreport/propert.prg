@@ -82,9 +82,8 @@ STATIC FUNCTION StaticDlg( aItem )
 
    @ 354, 78 SAY "Type:"  SIZE 80, 22
 
-   @ 350, 113 COMBOBOX oCombo ITEMS aVariables SIZE 92, 96  ;
-      STYLE CBS_DROPDOWNLIST + WS_TABSTOP ;
-      ON INIT { || aItem[ITEM_VAR] := aItem[ITEM_VAR] + 1 }
+   @ 350, 113 COMBOBOX oCombo ITEMS aVariables SIZE 92, 24 ;
+      STYLE CBS_DROPDOWNLIST + WS_TABSTOP
 
    @ 22, 185 SAY "Script:"  SIZE 80, 22
 
@@ -104,21 +103,12 @@ STATIC FUNCTION StaticDlg( aItem )
 STATIC FUNCTION InitStatic( oDlg, aItem )
 
    LOCAL oFont := aItem[ITEM_FONT]
-/*
-   oDlg:oRb1:Value := .F.
-   IF aItem[ITEM_ALIGN] == 0
-      oDlg:oRb1:Value := .T.
-   ELSEIF aItem[ITEM_ALIGN] == 1
-      oDlg:oRb2:Value := .T.
-   ELSE
-      oDlg:oRb3:Value := .T.
-   ENDIF
-*/
+
    oDlg:oEdit1:Value := aItem[ITEM_CAPTION]
    IF aItem[ITEM_SCRIPT] != Nil
       oDlg:oEdit2:Value := aItem[ITEM_SCRIPT]
    ENDIF
-   oDlg:oCombo:Value := aItem[ITEM_VAR]
+   oDlg:oCombo:Value := aItem[ITEM_VAR] + 1
    oDlg:oLabel2:SetText( oFont:name + "," + LTrim( Str(oFont:width ) ) + "," + LTrim( Str(oFont:height ) ) )
    hwg_Setfocus( oDlg:oEdit1:handle )
 
@@ -159,13 +149,11 @@ STATIC FUNCTION LineDlg( aItem )
    @ 19, 90  SAY "Line width:"  SIZE 80, 22
    @ 150, 62 SAY "Fill:"        SIZE 80, 22
 
-   @ 24, 33 COMBOBOX oCombo1  ITEMS aPenStyles SIZE 78, 96 ;
-      STYLE CBS_DROPDOWNLIST + WS_TABSTOP ;
-      ON INIT { || oPen:style + 1 }
+   @ 24, 33 COMBOBOX oCombo1 ITEMS aPenStyles SIZE 78, 24 STYLE CBS_DROPDOWNLIST + WS_TABSTOP
 
    @ 109, 90 EDITBOX oEdit1 CAPTION "" SIZE 16, 24 STYLE WS_BORDER
 
-   @ 154, 90 COMBOBOX oCombo2  ITEMS {} SIZE 87, 96 STYLE CBS_DROPDOWNLIST + WS_TABSTOP
+   @ 154, 90 COMBOBOX oCombo2  ITEMS {} SIZE 87, 24 STYLE CBS_DROPDOWNLIST + WS_TABSTOP
 
    @ 27, 135 BUTTON "OK" SIZE 80, 24 ;
       STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndLine( oModDlg, aItem ) }
@@ -183,19 +171,19 @@ STATIC FUNCTION InitLine( oDlg, aItem )
    IF aItem[ITEM_TYPE] != TYPE_BOX
       oDlg:oCombo2:Disable()
    ENDIF
+   oDlg:oCombo1:Value := oPen:style + 1
    oDlg:oEdit1:Value := Str( oPen:width,1 )
 
    RETURN .T.
 
 STATIC FUNCTION EndLine( oDlg, aItem )
    LOCAL nWidth := Val( oDlg:oEdit1:Value )
-   LOCAL cType := aPenStyles[oDlg:oCombo1:Value]
    LOCAL oPen := aItem[ITEM_PEN]
-   LOCAL i := Ascan( aPenStyles, cType )
+   LOCAL iType := oDlg:oCombo1:Value - 1
 
-   IF oPen:style != i - 1 .OR. oPen:width != nWidth
+   IF oPen:style != iType .OR. oPen:width != nWidth
       oPen:Release()
-      aItem[ITEM_PEN] := HPen():Add( i - 1, nWidth, 0 )
+      aItem[ITEM_PEN] := HPen():Add( iType, nWidth, 0 )
       aPaintRep[FORM_CHANGED] := .T.
    ENDIF
    oDlg:Close()

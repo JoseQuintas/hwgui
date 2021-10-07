@@ -60,11 +60,11 @@ STATIC FUNCTION StaticDlg( aItem )
 
    // FROM RESOURCE  "DLG_STATIC"
    INIT DIALOG oModDlg  TITLE "Text" ;
-      AT 680, 150 SIZE 516, 460 FONT oFontDlg ;
+      AT 0, 0 SIZE 500, 430 FONT oFontDlg ;
       ON INIT { || InitStatic( oModDlg, aItem ) }
 
    @ 14, 6 SAY "Caption:"  SIZE 80, 22
-   @ 20, 33 EDITBOX oEdit1 CAPTION "" SIZE 425, 24 STYLE WS_BORDER
+   @ 20, 33 EDITBOX oEdit1 CAPTION "" SIZE 425, 24
 
    @ 20, 70 GROUPBOX "Alignment" SIZE 100, 108
    RADIOGROUP
@@ -88,15 +88,15 @@ STATIC FUNCTION StaticDlg( aItem )
    @ 22, 185 SAY "Script:"  SIZE 80, 22
 
    @ 23, 211 EDITBOX oEdit2 CAPTION "" SIZE 457, 139 ;
-      STYLE WS_BORDER + ES_AUTOHSCROLL + WS_TABSTOP + ES_MULTILINE + ES_AUTOVSCROLL + ES_WANTRETURN + WS_DLGFRAME
+      STYLE ES_AUTOHSCROLL + ES_MULTILINE + ES_AUTOVSCROLL + ES_WANTRETURN + WS_TABSTOP
 
    @ 25, 370 BUTTON "OK" SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT ON CLICK {|| EndStatic( oModDlg, aItem ) }
+      STYLE WS_TABSTOP ON CLICK {|| EndStatic( oModDlg, aItem ) }
 
    @ 390, 372 BUTTON "Cancel" ID IDCANCEL  SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT
+      STYLE WS_TABSTOP
 
-   oModDlg:Activate()
+   ACTIVATE DIALOG oModDlg CENTER
 
    RETURN Nil
 
@@ -151,15 +151,14 @@ STATIC FUNCTION LineDlg( aItem )
 
    @ 24, 33 COMBOBOX oCombo1 ITEMS aPenStyles SIZE 78, 24 STYLE CBS_DROPDOWNLIST + WS_TABSTOP
 
-   @ 109, 90 EDITBOX oEdit1 CAPTION "" SIZE 16, 24 STYLE WS_BORDER
+   @ 109, 90 EDITBOX oEdit1 CAPTION "" SIZE 16, 24
 
    @ 154, 90 COMBOBOX oCombo2  ITEMS {} SIZE 87, 24 STYLE CBS_DROPDOWNLIST + WS_TABSTOP
 
    @ 27, 135 BUTTON "OK" SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndLine( oModDlg, aItem ) }
+      STYLE WS_TABSTOP ON CLICK { || EndLine( oModDlg, aItem ) }
 
-   @ 152, 134 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT
+   @ 152, 134 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 STYLE WS_TABSTOP
 
    oModDlg:Activate()
 
@@ -204,11 +203,10 @@ FUNCTION BitmapDlg( aItem )
 
    @ 49, 10 SAY "Bitmap file:"  SIZE 80, 22
 
-   @ 9, 39 EDITBOX oEdit1 CAPTION "" SIZE 238, 24 ;
-      STYLE WS_BORDER
+   @ 9, 39 EDITBOX oEdit1 CAPTION "" SIZE 238, 24
 
    @ 265, 39 BUTTON "Browse" SIZE 56, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT ON CLICK { ||OpenBmp( oModDlg, aItem, hwg_SelectFile( "Bitmap files( *.bmp )", "*.bmp",mypath ) ) }
+      STYLE WS_TABSTOP ON CLICK { ||OpenBmp( oModDlg, aItem, hwg_SelectFile( "Bitmap files( *.bmp )", "*.bmp",mypath ) ) }
 
    @ 12, 86 GROUPBOX "Bitmap size" SIZE 283, 137
 
@@ -227,9 +225,9 @@ FUNCTION BitmapDlg( aItem )
    @ 20, 186 SAY "Percentage of original %" SIZE 161, 22
 
    @ 15, 240 BUTTON "OK" SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndBitmap( oModDlg, aItem ) }
+      STYLE WS_TABSTOP ON CLICK { || EndBitmap( oModDlg, aItem ) }
    @ 197, 240 BUTTON "Cancel" ID IDCANCEL  SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT ON CLICK { || res := .F., oModDlg:Close() }
+      STYLE WS_TABSTOP ON CLICK { || res := .F., oModDlg:Close() }
 
    oModDlg:Activate()
 
@@ -301,12 +299,12 @@ FUNCTION MarkLDlg( aItem )
    @ 20, 13 SAY oLabel1 CAPTION "" SIZE 80, 22  // Scrpit
 
    @ 26, 41 EDITBOX oEdit1 CAPTION "" SIZE 316, 113 ;
-      STYLE WS_BORDER + ES_MULTILINE + ES_AUTOVSCROLL + ES_AUTOHSCROLL + ES_WANTRETURN + WS_TABSTOP + WS_DLGFRAME
+      STYLE ES_MULTILINE + ES_AUTOVSCROLL + ES_AUTOHSCROLL + ES_WANTRETURN + WS_TABSTOP
 
    @ 26, 168 BUTTON "OK" SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndMarkL( oModDlg, aItem ) }
+      STYLE WS_TABSTOP ON CLICK { || EndMarkL( oModDlg, aItem ) }
    @ 249, 168 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT
+      STYLE WS_TABSTOP
 
    oModDlg:Activate()
 
@@ -344,8 +342,8 @@ FUNCTION MarkFDlg( aItem )
    END RADIOGROUP SELECTED iif( aItem[ITEM_ALIGN] == 0, 1, 2 )
 
    @ 24, 115 BUTTON "OK" SIZE 80, 24 ;
-      STYLE WS_TABSTOP + BS_FLAT ON CLICK { || EndMarkF( oModDlg, aItem ) }
-   @ 144, 115 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 STYLE WS_TABSTOP + BS_FLAT
+      STYLE WS_TABSTOP ON CLICK { || EndMarkF( oModDlg, aItem ) }
+   @ 144, 115 BUTTON "Cancel" ID IDCANCEL SIZE 80, 24 STYLE WS_TABSTOP
 
    oModDlg:Activate()
 

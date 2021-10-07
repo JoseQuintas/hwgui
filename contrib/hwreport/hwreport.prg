@@ -611,9 +611,9 @@ STATIC FUNCTION MouseMove( wParam, xPos, yPos )
             TOP_INDENT + aItem[ITEM_Y1] + aItem[ITEM_HEIGHT] - aPaintRep[FORM_Y] + 3 )
          IF aItem[ITEM_TYPE] == TYPE_MARKER
             hwg_Invalidaterect( hWnd, 0, LEFT_INDENT, ;
-               TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y], ;
+               TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y] - 3, ;
                LEFT_INDENT - 1 + Round( aPaintRep[FORM_WIDTH] * aPaintRep[FORM_XKOEF], 0 ), ;
-               TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y] )
+               TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y] + 3 )
          ELSE
             aItem[ITEM_X1] += ( xPos - mPos[1] )
          ENDIF
@@ -624,9 +624,9 @@ STATIC FUNCTION MouseMove( wParam, xPos, yPos )
             TOP_INDENT + aItem[ITEM_Y1] + aItem[ITEM_HEIGHT] - aPaintRep[FORM_Y] + 3 )
          IF aItem[ITEM_TYPE] == TYPE_MARKER
             hwg_Invalidaterect( hWnd, 0, LEFT_INDENT, ;
-               TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y], ;
+               TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y] - 3, ;
                LEFT_INDENT - 1 + Round( aPaintRep[FORM_WIDTH] * aPaintRep[FORM_XKOEF], 0 ), ;
-               TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y] )
+               TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y] + 3 )
          ENDIF
          mPos[1] := xPos; mPos[2] := yPos
          aPaintRep[FORM_CHANGED] := .T.
@@ -678,6 +678,9 @@ STATIC FUNCTION MouseMove( wParam, xPos, yPos )
          hwg_Redrawwindow( hWnd )
       ENDIF
    ELSE
+#ifdef __GTK__
+      Hwg_SetCursor( Nil )
+#endif
       FOR i := Len( aPaintRep[FORM_ITEMS] ) TO 1 STEP - 1
          aItem := aPaintRep[FORM_ITEMS,i]
          IF aItem[ITEM_STATE] == STATE_SELECTED

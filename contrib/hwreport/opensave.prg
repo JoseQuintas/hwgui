@@ -37,9 +37,8 @@ FUNCTION FileDlg( lOpen )
       CloseReport()
    ENDIF
 
-   INIT DIALOG oDlg TITLE "Open report" ;
-      AT 100, 100 SIZE 426, 250 ;
-      ON INIT { || InitOpen( lOpen ) }
+   INIT DIALOG oDlg TITLE "" ;
+      AT 100, 100 SIZE 426, 250 ON INIT { || InitOpen( lOpen ) }
 
    @ 29, 8 GROUPBOX ""  SIZE 153, 72
    RADIOGROUP
@@ -50,19 +49,16 @@ FUNCTION FileDlg( lOpen )
    END RADIOGROUP SELECTED 1
 
    @ 24, 91 EDITBOX oEdit1 CAPTION ""  SIZE 269, 24 ;
-      STYLE ES_AUTOHSCROLL + WS_BORDER + WS_TABSTOP
+      STYLE ES_AUTOHSCROLL + WS_TABSTOP
 
    @ 28, 126 SAY oLabel1 CAPTION "Report name:"  SIZE 144, 22
-   @ 61, 153 EDITBOX oEdit2 CAPTION ""  SIZE 96, 24 ;
-      STYLE WS_BORDER
+   @ 61, 153 EDITBOX oEdit2 CAPTION ""  SIZE 96, 24
 
    @ 309, 89 BUTTON "Browse" SIZE 80, 27 ;
       STYLE WS_TABSTOP ON CLICK { ||BrowFile( lOpen ) }
 
-   @ 26, 200 BUTTON "OK"  SIZE 80, 32 ;
-      STYLE WS_TABSTOP ON CLICK { || EndOpen( lOpen ) }
-   @ 298, 200 BUTTON "Cancel"  SIZE 80, 32 ;
-      STYLE WS_TABSTOP ON CLICK { || oDlg:Close() }
+   @ 26, 200 BUTTON "OK"  SIZE 80, 32 STYLE WS_TABSTOP ON CLICK { || EndOpen( lOpen ) }
+   @ 298, 200 BUTTON "Cancel"  SIZE 80, 32 STYLE WS_TABSTOP ON CLICK { || oDlg:Close() }
 
    oDlg:Activate()
 

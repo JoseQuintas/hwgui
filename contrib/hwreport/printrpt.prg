@@ -77,12 +77,12 @@ FUNCTION PrintRpt
 
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] != TYPE_BITMAP
-         hwg_PrintItem( oPrinter, aPaintRep, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
+         hwg_Hwr_PrintItem( oPrinter, aPaintRep, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
       ENDIF
    NEXT
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_BITMAP
-         hwg_PrintItem( oPrinter, aPaintRep, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
+         hwg_Hwr_PrintItem( oPrinter, aPaintRep, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
       ENDIF
    NEXT
 

@@ -643,7 +643,9 @@ HB_FUNC( HWG_SELECTOBJECT )
       {
          hwg_setcolor( hDC->cr, ((PHWGUI_PEN)obj)->color );
          cairo_set_line_width( hDC->cr, ((PHWGUI_PEN)obj)->width );
-         if( ((PHWGUI_PEN)obj)->style != PS_SOLID )
+         if( ((PHWGUI_PEN)obj)->style == PS_SOLID )
+            cairo_set_dash( hDC->cr, NULL, 0, 0 );
+         else
          {
             static const double dashed[] = {2.0, 2.0};
             cairo_set_dash( hDC->cr, dashed, 2, 0 );

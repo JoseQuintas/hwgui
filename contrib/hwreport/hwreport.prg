@@ -61,9 +61,9 @@
 
    MEMVAR mypath
    MEMVAR aPaintRep
-   MEMVAR oPenBorder, oFontSmall, oFontStandard, lastFont
+   MEMVAR oPenBorder, oFontSmall, oFontStandard, oFontDlg, lastFont
    MEMVAR aItemTypes
-   MEMVAR cDirSep, oFontDlg
+   MEMVAR cDirSep
 
 FUNCTION Main()
    LOCAL oMainWindow, oPanel, oIcon
@@ -95,9 +95,9 @@ FUNCTION Main()
    oBrushLGray := HBrush():Add( CLR_LGRAY )
    oBrushGray  := HBrush():Add( CLR_GRAY )
 
-   oFontSmall := HFont():Add( "Small fonts", 0, - 8 )
-   oFontStandard := HFont():Add( "Arial", 0, - 13, 400, 204 )
-   oFontDlg   := HFont():Add( "MS Sans Serif" , 0 , - 8 )
+   oFontSmall := HFont():Add( "Courier", 0, -8 )
+   oFontStandard := HFont():Add( "Courier", 0, - 13, 400, 204 )
+   oFontDlg   := HFont():Add( "MS Sans Serif" , 0 , -13 )
 
    INIT WINDOW oMainWindow MAIN TITLE "Visual Report Builder"    ;
       SIZE hwg_getDesktopWidth()-100, hwg_getDesktopHeight()-100 ;
@@ -215,14 +215,13 @@ STATIC FUNCTION NewReport()
    @ 26, 12 GROUPBOX "Page size"  SIZE 200, 100
 
    RADIOGROUP
-   @ 30, 36 RADIOBUTTON oRb1 CAPTION "A4 portrait ( 210x297 )" SIZE 181, 22
-   @ 30, 64 RADIOBUTTON oRb2 CAPTION "A4 landscape ( 297x210 )" SIZE 187, 22
+   @ 30, 36 RADIOBUTTON oRb1 CAPTION "A4 portrait ( 210x297 )" SIZE 181, 24
+   @ 30, 64 RADIOBUTTON oRb2 CAPTION "A4 landscape ( 297x210 )" SIZE 187, 24
    END RADIOGROUP SELECTED 1
 
-   @ 25, 144 BUTTON "OK" SIZE 73, 27 ;
-      STYLE WS_TABSTOP + BS_FLAT ON CLICK {|| EndNewrep( oDlg ) }
-   @ 145, 144 BUTTON "Cancel" ID IDCANCEL SIZE 73, 27 ;
-      STYLE WS_TABSTOP + BS_FLAT
+   @ 25, 144 BUTTON "OK" SIZE 90, 28 ;
+      STYLE WS_TABSTOP ON CLICK {|| EndNewrep( oDlg ) }
+   @ 145, 144 BUTTON "Cancel" ID IDCANCEL SIZE 90, 28 STYLE WS_TABSTOP
 
    oDlg:Activate()
 

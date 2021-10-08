@@ -23,7 +23,7 @@
    // Removed
    // #define SB_VERT         1
 
-MEMVAR aPaintRep , mypath, aitemtypes
+MEMVAR aPaintRep , mypath, aItemTypes, oFontDlg
 STATIC oDlg
 
 FUNCTION FileDlg( lOpen )
@@ -38,24 +38,24 @@ FUNCTION FileDlg( lOpen )
    ENDIF
 
    INIT DIALOG oDlg TITLE "" ;
-      AT 100, 100 SIZE 426, 250 ON INIT { || InitOpen( lOpen ) }
+      AT 100, 100 SIZE 426, 250 FONT oFontDlg ON INIT { || InitOpen( lOpen ) }
 
-   @ 29, 8 GROUPBOX ""  SIZE 153, 72
+   @ 29, 8 GROUPBOX ""  SIZE 160, 76
    RADIOGROUP
-   @ 36, 23 RADIOBUTTON oRb1  ;
-      CAPTION "Report file"     SIZE 136, 22 ON CLICK {||oLabel1:SetText( "Report Name:" )}
-   @ 36, 47 RADIOBUTTON oRb2  ;
-      CAPTION "Program source"  SIZE 137, 22 ON CLICK {||oLabel1:SetText( "Function Name:" )}
+   @ 36, 24 RADIOBUTTON oRb1  ;
+      CAPTION "Report file"     SIZE 136, 24 ON CLICK {||oLabel1:SetText( "Report Name:" )}
+   @ 36, 48 RADIOBUTTON oRb2  ;
+      CAPTION "Program source"  SIZE 137, 24 ON CLICK {||oLabel1:SetText( "Function Name:" )}
    END RADIOGROUP SELECTED 1
 
-   @ 24, 91 EDITBOX oEdit1 CAPTION ""  SIZE 269, 24 ;
+   @ 16, 90 EDITBOX oEdit1 CAPTION ""  SIZE 280, 24 ;
       STYLE ES_AUTOHSCROLL + WS_TABSTOP
+
+   @ 296, 88 BUTTON "Browse" SIZE 90, 30 ;
+      STYLE WS_TABSTOP ON CLICK { ||BrowFile( lOpen ) }
 
    @ 28, 126 SAY oLabel1 CAPTION "Report name:"  SIZE 144, 22
    @ 61, 153 EDITBOX oEdit2 CAPTION ""  SIZE 96, 24
-
-   @ 309, 89 BUTTON "Browse" SIZE 80, 27 ;
-      STYLE WS_TABSTOP ON CLICK { ||BrowFile( lOpen ) }
 
    @ 26, 200 BUTTON "OK"  SIZE 80, 32 STYLE WS_TABSTOP ON CLICK { || EndOpen( lOpen ) }
    @ 298, 200 BUTTON "Cancel"  SIZE 80, 32 STYLE WS_TABSTOP ON CLICK { || oDlg:Close() }

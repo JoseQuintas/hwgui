@@ -122,11 +122,8 @@ FUNCTION hwg_OpenReport( fname, repName )
                      EXIT
                   ENDIF
                ELSEIF itemName == "MARKER"
-                  AAdd( aPaintRep[ FORM_ITEMS ], { 6, NextItem( stroka ), Val( NextItem( stroka ) ), ;
-                                                   Val( NextItem( stroka ) ), Val( NextItem( stroka ) ), ;
-                                                   Val( NextItem( stroka ) ), Val( NextItem( stroka ) ), ;
-                                                   0, 0, 0, 0, Nil, 0 } )
-                  aItem := ATail( aPaintRep[ FORM_ITEMS ] )
+                  aItem := hwg_Hwr_AddItem( 6, aLine[2], Val( aLine[3] ), ;
+                      Val( aLine[4] ), Val( aLine[5] ), Val( aLine[6] ), Val( aLine[7] ) )
                ENDIF
             ENDIF
          ELSEIF nMode == 2

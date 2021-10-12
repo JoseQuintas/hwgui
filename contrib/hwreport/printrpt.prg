@@ -10,9 +10,9 @@
 #include "repbuild.h"
 #include "repmain.h"
 
-MEMVAR aPaintRep, lAddMode, oFontStandard, aBitmaps
+MEMVAR aPaintRep, lAddMode, oFontStandard //, aBitmaps
 
-FUNCTION PrintRpt
+FUNCTION _hwr_PrintRpt
 
    LOCAL hDCwindow
    LOCAL oPrinter := HPrinter():New()
@@ -27,7 +27,7 @@ FUNCTION PrintRpt
    LOCAL fontKoef
 #endif
    PRIVATE lAddMode := .F.
-   PRIVATE aBitmaps := {}
+   //PRIVATE aBitmaps := {}
 
    IF Empty( hDC )
       RETURN .F.
@@ -60,15 +60,15 @@ FUNCTION PrintRpt
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_TEXT
          oFont := aPaintRep[FORM_ITEMS,i,ITEM_FONT]
 #ifdef __GTK__
-         aPaintRep[ FORM_ITEMS, i, ITEM_STATE ] := oPrinter:AddFont( oFont:name, ;
+         aPaintRep[ FORM_ITEMS, i, ITEM_GROUP ] := oPrinter:AddFont( oFont:name, ;
             Round( oFont:height * prnYCoef, 0 ), (oFont:weight>400), ;
             (oFont:italic>0), .F., oFont:charset )
 #else
-         aPaintRep[FORM_ITEMS,i,ITEM_STATE] := HFont():Add( oFont:name, ;
+         aPaintRep[FORM_ITEMS,i,ITEM_GROUP] := HFont():Add( oFont:name, ;
             oFont:width, Round( oFont:height * fontKoef, 0 ), oFont:weight, ;
             oFont:charset, oFont:italic )
 #endif
-         hwg_writelog( str(ofont:height)+" "+str(prnycoef)+" "+str(aPaintRep[ FORM_ITEMS, i, ITEM_STATE ]:height) )
+         hwg_writelog( str(ofont:height)+" "+str(prnycoef)+" "+str(aPaintRep[ FORM_ITEMS, i, ITEM_GROUP ]:height) )
       ENDIF
    NEXT
 
@@ -77,12 +77,12 @@ FUNCTION PrintRpt
 
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] != TYPE_BITMAP
-         hwg_Hwr_PrintItem( oPrinter, aPaintRep, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
+         hwg_Hwr_PrintItem( oPrinter, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
       ENDIF
    NEXT
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_BITMAP
-         hwg_Hwr_PrintItem( oPrinter, aPaintRep, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
+         hwg_Hwr_PrintItem( oPrinter, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
       ENDIF
    NEXT
 
@@ -95,16 +95,16 @@ FUNCTION PrintRpt
    oFontStdPrn:Release()
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_TEXT
-         aPaintRep[FORM_ITEMS,i,ITEM_STATE]:Release()
-         aPaintRep[FORM_ITEMS,i,ITEM_STATE] := Nil
+         aPaintRep[FORM_ITEMS,i,ITEM_GROUP]:Release()
+         aPaintRep[FORM_ITEMS,i,ITEM_GROUP] := Nil
       ENDIF
    NEXT
-
+   /*
    FOR i := 1 TO Len( aBitmaps )
       IF !Empty( aBitmaps[i] )
          hwg_Deleteobject( aBitmaps[i] )
       ENDIF
       aBitmaps[i] := Nil
    NEXT
-
+   */
    RETURN Nil

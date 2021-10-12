@@ -102,7 +102,7 @@ FUNCTION Main()
    INIT WINDOW oMainWindow MAIN TITLE "Visual Report Builder"    ;
       SIZE hwg_getDesktopWidth()-100, hwg_getDesktopHeight()-100 ;
       ICON oIcon COLOR COLOR_3DSHADOW                            ;
-      ON EXIT {||CloseReport() }
+      ON EXIT {||_hwr_CloseReport() }
 
    @ 0,0 PANEL oPanel SIZE oMainWindow:nWidth, oMainWindow:nHeight-24 ;
       STYLE SS_OWNERDRAW ;
@@ -114,14 +114,14 @@ FUNCTION Main()
    MENU OF oMainWindow
       MENU TITLE "&File"
          MENUITEM "&New" ACTION NewReport()
-         MENUITEM "&Open" ACTION FileDlg( .T. )
-         MENUITEM "&Close" ID IDM_CLOSE ACTION CloseReport()
+         MENUITEM "&Open" ACTION _hwr_FileDlg( .T. )
+         MENUITEM "&Close" ID IDM_CLOSE ACTION _hwr_CloseReport()
          SEPARATOR
-         MENUITEM "&Save" ID IDM_SAVE ACTION SaveReport()
-         MENUITEM "Save &as..." ID IDM_SAVEAS ACTION FileDlg( .F. )
+         MENUITEM "&Save" ID IDM_SAVE ACTION _hwr_SaveReport()
+         MENUITEM "Save &as..." ID IDM_SAVEAS ACTION _hwr_FileDlg( .F. )
          SEPARATOR
-         MENUITEM "&Print static" ID IDM_PRINT ACTION PrintRpt()
-         MENUITEM "&Print full" ID IDM_PREVIEW ACTION ( hwg_ClonePaintRep( aPaintRep ), hwg_PrintReport( ,, .T. ) )
+         MENUITEM "&Print static" ID IDM_PRINT ACTION _hwr_PrintRpt()
+         MENUITEM "&Print full" ID IDM_PREVIEW ACTION ( hwg_hwr_Print( aPaintRep,, .T. ) )
          SEPARATOR
          MENUITEM "&Exit" ID IDM_EXIT ACTION hwg_EndWindow()
       ENDMENU
@@ -535,7 +535,7 @@ STATIC FUNCTION MessagesProc( oWnd, msg, wParam, lParam )
    ELSEIF msg == WM_LBUTTONUP
       LButtonUp( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ELSEIF msg == WM_LBUTTONDBLCLK
-      LButtonDbl( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      _hwr_LButtonDbl( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
    ENDIF
 
    Return - 1

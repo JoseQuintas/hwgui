@@ -41,23 +41,30 @@ FUNCTION Main()
 
 STATIC FUNCTION Print1
 
-   IF hwg_OpenReport( "example.rpt", "MyReport" )
-      hwg_PrintReport( ,, .T. )
+   LOCAL aRep
+
+   IF !Empty( aRep := hwg_hwr_Open( "example.rpt", "MyReport" ) )
+      hwg_hwr_Print( aRep,, .T. )
+      hwg_hwr_Close( aRep )
    ENDIF
 
    RETURN Nil
 
 STATIC FUNCTION Print2
 
-   MyReport()
-   hwg_PrintReport( ,, .T. )
+   LOCAL aRep
+
+   aRep := MyReport()
+   hwg_hwr_Print( aRep,, .T. )
+   hwg_hwr_Close( aRep )
 
    RETURN Nil
 
 FUNCTION MyReport
    LOCAL aPaintRep , crlf := Chr( 13 ) + Chr( 10 )
 
-   aPaintRep := { 210, 297, 0, 0, 0, {}, , "MyReport", .F. , 0, Nil }
+   //aPaintRep := { 210, 297, 0, 0, 0, {}, , "MyReport", .F. , 0, Nil }
+   aPaintRep := hwg_hwr_Init( "MyReport" )
    aPaintRep[11] := "nStroka := 1" + crlf
 
    AAdd( aPaintRep[6], { 1, "Sample report - first 100 records of test.dbf", 132, 41, 513, 27, 2, 0, HFont():Add( "Arial",0, - 18,700,204,0,0,0 ), 0, 0, Nil, 0 } )
@@ -98,6 +105,6 @@ FUNCTION MyReport
    AAdd( aPaintRep[6], { 1, "End of report", 522, 932, 160, 20, 0, 0, HFont():Add( "MS Sans Serif",0, - 13,0,0,0,0,0 ), 0, 0, Nil, 0 } )
    hwg_RecalcForm( aPaintRep, 735 )
 
-   RETURN hwg_SetPaintRep( aPaintRep )
+   RETURN aPaintRep
 
    // ============================= EOF of example.prg ================================

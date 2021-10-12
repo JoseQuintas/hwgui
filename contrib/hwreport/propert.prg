@@ -24,7 +24,7 @@ STATIC aVariables := { "Static", "Variable" }
 MEMVAR apaintrep, mypath
 MEMVAR cDirSep, oFontDlg
 
-FUNCTION LButtonDbl( xPos, yPos )
+FUNCTION _hwr_LButtonDbl( xPos, yPos )
    LOCAL i, aItem
 
    FOR i := Len( aPaintRep[FORM_ITEMS] ) TO 1 STEP - 1

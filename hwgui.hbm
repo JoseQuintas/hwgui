@@ -128,6 +128,7 @@
 {unix}source/gtk/hmonthc.prg
 {unix}source/gtk/htrackbr.prg
 {unix}source/gtk/hmisc.prg
+{unix}source/gtk/initools.prg
 {unix}source/gtk/menu.prg
 
 # ---------------- EOF of hwgui.hbm ------------------------------

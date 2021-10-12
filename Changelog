@@ -8,6 +8,13 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-12 15:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/hwreport/example.prg
+  * contrib/hwreport/opensave.prg
+  * contrib/hwreport/printrpt.prg
+  * contrib/hwreport/repexec.prg
+    * Now it works correctly under Linux GTK, too.
+
 2021-10-12 10:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/hwreport/hwreport.prg
   * contrib/hwreport/propert.prg

@@ -233,7 +233,7 @@ STATIC FUNCTION OpenFile( fname, repName )
       */
       aPaintRep[FORM_ITEMS] := ASort( aPaintRep[FORM_ITEMS], , , { |z, y|z[ITEM_Y1] < y[ITEM_Y1] .OR. ( z[ITEM_Y1] == y[ITEM_Y1] .AND. z[ITEM_X1] < y[ITEM_X1] ) .OR. ( z[ITEM_Y1] == y[ITEM_Y1] .AND. z[ITEM_X1] == y[ITEM_X1] .AND. (z[ITEM_WIDTH] < y[ITEM_WIDTH] .OR. z[ITEM_HEIGHT] < y[ITEM_HEIGHT] ) ) } )
       IF !lPrg
-         hwg_RecalcForm( aPaintRep, Round( aPaintRep[ FORM_XKOEF ] * aPaintRep[ FORM_WIDTH ], 0 ) )
+         RecalcForm( aPaintRep, Round( aPaintRep[ FORM_XKOEF ] * aPaintRep[ FORM_WIDTH ], 0 ) )
       ENDIF
 
       hwg_WriteStatus( Hwindow():GetMain(), 2, LTrim( Str(aPaintRep[FORM_WIDTH],4 ) ) + "x" + ;
@@ -241,6 +241,27 @@ STATIC FUNCTION OpenFile( fname, repName )
    ENDIF
 
    RETURN res
+
+STATIC FUNCTION RecalcForm( aPaintRep, nFormWidth )
+
+   LOCAL hDC, aMetr, aItem, i, xKoef
+
+   hDC := hwg_Getdc( hwg_Getactivewindow() )
+   aMetr := hwg_Getdevicearea( hDC )
+   aPaintRep[ FORM_XKOEF ] := ( aMetr[ 1 ] - XINDENT ) / aPaintRep[ FORM_WIDTH ]
+   hwg_Releasedc( hwg_Getactivewindow(), hDC )
+
+   IF nFormWidth != aMetr[ 1 ] - XINDENT
+      xKoef := ( aMetr[ 1 ] - XINDENT ) / nFormWidth
+      FOR i := 1 TO Len( aPaintRep[ FORM_ITEMS ] )
+         aItem := aPaintRep[ FORM_ITEMS, i ]
+         aItem[ ITEM_X1 ] := Round( aItem[ ITEM_X1 ] * xKoef, 0 )
+         aItem[ ITEM_Y1 ] := Round( aItem[ ITEM_Y1 ] * xKoef, 0 )
+         aItem[ ITEM_WIDTH ] := Round( aItem[ ITEM_WIDTH ] * xKoef, 0 )
+         aItem[ ITEM_HEIGHT ] := Round( aItem[ ITEM_HEIGHT ] * xKoef, 0 )
+      NEXT
+   ENDIF
+   RETURN Nil
 
 STATIC FUNCTION SaveRFile( fname, repName )
    LOCAL strbuf := Space( 512 ), poz := 513, stroka, nMode := 0
@@ -375,19 +396,21 @@ STATIC FUNCTION WriteRep( han, repName )
    RETURN Nil
 
 STATIC FUNCTION WriteToPrg( han, repName )
-   LOCAL i, aItem, oPen, oFont, hDCwindow, aMetr, cItem, cQuote
+   LOCAL i, aItem, oPen, oFont, hDCwindow, aMetr, cItem, cQuote, crlf := Chr( 10 )
 
    hDCwindow := hwg_Getdc( Hwindow():GetMain():handle )
    aMetr := hwg_GetDeviceArea( hDCwindow )
    hwg_Releasedc( Hwindow():GetMain():handle, hDCwindow )
 
-   FWrite( han, "FUNCTION " + repName + Chr( 10 ) + ;
-      "LOCAL aPaintRep" + Chr( 10 ) )
-   FWrite( han, "   cEnd:=Chr(13)+Chr(10)" + Chr( 10 ) )
-   FWrite( han, "   aPaintRep := { " + LTrim( Str(aPaintRep[FORM_WIDTH] ) ) + "," + ;
-      LTrim( Str( aPaintRep[FORM_HEIGHT] ) ) + ',0,0,0,{},,"' + repName + '",.F.,0,Nil }' + Chr( 10 ) )
-   IF aPaintRep[FORM_VARS] != Nil .AND. !Empty( aPaintRep[FORM_VARS] )
-      FWrite( han, "   aPaintRep[11] := ;" + Chr( 10 ) )
+   FWrite( han, "FUNCTION " + repName + crlf + crlf + ;
+      "   LOCAL aPaintRep, cEnd := Chr(13)+Chr(10)" + crlf + crlf )
+
+   FWrite( han, '   aPaintRep := hwg_hwr_Init( "' + repName + '", ' ;
+      + LTrim( Str(aPaintRep[FORM_WIDTH] ) ) + ', ' + LTrim( Str( aPaintRep[FORM_HEIGHT] ) ) + ;
+      ', ' + LTrim( Str(aMetr[1] - XINDENT ) ) + ')' + crlf )
+
+   IF !Empty( aPaintRep[FORM_VARS] )
+      FWrite( han, "   aPaintRep[FORM_VARS] := ;" + crlf )
       WriteScript( han, aPaintRep[FORM_VARS], .T. )
    ENDIF
 
@@ -422,16 +445,17 @@ STATIC FUNCTION WriteToPrg( han, repName )
       ELSE
          cItem += ",0,0"
       ENDIF
-      cItem += ",0,Nil,0"
-      FWrite( han, "   Aadd( aPaintRep[6], { " + cItem + " } )" + Chr( 10 ) )
+      //cItem += ",0,Nil,0"
+      //FWrite( han, "   Aadd( aPaintRep[6], { " + cItem + " } )" + crlf )
+      FWrite( han, "   hwg_Hwr_AddItem( aPaintRep, " + cItem + " )" + crlf )
 
       IF aItem[ITEM_SCRIPT] != Nil .AND. !Empty( aItem[ITEM_SCRIPT] )
-         FWrite( han, "   aPaintRep[6,Len(aPaintRep[6]),12] := ;" + Chr( 10 ) )
+         FWrite( han, "   aPaintRep[FORM_ITEMS,Len(aPaintRep[FORM_ITEMS]),12] := ;" + crlf )
          WriteScript( han, aItem[ITEM_SCRIPT], .T. )
       ENDIF
    NEXT
-   FWrite( han, "   hwg_RecalcForm( aPaintRep," + LTrim( Str(aMetr[1] - XINDENT ) ) + " )" + Chr( 10 ) )
-   FWrite( han, "RETURN aPaintRep" + Chr( 10 ) )
+
+   FWrite( han, "RETURN aPaintRep" + crlf )
 
    RETURN Nil
 

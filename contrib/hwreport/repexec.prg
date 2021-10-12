@@ -17,8 +17,16 @@ REQUEST DBUSEAREA, RECNO, DBSKIP, DBGOTOP, DBCLOSEAREA
 
 //MEMVAR aBitmaps
 
-FUNCTION hwg_hwr_Init( cRepName )
-   RETURN { 210, 297, 0, 0, 0, {}, "", cRepName, .F. , 0, Nil }
+FUNCTION hwg_hwr_Init( cRepName, nWidth, nHeight, nFormWidth, cVars )
+
+   LOCAL xKoef := 0
+
+   nWidth := Iif( Empty(nWidth), 210, nWidth )
+   nHeight := Iif( Empty(nHeight),297,nHeight )
+   IF !Empty( nFormWidth )
+      xKoef := nFormWidth / nWidth
+   ENDIF
+   RETURN { nWidth, nHeight, xKoef, 0, 0, {}, "", cRepName, .F. , 0, cVars }
 
 FUNCTION hwg_hwr_Open( fname, repName )
 
@@ -47,7 +55,7 @@ FUNCTION hwg_hwr_Open( fname, repName )
                         repName := stroka
                      ENDIF
                      nMode := 1
-                     aPaintRep := hwg_hwr_Init()
+                     aPaintRep := hwg_hwr_Init( repName )
                   ENDIF
                ENDIF
             ENDIF
@@ -135,7 +143,7 @@ FUNCTION hwg_hwr_Open( fname, repName )
    ENDIF
    RETURN aPaintRep
 
-FUNCTION hwg_Hwr_AddItem( aPaintRep, nType, cCaption, nLeft, nTop, nWidth, nHeight, nAlign, cPen, cFont, nVarType )
+FUNCTION hwg_Hwr_AddItem( aPaintRep, nType, cCaption, nLeft, nTop, nWidth, nHeight, nAlign, cPen, cFont, nVarType, cScript )
 
    LOCAL aItem, arr
 
@@ -160,29 +168,11 @@ FUNCTION hwg_Hwr_AddItem( aPaintRep, nType, cCaption, nLeft, nTop, nWidth, nHeig
    IF aItem[ITEM_TYPE] == TYPE_BITMAP
       aItem[ITEM_BITMAP] := HBitmap():AddFile( aItem[ITEM_CAPTION] )
    ENDIF
+   IF !Empty( cScript )
+      aItem[ITEM_SCRIPT] := cScript
+   ENDIF
 
    RETURN aItem
-
-FUNCTION hwg_RecalcForm( aPaintRep, nFormWidth )
-
-   LOCAL hDC, aMetr, aItem, i, xKoef
-
-   hDC := hwg_Getdc( hwg_Getactivewindow() )
-   aMetr := hwg_Getdevicearea( hDC )
-   aPaintRep[ FORM_XKOEF ] := ( aMetr[ 1 ] - XINDENT ) / aPaintRep[ FORM_WIDTH ]
-   hwg_Releasedc( hwg_Getactivewindow(), hDC )
-
-   IF nFormWidth != aMetr[ 1 ] - XINDENT
-      xKoef := ( aMetr[ 1 ] - XINDENT ) / nFormWidth
-      FOR i := 1 TO Len( aPaintRep[ FORM_ITEMS ] )
-         aItem := aPaintRep[ FORM_ITEMS, i ]
-         aItem[ ITEM_X1 ] := Round( aItem[ ITEM_X1 ] * xKoef, 0 )
-         aItem[ ITEM_Y1 ] := Round( aItem[ ITEM_Y1 ] * xKoef, 0 )
-         aItem[ ITEM_WIDTH ] := Round( aItem[ ITEM_WIDTH ] * xKoef, 0 )
-         aItem[ ITEM_HEIGHT ] := Round( aItem[ ITEM_HEIGHT ] * xKoef, 0 )
-      NEXT
-   ENDIF
-   RETURN Nil
 
 FUNCTION hwg_hwr_Close( aPaintRep )
 
@@ -231,7 +221,11 @@ FUNCTION hwg_hwr_Print( aPaintRep, xPrn, lPreview )
       RETURN .F.
    ENDIF
 
+#ifdef __GTK__
+   aPrnCoors := hwg_gp_Getdevicearea( hDC )
+#else
    aPrnCoors := hwg_Getdevicearea( hDC )
+#endif
    prnXCoef := ( aPrnCoors[ 1 ] / aPaintRep[ FORM_WIDTH ] ) / aPaintRep[ FORM_XKOEF ]
    prnYCoef := ( aPrnCoors[ 2 ] / aPaintRep[ FORM_HEIGHT ] ) / aPaintRep[ FORM_XKOEF ]
    // writelog( oPrinter:cPrinterName + str(aPrnCoors[1])+str(aPrnCoors[2])+" / "+str(aPaintRep[FORM_WIDTH])+" "+str(aPaintRep[FORM_HEIGHT])+str(aPaintRep[FORM_XKOEF])+" / "+str(prnXCoef)+str(prnYCoef) )

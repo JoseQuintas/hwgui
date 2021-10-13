@@ -8,6 +8,16 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-13 12:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/hwreport/example.prg
+  * contrib/hwreport/example.rpt
+  * contrib/hwreport/hwreport.prg
+  * contrib/hwreport/printrpt.prg
+  * contrib/hwreport/repexec.prg
+  * contrib/hwreport/repbuild.h
+  * include\repmain.h
+    * Optimization
+
 2021-10-12 15:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/hwreport/example.prg
   * contrib/hwreport/opensave.prg

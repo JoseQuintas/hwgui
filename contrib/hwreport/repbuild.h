@@ -20,6 +20,10 @@
 
 #define IDM_FOPT       1021
 #define IDM_VIEW1      1022
-#define IDM_MOUSE2     1023
 
 #define IDC_EDIT3	109
+
+#define LEFT_INDENT     40
+#define TOP_INDENT      30
+#define XINDENT         65
+#define YINDENT         60

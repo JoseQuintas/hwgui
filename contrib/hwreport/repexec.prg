@@ -16,6 +16,7 @@
 REQUEST DBUSEAREA, RECNO, DBSKIP, DBGOTOP, DBCLOSEAREA
 
 //MEMVAR aBitmaps
+MEMVAR aImgs
 
 FUNCTION hwg_hwr_Init( cRepName, nWidth, nHeight, nFormWidth, cVars )
 
@@ -216,6 +217,7 @@ FUNCTION hwg_hwr_Print( aPaintRep, xPrn, lPreview )
 
    MEMVAR lFirst, lFinish, lLastCycle, oFontStandard
    PRIVATE lFirst := .T., lFinish := .T., lLastCycle := .F.  //, aBitmaps := {}
+   PRIVATE aImgs := {}
 
    IF Empty( hDC )
       RETURN .F.
@@ -435,6 +437,12 @@ FUNCTION hwg_hwr_Print( aPaintRep, xPrn, lPreview )
       ENDIF
    ENDDO
 
+   IF !Empty( aImgs )
+      FOR i := 1 TO Len( aImgs )
+         oPrinter:Bitmap( aImgs[i,1], aImgs[i,2], aImgs[i,3], aImgs[i,4], , aImgs[i,5], aImgs[i,6] )
+      NEXT
+   ENDIF
+
    oPrinter:EndPage()
    oPrinter:EndDoc()
    IF lPreview != Nil .AND. lPreview
@@ -448,6 +456,7 @@ FUNCTION hwg_hwr_Print( aPaintRep, xPrn, lPreview )
          aPaintRep[ FORM_ITEMS, i, ITEM_GROUP ] := Nil
       ENDIF
    NEXT
+   aImgs := Nil
    /*
    FOR i := 1 TO Len( aBitmaps )
       IF !Empty( aBitmaps[i] )
@@ -491,8 +500,9 @@ FUNCTION hwg_Hwr_PrintItem( oPrinter, aItem, prnXCoef, prnYCoef, nYadd, lCalc )
       //Aadd( aBitmaps, hBitmap := hwg_Openbitmap( aItem[ ITEM_CAPTION ], oPrinter:hDC ) )
       IF !Empty( aItem[ITEM_BITMAP] )
         hBitmap := aItem[ITEM_BITMAP]:handle
-      //hwg_writelog( "hBitmap: "+Iif(hBitmap==Nil,"Nil","Ok") )
-        oPrinter:Bitmap( x1, y1, x2, y2,, hBitmap, aItem[ ITEM_CAPTION ] )
+        AAdd( aImgs, {x1, y1, x2, y2, hBitmap, aItem[ ITEM_CAPTION ]} )
+        //hwg_writelog( "hBitmap: "+Iif(hBitmap==Nil,"Nil","Ok") )
+        //oPrinter:Bitmap( x1, y1, x2, y2,, hBitmap, aItem[ ITEM_CAPTION ] )
       ENDIF
       //hwg_Deleteobject( hBitmap )
    ENDIF

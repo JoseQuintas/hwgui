@@ -10,7 +10,7 @@
 #include "repbuild.h"
 #include "repmain.h"
 
-MEMVAR aPaintRep, lAddMode, oFontStandard //, aBitmaps
+MEMVAR aPaintRep, lAddMode, oFontStandard, aImgs
 
 FUNCTION _hwr_PrintRpt
 
@@ -27,13 +27,17 @@ FUNCTION _hwr_PrintRpt
    LOCAL fontKoef
 #endif
    PRIVATE lAddMode := .F.
-   //PRIVATE aBitmaps := {}
+   PRIVATE aImgs := {}
 
    IF Empty( hDC )
       RETURN .F.
    ENDIF
 
+#ifdef __GTK__
+   aPrnCoors := hwg_gp_Getdevicearea( hDC )
+#else
    aPrnCoors := hwg_GetDeviceArea( hDC )
+#endif
    prnXCoef := ( aPrnCoors[ 1 ] / aPaintRep[ FORM_WIDTH ] ) / aPaintRep[ FORM_XKOEF ]
    prnYCoef := ( aPrnCoors[ 2 ] / aPaintRep[ FORM_HEIGHT ] ) / aPaintRep[ FORM_XKOEF ]
    //hwg_writelog( str(aPrnCoors[2])+" / "+str(prnYCoef)+" / "+str(aPaintRep[FORM_XKOEF])+" // "+;
@@ -76,15 +80,22 @@ FUNCTION _hwr_PrintRpt
    oPrinter:StartPage()
 
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
-      IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] != TYPE_BITMAP
+      //IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] != TYPE_BITMAP
          hwg_Hwr_PrintItem( oPrinter, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
-      ENDIF
+      //ENDIF
    NEXT
+   /*
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_TYPE] == TYPE_BITMAP
          hwg_Hwr_PrintItem( oPrinter, aPaintRep[FORM_ITEMS,i], prnXCoef, prnYCoef, 0, .F. )
       ENDIF
    NEXT
+   */
+   IF !Empty( aImgs )
+      FOR i := 1 TO Len( aImgs )
+         oPrinter:Bitmap( aImgs[i,1], aImgs[i,2], aImgs[i,3], aImgs[i,4], , aImgs[i,5], aImgs[i,6] )
+      NEXT
+   ENDIF
 
    oPrinter:EndPage()
    oPrinter:EndDoc()
@@ -99,12 +110,6 @@ FUNCTION _hwr_PrintRpt
          aPaintRep[FORM_ITEMS,i,ITEM_GROUP] := Nil
       ENDIF
    NEXT
-   /*
-   FOR i := 1 TO Len( aBitmaps )
-      IF !Empty( aBitmaps[i] )
-         hwg_Deleteobject( aBitmaps[i] )
-      ENDIF
-      aBitmaps[i] := Nil
-   NEXT
-   */
+   aImgs := Nil
+
    RETURN Nil

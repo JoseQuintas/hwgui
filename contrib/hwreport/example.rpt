@@ -4,7 +4,7 @@ FORM;210;297;735
 nStroka := 1
 #ENDSCRIPT
 TEXT;Sample report - first 100 records of test.dbf;132;41;513;27;2;Arial,0,-18,700,204,0,0,0;0
-BITMAP;..\..\Image\logo.bmp;94;44;68;61
+BITMAP;../../image/logo.bmp;94;44;68;61
 TEXT;2001;320;81;89;20;2;Arial,0,-18,700,204,0,0,0;0
 HLINE;182;106;408;6;0,1,0
 MARKER;PH;-16;172;16;10;0

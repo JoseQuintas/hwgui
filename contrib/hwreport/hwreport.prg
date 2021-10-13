@@ -146,7 +146,6 @@ FUNCTION Main()
       MENU TITLE "&Options"
          MENUITEM "&Form options" ID IDM_FOPT ACTION FormOptions()
          MENUITEMCHECK "&Preview" ID IDM_VIEW1 ACTION FPreview()
-         MENUITEMCHECK "&Mouse limit" ID IDM_MOUSE2 ACTION ( hwg_Checkmenuitem( ,IDM_MOUSE2,!hwg_Ischeckedmenuitem(,IDM_MOUSE2 ) ) )
       ENDMENU
       MENUITEM "&About" ID IDM_ABOUT ACTION About()
    ENDMENU
@@ -159,7 +158,6 @@ FUNCTION Main()
    hwg_Enablemenuitem( , IDM_FOPT, .F. , .T. )
    hwg_Enablemenuitem( , IDM_VIEW1, .F. , .T. )
    hwg_Enablemenuitem( , 1, .F. , .F. )
-   hwg_Checkmenuitem( , IDM_MOUSE2, .T. )
 
    SET KEY 0, VK_LEFT TO KeyActions( VK_LEFT )
    SET KEY 0, VK_RIGHT TO KeyActions( VK_RIGHT )
@@ -598,7 +596,7 @@ STATIC FUNCTION MouseMove( wParam, xPos, yPos )
          Hwg_SetCursor( crossCursor )
       ENDIF
    ELSEIF itemPressed > 0
-      IF hwg_Ischeckedmenuitem( , IDM_MOUSE2 ) .AND. Abs( xPos - mPos[1] ) < 3 .AND. Abs( yPos - mPos[2] ) < 3
+      IF Abs( xPos - mPos[1] ) < 3 .AND. Abs( yPos - mPos[2] ) < 3
          RETURN Nil
       ENDIF
       aItem := aPaintRep[FORM_ITEMS,itemPressed]

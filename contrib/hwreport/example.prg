@@ -67,7 +67,7 @@ FUNCTION MyReport
    aPaintRep := hwg_hwr_Init( "MyReport", 210, 297, 735, "nStroka := 1" + crlf )
 
    hwg_Hwr_AddItem( aPaintRep, TYPE_TEXT, "Sample report - first 100 records of test.dbf", 132, 41, 513, 27, 2,, HFont():Add( "Arial",0, - 18,700,204 ) )
-   hwg_Hwr_AddItem( aPaintRep, TYPE_BITMAP, "..\..\samples\Image\logo.bmp", 94, 44, 68, 61 )
+   hwg_Hwr_AddItem( aPaintRep, TYPE_BITMAP, "../../image/logo.bmp", 94, 44, 68, 61 )
    hwg_Hwr_AddItem( aPaintRep, TYPE_TEXT, "2001", 320, 81, 89, 20, 2,, HFont():Add( "Arial",0, - 18,700,204 ) )
    hwg_Hwr_AddItem( aPaintRep, TYPE_HLINE, , 182, 106, 408, 6, 0, HPen():Add( 0,1,0 ) )
    hwg_Hwr_AddItem( aPaintRep, TYPE_MARKER, "PH", - 16, 172, 16, 10 )

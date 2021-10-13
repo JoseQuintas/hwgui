@@ -50,7 +50,3 @@
 #define ALIGN_RIGHT      1
 #define ALIGN_CENTER     2
 
-#define LEFT_INDENT     40
-#define TOP_INDENT      30
-#define XINDENT         65
-#define YINDENT         60

@@ -36,12 +36,12 @@ FUNCTION Main
 
    SetColor( "W+/B" )
    clear screen
-   @ 0, 0, 24, 79 BOX "******** "
+   @ 0, 0, MaxRow(), MaxCol() BOX "******** "
    @ 4,5 SAY "Test"
-   @ 23,1 SAY "---- " + Str( MaxRow() + 1, 3 ) + " X " + Str( MaxCol() + 1, 3 ) + " Desktop:" + Str( hb_gtinfo( HB_GTI_DESKTOPROWS ), 3 )
-   @ 23,70 SAY "----"
-   @ 24,1 SAY "===="
-   @ 24,70 SAY "===="
+   @ MaxRow() - 1, 1 SAY "---- " + Str( MaxRow() + 1, 3 ) + " X " + Str( MaxCol() + 1, 3 ) + " Desktop:" + Str( hb_gtinfo( HB_GTI_DESKTOPROWS ), 3 )
+   @ MaxRow() - 1, 70 SAY "----"
+   @ MaxRow(), 1 SAY "===="
+   @ MaxRow(), 70 SAY "===="
    @ 3,5 SAY "‚Ά¥¤¨β¥ β¥ªαβ:" GET cLogin
    READ
 

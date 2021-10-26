@@ -90,6 +90,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hprogres.o \
    $(OBJ_DIR)/hmonthc.o \
    $(OBJ_DIR)/htrackbr.o \
+   $(OBJ_DIR)/initools.o \
    $(OBJ_DIR)/menu.o \
    $(OBJ_DIR)/inter.o    
 

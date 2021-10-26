@@ -8,6 +8,10 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-26 18:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+   * source/gtk/Makefile.linux
+     * initools.prg added
+
 2021-10-18 19:33 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
    * contrib/gthwg/tests/test1.prg
      * Small change to use available maxrow/maxcol

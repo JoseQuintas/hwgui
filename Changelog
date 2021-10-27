@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-27 16:46 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
+   * include/windows.ch
+     ! change to use automatic HBMK2 variables, no extra setup
+   * source/winapi/hbrowse.prg
+     ! workaround when :oFont is Nil
+       hbrowse default is :oParent:oFont, but it can be Nil too.
+       On my test, with error, I use no main window.
+
 2021-10-26 18:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
    * source/gtk/Makefile.linux
      * initools.prg added

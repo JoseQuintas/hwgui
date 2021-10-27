@@ -1831,8 +1831,9 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
-   /* Preset charset for displaying special characters of other languages
-      for example Russian ::nHCCharset = 204   */
+   IF ::oFont != Nil
+      /* Preset charset for displaying special characters of other languages
+         for example Russian ::nHCCharset = 204   */
      nchrs := ::nHCCharset
      apffrarr := ::oFont:Props2Arr()
      IF ::nHCCharset == -1
@@ -1842,7 +1843,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
      apffrarr[6]  , apffrarr[7], apffrarr[8] )
 //        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
 //        1         2       3         4         5           6          7             8
-
+   ENDIF
 
    // hwg_WriteLog(oHCfont:PrintFont() )
 

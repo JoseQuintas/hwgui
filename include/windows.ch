@@ -135,6 +135,7 @@
 
    #define DS_ABSALIGN         1        // 0x01L
    #define DS_SYSMODAL         2        // 0x02L
+   #define DS_SETFOREGROUND    512      // 0x200L
    #define DS_CENTER           2048     // 0x0800L
    #define DS_MODALFRAME       0x80
 

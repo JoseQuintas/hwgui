@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-28 11:15 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
+   * include/windows.ch
+     * added DS_SETFOREGROUND
+   * source/winapi/hprogress.prg
+     * Newbox() Removed WS_SYSMENU, to do not show (x)close
+     * NewBox() Changed from DS_SYSMODAL to DS_SETFOREGROUND,
+       now dialog is top of application and not top most
+
 2021-10-27 16:46 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
    * include/windows.ch
      ! change to use automatic HBMK2 variables, no extra setup

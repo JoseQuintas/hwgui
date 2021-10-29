@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-29 17:24 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
+   ! source/winapi/hdialog.prg
+     ! bug when previous window/dialog is nomodal.
+       please check gtk source code, and make more tests.
+       On test ok, different solution for modal/nomodal dialog.
+
 2021-10-28 11:15 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
    * include/windows.ch
      * added DS_SETFOREGROUND

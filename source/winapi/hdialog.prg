@@ -129,7 +129,11 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
    ENDIF
 
    IF ::oParent == Nil
-      ::oParent := hwg_GetModalDlg()
+      IF ! lNoModal
+         ::oParent := hwg_GetActiveWindow()
+      ELSE
+         ::oParent := hwg_GetModalDlg()
+      ENDIF
    ENDIF
    hwg_CreateGetList( Self )
    hParent := Iif( ::oParent != Nil .AND. ;

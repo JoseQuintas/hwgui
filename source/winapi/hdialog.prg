@@ -27,12 +27,30 @@ STATIC aMessModalDlg := { ;
       { WM_DESTROY, { |o|hwg_onDestroy( o ) } }               ;
       }
 
+#ifdef MT_EXPERIMENTAL
+   THREAD STATIC aDialogs := {}
+   THREAD STATIC aModalDialogs := {}
+
+   FUNCTION aDialogs()
+
+      RETURN aDialogs
+
+   FUNCTION aModalDialogs()
+
+      RETURN aModalDialogs
+#endif
+
    // Class HDialog
 
 CLASS HDialog INHERIT HWindow
 
+#ifdef MT_EXPERIMENTAL
+   METHOD aDialogs          INLINE aDialogs()
+   METHOD aModalDialogs     INLINE aModalDialogs()
+#else
    CLASS VAR aDialogs       SHARED INIT {}
    CLASS VAR aModalDialogs  SHARED INIT {}
+#endif
 
    DATA lModal   INIT .T.
    DATA lResult  INIT .F.     // Becomes TRUE if the OK button is pressed

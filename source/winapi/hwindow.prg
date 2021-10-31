@@ -18,6 +18,14 @@
 #define  ID_NOTIFYICON           1
 #define SIZE_MINIMIZED           1
 
+#ifdef MT_EXPERIMENTAL
+   THREAD STATIC aWindows := {}
+
+   FUNCTION aWindows()
+
+   RETURN aWindows
+#endif
+
 FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
    LOCAL aCoors := hwg_Getwindowrect( oWnd:handle )
@@ -77,10 +85,10 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
 STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
    LOCAL iParLow := hwg_Loword( wParam )
-   
+
    * Variables not used
    * b
-   
+
    * Parameters not used
    HB_SYMBOL_UNUSED(lParam)
 
@@ -134,7 +142,11 @@ Local i, nHandle := oWnd:handle
 
 CLASS HWindow INHERIT HCustomWindow, HScrollArea
 
+#ifdef MT_EXPERIMENTAL
+   METHOD aWindows       INLINE aWindows()
+#else
    CLASS VAR aWindows    SHARED INIT {}
+#endif
    CLASS VAR szAppName   SHARED INIT "HwGUI_App"
    CLASS VAR aKeysGlobal SHARED INIT {}
 
@@ -176,7 +188,7 @@ ENDCLASS
 METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId, bColor ) CLASS HWindow
- 
+
     * Parameters not used
     HB_SYMBOL_UNUSED(clr)
     HB_SYMBOL_UNUSED(cMenu)
@@ -260,9 +272,9 @@ METHOD GetMain() CLASS HWindow
 
 METHOD EvalKeyList( nKey, bPressed ) CLASS HWindow
    LOCAL cKeyb, nctrl, nPos
-   
+
     * Parameters not used
-    HB_SYMBOL_UNUSED(bPressed)   
+    HB_SYMBOL_UNUSED(bPressed)
 
    cKeyb := hwg_Getkeyboardstate()
    nctrl := Iif( Asc( SubStr(cKeyb,VK_CONTROL + 1,1 ) ) >= 128, FCONTROL, ;
@@ -613,7 +625,7 @@ FUNCTION hwg_ReleaseAllWindows( hWnd )
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
    LOCAL iItem, iCont, aMenu, iParHigh, iParLow, nHandle
-   
+
     * Parameters not used
     HB_SYMBOL_UNUSED(lParam)
 

@@ -8,6 +8,20 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-10-31 04:50 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
+   ! source/winapi/hdialog.prg
+   ! source/winapi/hwindow.prg
+     ! Small change for multithread
+       Each thread will have it's own dialog and window list
+       activated only if compile using -DMT_EXPERIMENTAL
+       No change if do not compile using this parameter
+
+2021-10-31 04:42 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
+   ! include/windows.ch
+   ! source/winapi/hdatepic.prg
+     ! removed HBMK_HAS_GTWVG because is exclusive harbour 3.4
+       and harbour 3.4 is dead
+
 2021-10-29 19:55 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
    ! source/winapi/hdialog.prg
      ! revert previous change - bug for another user/situation

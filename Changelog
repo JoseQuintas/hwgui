@@ -20,7 +20,7 @@
    ! include/windows.ch
    ! source/winapi/hdatepic.prg
      ! removed HBMK_HAS_GTWVG because is exclusive harbour 3.4
-       and harbour 3.4 is dead
+       and it have few users, I and some others
 
 2021-10-29 19:55 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
    ! source/winapi/hdialog.prg

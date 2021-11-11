@@ -8,6 +8,10 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-11-11 09:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * :bRClick added, it evaluates when mouse right button is clicked
+
 2021-10-31 04:50 UTC-0300 Jose Quintas <jmcquintas@gmail.com>
    ! source/winapi/hdialog.prg
    ! source/winapi/hwindow.prg

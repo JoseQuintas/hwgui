@@ -54,10 +54,10 @@
  * If you do not wish that, delete this exception notice.
  *
  */
- 
+
 /* Modifications by DF7BE:
  - Bugfix: AltGr key ignored, so very important characters like
-   \@µ~{}[] and Euro Currency sign are not reached.   
+   \@µ~{}[] and Euro Currency sign are not reached.
 */
 
 #include "hbclass.ch"
@@ -188,7 +188,7 @@ CLASS HCEdit INHERIT HControl
    DATA   nCaret       INIT 0
    DATA   lChgCaret    INIT .F.
    DATA   lSetFocus    INIT .F.
-   DATA   bChangePos, bKeyDown, bClickDoub
+   DATA   bChangePos, bKeyDown, bClickDoub, bRClick
    DATA   bAfter
 
    DATA   lMDown       INIT .F.
@@ -230,11 +230,11 @@ CLASS HCEdit INHERIT HControl
    // After call of Init method, you can update the array with messages in your
    // desired language.
    // Sample: Preview( , , aLangTexts, )
-   // Structure of array look at 
+   // Structure of array look at
    // hwg_HPrinter_LangArray_EN() in file hprinter.prg
    // Copy your own language message array direct after
    // call of METHOD ::New()
- 
+
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )
@@ -288,7 +288,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )  CLASS HCEdit
 
    ::DefaultLang()
-   
+
    ::lVScroll := ( lNoVScroll == Nil .OR. !lNoVScroll )
    nStyle := Hwg_BitOr( Iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE +  ;
       Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) +          ;
@@ -401,18 +401,18 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    LOCAL n, nPages, lRes := - 1, x, aPointC[P_LENGTH]
    LOCAL n1 , n2, lctrls
-   
+
    * Variables not used
-   * arr   
+   * arr
 
    //hwg_writelog(STR(msg) )
    ::PCopy( ::aPointC, aPointC )
    IF ::bOther != Nil
 *  Warning W0032  Variable 'N' is assigned but not used in function ...
-*      IF ( n := Eval( ::bOther,Self,msg,wParam,lParam ) ) != - 1 
+*      IF ( n := Eval( ::bOther,Self,msg,wParam,lParam ) ) != - 1
 *  Devide into 2 instructions:
       n := Eval( ::bOther,Self,msg,wParam,lParam )
-      IF n != - 1  
+      IF n != - 1
          RETURN n
       ENDIF
    ENDIF
@@ -430,40 +430,40 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       x := hwg_GetKeyboardState( lParam )
 
       /*
-      ================================================================================ 
+      ================================================================================
       DF7BE : Handle AltGr key for ~, greek micro and Euro currency sign ( and more )
       ================================================================================
       */
 
       // hwg_writelog(x)
-      && 
+      &&
       n :=  Iif( Asc( SubStr(x,0x12,1 ) ) >= 128, FCONTROL, Iif( Asc(SubStr(x,0x11,1 ) ) >= 128,FSHIFT,0 ) )
       &&                       18dec                                          17dec
       n1 := Iif( Asc( SubStr(x,19,1 ) ) >= 128, FCONTROL, 0 )
       n2 := Iif( Asc( SubStr(x,18,1 ) ) >= 128, FSHIFT ,0 )
       /*
-        Keyboard buffer x has fixed length of 256 ( 0 ... 255 )  
+        Keyboard buffer x has fixed length of 256 ( 0 ... 255 )
         FSHIFT=4,FCONTROL=8,FALT=16=0x10
         Table: values for Ctrl and AltGr key
-        Position in keyboard buffer: 18 +  19 
+        Position in keyboard buffer: 18 +  19
         AltGr + Euro : 81 + 81 (Euro currency sign)
         AltGr + ~    : 80 + 80 (Tilde)
-        AltGr + mu   : 81 + 81 (Greek micro) 
+        AltGr + mu   : 81 + 81 (Greek micro)
         AltGr + \    : 81 + 80 (Backslash)
         Logical assignment:
          AltGr + character pressed : n1 ==  FCONTROL  and n2 == FSHIFT  ==> lctrls := .T.
          Ctrl pressed              : n1 ==  FCONTROL  and n2 == 0       ==> lctrls := .F.
-      */ 
-      lctrls := .F.  
-       
-      IF n != FCONTROL 
+      */
+      lctrls := .F.
+
+      IF n != FCONTROL
        lctrls := .T.
       ENDIF
 
       IF ( n1 ==  FCONTROL) .AND. ( n2 == FSHIFT )
        lctrls := .T.
       ENDIF
-  
+
       // hwg_writelog("n1=" + STR(n1) + " n2=" + STR(n2) )
       // IF n != FCONTROL
       IF lctrls   && Ctrl or AltGr key
@@ -472,11 +472,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 #else
          x := hwg_PtrToUlong( wParam )
 #endif
-*         
+*
 *        IF ::bKeyDown != Nil .AND. ( n := Eval( ::bKeyDown, Self, x, n, 1 ) ) != -1
          IF ::bKeyDown != Nil  && .AND.
-          n := Eval( ::bKeyDown, Self, x, n, 1 ) 
-          IF n != -1    
+          n := Eval( ::bKeyDown, Self, x, n, 1 )
+          IF n != -1
              RETURN -1
           ENDIF
          ENDIF
@@ -507,6 +507,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ENDIF
       IF ::nCaret <= 0
          ::nCaret ++
+      ENDIF
+      IF msg == WM_RBUTTONDOWN .AND. !Empty( ::bRClick )
+         Eval( ::bRClick, Self )
       ENDIF
 
    ELSEIF msg == WM_LBUTTONUP
@@ -640,11 +643,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 METHOD Paint( lReal ) CLASS HCEdit
    LOCAL pps, hDCReal, hDC, aCoors, nLine := 0, yPos := ::nBoundT, yNew, n4Separ := ::n4Separ
    LOCAL nDocWidth
-#ifndef __GTK__   
+#ifndef __GTK__
    LOCAL hBitmap
-#endif   
- 
-   * Variables not used 
+#endif
+
+   * Variables not used
    * i
 
    IF Empty( ::nDocFormat )
@@ -1218,7 +1221,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    LOCAL nLine, nDocWidth := ::nDocWidth
 #ifdef __GTK__
    LOCAL ln1 , ln2, ln3, ln4
-#endif   
+#endif
 
    // Store for last key (needed by memo edit)
    ::nLastKey := nKeyCode
@@ -1231,7 +1234,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
 
     AltGr + Euro : keydown:      65027 /          0 FFFF
     AltGr + ~    : keydown:         -1 /          0 TTTT
-   
+
    */
 
    IF nCtrl == Nil
@@ -1246,14 +1249,14 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    ln2 := Iif(hwg_checkBit( nKeyCode, FBITCTRL  ) , .T., .F. )
    ln3 := Iif(hwg_checkBit( nKeyCode, FBITALT   ) , .T., .F. )
    ln4 := Iif(hwg_checkBit( nKeyCode, FBITALTGR ) , .T., .F. )
-#endif   
-   
+#endif
+
 
    /*
-      Output of this command: 
+      Output of this command:
                      ln1   ln2, ln3 ln4
       nKeyCode nctrl Shift Ctrl Alt AltGr
-   */ 
+   */
    // hwg_writelog( "keydown: " + str(nKeyCode) + " / " + str(nctrl) +" "+Iif(hwg_checkBit( nKeyCode,FBITSHIFT ),"T","F")+Iif(hwg_checkBit( nKeyCode, FBITCTRL ),"T","F") + Iif(hwg_checkBit( nKeyCode, FBITALT), "T","F" ) + Iif(hwg_checkBit( nKeyCode, FBITALTGR) ,"T","F") )
 
 
@@ -1278,10 +1281,10 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
    IF (nKeyCode == -1) .AND. ln1 .AND. ln2 .AND. ln3 .AND. ln4  // AltGr + ~ (Tilde)
        ::putChar( 126 )  && nKeyCode
    ELSEIF nKeyCode == VK_RIGHT
-#else 
+#else
 // Cursor right : This block catches AltGr + ~ (Tilde) , so ignored, Bug fixed (DF7BE)
    IF nKeyCode == VK_RIGHT
-#endif   
+#endif
       n := Iif( hwg_checkBit( nctrl,FBITCTRL ), ::aLines[nLine,AL_NCHARS] - ::nPosC, 1 )
       l := .F.
       DO WHILE --n >= 0
@@ -1603,10 +1606,10 @@ METHOD LineDown() CLASS HCEdit
 
    RETURN Nil
 
-/* Added: lChgPos */   
+/* Added: lChgPos */
 METHOD LineUp( lChgPos ) CLASS HCEdit
    LOCAL y
-   * Variables not used   
+   * Variables not used
    *   i
 
    IF lChgPos == Nil; lChgPos := .T.; ENDIF
@@ -2174,7 +2177,7 @@ METHOD Highlighter( oHili ) CLASS HCEdit
    ENDIF
    RETURN Nil
 
-/* Added:  nl1, nl2, hDC, nWidth, nHeight */   
+/* Added:  nl1, nl2, hDC, nWidth, nHeight */
 METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
    LOCAL lNested := ::lScan, aCoors, yPos, yNew, nLine, nLines, i, n1, n2
    LOCAL nDocWidth
@@ -2682,4 +2685,4 @@ Function hced_NextPos( oEdit, cLine, nPos )
    RETURN nPos + 1
 
 * ====================== EOF of hcedit.prg =====================
-   
+

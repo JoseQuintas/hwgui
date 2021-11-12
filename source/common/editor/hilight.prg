@@ -265,7 +265,8 @@ Local nPos, nPos1, nPrev, cWord, c
    DO WHILE nPos <= nLen
       DO WHILE nPos <= nLen .AND. hced_Substr( ::oEdit,cLine,nPos,1 ) $ cSpaces; nPos++; ENDDO
       DO WHILE nPos <= nLen
-         IF ( c := hced_Substr( ::oEdit,cLine,nPos,1 ) ) $ cQuotes
+         IF ( c := hced_Substr( ::oEdit,cLine,nPos,1 ) ) $ cQuotes .AND. ;
+            !( nLen - nPos > 1 .AND. Substr( cLine,nPos+1,1 ) == c .AND. Substr( cLine,nPos+2,1 ) == c )
             nPos1 := nPos
             IF ( nPos := hced_At( ::oEdit, c, cLine, nPos1+1 ) ) == 0
                nPos := hced_Len( ::oEdit,cLine )

@@ -8,6 +8,10 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-11-12 20:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/menu.prg
+    ! Context menu functions fixed.
+
 2021-11-12 13:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hilight.prg
     ! Small fix

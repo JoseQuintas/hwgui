@@ -88,7 +88,7 @@ FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos, hWnd )
 
    IF nPos > Len( aMenu[1] )
       IF Empty( lSubmenu )
-         AAdd( aMenu[1], { bItem, cItem, nMenuId, 0, hSubMenu } )        
+         AAdd( aMenu[1], { bItem, cItem, nMenuId, 0, hSubMenu } )
       ELSE
          AAdd( aMenu[1], { {}, cItem, nMenuId, 0, hSubMenu } )
       ENDIF
@@ -242,7 +242,7 @@ FUNCTION Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBit
    LOCAL aMenu, i, nFlag
    * Variables not used
    * LOCAL oBmp
-   
+
    * Parameters not used
    HB_SYMBOL_UNUSED(lBitmap)
    HB_SYMBOL_UNUSED(lResource)
@@ -319,8 +319,12 @@ STATIC FUNCTION GetMenuByHandle( hWnd )
 
    IF hWnd == Nil
       aMenu := HWindow():GetMain():menu
-   ELSEIF Valtype(hWnd) == "O" .AND. __ObjHasMsg( hWnd, "MENU" )
-      RETURN hWnd:menu
+   ELSEIF Valtype(hWnd) == "O"
+      IF __ObjHasMsg( hWnd, "MENU" )
+         RETURN hWnd:menu
+      ELSEIF __ObjHasMsg( hWnd, "AMENU" )
+         RETURN hWnd:amenu
+      ENDIF
    ELSE
       IF ( oDlg := HDialog():FindDialog( hWnd ) ) != Nil
          aMenu := oDlg:menu
@@ -333,6 +337,9 @@ STATIC FUNCTION GetMenuByHandle( hWnd )
 
    RETURN aMenu
 
+// hwg_CheckMenuItem( xMenu, idItem, lCheck )
+// xMenu: oMenu - context menu object OR window object 
+//   OR hWnd - handle of a window OR hMenu - menu handle
 FUNCTION hwg_CheckMenuItem( hWnd, nId, lValue )
 
    LOCAL aMenu, aSubMenu, nPos

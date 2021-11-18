@@ -8,6 +8,11 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-11-18 09:10 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+    ! Little correction for function
+    ! hwg_Array_Len()
+
 2021-11-12 20:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/menu.prg
     ! Context menu functions fixed.

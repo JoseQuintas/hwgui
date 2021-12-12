@@ -8,6 +8,17 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-12-12 14:30 UTC+0100 Wilfried Brunken DF7BE
+  * utils/designer/Readme.txt
+  * utils/designer/hbmk.sh
+  * todo.txt
+    ! Designer:
+    ! Try to test on LINUX:
+    ! - Readme translation from spanish to english
+    ! - additional information in Readme about
+    !   recent bugs
+    ! todo.txt updated    
+
 2021-11-18 09:10 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
     ! Little correction for function

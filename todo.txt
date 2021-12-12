@@ -12,7 +12,8 @@ Tasks by DF7BE
    (recent state: not supported by Harbour)
  - Check for Pelles C compiler
    (recent state: not supported by Harbour)
-
+ - Port of HWGUI designer to LINUX
+ 
 List:  Samples not running or have bugs (Fix bugs, if time available, low priority):
   1.) WinAPI
       grid_5.prg     crashes, if click on button "Change": 
@@ -38,14 +39,6 @@ some work for recover mouse cursor on GTK.
   hwg_msginfo() or printer preview to hide there
   the mouse cursor. 
 
-
-some work for hwreport:
-- missing functions _HB_FUN_OPENREPORT()
-- HWG_WAITRUN(<file>),
-
-Some work for hwmake:
-Some bugs adding files and libs.
-Validation for class WinPrn.
 
 
 Add feature: Label utility.

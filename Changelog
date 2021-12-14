@@ -8,6 +8,11 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-12-14 12:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcontrol.prg
+    * Refresh() method added to a static control (label) - it is needed
+      for transparent labels.
+
 2021-12-12 14:30 UTC+0100 Wilfried Brunken DF7BE
   * utils/designer/Readme.txt
   * utils/designer/hbmk.sh

@@ -5,6 +5,12 @@
 
                                    $Id$
 
+HWGUI 2.23 build 2 ( 21.12.2021 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] HwReport (contribs) has been rewritten, it works now under Linux GTK, too.
+[+] GTHWG, Linux GTK version, added to contribs.
+[!] Some warnings and bugs fixed.
+
 HWGUI 2.23 build 1 ( 28.04.2021 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

@@ -8,6 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2021-12-21 09:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 build 2
+  * whatsnew.txt
+    * Updated for v2.23 build 2
+
 2021-12-14 12:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcontrol.prg
     * Refresh() method added to a static control (label) - it is needed

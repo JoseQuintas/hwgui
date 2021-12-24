@@ -22,7 +22,7 @@ is available for your platform.
 If you have success, please create a support ticket
 and post us your description (appended as a text file).
 We are interested in running HWGUI applications on
-Android an MacOS. 
+Android and MacOS. 
 
 
 First steps

@@ -81,6 +81,22 @@
     For details read instructions in file "samples\dev\MinGW64\MinGW64.txt"
 
 
+    1.2) Helpful tools for HWGUI developer
+         (All open source for Windows)
+
+        - 7Zip
+           A useful archiver, supports ZIP and UNIX/LINUX formats tar and tar.gz and many more 
+           https://www.7-zip.de/  
+        - Notepad++
+           A good editor for developers with syntax highlightning
+           https://notepad-plus-plus.org/
+        - WinMerge
+           A powerful diff an merge tool
+           https://winmerge.org/
+        - Greenfish icon editor
+           http://greenfishsoftware.org/gfie.php  (also for LINUX) 
+
+
    2) Linux
 
    For installation on Linux you need some prerequisites,

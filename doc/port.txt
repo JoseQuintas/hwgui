@@ -180,7 +180,9 @@ dependent of the used printer model. In CLLOG, i used a printer database
 to support more printer models.
 
 Because recent computer systems have no printer interfaces any more, it is strictly recommended,
-to use the Winprn class for Windows and Linux/GTK for all printing actions. The Winprn class contains a good print preview dialog. If you have a valid printer driver for your printer model installed,
+to use the Winprn class for Windows and Linux/GTK for all printing actions.
+The Winprn class contains a good print preview dialog.
+If you have a valid printer driver for your printer model installed,
 your printing job is done easy (printer connection via USB or LAN). 
 
 For evaluation purposes, you can redirect the printer output in the Harbour console program into a

@@ -2,11 +2,11 @@
 
                          Visual Report Builder
 
-
+        Actualized by DF7BE, 2021-12-30        
 
         1. Introduction
 
-	HWReport allows you create report forms for following using in
+    HWReport allows you create report forms for following using in
     applications, built with Harbour + HWGui.
         It provides intuitively clear way to design the desirable output form.
 
@@ -46,25 +46,37 @@
         repbuild.rc
         repbuild.h     -     HWReport source files
 
-        bldHWRep.bat   -     bat file to build HWReport
-
         repexec.prg    -     source file, which must be linked to any 
                                application, which uses HwReport
         example.prg    -     source file of example application
         bldexam.bat    -     bat file to build example application
         example.rpt    -     example report file
 
-        logo.bmp
+        hwreport.ico   -     Icon file
         test.dbf       -     data for example application
+        a1.rpt         -     sample report: first 100 records of test.dbf
+        example.rpt
 
         hwreport.txt   -     this file.
+
+        Build scripts to build HWReport:
+
+        hwreport.hbp   -   For hbmk2 utility
+        example.hbp    -     ------ " ------ , build example
+        hwmingnw.bat   -   MinGW
+        bldmngw.bat    -   MinGW for GTK cross development environment on Windows
+        bldow.bat      -   OpenWatcom
+        bldhwrep.bat   -   Borland C
+        bldexam.bat    -   Borland C,  build example
+ 
+        
 
         3. Menu
 
         3.1. File
 
         - New:   Creates a new blank form. Currently there is only one format -
-                 A4 Portrait ( 210x297mm ).
+                 DIN A4 Portrait ( 210x297mm ).
 
         - Open:  Opens existing report. You need to choose the format ( *.rpt -
                  report file or *.prg - program source ), file and write the

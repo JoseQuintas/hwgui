@@ -90,6 +90,7 @@
         - Notepad++
            A good editor for developers with syntax highlightning
            https://notepad-plus-plus.org/
+           Supports UTF-8, Windows, UNIX/LINUX and MacOS line endings.
         - WinMerge
            A powerful diff an merge tool
            https://winmerge.org/

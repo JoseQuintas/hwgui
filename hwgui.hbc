@@ -13,7 +13,7 @@ libpaths=lib
 {!hblib}libs=hwgui procmisc hbxml hwgdebug
 
 # --- Outdated, out of support ---
-#{win&!watcom&!hblib}libs=hbactivex hwg_extctrl hwg_qhtm
+#{win&!allmingw&!watcom&!hblib}libs=hbactivex hwg_extctrl hwg_qhtm
 
 {unix}ldflags+="`pkg-config --libs gtk+-2.0`"
 

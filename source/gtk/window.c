@@ -1059,5 +1059,10 @@ HB_FUNC( HWG_EXITPROC )
    gtk_key_snooper_remove( s_KeybHook );
 }
 
+HB_FUNC( HWG_DEICONIFY )
+{
+gtk_window_deiconify(  (GtkWindow*) (HB_PARHANDLE(1) ) );
+}
+
 /* ==================== EOF of window.c ==================== */
 

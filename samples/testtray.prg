@@ -3,8 +3,11 @@
 
 FUNCTION Main
    LOCAL oMainWindow, oTrayMenu
-   LOCAL oIcon1 := HIcon():AddResource( "ICON_1" )
-   LOCAL oIcon2 := HIcon():AddResource( "ICON_2" )
+   // LOCAL oIcon1 := HIcon():AddResource( "ICON_1" )
+   // LOCAL oIcon2 := HIcon():AddResource( "ICON_2" )
+   
+   LOCAL oIcon1 := HIcon():AddFile("../../image/ok.ico")
+   LOCAL oIcon2 := HIcon():AddFile("../../image/cancel.ico") 
 
    INIT WINDOW oMainWindow MAIN TITLE "Example"
 

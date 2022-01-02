@@ -140,6 +140,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
    METHOD CLOSE()    INLINE iif( !onDestroy( Self ), .F. , hwg_DestroyWindow( ::handle ) )
    METHOD SetTitle( cTitle ) INLINE hwg_Setwindowtext( ::handle, ::title := cTitle )
+   
 
 ENDCLASS
 
@@ -262,6 +263,7 @@ CLASS HMainWindow INHERIT HWindow
    METHOD Activate( lShow, lMaximize, lMinimize, lCentered, bActivate )
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray()
+   METHOD DEICONIFY()
 
 ENDCLASS
 
@@ -368,6 +370,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
 
 METHOD InitTray() CLASS HMainWindow
    RETURN Nil
+   
+METHOD DEICONIFY() CLASS HMainWindow 
+   hwg_deiconify(::handle)
+  RETURN NIL   
 
 FUNCTION hwg_ReleaseAllWindows( hWnd )
 

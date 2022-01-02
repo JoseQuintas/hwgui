@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
-      <td width="70%" align="center">Alexander S.Kresin, March 2021</td>
+      <td width="70%" align="center">Alexander S.Kresin, January 2022</td>
       <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
     </tr>
   </table>
@@ -93,6 +93,14 @@
     <b>bExit</b> - codeblock, which is evaluated when window is closed;<br>
     <b>bOther</b> - codeblock, which is evaluated for all other messages - you can write
     your own procedure for messages handling;<br>
+    <br><br>
+    <b>Special information for tray applications:</b><br>
+    The behavior of tray applications differ between Windows and LINUX.<br>
+    On LINUX, the main windows appears at start time, but the main window is
+    reachable by mouse right click.<br>
+    For details, see sample programs<br>
+    samples/gtk_samples/testtray.prg and samples/testtray.prg .<br>
+    <br>
 
     <br><a name="Commands1-2" href="#_Commands1-2">4.1.2.  INIT DIALOG</a>
     <p>This command creates the dialog box. To force the dialog

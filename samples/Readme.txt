@@ -157,7 +157,7 @@ For beginners:
  testrtf.prg  1)    N  #      -       Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 
  testsdi.prg        Y                 Tree control
  testspli.prg       Y                 Split windows
- testtray.prg       N  #              Tray Message: No exported method: HANDLE
+ testtray.prg 12)   Y  #              Tray Message : At this time works only with BCC, will be fixed as soon as possible
  testtree.prg       Y                 Tree view control
  testxml.prg        Y                 reading/writing XML file and handling menu items while run-time (testxml.xml)
  trackbar.prg       N                 Trackbar demo, horizontal und vertical.

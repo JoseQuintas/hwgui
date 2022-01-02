@@ -9,6 +9,25 @@
 */
 
 
+2022-01-02 17:35 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * samples/Readme.txt
+  * samples/gtk_samples/testtray.hbp (New)
+  * samples/gtk_samples/testtray.prg (New)
+  * samples/testtray.prg
+  * source/gtk/hwindow.prg
+  * source/gtk/window.c
+  * samples/testtray.rc (Deleted)
+    ! Tray port to GTK/LINUX with extra sample program.
+    ! Modify icon will be supported later.
+    ! Doc's updated
+    ! Port of tray sample resources to HWGUI commands
+    ! TO-DO: On MingW the program works correct,
+    ! but the trasy icon is not visible
+    ! (to be continued)
+
+
 2021-12-30 23:59 UTC+0100 Wilfried Brunken DF7BE
   * contrib/hwreport/bldow.bat
   * contrib/hwreport/hwreport.txt

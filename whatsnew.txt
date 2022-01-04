@@ -5,6 +5,15 @@
 
                                    $Id$
 
+HWGUI recent code snapshot
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+[!] Some bugs fixed.
+[!] More sample programs are running now on all platforms
+[!] Borland resources are incompatible with multi platform usage and MinGW. Ported to HWGUI commands. 
+[!] More improvement for LINUX/GTK
+
+
 HWGUI 2.23 build 2 ( 21.12.2021 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] HwReport (contribs) has been rewritten, it works now under Linux GTK, too.

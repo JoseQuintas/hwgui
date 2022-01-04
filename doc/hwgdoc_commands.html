@@ -95,12 +95,33 @@
     your own procedure for messages handling;<br>
     <br><br>
     <b>Special information for tray applications:</b><br>
-    The behavior of tray applications differ between Windows and LINUX.<br>
+    The behavior of tray applications differs between Windows and LINUX.<br>
     On LINUX, the main windows appears at start time, but the main window is
     reachable by mouse right click.<br>
+    <br>
+    (On LINUX, there is now way to change the tray icon, because<br>
+    the WinAPI function "HWG_SHELLMODIFYICON" does not work here.<br>
+    So the menu point "Change icon" does not appear on GTK/LINUX).<br>
+    <br>
     For details, see sample programs<br>
     samples/gtk_samples/testtray.prg and samples/testtray.prg .<br>
+    <br>Some screenshots from sample program "testtray.prg":<br>
+    Windows 10:<br>
     <br>
+    <img src="./image/tray_start_win10.png" align=center wborder=0 alt="Tray icon at start of example"><br>
+    Tray icon at start of example program with tooltip text<br>
+    <br>    
+    <img src="./image/tray_ContMenu_win10.png" align=center wborder=0 alt="Tray with context menu"><br>
+    Tray with context menu<br>
+    <br>
+    <br>LINUX:<br>
+    <img src="./image/tray_LINUX_mainwin.png" align=center wborder=0 alt="Main window"><br> 
+    Main window<br>
+    <br>
+    <img src="./image/tray_LINUX_msg.png" align=center wborder=0 alt="Tray message window"><br>
+    Tray message window<br>
+    <br>
+
 
     <br><a name="Commands1-2" href="#_Commands1-2">4.1.2.  INIT DIALOG</a>
     <p>This command creates the dialog box. To force the dialog

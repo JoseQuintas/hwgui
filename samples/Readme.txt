@@ -97,6 +97,13 @@ For beginners:
  
     Creating and editing forms use the HWGUI utility "Designer"
     in directory "utils/designer".
+   
+6.) Resources compiled into exe files:
+    To avaiod trouble with missing resource files, use the conversion of them
+    into hex value. 
+    See instructions in utils/bincnt/Readme.txt
+    An alternative method is to use the "Binary Container Manager" to collect
+    all resource file in one database.
  
 
 
@@ -114,7 +121,7 @@ For beginners:
  Dialogboxes.prg    Y                 Demonstrates few ready to use dialog boxes (extract from tutor)
  fileselect.prg     Y                 Sample for file selection menues
  getupdown.prg      Y                 Usage of @ <x> <y> GET UPDOWN ..
- GetWinVers.prg     Y                 Functions for get recenthwg_SaveFile() Windows version
+ GetWinVers.prg     Y                 Functions for get recent hwg_SaveFile() Windows version
  graph.prg          Y                 Paint graphs (Sinus, Bar diagram)
  grid_1.prg         N         Y       Grid demo (HGrid class)
  grid_2.prg 2)      N         -       Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
@@ -157,7 +164,7 @@ For beginners:
  testrtf.prg  1)    N  #      -       Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 
  testsdi.prg        Y                 Tree control
  testspli.prg       Y                 Split windows
- testtray.prg 12)   Y  #              Tray Message : At this time works only with BCC, will be fixed as soon as possible
+ testtray.prg       Y         Y       Tray Message : Be care of different behavior between WinAPI and GTK
  testtree.prg       Y                 Tree view control
  testxml.prg        Y                 reading/writing XML file and handling menu items while run-time (testxml.xml)
  trackbar.prg       N                 Trackbar demo, horizontal und vertical.

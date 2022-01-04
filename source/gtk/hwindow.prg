@@ -264,6 +264,7 @@ CLASS HMainWindow INHERIT HWindow
    METHOD onEvent( msg, wParam, lParam )
    METHOD InitTray()
    METHOD DEICONIFY()
+   METHOD ICONIFY()
 
 ENDCLASS
 
@@ -373,7 +374,11 @@ METHOD InitTray() CLASS HMainWindow
    
 METHOD DEICONIFY() CLASS HMainWindow 
    hwg_deiconify(::handle)
-  RETURN NIL   
+  RETURN NIL
+
+METHOD ICONIFY()  CLASS HMainWindow
+   hwg_iconify(::handle)
+  RETURN NIL  
 
 FUNCTION hwg_ReleaseAllWindows( hWnd )
 
@@ -426,6 +431,12 @@ STATIC FUNCTION onGetFocus( oDlg, w, l )
    ENDIF
 
    RETURN 0
+
+
+* Prepare for future (if available on next GTK versions)   
+* FUNCTION hwg_GTKShellnotifyicon( oIcon )
+*       hwg_ShellModifyIcon ( iif( oIcon != Nil, oIcon:handle, Nil ) )
+*   RETURN NIL
 
 * ===================== EOF of hwindow.prg ==============================
 

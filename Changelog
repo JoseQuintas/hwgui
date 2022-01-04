@@ -9,6 +9,47 @@
 */
 
 
+2022-01-05 00:30 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * doc/image/tray_ContMenu_win10.png (New)
+  * doc/image/tray_LINUX_mainwin.png (New)
+  * doc/image/tray_LINUX_msg.png (New)
+  * doc/image/tray_start_win10.png (New)
+  * image/MacOS (New)
+  * image/MacOS/Readme.txt (New)
+  * image/MacOS/hwgui_Mac_128x128_256.icns (New)
+  * image/MacOS/hwgui_Mac_16x16_1Bit.icns (New)
+  * image/MacOS/hwgui_Mac_16x16_256.icns (New)
+  * image/MacOS/hwgui_Mac_16x16_256_2.icns (New)
+  * image/MacOS/hwgui_Mac_16x16_256_3.icns (New)
+  * image/MacOS/hwgui_Mac_256x256_256.icns (New)
+  * image/MacOS/hwgui_Mac_32x32_1Bit_3.icns (New)
+  * image/MacOS/hwgui_Mac_32x32_256.icns (New)
+  * image/MacOS/hwgui_Mac_32x32_256_2.icns (New)
+  * image/MacOS/hwgui_Mac_32x32_256_3.icns (New)
+  * image/MacOS/hwgui_Mac_512x512_256.icns (New)
+  * image/hwgui.ico (New)
+  * image/hwgui_16x16.ico (New)
+  * image/hwgui_24x24.ico (New)
+  * image/hwgui_256x256.ico (New)
+  * image/hwgui_32x32.ico (New)
+  * image/hwgui_48x48.ico (New)
+  * samples/Readme.txt
+  * samples/gtk_samples/testtray.prg
+  * samples/testtray.prg
+  * source/gtk/hwindow.prg
+  * source/gtk/window.c
+  * whatsnew.txt
+    ! Sample testtray.prg port now also ready for MinGW(64)
+    ! and multi platform usage.
+    ! doc updated.
+    ! Icon files for experimental purposes added:
+    ! - several dimensions
+    ! - also for MacOS
+    ! Generated with gfie64 on Win 10.
+
+
 2022-01-02 17:35 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_commands.html

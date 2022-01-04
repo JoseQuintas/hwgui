@@ -1059,10 +1059,36 @@ HB_FUNC( HWG_EXITPROC )
    gtk_key_snooper_remove( s_KeybHook );
 }
 
-HB_FUNC( HWG_DEICONIFY )
+HB_FUNC( HWG_DEICONIFY ) /* maximize  */
 {
 gtk_window_deiconify(  (GtkWindow*) (HB_PARHANDLE(1) ) );
 }
+
+HB_FUNC( HWG_ICONIFY )   /* minimize */ 
+{
+gtk_window_iconify(  (GtkWindow*) (HB_PARHANDLE(1) ) );
+}
+
+/*
+  *  ShellModifyIcon( hWnd,  hIcon )
+  * TOOLTIP not supported
+  * Comment out for experimental purposes
+  */
+/*  
+HB_FUNC( HWG_SHELLMODIFYICON )
+{
+
+
+  PHWGUI_PIXBUF szFile = HB_ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL; 
+  if (szFile)
+   {
+        gtk_window_set_icon( (GtkWindow*) (HB_PARHANDLE(1) ), szFile->handle);
+        gtk_window_set_default_icon( szFile->handle );
+        gtk_window_iconify(  (GtkWindow*) (HB_PARHANDLE(1) ) );
+        gtk_window_deiconify(  (GtkWindow*) (HB_PARHANDLE(1) ) );
+   }
+}
+*/
 
 /* ==================== EOF of window.c ==================== */
 

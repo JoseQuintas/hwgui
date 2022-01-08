@@ -9,6 +9,26 @@
 */
 
 
+2022-01-08 21:55 UTC+0100 Wilfried Brunken DF7BE 
+  * samples/Readme.txt
+  * samples/doc (New)
+  * samples/doc/Readme.txt (New)
+  * samples/doc/image (New)
+  * samples/doc/image/propsh_bcc_c1.png (New)
+  * samples/doc/image/propsh_bcc_c2.png (New)
+  * samples/doc/image/propsh_mingw_c1.png (New)
+  * samples/doc/image/propsh_mingw_c2.png (New)
+  * samples/propsh.prg
+  * samples/propsh.rc (Deleted)
+     ! Sample propsh.prg prepared for bugfixing with MinGW
+     ! (to be continued)
+     ! Borland resources ported to HWGUI commands.
+     ! Added directories samples/doc and samples/doc/image
+     ! for additional information storage (for example
+     ! for describing bug fixing and port to GTK/LINUX).
+     ! recent: propsh.prg
+
+
 2022-01-05 00:30 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_commands.html

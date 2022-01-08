@@ -9,7 +9,9 @@ Created by DF7BE
 
 For beginners:
 
-1.1.) Read the Article of Alexander Kresin "Harbour for Beginners", it is a very good introduction
+1.1.) Read the Article of Alexander Kresin
+      "Harbour for Beginners",
+      it is a very good introduction
       into Harbour programming language: 
        http://www.kresin.ru/en/hrbfaq.html
       Hint for offline reading:
@@ -66,7 +68,7 @@ For beginners:
     sharp "S" (ß), Euro currency sign (€) and greek mue (µ) for SI system as prefix for
     parts per million. Select this codepage as data CP in dbview.prg. Select 
     DEWIN or UTF-8 for Linux as Local codepage for correct display. Do this
-    before opening a dbf file ! (data codepage was set at open moment of dbf).
+    before opening a dbf file ! (data codepage was set at open time of dbf).
 
 
 4.) List of sample programs
@@ -99,11 +101,11 @@ For beginners:
     in directory "utils/designer".
    
 6.) Resources compiled into exe files:
-    To avaiod trouble with missing resource files, use the conversion of them
+    To avoid trouble with missing resource files, use the conversion of them
     into hex value. 
     See instructions in utils/bincnt/Readme.txt
     An alternative method is to use the "Binary Container Manager" to collect
-    all resource file in one database.
+    all resource files in one database.
  
 
 
@@ -142,7 +144,7 @@ For beginners:
  nice.prg           N                 Demo of NICEBUTTON
  nice2.prg          N  #      -       Demo of NICEBUTTON (2), starts only in background, kill with Task Manager
  progbars.prg  12)  Y                 Progress bar
- propsh.prg         N  #              Property sheet, freezes at hwg_PropertySheet()
+ propsh.prg +)      N  #              Property sheet, freezes at hwg_PropertySheet()
  pseudocm.prg       Y                 Pseudo context menu
  shadebtn.prg       N                 Shade buttons
  simpleedit.prg     Y                 Simple text editor demonstrating hwg_Memoedit() and hwg_MemoCmp()
@@ -171,7 +173,7 @@ For beginners:
  tstcombo.prg       Y                 Test Combobox, with preset and refresh.
  tstprdos.prg 3)    N                 Print on LPT, outdated, see 3)
  tstscrlbar.prg     N                 Scrollbar (GTK: Compilable, but no scroll function)
- tstsplash.prg 	    N                 SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
+ tstsplash.prg      N                 SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
  TwoListbox.prg     N                 Sample for select and move items between two listboxes.
  TwoLstSub.prg      Y                 Multi platform substitute for two listboxes by BROWSE windows.
  winprn.prg  3) 8)  Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)
@@ -179,6 +181,21 @@ For beginners:
 
 Directories:
 ============
+
+
+ doc                                  Because this file is a summary, 
+                                      this directory contains additional information about
+                                      these sample program, here we report all facts about
+                                      state of port to LINUX/GTK and known and bugfixing
+                                      and many more hints (for example older sample source code
+                                      only for Borland C). 
+                                      Subdirectory "image" may contain screen shots and other
+                                      images.
+                                      Extra information for usage of a sample may often
+                                      written in the inline comments of the source code.
+                                      If extra information is availabe for a sample programm,
+                                      it is marked in this file with "+)"
+
  MariaDb     2)     ?                 Sample CRUD DBF and MariaDb
                                       Delivered by Itamar M. Lins Jr. (TNX !)
                                       Attention, sample not checked by HWGUI developer team.

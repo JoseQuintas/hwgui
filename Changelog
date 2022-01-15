@@ -8,6 +8,27 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-01-15 18:10 UTC+0100 Wilfried Brunken DF7BE 
+  *  samples/Readme.txt
+  *  samples/Sample.txt (New)
+  *  samples/doc/Readme.txt
+  *  samples/doc/image/Hello_InfoDlg_Win.png (New)
+  *  samples/doc/image/Hello_main_Win.png (New)
+  *  samples/gtk_samples/Sample.txt (New)
+  *  samples/hello.prg
+  *  source/winapi/message.c
+     ! Port of sample program hello.prg to GTK and bugfixing:
+     ! -  "Windows only" functions deactivated,
+     ! -  hwg_shellexecute() does not work, need bugfix,
+     ! -  Added sample text files to open with
+     !    editor (notepad or gedit) via hwg_shellexecute()
+     !    (if bugfixing is done),  
+     ! -  Function hwg_MsgTemp(), added description
+     !    in source code file message.c,
+     ! -  Added sceenshots and 
+     !    descriptive text as inline comments.
+     ! (to be continued)
+
 
 2022-01-08 21:55 UTC+0100 Wilfried Brunken DF7BE 
   * samples/Readme.txt
@@ -85,7 +106,7 @@
     ! Doc's updated
     ! Port of tray sample resources to HWGUI commands
     ! TO-DO: On MingW the program works correct,
-    ! but the trasy icon is not visible
+    ! but the tray icon is not visible
     ! (to be continued)
 
 

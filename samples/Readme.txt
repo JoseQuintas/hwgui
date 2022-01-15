@@ -76,6 +76,9 @@ For beginners:
     Special sample programs for GTK in directory "gtk_samples".
     The list contains only the main programs.
     Some of the programs are also ready for GTK, they are marked in the GTK column with "Y".
+    If the program is marked with "R", the "Windows only" functions are deactived by compiler
+    switch "#ifdef __GTK__", so the program runs also on GTK.
+    Read the inline comments of this sample to get information of the reduced feature set.
     
     If sample program also ready for GTK:
     For test with GTK create a locol copy of
@@ -111,7 +114,7 @@ For beginners:
 
  Sample program     GTK   NLS MinGW64 Purpose
  =================  ===   === ======= =======
- a.prg              N         CN 9)   Some HWGUI basics (Open DBF's, GET's, ...)
+ a.prg   +)         R         CN 9)   Some HWGUI basics (Open DBF's, GET's, ...)
  arraybrowse.prg    Y                 Array BROWSE avoiding crashes because of bugs (see inline comments)
  bincnts.prg 10)    N  #              Usage of images from Binary container
  buildpelles.prg    N         Y       Build APP using Pelles C Compiler (*.bld file)
@@ -125,12 +128,12 @@ For beginners:
  getupdown.prg      Y                 Usage of @ <x> <y> GET UPDOWN ..
  GetWinVers.prg     Y                 Functions for get recent hwg_SaveFile() Windows version
  graph.prg          Y                 Paint graphs (Sinus, Bar diagram)
- grid_1.prg         N         Y       Grid demo (HGrid class)
- grid_2.prg 2)      N         -       Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
- grid_3.prg 2)      N         -       Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
- grid_4.prg         N         Y       File Viewer
- grid_5.prg         N  #      -       Grid Editor  (crashes, if click on button "Insert","Change","Delete") 
- hello.prg          N                 Some elements: Edit field, tabs, tree view, combobox, ...
+ grid_1.prg     +)  N         Y       Grid demo (HGrid class)
+ grid_2.prg 2)  +)  N         -       Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
+ grid_3.prg 2)  +)  N         -       Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
+ grid_4.prg     +)  N         Y       File Viewer
+ grid_5.prg     +)  N  #      -       Grid Editor  (crashes, if click on button "Insert","Change","Delete") 
+ hello.prg      +)  R                 Some elements: Edit field, tabs, tree view, combobox, ...
  helpdemo.prg 6) 7) N                 Context help using windows help (Shellexecute crashes)
  helpstatic.prg     Y                 Static help text
  hexbincnt.prg 11)  Y                 Handling of binary resources with hex values. 

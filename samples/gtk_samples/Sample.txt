@@ -1,0 +1,20 @@
+This is a sample text file
+with UNIX line endings and UTF-8 code page.
+
+Here some special signs for german language:
+
+AE    : Ä
+OE    : Ö
+UE    : Ü  
+
+ae    : ä
+oe    : ö
+ue    : ü
+
+sz    : ß
+
+Micro : µ
+
+Euro  : €
+
+======================= EOF of Sample.txt ======================

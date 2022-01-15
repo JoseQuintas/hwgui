@@ -1,0 +1,21 @@
+This is a sample text file
+with Windows/DOS line endings and Windows code page.
+
+Here some special signs for german language:
+
+AE    : Ä
+OE    : Ö
+UE    : Ü  
+
+ae    : ä
+oe    : ö
+ue    : ü
+
+sz    : ß
+
+Micro : µ
+
+Euro  : €
+
+======================= EOF of Sample.txt ======================
+ 

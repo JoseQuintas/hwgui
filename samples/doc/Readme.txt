@@ -14,6 +14,9 @@ Then put the description about the way of fix or port as
 inline comment into the source code,
 if this information is helpful for the user.
 
+The subdirectory "image" contains screenshots of
+sample programs.
+
 
 1.) propsh.prg: (to be continued)   
     Property sheet, freezes at hwg_PropertySheet(),
@@ -41,7 +44,45 @@ if this information is helpful for the user.
     The contents of the old rc file was preserved
     as inline comment. 
     
+2.) bincnts.prg
+    The images of the binary container do not appear.
+    A special solution is write the resources from the
+    container into temporary files and load then from
+    there.
+    The handling of resources does not work in the way like Windows.
     
+    The icon appears OK.
+    
+3.) grid_5.prg 
+    Grid Editor (crashes, if click on button "Insert","Change","Delete")         
+
+
+
+Some information for port to GTK/LINUX
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+ 
+- grid_1.prg  grid_2.prg  grid_3.prg  grid_4.prg  grid_5.prg
+     The grid feature is available with GTK4,
+     first released in 2020. Port of HWGUI to GTK4 needed.
+     
+a.prg : Need for full port TO GTK: 
+       HWG_GETCURRENTDIR(), HMDICHILDWINDOW(), HDATEPICKER(), HRECT(),
+       HWG_RECT()
+       Program gtk_samples/a.prg is a reduced version:
+       Removed calls of "Windows only" functions by
+       compiler switch
+      
+hello.prg : Need for full port TO GTK: 
+       HRICHEDIT(),
+       HWG_RE_SETCHARFORMAT(), HWG_SETTABSIZE(), HWG_MSGTEMP(),
+       HWG_GETEDITTEXT(), HWG_SETDLGITEMTEXT(), HWG_PROPERTYSHEET() 
+       State: removed calls of "Windows only" functions by
+       compiler switch
+       screenshots:
+        samples/doc/image/Hello_InfoDlg_Win.png
+        samples/doc/image/Hello_main_Win.png       
+
+   
     
 List of sample programs with bugs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -73,6 +73,25 @@ HB_FUNC( HWG_MSGBEEP )
                0 ) ? ( LONG ) 0xFFFFFFFF : hb_parnl( 1 ) );
 }
 
+/*
+ Function hwg_MsgTemp()
+ (Not for HWGUI applications, only for debugging)
+ 
+ This function displays some compiler constants
+ in a Messagebox "DialogBaseUnits".
+ 
+ Table: Constants and header file with declaration (MinGW), default value and remarks:
+
+  CP_ACP                   winnls.h     0
+  WS_OVERLAPPEDWINDOW      winuser.h    0xcf0000
+  NM_FIRST                 commctrl.h   0
+  
+  The function MultiByteToWideChar(UINT,DWORD,LPCSTR,int,LPWSTR,int)
+  converts LPCSTR to LPWSTR strings.
+  
+  
+*/
+
 HB_FUNC( HWG_MSGTEMP )
 {
    char cres[60];
@@ -100,3 +119,6 @@ HB_FUNC( HWG_MSGTEMP )
                   MB_OKCANCEL | MB_ICONQUESTION ) );
    }
 }
+
+/* ===================== EOF of message.c ==================== */
+

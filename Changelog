@@ -8,6 +8,19 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-01-16 12:35 UTC+0100 Wilfried Brunken DF7BE 
+  *  samples/Readme.txt
+  *  samples/bincnts.hbp
+  *  samples/doc/Readme.txt
+  *  samples/doc/image/Hello_GTK_main.png (New)
+  *  samples/hello.hbp
+  *  samples/hello.prg
+  *  source/gtk/hmisc.prg
+  *  source/winapi/hmisc.prg
+     ! Continued bugfixing of samples
+     ! hello.prg and bincnts.prg
+       
+
 2022-01-15 18:10 UTC+0100 Wilfried Brunken DF7BE 
   *  samples/Readme.txt
   *  samples/Sample.txt (New)

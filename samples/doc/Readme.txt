@@ -6,6 +6,9 @@ Extra information about HWGUI sample programs
   
 This directory contains additional information about
 sample programs.
+The information in this file is useful for the HWGUI user
+and contains also reports about bugs or
+to do's for port to GTK/LINUX.
 
 It is recommended to delete files or information,
 if the program is successfully ported or
@@ -44,14 +47,23 @@ sample programs.
     The contents of the old rc file was preserved
     as inline comment. 
     
-2.) bincnts.prg
-    The images of the binary container do not appear.
+2.) bincnts.prg:
+    Runs best on Windows but not on GTK:
+    The sample program can be compiled. 
+    The icon was correct displayed from the
+    binary container, but the sample dialog with
+    bmp files does not run ==>  
+    The images of the binary container does not appear.
     A special solution is write the resources from the
     container into temporary files and load then from
     there.
     The handling of resources does not work in the way like Windows.
     
-    The icon appears OK.
+    The icon appears OK on WinAPI and GTK/LINUX.
+    
+    - The function hwg_SetResContainer() opens the
+      binary container at reads the resoureces in it:
+      See drawwig.prg, about line 892: HBinC:Open()
     
 3.) grid_5.prg 
     Grid Editor (crashes, if click on button "Insert","Change","Delete")         
@@ -79,8 +91,17 @@ hello.prg : Need for full port TO GTK:
        State: removed calls of "Windows only" functions by
        compiler switch
        screenshots:
+       Windows:
         samples/doc/image/Hello_InfoDlg_Win.png
-        samples/doc/image/Hello_main_Win.png       
+        samples/doc/image/Hello_main_Win.png 
+       LINUX: 
+       The differences of design must be fixed,
+       so that the GTK version of this sample is
+       displayed in the correct way.
+       Lot of extra information in the inline comments.
+        samples/doc/image/Hello_GTK_main.png      
+        ==> this was the screenshot with the further design
+            on Windows.
 
    
     
@@ -89,13 +110,13 @@ List of sample programs with bugs
 (Handle it as a "TO-DO list")
     
 bincnts.prg
-grid_5.prg 
-nice2.prg
+grid_5.prg    (Windows only)
+nice2.prg     (Windows only)
 stretch.prg
 tab.prg
 testbrw.prg
-testchild.prg
-testrtf.prg    
+testchild.prg (Windows only)
+testrtf.prg   (Windows only) 
     
     
 ====================== EOF of Readme.txt =======================================

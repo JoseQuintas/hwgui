@@ -81,9 +81,15 @@ For beginners:
     Read the inline comments of this sample to get information of the reduced feature set.
     
     If sample program also ready for GTK:
-    For test with GTK create a locol copy of
+    For test with GTK create a local copy of
     sample program in samples\gtk_samples,
-    because here are the compile scripts.
+    also copy the *.hbp file with same prefix and modify:
+    1.) comment out the stop for LINUX:
+        # -stop={linux}
+    2.) Modify path to common hbc file:
+        ../hwgui.hbc to ../../hwgui.hbc
+    Compile with
+     hbmk2 <prefix>.hbp        
 
     Some samples could not be compiled or are crashing, hope that we can fix the bugs if we have time,
     see remarks in "Purpose" column, marked with # sign (Test with MingW, recent Harbour Code snapshot).
@@ -116,7 +122,7 @@ For beginners:
  =================  ===   === ======= =======
  a.prg   +)         R         CN 9)   Some HWGUI basics (Open DBF's, GET's, ...)
  arraybrowse.prg    Y                 Array BROWSE avoiding crashes because of bugs (see inline comments)
- bincnts.prg 10)    N  #              Usage of images from Binary container
+ bincnts.prg 10) +) N  #              Usage of images from Binary container
  buildpelles.prg    N         Y       Build APP using Pelles C Compiler (*.bld file)
  colrbloc.prg       Y         Y       BROWSE: arrays and DBF's with colored lines and columns
  dbview.prg         Y         Y       DBF access (Browse, Indexing, Codepages, Structure, ... )

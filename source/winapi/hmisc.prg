@@ -725,7 +725,32 @@ LOCAL cres
   ELSE
    cres := ".F." 
   ENDIF
-RETURN cres 
+RETURN cres
+
+* =======================================================
+FUNCTION hwg_IsNIL(xpara)
+* =======================================================
+ 
+ IF xpara == NIL
+  RETURN .T.
+ ENDIF
+ RETURN .F.
+
+* =======================================================
+FUNCTION hwg_MsgIsNIL(xpara)
+* Sample call:
+* hwg_MsgIsNIL(hwg_Getactivewindow() )
+* =======================================================
+
+LOCAL lrvalue
+
+lrvalue := hwg_Isnil( xpara )
+   IF lrvalue
+     hwg_MsgInfo("NIL")
+   ELSE
+     hwg_MsgInfo("NOT NIL")
+   ENDIF 
+RETURN lrvalue
 
 * ============== EOF of hmisc.prg =================
 

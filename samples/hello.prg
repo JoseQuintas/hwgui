@@ -31,6 +31,18 @@
  *                          The screenshot is available in samples\doc\image\Hello_InfoDlg_Win.png
  * - HWG_GETEDITTEXT(),
  * - HWG_SETDLGITEMTEXT()
+ *
+ * Design differences for GTK:
+ * 
+ * In most cases, the design (for positions and sizes for GUI elements) differ
+ * between WinAPI and GTK/LINUX.
+ * For example:
+ * The combobox size is more bigger.
+ * 
+ * It is recommended to check the design for multi platform application
+ * also on LINUX !
+ * 
+ * In this sample program, we demonstrate the differences.
 */    
     
 #include "windows.ch"
@@ -80,7 +92,11 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
      @ 20,10 EDITBOX oEdit CAPTION "Hello, world !"  SIZE 200,30 
 #endif   
 
+#ifdef __GTK__
    @ 270,10 COMBOBOX aCombo ITEMS {} SIZE 100, 150 TOOLTIP "Combobox"
+#else
+   @ 270,10 COMBOBOX aCombo ITEMS {} SIZE 100, 150 TOOLTIP "Combobox"
+#endif   
 
    @ 20,50 LINE LENGTH 100
    
@@ -192,6 +208,8 @@ Local oDlg1, oDlg2
 
    INIT DIALOG oDlg2 TITLE "PAGE_2" STYLE WS_CHILD + WS_VISIBLE + WS_BORDER
    @ 20,35 EDITBOX "" SIZE 160, 26 STYLE WS_BORDER
+   
+   hwg_MsgIsNIL(hwg_Getactivewindow() )
 
    hwg_PropertySheet( hwg_Getactivewindow(), { oDlg1, oDlg2 }, "Sheet Example",210,10,300,300 )
 

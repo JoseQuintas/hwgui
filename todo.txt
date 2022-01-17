@@ -52,7 +52,15 @@ The console version of CLLOG also supports label.
 There is also an label editor as console application
 available.
 This must be ported to HWGUI using the WinPrn class. 
-  
+ 
+ 
+ Binary container manager:
+ Bug at deleting an item,
+ the entry is not deleted, but the name is empty.
+ Adding a new item, the name is corupted.
+ 
+ 
+ GTK + Toolbar : If used, the Ownerbuttons are not visible 
 
 Documentation:
 - A lot of functions with no describing text for usage and

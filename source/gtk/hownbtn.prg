@@ -175,8 +175,10 @@ METHOD Init() CLASS HOwnButton
 METHOD Paint() CLASS HOwnButton
    LOCAL hDC := hwg_Getdc( ::handle )
    LOCAL aCoors, aMetr, x1, y1, x2, y2, n
+   LOCAL nwidthb  && for ::widthb
 
    aCoors := hwg_Getclientrect( ::handle )
+   
 
    IF !Empty( ::aStyle )
       n := Len( ::aStyle )
@@ -209,10 +211,23 @@ METHOD Paint() CLASS HOwnButton
          ::widthb := ::oBitmap:nWidth
          ::heightb := ::oBitmap:nHeight
       ENDIF
+      * DF7BE bugfix: crashes here at bitmap resource, so added this:
+      IF ::widthb == NIL
+         nwidthb := 0
+      ELSE
+         nwidthb := ::widthb
+      ENDIF 
+      // hwg_MsgIsNIL(aCoors[1],"aCoors[1]") 
+      // hwg_MsgIsNIL(aCoors[3],"aCoors[3]") 
+      // hwg_MsgIsNIL(::widthb,"::widthb")    && passed NIL
+      
+      // hwg_WriteLog("aCoors[3]=" + STR(aCoors[3]) + CHR(10) + "aCoors[1]=" + STR(aCoors[1]) )
+      // hwg_WriteLog("::widthb=" + STR(::widthb) )
+          
       x1 := Iif( ::xb != Nil .AND. ::xb != 0, ::xb, ;
-         Round( ( aCoors[3] - aCoors[1] - ::widthb ) / 2, 0 ) )
+         Round( ( aCoors[3] - aCoors[1] - nwidthb ) / 2, 0 ) )
       y1 := Iif( ::yb != Nil .AND. ::yb != 0, ::yb, ;
-         Round( ( aCoors[4] - aCoors[2] - ::heightb ) / 2, 0 ) )
+         Round( ( aCoors[4] - aCoors[2] - nwidthb ) / 2, 0 ) )
       IF ::lEnabled
          IF ::lTransp
             hwg_Drawtransparentbitmap( hDC, ::oBitmap:handle, x1, y1, ::trColor )

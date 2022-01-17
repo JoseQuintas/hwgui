@@ -8,6 +8,23 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2022-01-17 19:25 UTC+0100 Wilfried Brunken DF7BE 
+  * samples/bincnts.prg
+  * samples/gtk_samples/bincnts.prg
+  * samples/gtk_samples/image/sample.bin
+  * samples/image/sample.bin
+  * source/gtk/drawwidg.prg
+  * source/gtk/hmisc.prg
+  * source/gtk/hownbtn.prg
+  * source/winapi/hmisc.prg
+  * todo.txt
+      ! Continued bugfixing of sample bincnts.prg
+      ! Ownerbutton now OK on GTK. 
+      ! astro.png added to sample.bin,
+      ! but not displayed.
+
+
 2022-01-16 12:35 UTC+0100 Wilfried Brunken DF7BE 
   *  samples/Readme.txt
   *  samples/bincnts.hbp

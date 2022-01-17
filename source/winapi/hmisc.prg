@@ -737,19 +737,30 @@ FUNCTION hwg_IsNIL(xpara)
  RETURN .F.
 
 * =======================================================
-FUNCTION hwg_MsgIsNIL(xpara)
+FUNCTION hwg_MsgIsNIL(xpara,ctitle)
 * Sample call:
 * hwg_MsgIsNIL(hwg_Getactivewindow() )
+* Only for debugging
 * =======================================================
 
 LOCAL lrvalue
 
+
 lrvalue := hwg_Isnil( xpara )
+
+IF ctitle == NIL
    IF lrvalue
      hwg_MsgInfo("NIL")
    ELSE
      hwg_MsgInfo("NOT NIL")
-   ENDIF 
+   ENDIF
+ELSE
+   IF lrvalue
+     hwg_MsgInfo("NIL",ctitle)
+   ELSE
+     hwg_MsgInfo("NOT NIL",ctitle)
+   ENDIF
+ENDIF    
 RETURN lrvalue
 
 * ============== EOF of hmisc.prg =================

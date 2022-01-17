@@ -416,7 +416,8 @@ METHOD AddResource( name ) CLASS HBitmap
  *  name : resource name in container, not file name. 
  *  returns an object to bitmap, if resource successfully added
  */
-   LOCAL oBmp, cVal
+   LOCAL oBmp   && cVal
+   LOCAL i , cTmp
 
    For EACH oBmp IN ::aBitmaps
       IF oBmp:name == name
@@ -429,13 +430,41 @@ METHOD AddResource( name ) CLASS HBitmap
     * DF7BE: AddString method loads image from file or
     * binary container and added it to resource container.
    */
+   
+   * oResCnt (Static Memvar) is object of HBinC class
+   IF !Empty( oResCnt )
+      IF !Empty( i := oResCnt:Get( name ) )
+       * DF7BE: 
+       * Store bmp in a temporary file 
+       * (otherwise the bmp is not loadable)
+       * Load from temporary file
+       *  ::handle := hwg_OpenImage( i, .T. )
+       * Ready for multi platform use
+       hb_memowrit( cTmp := hwg_CreateTempfileName() , i )
+         ::handle := hwg_OpenImage( cTmp )
+      ENDIF
+   ENDIF
+   
+   /*
    IF !Empty( oResCnt ) .AND. !Empty( cVal := oResCnt:Get( name ) )
       IF !Empty( oBmp := ::AddString( name, cVal ) )
           RETURN oBmp
       ENDIF
    ENDIF
+   */
+   
+   IF Empty( ::handle )
+      hwg_MsgStop("Can not add bitmap to resource container: >" + name + "<" )
+      RETURN Nil
+   // ELSE
+   //     hwg_MsgInfo("Bitmap resource successfully loaded >" + name + "<" )     
+   ENDIF
+   ::name   := name
+   AAdd( ::aBitmaps, Self )
 
-   RETURN Nil
+   RETURN Self
+
+   // RETURN Nil
 
 METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize

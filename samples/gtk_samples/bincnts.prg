@@ -95,10 +95,10 @@ INIT WINDOW oMainW  ;
    ICON oIcon STYLE WS_POPUP +  WS_CAPTION + WS_SYSMENU
 
 * GTK + Toolbar : If used, the Ownerbuttons are not visible !   
-* @ 0, 0 TOOLBAR oToolbar OF oMainW SIZE  299 , 50 
-  @ 0,0 PANEL oToolbar OF oMainW SIZE 300 , 50 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+* @ 0, 0 TOOLBAR oToolbar OF oMainW SIZE  299 , 50    
+*  @ 0,0 PANEL oToolbar OF oMainW SIZE 300 , 50 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
 
-@ htab+(nbut*32), 3 OWNERBUTTON oFileOpen OF oToolbar ;
+@ htab+(nbut*32), 3 OWNERBUTTON oFileOpen OF oMainW ; && OF oToolbar ;
    ON CLICK { | | FileOpen()} ;
    SIZE 28,24 FLAT ;
    BITMAP oBitmap ;
@@ -106,7 +106,7 @@ INIT WINDOW oMainW  ;
    TOOLTIP "Open File"
    
    nbut += 1
-
+/*
 @ htab+(nbut*32),3 OWNERBUTTON oQuit OF oToolbar ;
    ON CLICK { | | oMainW:Close()} ;
    SIZE 28,24 FLAT ;
@@ -140,7 +140,8 @@ INIT WINDOW oMainW  ;
    SIZE 28,24 FLAT ;
    BITMAP obtncnt ; 
    TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
-   TOOLTIP "Container image"  
+   TOOLTIP "Container image" 
+*/    
 
  @ 60 , 100 SAY "astro.png" SIZE 100, 20
  @ 60 , 150 BITMAP oastropng

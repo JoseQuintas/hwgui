@@ -671,7 +671,7 @@
     <p></p>
     <pre class="code">
     @ &lt;x&gt;,&lt;y&gt; OWNERBUTTON &lt;oOwnBtn&gt;
-    	 [ OF &lt;oWnd&gt ]; 
+    	 [ OF &lt;oWnd&gt ];  (WinAPI only)
     	 [ ID &lt;nId&gt; ] 
     	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
     	 [ ON INIT &lt;bInit&gt; ] 
@@ -679,7 +679,7 @@
     	 [ ON PAINT &lt;bPaint&gt; ] 
     	 [ ON CLICK &lt;bClick&gt; ] 
     	 [ HSTYLES &lt;aStyles,...&gt; ]
-    	 [ FLAT ] 
+    	 [ FLAT ]             (WinAPI only)
     	 [ DISABLED ] 
     	 [ BACKCOLOR &lt;bcolor&gt; ]
     	 [ TEXT &lt;cText&gt; 
@@ -692,6 +692,17 @@
          [ TOOLTIP &lt;ctoolt&gt; ]
          [ CHECK ]
     </pre>
+    <p>
+    <br>
+    &nbsp; - If FLAT or OF ... used on GTK/LINUX, the ownerbuttons or the images are not visible.<br>
+    &nbsp; - Be care of supported image formats, see documentation of HBitmap CLASS.<br>
+    &nbsp; - BITMAP COORDINATES: On GTK/LINUX pass the real size of image:<br> 
+    &nbsp; &nbsp; &nbsp;  &nbsp;3rd and 4th parameter<br>
+    &nbsp; &nbsp; &nbsp;  &nbsp;Set 1st and 2nd to centered image in the ownerbutton.<br>
+    &nbsp; &nbsp; &nbsp;  On Windows, the value 0,4,0,0 is OK for all.<br>
+    <br>
+    </p>
+
 
     <br><a name="Commands3-18" href="#_Commands3-18">4.3.18.  @ &lt;x&gt;,&lt;y&gt; SHADEBUTTON</a>
     <p></p>

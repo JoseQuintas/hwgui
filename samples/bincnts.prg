@@ -14,7 +14,7 @@
  
     * Status:
     *  WinAPI   :  Yes
-    *  GTK/Linux:  No
+    *  GTK/Linux:  Yes
     *  GTK/Win  :  No
 
 * --------- Instructions -------------
@@ -119,6 +119,9 @@ INIT WINDOW oMainW  ;
 *   Set 1st and 2nd to centered image in the ownerbutton.
 * - GTK: Remove "OF oToolbar" and "FLAT"
 
+
+#ifdef __GTK__ 
+
 @ htab+(nbut * nlowb), 3 OWNERBUTTON oFileOpen /* OF oToolbar */ ;
    ON CLICK { | | FileOpen()} ;
    SIZE nxowb,nyowb  /* FLAT */  ;
@@ -137,7 +140,30 @@ INIT WINDOW oMainW  ;
    TOOLTIP "Terminate Program"
    
    nbut += 1
+
+#else
+
+* If "OF oToolbar" is not added, the ON CLICK function does not work !
+
+@ htab+(nbut * nlowb), 3 OWNERBUTTON oFileOpen  OF oToolbar  ;
+   ON CLICK { | | FileOpen()} ;
+   SIZE nxowb,nyowb  FLAT  ;
+   BITMAP oBitmap ;
+   TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
+   TOOLTIP "Open File" 
+  
+   nbut += 1
+
+
+@ htab+(nbut * nlowb),3 OWNERBUTTON oQuit OF oToolbar  ;
+   ON CLICK { | | oMainW:Close()} ;
+   SIZE nxowb,nyowb /* FLAT */ ;
+   BITMAP oBMPExit ; 
+   TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
+   TOOLTIP "Terminate Program"
    
+   nbut += 1
+#endif   
   
 
 * !!!!! PNG not supported on Windows
@@ -150,20 +176,33 @@ INIT WINDOW oMainW  ;
    TOOLTIP "Open the door"
    
   nbut += 1
-#endif   
+#endif 
+
+#ifdef __GTK__  
 
 @ htab+(nbut * nlowb),3 OWNERBUTTON oBtnjpeg /* OF oToolbar */ ;
    ON CLICK { | | ClickJpeg()} ;
    SIZE nxowb,nyowb /* FLAT */ ;
    BITMAP ojpeg ; 
    TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,5,20,16 ; 
-   TOOLTIP "JPEG image"  
-
+   TOOLTIP "JPEG image"
+   
 
 
  @ 60 , 100 SAY "astro.png" SIZE 100, 20
  @ 60 , 150 BITMAP oastropng
 // @ 60 , 150 BITMAP oBitmap
+
+#else   
+
+@ htab+(nbut * nlowb),3 OWNERBUTTON oBtnjpeg  OF oToolbar  ;
+   ON CLICK { | | ClickJpeg()} ;
+   SIZE nxowb,nyowb  FLAT  ;
+   BITMAP ojpeg ; 
+   TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
+   TOOLTIP "JPEG image"
+
+#endif
    
    oMainW:Activate()
    

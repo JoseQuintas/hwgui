@@ -9,6 +9,33 @@
 */
 
 
+2022-01-20 11:30 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc.html
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_functions.html
+  * doc/image/CLLOG_LINUX_trayIcon.png (New)
+  * doc/image/CLLOG_Link.png (New)
+  * doc/image/Win_CLLOG_exeProperties.png (New)
+  * doc/image/Win_bincnts_Link.png (New)
+  * image/astro2.bmp (New)
+  * samples/Readme.txt
+  * samples/bincnts.prg
+  * samples/doc/Readme.txt
+  * samples/gtk_samples/image/sample.bin
+  * samples/image/sample.bin
+  * source/gtk/drawwidg.prg
+  * source/gtk/hbincnt.prg
+  * source/winapi/drawwidg.prg
+  * source/winapi/hbincnt.prg
+  * utils/bincnt/Readme.txt
+      ! Continued bugfixing of sample bincnts.prg:
+      !  Last issue is to fix the display of PNG
+      !  with the BITMAP command (to be continued)
+      ! New functions added for better handling the binary container
+      ! Docu updated: new Methods and functions,
+      ! description of iconfications with screenshoots.
+
+
 2022-01-17 23:10 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc_commands.html
   * samples/bincnts.prg

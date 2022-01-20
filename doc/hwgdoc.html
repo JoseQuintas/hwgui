@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left">&nbsp;</td>
-    <td width="70%" align="center">Alexander S.Kresin, March 2021</td>
+    <td width="70%" align="center">Alexander S.Kresin, January 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_commands.html">next</a></td>
   </tr>
 </table>
@@ -514,6 +514,7 @@
     <blockquote>
     1.) Icons and images<br>
     2.) Forms<br>
+    3.) Iconification
     </blockquote>
     Most development tools for GUI programs (like Micosoft Visual C/C++)
     contain a tool for handling and designing resources.<br>
@@ -525,9 +526,9 @@
     This feature is supported by HWGUI, but the resource files are not
     compatible between the various development tools.<br><br>
     For multi platform purposes here the description of the strategy with HWGUI:<br><br>
-    To desingn forms use the HWGUI utility "HWGUI Designer".<br>
-      The design is stored in an XML file. It can be read at run time (look at source of utils and samples)
-      or the form can also stored as HWGUI source file (*.prg).<br>
+    To design forms use the HWGUI utility "HWGUI Designer".<br>
+    The design is stored in an XML file. It can be read at run time (look at source of utils and samples)
+     or the form can also stored as HWGUI source file (*.prg).<br>
     Copy the generated code into the source code of your application.<br>
     But because of bugs in this function corrections of the generated code is needed.<br>
     Known bugs:<br>
@@ -535,8 +536,10 @@
     - Check the generated list of object variables of control elements in the LOCAL declaration section.
       Add missing variables.<br>
     - If a form contains a checkbox definition, the HWGUI designer crashes at storing of prg file.<br>
-      The workaround is, to store the checkbox as a static text, starting with "X".
-      Modfiy the command , but the position and size can be copied.
+      &nbsp;&nbsp;The workaround is, to store the checkbox as a static text, starting with "X".<br>
+      &nbsp;&nbsp;Modfiy the command , but the position and size can be copied.<br>
+    - The designer runs at this time only correct on Windows. We will finish the port to<br>
+      &nbsp;&nbsp;LINUX as soon as possible.<br>
     </blockquote>
     <br>
     For details read the chapter <a name="_Util1" href="hwgdoc_misc.html#Util1">7.1.  Designer</a><br>
@@ -544,6 +547,61 @@
     A good editor for icons is "Greenfish Icon Editor Pro" (free and open source).
     <br><br>
     </p>
+    <p>
+    <b>Iconification</b><br><br>
+      &nbsp;On Windows:
+      <br>
+      &nbsp;If you will see the program icons in links on the deskop:<br>
+      &nbsp;<img src="./image/CLLOG_Link.png" align=center wborder=0 alt="Link to CLLOG on Windows desktop"><br>
+      &nbsp;or compiled in the exe file:<br>
+      &nbsp;(properties of the exe file, right mouse click ==> Properties)<br>
+      &nbsp;<img src="./image/Win_CLLOG_exeProperties.png" align=center wborder=0 alt="CLLOG properties of exe file"><br>
+      <br>
+      &nbsp;you must use the resource compiler<br>
+      &nbsp;(is delivered with the most compilers for Windows like Borland C and MinGW).<br>
+      <br> 
+      <br>
+      &nbsp;Otherwise a default icon is showed:<br>
+      &nbsp;<img src="./image/Win_bincnts_Link.png" align=center wborder=0 alt="Link to bincnts.exe on Windows desktop"><br>
+      &nbsp;(Verkn&uuml;pfung ==> link)
+      <br>
+      <br>
+      &nbsp;You need a resource file only with 2 lines (for example):<br>
+      <br>
+      &nbsp;cllog.rc:<br>
+      &nbsp;&nbsp;1 24 "./images/WindowsXP.Manifest"<br> 
+      <br>
+      &nbsp;&nbsp;CLLOG&nbsp;&nbsp;ICON&nbsp;resource\cllog.ico<br>
+      <br>
+      <br>
+      &nbsp;You find the file WindowsXP.Manifest in directory "\image".<br>
+      <br>
+      &nbsp;The icon was compiled into the exe file, that the operating can find the icon:<br>
+      <br>
+      &nbsp;hbmk2 %PRGNAME%.prg cllog.rc ...<br>
+      <br>
+      &nbsp;In your main program, add the icon following this example:<br>
+      <br>
+      &nbsp;#ifndef __GTK__<br>
+      &nbsp;&nbsp;&nbsp;oIcon1 := HIcon():AddResource( "CLLOG" )<br>
+      &nbsp;#else<br>
+      &nbsp;&nbsp;&nbsp;oIcon1 := HIcon():AddString( "cllog" , cResourceCLICO  ) && loaded from hex values<br>
+      &nbsp;#endif<br>
+      &nbsp;...<br>
+      &nbsp;&nbsp;INIT WINDOW oWndMain TITLE "Title"  ;<br>
+      &nbsp;&nbsp;AT nx,ny SIZE nheight,nwidth ;<br>
+      &nbsp;&nbsp;ICON oIcon1<br>
+      &nbsp;...<br>
+      <br>
+      &nbsp;In the INIT WINDOW command the icon was only showed at run time !<br>
+      <br><br>
+      <br>&nbsp;On LINUX:<br>
+      &nbsp;The Icon was displayed at runtime in the tray bar and the header Window:<br>
+&nbsp;<img src="./image/CLLOG_LINUX_trayIcon.png" align=center wborder=0 alt="CLLOG tray icon on LINUX"><br>
+      <br>
+      <br>
+      </p>
+
 
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

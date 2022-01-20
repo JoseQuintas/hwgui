@@ -23,6 +23,7 @@
 *     Path is "utils\bincnt".
 *
 * 2.) Start the manager with "bincnt.exe"
+*     The exe file is stored in the "bin" directory.
 *
 * 3.) Create new a container file with menu
 *     "File/Create", enter full name
@@ -39,7 +40,7 @@
 * Name, Type and size.
 *
 * See HWGUI documentation for supported image types
-* for used terms of commands like BITMAP
+* for used terms of commands like BITMAP:
 * Windows only *.BMP, *.JPG 
 *
 * Info for GTK:
@@ -52,10 +53,11 @@ FUNCTION Main
 
 LOCAL cImageDir, cppath , oIcon, oBitmap , oToolbar , oFileOpen , oQuit , oMainW , oFontMain
 LOCAL htab, nbut , oBMPExit , oPNGDoor , oBtnDoor , ojpeg , oBtnjpeg
-LOCAL oastropng
+LOCAL oastropng , oastrobmp
 LOCAL cDirSep := hwg_GetDirSep()
 * For design differnces Windows and GTK/LINUX
 LOCAL nxowb, nyowb, nlowb
+
 
 #ifdef __GTK__
  nxowb := 24  && size x
@@ -85,15 +87,22 @@ CHECK_FILE(cImageDir + "sample.bin")
 * Open container
 hwg_SetResContainer( cImageDir + "sample.bin" )
 
-* Load contents from container into image objects.
-oIcon := HIcon():AddResource( "ok" )        && ico
-oBitmap := HBitmap():AddResource("open")    && bmp
-oBMPExit := HBitmap():AddResource("exit")   && bmp
-oPNGDoor := HBitmap():AddResource("door")   && png
-ojpeg  := HBitmap():AddResource("next")     && jpg
-oastropng := HBitmap():AddResource("astro") && png
 
-// hwg_MsgIsNIL(oBitmap)
+* Is container open ?
+IF .NOT. hwg_GetResContainerOpen()
+ hwg_MsgStop("Container is not open")
+ QUIT
+ENDIF 
+
+* Load contents from container into image objects.
+oIcon := HIcon():AddResource( "ok" )         && ico
+oBitmap := HBitmap():AddResource("open")     && bmp
+oBMPExit := HBitmap():AddResource("exit")    && bmp
+oPNGDoor := HBitmap():AddResource("door")    && png
+ojpeg  := HBitmap():AddResource("next")      && jpg
+oastropng := HBitmap():AddResource("astro")  && png
+oastrobmp := HBitmap():AddResource("astro2") && bmp
+
 
 #ifdef __PLATFORM__WINDOWS
    PREPARE FONT oFontMain NAME "MS Sans Serif" WIDTH 0 HEIGHT -14
@@ -178,7 +187,7 @@ INIT WINDOW oMainW  ;
   nbut += 1
 #endif 
 
-#ifdef __GTK__  
+#ifdef __GTK__
 
 @ htab+(nbut * nlowb),3 OWNERBUTTON oBtnjpeg /* OF oToolbar */ ;
    ON CLICK { | | ClickJpeg()} ;
@@ -186,24 +195,30 @@ INIT WINDOW oMainW  ;
    BITMAP ojpeg ; 
    TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,5,20,16 ; 
    TOOLTIP "JPEG image"
-   
-
-
- @ 60 , 100 SAY "astro.png" SIZE 100, 20
- @ 60 , 150 BITMAP oastropng
-// @ 60 , 150 BITMAP oBitmap
-
 #else   
-
+   
 @ htab+(nbut * nlowb),3 OWNERBUTTON oBtnjpeg  OF oToolbar  ;
    ON CLICK { | | ClickJpeg()} ;
    SIZE nxowb,nyowb  FLAT  ;
    BITMAP ojpeg ; 
    TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
    TOOLTIP "JPEG image"
-
-#endif
    
+#endif   
+  
+
+#ifdef __GTK__
+ // must be fixed
+ @ 60 , 100 SAY "astro.png" SIZE 100, 20
+ @ 60 , 150 BITMAP oastropng
+  @ 60 , 200 SAY "astro2.bmp" SIZE 100, 20 
+  @ 60 , 250 BITMAP oastrobmp
+#else
+  @ 60 , 100 SAY "astro2.bmp" SIZE 100, 20 
+  @ 60 , 150 BITMAP oastrobmp
+#endif
+
+  
    oMainW:Activate()
    
 RETURN NIL
@@ -227,5 +242,7 @@ FUNCTION CHECK_FILE ( cfi )
   QUIT
  ENDIF 
 RETURN Nil
+
+  
 
 * ============================= EOF of bincnts.prg ==================================

@@ -58,6 +58,8 @@ CLASS HBinC
    METHOD Pack()
    METHOD Exist( cObjName )
    METHOD Get( cObjName )
+   METHOD GetPos( cObjName )
+   METHOD GetType( cObjName )   
 
 ENDCLASS
 
@@ -273,5 +275,28 @@ METHOD Exist( cObjName )  CLASS HBinC
    cObjName := Lower( cObjName )
    RETURN ( Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) ) != 0
 
-* ================================ EOF of hbincnt.prg ===================================================
+METHOD GetPos( cObjName )  CLASS HBinC
+
+  cObjName := Lower( cObjName )
+  
+  RETURN  Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) 
+  
+  
+METHOD GetType( cObjName )
+
+  LOCAL n, crettype := ""
+
+  cObjName := Lower( cObjName )
+  
+  n:=  Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) 
+
+  IF n > 0
+    crettype := ::aObjects[n,OBJ_TYPE]
+  ENDIF
+  
+  RETURN crettype
+  
+
+
+* ================================= EOF of hbincnt.prg =======================================
    

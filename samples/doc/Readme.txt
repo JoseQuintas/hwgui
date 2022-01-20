@@ -57,13 +57,14 @@ sample programs.
     A special solution is write the resources from the
     container into temporary files and load then from
     there.
-    The handling of resources does not work in the way like Windows.
-    
+ 
+    The OWNERBUTTON's are now correct displayed, bit
+    the BITMAP command does not show the image on LINUX,
+    it is the last issue to fix for this sample.
+     
     The icon appears OK on WinAPI and GTK/LINUX.
     
-    - The function hwg_SetResContainer() opens the
-      binary container at reads the resoureces in it:
-      See drawwig.prg, about line 892: HBinC:Open()
+ 
     
 3.) grid_5.prg 
     Grid Editor (crashes, if click on button "Insert","Change","Delete")         

@@ -63,7 +63,10 @@ Created by DF7BE, 2020-09-07.
      oIcon1 := HIcon():AddString( "icon" , cValIcon  )  && *NIX with GTK
     #endif
 
-    For bitmaps the use of Hex value resources or the binary container it is no problem.    
+    For bitmaps the use of Hex value resources or the binary container it is no problem. 
+
+    Read more information about iconification in HWGUI HTML documentation
+    "doc/hwgdoc.html", chapter "3.11. Handling resources".   
 
     
 * =============== EOF of Readme.txt ================================

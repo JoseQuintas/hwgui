@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, November 2021</td>
+    <td width="70%" align="center">Alexander S.Kresin, January 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -1645,13 +1645,95 @@ See sample program "testspli.prg" for details.<br>
      <li> Return value - handle of a bitmap;
    </ul>
 
-   <a name="Functions8f"></a><br><strong class="subhead"> hwg_SetResContainer( cName )</strong> 
+   <br>
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   Binary Container functions<br>
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   <br>
+   <br>
+   The usage of the Binary Container is demonstrated in sample program<br>
+   "samples/bincnts.prg".<br>
+   <br>
+   <br> 
+
+   <br><strong class="subhead"> hwg_SetResContainer( cName )</strong> 
    <br>Opens a file of a binary container and sets is as a current for resources retrieving.
    Corresponding command: <a href="hwgdoc_commands.html#Commands6-3"> SET RESOURCES CONTAINER TO</a>.
    <ul>
      <li>cName - a full path and name of a binary container;
      <li>Return value - (logical) .T., if a file is opened successfully and .F. - in other case.
    </ul>
+   <br>
+
+   <br><strong class="subhead"> hwg_GetResContainerOpen()</strong> 
+   <br>Returns .T., if a binary container is open.<br>
+   <br>
+
+   <br><strong class="subhead"> hwg_GetResContainer()</strong> 
+   <br>Returns the object of opened container, otherwise NIL.<br>
+   (because the object variable is static).<br>
+   <br>
+
+   <br><strong class="subhead"> hwg_ExtractResContItem2file(cfilename,cname)</strong> 
+   <br>Extracts an item with name "cname" of an opened container to file "cfilename"<br>
+   (get file extension with function hwg_ExtractResContItemType() before)<br>
+   Returns .T., if success, otherwise .F.<br>
+   (for example if no match or container not open).<br>
+   <br>
+
+   <br><strong class="subhead"> hwg_ExtractResContItemType(cname)</strong> 
+   <br>Extracts the type of item with name "cname" of an open container.<br> 
+   Returns the type (bmp,png,ico,jpg) as a string.<br>
+   Empty string "", if container not open or no match<br>
+   <br>
+
+   <br><strong class="subhead"> hwg_ResContItemPosition(cname)</strong> 
+   <br>Extracts the position number of item with name cname of an open container.<br>
+    Returns the position name of item in the container (numeric), <br>
+    0 , if no match or container not open.<br> 
+    <br>
+
+   <br><strong class="subhead"> hwg_Bitmap2tmpfile(objBitmap , cname , cfextn)</strong> 
+   <br> Creates a temporary file from a bitmap object<br>
+   Avoids trouble with imcompatibility of image displays.<br>
+   Almost needed for binary container.<br>
+   <br>Parameters:<br>
+   <ul> 
+     <li>objBitmap    - object from resource container (from HBitmap class);
+     <li>cname        - resource name of object;
+     <li>cfextn       - file extension, for example "bmp" (Default);
+     <li>Return value - (logical) .T., if a file is opened successfully and .F. - in other case.
+   </ul>
+   <br>
+  Returns:<br>
+  <br>
+  &nbsp;The temporary file name,<br>
+  &nbsp;empty string, if error occured.<br>
+  &nbsp;Don't forget to delete the temporary file after usage.<br>
+  <br>
+  &nbsp;Example:<br>
+  <br>
+  &nbsp; LOCAL ctmpbmpf<br>
+  &nbsp; ctmpbmpf := hwg_Bitmap2tmpfile(obitmap , "sample" , "bmp")<br>
+  &nbsp; hwg_MsgInfo(ctmpbmpf,"Temporary image file") && display temporary filename for test<br>
+  &nbsp; IF .NOT. EMPTY(ctmpbmpf)<br>
+  &nbsp;&nbsp;...<br>
+  &nbsp; ENDIF<br>
+  &nbsp; ERASE &ctmpbmpf<br>
+  <br>
+  <br><strong class="subhead"> Reference:</strong><br> 
+  &nbsp;Read more about the usage of this functions in the documentation<br>
+  &nbsp;of the Binary Container Manager in the utils/bincnt directory and<br>
+  &nbsp;in the inline comments of sample program "samples/bincnts.prg".<br>
+  <br>
+
+
+
+   <br><br>   
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   End of Binary Container functions<br>
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   <br>
 
    <br><strong class="subhead"> hwg_SetCtrlName( oCtrl, cName )</strong> 
    <p>

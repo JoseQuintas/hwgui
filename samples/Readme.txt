@@ -102,9 +102,11 @@ For beginners:
     Y: Run OK, W: compiled with warnings, -: not (yet) tested ,
     C: can not be compiled , N: error at runtime
 
-5.) Some of this samples use resource files (*.rc) from the Borland Resource Workshop.
-    The port of this files to HWGUI commands for multi platform usage is under construction.
+5.) Further Versions of this samples used resource files (*.rc) from the Borland Resource Workshop.
+    The port of this files to HWGUI commands for multi platform usage is completed.
     It is strictly recommended, for new applications avoiding the usage of any resource files.
+    But for complete iconification the usage of a resource compiler is necessary, more
+    information see documentation "doc/hwgdoc.html", chapter "3.11. Handling resources".
  
     Creating and editing forms use the HWGUI utility "Designer"
     in directory "utils/designer".
@@ -115,6 +117,7 @@ For beginners:
     See instructions in utils/bincnt/Readme.txt
     An alternative method is to use the "Binary Container Manager" to collect
     all resource files in one database.
+    See sample programs "hello.prg" and "bincnts.prg".
  
 
 
@@ -122,7 +125,7 @@ For beginners:
  =================  ===   === ======= =======
  a.prg   +)         R         CN 9)   Some HWGUI basics (Open DBF's, GET's, ...)
  arraybrowse.prg    Y                 Array BROWSE avoiding crashes because of bugs (see inline comments)
- bincnts.prg 10) +) N  #              Usage of images from Binary container
+ bincnts.prg 10) +) Y                 Usage of images from Binary container
  buildpelles.prg    N         Y       Build APP using Pelles C Compiler (*.bld file)
  colrbloc.prg       Y         Y       BROWSE: arrays and DBF's with colored lines and columns
  dbview.prg         Y         Y       DBF access (Browse, Indexing, Codepages, Structure, ... )
@@ -209,6 +212,8 @@ Directories:
                                       Delivered by Itamar M. Lins Jr. (TNX !)
                                       Attention, sample not checked by HWGUI developer team.
 
+
+ +) Additional information for this sample program available in subdirectory "doc".
 
  1) Sample program needs extra libraries of HWGUI, build them in directory "contrib".
 

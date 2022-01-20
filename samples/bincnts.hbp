@@ -17,6 +17,8 @@
 
 -obincnts
 
+
 bincnts.prg
+{win}bincnts.rc
 
 # ==================== EOF of bincnts.hbp ===============

@@ -9,6 +9,20 @@
 */
 
 
+2022-01-20 15:55 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc.html
+  * samples/bincnts.hbp
+  * samples/bincnts.prg
+  * samples/bincnts.rc (New)
+  * samples/gtk_samples/image/sample.bin
+  * samples/image/hwgui_32x32.ico (Copied from ../../image directory)
+  * samples/image/sample.bin
+     ! Continued bugfixing of sample bincnts.prg:
+     ! Now with .rc file for normal iconifying.
+     ! Docu updated.
+
+
+
 2022-01-20 11:30 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc.html
   * doc/hwgdoc_classes.html

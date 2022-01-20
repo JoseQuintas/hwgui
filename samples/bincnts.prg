@@ -95,13 +95,14 @@ IF .NOT. hwg_GetResContainerOpen()
 ENDIF 
 
 * Load contents from container into image objects.
-oIcon := HIcon():AddResource( "ok" )         && ico
-oBitmap := HBitmap():AddResource("open")     && bmp
-oBMPExit := HBitmap():AddResource("exit")    && bmp
-oPNGDoor := HBitmap():AddResource("door")    && png
-ojpeg  := HBitmap():AddResource("next")      && jpg
-oastropng := HBitmap():AddResource("astro")  && png
-oastrobmp := HBitmap():AddResource("astro2") && bmp
+* oIcon := HIcon():AddResource( "ok" )        && ico (old)
+oIcon := HIcon():AddResource( "hwgui_32x32" ) && ico
+oBitmap := HBitmap():AddResource("open")      && bmp
+oBMPExit := HBitmap():AddResource("exit")     && bmp
+oPNGDoor := HBitmap():AddResource("door")     && png
+ojpeg  := HBitmap():AddResource("next")       && jpg
+oastropng := HBitmap():AddResource("astro")   && png
+oastrobmp := HBitmap():AddResource("astro2")  && bmp
 
 
 #ifdef __PLATFORM__WINDOWS

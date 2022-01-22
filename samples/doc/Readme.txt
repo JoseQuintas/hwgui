@@ -72,7 +72,11 @@ sample programs.
 
 
 Some information for port to GTK/LINUX
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~    
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+buildpelles.prg:
+    Port of this sample to GTK make no sense, because
+    the Pelles C compiler is only for Windows.   
  
 - grid_1.prg  grid_2.prg  grid_3.prg  grid_4.prg  grid_5.prg
      The grid feature is available with GTK4,
@@ -103,6 +107,19 @@ hello.prg : Need for full port TO GTK:
         samples/doc/image/Hello_GTK_main.png      
         ==> this was the screenshot with the further design
             on Windows.
+
+testbrw.prg:
+Crash on GTK fixed,
+(crashes with no PROPS2ARR at ENTER or click)
+==>
+Method Add Standard of HBITMAP class does not work,
+so the image was delivered by hex dump.
+
+HBROWSE class:
+Obscure behavior on editable field "Age" need to fix !
+The modified value not accepted.
+
+ 
 
    
     

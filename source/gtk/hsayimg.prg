@@ -4,7 +4,7 @@
  * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HSayImage class
  *
- * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2003 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
 
@@ -22,7 +22,7 @@ CLASS HSayImage INHERIT HControl
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
       bSize, ctoolt, bClick, bDblClick, bColor )
    METHOD Activate()
-   METHOD End()  INLINE ( ::Super:End(), Iif( ::oImage <> Nil,::oImage:Release(),::oImage := Nil ), ::oImage := Nil )
+   METHOD END()  INLINE ( ::Super:END(), iif( ::oImage <> Nil,::oImage:Release(),::oImage := Nil ), ::oImage := Nil )
 
 ENDCLASS
 
@@ -30,7 +30,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
       bSize, ctoolt, bClick, bDblClick, bColor ) CLASS HSayImage
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, ;
-      iif( nWidth != Nil, nWidth, 0 ), iif( nHeight != Nil, nHeight, 0 ),, ;
+      Iif( nWidth != Nil, nWidth, 0 ), iif( nHeight != Nil, nHeight, 0 ),, ;
       bInit, bSize,, ctoolt,, bColor )
 
    ::title := ""
@@ -58,6 +58,7 @@ CLASS HSayBmp INHERIT HSayImage
    DATA nOffsetH  INIT 0
    DATA nZoom
    DATA lTransp, trcolor
+   DATA nStretch
    DATA nBorder, oPen
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
@@ -86,7 +87,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    IF Image != Nil
       IF lRes == Nil ; lRes := .F. ; ENDIF
-      ::oImage := iif( lRes .OR. ValType( Image ) == "N",     ;
+      ::oImage := Iif( lRes .OR. ValType( Image ) == "N",     ;
          HBitmap():AddResource( Image ), ;
          iif( ValType( Image ) == "C",     ;
          HBitmap():AddFile( Image ), Image ) )
@@ -165,7 +166,7 @@ METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
       IF lRes == Nil ; lRes := .F. ; ENDIF
       ::oImage := iif( lRes .OR. ValType( Image ) == "N",  ;
          HBitmap():AddResource( Image ), ;
-         Iif( ValType( Image ) == "C",   ;
+         iif( ValType( Image ) == "C",   ;
          HBitmap():AddFile( Image ), Image ) )
    ENDIF
 
@@ -188,7 +189,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
    IF lRes == Nil ; lRes := .F. ; ENDIF
    ::oImage := iif( lRes .OR. ValType( Image ) == "N", ;
       HIcon():AddResource( Image , nWidth, nHeight ),  ;
-      Iif( ValType( Image ) == "C",  ;
+      iif( ValType( Image ) == "C",  ;
       HIcon():AddFile( Image , nWidth, nHeight ), Image ) )
    ::Activate()
 

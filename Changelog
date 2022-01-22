@@ -9,6 +9,20 @@
 */
 
 
+2022-01-22 22:15 UTC+0100 Wilfried Brunken DF7BE 
+  * image/true.bmp (New)
+  * samples/Readme.txt
+  * samples/doc/Readme.txt
+  * samples/testbrw.hbp
+  * samples/testbrw.prg
+  * source/gtk/hsayimg.prg
+      ! Continued bugfixing of sample bincnts.prg
+      ! and testbrw.prg (To be continued)
+      ! More info see samples/doc.
+      ! hsayimg.prg: differences to WinAPI reduced with WinMerge
+      ! as preparation to continued bugfixing.
+  
+
 2022-01-20 15:55 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc.html
   * samples/bincnts.hbp

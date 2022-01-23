@@ -20,6 +20,6 @@ hformgen.prg
 inspect.prg
 editor.prg
 
-designer.rc
+{win}designer.rc
 
 # ============== EOF of designer.hbp ====================

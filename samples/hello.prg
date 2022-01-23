@@ -39,10 +39,13 @@
  * For example:
  * The combobox size is more bigger.
  * 
- * It is recommended to check the design for multi platform application
+ * It is recommended to check the design for multi platform applications
  * also on LINUX !
  * 
  * In this sample program, we demonstrate the differences.
+ * Look at compiler switch
+ * #ifdef __GTK__
+ * for differences.
 */    
     
 #include "windows.ch"
@@ -54,7 +57,7 @@ Function Main
 Local oMainWindow, oBtn, aCombo := {"First","Second" }, cTool := "Example", oFont
 Local aTabs := { "A","B","C","D","E","F","G","H","I","J","K","L","M","N" }, oTab
 Local acho := { {"First item",180}, {"Second item",200} }
-Local oEdit, oGetTab, oTree, oItem
+Local oEdit, oGetTab, oTree, oItem, oCombo
 Local cExecprg
 Private aGetsTab := { "","","","","","","","","","","","","","" }
 
@@ -68,11 +71,20 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
  cExecprg := "notepad Sample.txt"
 #endif   
 
+#ifdef __GTK__
+   * increased size of main window
+   INIT WINDOW oMainWindow MAIN TITLE "Example"  ;
+     SYSCOLOR COLOR_3DLIGHT+1                    ;
+     AT 200,0 SIZE 600,400                       ;
+     FONT oFont                                  ;
+     ON EXIT {||hwg_Msgyesno("Really want to quit ?")}
+#else
    INIT WINDOW oMainWindow MAIN TITLE "Example"  ;
      SYSCOLOR COLOR_3DLIGHT+1                    ;
      AT 200,0 SIZE 420,300                       ;
      FONT oFont                                  ;
      ON EXIT {||hwg_Msgyesno("Really want to quit ?")}
+#endif
 
 #ifndef __GTK__
 
@@ -93,9 +105,9 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
 #endif   
 
 #ifdef __GTK__
-   @ 270,10 COMBOBOX aCombo ITEMS {} SIZE 100, 150 TOOLTIP "Combobox"
+   @ 470,10 COMBOBOX oCombo ITEMS aCombo SIZE 100, 150 TOOLTIP "Combobox"
 #else
-   @ 270,10 COMBOBOX aCombo ITEMS {} SIZE 100, 150 TOOLTIP "Combobox"
+   @ 270,10 COMBOBOX oCombo ITEMS aCombo SIZE 100, 150 TOOLTIP "Combobox"
 #endif   
 
    @ 20,50 LINE LENGTH 100
@@ -111,13 +123,21 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
    @ 10,30 RICHEDIT oGetTab TEXT "" OF oTab SIZE 120,60 ;
           STYLE ES_MULTILINE
 #else
-   @ 20,60 TAB oTab ITEMS aTabs SIZE 140,100      ;
+   @ 20,60 TAB oTab ITEMS aTabs SIZE 340,100      ;
         STYLE TCS_FIXEDWIDTH+TCS_FORCELABELLEFT          
 #endif          
 
+#ifdef __GTK__
+   @ 280,15 SAY "" SIZE 70,22 STYLE WS_BORDER BACKCOLOR 12507070
+#else
    @ 180,60 SAY "" SIZE 70,22 STYLE WS_BORDER BACKCOLOR 12507070
+#endif   
 
+#ifdef __GTK__
+   @ 270,170 TREE oTree SIZE 140,100 EDITABLE
+#else
    @ 270,60 TREE oTree SIZE 140,100 EDITABLE
+#endif   
 
    oTree:AddNode( "First" )
    oTree:AddNode( "Second" )
@@ -125,8 +145,11 @@ Private aGetsTab := { "","","","","","","","","","","","","","" }
    oItem:AddNode( "Third-1" )
    oTree:AddNode( "Forth" )
 
-
+#ifdef __GTK__
+   @ 250,300 BUTTON "Close"  SIZE 150,30  ON CLICK {||hwg_EndWindow()} ON SIZE ANCHOR_BOTTOMABS
+#else
    @ 100,180 BUTTON "Close"  SIZE 150,30  ON CLICK {||hwg_EndWindow()} ON SIZE ANCHOR_BOTTOMABS
+#endif   
 
    MENU OF oMainWindow
       MENU TITLE "File"

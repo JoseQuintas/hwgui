@@ -47,6 +47,7 @@
          <li><a name="_Using9" href="#Using9">3.9.  Inside HwGUI</a>
          <li><a name="_Using10" href="#Using10">3.10.  Using the UNICODE</a>
          <li><a name="_Using11" href="#Using11">3.11.  Handling resources</a>
+         <li><a name="_Using12" href="#Using11">3.12.  Multiplatform Instructions</a>         
       </ul>
       <li><a name="_Commands" href="hwgdoc_commands.html#Commands">4.  Commands</a>
       <ul>
@@ -605,6 +606,41 @@
       <br>
       </p>
 
+      <br><strong class="subhead"><a name="Using12" href="#_Using12">
+      3.12.  Multiplatform Instructions</a></strong><br><br>
+      <p>
+      In this chapter you find some description and tips for multi platform applications,<br>
+      at this time especially for Windows and GTK/LINUX.<br>
+      <br>
+      <br>
+      <b>Design rules</b><br>
+      The designs of forms differs between Windows and GTK, in most cases
+      the GUI elements needs more space.<br>
+      <br>
+      It is recommended to check the design for multi platform applications also on LINUX !<br>
+      The sample program "samples/hello.prg" demonstrates the design differences.<br>
+      Full infomation in the inline comments of this sample.<br>
+      The compiler switch "#ifdef __GTK__" is used to select the commands for correct design.<br>
+      Here some sceen shots for this example:<br>
+      <br>
+      Windows:<br>
+      <img src="./image/Hello_main_Win.png" align=center wborder=0 alt="hello.prg main on Windows"><br>
+      On LINUX with old design for Windows:<br>
+      <img src="./image/Hello_GTK_main.png" align=center wborder=0 alt=
+      "hello.prg main on LINUX with old Windows design"><br>
+      On LINUX with new design:<br>     
+      <img src="./image/hello_GTK_new.png" align=center wborder=0 alt="hello.prg main on GTK/LINUX"><br>
+      <br>
+      <br> 
+      Some other instructions:<br>
+      - Height 32 (default value in designer) for buttons is OK for Windows and GTK   
+      <br>
+      <br>    
+             
+    </p>
+
+
+<!-- Footer -->
 
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

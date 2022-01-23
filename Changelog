@@ -8,6 +8,20 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-01-23 14:50 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc.html
+  * doc/image/Hello_GTK_main.png
+    > moved from samples/doc/image/Hello_GTK_main.png
+  * doc/image/Hello_main_Win.png
+    > moved from  samples/doc/image/Hello_main_Win.png
+  *  doc/image/hello_GTK_new.png (New)
+  * samples/hello.prg
+  * utils/designer/designer.hbp
+  * utils/designer/designer2.hbp
+      ! Added design rules for Windows >> GTK/LINUX
+      ! hpb files: switch {win] for rc files added as
+      ! preparation for port to GTK/LINUX.  
+
 
 2022-01-22 22:15 UTC+0100 Wilfried Brunken DF7BE 
   * image/true.bmp (New)

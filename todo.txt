@@ -1,7 +1,6 @@
 2020-08-21:
 
 Tasks by DF7BE
- - Support request #15: GTK port for GET .... DATEPICKER
  - LISTBOX port to GTK, if bug in GTK is fixed.
  - Try to get all samples working.
     List of sample programs with bug description follows.
@@ -21,7 +20,6 @@ List:  Samples not running or have bugs (Fix bugs, if time available, low priori
                      //   ADD COLUMN TO GRIDEDIT aItems FIELD "Field_2" LABEL "Char" PICTURE "@!" //READONLY
       nice2.prg      Seems to be outdated, starts only in background, kill with Task Manager
       testchild.prg  child window not created ! command seems to be outdated.
-      testtray.prg   No exported method: HANDLE
       testrtf.prg    Created Rich text files are corrupted, see bug ticket #37 (text above).
       propsh.prg     hwg_PropertySheet() freezes. 
 

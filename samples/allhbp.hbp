@@ -46,7 +46,9 @@
 # Samples WinAPI and LINUX/GTK
 #
 ../samples/arraybrowse.prg
+../samples/bincnts.prg
 ../samples/colrbloc.prg
+../samples/datepicker.prg
 ../samples/dbview.prg
 ../samples/demodbf.prg
 ../samples/demohlistsub.prg
@@ -82,7 +84,6 @@
 # Samples WinAPI only
 #
 ../samples/a.prg
-../samples/bincnts.prg
 ../samples/buildpelles.prg
 ../samples/demohlist.prg
 ../samples/grid_1.prg

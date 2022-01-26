@@ -763,5 +763,22 @@ ELSE
 ENDIF    
 RETURN lrvalue
 
+
+* =======================================================
+FUNCTION hwg_DefaultFont()
+* Returns an object with a suitable default font
+* for Windows and LINUX
+* =======================================================
+LOCAL oFont
+
+#ifdef __PLATFORM__WINDOWS
+ PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+#else
+ PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 12 
+#endif 
+
+RETURN oFont
+
+
 * ============== EOF of hmisc.prg =================
 

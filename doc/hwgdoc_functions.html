@@ -1082,6 +1082,13 @@
    <br><strong class="subhead"> hwg_Setctrlfont( handle, hFont )</strong> (GTK only)
    <p></p>
 
+   <br><strong class="subhead"> hwg_DefaultFont()</strong>
+   <p>
+   Returns an object with a suitable default font<br>
+   for Windows and LINUX, OS dependent.<br>
+   <br>
+   </p>
+
    <br><strong class="subhead"> hwg_AddTooltip( handle, cTooltip )</strong> 
    <br>Add a tooltip to the control.
    <ul>
@@ -1119,6 +1126,52 @@
 
    <br><strong class="subhead"> hwg_GetTimePicker( handle )</strong> (Windows only)
    <p></p>
+
+   <br><strong class="subhead"> hwg_GetTimePicker( handle )</strong> (Windows only)
+   <p></p>
+
+   <br><strong class="subhead"> hwg_pCalendar(dstartdate, cTitle , cOK, cCancel , nx , ny , wid, hei )
+   </strong>
+   <p>
+   This function calls the calendar for date selection<br> 
+   in design like the WinAPI datepicker.<br>
+   Based on the MONTHCALENDAR command.<br>
+   <br>
+    &nbsp;dstartdate : Date of start, if NIL, the default is "today" from system date.<br> 
+    &nbsp;cTitle     : Title for this dialog, default is "Calendar"<br>
+    &nbsp;cOK        : Caption for OK button, default is "OK"<br>
+    &nbsp;cCancel    : Caption for cancel button, default is "Cancel"<br>
+    &nbsp;nx , ny    : Position in calling Window (default 0, 0)<br>
+    &nbsp;wid, hei   : Width and height of the calendar window, add 23 pixels<br>
+    &nbsp;&nbsp;&nbsp;           to height for size of dialog (space for buttons needed).<br>
+    &nbsp;&nbsp;&nbsp;           Default is 200, 160.<br>
+    <br>
+    &nbsp;Returns the selected date (type "D").<br>
+    <br>
+    For details see inline comments of sample programs<br>
+    "samples/datepicker.prg" and "samples/testget1.prg".<br>
+    Here you find instructions to create a multiplatform substitute
+    for the Windows only DATEPICKER.<br>
+    <br>
+    Some Screenshots:<br>
+    <br>
+    Datepicker Windows:<br>
+    (Heute = today)<br>
+    <img src="./image/Win_Datepicker.png" align=center wborder=0 alt="Datepicker Windows"><br>
+    <br>
+    Datepicker LINUX (Sample program datepicker.prg):<br>
+    <img src="./image/Datepicker_LINUX.png" align=center wborder=0 alt="Datepicker LINUX"><br>
+    <br>
+    Windows MONTHCALENDAR command:<br>
+    (Fertig = Ready, Abbruch = Cancel)<br>
+    <img src="./image/Win_MonthCal.png" align=center wborder=0 alt="Windows MONTHCALENDAR command"><br>
+    <br>
+    LINUX MONTHCALENDAR command:<br>
+    <img src="./image/LINUX_MonthCalendar.png" align=center wborder=0 alt="LINUX MONTHCALENDAR command"><br>
+    <br>
+    <br>
+    </p>
+
 
    <br><strong class="subhead"> hwg_AddTab( handle, cName )</strong> 
    <p></p>

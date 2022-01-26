@@ -8,6 +8,38 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2022-01-26 23:45 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+  * doc/image/Datepick_Button2.bmp (New)
+  * doc/image/Datepicker_LINUX.png (New)
+  * doc/image/LINUX_MonthCalendar.png (New)
+  * doc/image/Win_Datepicker.png (New)
+  * doc/image/Win_MonthCal.png (New)
+  * samples/Readme.txt
+  * samples/allhbp.hbp
+  * samples/datepicker.hbp (New)
+  * samples/datepicker.prg (New)
+  * samples/testget1.hbp
+  * samples/testget1.prg
+  * source/gtk/hmisc.prg
+  * source/gtk/hmonthc.prg
+  * source/winapi/hmisc.prg
+  * source/winapi/hmonthc.prg
+  * todo.txt
+      ! Support request #15:
+      !  Port of DATEPICKER to GTK
+      !  (based on MONTHCALENDAR),
+      !  a substitute solution for
+      !  multi platform.
+      ! New function hwg_DefaultFont().
+      ! clean.sh removes all executeables, o files and libraries
+      ! outside the makefile "clean".
+      ! (created by "hbmk2 allhbp.hbp)
+      ! Docu updated.
+
+
 2022-01-23 14:50 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc.html
   * doc/image/Hello_GTK_main.png

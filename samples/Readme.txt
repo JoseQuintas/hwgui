@@ -128,6 +128,7 @@ For beginners:
  bincnts.prg 10) +) Y                 Usage of images from Binary container
  buildpelles.prg    N         Y       Build APP using Pelles C Compiler (*.bld file)
  colrbloc.prg       Y         Y       BROWSE: arrays and DBF's with colored lines and columns
+ datepicker.prg     Y                 Multiplatform substitute of Windows only DATEPICKER
  dbview.prg         Y         Y       DBF access (Browse, Indexing, Codepages, Structure, ... )
  demodbf.prg        Y         Y       Demo for Edit using command NOEXIT
  demohlist.prg      N         Y       Demo for listbox
@@ -167,7 +168,7 @@ For beginners:
  test_bot.prg       N                 bOther Test: Press key, after key up the scan code is displayed.
  testbrw.prg        Y  #              Another BROWSE test (bug on GTK see docu)
  testchild.prg      N  #      -       Create a child windows; child window not created ! command seems to be outdated.
- testget1.prg       N                 Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
+ testget1.prg       Y                 Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
  testget2.prg       N                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
  testfunc.prg       Y         Y       Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button. 
  testhgt.prg        N                 class HGT for combined usage of HWGUI control elements in Harbour gtwvg programs in multithread mode.

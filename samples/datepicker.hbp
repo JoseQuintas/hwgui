@@ -15,8 +15,8 @@
 -n
 -w
 
--otestget1
+-odatepicker
 
-testget1.prg
+datepicker.prg
 
-# ==================== EOF of testget1.hbp ===============
+# ==================== EOF of datepicker.hbp ===============

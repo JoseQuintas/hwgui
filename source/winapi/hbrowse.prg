@@ -215,11 +215,14 @@ CLASS HBrowse INHERIT HControl
    DATA lCtrlPress INIT .F.                    // .T. while Ctrl key is pressed
    DATA aSelected                              // An array of selected records numbers
    DATA nPaintRow, nPaintCol                   // Row/Col being painted
-   DATA nHCCharset INIT -1                     // Charset for MEMO EDIT -1: set default value
+   DATA nHCCharset INIT -1                     // Charset for MEMO EDIT -1: set default value = 0
+                                               // 204: Russian
+                                               // 15 : IBM 858 with Euro currency sign
    // --- International Language Support for internal dialogs ---
    DATA cTextTitME INIT "Memo Edit"
    DATA cTextClose INIT "Close"   // Button
    DATA cTextSave  INIT "Save"
+   DATA cTextMod   INIT "Memo was modified, save ?"
    DATA cTextLockRec INIT "Can't lock the record!"
 
    METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
@@ -305,6 +308,7 @@ METHOD DefaultLang() CLASS HBrowse
    ::cTextTitME := "Memo Edit"
    ::cTextClose := "Close"   // Button
    ::cTextSave  := "Save"
+   ::cTextMod   := "Memo was modified, save ?"
    ::cTextLockRec := "Can't lock the record!"
    RETURN Self
 
@@ -1826,16 +1830,24 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL oModDlg, oColumn, aCoors, nChoic, bInit, oGet, type
    LOCAL oComboFont, oCombo
    LOCAL owb1, owb2
-   LOCAL oEdit,mvarbuff,bMemoMod, oHCfont    && DF7BE
+   LOCAL oEdit,mvarbuff,bMemoMod, oHCfont
    LOCAL apffrarr, nchrs
+   LOCAL lCancel, lSaveMem    && DF7BE
+   
+   lCancel  := .T.
+   lSaveMem := .T.   
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
    IF ::oFont != Nil
       /* Preset charset for displaying special characters of other languages
-         for example Russian ::nHCCharset = 204   */
+         for example Russian ::nHCCharset = 204 
+         default is 0 */
+     // ::nHCCharset := 15 && IBM 858 With Euro currency sign
+
      nchrs := ::nHCCharset
      apffrarr := ::oFont:Props2Arr()
+     // hwg_Writelog(STR(::nHCCharset) )
      IF ::nHCCharset == -1
       nchrs := apffrarr[5]
      ENDIF
@@ -1966,8 +1978,9 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                     FONT  oHCfont && ::oFont
 
                * ::varbuf ==> mvarbuff, oGet1 ==> oEdit (DF7BE)
-               @ 010, 252 ownerbutton owb2 TEXT ::cTextSave size 80, 24 ON Click { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
-               @ 100, 252 ownerbutton owb1 TEXT ::cTextClose size 80, 24 ON CLICK { ||oModDlg:close() }
+               @ 010, 252 ownerbutton owb2 TEXT ::cTextSave size 80, 24 ON Click { || lCancel  := .F. , mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
+               @ 100, 252 ownerbutton owb1 TEXT ::cTextClose size 80, 24 ON CLICK { || mvarbuff := oEdit , omoddlg:close(), oModDlg:lResult := .T. }
+//               @ 100, 252 ownerbutton owb1 TEXT ::cTextClose size 80, 24 ON CLICK { || oModDlg:close() }
                  * serve memo field for editing (DF7BE)
                 oEdit:SetText(mvarbuff)       && DF7BE
 * =========================================================================
@@ -1982,8 +1995,17 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
           * is modified ? (.T.)
           bMemoMod := oEdit:lUpdated
           IF bMemoMod
-           * write out edited memo field
-           ::varbuf := oEdit:GetText()
+*         "Close" Button should be handled like "Cancel".
+*          Ask for saving, if  "Close" is pressed and the memo is modified
+           IF lCancel
+*           Ask and mark vor saving
+            lSaveMem := hwg_Msgyesno( ::cTextMod , ::cTextTitME )
+           ENDIF
+           IF lSaveMem
+            * write out edited memo field
+            // hwg_MsgInfo("Memo saved")
+            ::varbuf := oEdit:GetText()
+           ENDIF
           ENDIF
          ENDIF
 * =========================================================================

@@ -8,6 +8,22 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-01-29 22:15 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc.html
+  * doc/hwgdoc_classes.html
+  * samples/dbview.prg
+  * samples/doc/Readme.txt
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+  * todo.txt
+  * whatsnew.txt
+      ! HBROWSE: Memoedit:
+      ! - "Close" button: if modified, ask
+      !  "Memo was modified, save ?"
+      ! - Character settings added in
+      !   dbview.prg, the Euro currency sign is
+      !   now displayed correct.
+      ! - Docu updated
 
 2022-01-26 23:45 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc_commands.html

@@ -11,7 +11,7 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
- ! 2022-01-20        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
+ ! 2022-01-29        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
  +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
  +-------------------!---------------------------------!--------------------------------------------+
@@ -413,13 +413,17 @@
       aRelation
       lResizing
       lCtrlPress
-      DATA nHCCharset INIT -1      Charset for MEMO EDIT, -1 for use default
+      DATA nHCCharset INIT -1      Charset for MEMO EDIT, -1 for use default (set default value = 0)
                                    For compatibiltity purposes, do not modify
-                                   with UTF-8
+                                   with UTF-8 (0).
+                                   For Windows:     
+                                   204: Russian
+                                   15 : IBM 858 with Euro currency sign (&Euro)                                  
       --- International Language Support for internal dialogs ---
       cTextTitME              (RW) "Memo Edit"   
       cTextClose              (RW) "Close"   // Button 
       cTextSave               (RW) "Save"
+      cTextMod                (RW) "Memo was modified, save ?"
       cTextLockRec            (RW) "Can't lock the record!"
    </pre>
    <pre class="code">METHODS
@@ -480,14 +484,12 @@
    documentation.<br>
    For sample call, look at program "CLLOG" by DF7BE.<br>   
    <br>
-   Bug information:<br>
-   MEMO EDIT on WinAPI:<br>
-   Euro currency was displayed as single bar
+      MEMO EDIT on WinAPI:<br>
+   If the Euro currency was displayed as single bar
    , <img src="./image/WrongEuro.png" align=center wborder=0 alt="Wrong Euro Display MEMO EDIT"><br>
-   if entered via AltGr + E, but was stored correct<br> 
-   in database, see sample samples/dbview.prg.<br>
-   The bug is located in file hcedit_w.c, will be fixed as soon as possible.<br>
-   Works best on LINUX/GTK.<br>
+   you must select a suitable character set.<br>
+   For details see sample program "samples/dbview.prg".<br>
+   Works best on LINUX/GTK, if the default charset 0 ist passed.<br>
    </p>
 
    <br><strong class="subhead"><a name="Classes3_3_2" href="#_Classes3_3_2">

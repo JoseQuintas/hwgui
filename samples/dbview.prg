@@ -25,6 +25,12 @@
     AMERICAN (default), ANSI, USA, GERMAN, BRITISH/FRENCH, ITALIAN, JAPAN
     (For Russia use german format)
   - Best default index format is NTX
+  
+  January 2022:
+  - Character set settings added for MEMO EDIT in BROWSE:
+    0   : Default
+    204 : Russian
+    15  : IBM 858 with Euro currency sign
 */
 
 #include "hwgui.ch"
@@ -54,6 +60,7 @@ REQUEST ORDKEYCOUNT
 Static aFieldTypes := { "C","N","D","L" }
 Static dbv_cLocate, dbv_nRec, dbv_cSeek
 
+
 Memvar oBrw, oFont , oSay1, oSay2, nBrwCharset
 
 Function Main
@@ -61,7 +68,7 @@ Local oWndMain, oPanel
 
 Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname , nBrwCharset
 
-nBrwCharset := 0
+nBrwCharset := 0  && Do not modify with UTF-8 on LINUX
 
 * Best default index format is NTX
    RDDSETDEFAULT( "DBFNTX" )
@@ -117,14 +124,14 @@ nBrwCharset := 0
 #endif
        ENDMENU
        MENU TITLE "&Data's codepage"
-          MENUITEMCHECK "EN" ACTION SetDataCP( "EN" )
-          MENUITEMCHECK "RUKOI8" ACTION SetDataCP( "RUKOI8" )
-          MENUITEMCHECK "RU1251" ACTION SetDataCP( "RU1251" )
-          MENUITEMCHECK "RU866"  ACTION SetDataCP( "RU866" )
-          MENUITEMCHECK "DEWIN"  ACTION SetDataCP( "DEWIN" )
-          MENUITEMCHECK "IBM858DE (Euro)" ACTION SetDataCP( "DE858" )
+          MENUITEMCHECK "EN"              ACTION  SetDtCP_EN()          && SetDataCP( "EN" )
+          MENUITEMCHECK "RUKOI8"          ACTION  SetDtCP_RUKOI8()      && SetDataCP( "RUKOI8" )
+          MENUITEMCHECK "RU1251"          ACTION  SetDtCP_RU1251()      && SetDataCP( "RU1251" )
+          MENUITEMCHECK "RU866"           ACTION  SetDtCP_RU866()       && SetDataCP( "RU866" )
+          MENUITEMCHECK "DEWIN"           ACTION  SetDtCP_DEWIN()       && SetDataCP( "DEWIN" ) 
+          MENUITEMCHECK "IBM858DE (Euro)" ACTION  SetDtCP_DE858()       && SetDataCP( "DE858" )
 #ifdef __LINUX__
-          MENUITEMCHECK "UTF-8"  ACTION SetDataCP( "UTF8EX" )
+          MENUITEMCHECK "UTF-8"           ACTION SetDtCP_UTF8EX()       && SetDataCP( "UTF8EX" )
 #endif
        ENDMENU
        MENU TITLE "Se&ttings"
@@ -827,5 +834,51 @@ FUNCTION SET_DATE_F(cc)
  ENDCASE
  
 RETURN Nil
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~
+* Set Data Codepages 
+* for MEMO EDIT in BROWSE
+* ~~~~~~~~~~~~~~~~~~~~~~~~
+
+FUNCTION SetDtCP_EN()
+SetDataCP( "EN" )
+nBrwCharset := 0
+RETURN NIL
+
+FUNCTION SetDtCP_RUKOI8()
+SetDataCP( "RUKOI8" )
+nBrwCharset := 206
+RETURN NIL
+
+FUNCTION SetDtCP_RU1251()
+SetDataCP(  "RU1251" )
+nBrwCharset := 204
+RETURN NIL
+
+FUNCTION SetDtCP_RU866()
+SetDataCP( "RU866" )
+nBrwCharset := 204
+RETURN NIL
+
+FUNCTION SetDtCP_DEWIN()
+SetDataCP( "DEWIN" )
+nBrwCharset := 0
+RETURN NIL
+
+FUNCTION SetDtCP_DE858()
+SetDataCP( "DE858" )
+nBrwCharset := 15
+RETURN NIL
+
+FUNCTION SetDtCP_UTF8EX()
+SetDataCP( "UTF8EX" )
+nBrwCharset := 0
+RETURN NIL
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~ 
+
+
+* ================================ EOF of dbview.prg =========================================
+
 
                                                  

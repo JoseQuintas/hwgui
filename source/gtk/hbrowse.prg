@@ -205,6 +205,7 @@ CLASS HBrowse INHERIT HControl
    DATA cTextTitME INIT "Memo Edit"
    DATA cTextClose INIT "Close"   // Button
    DATA cTextSave  INIT "Save"
+   DATA cTextMod   INIT "Memo was modified, save ?"
    DATA cTextLockRec INIT "Can't lock the record!"
 
    METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
@@ -295,6 +296,7 @@ METHOD DefaultLang() CLASS HBrowse
    ::cTextTitME := "Memo Edit"
    ::cTextClose := "Close"   // Button
    ::cTextSave  := "Save"
+   ::cTextMod   := "Memo was modified, save ?"
    ::cTextLockRec := "Can't lock the record!"
    RETURN Self
 
@@ -698,7 +700,7 @@ METHOD Paint()  CLASS HBrowse
    ::height := iif( ::nRowHeight>0, ::nRowHeight, ;
          Max( ::nRowTextHeight, ::minHeight ) + 1 + ::aPadding[2] + ::aPadding[4] )
    ::x1 := aCoors[ 1 ] + i
-   ::y1 := aCoors[ 2 ] + Iif( ::lDispHead, ::nRowTextHeight * ::nHeadRows + ::aHeadPadding[2] + ::aHeadPadding[4], 0 ) + i
+   ::y1 := aCoors[ 2 ] + iif( ::lDispHead, ::nRowTextHeight * ::nHeadRows + ::aHeadPadding[2] + ::aHeadPadding[4], 0 ) + i
    ::x2 := aCoors[ 3 ] - i
    ::y2 := aCoors[ 4 ] - i
    ::nRecords := Eval( ::bRcou, Self )
@@ -1771,6 +1773,9 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL fipos, lRes, x1, y1, fif, nWidth, rowPos
    LOCAL oColumn, type
    LOCAL mvarbuff , bMemoMod , owb1 , owb2 , oModDlg , bclsbutt
+   LOCAL lSaveMem    && DF7BE
+
+   lSaveMem := .T.
 
    * Variables not used   
    * lReadExit
@@ -1855,21 +1860,31 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                     FONT ::oFont
                // old 010, 252 - 100, 252 - sizes 80,24 (too small)
                @ 010, 340 ownerbutton owb2 TEXT ::cTextSave  size 100, 24 ON Click { || bclsbutt := .F. , mvarbuff := ::oEdit , omoddlg:close(), oModDlg:lResult := .T. }
-               @ 100, 340 ownerbutton owb1 TEXT ::cTextClose size 100, 24 ON CLICK { ||oModDlg:close() }
+               @ 100, 340 ownerbutton owb1 TEXT ::cTextClose size 100, 24 ON CLICK { || mvarbuff := ::oEdit , omoddlg:close(), oModDlg:lResult := .T. }
+//               @ 100, 340 ownerbutton owb1 TEXT ::cTextClose size 100, 24 ON CLICK { ||oModDlg:close() }
                  * serve memo field for editing
                 ::oEdit:SetText(mvarbuff)
             ACTIVATE DIALOG oModDlg
           * is modified ? (.T.)
           bMemoMod := ::oEdit:lUpdated // on GTK forever .T.
+          IF bMemoMod
           * Close button pressed ? (Dismiss modification)
-          IF .NOT. bclsbutt
-           IF bMemoMod
-            * write out edited memo field
-            ::varbuf := ::oEdit:GetText()
-            * Store new memo contents
-            VldBrwEdit( Self, fipos , .T. )
-           ENDIF
-          ENDIF
+            IF bclsbutt
+*         "Close" Button should be handled like "Cancel".
+*          Ask for saving, if  "Close" is pressed and the memo is modified
+*
+*            Ask and mark vor saving
+             lSaveMem := hwg_Msgyesno( ::cTextMod , ::cTextTitME )
+            ENDIF
+            IF lSaveMem
+             * write out edited memo field
+             ::varbuf := ::oEdit:GetText()
+             * Store new memo contents
+             VldBrwEdit( Self, fipos , .T. )
+             // hwg_MsgInfo("Memo saved")  && Debug
+            ENDIF  && lSaveMem
+           ENDIF   && bMemoMod
+//          ENDIF
           // ::lEditing := .F.
           * ===================================== *
          ENDIF // memo edit

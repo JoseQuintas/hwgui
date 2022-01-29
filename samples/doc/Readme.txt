@@ -83,11 +83,12 @@ buildpelles.prg:
      first released in 2020. Port of HWGUI to GTK4 needed.
      
 a.prg : Need for full port TO GTK: 
-       HWG_GETCURRENTDIR(), HMDICHILDWINDOW(), HDATEPICKER(), HRECT(),
+       HWG_GETCURRENTDIR(), HMDICHILDWINDOW(), HRECT(),
        HWG_RECT()
        Program gtk_samples/a.prg is a reduced version:
        Removed calls of "Windows only" functions by
-       compiler switch
+       compiler switch.
+       HDATEPICKER() convert to multi platform substitute.
       
 hello.prg : Need for full port TO GTK: 
        HRICHEDIT(),

@@ -4,7 +4,6 @@ Tasks by DF7BE
  - LISTBOX port to GTK, if bug in GTK is fixed.
  - Try to get all samples working.
     List of sample programs with bug description follows.
- - International language support for internal HWGUI dialogs.
  - Feature "Clipper style Alert() replacement" delivered
    by Alex Strickland port to GTK.
  - Check for Digital Mars C compiler
@@ -146,9 +145,6 @@ hwg_ClearKeyboard()
 hwg_ShowProgress()
 hwg_trackbarsetrange()
 hwg_Setctrlfont()
-hwg_SetDatePicker()
-hwg_SetDatePickerNull()
-hwg_GetDatePicker()
 hwg_GetTimePicker()
 hwg_SetTabSize() ==> hwg_SetCurrentTab()
 hwg_GetTabHeight() 

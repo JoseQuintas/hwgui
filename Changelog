@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2022-01-31 18:45 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_functions.html
+  * doc/image/Win_DatepickerSubst_full.png (New)
+      ! Some items added for DATEPICKER substitute.  
+      ! Euro sign now correct for Memo Edit. 
+
 2022-01-29 22:15 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc.html
   * doc/hwgdoc_classes.html

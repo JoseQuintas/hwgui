@@ -29,10 +29,12 @@ LOCAL odlg, oSayMain
 LOCAL nameimg
 LOCAL cs := hwg_GetDirSep()
 nameimg := ".." + cs + "image" + cs + "astro.bmp"
+/*
 #ifdef __GTK__
 * relative from path samples\gtk_samples
  nameimg := ".." + cs + nameimg
 #endif
+*/
 
 IF .NOT. FILE(nameimg)
  hwg_msginfo("File >" + nameimg + "< not found","Error" )

@@ -520,6 +520,18 @@
           <br><code>aArray[1]</code> - width of a bitmap;
           <br><code>aArray[2]</code> - height of a bitmap.
    </ul>
+   
+    <br><strong class="subhead"> hwg_GetBitmapHeight( hBitmap )</strong>
+   <p>
+   hBitmap : Handle of a bitmap object, for example "oBitmap:handle".<br> 
+   Returns the height of a bitmap.<br>
+   </p>
+   
+   <br><strong class="subhead"> hwg_GetBitmapWidth( hBitmap )</strong>
+   <p>
+   hBitmap : Handle of a bitmap object, for example "oBitmap:handle".<br> 
+   Returns the width of a bitmap.<br>
+   </p>   
 
    <br><strong class="subhead"> hwg_GetIconSize( hIcon )</strong> (Windows only)
    <br>Returns an array with the size (width and height) of an icon.
@@ -2644,6 +2656,16 @@ See sample program "testspli.prg" for details.<br>
    if logical parameter ltoCheck is true or false.<br> 
    For usage in combination with hwg_WriteLog() to<br>
    write value(s) into a log file.<br>
+   </p>
+   
+   <br><strong class="subhead"> hwg_deb_is_object(oObj)</strong>
+   <p>
+   For debugging purposes:<br>
+   Displays with a messagebox if oObj is an object or not.<br>
+   ("Is object" or "Is not an object")<br>
+   The condition for "IF" command to check for a valid object is:<br>
+   IF Valtype(oObj) == "O"<br>
+    ...<br> 
    </p>
 
    <br><strong class="subhead"> hwg_Alert</strong> (Windows only)

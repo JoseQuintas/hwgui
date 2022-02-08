@@ -80,15 +80,15 @@ For beginners:
     switch "#ifdef __GTK__", so the program runs also on GTK.
     Read the inline comments of this sample to get information of the reduced feature set.
     
-    If sample program also ready for GTK:
-    For test with GTK create a local copy of
-    sample program in samples\gtk_samples,
-    also copy the *.hbp file with same prefix and modify:
-    1.) comment out the stop for LINUX:
-        # -stop={linux}
-    2.) Modify path to common hbc file:
-        ../hwgui.hbc to ../../hwgui.hbc
-    Compile with
+    Mark "P" (planned) means, that the port to GTK is under construction.
+    
+    "N": Port is not possible yet or make no sense,
+    because of "Windows only" functions and commands.
+    
+    
+    If sample program also ready for GTK (Mark "Y" or "R"):
+      
+    Compile forever with
      hbmk2 <prefix>.hbp        
 
     Some samples could not be compiled or are crashing, hope that we can fix the bugs if we have time,
@@ -165,28 +165,28 @@ For beginners:
  tab.prg            Y  #      -       Sample for Tabs
  Testado.prg        N                 Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)
  testalert.prg      N                 Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
- test_bot.prg       N                 bOther Test: Press key, after key up the scan code is displayed.
+ test_bot.prg       P                 bOther Test: Press key, after key up the scan code is displayed.
  testbrw.prg        Y  #              Another BROWSE test (bug on GTK see docu)
  testchild.prg      N  #      -       Create a child windows; child window not created ! command seems to be outdated.
  testget1.prg       Y                 Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
- testget2.prg       N                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
+ testget2.prg       P                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
  testfunc.prg       Y         Y       Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button. 
  testhgt.prg        N                 class HGT for combined usage of HWGUI control elements in Harbour gtwvg programs in multithread mode.
  testhmonth.prg     Y         Y       Calendar, Datepicker, TOOLTIP
  testimage.prg      Y                 Displaying images and usage of FreeImage library (IMAGE, BITMAP).
- testini.prg        N                 Use INI file: create and read 
- testmenubitmap.prg N                 Menu with bitmaps
+ testini.prg        P                 Use INI file: create and read 
+ testmenubitmap.prg P                 Menu with bitmaps
  testrtf.prg  1)    N  #      -       Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 
  testsdi.prg        Y                 Tree control
  testspli.prg       Y                 Split windows
  testtray.prg       Y         Y       Tray Message : Be care of different behavior between WinAPI and GTK
  testtree.prg       Y                 Tree view control
  testxml.prg        Y                 reading/writing XML file and handling menu items while run-time (testxml.xml)
- trackbar.prg       N                 Trackbar demo, horizontal und vertical.
+ trackbar.prg       P                 Trackbar demo, horizontal und vertical.
  tstcombo.prg       Y                 Test Combobox, with preset and refresh.
  tstprdos.prg 3)    N                 Print on LPT, outdated, see 3)
- tstscrlbar.prg     N                 Scrollbar (GTK: Compilable, but no scroll function)
- tstsplash.prg      N                 SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
+ tstscrlbar.prg     P                 Scrollbar (GTK: Compilable, but no scroll function)
+ tstsplash.prg      P                 SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
  TwoListbox.prg     N                 Sample for select and move items between two listboxes.
  TwoLstSub.prg      Y                 Multi platform substitute for two listboxes by BROWSE windows.
  winprn.prg  3) 8)  Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)

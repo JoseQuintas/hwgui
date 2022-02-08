@@ -194,6 +194,19 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
    ::Activate()
 
    RETURN Self
+ 
+   
+   FUNCTION hwg_GetBitmapHeight( handle )
+   LOCAL aBmpSize
+   aBmpSize  := hwg_Getbitmapsize( handle )
+
+   RETURN aBmpSize[2]
+
+   FUNCTION hwg_GetBitmapWidth( handle )
+   LOCAL aBmpSize
+   aBmpSize  := hwg_Getbitmapsize( handle )
+   
+   RETURN aBmpSize[1]   
    
 * ====================== EOF of hsayimg.prg ========================
    

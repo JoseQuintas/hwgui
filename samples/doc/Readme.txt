@@ -47,26 +47,10 @@ sample programs.
     The contents of the old rc file was preserved
     as inline comment. 
     
-2.) bincnts.prg:
-    Runs best on Windows but not on GTK:
-    The sample program can be compiled. 
-    The icon was correct displayed from the
-    binary container, but the sample dialog with
-    bmp files does not run ==>  
-    The images of the binary container does not appear.
-    A special solution is write the resources from the
-    container into temporary files and load then from
-    there.
- 
-    The OWNERBUTTON's are now correct displayed, bit
-    the BITMAP command does not show the image on LINUX,
-    it is the last issue to fix for this sample.
-     
-    The icon appears OK on WinAPI and GTK/LINUX.
-    
+   
  
     
-3.) grid_5.prg 
+2.) grid_5.prg 
     Grid Editor (crashes, if click on button "Insert","Change","Delete")         
 
 
@@ -127,11 +111,11 @@ The modified value not accepted.
 List of sample programs with bugs
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 (Handle it as a "TO-DO list")
-    
-bincnts.prg
+
+
 grid_5.prg    (Windows only)
 nice2.prg     (Windows only)
-stretch.prg
+stretch.prg   (On GTK no image appears)
 tab.prg
 testbrw.prg
 testchild.prg (Windows only)

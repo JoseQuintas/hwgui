@@ -9,6 +9,30 @@
 */
 
 
+2022-02-09 00:59 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+  * samples/Readme.txt
+  * samples/bincnts.prg
+  * samples/doc/Readme.txt
+  * samples/stretch.hbp (New)
+  * samples/testimage.prg
+  * source/gtk/hmisc.prg
+  * source/gtk/hsayimg.prg
+  * source/winapi/hmisc.prg
+  * source/winapi/hsayimg.prg
+      ! Bug fixing BITMAP command on GTK:
+      ! bitmap image does not appear. 
+      ! Sample program modified for GTK.
+      ! New functions:
+      ! - hwg_GetBitmapHeight()
+      ! - hwg_GetBitmapWidth()
+      ! New function for debugging purposes:
+      ! - hwg_deb_is_object()
+      ! Docu updated.
+ 
+
 2022-01-31 18:45 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_functions.html

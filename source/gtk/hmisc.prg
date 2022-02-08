@@ -779,6 +779,19 @@ LOCAL oFont
 
 RETURN oFont
 
+* =======================================================
+FUNCTION hwg_deb_is_object(oObj)
+* =======================================================
+LOCAL lret
+
+       IF Valtype(oObj) == "O" && Debug
+         hwg_MsgInfo("Is object")
+         lret := .T.
+        ELSE
+         hwg_MsgInfo("Is not an object")
+         lret := .F.
+        ENDIF
+RETURN lret
 
 * ============== EOF of hmisc.prg =================
 

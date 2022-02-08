@@ -55,8 +55,10 @@ LOCAL cImageDir, cppath , oIcon, oBitmap , oToolbar , oFileOpen , oQuit , oMainW
 LOCAL htab, nbut , oBMPExit , oPNGDoor , oBtnDoor , ojpeg , oBtnjpeg
 LOCAL oastropng , oastrobmp
 LOCAL cDirSep := hwg_GetDirSep()
-* For design differnces Windows and GTK/LINUX
+* For design differences Windows and GTK/LINUX
 LOCAL nxowb, nyowb, nlowb
+LOCAL oSayImg1 , oSayImg2
+LOCAL nx1, ny1 , nx2, ny2
 
 
 #ifdef __GTK__
@@ -95,8 +97,8 @@ IF .NOT. hwg_GetResContainerOpen()
 ENDIF 
 
 * Load contents from container into image objects.
-* oIcon := HIcon():AddResource( "ok" )        && ico (old)
-oIcon := HIcon():AddResource( "hwgui_32x32" ) && ico
+oIcon := HIcon():AddResource( "ok" )        && ico (old)
+* oIcon := HIcon():AddResource( "hwgui_32x32" ) && ico
 oBitmap := HBitmap():AddResource("open")      && bmp
 oBMPExit := HBitmap():AddResource("exit")     && bmp
 oPNGDoor := HBitmap():AddResource("door")     && png
@@ -113,7 +115,7 @@ oastrobmp := HBitmap():AddResource("astro2")  && bmp
 
 INIT WINDOW oMainW  ;
    FONT oFontMain  ;
-   TITLE "Bitmap container sample" AT 0,0 SIZE 500 , 300 ;
+   TITLE "Bitmap container sample" AT 0,0 SIZE 500 , 500 ;
    ICON oIcon STYLE WS_POPUP +  WS_CAPTION + WS_SYSMENU
 
 * GTK + Toolbar : If used, the Ownerbuttons are not visible !
@@ -208,16 +210,37 @@ INIT WINDOW oMainW  ;
 #endif   
   
 
+
+nx2 := hwg_GetBitmapWidth ( oastrobmp:handle )
+ny2 := hwg_GetBitmapHeight( oastrobmp:handle )
+
+
 #ifdef __GTK__
- // must be fixed
- @ 60 , 100 SAY "astro.png" SIZE 100, 20
- @ 60 , 150 BITMAP oastropng
-  @ 60 , 200 SAY "astro2.bmp" SIZE 100, 20 
-  @ 60 , 250 BITMAP oastrobmp
+
+nx1 := hwg_GetBitmapWidth ( oastropng:handle )
+ny1 := hwg_GetBitmapHeight( oastropng:handle )
+
+* Attention !
+* The parameters oSayImg.. , nx.. , ny.. and "OF oDialog/oMainW"
+* are on GTK mandatory, otherwise the image does not appear !
+ 
+  @ 60 , 100 SAY "astro.png" SIZE 100, 20
+  @ 60 , 150 BITMAP oSayImg1 SHOW oastropng OF oMainW SIZE nx1, ny1 && 100, 20
+  
+  @ 60 , 300 SAY "astro2.bmp" SIZE 100, 20 
+  // @ 60 , 350 BITMAP oastrobmp && not displayed
+  @ 60 , 350 BITMAP oSayImg2 SHOW oastrobmp OF oMainW SIZE nx2, ny2
 #else
+  
+   nx1 := 0
+   ny1 := 0
+
   @ 60 , 100 SAY "astro2.bmp" SIZE 100, 20 
   @ 60 , 150 BITMAP oastrobmp
 #endif
+
+hwg_MsgInfo( "nx1=" + ALLTRIM(STR(nx1)) + " ny1=" + ALLTRIM(STR(ny1)) + CHR(10) + ;
+             "nx2=" + ALLTRIM(STR(nx2)) + " ny2=" + ALLTRIM(STR(ny2)) )
 
   
    oMainW:Activate()

@@ -9,6 +9,25 @@
 */
 
 
+2022-02-10 13:27 UTC+0100 Wilfried Brunken DF7BE 
+  * M       image/hwgui_16x16.ico
+  * M       image/hwgui_24x24.ico
+  * A       image/hwgui_256x256.bmp (New)
+  * M       image/hwgui_256x256.ico
+  * M       image/hwgui_32x32.ico
+  * M       image/hwgui_48x48.ico
+  * M       samples/bincnts.prg
+  * M       samples/gtk_samples/image/sample.bin
+  * M       samples/image/hwgui_32x32.ico
+  * M       samples/image/sample.bin
+  * M       utils/bincnt/Readme.txt
+  * M       utils/bincnt/hbmk.sh
+        ! Bug fixing corrupted Icons 
+        ! on Ubuntu LINUX 20, for details with bug report 
+        ! in the Binary Container Manager see 
+        ! utils/bincnt/Readme.txt
+        ! Sample program mofified.
+
 2022-02-09 00:59 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_commands.html

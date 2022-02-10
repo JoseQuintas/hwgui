@@ -30,6 +30,9 @@ Created by DF7BE, 2020-09-07.
     in the current directory.
     Read more about this topic in HWGUI documentation
     "doc/hwgdoc_misc.html", chapter "7.6. Binary container manager".
+    
+    The sample program "samples/bincnts.prg"
+    demonstrates the usage of items in a Binary Container file.
 
 
 2.) Hex value resources
@@ -60,14 +63,46 @@ Created by DF7BE, 2020-09-07.
     #ifndef __GTK__
      oIcon1 := HIcon():AddResource( "ICON" )   && Windows
     #else
-     oIcon1 := HIcon():AddString( "icon" , cValIcon  )  && *NIX with GTK
+     oIcon1 := HIcon():AddString( "icon" , cValIcon  )  && *NIX with GTK, by hex values
     #endif
 
     For bitmaps the use of Hex value resources or the binary container it is no problem. 
 
     Read more information about iconification in HWGUI HTML documentation
-    "doc/hwgdoc.html", chapter "3.11. Handling resources".   
+    "doc/hwgdoc.html", chapter "3.11. Handling resources".
 
     
+4.) Additional bug information
+
+    - Container manager
+       The exchange or removal of items (files) is buggy.
+       So make a backup copy of your binary container file before you begin
+       to add or edit items.
+      Name conflict:
+       If you want to add an item with same name, but other type,
+       the recent type is overwritten without changing the type, for example:
+        astro.bmp , astro.png, astro.jpg.
+       If you want to add these file into one container, rename them with a unique name,
+       for example:
+        astro.bmp, astro2.jpg, astro3.png
+       This is done in the sample program "bincnts.prg". 
+
+    - Converting bitmaps to icons:
+       First i converted a bitmap to icons with the "Greenfish Icon Editor" (gfie64),
+       but the converted icon files are corrupt. On Windows they are displayed correct,
+       but on Ubuntu LINUX 20 they are crackeld.
+       On Windows the corrupted icons are displayed correct, so
+       for multiplatform applications check them on LINUX, too !
+       This is also visible in the preview of the file viewer.
+       But new created icons seemed to be OK.
+      
+       Because of this i tested the conversion with IrfanView64:
+       Load the bitmap file, goto menu "Modify size" and set the desired
+       file size (recommeded default size for Icons is 48 x 48 pixels), and save the
+       image as "Windows icon". Now they are OK.
+                      
+          
+
+
 * =============== EOF of Readme.txt ================================
   

@@ -97,8 +97,10 @@ IF .NOT. hwg_GetResContainerOpen()
 ENDIF 
 
 * Load contents from container into image objects.
-oIcon := HIcon():AddResource( "ok" )        && ico (old)
-* oIcon := HIcon():AddResource( "hwgui_32x32" ) && ico
+* oIcon := HIcon():AddResource( "ok" )        && ico (old)
+oIcon := HIcon():AddResource( "hwgui_48x48" ) && ico
+* oIcon := HIcon():AddFile( "image" + cDirSep + "hwgui_32x32.ico" ) && icon from file (Test)
+*
 oBitmap := HBitmap():AddResource("open")      && bmp
 oBMPExit := HBitmap():AddResource("exit")     && bmp
 oPNGDoor := HBitmap():AddResource("door")     && png

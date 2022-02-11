@@ -9,19 +9,29 @@
 */
 
 
+
+2022-02-11 10:45 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc_commands.html
+  * samples/Readme.txt
+  * samples/stretch.prg
+        ! Stretch sample now running on 
+        ! Windows and LINUX.
+        ! Docu updated. 
+
+
 2022-02-10 13:27 UTC+0100 Wilfried Brunken DF7BE 
-  * M       image/hwgui_16x16.ico
-  * M       image/hwgui_24x24.ico
-  * A       image/hwgui_256x256.bmp (New)
-  * M       image/hwgui_256x256.ico
-  * M       image/hwgui_32x32.ico
-  * M       image/hwgui_48x48.ico
-  * M       samples/bincnts.prg
-  * M       samples/gtk_samples/image/sample.bin
-  * M       samples/image/hwgui_32x32.ico
-  * M       samples/image/sample.bin
-  * M       utils/bincnt/Readme.txt
-  * M       utils/bincnt/hbmk.sh
+  * image/hwgui_16x16.ico
+  * image/hwgui_24x24.ico
+  * image/hwgui_256x256.bmp (New)
+  * image/hwgui_256x256.ico
+  * image/hwgui_32x32.ico
+  * image/hwgui_48x48.ico
+  * samples/bincnts.prg
+  * samples/gtk_samples/image/sample.bin
+  * samples/image/hwgui_32x32.ico
+  * samples/image/sample.bin
+  * utils/bincnt/Readme.txt
+  * utils/bincnt/hbmk.sh
         ! Bug fixing corrupted Icons 
         ! on Ubuntu LINUX 20, for details with bug report 
         ! in the Binary Container Manager see 

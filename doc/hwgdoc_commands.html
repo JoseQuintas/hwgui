@@ -922,6 +922,12 @@
     The parameters &lt;oBmp&gt; SHOW , SIZE and "OF"
     are on GTK mandatory, otherwise the image does not appear !
     For details see sample program "bincnts.prg".<br>
+    For the SIZE parameter pass the real size of the image to display.<br>
+    <br>
+    Attention !<br>
+    Do not positionize a BUTTON into the image,<br>
+    otherwise the ON CLICK block does not work,<br>
+    for details see sample program "stretch.prg".<br>
     </p>
 
     <br><a name="Commands3-29" href="#_Commands3-29">4.3.29.  @ &lt;x&gt;,&lt;y&gt; ICON</a>
@@ -1241,7 +1247,7 @@
          [ HOVERCOLOR &lt;hcolor&gt; ]
     </pre>
 
-    <br><a name="Commands3-46" href="#_Commands3-46">4.3.46.  @ &lt;x&gt;,&lt;y&gt; TOOLBAR</a>
+    <br><a name="Commands3-46" href="#_Commands3-46">4.3.46.  @ &lt;x&gt;,&lt;y&gt; TOOLBAR</a> (GTK only)
     <p></p>
     <pre class="code">
     @ &lt;x&gt;,&lt;y&gt; TOOLBAR [ &lt;oTool&gt; ]
@@ -1251,8 +1257,12 @@
     	 [ STYLE &lt;nStyle&gt; ]
     	 [ ITEMS &lt;aItems&gt; ]
     </pre>
+    <p>
+    For multiplatform applications use PANEL and OWNERBUTTON.<br>
+    For details see sample programs "bincnts.prg and "escrita.prg".<br> 
+    </p>
 
-    <br><a name="Commands3-47" href="#_Commands3-47">4.3.47.  TOOLBUTTON, ADD TOOLBUTTON</a>
+    <br><a name="Commands3-47" href="#_Commands3-47">4.3.47.  TOOLBUTTON, ADD TOOLBUTTON</a>  (GTK only)
     <p></p>
     <pre class="code">
     TOOLBUTTON  &lt;oTool&gt; ;
@@ -1265,7 +1275,11 @@
          [ MENU &lt;d&gt;]
          ON CLICK &lt;bclick&gt;
     </pre>
-
+    <p>
+    For multiplatform applications use PANEL and OWNERBUTTON.<br>
+    For details see sample programs "bincnts.prg and "escrita.prg".<br> 
+    </p>
+    
     <br><a name="Commands3-48" href="#_Commands3-48">4.3.48.  @ &lt;x&gt;,&lt;y&gt; PAGER</a>
     <p></p>
     <pre class="code">

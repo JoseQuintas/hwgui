@@ -75,10 +75,15 @@ For beginners:
 
     Special sample programs for GTK in directory "gtk_samples".
     The list contains only the main programs.
+
     Some of the programs are also ready for GTK, they are marked in the GTK column with "Y".
     If the program is marked with "R", the "Windows only" functions are deactived by compiler
     switch "#ifdef __GTK__", so the program runs also on GTK.
     Read the inline comments of this sample to get information of the reduced feature set.
+    
+    Mark "S" mentioned a "Windows only" sample program, which have a
+    multiplatform sample with available substitute(s) of the Windows only 
+    function.
     
     Mark "P" (planned) means, that the port to GTK is under construction.
     
@@ -131,7 +136,7 @@ For beginners:
  datepicker.prg     Y                 Multiplatform substitute of Windows only DATEPICKER
  dbview.prg         Y         Y       DBF access (Browse, Indexing, Codepages, Structure, ... )
  demodbf.prg        Y         Y       Demo for Edit using command NOEXIT
- demohlist.prg      N         Y       Demo for listbox
+ demohlist.prg      S         Y       Demo for listbox
  demohlistsub.prg   Y         Y       Multi platform substitute for listbox by BROWSE.
  Dialogboxes.prg    Y                 Demonstrates few ready to use dialog boxes (extract from tutor)
  fileselect.prg     Y                 Sample for file selection menues
@@ -187,7 +192,7 @@ For beginners:
  tstprdos.prg 3)    N                 Print on LPT, outdated, see 3)
  tstscrlbar.prg     P                 Scrollbar (GTK: Compilable, but no scroll function)
  tstsplash.prg      P                 SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
- TwoListbox.prg     N                 Sample for select and move items between two listboxes.
+ TwoListbox.prg     S                 Sample for select and move items between two listboxes.
  TwoLstSub.prg      Y                 Multi platform substitute for two listboxes by BROWSE windows.
  winprn.prg  3) 8)  Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)
  xmltree.prg        Y          YW     Show XML-Tree: Open "testxml.xml" for test.

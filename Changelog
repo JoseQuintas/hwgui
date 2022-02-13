@@ -10,6 +10,17 @@
 
 
 
+2022-02-13 23:10 UTC+0100 Wilfried Brunken DF7BE 
+  * samples/Readme.txt
+  * samples/doc/Readme.txt
+  * samples/escrita.hbp (New, derived from gtk_samples)
+  * samples/escrita.prg (New, derived from gtk_samples)
+  * samples/hwmingnw-gtk.bat (New)
+        ! escrita.prg now ready for multiplatform usage,
+        ! The commands "TOOLBAR" and "TOOLBUTTON"
+        ! are GTK only, so they are
+        ! substituted by "PANEL" and "OWNERBUTTON".
+
 2022-02-11 10:45 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc_commands.html
   * samples/Readme.txt

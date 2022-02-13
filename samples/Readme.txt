@@ -27,16 +27,17 @@ For beginners:
 
 2.) List of build scripts for several compiler:
 
-    bld.bat         Borland C
-    bld4dll.bat     Borland C, build program which uses harbour.dll
-    bldmingw.bat    GCC(MinGW), 32 bit
-    bldmingw64.bat  GCC(MinGW), 64 bit
-    bldgw.bat       GCC(MinGW), alternative script 
-    bldpc.bat       Pelles C Compiler 
-    bldvc.bat       Microsoft Visual C  
-    hbmk.bat        Using hbmk2 utility
-    sample.hbp      Sample skript for hbmk2 utility, modify to your own needs
-                    (works for Windows and LINUX) 
+    bld.bat           Borland C
+    bld4dll.bat       Borland C, build program which uses harbour.dll
+    bldmingw.bat      GCC(MinGW), 32 bit
+    bldmingw64.bat    GCC(MinGW), 64 bit
+    bldgw.bat         GCC(MinGW), alternative script 
+    bldpc.bat         Pelles C Compiler 
+    bldvc.bat         Microsoft Visual C  
+    hbmk.bat          Using hbmk2 utility
+    sample.hbp        Sample skript for hbmk2 utility, modify to your own needs
+                      (works for Windows and LINUX)
+    hwmingnw-gtk.bat  Only for Cross Development Environment for GTK on Windows, GCC(MinGW), 32 bit
 
     For Compiler support look into text files of directory:
      samples/dev/compiler
@@ -139,6 +140,7 @@ For beginners:
  demohlist.prg      S         Y       Demo for listbox
  demohlistsub.prg   Y         Y       Multi platform substitute for listbox by BROWSE.
  Dialogboxes.prg    Y                 Demonstrates few ready to use dialog boxes (extract from tutor)
+ escrita.prg   +)   Y                 Tool buttons with bitmaps ("Accent Test")
  fileselect.prg     Y                 Sample for file selection menues
  getupdown.prg      Y                 Usage of @ <x> <y> GET UPDOWN ..
  GetWinVers.prg     Y                 Functions for get recent hwg_SaveFile() Windows version

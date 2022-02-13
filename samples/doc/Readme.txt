@@ -54,6 +54,18 @@ sample programs.
     Grid Editor (crashes, if click on button "Insert","Change","Delete")         
 
 
+3.) escrita.prg:
+    This sample program is derived from the sample in
+    directory "gtk_samples" with same name.
+    It is an alternative for multi platform usage.
+    The commands "TOOLBAR" and "TOOLBUTTON" are GTK only, so they are
+    substituted by "PANEL" and "OWNERBUTTON".
+    The behaviour on LINUX/GTK is preserved by usage 
+    of the compiler switch "#ifdef __GTK__".
+    Compiling of this program on Windows
+    and GTK/LINUX, you can see the diffences
+    in design and behavior.
+
 
 Some information for port to GTK/LINUX
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
@@ -115,7 +127,6 @@ List of sample programs with bugs
 
 grid_5.prg    (Windows only)
 nice2.prg     (Windows only)
-stretch.prg   (On GTK no image appears)
 tab.prg
 testbrw.prg
 testchild.prg (Windows only)

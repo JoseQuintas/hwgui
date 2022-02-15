@@ -178,11 +178,30 @@
    Read more about this topic in file
    "utils/bincnt/Readme.txt".
    Creating and editing forms use the HWGUI utility "Designer"
-   in directory "utils/designer". 
+   in directory "utils/designer".
+
+   4) Special build instructions
+
+   4.1) For Borland C (BCC) on Windows
+
+   The build process runs silent.
+   After compile, look into logfile
+   "make_b32.log"
+   and search for error messages, if the
+   build of HWGUI is not successful.
+   Ignore lots of warnings.
+
+   The following libraries must be built:
+     hbxml.lib
+     hwgdebug.lib
+     hwgui.lib
+     hwguimt.lib
+     procmisc.lib
   
 
- List of packages for Ubuntu Linux and LinuxMINT
- -----------------------------------------------
+
+ Appendix 1: List of packages for Ubuntu Linux and LinuxMINT
+ -----------------------------------------------------------
   
   Install packages as system administrator:
   

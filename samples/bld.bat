@@ -46,6 +46,7 @@ echo %1.exe, + >> b32.bc
 echo %1.map, + >> b32.bc
 echo %HWGUI_INSTALL%\lib\hwgui.lib + >> b32.bc
 echo %HWGUI_INSTALL%\lib\procmisc.lib + >> b32.bc
+if exist %HWGUI_INSTALL%\lib\hbxml.lib echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
 REM echo %HWGUI_INSTALL%\lib\hbxml.lib + >> b32.bc
 REM echo %HWGUI_INSTALL%\lib\hwgdebug.lib + >> b32.bc
 if exist %HWGUI_INSTALL%\lib\hwg_qhtm.lib echo %HWGUI_INSTALL%\lib\hwg_qhtm.lib + >> b32.bc

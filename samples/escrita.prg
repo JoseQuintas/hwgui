@@ -89,7 +89,7 @@ oIcoCancel :=   HIcon():AddFile(cbmppref + "cancel.ico")
 * ON INIT crashes with "No exported method: REFRESH"
 */
 /* But this works fime */
-   INIT DIALOG oModDlg TITLE "Teste da Acentuação" ;
+   INIT DIALOG oModDlg TITLE cTitle ;
       AT 210, 10  SIZE 300, 300 ON INIT { ||otool:refresh(), hwg_Enablewindow( oTool:aItem[2,11], .F. ) }
 #else
    INIT WINDOW oModDlg TITLE  cTitle ;
@@ -97,7 +97,7 @@ oIcoCancel :=   HIcon():AddFile(cbmppref + "cancel.ico")
 #endif
 
 #ifdef __GTK__
-   * Commands TOOLBAR and TOOLBUTTON are "Windows only"   
+   * Commands TOOLBAR and TOOLBUTTON are "GTK only"   
    @ 0, 0 toolbar oTool of oModDlg size 50, 100 ID 700
 #else 
   * On Windows, the size must have other values (old 50 , 100)

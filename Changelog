@@ -10,6 +10,18 @@
 
 
 
+2022-02-15 09:05 UTC+0100 Wilfried Brunken DF7BE 
+  * install.txt
+  * samples/bld.bat
+  * samples/escrita.prg
+        ! escrita.prg little corrections.
+        ! Install instructions updated.
+        ! Bugfix compile sample with BCC:
+        ! bld.bat testxml
+        ! Error: Unresolved external '_HB_FUN_HXMLDOC' referenced from C:\HWGUI\HWGUI-BCC\SAMPLES\TESTXML.OBJ
+        ! .. '_HB_FUN_HXMLNODE' ...
+
+
 2022-02-13 23:10 UTC+0100 Wilfried Brunken DF7BE 
   * samples/Readme.txt
   * samples/doc/Readme.txt

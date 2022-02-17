@@ -557,7 +557,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ENDIF
 
    ELSEIF msg == WM_VSCROLL
-      RETURN ::onVScroll( wParam )
+      lRes := ::onVScroll( wParam )
 
    ELSEIF msg == WM_MOUSEACTIVATE
       hced_SetFocus( ::hEdit )
@@ -619,8 +619,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
          IF n > 0 .AND. ( nPages := ( Int( ::nLinesAll/n ) + 1 ) ) > 1
             IF ::nLineF == 1 .AND. ::nWSublF == 1 .AND. ::nLineC == 1
                hced_SetVScroll( ::hEdit, 0, 4, nPages )
+               //hwg_writelog( "vscroll1" )
             ELSE
-               hced_SetVScroll( ::hEdit, Min( Int( hced_LineNum(Self,::nLineC) * 4/n ) - 1, (nPages - 1 ) * 4 ), 4, nPages )
+               hced_SetVScroll( ::hEdit, ;
+                  Min( Int( hced_LineNum(Self,::nLineC) * 4/n ) - 1, (nPages - 1 ) * 4 ), ;
+                  4, nPages )
+               //hwg_writelog( "vscroll2 "+ltrim(str(Min( Int( hced_LineNum(Self,::nLineC) * 4/n ) - 1, (nPages - 1 ) * 4 ))) )
             ENDIF
          ENDIF
       ENDIF

@@ -8,7 +8,12 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2022-02-17 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * utils/editor/editor.prg
+    ! Scrollbar fixed for Winapi version
+    * Scroll bar visibility handling added to view/ submenu for Winapi version
+    * The annoying start combo dialog removed. The font is reading now from the ini file.
 
 2022-02-15 09:05 UTC+0100 Wilfried Brunken DF7BE 
   * install.txt

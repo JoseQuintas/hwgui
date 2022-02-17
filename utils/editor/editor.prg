@@ -56,6 +56,7 @@ REQUEST HB_CODEPAGE_DEWIN  && ----  "   -------------
 #define MENU_INS_TABLE   1920
 #define MENU_INS_BLOCK   1921
 #define MENU_BLOCK       1922
+#define MENU_VSCROLL  1923
 
 #define FREE_BOUNDL      12
 #define DOC_BOUNDL       12
@@ -126,19 +127,20 @@ REQUEST HB_CODEPAGE_DEWIN  && ----  "   -------------
 
 STATIC cNewLine := e"\r\n"
 STATIC cWebBrow
-STATIC oFontP, oBrush1
+STATIC oFontMain, oFontP, oBrush1
 STATIC oToolbar, oRuler, oEdit, aButtons[4]
 STATIC oComboSiz, cComboSizDef := "100%", lComboSet := .F.
 STATIC aSetStyle, nLastMsg, nLastWpar, aPointLast[2], nCharsLast
 STATIC alAcc := { .F.,.F.,.F.,.F.,.F.,.F.,.F. }
 STATIC cCBformatted
 STATIC cSearch := "", aPointFound, lSeaCase := .T., lSeaRegex := .F.
+STATIC lScrollBar := .T.
 STATIC aFilesRecent := {}, lOptChg := .F.
 
 MEMVAR handcursor, cIniPath
 
 FUNCTION Main ( fName )
-   LOCAL oMainWindow, oFont, i
+   LOCAL oMainWindow, i
    LOCAL oStyle1, oStyle2, oStyle3
    LOCAL aComboSiz := { "50%", "60%", "80%", "90%", cComboSizDef, "110%", "120%", "130%", "140%", "150%", "160%", "180%", "200%", "240%", "280%" }
    LOCAL x1
@@ -159,8 +161,19 @@ FUNCTION Main ( fName )
      hb_cdpSelect("DEWIN") && Also OK for other western countries and Russia
    ENDIF
 
-
-
+   IF Empty( oFontMain )
+#ifndef __PLATFORM__WINDOWS
+      PREPARE FONT oFontMain NAME "Sans" WIDTH 0 HEIGHT 13
+#else
+      PREPARE FONT oFontMain NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 0
+#endif
+      lOptChg := .T.
+   ENDIF
+#ifndef __PLATFORM__WINDOWS
+      PREPARE FONT oFontP NAME "Sans" WIDTH 0 HEIGHT 12
+#else
+      PREPARE FONT oFontP NAME "Courier New" WIDTH 0 HEIGHT - 15
+#endif
 
    oBrush1 := HBrush():Add( 16777215 )
 
@@ -168,30 +181,8 @@ FUNCTION Main ( fName )
    oStyle2 := HStyle():New( {CLR_LBLUE}, 1,, 3, CLR_BLACK )
    oStyle3 := HStyle():New( {CLR_LBLUE1}, 1,, 2, CLR_LBLUE0 )
 
-
-#ifdef __PLATFORM__WINDOWS
-  * Ask for charset
-  result := __frm_CcomboSelect(aCharset,"Character Set","Please Select a Character Set", ;
-   200 , "OK" , "Cancel", "Help" , "Need Help : " , "HELP !" , nchrs , .F.)
- IF result != 0
-  * set to new value, if modified
-  nchrs := result /* Position in COMBOBOX */
-  csel := aCharset[result]
-  hwg_MsgInfo("Character Set is now: " + ALLTRIM(STR(nchrs - 1 )) + " Name: " + csel , ;
-          "Character Set")
-  oFont := Select_font(nchrs - 1 )    && ncharset 0 = ISO8859-15, 1 = 206 (Russian)
- ELSE
-  * Cancel: use default charset
-  oFont := Select_font(0)
- ENDIF
-#else
-  oFont := Select_font(0) && irrelvant for UTF-8
-#endif
-
-
-
    INIT WINDOW oMainWindow MAIN TITLE "Editor" ;
-      AT 200, 0 SIZE 600, 300 FONT oFont
+      AT 200, 0 SIZE 600, 300 FONT oFontMain
 
    * Alexander S.Kresin - 2019-12-13
    *    @ 0,272 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1,y-8)}
@@ -204,9 +195,6 @@ FUNCTION Main ( fName )
    *    @ 0,272 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1)}
    *
    * old: ON SIZE {|o,x|o:Move(,,x)
-
-
-
 
 //#ifndef __PLATFORM__WINDOWS
 #ifdef __GTK__
@@ -320,6 +308,9 @@ FUNCTION Main ( fName )
       ENDMENU
       MENU TITLE "&View"
          MENUITEMCHECK "&Ruler" ID MENU_RULER ACTION SetRuler()
+#ifdef __PLATFORM__WINDOWS
+         MENUITEMCHECK "&Scroll bar" ID MENU_VSCROLL ACTION (lScrollBar:=!lScrollBar,hwg_ShowScrollBar(oEdit:handle,SB_VERT,lScrollBar))
+#endif
          SEPARATOR
          MENUITEMCHECK "Zoom &In"+Chr(9)+"Ctrl+ +" ACTION Zoom( 2 ) ACCELERATOR FCONTROL,VK_ADD
          MENUITEMCHECK "&Zoom &Out"+Chr(9)+"Ctrl+ -" ACTION Zoom( -2 ) ACCELERATOR FCONTROL,VK_SUBTRACT
@@ -390,6 +381,9 @@ FUNCTION Main ( fName )
 
    SET KEY GLOBAL 0, VK_F2 TO MarkRow()
    hwg_Enablemenuitem( , MENU_FINDNEXT, .F., .T. )
+#ifdef __PLATFORM__WINDOWS
+   hwg_Checkmenuitem( ,MENU_VSCROLL, .T. )
+#endif
 
    ACTIVATE WINDOW oMainWindow
    CloseFile()
@@ -434,6 +428,7 @@ FUNCTION OpenFile( fname, lAdd )
       IF oEdit:lError
          hwg_MsgStop( "Wrong file format!" )
       ENDIF
+      Add2Recent( fname )
    ENDIF
 
    RETURN Nil
@@ -2311,6 +2306,8 @@ STATIC FUNCTION ReadIni( cPath )
              FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
                 Aadd( aFilesRecent, Trim( oNode:aItems[j]:GetAttribute("name") ) )
              NEXT
+          ELSEIF oNode:title == "font"
+             oFontMain := FontFromXML( oNode )
           ENDIF
        NEXT
     ENDIF
@@ -2325,6 +2322,8 @@ STATIC FUNCTION WriteIni( cPath )
 
    oIni:Add( oNode := HXMLNode():New( "init" ) )
 
+   oNode:Add( FontToXML( oFontMain, "font" ) )
+
    oNodeR := oNode:Add( HXMLNode():New( "recent" ) )
    FOR i := 1 TO Len( aFilesRecent )
       oNodeR:Add( HXMLNode():New( "db", HBXML_TYPE_SINGLE, { { "name", aFilesRecent[i] } } ) )
@@ -2334,6 +2333,58 @@ STATIC FUNCTION WriteIni( cPath )
 
    RETURN Nil
 
+STATIC FUNCTION FontFromXML( oXmlNode )
+
+   LOCAL width  := oXmlNode:GetAttribute( "width" )
+   LOCAL height := oXmlNode:GetAttribute( "height" )
+   LOCAL weight := oXmlNode:GetAttribute( "weight" )
+   LOCAL charset := oXmlNode:GetAttribute( "charset" )
+   LOCAL ita   := oXmlNode:GetAttribute( "italic" )
+   LOCAL under := oXmlNode:GetAttribute( "underline" )
+
+   IF width != Nil
+      width := Val( width )
+   ENDIF
+   IF height != Nil
+      height := Val( height )
+   ENDIF
+   IF weight != Nil
+      weight := Val( weight )
+   ENDIF
+   IF charset != Nil
+      charset := Val( charset )
+   ENDIF
+   IF ita != Nil
+      ita := Val( ita )
+   ENDIF
+   IF under != Nil
+      under := Val( under )
+   ENDIF
+
+   RETURN HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
+      width, height, weight, charset, ita, under,,,.T. )
+
+STATIC FUNCTION FontToXML( oFont, cTitle )
+
+   LOCAL aAttr := {}
+
+   AAdd( aAttr, { "name", oFont:name } )
+   AAdd( aAttr, { "width", LTrim( Str(oFont:width,5 ) ) } )
+   AAdd( aAttr, { "height", LTrim( Str(oFont:height,5 ) ) } )
+   IF oFont:weight != 0
+      AAdd( aAttr, { "weight", LTrim( Str(oFont:weight,5 ) ) } )
+   ENDIF
+   IF oFont:charset != 0
+      AAdd( aAttr, { "charset", LTrim( Str(oFont:charset,5 ) ) } )
+   ENDIF
+   IF oFont:Italic != 0
+      AAdd( aAttr, { "italic", LTrim( Str(oFont:Italic,5 ) ) } )
+   ENDIF
+   IF oFont:Underline != 0
+      AAdd( aAttr, { "underline", LTrim( Str(oFont:Underline,5 ) ) } )
+   ENDIF
+
+   RETURN HXMLNode():New( cTitle, HBXML_TYPE_SINGLE, aAttr )
 
 STATIC FUNCTION Help(cHTopic , nPROCLINE , cHVar)
 
@@ -2414,136 +2465,5 @@ STATIC FUNCTION GetVal_nTop
 #else
    RETURN 40
 #endif
-
-* ==========================================
-STATIC FUNCTION Select_font( ncharset )
-* Sets the charset for used font.
-* ncharset : 0 = ISO8859-15 (Default), 1 = 206 (Russian)
-* Ignored on LINUX/UNIX, UTF-8 used instead forever
-* ==========================================
-LOCAL oFont
-IF ncharset == NIL
-  ncharset := 0
-ENDIF
-#ifndef __PLATFORM__WINDOWS
-   PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 13
-   PREPARE FONT oFontP NAME "Sans" WIDTH 0 HEIGHT 12
-#else
- IF ncharset == 0
-   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 0
- ELSE
-   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 204
- ENDIF
-   PREPARE FONT oFontP NAME "Courier New" WIDTH 0 HEIGHT - 15
-#endif
-RETURN oFont
-
-* ==========================================
-FUNCTION __frm_CcomboSelect(apItems, cpTitle, cpLabel, npOffset, cpOK, cpCancel, cpHelp , cpHTopic , cpHVar , npreset , lHelp)
-* Common Combobox Selection
-* One combobox flexible.
-* Parameters: (Default values in brackets)
-* apItems  : Array with items (empty)
-* cpTitle  : Title for dialog ("Select Item")
-* cpLabel  : Headline         ("Select Item")
-* npOffset : Number of pixels for windows size offset, y axis (0)
-*            recommended value: depends of number of items:
-*            npOffset = (n - 1) * 30 (not exact)
-* cpOK     : Button caption   ("OK")
-* cpCancel : Button caption   ("Cancel")
-* cpHelp   : Button caption   ("Help")
-* cpHTopic : HELP() : Topic   ("")
-* cpHVar   : HELP() : Variable Name ("")
-* npreset  : Preser position (1)
-* lHelp    : Call help function HELP() (.F.)
-*
-* Sample call :
-*
-* LOCAL result,acItems
-* acItems := {"One","Two","Three"}
-* result := __frm_CcomboSelect(acItems,"Combo selection","Please Select an item", ;
-*  0 , "OK" , "Cancel", "Help" , "Need Help : " , "HELP !" )
-* returns: index number of item, if cancel: 0
-* ============================================
-LOCAL oDlgcCombo1
-LOCAL aITEMS , cTitle, cLabel, nOffset, cOK, cCancel, cHelp , cHTopic , cHVar
-LOCAL oLabel1, oCombobox1, oButton1, oButton2, oButton3 , nType , yofs, bcancel ,nRetu
-
-* Parameter check
- cTitle  := "Select Item"
- cLabel  := "Select Item"
- nOffset := 0
- cOK     := "OK"
- cCancel := "Cancel"
- cHelp   := "Help"
- cHTopic := ""
- cHVar   := ""
- nRetu   := 0
-
-aITEMS := {}
-IF .NOT. apItems == NIL
- aITEMS := apItems
-ENDIF
-IF .NOT. cpTitle == NIL
- cTitle := cpTitle
-ENDIF
-IF .NOT. cpLabel == NIL
- cLabel :=  cpLabel
-ENDIF
-IF .NOT. npOffset == NIL
- nOffset :=  npOffset
-ENDIF
-IF .NOT. cpOK == NIL
- cOK  :=  cpOK
-ENDIF
-IF .NOT. cpCancel == NIL
- cCancel :=  cpCancel
-ENDIF
-IF .NOT. cpHelp == NIL
- cHelp :=  cpHelp
-ENDIF
-IF .NOT. cpHTopic == NIL
- cHTopic  := cpHTopic
-ENDIF
-IF .NOT. cpHVar == NIL
- cHVar  := cpHVar
-ENDIF
-nType := 1
-IF .NOT. npreset == NIL
- nType := npreset
-ENDIF
-IF lHelp == NIL
- lHelp := .F.
-ENDIF
-bcancel := .T.
-yofs := nOffset + 120
-* y positions of elements:
-* Label1       : 44
-* Buttons      : 445  : ==> yofs
-* Combobox     : 84   :
-* Dialog size  : 565  : ==> yofs + 60
-*
-  INIT DIALOG oDlgcCombo1 TITLE cTitle ;
-    AT 578,79 SIZE 516, yofs + 80;
-     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
-
-
-   @ 67,44 SAY oLabel1 CAPTION cLabel SIZE 378,22 ;
-        STYLE SS_CENTER
-   @ 66,84 GET COMBOBOX oCombobox1 VAR nType ITEMS aITEMS SIZE 378,96
-   @ 58 , yofs  BUTTON oButton1 CAPTION cOK SIZE 80,32 ;
-        STYLE WS_TABSTOP+BS_FLAT ON CLICK { || nRetu := nType , bcancel := .F. , oDlgcCombo1:Close() }
-   @ 175, yofs  BUTTON oButton2 CAPTION cCancel SIZE 80,32 ;
-        STYLE WS_TABSTOP+BS_FLAT ON CLICK { || oDlgcCombo1:Close() }
-   IF lHelp
-   @ 375, yofs  BUTTON oButton3 CAPTION cHelp SIZE 80,32 ;
-        STYLE WS_TABSTOP+BS_FLAT ON CLICK { || HELP( cHTopic ,PROCLINE(), cHVar ) }
-   ENDIF
-
-   ACTIVATE DIALOG oDlgcCombo1
-* RETURN oDlgcCombo1:lresult
-RETURN nRetu
-
-
 
 * ================== EOF of editor.prg =======================

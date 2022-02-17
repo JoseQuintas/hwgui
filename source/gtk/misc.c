@@ -398,4 +398,8 @@ HB_FUNC( HWG_GETKEYSTATE )
    hb_retni( keyboard_state & hb_parni( 1 ) );
 }
 
+HB_FUNC( HWG_SHOWSCROLLBAR )
+{
+}
+
 /* ========= EOF of misc.c ============ */

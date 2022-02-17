@@ -8,6 +8,13 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-02-17 15:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/misc.c
+    * An empty (for now) hwg_ShowScrollBar() function added for compatibility with winapi version.
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 dev build 3
+      Not a new version, just added "dev"
+
 2022-02-17 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * utils/editor/editor.prg

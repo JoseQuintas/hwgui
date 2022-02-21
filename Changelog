@@ -8,6 +8,15 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-02-21 10:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/hsplit.prg
+  * source/gtk/htrackbr.prg
+  * source/winapi/htrackbr.prg
+    ! Fixes
+  * utils/tutorial/tutor_eng.xml
+    * htrack module modified
+
 2022-02-17 15:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/misc.c
     * An empty (for now) hwg_ShowScrollBar() function added for compatibility with winapi version.

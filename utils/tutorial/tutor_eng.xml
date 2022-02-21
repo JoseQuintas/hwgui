@@ -628,24 +628,33 @@ Return Nil
 #define CLR_BROWN_3  0xaad2ff
 
 Function Test
-Local oDlg, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Local oDlg, oTrack1, oSay1, oTrack2, oSay2, oFont := HFont():Add( "MS Sans Serif",0,-13 )
 Local bVolChange := {|o,n| 
-      HB_SYMBOL_UNUSED( o )
       HB_SYMBOL_UNUSED( n )
-      oSay:SetText( Ltrim(Str(oTrack:value)) )
+      IF o:lVertical
+         oSay2:SetText( Ltrim(Str(o:value)) )
+      ELSE
+         oSay1:SetText( Ltrim(Str(o:value)) )
+      ENDIF
       RETURN .T.
    }
 
    INIT DIALOG oDlg TITLE "Track bar control"  ;
-         AT 210,10  SIZE 300,200 FONT oFont BACKCOLOR CLR_BROWN_1
+         AT 210,10  SIZE 300,240 FONT oFont BACKCOLOR CLR_BROWN_1
 
    @ 40, 20 SAY "Just drag the slider:" SIZE 220, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
 
-   oTrack := HTrack():New( ,, 80, 50, 140, 28,,, CLR_WHITE, CLR_BROWN_1, 16 )
-   oTrack:bChange := bVolChange
-   oTrack:Value := 0.5
+   oTrack1 := HTrack():New( ,, 20, 50, 140, 28,,, CLR_WHITE, CLR_BROWN_1, 16 )
+   oTrack1:bChange := bVolChange
+   oTrack1:Value := 0.5
 
-   @ 80, 100 SAY oSay CAPTION "" SIZE 140, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+   @ 200, 50 SAY oSay1 CAPTION "" SIZE 80, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
+
+   oTrack2 := HTrack():New( ,, 40, 120, 28, 100,,, CLR_WHITE, CLR_BROWN_1, 16 )
+   oTrack2:bChange := bVolChange
+   oTrack2:Value := 0.5
+
+   @ 200, 120 SAY oSay2 CAPTION "" SIZE 80, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
 
    ACTIVATE DIALOG oDlg
    oFont:Release()

@@ -33,7 +33,7 @@ CLASS HSplitter INHERIT HControl
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Paint()
-   METHOD Move( x1, y1, width, height )
+   //METHOD Move( x1, y1, width, height )
    METHOD Drag( xPos, yPos )
    METHOD DragAll( xPos, yPos )
 
@@ -127,13 +127,13 @@ METHOD Paint() CLASS HSplitter
    ENDIF
 
    RETURN Nil
-
+/*
 METHOD Move( x1, y1, width, height )  CLASS HSplitter
 
    ::Super:Move( x1, y1, width, height, .T. )
 
    RETURN Nil
-
+*/
 METHOD Drag( xPos, yPos ) CLASS HSplitter
    LOCAL nFrom, nTo
 
@@ -154,7 +154,7 @@ METHOD Drag( xPos, yPos ) CLASS HSplitter
          ::nTop := yPos
       ENDIF
    ENDIF
-   hwg_MoveWidget( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight, .T. )
+   hwg_MoveWidget( ::handle, ::nLeft, ::nTop, ::nWidth, ::nHeight ) //, .T. )
    ::lMoved := .T.
 
    RETURN Nil

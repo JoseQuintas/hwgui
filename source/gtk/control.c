@@ -1068,14 +1068,14 @@ HB_FUNC( HWG_LOADCURSOR )
 
 /* Added by DF7BE:
        hwg_LoadCursorFromFile(ccurFname,x,y)
-*/ 
+*/
 HB_FUNC( HWG_LOADCURSORFROMFILE )
 {
    GdkPixbuf  *handle;
    GdkPixbuf  *pHandle;
    GdkCursor  *cursor;
    GdkDisplay *display = gdk_display_get_default();
-   
+
    if( HB_ISCHAR( 1 ) )
    {
       handle = gdk_pixbuf_new_from_file( hb_parc( 1 ), NULL );
@@ -1489,14 +1489,17 @@ HB_FUNC( HWG_CREATESPLITTER )
 {
    // HB_ULONG ulStyle = hb_parnl( 3 );
    GtkWidget *hCtrl;
-   GtkFixed *box, *fbox;
-
-   fbox = ( GtkFixed * ) gtk_fixed_new(  );
+   GtkFixed *box;
+   //GtkFixed *fbox = ( GtkFixed * ) gtk_fixed_new(  );
 
    hCtrl = gtk_drawing_area_new(  );
    g_object_set_data( ( GObject * ) hCtrl, "draw", ( gpointer ) hCtrl );
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
 
+   if( box )
+      gtk_fixed_put( box, hCtrl, hb_parni( 4 ), hb_parni( 5 ) );
+   gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
+   /*
    if( box )
    {
       gtk_fixed_put( box, ( GtkWidget * ) fbox, hb_parni( 4 ),
@@ -1507,7 +1510,7 @@ HB_FUNC( HWG_CREATESPLITTER )
    gtk_fixed_put( fbox, hCtrl, 0, 0 );
    gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
    g_object_set_data( ( GObject * ) hCtrl, "fbox", ( gpointer ) fbox );
-
+   */
 #if GTK_MAJOR_VERSION -0 < 3
    set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
 #else

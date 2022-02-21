@@ -145,8 +145,8 @@ METHOD Value( nValue ) CLASS HTrackBar
    ENDIF
 
    RETURN ::nValue
-   
-   
+
+
 CLASS HTrack INHERIT HControl
 
 CLASS VAR winclass INIT "STATIC"
@@ -166,6 +166,7 @@ CLASS VAR winclass INIT "STATIC"
    METHOD Init()
    METHOD Paint()
    METHOD Drag( xPos, yPos )
+   METHOD Move( x1, y1, width, height )
    METHOD Value ( xValue ) SETGET
 
 ENDCLASS
@@ -181,8 +182,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    ::title  := ""
    ::lVertical := ( ::nHeight > ::nWidth )
    ::nSize := Iif( nSize == Nil, 12, nSize )
-   ::nFrom  := Iif( ::lVertical, ::nHeight-1-Int(::nSize/2), Int(::nSize/2) )
-   ::nTo    := Iif( ::lVertical, Int(::nSize/2), ::nWidth-1-Int(::nSize/2) )
+   ::nFrom  := Int(::nSize/2)
+   ::nTo    := Iif( ::lVertical, ::nHeight-1-Int(::nSize/2), ::nWidth-1-Int(::nSize/2) )
    ::nCurr  := ::nFrom
    ::oStyle := oStyle
    ::oPen1 := HPen():Add( PS_SOLID, 1, color )
@@ -193,13 +194,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 
 METHOD Activate() CLASS HTrack
    IF ! Empty( ::oParent:handle )
-#ifdef __GTK__
-      ::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
-         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-#else
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-#endif
       ::Init()
    ENDIF
    RETURN Nil
@@ -223,7 +219,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrack
       ENDIF
 
    ELSEIF msg == WM_LBUTTONDOWN
-      ::lCaptured := .T.
+      //::lCaptured := .T.
       ::Drag( hwg_Loword( lParam ), hwg_Hiword( lParam ) )
 
    ELSEIF msg == WM_LBUTTONUP
@@ -255,12 +251,8 @@ METHOD Init() CLASS HTrack
 METHOD Paint() CLASS HTrack
 
    LOCAL nHalf, x1, y1
-#ifdef __GTK__
-   LOCAL hDC := hwg_Getdc( ::handle )
-#else
    LOCAL pps := hwg_Definepaintstru()
    LOCAL hDC := hwg_Beginpaint( ::handle, pps )
-#endif
 
    IF ::tColor2 != Nil .AND. ::oPen2 == Nil
       ::oPen2 := HPen():Add( PS_SOLID, 1, ::tColor2 )
@@ -280,15 +272,15 @@ METHOD Paint() CLASS HTrack
       hwg_Selectobject( hDC, ::oPen1:handle )
       IF ::lVertical
          x1 := Int(::nWidth/2)
-         IF ::nCurr + nHalf < ::nFrom
-            hwg_Drawline( hDC, x1, ::nTo, x1, ::nCurr+nHalf )
+         IF ::nCurr - nHalf > ::nFrom
+            hwg_Drawline( hDC, x1, ::nFrom, x1, ::nCurr-nHalf )
          ENDIF
          hwg_Rectangle( hDC, x1-nHalf, ::nCurr+nHalf, x1+nHalf, ::nCurr-nHalf )
-         IF ::nCurr - nHalf > ::nTo
+         IF ::nCurr + nHalf < ::nTo
             IF ::oPen2 != Nil
                hwg_Selectobject( hDC, ::oPen2:handle )
             ENDIF
-            hwg_Drawline( hDC, x1, ::nCurr-nHalf, x1, ::nTo )
+            hwg_Drawline( hDC, x1, ::nCurr+nHalf+1, x1, ::nTo )
          ENDIF
       ELSE
          y1 := Int(::nHeight/2)
@@ -304,23 +296,39 @@ METHOD Paint() CLASS HTrack
          ENDIF
       ENDIF
    ENDIF
-#ifdef __GTK__
-      hwg_Releasedc( ::handle, hDC )
-#else
-      hwg_Endpaint( ::handle, pps )
-#endif
+   hwg_Endpaint( ::handle, pps )
 
    RETURN Nil
 
 METHOD Drag( xPos, yPos ) CLASS HTrack
 
    LOCAL nCurr := ::nCurr
+   LOCAL nHalf := Int(::nSize/2), x1, y1
 
    IF ::lVertical
-      ::nCurr := Min( Max( ::nTo, yPos ), ::nFrom )
+      x1 := Int(::nWidth/2)
+      IF ::lCaptured .AND. ( xPos <= x1-nHalf .OR. xPos >= x1+nHalf )
+         ::lCaptured := .F.
+         IF ::bEndDrag != Nil
+            Eval( ::bEndDrag, Self )
+         ENDIF
+         hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+         RETURN Nil
+      ENDIF
+      ::nCurr := Min( Max( ::nFrom, yPos ), ::nTo )
    ELSE
+      y1 := Int(::nHeight/2)
+      IF ::lCaptured .AND. ( yPos <= y1-nHalf .OR. yPos >= y1+nHalf )
+         ::lCaptured := .F.
+         IF ::bEndDrag != Nil
+            Eval( ::bEndDrag, Self )
+         ENDIF
+         hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+         RETURN Nil
+      ENDIF
       ::nCurr := Min( Max( ::nFrom, xPos ), ::nTo )
    ENDIF
+   ::lCaptured := .T.
    hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    IF nCurr != ::nCurr .AND. ::bChange != Nil
       Eval( ::bChange, Self, ::Value )
@@ -328,10 +336,28 @@ METHOD Drag( xPos, yPos ) CLASS HTrack
 
    RETURN Nil
 
+METHOD Move( x1, y1, width, height ) CLASS HTrack
+
+   LOCAL xValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)
+
+   IF ::lVertical .AND. !Empty( height ) .AND. height != ::nHeight
+      ::nFrom  := Int(::nSize/2)
+      ::nTo    := height-1-Int(::nSize/2)
+      ::nCurr  := xValue * (::nTo - ::nFrom) + ::nFrom
+   ELSEIF !::lVertical .AND. !Empty( width ) .AND. width != ::nWidth
+      ::nFrom  := Int(::nSize/2)
+      ::nTo    := width-1-Int(::nSize/2)
+      ::nCurr  := xValue * (::nTo - ::nFrom) + ::nFrom
+   ENDIF
+
+   ::Super:Move( x1, y1, width, height )
+
+   RETURN Nil
+
 METHOD Value( xValue ) CLASS HTrack
 
    IF xValue != Nil .AND. xValue >= 0 .AND. xValue <= 1
-      ::nCurr := xValue * Abs(::nTo - ::nFrom) + Iif( ::lVertical, -::nFrom, ::nFrom )
+      ::nCurr := xValue * (::nTo - ::nFrom) + ::nFrom
       hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ELSE
       xValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)

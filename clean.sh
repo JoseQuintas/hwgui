@@ -19,6 +19,7 @@ rm utils/editor/editor 2>/dev/null
 rm utils/tutorial/hwgrun 2>/dev/null
 rm utils/tutorial/tutor 2>/dev/null
 #
+# Samples only for LINUX/GTK
 rm samples/gtk_samples/GetWinVers 2>/dev/null
 rm samples/gtk_samples/a 2>/dev/null
 rm samples/gtk_samples/dbview 2>/dev/null
@@ -30,10 +31,15 @@ rm samples/gtk_samples/pseudocm 2>/dev/null
 rm samples/gtk_samples/testget2 2>/dev/null
 rm samples/gtk_samples/winprn 2>/dev/null
 #
+# Samples for multi plattform
 rm samples/testget1 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/datepicker 2>/dev/null
+rm samples/bincnts 2>/dev/null
+rm samples/stretch 2>/dev/null
+
 #
+# Utils exe
 rm bin/bincnt 2>/dev/null
 rm bin/dbchw 2>/dev/null
 rm bin/file2hex 2>/dev/null

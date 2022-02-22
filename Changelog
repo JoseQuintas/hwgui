@@ -9,6 +9,26 @@
 */
 
 
+2022-02-22 23:55 UTC+0100 Wilfried Brunken DF7BE 
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * samples/night.hbp (New)
+  * samples/night.prg (New)
+  * source/gtk/hpanel.prg
+  * source/winapi/hedit.prg
+  * source/winapi/hpanel.prg
+  * test/gtk_err93.hbp (New)
+  * test/gtk_err93.prg (New)
+  * utils/bincnt/sample2.bin (New)
+      ! Tickets 93 and 48:
+      ! Added test program, the GTK error message does not appear.
+      ! For details see posts to tickets.
+      ! Class HPanelHea:
+      ! Method SetText( c , lrefresh ) allows
+      ! refreshing the header text at runtime,
+      ! with sample program night.prg.
+      ! Docu updated.
+
 2022-02-21 17:45 UTC+0100 Wilfried Brunken DF7BE 
   * clean.sh
     ! Remove more sample's executables

@@ -327,7 +327,7 @@ CLASS HPanelHea INHERIT HPANEL
 
    METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
       cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
-   METHOD SetText( c )  INLINE (::title := c)
+   METHOD SetText( c , lrefresh )  && INLINE (::title := c)
    METHOD SetSysbtnColor( tColor, bColor )
    METHOD PaintText( hDC )
    METHOD Paint()
@@ -379,6 +379,36 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oSty
    ENDIF
 
    RETURN Self
+   
+METHOD SetText( c , lrefresh) CLASS HPanelHea
+* DF7BE: Set lrefresh to .T. for refreshing the header text
+* (compatibility to INLINE definition)
+
+LOCAL hDC
+ 
+ IF lrefresh == NIL
+   lrefresh := .F.
+ ENDIF
+ 
+ ::title := c
+
+ IF lrefresh
+ 
+   hDC := hwg_Getdc( ::handle )
+
+   ::PaintText( hDC )
+
+  hwg_Redrawwindow( ::handle)
+   /* 
+      This only for WinAPI
+      RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW
+      (2nd parameter)	  
+    */ 
+  
+ ENDIF
+ 
+RETURN NIL
+     
 
 METHOD SetSysbtnColor( tColor, bColor )
 
@@ -510,3 +540,6 @@ STATIC FUNCTION fPaintBtn( oBtn )
    hwg_Endpaint( oBtn:handle, pps )
 
    RETURN Nil
+   
+* ================================ EOF of hpanel.prg ============================
+      

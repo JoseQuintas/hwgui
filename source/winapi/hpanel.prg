@@ -445,7 +445,7 @@ CLASS HPanelHea INHERIT HPANEL
 
    METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
       cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
-   METHOD SetText( c )  INLINE (::title := c)
+   METHOD SetText( c , lrefresh )  && INLINE (::title := c)
    METHOD SetSysbtnColor( tColor, bColor )
    METHOD PaintText( hDC )
    METHOD Paint()
@@ -501,6 +501,33 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oSty
    ENDIF
 
    RETURN Self
+   
+METHOD SetText( c , lrefresh) CLASS HPanelHea
+* DF7BE: Set lrefresh to .T. for refreshing the header text
+* (compatibility to INLINE definition)
+
+LOCAL pps, hDC
+ 
+ IF lrefresh == NIL
+   lrefresh := .F.
+ ENDIF
+ 
+ ::title := c
+
+ IF lrefresh
+  pps := hwg_Definepaintstru()
+  hDC := hwg_Beginpaint( ::handle, pps )
+
+  ::PaintText( hDC )
+
+  hwg_Endpaint( ::handle, pps )
+  
+   // hwg_Sendmessage( ::oParent:handle, WM_SIZE , 0, 0 )  && Does not refresh
+   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+  
+ ENDIF 
+  
+RETURN NIL   
 
 METHOD SetSysbtnColor( tColor, bColor )
 

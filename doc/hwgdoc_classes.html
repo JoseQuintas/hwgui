@@ -11,7 +11,7 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
- ! 2022-02-09        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
+ ! 2022-02-22        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
  +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
  +-------------------!---------------------------------!--------------------------------------------+
@@ -540,16 +540,23 @@
    <pre class="code">DATA
      xt, yt                   (RW)
      lMaximized
+     lPreDef                  HIDDEN
    </pre>
    <pre class="code">METHODS
      New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
       cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
-     SetText( c )
+     SetText( c , lrefresh )  && INLINE (::title := c)
      SetSysbtnColor( tColor, bColor )
   Internal:
      PaintText( hDC )
      Paint()
    </pre>
+   <p>
+   Set lrefresh to .T. for refreshing the header text at runtime<br>
+   (compatibility to INLINE definition)<br>
+   Default value of lrefresh is .F., this is set at initialization time.<br>
+   </p>
+   
 
    <br><strong class="subhead"><a name="Classes3_3_3" href="#_Classes3_3_3">
    HOwnButton</a></strong> 

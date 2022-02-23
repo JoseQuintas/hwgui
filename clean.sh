@@ -37,6 +37,7 @@ rm samples/bincnts 2>/dev/null
 rm samples/datepicker 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/stretch 2>/dev/null
+rm samples/escrita 2>/dev/null
 
 #
 # Utils exe
@@ -44,6 +45,9 @@ rm bin/bincnt 2>/dev/null
 rm bin/dbchw 2>/dev/null
 rm bin/file2hex 2>/dev/null
 rm bin/hwgdebug 2>/dev/null
+
+# Find and delete all Error logs
+find . -name Error.log -exec rm -f {} \;
 
 # ========================= EOF of clean.sh ===================================
 

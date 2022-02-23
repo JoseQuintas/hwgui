@@ -9,6 +9,13 @@
 */
 
 
+2022-02-23 16:00 UTC+0100 Wilfried Brunken DF7BE 
+  * clean.sh
+  * samples/Readme.txt
+  * samples/bincnts.prg
+      ! New sample night.prg in Readme.txt
+      ! Find and delete all Error logs in clean.sh
+
 2022-02-22 23:55 UTC+0100 Wilfried Brunken DF7BE 
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_commands.html

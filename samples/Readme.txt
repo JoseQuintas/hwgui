@@ -163,6 +163,7 @@ For beginners:
  modtitle.prg       Y                 Sample for modifying a main window title in HWGUI
  nice.prg           N                 Demo of NICEBUTTON
  nice2.prg          N  #      -       Demo of NICEBUTTON (2), starts only in background, kill with Task Manager
+ night.prg          Y                 "ADD HEADER PANEL" for a night mode application
  progbars.prg  12)  Y                 Progress bar
  propsh.prg +)      N  #              Property sheet, freezes at hwg_PropertySheet()
  pseudocm.prg       Y                 Pseudo context menu

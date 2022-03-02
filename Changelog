@@ -9,6 +9,17 @@
 */
 
 
+2022-03-02 14:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/htrackbr.prg
+  * source/winapi/htrackbr.prg
+  * source/winapi/hsplit.prg
+    ! Fixes
+  * source/common/editor/hcedit.prg
+    * Scroll bar implementation changed: the htrack instead of a standard.
+  * contrib/hwreport/hwreport.prg
+  * contrib/hwreport/repexec.prg
+    ! Few bugs fixed, reported by Itamar M. Lins Jr.
+
 2022-02-23 16:00 UTC+0100 Wilfried Brunken DF7BE 
   * clean.sh
   * samples/Readme.txt

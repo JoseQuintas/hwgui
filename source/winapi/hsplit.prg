@@ -168,38 +168,43 @@ METHOD Drag( xPos, yPos ) CLASS HSplitter
 
 METHOD DragAll( xPos, yPos ) CLASS HSplitter
    LOCAL i, oCtrl, nDiff, wold, hold
+   LOCAL nLeft, nTop, nWidth, nHeight
 
    IF xPos != Nil .OR. yPos != Nil
       ::Drag( xPos, yPos )
    ENDIF
    FOR i := 1 TO Len( ::aRight )
       oCtrl := ::aRight[ i ]
-      wold := oCtrl:nWidth
-      hold := oCtrl:nHeight
+      nLeft := oCtrl:nLeft
+      nTop := oCtrl:nTop
+      nWidth := wold := oCtrl:nWidth
+      nHeight := hold := oCtrl:nHeight
       IF ::lVertical
          nDiff := ::nLeft + ::nWidth - oCtrl:nLeft
-         oCtrl:nLeft += nDiff
-         oCtrl:nWidth -= nDiff
+         nLeft += nDiff
+         nWidth -= nDiff
       ELSE
          nDiff := ::nTop + ::nHeight - oCtrl:nTop
-         oCtrl:nTop += nDiff
-         oCtrl:nHeight -= nDiff
+         nTop += nDiff
+         nHeight -= nDiff
       ENDIF
-      oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
+      oCtrl:Move( nLeft, nTop, nWidth, nHeight )
       hwg_onAnchor( oCtrl, wold, hold, oCtrl:nWidth, oCtrl:nHeight )
    NEXT
    FOR i := 1 TO Len( ::aLeft )
       oCtrl := ::aLeft[ i ]
-      wold := oCtrl:nWidth
-      hold := oCtrl:nHeight
+      nLeft := oCtrl:nLeft
+      nTop := oCtrl:nTop
+      nWidth := wold := oCtrl:nWidth
+      nHeight := hold := oCtrl:nHeight
       IF ::lVertical
          nDiff := ::nLeft - ( oCtrl:nLeft + oCtrl:nWidth )
-         oCtrl:nWidth += nDiff
+         nWidth += nDiff
       ELSE
          nDiff := ::nTop - ( oCtrl:nTop + oCtrl:nHeight )
-         oCtrl:nHeight += nDiff
+         nHeight += nDiff
       ENDIF
-      oCtrl:Move( oCtrl:nLeft, oCtrl:nTop, oCtrl:nWidth, oCtrl:nHeight )
+      oCtrl:Move( nLeft, nTop, nWidth, nHeight )
       hwg_onAnchor( oCtrl, wold, hold, oCtrl:nWidth, oCtrl:nHeight )
    NEXT
    ::lMoved := .F.

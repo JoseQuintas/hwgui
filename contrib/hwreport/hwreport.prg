@@ -830,8 +830,9 @@ STATIC FUNCTION DeleteItem()
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       IF aPaintRep[FORM_ITEMS,i,ITEM_STATE] == STATE_SELECTED
          aItem := aPaintRep[FORM_ITEMS,i]
-         IF aItem[ITEM_PEN] != Nil
+         IF aItem[ITEM_PEN] != Nil .AND. Valtype( aItem[ ITEM_PEN ] ) == "O"
             aItem[ITEM_PEN]:Release()
+            aItem[ITEM_PEN] := Nil
          ENDIF
          hwg_Invalidaterect( hWnd, 0, LEFT_INDENT + aItem[ITEM_X1] - 3, ;
             TOP_INDENT + aItem[ITEM_Y1] - aPaintRep[FORM_Y] - 3, ;

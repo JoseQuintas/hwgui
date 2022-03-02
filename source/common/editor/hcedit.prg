@@ -119,6 +119,8 @@
 
 #define BOTTOM_HEIGHT   8
 
+#define HTRACK_DEF_WIDTH  18
+
 #ifdef __GTK__
 #define GDK_CONTROL_MASK  2
 #define GDK_MOD1_MASK     4
@@ -138,6 +140,7 @@ CLASS HCEdit INHERIT HControl
    CLASS VAR winclass  INIT "TEDIT"
 
    DATA   hEdit
+   DATA   oTrack
    DATA   cFileName
    DATA   aText, nTextLen
    DATA   nMaxLines    INIT 0
@@ -197,7 +200,7 @@ CLASS HCEdit INHERIT HControl
    DATA   nTabLen      INIT 4
    DATA   lTabs        INIT .F.
    DATA   lStripSpaces INIT .T.
-   DATA   lVScroll
+   //DATA   lVScroll
    DATA   nClientWidth
    DATA   nDocWidth
    DATA   nLastKey     INIT 0
@@ -264,7 +267,7 @@ CLASS HCEdit INHERIT HControl
    METHOD Top()
    METHOD Bottom()
    METHOD GOTO( nLine )
-   METHOD onVScroll( wParam )
+   //METHOD onVScroll( wParam )
    METHOD PCopy( Psource, Pdest )
    METHOD PCmp( P1, P2 )
    METHOD GetText( P1, P2, lTabs )
@@ -281,24 +284,35 @@ CLASS HCEdit INHERIT HControl
    METHOD Undo( nLine1, nPos1, nLine2, nPos2, nOper, cText )
    METHOD Print( nDocFormat, nDocOrient, nMarginL, nMarginR, nMarginT, nMarginB )
    METHOD PrintLine( oPrinter, yPos, nL )
+   METHOD Move( x1, y1, width, height )
+   METHOD ShowTrackBar( lShow, nTrackWidth )
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )  CLASS HCEdit
 
+   LOCAL nTrackWidth
+
    ::DefaultLang()
 
-   ::lVScroll := ( lNoVScroll == Nil .OR. !lNoVScroll )
+   //::lVScroll := ( lNoVScroll == Nil .OR. !lNoVScroll )
+   IF Valtype( lNoVScroll ) == "N"
+      nTrackWidth := lNoVScroll
+   ELSEIF Valtype( lNoVScroll ) == "L" .AND. lNoVScroll
+      nTrackWidth := 0
+   ELSE
+      nTrackWidth := HTRACK_DEF_WIDTH
+   ENDIF
    nStyle := Hwg_BitOr( Iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE +  ;
-      Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) +          ;
-      Iif( ::lVScroll, WS_VSCROLL, 0 ) )
+      Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) ) //+          ;
+      //Iif( ::lVScroll, WS_VSCROLL, 0 ) )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, Iif( nWidth == Nil,0,nWidth ), ;
       Iif( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, , ;
       Iif( tcolor == Nil, 0, tcolor ), Iif( bcolor == Nil, 16777215, bcolor ) )
 
-   ::nBoundR := ::nClientWidth := ::nWidth
+   ::nBoundR := ::nClientWidth := ::nWidth - nTrackWidth
 
    IF ::oFont == Nil
       IF ::oParent:oFont == Nil
@@ -320,6 +334,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::aHili := hb_Hash()
 
    ::hEdit := hced_InitTextEdit()
+
+   IF !Empty( nTrackWidth )
+      ::ShowTrackBar( .T., nTrackWidth )
+   ENDIF
 
    ::Activate()
 
@@ -347,7 +365,7 @@ METHOD Activate() CLASS HCEdit
       ENDIF
 #else
       ::handle := hced_CreateTextEdit( ::oParent:handle, ::id, ;
-         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+         ::style, ::nLeft, ::nTop, ::nClientWidth, ::nHeight )
 #endif
       ::Init()
 
@@ -399,7 +417,7 @@ METHOD SetHili( xGroup, oFont, tColor, bColor ) CLASS HCEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
-   LOCAL n, nPages, lRes := - 1, x, aPointC[P_LENGTH]
+   LOCAL n, lRes := - 1, x, aPointC[P_LENGTH], nLinesAll
    LOCAL n1 , n2, lctrls
 
    * Variables not used
@@ -556,9 +574,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
          ENDIF
       ENDIF
 
-   ELSEIF msg == WM_VSCROLL
-      lRes := ::onVScroll( wParam )
-
    ELSEIF msg == WM_MOUSEACTIVATE
       hced_SetFocus( ::hEdit )
       lRes := MA_ACTIVATE
@@ -612,30 +627,23 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 
    ENDIF
 
-   //IF ::lChgCaret
    IF aPointC[P_X] != ::aPointC[P_X] .OR. aPointC[P_Y] != ::aPointC[P_Y]
-      IF ::lVScroll
-         n := Iif( ::nLines > 0, Int( ::nHeight/(::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
-         IF n > 0 .AND. ( nPages := ( Int( ::nLinesAll/n ) + 1 ) ) > 1
-            IF ::nLineF == 1 .AND. ::nWSublF == 1 .AND. ::nLineC == 1
-               hced_SetVScroll( ::hEdit, 0, 4, nPages )
-               //hwg_writelog( "vscroll1" )
-            ELSE
-               hced_SetVScroll( ::hEdit, ;
-                  Min( Int( hced_LineNum(Self,::nLineC) * 4/n ) - 1, (nPages - 1 ) * 4 ), ;
-                  4, nPages )
-               //hwg_writelog( "vscroll2 "+ltrim(str(Min( Int( hced_LineNum(Self,::nLineC) * 4/n ) - 1, (nPages - 1 ) * 4 ))) )
-            ENDIF
+      IF !Empty( ::oTrack )
+         n := Iif( ::nLines > 0, Int( ::nHeight/( ::aLines[1,AL_Y2] - ::aLines[1,AL_Y1] ) ), 0 )
+         nLinesAll := ::nLinesAll - n + 2
+         IF ::lWrap
+            n := (hced_LineNum(Self,1)-1) / nLinesAll
+         ELSE
+            n := (::nLineF-1) / nLinesAll
          ENDIF
+         ::oTrack:Value := n
       ENDIF
       IF ::bChangePos != Nil
          Eval( ::bChangePos, Self )
       ENDIF
-      //::lChgCaret := .F.
    ENDIF
 
    IF ::bAfter != Nil
-*      IF ( n := Eval( ::bAfter,Self,msg,wParam,lParam ) ) != - 1
       n := Eval( ::bAfter,Self,msg,wParam,lParam )
       IF n != - 1
          RETURN n
@@ -650,9 +658,6 @@ METHOD Paint( lReal ) CLASS HCEdit
 #ifndef __GTK__
    LOCAL hBitmap
 #endif
-
-   * Variables not used
-   * i
 
    IF Empty( ::nDocFormat )
       ::nDocWidth := nDocWidth := 0
@@ -754,7 +759,7 @@ METHOD Paint( lReal ) CLASS HCEdit
 
    IF lReal
 #ifdef __GTK__
-      hced_drawBorder( ::hEdit, ::nWidth, ::nHeight )
+      //hced_drawBorder( ::hEdit, ::nWidth, ::nHeight )
       //hwg_BitBlt( hDCReal, 0, 0, aCoors[3] - aCoors[1], aCoors[4] - aCoors[2], hDC )
       //hwg_ReleaseDC( , hDC )
 #else
@@ -1042,6 +1047,9 @@ METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
    ::PCopy( { ::nPosC, ::nLineC }, ::aPointC )
    ::PCopy( , ::aPointM1 )
    ::PCopy( , ::aPointM2 )
+   IF !Empty( ::oTrack )
+      ::oTrack:Value := 0
+   ENDIF
    ::lSetFocus := .T.
    IF ::lInit
       hced_Invalidaterect( ::hEdit, 0 )
@@ -1795,6 +1803,7 @@ METHOD GOTO( nLine ) CLASS HCEdit
 
    RETURN Nil
 
+/*
 METHOD onVScroll( wParam ) CLASS HCEdit
    LOCAL nCode := hwg_Loword( wParam ), nPos := hwg_Hiword( wParam )
    LOCAL n, nPages, i, nL
@@ -1848,6 +1857,7 @@ METHOD onVScroll( wParam ) CLASS HCEdit
    ENDIF
 
    RETURN 0
+*/
 
 METHOD PCopy( Psource, Pdest ) CLASS HCEdit
 
@@ -2503,9 +2513,64 @@ METHOD PrintLine( oPrinter, yPos, nL ) CLASS HCEdit
 
    RETURN yPos
 
+METHOD Move( x1, y1, width, height ) CLASS HCEdit
+
+   LOCAL nw := Iif( Empty(::oTrack).OR.::oTrack:lHide, 0, ;
+      Iif( Valtype(::oTrack)=="N", ::oTrack, ::oTrack:nWidth ) )
+
+   //hwg_writelog( "1> "+Iif(x1==nil,"nil",str(x1)) + " " + Iif(width==nil,"nil",str(width)) + " " + str(nw) )
+   //hwg_writelog( "2> "+str(::nLeft) + " " + str(::nWidth) + " " + str(::nClientWidth) + " / " + Iif(!Empty(::oTrack),str(::oTrack:nLeft),"") )
+
+   ::Super:Move( x1, y1, Iif(!Empty(width),width-nw,width), height )
+   ::nWidth += nw
+   //hwg_writelog( "3> "+str(::nLeft) + " " + str(::nWidth) + " " + str(::nClientWidth) + " / " + Iif(!Empty(::oTrack),str(::oTrack:nLeft),"") )
+   IF !Empty(::oTrack) .AND. !::oTrack:lHide
+      //hwg_writelog( valtype(x1) + valType(y1) + valtype(width) + valType(height) )
+      /*
+      IF !Empty( x1 )
+         x1 := x1 + Iif( !Empty(width), width - nw, ::nClientWidth )
+      ELSEIF !Empty( width )
+         x1 := ::nLeft + width - nw
+      ENDIF
+      */
+      x1 := ::nLeft + ::nWidth - nw
+      //hwg_writelog( "4> "+Iif(x1==Nil,"Nil",str(x1)) )
+      ::oTrack:Move( x1, y1, ::oTrack:nWidth, height ) //, .T. )
+
+      //hwg_Redrawwindow( ::oTrack:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      //hwg_writelog( str(::oTrack:nLeft) + " " + str(::oTrack:nTop) + " " + str(::oTrack:nWidth) + ;
+      //   " " + str(::oTrack:nheight) + " { " + str(::oParent:nWidth) + " " + ::oTrack:oParent:classname)
+   ENDIF
+
+   RETURN Nil
+
+METHOD ShowTrackBar( lShow, nTrackWidth ) CLASS HCEdit
+
+   IF lShow
+      IF Empty( ::oTrack )
+         IF Empty( nTrackWidth ); nTrackWidth := HTRACK_DEF_WIDTH; ENDIF
+         ::oTrack := HTrack():New( ::oParent,, ::nLeft+::nWidth-nTrackWidth, ::nTop, nTrackWidth, ;
+            ::nHeight,,,,, 48,, HStyle():New( { 0x555555, 0xbbbbbb }, 3, { 8,8,8,8 } ), .F. )
+         ::oTrack:bChange := {|o,n| onTrack(Self,o,n) }
+      ELSE
+         ::oTrack:Show()
+      ENDIF
+      IF !Empty( ::handle )
+         ::Move( ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      ENDIF
+   ELSE
+      IF !Empty( ::oTrack )
+         ::oTrack:Hide()
+         ::Move( ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+
 /*  nL - A row on the screen ( 1 ... ::nLines )
  */
-Function hced_LineNum( oEdit, nL )
+FUNCTION hced_LineNum( oEdit, nL )
    LOCAL i, n := 0, nLine
 
    IF oEdit:SetWrap()
@@ -2525,7 +2590,7 @@ Function hced_LineNum( oEdit, nL )
  *  SB_REST (3) - how many sublines after it
  *  SB_TEXT (4) - how many sublines after it
  */
-Static Function hced_SubLine( oEdit, nL, nOper )
+STATIC FUNCTION hced_SubLine( oEdit, nL, nOper )
    LOCAL i, nLine := oEdit:aLines[nL,AL_LINE]
    LOCAL n   && := 0
 
@@ -2553,7 +2618,7 @@ Static Function hced_SubLine( oEdit, nL, nOper )
    ENDIF
    RETURN n
 
-Static Function hced_P2Screen( oEdit, y, x, nSub )
+STATIC FUNCTION hced_P2Screen( oEdit, y, x, nSub )
    LOCAL i, n, nL := oEdit:nLineF
 
    IF oEdit:SetWrap()
@@ -2605,7 +2670,7 @@ Static Function hced_P2Screen( oEdit, y, x, nSub )
    nSub := 1
    RETURN y - oEdit:nLineF + 1
 
-Static Function hced_P2SubLine( oEdit, y, x )
+STATIC FUNCTION hced_P2SubLine( oEdit, y, x )
    LOCAL i
 
    IF oEdit:SetWrap() .AND. !Empty( oEdit:aWrap[y] )
@@ -2618,7 +2683,51 @@ Static Function hced_P2SubLine( oEdit, y, x )
    ENDIF
    RETURN 1
 
-Function hced_Line4Pos( oEdit, yPos )
+STATIC FUNCTION onTrack( oEdit, oTrack )
+
+   LOCAL nInPage, nLine, nLinesAll, i, nL, nPos := oTrack:Value
+   LOCAL nLineF, nWSublF, nWCharF, lChg := .F.
+
+   nInPage := Iif( oEdit:nLines > 0, Int( oEdit:nHeight/(oEdit:aLines[1,AL_Y2] - oEdit:aLines[1,AL_Y1] ) ), 0 )
+   nLinesAll := oEdit:nLinesAll - nInPage + 2
+   // hwg_writelog( "1> nPos: " + str(nPos,7,4)+" nInPage: "+str(nInPage)+" nLines: "+str(oEdit:nLines) )
+   IF oEdit:nLinesAll > nInPage //n > 0
+      nLine := Min( nLinesAll, Max( 1, Int( nPos * nLinesAll ) ) )
+      //hwg_writelog( "  2> nLine: " + str(nLine)+" nLinesAll: "+str(oEdit:nLinesAll) )
+      IF oEdit:SetWrap()
+         i := nL := 0
+         DO WHILE ++i <= oEdit:nTextLen
+            nL += Iif( Empty(oEdit:aWrap[i]), 1, Len(oEdit:aWrap[i])+1 )
+            IF nL >= nLine
+               EXIT
+            ENDIF
+         ENDDO
+         nLineF := i
+         nWSublF := Iif( nL == nLine .OR. Empty(oEdit:aWrap[i]), 1, Len(oEdit:aWrap[i])-(nL-nLine)+2 )
+         nWCharF := Iif( nL == nLine .OR. Empty(oEdit:aWrap[i]), 1, oEdit:aWrap[i,Len(oEdit:aWrap[i])-(nL-nLine)+1] )
+         IF nLineF != oEdit:nLineF .OR. nWSublF != oEdit:nWSublF .OR. nWCharF != oEdit:nWCharF
+            oEdit:nLineF := nLineF
+            oEdit:nWSublF := nWSublF
+            oEdit:nWCharF := nWCharF
+            lChg := .T.
+         ENDIF
+      ELSE
+         nLineF := nLine
+         IF nLineF != oEdit:nLineF
+            oEdit:nLineF := nLineF
+            lChg := .T.
+         ENDIF
+      ENDIF
+      IF lChg
+         oEdit:Paint( .F. )
+         oEdit:SetCaretPos( SETC_COORS, hced_GetXCaretPos( oEdit:hEdit ), hced_GetYCaretPos( oEdit:hEdit ) )
+         hced_Invalidaterect( oEdit:hEdit, 0 )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+FUNCTION hced_Line4Pos( oEdit, yPos )
    LOCAL y1
    FOR y1 := 1 TO oEdit:nLines
       IF yPos < oEdit:aLines[ y1,AL_Y2 ]

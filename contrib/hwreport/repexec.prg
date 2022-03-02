@@ -50,7 +50,9 @@ FUNCTION hwg_hwr_Open( fname, repName )
          IF nMode == 0
             IF Left( stroka, 1 ) == "#"
                IF Upper( SubStr( stroka, 2, 6 ) ) == "REPORT"
-                  stroka := LTrim( SubStr( stroka, 9 ) )
+                  IF Empty( stroka := LTrim( SubStr( stroka, 9 ) ) )
+                     stroka := "report"
+                  ENDIF
                   IF Empty( repName ) .OR. Upper( stroka ) == Upper( repName )
                      IF Empty( repName )
                         repName := stroka
@@ -185,7 +187,7 @@ FUNCTION hwg_hwr_Close( aPaintRep )
 
    FOR i := 1 TO Len( aPaintRep[FORM_ITEMS] )
       aItem := aPaintRep[FORM_ITEMS,i]
-      IF !Empty( aItem[ITEM_PEN] )
+      IF !Empty( aItem[ITEM_PEN] ) .AND. Valtype( aItem[ ITEM_PEN ] ) == "O"
          aItem[ITEM_PEN]:Release()
       ENDIF
       IF !Empty( aItem[ITEM_FONT] )

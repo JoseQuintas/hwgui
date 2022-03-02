@@ -309,7 +309,7 @@ FUNCTION Main ( fName )
       MENU TITLE "&View"
          MENUITEMCHECK "&Ruler" ID MENU_RULER ACTION SetRuler()
 #ifdef __PLATFORM__WINDOWS
-         MENUITEMCHECK "&Scroll bar" ID MENU_VSCROLL ACTION (lScrollBar:=!lScrollBar,hwg_ShowScrollBar(oEdit:handle,SB_VERT,lScrollBar))
+         MENUITEMCHECK "&Scroll bar" ID MENU_VSCROLL ACTION (lScrollBar:=!lScrollBar,oEdit:ShowTrackBar(lScrollBar))
 #endif
          SEPARATOR
          MENUITEMCHECK "Zoom &In"+Chr(9)+"Ctrl+ +" ACTION Zoom( 2 ) ACCELERATOR FCONTROL,VK_ADD

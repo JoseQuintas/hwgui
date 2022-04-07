@@ -201,6 +201,7 @@ CLASS HCEdit INHERIT HControl
    DATA   lTabs        INIT .F.
    DATA   lStripSpaces INIT .T.
    //DATA   lVScroll
+   DATA   nTrackWidth  INIT 0
    DATA   nClientWidth
    DATA   nDocWidth
    DATA   nLastKey     INIT 0
@@ -292,17 +293,15 @@ ENDCLASS
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, lNoVScroll, lNoBorder )  CLASS HCEdit
 
-   LOCAL nTrackWidth
-
    ::DefaultLang()
 
    //::lVScroll := ( lNoVScroll == Nil .OR. !lNoVScroll )
    IF Valtype( lNoVScroll ) == "N"
-      nTrackWidth := lNoVScroll
+      ::nTrackWidth := lNoVScroll
    ELSEIF Valtype( lNoVScroll ) == "L" .AND. lNoVScroll
-      nTrackWidth := 0
+      ::nTrackWidth := 0
    ELSE
-      nTrackWidth := HTRACK_DEF_WIDTH
+      ::nTrackWidth := HTRACK_DEF_WIDTH
    ENDIF
    nStyle := Hwg_BitOr( Iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE +  ;
       Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) ) //+          ;
@@ -312,7 +311,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       Iif( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, , ;
       Iif( tcolor == Nil, 0, tcolor ), Iif( bcolor == Nil, 16777215, bcolor ) )
 
-   ::nBoundR := ::nClientWidth := ::nWidth - nTrackWidth
+   ::nBoundR := ::nClientWidth := ::nWidth - ::nTrackWidth
 
    IF ::oFont == Nil
       IF ::oParent:oFont == Nil
@@ -335,9 +334,11 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    ::hEdit := hced_InitTextEdit()
 
-   IF !Empty( nTrackWidth )
-      ::ShowTrackBar( .T., nTrackWidth )
-   ENDIF
+#ifdef __GTK__
+      IF ::nTrackWidth > 0 .AND. Empty( ::oTrack )
+         ::ShowTrackBar( .T., ::nTrackWidth )
+      ENDIF
+#endif
 
    ::Activate()
 
@@ -356,9 +357,13 @@ METHOD Open( cFileName, cPageIn, cPageOut ) CLASS HCEdit
 
 METHOD Activate() CLASS HCEdit
 
+   LOCAL nw
    IF !Empty( ::oParent:handle )
 #ifdef __GTK__
+      nw := ::nWIdth
+      ::nWidth := ::nClientWidth
       ::hEdit := hced_CreateTextEdit( Self )
+      ::nWIdth := nw
       ::handle := hced_GetHandle( ::hEdit )
       IF hwg_bitand( ::style, WS_BORDER ) != 0
          ::SetBorder( 2 )
@@ -382,6 +387,7 @@ METHOD Init() CLASS HCEdit
 #endif
       hced_SetHandle( ::hEdit, ::handle )
       hwg_Setwindowobject( ::handle, Self )
+
       IF Empty( ::aFonts )
          ::AddFont( ::oFont )
       ENDIF
@@ -394,6 +400,16 @@ METHOD Init() CLASS HCEdit
          ::aWrap := Array( ::nTextLen )
          ::Scan()
       ENDIF
+#ifdef __GTK__
+      IF !Empty( ::oTrack )
+         //::Move( ::nLeft, ::nTop, ::nWidth, ::nHeight )
+         //::oTrack:Value := 0
+      ENDIF
+#else
+      IF ::nTrackWidth > 0 .AND. Empty( ::oTrack )
+         ::ShowTrackBar( .T., ::nTrackWidth )
+      ENDIF
+#endif
    ENDIF
 
    RETURN Nil
@@ -2518,28 +2534,13 @@ METHOD Move( x1, y1, width, height ) CLASS HCEdit
    LOCAL nw := Iif( Empty(::oTrack).OR.::oTrack:lHide, 0, ;
       Iif( Valtype(::oTrack)=="N", ::oTrack, ::oTrack:nWidth ) )
 
-   //hwg_writelog( "1> "+Iif(x1==nil,"nil",str(x1)) + " " + Iif(width==nil,"nil",str(width)) + " " + str(nw) )
-   //hwg_writelog( "2> "+str(::nLeft) + " " + str(::nWidth) + " " + str(::nClientWidth) + " / " + Iif(!Empty(::oTrack),str(::oTrack:nLeft),"") )
-
+   //hwg_writelog( "1> "+Iif(x1==nil,"nil",str(x1)) + " " + Iif(width==nil,"nil",str(width)) + " " + str(nw) + " " + str(::nWidth) )
    ::Super:Move( x1, y1, Iif(!Empty(width),width-nw,width), height )
    ::nWidth += nw
-   //hwg_writelog( "3> "+str(::nLeft) + " " + str(::nWidth) + " " + str(::nClientWidth) + " / " + Iif(!Empty(::oTrack),str(::oTrack:nLeft),"") )
    IF !Empty(::oTrack) .AND. !::oTrack:lHide
-      //hwg_writelog( valtype(x1) + valType(y1) + valtype(width) + valType(height) )
-      /*
-      IF !Empty( x1 )
-         x1 := x1 + Iif( !Empty(width), width - nw, ::nClientWidth )
-      ELSEIF !Empty( width )
-         x1 := ::nLeft + width - nw
-      ENDIF
-      */
       x1 := ::nLeft + ::nWidth - nw
-      //hwg_writelog( "4> "+Iif(x1==Nil,"Nil",str(x1)) )
-      ::oTrack:Move( x1, y1, ::oTrack:nWidth, height ) //, .T. )
+      ::oTrack:Move( x1, y1, ::oTrack:nWidth, height )
 
-      //hwg_Redrawwindow( ::oTrack:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
-      //hwg_writelog( str(::oTrack:nLeft) + " " + str(::oTrack:nTop) + " " + str(::oTrack:nWidth) + ;
-      //   " " + str(::oTrack:nheight) + " { " + str(::oParent:nWidth) + " " + ::oTrack:oParent:classname)
    ENDIF
 
    RETURN Nil
@@ -2550,8 +2551,9 @@ METHOD ShowTrackBar( lShow, nTrackWidth ) CLASS HCEdit
       IF Empty( ::oTrack )
          IF Empty( nTrackWidth ); nTrackWidth := HTRACK_DEF_WIDTH; ENDIF
          ::oTrack := HTrack():New( ::oParent,, ::nLeft+::nWidth-nTrackWidth, ::nTop, nTrackWidth, ;
-            ::nHeight,,,,, 48,, HStyle():New( { 0x555555, 0xbbbbbb }, 3, { 8,8,8,8 } ), .F. )
+            ::nHeight,,,,, 48,, HStyle():New( { 0x888888, 0xcccccc }, 3 ), .F. )
          ::oTrack:bChange := {|o,n| onTrack(Self,o,n) }
+         //hwg_writelog( "CrTrack " + ::oParent:ClassName() )
       ELSE
          ::oTrack:Show()
       ENDIF

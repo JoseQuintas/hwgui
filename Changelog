@@ -9,6 +9,10 @@
 */
 
 
+2022-04-06 15:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+   * source/common/editor/hcedit.prg
+     ! Fixes and improvements
+
 2022-03-18 12:10  UTC-0300 Jose Quintas <jmcquintas@gmail.com>
    * samples/propsh.prg
      ! variable declaration

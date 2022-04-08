@@ -9,6 +9,10 @@
 */
 
 
+2022-04-08 12:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
+   * utils/editor/editor.prg
+     ! Fixes
+
 2022-04-06 15:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
    * source/common/editor/hcedit.prg
      ! Fixes and improvements

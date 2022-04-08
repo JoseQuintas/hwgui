@@ -36,7 +36,9 @@ REQUEST HB_CODEPAGE_UTF8
 
 REQUEST HB_CODEPAGE_RU1251
 REQUEST HB_CODEPAGE_RU866
+#if ( HB_VER_REVID - 0 ) >= 2002101634
 REQUEST HB_CODEPAGE_DE858  && With Euro currency sign
+#endif
 REQUEST HB_CODEPAGE_DEWIN  && ----  "   -------------
 
 #define MENU_RULER       1901
@@ -2165,6 +2167,14 @@ STATIC FUNCTION FindNext()
 
 STATIC FUNCTION CopyFormatted()
 
+   LOCAL nL, nLTr, iTd
+
+   nL := oEdit:aPointC[P_Y]
+   IF Valtype( oEdit:aStru[nL,1,OB_TYPE] ) == "C" .AND. oEdit:aStru[nL,1,OB_TYPE] == "tr"
+      nLTr := nL
+      iTd := oEdit:nPosC
+      oEdit:LoadEnv( nL, iTd )
+   ENDIF
    IF !Empty( oEdit:aPointM2[P_Y] )
       cCBformatted := oEdit:Save( ,,, .T., oEdit:aPointM1, oEdit:aPointM2 )
       IF !Empty( cCBformatted )
@@ -2175,20 +2185,38 @@ STATIC FUNCTION CopyFormatted()
          hwg_Enablemenuitem( , MENU_PASTEF, .T., .T. )
       ENDIF
    ENDIF
+   IF !Empty( nLTr )
+      oEdit:RestoreEnv( nLTr, iTd )
+   ENDIF
 
    RETURN Nil
 
 STATIC FUNCTION PasteFormatted()
 
-   LOCAL nLines := oEdit:nLines, nLineF := oEdit:nLineF, nLineC := oEdit:nLineC, nPosF := oEdit:nPosF, nPosC := oEdit:nPosC, nWCharF := oEdit:nWCharF, nWSublF := oEdit:nWSublF
-   LOCAL nPosTR := 1, nPos, cTemp, nTr := 0
+   LOCAL nLines, nLineF, nLineC, nPosF, nPosC, nWCharF, nWSublF
+   LOCAL nL, nLTr, iTd
 
    IF !Empty( cCBformatted )
-      oEdit:SetText( cCBformatted,,, .T., .T., oEdit:aPointC[P_Y] )
-      oEdit:nLines := nLines; oEdit:nLineF := nLineF; oEdit:nLineC := nLineC; oEdit:nPosF := nPosF; oEdit:nPosC := nPosC; oEdit:nWCharF := nWCharF; oEdit:nWSublF := nWSublF
-      oEdit:PCopy( { nPosC, nLineC }, oEdit:aPointC )
-      oEdit:SetCaretPos( SETC_XY )
-      hced_Setfocus( oEdit:hEdit )
+      IF !Empty( oEdit )
+         nL := oEdit:aPointC[P_Y]
+         nLines := oEdit:nLines; nLineF := oEdit:nLineF; nLineC := oEdit:nLineC; nPosF := oEdit:nPosF; nPosC := oEdit:nPosC; nWCharF := oEdit:nWCharF; nWSublF := oEdit:nWSublF
+
+         IF Valtype( oEdit:aStru[nL,1,OB_TYPE] ) == "C" .AND. oEdit:aStru[nL,1,OB_TYPE] == "tr"
+            nLTr := nL
+            iTd := oEdit:nPosC
+            oEdit:LoadEnv( nL, iTd )
+            nL := oEdit:aPointC[P_Y]
+         ENDIF
+         oEdit:SetText( cCBformatted,,, .T., .T., nL )
+         IF !Empty( nLTr )
+            oEdit:RestoreEnv( nLTr, iTd )
+         ENDIF
+
+         oEdit:nLines := nLines; oEdit:nLineF := nLineF; oEdit:nLineC := nLineC; oEdit:nPosF := nPosF; oEdit:nPosC := nPosC; oEdit:nWCharF := nWCharF; oEdit:nWSublF := nWSublF
+         oEdit:PCopy( { nPosC, nLineC }, oEdit:aPointC )
+         oEdit:SetCaretPos( SETC_XY )
+         hced_Setfocus( oEdit:hEdit )
+      ENDIF
    ENDIF
 
    RETURN Nil

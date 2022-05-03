@@ -33,6 +33,10 @@
 * 238 : EAST EUROPE        EE_CHARSET
 * 255 : OEM
 * 
+* 
+* look at:
+* https://docs.microsoft.com/de-de/dotnet/api/system.drawing.font.gdicharset?view=netframework-4.8
+*
 * Sample see samples\winprn.prg
 *
 * #include "hwgui.ch"

@@ -319,16 +319,21 @@ METHOD Drag( xPos, yPos ) CLASS HTrack
 
    LOCAL nCurr := ::nCurr
    LOCAL nHalf := Int(::nSize/2), x1, y1
+   
+
+   HB_SYMBOL_UNUSED(nhalf)
 
    //hwg_writelog( str(xPos) + str(yPos)  )
    IF ::lVertical
       x1 := Int(::nWidth/2)
+      HB_SYMBOL_UNUSED(x1)
       IF yPos > 32000
          yPos -= 65535
       ENDIF
       ::nCurr := Min( Max( ::nFrom, yPos ), ::nTo )
    ELSE
       y1 := Int(::nHeight/2)
+      HB_SYMBOL_UNUSED(y1)
       IF xPos > 32000
          xPos -= 65535
       ENDIF
@@ -344,6 +349,9 @@ METHOD Drag( xPos, yPos ) CLASS HTrack
 METHOD Move( x1, y1, width, height ) CLASS HTrack
 
    LOCAL xValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)
+   
+   HB_SYMBOL_UNUSED(x1)
+   HB_SYMBOL_UNUSED(y1)
 
    IF ::lVertical .AND. !Empty( height ) .AND. height != ::nHeight
       ::nFrom  := Int(::nSize/2)

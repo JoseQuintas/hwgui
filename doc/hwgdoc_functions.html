@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, January 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, May 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -32,7 +32,8 @@
      <li><a name="_Functions6" href="#Functions6">5.6.  Menu functions.</a>
      <li><a name="_Functions7" href="#Functions7">5.7.  Windows registry.</a>
      <li><a name="_Functions8" href="#Functions8">5.8.  Miscellaneous functions.</a>
-     <li><a name="_Functions8" href="#Functions81">5.8.1 Unit conversions.</a>
+     <li><a name="_Functions81" href="#Functions81">5.8.1 Unit conversions.</a>
+     <li><a name="_Functions82" href="#Functions82">5.8.2 Date and time functions.</a>
      <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
    </ul>
 
@@ -1576,14 +1577,6 @@ See sample program "testspli.prg" for details.<br>
 
    <br><strong class="subhead"><a name="Functions8" href="hwgdoc.html#_Functions8">
    5.8.  Miscellaneous functions.</a></strong><br>
-   <p></p>
-   <br><strong class="subhead">hwg_getCentury()</strong>
-   <br>Returns the value of the recent century setting.
-   <ul>
-     <li> (set it with command "SET CENTURY ON|OFF")
-     <li>.F. : OFF
-     <li>.T. : ON
-   </ul>
 
    <p></p>
    <br><strong class="subhead">hwg_GetDirSep()</strong>
@@ -1705,13 +1698,7 @@ See sample program "testspli.prg" for details.<br>
      <li> Return value - a numeric color representation.
    </ul>
 
-   <br><strong class="subhead"> hwg_BmpFromRes( cBmp )</strong> 
-   <br>Creates a bitmap from the data stored in the resources or in the binary container (if it is previously opened with hwg_SetResContainer() function).
-   In most cases you don't need to call this function directly, use <code>HBitmap():AddResource(cBmp)</code> instead.
-   <ul>
-     <li> cName - name of a <i>bmp</i> resource;
-     <li> Return value - handle of a bitmap;
-   </ul>
+
 
    <br>
    ~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
@@ -1724,6 +1711,14 @@ See sample program "testspli.prg" for details.<br>
    <br>
    <br> 
 
+   <br><strong class="subhead"> hwg_BmpFromRes( cBmp )</strong> 
+   <br>Creates a bitmap from the data stored in the resources or in the binary container (if it is previously opened with hwg_SetResContainer() function).
+   In most cases you don't need to call this function directly, use <code>HBitmap():AddResource(cBmp)</code> instead.
+   <ul>
+     <li> cName - name of a <i>bmp</i> resource;
+     <li> Return value - handle of a bitmap;
+   </ul>   
+   
    <br><strong class="subhead"> hwg_SetResContainer( cName )</strong> 
    <br>Opens a file of a binary container and sets is as a current for resources retrieving.
    Corresponding command: <a href="hwgdoc_commands.html#Commands6-3"> SET RESOURCES CONTAINER TO</a>.
@@ -1965,7 +1960,7 @@ See sample program "testspli.prg" for details.<br>
    for setting the language of your application).<br>
    Windows: Returns the value of function call GetLocaleInfo(LOCAL_USER_DEFAULT,...).<br>
    LINUX: Returns the value of setlocale(LC_CTYPE,NULL)<br>
-   To get all possible values on your system, look to the output of the command "locale -a"
+   To get all possible values on your system, look to the output of the command "locale -a".<br>
    The type of return value is a string.
    <p></p>
 
@@ -2394,62 +2389,6 @@ See sample program "testspli.prg" for details.<br>
    <p></p> 
    
 
-   <br><strong class="subhead"> hwg_GetUTCTimeDate()</strong><br>
-   Returns a string with date and time in UTC.<br>
-   This function is platform independant.<br>
-   Output format is: W,YYYYMMDD-HH:MM:SS<br>
-   W: Weekday: 0 = Sunday, 1 = Monday ... 6 = Saturday<br>
-   Use the SUBSTR() function of Harbour to extract the desired<br>
-   information.<br>
-   The output format is independent by settings of:<br>
-   - SET DATE ...<br>
-   - SET CENTURY ...<br>
-   <p></p>
-
-   <br><strong class="subhead"> hwg_GetDateANSI()</strong><br>
-   Returns a string with date in ANSI format.<br>
-   This function is platform independant.<br>
-   Output format is: YYYYMMDD, based on local time.<br>
-   The output format is independent by settings of:<br>
-   - SET DATE ...<br>
-   - SET CENTURY ...<br>
-   If ANSI date is part of a file name, the files are listed<br>
-   in correct order sorted by date.<br> 
-   <p></p>
-
-   <br><strong class="subhead"> hwg_GetUTCDateANSI()</strong><br>
-   Returns a string with date in ANSI format.<br>
-   This function is platform independant.<br>
-   Output format is: YYYYMMDD, based on UTC.<br>
-   The output format is independent by settings of:<br>
-   - SET DATE ...<br>
-   - SET CENTURY ...<br>
-   If ANSI date is part of a file name, the files are listed<br>
-   in correct order sorted by date.<br> 
-   <p></p>
-
-   <br><strong class="subhead"> hwg_GetUTCTime()</strong><br>
-   Returns a string with UTC time.<br>
-   This function is platform independant.<br>
-   Output format is: HH:MM:SS (same as TIME() ).<br>
-   <p></p>
-
-   <br><strong class="subhead"> hwg_IsLeapYear ( nyear )</strong><br>
-   nyear : a year to check for leap year.<br>
-   returns: .T. , if nyear is a leap year,<br>
-   so that the month February has 29 instead of 28 days.<br>
-   <br>
-   The function concerns to the leap year rules of the Gregorian calendar,<br>
-   valid for all years above 1582. Before this year, the "Julian calendar"<br>
-   was used, it had an error about 10 days for the difference against the<br>
-   solar year. With the invention of the Gregorian calendar, created by Pope Gregory XIII,<br>
-   this error was fixed. So leap years are 1600 and 2000,<br>
-   non leap years are 1700, 1800, 1900 and 2100.<br>
-   For the Julian calendar the leap year rule is very simple:<br>
-   &nbsp;IF (nyear % 4)  == 0 ) ...<br>
-   If you have a date variable, use the Harbour function YEAR(d)<br>
-   to extract the year as a numerical value from a date.<br>
-   <p></p>
 
    <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)
    <p></p>
@@ -2549,6 +2488,19 @@ See sample program "testspli.prg" for details.<br>
    <br><strong class="subhead"> hwg_NUMB2HEX ( nascchar )</strong>
    <br> Converts  0 ... 255 TO HEX 00 ... FF<br>
    (2 Bytes String)<br>
+ 
+   <p></p> 
+   <br><strong class="subhead"> int hwg_hexbin(int cha)</strong>
+    <br>converts single hex char to int,<br>
+    returns -1 , if not in range<br>
+    returns 0 - 15 (dec) , only a half byte<br>
+    This function is the equivalent to<br>
+    hwg_NUMB2HEX(), but you can use it<br>
+    in the C implementation of your<br>
+    application<br> 
+    Don't forget to cast int to unsigned char.<br>
+    For usage sample look into source code file<br>
+    utils\devtools\memdump.prg<br>
 
    <p></p>
    <br><strong class="subhead"> hwg_KEYESCCLDLG (odlg)</strong>
@@ -2667,7 +2619,43 @@ See sample program "testspli.prg" for details.<br>
    IF Valtype(oObj) == "O"<br>
     ...<br> 
    </p>
+   
+   <br><strong class="subhead"> hwg_Bin2D(cbin,nlen,ndec)</strong>
+   <p>
+   Converts double (8 bytes) to<br>
+   Numeric Value.<br>
+   Parameters:<br>
+   cbin : Hex value of binary<br>
+   (double 8 bytes => 16 hex characters)<br>
+   Size 16 Bytes with or without blanks in one line.<br>
+   nlen : number of digits<br>  
+   ndec : number of digits after decimal point<br>
+   <br>
+   Sample call:<br>
+   hwg_Bin2D(hwg_HEX_DUMP(Buffer,0),10,2)<br>
+   Buffer is the 8 bytes of double var memory.<br>
+   <br>
+   For usage sample look into source code file<br>
+   utils\devtools\memdump.prg<br>
+   </p>
 
+   <br><strong class="subhead"> hwg_Bin2DC(cbin,nlen,ndec)</strong>
+   <p>   
+   Converts double (8 bytes) to<br>
+   Numeric Value.<br>
+   Only for internal usage.<br>
+   This function is called by<br>
+   hwg_Bin2D().<br>
+   </p>
+   
+   <br><strong class="subhead">  hwg_leading0(ce)</strong>
+   <p>
+   Replace all leading blanks with<br>
+   "0".
+   ce : string<br>
+   Returns : String<br>
+   </p>
+  
    <br><strong class="subhead"> hwg_Alert</strong> (Windows only)
    <p></p>
 
@@ -2782,7 +2770,150 @@ See sample program "testspli.prg" for details.<br>
     hwg_KM2NML(km)<br>
     </p>
 
+<br><br> 
 
+   <br><strong class="subhead"><a name="Functions82" href="hwgdoc.html#_Functions81">
+   5.8.2 Date and time functions.</a></strong><br>
+   <p></p>
+
+
+   <br><strong class="subhead">hwg_getCentury()</strong>
+   <br>Returns the value of the recent century setting.
+   <ul>
+     <li> (set it with command "SET CENTURY ON|OFF")
+     <li>.F. : OFF
+     <li>.T. : ON
+   </ul>
+
+   <p></p>
+   <br><strong class="subhead"> hwg_GetUTCTimeDate()</strong><br>
+   Returns a string with date and time in UTC.<br>
+   This function is platform independant.<br>
+   Output format is: W,YYYYMMDD-HH:MM:SS<br>
+   W: Weekday: 0 = Sunday, 1 = Monday ... 6 = Saturday<br>
+   Use the SUBSTR() function of Harbour to extract the desired<br>
+   information.<br>
+   The output format is independent by settings of:<br>
+   - SET DATE ...<br>
+   - SET CENTURY ...<br>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetDateANSI()</strong><br>
+   Returns a string with date in ANSI format.<br>
+   This function is platform independant.<br>
+   Output format is: YYYYMMDD, based on local time.<br>
+   The output format is independent by settings of:<br>
+   - SET DATE ...<br>
+   - SET CENTURY ...<br>
+   If ANSI date is part of a file name, the files are listed<br>
+   in correct order sorted by date.<br> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetUTCDateANSI()</strong><br>
+   Returns a string with date in ANSI format.<br>
+   This function is platform independant.<br>
+   Output format is: YYYYMMDD, based on UTC.<br>
+   The output format is independent by settings of:<br>
+   - SET DATE ...<br>
+   - SET CENTURY ...<br>
+   If ANSI date is part of a file name, the files are listed<br>
+   in correct order sorted by date.<br> 
+   <p></p>
+
+   <br><strong class="subhead"> hwg_GetUTCTime()</strong><br>
+   Returns a string with UTC time.<br>
+   This function is platform independant.<br>
+   Output format is: HH:MM:SS (same as TIME() ).<br>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_IsLeapYear ( nyear )</strong><br>
+   nyear : a year to check for leap year.<br>
+   returns: .T. , if nyear is a leap year,<br>
+   so that the month February has 29 instead of 28 days.<br>
+   <br>
+   The function concerns to the leap year rules of the Gregorian calendar,<br>
+   valid for all years above 1582. Before this year, the "Julian calendar"<br>
+   was used, it had an error about 10 days for the difference against the<br>
+   solar year. With the invention of the Gregorian calendar, created by Pope Gregory XIII,<br>
+   this error was fixed. So leap years are 1600 and 2000,<br>
+   non leap years are 1700, 1800, 1900 and 2100.<br>
+   For the Julian calendar the leap year rule is very simple:<br>
+   &nbsp;IF (nyear % 4)  == 0 ) ...<br>
+   If you have a date variable, use the Harbour function YEAR(d)<br>
+   to extract the year as a numerical value from a date.<br>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_STOD(cANSIDate)</strong><br>
+   Extra implementation of STOD(),<br>
+   it is a Clipper tools function.<br>
+   For compatibilty purposes.<br>
+   Parameter 1: Date String<br>
+   in ANSI-Format YYYYMMDD.<br>
+   Result value is independant from<br>
+   SET DATE and SET CENTURY settings.<br>
+   Sample Call:<br>
+   ddate := hwg_STOD("20201108")<br>
+   <p></p> 
+
+   <br><strong class="subhead"> hwg_checkANSIDate(cANSIDate)</strong><br>
+   Check, if an ANSI Date is valid.<br>
+   cANSIDate: ANSI date as string<br>
+   of Format YYYYMMDD.<br>
+   Returns .T., if the date is valid.<br>
+   <p></p>  
+
+   <br><strong class="subhead"> hwg_JulianDay2Date(z)</strong><br>
+   Converts julian date of mem files into <br>
+   String , Format YYYYMMDD (ANSI)<br>
+   z: double (of type N)<br>
+   Returns string<br>
+   Valid for dates from 1901 to 2099<br>
+   The julian is stored in Clipper<br>
+   and Harbour MEM files as<br>
+   double value.<br>
+   Convert a real double value of 8 bytes with<br>
+   hwg_Bin2D() into type N.<br>
+   <br>
+   For usage sample look into source code file<br>
+   utils\devtools\memdump.prg<br>
+   Additional information:<br>
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   In Clipper and Harbour there is no function available,<br>
+   to convert the double value of type N (or D) to<br>
+   memvar type N.<br>
+   <br>
+   This the solution of this topic:<br>
+   <br>
+   The double value is converted to a hex string in one line without blanks:<br>
+   1---+----1----+-<br>
+   50455254FB210940  = Pi (for example),<br>
+   so size = 16 Bytes<br>
+   <br>
+   The function hwg_BIN2D() converts the hexstring<br>
+   into double and then into a memvar of type N<br>
+   For type N : it could be displayed with ? ... or processed afterwards.<br>
+   For type D : double value represents the julian day<br>
+   and is converted to a date string by<br>
+   function hwg_JulianDay2Date(), returned format is YYYYMMDD.<br>
+   Finally, the function STOD() converts<br>
+   the date string into D value.<br>
+   If the function STOD() is not available,<br>
+   then hwg_STOD() is a substitue.<br>
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   <br>
+   <p></p>  
+
+
+   <br><strong class="subhead"> hwg_Date2JulianDay(dDate,nhour,nminutes,nseconds)</strong><br>
+   Converts date (type D) to julian date<br>
+   (returned as type N).<br>
+   This is the opposite function to<br>
+   hwg_JulianDay2Date().<br>
+   The paramaters nhour,nminutes,nseconds<br>
+   are optional (default values are 0).<br>
+   <p></p>  
+     
+   
 <br><br>   
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

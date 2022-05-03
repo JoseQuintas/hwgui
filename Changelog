@@ -9,6 +9,47 @@
 */
 
 
+2022-05-03 11:55 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/hwgdoc.html
+  * doc/hwgdoc_functions.html
+  * doc/hwgdoc_misc.html
+  * include/prncharsets.ch
+  * source/common/editor/hcedit.prg
+  * source/gtk/hmisc.prg
+  * source/gtk/misc.c
+  * source/winapi/hmisc.prg
+  * source/winapi/htrackbr.prg
+  * source/winapi/misc.c
+  * test/juldate.prg (new)
+  * utils/dbc/Readme.txt (new)
+  * utils/devtools/designer/frm_memdump.xml (new)
+  * utils/devtools/memdump.hbp (new)
+  * utils/devtools/memdump.prg (new)
+  * utils/devtools/Readme.txt (new)
+      ! Urgent bugfixing: Unused symbols in
+      ! htrackbr.prg: METHODs Drag and Move.
+      ! hcedit.prg: METHOD Activate()
+      !  
+      ! New functions:
+      ! hwg_STOD()
+      ! hwg_BIN2D() 
+      ! hwg_hexbin()
+      ! hwg_Bin2D()
+      ! hwg_Bin2DC()
+      ! hwg_leading0()
+      ! hwg_checkANSIDate()
+      ! hwg_Date2JulianDay()
+      ! hwg_JulianDay2Date()
+      ! hwg_leading0()
+      ! New developer tools:
+      ! memdump.prg (under construction)
+      ! Docu updated:
+      ! New functions added.
+      ! Extra chapter:
+      ! 5.8.2 Date and time functions
+
+
 2022-04-08 12:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
    * utils/editor/editor.prg
      ! Fixes

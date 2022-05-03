@@ -8,12 +8,20 @@
  * www - http://www.kresin.ru
 */
 
+#define HB_MEM_NUM_LEN  8
+
 #define OEMRESOURCE
 #include "hwingui.h"
+/* Standard C libraries */
 #include <commctrl.h>
 #include <math.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
 
 #include "hbmath.h"
+#include "hbapi.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
@@ -1128,5 +1136,213 @@ HB_FUNC( HWG_ALERT_GETWINDOW )
    hb_retptr( (HWND) GetWindow( (HWND) hb_parptr(1), (UINT) hb_parni( 2 ) ) );
 }
 
+/*
+* ============================================
+* FUNCTION hwg_STOD
+* Extra implementation of STOD(),
+* it is a Clipper tools function.
+* For compatibilty purposes.
+* Parameter 1: Date String
+* in ANSI-Format YYYYMMDD.
+* Result value is independant from
+* SET DATE and SET CENTURY settings.
+* Sample Call:
+* ddate := hwg_STOD("20201108")
+* ============================================
+*/
+
+
+
+HB_FUNC( HWG_STOD )
+{
+   PHB_ITEM pDateString = hb_param( 1, HB_IT_STRING );
+
+   hb_retds( hb_itemGetCLen( pDateString ) >= 7 ? hb_itemGetCPtr( pDateString ) : NULL );
+}
+
+int hwg_hexbin(int cha)
+/* converts single hex char to int, returns -1 , if not in range
+   returns 0 - 15 (dec) , only a half byte */ 
+{
+    char gross;
+    int o;
+
+    gross = toupper(cha);
+    switch (gross)
+    {
+     case 48:  /* 0 */
+     o = 0;
+     break;
+     case 49:  /* 1 */
+     o = 1;
+     break;
+     case 50:  /* 2 */
+     o = 2;
+     break;	 
+     case 51:  /* 3 */
+     o = 3;
+     break;
+     case 52:  /* 4 */
+     o = 4;
+     break;
+     case 53:  /* 5 */
+     o = 5;
+     break;
+     case 54:  /* 6 */
+     o = 6;
+     break;	 
+     case 55:  /* 7 */
+     o = 7	 ;
+     break;
+     case 56:  /* 8 */
+     o = 8;
+     break;	 
+     case 57:  /* 9 */
+     o = 9;
+     break;
+     case 65:  /* A */
+     o = 10;
+     break;
+     case 66:  /* B */
+     o = 11;
+     break;
+     case 67:  /* C */
+     o = 12;
+     break;	 
+     case 68:  /* D */
+     o = 13;
+     break;
+     case 69:  /* E */
+     o = 14;
+     break;	 
+     case 70:  /* F */
+     o = 15;
+     break;
+     default:
+     o = -1; 
+    } 
+    return o;
+}
+
+/*
+   hwg_Bin2DC(cbin,nlen,ndec)
+*/
+
+HB_FUNC( HWG_BIN2DC )
+{
+
+    double pbyNumber;
+    int i;
+    unsigned char o;
+    unsigned char bu[8];     /* Buffer with binary contents of double value */ 
+    unsigned char szHex[17]; /* The hex string from parameter 1 + null byte*/
+
+
+    int p;
+    int c;      /* char with int value hex from hex */
+    int od;     /* odd even sign / gerade - ungerade */
+
+  /* init vars */
+  
+  pbyNumber = 0;
+  
+    szHex[0] = '\0';
+    szHex[1] = '\0';
+    szHex[2] = '\0';
+    szHex[3] = '\0';
+    szHex[4] = '\0';
+    szHex[5] = '\0';
+    szHex[6] = '\0';
+    szHex[7] = '\0';
+    szHex[8] = '\0';
+    szHex[9] = '\0';
+    szHex[10] = '\0';
+    szHex[11] = '\0';
+    szHex[12] = '\0'; 
+    szHex[13] = '\0';
+    szHex[14] = '\0';
+    szHex[15] = '\0';
+    szHex[16] = '\0';
+
+
+    p = 0;
+    c = 0;
+    od = 0;  
+
+    // Internal I2BIN for Len
+
+    HB_USHORT uiWidth = ( HB_USHORT ) hb_parni( 2 );
+
+    // Internal I2BIN for Dec
+
+    HB_USHORT uiDec = ( HB_USHORT ) hb_parni( 3 );
+
+
+    const char *name = hb_parc( 1 );
+
+    // hwg_writelog(NULL,name);
+ 
+    memcpy(&szHex,name,16);
+
+    szHex[16] = '\0';
+ 
+    // hwg_writelog(NULL,szHex);
+
+    /* Convert hex to bin */
+
+    for ( i = 0 ; i < 16; i++ )
+     {
+ 
+          c = hwg_hexbin(szHex[i]);
+          /* ignore, if not in 0 ... 1, A ... F */
+          if ( c  != -1 )
+          {
+           /* must be a pair of char,
+              other values between the pairs of hex values are ignored */
+            if ( od == 1 )
+            {
+                od = 0;
+            }
+            else
+            {
+                od = 1;
+            }
+            /* 1. Halbbyte zwischenspeichern / Store first half byte */
+            if ( od == 1)
+            {
+              p = c;
+            }
+            else
+            /* 2. Halbbyte verarbeiten, ganzes Byte ausspeichern 
+                / Process second half byte and store full byte */
+            {
+              p = ( p * 16 ) + c;
+              o = (unsigned char) p;
+              bu[ i / 2 ] = o;  
+
+/* Display some debug info */
+//             printf("i=%d ", i);
+//             printf("%d ", p);
+//             printf("%s", " ");
+//             printf("%c", o);
+//             printf("%s", " ");
+// 80  P 69  E 82  R 84  T 251  ยน 33  ! 9     64
+// 50    45    52    54    FB     21    09    40
+
+            }
+          }
+        }  
+
+    // hwg_writelog(NULL,szHex);
+   
+    /* Convert buffer to double */
+
+    memcpy(&pbyNumber,bu,sizeof(pbyNumber));
+
+    /* Return double value as type N */
+  
+    hb_retndlen( pbyNumber , uiWidth , uiDec );
+  
+}
 
 /* ========= EOF of misc.c ============ */

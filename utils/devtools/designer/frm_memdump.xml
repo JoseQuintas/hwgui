@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{220,23,1120,498}</property>
+    <property name="Name">[frm_memdump]</property>
+    <property name="Caption">[Dump a MEM file]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="lDebug">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="BackColor">-1</property>
+    <property name="NoModal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <part class="label">
+    <style>
+      <property name="Geometry">{36,25,153,22}</property>
+      <property name="Name">[oLabel1]</property>
+      <property name="Caption">[Dump of file :]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{217,25,638,22}</property>
+      <property name="Name">[oLabel2]</property>
+      <property name="Caption">[filename]</property>
+    </style>
+  </part>
+  <part class="browse">
+    <style>
+      <property name="Geometry">{38,94,1044,306}</property>
+      <property name="Name">[oBrowse1]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{40,430,155,32}</property>
+      <property name="Name">[oButton1]</property>
+      <property name="Caption">[Open MEM file]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{223,430,80,32}</property>
+      <property name="Name">[oButton2]</property>
+      <property name="Caption">[Exit]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{331,430,235,32}</property>
+      <property name="Name">[oButton3]</property>
+      <property name="Caption">[Save as text file]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{594,430,235,32}</property>
+      <property name="Name">[oButton4]</property>
+      <property name="Caption">[Save as HTML file]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{864,430,80,32}</property>
+      <property name="Name">[oButton5]</property>
+      <property name="Caption">[Help]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{997,430,80,32}</property>
+      <property name="Name">[oButton6]</property>
+      <property name="Caption">[Test]</property>
+    </style>
+  </part>
+</part>

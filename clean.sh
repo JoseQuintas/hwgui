@@ -38,6 +38,8 @@ rm samples/datepicker 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/stretch 2>/dev/null
 rm samples/escrita 2>/dev/null
+rm samples/night   2>/dev/null
+
 
 #
 # Utils exe

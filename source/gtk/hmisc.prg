@@ -793,5 +793,227 @@ LOCAL lret
         ENDIF
 RETURN lret
 
+
+* =================================
+FUNCTION hwg_leading0(ce)
+* ce : string
+* Returns : String
+* Replace all leading blanks with
+* "0".
+* =================================
+LOCAL vni , e1 , crvalue, lstop
+
+lstop := .F.
+ 
+  e1 := ce
+  IF LEN(e1) == 0
+     RETURN ""
+  ENDIF
+  FOR vni := 1 TO LEN(ce)
+   IF .NOT. lstop  
+     if SUBSTR(e1,vni,1) == " "
+      e1 := STUFF(e1,vni,1,"0")  && modify character at position vni to "0"
+     ELSE
+      lstop := .T.               && Stop search, if no blank appeared
+     ENDIF
+   ENDIF
+  NEXT
+  crvalue := e1
+RETURN crvalue
+
+
+FUNCTION hwg_Bin2D(chex,nlen,ndec)
+// hwg_msginfo(chex)
+RETURN hwg_Bin2DC(SUBSTR(STRTRAN(SUBSTR(chex,1,23) ," ","") ,1,16) ,nlen,ndec)
+
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Date and time functions
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* =================================
+FUNCTION hwg_checkANSIDate(cANSIDate)
+* Check, if an ANSI Date is valid.
+* cANSIDate: ANSI date as string
+* of Format YYYYMMDD
+* 
+* =================================
+LOCAL ddate, cdate
+IF cANSIDate == NIL
+ RETURN .F.
+ENDIF
+cANSIDate := ALLTRIM(cANSIDate) 
+IF EMPTY(cANSIDate)
+ RETURN .F.
+ENDIF
+IF LEN(cANSIDate) <> 8
+ RETURN .F.
+ENDIF
+ddate := hwg_STOD(cANSIDate)
+cdate := DTOC(ddate)
+* Invalid date is "  .  .  " , so ...
+cdate := STRTRAN(cdate," ","")
+cdate := STRTRAN(cdate,".","")
+IF EMPTY(cdate)
+ RETURN .F.
+ENDIF
+RETURN .T.
+
+* =================================
+FUNCTION hwg_Date2JulianDay(dDate,nhour,nminutes,nseconds)
+* =================================
+
+LOCAL nyear, nmonth, nday , ngreg
+
+IF nhour == NIL
+ nhour     := 0
+ENDIF
+IF nminutes == NIL
+ nminutes  := 0
+ENDIF
+IF nseconds == NIL
+ nseconds  := 0
+ENDIF
+
+
+nyear  := YEAR(dDate)
+nmonth := MONTH(dDate)
+nday   := DAY(dDate)
+
+    IF nmonth <= 2
+       nmonth := nmonth + 12
+       nyear :=  nyear - 1
+    ENDIF 
+
+   ngreg :=  ( nyear / 400 ) - ( nyear / 100 ) + ( nyear / 4 )  && Gregorian calendar
+
+RETURN 2400000.5 + 365 * nyear - 679004 + ngreg ;
+           + INT(30.6001 * ( nmonth + 1 )) + nday + ( nhour / 24 ) ;
+           + ( nminutes / 1440 ) + ( nseconds / 86400 )
+   
+   
+* =================================
+FUNCTION hwg_JulianDay2Date(z)
+* Converts julian date of mem files into 
+* String , Format YYYYMMDD (ANSI)
+* z: double (of type N)
+* Returns string
+* Valid for dates from 1901 to 2099
+* The julian is stored in Clipper
+* and Harbour MEM files as
+* double value.
+* =================================
+LOCAL njoff , nRound_4 , nFour , nYear , d , d1 , i , jz  , sz ,  k ,  cYear ,  cMonth , cday
+
+ njoff := 4712                  && const year offset
+ nFour := ( z + 13 ) / 1461     && 1461 = 3*365+366  period of 4 years  (valid 1901 ... 2099)
+ nRound_4 := INT(nFour)
+ nYear := nRound_4 * 4
+ nRound_4 := (nRound_4 * 1461) - 13
+ d  := z - nRound_4
+ i  := 1
+ d1 := 0
+   DO WHILE (d1 >= 0) .AND. (i < 5) 
+      IF i == 1 
+       jz := 366
+      ELSE
+       jz := 365
+      ENDIF
+      d1 := d - jz
+      IF d1 >= 0 
+        d := d1
+        nYear := nYear + 1
+      ENDIF
+     i := i + 1
+    ENDDO
+    nYear := nYear - njoff
+    cYear := STR( nYear , 4 , 0 )   
+
+    cYear := hwg_leading0(cYear)
+    * Check for valid year range
+    IF (nYear < 1901 ) .OR. (nYear > 2099)
+       RETURN ""
+    ENDIF
+
+    d := d + 1;     && 0 .. 364 => 1 .. 365 
+   
+    IF ( nYear % 4 ) == 0   && Leap year 1901 ... 2099
+      sz := -1
+    ELSE
+      sz := 0
+    ENDIF
+    IF (sz = -1) .AND. (d = 60)
+         * 29th February
+         cMonth := "02"
+         cday := "29"
+    ELSE
+         * All other days 
+         IF (d > 60) .AND. (sz == -1)
+           d := d - 1
+         ENDIF  && Correction Leap Year
+         cMonth := "  "
+         IF  d > 0
+             cMonth := "01"
+             k := 0
+         ENDIF
+         IF  d > 31
+             cMonth := "02"
+             k := 31
+         ENDIF
+         IF  d > 59
+             cMonth := "03"
+             k := 59
+         ENDIF
+         IF  d > 90
+             cMonth := "04"
+             k := 90
+         ENDIF
+         IF  d > 120
+             cMonth := "05"
+             k := 120
+         ENDIF
+         IF  d > 151
+             cMonth := "06"
+             k := 151
+         ENDIF
+         IF  d > 181
+             cMonth := "07"
+             k := 181
+         ENDIF
+         IF  d > 212
+             cMonth := "08"
+             k := 212
+         ENDIF
+         IF  d > 243
+             cMonth := "09"
+             k := 243
+         ENDIF
+         IF  d > 273
+             cMonth := "10"
+             k := 273
+         ENDIF
+         if  d > 304
+             cMonth := "11"
+             k := 304
+         ENDIF
+         IF  d > 334
+             cMonth := "12"
+             k := 334
+         ENDIF
+         d := d - k
+         cday := STR( d , 2 ,0 ) 
+        ENDIF
+   cday := hwg_leading0(cday)
+   
+   * Check for Errors 
+   * Could be for example "20991232". 
+   IF .NOT. hwg_checkANSIDate(cYear + cMonth + cday)
+    RETURN ""
+   ENDIF
+
+RETURN cYear + cMonth + cday
+
+
+
 * ============== EOF of hmisc.prg =================
 

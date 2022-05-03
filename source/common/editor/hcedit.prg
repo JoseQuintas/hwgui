@@ -357,8 +357,12 @@ METHOD Open( cFileName, cPageIn, cPageOut ) CLASS HCEdit
 
 METHOD Activate() CLASS HCEdit
 
+#ifdef __GTK__
    LOCAL nw
+#endif
+   
    IF !Empty( ::oParent:handle )
+   
 #ifdef __GTK__
       nw := ::nWIdth
       ::nWidth := ::nClientWidth

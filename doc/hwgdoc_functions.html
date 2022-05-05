@@ -1601,6 +1601,9 @@ See sample program "testspli.prg" for details.<br>
    Returns full path of current directory.<br>
    The Harbour function CurDir() does not return the<br>
    leading "\" or "/" Character.<br>
+   To assemble a full path and filename, follow this example:<br>
+   cp := hwg_CurDir() + hwg_GetDirSep() + "sample.txt"<br>
+   <br>
    This function returns the complete path with drive letter on Windows.<br>
    This function works also on GTK cross development environment.<br>
 
@@ -2772,7 +2775,7 @@ See sample program "testspli.prg" for details.<br>
 
 <br><br> 
 
-   <br><strong class="subhead"><a name="Functions82" href="hwgdoc.html#_Functions81">
+   <br><strong class="subhead"><a name="Functions82" href="hwgdoc.html#_Functions82">
    5.8.2 Date and time functions.</a></strong><br>
    <p></p>
 

@@ -48,6 +48,9 @@ rm bin/dbchw 2>/dev/null
 rm bin/file2hex 2>/dev/null
 rm bin/hwgdebug 2>/dev/null
 
+# test exe
+rm test/gtk_err93 2>/dev/null
+
 # Find and delete all Error logs
 find . -name Error.log -exec rm -f {} \;
 

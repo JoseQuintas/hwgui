@@ -8,6 +8,16 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-05-05 23:34 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/hwgdoc.html
+  * doc/hwgdoc_functions.html
+  * samples/arraybrowse.prg
+  * utils/Readme.txt 
+  * utils/devtools/memdump.prg
+  * utils/devtools/Readme.txt
+      ! Project memdump finished
+      ! Docu updated
 
 2022-05-03 11:55 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh

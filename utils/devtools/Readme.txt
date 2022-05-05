@@ -45,6 +45,11 @@
    Buttons "Save as text file" and "Save as HTML file" stores the recents contents
    in files "memdump.txt" or "memdump.htm". You can insert the contents for example
    in your program documentation.
+   You got a message of store destination.
+   
+   The "Clean" button cleans the display and
+   removes the file test.mem.
+   So the dialog is ready to open another mem file.   
 
    Button "Test" creates an MEM file "test.mem" and opens it. 
    It has 5 records with variables of every type.

@@ -14,6 +14,9 @@
 
 
 /*
+  More samples for ARRAY BROWSE in 
+  utils\devtools\memdump.prg
+  
   Because the HBROWSE class for arrays have some bugs,
   so this sample demonstrates a suitable working browse function
   for full editing of arrays (mainly without crash's). 

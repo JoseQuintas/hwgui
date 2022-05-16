@@ -18,6 +18,8 @@ rm utils/designer/designer 2>/dev/null
 rm utils/editor/editor 2>/dev/null
 rm utils/tutorial/hwgrun 2>/dev/null
 rm utils/tutorial/tutor 2>/dev/null
+rm utils/dbc/a1 2>/dev/null
+rm utils/tutorial/__tmp.hrb 2>/dev/null
 #
 # Samples only for LINUX/GTK
 rm samples/gtk_samples/GetWinVers 2>/dev/null
@@ -39,6 +41,8 @@ rm samples/bincnts 2>/dev/null
 rm samples/stretch 2>/dev/null
 rm samples/escrita 2>/dev/null
 rm samples/night   2>/dev/null
+rm samples/TwoLstSub 2>/dev/null
+rm samples/dbview 2>/dev/null
 
 
 #

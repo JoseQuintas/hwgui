@@ -8,6 +8,15 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-05-16 22:40 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * install.txt
+  * utils/Readme.txt
+      ! Install instructions for
+      ! Ubuntu 22.04 LTS
+      ! Little corrections 
+      
+      
 2022-05-05 23:34 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * doc/hwgdoc.html

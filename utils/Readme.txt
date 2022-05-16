@@ -41,7 +41,7 @@
   Data Base Control (Harbour)
   is an utility that allows complete
   multiuser access and indexes.
-  For details read file "hwgui\utils\dbc".
+  For details read file "hwgui\utils\dbc\Readme.txt".
 
 
   debugger \
@@ -61,7 +61,7 @@
 
   The Designer is intended to create/modify input screen forms and reports.
   For details read the HTML documentation "doc/hwgdoc_misc.html",
-  chapter "7.1. Designer" and the file Readme.txt in the subsirectory.
+  chapter "7.1. Designer" and the file Readme.txt in the subdirectory.
 
 
   devtools \
@@ -69,8 +69,8 @@
 
   HWGUI devloper tools:
 
-  In the subdirectory "utils\devtools" you find some more helpful utilities
-  for programmimg and bugfixing of Clipper, Harbour and HWGUI programs.
+  In the subdirectory "devtools" you find some more helpful utilities
+  for programming and bugfixing of Clipper, Harbour and HWGUI programs.
   For details look into file "Readme.txt" in this directory.    
 
 
@@ -101,5 +101,18 @@
    can not only read the code and comments, but execute it. Moreover,
    you can edit the code and then execute it immediately to see the
    results of your changes.  
+   
+   Build scripts:
+   
+   bldgw.bat     for MingGW on Windows 
+   bld.bat       for Borland C
+   bldow.bat     for OpenWatCom C on Windows
+   bldgtkwin.bat for Windows with GTK+ (cross development environment), only for test purposes.
+   build.sh      for LINUX with GTK+2
+   hbmk.sh       alternative script using the Harbour hbmk2 utility, 
+                 calls hwgrun.hbp and tutor.hbp
+         
+
+    
 
 ========================== EOF of Readme.txt ==================================

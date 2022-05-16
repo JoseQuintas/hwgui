@@ -202,6 +202,8 @@
 
  Appendix 1: List of packages for Ubuntu Linux and LinuxMINT
  -----------------------------------------------------------
+ 
+ Instructions for more LINUX distributions see "Appendix 2".
   
   Install packages as system administrator:
   
@@ -281,6 +283,70 @@
    On Ubuntu 20.04.2.0 LTS some warnings like
    "‘GTimeVal’ is deprecated:"
    appeared, but dont care of them.
+   
+   
+Appendix 2:
+-----------
+
+Additional instructions and information for other LINUX distributions.
+
+Ubuntu 22.04 LTS (5.15.0-27-generic), AMD 64 by 16th May 2022.
+--------------------------------------------------------------
+(DF7BE)
+
+Because of different benaviour of make 4.3 here the additional instructions:
+
+Contents of .profile:
+
+# --- Harbour and HWGUI --
+   HARBOUR_INSTALL=/home/cltest/Harbour/core-master
+   HWGUI_INSTALL=$HOME/svnwork/hwgui-code/hwgui
+   PATH=$PATH:$HARBOUR_INSTALL/bin/linux/gcc:$HWGUI_INSTALL/bin
+   export PATH
+   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HARBOUR_INSTALL/lib/linux/gcc
+   export LD_LIBRARY_PATH
+   HB_COMPILER=gcc
+   export HB_COMPILER
+   HB_INSTALL_PREFIX=$HARBOUR_INSTALL
+   export HB_INSTALL_PREFIX
+#
+  
+- Use full path for HARBOUR_INSTALL  
+- New variables HB_COMPILER and HB_INSTALL_PREFIX.
+
+(solve trouble with autodetect).
+
+Complete list of installed packages:
+
+sudo apt-get install make
+sudo apt-get install linux-headers-generic
+sudo apt-get update -y
+sudo apt install wmctrl 
+sudo apt-get install libcanberra-gtk-module libcanberra-gtk3-module 
+sudo apt-get install libxmu-dev libxaw7-dev libxt-dev
+sudo apt-get install gpm
+sudo apt-get install libgpm-dev
+sudo apt-get install glslang-dev
+sudo apt-get install xorg-dev
+sudo apt-get install libncurses-dev
+sudo apt-get install libslang2-dev
+sudo apt-get install libx11-dev
+sudo apt-get install libjpeg-dev
+sudo apt-get install libpcre3-dev
+sudo apt-get install libtiff-dev
+sudo apt-get install liballegro4.2-dev
+sudo apt-get install libcairo2-dev
+sudo apt-get install libcups2-dev
+sudo apt-get install libcurl4-gnutls-dev
+sudo apt-get install firebird-dev 
+sudo apt-get install libfreeimage-dev
+sudo apt-get install libgs-dev
+sudo apt-get install libmagic-dev
+sudo apt-get install unixodbc-dev
+sudo apt-get install libpq-dev
+sudo apt-get install libcurl4-openssl-dev
+sudo apt-get install libgtk2.0-dev
+ 
    
 
 * =============== EOF of install.txt ====================

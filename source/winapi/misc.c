@@ -18,6 +18,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
+#include <malloc.h>
+#include <time.h>
+#include <sys/stat.h>
 
 
 #include "hbmath.h"
@@ -1242,6 +1245,11 @@ HB_FUNC( HWG_BIN2DC )
     int c;      /* char with int value hex from hex */
     int od;     /* odd even sign / gerade - ungerade */
 
+    /* For Borland C the variables must declare extra */
+    HB_USHORT uiWidth;
+    HB_USHORT uiDec;
+    const char *name;
+
   /* init vars */
   
   pbyNumber = 0;
@@ -1271,14 +1279,14 @@ HB_FUNC( HWG_BIN2DC )
 
     // Internal I2BIN for Len
 
-    HB_USHORT uiWidth = ( HB_USHORT ) hb_parni( 2 );
+    uiWidth = ( HB_USHORT ) hb_parni( 2 );
 
     // Internal I2BIN for Dec
 
-    HB_USHORT uiDec = ( HB_USHORT ) hb_parni( 3 );
+    uiDec = ( HB_USHORT ) hb_parni( 3 );
 
 
-    const char *name = hb_parc( 1 );
+    name = hb_parc( 1 );
 
     // hwg_writelog(NULL,name);
  
@@ -1343,6 +1351,39 @@ HB_FUNC( HWG_BIN2DC )
   
     hb_retndlen( pbyNumber , uiWidth , uiDec );
   
+}
+
+static void GetFileMtimeU(const char * filePath)
+{
+/* Format: YYYYMMDD-HH:MM:SS  for example: 20211204-20:05:42 l= 17 + NULL byte */
+ struct stat attrib;
+ char date[18];
+ stat (filePath, &attrib);
+
+ strftime(date, sizeof(date) , "%Y%m%d-%H:%M:%S", gmtime(&(attrib.st_mtime)));
+ hb_retc(date);
+}
+
+static void GetFileMtime(const char * filePath)
+{
+/* Format: YYYYMMDD-HH:MM:SS  for example: 20211204-20:05:42 l= 17 + NULL byte */
+ struct stat attrib;
+ char date[18];
+ stat (filePath, &attrib);
+ strftime(date, sizeof(date) , "%Y%m%d-%H:%M:%S", localtime(&(attrib.st_mtime)));
+ hb_retc(date);
+}
+
+
+HB_FUNC( HWG_FILEMODTIMEU )
+{
+ GetFileMtimeU( ( const char * ) hb_parc(1) );
+}
+
+ 
+HB_FUNC( HWG_FILEMODTIME )
+{
+ GetFileMtime( ( const char * ) hb_parc(1) );
 }
 
 /* ========= EOF of misc.c ============ */

@@ -35,8 +35,9 @@
      <li><a name="_Functions81" href="#Functions81">5.8.1 Unit conversions.</a>
      <li><a name="_Functions82" href="#Functions82">5.8.2 Date and time functions.</a>
      <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
+     <li><a name="_References"  href="#References">References</a>
    </ul>
-
+   
    <br><strong class="subhead"><a name="Functions1" href="hwgdoc.html#_Functions1">
    5.1.  Common dialogs</a></strong><br>
 
@@ -1601,9 +1602,6 @@ See sample program "testspli.prg" for details.<br>
    Returns full path of current directory.<br>
    The Harbour function CurDir() does not return the<br>
    leading "\" or "/" Character.<br>
-   To assemble a full path and filename, follow this example:<br>
-   cp := hwg_CurDir() + hwg_GetDirSep() + "sample.txt"<br>
-   <br>
    This function returns the complete path with drive letter on Windows.<br>
    This function works also on GTK cross development environment.<br>
 
@@ -2658,6 +2656,18 @@ See sample program "testspli.prg" for details.<br>
    ce : string<br>
    Returns : String<br>
    </p>
+   
+  <br><strong class="subhead"> hwg_Has_Win_Euro_Support()</strong>
+  <p>
+   This functions returns .T., if the used Harbour Version<br>
+   supports the Euro currency sign (&euro;) on Windows.<br> 
+   In this case, the following code page must be requested:<br>   
+   &nbsp;REQUEST HB_CODEPAGE_DE858<br>
+   If for example your datebase uses a Euro currency sign, you<br>
+   can set this codepage at opening time of a database with<br>
+   the USE command.<br>
+   The UTF-8 codepage supports forever the Euro currency sign.<br>   
+  </p>
   
    <br><strong class="subhead"> hwg_Alert</strong> (Windows only)
    <p></p>
@@ -2775,7 +2785,7 @@ See sample program "testspli.prg" for details.<br>
 
 <br><br> 
 
-   <br><strong class="subhead"><a name="Functions82" href="hwgdoc.html#_Functions82">
+   <br><strong class="subhead"><a name="Functions82" href="hwgdoc.html#_Functions81">
    5.8.2 Date and time functions.</a></strong><br>
    <p></p>
 
@@ -2914,8 +2924,57 @@ See sample program "testspli.prg" for details.<br>
    hwg_JulianDay2Date().<br>
    The paramaters nhour,nminutes,nseconds<br>
    are optional (default values are 0).<br>
-   <p></p>  
-     
+   <p></p>
+
+   <br><strong class="subhead"> hwg_FileModTimeU()</strong><br>  
+   Returns the file modification time in UTC as string.<br>
+   Format: YYYYMMDD-HH:MM:SS<br>
+   This function works also on open file.<br>
+   It is a good substutite of Harbour function LUPDATE(),<br>
+   which has bugs.<br>
+   For example:<br>
+   USE logbuch<br>
+   * Modify a record:<br>
+   REPLACE FIELD WITH "Value"<br>
+   hwg_FILEMODTIMEU("logbuch.dbf")<br>
+   * ==> now the date and time of modification is returned.<br> 
+   In case of errors (for example name of a not existing file)<br>
+   the value 19700101-00:00:00 is returned.<br>
+   <p></p> 
+   
+   <br><strong class="subhead"> hwg_FileModTime()</strong><br>
+   Returns the file modification time (local) as string.<br>
+   Format: YYYYMMDD-HH:MM:SS<br>
+   This function works also on open file.<br>
+   It is the equivalent to HWG_FILEMODTIMEU()<br>
+   <p></p>
+   
+  <br><strong class="subhead"> hwg_Get_Time_Shift()</strong><br>
+   Returns the time shift from UTC as a numeric<br>
+   value in hours.<br>
+   So add this shift value to UTC for<br>
+   getting local time.<br>
+   This function regards daylight saving<br>
+   time.<br>
+   <p></p>   
+   
+<br><br>
+
+   <br><strong class="subhead"><a name="References" href="#_References">
+   References</a></strong><br>
+
+<pre>
+   [1] Spence, Rick (Co-Developer of Clipper):
+       Clipper Programming Guide, Second Edition Version 5.
+       Microtrend Books, Slawson Communication Inc., San Marcos, CA, 1991
+       ISBN 0-915391-41-4
+
+   [2] Project CLLOG at Sourceforge:
+</pre>   
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://sourceforge.net/projects/cllog/">
+  https://sourceforge.net/projects/cllog/</a>
+<pre>   
+</pre>
    
 <br><br>   
 <hr align="left" width="100%">

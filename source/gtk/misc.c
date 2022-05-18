@@ -22,6 +22,10 @@
 #include <string.h>
 #include <ctype.h>
 
+#include <malloc.h>
+#include <time.h>
+#include <sys/stat.h>
+
 #include "guilib.h"
 #include "hbmath.h"
 #include "hbapi.h"
@@ -614,5 +618,39 @@ HB_FUNC( HWG_BIN2DC )
     hb_retndlen( pbyNumber , uiWidth , uiDec );
   
 }
+
+static void GetFileMtimeU(const char * filePath)
+{
+/* Format: YYYYMMDD-HH:MM:SS  for example: 20211204-20:05:42 l= 17 + NULL byte */
+ struct stat attrib;
+ char date[18];
+ stat (filePath, &attrib);
+
+ strftime(date, sizeof(date) , "%Y%m%d-%H:%M:%S", gmtime(&(attrib.st_mtime)));
+ hb_retc(date);
+}
+
+static void GetFileMtime(const char * filePath)
+{
+/* Format: YYYYMMDD-HH:MM:SS  for example: 20211204-20:05:42 l= 17 + NULL byte */
+ struct stat attrib;
+ char date[18];
+ stat (filePath, &attrib);
+ strftime(date, sizeof(date) , "%Y%m%d-%H:%M:%S", localtime(&(attrib.st_mtime)));
+ hb_retc(date);
+}
+
+
+HB_FUNC( HWG_FILEMODTIMEU )
+{
+ GetFileMtimeU( ( const char * ) hb_parc(1) );
+}
+
+ 
+HB_FUNC( HWG_FILEMODTIME )
+{
+ GetFileMtime( ( const char * ) hb_parc(1) );
+}
+
 
 /* ========= EOF of misc.c ============ */

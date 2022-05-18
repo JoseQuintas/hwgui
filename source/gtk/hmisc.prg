@@ -1013,6 +1013,19 @@ LOCAL njoff , nRound_4 , nFour , nYear , d , d1 , i , jz  , sz ,  k ,  cYear ,  
 
 RETURN cYear + cMonth + cday
 
+FUNCTION HWG_GET_TIME_SHIFT()
+LOCAL nhUTC , nhLocal
+nhUTC := VAL(SUBSTR(HWG_GETUTCTIMEDATE(),12,2  ))
+* Format: W,YYYYMMDD-HH:MM:SS
+nhLocal := VAL(SUBSTR(TIME(),1,2))
+RETURN nhLocal - nhUTC
+
+FUNCTION hwg_Has_Win_Euro_Support()
+#if ( HB_VER_REVID - 0 ) >= 2002101634
+RETURN .T.
+#else
+RETURN .F.
+#endif
 
 
 * ============== EOF of hmisc.prg =================

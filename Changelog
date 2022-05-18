@@ -8,6 +8,23 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-05-18 23:40 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * samples/testfunc.prg
+  * source/gtk/hmisc.prg
+  * source/gtk/misc.c
+  * source/winapi/hmisc.prg
+  * source/winapi/misc.c
+  *  utils/devtools/memdump.prg
+      ! Urgent bugfix compile Borland C 
+      ! New functions:
+      ! hwg_Has_Win_Euro_Support()
+      ! hwg_FileModTimeU()
+      ! hwg_FileModTime()
+      ! hwg_Get_Time_Shift()
+      ! Little corrections
+      ! Docu updated
+
 2022-05-16 22:40 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * install.txt

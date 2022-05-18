@@ -321,7 +321,7 @@ IF hwg_ARRAY_LEN(aret) == 0
 ENDIF 
 SET_FINAME(cmfiname)
 aret2 := FormArrText(aret)
-TO_TEXTFI(aret,cmfiname)
+TO_TEXTFI(aret,"test.txt")
 * Show with BROWSE
  aumemdarr := aret2 
  amemdarr  := aret

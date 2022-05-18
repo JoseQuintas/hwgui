@@ -9,7 +9,7 @@
  * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
  *
- * Copyright 2020 Wilfried Brunken, DF7BE 
+ * Copyright 2020-2022 Wilfried Brunken, DF7BE 
 */
 
     * Status:
@@ -36,6 +36,12 @@
  hwg_ShowCursor()
  hwg_GetCursorType() && GTK only
  hwg_IsLeapYear ( nyear )
+ 
+ hwg_Has_Win_Euro_Support()
+ hwg_FileModTimeU()
+ hwg_FileModTime()
+ hwg_Get_Time_Shift()
+
 
  Harbour functions:
  CurDir() 
@@ -60,10 +66,12 @@ LOCAL Testfunc, oFont , nheight
 
 LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
 LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
-LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22
+LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
+LOCAL oButton26
 
 PUBLIC cDirSep := hwg_GetDirSep()
 PUBLIC bgtk , ndefaultcsrtype
+
 
 * Detect GTK build
 bgtk := .F.
@@ -174,6 +182,23 @@ SET DATE ANSI  && YY(YY).MM.TT
    @ 25 ,200 BUTTON oButton22 CAPTION "hwg_IsLeapYear()" SIZE 140,nheight FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | TestLeapYear() } 
+
+   @ 180,175 BUTTON oButton23 CAPTION "hwg_Has_Win_Euro_Support()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | |  Funkt(hwg_Has_Win_Euro_Support(),"L","hwg_Has_Win_Euro_Support()" ) }
+
+   @ 340,175 BUTTON oButton24 CAPTION "hwg_FileModTimeU()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | |  Test_FileModTimeU() }
+
+   @ 505,175 BUTTON oButton25 CAPTION "hwg_FileModTime()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | |  Test_FileModTime() }
+
+   @ 505 ,150 BUTTON oButton26 CAPTION "hwg_Get_Time_Shift()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+        { | | Funkt(hwg_Get_Time_Shift(),"N","hwg_Get_Time_Shift()") }
+
 
 /* Disable buttons for Windows only functions */
 #ifndef __PLATFORM__WINDOWS
@@ -348,5 +373,35 @@ LOCAL cRet
  hwg_MsgInfo("Result of Res_LeapYear(" + ALLTRIM(STR(nyeart)) + ")=" + cRet , "hwg_IsLeapYear()" )
 RETURN NIL
 
+FUNCTION FILE_SEL()
+LOCAL cstartvz,fname
+* Get current directory as start directory
+cstartvz := Curdir()
+fname := hwg_Selectfile("Select a file" , "*.*", cstartvz )
+
+RETURN fname 
+
+
+FUNCTION Test_FileModTimeU()
+LOCAL fn, ctim
+fn := FILE_SEL()
+IF EMPTY(fn)
+ RETURN NIL
+ENDIF 
+ctim := hwg_FileModTimeU(fn)
+hwg_MsgInfo("Modification date and time (UTC) of file" + ;
+ CHR(10) + fn + " is :" + CHR(10) +  ctim, "Result of hwg_FileModTimeU()")
+RETURN NIL 
+
+FUNCTION Test_FileModTime()
+LOCAL fn, ctim
+fn := FILE_SEL()
+IF EMPTY(fn)
+ RETURN NIL
+ENDIF 
+ctim := hwg_FileModTime(fn)
+hwg_MsgInfo("Modification date and time (local) of file" + ;
+ CHR(10) + fn + " is :" + CHR(10) +  ctim, "Result of hwg_FileModTime()")
+RETURN NIL 
 
 * ============================== EOF of testfunc.prg ==============================

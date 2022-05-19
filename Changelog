@@ -8,6 +8,13 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2022-05-19 14:15 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * clean.sh 
+        ! Little corrections
+        
+  
 2022-05-18 23:40 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * samples/testfunc.prg

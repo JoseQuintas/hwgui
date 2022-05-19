@@ -43,6 +43,7 @@ rm samples/escrita 2>/dev/null
 rm samples/night   2>/dev/null
 rm samples/TwoLstSub 2>/dev/null
 rm samples/dbview 2>/dev/null
+rm samples/testfunc 2>/dev/null
 
 
 #
@@ -51,6 +52,9 @@ rm bin/bincnt 2>/dev/null
 rm bin/dbchw 2>/dev/null
 rm bin/file2hex 2>/dev/null
 rm bin/hwgdebug 2>/dev/null
+rm utils/devtools/memdump 2>/dev/null
+rm utils/devtools/test.mem 2>/dev/null
+rm utils/devtools/test.txt 2>/dev/null
 
 # test exe
 rm test/gtk_err93 2>/dev/null

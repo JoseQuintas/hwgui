@@ -55,6 +55,7 @@ rm bin/hwgdebug 2>/dev/null
 rm utils/devtools/memdump 2>/dev/null
 rm utils/devtools/test.mem 2>/dev/null
 rm utils/devtools/test.txt 2>/dev/null
+rm utils/devtools/lbldump 2>/dev/null
 
 # test exe
 rm test/gtk_err93 2>/dev/null

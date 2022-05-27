@@ -9,11 +9,20 @@
 */
 
 
+2022-05-27 06:30 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * utils/devtools/Readme.txt
+  * utils/devtools/lbldump.prg (new)
+  * utils/devtools/test.lbl (new)
+      ! Project "Labeldump" finished
+      ! (as a preparation for contrib/hwlabel)
+        
+
 2022-05-19 14:15 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * clean.sh 
-        ! Little corrections
-        
+      ! Little corrections
+       
   
 2022-05-18 23:40 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html

@@ -9,6 +9,14 @@
 */
 
 
+2022-05-31 17:55 UTC+0200 Wilfried Brunken DF7BE
+  * utils/devtools/MS-DOS/DBFSTRU.EXE (new)
+  * utils/devtools/Readme.txt
+  * utils/devtools/dbfstru.prg (new)
+      ! Project "dbfstru" added
+      ! Exe for MS-DOS also available
+
+
 2022-05-27 06:30 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * utils/devtools/Readme.txt

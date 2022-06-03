@@ -3065,8 +3065,11 @@ METHOD Edit( wParam, lParam ) CLASS HBrowseEx
                { | o | hwg_Movewindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ), ;
                o:aControls[ 1 ]:Setfocus(), hwg_Postmessage( o:aControls[ 1 ]:handle, WM_CHAR, wParam, lParam ) } )
             IF Type <> "M"
+               /* Bug Ticket #108 by Itamer M. Lins Jr,
+                  WINE ESC and ENTER not working on get (edit) browse:
+                  + DS_CONTROL removed */
                INIT DIALOG ::oEditDlg ;
-                  STYLE WS_POPUP + 1 + iif( oColumn:aList == NIL, WS_BORDER, 0 ) + DS_CONTROL ;
+                  STYLE WS_POPUP + 1 + iif( oColumn:aList == NIL, WS_BORDER, 0 )  ;
                   At x1, y1 - iif( oColumn:aList == NIL, 1, 0 ) ;
                   SIZE nWidth - 1, ::height + iif( oColumn:aList == NIL, 1, 0 ) ;
                   ON INIT bInit ;

@@ -9,6 +9,12 @@
 */
 
 
+2022-06-03 10:55 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/ext_controls/hbrowsex.prg
+      ! Bug Ticket #108 by Itamer M. Lins Jr,
+      ! WINE ESC and ENTER not working on get (edit) browse:
+      ! DS_CONTROL removed 
+
 2022-05-31 17:55 UTC+0200 Wilfried Brunken DF7BE
   * utils/devtools/MS-DOS/DBFSTRU.EXE (new)
   * utils/devtools/Readme.txt

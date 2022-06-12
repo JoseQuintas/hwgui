@@ -24,6 +24,7 @@ REM Using build script for MinGW or hbmk2: *.c and *.o
 REM are removed, if compiled with success. 
 REM 1. Samples
 del samples\*.exe 2> NUL
+del samples\temp_a2.pdf 2> NUL
 REM 2. GTK samples
 del samples\gtk_samples\*.exe 2> NUL
 REM 3. Utils

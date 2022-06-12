@@ -46,6 +46,7 @@ CLASS HPrinter INHERIT HObject
    DATA nZoom, nCurrPage, hMeta
    DATA x1, y1, x2, y2
    DATA oBrush1, oBrush2
+   DATA lprbutton      INIT .T.   
    // --- International Language Support for internal dialogs --
    DATA aLangTexts
    // Print Preview Dialog with sub dialog:
@@ -70,7 +71,7 @@ CLASS HPrinter INHERIT HObject
    METHOD SetFont( oFont )
    METHOD AddPen( nWidth, style, color )
    METHOD SetPen( nWidth, style, color )
-   METHOD StartDoc( lPreview, cScriptFile )
+   METHOD StartDoc( lPreview, cScriptFile, lprbutton )
    METHOD EndDoc()
    METHOD StartPage()
    METHOD EndPage()
@@ -360,7 +361,13 @@ METHOD Bitmap( x1, y1, x2, y2, nOpt, hBitmap, cImageName ) CLASS HPrinter
 
    RETURN Nil
 
-METHOD StartDoc( lPreview, cScriptFile ) CLASS HPrinter
+METHOD StartDoc( lPreview, cScriptFile , lprbutton ) CLASS HPrinter
+
+   IF lprbutton == NIL
+      ::lprbutton := .T.
+   ELSE
+      ::lprbutton := lprbutton
+   ENDIF 
 
    ::nPage := 0
    ::aPages := {}
@@ -537,9 +544,12 @@ FUNCTION hwg_HPrinter_LangArray_EN()
 
    @ 1, 31 LINE LENGTH TOOL_SIDE_WIDTH - 1
 
+  IF ::lprbutton 
    @ 3, 36 OWNERBUTTON oBtn  ON CLICK { || ::PrintDoc() } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT cmPrint FONT oFont         ;  && "Print"
       TOOLTIP iif( aTooltips != Nil, aTooltips[ 2 ], "Print file" )
+  ENDIF  
+
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[ 3 ] != Nil
       oBtn:oBitmap := iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 3 ] ), HBitmap():AddFile( aBitmaps[ 3 ] ) )
       oBtn:title   := Nil

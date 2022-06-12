@@ -11,7 +11,7 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
- ! 2022-02-22        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
+ ! 2022-06-12        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
  +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
  +-------------------!---------------------------------!--------------------------------------------+
@@ -29,7 +29,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_functions.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, February 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, June 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_misc.html">next</a></td>
   </tr>
 </table>
@@ -1741,7 +1741,7 @@
       SetMode( nOrientation, nDuplex )
       AddFont( fontName, nHeight ,lBold, lItalic, lUnderline, nCharset )
       SetFont( oFont )
-      StartDoc( lPreview,cMetaName ) - Starts printing of a document.
+      StartDoc( lPreview,cMetaName,lprbutton ) - Starts printing of a document.
       EndDoc()                  - End of a document printing.
       StartPage()
       EndPage()
@@ -1760,6 +1760,16 @@
       Bitmap( x1,y1,x2,y2,nOpt,hBitmap )
       GetTextWidth( cString, oFont )
    </pre>
+   <p>
+   Additional instructions:<br>
+   <br>
+   Some more instructions see class HWINPRN. 
+   <br>
+   Set lPreview in method StartDoc() to .T. to show the print preview dialog. Default is .F.<br>
+   Otherwise the printing process starts immediately.<br>
+   Set lprbutton to .F., if preview dialog does not show the print button.<br>
+   <br>
+   </p>
 
    <br><strong class="subhead"><a name="Classes26" href="#_Classes26">
    HProgressBar</a></strong> 
@@ -1932,7 +1942,7 @@
       InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       SetDefaultMode() &nbsp;&nbsp;  // Should act like a "printer reset".
-      StartDoc( lPreview,cMetaName )
+      StartDoc( lPreview,cMetaName,lprbutton )
       NextPage()
       PrintLine( cLine,lNewLine )
       PrintBitmap( xBitmap, nAlign , cBitmapName ) 
@@ -1948,6 +1958,11 @@
    WinAPI:      "Lucida Console"<BR>
    <BR>
    Additional instructions:<BR>
+   <br>
+   Set lPreview in method StartDoc() to .T. to show the print preview dialog. Default is .F.<br>
+   Otherwise the printing process starts immediately.<br>
+   Set lprbutton to .F., if preview dialog does not show the print button.<br>
+   <br>
    Special hints for test and development without printer usage:<BR>
     Windows 10: You can install a virtual printer driver named "Print to PDF" to redirect the printer data.<BR>
     LINUX: The Printer dialog of the system allows redirection into a PDF file.<BR>
@@ -1968,7 +1983,7 @@
    Bug in Cairo graphical library (instructions for LINUX/GTK):<BR>
    Inserting bitmaps into a document to print, it is necessary to add at first<BR>
    the text lines, and than the bitmap images (exact in this order).<BR>
-   For deatils, see inline comments of sample program <BR>
+   For details, see inline comments of sample program <BR>
    "samples/gtk_samples/winprn.prg".<BR>
    More description in following text block.<BR> 
    </p>

@@ -9,6 +9,28 @@
 */
 
 
+2022-06-12 23:40 UTC+0200 Wilfried Brunken DF7BE
+  * clean.bat
+  * clean.sh
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * samples/winprn.prg
+  * source/gtk/hprinter.prg
+  * source/gtk/hwinprn.prg
+  * source/winapi/hprinter.prg
+  * source/winapi/hwinprn.prg
+      ! Classes HWINPRN and HPRINTER:
+      ! New parameter "lprbutton" 
+      ! hides the "Print" button in print preview (optional)
+      ! Now 3 modes selectable at samples/winprn.prg
+      ! 1. Print immediatelly (default, recent behavior, compatible)
+      ! 2. Print preview with "Print" button
+      ! 3. Print preview with hidden "Print" button      
+      ! Docu updated.
+      ! TO-DO: Sample winprn.prg freezes on LINUX/GTK
+      ! at start (need to fix urgent).
+
+
 2022-06-03 10:55 UTC+0200 Wilfried Brunken DF7BE
   * contrib/ext_controls/hbrowsex.prg
       ! Bug Ticket #108 by Itamer M. Lins Jr,

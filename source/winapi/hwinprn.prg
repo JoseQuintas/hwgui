@@ -20,6 +20,43 @@
  *   (Ticket #64, TNX HKrzak)
 */
 
+/*
+  Some notes how to explain the work flow of the
+  HWINPRN class:
+  Every method adding lines or settings into the document to print  
+  collect records in an Array aPages[] initialized by method New() of HPRINTER class.
+  These methods are for example:
+  SetMode(), PrintLine(), PrintBitmap(), NextPage().
+  When running method End() of HWINPRN class to close the print job,
+  all collected records in the array
+  are written in a script file with default filename "temp_a2.ps". 
+  This script builds the complete layout of the printing job in background.
+  After this, the layout is diplayed in the print preview dialog, the last step
+  is send the data to the printer device.
+
+  Sample for the page 7 created by sample program "winprn.prg":
+   page,7,px,p
+   fnt,monospace,12.2410,400,0,0,
+   txt,14.16,-0.3156,589,11.6812,,From file >hwgui.bmp<
+   img,14.16,11.6812,315.16,171.6812,,../../image/hwgui.bmp
+   txt,14.16,183.6780,589,195.6749,,astro from hex value via temporary file
+   img,14.16,195.6749,121.16,285.6749,,/tmp/e5950039.bmp
+   img,248.16,297.6717,355.16,387.6717,,/tmp/e5950039.bmp
+   img,482.16,399.6685,589.16,489.6685,,/tmp/e5950039.bmp
+   txt,14.16,501.6654,589,513.6622,,--------------------
+
+   The record secription (not valid for all types):
+   <type>,<x1>,<y1>,<x2>,<y2>,nOpt,<value> CRLF
+
+   The layout is generated in function hwg_gp_Print() in hprinter.prg.
+   This function is implemented in wprint.c using
+   the features of the Cairo graphic library.
+   Function draw_page() interprets the values of the array and
+   builds the pixbuffer for one page.
+ 
+
+*/
+
 #include "hwgui.ch"
 #include "hbclass.ch"
 
@@ -63,22 +100,23 @@ CLASS HWinPrn
    // --- International Language Support for internal dialogs --
    DATA aTooltips   INIT {}  // Array with tooltips messages for print preview dialog
    DATA aBootUser   INIT {}  // Array with control  messages for print preview dialog  (optional usage)
-   
+
 
    METHOD New( cPrinter, cpFrom, cpTo, nFormType, nCharset )
    METHOD SetLanguage(apTooltips, apBootUser)
    METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetDefaultMode()
-   METHOD StartDoc( lPreview, cMetaName )
+   METHOD StartDoc( lPreview, cMetaName , lprbutton )
    METHOD NextPage()
    METHOD PrintLine( cLine, lNewLine )
-   METHOD PrintBitmap( xBitmap, nAlign , cBitmapName )
+   METHOD PrintBitmap( xBitmap, nAlign , cBitmapName )  && cImageName
    METHOD PrintText( cText )
    METHOD SetY( nYvalue )
    METHOD PutCode( cLine )   && cText
    METHOD EndDoc()
    METHOD END()
+
 #ifdef __GTK__
    METHOD SetMetaFile( cMetafile )    INLINE ::oPrinter:cScriptFile := cMetafile
 #endif
@@ -228,10 +266,12 @@ METHOD SetY( nYvalue ) CLASS HWinPrn
  RETURN nYvalue
 
 
-METHOD StartDoc( lPreview, cMetaName ) CLASS HWinPrn
+METHOD StartDoc( lPreview, cMetaName , lprbutton ) CLASS HWinPrn
+* Set lprbutton to .F., if preview dialog not shows the print button
+
 
    ::lDocStart := .T.
-   ::oPrinter:StartDoc( lPreview, cMetaName )
+   ::oPrinter:StartDoc( lPreview, cMetaName , lprbutton )
    ::NextPage()
 
    RETURN Nil
@@ -280,7 +320,7 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    LOCAL hBitmap, aBmpSize , cImageName
    
    * Variables not used
-   * oBitmap
+   * LOCAL oBitmap
 
    IF ! ::lDocStart
       ::StartDoc()
@@ -292,7 +332,7 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
 
    cTmp := hwg_CreateTempfileName( , ".bmp")   
    
-   IF VALTYPE( xBitmap ) == "C"
+   IF VALTYPE( xBitmap ) == "C" && does not work on GTK
      * from file
      IF ! hb_fileexists( xBitmap )
        RETURN NIL
@@ -318,6 +358,7 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
      FERASE(cTmp)
    ENDIF  
    
+/* Page size overflow  ? ==> next page */ 
 #ifdef __GTK__
    IF ::y + aBmpSize[2] + ::nLined > ::oPrinter:nHeight
 #else
@@ -328,6 +369,7 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    
    ::x := ::nLeft * ::oPrinter:nHRes
    ::y += ::nLineHeight + ::nLined
+
    IF nAlign == 1 .AND. ::x + aBmpSize[2] < ::oPrinter:nWidth 
      ::x += ROUND( (::oPrinter:nWidth - ::x - aBmpSize[1] ) / 2, 0)
    * HKrzak 2020-10-27 
@@ -344,6 +386,9 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    IF i > 0
      ::Y +=  i 
    ENDIF  
+
+   // hwg_WriteLog(STR(::x) + CHR(10) + STR(::y) + CHR(10) ;
+   // + STR(aBmpSize[1]) + CHR(10) +  STR(aBmpSize[2]) + CHR(10) +  STR(i) )
 
    RETURN Nil
 
@@ -455,6 +500,8 @@ IF cLine != Nil .AND. VALTYPE(cLine) == "N"
          i ++
       ENDDO
       IF i0 != 0
+       // hwg_writelog(STR(::x) + CHR(10) + STR(::y) + CHR(10) + STR(i0) + CHR(10) + STR(i) + ;
+       //  CHR(10) + STR(::nLineHeight) )
          ::PrintText( SubStr( cLine, i0, i - i0 ) )
       ENDIF
    ENDIF
@@ -469,6 +516,7 @@ METHOD PrintText( cText ) CLASS HWinPrn
    ::oPrinter:Say( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ), ;
          ::x, ::y, ::oPrinter:nWidth, ::y + ::nLineHeight + ::nLined )
    ::x += ( ::nCharW * Len( cText ) )
+
 
    RETURN Nil
 

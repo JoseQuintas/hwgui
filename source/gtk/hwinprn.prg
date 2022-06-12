@@ -107,7 +107,7 @@ CLASS HWinPrn
    METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetDefaultMode()
-   METHOD StartDoc( lPreview, cMetaName )
+   METHOD StartDoc( lPreview, cMetaName , lprbutton )
    METHOD NextPage()
    METHOD PrintLine( cLine, lNewLine )
    METHOD PrintBitmap( xBitmap, nAlign , cBitmapName  )  && cImageName
@@ -116,6 +116,7 @@ CLASS HWinPrn
    METHOD PutCode( cLine )  && cText
    METHOD EndDoc()
    METHOD END()
+
 #ifdef __GTK__
    METHOD SetMetaFile( cMetafile )    INLINE ::oPrinter:cScriptFile := cMetafile
 #endif
@@ -155,12 +156,11 @@ METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
 
 
 METHOD SetLanguage(apTooltips, apBootUser) CLASS HWinPrn
+* NLS: Sets the message and control texts to print preview dialog
+* Are stored in arrays:   ::aTooltips[], ::aBootUser[]
 
 * Parameters not used
  HB_SYMBOL_UNUSED(apBootUser)
-
-* NLS: Sets the message and control texts to print preview dialog
-* Are stored in arrays:   ::aTooltips[], ::aBootUser[]
 
 * Default settings (English)
   ::aTooltips := hwg_HPrinter_LangArray_EN()
@@ -266,10 +266,12 @@ METHOD SetY( nYvalue ) CLASS HWinPrn
  RETURN nYvalue
 
 
-METHOD StartDoc( lPreview, cMetaName ) CLASS HWinPrn
+METHOD StartDoc( lPreview, cMetaName , lprbutton ) CLASS HWinPrn
+* Set lprbutton to .F., if preview dialog not shows the print button
+
 
    ::lDocStart := .T.
-   ::oPrinter:StartDoc( lPreview, cMetaName )
+   ::oPrinter:StartDoc( lPreview, cMetaName , lprbutton )
    ::NextPage()
 
    RETURN Nil
@@ -316,8 +318,9 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
 
    LOCAL i , cTmp , bfromobj
    LOCAL hBitmap, aBmpSize , cImageName
+   
    * Variables not used
-   * LOCAl oBitmap
+   * LOCAL oBitmap
 
    IF ! ::lDocStart
       ::StartDoc()
@@ -332,7 +335,7 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    cTmp := hwg_CreateTempfileName( , ".bmp")   
    
    // IF VALTYPE( xBitmap ) == "C" && does not work on GTK
- 
+     * from file 
      IF ! hb_fileexists( xBitmap )
       * xBitmap is a bitmap object
       bfromobj := .T.

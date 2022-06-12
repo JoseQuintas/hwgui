@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
-      <td width="70%" align="center">Alexander S.Kresin, February 2022</td>
+      <td width="70%" align="center">Alexander S.Kresin, June 2022</td>
       <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
     </tr>
   </table>
@@ -1416,6 +1416,13 @@
     <br>
     <b>Important:</b><br>
     <br>
+    GET commands started with overwrite mode for editing.<br>
+    Set<br>
+     &nbsp;READINSERT(.T.)<br>
+    to switch to insert editing mode.<br>
+    The best way is, to insert this command into the main section in your<br>
+    HWGUI application as one of the first commands.<br>
+    <br>
     To avoid side effects while entering characters only reachable by "AltGr" key<br>
     (&nbsp;for example on german keyboard layout: ~&micro;@{[]}\&euro;&nbsp;),<br>
     be shure that the size of the GET control field (X value of SIZE parameter)<br>
@@ -1432,10 +1439,12 @@
     Add a security reserve of 5 ... 10%.<br>
     For empty fields initialize the variables with empty values<br>
     like these examples before use of the GET command:<br>
+    <br>
     cField := SPACE(30)<br>
     dField := CTOD("") or better with todays date : dField := DATE()<br>
     nField := 0<br>
     lField := .F.<br>
+    <br>
     For editing MEMO type fields use the HCEDIT class.<br>
     <br> 
     <b>Parameters COLOR and BACKCOLOR for GTK,<br>

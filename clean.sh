@@ -34,6 +34,7 @@ rm samples/gtk_samples/testget2 2>/dev/null
 rm samples/gtk_samples/winprn 2>/dev/null
 #
 # Samples for multi plattform
+rm samples/temp_a2.pdf 2>/dev/null
 rm samples/testget1 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/datepicker 2>/dev/null
@@ -44,6 +45,7 @@ rm samples/night   2>/dev/null
 rm samples/TwoLstSub 2>/dev/null
 rm samples/dbview 2>/dev/null
 rm samples/testfunc 2>/dev/null
+rm samples/winprn 2>/dev/null
 
 
 #

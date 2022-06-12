@@ -39,6 +39,7 @@
 *    aLanguage : Add new element in array with name of language, avoid special signs (only ANSI)
 * 4. FUNCTION NLS_SetLang() : Add new block in case command.
 * 5. FUNCTION PRINT_OUT():  Add new block in case command with initialization of Winprn class.
+* 6. FUNCTION acdiamode():  Add text block for dialog mode
 
 
 /* Modifications by DF7BE:
@@ -54,6 +55,14 @@
     Special hints for test and development without printer usage:
     Windows 10: You can install a virtual printer driver named "Print to PDF" to redirect the printer data.
     LINUX: The Printer dialog of the system allows redirection into a PDF file.
+
+    June 2022:
+
+    nmode:
+     0 : Print immediately (show no print preview). Default, old behavior.
+     1 : Show print preview and start printing with button press
+     2 : Show print preview and hide print button
+
 */
 
 /*
@@ -99,6 +108,7 @@ REQUEST HB_CODEPAGE_UTF8
 MEMVAR aMainMenu , aLanguages , aPriCharSets , att_priprev, clangset, cIniFile, cTitle
 MEMVAR nPrCharset, nchrs , cImageDir
 MEMVAR cHexAstro , cValAstro , oBitmap1 , oBitmap2
+MEMVAR nmode , lPreview , lprbutton
 
 * ---------------------------------------------
 Function Main
@@ -106,6 +116,7 @@ Function Main
  LOCAL oMainWindow 
  LOCAL cDirSep := hwg_GetDirSep()
  
+ PUBLIC nmode , lPreview , lprbutton
  PUBLIC aMainMenu , aLanguages , aPriCharSets , att_priprev, clangset, cIniFile, cTitle
  PUBLIC nPrCharset, nchrs , cImageDir
  PUBLIC cHexAstro , cValAstro , oBitmap1 , oBitmap2
@@ -115,6 +126,9 @@ Function Main
    //   cIniFile := "language.ini"
 
    /* Preset defaults */
+   lPreview := .T.
+   lprbutton := .T.
+   nmode := 0
    nPrCharset := 0
    nchrs := 1 /* Item in COMBOXBOX */
    clangset := "English" 
@@ -132,7 +146,8 @@ Function Main
  Init_Hexvars()
  
 #ifdef __GTK__
- cImageDir := ".." + cDirSep + ".." + cDirSep + "image" + cDirSep
+* cImageDir := ".." + cDirSep + ".." + cDirSep + "image" + cDirSep
+  cImageDir := ".." + cDirSep  + "image" + cDirSep
 #else 
  cImageDir := ".." + cDirSep + "image" + cDirSep
 #endif 
@@ -164,11 +179,12 @@ Function Main
         MENUITEM aMainMenu[2] ACTION oMainWindow:Close() /* Quit */
       ENDMENU
       MENU TITLE aMainMenu[3] /* Print */
-         MENUITEM aMainMenu[4] ACTION { || PRINT_OUT(clangset) }
+         MENUITEM aMainMenu[4] ACTION { || PRINT_OUT(clangset,lpreview,lprbutton) }
       ENDMENU
       MENU TITLE aMainMenu[5] /* Settings */
          MENUITEM aMainMenu[6] ACTION Select_LangChrs()  /* Charset */
          MENUITEM aMainMenu[7] ACTION Select_LangDia(aLanguages)  /* Language */
+         MENUITEM aMainMenu[8] ACTION Select_Mode() /* Select dialog mode */
       ENDMENU
    ENDMENU
 
@@ -179,15 +195,8 @@ Function Main
  
 RETURN NIL
 
-#ifdef __GTK__
-#ifdef __PLATFORM__WINDOWS
-#include "..\hexres.ch"
-#else
-#include "../hexres.ch"
-#endif
-#else
+
 #include "hexres.ch"
-#endif
 
 * ---------------------------------------------
 FUNCTION Set_Maintitle(omnwnd,ctit)
@@ -197,8 +206,13 @@ FUNCTION Set_Maintitle(omnwnd,ctit)
 RETURN NIL
 
 * ---------------------------------------------
-FUNCTION PRINT_OUT(cname)
+FUNCTION PRINT_OUT(cname,lpreview,lprbutton)
 * Print test
+* lpreview : Set to .T. for print preview
+*            Default is .F.
+* lprbutton:
+* Set to .F., if preview dialog not shows the print button
+* Default is .T.
 * ---------------------------------------------
 
 Local oWinPrn, i , j
@@ -217,12 +231,25 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
   cbl    := CHR(192)  && Edge bottom left
   cbr    := CHR(217)  && Edge bottom right
 
+  IF lpreview == NIL
+    lpreview := .F.
+  ENDIF
+
+  IF lprbutton == NIL
+     lprbutton := .T.
+  ENDIF 
 
   IF cname == NIL ; cname := "English" ; ENDIF
 /* ===========================================  
    + Initialize sequences for printer class  +
    ===========================================
-*/   
+*/ 
+
+* Method  StartDoc(): If the first parameter is set to .T., the print preview dialog appeared,
+* otherwise the print action starts immediately (.F. or left empty).
+* Set the 3rd parameter to .F., if you want to hide the "Print" button, the default is .T.
+* 
+ 
   DO CASE
   
    * =============== German =================
@@ -232,7 +259,8 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn := HWinPrn():New( ,"DE858","UTF8", , nPrCharset )
 //   oWinPrn := HWinPrn():New( ,,"UTF8", , nPrCharset )
    oWinPrn:aTooltips := hwg_HPrinter_LangArray_DE()
-   oWinPrn:StartDoc( .T.,"temp_a2.ps" )
+//   oWinPrn:StartDoc( .T.,"temp_a2.ps" )
+   oWinPrn:StartDoc( lpreview ,"temp_a2.ps", lprbutton )
 #else
    oWinPrn := HWinPrn():New( ,"DE858","DEWIN", , nPrCharset)
    /* This displays the Euro currency sign CHR(128) correct, but not
@@ -240,7 +268,8 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 //   oWinPrn := HWinPrn():New( ,,, , nPrCharset )   
    oWinPrn:aTooltips := hwg_HPrinter_LangArray_DE()
 *   oWinPrn:StartDoc( .T. )
-   oWinPrn:StartDoc( .T.,"temp_a2.pdf" )
+//   oWinPrn:StartDoc( .T.,"temp_a2.pdf" )
+   oWinPrn:StartDoc( lpreview ,"temp_a2.pdf" , lprbutton)
 #endif
 
 
@@ -251,13 +280,15 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 #ifndef __PLATFORM__WINDOWS
    oWinPrn := HWinPrn():New( ,"RU866","RUKOI8" , , nPrCharset ) && 204
       oWinPrn:aTooltips := hwg_HPrinter_LangArray_RU()
-   oWinPrn:StartDoc( .T.,"temp_a2.ps" )
+ *  oWinPrn:StartDoc( .T.,"temp_a2.ps" )
+   oWinPrn:StartDoc( lpreview,"temp_a2.ps" , lprbutton )
 #else
    oWinPrn := HWinPrn():New( ,"RU866","RU1251", , nPrCharset ) && 204
    oWinPrn:aTooltips := hwg_HPrinter_LangArray_RU()
 //   Hwg_MsgInfo("nCharset=" + STR(oWinPrn:nCharset),"Russian" )
 *   oWinPrn:StartDoc( .T. )
-   oWinPrn:StartDoc( .T.,"temp_a2.pdf" )
+*   oWinPrn:StartDoc( .T.,"temp_a2.pdf" )
+   oWinPrn:StartDoc( lpreview,"temp_a2.pdf" , lprbutton)   
 #endif
 */
 
@@ -265,11 +296,13 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 /* ============== Default EN/USA ==================*/ 
 #ifndef __PLATFORM__WINDOWS
    oWinPrn := HWinPrn():New( ,,, , nPrCharset )
-   oWinPrn:StartDoc( .T.,"temp_a2.ps" )
+//   oWinPrn:StartDoc( .T.,"temp_a2.ps" )
+   oWinPrn:StartDoc( lpreview ,"temp_a2.ps" , lprbutton)
 #else
    oWinPrn := HWinPrn():New( ,,, , nPrCharset)
 *   oWinPrn:StartDoc( .T. )
-    oWinPrn:StartDoc( .T.,"temp_a2.pdf" )
+//   oWinPrn:StartDoc( .T.,"temp_a2.pdf" )
+    oWinPrn:StartDoc( lpreview ,"temp_a2.pdf" , lprbutton )
 #endif
  
  ENDCASE
@@ -412,7 +445,7 @@ FUNCTION NLS_SetLang(cname,omain)
    CASE cname == "Deutsch"  && Germany @ Euro
       clangset := "Deutsch"
       aMainMenu := { "E&nde", "&Quit" , "&Drucken" , "&Druck starten" , "&Einstellungen" , ;
-       "Drucker &Zeichensatz" , "&Sprache" }
+       "Drucker &Zeichensatz" , "&Sprache" , "&Dialog-Modus" }
       IF hwg__isUnicode()
         * UTF-8 (without BOM)
         cTitle := "Demo für Winprn-Klasse"
@@ -424,7 +457,7 @@ FUNCTION NLS_SetLang(cname,omain)
       IF bmn ; Set_Maintitle(omain,cTitle) ; ENDIF
    CASE cname == "Deutsch-OE"  && Austria: German @ Euro
       aMainMenu := { "E&nde", "&Quit" , "&Drucken" , "&Druck starten" , "&Einstellungen" , ;
-       "Drucker &Zeichensatz" , "&Sprache" }
+       "Drucker &Zeichensatz" , "&Sprache" , "&Dialog-Modus" }
       clangset := "Deutsch"
       IF hwg__isUnicode()
         * UTF-8 (without BOM)
@@ -435,14 +468,48 @@ FUNCTION NLS_SetLang(cname,omain)
       ENDIF
   OTHERWISE    && Default EN/USA
      aMainMenu := { "&Exit", "&Quit" , "&Print" , "&Start printing" , "&Settings" , ;
-      "&Printer Char Set" , "&Language" }
+      "&Printer Char Set" , "&Language" , "&Select dialog mode" }
      clangset := "English"
      cTitle := "Demo for Winprn Class"
       * Set title of main windows
      IF bmn ; Set_Maintitle(omain,cTitle) ; ENDIF 
  ENDCASE
  
+RETURN NIL
+
+
+* ---------------------------------------------
+FUNCTION Select_Mode
+* Dialog for selection of printer dialog mode
+* ---------------------------------------------
+LOCAL result, achrit, csel , nchrs
+  csel := ""
+  nchrs := 1
+  achrit := acdiamode()
+  result := __frm_CcomboSelect(achrit,"Select a dialog mode","Please Select dialog mode", ;
+   200 , "OK" , "Cancel", "Help" , "Need Help : " , "HELP !" , nchrs )
+  nchrs := result - 1 /* Position in COMBOBOX */
+  * Copy results to public
+   nmode := nchrs
+/*   
+   0 : Print immediately (show no print preview). Default, old behavior.
+   1 : Show print preview and start printing with print button press.
+   2 : Show print preview and hide print button.
+*/  
+   lPreview := IIF ( nmode > 0 , .T. , .F.)
+   lprbutton :=  IIF ( nmode > 1 , .F. , .T. )
+   
+   hwg_MsgInfo("Preview: " + Bool2string(lPreview) + CHR(10) + ;
+   "Print Button in preview: " + Bool2string(lprbutton),"Dialog mode settting")
 RETURN NIL 
+ 
+* --------------------------------------------- 
+FUNCTION Bool2string(lval)
+* ---------------------------------------------
+IF lval
+ RETURN "Yes"
+ENDIF
+RETURN "No"
 
 * ---------------------------------------------
 FUNCTION Select_LangChrs
@@ -525,6 +592,7 @@ FUNCTION hwg_HPrinter_LangArray_DE()
   /* 19 */ AAdd(aTooltips,"Drucken")         && Button                    "Print"
   /* 20 */ AAdd(aTooltips,"Abbruch" )        && Button                    "Cancel"
   /* 21 */ AAdd(aTooltips,"Seitenbereich(e) eingeben") && Tooltip         "Enter range of pages"
+  
   
 RETURN aTooltips
 
@@ -629,6 +697,36 @@ yofs := nOffset + 120
 * RETURN oDlgcCombo1:lresult
 RETURN nRetu
  
+* --------------------------------------------
+FUNCTION acdiamode() 
+* Returns array with valid dialog modes
+* as strings.
+* Format : n : string
+* Dependant on language setting.
+* --------------------------------------------
+LOCAL aps := {}
+
+IF (clangset == NIL) .OR. EMPTY(clangset) 
+   AAdd (aps, "0")
+   AAdd (aps, "1")
+   AAdd (aps, "2")
+   RETURN aps  && Avoid crash
+ ENDIF 
+
+ IF clangset == "Deutsch"
+   AAdd (aps, "0 : Sofortiger Ausdruck (keine Vorschau). Default, altes Verhalten.")
+   AAdd (aps, "1 : Zeige Druck-Vorschau und Start des Ausdrucks mit Drucken-Knopf")
+   AAdd (aps, "2 : Zeige Druck-Vorschau und verstecke den Drucken-Knopf")
+ ENDIF
+
+ IF clangset == "English"
+  AAdd (aps, "0 : Print immediately (show no print preview). Default, old behavior.")
+  AAdd (aps, "1 : Show print preview and start printing with print button press")
+  AAdd (aps, "2 : Show print preview and hide print button")
+ ENDIF
+
+  
+RETURN aps 
 
 * --------------------------------------------
 FUNCTION acPr_Charsets

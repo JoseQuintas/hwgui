@@ -4,7 +4,7 @@
  * HWGUI - Harbour Win32 GUI library source code:
  * HPrinter class
  *
- * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2005 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
 
@@ -58,6 +58,7 @@ CLASS HPrinter INHERIT HObject
    DATA BottomMargin
    DATA LeftMargin
    DATA RightMargin
+   DATA lprbutton      INIT .T.
    // --- International Language Support for internal dialogs --
    DATA aLangTexts
    // Print Preview Dialog with sub dialog:
@@ -83,7 +84,7 @@ CLASS HPrinter INHERIT HObject
    METHOD SetTBkColor( nColor )   INLINE hwg_Setbkcolor( ::hDC, nColor )
    METHOD Setbkmode( lmode )   INLINE hwg_Setbkmode( ::hDC, IF( lmode, 1, 0 ) )
    METHOD Recalc( x1, y1, x2, y2 )
-   METHOD StartDoc( lPreview, cScriptFile )
+   METHOD StartDoc( lPreview, cScriptFile , lprbutton )
    METHOD EndDoc()
    METHOD StartPage()
    METHOD EndPage()
@@ -471,10 +472,16 @@ METHOD GetTextWidth( cString, oFont ) CLASS HPrinter
 
    RETURN Iif( ::lmm, Int( arr[ 1 ] / ::nHRes ), arr[ 1 ] )
 
-METHOD StartDoc( lPreview, cScriptFile ) CLASS HPrinter
+METHOD StartDoc( lPreview, cScriptFile , lprbutton ) CLASS HPrinter
 
    LOCAL nRes := 0
-
+   
+   IF lprbutton == NIL
+      ::lprbutton := .T.
+   ELSE
+      ::lprbutton := lprbutton
+   ENDIF  
+   
    IF !Empty( lPreview ) .OR. ::lBuffPrn
       ::lPreview := .T.
       IF ::lUseMeta
@@ -715,9 +722,13 @@ FUNCTION hwg_HPrinter_LangArray_EN()
 
    @ 1, 31 LINE LENGTH oToolBar:nWidth - 1
 
+  IF ::lprbutton  
    @ 3, 36 OWNERBUTTON oBtn OF oToolBar ON CLICK { || ::PrintDoc() } ;
       SIZE oToolBar:nWidth - 6, 24 TEXT cmPrint FONT oFont           ;  && "Print"
       TOOLTIP Iif( aTooltips != Nil, aTooltips[ 2 ], "Print file" )
+  ENDIF
+
+
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[ 3 ] != Nil
       oBtn:oBitmap := Iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 3 ] ), HBitmap():AddFile( aBitmaps[ 3 ] ) )
       oBtn:title   := Nil

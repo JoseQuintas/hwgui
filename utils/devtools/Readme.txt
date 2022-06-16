@@ -81,7 +81,7 @@
    the used printer model.
    It contains a label editor for creating and editing label files
    and a sample program with a sample database. 
-   (under construction)
+   
 
    The labels are processed by command "LABEL FORM".
    The output is directed into a temporary file and afterwards

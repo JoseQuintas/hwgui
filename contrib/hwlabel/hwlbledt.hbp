@@ -1,0 +1,21 @@
+#
+# $Id: designer.hbp 3049 2022-01-23 13:47:16Z df7be $
+#
+
+-n -w
+
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-L../../
+hwgui.hbc
+
+-ohwlbledt
+
+hwlbledt.prg
+
+{win}hwlbledt.rc
+
+# ============== EOF of hwlbledt.hbp ====================

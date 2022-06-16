@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{443,0,718,718}</property>
+    <property name="Name">[frm_lbl_contents]</property>
+    <property name="Caption">[Edit contents of label]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="lDebug">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="BackColor">-1</property>
+    <property name="NoModal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <part class="label">
+    <style>
+      <property name="Geometry">{5,19,707,22}</property>
+      <property name="Name">[oLabel1]</property>
+      <property name="Caption">[Contents of label]</property>
+      <property name="Justify">[Center]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,60,550,24}</property>
+      <property name="Name">[oEditbox1]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,61,45,22}</property>
+      <property name="Name">[oLabel2]</property>
+      <property name="Caption">[1:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,95,550,24}</property>
+      <property name="Name">[oEditbox2]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,96,45,22}</property>
+      <property name="Name">[oLabel3]</property>
+      <property name="Caption">[2:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,130,550,24}</property>
+      <property name="Name">[oEditbox3]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,131,45,22}</property>
+      <property name="Name">[oLabel4]</property>
+      <property name="Caption">[3:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,165,550,24}</property>
+      <property name="Name">[oEditbox4]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,166,45,22}</property>
+      <property name="Name">[oLabel5]</property>
+      <property name="Caption">[4:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,200,550,24}</property>
+      <property name="Name">[oEditbox5]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,201,45,22}</property>
+      <property name="Name">[oLabel6]</property>
+      <property name="Caption">[5:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,235,550,24}</property>
+      <property name="Name">[oEditbox6]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,236,45,22}</property>
+      <property name="Name">[oLabel7]</property>
+      <property name="Caption">[6:]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,271,45,22}</property>
+      <property name="Name">[oLabel8]</property>
+      <property name="Caption">[7:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,271,550,24}</property>
+      <property name="Name">[oEditbox7]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,305,550,24}</property>
+      <property name="Name">[oEditbox8]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,306,45,22}</property>
+      <property name="Name">[oLabel9]</property>
+      <property name="Caption">[8:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,340,550,24}</property>
+      <property name="Name">[oEditbox9]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,341,45,22}</property>
+      <property name="Name">[oLabel10]</property>
+      <property name="Caption">[9:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,375,550,24}</property>
+      <property name="Name">[oEditbox10]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,376,45,22}</property>
+      <property name="Name">[oLabel11]</property>
+      <property name="Caption">[10:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,410,550,24}</property>
+      <property name="Name">[oEditbox11]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,411,45,22}</property>
+      <property name="Name">[oLabel12]</property>
+      <property name="Caption">[11:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,445,550,24}</property>
+      <property name="Name">[oEditbox12]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,446,45,22}</property>
+      <property name="Name">[oLabel13]</property>
+      <property name="Caption">[12:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,480,550,24}</property>
+      <property name="Name">[oEditbox13]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,481,45,22}</property>
+      <property name="Name">[oLabel14]</property>
+      <property name="Caption">[13:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,515,550,24}</property>
+      <property name="Name">[oEditbox14]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,516,45,22}</property>
+      <property name="Name">[oLabel15]</property>
+      <property name="Caption">[14:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,550,550,24}</property>
+      <property name="Name">[oEditbox15]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,551,45,22}</property>
+      <property name="Name">[oLabel16]</property>
+      <property name="Caption">[15:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{110,585,550,24}</property>
+      <property name="Name">[oEditbox16]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{50,586,45,22}</property>
+      <property name="Name">[oLabel17]</property>
+      <property name="Caption">[16:]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{528,640,80,32}</property>
+      <property name="Name">[oButton3]</property>
+      <property name="Caption">[Help]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{112,641,80,32}</property>
+      <property name="Name">[oButton1]</property>
+      <property name="Caption">[OK]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{245,643,80,32}</property>
+      <property name="Name">[oButton2]</property>
+      <property name="Caption">[Cancel]</property>
+    </style>
+  </part>
+</part>

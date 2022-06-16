@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<part class="form">
+  <style>
+    <property name="Geometry">{354,214,942,517}</property>
+    <property name="Name">[frm_hwlabel_par]</property>
+    <property name="Caption">[Label parameters]</property>
+    <property name="FormType">[dlgModal]</property>
+    <property name="lClipper">.F.</property>
+    <property name="lExitOnEnter">.F.</property>
+    <property name="lDebug">.F.</property>
+    <property name="FromStyle">[Popup]</property>
+    <property name="Icon">[]</property>
+    <property name="BackColor">-1</property>
+    <property name="NoModal">.F.</property>
+    <property name="SystemMenu">.T.</property>
+    <property name="Minimizebox">.F.</property>
+    <property name="Maximizebox">.F.</property>
+    <property name="AbsAlignent">.T.</property>
+    <property name="SizeBox">.T.</property>
+    <property name="Visible">.T.</property>
+    <property name="3DLook">.F.</property>
+    <property name="Clipsiblings">.F.</property>
+    <property name="Clipchildren">.F.</property>
+  </style>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,24,208,22}</property>
+      <property name="Name">[oLabel1]</property>
+      <property name="Caption">[Edit parameters for :]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,53,430,22}</property>
+      <property name="Name">[oLabel2]</property>
+      <property name="Caption">[filename]</property>
+      <property name="Border">.T.</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{300,84,587,24}</property>
+      <property name="Name">[oEditbox1]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,87,238,22}</property>
+      <property name="Name">[oLabel3]</property>
+      <property name="Caption">[Remarks:]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,114,185,22}</property>
+      <property name="Name">[oLabel11]</property>
+      <property name="Caption">[(Maximal 60 characters)]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{405,151,250,22}</property>
+      <property name="Name">[oLabel10]</property>
+      <property name="Caption">[(Range, default in brackets)]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{665,151,80,22}</property>
+      <property name="Name">[oLabel18]</property>
+      <property name="Caption">[English:]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{300,195,85,24}</property>
+      <property name="Name">[oEditbox2]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{405,195,80,22}</property>
+      <property name="Name">[oLabel12]</property>
+      <property name="Caption">[1..16 (5)]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,196,250,22}</property>
+      <property name="Name">[oLabel4]</property>
+      <property name="Caption">[Heigth of label:]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{600,196,166,22}</property>
+      <property name="Name">[oLabel19]</property>
+      <property name="Caption">[Heigth of label]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{300,230,85,24}</property>
+      <property name="Name">[oEditbox3]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,231,250,22}</property>
+      <property name="Name">[oLabel5]</property>
+      <property name="Caption">[Width of label:]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{405,231,87,22}</property>
+      <property name="Name">[oLabel13]</property>
+      <property name="Caption">[1..120 (35)]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{600,231,166,22}</property>
+      <property name="Name">[oLabel20]</property>
+      <property name="Caption">[Width of label]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{300,265,85,24}</property>
+      <property name="Name">[oEditbox4]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,266,250,22}</property>
+      <property name="Name">[oLabel6]</property>
+      <property name="Caption">[Left margin:]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{405,266,80,22}</property>
+      <property name="Name">[oLabel14]</property>
+      <property name="Caption">[0..250 (0)]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{600,266,166,22}</property>
+      <property name="Name">[oLabel21]</property>
+      <property name="Caption">[Left margin]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{300,300,85,24}</property>
+      <property name="Name">[oEditbox5]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,301,250,22}</property>
+      <property name="Name">[oLabel7]</property>
+      <property name="Caption">[Lines between labels:]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{405,301,80,22}</property>
+      <property name="Name">[oLabel15]</property>
+      <property name="Caption">[0..16 (1)]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{600,301,166,22}</property>
+      <property name="Name">[oLabel22]</property>
+      <property name="Caption">[Lines between labels]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{300,335,85,24}</property>
+      <property name="Name">[oEditbox6]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,336,250,22}</property>
+      <property name="Name">[oLabel8]</property>
+      <property name="Caption">[Spaces between labels:]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{405,336,91,22}</property>
+      <property name="Name">[oLabel16]</property>
+      <property name="Caption">[0 ... 120 (0)]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{600,336,166,22}</property>
+      <property name="Name">[oLabel23]</property>
+      <property name="Caption">[Spaces between labels]</property>
+    </style>
+  </part>
+  <part class="editbox">
+    <style>
+      <property name="Geometry">{300,370,85,24}</property>
+      <property name="Name">[oEditbox7]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{30,371,250,22}</property>
+      <property name="Name">[oLabel9]</property>
+      <property name="Caption">[Number of label across:]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{405,371,89,22}</property>
+      <property name="Name">[oLabel17]</property>
+      <property name="Caption">[1 .. 5 (1)]</property>
+    </style>
+  </part>
+  <part class="label">
+    <style>
+      <property name="Geometry">{600,371,166,22}</property>
+      <property name="Name">[oLabel24]</property>
+      <property name="Caption">[Number of label across]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{34,415,80,32}</property>
+      <property name="Name">[oButton1]</property>
+      <property name="Caption">[Continue]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{165,415,80,32}</property>
+      <property name="Name">[oButton2]</property>
+      <property name="Caption">[Cancel]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{336,415,169,32}</property>
+      <property name="Name">[oButton4]</property>
+      <property name="Caption">[Set default values]</property>
+    </style>
+  </part>
+  <part class="button">
+    <style>
+      <property name="Geometry">{668,415,80,32}</property>
+      <property name="Name">[oButton3]</property>
+      <property name="Caption">[Help]</property>
+    </style>
+  </part>
+</part>

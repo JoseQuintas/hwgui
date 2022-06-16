@@ -8,6 +8,30 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-06-16 23:20 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/hwlabel/Readme.txt (New)
+  * contrib/hwlabel/Readme_de.txt (New)
+  * contrib/hwlabel/WindowsXP.Manifest (New)
+  * contrib/hwlabel/customer.dbf (New)
+  * contrib/hwlabel/customer.lbl (New)
+  * contrib/hwlabel/designer (New)
+  * contrib/hwlabel/designer/frm_hwlabel_par.xml (New)
+  * contrib/hwlabel/designer/frm_lbl_contents.xml (New)
+  * contrib/hwlabel/hwlbledt.hbp (New)
+  * contrib/hwlabel/hwlbledt.prg (New)
+  * contrib/hwlabel/hwlbledt.rc (New)
+  * contrib/hwlabel/hwlblsample.hbp (New)
+  * contrib/hwlabel/hwlblsample.prg (New)
+  * contrib/hwlabel/hwmk.bat (New)
+  * contrib/hwlabel/lbledit.prg (New)
+  * contrib/hwlabel/libhwlabel.prg (New)
+  * contrib/hwlabel/resource/hwlabel.ico (New)
+  * contrib/hwlabel/resource/hwlabel32x32.ico (New)
+  * utils/devtools/Readme.txt
+      ! First Issue of project "contrib/hwlabel".
+      ! For TO-DO's for the final issue, see
+      ! Readme files.
+
 
 2022-06-12 23:40 UTC+0200 Wilfried Brunken DF7BE
   * clean.bat

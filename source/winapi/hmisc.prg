@@ -1028,5 +1028,34 @@ RETURN .T.
 RETURN .F.
 #endif
 
+
+FUNCTION hwg_addextens(cfilename,cext,lcs)
+
+LOCAL nposi , fna , ce
+IF cfilename == NIL
+ cfilename := ""
+ENDIF 
+IF cext == NIL
+ RETURN cfilename
+ENDIF 
+IF EMPTY(cext)
+ RETURN cfilename
+ENDIF
+IF lcs == NIL
+  lcs := .F.
+ENDIF
+ fna := cfilename
+IF lcs
+ cfilename := UPPER(cfilename)
+ ce := "." + UPPER(cext)
+ELSE  
+  ce := "." + cext
+ENDIF
+nposi := RAT(ce,cfilename)
+IF nposi == 0
+ fna := fna + "." + cext
+ENDIF 
+RETURN fna
+
 * ============== EOF of hmisc.prg =================
 

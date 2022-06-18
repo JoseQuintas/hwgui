@@ -2651,6 +2651,24 @@ See sample program "testspli.prg" for details.<br>
    This function is called by<br>
    hwg_Bin2D().<br>
    </p>
+ 
+   <br><strong class="subhead"> hwg_addextens(cfilename,cext,lcs)</strong>
+   <p>  
+    Add file extension "cext",<br>
+    if not passed with "cfilename".<br>
+    If cext is NIL, original name is returned.<br>
+    Pass "cext" without previous ".".<br>
+    It is recommended, to pass cext in lower case.<br>
+    lcs : Set to .T., if case sensitive.<br>
+    This is recommended for LINUX/UNIX.<br>
+    On Windows set to .F. (Default).<br>
+    For example:<br>
+    &nbsp;#ifdef __PLATFORM__WINDOWS<br>
+    &nbsp;&nbsp;lblname := hwlabel_addextens(lblname,"lbl")<br>
+    &nbsp;#else<br>
+    &nbsp;&nbsp;lblname := hwlabel_addextens(lblname,"lbl",.T.)<br>
+    &nbsp;#endif<br>
+   </p>
    
    <br><strong class="subhead">  hwg_leading0(ce)</strong>
    <p>

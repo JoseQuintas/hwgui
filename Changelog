@@ -8,6 +8,14 @@
    2002-12-01 15:50 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+2022-06-18 11:40 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+     ! New FUNCTION hwg_addextens()
+       
+
 2022-06-16 23:20 UTC+0200 Wilfried Brunken DF7BE
   * contrib/hwlabel/Readme.txt (New)
   * contrib/hwlabel/Readme_de.txt (New)

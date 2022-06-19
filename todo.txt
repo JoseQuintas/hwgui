@@ -37,20 +37,6 @@ some work for recover mouse cursor on GTK.
   the mouse cursor. 
 
 
-
-Add feature: Label utility.
-It is an important feature for business application for
-example to label envelopes of letters to customers.
-In CLLOG it is necessary for QSL cards.
-The label editor is almost implememented in Clipper
-utility RL.EXE, in S'87 as LABEL.EXE
-and is also supported by Harbour.
-The console version of CLLOG also supports label.
-There is also an label editor as console application
-available.
-This must be ported to HWGUI using the WinPrn class. 
- 
- 
  Binary container manager:
  Bug at deleting an item,
  the entry is not deleted, but the name is empty.
@@ -62,10 +48,7 @@ This must be ported to HWGUI using the WinPrn class.
 Documentation:
 - A lot of functions with no describing text for usage and
   purpose (all developers).
-- doc/hwgdoc_misc.html
-  Fill with contents for:
-  7.5 Dbc
-  (Alexander Kresin)
+
   
 =========================================================
 Create list with Windows only functions and commands 

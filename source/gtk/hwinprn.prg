@@ -109,9 +109,11 @@ CLASS HWinPrn
    METHOD SetDefaultMode()
    METHOD StartDoc( lPreview, cMetaName , lprbutton )
    METHOD NextPage()
+   METHOD NewLine()
    METHOD PrintLine( cLine, lNewLine )
    METHOD PrintBitmap( xBitmap, nAlign , cBitmapName  )  && cImageName
    METHOD PrintText( cText )
+   METHOD SetX( nYvalue )
    METHOD SetY( nYvalue )
    METHOD PutCode( cLine )  && cText
    METHOD EndDoc()
@@ -265,6 +267,15 @@ METHOD SetY( nYvalue ) CLASS HWinPrn
   
  RETURN nYvalue
 
+ METHOD SetX( nYvalue ) CLASS HWinPrn
+
+  IF nYvalue == NIL
+   nYvalue := 0
+  ENDIF
+  ::X := nYvalue
+  
+ RETURN nYvalue
+
 
 METHOD StartDoc( lPreview, cMetaName , lprbutton ) CLASS HWinPrn
 * Set lprbutton to .F., if preview dialog not shows the print button
@@ -413,6 +424,16 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    // + STR(aBmpSize[1]) + CHR(10) +  STR(aBmpSize[2]) + CHR(10) +  STR(i) )
 
   RETURN Nil
+
+   
+METHOD NewLine()  CLASS HWinPrn
+    ::PrintLine( "" , .T. )
+    ::SetX()
+    ::y += ::nLineHeight
+     IF ::y < 0
+       ::y := 0
+     ENDIF
+   RETURN Nil   
 
    
 METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn

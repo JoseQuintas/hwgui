@@ -62,6 +62,8 @@
      0 : Print immediately (show no print preview). Default, old behavior.
      1 : Show print preview and start printing with button press
      2 : Show print preview and hide print button
+ 
+    Test for METHOD NewLine()
 
 */
 
@@ -216,7 +218,7 @@ FUNCTION PRINT_OUT(cname,lpreview,lprbutton)
 * ---------------------------------------------
 
 Local oWinPrn, i , j
-LOCAL ctest1
+LOCAL ctest1,ctest2
 * Block grafic chars (CP850), single line
 LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
   cCross := CHR(197)
@@ -311,8 +313,10 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    ====================================
 */
    
-* Test German Umlaute and sharp "S"
-   ctest1 := CHR(142) + CHR(153) + CHR(154) + CHR(132) + CHR(148) + CHR(129) + CHR(225)
+*  DOS Test German Umlaute and sharp "S" + mue + Euro
+   ctest1 := CHR(142) + CHR(153) + CHR(154) + CHR(132) + CHR(148) + CHR(129) + CHR(225) + CHR(230) + CHR(213)
+*  Windows
+   ctest2 := CHR(196) + CHR(214) + CHR(220) + CHR(228) + CHR(246) + CHR(252) + CHR(223) + CHR(181) + CHR(128)
 
  
   
@@ -417,6 +421,26 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:PrintBitmap( oBitmap1 , 2 , "astro")   
    // oWinPrn:PrintLine("From Hex value, size x 4")
    // oWinPrn:PrintBitmap( oBitmap2 , , "astro")
+   
+   * Test for METHOD NewLine() and switch to other modes in one print line
+   * + Euro currency sign
+   oWinPrn:NextPage()
+   * Switch to small and back
+
+   oWinPrn:PrintLine("Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)))
+   oWinPrn:Newline()
+   oWinPrn:SetX()
+   oWinPrn:PrintText("Small : ")
+   oWinPrn:SetMode( .T. )
+   oWinPrn:PrintText("Small")
+   oWinPrn:SetMode(.F.)
+   oWinPrn:PrintText(" ... and normal again")
+   oWinPrn:Newline()
+   oWinPrn:SetMode( , , , , , , , 1 )
+   oWinPrn:PrintText("German Umlaute: " + ctest2 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )    
+   * Change charset, so that the Euro currency sign appeared
+   oWinPrn:SetMode( , , , , , , , 0 )
+   oWinPrn:PrintText(" Euro : " + CHR(128) )
 
    oWinPrn:End()
 

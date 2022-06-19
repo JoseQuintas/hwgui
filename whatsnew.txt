@@ -12,8 +12,10 @@ HWGUI recent code snapshot
 [!] More sample programs are running now on all platforms (port to GTK)
 [!] Borland resources are incompatible with multi platform usage and MinGW. Ported to HWGUI commands. 
 [!] More improvement for LINUX/GTK
-[+] Port of Windows only DATEPICKER to GTK by substitute solution based on MONHCALENDAR.
+[+] Port of Windows only DATEPICKER to GTK by substitute solution based on MONTHCALENDAR.
 [+] BROWSE/MEMO EDIT: "Memo was modified, save ?" if "Close" button pressed.
+[+] Project "HWLABEL" created. Edit and create adress labels and print them. Details see contrib\hwlabel\Readme.txt
+[+] Enhancements of HWinPrn class (modify character sets in a line, so for example the Euro currency sign can be printed)
 
 
 HWGUI 2.23 build 2 ( 21.12.2021 )

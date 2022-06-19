@@ -2668,6 +2668,15 @@ See sample program "testspli.prg" for details.<br>
     &nbsp;#else<br>
     &nbsp;&nbsp;lblname := hwlabel_addextens(lblname,"lbl",.T.)<br>
     &nbsp;#endif<br>
+    <br>
+    This function is very useful, if you want to query a new file name for storing.<br>
+    For example for *.prg:<br>
+    #ifdef __GTK__<br>
+     fname := hwg_SelectFileEx(,,{{ "XBase source code( *.prg )","*.prg" },{ "All files" ,"*"}} )<br>
+    #else<br>
+     fname := hwg_SaveFile( "Enter name of new file","XBase source code( *.prg )","*.prg",<cstartvz>,"Save File" )<br>
+    #endif<br>
+    After query, add the extension "prg" corresponding the sample above.<br>
    </p>
    
    <br><strong class="subhead">  hwg_leading0(ce)</strong>

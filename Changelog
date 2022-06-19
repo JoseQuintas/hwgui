@@ -9,6 +9,21 @@
 */
 
 
+2022-06-19 22:10 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_functions.html
+  * samples/winprn.prg
+  * source/gtk/hwinprn.prg
+  * source/winapi/hwinprn.prg
+  * todo.txt
+  * whatsnew.txt
+     ! Enhancement of HWinPrn class as preparation
+     ! for extended hwlabel project:
+     ! New methods SetX() and NewLine()
+     ! Support for change char set in one line
+     ! and Euro currency sign.
+     ! TO-DO: Euro on LINUX.
+
 2022-06-18 11:40 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * source/gtk/hmisc.prg

@@ -11,7 +11,7 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
- ! 2022-06-12        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
+ ! 2022-06-19        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
  +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
  +-------------------!---------------------------------!--------------------------------------------+
@@ -1944,9 +1944,11 @@
       SetDefaultMode() &nbsp;&nbsp;  // Should act like a "printer reset".
       StartDoc( lPreview,cMetaName,lprbutton )
       NextPage()
+      NewLine()
       PrintLine( cLine,lNewLine )
       PrintBitmap( xBitmap, nAlign , cBitmapName ) 
       PrintText( cText )
+      SetX( nYvalue )
       SetY( nYvalue )
       PutCode( cText )
       EndDoc()
@@ -1979,6 +1981,9 @@
    National Language Support for Print Preview Dialog:<BR>
    Detailed instructions in inline comment lines of sample program "winprn.prg".<BR>
    Here you find also instructions for National Language Support of the preview dialog.<BR>
+   <BR>
+   More instructions for usage of the HWinPrn calls see sample program<br>
+   samples\winprn.prg.<br>
    <BR>
    Bug in Cairo graphical library (instructions for LINUX/GTK):<BR>
    Inserting bitmaps into a document to print, it is necessary to add at first<BR>

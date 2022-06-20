@@ -21,7 +21,7 @@ CLASS HPrinter INHERIT HObject
 
    CLASS VAR cdp       SHARED  INIT "RUKOI8"
 #else
-   CLASS VAR cdp       SHARED
+   CLASS VAR cdp       SHARED  INIT "EN"
 #endif
    CLASS VAR aPaper  INIT { { "A3", 297, 420 }, { "A4", 210, 297 }, { "A5", 148, 210 }, ;
       { "A6", 105, 148 } }
@@ -62,7 +62,7 @@ CLASS HPrinter INHERIT HObject
    // HWINPRN, HRepTmpl , ...
    // For more details see inline comments in sample program "nlsdemo.prg" 
 
-   METHOD New( cPrinter, lmm, nFormType )
+   METHOD New( cPrinter, lmm, nFormType , cdp )
    // FUNCTION hwg_HPrinter_LangArray_EN()
    METHOD DefaultLang()   
    METHOD SetMode( nOrientation, nDuplex )
@@ -123,7 +123,7 @@ FUNCTION hwg_HPrinter_LangArray_EN()
   
 RETURN aTooltips  
 
-METHOD New( cPrinter, lmm, nFormType ) CLASS HPrinter
+METHOD New( cPrinter, lmm, nFormType , cdp) CLASS HPrinter
 
    LOCAL aPrnCoors
 
@@ -138,7 +138,12 @@ METHOD New( cPrinter, lmm, nFormType ) CLASS HPrinter
       nFormType := DMPAPER_A4
    ENDIF
 
-   ::cdpIn := iif( Empty( ::cdp ), hb_cdpSelect(), ::cdp )
+   IF cdp != NIL
+     ::cdp := cdp
+   ENDIF  
+
+   * hb_cdpSelect() returns "EN" as default
+   ::cdpIn := iif( Empty( ::cdp ), hb_cdpSelect(), ::cdp ) 
 
    IF cPrinter != Nil .AND. cPrinter == SCREEN_PRINTER
       ::lBuffPrn := .T.

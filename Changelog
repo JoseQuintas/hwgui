@@ -9,6 +9,18 @@
 */
 
 
+
+2022-06-20 23:30 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * samples/winprn.prg
+  * source/gtk/hprinter.prg
+  * source/gtk/hwinprn.prg
+  * test/euro.prg
+     ! To be continued: Umlaute on LINUX printing.
+     ! METHOD PrintText() works now,
+     ! PrintLine() no translation UTF-8 ==> DEWIN
+     ! (Need to fix) 
+
 2022-06-20 12:35 UTC+0200 Wilfried Brunken DF7BE
   * clean.bat
   * clean.sh

@@ -1735,7 +1735,8 @@
       // For more details see inline comments in sample program "Winprn.prg" 
    </pre>
    <pre class="code">METHODS
-      New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
+      New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn ) - Windows
+      New( cPrinter, lmm, nFormType , cdp )                                             - GTK
       FUNCTION hwg_HPrinter_LangArray_EN()
       DefaultLang()
       SetMode( nOrientation, nDuplex )
@@ -1942,6 +1943,7 @@
       InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       SetDefaultMode() &nbsp;&nbsp;  // Should act like a "printer reset".
+      SetCPTo(cpTo)                  - GTK only, on Windows ignored, see nPrCharset      
       StartDoc( lPreview,cMetaName,lprbutton )
       NextPage()
       NewLine()

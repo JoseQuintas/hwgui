@@ -89,13 +89,15 @@ CLASS HWinPrn
    DATA   nLineMax  INIT 0
    DATA   lChanged  INIT .F.
 
-   DATA   cpFrom, cpTo
+   DATA   cpFrom    INIT "DE"
+   DATA   cpTo      INIT "DE"
    DATA   nTop      INIT 5
    DATA   nBottom   INIT 5
    DATA   nLeft     INIT 5
    DATA   nRight    INIT 5
    
    DATA   nCharset  INIT 0   &&  Charset (N) Default: 0  , 204 = Russian
+                             &&  Ignored on GTK   
 
    // --- International Language Support for internal dialogs --
    DATA aTooltips   INIT {}  // Array with tooltips messages for print preview dialog
@@ -107,6 +109,7 @@ CLASS HWinPrn
    METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetDefaultMode()
+   METHOD SetCPTo(cpTo)
    METHOD StartDoc( lPreview, cMetaName , lprbutton )
    METHOD NextPage()
    METHOD NewLine()
@@ -155,6 +158,16 @@ METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
  
 
    RETURN Self
+
+
+METHOD SetCPTo(cpTo) CLASS HWinPrn
+
+IF cpTo != NIL
+  ::cpTo   := cpTo
+  ::oPrinter:cdpIn := cpTo
+ENDIF
+
+RETURN NIL 
 
 
 METHOD SetLanguage(apTooltips, apBootUser) CLASS HWinPrn
@@ -560,6 +573,9 @@ METHOD PrintText( cText ) CLASS HWinPrn
    IF ::lChanged
       ::SetMode()
    ENDIF
+   
+   // hwg_writelog( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ) )
+   
    ::oPrinter:Say( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ), ;
          ::x, ::y, ::oPrinter:nWidth, ::y + ::nLineHeight + ::nLined )
    ::x += ( ::nCharW * Len( cText ) )

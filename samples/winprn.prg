@@ -64,8 +64,9 @@
      2 : Show print preview and hide print button
  
     Test for METHOD NewLine()
-    Charsets for LINUX
+    Charsets for LINUX: METHOD New()
     The option nPrCharset is Windows only and ignored on GTK/LINUX
+    The Option cdp is for LINUX/GTK and ignored on Windows 
 
 */
 
@@ -124,6 +125,7 @@ Function Main
  PUBLIC aMainMenu , aLanguages , aPriCharSets , att_priprev, clangset, cIniFile, cTitle
  PUBLIC nPrCharset, nchrs , cImageDir
  PUBLIC cHexAstro , cValAstro , oBitmap1 , oBitmap2
+ 
 
    /* Names of supported languages, use only ANSI charset, displayed in language selection dialog */ 
    aLanguages := { "English", "Deutsch" }
@@ -260,7 +262,9 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    CASE cname == "Deutsch"  && Germany @ Euro
 
 #ifndef __PLATFORM__WINDOWS
-   oWinPrn := HWinPrn():New( ,"DE858","UTF8", , nPrCharset )
+* GTK/LINUX
+   oWinPrn := HWinPrn():New( ,"UTF8" , "DEWIN" , , nPrCharset )
+//   oWinPrn := HWinPrn():New( ,"DE858","UTF8", , nPrCharset )
 //   oWinPrn := HWinPrn():New( ,,"UTF8", , nPrCharset )
    oWinPrn:aTooltips := hwg_HPrinter_LangArray_DE()
 //   oWinPrn:StartDoc( .T.,"temp_a2.ps" )
@@ -368,7 +372,7 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 #ifdef __PLATFORM__WINDOWS
    oWinPrn:PrintLine(ctest2)
 #else
-   oWinPrn:PrintLine(ctest1)
+   oWinPrn:PrintLine(ctest3)
 #endif   
  
    oWinPrn:PrintLine( "abcdefghijklmnopqrstuvwxyz" )
@@ -457,7 +461,7 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:SetMode( , , , , , , , 0 )
    oWinPrn:PrintText(" Euro : " + CHR(128) )
 #else
-   oWinPrn:PrintText("German Umlaute: " + ctest1 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
+   oWinPrn:PrintText("German Umlaute: " + ctest3 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
    oWinPrn:PrintText(" Euro : " + cEuroUTF8 )
 #endif   
 

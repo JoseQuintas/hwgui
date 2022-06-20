@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, May 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, June 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -1906,7 +1906,10 @@ See sample program "testspli.prg" for details.<br>
    <p></p>
 
    <br><strong class="subhead"> hwg_GetFontsList()</strong> 
-   <p></p>
+   <p>
+    Windows 10: Always returns an empty list.<br>
+    GTK: Do not use yet, crashes with core dump. Need to fix.<br>
+   </p>
 
    <br><strong class="subhead"> hwg_HdSerial( cDrive )</strong> (Windows only)
    <p></p>
@@ -1963,6 +1966,7 @@ See sample program "testspli.prg" for details.<br>
    Returns the recent language setting (National Language Support,<br>
    for setting the language of your application).<br>
    Windows: Returns the value of function call GetLocaleInfo(LOCAL_USER_DEFAULT,...).<br>
+   This is forever ";".
    LINUX: Returns the value of setlocale(LC_CTYPE,NULL)<br>
    To get all possible values on your system, look to the output of the command "locale -a".<br>
    The type of return value is a string.
@@ -2686,6 +2690,13 @@ See sample program "testspli.prg" for details.<br>
    ce : string<br>
    Returns : String<br>
    </p>
+   
+   <br><strong class="subhead">  hwg_EuroUTF8()</strong>
+   <p> 
+   Returns the Euro currency sign (&euro;) in UTF-8 code.<br>
+   0xE2 + 0x82 + 0xAC = CHR(226) + CHR(130) + CHR(172)
+   On Windows 10 the Euro sign is CHR(128) = 0x80<br> 
+   </p>   
    
   <br><strong class="subhead"> hwg_Has_Win_Euro_Support()</strong>
   <p>

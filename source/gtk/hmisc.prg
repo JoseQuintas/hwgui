@@ -1033,7 +1033,7 @@ FUNCTION hwg_addextens(cfilename,cext,lcs)
 LOCAL nposi , fna , ce
 IF cfilename == NIL
  cfilename := ""
-ENDIF 
+ENDIF
 IF cext == NIL
  RETURN cfilename
 ENDIF 
@@ -1047,7 +1047,7 @@ ENDIF
 IF lcs
  cfilename := UPPER(cfilename)
  ce := "." + UPPER(cext)
-ELSE  
+ELSE
   ce := "." + cext
 ENDIF
 nposi := RAT(ce,cfilename)
@@ -1055,6 +1055,12 @@ IF nposi == 0
  fna := fna + "." + cext
 ENDIF 
 RETURN fna
+
+
+FUNCTION hwg_EuroUTF8()
+* 0xE2 + 0x82 + 0xAC
+RETURN CHR(226) + CHR(130) + CHR(172)
+
 
 * ============== EOF of hmisc.prg =================
 

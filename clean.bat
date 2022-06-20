@@ -27,7 +27,7 @@ del samples\*.exe 2> NUL
 REM 2. GTK samples
 del samples\gtk_samples\*.exe 2> NUL
 REM from winprn.prg
-del temp_a2.pdf  2> NUL
+del samples\temp_a2.pdf  2> NUL
 REM 3. Utils
 del utils\tutorial\*.exe 2> NUL
 REM del utils\tutorial\*.c

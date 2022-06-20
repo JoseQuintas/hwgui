@@ -9,6 +9,19 @@
 */
 
 
+2022-06-20 12:35 UTC+0200 Wilfried Brunken DF7BE
+  * clean.bat
+  * clean.sh
+  * doc/hwgdoc_functions.html
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+  * test/euro.hbp
+  * test/euro.prg
+     ! To be continued: Euro on LINUX printing.
+     ! To fix: hwg_GetFontsList() crashes on LINUX,
+     ! List left empty on Windows 10. 
+
+
 2022-06-20 07:35 UTC+0200 Wilfried Brunken DF7BE
   * clean.bat
   * clean.sh

@@ -69,6 +69,7 @@ rm contrib/hwlabel/hwlblsample 2>/dev/null
 
 # test exe
 rm test/gtk_err93 2>/dev/null
+rm test/euro 2>/dev/null
 
 
 # Find and delete all Error logs

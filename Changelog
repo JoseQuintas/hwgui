@@ -9,6 +9,14 @@
 */
 
 
+2022-06-20 07:35 UTC+0200 Wilfried Brunken DF7BE
+  * clean.bat
+  * clean.sh
+  * samples/winprn.prg
+     ! Umlaute now OK.
+     ! To be continued: Euro on LINUX.
+
+
 2022-06-19 22:10 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_functions.html
@@ -23,6 +31,7 @@
      ! Support for change char set in one line
      ! and Euro currency sign.
      ! TO-DO: Euro on LINUX.
+
 
 2022-06-18 11:40 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html

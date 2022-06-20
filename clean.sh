@@ -3,7 +3,8 @@
 # clean.sh
 #
 # 
-# Removes all executeables, o files and libraries
+# Removes all executeables, o files , libraries
+# and other temporary files of program runs
 # outside the makefile "clean".
 # (created by "hbmk2 allhbp.hbp)
 # 
@@ -32,9 +33,9 @@ rm samples/gtk_samples/progbars 2>/dev/null
 rm samples/gtk_samples/pseudocm 2>/dev/null
 rm samples/gtk_samples/testget2 2>/dev/null
 rm samples/gtk_samples/winprn 2>/dev/null
+rm samples/gtk_samples/temp_a2.ps 2>/dev/null
 #
 # Samples for multi plattform
-rm samples/temp_a2.pdf 2>/dev/null
 rm samples/testget1 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/datepicker 2>/dev/null
@@ -46,6 +47,9 @@ rm samples/TwoLstSub 2>/dev/null
 rm samples/dbview 2>/dev/null
 rm samples/testfunc 2>/dev/null
 rm samples/winprn 2>/dev/null
+rm samples/temp_a2.ps 2>/dev/null
+rm samples/temp_a2.pdf 2>/dev/null
+rm samples/tstcombo  2>/dev/null
 
 
 #
@@ -59,8 +63,13 @@ rm utils/devtools/test.mem 2>/dev/null
 rm utils/devtools/test.txt 2>/dev/null
 rm utils/devtools/lbldump 2>/dev/null
 
+# contrib exe
+rm contrib/hwlabel/hwlbledt 2>/dev/null
+rm contrib/hwlabel/hwlblsample 2>/dev/null
+
 # test exe
 rm test/gtk_err93 2>/dev/null
+
 
 # Find and delete all Error logs
 find . -name Error.log -exec rm -f {} \;

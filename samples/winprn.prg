@@ -64,6 +64,8 @@
      2 : Show print preview and hide print button
  
     Test for METHOD NewLine()
+    Charsets for LINUX
+    The option nPrCharset is Windows only and ignored on GTK/LINUX
 
 */
 
@@ -218,7 +220,7 @@ FUNCTION PRINT_OUT(cname,lpreview,lprbutton)
 * ---------------------------------------------
 
 Local oWinPrn, i , j
-LOCAL ctest1,ctest2
+LOCAL ctest1,ctest2,ctest3,cEuroUTF8
 * Block grafic chars (CP850), single line
 LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
   cCross := CHR(197)
@@ -317,17 +319,21 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    ctest1 := CHR(142) + CHR(153) + CHR(154) + CHR(132) + CHR(148) + CHR(129) + CHR(225) + CHR(230) + CHR(213)
 *  Windows
    ctest2 := CHR(196) + CHR(214) + CHR(220) + CHR(228) + CHR(246) + CHR(252) + CHR(223) + CHR(181) + CHR(128)
-
- 
+*  UTF-8
+   ctest3 := "ÄÖÜäöüßµ€"
+   
+   cEuroUTF8 :="€" 
   
-  * print all chars over ASCII with decimal values
+  * Page 1 :  print all chars over ASCII with decimal values (128 ... 190)
   FOR j := 128 TO 190
    oWinPrn:PrintLine(ALLTRIM(STR(j)) + ": " + CHR(j) )
   NEXT
+  * Page 2: 191 ... 255
   oWinPrn:NextPage()
   FOR j := 191 TO 255
    oWinPrn:PrintLine(ALLTRIM(STR(j)) + ": " + CHR(j) )
   NEXT
+  * Page 3: Several character sizes and block grafics
    oWinPrn:NextPage()
    
    oWinPrn:PrintLine( oWinPrn:oFont:name + " " + Str(oWinPrn:oFont:height) + " " + Str(oWinPrn:nCharW) + " " + Str(oWinPrn:nLineHeight) )
@@ -358,7 +364,12 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 *  sz  = 223 / 337 / DF
 *
 
+* German Umlaute
+#ifdef __PLATFORM__WINDOWS
+   oWinPrn:PrintLine(ctest2)
+#else
    oWinPrn:PrintLine(ctest1)
+#endif   
  
    oWinPrn:PrintLine( "abcdefghijklmnopqrstuvwxyz" )
    oWinPrn:PrintLine( "ABCDEFGHIJKLMNOPQRSTUVWXYZ" )
@@ -394,12 +405,14 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:PrintLine( "A123456789012345678901234567890123456789012345678901234567890123456789012345678Z" )
 
    oWinPrn:SetMode( .F.,.F. )
+   * Page 4: 80 Lines (overflow to page 5 after 69 lines)
    oWinPrn:NextPage()
    oWinPrn:PrintLine( oWinPrn:oFont:name + " " + Str(oWinPrn:oFont:height) + " " + Str(oWinPrn:nCharW) + " " + Str(oWinPrn:nLineHeight) )
    FOR i := 1 TO 80
       oWinPrn:PrintLine( Padl( i,3 ) + " --------" )
    NEXT
    
+   * Page 6:
    * Test 10 lines forward
    oWinPrn:NextPage()
    oWinPrn:PrintLine(10)
@@ -407,7 +420,7 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:PrintLine()
    oWinPrn:PrintLine("Line 13")
    
-   
+   * Page 7
    * Print a bitmap in several ways
    oWinPrn:NextPage()
    oWinPrn:PrintLine("From file >hwgui.bmp<")
@@ -422,6 +435,7 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    // oWinPrn:PrintLine("From Hex value, size x 4")
    // oWinPrn:PrintBitmap( oBitmap2 , , "astro")
    
+   * Page 8:
    * Test for METHOD NewLine() and switch to other modes in one print line
    * + Euro currency sign
    oWinPrn:NextPage()
@@ -436,11 +450,16 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:SetMode(.F.)
    oWinPrn:PrintText(" ... and normal again")
    oWinPrn:Newline()
+#ifdef __PLATFORM__WINDOWS   
    oWinPrn:SetMode( , , , , , , , 1 )
    oWinPrn:PrintText("German Umlaute: " + ctest2 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )    
    * Change charset, so that the Euro currency sign appeared
    oWinPrn:SetMode( , , , , , , , 0 )
    oWinPrn:PrintText(" Euro : " + CHR(128) )
+#else
+   oWinPrn:PrintText("German Umlaute: " + ctest1 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
+   oWinPrn:PrintText(" Euro : " + cEuroUTF8 )
+#endif   
 
    oWinPrn:End()
 

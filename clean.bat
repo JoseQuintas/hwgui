@@ -6,7 +6,7 @@ REM $Id$
 REM
 REM Extended clean
 REM this BAT
-REM removes all *.o,  *.a and *.exe
+REM removes all *.o,  *.a and *.exe and other temporary files of program runs
 REM of a HWGUI build with samples and utils.
 REM
 REM Created by DF7BE
@@ -24,9 +24,10 @@ REM Using build script for MinGW or hbmk2: *.c and *.o
 REM are removed, if compiled with success. 
 REM 1. Samples
 del samples\*.exe 2> NUL
-del samples\temp_a2.pdf 2> NUL
 REM 2. GTK samples
 del samples\gtk_samples\*.exe 2> NUL
+REM from winprn.prg
+del temp_a2.pdf  2> NUL
 REM 3. Utils
 del utils\tutorial\*.exe 2> NUL
 REM del utils\tutorial\*.c
@@ -36,5 +37,7 @@ del utils\dbc\*.exe 2> NUL
 del utils\debugger\*.exe 2> NUL
 del utils\designer\*.exe 2> NUL
 del utils\editor\*.exe 2> NUL
+REM 4. contrib
+del contrib\hwlabel\*.exe 2> NUL
 REM
 REM ===== EOF of clean.bat =====

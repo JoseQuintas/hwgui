@@ -65,6 +65,13 @@ Local oGet
 Local e1 := "Dialog from prg", c1 := .F., c2 := .T., r1 := 2, cm := 1
 Local upd := 12, d1 := Date()+1
 Local odGet, oDateOwb   && For DATEPICKER substitute
+Local nxsizedia
+
+#ifdef __GTK__
+ nxsizedia := 450 
+#else
+ nxsizedia := 350
+#endif
 
 #ifdef __PLATFORM__WINDOWS
  PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
@@ -73,7 +80,7 @@ Local odGet, oDateOwb   && For DATEPICKER substitute
 #endif 
 
    INIT DIALOG oModDlg TITLE "Get a value"  ;
-   AT 210,10  SIZE 350,300                  ;
+   AT 210,10  SIZE nxsizedia,300                  ;
    FONT oFont NOEXIT
 
    SET KEY 0,VK_F3 TO hwg_Msginfo("F3") 
@@ -111,10 +118,11 @@ Local odGet, oDateOwb   && For DATEPICKER substitute
 * Windows only DATEPICKER substitute
 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-*  v==> These are the original coordinates of DATEPICKER command    
-   @ 160,170 GET odGet VAR d1  ;
+*  v==> These are the original coordinates of DATEPICKER command : @ 160,170 SIZE 80, 20   
+   @ 140,170 GET odGet VAR d1  ;
         STYLE WS_DLGFRAME   ;
-        SIZE 80, 20 COLOR hwg_ColorC2N("FF0000")
+        SIZE 100, 20 COLOR hwg_ColorC2N("FF0000")
+*       SIZE 80 ,20         
 *            ^==> This is the original size of DATEPICKER command
 
 *    v==>  x = 160 + 81 (x value of GET + width of GET + 1 )

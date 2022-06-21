@@ -270,7 +270,8 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 //   oWinPrn:StartDoc( .T.,"temp_a2.ps" )
    oWinPrn:StartDoc( lpreview ,"temp_a2.ps", lprbutton )
 #else
-   oWinPrn := HWinPrn():New( ,"DE858","DEWIN", , nPrCharset)
+    oWinPrn := HWinPrn():New( ,,, , 1)
+//   oWinPrn := HWinPrn():New( ,"DE858","DEWIN", , nPrCharset)
    /* This displays the Euro currency sign CHR(128) correct, but not
       all of the Umlaute ! */
 //   oWinPrn := HWinPrn():New( ,,, , nPrCharset )   
@@ -370,7 +371,8 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 
 * German Umlaute
 #ifdef __PLATFORM__WINDOWS
-   oWinPrn:PrintLine(ctest2)
+   oWinPrn:PrintLine(" Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
+   oWinPrn:PrintLine(ctest1)
 #else
    oWinPrn:PrintLine(ctest3)
 #endif   

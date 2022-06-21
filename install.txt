@@ -346,8 +346,19 @@ sudo apt-get install unixodbc-dev
 sudo apt-get install libpq-dev
 sudo apt-get install libcurl4-openssl-dev
 sudo apt-get install libgtk2.0-dev
- 
-   
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+Urgent instructions (2022-06-21)
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+Some obscure behavior detected, 
+for example freezed program after start a
+function from menu.
+
+These are bugs in the operation system.
+
+Forever update your system to the recent version !!
+
 
 * =============== EOF of install.txt ====================
  

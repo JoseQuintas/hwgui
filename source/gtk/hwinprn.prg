@@ -89,8 +89,8 @@ CLASS HWinPrn
    DATA   nLineMax  INIT 0
    DATA   lChanged  INIT .F.
 
-   DATA   cpFrom    INIT "DE"
-   DATA   cpTo      INIT "DE"
+   DATA   cpFrom    INIT "EN"
+   DATA   cpTo      INIT "EN"
    DATA   nTop      INIT 5
    DATA   nBottom   INIT 5
    DATA   nLeft     INIT 5

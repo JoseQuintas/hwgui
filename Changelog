@@ -10,6 +10,18 @@
 
 
 
+2022-06-21 09:30 UTC+0200 Wilfried Brunken DF7BE
+  * samples/testget1.prg
+  * samples/tstcombo.hbp
+  * samples/tstcombo.prg
+  * samples/winprn.prg
+  * source/gtk/hwinprn.prg
+     ! Urgent instructions for Ubuntu 22.04 LTS.
+     ! Sizes for GTK in samples corrected.
+     ! To be continued: Umlaute on LINUX printing:
+     ! PrintLine() is buggy, need to fix. 
+
+
 2022-06-20 23:30 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * samples/winprn.prg

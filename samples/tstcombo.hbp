@@ -3,11 +3,14 @@
 #
 
 # Special parameters for LINUX/GTK
-{linux}-lm
-{linux}-static
-{linux}-d__LINUX__
-{linux}-d__GTK__
+# The macro for unix has also effect on LINUX
+{unix}-lm
+{unix}-static
+{unix}-d__LINUX__
+{unix}-d__GTK__
+{unix}-d__GNUC__
 
+-L..
 ../hwgui.hbc
 
 -n

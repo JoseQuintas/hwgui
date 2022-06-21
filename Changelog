@@ -10,6 +10,14 @@
 
 
 
+2022-06-21 21:50 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * samples/winprn.prg
+  * source/gtk/hwinprn.prg
+     ! Special for German Umlaute and other characters
+     ! (LINUX printing Umlaute finished).
+
+
 2022-06-21 09:30 UTC+0200 Wilfried Brunken DF7BE
   * samples/testget1.prg
   * samples/tstcombo.hbp

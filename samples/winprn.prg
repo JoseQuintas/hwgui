@@ -371,10 +371,11 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 
 * German Umlaute
 #ifdef __PLATFORM__WINDOWS
-   oWinPrn:PrintLine(" Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
+   // oWinPrn:PrintLine(" Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
    oWinPrn:PrintLine(ctest1)
 #else
-   oWinPrn:PrintLine(ctest3)
+   // oWinPrn:PrintLine("Cdp from : " + oWinPrn:cpFrom + " Cdp to : " + oWinPrn:cpTo + " " )
+   oWinPrn:PrintLine2(ctest3)
 #endif   
  
    oWinPrn:PrintLine( "abcdefghijklmnopqrstuvwxyz" )

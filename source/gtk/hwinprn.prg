@@ -114,6 +114,7 @@ CLASS HWinPrn
    METHOD NextPage()
    METHOD NewLine()
    METHOD PrintLine( cLine, lNewLine )
+   METHOD PrintLine2( cLine )
    METHOD PrintBitmap( xBitmap, nAlign , cBitmapName  )  && cImageName
    METHOD PrintText( cText )
    METHOD SetX( nYvalue )
@@ -448,6 +449,19 @@ METHOD NewLine()  CLASS HWinPrn
      ENDIF
    RETURN Nil   
 
+METHOD PrintLine2( cLine ) CLASS HWinPrn
+* Special for Umlaute and other characters
+
+  IF ! ::lDocStart
+      ::StartDoc()
+  ENDIF
+  ::NewLine()
+  
+  ::PrintText("  " + cLine)  && Try to get same behavior as PrintLine(), left margin not 0
+ 
+ //  ::PrintLine( IIf( ::cpFrom != ::cpTo, hb_Translate( cLine, ::cpFrom, ::cpTo ), cLine ), lNewLine )
+
+RETURN NIL
    
 METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn
    LOCAL i, i0, j, slen, c

@@ -1943,11 +1943,12 @@
       InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax  )
       SetDefaultMode() &nbsp;&nbsp;  // Should act like a "printer reset".
-      SetCPTo(cpTo)                  - GTK only, on Windows ignored, see nPrCharset      
+      SetCPTo(cpTo)    &nbsp;&nbsp;&nbsp;&nbsp; - GTK only, on Windows ignored, see nPrCharset      
       StartDoc( lPreview,cMetaName,lprbutton )
       NextPage()
       NewLine()
       PrintLine( cLine,lNewLine )
+      PrintLine2( cLine )  - GTK only, Special for German Umlaute and other characters
       PrintBitmap( xBitmap, nAlign , cBitmapName ) 
       PrintText( cText )
       SetX( nYvalue )

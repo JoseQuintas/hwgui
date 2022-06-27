@@ -1013,6 +1013,7 @@ LOCAL njoff , nRound_4 , nFour , nYear , d , d1 , i , jz  , sz ,  k ,  cYear ,  
 
 RETURN cYear + cMonth + cday
 
+
 FUNCTION HWG_GET_TIME_SHIFT()
 LOCAL nhUTC , nhLocal
 nhUTC := VAL(SUBSTR(HWG_GETUTCTIMEDATE(),12,2  ))
@@ -1061,6 +1062,78 @@ FUNCTION hwg_EuroUTF8()
 * 0xE2 + 0x82 + 0xAC
 RETURN CHR(226) + CHR(130) + CHR(172)
 
+
+FUNCTION hwg_ValType(xxxx)
+* Returns the type of a variable or expression:
+* "A", "L", "N", "C" , "D", "O" , "U"
+LOCAL crtype
+IF xxxx == NIL
+ crtype := "U"
+ELSE
+ crtype := VALTYPE(xxxx)
+ENDIF 
+RETURN crtype
+
+
+FUNCTION hwg_xVal2C(xxx)
+* Convert the value of xxx to string, dependant
+* of type.
+* Helpful for debugging.
+LOCAL ctyp , cval
+ctyp := hwg_ValType(xxx)
+
+ DO CASE
+   CASE ctyp == "U"
+     cval := "NIL"    
+   CASE ctyp == "A" 
+     cval := "<ARRAY>"
+   CASE ctyp == "L"
+     cval := IIF(xxx, ".T.",".F.")
+   CASE ctyp == "N"
+     cval := ALLTRIM(STR(xxx))
+   CASE ctyp == "C"
+     cval := xxx
+   CASE ctyp == "D"
+     cval := DTOS(xxx)
+   CASE ctyp == "O"
+     cval := "<OBJECT>"   
+   OTHERWISE
+      cval := "<UNKNOWN>"
+  ENDCASE 
+RETURN cval
+
+FUNCTION hwg_xvalMsg(xxx,cttype,cttval,cttitle)
+* Starts a messagebox to display a value of xxx
+IF cttype == NIL
+ cttype := "Type : "
+ENDIF
+IF cttval == NIL
+ cttval := "Value : "
+ENDIF
+IF cttitle == NIL
+ cttitle := "Debug"
+ENDIF 
+hwg_MsgInfo(cttype + hwg_ValType(xxx) + CHR(10) +  cttval + hwg_xVal2C(xxx) )
+
+RETURN NIL
+
+
+FUNCTION hwg_xvalLog(xxx,cttype,cttval,cttitle,cfilename)
+* Writes a value of xxx into a log file
+IF cttype == NIL
+ cttype := "Type : "
+ENDIF
+IF cttval == NIL
+ cttval := "Value : "
+ENDIF
+IF cttitle == NIL
+ cttitle := "Debug"
+ENDIF
+IF cfilename == NIL
+ cfilename := "a.log"
+ENDIF 
+hwg_WriteLog(cttype + hwg_ValType(xxx) + " " +  cttval + hwg_xVal2C(xxx), cfilename )
+RETURN NIL 
 
 * ============== EOF of hmisc.prg =================
 

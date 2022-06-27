@@ -10,6 +10,19 @@
 
 
 
+2022-06-27 22:50 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+  * test/xval.hbp (New)
+  * test/xval.prg (New)
+     ! New functions:
+     ! hwg_ValType(), hwg_xVal2C(),
+     ! hwg_xvalMsg() and hwg_xvalLog.
+     ! (Very helpful for debugging)
+     ! Docu upated
+
+
 2022-06-21 21:50 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * samples/winprn.prg

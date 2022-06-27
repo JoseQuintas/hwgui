@@ -2691,11 +2691,11 @@ See sample program "testspli.prg" for details.<br>
    Returns : String<br>
    </p>
    
-   <br><strong class="subhead">  hwg_EuroUTF8()</strong>
-   <p> 
+   <br><strong class="subhead"> hwg_EuroUTF8()</strong>
+   <p>
    Returns the Euro currency sign (&euro;) in UTF-8 code.<br>
-   0xE2 + 0x82 + 0xAC = CHR(226) + CHR(130) + CHR(172)
-   On Windows 10 the Euro sign is CHR(128) = 0x80<br> 
+   0xE2 + 0x82 + 0xAC = CHR(226) + CHR(130) + CHR(172)<br>
+   On Windows 10 the Euro sign is CHR(128) = 0x80<br>
    </p>   
    
   <br><strong class="subhead"> hwg_Has_Win_Euro_Support()</strong>
@@ -2708,8 +2708,53 @@ See sample program "testspli.prg" for details.<br>
    can set this codepage at opening time of a database with<br>
    the USE command.<br>
    The UTF-8 codepage supports forever the Euro currency sign.<br>   
-  </p>
-  
+   </p>
+   
+   <br><strong class="subhead"> hwg_ValType(xxxx)</strong>
+   <p>
+   Returns the type of a variable or expression:<br>
+   "A", "L", "N", "C", "D", "O", "U"<br>
+   ("U" = NIL)<br>
+   </p>
+
+   <br><strong class="subhead"> hwg_xVal2C(xxx)</strong>
+   <p>
+   Converts the value of xxx to string, dependant of type.<br>
+   This function may be helpful for debugging.<br>
+   </p>
+
+   <br><strong class="subhead"> hwg_xvalMsg(xxx,cttype,cttval,cttitle)</strong>
+   <p>
+   Starts a messagebox to display a value of xxx.<br>
+   The displayed values are simular to function "hwg_xvalLog()"<br>
+   This function may be helpful for debugging.<br>
+   </p>
+
+   <br><strong class="subhead"> hwg_xvalLog(xxx,cttype,cttval,cttitle,cfilename)</strong>
+   <p>
+   Writes a value of xxx into a log file.<br>
+   This function may be helpful for debugging.<br>
+   The default file name is "a.log".<br>
+   If you don't know the type of a variable passed to a function<br>
+   (for example to STR() ) and you want to investigate the reason for a crash like this sample:<br>
+   <br>
+   &nbsp;&nbsp;Error BASE/1099  Argument error: STR<br>
+   &nbsp;&nbsp;Called from ->STR(0)<br>
+   &nbsp;&nbsp;Called from source\winapi/hprinter.prg->HPRINTER:SAY(416)<br>
+   &nbsp;&nbsp;...<br>
+   then the argument passed to STR() is not of type N.<br>
+   <br>
+   Expected values in logfile:<br>
+   &nbsp;&nbsp;Type : U Value : NIL<br>
+   &nbsp;&nbsp;Type : A Value : &lt;ARRAY&gt;<br>
+   &nbsp;&nbsp;Type : L Value : .T.<br>
+   &nbsp;&nbsp;Type : N Value : 12345<br>
+   &nbsp;&nbsp;Type : C Value : Test<br>
+   &nbsp;&nbsp;Type : D Value : 20220627<br>
+   &nbsp;&nbsp;Type : O Value : &lt;OBJECT&gt;<br>
+   (This is the output written to logfile by test program "test/xval.prg")<br>
+   </p>
+
    <br><strong class="subhead"> hwg_Alert</strong> (Windows only)
    <p></p>
 
@@ -2905,6 +2950,7 @@ See sample program "testspli.prg" for details.<br>
    in ANSI-Format YYYYMMDD.<br>
    Result value is independant from<br>
    SET DATE and SET CENTURY settings.<br>
+   This is the opposite function to DTOS().<br>
    Sample Call:<br>
    ddate := hwg_STOD("20201108")<br>
    <p></p> 

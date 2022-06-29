@@ -409,6 +409,14 @@ METHOD Say( cString, x1, y1, x2, y2, nOpt, oFont, nTextColor, nBkColor ) CLASS H
          ENDIF
       ENDIF
 
+      // hwg_xvalLog(x1)  
+
+      /* DF7BE: x1 is not forever of type N, so STR() crashes with argument error */
+      IF hwg_ValType(x1) != "N"
+         x1 := 0
+      ENDIF
+
+  
       ::aPages[::nPage] += "txt," + LTrim( Str( x1 ) ) + "," + LTrim( Str( y1 ) ) + "," + ;
          LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
          Iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + cString + crlf

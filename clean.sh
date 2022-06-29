@@ -49,6 +49,7 @@ rm samples/testfunc 2>/dev/null
 rm samples/winprn 2>/dev/null
 rm samples/temp_a2.ps 2>/dev/null
 rm samples/temp_a2.pdf 2>/dev/null
+rm samples/tstcombo.c  2>/dev/null
 rm samples/tstcombo  2>/dev/null
 
 

@@ -10,6 +10,15 @@
 
 
 
+2022-06-29 23_35 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * source/winapi/hprinter.prg
+  * source/winapi/hwinprn.prg
+     ! HWINPRN class bugfix,
+     ! METHODs PrintText(), Say(): 
+     ! x1,x2 is not forever of type N, so STR() crashes with argument error 
+
+
 2022-06-27 22:50 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * source/gtk/hmisc.prg

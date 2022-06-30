@@ -584,14 +584,31 @@ IF cLine != Nil .AND. VALTYPE(cLine) == "N"
 
 METHOD PrintText( cText ) CLASS HWinPrn
 
+LOCAL x , y 
+
    IF ::lChanged
       ::SetMode()
    ENDIF
+
+// hwg_writelog( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ) )
+
    
-   // hwg_writelog( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ) )
+   x := ::x
+   y := ::y
+
+ 
+   IF hwg_ValType(x) != "N"
+    x := 0
+    ::x := 0
+   ENDIF
+   
+   IF hwg_ValType(y) != "N"
+    y := 0
+   ENDIF   
    
    ::oPrinter:Say( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ), ;
-         ::x, ::y, ::oPrinter:nWidth, ::y + ::nLineHeight + ::nLined )
+         x, y, ::oPrinter:nWidth, y + ::nLineHeight + ::nLined )
+
    ::x += ( ::nCharW * Len( cText ) )
 
 

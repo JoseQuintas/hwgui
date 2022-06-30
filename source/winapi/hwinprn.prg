@@ -89,13 +89,15 @@ CLASS HWinPrn
    DATA   nLineMax  INIT 0
    DATA   lChanged  INIT .F.
 
-   DATA   cpFrom, cpTo
+   DATA   cpFrom    INIT "EN"
+   DATA   cpTo      INIT "EN"
    DATA   nTop      INIT 5
    DATA   nBottom   INIT 5
    DATA   nLeft     INIT 5
    DATA   nRight    INIT 5
    
    DATA   nCharset  INIT 0   &&  Charset (N) Default: 0  , 204 = Russian
+                             &&  Ignored on GTK   
 
    // --- International Language Support for internal dialogs --
    DATA aTooltips   INIT {}  // Array with tooltips messages for print preview dialog
@@ -107,10 +109,12 @@ CLASS HWinPrn
    METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetDefaultMode()
+   METHOD SetCPTo(cpTo)
    METHOD StartDoc( lPreview, cMetaName , lprbutton )
    METHOD NextPage()
    METHOD NewLine()
    METHOD PrintLine( cLine, lNewLine )
+   METHOD PrintLine2( cLine )
    METHOD PrintBitmap( xBitmap, nAlign , cBitmapName )  && cImageName
    METHOD PrintText( cText )
    METHOD SetX( nYvalue )
@@ -155,6 +159,16 @@ METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
  
 
    RETURN Self
+
+
+METHOD SetCPTo(cpTo) CLASS HWinPrn
+
+IF cpTo != NIL
+  ::cpTo   := cpTo
+  ::oPrinter:cdpIn := cpTo
+ENDIF
+
+RETURN NIL 
 
 
 METHOD SetLanguage(apTooltips, apBootUser) CLASS HWinPrn
@@ -413,6 +427,19 @@ METHOD NewLine()  CLASS HWinPrn
      ENDIF
    RETURN Nil   
 
+METHOD PrintLine2( cLine ) CLASS HWinPrn
+* Special for Umlaute and other characters
+
+  IF ! ::lDocStart
+      ::StartDoc()
+  ENDIF
+  ::NewLine()
+  
+  ::PrintText("  " + cLine)  && Try to get same behavior as PrintLine(), left margin not 0
+ 
+ //  ::PrintLine( IIf( ::cpFrom != ::cpTo, hb_Translate( cLine, ::cpFrom, ::cpTo ), cLine ), lNewLine )
+
+RETURN NIL
    
 METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn
    LOCAL i, i0, j, slen, c
@@ -421,6 +448,10 @@ METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn
       ::StartDoc()
    ENDIF
 
+   IF lNewLine == Nil
+     lNewLine := .T.
+   ENDIF
+   
 * HKrzak.Start 2020-10-25
 * Bug Ticket #64
 IF cLine != Nil .AND. VALTYPE(cLine) == "N"
@@ -536,6 +567,9 @@ LOCAL x , y
    IF ::lChanged
       ::SetMode()
    ENDIF
+
+// hwg_writelog( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ) )
+
    
    x := ::x
    y := ::y

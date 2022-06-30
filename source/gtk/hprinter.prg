@@ -411,6 +411,7 @@ METHOD EndPage() CLASS HPrinter
    RETURN Nil
 
 METHOD LoadScript( cScriptFile ) CLASS HPrinter
+
    LOCAL arr, i, s
 
    IF Empty( cScriptFile ) .OR. Empty( arr := hb_aTokens( MemoRead( cScriptFile ), crlf ) )

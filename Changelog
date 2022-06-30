@@ -9,8 +9,15 @@
 */
 
 
+2022-06-30 09:30 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * samples/xmltree.prg
+     ! xmltree.prg:
+     ! OS_UNIX_COMPATIBLE  not supported any more
+     ! TO-DO: crashes with core "corrupted size vs. prev_size"
 
-2022-06-29 23_35 UTC+0200 Wilfried Brunken DF7BE
+
+2022-06-29 23:35 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * source/winapi/hprinter.prg
   * source/winapi/hwinprn.prg

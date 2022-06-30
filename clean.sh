@@ -51,6 +51,8 @@ rm samples/temp_a2.ps 2>/dev/null
 rm samples/temp_a2.pdf 2>/dev/null
 rm samples/tstcombo.c  2>/dev/null
 rm samples/tstcombo  2>/dev/null
+rm samples/testxml 2>/dev/null
+rm samples/xmltree 2>/dev/null
 
 
 #

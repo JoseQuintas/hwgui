@@ -96,6 +96,10 @@ Static Function NodeOut( o,oSay )
 
 Return Nil
 
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#ifdef __LINUX__
+
 #pragma BEGINDUMP
 
 #include "hbapi.h"
@@ -105,7 +109,10 @@ Return Nil
 #include "item.api"
 
 
-#ifdef OS_UNIX_COMPATIBLE
+/*
+ DF7BE: Not supported any more
+ #ifdef OS_UNIX_COMPATIBLE
+*/
 
 #include <iconv.h>
 
@@ -171,30 +178,6 @@ static char * utfConvert( char * psz1, short int b2Utf, short int bKoi )
    return psz2;
 }
 
-#else
-
-#include <windows.h>
-
-static char * utfConvert( const char * psz1, short int b2Utf, short int bAnsi )
-{
-   LPWSTR pszUni;
-   UINT codePage = (bAnsi)? CP_ACP : CP_OEMCP;
-   int nUniLen = MultiByteToWideChar( (b2Utf)? codePage:CP_UTF8, 0, psz1, -1, NULL, 0 );
-   char * psz2;
-   int nLen2;
-
-   pszUni = ( LPWSTR ) malloc( nUniLen*2 );
-   MultiByteToWideChar( (b2Utf)? codePage:CP_UTF8, 0, psz1, -1, pszUni, nUniLen );
-
-   nLen2 = WideCharToMultiByte( (b2Utf)? CP_UTF8:codePage, 0, pszUni, -1, NULL, 0, NULL, NULL );
-   psz2 = ( char * ) hb_xgrab( nLen2 );
-   WideCharToMultiByte( (b2Utf)? CP_UTF8:codePage, 0, pszUni, -1, (LPSTR)psz2, nLen2, NULL, NULL );
-
-   free( pszUni );
-   return psz2;
-}
-
-#endif
 
 HB_FUNC( ANSI2UTF8 )
 {
@@ -229,7 +212,7 @@ HB_FUNC( UTF82OEM )
 
 HB_FUNC( ICONV_CLOSE )
 {
-#ifdef OS_UNIX_COMPATIBLE
+/* #ifdef OS_UNIX_COMPATIBLE */
    if( it_koi2utf )
       iconv_close( it_koi2utf );
    if( it_utf2koi )
@@ -238,7 +221,88 @@ HB_FUNC( ICONV_CLOSE )
       iconv_close( it_8662utf );
    if( it_utf2866 )
       iconv_close( it_utf2866 );
-#endif
+/* #endif*/
 }
 
 #pragma ENDDUMP
+
+/* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
+
+#else
+
+/* Windows */
+
+#pragma BEGINDUMP
+
+#include "hbapi.h"
+#include "hbapiitm.h"
+#include "hbvm.h"
+#include "hbstack.h"
+#include "item.api"
+
+
+#include <windows.h>
+
+static char * utfConvert( const char * psz1, short int b2Utf, short int bAnsi )
+{
+   LPWSTR pszUni;
+   UINT codePage = (bAnsi)? CP_ACP : CP_OEMCP;
+   int nUniLen = MultiByteToWideChar( (b2Utf)? codePage:CP_UTF8, 0, psz1, -1, NULL, 0 );
+   char * psz2;
+   int nLen2;
+
+   pszUni = ( LPWSTR ) malloc( nUniLen*2 );
+   MultiByteToWideChar( (b2Utf)? codePage:CP_UTF8, 0, psz1, -1, pszUni, nUniLen );
+
+   nLen2 = WideCharToMultiByte( (b2Utf)? CP_UTF8:codePage, 0, pszUni, -1, NULL, 0, NULL, NULL );
+   psz2 = ( char * ) hb_xgrab( nLen2 );
+   WideCharToMultiByte( (b2Utf)? CP_UTF8:codePage, 0, pszUni, -1, (LPSTR)psz2, nLen2, NULL, NULL );
+
+   free( pszUni );
+   return psz2;
+}
+
+HB_FUNC( ANSI2UTF8 )
+{
+   char * pszUtf = utfConvert( hb_parc(1), 1, 1 );
+   hb_retc_buffer( pszUtf );
+
+}
+
+HB_FUNC( UTF82ANSI )
+{
+   char * pszAnsi = utfConvert( hb_parc(1), 0, 1 );
+   if( pszAnsi )
+      hb_retc_buffer( pszAnsi );
+   else
+      hb_ret();
+
+}
+
+HB_FUNC( OEM2UTF8 )
+{
+   char * pszUtf = utfConvert( hb_parc(1), 1, 0 );
+   hb_retc_buffer( pszUtf );
+
+}
+
+HB_FUNC( UTF82OEM )
+{
+   char * pszAnsi = utfConvert( hb_parc(1), 0, 0 );
+   hb_retc_buffer( pszAnsi );
+
+}
+
+HB_FUNC( ICONV_CLOSE )
+{
+
+}
+
+#pragma ENDDUMP
+
+
+#endif
+
+
+* ======================================= EOF of xmltree.prg ===================================
+

@@ -126,8 +126,13 @@ static char * utfConvert( char * psz1, short int b2Utf, short int bKoi )
    char * psz2, * ptr;
    char * codePage = (bKoi)? "KOI8-R" : "CP866";
    iconv_t it;
-   int nLen1 = strlen( psz1 );
-   int nLen2, nLen;
+   /* int nLen1; */
+   size_t nLen1; 
+   /* int nLen2, nLen; */
+   size_t nLen;
+   size_t nLen2;
+
+   nLen1 = strlen( psz1 );
 
    if( b2Utf )
    {
@@ -181,14 +186,14 @@ static char * utfConvert( char * psz1, short int b2Utf, short int bKoi )
 
 HB_FUNC( ANSI2UTF8 )
 {
-   char * pszUtf = utfConvert( hb_parc(1), 1, 1 );
+   char * pszUtf = utfConvert( ( char *) hb_parc(1), 1, 1 );
    hb_retc_buffer( pszUtf );
 
 }
 
 HB_FUNC( UTF82ANSI )
 {
-   char * pszAnsi = utfConvert( hb_parc(1), 0, 1 );
+   char * pszAnsi = utfConvert( ( char *) hb_parc(1), 0, 1 );
    if( pszAnsi )
       hb_retc_buffer( pszAnsi );
    else
@@ -198,14 +203,14 @@ HB_FUNC( UTF82ANSI )
 
 HB_FUNC( OEM2UTF8 )
 {
-   char * pszUtf = utfConvert( hb_parc(1), 1, 0 );
+   char * pszUtf = utfConvert( ( char *) hb_parc(1), 1, 0 );
    hb_retc_buffer( pszUtf );
 
 }
 
 HB_FUNC( UTF82OEM )
 {
-   char * pszAnsi = utfConvert( hb_parc(1), 0, 0 );
+   char * pszAnsi = utfConvert( ( char *) hb_parc(1), 0, 0 );
    hb_retc_buffer( pszAnsi );
 
 }

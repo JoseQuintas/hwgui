@@ -10,6 +10,12 @@
 
 
 
+2022-06-30 22:55 UTC+0200 Wilfried Brunken DF7BE
+  * samples/xmltree.prg
+     ! Bugfix on Ubuntu 22.04 LTS:
+     ! See 2022-06-30.
+
+
 2022-06-30 09:30 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * source/gtk/hprinter.prg

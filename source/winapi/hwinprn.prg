@@ -79,6 +79,7 @@ CLASS HWinPrn
    DATA   nLineHeight, nLined
    DATA   nCharW
    DATA   x, y
+   DATA   old_y
    DATA   cPseudo   INIT "ƒÕ≥∫⁄…’÷øª∑∏¿»”‘ŸºΩæ¬À—“¡ œ–√Ã∆«¥πµ∂≈Œ◊ÿ"
    DATA   lElite    INIT .F.
    DATA   lCond     INIT .F.
@@ -419,12 +420,20 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    
 
 METHOD NewLine()  CLASS HWinPrn
-    ::PrintLine( "" , .T. )
+    
+    ::old_y := ::y 
+//    ::PrintLine( "" , .T. )
+    ::PrintLine(  , .T. )
     ::SetX()
-    ::y += ::nLineHeight
+    * Handle bug in METHOD PrintLine()
+    IF ::y ==  ::old_y
+     ::y += ::nLineHeight
+    ENDIF
      IF ::y < 0
        ::y := 0
      ENDIF
+
+     // hwg_WriteLog("::y=" + STR(::y) + " ::nLineHeight=" + STR(::nLineHeight)  )
    RETURN Nil   
 
 METHOD PrintLine2( cLine ) CLASS HWinPrn
@@ -436,6 +445,7 @@ METHOD PrintLine2( cLine ) CLASS HWinPrn
   ::NewLine()
   
   ::PrintText("  " + cLine)  && Try to get same behavior as PrintLine(), left margin not 0
+  
  
  //  ::PrintLine( IIf( ::cpFrom != ::cpTo, hb_Translate( cLine, ::cpFrom, ::cpTo ), cLine ), lNewLine )
 

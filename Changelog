@@ -9,6 +9,12 @@
 */
 
 
+2022-07-01 21:50 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * source/gtk/hwinprn.prg
+  * source/winapi/hwinprn.prg
+     ! Bugfix HWinPrn:NewLine()
+     
 
 2022-06-30 22:55 UTC+0200 Wilfried Brunken DF7BE
   * samples/xmltree.prg

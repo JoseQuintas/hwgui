@@ -67,7 +67,7 @@ LOCAL Testfunc, oFont , nheight
 LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
 LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
 LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
-LOCAL oButton26
+LOCAL oButton26, oButton27
 
 PUBLIC cDirSep := hwg_GetDirSep()
 PUBLIC bgtk , ndefaultcsrtype
@@ -198,6 +198,10 @@ SET DATE ANSI  && YY(YY).MM.TT
    @ 505 ,150 BUTTON oButton26 CAPTION "hwg_Get_Time_Shift()" SIZE 140,nheight FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
         { | | Funkt(hwg_Get_Time_Shift(),"N","hwg_Get_Time_Shift()") }
+
+   @ 505 ,100 BUTTON oButton27 CAPTION "New caption Test Button" SIZE 160,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+       { | | oButton10:SetText("New Caption") }
 
 
 /* Disable buttons for Windows only functions */

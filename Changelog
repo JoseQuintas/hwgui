@@ -9,6 +9,16 @@
 */
 
 
+2022-07-04 09:55 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * samples/testfunc.prg
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+     ! HButton: New Methods
+     ! tText( c ), GetText()
+     ! (For Ticket #109)      
+
+
 2022-07-01 21:50 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * source/gtk/hwinprn.prg

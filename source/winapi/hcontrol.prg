@@ -461,6 +461,8 @@ CLASS HButton INHERIT HControl
    METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
       tcolor, bColor, cCaption )
    METHOD Init()
+   METHOD GetText()     INLINE hwg_Getwindowtext( ::handle )
+   METHOD SetText( c )    
 
 ENDCLASS
 
@@ -521,6 +523,13 @@ METHOD Init() CLASS HButton
    ENDIF
 
    RETURN  NIL
+
+ METHOD SetText( c ) CLASS HButton
+ 
+   hwg_Setwindowtext( ::Handle, ::title := c )
+   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )
+   
+ RETURN NIL   
 
    //- HGroup
 
@@ -637,3 +646,6 @@ STATIC FUNCTION onClick( oParent, id )
    ENDIF
 
    RETURN .T.
+
+* =================================== EOF of hcontrol.prg ==============================
+   

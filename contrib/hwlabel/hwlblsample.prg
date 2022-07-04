@@ -95,12 +95,16 @@ REQUEST HB_CODEPAGE_DE858
 *       !
 STATIC  lblname
 
+MEMVAR EC
+
+FIELD ACCOUNT
 
 FUNCTION MAIN()
 
 LOCAL olbleditsam , oFontMain
 LOCAL cValicon , oIcon
 
+PUBLIC EC 
  
 SET PROCEDURE TO libhwlabel
 * Alternative:
@@ -120,6 +124,8 @@ READINSERT(.T.)
 
 * Init
 
+EC := CHR(27)
+
 lblname := "customer"  && Pass label name "sample.lbl" without file extension (.lbl) .
                          && Setzen des Label-Dateinamens ohne Datei-Erweiterung (.lbl) .
 * TO-DO for you:
@@ -132,7 +138,7 @@ oIcon        := HIcon():AddString( "hwlabel" , cValicon )
 
         INIT WINDOW olbleditsam MAIN TITLE "HWLABEL Test" ;
         ICON oIcon ;
-        FONT oFontMain SIZE 300, 100
+        SIZE 300, 100
 
         MENU OF olbleditsam
          MENU TITLE "&File" 
@@ -157,6 +163,8 @@ LOCAL hihandle , cbuffer , lEOF , oWinPrn
 
 LOCAL nPrCharset , lpreview , lprbutton
 
+LOCAL ctestfa := "O_PRTTXT(" + CHR(34) + "Test1" + CHR(34) + ")"
+
 * Set to your own needs or by configuration dialog
 nPrCharset := 1    && See include\prncharsets.ch for valid values
 * Compile and run samples/winprn.prg to set a suitable printer character for your language
@@ -178,6 +186,7 @@ USE customer
 
 ctempoutfile := hwg_CreateTempfileName() + "1"
 ctempoutficv := hwg_CreateTempfileName() 
+
 
 * ctempoutfile := "lblprt.txt"
 * ctempoutficv := "lblprt2.txt"
@@ -203,18 +212,22 @@ ctempoutficv := hwg_CreateTempfileName()
  
  * Create HWINPRN object
 #ifndef __PLATFORM__WINDOWS
-   oWinPrn := HWinPrn():New( ,"DE858","UTF8", , nPrCharset )
-   oWinPrn:StartDoc( lpreview ,"temp_a2.ps", lprbutton )
+   // oWinPrn := HWinPrn():New( ,"DE858","UTF8", , nPrCharset )
+   O_NEW(,"DE858","UTF8", , nPrCharset)
+   // oWinPrn:StartDoc( lpreview ,"temp_a2.ps", lprbutton )
+   O_STD(lpreview ,"temp_a2.ps", lprbutton)
 #else
-   oWinPrn := HWinPrn():New( ,"DE858","DEWIN", , nPrCharset)
-   oWinPrn:StartDoc( lpreview ,"temp_a2.pdf" , lprbutton)
+   // oWinPrn := HWinPrn():New( ,"DE858","DEWIN", , nPrCharset)
+   O_NEW( ,"DE858","DEWIN", , nPrCharset)
+   // oWinPrn:StartDoc( lpreview ,"temp_a2.pdf" , lprbutton )
+   O_STD( lpreview ,"temp_a2.pdf" , lprbutton )
 #endif
 
 
 * Store the HWinPrn object
-hwlabel_setO(oWinPrn)
+// hwlabel_setO(oWinPrn)
 
-SET_SMA()
+// SMA()
  
  DO WHILE .NOT. lEOF 
  
@@ -224,13 +237,24 @@ SET_SMA()
   ELSE
   * Remove CR line ending
    cbuffer := hwlabel_REM_CR(cbuffer)
-   oWinPrn:PrintLine(ALLTRIM(cbuffer))
+   * Now the contents of buffer must be processed
+   * with the macro interpreter
+   // oWinPrn:PrintLine(ALLTRIM(cbuffer))
+   hwlabel_macro(cbuffer)  && add second parameter .T. for debug output into log file a.log
   ENDIF  
 ENDDO
 
 * Test
 // SET_VSM()
-// oWinPrn:PrintLine("Very Small") 
+// oWinPrn:PrintLine("Very Small")
+
+* Test by macro call : O_PRTTXT("Test1")
+//  &ctestfa
+
+// O_PRTTXT("Test2")
+// O_NEWLINE()
+// O_PRTTXT("Test3")
+// O_PRTTXT("Test4") 
 
 * At your opinion:
 * for single sheet labels it is better,
@@ -239,7 +263,7 @@ ENDDO
 // oWinPrn:NextPage()
 
 * End printing (preview and start)
- oWinPrn:End() 
+ O_END()
  
 * Close file
 FCLOSE(hihandle) 
@@ -252,5 +276,17 @@ ERASE &ctempoutficv
   
 RETURN NIL
 
+
+FUNCTION CACC()
+* Returns Strings for negative or positive value of ACCOUNT
+* A good sample for usage of a user defined function in a
+* label.
+IF ACCOUNT < 0
+ RETURN " debts "
+ENDIF
+IF ACCOUNT == 0
+ RETURN " balanced "
+ENDIF 
+RETURN " credit " 
 
 * ==================================== EOF of hwlblsample.prg ================================

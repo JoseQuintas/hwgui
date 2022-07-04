@@ -9,6 +9,21 @@
 */
 
 
+2022-07-04 13:50 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/hwlabel/Readme.txt
+  * contrib/hwlabel/Readme_de.txt
+  * contrib/hwlabel/customer.dbf
+  * contrib/hwlabel/customer.lbl
+  * contrib/hwlabel/hwlbledt.hbp
+  * contrib/hwlabel/hwlbledt.prg
+  * contrib/hwlabel/hwlblsample.hbp
+  * contrib/hwlabel/hwlblsample.prg
+  * contrib/hwlabel/image/Hwlabel_Win PrView.png (New)
+  * contrib/hwlabel/libhwlabel.prg
+     ! Second issue of HWLABEL
+     ! (TO-DOs see Readme file)
+
+
 2022-07-04 09:55 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * samples/testfunc.prg

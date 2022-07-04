@@ -37,6 +37,7 @@
 * Function list
 * ~~~~~~~~~~~~~
 *
+* FUNCTION hwlabel_macro            && Run the macro interpreter and create call of HWINPRN methods
 * FUNCTION hwlabel_translcp2        && Translates codepages for label file
 * FUNCTION hwlabel_setO             && Copies the object var into static var (for better handling)
 * FUNCTION hwlabel_getO             && Returns the HWinprn object from STATIC variable
@@ -49,6 +50,21 @@
 * FUNCTION hwlabel_MAX(a,b)         && Returns the max value of a or b
 * FUNCTION hwlabel_OPENR            && Opens a text file for reading 
 *
+* ~~~~~~ Set modes for usage with macro interpreter ~~~~~~
+*
+* FUNCTION NCH                      && Set charset
+* FUNCTION DEF                      && Set default
+* FUNCTION SMA                      && Set small
+* FUNCTION SML                      && Set smaller
+* FUNCTION VSM                      && Set very small
+* FUNCTION E                        && Print Euro currency sign
+*
+* ~~~~~~ Other important functions of handling the WinPrn class ~~~~~~
+*
+* FUNCTION O_NEW                    && Creates a HWinPrn object by calling the New() method
+* FUNCTION O_STD                    && Start doc definition by calling the method StartDoc() 
+* FUNCTION O_END                    && End printing (preview and start), call method End()
+*
 * ~~~~~~ Shortend functions for label contents ~~~~~~
 * FUNCTION NOSKIP           && For empty lines in labels
 * FUNCTION   S(n)           && (C)  SPACE(n)
@@ -57,6 +73,12 @@
 * FUNCTION   R(s,n)         && (C)  REPLICATE(s,n)
 * FUNCTION   T(s,p)         && (C)  TRANSFORM(s,p)
 * FUNCTION   A(s)           && (C)  ALLTRIM(s)
+*
+* ~~~~~~ Only for debugging purposes ~~~~~~
+*
+* FUNCTION hwlabel_debostr  && Simulation for METHOD PrintText()
+* FUNCTION hwlabel_getostr  && Returns the contents of static var cprintstr
+* FUNCTION hwlabel_setostr  && Set the value of static var cprintstr 
 *
 * ============================================================================================
 
@@ -71,6 +93,184 @@
 #include "hwgextern.ch"
 
 STATIC oWinPrn
+
+STATIC cprintstr   && Only for debugging
+
+* ==============================================
+FUNCTION hwlabel_macro(cmstring,ldebug)
+* Run the macro interpreter and
+* create call of HWINPRN methods for
+* print output
+* Instructions:
+* For call a function of this
+* library (for example)
+* "Test:" + A("   All trimmed  ") + "." + EC + "&SET_SMA();" + " Small"
+* Returns forever empty string "".
+* ldebug: Set .T., if the macros are not
+* executed, output written to a.log.
+* Pass only one line of the label contents for cmstring.
+* Additional info:
+* Suppress SUB = 0x1a = CHR(26)
+* METHOD HPRINTER:SAY crashes
+* ==============================================
+LOCAL cmstri , cmstri2 , latend , ncposis ,  ncposie , ncposin, cmac , cretstr , nretplus
+LOCAL nloop
+IF cmstring == NIL
+ RETURN ""
+ENDIF
+IF ldebug == NIL
+ ldebug := .F.
+ENDIF
+cmstring := STRTRAN(cmstring,CHR(26),"")  && Suppress SUB
+IF ldebug
+ hwg_WriteLog("Macro interpretation of : " + cmstring)
+ENDIF 
+cmac := ""
+cmstri := cmstring
+cmstri2 := ""
+cretstr := ""
+latend := .F.
+nloop := 0
+
+cprintstr := ""  && Only for debugging
+
+* Look for apprearence of ESC+& = Start of a macro definition
+DO WHILE .NOT. latend
+  nloop := nloop + 1
+  // hwg_WriteLog("Loop Nr. " + ALLTRIM(STR(nloop)) ) 
+  * Avoid endless run in case of errors
+  IF nloop > 100
+    latend := .T.
+  ENDIF
+
+  IF EMPTY(cmstri)
+        latend := .T.  && End of string reached
+  ELSE
+    ncposis  :=  AT(CHR(27) + "&" , cmstri )   && Start position of a macro
+    // hwg_WriteLog("cmstri=>" + cmstri + "< ncposis=" + ALLTRIM(STR(ncposis)) )
+    IF ncposis < 1
+      latend := .T.
+      * Look for trailing string (for normal string interpretation) and remove all ESC
+      cretstr :=  STRTRAN(cmstri,CHR(27),"")
+      * And print out the string without any macro definitions
+      IF .NOT. EMPTY(cretstr)
+           // hwg_WriteLog("Execute O_PRTTXT(" + cretstr + ")" )
+           O_PRTTXT(cretstr)
+      ENDIF
+    ELSE
+     * Collect normal string interpretation
+     cretstr := cretstr + SUBSTR(cmstri,1,ncposis)
+     * Search for end of macro
+     ncposie :=  AT(";",cmstri )
+     * Next match of macro start
+     cmstri2 :=  SUBSTR(cmstri,ncposis + 2)
+     // hwg_WriteLog("cmstri2=>" + cmstri2 + "<")
+     ncposin :=  AT(CHR(27) + "&" , cmstri2 )
+     IF ncposin > 0
+       ncposin := ncposis + ncposin + 1  && recalc position in original string
+     ENDIF
+     * The variable ncposin now contains the position of the start of the next
+     * macro. The string between them must be printed out.
+       // hwg_WriteLog("cmstri=>" + cmstri + "< ncposis=" + ALLTRIM(STR(ncposis)) + " ncposie=" + ALLTRIM(STR(ncposie)) + ;
+       // " ncposin=" + ALLTRIM(STR(ncposin))   ) 
+     IF ncposie < 1
+       * No matching end of macro
+       * First printout the string between end of invalid macro and next macro or end of line
+       cretstr := STRTRAN(cretstr,CHR(27),"")
+       * continue search
+       cmstri := SUBSTR(cmstri,ncposis  + 2 )
+     ELSE
+         // hwg_WriteLog("cmstri=>" + cmstri + "< cretstr=>" + cretstr + "<" )
+       * Avoid finding match of end of next valid macro, invalid end of macro (not trailing ";")
+       IF  ( ncposie > ncposin ) .AND. ( ncposin > 0 ) 
+         cmstri := SUBSTR(cmstri,ncposin ) && Continue:   not + 2
+         // hwg_WriteLog("cmstri=>" + cmstri + "< ncposis=" + ALLTRIM(STR(ncposis)) + " ncposie=" + ALLTRIM(STR(ncposie)) + ;
+         // " ncposin=" + ALLTRIM(STR(ncposin)) )
+       ELSE
+         * Create macro definition
+           cmac := SUBSTR(cmstri,ncposis + 2 , ncposie - ncposis - 2 )
+         * Remove trailing "+" from previous string all ESC 
+           cretstr := STRTRAN(cretstr,CHR(27),"")
+           nretplus :=  RAT("+",cretstr)
+           IF nretplus > 0
+             cretstr := SUBSTR(cretstr,nretplus + 1 )
+           ENDIF
+ 
+         IF .NOT. ldebug
+          * First fill line with previous string
+          IF .NOT. EMPTY(cretstr)
+           // hwg_WriteLog("Execute O_PRTTXT(" + cretstr + ")" )
+           O_PRTTXT(cretstr)
+          ENDIF
+          * execute the macro found
+           // hwg_WriteLog("Execute (" + cmac +")" )
+            &cmac 
+         ELSE    && ldebug
+          hwlabel_debostr(cretstr)
+          hwg_WriteLog("Previous string : >" + cretstr + "<")
+          hwg_WriteLog("Macro found: " + cmac)
+         ENDIF   && ldebug
+         cmac := ""
+         // hwg_WriteLog("cretstr before deleting =>" + cretstr + "<" )
+         cretstr := "" 
+         * Search for next macro
+         // hwg_WriteLog("Search for next macro cmstri=>" + cmstri + "< ncposie + 1 =" + STR(ncposie + 1) )
+         cmstri := SUBSTR(cmstri,ncposie + 1)
+       ENDIF && invalid end of macro   
+      ENDIF  && End of macro 
+    ENDIF   && ! at end
+   ENDIF    && cmstri empty
+   * String to end of line ?
+   IF .NOT. EMPTY(cretstr)
+     IF ldebug
+       hwlabel_debostr(cretstr)
+       hwg_WriteLog("String at end of line : >" + cretstr + "<")
+     ENDIF 
+   ENDIF
+
+   // hwg_WriteLog("cretstr=>" + cretstr + "<")
+   
+
+ENDDO
+
+* Complete line
+     // hwg_WriteLog("Execute O_NEWLINE()")
+     O_NEWLINE()
+
+RETURN ""
+
+* ==============================================
+FUNCTION hwlabel_debostr(cstr)
+* Simulation for METHOD PrintText()
+* Only for debugging purposes.
+* Collect all printouts in static variable
+* cprintstr
+* After test run, read the result
+* from this variable. 
+* ==============================================
+IF cstr == NIL
+ cstr := ""
+ENDIF 
+cprintstr := cprintstr + cstr
+RETURN ""
+
+* ==============================================
+FUNCTION hwlabel_getostr()
+* Returns the contents of static var
+* cprintstr (only for debugging)
+* ==============================================
+ RETURN cprintstr
+ 
+* ==============================================
+FUNCTION hwlabel_setostr(cstr)
+* Set the value of static var
+* cprintstr (only for debugging)
+* ==============================================
+IF cstr == NIL
+ cstr := ""
+ENDIF
+cprintstr := cstr
+RETURN ""
 
 * ==============================================
 FUNCTION hwlabel_setO(o)
@@ -434,15 +634,50 @@ RETURN chexstr
 * Functions for use in label file
 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+* ===============
+* Printouts
+* ===============
+
+* These functions only called by the macro interpreter
+
+FUNCTION O_NEWLINE()
+ oWinPrn:Newline()
+RETURN ""
+
+FUNCTION O_PRTTXT(ctext)
+ oWinPrn:PrintText(ctext)
+RETURN "" 
+
+FUNCTION O_NPG()
+ oWinPrn:NextPage()
+RETURN "" 
+
+FUNCTION O_END()
+ oWinPrn:End() 
+RETURN ""
+
+
+FUNCTION O_NEW(cPrinter, cpFrom, cpTo, nFormType, nCharset)
+ oWinPrn := HWinPrn():New( cPrinter, cpFrom, cpTo, nFormType, nCharset )
+RETURN ""
+
+FUNCTION O_STD( lPreview, cMetaName , lprbutton )
+ oWinPrn:StartDoc( lPreview, cMetaName , lprbutton )
+RETURN ""
+
+ 
 * ==========
 * Set modes
 * ==========
 
-
+* These functions only called by the macro interpreter
 
 *   METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
+FUNCTION MDE(lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset)
+  oWinPrn:SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
+RETURN ""  
 
-FUNCTION SET_NCH(nChars)
+FUNCTION NCH(nChars)
 * Set Charset
  oWinPrn:SetMode( , , , , , , , nChars )
 RETURN "" 
@@ -452,27 +687,42 @@ RETURN ""
 // SET_SML() + "Smaller" + SET_DEF() + "Default"
 // SET_VSM() + "Very small" + SET_DEF() + "Default"
 
-FUNCTION SET_DEF()
+FUNCTION DEF()
 *  Default
 * See hwinprn.prg, METHOD SetDefaultMode() CLASS HWinPrn, about line 252
-oWinPrn:SetMode( .F., .F. , 6, .F. , .F. , .F. , 0 , 0 )
+* Acts like a printer reset
+ oWinPrn:SetMode( .F., .F. , 6, .F. , .F. , .F. , 0 , 0 )
 * oWinPrn:SetMode( .F.,.F. )
 RETURN "" 
 
-FUNCTION SET_SMA()
+FUNCTION SMA()
 *   Small
-oWinPrn:SetMode( .T. )
+ oWinPrn:SetMode( .T. )
 RETURN ""
 
-FUNCTION SET_SML()
+FUNCTION SML()
 * Smaller
 oWinPrn:SetMode( .F.,.T. )
 RETURN ""
 
-FUNCTION SET_VSM()
+FUNCTION VSM()
 * Very small
 oWinPrn:SetMode( .T.,.T. )
 RETURN "" 
+
+FUNCTION E()
+* Print Euro currency sign
+LOCAL noldchr
+* Remember old charset
+noldchr := oWinPrn:nCharset
+oWinPrn:SetMode( , , , , , , , 1 )
+oWinPrn:PrintText(CHR(213))  && 0xD5
+oWinPrn:SetMode( , , , , , , , noldchr )
+RETURN ""
+
+* ===================================
+* Other functions
+* ===================================
 
 
 * ================================= *

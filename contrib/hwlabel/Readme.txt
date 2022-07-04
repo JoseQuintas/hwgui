@@ -1,11 +1,12 @@
 
   Readme File for printing adress labels with "hwlabel".
   By Wilfried Brunken, DF7BE
-  Created June 2022.
+  Created July 2022.
 
   $Id$
 
   Deutsche Beschreibung in Datei "Readme_de.txt" !
+
 
 Contents
 --------
@@ -13,6 +14,7 @@ Contents
 1.  Preface
 1.1 Prerequisites
 2.  The Label Editor
+2.1 Design rules
 3.  Sample program
 4.  Build programs
 5.  Additional information
@@ -102,6 +104,25 @@ The description of these parameters and the default values can be found in the i
 function "hwlabel_translcp()".
 
 
+2.1 Design rules
+----------------
+
+1.) In the recent issue of the HWLABEL utility the length beetween labels across is not
+    correct. This bug will bee fixed as soon as possible.
+    We recommend to use only labels with one lane (Number of labels across = 1 ).
+
+2.) The result of a contents line may not exceed the width of label. 
+    The output of the macro and function calls may be shorter than defined 
+    in the contents line, so if the result on the printer or the printer preview
+    is OK to you, than you can ignore the following warning of the label editor
+    finishing the contents edit:
+
+Warning !
+Length of line nn
+could exceed the width of label.
+Recent length is : nn
+
+
 3. Sample program
 -----------------
 
@@ -122,6 +143,9 @@ database record redirected into a file:
 
 Function reference for use in label file see Appendix, Table 3
 
+Print preview of sample program see image file:
+contrib\hwlabel\image\Hwlabel_Win PrView.png
+
 
 4. Build programs
 -----------------
@@ -141,16 +165,14 @@ With the "hbmk2" utility (LINUX and Windows):
 5. Additional information
 -------------------------
 
+You can integrate the HWLABEL feature with the label editor in your
+own HWGUI application. Read the instructions in the inline comment line
+of the source code files.
+
 For the next issue of hwlabel:
 
-- Macro interpreter, need for call of method
-  SetMode im label contents.
-  So you can modify character size, type and character set.
+- More than 1 lane (Number of labels across > 2)
 
-- Support of Euro currency sign:
-  Euro = CHR(128) at nCharset = 0, but not all
-  Umlaute can be printed. This is only possible,
-  if the macro interpreter is realized.  
 
  
 
@@ -171,6 +193,7 @@ For the next issue of hwlabel:
 
 Table 1: 
 --------
+
 American standard label formats
 
 
@@ -278,13 +301,55 @@ Printer character sets:
  parameter nCharset.
  
  
+ Escape sequences of macro interpreter
+ -------------------------------------
+ 
+  The PUBLIC Variable "EC" stands for CHR(27) (Escape),
+ saves space in the label file.
+
+ So a function call is written like this:
+  EC+"&SMA(); Small"
+
+ 
+ Table 5:
+ --------
+ 
+Reference of set modes called by macro interpreter:
+
+FUNCTION MDE(lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset)  Call METHOD SetMode()
+FUNCTION NCH(nChars)        Set Charset
+FUNCTION DEF()              Default
+FUNCTION SMA()              Small
+FUNCTION SML()              Smaller
+FUNCTION VSM()              Very small
+FUNCTION E()                Print Euro currency sign
+
+ Table 6:
+ --------
+
+Reference of printouts called by macro interpreter:
+(only for internal use)
+
+FUNCTION O_NEWLINE()        New line
+FUNCTION O_PRTTXT(ctext)    PrintText(ctext)
+FUNCTION O_NPG()            NextPage
+
+   
   
  Internet links
  --------------
 
  See "6. References"
 
-      
+  
+
+ Modification summary
+ --------------------
+
+  Date (YYYY-MM-DD)  SVN     Description
+  ----------         ------- ----------------------------------------------------------------
+  2022-07-04         r3095   Second issue with macro interpeter
+  2022-06-16         r3079   First issue  
 
 ================================= EOF of Readme.txt ================================================
 

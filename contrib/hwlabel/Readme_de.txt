@@ -1,6 +1,6 @@
 Readme-Datei für den Ausdruck von Adressen-Aufklebern "labels" mit "hwlabel".
   Von Wilfried Brunken, DF7BE
-  Erstellt Juni 2022.
+  Erstellt Juli 2022.
 
 English description in file "Readme.txt" !
 
@@ -12,6 +12,7 @@ Inhalt
 1.  Vorwort
 1.1 Voraussetzungen
 2.  Der Label Editor
+2.1 Design-Regeln
 3.  Beispielprogramm
 4.  Programme übersetzen
 5.  Zusätzliche Informationen
@@ -48,14 +49,14 @@ Link zu CLLOG siehe Kapitel "Internet-Links".
 
 "hwlabel" ist die Portierung dieses Leistungsmerkmales zu HWGUI
 unter Nutzung der "HWinPrn" Klasse,
-damit ist es bereit für eine  "Multi Platform" Anwendung und
+damit ist es bereit für eine "Multi Platform" Anwendung und
 unabhängig vom verwendeten Drucker-Modell. 
 
 
 1.1 Voraussetzungen
 -------------------
 
-Um dieses Modul verwenden zu können, wird die Harbour-Version 
+Um dieses Modul verwenden zu können, wird die Harbour-Version, 
 die die Codepage "CP858" für die Unterstützung
 des Euro-Währungszeichens beinhaltet, benötigt.
 Diese Codepage unterstützt die Zeichensätze "Latin" für die meisten
@@ -71,6 +72,7 @@ Andernfalls müssen Sie die aktuelle Harbour-Version installieren.
 
 Unter LINUX muss das auch der Fall sein, da in der Label-Datei dieser
 Zeichensatz abgespeichert wird.
+
 
 2. Der Label Editor
 -------------------
@@ -112,6 +114,34 @@ Eine Console Version des Label-Editors ist als "lbledit.prg" zusätzlich verfüg
 hbmk2 lbledit.prg.
 
 
+2.1 Design-Regeln
+-----------------
+
+
+1.) In der aktuellen Version von  HWLABEL wird die Länge der einzelnen
+    Zeilen im Inhalt noch nicht korrekt ermittelt.
+    In diesem Falle wird die Breite (spaces beetween labels across) falsch dargestellt.
+    Diesen Fehler werden wir so schnell wie möglich beheben.
+    Wir empfehlen derzeit, vorerst nur Etiketten mit 1 Bahn (Number of labels across = 1 )
+    zu verwenden.
+
+
+2.) Das Ergebnis einer Inhalts-Zeile darf die Breite des Labels (width of label)
+    keinesfalls überschreiten.
+    Das Ergebnis von Funktions- und Macro-Aufrufen kann oft kürzer als
+    die tatsächliche Länge sein. 
+    Wenn der Ausdruck oder das Bild in der Druckvorschau Ihren Wünschen enstpricht,
+    können Sie die folgende Warnung beim Verlassen des Dialoges für die
+    Bearbeitung der Inhalte getrost ignorieren:
+
+Warnung!
+Länge der Zeile nn
+überschreitet möglicherweise die
+Breite des Aufklebers.
+Aktuelle Länge ist : nn 
+
+
+
 3. Beispielprogramm
 -------------------
 
@@ -138,6 +168,8 @@ umgeleitet in eine Datei, zu erfolgen hat:
 Funktionen fuer den Label-Ausdruck:
 Siehe Anhang, Tabelle 3.
 
+Druck-Vorschau dieses Beispiel-Programms sie Bild-Datei:
+contrib\hwlabel\image\Hwlabel_Win PrView.png
 
 4. Programme übersetzen
 -----------------------
@@ -156,15 +188,15 @@ Mit dem Programm "hbmk2" (LINUX und Windows):
 5. Zusätzliche Informationen
 ----------------------------
 
+Sie können den Label-Funktion und den Label-Editor in ihre eigene
+HWGUI-Anwendung integrieren.
+Lesen Sie dazu die entsprechenden Hinweise in den Kommentarzeilen der
+Quelltextdateien.
+
 Für die nächste Version von hwlabel
 
-- Macro-Interpreter, um auch Aufrufe der Methode
-  SetMode im Label-Inhalt zu ermöglichen.
-  Auf diese Weise lassen sich Schriftgröße, Art und Zeichensatz 
-  variiren.
-- Unterstützung des Euro-Symbols:
-  Euro = CHR(128) bei nCharset = 0 , jedoch sind hier nicht alle
-  Umlaute enthalten. Dafür ist der Macro-Interpreter notwendig.  
+- Mehr als eine Bahn (Number of labels across > 2)
+ 
 
 6. Referenzen
 -------------
@@ -224,17 +256,17 @@ ACCOUNT     N    10
 
 Tabelle 3:
 ----------
-*
-* spezielle verkürzte Funktionsaufrufe (damit der Platz in den
-* Label-Dateien und in den Filtereinstellungen besser passt)
-*
-* FUNCTION   A                 && (C)  ALLTRIM(s)
-* FUNCTION   S                 && (C)  SPACE(n)
-* FUNCTION   P                 && (C)  PADRIGHT(s,n)
-* FUNCTION   C                 && (C)  CHR(n)
-* FUNCTION   R                 && (C)  REPLICATE(s,n)
-* FUNCTION   T                 && (C)  TRANSFORM(s,p)
-* FUNCTION   NOSKIP            && (C)  gibt ein Zeichen 255 aus, wenn leer
+
+ spezielle verkürzte Funktionsaufrufe (damit der Platz in den
+ Label-Dateien und in den Filtereinstellungen besser passt)
+
+ FUNCTION   A                 && (C)  ALLTRIM(s)
+ FUNCTION   S                 && (C)  SPACE(n)
+ FUNCTION   P                 && (C)  PADRIGHT(s,n)
+ FUNCTION   C                 && (C)  CHR(n)
+ FUNCTION   R                 && (C)  REPLICATE(s,n)
+ FUNCTION   T                 && (C)  TRANSFORM(s,p)
+ FUNCTION   NOSKIP            && (C)  gibt ein Zeichen 255 aus, wenn leer
 
 
 FUNCTION NOSKIP(e)
@@ -284,12 +316,55 @@ Drucker-Zeichensätze:
  Methode SetMode() der Klasse HWinPrn,
  Parameter nCharset.
 
+ 
+ Escape-Sequenzen des Macro-Interpreters
+ ----------------------------------------
+ 
+  Die PUBLIC Variable "EC" steht für CHR(27) (Escape),
+  spart Platz in der Label-Datei.
+
+  Auf diese Weise wird ein Funktions-Aufruf wie folgt geschrieben:
+  EC+"&SMA(); Small"
+
+ 
+Tabelle 5:
+----------
+ 
+Referenz für "Set Modus"-Funktionen, die vom Macro-Interpreter aufgerufen werden:
+
+FUNCTION MDE(lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset)  Aufruf Methode SetMode()
+FUNCTION NCH(nChars)        Zeichensatz festlegen
+FUNCTION DEF()              Default
+FUNCTION SMA()              Schmal
+FUNCTION SML()              Schmaler
+FUNCTION VSM()              Sehr schmal
+FUNCTION E()                Drucke Euro-Zeichen
+
+ Table 6:
+ --------
+
+Referenz für Druckausgaben die vom Macro-Interpreter aufgerufen werden:
+(Nur interne Verwendung)
+
+FUNCTION O_NEWLINE()        Neue Zeile
+FUNCTION O_PRTTXT(ctext)    PrintText(ctext)
+FUNCTION O_NPG()            Neue Seite
+
+
  Internet-Links
  --------------
  
  Siehe "6. Referenzen"
 
  
+ 
+ Änderungsübersicht
+ ------------------
+
+  Datum (YYYY-MM-DD) SVN     Beschreibung
+  ----------         ------- ----------------------------------------------------------------
+  2022-07-04         r3095   Zweite Ausgabe mit Macro-Interpeter
+  2022-06-16         r3079   Erste Ausgabe  
 
 
 ================================= EOF of Readme_de.txt ================================================

@@ -145,6 +145,8 @@
 * FUNCTION hwlabel_ccontents        && Clean unused contents
 * FUNCTION hwlabel_addextens        && Add file extension, if not passed with file name
 * FUNCTION hwlabel_translcp         && Translates codepages for label file
+* FUNCTION hwlabel_Check_lnc        && Check length of contents lines
+* FUNCTION hwlbledit_contlwarn      && Displays warning of contents length greater than width of label
 *
 * Store and read language setting from file
 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1775,7 +1777,9 @@ ENDIF
                 ON CLICK {|| hwlabel_Mainhlp(clangset,2) }
    @ 112,641 BUTTON oButton1 CAPTION aMsg[34]   SIZE 80,32 ;  && "OK"
         STYLE WS_TABSTOP+BS_FLAT ;
-        ON CLICK {|| bCancel := .F. , frm_lbl_contents:Close() }  
+        ON CLICK {|| bCancel := .F. , hwlabel_Check_lnc( cCnt1, cCnt2, cCnt3, cCnt4, cCnt5, cCnt6, cCnt7, cCnt8, ;
+     cCnt9, cCnt10, cCnt11, cCnt12, cCnt13, cCnt14, cCnt15, cCnt16 ) ;
+        , frm_lbl_contents:Close() }  
    @ 245,643 BUTTON oButton2 CAPTION aMsg[35]   SIZE 80,32 ; && "Cancel"
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK {|| frm_lbl_contents:Close() }
@@ -1826,6 +1830,126 @@ ENDIF
  ENDIF
 
 RETURN frm_lbl_contents:lresult
+
+* ==============================================
+FUNCTION hwlabel_Check_lnc( cCnt1, cCnt2, cCnt3, cCnt4, cCnt5, cCnt6, cCnt7, cCnt8, ;
+     cCnt9, cCnt10, cCnt11, cCnt12, cCnt13, cCnt14, cCnt15, cCnt16 )
+* Check length of contents line
+* ==============================================
+
+IF n_NUMZ < 1
+ RETURN NIL
+ENDIF
+
+ IF LEN(ALLTRIM(cCnt1)) >  n_BR 
+   hwlbledit_contlwarn(1,cCnt1)
+ ENDIF
+
+IF n_NUMZ > 1
+ IF LEN(ALLTRIM(cCnt2)) >  n_BR 
+   hwlbledit_contlwarn(2,cCnt2)
+ ENDIF  
+ENDIF
+
+IF n_NUMZ > 2
+ IF LEN(ALLTRIM(cCnt3)) >  n_BR 
+   hwlbledit_contlwarn(3,cCnt3)
+ ENDIF  
+ENDIF
+
+IF n_NUMZ > 3
+ IF LEN(ALLTRIM(cCnt4)) >  n_BR 
+   hwlbledit_contlwarn(4,cCnt4)
+ ENDIF  
+ENDIF
+
+
+IF n_NUMZ > 4
+ IF LEN(ALLTRIM(cCnt5)) >  n_BR 
+   hwlbledit_contlwarn(5,cCnt5)
+ ENDIF  
+ENDIF
+
+
+IF n_NUMZ > 5
+ IF LEN(ALLTRIM(cCnt6)) >  n_BR 
+   hwlbledit_contlwarn(6,cCnt6)
+ ENDIF  
+ENDIF
+
+IF n_NUMZ > 6
+ IF LEN(ALLTRIM(cCnt7)) >  n_BR 
+   hwlbledit_contlwarn(7,cCnt7)
+ ENDIF  
+ENDIF
+
+IF n_NUMZ > 7
+ IF LEN(ALLTRIM(cCnt8)) >  n_BR 
+   hwlbledit_contlwarn(8,cCnt8)
+ ENDIF  
+ENDIF
+
+IF n_NUMZ > 8
+ IF LEN(ALLTRIM(cCnt9)) >  n_BR 
+   hwlbledit_contlwarn(9,cCnt9)
+ ENDIF  
+ENDIF
+
+IF n_NUMZ > 9
+ IF LEN(ALLTRIM(cCnt10)) >  n_BR 
+   hwlbledit_contlwarn(10,cCnt10)
+ ENDIF  
+ENDIF
+
+IF n_NUMZ > 10
+ IF LEN(ALLTRIM(cCnt11)) >  n_BR 
+   hwlbledit_contlwarn(11,cCnt11)
+ ENDIF   
+ENDIF
+
+
+IF n_NUMZ > 11
+ IF LEN(ALLTRIM(cCnt12)) >  n_BR 
+   hwlbledit_contlwarn(12,cCnt12)
+ ENDIF   
+ENDIF
+
+IF n_NUMZ > 12
+ IF LEN(ALLTRIM(cCnt13)) >  n_BR 
+   hwlbledit_contlwarn(13,cCnt13)
+ ENDIF   
+ENDIF
+
+IF n_NUMZ > 13
+ IF LEN(ALLTRIM(cCnt14)) >  n_BR 
+   hwlbledit_contlwarn(14,cCnt14)
+ ENDIF   
+ENDIF
+
+IF n_NUMZ > 14
+ IF LEN(ALLTRIM(cCnt15)) >  n_BR 
+   hwlbledit_contlwarn(15,cCnt15)
+  ENDIF  
+ENDIF
+
+IF n_NUMZ > 15
+ IF LEN(ALLTRIM(cCnt16)) >  n_BR 
+   hwlbledit_contlwarn(16,cCnt16)
+ ENDIF   
+ENDIF
+
+RETURN NIL
+
+
+* ==============================================
+FUNCTION hwlbledit_contlwarn(nzeile,czeile)
+* Displays warning of contents length greater
+* than width of label
+* ==============================================
+    hwg_MsgInfo(aMsg[63] + ALLTRIM(STR(nzeile)) + CHR(10) + aMsg[64] + CHR(10) + ;
+    aMsg[65] + ALLTRIM(STR(LEN(ALLTRIM(czeile)))) ;
+    ,aMsg[1])
+RETURN NIL 
 
 * ==============================================
 FUNCTION hwlbledit_exit()
@@ -2125,6 +2249,9 @@ aMsg := {}
 /* 60  */ AADD(aMsg,"Load label file")
 /* 61  */ AADD(aMsg,"HWLABEL Help")
 /* 62  */ AADD(aMsg,"No help available")
+/* 63  */ AADD(aMsg,"Warning !" + CHR(10) + "Length of line  ")
+/* 64  */ AADD(aMsg," could exceed the width of label.")
+/* 65  */ AADD(aMsg,"Recent length is : ")
 
 
 RETURN aMsg
@@ -2214,6 +2341,10 @@ aUmlaute := hwlabel_GUI_INIT_DE()
 /* 60  */ AADD(aMsg,"Label-Datei laden")
 /* 61  */ AADD(aMsg,"HWLABEL Hilfe")
 /* 62  */ AADD(aMsg,"Keine Hilfe verf" + aUmlaute[6] + "gbar")
+/* 63  */ AADD(aMsg,"Warnung !" + CHR(10) + "L" + CAKUML + "nge der Zeile ")
+/* 64  */ AADD(aMsg," " + CUKUML + "berschreitet m" + COKUML + "glicherweise die" +CHR(10) + ;
+                     "Breite des Aufklebers.")
+/* 65  */ AADD(aMsg,"Aktuelle L" + CAKUML + "nge ist : ")
 
 * aUmlaute[1]  = AE
 * aUmlaute[2]  = OE

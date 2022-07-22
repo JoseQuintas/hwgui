@@ -371,11 +371,10 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 
 * German Umlaute
 #ifdef __PLATFORM__WINDOWS
-   // oWinPrn:PrintLine(" Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
+   oWinPrn:PrintLine(" Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
    oWinPrn:PrintLine(ctest1)
 #else
-   // oWinPrn:PrintLine("Cdp from : " + oWinPrn:cpFrom + " Cdp to : " + oWinPrn:cpTo + " " )
-   oWinPrn:PrintLine2(ctest3)
+   oWinPrn:PrintLine(ctest3)
 #endif   
  
    oWinPrn:PrintLine( "abcdefghijklmnopqrstuvwxyz" )
@@ -463,9 +462,13 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    * Change charset, so that the Euro currency sign appeared
    oWinPrn:SetMode( , , , , , , , 0 )
    oWinPrn:PrintText(" Euro : " + CHR(128) )
+   oWinPrn:Newline()
+   oWinPrn:PrintText("Stroked zero : " + CHR(216) )   
 #else
    oWinPrn:PrintText("German Umlaute: " + ctest3 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
    oWinPrn:PrintText(" Euro : " + cEuroUTF8 )
+   oWinPrn:Newline()
+   oWinPrn:PrintText("Stroked zero : " + CHR(157) )
 #endif   
 
    oWinPrn:End()

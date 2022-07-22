@@ -58,6 +58,7 @@
 * FUNCTION SML                      && Set smaller
 * FUNCTION VSM                      && Set very small
 * FUNCTION E                        && Print Euro currency sign
+* FUNCTION STR0                     && Print upper stroked zero (for QSL card printing)
 *
 * ~~~~~~ Other important functions of handling the WinPrn class ~~~~~~
 *
@@ -717,6 +718,19 @@ LOCAL noldchr
 noldchr := oWinPrn:nCharset
 oWinPrn:SetMode( , , , , , , , 1 )
 oWinPrn:PrintText(CHR(213))  && 0xD5
+oWinPrn:SetMode( , , , , , , , noldchr )
+RETURN ""
+
+* ==============================================
+FUNCTION STR0()
+* Print upper stroked zero &Oslash;
+* (for QSL card printing) 
+* ==============================================
+LOCAL noldchr
+* Remember old charset
+noldchr := oWinPrn:nCharset
+oWinPrn:SetMode( , , , , , , , 1 )
+oWinPrn:PrintText(CHR(157))  && Not 216 0xD8 ??
 oWinPrn:SetMode( , , , , , , , noldchr )
 RETURN ""
 

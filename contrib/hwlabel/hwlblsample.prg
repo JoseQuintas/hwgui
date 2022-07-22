@@ -237,6 +237,10 @@ ctempoutficv := hwg_CreateTempfileName()
   ELSE
   * Remove CR line ending
    cbuffer := hwlabel_REM_CR(cbuffer)
+   // hwg_xvalLog(cbuffer)  && Debug
+   * Substitute 0 by macro for stroked 0 (optional)
+   cbuffer :=  STRTRAN(cbuffer,"0", CHR(27) + "&STR0();")
+   // hwg_xvalLog(cbuffer)  && Debug
    * Now the contents of buffer must be processed
    * with the macro interpreter
    // oWinPrn:PrintLine(ALLTRIM(cbuffer))

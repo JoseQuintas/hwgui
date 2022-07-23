@@ -9,6 +9,14 @@
 */
 
 
+2022-07-23 11:15 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * samples/checkbox.prg
+  * source/gtk/hcheck.prg
+  * source/winapi/hcheck.prg
+        ! Ticket #109: Method Invert() added to
+        ! HCheckButton class.
+ 
 
 2022-07-22 21:30 UTC+0200 Wilfried Brunken DF7BE
   * contrib/hwlabel/hwlblsample.prg

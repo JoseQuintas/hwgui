@@ -28,6 +28,7 @@ CLASS HCheckButton INHERIT HControl
    METHOD Disable()
    METHOD Enable()
    METHOD Value( lValue ) SETGET
+   METHOD Invert()
 
 ENDCLASS
 
@@ -125,6 +126,22 @@ METHOD Enable() CLASS HCheckButton
 
    RETURN Nil
 
+   
+METHOD Invert() CLASS HCheckButton
+
+   LOCAL lValue
+
+   IF ::lValue == NIL
+    lValue := .F.
+   ELSE
+    lValue := .NOT. ::lValue
+   ENDIF
+
+   ::Value(lValue)
+
+   RETURN Nil
+
+
 METHOD Value( lValue ) CLASS HCheckButton
 
    IF lValue != Nil
@@ -174,3 +191,6 @@ STATIC FUNCTION __When( oCtrl )
    ENDIF
 
    RETURN .T.
+
+   * ===================================== EOF of hcheck.prg ===========================================
+   

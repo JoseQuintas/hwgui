@@ -28,6 +28,7 @@ CLASS HCheckButton INHERIT HControl
    METHOD SetText( value ) INLINE hwg_button_SetText( ::handle, ::title := value )
    METHOD GetText() INLINE hwg_button_GetText( ::handle )
    METHOD Value( lValue ) SETGET
+   METHOD Invert()
 
 ENDCLASS
 
@@ -118,6 +119,22 @@ METHOD Refresh() CLASS HCheckButton
 
    RETURN Nil
 
+
+METHOD Invert() CLASS HCheckButton
+
+   LOCAL lValue
+
+   IF ::lValue == NIL
+    lValue := .F.
+   ELSE
+    lValue := .NOT. ::lValue
+   ENDIF
+
+   ::Value(lValue)
+
+   RETURN Nil
+
+
 METHOD Value( lValue ) CLASS HCheckButton
 
    IF lValue != Nil
@@ -164,3 +181,6 @@ STATIC FUNCTION __When( oCtrl )
    ENDIF
 
    RETURN .T.
+
+* ===================================== EOF of hcheck.prg ===========================================
+   

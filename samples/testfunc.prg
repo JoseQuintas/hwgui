@@ -36,6 +36,7 @@
  hwg_ShowCursor()
  hwg_GetCursorType() && GTK only
  hwg_IsLeapYear ( nyear )
+ hwg_MsgYesNoCancel(...)
  
  hwg_Has_Win_Euro_Support()
  hwg_FileModTimeU()
@@ -202,6 +203,12 @@ SET DATE ANSI  && YY(YY).MM.TT
    @ 505 ,100 BUTTON oButton27 CAPTION "New caption Test Button" SIZE 160,nheight FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
        { | | oButton10:SetText("New Caption") }
+
+   @ 25 ,225 BUTTON oButton22 CAPTION "hwg_MsgYesNoCancel()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_MsgYesNoCancel() } 
+   
+
 
 
 /* Disable buttons for Windows only functions */
@@ -407,5 +414,18 @@ ctim := hwg_FileModTime(fn)
 hwg_MsgInfo("Modification date and time (local) of file" + ;
  CHR(10) + fn + " is :" + CHR(10) +  ctim, "Result of hwg_FileModTime()")
 RETURN NIL 
+
+
+FUNCTION Test_MsgYesNoCancel()
+LOCAL nretu
+
+nretu := hwg_MsgYesNoCancel("Press a button")
+* yes    = 1
+* no     = 2
+* cancel = 0
+
+hwg_MsgInfo(STR(nretu) , "Return value of hwg_MsgYesNoCancel()")
+
+RETURN NIL
 
 * ============================== EOF of testfunc.prg ==============================

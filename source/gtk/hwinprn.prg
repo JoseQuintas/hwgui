@@ -111,6 +111,8 @@ CLASS HWinPrn
    METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset )
    METHOD SetDefaultMode()
    METHOD SetCPTo(cpTo)
+   METHOD SetCP(ccp)
+   METHOD SetCDPin(ccp)
    METHOD StartDoc( lPreview, cMetaName , lprbutton )
    METHOD NextPage()
    METHOD NewLine()
@@ -171,6 +173,23 @@ ENDIF
 
 RETURN NIL 
 
+METHOD SetCP(ccp) CLASS HWinPrn
+
+IF ccp != NIL
+  ::cpTo   := ccp
+  ::oPrinter:cdp  := ccp
+ENDIF
+
+RETURN NIL 
+
+
+METHOD SetCDPin(ccp) CLASS HWinPrn
+
+IF ccp != NIL
+  ::oPrinter:cdpIn  := ccp
+ENDIF
+
+RETURN NIL 
 
 METHOD SetLanguage(apTooltips, apBootUser) CLASS HWinPrn
 * NLS: Sets the message and control texts to print preview dialog

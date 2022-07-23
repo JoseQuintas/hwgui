@@ -222,7 +222,7 @@ FUNCTION PRINT_OUT(cname,lpreview,lprbutton)
 * ---------------------------------------------
 
 Local oWinPrn, i , j
-LOCAL ctest1,ctest2,ctest3,cEuroUTF8
+LOCAL ctest1,ctest2,ctest3,cEuroUTF8,cEuroDOS
 * Block grafic chars (CP850), single line
 LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
   cCross := CHR(197)
@@ -270,6 +270,7 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
 //   oWinPrn:StartDoc( .T.,"temp_a2.ps" )
    oWinPrn:StartDoc( lpreview ,"temp_a2.ps", lprbutton )
 #else
+* Windows
     oWinPrn := HWinPrn():New( ,,, , 1)
 //   oWinPrn := HWinPrn():New( ,"DE858","DEWIN", , nPrCharset)
    /* This displays the Euro currency sign CHR(128) correct, but not
@@ -328,6 +329,8 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    ctest3 := "ÄÖÜäöüßµ€"
    
    cEuroUTF8 :="€" 
+   
+   cEuroDOS := CHR(128)
   
   * Page 1 :  print all chars over ASCII with decimal values (128 ... 190)
   FOR j := 128 TO 190
@@ -374,7 +377,7 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:PrintLine(" Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
    oWinPrn:PrintLine(ctest1)
 #else
-   oWinPrn:PrintLine(ctest3)
+   oWinPrn:PrintLine(ctest1)    && ctest3 (UTF-8) not working here
 #endif   
  
    oWinPrn:PrintLine( "abcdefghijklmnopqrstuvwxyz" )
@@ -456,7 +459,8 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:SetMode(.F.)
    oWinPrn:PrintText(" ... and normal again")
    oWinPrn:Newline()
-#ifdef __PLATFORM__WINDOWS   
+#ifdef __PLATFORM__WINDOWS
+* Windows   
    oWinPrn:SetMode( , , , , , , , 1 )
    oWinPrn:PrintText("German Umlaute: " + ctest2 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )    
    * Change charset, so that the Euro currency sign appeared
@@ -465,10 +469,33 @@ LOCAL cCross, cvert, chori, ctl, ctr, ctd, clr , crl, cbl, cbr, cbo
    oWinPrn:Newline()
    oWinPrn:PrintText("Stroked zero : " + CHR(216) )   
 #else
-   oWinPrn:PrintText("German Umlaute: " + ctest3 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
-   oWinPrn:PrintText(" Euro : " + cEuroUTF8 )
+* LINUX
+   oWinPrn:SetCP("EN")
+   oWinPrn:PrintText("German Umlaute: " + ctest1 +  " Recent charset is " + ALLTRIM(STR(oWinPrn:nCharset)) )
    oWinPrn:Newline()
-   oWinPrn:PrintText("Stroked zero : " + CHR(157) )
+   oWinPrn:SetCP("EN")       && Only this settings to have Euro sign
+   oWinPrn:SetCDPin("UTF8")
+   oWinPrn:PrintText(" Euro : " + cEuroUTF8 )
+   oWinPrn:Newline()        && Reset to "EN","EN" ; otherwise the newline not printed 
+   oWinPrn:SetCP("EN")
+   oWinPrn:SetCDPin("EN")
+   oWinPrn:SetCDPin("UTF8")
+   * Stroked zero: UTF-8 : 0xC3 = 195 , 0x98 = 152
+   oWinPrn:PrintText("Stroked zero : " + CHR(195) + CHR(152) )
+   
+   
+* Use the following sequece to look for desired characters and codepages   
+/*   
+   oWinPrn:Newline()
+   FOR i := 128 TO 190
+    oWinPrn:PrintText(CHR(i))
+   NEXT
+   oWinPrn:Newline()
+   FOR i := 191 TO 255
+    oWinPrn:PrintText(CHR(i))
+   NEXT
+*/   
+    
 #endif   
 
    oWinPrn:End()

@@ -35,7 +35,7 @@ rm samples/gtk_samples/testget2 2>/dev/null
 rm samples/gtk_samples/winprn 2>/dev/null
 rm samples/gtk_samples/temp_a2.ps 2>/dev/null
 #
-# Samples for multi plattform
+# Samples for multi plattform (exe)
 rm samples/testget1 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/datepicker 2>/dev/null
@@ -47,14 +47,18 @@ rm samples/TwoLstSub 2>/dev/null
 rm samples/dbview 2>/dev/null
 rm samples/testfunc 2>/dev/null
 rm samples/winprn 2>/dev/null
-rm samples/temp_a2.ps 2>/dev/null
-rm samples/temp_a2.pdf 2>/dev/null
 rm samples/tstcombo.c  2>/dev/null
 rm samples/tstcombo  2>/dev/null
 rm samples/testxml 2>/dev/null
 rm samples/xmltree 2>/dev/null
+rm samples/colrbloc 2>/dev/null
+rm samples/testtree 2>/dev/null
+#
+# created files from sample programs
 rm samples/a.log 2>/dev/null
-
+rm samples/temp_a2.ps 2>/dev/null
+rm samples/temp_a2.pdf 2>/dev/null
+rm samples/tstbrw.dbf 2>/dev/null
 
 #
 # Utils exe

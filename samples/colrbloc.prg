@@ -61,7 +61,8 @@ LOCAL cDirSep := hwg_GetDirSep()
 PUBLIC cImgTop , cImgBottom , cImgPrev, cImgNext
 * Image dir
 #ifdef __GTK__
-cImageDir := ".." + hwg_GetDirSep() + ".." + hwg_GetDirSep() + "image" + hwg_GetDirSep()
+cImageDir := ".." + hwg_GetDirSep() + "image" + hwg_GetDirSep()
+// cImageDir := ".." + hwg_GetDirSep() + ".." + hwg_GetDirSep() + "image" + hwg_GetDirSep()
 #else
 cImageDir := ".." + hwg_GetDirSep() + "image" + hwg_GetDirSep()
 #endif

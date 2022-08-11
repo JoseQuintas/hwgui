@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
-      <td width="70%" align="center">Alexander S.Kresin, June 2022</td>
+      <td width="70%" align="center">Alexander S.Kresin, August 2022</td>
       <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
     </tr>
   </table>
@@ -179,9 +179,16 @@
              [ CENTER ]
              [ ON ACTIVATE &lt;bInit&gt; ]
     </pre>
-    <p>This command is equivalent to 'oDlg:Activate()' call. It shows the previously defined
-    dialog and starts messages processing for it. By default, it creates modal dialog.
-    You can create modeless dialog, specifying NOMODAL clause in this command.</p>
+
+    <p>This command is equivalent to 'oDlg:Activate()' call. It shows the previously defined<br>
+    dialog and starts messages processing for it. By default, it creates modal dialog.<br>
+    You can create modeless dialog, specifying NOMODAL clause in this command.<br>
+    <br>
+    Attention !<br>
+    Be sure, that the dialog calling a subdialog in non modal mode is not closed in background.<br>
+    Otherwise, if the calling dialog is closed, the called non modal subdialog is also closed<br>
+    together with the calling dialog.<br>
+    </p>
 
     <br><strong class="subhead"><a name="Commands2" href="hwgdoc.html#_Commands2">
     4.2.  Menu commands</a></strong><br> 

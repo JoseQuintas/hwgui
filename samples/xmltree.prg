@@ -1,11 +1,20 @@
 #include "windows.ch"
 #include "guilib.ch"
 
-MEMVAR oFont
+MEMVAR oFont , cImageDir , cDirSep , cBitmap1, cbitmap2 , cppath
 
 Function Main
 Local oMainWindow
 Private oFont := HFont():Add( "MS Sans Serif",0,-13 )
+Private cppath := ".."
+Private cDirSep := hwg_GetDirSep()
+Private cImageDir := cppath + cDirSep + "image" + cDirSep
+Private cBitmap1 := cImageDir + "cl_fl.bmp"
+Private cbitmap2 := cImageDir + "op_fl.bmp"
+
+
+CHECK_FILE(cBitmap1)
+CHECK_FILE(cbitmap2)
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150
@@ -21,8 +30,12 @@ Return Nil
 Function DlgGet
 Local oDlg
 Local oTree, oXmlDoc
-Local fname := hwg_Selectfile( "All files( *.* )", "*.*" )
+Local fname
 Local oSplit, oSay
+
+
+fname := hwg_Selectfile( "XML files( *.xml )", "*.xml" )
+// fname := hwg_Selectfile( "All files( *.* )", "*.*" )
 
    IF Empty( fname )
       Return Nil
@@ -38,7 +51,7 @@ Local oSplit, oSay
 
    @ 10,10 TREE oTree OF oDlg SIZE 200,280 ;
         EDITABLE ;
-        BITMAP { "..\image\cl_fl.bmp","..\image\op_fl.bmp" } ;
+        BITMAP { cBitmap1, cbitmap2 } ;
         ON SIZE {|o,x,y|o:Move(,,,y-20)}
 
    @ 214,10 SAY oSay CAPTION "" SIZE 206,280 STYLE WS_BORDER ;
@@ -95,6 +108,15 @@ Static Function NodeOut( o,oSay )
    ENDIF
 
 Return Nil
+
+FUNCTION CHECK_FILE ( cfi )
+* Check, if file exist, otherwise terminate program
+ IF .NOT. FILE( cfi )
+  Hwg_MsgStop("File >" + cfi + "< not found, program terminated","File ERROR !")
+  QUIT
+ ENDIF 
+RETURN Nil
+
 
 /* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ */
 

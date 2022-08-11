@@ -96,9 +96,6 @@ IF .NOT. hwg_GetResContainerOpen()
  QUIT
 ENDIF 
 
-IF cImageDir
-  QUIT
-ENDIF
 
 * Load contents from container into image objects.
 * oIcon := HIcon():AddResource( "ok" )        && ico (old)

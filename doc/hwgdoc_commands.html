@@ -184,6 +184,12 @@
     dialog and starts messages processing for it. By default, it creates modal dialog.<br>
     You can create modeless dialog, specifying NOMODAL clause in this command.<br>
     <br>
+    Some commands between INIT DIALOG ... and ACTIVATE DIALOG ... NOMODAL<br>
+    overwrite the modeless property, so the NOMODAL option is ignored and<br>
+    the dialog started in modal mode. For example the HCEDIT command do this, see<br>
+    HELP() function of CLLOG in src/hilfew.prg<br>
+    (<a href="https://sourceforge.net/projects/cllog/">https://sourceforge.net/projects/cllog/</a>).<br>
+    <br>
     Attention !<br>
     Be sure, that the dialog calling a subdialog in non modal mode is not closed in background.<br>
     Otherwise, if the calling dialog is closed, the called non modal subdialog is also closed<br>

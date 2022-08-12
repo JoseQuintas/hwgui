@@ -10,6 +10,11 @@
 
 
 
+2022-08-12 11:08 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_commands.html
+        ! More additional info for modeless dialog's in doc
+
+
 2022-08-11 07:00 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * doc/hwgdoc_commands.html

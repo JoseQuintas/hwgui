@@ -9,6 +9,15 @@
 */
 
 
+2022-08-16 23:00 UTC+0200 Wilfried Brunken DF7BE
+  * source/winapi/hbincnt.prg
+  * utils/bincnt/Readme.txt
+  * utils/bincnt/addbatitem.prg (New)
+  * utils/bincnt/sample.bat (New)
+        ! Add a lot of files into
+        ! Binary Container by batch.
+        ! (Neede for CLLOG)   
+  
 
 2022-08-12 11:08 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html

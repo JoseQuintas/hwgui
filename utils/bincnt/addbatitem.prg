@@ -1,26 +1,95 @@
 /*
- *$Id$
+ * addbatitem.prg
  *
- * HWGUI - Harbour Win32 GUI library source code:
- * HBinC class
+ * $Id$
  *
- * Copyright 2014 Alexander S.Kresin <alex@kresin.ru>
- * www - http://www.kresin.ru
+ * HWGUI - Harbour Win32 and Linux (GTK) GUI library
+ *
+ * Copyright 2020 Wilfried Brunken, DF7BE 
+ * https://sourceforge.net/projects/cllog/
+ * 
+ * Adds one binary file to an existing HWGUI binary container,
+ * for usage in a batch.
+ *
+ * Parameter 1: File of binary container, for example sample.bin
+ *              The file must exists, otherwise create an empty one
+ *              with the HWGUI container manager
+ * Parameter 2: File to add to the binary container.
+ *              The file name must have an extension, for example
+ *              image.bmp
+ *
+ * Compile with:
+ * hbmk2 addbatitem.prg
 */
-
-#include "hwgui.ch"
 #include "hbclass.ch"
 #include "fileio.ch"
 
-/* Data structure:
- * Header: "hwgbc" ver(2b) reserve(1b)  N items  Contents Len  Contents blocks  Pass Length Pass info
- *         ---------------------------  -------  ------------  ---------------  ----------- ---------
- *                    8b                 2b          3b             1b               1b      1 - 64b
- * Contents item:
- *         Name Length    Name     Type   Address   Size  Flags
- *         -----------  ---------  ----   -------   ----  -----
- *             1 b       1 - 32b    4b      4b       4b     2b
- */
+Static  cHead := "hwgbc"
+
+FUNCTION MAIN(fname,cFileName)
+LOCAL oContainer, cType , nit, nnew, nret , cfilefull
+
+IF PCOUNT() <> 2
+  ? "Usage : addbatitem containerfile binfiletoadd"
+  QUIT
+ENDIF  
+     IF Empty( oContainer := HBinC():Open( fname, .T. ) )
+        ? "Open Error binary container >" , fname , "<"
+        QUIT
+      ENDIF
+     cfileful := cFileName
+     cType := FilExten( cFileName )
+     IF EMPTY(cType)
+      ? "Error : File name to add must have an extension !"
+      QUIT
+     ENDIF
+     cFileName := CutExten(CutPath(cFileName))
+     IF oContainer:Exist(cFileName)
+       ? "Binary object " , cFileName , " exists, not added !"
+       QUIT
+     ENDIF
+     nit := oContainer:nItems
+     * Add the file
+     oContainer:Add( cFileName, cType, MemoRead( cfileful ) )
+      * Save to container file
+      fname := hb_FNameExtSetDef( fname,  oContainer:aObjects[nit + 1 , 2] )
+      hb_MemoWrit( fname, oContainer:Get( oContainer:aObjects[nit + 1 , 1] ) )
+     
+      nnew := oContainer:nItems
+
+      ? "Items added : " , ALLTrim( Str(nnew - nit ))
+      * must be 1 !
+      ? "Total number of elements in container : " , ALLTrim( Str (nnew))   
+
+      QUIT
+
+ 
+ RETURN NIL
+ 
+ * Copied from source\common\procmisc\procs7.prg
+
+FUNCTION FilExten( fname )
+
+   LOCAL i
+
+   RETURN iif( ( i := RAt( '.', fname ) ) = 0, "", SubStr( fname, i + 1 ) )
+
+FUNCTION CutPath( fname )
+
+   LOCAL i
+
+   RETURN iif( ( i := RAt( '\', fname ) ) = 0, ;
+      iif( ( i := RAt( '/', fname ) ) = 0, fname, SubStr( fname, i + 1 ) ), ;
+      SubStr( fname, i + 1 ) ) 
+  
+FUNCTION CutExten( fname )
+
+   LOCAL i
+
+   RETURN iif( ( i := RAt( '.', fname ) ) = 0, fname, SubStr( fname, 1, i - 1 ) )
+ 
+* Modified version of source\winapi\hbincnt.prg
+* (only for Harbour console)
 
 #define VER_HIGH   1
 #define VER_LOW       0
@@ -33,7 +102,8 @@
 #define OBJ_SIZE      4
 #define OBJ_ADDR      5
 
-Static  cHead := "hwgbc"
+// Moved to head of source file
+// Static  cHead := "hwgbc"
 
 CLASS HBinC
 
@@ -274,7 +344,7 @@ METHOD Exist( cObjName )  CLASS HBinC
 
    cObjName := Lower( cObjName )
    RETURN ( Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) ) != 0
-
+   
 METHOD GetPos( cObjName )  CLASS HBinC
 
   cObjName := Lower( cObjName )
@@ -295,8 +365,6 @@ METHOD GetType( cObjName )
   ENDIF
   
   RETURN crettype
-  
-
-
-* ================================= EOF of hbincnt.prg =======================================
    
+  
+* ========================== EOF of addbatitem.prg ================================

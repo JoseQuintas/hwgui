@@ -5,6 +5,16 @@ $Id$
 
 Created by DF7BE, 2020-09-07.
 
+Contents:
+---------
+
+0.) Introduction
+1.) The Binary Container
+2.) Hex value resources
+3.) Additional information for WinAPI
+4.) Additional bug information
+5.) Add binary files to a container in a batch
+
 
 0.) Introduction
    Resources means images and icons in GUI applications.
@@ -101,8 +111,49 @@ Created by DF7BE, 2020-09-07.
        file size (recommeded default size for Icons is 48 x 48 pixels), and save the
        image as "Windows icon". Now they are OK.
                       
-          
+  
+5.) Add binary files to a container in a batch 
 
+With the HWGUI container manager "bincnt.prg" it is
+very hard to add a lot of files to a binary container manually.
+
+With the program "addbatitem.prg" and the sample batch "sample.bat"
+it is no problem do that.
+Here in this example a lot of bitmap images are to add.
+
+Instructions:
+Build the binary container manager "bincnt.prg" as described in "1.) The Binary Container".
+
+Compile the import program by:
+hbmk2 addbatitem.prg
+Copy the created file "addbatitem.exe" and "bincnt.exe"
+(the binary container manager) into your working directory.
+
+Also copy all files to import and the batch "sample.bat"
+into this directory.
+The files to import must have the same file extension !
+Modify sample.bat to your own needs. 
+
+The container to be filled, must be existing.
+Before starting the import, make a backup copy
+of the container file.
+
+If you start at scratch, create a new container with
+the binary containr manager:
+File / Create
+
+Enter file name for
+binary container to create,
+for example sample.bin 
+
+Start your import by calling 
+sample.bat
+
+Now the binary container is filled.
+Check your result with the Binary container manager.
+
+In case of errors, recover the binary container file
+from your backup copy.
 
 * =============== EOF of Readme.txt ================================
   

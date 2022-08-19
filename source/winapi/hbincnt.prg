@@ -274,7 +274,7 @@ METHOD Exist( cObjName )  CLASS HBinC
 
    cObjName := Lower( cObjName )
    RETURN ( Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) ) != 0
-
+   
 METHOD GetPos( cObjName )  CLASS HBinC
 
   cObjName := Lower( cObjName )
@@ -299,4 +299,4 @@ METHOD GetType( cObjName )
 
 
 * ================================= EOF of hbincnt.prg =======================================
-   
+  

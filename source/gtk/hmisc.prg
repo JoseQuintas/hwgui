@@ -175,6 +175,11 @@ FUNCTION hwg_HEX_DUMP (cinfield, npmode, cpVarName)
 *     (Default)
 * 3 : 16 bytes per line, only hex output,
 *     no quotes or other characters.
+* 4 : Like 0, but without blank
+*     between the hex values.
+*     Used by Binary Large Objects (BLOBs)
+*     stored in memo fields of a DBF.
+*     See program utils\bincnt\bindbf.prg
 *
 * cpVarName:
 * Only used, if npmode = 2.
@@ -227,8 +232,14 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
     * convert single character to hex
     ccchex  := hwg_NUMB2HEX(nccchar)
     * collect hex and printable chars in outline
-    cccprline := cccprline + cccprint + " "
-    ccchexline := ccchexline + ccchex + " "  
+    IF nmode == 4
+     cccprline := cccprline + cccprint
+     ccchexline := ccchexline + ccchex
+    ELSE
+     * Add a blank between a hex value pair
+     cccprline := cccprline + cccprint + " "
+     ccchexline := ccchexline + ccchex + " "
+    ENDIF
     * end of line with 16 bytes reached
     IF nlinepos > 15
     * create new line
@@ -242,6 +253,8 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
        coutfield := coutfield + ccchexline + CHR(34) + " + ;" + hwg_EOLStyle()
       CASE nmode == 3
        coutfield := coutfield + ccchexline + hwg_EOLStyle()
+      CASE nmode == 4
+       coutfield := coutfield + ccchexline
     ENDCASE
 
       * ready for new line  
@@ -267,6 +280,8 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
        coutfield := coutfield + ccchexline + CHR(34) +  hwg_EOLStyle()
       CASE nmode == 3
        coutfield := coutfield + ccchexline + hwg_EOLStyle()
+      CASE nmode == 4
+       coutfield := coutfield + ccchexline
     ENDCASE
 
   ENDIF
@@ -725,7 +740,7 @@ LOCAL cres
   ELSE
    cres := ".F." 
   ENDIF
-RETURN cres 
+RETURN cres
 
 * =======================================================
 FUNCTION hwg_IsNIL(xpara)

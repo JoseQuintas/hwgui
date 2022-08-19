@@ -9,6 +9,19 @@
 */
 
 
+
+2022-08-19 11:10 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * source/gtk/hmisc.prg
+  * source/winapi/hbincnt.prg
+  * source/winapi/hmisc.prg
+  * utils/bincnt/Crackled_items.png (New)
+  * utils/bincnt/Readme.txt
+  * utils/bincnt/bindbf.hbp (New)
+  * utils/bincnt/bindbf.prg (New)
+        ! New feature: binary container in a dbf
+        ! (to be continued)
+
 2022-08-16 23:00 UTC+0200 Wilfried Brunken DF7BE
   * source/winapi/hbincnt.prg
   * utils/bincnt/Readme.txt
@@ -16,7 +29,7 @@
   * utils/bincnt/sample.bat (New)
         ! Add a lot of files into
         ! Binary Container by batch.
-        ! (Neede for CLLOG)   
+        ! (Needed for CLLOG)   
   
 
 2022-08-12 11:08 UTC+0200 Wilfried Brunken DF7BE

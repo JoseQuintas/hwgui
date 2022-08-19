@@ -14,6 +14,7 @@ Contents:
 3.) Additional information for WinAPI
 4.) Additional bug information
 5.) Add binary files to a container in a batch
+6.) DBF as binary container
 
 
 0.) Introduction
@@ -43,6 +44,16 @@ Contents:
     
     The sample program "samples/bincnts.prg"
     demonstrates the usage of items in a Binary Container file.
+
+    Attention:
+    The file size of the resulted container manager file may not
+    exceed about 128 kByte. Otherwise the container
+    "crackled records", refer the screenshot "Crackled_items.png".
+    Make a backup copy of your binary container file before
+    any modification.
+
+    An alternative method is the usage of a DBF file,
+    described in "6.) DBF as binary container".
 
 
 2.) Hex value resources
@@ -95,7 +106,9 @@ Contents:
        If you want to add these file into one container, rename them with a unique name,
        for example:
         astro.bmp, astro2.jpg, astro3.png
-       This is done in the sample program "bincnts.prg". 
+       This is done in the sample program "bincnts.prg".
+      Delete item not working:
+       This bug will be fixed if we have time.  
 
     - Converting bitmaps to icons:
        First i converted a bitmap to icons with the "Greenfish Icon Editor" (gfie64),
@@ -139,7 +152,7 @@ Before starting the import, make a backup copy
 of the container file.
 
 If you start at scratch, create a new container with
-the binary containr manager:
+the binary container manager:
 File / Create
 
 Enter file name for
@@ -154,6 +167,32 @@ Check your result with the Binary container manager.
 
 In case of errors, recover the binary container file
 from your backup copy.
+
+
+6.) DBF as binary container
+    (To be continued)
+
+    It seems, that there are no size limits known.
+    A 2,8 Mbyte big exe file was added and exported.
+    Let us know, if you a find a size limit.
+
+    The file bindbf.prg is the source code
+    of the binary container manager.
+
+    Compile the container mamager with
+    hbmk2 bindbf.hbp
+
+    First create an new DBF file, after than
+    open the file.
+
+    Now you add binary files and export them.
+
+
+    In the next steps, we will add the following features:
+    - Handle resources
+    - Add a lot files within a batch.
+    - Display bitmaps in the container manager.
+
 
 * =============== EOF of Readme.txt ================================
   

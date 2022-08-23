@@ -8,7 +8,13 @@
    2002-12-01 16:55 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2022-08-23 22:10 UTC+0200 Wilfried Brunken DF7BE
+  * utils/bincnt/Readme.txt
+  * utils/bincnt/adddbfitem.prg (New)
+  * utils/bincnt/bindbf.hbp
+  * utils/bincnt/bindbf.prg
+  * utils/bincnt/samdbf.bat (New)
+        ! Binary container in a dbf (2)
 
 2022-08-19 11:10 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html

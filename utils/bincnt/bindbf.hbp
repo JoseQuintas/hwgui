@@ -10,6 +10,7 @@
 
 -n -w
 
+# -o../../bin/
 -obindbf
 
 bindbf.prg

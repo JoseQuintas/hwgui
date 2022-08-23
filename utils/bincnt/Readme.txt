@@ -15,6 +15,7 @@ Contents:
 4.) Additional bug information
 5.) Add binary files to a container in a batch
 6.) DBF as binary container
+7.) Add binary files to a DBF container in a batch
 
 
 0.) Introduction
@@ -25,9 +26,10 @@ Contents:
    setup script. This is uncomfortable. You can use the Windows resource
    compiler utility (HWGUI supports this), but for multi platform programs
    you must avoid the resource compiler.
-   But there are 2 alternatives (as a good substitute for the Windows resource compiler):
+   But there are 3 alternatives (as a good substitute for the Windows resource compiler):
 
    - The Binary Container
+   - The DBF Binary Container
    - Hex value resources
 
    Here a short description.
@@ -53,7 +55,8 @@ Contents:
     any modification.
 
     An alternative method is the usage of a DBF file,
-    described in "6.) DBF as binary container".
+    described in "6.) DBF as binary container",
+    or use more than one binary container.
 
 
 2.) Hex value resources
@@ -177,22 +180,104 @@ from your backup copy.
     Let us know, if you a find a size limit.
 
     The file bindbf.prg is the source code
-    of the binary container manager.
+    of the binary DBF container manager.
+    Your can add, export or delete
+    binary elements with this utility.
 
-    Compile the container mamager with
+    Compile the container manager with
     hbmk2 bindbf.hbp
 
     First create an new DBF file, after than
     open the file.
 
-    Now you add binary files and export them.
+    Now you can add binary files and export them.
 
 
     In the next steps, we will add the following features:
     - Handle resources
-    - Add a lot files within a batch.
     - Display bitmaps in the container manager.
 
+    Structure of a DBF container:
+  
+    BIN_CITEM ,  C ,  25, 0   The file name of the binary element
+    BIN_CTYPE ,  C ,  10, 0   The file extension of the binary element
+    BIN_MITEM ,  M            MEMO field stores the value of the element as a hex dump
+
+    The expression ALLTRIM(BIN_CITEM) + "." + ALLTRIM(BIN_CTYPE) delivers the
+    full filoename.
+  
+
+7.) Add binary files to a DBF container in a batch
+
+The task is simular to "5.) Add binary files to a container in a batch".
+
+The batch file is "samdbf.bat" and the program is
+"adddbfitem.prg"
+
+- Compile the programm by calling:
+  hbmk2 adddbfitem.prg
+
+- Create a new DBF with the binary DBF container manager.
+
+- Modify the bat to your own needs and start it.
+
+
+8.) Usage of the DBF binary container in your HWGUI application:
+
+    - Compile the binary DBF container manager.
+    - Start the program and at first create the binary DBF container.
+    - Open the created binary DBF container
+    - Add all resource files needed into the binary DBF container.
+
+
+    Extract the sample code snippets from the source code file "bindbf.prg"
+    following the instructions:
+
+
+    Use Variable "fname" to store the file name of the DBF
+    without extension "dbf"
+    (for example):
+
+     fname := "sample"
+
+    - Select a free working area
+
+    - open the DBF with  
+       USE &fname
+    - Optional with index:
+
+      IF .NOT. FILE(fname + INDEXEXT())
+        INDEX ON BIN_CITEM + BIN_CTYPE TO fname
+      ENDIF
+ 
+      USE
+      * Re open DBF
+      USE &fname INDEX fname
+      SET ORDER TO 1
+   
+    - Copy the following functions from bindbf.prg into
+      your source code:
+      - bindbf_shbitmap(): Modify the SELECT command, modify code to your own needs
+      - bindbf_obitmap() : No modification, copy and rename this function for other resource types (.ico,.png,.jpg,...)
+      - dbfcnt_search() : No modification 
+
+    - The sequence to get an element from the DBF container file:
+      1.) SELECT nnn    && the open DBF container
+      2.) dbfcnt_search(<name>,<type>)
+          - Check for return code > 0 , now the records pointer is set to the matched element.
+          - Check, that BIN_CTYPE == "bmp"
+      3.) Convert the bitmap to a bitmap object and store in an object variable:
+          obmp := bindbf_obitmap(BIN_CITEM , BIN_CTYPE , BIN_MITEM)
+
+      4.) Modify and call function bindbf_shbitmap(), so that it is OK
+          to your HWGUI application.
+       
+          Before displaying a bitmap, in most cases you must return to
+          the previous select.  
+
+    Feel free to expand the code for other resource types.
+      
+   
 
 * =============== EOF of Readme.txt ================================
   

@@ -2737,13 +2737,19 @@ See sample program "testspli.prg" for details.<br>
    <p>
    Starts a messagebox to display a value of xxx.<br>
    The displayed values are simular to function "hwg_xvalLog()"<br>
-   This function may be helpful for debugging.<br>
+   This function may be helpful for debugging.
+   <br>
+   The header texts written to message:<br>
+   cttype : default is "Type : "<br>
+   cttval : default is "Value : "<br>
+   cttitle: default is "Debug" <br>  
    <br>
    Additional info for debugging:<br>
    On GTK/Linux you can use the function QOUT()<br>
    to display values of variables in the terminal,<br>
    where the program is started.<br>
    On Windows, these outputs are not visible.<br>
+   So these functions for debugging are helpful on Windows.<br>
    </p>
 
    <br><strong class="subhead"> hwg_xvalLog(xxx,cttype,cttval,cttitle,cfilename)</strong>
@@ -2769,6 +2775,9 @@ See sample program "testspli.prg" for details.<br>
    &nbsp;&nbsp;Type : D Value : 20220627<br>
    &nbsp;&nbsp;Type : O Value : &lt;OBJECT&gt;<br>
    (This is the output written to logfile by test program "test/xval.prg")<br>
+   <br>
+   Parameters cttype,cttval and cttitle same as hwg_xvalMsg(),<br>
+   but written into logfile.<br>
    </p>
 
    <br><strong class="subhead"> hwg_Alert</strong> (Windows only)

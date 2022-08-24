@@ -11,6 +11,11 @@
 
 
 2022-08-24 10:10 UTC+0200 Wilfried Brunken DF7BE
+  * source/gtk/drawwidg.prg
+  * source/gtk/hmisc.prg
+        ! Preparation Ticket #111: Some debug help added 
+
+2022-08-24 10:10 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
         ! Binary container in a dbf, clean
 

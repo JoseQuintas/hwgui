@@ -71,7 +71,7 @@ FUNCTION hwg_GetUTCTime
 RETURN SUBSTR(hwg_GetUTCTimeDate(), 12 , 8 ) 
 
 * ================================= * 
-FUNCTION hwg_cHex2Bin (chexstr)
+FUNCTION hwg_cHex2Bin (chexstr,cdebug)
 * Converts a hex string to binary
 * Returns empty string, if error
 * or number of hex characters is
@@ -80,9 +80,19 @@ FUNCTION hwg_cHex2Bin (chexstr)
 * Valid characters:
 * 0 ... 9 , A ... F , a ... f
 * Other characters are ignored.
+* cdebug : Set a string for debug.
+* The string appears at the beginning
+* of the logfile.
 * ================================= *
 LOCAL cbin, ncount, chs, lpos, nvalu, nvalue , nodd
 * lpos : F = MSB , T = LSB
+LOCAL ldebug
+IF cdebug == NIL
+ ldebug := .F.
+ELSE
+ ldebug := .T.
+ hwg_xvalLog(cdebug)
+ENDIF
 cbin := ""
 lpos := .T.
 nvalue := 0
@@ -91,6 +101,9 @@ IF (chexstr == NIL)
  RETURN ""
 ENDIF 
 chexstr := UPPER(chexstr)
+ IF ldebug 
+  hwg_xvalLog(chexstr)
+ ENDIF
 FOR ncount := 1 TO LEN(chexstr)
  chs := SUBSTR(chexstr, ncount, 1 )
  IF chs $ "0123456789ABCDEF"
@@ -145,7 +158,10 @@ FOR ncount := 1 TO LEN(chexstr)
   * if odd, return error
   IF ( nodd % 2 ) != 0
    RETURN ""
-  ENDIF   
+  ENDIF 
+  IF ldebug 
+    hwg_xvalLog(cbin)
+  ENDIF  
 RETURN cbin
 
 

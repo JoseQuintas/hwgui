@@ -8,6 +8,31 @@
  * www - http://www.kresin.ru
 */
 
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* List of classes in this file:
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* HFont
+* HPen
+* HBrush
+* HBitmap
+* HBitmap
+* HStyle
+
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* List of functions:
+* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* hwg_BmpFromRes()
+* hwg_SetResContainer()
+* hwg_GetResContainer()
+* hwg_ExtractResContItem2file()
+* hwg_ExtractResContItemType()
+* hwg_ResContItemPosition()
+* hwg_Bitmap2tmpfile()
+* EXIT PROCEDURE CleanDrawWidg()
+* hwg_FontSetCharset()
+* hwg_LoadCursorFromString()
+
+
 #include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"

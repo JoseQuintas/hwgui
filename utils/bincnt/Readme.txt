@@ -173,8 +173,7 @@ from your backup copy.
 
 
 6.) DBF as binary container
-    (To be continued)
-
+ 
     It seems, that there are no size limits known.
     A 2,8 Mbyte big exe file was added and exported.
     Let us know, if you a find a size limit.
@@ -183,6 +182,7 @@ from your backup copy.
     of the binary DBF container manager.
     Your can add, export or delete
     binary elements with this utility.
+    Also added bitmaps "bmp" can be displayed.
 
     Compile the container manager with
     hbmk2 bindbf.hbp
@@ -191,6 +191,12 @@ from your backup copy.
     open the file.
 
     Now you can add binary files and export them.
+
+    Attention !
+    The file name is limited to 25 characters, the
+    type (extension) to 10 characters.
+    If necessary, rename the files to add for
+    shortening the name(s).
 
 
     In the next steps, we will add the following features:
@@ -205,6 +211,9 @@ from your backup copy.
 
     The expression ALLTRIM(BIN_CITEM) + "." + ALLTRIM(BIN_CTYPE) delivers the
     full filoename.
+
+    For details see sample program
+    "sample\bindbf.prg"
   
 
 7.) Add binary files to a DBF container in a batch
@@ -227,14 +236,21 @@ The batch file is "samdbf.bat" and the program is
     - Compile the binary DBF container manager.
     - Start the program and at first create the binary DBF container.
     - Open the created binary DBF container
-    - Add all resource files needed into the binary DBF container.
+    - Add all resource files needed to the binary DBF container.
+    - Quit the binary DBF container manager.
 
 
-    Extract the sample code snippets from the source code file "bindbf.prg"
+    Extract the sample code snippets from the sample code file "samples\bindbf.prg".
+    Copy the following functions from bindbf.prg into
+    your source code:
+      - bindbf_getimage(cfile,ctype)      : Optional modify the SELECT command, optional modify code to your own needs
+      - bindbf_obitmap(citem,ctype,mitem) : No modification, copy and rename this function for other resource types (.ico,.png,.jpg,...)
+      - dbfcnt_search(cfile,ctype)        : No modification 
+
     following the instructions:
+    (start after FUNCTION or PROCEDURE MAIN with LOCAL declarations)
 
-
-    Use Variable "fname" to store the file name of the DBF
+    Optional: Use Variable "fname" to store the file name of the DBF
     without extension "dbf"
     (for example):
 
@@ -255,27 +271,20 @@ The batch file is "samdbf.bat" and the program is
       USE &fname INDEX fname
       SET ORDER TO 1
    
-    - Copy the following functions from bindbf.prg into
-      your source code:
-      - bindbf_shbitmap(): Modify the SELECT command, modify code to your own needs
-      - bindbf_obitmap() : No modification, copy and rename this function for other resource types (.ico,.png,.jpg,...)
-      - dbfcnt_search() : No modification 
+ 
+    - The sequence to get an image element from the DBF container file:
+ 
+       oImage1 := bindbf_getimage(<file1>,<type1>)
+       oImage2 := bindbf_getimage(<file2>,<type2>)
+       ...   
+ 
+      Before displaying an image, in most cases you must return to
+      the previous select.
 
-    - The sequence to get an element from the DBF container file:
-      1.) SELECT nnn    && the open DBF container
-      2.) dbfcnt_search(<name>,<type>)
-          - Check for return code > 0 , now the records pointer is set to the matched element.
-          - Check, that BIN_CTYPE == "bmp"
-      3.) Convert the bitmap to a bitmap object and store in an object variable:
-          obmp := bindbf_obitmap(BIN_CITEM , BIN_CTYPE , BIN_MITEM)
+      USE              && Close DBF binary container
+      USE <dbf> ...    && Open your own database(s)
 
-      4.) Modify and call function bindbf_shbitmap(), so that it is OK
-          to your HWGUI application.
-       
-          Before displaying a bitmap, in most cases you must return to
-          the previous select.  
-
-    Feel free to expand the code for other resource types.
+    Feel free to expand the code for other binary types.
       
    
 

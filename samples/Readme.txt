@@ -131,6 +131,7 @@ For beginners:
  =================  ===   === ======= =======
  a.prg   +)         R         CN 9)   Some HWGUI basics (Open DBF's, GET's, ...)
  arraybrowse.prg    Y                 Array BROWSE avoiding crashes because of bugs (see inline comments)
+ bindbf.prg 10)     Y                 Usage of images from Binary DBF container
  bincnts.prg 10) +) Y                 Usage of images from Binary container
  buildpelles.prg    N         Y       Build APP using Pelles C Compiler (*.bld file)
  checkbox.prg       Y                 Checkboxes and tabs
@@ -286,10 +287,14 @@ Directories:
   9) MinGW64: Syntax error in rc file, hex values not allowed any more, must be following:
      <name> BITMAP "<file.bmp>"
 
- 10) Binary container manager: See instructions in inline command. For this sample a
+ 10) Binary container manager: See instructions in inline comment. For this sample a
      sample binary container is stored here: image/sample.bin.
      It contains all images needed for this sample.
      For creating and editing binary container you find the utility "Binary container manager"
+     in directory "utils/bincnt". 
+     Binary DBF container manager: See instructions in inline comment.
+     Sample container:  bindbf.dbf and bindbf.dbt
+     For creating and editing binary DBF container you find the utility "Binary container manager"
      in directory "utils/bincnt". 
  
  11) Read more about the handling of hex value resources in file "utils/bincnt/Readme.txt".

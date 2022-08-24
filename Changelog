@@ -8,6 +8,20 @@
    2002-12-01 16:55 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+
+
+2022-08-24 07:25 UTC+0200 Wilfried Brunken DF7BE
+  * samples/bindbf.dbf (New)
+  * samples/bindbf.dbt (New)
+  * samples/bindbf.hbp (New)
+  * samples/bindbf.prg (New)
+  * samples/bindbf.rc  (New)
+  * samples/Readme.txt
+  * utils/bincnt/Readme.txt
+        ! Binary container in a dbf (3):
+        ! Finished with sample program.
+
+
 2022-08-23 22:10 UTC+0200 Wilfried Brunken DF7BE
   * utils/bincnt/Readme.txt
   * utils/bincnt/adddbfitem.prg (New)

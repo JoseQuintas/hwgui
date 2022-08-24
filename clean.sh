@@ -53,6 +53,7 @@ rm samples/testxml 2>/dev/null
 rm samples/xmltree 2>/dev/null
 rm samples/colrbloc 2>/dev/null
 rm samples/testtree 2>/dev/null
+rm samples/bindbf 2>/dev/null
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null
@@ -61,7 +62,7 @@ rm samples/temp_a2.pdf 2>/dev/null
 rm samples/tstbrw.dbf 2>/dev/null
 
 #
-# Utils exe
+# Utils exe and logs
 rm bin/bincnt 2>/dev/null
 rm bin/dbchw 2>/dev/null
 rm bin/file2hex 2>/dev/null
@@ -70,6 +71,8 @@ rm utils/devtools/memdump 2>/dev/null
 rm utils/devtools/test.mem 2>/dev/null
 rm utils/devtools/test.txt 2>/dev/null
 rm utils/devtools/lbldump 2>/dev/null
+rm utils/bincnt/a.log 2>/dev/null
+rm utils/bincnt/bindbf 2>/dev/null
 
 # contrib exe
 rm contrib/hwlabel/hwlbledt 2>/dev/null

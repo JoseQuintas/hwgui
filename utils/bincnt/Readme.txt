@@ -75,6 +75,28 @@ Contents:
     call it with parameter "file2hex" or by:
     hbmk2 file2hex.hbp .
 
+    Attention !
+    On GTK a core dump is possible, if the object variables are not defined as LOCAL.
+    (Reference Bug Ticket #111).
+    
+    See Sample "hexbincnt.prg":
+    
+    In the old version the call of  showbitmap(oBMPExit)
+    crashes.
+    
+    At first, this variableoBMPExit was declared as PUBLIC
+    and passed to function showbitmap(): 
+    // oBMPExit2 := HBitmap():AddString( "exit2" , cValexit2 )
+  
+    Now the function is modified and needed the following parameters to pass:
+    showbitmap(cValopen,"open")
+    - cValopen is the binary value created by hwg_cHex2Bin()
+    - "open" is the name of resource.
+
+    It seems, that the internal GTK variables are overwritten.
+
+
+
 
 3.) Additional information for WinAPI
 

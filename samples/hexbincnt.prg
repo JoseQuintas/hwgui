@@ -56,20 +56,28 @@
 
 #include "hwgui.ch"
 
-MEMVAR cHexAstro , cHexok , cHexopen , cHexexit , cHexdoor , cHexnext    && Hex dumps 
-MEMVAR cValAstro , cValok , cValopen , cValexit , cValdoor , cValnext    && Resource contents
+MEMVAR cHexAstro , cHexok , cHexopen , cHexexit , cHexdoor , cHexnext, cHexExit2    && Hex dumps 
+MEMVAR cValAstro , cValok , cValopen , cValexit , cValdoor , cValnext, cValExit2    && Resource contents
 
 FUNCTION Main
 
 LOCAL cImageDir, cppath , oIcon, oBitmap , oToolbar , oFileOpen , oQuit , oMainW , oFontMain
-LOCAL htab, nbut , oBMPExit , oPNGDoor , oBtnDoor , ojpeg , oBtnjpeg , oastropng
+LOCAL htab, nbut , oBMPExit , oPNGDoor , oBtnDoor , ojpeg , oBtnjpeg , oastropng , oBMPExit2
 LOCAL cDirSep := hwg_GetDirSep()
+LOCAL obttontest , obttontest2
 
-PUBLIC cHexAstro , cHexok , cHexopen , cHexexit , cHexdoor , cHexnext    && Hex dumps 
-PUBLIC cValAstro , cValok , cValopen , cValexit , cValdoor , cValnext    && Resource contents
+PUBLIC cHexAstro , cHexok , cHexopen , cHexexit , cHexdoor , cHexnext , cHexExit2   && Hex dumps 
+PUBLIC cValAstro , cValok , cValopen , cValexit , cValdoor , cValnext , cValExit2   && Resource contents
 
 htab := 0
 nbut := 0
+
+* Exit2 : bmp
+* astro : bmp
+* next.bmp : door.bmp
+* exit.bmp
+* open.bmp
+* ok.ico 
 
 * Fill variables with hex values
 Init_Hexvars()
@@ -82,6 +90,8 @@ cValexit  := hwg_cHex2Bin ( cHexexit )
 cValdoor  := hwg_cHex2Bin ( cHexdoor )
 cValnext  := hwg_cHex2Bin ( cHexnext )
 
+cValExit2 := hwg_cHex2Bin ( cHexExit2 )
+
 * Load contents from hex resources into image objects.
 oIcon     := HIcon():AddString( "ok" , cValok )
 oBitmap   := HBitmap():AddString( "open" , cValopen )
@@ -89,6 +99,8 @@ oBMPExit  := HBitmap():AddString( "exit" , cValexit )
 oPNGDoor  := HBitmap():AddString( "door" , cValdoor )
 ojpeg     := HBitmap():AddString( "next" , cValnext )
 oastropng := HBitmap():AddString( "astro", cValAstro )
+
+// oBMPExit2 := HBitmap():AddString( "exit2" , cValexit2 )
 
 #ifdef __PLATFORM__WINDOWS
    PREPARE FONT oFontMain NAME "MS Sans Serif" WIDTH 0 HEIGHT -14
@@ -98,7 +110,7 @@ oastropng := HBitmap():AddString( "astro", cValAstro )
 
 INIT WINDOW oMainW  ;
    FONT oFontMain  ;
-   TITLE "Bitmap Hex container sample" AT 0,0 SIZE 300 , 200 ;
+   TITLE "Bitmap Hex container sample" AT 0,0 SIZE 400 , 400 ;
    ICON oIcon STYLE WS_POPUP +  WS_CAPTION + WS_SYSMENU ;
  
    
@@ -143,6 +155,23 @@ INIT WINDOW oMainW  ;
    TRANSPARENT COLOR hwg_ColorC2N("#DCDAD5") COORDINATES 0,4,0,0 ; 
    TOOLTIP "JPEG image" 
   
+nbut+=1
+
+   @ htab+(nbut*32), 3 BUTTON obttontest CAPTION "Show Bmp"  OF oToolbar SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK { || showbitmap(cValopen,"open") }
+
+nbut+=1
+
+   @ htab+( (nbut*32)  + 48 ), 3 BUTTON obttontest2  CAPTION "Show bmp2" OF oToolbar SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK { || showbitmap(cValAstro,"astro") }
+
+* Attention:
+* This crashes with core dump        
+//   @ htab+(nbut*32), 3 BUTTON obttontest CAPTION "Show Bitmap" SIZE 80,32 ;
+//        STYLE WS_TABSTOP+BS_FLAT ;
+//        ON CLICK { || showbitmap(oBMPExit) }
 
  @ 60 , 100 SAY "astro.png" SIZE 100, 20
  @ 60 , 100 BITMAP oastropng 
@@ -162,6 +191,63 @@ FUNCTION ClickJpeg
  hwg_msginfo("You have clicked >JPEG image<")
 RETURN NIL
 
+* ==============================================
+FUNCTION showbitmap(cbmp,cbmpname)
+* Shows a bitmap
+* ==============================================
+LOCAL frm_bitmap , oButton1 , nx , ny , oBitmap
+LOCAL oLabel1, oLabel2, oLabel3, oLabel4
+LOCAL obmp
+
+
+* Display the bitmap in an extra window
+* Max size : 1277,640
+
+obmp := HBitmap():AddString( cbmpname , cbmp )
+
+
+* Get current size
+nx := hwg_GetBitmapWidth ( obmp:handle )
+ny := hwg_GetBitmapHeight( obmp:handle )
+
+
+IF nx > 1277
+  nx := 1277
+ENDIF 
+
+IF ny > 640
+  ny := 640
+ENDIF  
+
+  INIT DIALOG frm_bitmap TITLE "Bitmap Image" ;
+    AT 20,20 SIZE 1324,772 ;
+     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+
+   @ 747,667 SAY oLabel1 CAPTION "Size:  x:"  SIZE 87,22 ;
+        STYLE SS_RIGHT   
+   @ 866,667 SAY oLabel2 CAPTION ALLTRIM(STR(nx))  SIZE 80,22   
+   @ 988,667 SAY oLabel3 CAPTION "y:"  SIZE 80,22 ;
+        STYLE SS_RIGHT   
+   @ 1130,667 SAY oLabel4 CAPTION ALLTRIM(STR(ny))  SIZE 80,22    
+
+
+#ifdef __GTK__
+   @ 17,12 BITMAP oBitmap  ;
+        SHOW obmp OF frm_bitmap  ;
+        SIZE nx, ny
+#else
+   @ 17,12 BITMAP oBitmap  ;
+        SHOW obmp OF frm_bitmap
+#endif
+
+ 
+   @ 590,663 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK { || frm_bitmap:Close() }
+
+   ACTIVATE DIALOG frm_bitmap
+
+RETURN NIL
 
 * ==============================================
 * Init hex defintions of binary resources
@@ -2294,6 +2380,80 @@ cHexAstro := ;
 "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF " + ;
 "FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF " + ;
 "FF FF FF FF FF FF FF FF FF FF FF 00 00 00 "
+
+cHexExit2 := "42 4D 8A 04 00 00 00 00 00 00 8A 00 00 00 7C 00 " + ;
+"00 00 10 00 00 00 10 00 00 00 01 00 20 00 03 00 " + ;
+"00 00 00 04 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 FF 00 00 FF 00 00 FF 00 " + ;
+"00 00 00 00 00 FF 42 47 52 73 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 04 00 00 00 00 00 " + ;
+"00 00 00 00 00 00 00 00 00 00 34 14 7C 4E 35 13 " + ;
+"7E ED 35 13 7C FF 35 13 7C FF 35 13 7C FF 35 13 " + ;
+"7C FF 35 13 7C FF 35 13 7C FF 35 13 7C FF 35 13 " + ;
+"7C FF 35 13 7C FF 35 13 7C FF 35 13 7C FF 35 13 " + ;
+"7C FF 35 13 7E ED 35 14 7E 4D 35 17 84 EE 38 1C " + ;
+"A1 FF 39 1E AB FF 39 1E AB FF 39 1E AB FF 39 1E " + ;
+"AB FF 39 1E AB FF 39 1E AB FF 39 1E AB FF 39 1E " + ;
+"AB FF 39 1E AB FF 39 1E AB FF 39 1E AB FF 39 1E " + ;
+"AB FF 38 1B A0 FF 34 16 83 ED 33 18 87 FF 33 26 " + ;
+"BF FF 31 24 BE FF 31 24 BE FF 31 24 BF FF 30 25 " + ;
+"C1 FF 56 4F CE FF 78 73 D8 FF 79 74 D9 FF 58 50 " + ;
+"CF FF 31 27 C1 FF 31 24 BE FF 31 24 BE FF 31 24 " + ;
+"BE FF 33 26 BF FF 33 18 87 FF 32 1A 8D FF 39 34 " + ;
+"CB FF 31 2C C9 FF 31 2B C9 FF 4F 49 CE FF C4 C1 " + ;
+"EC FF FA FA FA FF FA FA FA FF FA FA FA FF FA FA " + ;
+"FA FF D0 CE EF FF 59 53 D2 FF 31 2C C9 FF 31 2C " + ;
+"C9 FF 39 34 CB FF 32 1A 8C FF 31 1C 92 FF 45 44 " + ;
+"D1 FF 37 35 CE FF 4D 48 CF FF E9 E8 F5 FF EF EE " + ;
+"F7 FF 91 8D DF FF 59 53 D1 FF 58 52 D1 FF 8B 86 " + ;
+"DE FF E7 E7 F5 FF F1 F1 F8 FF 5F 5A D4 FF 37 36 " + ;
+"CE FF 45 44 D1 FF 31 1C 92 FF 31 1F 98 FF 51 53 " + ;
+"D8 FF 38 35 CE FF C4 C2 EC FF F0 F0 F7 FF 59 53 " + ;
+"D1 FF 3A 3A D1 FF 3D 40 D4 FF 3D 3F D4 FF 39 39 " + ;
+"D0 FF 4B 44 CD FF E6 E6 F5 FF DA D9 F2 FF 39 38 " + ;
+"CF FF 51 53 D8 FF 31 1F 98 FF 30 21 9E FF 5C 62 " + ;
+"DE FF 54 50 D2 FF FA FA FA FF 97 93 E0 FF 3D 41 " + ;
+"D4 FF 43 4A D9 FF 43 4A D9 FF 43 4A D9 FF 43 4A " + ;
+"D9 FF 3E 41 D4 FF 7F 7B DB FF FA FA FA FF 69 66 " + ;
+"D7 FF 5C 62 DE FF 30 21 9D FF 2F 23 A3 FF 67 70 " + ;
+"E3 FF 75 71 D9 FF FA FA FA FF 5F 5A D3 FF 49 54 " + ;
+"DE FF 49 54 DE FF 44 4C DA FF 44 4B D9 FF 49 54 " + ;
+"DE FF 49 54 DE FF 4B 46 CF FF FA FA FA FF 88 84 " + ;
+"DE FF 67 70 E3 FF 2F 23 A3 FF 2E 26 A9 FF 72 7E " + ;
+"E8 FF 75 71 D9 FF FA FA FA FF 62 5D D4 FF 4F 5E " + ;
+"E3 FF 47 51 DC FF 93 8F E0 FF 99 96 E1 FF 46 4E " + ;
+"DB FF 4E 5D E3 FF 54 4F D0 FF FA FA FA FF 80 7D " + ;
+"DC FF 72 7E E8 FF 2E 25 A8 FF 2E 28 AE FF 7C 8B " + ;
+"EC FF 52 51 D4 FF F9 F9 FA FF A4 A1 E4 FF 46 4F " + ;
+"D9 FF 46 4E D9 FF E2 E1 F4 FF EB EA F6 FF 44 4A " + ;
+"D7 FF 43 49 D6 FF A1 9D E3 FF FA FA FA FF 5C 5C " + ;
+"D6 FF 7C 8B EC FF 2E 28 AE FF 2D 2A B4 FF 86 98 " + ;
+"EF FF 4D 59 DD FF AF AC E7 FF F8 F7 F9 FF 8E 8A " + ;
+"DF FF 3E 3F D1 FF E2 E1 F4 FF EB EA F6 FF 3B 3A " + ;
+"CE FF 88 84 DD FF F8 F7 F9 FF B4 B1 E8 FF 50 60 " + ;
+"E0 FF 86 98 EF FF 2D 2A B4 FF 2C 2C BA FF 90 A4 " + ;
+"F2 FF 62 7F EC FF 49 4D D5 FF BF BD EB FF FA FA " + ;
+"FA FF 4D 47 CE FF E2 E1 F4 FF EB EA F6 FF 46 3F " + ;
+"CC FF FA FA FA FF C4 C1 EC FF 51 58 DA FF 62 7F " + ;
+"EC FF 90 A4 F2 FF 2C 2C B9 FF 2B 2F BF FF 99 B0 " + ;
+"F3 FF 68 8A EE FF 68 88 ED FF 4B 58 D9 FF 70 6E " + ;
+"DA FF 42 46 D2 FF D6 D5 F1 FF E0 DF F4 FF 40 40 " + ;
+"D0 FF 71 6F DA FF 50 5E DC FF 68 8A EE FF 68 8A " + ;
+"EE FF 99 B0 F3 FF 2B 2F BF FF 2A 31 C5 FF A2 BA " + ;
+"F6 FF 6F 95 F1 FF 6F 95 F1 FF 6F 95 F1 FF 6F 95 " + ;
+"F1 FF 68 8A EC FF 56 58 D4 FF 58 58 D5 FF 66 87 " + ;
+"EC FF 6E 95 F1 FF 6E 95 F1 FF 6E 95 F1 FF 6E 95 " + ;
+"F1 FF A1 BA F6 FF 2A 31 C4 FF 2D 36 CC EF 90 A8 " + ;
+"F0 FF AA C5 F8 FF AA C5 F8 FF AA C5 F8 FF AA C5 " + ;
+"F8 FF AA C5 F8 FF AA C5 F8 FF AA C5 F8 FF AA C5 " + ;
+"F8 FF AA C5 F8 FF AA C5 F8 FF AA C5 F8 FF AA C5 " + ;
+"F8 FF 90 A8 F0 FF 2C 37 CB ED 28 38 D0 52 2C 3B " + ;
+"D1 EF 29 36 D0 FF 29 36 D0 FF 29 36 D0 FF 29 36 " + ;
+"D0 FF 29 36 D0 FF 29 36 D0 FF 29 36 D0 FF 29 36 " + ;
+"D0 FF 29 36 D0 FF 29 36 D0 FF 29 36 D0 FF 29 36 " + ;
+"D0 FF 2C 3A D1 EF 2A 3A D2 4F "
 
 RETURN NIL
 

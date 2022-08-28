@@ -19,6 +19,8 @@
     *  GTK/Linux:  Yes
     *  GTK/Win  :  No
 
+* All entries (file name and type) are always stored in lower case,
+* so handle exchange from LINUX/UNIX <==> Windows
  
 #include "hwgui.ch"
 #ifdef __GTK__
@@ -46,7 +48,7 @@ Private oBrw, oFont,  currFname , oSay1, oSay2 , oMenuBrw
        MENUITEM "&Open"+Chr(9)+"Alt+O" ACTION FileOpen() ACCELERATOR FALT,Asc("O")
      ENDMENU
      MENU TITLE "&Edit" ID 31001
-       MENUITEM "&Add File" ACTION bindbf_addfile()
+       MENUITEM "&Add/Replace File" ACTION bindbf_addfile()
        MENUITEM "&Export File" ACTION bindbf_expfile()
        MENUITEM "&Delete" ACTION  bindbf_delete()
        MENUITEM "&Recall" ACTION  bindbf_recall()
@@ -64,7 +66,8 @@ Private oBrw, oFont,  currFname , oSay1, oSay2 , oMenuBrw
    CONTEXT MENU oMenuBrw
        MENUITEM "&Delete"   ACTION  bindbf_delete()
        MENUITEM "&Recall"   ACTION  bindbf_recall()
-       MENUITEM "&Add File" ACTION bindbf_addfile()
+       MENUITEM "&Add/Replace File" ACTION bindbf_addfile()
+       MENUITEM "&Export File" ACTION bindbf_expfile()
        MENUITEM "Show &Bitmap" ACTION bindbf_shbitmap()   
    ENDMENU
    
@@ -133,7 +136,7 @@ RETURN NIL
 * ==============================================
 FUNCTION bindbf_addfile()
 * ==============================================
-LOCAL cdirSep , mypath , fname , cType , cfileful
+LOCAL cdirSep , mypath , fname , cType , cfileful , lreplace
 cdirSep := hwg_GetDirSep()
 mypath := cdirSep + CURDIR() + IIF( EMPTY( CURDIR() ), "", cdirSep )
 
@@ -144,29 +147,42 @@ IF EMPTY(fname)
 ENDIF
 * Process file name
      cfileful := fname
-     cType := FilExten( fname )
-     fname := CutExten(CutPath(fname))
+     cType := Lower(FilExten( fname ))
+     fname := Lower(CutExten(CutPath(fname)))
 
 IF EMPTY(cType)
  hwg_MsgStop("File name must have an extension","Add file")
  RETURN NIL
 ENDIF
 
-* Do not add existing entries
+lreplace := .F.
  
-IF dbfcnt_exist(fname,cType)
-  hwg_MsgStop("File entry exist, not added","Add file")
+IF dbfcnt_exist(fname,cType,.F.)
+  // hwg_MsgStop("File entry exist, not added","Add file")
+  lreplace := hwg_MsgYesNo("File entry exist, replace","Add/Replace file")
+  IF .NOT. lreplace
+    RETURN NIL
+  ENDIF
+  * Seek to entry to replace
+  dbfcnt_seek(fname,cType,.F.,.F.)
 ELSE 
+* Add new
+ APPEND BLANK
+ IF DELETED()
+  RECALL
+ ENDIF 
+ENDIF
+*
 * Now copy selected file into memo field
-APPEND BLANK
-IF DELETED()
- RECALL
-ENDIF 
 REPLACE BIN_CITEM WITH fname
 REPLACE BIN_CTYPE WITH cType
 REPLACE BIN_MITEM WITH bindbf_RDFILE(cfileful)
 
-ENDIF
+IF lreplace
+ hwg_MsgInfo("File replaced : " + fname + "." + cType)
+ELSE
+ hwg_MsgInfo("File added : " + fname + "." + cType)
+ENDIF 
 
 bindbf_brwref()
 
@@ -279,12 +295,18 @@ RETURN NIL
 
 
 * ============================================== 
-FUNCTION dbfcnt_exist(cfile,ctype)
+FUNCTION dbfcnt_exist(cfile,ctype,lmsg)
 * Returns .T., if file exists
 * in DBF binary container
+* Set lmsg to .F. to suppress message
+* Default is .T.
 * ==============================================
 LOCAL lfound
 FIELD BIN_CITEM,  BIN_CTYPE
+
+IF lmsg == NIL
+ lmsg := .T.
+ENDIF 
 
 GO TOP
 
@@ -306,9 +328,11 @@ ENDIF
  
  IF FOUND()
   lfound := .T.
-  hwg_MsgInfo("Record for file " + ALLTRIM(cfile) + "." + ALLTRIM(ctype) + " found, record number : "  + ;
-   ALLTRIM(STR(RECNO() )), ;
-   "Duplicate record found" )
+  IF lmsg
+    hwg_MsgInfo("Record for file " + ALLTRIM(cfile) + "." + ALLTRIM(ctype) + " found, record number : "  + ;
+     ALLTRIM(STR(RECNO() )), ;
+     "Duplicate record found" )
+  ENDIF  
  ELSE
   lfound := .F.
  ENDIF
@@ -320,16 +344,29 @@ ENDIF
  
  
  * ============================================== 
-FUNCTION dbfcnt_seek(cfile,ctype)
+FUNCTION dbfcnt_seek(cfile,ctype,lrefresh,lmsg)
 * Search for binary element
 * and seek to this position 
 * Returns .T., if entry exists
 * in DBF binary container.
 * The records pointer show than
-* to the matched entry 
+* to the matched entry
+* Set lrefresh to .F., if the browse list
+* is refreshed later in the calling function
+* (Default is .T.)
+* lmsg : Suppress message, if set to .F.
+* Default is .T.    
 * ==============================================
 LOCAL lfound
 FIELD BIN_CITEM,  BIN_CTYPE
+
+IF lmsg == NIL
+ lmsg := .T.
+ENDIF
+
+IF lrefresh == NIL
+ lrefresh := .T.
+ENDIF 
 
 GO TOP
 
@@ -352,15 +389,19 @@ ENDIF
  
  IF FOUND()
   lfound := .T.
-  hwg_MsgInfo("Record for file " + ALLTRIM(cfile) + "." + ALLTRIM(ctype) + " found, record number : "  + ;
-   ALLTRIM(STR(RECNO() )), ;
-   "Duplicate record found" )
+  IF lmsg
+    hwg_MsgInfo("Record for file " + ALLTRIM(cfile) + "." + ALLTRIM(ctype) + " found, record number : "  + ;
+     ALLTRIM(STR(RECNO() )), ;
+     "Duplicate record found" )
+  ENDIF
  ELSE
   lfound := .F.
  ENDIF
  
  * Optional: Refresh browse list
- bindbf_brwref()
+ IF lrefresh
+  bindbf_brwref()
+ ENDIF 
  
  RETURN lfound
  

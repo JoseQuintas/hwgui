@@ -44,12 +44,12 @@ IF .NOT. FILE(cFileName)
 ENDIF
 
     cfileful := cFileName
-    cType := FilExten( cFileName )
+    cType := Lower(FilExten( cFileName ))
      IF EMPTY(cType)
       ? "Error : File name to add must have an extension !"
       QUIT
      ENDIF
-     cFileName := CutExten(CutPath(cFileName))
+     cFileName := Lower(CutExten(CutPath(cFileName)) )
 
 
  * Open DBF

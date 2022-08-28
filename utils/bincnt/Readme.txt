@@ -234,8 +234,14 @@ from your backup copy.
     The expression ALLTRIM(BIN_CITEM) + "." + ALLTRIM(BIN_CTYPE) delivers the
     full filoename.
 
+    All entries (file name and type) are always stored in lower case,
+    so handle exchange from LINUX/UNIX <==> Windows.
+
     For details see sample program
     "sample\bindbf.prg"
+
+    Attention !
+    Do not edit the MEMO field in the browse list.
   
 
 7.) Add binary files to a DBF container in a batch

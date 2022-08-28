@@ -9,6 +9,14 @@
 */
 
 
+2022-08-28 21:10 UTC+0200 Wilfried Brunken DF7BE
+  * utils/bincnt/Readme.txt
+  * utils/bincnt/adddbfitem.prg
+  * utils/bincnt/bindbf.prg
+        ! Binary DBF container:
+        ! All entries (file name and type)
+        ! are always stored in lower case,
+        ! so handle exchange from LINUX/UNIX <==> Windows
 
 2022-08-25 22:25 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html

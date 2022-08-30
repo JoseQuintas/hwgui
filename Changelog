@@ -9,6 +9,12 @@
 */
 
 
+2022-08-30 13:30 UTC+0200 Wilfried Brunken DF7BE
+  * utils/bincnt/bindbf.prg
+        ! Binary DBF container:
+        ! Added feature "Export all files"
+        
+
 2022-08-28 21:10 UTC+0200 Wilfried Brunken DF7BE
   * utils/bincnt/Readme.txt
   * utils/bincnt/adddbfitem.prg

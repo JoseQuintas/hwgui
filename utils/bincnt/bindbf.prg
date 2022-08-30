@@ -53,6 +53,7 @@ Private oBrw, oFont,  currFname , oSay1, oSay2 , oMenuBrw
        MENUITEM "&Delete" ACTION  bindbf_delete()
        MENUITEM "&Recall" ACTION  bindbf_recall()
        MENUITEM "&Search"  ACTION dbfcnt_dlgsea()
+       MENUITEM "&Export all" ACTION bindbf_expall()
        SEPARATOR
        MENUITEM "&Pack"  ACTION dbfcnt_pack()
        MENUITEM "&Zap database" ACTION dbfcnt_zap()
@@ -212,17 +213,23 @@ bindbf_brwref()
 RETURN NIL
 
 * ==============================================
-FUNCTION bindbf_WRFILE(cfilename,mm)
+FUNCTION bindbf_WRFILE(cfilename,mm,cdir)
+* Returns .T., if file is written
+* cdir : Directory to write file
+* If NIL, current directory (default)
 * ==============================================
-
+IF cdir == NIL
+  cdir := ""
+ELSE
+  cdir := cdir + hwg_GetDirSep()
+ENDIF  
 * Debug
 // LOCAL nbytes := 0 ,  binmm
 // binmm := hwg_cHex2Bin(mm)
 // hwg_MsgInfo("Bytes written : " + ALLTRIM(STR(LEN(binmm))) )
 
-hb_MemoWrit(cfilename, hwg_cHex2Bin(mm) )
+RETURN hb_MemoWrit(cdir + cfilename, hwg_cHex2Bin(mm) )
 
-RETURN NIL
 
 
 * ==============================================
@@ -239,28 +246,100 @@ RETURN hwg_HEX_DUMP(MEMOREAD(cfilename), 4 )
 
 
 * ==============================================
-FUNCTION bindbf_expfile()
-* Export in current directory
+FUNCTION bindbf_expfile(lmsg,cdir)
+* cdir : directory to export.
+* IF NIL: Export in current directory (default)
+* lmsg: Set to .F., to supress all messages
+* Default is .T.
+* Returns .T., if file is exported
 * ==============================================
-LOCAL citem, ctype
+LOCAL citem, ctype , lsucc
 FIELD BIN_CITEM,  BIN_CTYPE , BIN_MITEM
+
+IF lmsg == NIL
+ lmsg := .T.
+ENDIF
+
+IF cdir == NIL
+ cdir := ""
+ENDIF
+
+lsucc := .F.
 
  citem := ALLTRIM(BIN_CITEM)
  ctype := ALLTRIM(BIN_CTYPE)
  
   IF EMPTY(citem)
-   hwg_MsgStop("File name is empty","File export")
-   RETURN NIL
+   IF lmsg
+     hwg_MsgStop("File name is empty","File export")
+   ENDIF
+   RETURN .F.
   ENDIF 
  
   IF EMPTY(ctype)
-   hwg_MsgStop("File extension is empty","File export")
-   RETURN NIL
+   IF lmsg
+    hwg_MsgStop("File extension is empty","File export")
+   ENDIF
+   RETURN .F.
   ENDIF 
 
-  bindbf_WRFILE ( citem  + "." + ctype , BIN_MITEM )
-  
-  hwg_msgInfo("File " + citem  + "." + ctype + " written")
+  IF EMPTY(cdir)
+    lsucc := bindbf_WRFILE ( citem  + "." + ctype , BIN_MITEM )
+  ELSE
+    lsucc := bindbf_WRFILE ( citem  + "." + ctype , BIN_MITEM , cdir )
+  ENDIF
+
+  IF lsucc
+   IF lmsg  
+     hwg_msgInfo("File " + citem  + "." + ctype + " written")
+   ENDIF
+  ELSE
+   IF lmsg  
+     hwg_MsgStop("Error writing file " + citem  + "." + ctype)
+   ENDIF
+  ENDIF  
+
+RETURN lsucc
+
+* ==============================================
+FUNCTION bindbf_expall()
+* Export all files in an selected directory
+* ==============================================
+LOCAL nexp, ndel , nerr , cdir , noldrecno
+
+nexp := 0
+ndel := 0
+nerr := 0
+
+* 
+cdir := hwg_SelectFolder("Select directory to export files")
+IF EMPTY(cdir)
+ RETURN NIL
+ENDIF
+
+noldrecno := RECNO()
+
+GO TOP
+
+DO WHILE .NOT. EOF()
+ IF DELETED()
+  ndel := ndel + 1
+ ELSE
+   IF bindbf_expfile(.F.,cdir)
+    nexp := nexp + 1
+   ELSE
+    nerr := nerr + 1
+   ENDIF 
+ ENDIF 
+ SKIP
+ENDDO
+
+hwg_MsgInfo("Files exported : " + ALLTRIM(STR(nexp)) ;
+ + CHR(10) + "Deleted files not exported : " + ALLTRIM(STR(ndel)) + CHR(10) + ;
+ + "Errors : " +  ALLTRIM(STR(nerr)) )
+
+GO noldrecno 
+
 
 RETURN NIL
 
@@ -611,6 +690,7 @@ obmp := bindbf_obitmap(BIN_CITEM , BIN_CTYPE , BIN_MITEM)
 SELECT (oldsel)
 
 IF obmp == NIL
+  hwg_MsgStop("Bitmap is corrupted" + CHR(10) + "(Returned object is NIL)" )
   RETURN NIL
 ENDIF 
 
@@ -669,9 +749,10 @@ ctype := ALLTRIM(ctype)
 IF ctype  != "bmp"
  RETURN NIL
 ENDIF 
+
 mm := hwg_cHex2Bin(mitem)
 
-obmp := HBitmap():AddString( citem, mm )
+obmp := HBitmap():AddString( citem, mm  )
 
 RETURN obmp
 

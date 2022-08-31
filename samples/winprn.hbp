@@ -9,6 +9,8 @@
 {linux}-d__GTK__
 
 ../hwgui.hbc
+# hbwin.hbc
+xhb.hbc
 
 -n
 -w

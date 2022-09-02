@@ -142,8 +142,9 @@ Function Main
  PUBLIC nPrCharset, nchrs , cImageDir
  PUBLIC cHexAstro , cValAstro , oBitmap1 , oBitmap2
  
- PRIVATE cQR := "https://suf.purs.gov.rs/v/?vl=A0FVRVM0RllGQVVFUzRGWUYDAAAAAgAAAJCfiEIAAAAAAAABgjsBiWkAAAA8cNJI%2FbGxx11DlHJlGtKZGtRuq4NHcwg%2BKztPLN1bogOyAyHaj4xt5XCaRxE9jtqE0Rg12mLYgasUenuR1hBowZyUgTA%2F3jIbDAZkROSOqlnVpaJ4bDV4JH66ddL0YKiAwyOmW65IeXUcVamb3ZiGDw5RcGggRfi9iO%2B1uZRrBCnQImPFWYRD9DOkcNr%2Frmkr78J4cNsK1B8rfIGHGb028lJjd9SJJCoRAxm4mo9sUKEZuyKXZm%2BnM12kXS1r5jicRiM%2B1niB44jg8BU%2F8fjSp1sxgEErV5DHEGzgsrgS1iQPWidElHV7wmaydSFfqyEUuweCuNy5NTg%2FrcJvpHNWDfpl58E27SvTZ2k5BdrDSsveSh3ioh1UW2uAKYhemoA5pWCWsu4XYL0bV0DYMY0ePUlSnXqiQr5bmUyUl7lTDvY3KLziTjSLzNRyY8Oxn%2B1%2F8lV5GwUIslxjLzh9Wq7lM%2FAfZLpx4GcP%2F19pQC7shi4k%2F2zOcAT8MQVMUzljMkOFYK73pxunbitupzKocTy4z2FonLuSCeQOJeCQF9hVmtQAZ2K1m%2FiUqbD5NnAdEfPZrmdsblD8EW%2FRsUL5n7FTmwpUIFtdP%2B1mEy4mWEU8Jrb3XTiB%2F8fSJUUt%2Bg%2Bz4S0ncApxLI0ZgjGk3LwtLFz5h0ymFMumxhfPc1FgLhPBl0fvq%2BQSUCxo6UCMCh2cOsU%3D"
-
+ PRIVATE cQR
+ // cQR:= "https://suf.purs.gov.rs/v/?vl=A0FVRVM0RllGQVVFUzRGWUYDAAAAAgAAAJCfiEIAAAAAAAABgjsBiWkAAAA8cNJI%2FbGxx11DlHJlGtKZGtRuq4NHcwg%2BKztPLN1bogOyAyHaj4xt5XCaRxE9jtqE0Rg12mLYgasUenuR1hBowZyUgTA%2F3jIbDAZkROSOqlnVpaJ4bDV4JH66ddL0YKiAwyOmW65IeXUcVamb3ZiGDw5RcGggRfi9iO%2B1uZRrBCnQImPFWYRD9DOkcNr%2Frmkr78J4cNsK1B8rfIGHGb028lJjd9SJJCoRAxm4mo9sUKEZuyKXZm%2BnM12kXS1r5jicRiM%2B1niB44jg8BU%2F8fjSp1sxgEErV5DHEGzgsrgS1iQPWidElHV7wmaydSFfqyEUuweCuNy5NTg%2FrcJvpHNWDfpl58E27SvTZ2k5BdrDSsveSh3ioh1UW2uAKYhemoA5pWCWsu4XYL0bV0DYMY0ePUlSnXqiQr5bmUyUl7lTDvY3KLziTjSLzNRyY8Oxn%2B1%2F8lV5GwUIslxjLzh9Wq7lM%2FAfZLpx4GcP%2F19pQC7shi4k%2F2zOcAT8MQVMUzljMkOFYK73pxunbitupzKocTy4z2FonLuSCeQOJeCQF9hVmtQAZ2K1m%2FiUqbD5NnAdEfPZrmdsblD8EW%2FRsUL5n7FTmwpUIFtdP%2B1mEy4mWEU8Jrb3XTiB%2F8fSJUUt%2Bg%2Bz4S0ncApxLI0ZgjGk3LwtLFz5h0ymFMumxhfPc1FgLhPBl0fvq%2BQSUCxo6UCMCh2cOsU%3D"
+ cQR := "https:www.darc.de/distrikte"
    /* Names of supported languages, use only ANSI charset, displayed in language selection dialog */ 
    aLanguages := { "English", "Deutsch", "Serbian" }
    //   cIniFile := "language.ini"
@@ -274,6 +275,7 @@ LOCAL nRet, nScale := 7.2
 #endif 
 LOCAL nLineWidth := 1*nScale, nLineHeight := nLineWidth
 LOCAL nY := 130*nScale, nX:= 300*nScale
+LOCAL cFile
 
   cCross := CHR(197)
   cvert  := CHR(196)  && Vertical line
@@ -626,11 +628,29 @@ LOCAL nY := 130*nScale, nX:= 300*nScale
      * Error
      hwg_msginfo(aMessages[22])
    ENDIF
+#else
+    #ifdef __PLATFORM__WINDOWS
+      cFile := CreateQRtoBMP( cQR, cImageDir + "QR.bmp" )
+      oWinPrn:PrintBitmap( cFile )
+    #endif
 #endif
    
    oWinPrn:End()
 
 Return Nil
+
+#ifdef __PLATFORM__WINDOWS
+#require "hbxpp"
+
+FUNC CreateQRtoBMP( cStr, cFile )
+   LOCAL qrDLL
+   cFile:=IIF(HB_ISNIL(cFile),hwg_CreateTempfileName("QR","*.bmp"), cFile )
+   qrDLL:=DLLLoad("QRCodelib.Dll" )
+   DllCall(qrDLL,0x0020,"FastQRCode",cStr,cFile)
+   DLLUnload(qrDLL)
+RETURN cFile
+
+#endif   
 
 * ---------------------------------------------
 FUNCTION XWIN_SR(clang)
@@ -664,7 +684,7 @@ FUNCTION NLS_SetLang(cname,omain)
      IF hwg__isUnicode()
          * UTF-8 (without BOM) 
       aMainMenu := { "Излаз", "&Заврши са радом" , "&Штампај" , "Покрени штампу" , "Подешавање", "Кодна страна штампача" , "&Jезик" , ;
-      "&Dialog-Modus" }
+      "&Диалог-Модус" }
         cTitle := "Демо за Winprn класу"
       ELSE
         * Windows

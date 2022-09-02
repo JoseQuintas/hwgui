@@ -48,6 +48,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetText( c )  INLINE hwg_Setwindowtext( ::Handle, ::title := c )
    METHOD End()
    METHOD onAnchor( x, y, w, h )
+   METHOD SetTooltip( cText )   
 
 ENDCLASS
 
@@ -101,6 +102,19 @@ METHOD INIT() CLASS HControl
    ENDIF
 
    RETURN NIL
+   
+METHOD SetTooltip( cText ) CLASS HControl
+
+     IF cText == NIL
+       ::tooltip := ""
+     ELSE 
+       ::tooltip := cText
+     ENDIF 
+     hwg_Deltooltip( ::handle )
+     IF .NOT. EMPTY(::tooltip)
+      hwg_Addtooltip( ::handle, ::tooltip )
+     ENDIF
+RETURN NIL   
 
 METHOD Disable() CLASS HControl
 
@@ -255,6 +269,7 @@ CLASS HStatus INHERIT HControl
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aParts )
    METHOD SetText( cText, nPart ) INLINE  hwg_WriteStatus( ::oParent, nPart, cText )
 
+
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint ) CLASS HStatus
@@ -311,6 +326,8 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::aparts := aparts
 
    RETURN Self
+   
+   
 
    //- HStatic
 

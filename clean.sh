@@ -54,6 +54,7 @@ rm samples/xmltree 2>/dev/null
 rm samples/colrbloc 2>/dev/null
 rm samples/testtree 2>/dev/null
 rm samples/bindbf 2>/dev/null
+rm samples/hexbincnt  2>/dev/null
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null
@@ -74,6 +75,7 @@ rm utils/devtools/lbldump 2>/dev/null
 rm utils/bincnt/a.log 2>/dev/null
 rm utils/bincnt/bindbf 2>/dev/null
 
+
 # contrib exe
 rm contrib/hwlabel/hwlbledt 2>/dev/null
 rm contrib/hwlabel/hwlblsample 2>/dev/null
@@ -83,6 +85,7 @@ rm contrib/hwlabel/temp_a2.ps 2>/dev/null
 rm test/gtk_err93 2>/dev/null
 rm test/euro 2>/dev/null
 rm test/xval 2>/dev/null
+rm test/ChTooltip 2>/dev/null
 
 
 # Find and delete all Error logs

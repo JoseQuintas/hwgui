@@ -29,6 +29,7 @@ CLASS HCheckButton INHERIT HControl
    METHOD GetText() INLINE hwg_button_GetText( ::handle )
    METHOD Value( lValue ) SETGET
    METHOD Invert()
+   METHOD SetTooltip( cText )
 
 ENDCLASS
 
@@ -70,6 +71,19 @@ METHOD Activate() CLASS HCheckButton
    ENDIF
 
    RETURN Nil
+   
+METHOD SetTooltip( cText ) CLASS HCheckButton
+
+     IF cText == NIL
+       ::tooltip := ""
+     ELSE 
+       ::tooltip := cText
+     ENDIF 
+     hwg_Deltooltip( ::handle )
+     IF .NOT. EMPTY(::tooltip)
+      hwg_Addtooltip( ::handle, ::tooltip )
+     ENDIF
+RETURN NIL    
    
 METHOD Disable() CLASS HCheckButton
    IF !Empty( ::oParent:handle )

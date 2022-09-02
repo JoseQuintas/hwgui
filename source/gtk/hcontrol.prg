@@ -57,8 +57,9 @@ CLASS HControl INHERIT HCustomWindow
 
    METHOD Setfocus() INLINE hwg_SetFocus( ::handle )
    METHOD Move( x1, y1, width, height, lMoveParent )
-   METHOD onAnchor( x, y, w, h )
    METHOD End()
+   METHOD onAnchor( x, y, w, h )
+   METHOD SetTooltip( cText )   
 
 ENDCLASS
 
@@ -119,15 +120,30 @@ METHOD INIT() CLASS HControl
    ENDIF
 
    RETURN Nil
+   
+METHOD SetTooltip( cText ) CLASS HControl
+
+     IF cText == NIL
+       ::tooltip := ""
+     ELSE 
+       ::tooltip := cText
+     ENDIF 
+     hwg_Deltooltip( ::handle )
+     IF .NOT. EMPTY(::tooltip)
+      hwg_Addtooltip( ::handle, ::tooltip )
+     ENDIF
+RETURN NIL   
 
 METHOD Disable() CLASS HControl
 
    hwg_Enablewindow( ::handle, .F. )
+
 RETURN NIL
 
 METHOD Enable() CLASS HControl
 
    hwg_Enablewindow( ::handle, .T. )
+
 RETURN NIL
 
 METHOD Enabled( lEnabled ) CLASS HControl

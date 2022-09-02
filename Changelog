@@ -9,6 +9,23 @@
 */
 
 
+
+2022-02-09 10:35 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/hwgdoc_classes.html
+  * samples/winprn.prg
+  * source/gtk/hcheck.prg
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcheck.prg
+  * source/winapi/hcontrol.prg
+  * test/ChTooltip.hbp (New)
+  * test/ChTooltip.prg (New)
+  * test/designer/frm_ChTT.xml (New)
+        ! Tickets #52 and #53  
+        ! METHOD SetTooltip() added to
+        ! classes HControl and HCheckButton
+        ! For details see posts to tickets.
+
 2022-08-31 12:15 UTC+0200 Wilfried Brunken DF7BE
   * samples/winprn.hbp
   * samples/winprn.prg

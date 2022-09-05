@@ -347,7 +347,7 @@ FUNCTION Main ( fName )
             MENUITEM "&Properties" ACTION (setTable( .F. ),hced_Setfocus(oEdit:hEdit))
             SEPARATOR
             MENUITEM "&Insert row" ACTION (InsRows(),hced_Setfocus(oEdit:hEdit))
-            MENUITEM "&Delete row" ACTION DelRow()
+            MENUITEM "&Delete row" ACTION oEdit:DelRow()
             SEPARATOR
             MENUITEM "Insert column" ACTION InsCols( .F. )
             MENUITEM "Add column" ACTION InsCols( .T. )
@@ -1977,31 +1977,6 @@ STATIC FUNCTION InsRows()
       oEdit:InsRows( nL, nRows )
       hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
    ENDIF
-
-   RETURN Nil
-
-STATIC FUNCTION DelRow()
-
-   LOCAL nL := oEdit:aPointC[P_Y], i
-
-   IF Valtype(oEdit:aStru[nL,1,1]) != "C" .OR. oEdit:aStru[nL,1,1] != "tr"
-      RETURN Nil
-   ENDIF
-
-   IF nL == oEdit:nTextLen .OR. ;
-         !(Valtype(oEdit:aStru[nL+1,1,1]) == "C" .AND. oEdit:aStru[nL+1,1,1] == "tr")
-      oEdit:aPointC[P_Y] := nL - 1
-   ENDIF
-
-   i := nL
-   DO WHILE ++i <= oEdit:nTextLen .AND. ;
-         Valtype(oEdit:aStru[i,1,1]) == "C" .AND. oEdit:aStru[i,1,1] == "tr"
-      oEdit:aStru[i,1,OB_TRNUM] --
-   ENDDO
-   oEdit:DelLine( nL )
-   oEdit:Scan( nL )
-   oEdit:Paint( .F. )
-   hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
 
    RETURN Nil
 

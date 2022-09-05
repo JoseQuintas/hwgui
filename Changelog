@@ -8,6 +8,13 @@
    2002-12-01 16:55 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-09-05 13:23 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/hcediext.prg
+    ! Some fixes
+    * :DelRow( nL ) method added
+  * utils/editor/editor.prg
+    * DelRow() function removed.
+
 2022-09-05 11:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   ! source/winapi/htrackbr.prg
     ! Small fix

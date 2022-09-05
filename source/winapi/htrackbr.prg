@@ -294,7 +294,7 @@ METHOD Paint() CLASS HTrack
          ENDIF
       ELSE
          y1 := Int(::nHeight/2)
-         nw := Min( nHalf, x1 - 2 )
+         nw := Min( nHalf, y1 - 2 )
          IF ::lAxis .AND. ::nCurr - nHalf > ::nFrom
             hwg_Drawline( hDC, ::nFrom, y1, ::nCurr-nHalf, y1 )
          ENDIF

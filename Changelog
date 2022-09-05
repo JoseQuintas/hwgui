@@ -8,7 +8,9 @@
    2002-12-01 16:55 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
-
+2022-09-05 11:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  ! source/winapi/htrackbr.prg
+    ! Small fix
 
 2022-02-09 10:35 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh

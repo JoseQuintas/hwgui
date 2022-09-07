@@ -56,7 +56,7 @@
  * <tr>(2...):"tr", OB_OB(td), cClsName, OB_TRNUM, OB_OPT
  * <td>:      "td", OB_ASTRU, cClsName, OB_ATEXT, OB_COLSPAN, OB_ROWSPAN, OB_AWRAP,
        OB_ALIN, OB_NLINES, OB_NLINEF, OB_NTLEN, OB_NWCF, OB_NWSF, OB_NLINEC, OB_NPOSC,
-       OB_NLALL, OB_APC, OB_APM1, OB_APM2
+       OB_NLALL, OB_APC, OB_APM1, OB_APM2, OB_FONT, OB_TCLR, OB_BCLR, OB_BCLRCUR
  */
 #define OB_ARRLEN      23
 #define OB_TYPE         1
@@ -355,7 +355,7 @@ METHOD SetText( xText, cPageIn, cPageOut, lCompact, lAdd, nFrom ) CLASS HCEdiExt
                   j := ::aStru[n,1,OB_TRNUM]
                   i := n + 1
                   DO WHILE i <= Len( ::aStru ) .AND. Valtype( ::aStru[i,1,OB_TYPE] ) == "C" ;
-                        .AND. ::aStru[i,1,OB_TYPE] == "tr"
+                        .AND. ::aStru[i,1,OB_TYPE] == "tr" .AND. Len(::aStru[i,1]) < OB_TBL
                      ::aStru[i,1,OB_TRNUM] := ++j
                      i ++
                   ENDDO
@@ -1689,7 +1689,7 @@ METHOD InsRows( nL, nRows, nCols, lNoAddline ) CLASS HCEdiExt
       ::aText[nL+1] := ""
    ENDIF
    DO WHILE ++nL <= ::nTextLen
-      IF Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr"
+      IF Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr".AND. Len(::aStru[nL,1]) < OB_TBL
          ::aStru[nL,1,OB_TRNUM] := ++nRow
       ELSE
          EXIT
@@ -1701,6 +1701,7 @@ METHOD InsRows( nL, nRows, nCols, lNoAddline ) CLASS HCEdiExt
    RETURN .T.
 
 METHOD DelRow( nL ) CLASS HCEdiExt
+
    LOCAL i
 
    IF nL == Nil
@@ -1722,19 +1723,18 @@ METHOD DelRow( nL ) CLASS HCEdiExt
       Aadd( ::aStru[i+1,1], ::aStru[i,1,OB_TBL] )
    ENDIF
    DO WHILE ++i <= ::nTextLen .AND. ;
-         Valtype(::aStru[i,1,1]) == "C" .AND. ::aStru[i,1,1] == "tr"
+         Valtype(::aStru[i,1,1]) == "C" .AND. ::aStru[i,1,1] == "tr" .AND. Len( ::aStru[i+1,1] ) < OB_TBL
       ::aStru[i,1,OB_TRNUM] --
    ENDDO
    ::DelLine( nL )
-   ::Scan( nL )
-   ::Paint( .F. )
-   hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+
+   ::lUpdated := .T.
 
    RETURN Nil
 
 METHOD InsCol( nL, iTd ) CLASS HCEdiExt
 
-   LOCAL aStruCols, nCols, nWidth, i, n
+   LOCAL aStruCols, nCols, nWidth, i, n, lStart := .F.
 
    IF Empty( nL ) .OR. Valtype( ::aStru[nL,1,1] ) != "C" .OR. ::aStru[nL,1,1] != "tr"
       RETURN .F.
@@ -1765,11 +1765,14 @@ METHOD InsCol( nL, iTd ) CLASS HCEdiExt
       NEXT
    ENDIF
 
-   DO WHILE Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr"
+   DO WHILE Valtype( ::aStru[nL,1,OB_TYPE] ) == "C" .AND. ::aStru[nL,1,OB_TYPE] == "tr" .AND. ;
+      ( !lStart .OR. Len(::aStru[nL,1]) < OB_TBL )
+      lStart := .T.
       aStruCols := ::aStru[nL,1,OB_OB]
       Aadd( aStruCols, Nil )
       AIns( aStruCols, iTd )
-      aStruCols[iTd] := { "td", { { { 0,0,Nil } } }, Nil, {""}, 0, 0, {Nil}, Array(4,AL_LENGTH), 0, 1, 1, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0} }
+      aStruCols[iTd] := { "td", { { { 0,0,Nil } } }, Nil, {""}, 0, 0, {Nil}, Array(4,AL_LENGTH), ;
+         0, 1, 1, 1, 1, 1, 1, 1, {1,1}, {0,0}, {0,0}, 0, 0, 0, 0 }
       nL++
    ENDDO
 
@@ -1779,7 +1782,7 @@ METHOD InsCol( nL, iTd ) CLASS HCEdiExt
 
 METHOD DelCol( nL, iTd ) CLASS HCEdiExt
 
-   LOCAL aStruCols, nCols, nWidth, i, n
+   LOCAL aStruCols, nCols, nWidth, i, n, lStart := .F.
 
    IF Empty( nL ) .OR. Empty( iTd ) .OR. Valtype( ::aStru[nL,1,1] ) != "C" .OR. ::aStru[nL,1,1] != "tr"
       RETURN .F.
@@ -1805,7 +1808,9 @@ METHOD DelCol( nL, iTd ) CLASS HCEdiExt
       aStruCols[1,1] := - (Abs(aStruCols[1,1])-(nWidth-100))
    ENDIF
 
-   DO WHILE Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr"
+   DO WHILE Valtype( ::aStru[nL,1,1] ) == "C" .AND. ::aStru[nL,1,1] == "tr" .AND. ;
+      ( !lStart .OR. Len(::aStru[nL,1]) < OB_TBL )
+      lStart := .T.
       aStruCols := ::aStru[nL,1,OB_OB]
       ADel( aStruCols, iTd )
       ASize( aStruCols, nCols )
@@ -2178,6 +2183,10 @@ METHOD Save( cFileName, cpSou, lHtml, lCompact, xFrom, xTo, lEmbed ) CLASS HCEdi
             Iif( !lHtml.AND.Len(::aStru[i,1])>=OB_ACCESS.and.!Empty(::aStru[i,1,OB_ACCESS]),' access="'+hced_SaveAccInfo(::aStru[i,1,OB_ACCESS])+'"','' ) + ;
             ::SaveTag( "img", i ) + '/>' + cNewL
       ELSEIF ::aStru[i,1,OB_TYPE] == "tr"
+         IF !Empty( aStruTbl ) .AND. ::aStru[i,1,OB_TRNUM] == 1 .AND. Len( ::aStru[i,1] ) == OB_TBL
+            aStruTbl := Nil
+            s += "</table>" + cNewL
+         ENDIF
          IF nFrom > 1 .AND. aStruTbl == Nil
             iTbl := i - ::aStru[i,1,OB_TRNUM] + 1
          ELSE

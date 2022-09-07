@@ -347,7 +347,7 @@ FUNCTION Main ( fName )
             MENUITEM "&Properties" ACTION (setTable( .F. ),hced_Setfocus(oEdit:hEdit))
             SEPARATOR
             MENUITEM "&Insert row" ACTION (InsRows(),hced_Setfocus(oEdit:hEdit))
-            MENUITEM "&Delete row" ACTION oEdit:DelRow()
+            MENUITEM "&Delete row" ACTION DelRow()
             SEPARATOR
             MENUITEM "Insert column" ACTION InsCols( .F. )
             MENUITEM "Add column" ACTION InsCols( .T. )
@@ -1433,7 +1433,8 @@ STATIC FUNCTION setTable( lNew )
       ENDIF
 
       i := 1
-      DO WHILE nL+i <= oEdit:nTextLen .AND. Valtype(oEdit:aStru[nL+i,1,1]) == "C" .AND. oEdit:aStru[nL+i,1,1] == "tr"
+      DO WHILE nL+i <= oEdit:nTextLen .AND. Valtype(oEdit:aStru[nL+i,1,1]) == "C" .AND. ;
+         oEdit:aStru[nL+i,1,OB_TYPE] == "tr" .AND. Len( oEdit:aStru[nL+i,1] ) < OB_TBL
          i ++
          nRows ++
       ENDDO
@@ -1980,6 +1981,18 @@ STATIC FUNCTION InsRows()
 
    RETURN Nil
 
+STATIC FUNCTION DelRow()
+
+   LOCAL nL := oEdit:aPointC[P_Y]
+
+   oEdit:DelRow( nL )
+   oEdit:Scan( nL )
+   oEdit:Paint( .F. )
+   onChangePos()
+   hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
+
+   RETURN Nil
+
 STATIC FUNCTION InsCols( l2End )
 
    LOCAL nL := oEdit:aPointC[P_Y]
@@ -2301,19 +2314,17 @@ STATIC FUNCTION ReadIni( cPath )
    LOCAL oIni := HXMLDoc():Read( cPath + "editor.ini" )
    LOCAL oNode, i, j
 
-   IF FILE(cPath + "editor.ini")
-    IF !Empty( oIni:aItems )
-       FOR i := 1 TO Len( oIni:aItems[1]:aItems )
-          oNode := oIni:aItems[1]:aItems[i]
-          IF oNode:title == "recent"
-             FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
-                Aadd( aFilesRecent, Trim( oNode:aItems[j]:GetAttribute("name") ) )
-             NEXT
-          ELSEIF oNode:title == "font"
-             oFontMain := FontFromXML( oNode )
-          ENDIF
-       NEXT
-    ENDIF
+   IF !Empty( oIni ) .AND. !Empty( oIni:aItems )
+      FOR i := 1 TO Len( oIni:aItems[1]:aItems )
+         oNode := oIni:aItems[1]:aItems[i]
+         IF oNode:title == "recent"
+            FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
+               Aadd( aFilesRecent, Trim( oNode:aItems[j]:GetAttribute("name") ) )
+            NEXT
+         ELSEIF oNode:title == "font"
+            oFontMain := FontFromXML( oNode )
+         ENDIF
+      NEXT
    ENDIF
 
    RETURN Nil

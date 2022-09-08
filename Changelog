@@ -8,6 +8,10 @@
    2002-12-01 16:55 UTC+0100 Foo Bar <foo.bar@foobar.org>
 */
 
+2022-09-08 11:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    * PageDown() method modified.
+
 2022-09-07 15:53 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/editor/hcediext.prg
   * utils/editor/editor.prg

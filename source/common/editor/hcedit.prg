@@ -360,9 +360,9 @@ METHOD Activate() CLASS HCEdit
 #ifdef __GTK__
    LOCAL nw
 #endif
-   
+
    IF !Empty( ::oParent:handle )
-   
+
 #ifdef __GTK__
       nw := ::nWIdth
       ::nWidth := ::nClientWidth
@@ -1683,19 +1683,23 @@ METHOD PageDown() CLASS HCEdit
    LOCAL y
 
    IF ::lWrap
-      IF ::nLines == 1 .AND. ::nLineF + 1 <= ::nTextLen
+      IF ::nLines == 1 .AND. ::nLineF + 1 < ::nTextLen
          ::nLineF ++
          ::nWCharF := ::nWSublF := 1
       ELSE
+         RETURN ::Bottom()
+         /*
          ::nLineF := ::aLines[::nLines,AL_LINE]
          ::nWCharF := ::aLines[::nLines,AL_FIRSTC]
          ::nWSublF := ::aLines[::nLines,AL_SUBL]
+         */
       ENDIF
    ELSE
       IF ::aLines[::nLines,AL_LINE] < ::nTextLen
          ::nLineF += ::nLines - 1
       ELSE
-         ::nLineC := ::nLines
+         RETURN ::Bottom()
+         //::nLineC := ::nLines
       ENDIF
    ENDIF
    y := ::aLines[::nLineC,AL_Y2] - 4

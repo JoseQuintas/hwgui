@@ -55,6 +55,7 @@ rm samples/colrbloc 2>/dev/null
 rm samples/testtree 2>/dev/null
 rm samples/bindbf 2>/dev/null
 rm samples/hexbincnt  2>/dev/null
+rm samples/imageview 2>/dev/null
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null

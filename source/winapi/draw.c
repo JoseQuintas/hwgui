@@ -8,6 +8,24 @@
  * www - http://www.kresin.ru
 */
 
+
+/*
+~~~~~~~~~ Attention ~~~~~~~~~~
+PNG support prepared for further Windows releases:
+The recent Windows release do not support PNG images.
+
+For further releases the following functions and methods
+are inserted for test purposes, if the
+WinAPI function LoadImage() will support PNGs:
+
+METHOD AddPngString( name, cVal ) CLASS HIcon            of drawwidg.prg
+METHOD AddPngFile( name , nWidth, nHeight) CLASS HIcon   of drawwidg.prg
+
+HWG_LOADPNG()                                            of draw.c
+
+DF7BE, September 2022
+*/
+
 #define OEMRESOURCE
 #ifdef __DMC__
 #define __DRAW_C__
@@ -410,6 +428,17 @@ HB_FUNC( HWG_LOADICON )
    }
 }
 
+/*
+ hwg_LoadImage(handle,nresource,ntype,nwidth,nheigth,nloadflags)
+               ^      ^         ^     ^      ^       ^
+               !      !         !     !      !       ! load flags
+               !      !         !     !      ! desired height   
+               !      !         !     ! desired width
+               !      !         ! type of image  
+               !      ! name or identifier of image 
+               ! handle of the instance that contains the image
+*/
+
 HB_FUNC( HWG_LOADIMAGE )
 {
    void *hString = NULL;
@@ -423,6 +452,32 @@ HB_FUNC( HWG_LOADIMAGE )
           ) );
    hb_strfree( hString );
 }
+
+/*
+  hwg_LoadPNG(handle,nresource,ntype,nwidth,nheigth,nloadflags)   
+              ^      ^         ^     ^      ^       ^
+              !      !         !     !      !       ! load flags
+              !      !         !     !      ! desired height   
+              !      !         !     ! desired width
+              !      !         ! type of image  
+              !      ! name or identifier of image 
+              ! handle of the instance that contains the image
+*/
+
+HB_FUNC( HWG_LOADPNG )
+{
+
+   void *hString = NULL;
+
+/*    
+    HB_RETHANDLE( (HICON)LoadImage(HB_ISNIL( 1 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 1 ),
+                   MAKEINTRESOURCE(ICO_LOGO) ,
+                  IMAGE_ICON, 0, 0, LR_LOADTRANSPARENT) );
+*/ 
+
+   hb_strfree( hString ); 
+}
+
 
 HB_FUNC( HWG_LOADBITMAP )
 {
@@ -1083,6 +1138,12 @@ HB_FUNC( HWG_DRAWGRAYBITMAP )
 #include <olectl.h>
 #include <ole2.h>
 #include <ocidl.h>
+
+/* hwg_Openimage( cFileName , bString )
+  bString : .F. : from image file (default)
+            .T. : from pixbuffer
+  returns handle to pixbuffer  
+  */
 
 HB_FUNC( HWG_OPENIMAGE )
 {

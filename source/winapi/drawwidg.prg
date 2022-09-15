@@ -8,6 +8,23 @@
  * www - http://www.kresin.ru
 */
 
+/*
+~~~~~~~~~ Attention ~~~~~~~~~~
+PNG support prepared for further Windows releases:
+The recent Windows release do not support PNG images.
+
+For further releases the following functions and methods
+are inserted for test purposes, if the
+WinAPI function LoadImage() will support PNGs:
+
+METHOD AddPngString( name, cVal ) CLASS HIcon            of drawwidg.prg
+METHOD AddPngFile( name , nWidth, nHeight) CLASS HIcon   of drawwidg.prg
+
+HWG_LOADPNG()                                            of draw.c
+
+DF7BE, September 2022
+*/
+
 #include "hbclass.ch"
 #include "windows.ch"
 #include "guilib.ch"
@@ -535,6 +552,7 @@ METHOD AddString( name, cVal , nWidth, nHeight ) CLASS HBitmap
       ENDIF
    NEXT
 
+/* DF7BE: Open of de.bmp fails here */   
    ::handle := hwg_Openimage( cVal, .T. )
    IF !Empty( ::handle )
       ::name := name
@@ -619,6 +637,9 @@ CLASS HIcon INHERIT HObject
    METHOD AddString( name, cVal , nWidth, nHeight )
    METHOD Draw( hDC, x, y )   INLINE hwg_Drawicon( hDC, ::handle, x, y )
    METHOD RELEASE()
+   * PNG support prepared for further Windows releases
+   METHOD AddPngString( name, cVal ) 
+   METHOD AddPngFile( name , nWidth, nHeight )   // Not used: nWidth, nHeight)
 
 ENDCLASS
 
@@ -703,6 +724,86 @@ METHOD AddString( name, cVal , nWidth, nHeight) CLASS HIcon
  FERASE(cTmp)
 
 RETURN  Self   && oreturn
+
+
+/* Added by DF7BE Sept. 2022 */
+METHOD AddPngString( name, cVal ) CLASS HIcon
+* Not used :  nWidth, nHeight
+ LOCAL cTmp   
+ LOCAL aIconSize
+
+/* 
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
+*/
+ * Write contents into temporary file
+ hb_memowrit( cTmp := hwg_CreateTempfileName( , ".png") , cVal )
+ * Load PNG from temporary file
+ ::handle :=  HWG_LOADPNG( 0, cTmp )
+ ::name := name
+  aIconSize := hwg_Geticonsize( ::handle )
+ ::nWidth  := aIconSize[ 1 ]
+ ::nHeight := aIconSize[ 2 ]
+
+   AAdd( ::aIcons, Self )
+
+  * oreturn := ::AddFile( name )
+ FERASE(cTmp)
+ 
+RETURN  Self
+
+
+METHOD AddPngFile( name , nWidth, nHeight) CLASS HIcon
+
+* Not used: nWidth, nHeight
+
+   LOCAL i, aIconSize, cname := CutPath( name ), cCurDir
+
+
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
+
+   FOR EACH i IN  ::aIcons
+      IF i:name == cname .AND. ( nWidth == Nil .OR. i:nWidth == nWidth ) ;
+         .AND. ( nHeight == Nil .OR. i:nHeight == nHeight )
+         i:nCounter ++
+         RETURN i
+      ENDIF
+   NEXT
+
+   name := AddPath( name, ::cPath )
+   name := iif( ! File( name ) .AND. File( cname ), cname, name )
+   IF ::lSelFile .AND. !File( name )
+      cCurDir  := DiskName() + ':\' + CurDir()
+      name := hwg_Selectfile( "Image Files( *.jpg;*.gif;*.bmp;*.ico )", CutPath( name ), FilePath( name ), "Locate " + name ) //"*.jpg;*.gif;*.bmp;*.ico"
+      DirChange( cCurDir )
+   ENDIF
+   #ifdef __XHARBOUR__
+   hb_FNameSplit( name,, , @cFext )
+   IF Empty( cFext )
+   #else
+   IF Empty( hb_fNameExt( name ) )
+   #endif
+      name += ".png"
+   ENDIF
+   ::handle := HWG_LOADPNG( 0, name )
+   * ::handle := hwg_Loadimage( 0, name, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )
+   ::name := cname
+   aIconSize := hwg_Geticonsize( ::handle )
+   ::nWidth  := aIconSize[ 1 ]
+   ::nHeight := aIconSize[ 2 ]
+
+   AAdd( ::aIcons, Self )
+
+   RETURN Self
 
 
 METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon

@@ -160,7 +160,8 @@ For beginners:
  htrack.prg         Y                 Demo of HTRACK class as substitute for Windows only HTRACKBAR
  icons.prg          Y                 Icons and background bitmaps
  icons2.prg         Y                 Icons and bitmaps using hex values
- iesample.prg 2) 5) N                 Sample of ActiveX container for the IE browser object. 
+ iesample.prg 2) 5) N                 Sample of ActiveX container for the IE browser object.
+ imageview.prg      Y                 Show images with zoom setting 
  menumod.prg        Y                 Handling menu items while run-time in dialogs.
  modtitle.prg       Y                 Sample for modifying a main window title in HWGUI
  nice.prg           N                 Demo of NICEBUTTON
@@ -199,7 +200,7 @@ For beginners:
  tstsplash.prg      P                 SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
  TwoListbox.prg     S                 Sample for select and move items between two listboxes.
  TwoLstSub.prg      Y                 Multi platform substitute for two listboxes by BROWSE windows.
- winprn.prg  3) 8)  Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)
+ winprn.prg 3)8)13) Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)
  xmltree.prg        Y          YW     Show XML-Tree: Open "testxml.xml" for test.
 
 Directories:
@@ -301,6 +302,10 @@ Directories:
 
  12) Little modifications for GTK needed (use compiler switch "#ifdef __GTK__").
      Extra sample program with same filename in subdirectory "gtk_samples"
+
+ 13) Sample needed "qrcodelib.dll" for encode and printing out QR code,
+     but runs without this DLL not printing the QR code sample.
+     Library for LINUX is under construction and will be integrated as soon as possible.
  
 * =================== EOF of Readme.txt ========================
 

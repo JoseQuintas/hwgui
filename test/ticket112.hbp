@@ -1,0 +1,16 @@
+#
+# $Id$
+#
+
+
+# -mt
+-n -w
+
+-oticket112
+
+ticket112.prg
+
+..\hwgui.hbc
+
+# ===================== EOF of ticket112.hbp ====================
+

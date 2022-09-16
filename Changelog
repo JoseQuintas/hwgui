@@ -16,6 +16,12 @@
 */
 
 
+
+2022-02-16 11:10 UTC+0200 Wilfried Brunken DF7BE
+  * test/ticket112.hbp (New)
+  * test/ticket112.prg (New)
+    ! Test program for ticket 112
+
 2022-02-15 09:12 UTC+0200 Wilfried Brunken DF7BE
   * Changelog
   * clean.sh
@@ -27,7 +33,7 @@
   * samples/imageview.hbp (New)
   * samples/imageview.prg (New)
   * source/winapi/draw.c
-vsource/winapi/drawwidg.prg
+  * source/winapi/drawwidg.prg
     ! Old changelog archived in directory "oldlogs"
     ! Started projects QR code encoding
     ! and support for PNG on Windows

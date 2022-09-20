@@ -196,6 +196,11 @@ FUNCTION hwg_HEX_DUMP (cinfield, npmode, cpVarName)
 *     Used by Binary Large Objects (BLOBs)
 *     stored in memo fields of a DBF.
 *     See program utils\bincnt\bindbf.prg
+* 5:  As C notation array,
+*     16 bytes per line, 0x..
+*     written in {}
+*     Add before generated block (for example):
+*     const unsigned char sample[] =
 *
 * cpVarName:
 * Only used, if npmode = 2.
@@ -208,9 +213,13 @@ FUNCTION hwg_HEX_DUMP (cinfield, npmode, cpVarName)
 * MEMOWRIT("hexdump.txt",HEX_DUMP(varbuf))
 * ================================= *  
 LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccprint, ;
-   cccprline, ccchexline, nmode , cVarName
+   cccprline, ccchexline, nmode , cVarName , ncomma
  IIF(npmode == NIL , nmode := 2 , nmode := npmode )
  IIF(cpVarName == NIL , cVarName := "cVar" , cVarName := cpVarName )
+ * Check for valid mode
+ IF (nmode < 1 ) .OR. (nmode > 6 )
+    RETURN ""
+ ENDIF
  * get length of field to be dumped
  nlength := LEN(cinfield)
  * if empty, nothing to dump
@@ -221,7 +230,11 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
   IF nmode == 2
    coutfield := cVarName + " := " + CHR(34)  && collects out line, start with variable name
   ELSE
+   IF nmode == 5
+     coutfield := "{"
+   ELSE
    coutfield := ""  && collects out line
+  ENDIF 
   ENDIF 
   // cccprint := ""   && collects printable char
   cccprline := ""  && collects printable chars
@@ -252,9 +265,14 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
      cccprline := cccprline + cccprint
      ccchexline := ccchexline + ccchex
     ELSE
+     IF nmode == 5
+     cccprline := cccprline + cccprint + " "
+     ccchexline := ccchexline + "0x" + ccchex + ","
+     ELSE
      * Add a blank between a hex value pair
      cccprline := cccprline + cccprint + " "
      ccchexline := ccchexline + ccchex + " "
+    ENDIF
     ENDIF
     * end of line with 16 bytes reached
     IF nlinepos > 15
@@ -271,6 +289,8 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
        coutfield := coutfield + ccchexline + hwg_EOLStyle()
       CASE nmode == 4
        coutfield := coutfield + ccchexline
+      CASE nmode == 5
+       coutfield := coutfield + ccchexline + hwg_EOLStyle()
     ENDCASE
 
       * ready for new line  
@@ -298,6 +318,11 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
        coutfield := coutfield + ccchexline + hwg_EOLStyle()
       CASE nmode == 4
        coutfield := coutfield + ccchexline
+      CASE nmode == 5
+       * Remove "," at end of last line
+       ncomma := RAT(",",ccchexline)
+       ccchexline := IIF(ncomma > 0 , SUBSTR(ccchexline, 1, ncomma - 1) , ccchexline )
+       coutfield := coutfield + ccchexline + "}" + hwg_EOLStyle()
     ENDCASE
 
   ENDIF

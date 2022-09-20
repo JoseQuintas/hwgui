@@ -30,9 +30,21 @@
 
 #include "hwgui.ch"
 
-FUNCTION MAIN
+FUNCTION MAIN(cmodus)
+
+LOCAL nmodus 
 
 LOCAL oFontMain , oMainW
+
+IF cmodus == NIL
+ nmodus := 2
+ELSE
+ IF EMPTY(cmodus)
+  nmodus := 2
+ ELSE
+  nmodus := VAL(cmodus)
+ ENDIF
+ENDIF 
 
 
 #ifdef __PLATFORM__WINDOWS
@@ -51,7 +63,7 @@ INIT WINDOW oMainW  ;
              MENUITEM "&Quit" ACTION oMainW:Close()
          ENDMENU
          MENU TITLE "&Convert"
-             MENUITEM "&File to HEX" ACTION Convert_file()
+             MENUITEM "&File to HEX" ACTION Convert_file(nmodus)
          ENDMENU
         ENDMENU
 
@@ -62,7 +74,7 @@ RETURN NIL
 * --- End of Main ---
 
 
-FUNCTION Convert_file
+FUNCTION Convert_file(nmodus)
 
 LOCAL fname, hd, varbuf, ccdir
 
@@ -75,7 +87,7 @@ LOCAL fname, hd, varbuf, ccdir
  * Read selected file
  varbuf := MEMOREAD(fname)
  * Write Hexdump
- hd := hwg_HEX_DUMP(varbuf,2)
+ hd := hwg_HEX_DUMP(varbuf,nmodus)   && Default mode is 2
  MEMOWRIT(ccdir + "hexdump.txt",hd)
  
  IF .NOT. EMPTY(hd)

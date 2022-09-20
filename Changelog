@@ -16,6 +16,16 @@
 */
 
 
+2022-02-20 14:45 UTC+0200 Wilfried Brunken DF7BE
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+  * test/testfilehex.hbp (New)
+  * test/testfilehex.prg (New)
+  * utils/bincnt/file2hex.prg
+    ! New mode 5 (hexdump for C mode array 0x..)
+    ! in function hwg_HEX_DUMP().
+    ! Test program for all modes added.   
+
 
 2022-02-16 11:10 UTC+0200 Wilfried Brunken DF7BE
   * test/ticket112.hbp (New)

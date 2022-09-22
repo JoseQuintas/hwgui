@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, August 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, September 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -34,6 +34,7 @@
      <li><a name="_Functions8" href="#Functions8">5.8.  Miscellaneous functions.</a>
      <li><a name="_Functions81" href="#Functions81">5.8.1 Unit conversions.</a>
      <li><a name="_Functions82" href="#Functions82">5.8.2 Date and time functions.</a>
+     <li><a name="_Functions83" href="#Functions83">5.8.3 Raw bitmap support and QR code.</a>
      <li><a name="_FunctionsA" href="hwgdoc_func2.html#FunctionsA">5.A.  Functions, not included in documentation</a>
      <li><a name="_References"  href="#References">References</a>
    </ul>
@@ -2257,6 +2258,20 @@ See sample program "testspli.prg" for details.<br>
    <br>Returns a height of a desktop in pixels.
    <p></p>
 
+   <p><br>
+   Additional information for functions hwg_GetDesktopWidth() and hwg_GetDesktopWidth():<br>
+   As reported with bug ticket #112, on newer GCC and Windows versions the<br>
+   main window is not opened in full size.<br>
+   <br>
+   A quick fix is reported like this code snippet:<br>
+   INIT WINDOW oFormMain MAIN AT -7,0 SIZE hwg_Getdesktopwidth()+14,hwg_Getdesktopheight()+14<br>
+   <br>
+   Please check by compiling the test program<br>
+   test\ticket112.prg.<br>
+   If the main window appears nearly in full size, than this is the<br>
+   intermediate solution.<br>
+   </p>
+   
    <br><strong class="subhead"> hwg_GetNextDlgTabItem ( parentHandle, ::handle, lNext )</strong> (Windows only)
    <br>Returns a handle of a next or previous control in a window.
    <ul>
@@ -2492,6 +2507,12 @@ See sample program "testspli.prg" for details.<br>
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Used by Binary Large Objects (BLOBs)<br>
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stored in memo fields of a DBF.<br>
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; See program utils\bincnt\bindbf.prg<br>
+     5 : &nbsp; As C notation array<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 16 bytes per line, 0x..<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; written in {}<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add before generated block (for example):<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; const unsigned char sample[] =<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and a ";" at end of block.<br>
      <br>
      cpVarName:<br>
      Only used, if npmode = 2.<br>
@@ -3069,6 +3090,56 @@ See sample program "testspli.prg" for details.<br>
    This function regards daylight saving<br>
    time.<br>
    <p></p>   
+   
+   <br><strong class="subhead"><a name="Functions83" href="hwgdoc_functions.html#_Functions83">
+   5.8.3 Raw bitmap support and QR code.</a></strong><br>
+   <p></p>
+
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   Functions for raw bitmap support<br>
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   <br>
+   &lt;under construction&gt;<br>
+   <br>
+   Helpful for Windows, because PNG support<br>
+   by the operating system only for LINUX.<br>
+   <br>
+   For multi platform applications,<br>
+   it is recommended to handle all images<br>
+   as bitmaps.<br>
+   These functions are a subset of full bitmap<br>
+   specifications to integrate the QR encoding<br>
+   function for all platforms into HWGUI.<br>
+   <br>
+   These functions are implemented in source code files<br>
+   drawwidg.prg and draw.c .<br>
+   <br>
+   All functions start with prefix "hwg_BPM".<br>
+   <br>
+   Some bitmap parameters are set fixed by default:<br>
+   &nbsp;&nbsp;compression 0 (No compression)<br> 
+   &nbsp;&nbsp;planes 1 (Number of color planes)<br> 
+   <br>
+   The handled version of bitmap is 3.x, but is OK for recent Windows versions.<br>
+   <br>
+   <p></p>
+   
+   <br><strong class="subhead">hwg_BPMinches_per_meter()</strong>
+   <br>Returns constant value "Inches per meter"
+ 
+   <p></p>
+
+   <br><strong class="subhead">hwg_BPMconv_inch(mtr)</strong>
+   <br>Converts bitmap resolution into DPI
+
+   <p></p>
+
+  
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   End of Functions for raw bitmap support<br>
+   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+
+   <br>QR functions &lt;encode and decode under contruction&gt; !<br>  
    
 <br><br>
 

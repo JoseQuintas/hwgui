@@ -31,6 +31,10 @@
 * EXIT PROCEDURE CleanDrawWidg()
 * hwg_FontSetCharset()
 * hwg_LoadCursorFromString()
+* hwg_BPMinches_per_meter()
+* hwg_BPMconv_inch(mtr)
+* hwg_BMPWriteFile()
+
 
 
 #include "hbclass.ch"
@@ -1121,6 +1125,21 @@ LOCAL cTmp , hCursor
  FERASE(cTmp)
 RETURN hCursor
    
+
+*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*   Functions for raw bitmap support
+*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FUNCTION hwg_BPMinches_per_meter()
+RETURN 100.0 / 2.54
+
+FUNCTION hwg_BPMconv_inch(mtr)
+RETURN mtr / (100.0 / 2.54)
+
+*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*   End of Functions for raw bitmap support
+*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 * ====================== EOF of drawwidg.prg ==========================
    
 

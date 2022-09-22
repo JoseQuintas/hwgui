@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-02-22 12:50 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/hwgdoc_functions.html
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+  * test/ticket112.hbp
+  * test/ticket112.prg
+    ! Added instructions for ticket 112
+    ! Raw bitmap support (to be continued) 
 
 2022-02-20 14:45 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/hmisc.prg

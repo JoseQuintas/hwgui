@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-02-26 12:35 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_commands.html
+    ! Ticket #109 closed:
+    ! Additional information GET CHECKBOX
+  
+
 2022-02-22 12:50 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * doc/hwgdoc_functions.html

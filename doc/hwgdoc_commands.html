@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
-      <td width="70%" align="center">Alexander S.Kresin, August 2022</td>
+      <td width="70%" align="center">Alexander S.Kresin, September 2022</td>
       <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
     </tr>
   </table>
@@ -454,6 +454,20 @@
     	 [ FONT &lt;oFont&gt; ] 
     	 [ TOOLTIP &lt;ctoolt&gt; ]
     </pre>
+
+    <p>
+    Additional information:<br>
+    To avoid some trouble with presetting of values for CHECKBOX,<br>
+    it is a better solution to use:<br>
+    LOCAL lCheckbox1<br>
+    lCheckbox1 := .F.<br>
+    ...<br>
+    @ &lt;x&gt;,&lt;y&gt;  GET CHECKBOX &lt;oCheck&gt; VAR lCheckbox1 ;<br>
+      CAPTION  &lt;caption&gt; SIZE &lt;width&gt;, &lt;height&gt;<br>
+    (See sample program \samples\checkbox.prg)<br>
+    In this code snippet mentioned, it is mandatory to pre init the variable lCheckbox1<br>
+    with .T. or .F. .<br>
+    </p>
 
     <br><a name="Commands3-6" href="#_Commands3-6">4.3.6.  @ &lt;x&gt;,&lt;y&gt; COMBOBOX</a>
     <p></p>

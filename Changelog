@@ -15,13 +15,29 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-2022-02-26 12:35 UTC+0200 Wilfried Brunken DF7BE
+
+2022-10-02 18:30 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/hwgdoc_functions.html
+  * source/gtk/drawwidg.prg
+  * source/gtk/hmisc.prg
+  * source/winapi/draw.c
+  * source/winapi/hmisc.prg
+  * test/testbmpcr.hbp (New)
+  * test/testbmpcr.prg (New)
+  * test/ticket112.hbp
+  * utils/devtools/Readme.txt
+  * utils/devtools/bcc_comp.bat (New)
+    ! Raw bitmap support, part 1 (creation for QR encoding)
+    ! (To be continued)  
+
+2022-09-26 12:35 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html
     ! Ticket #109 closed:
     ! Additional information GET CHECKBOX
   
 
-2022-02-22 12:50 UTC+0200 Wilfried Brunken DF7BE
+2022-09-22 12:50 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * doc/hwgdoc_functions.html
   * source/gtk/drawwidg.prg
@@ -31,7 +47,7 @@
     ! Added instructions for ticket 112
     ! Raw bitmap support (to be continued) 
 
-2022-02-20 14:45 UTC+0200 Wilfried Brunken DF7BE
+2022-09-20 14:45 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/hmisc.prg
   * source/winapi/hmisc.prg
   * test/testfilehex.hbp (New)
@@ -42,12 +58,12 @@
     ! Test program for all modes added.   
 
 
-2022-02-16 11:10 UTC+0200 Wilfried Brunken DF7BE
+2022-09-16 11:10 UTC+0200 Wilfried Brunken DF7BE
   * test/ticket112.hbp (New)
   * test/ticket112.prg (New)
     ! Test program for ticket 112
 
-2022-02-15 09:12 UTC+0200 Wilfried Brunken DF7BE
+2022-09-15 09:12 UTC+0200 Wilfried Brunken DF7BE
   * Changelog
   * clean.sh
   * image/qr_darc.png (New)

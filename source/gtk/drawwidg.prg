@@ -1124,7 +1124,7 @@ LOCAL cTmp , hCursor
  hCursor := hwg_LoadCursorFromFile( cTmp , nx, ny )
  FERASE(cTmp)
 RETURN hCursor
-   
+
 
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *   Functions for raw bitmap support

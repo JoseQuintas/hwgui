@@ -89,6 +89,7 @@ rm test/xval 2>/dev/null
 rm test/ChTooltip 2>/dev/null
 rm test/testfilehex 2>/dev/null
 rm test/ticket112 2>/dev/null
+rm test/testbmpcr 2>/dev/null
 
 
 # Find and delete all Error logs

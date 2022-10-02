@@ -3,6 +3,7 @@
  *
  * HWGUI - Harbour Win32 GUI library source code:
  * C level painting functions
+ * Raw bitmap support
  *
  * Copyright 2001 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
@@ -40,6 +41,16 @@ DF7BE, September 2022
 
 #include "incomp_pointer.h"
 
+/* Includes for raw bitmap support */
+#include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <malloc.h>
+
+
 #if defined( __BORLANDC__ ) && __BORLANDC__ == 0x0550
 #ifdef __cplusplus
 extern "C"
@@ -61,6 +72,8 @@ typedef int ( _stdcall * TRANSPARENTBLT ) ( HDC, int, int, int, int, HDC, int,
       int, int, int, int );
 
 static TRANSPARENTBLT s_pTransparentBlt = NULL;
+
+static void * bmp_fileimg ; /* Pointer to file image of a bitmap */
 
 #define GRADIENT_MAX_COLORS 16
 
@@ -102,6 +115,19 @@ typedef struct _TRIVERTEX
 #ifndef M_PI_4
 #define M_PI_4           0.78539816339744830962
 #endif
+
+
+/* Define fixed parameters for bitmap */
+
+#define BMPFILEIMG_MAXSZ 131072 /* Max file size of a bitmap (128 K) */
+#define  _planes      1         /* Forever 1 */
+#define  _compression 0         /* No compression */
+
+
+#define HI_NIBBLE    0
+#define LO_NIBBLE    1
+#define MINIMUM(a, b) ((a) < (b) ? (a) : (b))
+
 
 
 typedef int ( _stdcall * GRADIENTFILL ) ( HDC, PTRIVERTEX, int, PVOID, int, int );
@@ -463,20 +489,6 @@ HB_FUNC( HWG_LOADIMAGE )
               !      ! name or identifier of image 
               ! handle of the instance that contains the image
 */
-
-HB_FUNC( HWG_LOADPNG )
-{
-
-   void *hString = NULL;
-
-/*    
-    HB_RETHANDLE( (HICON)LoadImage(HB_ISNIL( 1 ) ? GetModuleHandle( NULL ) : ( HINSTANCE ) hb_parnl( 1 ),
-                   MAKEINTRESOURCE(ICO_LOGO) ,
-                  IMAGE_ICON, 0, 0, LR_LOADTRANSPARENT) );
-*/ 
-
-   hb_strfree( hString ); 
-}
 
 
 HB_FUNC( HWG_LOADBITMAP )
@@ -1950,6 +1962,655 @@ HB_FUNC( HWG_DRAWGRADIENT )
    DeleteObject( hBrush );
 
 }
+
+
+/* As preparation to further versions */ 
+HB_FUNC( HWG_LOADPNG )
+{
+}
+
+/*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
+/*   Functions for raw bitmap support   */
+/*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
+
+
+/* Some more functions for bitmap support
+   (for example painting and stretching of bitmap images)
+   are implemented in source code file "cxshade.c".
+*/   
+
+/*
+ === Bitmap structures == 
+
+ Not used structures are inserted for future realeases of HWGUI. 
+
+ */
+
+/* uint32_t : l=4, DWORD LONG  , uint16_t : l=2, WORD  uint8_t l=1,BYTE, unsigned char */
+
+/*
+ Summary of bitmap structures:
+ 
+ fileheader l=14
+ 
+ bitmapinfoheader l=40
+
+ bitmapheader3x l=54
+   - fileheader
+   - bitmapinfoheader
+
+ Win2xPaletteElement
+
+ bitmapinfoheader4x
+
+ bitmapinfoheader5x
+
+ bitmap4x  l= 122
+   -  fileheader
+   -  bitmapinfoheader bitmapinfoheader
+   -  bitmapinfoheader4x bitmapinfoheader4x
+
+
+ WINNTBITFIELDSMASKS (RGB mask's)
+
+ color (Win3x palette element)
+
+ pixel
+
+ imagedata
+   - pixel
+   - color
+
+ BMPImage
+   - bitmap4x 
+   - pixel **
+   - color
+
+*/
+
+
+
+#pragma pack(push,1)
+
+/* Alternative declaration:
+typedef struct <name> {
+ ...
+}  __attribute__((packed)) <name> ;
+*/   
+
+typedef struct{
+    uint8_t signature[2];              /* 0  "BM" */
+    uint32_t filesize;                 /* 2  Size of file in bytes */ 
+    uint32_t reserved;                 /* 6  reserved, forever 0 */
+    uint32_t fileoffset_to_pixelarray; /* 10 Start position of image data in bytes */ 
+} fileheader;                          /* 14 l = 14 */
+
+/* Win 3.x info header */
+typedef struct{
+    uint32_t dibheadersize;            /* 14  Size of this header in bytes */
+    uint32_t width;                    /* 18  Image width in pixels */
+    uint32_t height;                   /* 22  Image height in pixels */
+    uint16_t planes;                   /* 26  Number of color planes */
+    uint16_t bitsperpixel;             /* 28  Number of bits per pixel */
+    uint32_t compression;              /* 30  Compression methods used */
+    uint32_t imagesize;                /* 34  Size of bitmap in bytes */
+    uint32_t ypixelpermeter;           /* 38  Horizontal resolution in pixels per meter */
+    uint32_t xpixelpermeter;           /* 42  Vertical resolution in pixels per meter */
+    uint32_t numcolorspallette;        /* 46  Number of colors in the image */
+    uint32_t mostimpcolor;             /* 50  Minimum number of important colors */
+} bitmapinfoheader;                    /* 54 l = 40 */
+
+
+/* Color components (Win3x palette element)  */ 
+typedef struct {
+    uint8_t b; /* Blue */
+    uint8_t g; /* Green */
+    uint8_t r; /* Red component */
+    uint8_t a; /* Reserved = 0 */
+} color;
+ 
+typedef struct
+{
+    uint8_t b;
+    uint8_t g;
+    uint8_t r;
+    uint8_t i;
+}  pixel;
+
+/* W3.x complete header */
+typedef struct {
+    fileheader fileheader;             /* l = 14 */
+    bitmapinfoheader bitmapinfoheader; /* l = 40 */
+} bitmapheader3x;  /* l=54 */
+
+typedef struct { 
+   char Blue;      /* Blue component */
+   char Green;     /* Green component */
+   char Red;       /* Red component */
+} Win2xPaletteElement ;
+
+/* Fields added for Windows 4.x follow this line */
+
+typedef struct {
+ uint32_t RedMask;       /* 54 Mask identifying bits of red component */
+ uint32_t GreenMask;     /* 58 Mask identifying bits of green component */
+ uint32_t BlueMask;      /* 62 Mask identifying bits of blue component */
+ uint32_t AlphaMask;     /* Mask identifying bits of alpha component */
+ uint32_t CSType;        /* Color space type */
+ uint32_t RedX;          /* X coordinate of red endpoint */
+ uint32_t RedY;          /* Y coordinate of red endpoint */
+ uint32_t RedZ;          /* Z coordinate of red endpoint */
+ uint32_t GreenX;        /* X coordinate of green endpoint */
+ uint32_t GreenY;        /* Y coordinate of green endpoint */
+ uint32_t GreenZ;        /* Z coordinate of green endpoint */
+ uint32_t BlueX;         /* X coordinate of blue endpoint */
+ uint32_t BlueY;         /* Y coordinate of blue endpoint */
+ uint32_t BlueZ;         /* Z coordinate of blue endpoint */
+ uint32_t GammaRed;      /* Gamma red coordinate scale value */
+ uint32_t GammaGreen;    /* Gamma green coordinate scale value */
+ uint32_t GammaBlue;     /* Gamma blue coordinate scale value */
+} bitmapinfoheader4x;    /* l=68 */
+
+typedef struct {
+    uint32_t        intent;             /* Rendering intent */
+    uint32_t        profile_data;       /* Profile data offset in byte) */
+    uint32_t        profile_size;       /* Profile data size in byte */
+    uint32_t        reserved;           /* 0 */
+} bitmapinfoheader5x;
+
+/* Bmp image W3.x structure for QR encoding */
+typedef struct {
+    bitmapheader3x bmp_header;   /* full Header of the bitmap */
+    pixel **pixel_data;    /* Pixel matrix (jagged array) */
+    color *palette;        /* Color palette (array) */
+}  BMPImage3x;
+
+
+
+
+typedef struct {
+ uint32_t  RedMask;         /* Mask red component */
+ uint32_t  GreenMask;       /* Mask green component */
+ uint32_t  BlueMask;        /* Mask blue component */
+} WINNTBITFIELDSMASKS ;
+
+
+
+typedef struct {
+    pixel **pixel_data;    /* Pixel matrix (jagged array) */
+    color *palette;        /* Color palette (array) */
+}  imagedata;
+
+typedef struct {
+    fileheader fileheader;                  /* l = 14 */
+    bitmapinfoheader bitmapinfoheader;      /* l = 40 */
+    bitmapinfoheader4x bitmapinfoheader4x;  /* l = 68 */
+} bitmap4x;  /* l=122 */
+
+typedef struct 
+{
+    bitmap4x bmp_header;   /* full Header of the bitmap */
+    pixel **pixel_data;    /* Pixel matrix (jagged array) */
+    color *palette;        /* Color palette (array) */
+}  BMPImage4x; /* W4x */
+
+#pragma pack(pop)
+
+static unsigned int cc_null(uint32_t wert) 
+{
+    unsigned int zae ;
+
+    zae = 0;
+
+    if (! wert)
+    {
+      return 0u;
+    }
+
+    while (!(wert & 0x1))
+    {
+        ++zae;
+        wert >>= 1;
+    }
+
+    return zae;
+}
+
+
+uint32_t hwg_BMPFileSizeC(
+    int bmp_width,
+    int bmp_height,
+    int bmp_bit_depth,
+    unsigned int colors
+    )
+{           
+    uint32_t image_size;
+    uint32_t pad;
+    uint32_t fileoffset_to_pixelarray;
+    uint32_t filesize ;
+
+ 
+    pad = (4 - (bmp_bit_depth * bmp_width + 7 ) / 8 % 4) % 4;
+    image_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad ) * bmp_height;
+
+    fileoffset_to_pixelarray = sizeof (fileheader) + sizeof(bitmapinfoheader) +
+    colors * 4 ;
+    filesize = fileoffset_to_pixelarray + image_size ;
+
+    return filesize; 
+}
+
+/* Creates a C element with bitmap file image */
+
+void * hwg_BMPNewImageC(
+
+    int bmp_width,
+    int bmp_height,
+    int bmp_bit_depth,
+    unsigned int colors,
+    uint32_t xpixelpermeter,
+    uint32_t ypixelpermeter )
+
+{
+    BMPImage3x pbitmap;  /* Memory for the image with pointers */
+    uint32_t image_size;
+    uint32_t pad;
+    uint32_t fileoffset_to_pixelarray;
+    
+    uint32_t filesize ;
+    uint32_t max_colors;
+//    int i;
+    uint32_t i,j;
+    void * bmp_locpointer;
+    uint8_t * bitmap_buffer;
+    uint8_t * buf;
+    uint8_t tmp;
+    short bit;
+
+    /* uint8_t mask1[8]; */
+    uint8_t mask4[2]; 
+
+    /* Reserved for later releases
+    mask1[0] = 128;
+    mask1[1] = 64;
+    mask1[2] = 32;
+    mask1[3] = 16;
+    mask1[4] = 8;
+    mask1[5] = 4;
+    mask1[6] = 2;
+    mask1[7] = 1;
+   */
+   
+    mask4[0] = 240,
+    mask4[1] = 15;
+ 
+    max_colors = (uint32_t) 1;
+
+    memset(&pbitmap, 0, sizeof (BMPImage3x));
+
+    /* Some parameter checks */
+    if (bmp_bit_depth != 1 && bmp_bit_depth != 4 && bmp_bit_depth != 8 && bmp_bit_depth != 16 && bmp_bit_depth != 24 )
+    {
+       return NULL;
+    }
+
+    if (bmp_width < 1 || bmp_height < 1 )
+    {
+       return NULL;
+    }
+
+ 
+    for (i = 0; i < bmp_bit_depth; ++i)
+    {
+        max_colors *= 2;
+    }
+
+    if (colors > max_colors)
+    {
+        /* Colors and max colors not compatible */
+        return NULL;
+    }
+
+    pad = (4 - (bmp_bit_depth * bmp_width + 7 ) / 8 % 4) % 4;
+    image_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad ) * bmp_height;
+
+
+    
+    /* Pre init with 0 */
+    memset(&pbitmap,0x00,sizeof(BMPImage3x) ); 
+
+   
+    fileoffset_to_pixelarray = sizeof (fileheader) + sizeof(bitmapinfoheader) +
+    colors * 4 ;
+    filesize = fileoffset_to_pixelarray + image_size ;
+ 
+    /* Allocate memory for full file size */
+    bmp_fileimg = malloc(filesize);
+ 
+ 
+    /* Bitmap file header */
+    strcpy( (char *) pbitmap.bmp_header.fileheader.signature,"BM");               /* fixed signature */ 
+    pbitmap.bmp_header.fileheader.filesize = filesize;                            /* Size of file in bytes */
+    pbitmap.bmp_header.fileheader.reserved = 0;
+    pbitmap.bmp_header.fileheader.fileoffset_to_pixelarray = fileoffset_to_pixelarray; /* Start position of image data in bytes */
+
+    /* Bitmap information header 3.x*/
+    pbitmap.bmp_header.bitmapinfoheader.dibheadersize = (uint32_t) sizeof(bitmapinfoheader); /* Size of this header in bytes */
+    pbitmap.bmp_header.bitmapinfoheader.width = (uint32_t) bmp_width;            /* Image width in pixels */ 
+    pbitmap.bmp_header.bitmapinfoheader.height = (uint32_t) bmp_height;          /* Image height in pixels */
+    pbitmap.bmp_header.bitmapinfoheader.planes = (uint32_t) _planes;             /* Number of color planes (must be 1) */
+    pbitmap.bmp_header.bitmapinfoheader.bitsperpixel = (uint16_t) bmp_bit_depth; /* Number of bits per pixel `*/
+    pbitmap.bmp_header.bitmapinfoheader.compression = _compression;              /* Compression methods used */
+    pbitmap.bmp_header.bitmapinfoheader.imagesize = (uint32_t) image_size;       /* Size of bitmap in bytes (pixelbytesize) */
+    pbitmap.bmp_header.bitmapinfoheader.ypixelpermeter = ypixelpermeter ;        /* Horizontal resolution in pixels per meter */
+    pbitmap.bmp_header.bitmapinfoheader.xpixelpermeter = xpixelpermeter ;        /* Vertical resolution in pixels per meter */
+    pbitmap.bmp_header.bitmapinfoheader.numcolorspallette = colors;              /* Number of colors in the image */
+    pbitmap.bmp_header.bitmapinfoheader.mostimpcolor = colors;                   /* Minimum number of important colors */
+
+
+    /* process image data */
+
+    /* Alloc pixel data (jagged array) */
+    pbitmap.pixel_data = (pixel**) malloc(bmp_height * sizeof(pixel*) );
+
+    if ( ! pbitmap.pixel_data)
+    {
+       return NULL;
+    }
+    for (i = 0; i < bmp_height; ++i)
+    {
+      pbitmap.pixel_data[i] = (pixel*) calloc(bmp_width, sizeof (pixel));
+
+      if (! pbitmap.pixel_data[i])
+      {
+        while (i > 0)
+        {
+          free( pbitmap.pixel_data[--i]);
+        }
+          free(pbitmap.pixel_data);
+      }
+    }
+
+    /* Alloc color palette */
+    pbitmap.palette = (color*) calloc(colors, sizeof (color));
+    memset(&pbitmap.palette, 0x00, sizeof (color));
+ 
+    /* Copy structure pbitmap (BMPImage3x) to file buffer */
+    memcpy(bmp_fileimg,&pbitmap, sizeof(BMPImage3x) );
+
+    /*
+      Now until here processed:
+      - Fileheader
+      - Info header
+      - Pixel pointer
+      - Palette
+     */
+
+    /* Move pointer to end of block : start position of pixel data */
+    bmp_locpointer = bmp_fileimg + fileoffset_to_pixelarray;
+    
+    /* Process initialization of  pixel data */
+
+    /* allocate buffer for bitmap pixel data */
+    bitmap_buffer = (uint8_t *) calloc(1, image_size);
+    memset(bitmap_buffer,0x00,image_size);
+    buf = bitmap_buffer;
+    
+    /* convert pixel data into bitmap format */
+    switch (bmp_bit_depth)
+    {
+    /* Each byte of data represents 8 pixels, with the most significant 
+       bit mapped into the leftmost pixel */
+    case 1:
+       for (i = 0; i < bmp_height; ++i)
+       {
+         j = 0;
+         while (j < bmp_width)
+         {
+           tmp = 0;
+           for (bit = 7; bit >= 0 && j < bmp_width; --bit)
+           {
+             tmp |= (pbitmap.pixel_data[i][j].i == 0 ? 0u : 1u) << bit;
+             ++j;
+           }
+           *buf++ = tmp;
+         }
+         buf += pad;
+       }
+       break;
+
+    /* Each byte represents 2 pixel byte, nibble */
+
+    case 4:
+       for (i = 0; i < bmp_height; ++i)
+        {
+         for (j = 0; j < bmp_width; j += 2)
+          {
+             /* write two pixels in the one byte variable tmp */
+             tmp = 0;
+             /* most significant nibble */
+             tmp |= pbitmap.pixel_data[i][j].i << 4;
+             if (j + 1 < bmp_height)
+             {
+              /* least significant nibble */
+               tmp |= pbitmap.pixel_data[i][j + 1].i & mask4[LO_NIBBLE];
+             }
+              /* write the byte in the image buffer */
+              *buf++ = tmp;
+          }
+          /* each row has a padding to a 4 byte alignment */
+          buf += pad;
+        }
+        break;
+
+    /* represents 1 byte pixel */
+    case 8:
+       for (i = 0; i < bmp_height; ++i)
+        {
+         for (j = 0; j < bmp_width; ++j)
+           *buf++ = pbitmap.pixel_data[i][j].i;
+           /* each row has a padding to a 4 byte alignment */
+           buf += pad;
+        }
+        break;
+
+    /* 2 bytes pixel*/
+    case 16:
+       for (i = 0; i < bmp_height; ++i)
+        {
+          for (j = 0; j < bmp_width; ++j)
+          {
+            uint16_t *px = (uint16_t*) buf;
+            *px = 
+             (pbitmap.pixel_data[i][j].b << cc_null(pbitmap.palette->b)) +
+             (pbitmap.pixel_data[i][j].g << cc_null(pbitmap.palette->g)) + 
+             (pbitmap.pixel_data[i][j].r << cc_null(pbitmap.palette->r));
+            buf += 2;
+          }
+          buf += pad;
+       }
+       break;
+
+    /* 3 bytes pixel, 1 byte for one color */
+    case 24:
+       for (i = 0; i < bmp_height; ++i)
+       {
+          for (j = 0; j < bmp_width; ++j)
+          {
+             *buf++ = pbitmap.pixel_data[i][j].b;
+             *buf++ = pbitmap.pixel_data[i][j].g;
+             *buf++ = pbitmap.pixel_data[i][j].r;
+          }
+          /* Each row has a padding to a 4 byte alignment */
+          buf += pad;
+       }
+       break;
+     }
+    
+
+    /* Copy the image data to the file buffer */
+    memcpy(bmp_locpointer,bitmap_buffer, image_size );
+
+    /* Free all the memory not needed */
+
+    free(bitmap_buffer);
+    free(bmp_locpointer);
+    free(buf);
+
+
+    /* Return the pointer of complete file buffer,
+       its content must be returned as Harbour string */
+
+    return bmp_fileimg;
+
+}
+
+/* Calculates the offset to pixel array (image data) */
+uint32_t hwg_BMPCalcOffsPixArrC(unsigned int colors)
+   {  
+    uint32_t fileoffset_to_pixelarray;
+
+    fileoffset_to_pixelarray = sizeof (fileheader) + sizeof(bitmapinfoheader) +
+    colors * 4 ;
+
+    return fileoffset_to_pixelarray;
+
+}
+
+/* Calculates the offset to palette data */
+/* Under construction */
+/*
+uint32_t hwg_BMPCalcOffsPalC()
+{
+  
+}
+*/
+
+/*  ==== HWGUI Interface function for raw bitmap support ==== */
+
+HB_FUNC( HWG_BMPNEWIMAGE )
+{
+
+    int bmp_width;
+    int bmp_height;
+    int bmp_bit_depth;
+    unsigned int colors;
+    uint32_t xpixelpermeter;
+    uint32_t ypixelpermeter;
+    void * rci; 
+    char rcbuff[BMPFILEIMG_MAXSZ];
+    uint32_t filesize ;
+   
+    bmp_width = hb_parni(1);
+    bmp_height = hb_parni(2);
+    bmp_bit_depth = hb_parni(3);
+    colors = hb_parni(4);
+    xpixelpermeter = hb_parnl(5); 
+    ypixelpermeter = hb_parnl(6);
+
+
+
+    rci = hwg_BMPNewImageC(
+     bmp_width,
+     bmp_height,
+     bmp_bit_depth,
+     colors,
+     xpixelpermeter,
+     ypixelpermeter );
+     
+
+     if ( ! rci )
+     { 
+      hb_retc("Error");
+     }  
+
+    /* Calculate the file size */
+    filesize = hwg_BMPFileSizeC(bmp_width, bmp_height, bmp_bit_depth, colors) ;
+
+    if ( filesize > BMPFILEIMG_MAXSZ )
+    {
+      hb_retc("Error");      
+    }
+
+     memcpy(&rcbuff,rci,filesize);
+ 
+    
+     hb_retclen_buffer(rcbuff,filesize);
+
+    /* HB_RETSTR(rcbuff) stops writing bytes at first appearence of 0x00 */
+
+}
+
+
+/* Free's the allocted memory of a bitmap */
+HB_FUNC( HWG_BMPDESTROY )
+{
+   if ( bmp_fileimg )
+   {
+    free(bmp_fileimg);
+   }
+}
+
+/* Calculates the expected filesize of a bitmap W3.x file */
+HB_FUNC( HWG_BMPFILESIZE )
+{
+    uint32_t image_size;
+    uint32_t pad;
+    uint32_t fileoffset_to_pixelarray;
+    uint32_t filesize ;
+
+    int bmp_width;
+    int bmp_height;
+    int bmp_bit_depth;
+    unsigned int colors;
+
+    bmp_width = hb_parni(1);
+    bmp_height = hb_parni(2);
+    bmp_bit_depth = hb_parni(3);
+    colors = hb_parni(4);
+
+    pad = (4 - (bmp_bit_depth * bmp_width + 7 ) / 8 % 4) % 4;
+    image_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad ) * bmp_height;
+
+    fileoffset_to_pixelarray = sizeof (fileheader) + sizeof(bitmapinfoheader) +
+    colors * 4 ;
+    filesize = fileoffset_to_pixelarray + image_size ;
+
+    hb_retnl(filesize); 
+}
+
+/* Returns the size of BMPImage3x structure */
+HB_FUNC( HWG_BMPSZ3X )
+{
+  uint32_t i;
+  i = ( sizeof(BMPImage3x) );
+  hb_retnl(i);
+}
+
+/* Returns the maximum size of the bitmap file size */
+HB_FUNC( HWG_BMPMAXFILESZ )
+{
+  return hb_retnl(BMPFILEIMG_MAXSZ);
+}
+
+/* Calculates the offset to pixel array (image data) */
+
+HB_FUNC( HWG_BMPCALCOFFSPIXARR )
+{
+
+    unsigned int colors;
+    uint32_t fileoffset_to_pixelarray;
+
+    colors = hb_parni(1);
+
+    fileoffset_to_pixelarray = hwg_BMPCalcOffsPixArrC(colors);
+    hb_retnl(fileoffset_to_pixelarray); 
+
+}
+
+/*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
+/*   End of Functions for raw bitmap support   */
+/*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
 
 /* ============================== EOF of draw.c ================================ */
 

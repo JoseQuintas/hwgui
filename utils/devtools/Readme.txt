@@ -12,6 +12,7 @@
    1. MEM dump utility
    2. Label Dump utility
    3. DBF structure dump utililty
+   4. Dump some parameters of a bitmap file
 
 
 
@@ -177,6 +178,16 @@ End ==> any key
 
   The sub directory "MS-DOS" contains an executable for MS-DOS compiled
   with Clipper Summer 1987 release.
+
+
+
+   4. Dump some parameters of a bitmap file
+   ========================================
+   Compile commands see comment line of getbitmappars.c.
+
+   Start programm passing the full name of the bitmap file with extension ".bmp":
+   getbitmappars.exe ..\..\image\astro.bmp
+
 
 
    References

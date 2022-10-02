@@ -1191,5 +1191,41 @@ ENDIF
 hwg_WriteLog(cttype + hwg_ValType(xxx) + " " +  cttval + hwg_xVal2C(xxx), cfilename )
 RETURN NIL 
 
+
+FUNCTION hwg_ChangeCharInString(cinp,nposi,cval)
+LOCAL cout, i
+
+IF cinp == NIL
+ RETURN ""
+ENDIF 
+
+IF cval == NIL
+ RETURN cinp
+ENDIF
+
+IF LEN(cval) <> 1
+ RETURN cinp
+ENDIF
+
+IF nposi == NIL
+  RETURN cinp
+ENDIF
+
+IF nposi > LEN(cinp)
+  RETURN cinp
+ENDIF
+
+cout := ""
+
+FOR i := 1 TO LEN(cinp)
+ IF i == nposi
+    cout := cout + cval
+ ELSE
+  cout := cout + SUBSTR(cinp,i,1)
+ ENDIF
+NEXT
+
+RETURN cout 
+
 * ============== EOF of hmisc.prg =================
 

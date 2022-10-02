@@ -158,7 +158,7 @@ FOR ncount := 1 TO LEN(chexstr)
   * if odd, return error
   IF ( nodd % 2 ) != 0
    RETURN ""
-  ENDIF 
+  ENDIF   
   IF ldebug 
     hwg_xvalLog(cbin)
   ENDIF  
@@ -233,8 +233,8 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
    IF nmode == 5
      coutfield := "{"
    ELSE
-   coutfield := ""  && collects out line
-  ENDIF 
+     coutfield := ""  && collects out line
+   ENDIF
   ENDIF 
   // cccprint := ""   && collects printable char
   cccprline := ""  && collects printable chars
@@ -272,7 +272,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
      * Add a blank between a hex value pair
      cccprline := cccprline + cccprint + " "
      ccchexline := ccchexline + ccchex + " "
-    ENDIF
+     ENDIF
     ENDIF
     * end of line with 16 bytes reached
     IF nlinepos > 15
@@ -298,7 +298,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
       cccprline := ""
       IF nmode == 2
        ccchexline := CHR(34) && start new line with double quote
-      ELSE  
+      ELSE
        ccchexline := ""
       ENDIF
     ENDIF
@@ -1190,6 +1190,42 @@ IF cfilename == NIL
 ENDIF 
 hwg_WriteLog(cttype + hwg_ValType(xxx) + " " +  cttval + hwg_xVal2C(xxx), cfilename )
 RETURN NIL 
+
+
+FUNCTION hwg_ChangeCharInString(cinp,nposi,cval)
+LOCAL cout, i
+
+IF cinp == NIL
+ RETURN ""
+ENDIF 
+
+IF cval == NIL
+ RETURN cinp
+ENDIF
+
+IF LEN(cval) <> 1
+ RETURN cinp
+ENDIF
+
+IF nposi == NIL
+  RETURN cinp
+ENDIF
+
+IF nposi > LEN(cinp)
+  RETURN cinp
+ENDIF
+
+cout := ""
+
+FOR i := 1 TO LEN(cinp)
+ IF i == nposi
+    cout := cout + cval
+ ELSE
+  cout := cout + SUBSTR(cinp,i,1)
+ ENDIF
+NEXT
+
+RETURN cout 
 
 * ============== EOF of hmisc.prg =================
 

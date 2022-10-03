@@ -56,6 +56,7 @@ rm samples/testtree 2>/dev/null
 rm samples/bindbf 2>/dev/null
 rm samples/hexbincnt  2>/dev/null
 rm samples/imageview 2>/dev/null
+rm samples/checkbox 2>/dev/null
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null
@@ -91,6 +92,9 @@ rm test/testfilehex 2>/dev/null
 rm test/ticket112 2>/dev/null
 rm test/testbmpcr 2>/dev/null
 
+# Other files created by test programs
+rm test/hexdump.txt 2>/dev/null
+rm test/test.bmp 2>/dev/null
 
 # Find and delete all Error logs
 find . -name Error.log -exec rm -f {} \;

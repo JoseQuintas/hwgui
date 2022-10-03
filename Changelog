@@ -16,6 +16,16 @@
 */
 
 
+
+2022-10-02 18:30 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * source/gtk/draw.c
+  * source/winapi/draw.c
+   ! Raw bitmap support, part 2
+   ! Ready for LINUX/GTK.
+   ! (To be continued)  
+
+
 2022-10-02 18:30 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
   * doc/hwgdoc_functions.html

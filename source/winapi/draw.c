@@ -2226,6 +2226,7 @@ void * hwg_BMPNewImageC(
     uint8_t * buf;
     uint8_t tmp;
     short bit;
+    char csig[2];
 
     /* uint8_t mask1[8]; */
     uint8_t mask4[2]; 
@@ -2245,6 +2246,11 @@ void * hwg_BMPNewImageC(
     mask4[1] = 15;
  
     max_colors = (uint32_t) 1;
+
+    /* Fixed signature "BM" */
+    csig[0] = 0x42;
+    csig[1] = 0x4d;
+
 
     memset(&pbitmap, 0, sizeof (BMPImage3x));
 
@@ -2289,7 +2295,8 @@ void * hwg_BMPNewImageC(
  
  
     /* Bitmap file header */
-    strcpy( (char *) pbitmap.bmp_header.fileheader.signature,"BM");               /* fixed signature */ 
+
+    memcpy( &pbitmap.bmp_header.fileheader.signature,csig,2);                     /* fixed signature */ 
     pbitmap.bmp_header.fileheader.filesize = filesize;                            /* Size of file in bytes */
     pbitmap.bmp_header.fileheader.reserved = 0;
     pbitmap.bmp_header.fileheader.fileoffset_to_pixelarray = fileoffset_to_pixelarray; /* Start position of image data in bytes */
@@ -2612,5 +2619,5 @@ HB_FUNC( HWG_BMPCALCOFFSPIXARR )
 /*   End of Functions for raw bitmap support   */
 /*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
 
-/* ============================== EOF of draw.c ================================ */
+/* ================== EOF of draw.c ========================== */
 

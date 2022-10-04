@@ -1357,9 +1357,9 @@ uint32_t hwg_BMPFileSizeC(
 
 void * hwg_BMPNewImageC(
 
-    int bmp_width,
-    int bmp_height,
-    int bmp_bit_depth,
+    int pbmp_width,
+    int pbmp_height,
+    int pbmp_bit_depth,
     unsigned int colors,
     uint32_t xpixelpermeter,
     uint32_t ypixelpermeter )
@@ -1380,6 +1380,9 @@ void * hwg_BMPNewImageC(
     uint8_t tmp;
     short bit;
     char csig[2];
+    uint32_t bmp_width;
+    uint32_t bmp_height;
+    uint32_t bmp_bit_depth;
 
     /* uint8_t mask1[8]; */
     uint8_t mask4[2]; 
@@ -1404,6 +1407,10 @@ void * hwg_BMPNewImageC(
     csig[0] = 0x42;
     csig[1] = 0x4d;
 
+    /* Cast for avoiding warnings in for loops (int ==> uint32_t */
+     bmp_width = (uint32_t) pbmp_width;
+     bmp_height = (uint32_t) pbmp_height;
+     bmp_bit_depth = (uint32_t) pbmp_bit_depth;
 
     memset(&pbitmap, 0, sizeof (BMPImage3x));
 
@@ -1456,8 +1463,8 @@ void * hwg_BMPNewImageC(
 
     /* Bitmap information header 3.x*/
     pbitmap.bmp_header.bitmapinfoheader.dibheadersize = (uint32_t) sizeof(bitmapinfoheader); /* Size of this header in bytes */
-    pbitmap.bmp_header.bitmapinfoheader.width = (uint32_t) bmp_width;            /* Image width in pixels */ 
-    pbitmap.bmp_header.bitmapinfoheader.height = (uint32_t) bmp_height;          /* Image height in pixels */
+    pbitmap.bmp_header.bitmapinfoheader.width =  bmp_width;            /* Image width in pixels */ 
+    pbitmap.bmp_header.bitmapinfoheader.height = bmp_height;          /* Image height in pixels */
     pbitmap.bmp_header.bitmapinfoheader.planes = (uint32_t) _planes;             /* Number of color planes (must be 1) */
     pbitmap.bmp_header.bitmapinfoheader.bitsperpixel = (uint16_t) bmp_bit_depth; /* Number of bits per pixel `*/
     pbitmap.bmp_header.bitmapinfoheader.compression = _compression;              /* Compression methods used */
@@ -1645,7 +1652,8 @@ uint32_t hwg_BMPCalcOffsPixArrC(unsigned int colors)
 
 }
 
-/* Calculates the offset to palette data
+
+/*
  Calculates the offset to palette data,
  located after the pixel matrix (jagged array)
  */

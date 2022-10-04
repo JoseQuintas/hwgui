@@ -40,7 +40,7 @@ HWG_BMPDESTROY()
 
 noffset := hwg_BMPCalcOffsPixArr(2);
 
-* 62
+* Expected value: 62
 hwg_msgInfo("Offset to pixel data is " + ALLTRIM(STR(noffset)) )
 
 * Start with 55 : Add 1 to palette offset
@@ -50,6 +50,7 @@ CBMP := hwg_ChangeCharInString(CBMP,57,CHR(255) )
 
 npoffset := HWG_BMPCALCOFFSPAL()
 hwg_msgInfo("Offset to palette data is " + ALLTRIM(STR(npoffset)) )
+* Expected value: 54
 
 
 * 0x101 = 257 + 1,  0x80 = 128

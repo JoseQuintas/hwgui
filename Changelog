@@ -16,6 +16,14 @@
 */
 
 
+2022-10-04 21:40 UTC+0200 Wilfried Brunken DF7BE
+  * source/gtk/draw.c
+  * source/winapi/draw.c
+  * test/testbmpcr.prg
+   ! Ticket 114: Warnings in "for" loop
+   ! in draw.c with GCC 12  
+  
+
 2022-10-04 11:20 UTC+0200 Wilfried Brunken DF7BE
   * clean.bat
   * doc/hwgdoc_functions.html

@@ -1189,7 +1189,7 @@ IF cfilename == NIL
  cfilename := "a.log"
 ENDIF 
 hwg_WriteLog(cttype + hwg_ValType(xxx) + " " +  cttval + hwg_xVal2C(xxx), cfilename )
-RETURN NIL 
+RETURN NIL
 
 
 FUNCTION hwg_ChangeCharInString(cinp,nposi,cval)

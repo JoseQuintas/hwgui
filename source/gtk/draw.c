@@ -1116,6 +1116,7 @@ HB_FUNC( HWG__DRAWRADIOBTN )
 #endif
 }
 
+
 /* As preparation to further versions */ 
 HB_FUNC( HWG_LOADPNG )
 {
@@ -1624,7 +1625,9 @@ void * hwg_BMPNewImageC(
 
 
     /* Return the pointer of complete file buffer,
-       its content must be returned as Harbour string */
+       its content must be returned as Harbour string
+       in the corresponding HB_FUNC()
+    */
 
     return bmp_fileimg;
 
@@ -1642,14 +1645,19 @@ uint32_t hwg_BMPCalcOffsPixArrC(unsigned int colors)
 
 }
 
-/* Calculates the offset to palette data */
-/* Under construction */
-/*
-uint32_t hwg_BMPCalcOffsPalC()
+/* Calculates the offset to palette data
+ Calculates the offset to palette data,
+ located after the pixel matrix (jagged array)
+ */
+
+
+uint32_t hwg_BMPCalcOffsPalC(int bmp_height)
 {
-  
+  uint32_t iret;
+  iret = sizeof(bitmapheader3x) + ( bmp_height * sizeof(pixel*) );
+  return iret;
 }
-*/
+
 
 /*  ==== HWGUI Interface function for raw bitmap support ==== */
 
@@ -1772,6 +1780,18 @@ HB_FUNC( HWG_BMPCALCOFFSPIXARR )
     hb_retnl(fileoffset_to_pixelarray); 
 
 }
+
+/* Calculates the offset to palette data */
+HB_FUNC( HWG_BMPCALCOFFSPAL )
+{
+  uint32_t rc;
+  int bmp_height;
+  
+  bmp_height = hb_parni(1);
+  rc = hwg_BMPCalcOffsPalC(bmp_height);
+  hb_retnl(rc);
+}
+
 
 /*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
 /*   End of Functions for raw bitmap support   */

@@ -16,6 +16,17 @@
 */
 
 
+2022-10-04 11:20 UTC+0200 Wilfried Brunken DF7BE
+  * clean.bat
+  * doc/hwgdoc_functions.html
+  * source/gtk/draw.c
+  * source/gtk/hmisc.prg
+  * source/winapi/draw.c
+  * source/winapi/hmisc.prg
+  * test/testbmpcr.prg
+   ! Raw bitmap support, part 3
+   ! (To be continued) 
+   
 
 2022-10-02 18:30 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh

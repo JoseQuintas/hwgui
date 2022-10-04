@@ -158,7 +158,7 @@ FOR ncount := 1 TO LEN(chexstr)
   * if odd, return error
   IF ( nodd % 2 ) != 0
    RETURN ""
-  ENDIF   
+  ENDIF 
   IF ldebug 
     hwg_xvalLog(cbin)
   ENDIF  
@@ -233,8 +233,8 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
    IF nmode == 5
      coutfield := "{"
    ELSE
-     coutfield := ""  && collects out line
-   ENDIF
+   coutfield := ""  && collects out line
+  ENDIF 
   ENDIF 
   // cccprint := ""   && collects printable char
   cccprline := ""  && collects printable chars
@@ -272,7 +272,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
      * Add a blank between a hex value pair
      cccprline := cccprline + cccprint + " "
      ccchexline := ccchexline + ccchex + " "
-     ENDIF
+    ENDIF
     ENDIF
     * end of line with 16 bytes reached
     IF nlinepos > 15
@@ -298,7 +298,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
       cccprline := ""
       IF nmode == 2
        ccchexline := CHR(34) && start new line with double quote
-      ELSE
+      ELSE  
        ccchexline := ""
       ENDIF
     ENDIF

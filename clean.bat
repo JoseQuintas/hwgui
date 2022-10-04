@@ -39,5 +39,9 @@ del utils\designer\*.exe 2> NUL
 del utils\editor\*.exe 2> NUL
 REM 4. contrib
 del contrib\hwlabel\*.exe 2> NUL
+REM 5. test
+del test\*.exe 2> NUL
+del test\test.bmp 2> NUL
+del test\hexdump.txt 2> NUL
 REM
 REM ===== EOF of clean.bat =====

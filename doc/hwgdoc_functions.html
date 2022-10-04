@@ -3189,75 +3189,83 @@ See sample program "testspli.prg" for details.<br>
     <br>Same as "hwg_BMPNewImageC", returns the bitmap data field in a C type value<br>
     for processing with the following HWGUI functions.<br>
     
-   <p></p>
-   Parameters of both functions above:<br>
-   All parameters are mandatory.<br>
-   <br>    
-   To avoid misfunction in display and program crash<br>
-   pass all parameters concerning the<br>
-   bitmap specification described in the Microsoft documents.<br> 
-   <br>
-   <ul>
-     <li>filename                 : Full filename and path for bitmap file to create, with extension ".bmp"
-     <li>fileoffset_to_pixelarray : Start position of image data in bytes (must be >=54)
-     <li>bmp_height               : Image height in pixels
-     <li>bmp_width                : Image width in pixels
-     <li>bmp_bit_depth            : Number of bits per pixel
-     <li>colors                   : Number of colors in the image 
-     <li>xpixelpermeter           : Vertical resolution in pixels per meter
-     <li>ypixelpermeter           : Horizontal resolution in pixels per meter
-   </ul>
-   <br>
-   Some possible values for xpixelpermeter and ypixelpermeter (in pixels per meter):<br>
-   <ul>
-     <li>2835 in DPI:  72 (Default value)
-     <li>3780 in DPI:  96 (recommended value)
-   </ul>
-   <br>
-   Allowed values for bmp_bit_depth (Number of bits per pixel):<br>
-   1,4,8,24<br>
-   <br>
-   <br>
-   Sample call:<br>
-   LOCAL CBMP<br>
-   CBMP := HWG_BMPNEWIMAGE(48, 48, 1, 2, 2835, 2835 )<br>
-   HWG_BMPDESTROY()<br>
-   * ... process image data in C variable "CBMP" with HWGUI functions<br>
-   * ...<br>
-   * Write the bitmap to file:<br>
-   MEMOWRIT("sample.bmp",CBMP)<br>
-   * (otherwise the bitmap image can be converted to hex values for<br>
-   * processing in more program steps)<br>
-   <p></p>
+    <p></p>
+    Parameters of both functions above:<br>
+    All parameters are mandatory.<br>
+    <br>    
+    To avoid misfunction in display and program crash<br>
+    pass all parameters concerning the<br>
+    bitmap specification described in the Microsoft documents.<br> 
+    <br>
+    <ul>
+      <li>filename                 : Full filename and path for bitmap file to create, with extension ".bmp"
+      <li>fileoffset_to_pixelarray : Start position of image data in bytes (must be >=54)
+      <li>bmp_height               : Image height in pixels
+      <li>bmp_width                : Image width in pixels
+      <li>bmp_bit_depth            : Number of bits per pixel
+      <li>colors                   : Number of colors in the image 
+      <li>xpixelpermeter           : Vertical resolution in pixels per meter
+      <li>ypixelpermeter           : Horizontal resolution in pixels per meter
+    </ul>
+    <br>
+    Some possible values for xpixelpermeter and ypixelpermeter (in pixels per meter):<br>
+    <ul>
+      <li>2835 in DPI:  72 (Default value)
+      <li>3780 in DPI:  96 (recommended value)
+    </ul>
+    <br>
+    Allowed values for bmp_bit_depth (Number of bits per pixel):<br>
+    1,4,8,24<br>
+    <br>
+    <br>
+    Sample call:<br>
+    LOCAL CBMP<br>
+    CBMP := HWG_BMPNEWIMAGE(48, 48, 1, 2, 2835, 2835 )<br>
+    HWG_BMPDESTROY()<br>
+    * ... process image data in C variable "CBMP" with HWGUI functions<br>
+    * ...<br>
+    * Write the bitmap to file:<br>
+    MEMOWRIT("sample.bmp",CBMP)<br>
+    * (otherwise the bitmap image can be converted to hex values for<br>
+    * processing in more program steps)<br>
+    <p></p>
    
-   <br><strong class="subhead"> hwg_BMPDestroy()</strong>
-   <br>Free's the image data created by hwg_BMPNewImage().<br>
-   To avoid memory leaks, call this function after every<br>
-   call of hwg_BMPNewImage().<br>
-   <p></p>
+    <br><strong class="subhead"> hwg_BMPDestroy()</strong>
+    <br>Free's the image data created by hwg_BMPNewImage().<br>
+    To avoid memory leaks, call this function after every<br>
+    call of hwg_BMPNewImage().<br>
+    <p></p>
 
-   <br><strong class="subhead"> hwg_BMPMaxFileSz()</strong><br>
-   Returns the maximum size of the bitmap file size.<br>
-   <p></p>
+    <br><strong class="subhead"> hwg_BMPMaxFileSz()</strong><br>
+    Returns the maximum size of the bitmap file size.<br>
+    <p></p>
   
-   <br><strong class="subhead"> hwg_BMPCalcOffsPixArr(colors)</strong><br>
-   Calculates the offset to pixel array (image data).<br>
-   colors : The number of colors.<br> 
-   Pass it like the same parameter "colors" (4th parameter)<br>
-   of function hwg_BMPNewImage.<br>
-   <p></p>
-  
-   <br>
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
-   End of Functions for raw bitmap support<br>
-   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
-
-   <br>QR functions &lt;encode and decode under contruction&gt; !<br>  
+    <br><strong class="subhead"> hwg_BMPCalcOffsPixArr(colors)</strong><br>
+    Calculates the offset to pixel array (image data).<br>
+    colors : The number of colors.<br> 
+    Pass it like the same parameter "colors" (4th parameter)<br>
+    of function hwg_BMPNewImage.<br>
+    <p></p>
    
-   <br><br>
+    <br><strong class="subhead"> hwg_BMPCalcOffsPal</strong><br>
+    Calculates the offset to palette data,<br>
+    located after the pixel matrix (jagged array)<br>
+    Add 1 to the returned value to modify the palette <br>
+    with function "hwg_ChangeCharInString()".<br>
+    <p></p>
+   
+    <br>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+    End of Functions for raw bitmap support<br>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
 
-   <br><strong class="subhead"><a name="References" href="#_References">
-   References</a></strong><br>
+    <br>QR functions &lt;encode and decode under contruction&gt; !<br>  
+   
+   
+    <br><br>
+
+    <br><strong class="subhead"><a name="References" href="#_References">
+    References</a></strong><br>
 
 <pre>
    [1] Spence, Rick (Co-Developer of Clipper):

@@ -40,12 +40,16 @@ HWG_BMPDESTROY()
 
 noffset := hwg_BMPCalcOffsPixArr(2);
 
+* 62
 hwg_msgInfo("Offset to pixel data is " + ALLTRIM(STR(noffset)) )
 
-
+* Start with 55 : Add 1 to palette offset
 CBMP := hwg_ChangeCharInString(CBMP,55,CHR(255) )
 CBMP := hwg_ChangeCharInString(CBMP,56,CHR(255) )
 CBMP := hwg_ChangeCharInString(CBMP,57,CHR(255) )
+
+npoffset := HWG_BMPCALCOFFSPAL()
+hwg_msgInfo("Offset to palette data is " + ALLTRIM(STR(npoffset)) )
 
 
 * 0x101 = 257 + 1,  0x80 = 128
@@ -56,7 +60,7 @@ CBMP := hwg_ChangeCharInString(CBMP,258,CHR(128) )  // center point
 *
 * y = 0 bottom, x = 0 left
 
-MEMOWRIT("hexdump.txt",hwg_HEX_DUMP (CBMP, 1) )
+* MEMOWRIT("hexdump.txt",hwg_HEX_DUMP (CBMP, 1) )
 MEMOWRIT("test.bmp",CBMP)
 * EOF mark 0x1A = CHR(26) is added by MEMOWRIT,
 * it seems, that this has no negative effect.

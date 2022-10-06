@@ -3253,6 +3253,30 @@ See sample program "testspli.prg" for details.<br>
     Add 1 to the returned value to modify the palette <br>
     with function "hwg_ChangeCharInString()".<br>
     <p></p>
+
+    <br><strong class="subhead"> hwg_ShowBitmap(cbmp,cbmpname,ncolbg,ncolfg)</strong><br>
+    A standard dialog displays a bitmap up to 1277 x 640 pixel (x,y).<br>
+    It is useful for debugging.<br>
+    Parameters:<br>
+    cbmp      : The bitmap file image string<br>
+    cbmpname  : A unique name of the bitmap<br>
+    ncolbg    : Background color (system, if NIL)<br>
+    ncolfg    : Foreground colors (ignored, if no background color is set)<br>
+    For pass parameters for for both color values<br>
+    you can use the function hwg_ColorC2N( cColor ):<br> 
+    Converts color representation from string to numeric format.<br> 
+    cColor - a string in #RRGGBB<br>
+    Modify colors for better visibilty to your own needs.<br>
+    <br>
+    For parameter cbmp you can pass the string created by HWG_BMPNEWIMAGE()<br>
+    + processing the pixel data.<br> 
+    Sample for display the bitmap image file:<br>
+    &nbsp;&nbsp;LOCAL CBMP2, cdirsep<br>
+    &nbsp;&nbsp;cdirsep := hwg_GetDirSep()<br>
+    &nbsp;&nbsp;CBMP2 := MEMOREAD(".." + cdirsep + "image" + cdirsep + "astro.bmp")<br>
+    &nbsp;&nbsp;hwg_ShowBitmap(CBMP2,"astro")<br>
+
+    <p></p>   
    
     <br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>

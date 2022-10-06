@@ -1172,6 +1172,120 @@ RETURN 100.0 / 2.54
 FUNCTION hwg_BPMconv_inch(mtr)
 RETURN mtr / (100.0 / 2.54)
 
+FUNCTION hwg_ShowBitmap(cbmp,cbmpname,ncolbg,ncolfg)
+* Shows a bitmap
+* cbmp      : The bitmap file image string
+* cbmpname  : A unique name of the bitmap
+* ncolbg    : Background color (system, if NIL)
+* ncolfg    : foreground colors (ignored, if no background color is set)
+* You can use
+* hwg_ColorC2N( cColor ): 
+*  Converts color representation from string to numeric format. 
+*  cColor - a string in #RRGGBB
+
+LOCAL frm_bitmap , oButton1 , nx , ny , oBitmap
+LOCAL oLabel1, oLabel2, oLabel3, oLabel4
+LOCAL obmp, ldefc
+
+
+* Display the bitmap in an extra window
+* Max size : 1277,640
+
+ldefc := .F.
+IF ncolbg != NIL
+  ldefc := .T.
+ENDIF 
+
+IF ncolfg != NIL
+  ldefc := .T.
+ENDIF 
+
+obmp := HBitmap():AddString( cbmpname , cbmp )
+
+
+* Get current size
+nx := hwg_GetBitmapWidth ( obmp:handle )
+ny := hwg_GetBitmapHeight( obmp:handle )
+
+
+IF nx > 1277
+  nx := 1277
+ENDIF 
+
+IF ny > 640
+  ny := 640
+ENDIF 
+
+IF ldefc
+
+  INIT DIALOG frm_bitmap TITLE "Bitmap Image" ;
+    AT 20,20 SIZE 1324,772 ;
+     BACKCOLOR ncolbg;
+     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+
+   @ 747,667 SAY oLabel1 CAPTION "Size:  x:"  SIZE 87,22 ;
+        COLOR ncolfg  BACKCOLOR ncolbg ;  
+        STYLE SS_RIGHT
+
+   @ 866,667 SAY oLabel2 CAPTION ALLTRIM(STR(nx))  SIZE 80,22  ;
+        COLOR ncolfg  BACKCOLOR ncolbg  
+   @ 988,667 SAY oLabel3 CAPTION "y:"  SIZE 80,22 ;
+        COLOR ncolfg  BACKCOLOR ncolbg ;
+        STYLE SS_RIGHT   
+   @ 1130,667 SAY oLabel4 CAPTION ALLTRIM(STR(ny))  SIZE 80,22 ;
+        COLOR ncolfg  BACKCOLOR ncolbg ;   
+
+
+#ifdef __GTK__
+   @ 17,12 BITMAP oBitmap  ;
+        SHOW obmp OF frm_bitmap  ;
+        SIZE nx, ny
+#else
+   @ 17,12 BITMAP oBitmap  ;
+        SHOW obmp OF frm_bitmap
+#endif
+
+ 
+   @ 590,663 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
+        COLOR ncolfg  BACKCOLOR ncolbg ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK { || frm_bitmap:Close() }
+
+ELSE
+* System colors 
+
+  INIT DIALOG frm_bitmap TITLE "Bitmap Image" ;
+    AT 20,20 SIZE 1324,772 ;
+     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+
+   @ 747,667 SAY oLabel1 CAPTION "Size:  x:"  SIZE 87,22 ;
+        STYLE SS_RIGHT   
+   @ 866,667 SAY oLabel2 CAPTION ALLTRIM(STR(nx))  SIZE 80,22   
+   @ 988,667 SAY oLabel3 CAPTION "y:"  SIZE 80,22 ;
+        STYLE SS_RIGHT   
+   @ 1130,667 SAY oLabel4 CAPTION ALLTRIM(STR(ny))  SIZE 80,22    
+
+
+#ifdef __GTK__
+   @ 17,12 BITMAP oBitmap  ;
+        SHOW obmp OF frm_bitmap  ;
+        SIZE nx, ny
+#else
+   @ 17,12 BITMAP oBitmap  ;
+        SHOW obmp OF frm_bitmap
+#endif
+
+ 
+   @ 590,663 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK { || frm_bitmap:Close() }
+
+ENDIF
+
+   ACTIVATE DIALOG frm_bitmap
+
+RETURN NIL
+
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *   End of Functions for raw bitmap support
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

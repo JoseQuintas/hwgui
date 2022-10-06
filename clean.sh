@@ -95,6 +95,7 @@ rm test/testbmpcr 2>/dev/null
 # Other files created by test programs
 rm test/hexdump.txt 2>/dev/null
 rm test/test.bmp 2>/dev/null
+rm test/Test_tab 2>/dev/null
 
 # Find and delete all Error logs
 find . -name Error.log -exec rm -f {} \;

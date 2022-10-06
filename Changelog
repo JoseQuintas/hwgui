@@ -16,6 +16,18 @@
 */
 
 
+2022-10-06 12:25 UTC+0200 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/hwgdoc_functions.html
+  * source/gtk/Makefile.linux
+  * source/gtk/drawwidg.prg
+  * source/winapi/draw.c
+  * source/winapi/drawwidg.prg
+  * test/testbmpcr.prg
+   ! Ticket 114:
+   ! See post to ticket.
+
+
 2022-10-04 21:40 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/draw.c
   * source/winapi/draw.c

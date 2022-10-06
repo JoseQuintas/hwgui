@@ -2425,6 +2425,7 @@ void * hwg_BMPNewImageC(
           {
            *buf++ = pbitmap.pixel_data[i][j].i;
           }
+           
           /* each row has a padding to a 4 byte alignment */
           buf += pad;
         }

@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left">&nbsp;</td>
-    <td width="70%" align="center">Alexander S.Kresin, May 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, October 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_commands.html">next</a></td>
   </tr>
 </table>
@@ -603,10 +603,32 @@
       <br><br>
       <br>&nbsp;On LINUX:<br>
       &nbsp;The Icon was displayed at runtime in the tray bar and the header Window:<br>
-&nbsp;<img src="./image/CLLOG_LINUX_trayIcon.png" align=center wborder=0 alt="CLLOG tray icon on LINUX"><br>
+      &nbsp;<img src="./image/CLLOG_LINUX_trayIcon.png" align=center wborder=0 alt="CLLOG tray icon on LINUX"><br>
       <br>
       <br>
-      </p>
+      Special troubleshooting:<br>
+      As reported with support ticket #55 some trouble<br>
+      with program crashes caused by recource configuration<br>
+      on MingW64 with GGC version >= 11, Windows 10.<br>
+      <br>
+      We suggest to add extra .rc files and compile scripts for<br>
+      newer GCC versions.<br>
+      If the following message appears:<br>
+      &nbsp;<img src="./image/Msyscrash.png" align=center wborder=0 alt="Start error 0xc000007b"><br> 
+      <br>   
+      Die Anwendung konnte nicht korrekt gestartet werden.<br>
+     (0xc000007b).<br>
+      ==> The german text means:<br>
+     The application could not be startet correctly.<br>
+     To fix:<br>
+     - Remove the line from all *.rc<br>
+     1 24 "../image/WindowsXP.Manifest"<br>
+     - Load icons from file in the *.rc file, for example:<br>
+     HWGUI  ICON image\hwgui_32x32.ico<br>
+     All other resources can be loaded from hex hex values or<br> 
+     the binary container.<br> 
+     <br>
+     </p>
 
       <br><strong class="subhead"><a name="Using12" href="#_Using12">
       3.12.  Multiplatform Instructions</a></strong><br><br>

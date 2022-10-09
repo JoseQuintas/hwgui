@@ -201,16 +201,32 @@ HB_FUNC( HWG_GETNOTIFYCODE )
    hb_retnl( ( LONG ) ( ( ( NMHDR * ) HB_PARHANDLE( 1 ) )->code ) );
 }
 
+
+/*
+   Support Ticket #55 (October 2022):
+   GCC >= 11 uses full 64 bit pointer,
+   otherwise program crashes.
+   
+   Helper routine.
+   Take an input pointer, return closest
+*  pointer that is aligned on a DWORD (4 byte) boundary.
+*/
 static LPWORD s_lpwAlign( LPWORD lpIn )
 {
-   ULONG ul;
 
-   ul = ( ULONG ) lpIn;
+#if defined(__GNUC__) && (__GNUC__ >= 11)
+   ULONGLONG ul;
+   ul = ( ULONGLONG ) lpIn;
+#else
+   ULONG ul;
+   ul = ( ULONG ) lpIn;   
+#endif
    ul += 3;
    ul >>= 2;
    ul <<= 2;
    return ( LPWORD ) ul;
 }
+
 
 static HB_SIZE s_nCopyAnsiToWideChar( LPWORD lpWCStr, PHB_ITEM pItem,
       HB_SIZE size )

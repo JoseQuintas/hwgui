@@ -17,6 +17,13 @@
 
 
 
+2022-10-10 18:30 UTC+0200 Wilfried Brunken DF7BE
+  * doc/MSysInst.txt (New)
+   ! Support ticket 55:
+   ! Installation instructions for Msys2 added.
+   
+
+
 2022-10-09 21:00 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc.html
   * doc/image/Msyscrash.png (New)

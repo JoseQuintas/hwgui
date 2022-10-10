@@ -1,0 +1,120 @@
+
+MSysInst.txt
+
+$Id$
+
+Installation instructions for MSys2 on Windows 10
+-------------------------------------------------
+(Offline installation) 
+
+Created by DF7BE, October 2022
+
+"Msys2" is a LINUX like simulation environment for Windows.
+
+ 
+
+Installation directory is "C:\Msys64". 
+
+1.) Install "7-Zip" for extracting archives.
+
+2.) Open a Windows command window for install all components (CMD.EXE)
+
+3.) Create the installation directory: 
+
+    cd \
+    mkdir Msys64
+
+4.) Extract the archive,so that following directories are visible:
+     bin
+     etc
+     include
+     lib
+     libexec
+     share
+     ssl
+     x86_64-w64-mingw32
+
+
+5.) Copy the environment script "pfad_msys.bat" from HWGUI repository
+    samples\dev\env
+    to base directory "C:\Msys64".
+
+6.) Set path:
+    pfad_msys.bat
+
+
+
+7.) Test gcc:
+    C:\Msys64>gcc --version
+    gcc (Rev1, Built by MSYS2 project) 12.2.0
+    Copyright (C) 2022 Free Software Foundation, Inc.
+    This is free software; see the source for copying conditions.  There is NO
+    warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+
+8.)Copy the make utility:
+   cd bin
+   C:\Msys64\bin>copy mingw32-make.exe make.exe
+   cd ..
+
+9.) Install Harbour from source
+    mkdir harbour
+    Extract the Harbour archive with 7-Zip into
+    directory "C:\Msys64\harbour\core-master".
+
+    Destination path is: C:\Msys64\harbour\core-master,
+    "cd" to it.
+
+    C:\Msys64\harbour\core-master>make
+
+    Ignore warning's listed in the apendix 1.
+
+    The binaries (for example the hbmk2 utility) must be reached
+    by PATH setting:
+     C:\Msys64\harbour\core-master\bin\win\mingw64
+
+
+10.) Install HWGUI:
+
+    Installation destination is: C:\Msys64\hwgui\hwgui.
+    cd C:\Msys64\hwgui\hwgui
+    makemngw.bat
+
+    Also ignore warning's and check for the existing
+    HWGUI libraries following the HWGUI install instructions.
+
+
+11.) If HWGUI is already installed,
+     compile some samples or utils or your
+     own application.
+
+
+pterm.exe is the
+terminal window of Msys.
+But you can start all programs
+also from the Windows command window (CMD.EXE) 
+
+
+Appendix 1: Harbour warnings to ignore
+--------------------------------------
+
+../../../../../../contrib/gtwvg/wvgwin.c: In function 'HB_FUN_WVG_SETLAYEREDWINDOWATTRIBUTES':
+../../../../../../contrib/gtwvg/wvgwin.c:1032:20: warning: cast between incompatible function types from 'FARPROC' {aka 'long long int (*)()'} to 'BOOL (*)(struct HWND__ *, COLORREF,  BYTE,  DWORD)' {aka 'int (*)(struct HWND__ *, long unsigned int,  unsigned char,  long unsigned int)'} [-Wcast-function-type]
+ 1032 |       pfnLayered = ( wvtSetLayeredWindowAttributes ) HB_WINAPI_GETPROCADDRESS( h, "SetLayeredWindowAttributes" );
+      |                    ^
+../../../../../../contrib/gtwvg/wvgwing.c: In function 'HB_FUN_WVG_CHOOSEFONT':
+../../../../../../contrib/gtwvg/wvgwing.c:865:19: warning: cast between incompatible function types from 'BOOL (*)(struct HWND__ *, UINT,  WPARAM,  LPARAM)' {aka 'int (*)(struct HWND__ *, unsigned int,  long long unsigned int,  long long int)'} to 'UINT_PTR (*)(struct HWND__ *, UINT,  WPARAM,  LPARAM)' {aka 'long long unsigned int (*)(struct HWND__ *, unsigned int,  long long unsigned int,  long long int)'} [-Wcast-function-type]
+  865 |    cf.lpfnHook  = ( LPCFHOOKPROC ) WvgDialogProcChooseFont;
+      |                   ^
+C:\Msys64\harbour\core-master\bin\win\mingw64\hbmk2 -quiet -width=0 -autohbm- @hbpre -inc gtqtc/gtqtc.hbp @hbpost
+hbmk2[gtqtc]: plugin: HB_WITH_QT, HB_QTPATH, HB_QTSUFFIX not set, could not autodetect 'moc.exe' executable
+hbmk2[gtqtc]: Exit status: 20: plugin initialization
+C:\Msys64\harbour\core-master\bin\win\mingw64\hbmk2 -quiet -width=0 -autohbm- @hbpre -inc gtalleg/gtalleg.hbp @hbpost
+hbmk2[gtalleg]: Warning: Missing dependency: allegro
+hbmk2[gtalleg]: Exit status: 10: dependency missing or disabled
+! Finished package build...
+./bin/win/mingw64/hbmk2.exe ./config/postinst.hb first
+! postinst script finished
+
+
+
+======================================= EOF of MSysInst.txt ==================================

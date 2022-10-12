@@ -623,6 +623,14 @@
      To fix:<br>
      - Remove the line from all *.rc<br>
      1 24 "../image/WindowsXP.Manifest"<br>
+     and change concerning the following sample:<br>
+     CREATEPROCESS_MANIFEST_RESOURCE_ID RT_MANIFEST "../image/Windows64.Manifest"<br>
+     <br>
+     CLLOG           ICON   resource/cllog.ico
+     <br>
+     Change in the manifest file the entry<br>
+     processorArchitecture="x86" to "ia64"<br>
+     <br>
      - Load icons from file in the *.rc file, for example:<br>
      HWGUI  ICON image\hwgui_32x32.ico<br>
      All other resources can be loaded from hex hex values or<br> 

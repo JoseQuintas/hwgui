@@ -2017,7 +2017,17 @@ See sample program "testspli.prg" for details.<br>
    <br><strong class="subhead"> hwg_CheckBit( n, nBit )</strong> 
    <br>Bit functions as in Harbour ( hb_bitand(),... ).
    <p></p>
-
+   
+   <br><strong class="subhead"> hwg_SetBitByte(nbyte,npos,nvalue)</strong>
+   <br> Sets a bit in one byte<br>
+   nbyte  : The input byte as numeric value, transform from C with Harbour function ASC(), 0 ... 255<br>
+   npos   : The position of byte to set, 1 ... 8<br>
+   nvalue : Set to 0 or 1, all other bytes returns the input value<br>
+   <br>
+   Returns the new byte of the modified byte as numeric<br>
+   value, convert it with CHR() to C.<br>  
+   <p></p>
+   
    <br><strong class="subhead"> hwg_Sin( n )</strong> 
    <br><strong class="subhead"> hwg_Cos( n )</strong>
    <br><strong class="subhead"> hwg_PI()</strong>  
@@ -2582,6 +2592,18 @@ See sample program "testspli.prg" for details.<br>
    RETURN NIL<br>  
   
    <p></p>
+   
+   <br><strong class="subhead"> hwg_hex2binchar(cchar)</strong>
+   <br>Converts a hex string to bin string with "0" or "1".<br>
+   Allowed characters 0 .. 9, A .. F , a .. f<br>
+   Every half byte is separated by a space,<br>
+   every byte by an extra space.<br>
+   Helpful for debugging.<br>
+   cchar : The hex string, for example<br>
+   returned by hwg_HEX_DUMP() only with modes 3,4<br>
+   
+   <p></p>
+
    <br><strong class="subhead"> hwg_ShowHelp(cHelptxt,cTitle,cClose,opFont,blmodus)</strong>
    <br>Shows help window<br>
    (Useful for static help texts)<br>

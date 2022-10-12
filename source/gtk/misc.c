@@ -160,6 +160,35 @@ HB_FUNC( HWG_SETBIT )
       hb_retnl( hb_parnl(1) & ~( 1 << (hb_parni(2)-1) ) );
 }
 
+HB_FUNC( HWG_SETBITBYTE )
+{
+  int para3;
+
+   if ( hb_pcount() < 3 ) 
+    {
+      /* Return previous value */
+      hb_retni( hb_parni(1) );
+    }
+
+    para3 = hb_parni( 3 );
+    if ( para3 < 0 || para3 > 1 )
+    {
+      /* Return previous value */
+      hb_retni( hb_parni(1) );
+    }
+
+   if ( para3 == 1 )
+   {
+   /* 0 to 1 */
+    hb_retni( hb_parni(1) | ( 1 << (hb_parni(2) - 1) ) );
+   }
+   else
+   {
+   /* 1 to 0 */
+   hb_retni( hb_parni(1) & ~( 1 << (hb_parni(2) - 1) ) );
+   }
+}
+
 HB_FUNC( HWG_CHECKBIT )
 {
    hb_retl( hb_parnl(1) & ( 1 << (hb_parni(2)-1) ) );

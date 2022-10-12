@@ -1225,7 +1225,67 @@ FOR i := 1 TO LEN(cinp)
  ENDIF
 NEXT
 
-RETURN cout 
+RETURN cout
+
+
+FUNCTION hwg_hex2binchar(cchar)
+LOCAL cret , ipos , csingle, lpair, lignore
+
+ cret := ""
+ lpair := .F.
+ cchar := UPPER(cchar)
+ FOR ipos := 1 to LEN(cchar)
+  lignore := .F.
+  csingle := SUBSTR(cchar,ipos,1)
+  DO CASE
+   CASE csingle == "0"
+     cret := cret + "0000 "
+   CASE csingle == "1"
+     cret := cret + "0001 "
+   CASE csingle == "2"
+     cret := cret + "0010 "
+   CASE csingle == "3"
+     cret := cret + "0011 "
+   CASE csingle == "4"
+     cret := cret + "0100 "
+   CASE csingle == "5"
+     cret := cret + "0101 "
+   CASE csingle == "6"
+     cret := cret + "0110 "
+   CASE csingle == "7"
+     cret := cret + "0111 "
+   CASE csingle == "8"
+     cret := cret + "1000 "
+   CASE csingle == "9"
+     cret := cret + "1001 "
+   CASE csingle == "A"
+     cret := cret + "1010 "
+   CASE csingle == "B"
+     cret := cret + "1011 "
+   CASE csingle == "C"
+     cret := cret + "1100 "
+   CASE csingle == "D"
+     cret := cret + "1101 "
+   CASE csingle == "E"
+     cret := cret + "1110 "
+   CASE csingle == "F"
+     cret := cret + "1111 "
+   OTHERWISE
+     lignore := .T.   
+  ENDCASE
+  * Ignore invalid character
+  IF .NOT. lignore
+   IF lpair
+    cret := cret + " "
+   ENDIF
+   * toggle for hex pair to add a space
+   lpair := .NOT. lpair
+  ENDIF   
+ NEXT
+
+
+RETURN cret
+ 
 
 * ============== EOF of hmisc.prg =================
 

@@ -15,6 +15,21 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-10-12 18:35 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc.html
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+  * source/gtk/hmisc.prg
+  * source/gtk/misc.c
+  * source/winapi/hmisc.prg
+  * source/winapi/misc.c
+  * test/testbmpcr.prg
+   ! Support ticket 55 afterglow:
+   ! Different behavior of Combobox
+   ! described.
+   ! New common functions for QR encoding added
+   ! (To be continued) 
+
 
 
 2022-10-10 18:30 UTC+0200 Wilfried Brunken DF7BE

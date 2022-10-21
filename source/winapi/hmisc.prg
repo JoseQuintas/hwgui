@@ -1287,5 +1287,13 @@ LOCAL cret , ipos , csingle, lpair, lignore
 RETURN cret
 
 
+FUNCTION hwg_Toggle_HalfByte( cchar )
+LOCAL ci
+
+ci := ASC(SUBSTR(cchar,1,1))
+
+RETURN SUBSTR(CHR(hwg_Toggle_HalfByte_C(ci) ),1,1)
+
+
 * ============== EOF of hmisc.prg =================
 

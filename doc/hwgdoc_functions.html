@@ -2011,6 +2011,7 @@ See sample program "testspli.prg" for details.<br>
    </ul>
 
    <br><strong class="subhead"> hwg_BitOr( n1, n2 )</strong> 
+   <br><strong class="subhead"> hwg_BitOt_Int( n1, n2 )</strong> 
    <br><strong class="subhead"> hwg_BitAnd( n1, n2 )</strong> 
    <br><strong class="subhead"> hwg_BitAndInverse( n1, n2 )</strong> 
    <br><strong class="subhead"> hwg_SetBit( n, nBit )</strong> 
@@ -2834,6 +2835,13 @@ See sample program "testspli.prg" for details.<br>
    Parameters cttype,cttval and cttitle same as hwg_xvalMsg(),<br>
    but written into logfile.<br>
    </p>
+   
+   <br><strong class="subhead"> hwg_Toggle_HalfByte( cchar )</strong><br>
+   <p></p>
+   
+   <br><strong class="subhead"> hwg_Toggle_HalfByte_C(n)</strong><br>
+   HB_FUNC C function.<br>
+   <p></p>
 
    <br><strong class="subhead"> hwg_Alert</strong> (Windows only)
    <p></p>
@@ -3149,7 +3157,7 @@ See sample program "testspli.prg" for details.<br>
    (for example painting and stretching of bitmap images)<br>
    are implemented in source code file "cxshade.c".<br>
    <br>
-   All functions start with prefix "hwg_BPM".<br>
+   All functions start with prefix "hwg_BMP".<br>
    <br>
    Some bitmap parameters are set fixed by default:<br>
    &nbsp;&nbsp;compression 0 (No compression)<br> 
@@ -3167,6 +3175,8 @@ See sample program "testspli.prg" for details.<br>
    value in the following define:<br>
    #define BMPFILEIMG_MAXSZ 131072 /* Max file size of a bitmap (128 K) */<br>
    and recompile HWGUI and your HWGUI application.<br>
+   <br>
+   For Details see inline comments of sample program "samples\testbmpcr.prg".<br>
    <p></p>
    
    <br><strong class="subhead">hwg_BPMinches_per_meter()</strong>
@@ -3299,15 +3309,35 @@ See sample program "testspli.prg" for details.<br>
     &nbsp;&nbsp;hwg_ShowBitmap(CBMP2,"astro")<br>
 
     <p></p>   
-   
+ 
+    <br><strong class="subhead"> hwg_BMPSetMonochromePalette(pcBMP)</strong><br>
+    Sets the monochrome palette (Bytes per pixel =1, colors=2).<br> 
+    <p></p> 
+
+    <br><strong class="subhead"> hwg_BMPDrawCircle(nradius,ndeg)</strong><br>
+    Returns an 2 element array with pixel settings (x,y) for drawing a circle<br>
+    with a radius of nradius pixels.<br>
+    Usage see sample program "samples\testbmpcr.prg".<br>  
+
+    <p></p> 
+
+
     <br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
     End of Functions for raw bitmap support<br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
 
-    <br>QR functions &lt;encode and decode under contruction&gt; !<br>  
-   
-   
+    <br>QR functions &lt;encode and decode under contruction&gt; !<br>
+    <br>
+    All functions start with prefix "hwg_QR".<br>
+    <br>
+  
+    <br><strong class="subhead"> hwg_QR_SetPixel(cmbp,x,y,xw,yh)</strong><br>
+    Set a single pixel into QR code bitmap string.<br>
+    Background color is white, pixel color is black.<br> 
+
+   <p></p>
+
     <br><br>
 
     <br><strong class="subhead"><a name="References" href="#_References">

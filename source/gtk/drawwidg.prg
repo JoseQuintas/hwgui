@@ -1250,10 +1250,107 @@ ENDIF
 
 RETURN NIL
 
+FUNCTION hwg_BMPDrawCircle(nradius,ndeg)
+LOCAL aret , nx, ny ,nrad
+aret := {}
+* Convert degrees to radiant
+nrad := ndeg/180.0 * hwg_PI()
+
+nx := ROUND( hwg_Cos(nrad) * nradius  , 0) + nradius + 1
+ny := ROUND( hwg_Sin(nrad) * nradius  , 0) + nradius + 1
+
+AADD(aret,nx)
+AADD(aret,ny)
+
+RETURN aret
+
+
+FUNCTION hwg_BMPSetMonochromePalette(pcBMP)
+* Set monochrome palette for QR encoding,
+* The background is white.
+* (2 colors, black and white)
+* Set 55, 56, 57 to 0xFF
+* This setting define color 0 as white (the color 1 now is black by default)
+* Sample:
+* CBMP := HWG_BMPNEWIMAGE(nx, ny, 1, 2, 2835, 2835 )
+* HWG_BMPDESTROY()
+* CBMP := hwg_BMPSetMonochromePalette(CBMP)
+LOCAL npoffset, CBMP 
+CBMP := pcBMP
+* Get Offset to palette data, expected value by default is 54
+npoffset := HWG_BMPCALCOFFSPAL()
+* Start with 55 : Add 1 to palette offset
+CBMP := hwg_ChangeCharInString(CBMP,npoffset + 1 , CHR(255) )
+CBMP := hwg_ChangeCharInString(CBMP,npoffset + 2 , CHR(255) )
+CBMP := hwg_ChangeCharInString(CBMP,npoffset + 3 , CHR(255) ) 
+RETURN CBMP
+
+
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *   End of Functions for raw bitmap support
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ====================== EOF of drawwidg.prg ==========================
    
+*   ~~~~~~~~~~~~~~~~~~~~~~~~~
+*   Functions for QR encoding
+*   ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Set a single pixel into QR code bitmap string
+* Background color is white, pixel color is black
+FUNCTION hwg_QR_SetPixel(cmbp,x,y,xw,yh)
+LOCAL cbmret, noffset, nbit , y1 
+LOCAL nolbyte
+LOCAL nbline, nbyt , nline , nbint
+
+cbmret := cmbp
+
+* Range check
+IF ( x > xw ) .OR. ( y > yh ) .OR. ( x < 1 ) .OR. ( y < 1 )
+ RETURN cbmret
+ENDIF 
+
+* Add 1 to pixel data offset, this is done with call of HWG_SETBITBYTE()
+noffset := hwg_BMPCalcOffsPixArr(2);  && For 2 colors
+
+* y Position conversion
+* (reversed position 1 = 48, 48 = 1)
+y1 := yh - y + 1
+* Bytes per line
+nline := hwg_BMPLineSize(xw,1)
+// hwg_MsgInfo("nline="+ STR(nline) )
+
+* Calculate the recent y position
+* (Start postion of a line)
+
+nbyt := ( y1 - 1 ) *  nline
+
+* Split line into number of bytes and bit position
+nbline := INT( x / 8 )
+nbyt := nbyt + nbline + 1   && Added 1 padding byte at begin of a line
+
+nbint :=  INT( x % 8 ) // + 1  
+
+* Reverse x value in a byte
+nbint := 8 - nbint + 1 && 1 ... 8
+
+IF nbint == 9
+    nbint := 1
+    nbyt := nbyt - 1
+ENDIF
+
+* Extract old byte value
+nolbyte := ASC(SUBSTR(cbmret,noffset + nbyt,1))
+
+nbit := CHR(HWG_SETBITBYTE(0,nbint,1))  
+nbit := CHR(HWG_BITOR_INT(ASC(nbit), nolbyte) )
+
+cbmret := hwg_ChangeCharInString(cbmret,noffset + nbyt , nbit)
+
+RETURN cbmret
+
+*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+*   End of Functions for QR encoding
+*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ======================== EOF of drawwidg.prg =========================
 

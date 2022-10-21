@@ -178,6 +178,7 @@ For beginners:
  testalert.prg      N                 Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
  test_bot.prg       P                 bOther Test: Press key, after key up the scan code is displayed.
  testbrw.prg        Y  #              Another BROWSE test (bug on GTK see docu)
+ testbmpcr.prg      Y                 Create monochrome bitmaps (color=2, black and white)
  testchild.prg      N  #      -       Create a child windows; child window not created ! command seems to be outdated.
  testget1.prg       Y                 Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
  testget2.prg       P                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number

@@ -142,6 +142,11 @@ HB_FUNC( HWG_BITOR )
    hb_retnl( hb_parnl(1) | hb_parnl(2) );
 }
 
+HB_FUNC( HWG_BITOR_INT )
+{
+   hb_retni( ( hb_parni( 1 ) | hb_parni( 2 ) ) );
+}
+
 HB_FUNC( HWG_BITAND )
 {
    hb_retnl( hb_parnl(1) & hb_parnl(2) );
@@ -590,6 +595,8 @@ HB_FUNC( HWG_BIN2DC )
     memcpy(&szHex,name,16);
  
     szHex[16] = '\0';
+ 
+    // hwg_writelog(NULL,szHex);
 
     /* Convert hex to bin */
 
@@ -636,7 +643,7 @@ HB_FUNC( HWG_BIN2DC )
           }
         }  
 
-
+    // hwg_writelog(NULL,szHex);
    
     /* Convert buffer to double */
 
@@ -679,6 +686,23 @@ HB_FUNC( HWG_FILEMODTIMEU )
 HB_FUNC( HWG_FILEMODTIME )
 {
  GetFileMtime( ( const char * ) hb_parc(1) );
+}
+
+
+/* hwg_Toggle_HalfByte_C(n) */
+HB_FUNC( HWG_TOGGLE_HALFBYTE_C )
+{
+ int i,k,l;
+ 
+ i = hb_parni( 1 );
+ k = i & 15;
+ l = i & 240;
+ 
+ k = k << 4;
+ l = l >> 4;
+ 
+ hb_retni( l | k );
+
 }
 
 

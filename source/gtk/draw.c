@@ -1800,6 +1800,58 @@ HB_FUNC( HWG_BMPCALCOFFSPAL )
   hb_retnl(rc);
 }
 
+/*
+  BMPImageSize(width,height,bitsperpixel)
+  Calculates the imagesize of a bitmap W3x .
+*/
+
+HB_FUNC( HWG_BMPIMAGESIZE )
+{
+    uint32_t image_size;
+ 
+    int bmp_width;
+    int bmp_height;
+    int bmp_bit_depth;
+
+    uint32_t pad;
+
+    bmp_width = hb_parni(1);
+    bmp_height = hb_parni(2);
+    bmp_bit_depth = hb_parni(3);
+
+
+    pad = (4 - (bmp_bit_depth * bmp_width + 7 ) / 8 % 4) % 4;
+    image_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad ) * bmp_height;
+
+   hb_retnl(image_size);
+
+}
+   
+
+/*
+  hwg_BMPLineSize(width,bitsperpixel)
+  Returns the size of a pixel line in bytes,
+  accepting the padding at end of line
+*/
+HB_FUNC( HWG_BMPLINESIZE )
+{
+    uint32_t line_size;
+ 
+    int bmp_width;
+    int bmp_bit_depth;
+
+    uint32_t pad;
+
+    bmp_width = hb_parni(1);
+    bmp_bit_depth = hb_parni(2);
+
+
+    pad = (4 - (bmp_bit_depth * bmp_width + 7 ) / 8 % 4) % 4;
+    line_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad );
+
+    hb_retnl(line_size);
+
+}
 
 /*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
 /*   End of Functions for raw bitmap support   */

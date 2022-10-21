@@ -15,6 +15,23 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2022-10-21 21:00 UTC+0200 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * samples/Readme.txt
+  * samples/testbmpcr.hbp (moved from test)
+  * samples/testbmpcr.prg (moved from test)
+  * source/gtk/draw.c
+  * source/gtk/drawwidg.prg
+  * source/gtk/hmisc.prg
+  * source/gtk/misc.c
+  * source/winapi/draw.c
+  * source/winapi/drawwidg.prg
+  * source/winapi/hmisc.prg
+  * source/winapi/misc.c
+   ! Raw bitmap support (monochrome) finished.
+   ! Continue with QR encoding.
+
 2022-10-12 18:35 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc.html
   * doc/hwgdoc_commands.html

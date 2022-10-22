@@ -1,0 +1,40 @@
+
+MoreCopyright.txt
+
+$Id$
+
+Only for added external libraries.
+
+If you integrate external "contrib" libraries
+into your local HWGUI installation and
+your HWGUI based app,
+you need to respect the copyright of the
+authors of the integrated library.
+In some license conditions, it is
+necessary to preserve the copyright notice
+into your application. Please read
+the license conditions carefully.
+
+Here the list of the library products with
+copyright and licence information
+served for download in the "files" section of
+this project site.
+
+
+1.) QR-Code-generator
+
+    Date: 2022-09-07
+
+    File: "QR-Code-generator-master.zip"
+
+    Copyright (c) Project Nayuki. (MIT License)
+
+
+https://www.nayuki.io/page/qr-code-generator-library
+
+https://github.com/nayuki/QR-Code-generator
+
+
+
+
+=============== EOF of MoreCopyright.txt =================

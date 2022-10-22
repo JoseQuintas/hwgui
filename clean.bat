@@ -11,12 +11,17 @@ REM of a HWGUI build with samples and utils.
 REM
 REM Created by DF7BE
 REM
-REM === Remove all libraries ===
+REM === Remove all HWGUI basic libraries ===
 REM Do not delete libpcre.a (GTK cross development environment) 
 del lib\libhbxml.a 2> NUL
 del lib\libhwgdebug.a 2> NUL
 del lib\libhwgui.a 2> NUL
 del lib\libprocmisc.a 2> NUL
+REM Remove BCC libaries
+del lib\libhbxml.lib 2> NUL
+del lib\libhwgdebug.lib 2> NUL
+del lib\libhwgui.lib 2> NUL
+del lib\libprocmisc.lib 2> NUL
 REM === Remove all obj files ===
 del obj\*.o 2> NUL
 REM === Remove EXE, C, O ===

@@ -8,8 +8,14 @@
 # outside the makefile "clean".
 # (created by "hbmk2 allhbp.hbp)
 # 
+# === Remove all HWGUI basic libraries ===
+#rm lib/*.a 2>/dev/null
+rm lib\libhbxml.a 2>/dev/null
+rm lib\libhwgdebug.a 2>/dev/null
+rm lib\libhwgui.a 2>/dev/null
+rm lib\libprocmisc.a 2>/dev/null
+# 
 rm -rf lib/.hbmk 2>/dev/null
-rm lib/*.a 2>/dev/null
 rm obj/*.o 2>/dev/null
 #
 rm contrib/hwreport/hwreport 2>/dev/null
@@ -57,6 +63,8 @@ rm samples/bindbf 2>/dev/null
 rm samples/hexbincnt  2>/dev/null
 rm samples/imageview 2>/dev/null
 rm samples/checkbox 2>/dev/null
+rm samples/testbmpcr 2>/dev/null
+rm samples/qrencode 2>/dev/null
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null

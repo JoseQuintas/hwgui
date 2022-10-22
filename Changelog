@@ -16,6 +16,19 @@
 */
 
 
+
+2022-10-22 11:30 UTC+0200 Wilfried Brunken DF7BE
+  * MoreCopyright.txt (new)
+  * clean.bat
+  * clean.sh
+  * contrib/qrencode/Makefile.mingw (new)
+  * contrib/qrencode/Readme.txt (new)
+  * contrib/qrencode/include/empty.txt (new)
+   ! Project QR encoding started.
+   ! Clean only HWGUI basic libraries, also
+   ! *.lib from BCC.   
+  
+
 2022-10-21 21:00 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * samples/Readme.txt

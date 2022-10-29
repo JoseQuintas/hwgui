@@ -19,7 +19,7 @@
 #include "hbfast.h"
 #endif
 
-#include "hwingui.h"
+/* #include "hwingui.h" */
 #include "hbdefs.h"
 #include "hbvm.h"
 #include "hbstack.h"
@@ -40,7 +40,7 @@ HB_FUNC( HWG_QRCODETXTGEN )
 {
   /* UTF-8 */
   
-  void *hString;
+//  void *hString;
   
   uint8_t qrcode[qrcodegen_BUFFER_LEN_MAX];
   uint8_t tempBuffer[qrcodegen_BUFFER_LEN_MAX];
@@ -57,10 +57,11 @@ HB_FUNC( HWG_QRCODETXTGEN )
   cptr = -1;
   memset(&retchr, 0x00, 16385 );
   memset(&qrcode, 0x00, qrcodegen_BUFFER_LEN_MAX);
- 
-  ok = qrcodegen_encodeText(HB_PARSTR( 1, &hString, NULL ), tempBuffer, qrcode,
+  
+  ok = qrcodegen_encodeText(hb_parc( 1 ), tempBuffer, qrcode,
        qrcodegen_Ecc_QUARTILE, qrcodegen_VERSION_MIN,
-       qrcodegen_VERSION_MAX, qrcodegen_Mask_AUTO, true);
+       qrcodegen_VERSION_MAX, qrcodegen_Mask_AUTO, true);  
+
   if (ok)
   {
    
@@ -117,7 +118,9 @@ HB_FUNC( HWG_QRCODETXTGEN )
             }
     }
     cptr++;
-    HB_RETSTRLEN(retchr,cptr);
+
+      hb_retclen(retchr,cptr);
+
 }
 
 

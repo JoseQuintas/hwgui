@@ -16,6 +16,15 @@
 */
 
 
+2022-10-29 18:55 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/qrencode/qrencode.c
+   ! Project QR encoding: 
+   ! Finished for GTK.
+   ! To be continued:
+   ! Color is blue instead for black on GTK,
+   ! zoom funcion need to be coded in C.
+     
+
 
 2022-10-29 12:35 UTC+0200 Wilfried Brunken DF7BE
   * contrib/qrencode/Readme.txt

@@ -1,7 +1,6 @@
 QR encode library ready for integration into HWGUI
 --------------------------------------------------
 
-<under construction>
 
 "QR-Code-generator"
 
@@ -33,10 +32,15 @@ At this time only the following compiler are supported:
 - MinGW64 (also with Msys2 environment)
 - GTK/LINUX with gcc
 
+
+*) Build script only build the library, not the
+   sample and demo program. 
+
 Build scripts for other compilers are delivered 
 as soon as possible.
+
  
-2.2) Steps to install
+2.2) Steps to install QR-Code-generator
  
 - On Windows, start path script concerning the used compiler,
   for example:
@@ -56,12 +60,54 @@ as soon as possible.
 
 - Extract the archive in an temporary directory.
 
-- 
+-  Change to build directory:
+  cd QR-Code-generator-master
+  cd c
   
+- Copy the desired build script from HWGUI environment
+  in directory "contrib\qrencode".  
+
+- Start build process:
+  
+  MinGW: make -f Makefile.mingw
+  LINUX: make (usage of the Makefile delivered by archive of QR code generator)
+
+- Copy header file "qrcodegen.h" to contrib\qrencode\include 
+  
+- copy library "libqrcodegen.a" or "libqrcodegen.lib"
+  to the HWGUI "lib" directory.
+  The file extensions depends of the used compiler.
+
+- Optional: the temporary build directory is not needed any more,
+  delete it.
 
 
+2.3) Steps to build HWGUI interface module:
+     - hbmk2 qrencode.hbp
+     - Check, that the library for the HWGUI interface module
+       "libqrcodegen.<ext> "is created in the HWGUI "lib" directory.
+       <ext>: a, or lib or ?
 
-copy library "libqrcodegen.a" to the HWGUI "lib" directory.
+2.4) Test with sample program
+   
+     cd samples
+     hbmk2 qrencode.hbp
+     qrencode.exe
+
+     Read the generated QR code with the smart phone,
+     the HWGUI porject site must be opened.
+
+    
+
+2.5) Final instructions.
+
+Be shure, that the following options are inserted in 
+your *.hbp or Makefile:
+
+-L../lib
+
+-lqrcodegen
+-lhbqrencode 
 
 
 =============== EOF of Readme.txt ======================== 

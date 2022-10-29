@@ -160,8 +160,7 @@ For beginners:
  htrack.prg         Y                 Demo of HTRACK class as substitute for Windows only HTRACKBAR
  icons.prg          Y                 Icons and background bitmaps
  icons2.prg         Y                 Icons and bitmaps using hex values
- iesample.prg 2) 5) N                 Sample of ActiveX container for the IE browser object.
- imageview.prg      Y                 Show images with zoom setting 
+ iesample.prg 2) 5) N                 Sample of ActiveX container for the IE browser object. 
  menumod.prg        Y                 Handling menu items while run-time in dialogs.
  modtitle.prg       Y                 Sample for modifying a main window title in HWGUI
  nice.prg           N                 Demo of NICEBUTTON
@@ -170,6 +169,7 @@ For beginners:
  progbars.prg  12)  Y                 Progress bar
  propsh.prg +)      N  #              Property sheet, freezes at hwg_PropertySheet()
  pseudocm.prg       Y                 Pseudo context menu
+ qrencode.prg 1) 2) Y                 Encode QR code from string an convert to monochrome bitmap.
  shadebtn.prg       N                 Shade buttons
  simpleedit.prg     Y                 Simple text editor demonstrating hwg_Memoedit() and hwg_MemoCmp()
  stretch.prg        Y  #              Sample for resizing bitmaps (background), some bugs (as test program) 
@@ -178,7 +178,6 @@ For beginners:
  testalert.prg      N                 Clipper style Alert() replacement, delivered by Alex Strickland (TNX !) 
  test_bot.prg       P                 bOther Test: Press key, after key up the scan code is displayed.
  testbrw.prg        Y  #              Another BROWSE test (bug on GTK see docu)
- testbmpcr.prg      Y                 Create monochrome bitmaps (color=2, black and white)
  testchild.prg      N  #      -       Create a child windows; child window not created ! command seems to be outdated.
  testget1.prg       Y                 Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
  testget2.prg       P                 Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
@@ -201,7 +200,7 @@ For beginners:
  tstsplash.prg      P                 SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
  TwoListbox.prg     S                 Sample for select and move items between two listboxes.
  TwoLstSub.prg      Y                 Multi platform substitute for two listboxes by BROWSE windows.
- winprn.prg 3)8)13) Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)
+ winprn.prg  3) 8)  Y     Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)
  xmltree.prg        Y          YW     Show XML-Tree: Open "testxml.xml" for test.
 
 Directories:
@@ -303,10 +302,6 @@ Directories:
 
  12) Little modifications for GTK needed (use compiler switch "#ifdef __GTK__").
      Extra sample program with same filename in subdirectory "gtk_samples"
-
- 13) Sample needed "qrcodelib.dll" for encode and printing out QR code,
-     but runs without this DLL not printing the QR code sample.
-     Library for LINUX is under construction and will be integrated as soon as possible.
  
 * =================== EOF of Readme.txt ========================
 

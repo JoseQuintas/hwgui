@@ -1,0 +1,22 @@
+#
+# $Id$
+#
+
+../../hwgui.hbc
+
+-hblib
+
+-o../../lib/hbqrencode
+
+-w
+
+-I./include
+
+# Uncomment these two lines to build HwGUI in Unicode mode
+#-prgflag=-DUNICODE
+#-cflag=-DUNICODE
+
+#-cflag=-DHWG_USE_POINTER_ITEM
+qrencode.c
+
+# ============================ EOF of qrencode.hbp ======================================

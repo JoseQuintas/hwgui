@@ -17,6 +17,25 @@
 
 
 
+2022-10-29 12:35 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/qrencode/Readme.txt
+  * contrib/qrencode/qrencode.c (New)
+  * contrib/qrencode/qrencode.hbp (New)
+  * doc/hwgdoc_functions.html
+  * samples/Readme.txt
+  * samples/qrencode.hbp (New)
+  * samples/qrencode.prg (New)
+  * source/gtk/drawwidg.prg
+  * source/gtk/hmisc.prg
+  * source/winapi/drawwidg.prg
+  * source/winapi/hmisc.prg
+   ! Project QR encoding: 
+   ! Finished for WinAPI, to be
+   ! continued with GTK and
+   ! other Windows compiler.  
+
+
+
 2022-10-22 11:30 UTC+0200 Wilfried Brunken DF7BE
   * MoreCopyright.txt (new)
   * clean.bat

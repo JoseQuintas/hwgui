@@ -2011,7 +2011,7 @@ See sample program "testspli.prg" for details.<br>
    </ul>
 
    <br><strong class="subhead"> hwg_BitOr( n1, n2 )</strong> 
-   <br><strong class="subhead"> hwg_BitOt_Int( n1, n2 )</strong> 
+   <br><strong class="subhead"> hwg_BitOr_Int( n1, n2 )</strong> 
    <br><strong class="subhead"> hwg_BitAnd( n1, n2 )</strong> 
    <br><strong class="subhead"> hwg_BitAndInverse( n1, n2 )</strong> 
    <br><strong class="subhead"> hwg_SetBit( n, nBit )</strong> 
@@ -2544,7 +2544,7 @@ See sample program "testspli.prg" for details.<br>
      For other modes, this parameter is ignored.<br>     
      <br>
      Sample writing hex dump to text file:<br>
-     MEMOWRIT("hexdump.txt",HEX_DUMP(varbuf))<br>
+     MEMOWRIT("hexdump.txt",hwg_HEX_DUMP(varbuf),1)<br>
 
    <p></p>
    <br><strong class="subhead"> hwg_NUMB2HEX ( nascchar )</strong>
@@ -2565,6 +2565,17 @@ See sample program "testspli.prg" for details.<br>
     utils\devtools\memdump.prg<br>
 
    <p></p>
+   
+   <br><strong class="subhead"> FUNCTION hwg_COUNT_CHAR(stri,such)</strong>
+   <br>Counts the appearance of string "such"<br>
+   in "stri".<br>
+   This function has a subset<br>
+   of parameters of the <br>
+   Clipper tools function AFTERATNUM()<br>
+   for better handling.<br>
+
+   <p></p>   
+   
    <br><strong class="subhead"> hwg_KEYESCCLDLG (odlg)</strong>
    <br>Simple helper function, closes dialog at ESC key<br>
    For the cases with usage of INIT DIALOG ... NOEXIT, which blocks the close of dialog by
@@ -3321,6 +3332,12 @@ See sample program "testspli.prg" for details.<br>
 
     <p></p> 
 
+    <br><strong class="subhead"> hwg_BMPStr2Obj(pcBMP,cbmpname)</strong><br>
+    Converts the bitmap string after (optional)<br>
+    modifications into a bitmap object.<br>
+    cbmpname : String with an unique bitmap name<br>
+
+    <p></p>
 
     <br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
@@ -3331,6 +3348,49 @@ See sample program "testspli.prg" for details.<br>
     <br>
     All functions start with prefix "hwg_QR".<br>
     <br>
+    The encode functions need an external library, instructions to<br>
+    integrate into HWGUI see file contrib\qrencode\Readme.txt.<br>
+    Please respect the copyright notes of external libraries.<br>
+    <br>
+    <br><strong class="subhead"> hwg_QRCodeTxtGen(ctext,&lt;border&gt;)</strong><br>
+    Converts a string ctext into a<br>
+    QR code text string,<br>
+    needed character set is UTF-8.<br>
+    If the operating system does not support<br>
+    UTF, convert it with function<br>
+    HB_TRANSLATE().<br>
+    border: Number of pixel of the<br>
+    desired (white) border in pixels.<br>
+    Default value is 4.<br>
+    For usage see sample program<br>
+    samples\qrencode.prg.<br>
+    This function is part of the interface module, all<br>
+    other functions for QR encoding are part of the HWGUI base libraries.<br>
+
+  <p></p>    
+  
+  
+    <br><strong class="subhead"> hwg_QRCodetxt2BPM(cqrcode)</strong><br>
+    Encode QR code (text format) to bitmap<br>
+    cqrcode : The text string to encode to<br>
+    a bitmap.<br>
+
+
+  <p></p>
+  
+   <br><strong class="subhead"> FUNCTION hwg_QRCodeZoom(cqrcode,nzoom)</strong><br>
+   Increases the size of a QR code image<br> 
+   cqrcode : The QR code in text format<br>
+   nzoom   : The zoom factor 1 ... n<br>
+   Returns the new QR code text string.<br>
+   <br>
+   Important advice:<br>
+   This function needs some CPU time to finish calculation.<br>
+   We will deliver a C code copy with effective processing<br>
+   with one of the future versions.<br>   
+   
+
+  <p></p>
   
     <br><strong class="subhead"> hwg_QR_SetPixel(cmbp,x,y,xw,yh)</strong><br>
     Set a single pixel into QR code bitmap string.<br>
@@ -3338,6 +3398,8 @@ See sample program "testspli.prg" for details.<br>
 
    <p></p>
 
+   <!-- End of QR code functions -->
+   
     <br><br>
 
     <br><strong class="subhead"><a name="References" href="#_References">

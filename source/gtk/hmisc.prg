@@ -1295,5 +1295,34 @@ ci := ASC(SUBSTR(cchar,1,1))
 RETURN SUBSTR(CHR(hwg_Toggle_HalfByte_C(ci) ),1,1)
 
 
+FUNCTION hwg_COUNT_CHAR(stri,such)
+* Counts the appearance of string "such"
+* in "stri".
+* This function has a subset
+* of parameters of the function
+* AFTERATNUM() for better handling.  
+  LOCAL l,i,c,t
+  l := LEN (stri)
+  IF l == 0
+   RETURN 0
+  ENDIF
+  IF LEN(such) == 0
+   RETURN 0
+  ENDIF
+  c := 0
+  t := stri
+  DO WHILE .T.
+   i := AT(such,t)
+   IF i != 0
+     c := c + 1
+     t := SUBSTR(t,i+LEN(such))
+   ELSE
+     RETURN c
+   ENDIF
+  ENDDO
+RETURN 0
+
+
+
 * ============== EOF of hmisc.prg =================
 

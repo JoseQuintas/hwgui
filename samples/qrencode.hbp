@@ -1,0 +1,27 @@
+#
+# $Id$
+#
+
+# Special parameters for LINUX/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+../hwgui.hbc
+# hbwin.hbc
+# xhb.hbc
+
+-n
+-w
+
+-L../lib
+
+-lqrcodegen
+-lhbqrencode
+
+-oqrencode
+
+qrencode.prg
+
+# ==================== EOF of qrencode.hbp ===============

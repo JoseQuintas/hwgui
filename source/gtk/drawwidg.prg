@@ -1279,12 +1279,22 @@ LOCAL npoffset, CBMP
 CBMP := pcBMP
 * Get Offset to palette data, expected value by default is 54
 npoffset := HWG_BMPCALCOFFSPAL()
-* Start with 55 : Add 1 to palette offset
+CBMP := hwg_ChangeCharInString(CBMP,npoffset     , CHR(255) )
 CBMP := hwg_ChangeCharInString(CBMP,npoffset + 1 , CHR(255) )
 CBMP := hwg_ChangeCharInString(CBMP,npoffset + 2 , CHR(255) )
 CBMP := hwg_ChangeCharInString(CBMP,npoffset + 3 , CHR(255) ) 
 RETURN CBMP
 
+
+* Converts the bitmap string after (opional)
+* modifications into a bitmap object.
+* cbmpname : String with an unique bitmap name
+FUNCTION hwg_BMPStr2Obj(pcBMP,cbmpname)
+LOCAL oBmp
+
+ oBmp := HBitmap():AddString( cbmpname , pcBMP )
+
+RETURN oBmp
 
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *   End of Functions for raw bitmap support
@@ -1294,6 +1304,80 @@ RETURN CBMP
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~
 *   Functions for QR encoding
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+/* Convert QR code to bitmap */ 
+FUNCTION hwg_QRCodetxt2BPM(cqrcode)
+
+LOCAL cBMP , nlines, ncol , x , i , n
+LOCAL leofq
+
+IF cqrcode == NIL
+ RETURN ""
+ENDIF 
+
+* Count the columns in QR code text string
+* ( Appearance of line end in first line ) 
+ncol   := AT(CHR(10),cqrcode ) - 1
+
+
+* Count the lines in QR code text string
+* Suppress empty lines
+
+leofq := .F.
+nlines := 0
+FOR i := 1 TO LEN(cqrcode)
+ IF .NOT. leofq
+  IF SUBSTR(cqrcode,i,1) == CHR(10)
+   IF .NOT. ( SUBSTR(cqrcode, i + 1 , 1) == " ")
+      * Empty line following, stop here
+      leofq := .T.
+     ELSE
+     * Count line ending
+       nlines := nlines + 1
+     ENDIF 
+  ENDIF
+ ENDIF
+
+NEXT
+
+* Based on this, calculate the bitmap size
+nlines := nlines + 1
+
+* Create the bitmap template and set monochrome palette
+cBMP := HWG_BMPNEWIMAGE(ncol, nlines, 1, 2, 2835, 2835 )
+HWG_BMPDESTROY()
+cBMP := hwg_BMPSetMonochromePalette(cBMP)
+
+
+* Convert to bitmap 
+
+
+leofq := .F.
+* i:        Position in cqrcode
+n := 1   && Line
+x := 0   && Column
+FOR i := 1 TO LEN(cqrcode)
+ x := x + 1
+ IF .NOT. leofq
+  IF SUBSTR(cqrcode,i,1) == CHR(10)
+   IF .NOT. ( SUBSTR(cqrcode, i + 1 , 1) == " ")
+      * Empty line following, stop here
+      leofq := .T.
+   ENDIF
+     * Count line ending and start with new line
+       n := n + 1
+       x := 0
+  ELSE  && SUBSTR " "
+    IF SUBSTR(cqrcode,i,1) == "#"
+      cBMP := hwg_QR_SetPixel(cBMP,x,n,ncol,nlines)
+    ENDIF  && #
+  ENDIF && is CHR(10)
+ ENDIF && .NOT. leofq
+
+NEXT 
+
+
+RETURN cBMP
 
 * Set a single pixel into QR code bitmap string
 * Background color is white, pixel color is black
@@ -1347,6 +1431,58 @@ nbit := CHR(HWG_BITOR_INT(ASC(nbit), nolbyte) )
 cbmret := hwg_ChangeCharInString(cbmret,noffset + nbyt , nbit)
 
 RETURN cbmret
+
+* Increases the size of a QR code image 
+* cqrcode : The QR code in text format
+* nzoom   : The zoom factor 1 ... n
+* Return the new QR code text string
+FUNCTION hwg_QRCodeZoom(cqrcode,nzoom)
+LOCAL cBMP, cLine, i , j
+LOCAL leofq
+
+IF nzoom == NIL
+ nzoom := 1
+ENDIF
+
+IF nzoom < 1
+ RETURN cqrcode
+ENDIF  
+
+cBMP  := ""
+cLine := ""
+
+leofq := .F.
+* i:        Position in cqrcode
+
+FOR i := 1 TO LEN(cqrcode)
+ IF .NOT. leofq
+  IF SUBSTR(cqrcode,i,1) == CHR(10)
+   IF .NOT. ( SUBSTR(cqrcode, i + 1 , 1) == " ")
+      * Empty line following, stop here
+      leofq := .T.
+   ENDIF
+     * Count line ending and start with new line
+
+     * Replicate line with zoom factor
+       FOR j := 1 TO nzoom 
+        cBMP  := cBMP + cLine + CHR(10)
+       NEXT
+       * 
+       cLine := ""   
+  ELSE  && SUBSTR " "
+  cLine := cLine + REPLICATE(SUBSTR(cqrcode,i,1),nzoom) 
+  ENDIF && is CHR(10)
+ ENDIF && .NOT. leofq
+
+NEXT
+
+IF .NOT. EMPTY(cLine)
+  cBMP  := cBMP + cLine + CHR(10)
+ENDIF
+* Empty line as mark for EOF
+cBMP  := cBMP + CHR(10)
+
+RETURN cBMP
 
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *   End of Functions for QR encoding

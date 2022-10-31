@@ -213,7 +213,7 @@ TEDFONT * ted_setfont( TEDIT * pted, PHWGUI_FONT hwg_font, int iNum, HB_BOOL bPr
 }
 
 /*
- * ted_CalcItemWidth() returns the text width in pixels, 
+ * ted_CalcItemWidth() returns the text width in pixels,
  * writes to the 4 parameter (iRealLen) the width in chars
  */
 
@@ -392,7 +392,7 @@ int ted_TextOut( TEDIT * pted, int xpos, int ypos, int iHeight,
    {
       hwg_setcolor( hDC->cr, hDC->bcolor );
       cairo_rectangle( hDC->cr, (gdouble)xpos, (gdouble)ypos,
-            (iLen==1 && *szText==' ')? (gdouble)font->iSpace : (gdouble)iWidth, 
+            (iLen==1 && *szText==' ')? (gdouble)font->iSpace : (gdouble)iWidth,
             (gdouble)PANGO_DESCENT(rc)+pted->iInterline );
       cairo_fill( hDC->cr );
    }
@@ -488,7 +488,7 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    GObject *handle;
    int nLeft = hb_itemGetNI( GetObjectVar( pObject, "NLEFT" ) );
    int nTop = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
-   int nWidth = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
+   int nWidth = hb_itemGetNI( GetObjectVar( pObject, "NCLIENTWIDTH" ) );
    int nHeight = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
    unsigned long int ulStyle =
          hb_itemGetNL( GetObjectVar( pObject, "STYLE" ) );
@@ -628,7 +628,7 @@ HB_FUNC( HCED_SETFONT )
    int iFont = hb_parni(3);
 
    if( iFont > 0 ) iFont --;
-   ted_setfont( ( TEDIT * ) HB_PARHANDLE( 1 ), ( PHWGUI_FONT ) HB_PARHANDLE( 2 ), 
+   ted_setfont( ( TEDIT * ) HB_PARHANDLE( 1 ), ( PHWGUI_FONT ) HB_PARHANDLE( 2 ),
          iFont, (HB_ISNIL(4))? 0 : hb_parl(4) );
 }
 
@@ -660,7 +660,7 @@ HB_FUNC( HCED_SETATTR )
    TEDATTR * pattr = pted->pattr + iPos - 1;
 
    if( iPos + i >= pted->iAttrLen )
-   {     
+   {
       iLen = pted->iAttrLen;
       pted->iAttrLen = iPos + i + 128;
       pted->pattr = ( TEDATTR * ) hb_xrealloc( pted->pattr,
@@ -825,7 +825,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
             ptr = szText + hced_utf8bytes( szText, lasti );
             iRealLen = iReqLen;
 
-            x1 += ted_CalcItemWidth( layout, ptr, 
+            x1 += ted_CalcItemWidth( layout, ptr,
                   pted->pFontsScr + (pattr + lasti)->iFont, &iRealLen,
                   xpos - x1, 0, lasti );
 
@@ -864,7 +864,7 @@ HB_FUNC( HCED_EXACTCARETPOS )
       pted->ixCaretPos = x1 + pted->nBorder;
       pted->iyCaretPos = y1 + pted->nBorder;
    }
-   
+
    hb_retni( iPrinted );
 
 }
@@ -889,11 +889,11 @@ HB_FUNC( HCED_INVALIDATERECT )
 
       x1 = y1 = 0;
       x2 = alloc.width;
-      y2 = alloc.height;      
+      y2 = alloc.height;
    }
    gtk_widget_queue_draw_area( widget, x1, y1,
         x2 - x1 + 1, y2 - y1 + 1 );
-   
+
 }
 
 HB_FUNC( HCED_SETFOCUS )
@@ -945,7 +945,7 @@ HB_FUNC( HCED_LINEOUT )
    while( i < TEDATTRF_MAX )
    {
       iFont = *( pted->pattrf + i );
-      font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
+      font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) +
             (iFont? iFont-1 : 0) ;
       iHeight = ( iHeight > font->iHeight )? iHeight : font->iHeight;
       if( ! *( pted->pattrf+i ) )

@@ -458,10 +458,10 @@ HB_FUNC( HWG_LOADICON )
  hwg_LoadImage(handle,nresource,ntype,nwidth,nheigth,nloadflags)
                ^      ^         ^     ^      ^       ^
                !      !         !     !      !       ! load flags
-               !      !         !     !      ! desired height   
+               !      !         !     !      ! desired height
                !      !         !     ! desired width
-               !      !         ! type of image  
-               !      ! name or identifier of image 
+               !      !         ! type of image
+               !      ! name or identifier of image
                ! handle of the instance that contains the image
 */
 
@@ -480,13 +480,13 @@ HB_FUNC( HWG_LOADIMAGE )
 }
 
 /*
-  hwg_LoadPNG(handle,nresource,ntype,nwidth,nheigth,nloadflags)   
+  hwg_LoadPNG(handle,nresource,ntype,nwidth,nheigth,nloadflags)
               ^      ^         ^     ^      ^       ^
               !      !         !     !      !       ! load flags
-              !      !         !     !      ! desired height   
+              !      !         !     !      ! desired height
               !      !         !     ! desired width
-              !      !         ! type of image  
-              !      ! name or identifier of image 
+              !      !         ! type of image
+              !      ! name or identifier of image
               ! handle of the instance that contains the image
 */
 
@@ -622,7 +622,7 @@ HB_FUNC( HWG_DRAWTRANSPARENTBITMAP )
       /*
          BitBlt( dcTrans, 0, 0, bitmap.bmWidth, bitmap.bmHeight, dcImage, 0, 0,
          SRCCOPY );
-         SetStretchBltMode(  hDC, COLORONCOLOR );    
+         SetStretchBltMode(  hDC, COLORONCOLOR );
          StretchBlt( hDC, 0, 0, nWidthDest, nHeightDest, dcImage, 0, 0,
          bitmap.bmWidth, bitmap.bmHeight, SRCINVERT );
          StretchBlt( hDC, 0, 0, nWidthDest, nHeightDest, dcTrans, 0, 0,
@@ -790,7 +790,7 @@ HB_FUNC( HWG_GETICONSIZE )
 /*
   hwg_Openbitmap( cBitmap, hDC )
   cBitmap : File name of bitmap
-  hDC     : Printer device handle 
+  hDC     : Printer device handle
 */
 HB_FUNC( HWG_OPENBITMAP )
 {
@@ -1154,7 +1154,7 @@ HB_FUNC( HWG_DRAWGRAYBITMAP )
 /* hwg_Openimage( cFileName , bString )
   bString : .F. : from image file (default)
             .T. : from pixbuffer
-  returns handle to pixbuffer  
+  returns handle to pixbuffer
   */
 
 HB_FUNC( HWG_OPENIMAGE )
@@ -1563,10 +1563,10 @@ HB_FUNC( HWG_DRAWGRADIENT )
    int polygon_len = 0, nearest_coord = 0, cycle_start, cycle_stop, cycle_step;
    int convert[4][2] = { {-1,1}, {1,1}, {1,-1}, {-1,-1} };
    long x, y;
-   
+
    if ( !pArrColor || ( user_colors_num = hb_arrayLen( pArrColor ) ) == 0 )
       return;
-   
+
    if ( user_colors_num >= 2 )
    {
       colors_num = ( user_colors_num <= GRADIENT_MAX_COLORS ) ? user_colors_num : GRADIENT_MAX_COLORS;
@@ -1628,12 +1628,12 @@ HB_FUNC( HWG_DRAWGRADIENT )
 
       if ( type >= 1 && type <= 4 ) // horizontal and vertical gradients
       {
-     
+
          // We create a bitmap that compatable to our main device
          // and attach it to the memory device context.
          bmp = ( HBITMAP ) CreateCompatibleBitmap( hDC, x2+1, y2+1 );
          SelectObject( hDC_mem, bmp );
-        
+
          // 1. Array of TRIVERTEX structures that describe
          // positional and color values for each vertex
          // (for a rectangle two vertices need to be defined: upper-left and lower-right).
@@ -1647,18 +1647,18 @@ HB_FUNC( HWG_DRAWGRADIENT )
             vertex[(i-1)*2].Green = (COLOR16) (green[i-1] * 256);
             vertex[(i-1)*2].Blue  = (COLOR16) (blue[i-1] * 256);
             vertex[(i-1)*2].Alpha = 0x0000;
-         
+
             vertex[(i-1)*2+1].x     = ( isH ) ? stop_x[i] : x2 + 1;
             vertex[(i-1)*2+1].y     = ( isV ) ? stop_y[i] : y2 + 1;
             vertex[(i-1)*2+1].Red   = (COLOR16) (red[i] * 256);
             vertex[(i-1)*2+1].Green = (COLOR16) (green[i] * 256);
             vertex[(i-1)*2+1].Blue  = (COLOR16) (blue[i] * 256);
             vertex[(i-1)*2+1].Alpha = 0x0000;
-            
+
             gRect[i-1].UpperLeft  = (i-1)*2;
             gRect[i-1].LowerRight = (i-1)*2+1;
          }
-               
+
          if( FuncGradientFill == NULL )
             FuncGradientFill = ( GRADIENTFILL )
                GetProcAddress( LoadLibrary( TEXT( "MSIMG32.DLL" ) ),
@@ -1700,7 +1700,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
             DeleteObject( hPen );
             DeleteObject( hBrush );
          }
-         
+
       } // end horizontal and vertical gradients
       else if ( type >= 5 && type <= 8 ) // diagonal gradients
       {
@@ -1734,7 +1734,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
                DeleteObject( hPen );
             }
          }
-         
+
          // shifts of edges
          if ( stop_x[0] > 2*x1-x2-1 ) // on the left
          {
@@ -1751,10 +1751,10 @@ HB_FUNC( HWG_DRAWGRADIENT )
             edge[2].y = ( is_5_6 ) ? y1 : y2;
             edge[3].x = 2*x1 - x2 - 1;
             edge[3].y = ( is_5_6 ) ? y1 : y2;
-            
+
             Polygon( hDC_mem, edge, 4 );
 
-            SelectObject( hDC_mem, hPenOld ); 
+            SelectObject( hDC_mem, hPenOld );
             DeleteObject( hPen );
             DeleteObject( hBrush );
          }
@@ -1773,14 +1773,14 @@ HB_FUNC( HWG_DRAWGRADIENT )
             edge[2].y = ( is_5_6 ) ? y2 : y1;
             edge[3].x = 2*x2 - x1 + 1;
             edge[3].y = ( is_5_6 ) ? y2 : y1;
-            
+
             Polygon( hDC_mem, edge, 4 );
 
             SelectObject( hDC_mem, hPenOld );
             DeleteObject( hPen );
             DeleteObject( hBrush );
          }
-         
+
       } // end diagonal gradients
       else if ( type == 9 ) // radial gradients
       {
@@ -1788,7 +1788,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
          // and attach it to the memory device context.
          bmp = ( HBITMAP ) CreateCompatibleBitmap( hDC, x2+1, y2+1 );
          SelectObject( hDC_mem, bmp );
-      
+
          // shifts of edge
          if ( stop_x[colors_num-1] < gr_radius )
          {
@@ -1796,7 +1796,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
             hPenOld = SelectObject( hDC_mem, hPen );
             hBrush = CreateSolidBrush( RGB(red[colors_num-1], green[colors_num-1], blue[colors_num-1]) );
             SelectObject( hDC_mem, hBrush );
-            
+
             Rectangle( hDC_mem, x1, y1, x2+1, y2+1);
 
             SelectObject( hDC_mem, hPenOld );
@@ -1822,12 +1822,12 @@ HB_FUNC( HWG_DRAWGRADIENT )
 
                Ellipse( hDC_mem, x_center - j, y_center - j, x_center + j+1, y_center + j+1 );
 
-               SelectObject( hDC_mem, hPenOld ); 
+               SelectObject( hDC_mem, hPenOld );
                DeleteObject( hPen );
                DeleteObject( hBrush );
             }
          }
-      
+
       } // end radial gradients
 
    } // user passes two colors or more
@@ -1840,7 +1840,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
       radius[i] = ( i < user_radiuses_num ) ? hb_arrayGetNI( pArrRadius, i+1 ) : 0;
       radius[i] = ( radius[i] >= 0 ) ? radius[i] : 0;
    }
-   
+
    center[0].x = x1 + radius[0];
    center[0].y = y1 + radius[0];
    center[1].x = x2 - radius[1];
@@ -1866,8 +1866,8 @@ HB_FUNC( HWG_DRAWGRADIENT )
             // The radius is greater than zero, so we draw a quarter circle.
             // The drawing uses the principle of Bresenham's circle algorithm
             // for finding in the group of pixels the nearest pixel to a circle.
-            // At first we calculate the coordinates of the pixels 
-            // in the quadrant from -Pi/2 to 0. This is a handy quadrant - 
+            // At first we calculate the coordinates of the pixels
+            // in the quadrant from -Pi/2 to 0. This is a handy quadrant -
             // when the angle increases, the values on bouth X-axis and Y-axis
             // are monotonically increase.
             // Then, the coordinates are converted for the corresponding quarter
@@ -1904,12 +1904,12 @@ HB_FUNC( HWG_DRAWGRADIENT )
                      min_delta = delta;
                   }
                }
-               
+
                coords[j].x = candidates[ nearest_coord ].x;
                coords[j].y = candidates[ nearest_coord ].y;
-            }    
+            }
          }
-         
+
          cycle_start = ( i%2 == 0 ) ? SECTORS_NUM : 0;
          cycle_stop = ( i%2 == 0 ) ? -1 : SECTORS_NUM + 1;
          cycle_step = ( i%2 == 0 ) ? -1 : 1;
@@ -1939,11 +1939,11 @@ HB_FUNC( HWG_DRAWGRADIENT )
       hPen = CreatePen( PS_SOLID, 1, color );
       hBrush = CreateSolidBrush( color );
    }
-   
+
    hPenOld = SelectObject( hDC, hPen );
    SelectObject( hDC, hBrush );
    Polygon( hDC, polygon, polygon_len );
-   
+
    if( user_colors_num >= 2 )
    {
       // In WinAPI rightmost column and bottommost row of pixels are ignored while filling polygon
@@ -1951,7 +1951,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
       Rectangle( hDC, x2, y1+radius[1], x2+2, y2-radius[2]+2 );
       Rectangle( hDC, x1+radius[3], y2, x2-radius[2]+2, y2+2 );
 
-      if( bmp ) 
+      if( bmp )
          DeleteObject( bmp );
       if( hDC_mem )
          DeleteDC( hDC_mem );
@@ -1964,7 +1964,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
 }
 
 
-/* As preparation to further versions */ 
+/* As preparation to further versions */
 HB_FUNC( HWG_LOADPNG )
 {
 }
@@ -1977,12 +1977,12 @@ HB_FUNC( HWG_LOADPNG )
 /* Some more functions for bitmap support
    (for example painting and stretching of bitmap images)
    are implemented in source code file "cxshade.c".
-*/   
+*/
 
 /*
- === Bitmap structures == 
+ === Bitmap structures ==
 
- Not used structures are inserted for future realeases of HWGUI. 
+ Not used structures are inserted for future realeases of HWGUI.
 
  */
 
@@ -1990,9 +1990,9 @@ HB_FUNC( HWG_LOADPNG )
 
 /*
  Summary of bitmap structures:
- 
+
  fileheader l=14
- 
+
  bitmapinfoheader l=40
 
  bitmapheader3x l=54
@@ -2022,7 +2022,7 @@ HB_FUNC( HWG_LOADPNG )
    - color
 
  BMPImage
-   - bitmap4x 
+   - bitmap4x
    - pixel **
    - color
 
@@ -2036,13 +2036,13 @@ HB_FUNC( HWG_LOADPNG )
 typedef struct <name> {
  ...
 }  __attribute__((packed)) <name> ;
-*/   
+*/
 
 typedef struct{
     uint8_t signature[2];              /* 0  "BM" */
-    uint32_t filesize;                 /* 2  Size of file in bytes */ 
+    uint32_t filesize;                 /* 2  Size of file in bytes */
     uint32_t reserved;                 /* 6  reserved, forever 0 */
-    uint32_t fileoffset_to_pixelarray; /* 10 Start position of image data in bytes */ 
+    uint32_t fileoffset_to_pixelarray; /* 10 Start position of image data in bytes */
 } fileheader;                          /* 14 l = 14 */
 
 /* Win 3.x info header */
@@ -2061,14 +2061,14 @@ typedef struct{
 } bitmapinfoheader;                    /* 54 l = 40 */
 
 
-/* Color components (Win3x palette element)  */ 
+/* Color components (Win3x palette element)  */
 typedef struct {
     uint8_t b; /* Blue */
     uint8_t g; /* Green */
     uint8_t r; /* Red component */
     uint8_t a; /* Reserved = 0 */
 } color;
- 
+
 typedef struct
 {
     uint8_t b;
@@ -2083,7 +2083,7 @@ typedef struct {
     bitmapinfoheader bitmapinfoheader; /* l = 40 */
 } bitmapheader3x;  /* l=54 */
 
-typedef struct { 
+typedef struct {
    char Blue;      /* Blue component */
    char Green;     /* Green component */
    char Red;       /* Red component */
@@ -2147,7 +2147,7 @@ typedef struct {
     bitmapinfoheader4x bitmapinfoheader4x;  /* l = 68 */
 } bitmap4x;  /* l=122 */
 
-typedef struct 
+typedef struct
 {
     bitmap4x bmp_header;   /* full Header of the bitmap */
     pixel **pixel_data;    /* Pixel matrix (jagged array) */
@@ -2156,7 +2156,7 @@ typedef struct
 
 #pragma pack(pop)
 
-static unsigned int cc_null(uint32_t wert) 
+static unsigned int cc_null(uint32_t wert)
 {
     unsigned int zae ;
 
@@ -2183,13 +2183,13 @@ uint32_t hwg_BMPFileSizeC(
     int bmp_bit_depth,
     unsigned int colors
     )
-{           
+{
     uint32_t image_size;
     uint32_t pad;
     uint32_t fileoffset_to_pixelarray;
     uint32_t filesize ;
 
- 
+
     pad = (4 - (bmp_bit_depth * bmp_width + 7 ) / 8 % 4) % 4;
     image_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad ) * bmp_height;
 
@@ -2197,7 +2197,7 @@ uint32_t hwg_BMPFileSizeC(
     colors * 4 ;
     filesize = fileoffset_to_pixelarray + image_size ;
 
-    return filesize; 
+    return filesize;
 }
 
 /* Creates a C element with bitmap file image */
@@ -2216,7 +2216,7 @@ void * hwg_BMPNewImageC(
     uint32_t image_size;
     uint32_t pad;
     uint32_t fileoffset_to_pixelarray;
-    
+
     uint32_t filesize ;
     uint32_t max_colors;
 //    int i;
@@ -2232,7 +2232,7 @@ void * hwg_BMPNewImageC(
     uint32_t bmp_bit_depth;
 
     /* uint8_t mask1[8]; */
-    uint8_t mask4[2]; 
+    uint8_t mask4[2];
 
     /* Reserved for later releases
     mask1[0] = 128;
@@ -2244,10 +2244,10 @@ void * hwg_BMPNewImageC(
     mask1[6] = 2;
     mask1[7] = 1;
    */
-   
+
     mask4[0] = 240,
     mask4[1] = 15;
- 
+
     max_colors = (uint32_t) 1;
 
     /* Fixed signature "BM" */
@@ -2272,7 +2272,7 @@ void * hwg_BMPNewImageC(
        return NULL;
     }
 
- 
+
     for (i = 0; i < bmp_bit_depth; ++i)
     {
         max_colors *= 2;
@@ -2288,29 +2288,29 @@ void * hwg_BMPNewImageC(
     image_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad ) * bmp_height;
 
 
-    
-    /* Pre init with 0 */
-    memset(&pbitmap,0x00,sizeof(BMPImage3x) ); 
 
-   
+    /* Pre init with 0 */
+    memset(&pbitmap,0x00,sizeof(BMPImage3x) );
+
+
     fileoffset_to_pixelarray = sizeof (fileheader) + sizeof(bitmapinfoheader) +
     colors * 4 ;
     filesize = fileoffset_to_pixelarray + image_size ;
- 
+
     /* Allocate memory for full file size */
     bmp_fileimg = malloc(filesize);
- 
- 
+
+
     /* Bitmap file header */
 
-    memcpy( &pbitmap.bmp_header.fileheader.signature,csig,2);                     /* fixed signature */ 
+    memcpy( &pbitmap.bmp_header.fileheader.signature,csig,2);                     /* fixed signature */
     pbitmap.bmp_header.fileheader.filesize = filesize;                            /* Size of file in bytes */
     pbitmap.bmp_header.fileheader.reserved = 0;
     pbitmap.bmp_header.fileheader.fileoffset_to_pixelarray = fileoffset_to_pixelarray; /* Start position of image data in bytes */
 
     /* Bitmap information header 3.x*/
     pbitmap.bmp_header.bitmapinfoheader.dibheadersize = (uint32_t) sizeof(bitmapinfoheader); /* Size of this header in bytes */
-    pbitmap.bmp_header.bitmapinfoheader.width =  bmp_width;            /* Image width in pixels */ 
+    pbitmap.bmp_header.bitmapinfoheader.width =  bmp_width;            /* Image width in pixels */
     pbitmap.bmp_header.bitmapinfoheader.height = bmp_height;          /* Image height in pixels */
     pbitmap.bmp_header.bitmapinfoheader.planes = (uint32_t) _planes;             /* Number of color planes (must be 1) */
     pbitmap.bmp_header.bitmapinfoheader.bitsperpixel = (uint16_t) bmp_bit_depth; /* Number of bits per pixel `*/
@@ -2348,7 +2348,7 @@ void * hwg_BMPNewImageC(
     /* Alloc color palette */
     pbitmap.palette = (color*) calloc(colors, sizeof (color));
     memset(&pbitmap.palette, 0x00, sizeof (color));
- 
+
     /* Copy structure pbitmap (BMPImage3x) to file buffer */
     memcpy(bmp_fileimg,&pbitmap, sizeof(BMPImage3x) );
 
@@ -2361,19 +2361,19 @@ void * hwg_BMPNewImageC(
      */
 
     /* Move pointer to end of block : start position of pixel data */
-    bmp_locpointer = bmp_fileimg + fileoffset_to_pixelarray;
-    
+    bmp_locpointer = (void*) ( ((unsigned char*)bmp_fileimg) + fileoffset_to_pixelarray );
+
     /* Process initialization of  pixel data */
 
     /* allocate buffer for bitmap pixel data */
     bitmap_buffer = (uint8_t *) calloc(1, image_size);
     memset(bitmap_buffer,0x00,image_size);
     buf = bitmap_buffer;
-    
+
     /* convert pixel data into bitmap format */
     switch (bmp_bit_depth)
     {
-    /* Each byte of data represents 8 pixels, with the most significant 
+    /* Each byte of data represents 8 pixels, with the most significant
        bit mapped into the leftmost pixel */
     case 1:
        for (i = 0; i < bmp_height; ++i)
@@ -2425,7 +2425,7 @@ void * hwg_BMPNewImageC(
           {
            *buf++ = pbitmap.pixel_data[i][j].i;
           }
-           
+
           /* each row has a padding to a 4 byte alignment */
           buf += pad;
         }
@@ -2438,9 +2438,9 @@ void * hwg_BMPNewImageC(
           for (j = 0; j < bmp_width; ++j)
           {
             uint16_t *px = (uint16_t*) buf;
-            *px = 
+            *px =
              (pbitmap.pixel_data[i][j].b << cc_null(pbitmap.palette->b)) +
-             (pbitmap.pixel_data[i][j].g << cc_null(pbitmap.palette->g)) + 
+             (pbitmap.pixel_data[i][j].g << cc_null(pbitmap.palette->g)) +
              (pbitmap.pixel_data[i][j].r << cc_null(pbitmap.palette->r));
             buf += 2;
           }
@@ -2463,7 +2463,7 @@ void * hwg_BMPNewImageC(
        }
        break;
      }
-    
+
 
     /* Copy the image data to the file buffer */
     memcpy(bmp_locpointer,bitmap_buffer, image_size );
@@ -2471,7 +2471,7 @@ void * hwg_BMPNewImageC(
     /* Free all the memory not needed */
 
     free(bitmap_buffer);
-/* 
+/*
     free(bmp_locpointer);
     free(buf);
 */
@@ -2488,7 +2488,7 @@ void * hwg_BMPNewImageC(
 
 /* Calculates the offset to pixel array (image data) */
 uint32_t hwg_BMPCalcOffsPixArrC(unsigned int colors)
-   {  
+   {
     uint32_t fileoffset_to_pixelarray;
 
     fileoffset_to_pixelarray = sizeof (fileheader) + sizeof(bitmapinfoheader) +
@@ -2524,15 +2524,15 @@ HB_FUNC( HWG_BMPNEWIMAGE )
     unsigned int colors;
     uint32_t xpixelpermeter;
     uint32_t ypixelpermeter;
-    void * rci; 
+    void * rci;
     char rcbuff[BMPFILEIMG_MAXSZ];
     uint32_t filesize ;
-   
+
     bmp_width = hb_parni(1);
     bmp_height = hb_parni(2);
     bmp_bit_depth = hb_parni(3);
     colors = hb_parni(4);
-    xpixelpermeter = hb_parnl(5); 
+    xpixelpermeter = hb_parnl(5);
     ypixelpermeter = hb_parnl(6);
 
 
@@ -2544,24 +2544,24 @@ HB_FUNC( HWG_BMPNEWIMAGE )
      colors,
      xpixelpermeter,
      ypixelpermeter );
-     
+
 
      if ( ! rci )
-     { 
+     {
       hb_retc("Error");
-     }  
+     }
 
     /* Calculate the file size */
     filesize = hwg_BMPFileSizeC(bmp_width, bmp_height, bmp_bit_depth, colors) ;
 
     if ( filesize > BMPFILEIMG_MAXSZ )
     {
-      hb_retc("Error");      
+      hb_retc("Error");
     }
 
      memcpy(&rcbuff,rci,filesize);
- 
-    
+
+
      hb_retclen_buffer(rcbuff,filesize);
 
     /* HB_RETSTR(rcbuff) stops writing bytes at first appearence of 0x00 */
@@ -2603,7 +2603,7 @@ HB_FUNC( HWG_BMPFILESIZE )
     colors * 4 ;
     filesize = fileoffset_to_pixelarray + image_size ;
 
-    hb_retnl(filesize); 
+    hb_retnl(filesize);
 }
 
 /* Returns the size of BMPImage3x structure */
@@ -2631,7 +2631,7 @@ HB_FUNC( HWG_BMPCALCOFFSPIXARR )
     colors = hb_parni(1);
 
     fileoffset_to_pixelarray = hwg_BMPCalcOffsPixArrC(colors);
-    hb_retnl(fileoffset_to_pixelarray); 
+    hb_retnl(fileoffset_to_pixelarray);
 
 }
 
@@ -2640,7 +2640,7 @@ HB_FUNC( HWG_BMPCALCOFFSPAL )
 {
   uint32_t rc;
   int bmp_height;
-  
+
   bmp_height = hb_parni(1);
   rc = hwg_BMPCalcOffsPalC(bmp_height);
   hb_retnl(rc);
@@ -2654,7 +2654,7 @@ HB_FUNC( HWG_BMPCALCOFFSPAL )
 HB_FUNC( HWG_BMPIMAGESIZE )
 {
     uint32_t image_size;
- 
+
     int bmp_width;
     int bmp_height;
     int bmp_bit_depth;
@@ -2682,7 +2682,7 @@ HB_FUNC( HWG_BMPIMAGESIZE )
 HB_FUNC( HWG_BMPLINESIZE )
 {
     uint32_t line_size;
- 
+
     int bmp_width;
     int bmp_bit_depth;
 

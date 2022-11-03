@@ -16,6 +16,15 @@
 */
 
 
+2022-11-03 09:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/draw.c
+    ! Small fix in hwg_BMPNewImageC(). The code caused an error while compiling with bcc55 
+      (didn't check it with other compilers)
+  * source/winapi/guimain.prg
+    * hwg_KeyToUtf8() added for compatibility with GTK version
+  * source/common/editor/hcedit.prg
+    ! hced_Chr() fixed for Windows unicode mode.
+
 2022-10-31 19:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/editor/editor.prg
     ! Fixes

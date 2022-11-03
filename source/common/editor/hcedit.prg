@@ -1601,6 +1601,7 @@ METHOD PutChar( nKeyCode ) CLASS HCEdit
          ENDIF
       ENDIF
    ELSE        // Insert or overwrite any character
+      //hwg_writelog( str( nKeyCode ) + "/" + hced_Chr( Self,nKeyCode ) )
       ::InsText( ::aPointC, hced_Chr( Self,nKeyCode ), !::lInsert )
    ENDIF
 
@@ -2751,11 +2752,9 @@ FUNCTION hced_Line4Pos( oEdit, yPos )
 
 Function hced_Chr( oEdit, nCode )
 #ifndef __XHARBOUR__
-#ifndef __PLATFORM__WINDOWS        // __WINDOWS__
-   IF oEdit:lUtf8; RETURN hwg_KeyToUtf8( nCode ); ENDIF
-#else
-   IF oEdit:lUtf8; RETURN hb_utf8Chr( nCode ); ENDIF
-#endif
+   IF hwg__isUnicode()
+      IF oEdit:lUtf8; RETURN hwg_KeyToUtf8( nCode ); ELSE; RETURN hb_translate( hwg_KeyToUtf8(nCode),"UTF8",oEdit:cp ); ENDIF
+   ENDIF
 #endif
    RETURN Chr( nCode )
 

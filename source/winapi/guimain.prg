@@ -553,3 +553,6 @@ FUNCTION HWG_ScrollHV( oForm, msg, wParam, lParam )
    ENDIF  
 
    RETURN Nil
+
+FUNCTION hwg_KeyToUtf8( nCode )
+   RETURN hb_utf8Chr( nCode )

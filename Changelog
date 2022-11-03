@@ -15,6 +15,20 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-11-03 14:10 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * samples/qrencode.prg
+  * source/gtk/draw.c
+  * source/winapi/draw.c
+   ! Project QR encoding: 
+   ! To be continued:
+   ! Zoom function coded in C,
+   ! only experimental state.
+   ! Checked also with BCC 5.8.
+   ! Need to add scripts for other compilers:
+   ! Watcom C, Digital Mars, ...
+   ! Need to add to winprn.prg.
+   
 
 2022-11-03 09:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/draw.c

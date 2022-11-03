@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, October 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, November 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -1662,6 +1662,14 @@ See sample program "testspli.prg" for details.<br>
      <li> sTraceMsg - pointer to a string with the text to be written;
      <li> sFile - (optional) pointer to a string with file name, the default is "ac.log", set to NULL for default value.  
    </ul>
+   <p>
+   A sample code snippet to log numeric values:<br>
+   &nbsp;&nbsp;&nbsp;char debug[100];<br>
+   &nbsp;&nbsp;&nbsp;int num = 1000;<br>
+   &nbsp;&nbsp;&nbsp;itoa(num,&debug,10);<br>
+   &nbsp;&nbsp;&nbsp;hwg_writelog(NULL,&debug);<br>   
+   </p>
+   
 
    <br><strong class="subhead"> hwg_SetDlgKey( [oDlg], nCtrl, nKey, block [, lGlobal] )</strong> 
    <br>Sets a &quot;hot key&quot; for a window/dialog or globally - for all the application. There is
@@ -3344,9 +3352,11 @@ See sample program "testspli.prg" for details.<br>
     End of Functions for raw bitmap support<br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
 
-    <br>QR functions &lt;encode and decode under contruction&gt; !<br>
+    <br>QR code functions &lt;for decode under contruction&gt; !<br>
     <br>
     All functions start with prefix "hwg_QR".<br>
+    <br>
+    <strong>QR code encoding</strong><br>
     <br>
     The encode functions need an external library, instructions to<br>
     integrate into HWGUI see file contrib\qrencode\Readme.txt.<br>
@@ -3378,7 +3388,7 @@ See sample program "testspli.prg" for details.<br>
 
   <p></p>
   
-   <br><strong class="subhead"> FUNCTION hwg_QRCodeZoom(cqrcode,nzoom)</strong><br>
+   <br><strong class="subhead"> hwg_QRCodeZoom(cqrcode,nzoom)</strong><br>
    Increases the size of a QR code image<br> 
    cqrcode : The QR code in text format<br>
    nzoom   : The zoom factor 1 ... n<br>
@@ -3386,11 +3396,28 @@ See sample program "testspli.prg" for details.<br>
    <br>
    Important advice:<br>
    This function needs some CPU time to finish calculation.<br>
-   We will deliver a C code copy with effective processing<br>
-   with one of the future versions.<br>   
+   We recommend, not to use a zoom factor<br>
+   greater than 3 or 4.<br>   
    
 
   <p></p>
+  
+  <br><strong class="subhead"> hwg_QRCodeZoom_C(cqrcode,nlen,<nzoom>)</strong><br>
+  <br>Only experimental status !!<br>
+  <br>This is the eqivalent function to hwg_QRCodeZoom().
+  <br>Detected by some tests, the code effeciency is not signficant better than
+  <br>hwg_QRCodeZoom() (about 10 % faster). This fact shows, that the Harbour compiler creates very
+  <br>effective code !
+  <br> 
+  cqrcode : The QR code in text format<br>
+  nlen    : Pass LEN(cqrcode)<br>
+  nzoom   : The zoom factor 1 ... n, the default is 1 (no zoom)<br>
+  There are some limitations caused by the buffer size of the internal
+  string buffer (16 kByte).
+  A NULL byte at end of every line do not cause trouble creating the bitmap
+  with hwg_QRCodetxt2BPM().
+
+  <p></p>  
   
     <br><strong class="subhead"> hwg_QR_SetPixel(cmbp,x,y,xw,yh)</strong><br>
     Set a single pixel into QR code bitmap string.<br>

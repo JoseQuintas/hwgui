@@ -46,7 +46,7 @@ RETURN NIL
 * Ask for string to convert, zoom factor and 
 * store to bitmap file
 * Convert to bitmap and show the qrcode,
-* optional store to bitmap file "test.bmp 
+* Store the QR code to bitmap file "test.bmp 
 FUNCTION Testen()
 
 LOCAL cqrc, cbitmap
@@ -56,7 +56,11 @@ LOCAL cqrc, cbitmap
 cqrc := hwg_QRCodeTxtGen("https://sourceforge.net/projects/hwgui",1)
 
 
-cqrc := hwg_QRCodeZoom(cqrc,2)
+cqrc := hwg_QRCodeZoom(cqrc,3)
+
+// cqrc := hwg_QRCodeZoom_C(cqrc,LEN(cqrc),3)
+
+hwg_WriteLog(cqrc)
 
 cbitmap := hwg_QRCodetxt2BPM(cqrc)
 

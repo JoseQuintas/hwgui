@@ -1857,5 +1857,116 @@ HB_FUNC( HWG_BMPLINESIZE )
 /*   End of Functions for raw bitmap support   */
 /*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
 
+/*
+* Increases the size of a QR code image 
+* cqrcode : The QR code in text format
+* nlen    : Pass LEN(cqrcode)
+* nzoom   : The zoom factor 1 ... n
+*           The default is 1 (no zoom)
+* Return the new QR code text string
+
+hwg_QRCodeZoom_C(cqrcode,nlen,<nzoom>)
+
+*/
+
+HB_FUNC ( HWG_QRCODEZOOM_C )
+{
+  int i , j, leofq;
+  // leofq: 0 = .F. , 1 = .T.
+  int nzoom, nlen;
+  int cptr,lptr;
+  char cqrcode [16385];
+  char cout[16385];
+  char cLine[8192];
+  const char *hString;
+  
+
+  
+ 
+  nlen  =  hb_parni( 2 );
+  nzoom =  ( HB_ISNIL( 3 ) ? 1 : hb_parni( 3 )  ); 
+ 
+
+  lptr = 0;  // Position in a line 
+  cptr = 0;  // Position in cout 
+  memset(&cout , 0x00, 16385 );
+  memset(&cLine , 0x00, 8192 ); 
+
+  // Copy the image into char array
+  hString = hb_parc( 1 );
+  memcpy(&cqrcode,hString,nlen);
+
+  
+ 
+  if ( nzoom < 1 )
+  {
+    hb_retclen(cqrcode,nlen);
+  }
+  
+
+leofq = 0;
+// i: Position in cqrcode
+
+for (i = 0 ; i < nlen ; i++ ) 
+{
+ if ( leofq == 0 )
+ {
+  if ( cqrcode[i] == 10 )
+  { 
+    if ( ! ( cqrcode[ i + 1 ] == 32 )  )
+    {
+      // Empty line following, stop here
+      leofq = 1;
+    }
+    // Count line ending and start with new line
+
+    // Replicate line with zoom factor 
+    // and add line to output string
+        for(j = 1 ; j <= nzoom ; j++ )
+        {
+          memcpy(&cout[cptr],&cLine,lptr);
+          cout[cptr + lptr + 1 ] = 10;
+          cptr = cptr + lptr + 2; // Next line 
+        }
+        lptr = 0;
+        memset(&cLine , 0x00, 8192 );
+  }   
+  else  // SUBSTR " "
+  {
+    // Replicate characters in line with zoom factor
+
+    for(j = 1 ; j <= nzoom ; j++ )
+    {
+      cLine[lptr] = cqrcode[i];
+      lptr++;
+    }
+    // Set line ending 
+    cLine[lptr] = 10;
+    
+
+  }  // is CHR(10)
+ }   // .NOT. leofq
+
+} // NEXT
+
+  if (lptr > 0)
+  {
+      memcpy(&cout[cptr],&cLine,lptr);
+      cout[cptr + lptr + 1] = 10;
+      cptr = cptr + lptr + 2; // Next line     
+  }
+
+// Empty line as mark for EOF
+
+
+   cout[cptr + 1] = 10;
+   cptr++;
+   cptr++;
+
+   hb_retclen(cout,cptr);
+
+}
+
+
 /* ================== EOF of draw.c ========================== */
 

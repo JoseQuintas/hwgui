@@ -2617,7 +2617,7 @@ HB_FUNC( HWG_BMPSZ3X )
 /* Returns the maximum size of the bitmap file size */
 HB_FUNC( HWG_BMPMAXFILESZ )
 {
-  return hb_retnl(BMPFILEIMG_MAXSZ);
+  hb_retnl(BMPFILEIMG_MAXSZ);
 }
 
 /* Calculates the offset to pixel array (image data) */

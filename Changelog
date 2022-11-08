@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-11-08 18:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/Makefile.linux
+    * cfuncs.c added
+
 2022-11-08 11:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + source/common/procmisc/cfuncs.c
     + Functions added: edi_utf8_Upper( cText ), edi_utf8_Lower( cText ) for

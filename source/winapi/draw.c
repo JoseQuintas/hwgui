@@ -119,7 +119,12 @@ typedef struct _TRIVERTEX
 
 /* Define fixed parameters for bitmap */
 
+#ifdef __WATCOMC__
+#define BMPFILEIMG_MAXSZ 65536
+#else
 #define BMPFILEIMG_MAXSZ 131072 /* Max file size of a bitmap (128 K) */
+#endif
+
 #define  _planes      1         /* Forever 1 */
 #define  _compression 0         /* No compression */
 

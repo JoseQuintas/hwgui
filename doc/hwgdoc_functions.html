@@ -3195,6 +3195,11 @@ See sample program "testspli.prg" for details.<br>
    #define BMPFILEIMG_MAXSZ 131072 /* Max file size of a bitmap (128 K) */<br>
    and recompile HWGUI and your HWGUI application.<br>
    <br>
+   With Open Watcom C the maximum size is 65536 (64 k), otherwise
+   the program crashes.<br>
+   This value is selected with compiler switch<br>
+   #ifdef __WATCOMC__<br>
+   <br>
    For Details see inline comments of sample program "samples\testbmpcr.prg".<br>
    <p></p>
    

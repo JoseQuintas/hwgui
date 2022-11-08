@@ -56,7 +56,8 @@ PROCMISC_LIB_OBJS = \
    $(OBJ_DIR)\scrdebug.obj\
    $(OBJ_DIR)\hcedit.obj\
    $(OBJ_DIR)\hcedit_w.obj\
-   $(OBJ_DIR)\hilight.obj
+   $(OBJ_DIR)\hilight.obj \
+   $(OBJ_DIR)\cfuncs.obj
 
 HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hipedit.obj \
@@ -591,6 +592,9 @@ $(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\hcedit_w.obj : $(EDITOR_DIR)\hcedit_w.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\cfuncs.obj : $(PROCMISC_DIR)\cfuncs.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 # =======================

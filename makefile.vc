@@ -308,7 +308,8 @@ $(LIB_DIR)\procmisc.lib : \
    $(OBJ_DIR)\scrdebug.obj\
    $(OBJ_DIR)\hcedit.obj\
    $(OBJ_DIR)\hcedit_w.obj\
-   $(OBJ_DIR)\hilight.obj
+   $(OBJ_DIR)\hilight.obj \
+   $(OBJ_DIR)\cfuncs.obj
   lib /out:$@ $**
 
 $(OBJ_DIR)\procini.c    : $(PROCMISC_DIR)\procini.prg
@@ -333,6 +334,9 @@ $(OBJ_DIR)\procscri.obj : $(OBJ_DIR)\procscri.c
 $(OBJ_DIR)\scrdebug.obj : $(OBJ_DIR)\scrdebug.c
 $(OBJ_DIR)\hcedit.obj : $(OBJ_DIR)\hcedit.c
 $(OBJ_DIR)\hilight.obj : $(OBJ_DIR)\hilight.c
+
+$(OBJ_DIR)\cfuncs.obj  : $(PROCMISC_DIR)\cfuncs.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
 $(LIB_DIR)\hbxml.lib : \
    $(OBJ_DIR)\hxmldoc.obj    \

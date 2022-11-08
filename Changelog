@@ -15,13 +15,23 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-11-08 11:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + source/common/procmisc/cfuncs.c
+    + Functions added: edi_utf8_Upper( cText ), edi_utf8_Lower( cText ) for
+      upper/lower utf8 string conversions
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * Makefile.scr
+  * makefile.vc
+  * makefile.wc
+    * build files updated for source/common/procmisc/cfuncs.c
 
 2022-11-06 10:20 UTC+0100 Wilfried Brunken DF7BE
   * source/gtk/draw.c
   * source/winapi/draw.c
    ! Urgent fix Watcom C compile error:
    ! Nonsense: return hb_retnl(BMPFILEIMG_MAXSZ); => hb_retnl(BMPFILEIMG_MAXSZ);   
-  
   
 
 2022-11-03 14:10 UTC+0100 Wilfried Brunken DF7BE

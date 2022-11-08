@@ -192,7 +192,8 @@ PROCMISC_LIB_OBJS = \
    $(PROCMISC_OBJ_DIR)\scrdebug.obj \
    $(PROCMISC_OBJ_DIR)\hcedit.obj \
    $(PROCMISC_OBJ_DIR)\hcedit_w.obj \
-   $(PROCMISC_OBJ_DIR)\hilight.obj
+   $(PROCMISC_OBJ_DIR)\hilight.obj \
+   $(PROCMISC_OBJ_DIR)\cfuncs.obj
 
 #
 # HBXML.LIB rules

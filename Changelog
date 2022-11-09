@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-11-09 09:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    ! Minor change
+  * utils/editor/hcediext.prg
+  * utils/editor/editor.prg
+    * Some changes, related to different codepages support, fixes.
 
 2022-11-08 10:20 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html

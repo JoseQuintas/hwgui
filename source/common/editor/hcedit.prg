@@ -1097,7 +1097,7 @@ METHOD Save( cFileName, cpSou ) CLASS HCEdit
       ENDIF
       FOR i := 1 TO ::nTextLen
          cLine := Iif( ::lStripSpaces, Trim(::aText[i] ), ::aText[i] )
-         FWrite( nHand, Iif( !Empty(cpSou), hb_Translate( cLIne, ::cp, cpSou ), cLine )  + cNewLine )
+         FWrite( nHand, Iif( !Empty(cpSou), hb_Translate( cLine, ::cp, cpSou ), cLine )  + cNewLine )
       NEXT
       FClose( nHand )
    ENDIF

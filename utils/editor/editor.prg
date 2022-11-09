@@ -138,6 +138,7 @@ STATIC cCBformatted
 STATIC cSearch := "", aPointFound, lSeaCase := .T., lSeaRegex := .F.
 STATIC lScrollBar := .T.
 STATIC aFilesRecent := {}, lOptChg := .F.
+STATIC cpDef := "DEWIN", cpSource := "DEWIN"
 
 MEMVAR handcursor, cIniPath
 
@@ -157,17 +158,13 @@ FUNCTION Main ( fName )
 
    ReadIni( cIniPath )
 
-   IF hwg__isUnicode()
-      hb_cdpSelect( "UTF8" )
-   ELSE
-     hb_cdpSelect("DEWIN") && Also OK for other western countries and Russia
-   ENDIF
+   SetCpDef()
 
    IF Empty( oFontMain )
 #ifndef __PLATFORM__WINDOWS
       PREPARE FONT oFontMain NAME "Sans" WIDTH 0 HEIGHT 13
 #else
-      PREPARE FONT oFontMain NAME "Courier New" WIDTH 0 HEIGHT - 18 CHARSET 0
+      PREPARE FONT oFontMain NAME "Courier New" WIDTH 0 HEIGHT - 18
 #endif
       lOptChg := .T.
    ENDIF
@@ -247,12 +244,11 @@ FUNCTION Main ( fName )
    MENU OF oMainWindow
       MENU TITLE "&File"
          MENUITEM "&New"+Chr(9)+"Ctrl+N" ACTION NewFile() ACCELERATOR FCONTROL,Asc("N")
-         MENUITEM "&Open"+Chr(9)+"Ctrl+O" ACTION OpenFile() ACCELERATOR FCONTROL,Asc("O")
-         MENUITEM "&Add" ACTION OpenFile( ,.T. )
+         MENUITEM "&Open"+Chr(9)+"Ctrl+O" ACTION __OpenFile() ACCELERATOR FCONTROL,Asc("O")
          MENU TITLE "&Recent files"
          FOR i := 1 TO Len( aFilesRecent )
-            Hwg_DefineMenuItem( aFilesRecent[i], 1020 + i, ;
-               &( "{||OpenFile('" + aFilesRecent[i] + "')}" ) )
+            Hwg_DefineMenuItem( aFilesRecent[i,1], 1020 + i, ;
+               &( "{||__OpenFile('" + aFilesRecent[i,1] + "','" + aFilesRecent[i,2] + "')}" ) )
          NEXT
          ENDMENU
          SEPARATOR
@@ -291,8 +287,10 @@ FUNCTION Main ( fName )
          MENUITEMCHECK "&Scroll bar" ID MENU_VSCROLL ACTION (lScrollBar:=!lScrollBar,oEdit:ShowTrackBar(lScrollBar))
 #endif
          SEPARATOR
-         MENUITEMCHECK "Zoom &In"+Chr(9)+"Ctrl+ +" ACTION Zoom( 2 ) ACCELERATOR FCONTROL,VK_ADD
-         MENUITEMCHECK "&Zoom &Out"+Chr(9)+"Ctrl+ -" ACTION Zoom( -2 ) ACCELERATOR FCONTROL,VK_SUBTRACT
+         MENUITEM "Zoom &In"+Chr(9)+"Ctrl+ +" ACTION Zoom( 2 ) ACCELERATOR FCONTROL,VK_ADD
+         MENUITEM "&Zoom &Out"+Chr(9)+"Ctrl+ -" ACTION Zoom( -2 ) ACCELERATOR FCONTROL,VK_SUBTRACT
+         SEPARATOR
+         MENUITEM "Set font" ACTION SetFont()
       ENDMENU
       MENU TITLE "&Insert"
          MENU TITLE "&Url"
@@ -304,12 +302,17 @@ FUNCTION Main ( fName )
          MENUITEM "&Block" ID MENU_INS_BLOCK ACTION (insBlock(),hced_Setfocus(oEdit:hEdit))
          MENUITEM "&Script" ACTION EditScr(oEdit)
       ENDMENU
-      MENU TITLE "&Format"
-         MENUITEM "Selected"+Chr(9)+"Ctrl+E" ID MENU_SPAN ACTION (setSpan(),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("E")
+      MENU TITLE "F&ormat"
+         MENU TITLE "&Selected" ID MENU_SPAN
+            MENUITEM "&Properties"+Chr(9)+"Ctrl+E" ACTION (setSpan(),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("E")
+            MENUITEM "to &UPPER CASE" ACTION CnvCase( 1 )
+            MENUITEM "To &lower case" ACTION CnvCase( 2 )
+            MENUITEM "To &Title case" ACTION CnvCase( 3 )
+         ENDMENU
          SEPARATOR
          MENUITEM "&Document" ACTION (setDoc(),hced_Setfocus(oEdit:hEdit))
          MENU TITLE "&Paragraph"
-            MENUITEM "Properties"+Chr(9)+"Ctrl+H" ACTION (setPara(),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("H")
+            MENUITEM "&Properties"+Chr(9)+"Ctrl+H" ACTION (setPara(),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("H")
             SEPARATOR
             MENUITEM "h1" ACTION oEdit:StyleDiv( ,, "h1" )
             MENUITEM "h2" ACTION oEdit:StyleDiv( ,, "h2" )
@@ -337,12 +340,6 @@ FUNCTION Main ( fName )
       MENU TITLE "&Tools"
          MENUITEM "Calculate"+Chr(9)+"F9" ACTION Calc( oEdit ) ACCELERATOR 0,VK_F9
          MENUITEM "Calculate all"+Chr(9)+"Ctrl+F9" ACTION CalcAll( oEdit ) ACCELERATOR FCONTROL,VK_F9
-         SEPARATOR
-         MENU TITLE "&Convert case"
-            MENUITEM "to &UPPER" ACTION CnvCase( 1 )
-            MENUITEM "to &lower" ACTION CnvCase( 2 )
-            MENUITEM "to &Title" ACTION CnvCase( 3 )
-         ENDMENU
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&Help" ACTION Help()
@@ -353,7 +350,7 @@ FUNCTION Main ( fName )
    handCursor := hwg_Loadcursor( CURS_HAND )
 
    IF fname != Nil
-      OpenFile( fname )
+      __OpenFile( fname )
    ELSE
       onChangePos( .T. )
    ENDIF
@@ -381,24 +378,44 @@ STATIC FUNCTION NewFile()
 
    RETURN Nil
 
-FUNCTION OpenFile( fname, lAdd )
+FUNCTION __OpenFile( fname, cp )
 
-   IF Empty( lAdd )
-      CloseFile()
-   ENDIF
+   LOCAL oDlg, oGet, cFile := ""
+   LOCAL aCps := { "", "DE850", "DEWIN", "RU1251", "RU866", "RUKOI8" }, nCp := 1
+
+   CloseFile()
    IF Empty( fname )
+      IF hwg__isUnicode()
+         AAdd( aCps, "UTF8" )
+      ENDIF
 
+      INIT DIALOG oDlg TITLE "Open file" AT 50, 50 SIZE 400, 230 FONT HWindow():GetMain():oFont
+
+      @ 20, 30 GET oGet VAR cFile SIZE 320, 24 STYLE ES_AUTOHSCROLL
 #ifdef __GTK__
-      fname := hwg_SelectfileEx( ,, { { "HwGUI Editor files", "*.hwge" }, { "All files", "*" } } )
+      @ 340, 30 BUTTON ".." SIZE 40, 24 ON CLICK ;
+         {||fname := hwg_SelectfileEx( ,, { { "HwGUI Editor files", "*.hwge" }, { "All files", "*" } } ), cFile := Iif(Empty(fname),cFile,fname), oGet:Refresh()}
 #else
-      fname := hwg_Selectfile( { "HwGUI Editor files","All files" }, { "*.hwge","*.*" }, Curdir() )
+      @ 340, 30 BUTTON ".." SIZE 40, 24 ON CLICK ;
+         {||fname := hwg_Selectfile( { "HwGUI Editor files","All files" }, { "*.hwge","*.*" }, Curdir() ), cFile := Iif(Empty(fname),cFile,fname), oGet:Refresh()}
 #endif
+      @ 20, 80 SAY "Codepage:" SIZE 120, 24
+      @ 140, 80 GET COMBOBOX nCp ITEMS aCps SIZE 140, 28 DISPLAYCOUNT 5
+
+      @ 20, 180  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult := .T., hwg_EndDialog() }
+      @ 280, 180 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+
+      ACTIVATE DIALOG oDlg
+      cp := aCps[nCp]
+   ELSE
+      cFile := fname
    ENDIF
-   IF !Empty( fname )
+
+   IF ( Empty(oDlg) .OR. oDlg:lResult ) .AND. !Empty( cFile )
       IF !( Lower( hb_FNameExt( fname ) ) $ ".html;.hwge;" )
          oEdit:bImport := { |o, cText| SetText( o, cText ) }
       ENDIF
-      oEdit:SetText( MemoRead(fname),,,, lAdd, Iif( !Empty(lAdd),oEdit:aPointC[P_Y],Nil ) )
+      oEdit:SetText( MemoRead(fname), Iif( Empty(cp), Nil, cp ), SetCpDef( cp ) )
       oEdit:cFileName := fname
 
       oEdit:bImport := Nil
@@ -413,27 +430,62 @@ FUNCTION OpenFile( fname, lAdd )
    RETURN Nil
 
 STATIC FUNCTION SaveFile( lAs, lHtml )
-   LOCAL fname
+
+   LOCAL oDlg, oGet, cFile := "", fname
+   LOCAL aCps, nCp := 1, cp := ""
 
    IF lAs .OR. Empty( oEdit:cFileName )
-
-#ifdef __GTK__
-      /* GTK only */
-      fname := hwg_SelectfileEx( ,, { Iif(Empty(lHtml),{"HwGUI Editor files","*.hwge"},{"Html files","*.html"}), { "All files", "*" } } )
-#else
-      fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() ) /* Windows only */
-#endif
-      IF !Empty( fname )
-         IF Empty( hb_FnameExt( fname ) )
-            fname += Iif( Empty( lHtml ), ".hwge", ".html" )
+      IF Empty( oEdit:cpSource ) .OR. oEdit:cpSource == "UTF8"
+         aCps := { "DE850", "DEWIN", "RU1251", "RU866", "RUKOI8" }
+         IF Empty( oEdit:cpSource )
+            hb_AIns( aCps, 1, "", .T. )
          ENDIF
-         oEdit:Save( fname, , lHtml )
+      ELSEIF Left( oEdit:cpSource,2 ) == "RU"
+         aCps := { "RU1251", "RU866", "RUKOI8" }
+      ELSE
+         aCps := { "DE850", "DEWIN" }
       ENDIF
+      IF hwg__isUnicode()
+         AAdd( aCps, "UTF8" )
+      ENDIF
+      nCp := Iif( Empty( oEdit:cpSource ), 1, Ascan( aCps, oEdit:cpSource ) )
+      IF lAs
+         cFile := oEdit:cFileName
+      ENDIF
+
+      INIT DIALOG oDlg TITLE "Save file" AT 50, 50 SIZE 400, 230 FONT HWindow():GetMain():oFont
+
+      @ 20, 30 GET oGet VAR cFile SIZE 320, 24 STYLE ES_AUTOHSCROLL
+#ifdef __GTK__
+      @ 340, 30 BUTTON ".." SIZE 40, 24 ON CLICK ;
+         {||fname := hwg_SelectfileEx( ,, { Iif(Empty(lHtml),{"HwGUI Editor files","*.hwge"},{"Html files","*.html"}), { "All files", "*" } } ), cFile := Iif(Empty(fname),cFile,fname), oGet:Refresh()}
+#else
+      @ 340, 30 BUTTON ".." SIZE 40, 24 ON CLICK ;
+         {||fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() ), cFile := Iif(Empty(fname),cFile,fname), oGet:Refresh()}
+#endif
+      @ 20, 80 SAY "Codepage:" SIZE 120, 24
+      @ 140, 80 GET COMBOBOX nCp ITEMS aCps SIZE 140, 28 DISPLAYCOUNT 5
+
+      @ 20, 180  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult := .T., hwg_EndDialog() }
+      @ 280, 180 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+
+      ACTIVATE DIALOG oDlg
+      cp := aCps[nCp]
    ELSE
-      oEdit:Save( fname := oEdit:cFileName )
+      cFile := oEdit:cFileName
+      cp := oEdit:cpSource
    ENDIF
-   IF Empty( lHtml )
-      Add2Recent( fname )
+
+   IF !Empty( cFile )
+      IF Empty( hb_FnameExt( cFile ) )
+         cFile += Iif( Empty( lHtml ), ".hwge", ".html" )
+      ENDIF
+      oEdit:Save( cFile, cp, lHtml )
+      oEdit:lUpdated := .F.
+      oEdit:cpSource := cp
+      IF Empty( lHtml )
+         Add2Recent( cFile )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -1697,6 +1749,33 @@ STATIC FUNCTION SetText( oEd, cText )
 
    RETURN aText
 
+STATIC FUNCTION SetCpDef( cpSou )
+
+   IF hwg__isUnicode()
+      hb_cdpSelect( cpDef := "UTF8" )
+   ELSE
+      IF Empty( cpSou )
+         hb_cdpSelect( cpDef )
+      ELSEIF Left( cpSou, 2 ) == "RU"
+         hb_cdpSelect( cpDef := "RU1251" )
+      ELSE
+         hb_cdpSelect( cpDef := "DEWIN" )
+      ENDIF
+   ENDIF
+   RETURN cpDef
+
+STATIC FUNCTION SetFont()
+
+   LOCAL oFont := HFont():Select( oFontMain )
+
+   IF !Empty( oFont )
+      oFontMain := oFont
+      lOptChg := .T.
+      oEdit:SetFont( oFont )
+   ENDIF
+
+   RETURN Nil
+
 STATIC FUNCTION InsUrl( nType )
    LOCAL oDlg, cHref := "", cName := "", aPos, xAttr
    LOCAL aRefs, nref
@@ -2230,6 +2309,7 @@ STATIC FUNCTION MarkRow( n )
 STATIC FUNCTION CnvCase( nType )
 
    LOCAL nL1, nL2, i, nPos1, nPos2, nLen, cTemp
+   LOCAL lUtf8 := oEdit:lUtf8
 
    IF !Empty( nL2 := oEdit:aPointM2[P_Y] )
       nL1 := oEdit:aPointM1[P_Y]
@@ -2239,11 +2319,12 @@ STATIC FUNCTION CnvCase( nType )
          nPos2 := Iif( i==nL2, oEdit:aPointM2[P_X]-1, nLen )
          cTemp := hced_Substr( oEdit, oEdit:aText[i], nPos1, nPos2-nPos1+1 )
          IF nType == 1
-            cTemp := Upper( cTemp )
+            cTemp := Iif( lUtf8, edi_utf8_Upper( cTemp ), Upper( cTemp ) )
          ELSEIF nType == 2
-            cTemp := Lower( cTemp )
+            cTemp := Iif( lUtf8, edi_utf8_Lower( cTemp ), Lower( cTemp ) )
          ELSEIF nType == 3
-            cTemp := Upper( hced_Left( oEdit, cTemp, 1 ) ) + Lower( hced_Substr( oEdit, cTemp, 2 ) )
+            cTemp := Iif( lUtf8, edi_utf8_Upper(hb_utf8Left(cTemp,1)), Upper(Left(cTemp,1 )) ) + ;
+               Iif( lUtf8, edi_utf8_Upper(hb_utf8Substr(cTemp,2)), Lower(Substr(cTemp,2)) )
          ENDIF
          oEdit:aText[i] := Iif( nPos1==1,"", hced_Left(oEdit,oEdit:aText[i],nPos1-1) ) + ;
             cTemp + Iif( nPos2==nLen, "", hced_Substr(oEdit,oEdit:aText[i],nPos2+1) )
@@ -2256,20 +2337,23 @@ STATIC FUNCTION CnvCase( nType )
 
 FUNCTION Add2Recent( cFile )
 
-   LOCAL i, j
+   LOCAL i, j, cp := Iif( Empty(oEdit:cpSource), "", oEdit:cpSource )
 
-   IF ( i := Ascan( aFilesRecent, cFile ) ) == 0
+   IF ( i := Ascan( aFilesRecent, {|a|a[1]==cFile} ) ) == 0
       IF Len( aFilesRecent ) < MAX_RECENT_FILES
          Aadd( aFilesRecent, Nil )
       ENDIF
       AIns( aFilesRecent, 1 )
-      aFilesRecent[1] := cFile
+      aFilesRecent[1] := { cFile, cp }
       lOptChg := .T.
    ELSEIF i > 1
       FOR j := i TO 2 STEP -1
          aFilesRecent[j] := aFilesRecent[j-1]
       NEXT
-      aFilesRecent[1] := cFile
+      aFilesRecent[1] := { cFile, cp }
+      lOptChg := .T.
+   ELSEIF !( aFilesRecent[1,2] == cp )
+      aFilesRecent[1,2] := cp
       lOptChg := .T.
    ENDIF
 
@@ -2278,17 +2362,27 @@ FUNCTION Add2Recent( cFile )
 STATIC FUNCTION ReadIni( cPath )
 
    LOCAL oIni := HXMLDoc():Read( cPath + "editor.ini" )
-   LOCAL oNode, i, j
+   LOCAL oNode, i, j, xTemp
 
    IF !Empty( oIni ) .AND. !Empty( oIni:aItems )
       FOR i := 1 TO Len( oIni:aItems[1]:aItems )
          oNode := oIni:aItems[1]:aItems[i]
          IF oNode:title == "recent"
             FOR j := 1 TO Min( Len( oNode:aItems ), MAX_RECENT_FILES )
-               Aadd( aFilesRecent, Trim( oNode:aItems[j]:GetAttribute("name") ) )
+               Aadd( aFilesRecent, { Trim( oNode:aItems[j]:GetAttribute("name","C","") ), ;
+                  Trim( oNode:aItems[j]:GetAttribute("cp","C","") ) } )
             NEXT
          ELSEIF oNode:title == "font"
             oFontMain := FontFromXML( oNode )
+         ELSEIF oNode:title == "codepage"
+            xTemp := oNode:GetAttribute( "main" )
+            IF !Empty( xTemp ) .AND. hb_cdpExists( xTemp )
+               cpDef := xTemp
+            ENDIF
+            xTemp := oNode:GetAttribute( "source" )
+            IF !Empty( xTemp ) .AND. hb_cdpExists( xTemp )
+               cpSource := xTemp
+            ENDIF
          ENDIF
       NEXT
    ENDIF
@@ -2303,10 +2397,11 @@ STATIC FUNCTION WriteIni( cPath )
    oIni:Add( oNode := HXMLNode():New( "init" ) )
 
    oNode:Add( FontToXML( oFontMain, "font" ) )
+   oNode:Add(  HXMLNode():New( "codepage", HBXML_TYPE_SINGLE, { { "main", cpDef }, { "source", cpSource } } ) )
 
    oNodeR := oNode:Add( HXMLNode():New( "recent" ) )
    FOR i := 1 TO Len( aFilesRecent )
-      oNodeR:Add( HXMLNode():New( "db", HBXML_TYPE_SINGLE, { { "name", aFilesRecent[i] } } ) )
+      oNodeR:Add( HXMLNode():New( "file", HBXML_TYPE_SINGLE, { { "name", aFilesRecent[i,1] }, { "cp", aFilesRecent[i,2] } } ) )
    NEXT
 
    oIni:Save( cPath + "editor.ini" )
@@ -2409,22 +2504,22 @@ STATIC FUNCTION Help(cHTopic , nPROCLINE , cHVar)
 
 STATIC FUNCTION About()
 
-   LOCAL oDlg, oStyle1, oStyle2, aRadius := { 8,8,8,8 }
+   LOCAL oDlg, oStyle1, oStyle2, aRadius := { 4,4,4,4 }
 
-   oStyle1 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 1, aRadius, )
-   oStyle2 := HStyle():New( { 0xFFFFFF, CLR_GRAY1 }, 2, aRadius, )
+   oStyle1 := HStyle():New( { 0xDDDDDD, 0xAAAAAA }, 1, aRadius, )
+   oStyle2 := HStyle():New( { 0xDDDDDD, 0xAAAAAA }, 2, aRadius, )
 
    INIT DIALOG oDlg TITLE "About" ;
-      AT 0, 0 SIZE 400, 330 FONT HWindow():GetMain():oFont COLOR hwg_colorC2N("CCCCCC")
+      AT 0, 0 SIZE 460, 310 FONT HWindow():GetMain():oFont COLOR hwg_colorC2N("CCCCCC")
 
-   @ 20, 40 SAY "Editor" SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
-   @ 20, 64 SAY "Version "+APP_VERSION SIZE 360,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
-   @ 10, 100 SAY "Copyright 2015 Alexander S.Kresin" SIZE 380,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
-   @ 20, 124 SAY "http://www.kresin.ru" LINK "http://www.kresin.ru" SIZE 360,26 STYLE SS_CENTER
-   @ 20, 160 LINE LENGTH 360
-   @ 20, 180 SAY hwg_version() SIZE 360,26 STYLE SS_CENTER COLOR CLR_LBLUE0 TRANSPARENT
+   @ 20, 40 SAY "Editor" SIZE 420,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 20, 64 SAY "Version "+APP_VERSION+Iif( hwg__isUnicode()," Unicode","" ) SIZE 420,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 10, 100 SAY "Copyright 2015-2022 Alexander S.Kresin" SIZE 440,26 STYLE SS_CENTER COLOR CLR_VDBLUE TRANSPARENT
+   @ 20, 124 SAY "http://www.kresin.ru" LINK "http://www.kresin.ru" SIZE 420,26 STYLE SS_CENTER
+   @ 20, 160 LINE LENGTH 420
+   @ 20, 180 SAY hwg_version() SIZE 420,26 STYLE SS_CENTER COLOR CLR_LBLUE0 TRANSPARENT
 
-   @ 120, 246 OWNERBUTTON ON CLICK {|| hwg_EndDialog()} SIZE 160,36 ;
+   @ 150, 246 OWNERBUTTON ON CLICK {|| hwg_EndDialog()} SIZE 160,36 ;
           TEXT "Close" COLOR hwg_colorC2N("0000FF")
 
    Atail(oDlg:aControls):aStyle := { oStyle1, oStyle2 }

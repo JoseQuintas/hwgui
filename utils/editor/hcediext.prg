@@ -2558,7 +2558,7 @@ METHOD Find( cText, cId, cHRef, aStart, lCase, lRegex ) CLASS HCEdiExt
 
    IF lCase == Nil; lCase := .T.; ENDIF
    IF !lCase
-      cText := Lower( cText )
+      cText := Iif( ::lUtf8, edi_utf8_Lower(cText), Lower(cText) )
    ENDIF
    lAll := Iif( aStart==Nil.OR.Valtype(aStart)!="L", .F., aStart )
    IF lAll
@@ -2577,7 +2577,7 @@ METHOD Find( cText, cId, cHRef, aStart, lCase, lRegex ) CLASS HCEdiExt
             ENDIF
          ELSEIF lText
             nPos := Iif( i==nLStart,nPosStart,1 )
-            cLine := Iif( lCase, ::aText[i], Lower( ::aText[i] ) )
+            cLine := Iif( lCase, ::aText[i], Iif(::lUtf8,edi_utf8_Lower(::aText[i]),Lower(::aText[i])) )
             DO WHILE nPos > 0
                IF Empty( lRegex )
                   nPos := hced_At( Self, cText, cLine, nPos )
@@ -2634,7 +2634,7 @@ METHOD Find( cText, cId, cHRef, aStart, lCase, lRegex ) CLASS HCEdiExt
                   ENDIF
                ELSEIF lText
                   nPos := Iif( i1==nL1Start, Iif( Valtype(aStart)=="A".AND.Len(aStart)>3,aStart[3],1 ), 1 )
-                  cLine := Iif( lCase, aText[i1], Lower( ::aText[i] ) )
+                  cLine := Iif( lCase, aText[i1], Iif(::lUtf8,edi_utf8_Lower(::aText[i]),Lower(::aText[i])) )
                   DO WHILE nPos > 0
                      IF Empty( lRegex )
                         nPos := hced_At( Self, cText, cLine, nPos )

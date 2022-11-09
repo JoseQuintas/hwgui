@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2022-11-09 13:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + utils/hbpad/
+  + utils/hbpad/bld.bat
+  + utils/hbpad/bldgw.bat
+  + utils/hbpad/hbpad.hbp
+  + utils/hbpad/hbpad.prg
+    + Hbpad - notepad like, plain text editor added
+  * utils/Readme.txt
+
 2022-11-09 09:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     ! Minor change

@@ -90,6 +90,12 @@
   For introduction read file "utils/editor/Readme.txt".
 
 
+  hbpad \
+  ========
+
+   A notepad like, plain text editor, based on HcEdit class.
+
+
   tutorial \
   ==========
 

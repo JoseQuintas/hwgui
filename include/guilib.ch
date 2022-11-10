@@ -1841,6 +1841,7 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oTEdit> :=] HCEdit():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>,<height>, ;
        <oFont>,<bInit>,<bSize>,<bDraw>,<color>,<bcolor>,<bGfocus>,<bLfocus>, ;
-       <.lNoVScr.>,<.lNoBord.> )
+       <.lNoVScr.>,<.lNoBord.> );
+    [; hwg_SetCtrlName( <oTEdit>,<(oTEdit)> )]
 
 /* ================= EOF of guilib.ch ==================== */

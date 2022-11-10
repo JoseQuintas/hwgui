@@ -16,6 +16,12 @@
 */
 
 
+2022-11-10 10:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * hwg_SetCtrlName() call added to HCEDIT definition
+  * utils/hbpad/hbpad.prg
+    * Fixes, pluginc support added.
+
 2022-11-09 13:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + utils/hbpad/
   + utils/hbpad/bld.bat

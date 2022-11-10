@@ -46,13 +46,15 @@ STATIC cSearch := "", aPointFound, lSeaCase := .T.
 STATIC lSelected := .F., lIsUndo := .F.
 STATIC aFilesRecent := {}, lOptChg := .F.
 STATIC oFontMain, cpDef := "RU1251"
+STATIC aPlugins := {}
 
 FUNCTION Main ( fName )
 
-   LOCAL oMainWindow, i
-   PRIVATE oMenuC1, cIniPath := hb_fnameDir( hb_ArgV( 0 ) )
+   LOCAL oMainWindow, i, s
+   PRIVATE cIniPath := hb_fnameDir( hb_ArgV( 0 ) )
 
    ReadIni( cIniPath )
+   SetPlugins()
 
    SET DATE FORMAT "dd.mm.yy"
    IF Empty( oFontMain )
@@ -74,12 +76,12 @@ FUNCTION Main ( fName )
       //oEdit:cpSource := cpSource
    //ENDIF
    oEdit:bAfter := {||f_bAfter()}
-#ifdef _USE_HILIGHT_
+//#ifdef _USE_HILIGHT_
    oEdit:SetHili( HILIGHT_KEYW, oEdit:oFont:SetFontStyle( .T. ), 8388608, oEdit:bColor )  // 8388608
    oEdit:SetHili( HILIGHT_FUNC, - 1, 8388608, 16777215 )   // Blue on White // 8388608
    oEdit:SetHili( HILIGHT_QUOTE, - 1, 16711680, 16777215 )     // Green on White  // 4227072
    oEdit:SetHili( HILIGHT_COMM, oEdit:oFont:SetFontStyle( ,, .T. ), 32768, 16777215 )    // Green on White //4176740
-#endif
+//#endif
    oEdit:bColorCur := oEdit:bColor
    //oEdit:nBoundL := 24
    //oEdit:nBoundT := 12
@@ -131,6 +133,13 @@ FUNCTION Main ( fName )
          MENUITEM "to &UPPER CASE" ID MENU_UPPER ACTION CnvCase( 1 )
          MENUITEM "To &lower case" ID MENU_LOWER ACTION CnvCase( 2 )
          MENUITEM "To &Title case" ID MENU_TCASE ACTION CnvCase( 3 )
+         SEPARATOR
+         MENU TITLE "&Plugins"
+         FOR i := 1 TO Len( aPlugins )
+            Hwg_DefineMenuItem( aPlugins[i,1], 1040 + i, ;
+               &( "{||__RunPlugin(" + Ltrim(Str(i)) + ")}" ) )
+         NEXT
+         ENDMENU
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "About" ACTION hwg_MsgInfo( "HbPad"+Chr(13)+Chr(10)+"Simple text editor"+Chr(13)+Chr(10)+"Version "+APP_VERSION+Iif(hwg__isUnicode()," (Unicode)",""), "About" )
@@ -212,11 +221,11 @@ FUNCTION __OpenFile( fname, cp )
    ENDIF
 
    IF ( Empty(oDlg) .OR. oDlg:lResult ) .AND. !Empty( cFile )
-#ifdef _USE_HILIGHT_
+//#ifdef _USE_HILIGHT_
       IF File( cIniPath + "hilight.xml" )
          oEdit:HighLighter( Hilight():New( cIniPath + "hilight.xml", Lower( hb_fnameExt( cFile ) ) ) )
       ENDIF
-#endif
+//#endif
       oEdit:Open( cFile, Iif( Empty(cp), Nil, cp ), SetCpDef( cp ) )
       Add2Recent( cFile )
    ENDIF
@@ -379,13 +388,13 @@ STATIC FUNCTION Find()
    IF oDlg:lResult
       aPointFound := Nil
       IF !lSeaCase
-         cSearch := Lower( cSearch )
+         cSearch := Iif( ::lUtf8, edi_utf8_Lower(cSearch), Lower(cSearch) )
       ENDIF
       FOR i := 1 TO oEdit:nTextLen
          IF lSeaCase
             j := At( cSearch, oEdit:aText[i] )
          ELSE
-            j := At( cSearch, Lower(oEdit:aText[i]) )
+            j := At( cSearch, Iif( ::lUtf8, edi_utf8_Lower(oEdit:aText[i]), Lower(oEdit:aText[i]) ) )
          ENDIF
          IF j != 0
             aPointFound := { j, i }
@@ -420,7 +429,8 @@ STATIC FUNCTION FindNext()
          IF lSeaCase
             j := hb_At( cSearch, oEdit:aText[i], Iif( i==nLineStart,nPosStart,1 ) )
          ELSE
-            j := hb_At( Lower(cSearch), Lower(oEdit:aText[i]), Iif( i==nLineStart,nPosStart,1 ) )
+            j := hb_At( cSearch, Iif(::lUtf8,edi_utf8_Lower(oEdit:aText[i]),Lower(oEdit:aText[i])), ;
+               Iif( i==nLineStart,nPosStart,1 ) )
          ENDIF
          IF j != 0
             aPointFound := { j, i }
@@ -623,3 +633,36 @@ STATIC FUNCTION FontToXML( oFont, cTitle )
    ENDIF
 
    RETURN HXMLNode():New( cTitle, HBXML_TYPE_SINGLE, aAttr )
+
+STATIC FUNCTION SetPlugins()
+
+   LOCAL oIni
+   LOCAL oNode, i, j, xTemp
+
+   IF File( xTemp := (cIniPath + "plugins" + hb_ps() + "plugins.ini") )
+      oIni := HXMLDoc():Read( xTemp )
+      IF !Empty( oIni ) .AND. !Empty( oIni:aItems )
+         FOR i := 1 TO Len( oIni:aItems[1]:aItems )
+            oNode := oIni:aItems[1]:aItems[i]
+            IF oNode:title == "plugin"
+               xTemp := Trim( oNode:GetAttribute("file","C","") )
+               IF File( xTemp := cIniPath + "plugins" + hb_ps() + xTemp )
+                  AAdd( aPlugins, { Trim( oNode:GetAttribute("title","C","") ), xTemp } )
+               ENDIF
+            ENDIF
+         NEXT
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+FUNCTION __RunPlugin( n )
+
+   IF Valtype( aPlugins[n,2] ) == "C"
+      aPlugins[n,2] := hb_hrbLoad( aPlugins[n,2] )
+   ENDIF
+   IF !Empty( aPlugins[n,2] )
+      hb_hrbDo( aPlugins[n,2] )
+   ENDIF
+
+   RETURN Nil

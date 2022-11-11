@@ -31,6 +31,7 @@ At this time only the following compiler are supported:
 - MinGW32
 - MinGW64 (also with Msys2 environment)
 - GTK/LINUX with gcc
+- Borland C with DLL, see extra instructions
 
 
 *) Build script only build the library, not the
@@ -107,7 +108,32 @@ your *.hbp or Makefile:
 -L../lib
 
 -lqrcodegen
--lhbqrencode 
+-lhbqrencode
+
+2.6) Extra instructions for non C99 standard compiler.
+
+    In this case, the library "contrib\qrencode\qrencode.c"
+	cannot be compiled with the desired compiler.
+	Instead the use of a DLL (qrcodegen.dll) is the
+	only way to get a running QR code generator.
+	The ready to use DLL (compiled with MinGW32)
+	can be downloaded from the files section of
+	the HWGUI project site a sourceforge.net.
+	
+	The sample program "qrencodedll.prg"
+	demonstrates the usage of the DLL.
+    
+2.6.1) Borland C	
+
+   - Download the DLL (location see above)
+   - Set environment for Borland C, for example:
+      C:\hwgui\hwgui-bcc\samples\dev\env\pfad_bc.bat 
+   - Compile the sample qrencodedll.prg:
+      hbmk2 qrencodedll.hbp
+   - Copy the DLL into the sample directory	  
+     and run it.
+   - Copy the DLL into the directory running your HWGUI application.   
+ 
 
 
 =============== EOF of Readme.txt ======================== 

@@ -16,6 +16,22 @@
 */
 
 
+
+2022-11-11 21:30 UTC+0100 Wilfried Brunken DF7BE
+  * MoreCopyright.txt
+  * contrib/qrencode/Readme.txt
+  * contrib/qrencode/make_mingwdll.bat (New)
+  * contrib/qrencode/qrencodedll.c (New)
+  * install.txt
+  * samples/Readme.txt
+  * samples/qrencodedll.hbp (New)
+  * samples/qrencodedll.prg (New)
+   ! Additional instructions for Windows 11
+   ! QR code encoding:   
+   ! Borland C with DLL, see extra instructions.
+   ! (To be continued for other compilers)   
+
+
 2022-11-10 10:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * hwg_SetCtrlName() call added to HCEDIT definition

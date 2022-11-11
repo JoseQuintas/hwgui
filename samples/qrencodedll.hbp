@@ -1,0 +1,24 @@
+#
+# $Id$
+#
+
+
+-stop={linux}
+
+../hwgui.hbc
+# hbwin.hbc
+xhb.hbc
+
+-n
+-w
+
+-L../lib
+
+# -lqrcodegen
+# -lhbqrencode
+
+-oqrencodedll
+
+qrencodedll.prg
+
+# ==================== EOF of qrencodedll.hbp ===============

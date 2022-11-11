@@ -170,6 +170,7 @@ For beginners:
  propsh.prg +)      N  #              Property sheet, freezes at hwg_PropertySheet()
  pseudocm.prg       Y                 Pseudo context menu
  qrencode.prg 1) 2) Y                 Encode QR code from string an convert to monochrome bitmap.
+ qrencodedll.prg 1) N                 Encode QR code like qrencode.prg by using a DLL
  shadebtn.prg       N                 Shade buttons
  simpleedit.prg     Y                 Simple text editor demonstrating hwg_Memoedit() and hwg_MemoCmp()
  stretch.prg        Y  #              Sample for resizing bitmaps (background), some bugs (as test program) 

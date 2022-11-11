@@ -25,7 +25,9 @@ this project site.
 
     Date: 2022-09-07
 
-    File: "QR-Code-generator-master.zip"
+    Files: 
+     "QR-Code-generator-master.zip"
+     "qrencodedll.c"
 
     Copyright (c) Project Nayuki. (MIT License)
 

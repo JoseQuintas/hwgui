@@ -199,6 +199,26 @@
      procmisc.lib
   
 
+  
+    5) Additional instructions for Windows 11
+	
+	On Windows 11, all HWGUI applications run as well.
+	The default terminal is now the "Windows Power Shell",
+	it cannot execute *.bat jobs.
+	To get the command line terminal, search in the system dialog for
+	"cmd.exe" and start it. If running, pin it at the task bar for
+	quick call.
+	
+	A new feature of Windows 11 is a scalable view. The
+	default value is 150 %. This could be to high for bigger
+	dialog windows. If a dialog has no space on the desktop, go to
+	the system settings and reduce it to 125 or 100 %.
+	
+	In the Power shell you can run Harbour console applications direct,
+	but in most cases you need to setup the lines to 25 and the columns to 80.
+	
+	
+	
 
  Appendix 1: List of packages for Ubuntu Linux and LinuxMINT
  -----------------------------------------------------------
@@ -208,18 +228,33 @@
   Install packages as system administrator:
   
   LinuxMINT:
+  ~~~~~~~~~~
   
    sudo apt-get install build-essential linux-headers-generic dkms
    sudo apt-get install libgtk2.0-dev
    sudo apt install wmctrl  *1)
    
+   Optional installations:
+   The default text editor:
+     sudo apt-get install gedit 
+	 
+   DKMS extensions:	 
+   git clone https://github.com/tomaspinho/rtl8821ce
+   cd rtl8821ce
+   chmod +x dkms-install.sh 
+   chmod +x dkms-remove.sh
+   sudo ./dkms-install.sh   # needs some time
+   sudo modprobe -v 8821ce	 
+   
    Ubuntu 18:
+   ~~~~~~~~~~
    
    sudo apt-get install linux-headers-generic
    sudo apt-get install libgtk2.0-dev
    sudo apt install wmctrl  *1)
    
    Ubuntu 20.04.2.0 LTS:
+   ~~~~~~~~~~~~~~~~~~~~~
    
    sudo apt-get install linux-headers-generic
    sudo apt-get update -y
@@ -249,6 +284,18 @@
    
    *1) This is necessary for set focus on progress bars, see sample program
        "samples/gtk_samples/progbars.prg". 
+	   
+	   
+	Knoppix by Klaus Knopper:
+	~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    Knoppix does not support GTK2.
+    So be patient, the port of HWGUI to GTK3
+    will start as soon as possible.
+    Harbour is compilable without any trouble.
+    All development packages are installed with
+    the regular system installation.	
+	   
 
 
   1.) You need some entries in the .profile in the home directory of the desired

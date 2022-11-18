@@ -2308,15 +2308,27 @@ STATIC FUNCTION MarkRow( n )
 
 STATIC FUNCTION CnvCase( nType )
 
-   LOCAL nL1, nL2, i, nPos1, nPos2, nLen, cTemp
-   LOCAL lUtf8 := oEdit:lUtf8
+   LOCAL arr1, nL1, nL2, i, nPos1, nPos2, nLen, cTemp
+   LOCAL lUtf8 := oEdit:lUtf8, P1, P2
 
-   IF !Empty( nL2 := oEdit:aPointM2[P_Y] )
-      nL1 := oEdit:aPointM1[P_Y]
+   IF Len( arr1 := oEdit:GetPosInfo() ) >= 7
+      oEdit:LoadEnv( arr1[1], arr1[2] )
+   ENDIF
+
+   IF !Empty( oEdit:aPointM2[P_Y] )
+      IF oEdit:aPointM2[P_Y] >= oEdit:aPointM1[P_Y]
+         P1 := oEdit:aPointM1
+         P2 := oEdit:aPointM2
+      ELSE
+         P2 := oEdit:aPointM1
+         P1 := oEdit:aPointM2
+      ENDIF
+      nL1 := P1[P_Y]
+      nL2 := P2[P_Y]
       FOR i := nL1 TO nL2
-         nPos1 := Iif( i==nL1, oEdit:aPointM1[P_X], 1 )
+         nPos1 := Iif( i==nL1, P1[P_X], 1 )
          nLen := hced_Len( oEdit, oEdit:aText[i] )
-         nPos2 := Iif( i==nL2, oEdit:aPointM2[P_X]-1, nLen )
+         nPos2 := Iif( i==nL2, P2[P_X]-1, nLen )
          cTemp := hced_Substr( oEdit, oEdit:aText[i], nPos1, nPos2-nPos1+1 )
          IF nType == 1
             cTemp := Iif( lUtf8, edi_utf8_Upper( cTemp ), Upper( cTemp ) )
@@ -2331,6 +2343,10 @@ STATIC FUNCTION CnvCase( nType )
       NEXT
       oEdit:lUpdated := .T.
       oEdit:Refresh()
+   ENDIF
+
+   IF Len( arr1 ) >= 7
+      oEdit:RestoreEnv( arr1[1], arr1[2] )
    ENDIF
 
    RETURN Nil

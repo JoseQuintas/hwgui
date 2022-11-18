@@ -1688,12 +1688,12 @@ METHOD PageDown() CLASS HCEdit
          ::nLineF ++
          ::nWCharF := ::nWSublF := 1
       ELSE
-         RETURN ::Bottom()
-         /*
+         //RETURN ::Bottom()
+
          ::nLineF := ::aLines[::nLines,AL_LINE]
          ::nWCharF := ::aLines[::nLines,AL_FIRSTC]
          ::nWSublF := ::aLines[::nLines,AL_SUBL]
-         */
+
       ENDIF
    ELSE
       IF ::aLines[::nLines,AL_LINE] < ::nTextLen

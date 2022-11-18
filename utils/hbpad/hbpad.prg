@@ -24,6 +24,9 @@ REQUEST HB_CODEPAGE_RU1251, HB_CODEPAGE_RU866, HB_CODEPAGE_RUKOI8
 REQUEST HB_CODEPAGE_DEWIN, HB_CODEPAGE_DE850
 REQUEST HB_CODEPAGE_UTF8
 
+REQUEST HB_BLOWFISHKEY, HB_BLOWFISHENCRYPT, HB_BLOWFISHDECRYPT
+REQUEST HB_BASE64ENCODE, HB_BASE64DECODE
+
 #define MENU_NUMB        1901
 #define MENU_WRAP        1902
 #define MENU_FINDNEXT    1903
@@ -204,7 +207,7 @@ FUNCTION __OpenFile( fname, cp )
 
       INIT DIALOG oDlg TITLE "Open file" AT 50, 50 SIZE 400, 230 FONT HWindow():GetMain():oFont
 
-      @ 20, 30 GET oGet VAR cFile SIZE 320, 24 STYLE ES_AUTOHSCROLL
+      @ 20, 30 GET oGet VAR cFile SIZE 320, 24 STYLE ES_AUTOHSCROLL MAXLENGTH 0
       @ 340, 30 BUTTON ".." SIZE 40, 24 ON CLICK ;
          {||fname := hwg_Selectfile( { "Text files (*.txt)", "All files" }, { "*.txt", "*.*" }, "" ), cFile := Iif(Empty(fname),cFile,fname), oGet:Refresh()}
 
@@ -258,13 +261,13 @@ STATIC FUNCTION SaveFile( lAs )
 
       INIT DIALOG oDlg TITLE "Save file" AT 50, 50 SIZE 400, 230 FONT HWindow():GetMain():oFont
 
-      @ 20, 30 GET oGet VAR cFile SIZE 320, 24 STYLE ES_AUTOHSCROLL
+      @ 20, 30 GET oGet VAR cFile SIZE 320, 24 STYLE ES_AUTOHSCROLL MAXLENGTH 0
 #ifdef __GTK__
       @ 340, 30 BUTTON ".." SIZE 40, 24 ON CLICK ;
          {||fname := hwg_Selectfile( "( *.* )", "*.*", CurDir() ), cFile := Iif(Empty(fname),cFile,fname), oGet:Refresh()}
 #else
       @ 340, 30 BUTTON ".." SIZE 40, 24 ON CLICK ;
-         {||fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() ), cFile := Iif(Empty(fname),cFile,fname), oGet:Refresh()}
+         {||fname := hwg_SaveFile( "*.*", "( *.* )", "*.*", CurDir() ), cFile := Iif(Empty(fname),cFile,fname), oGet:Refresh()}
 #endif
       @ 20, 80 SAY "Codepage:" SIZE 120, 24
       @ 140, 80 GET COMBOBOX nCp ITEMS aCps SIZE 140, 28 DISPLAYCOUNT 5
@@ -479,14 +482,22 @@ STATIC FUNCTION SetFont()
 STATIC FUNCTION CnvCase( nType )
 
    LOCAL nL1, nL2, i, nPos1, nPos2, nLen, cTemp
-   LOCAL lUtf8 := oEdit:lUtf8
+   LOCAL lUtf8 := oEdit:lUtf8, P1, P2
 
-   IF !Empty( nL2 := oEdit:aPointM2[P_Y] )
-      nL1 := oEdit:aPointM1[P_Y]
+   IF !Empty( oEdit:aPointM2[P_Y] )
+      IF oEdit:aPointM2[P_Y] >= oEdit:aPointM1[P_Y]
+         P1 := oEdit:aPointM1
+         P2 := oEdit:aPointM2
+      ELSE
+         P2 := oEdit:aPointM1
+         P1 := oEdit:aPointM2
+      ENDIF
+      nL1 := P1[P_Y]
+      nL2 := P2[P_Y]
       FOR i := nL1 TO nL2
-         nPos1 := Iif( i==nL1, oEdit:aPointM1[P_X], 1 )
+         nPos1 := Iif( i==nL1, P1[P_X], 1 )
          nLen := hced_Len( oEdit, oEdit:aText[i] )
-         nPos2 := Iif( i==nL2, oEdit:aPointM2[P_X]-1, nLen )
+         nPos2 := Iif( i==nL2, P2[P_X]-1, nLen )
          cTemp := hced_Substr( oEdit, oEdit:aText[i], nPos1, nPos2-nPos1+1 )
          IF nType == 1
             cTemp := Iif( lUtf8, edi_utf8_Upper( cTemp ), Upper( cTemp ) )

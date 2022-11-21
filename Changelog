@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2022-11-21 21:00 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+  * test/checkbox.hbp (New)
+  * test/checkbox.prg (New)
+    ! Ticket #56 How to update a tab ?
+
+
 2022-11-18 11:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * utils/editor/editor.prg

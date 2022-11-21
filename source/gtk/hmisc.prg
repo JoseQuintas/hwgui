@@ -1322,7 +1322,8 @@ FUNCTION hwg_COUNT_CHAR(stri,such)
   ENDDO
 RETURN 0
 
-
+FUNCTION hwg_nothing(xpara)
+RETURN xpara
 
 * ============== EOF of hmisc.prg =================
 

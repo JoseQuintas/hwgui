@@ -2861,6 +2861,18 @@ See sample program "testspli.prg" for details.<br>
    <br><strong class="subhead"> hwg_Toggle_HalfByte_C(n)</strong><br>
    HB_FUNC C function.<br>
    <p></p>
+   
+   
+   <br><strong class="subhead"> hwg_nothing(xpara)</strong><br>
+   <p>
+    The compilation of this expression (for example)<br>
+    IIF(nbChecked==0, oStatus:SetText(""),.t.)<br>
+    throws the following warning:<br>
+    Warning W0027  Meaningless use of expression 'Logical'<br>
+    and the program freezes.<br> 
+    So modify to:<br>
+    IIF(nbChecked==0,oStatus:SetText(""),hwg_nothing(.t.) )<br> 
+   </p>      
 
    <br><strong class="subhead"> hwg_Alert</strong> (Windows only)
    <p></p>

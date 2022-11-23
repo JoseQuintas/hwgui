@@ -16,11 +16,16 @@
 */
 
 
+2022-11-23 15:27 UTC-0200 Jose Quintas
+   * samples/a.prg
+   * samples/testget1.prg
+   * samples/testget2.prg
+      * source code format only
 
 2022-11-23 11:05 UTC+0100 Wilfried Brunken DF7BE
   * samples/dev/env/pfad_msys.bat
     ! PATH to Msys2 system programs corrected
-    ! for example "awk" and "sed".  
+    ! for example "awk" and "sed".
 
 2022-11-23 13:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/hbpad/hbpad.prg
@@ -65,9 +70,9 @@
   * samples/qrencodedll.hbp (New)
   * samples/qrencodedll.prg (New)
    ! Additional instructions for Windows 11
-   ! QR code encoding:   
+   ! QR code encoding:
    ! Borland C with DLL, see extra instructions.
-   ! (To be continued for other compilers)   
+   ! (To be continued for other compilers)
 
 
 2022-11-10 10:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
@@ -122,15 +127,15 @@
   * source/gtk/draw.c
   * source/winapi/draw.c
    ! Urgent fix Watcom C compile error:
-   ! Nonsense: return hb_retnl(BMPFILEIMG_MAXSZ); => hb_retnl(BMPFILEIMG_MAXSZ);   
-  
+   ! Nonsense: return hb_retnl(BMPFILEIMG_MAXSZ); => hb_retnl(BMPFILEIMG_MAXSZ);
+
 
 2022-11-03 14:10 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * samples/qrencode.prg
   * source/gtk/draw.c
   * source/winapi/draw.c
-   ! Project QR encoding: 
+   ! Project QR encoding:
    ! To be continued:
    ! Zoom function coded in C,
    ! only experimental state.
@@ -138,11 +143,11 @@
    ! Need to add scripts for other compilers:
    ! Watcom C, Digital Mars, ...
    ! Need to add to winprn.prg.
-   
+
 
 2022-11-03 09:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/draw.c
-    ! Small fix in hwg_BMPNewImageC(). The code caused an error while compiling with bcc55 
+    ! Small fix in hwg_BMPNewImageC(). The code caused an error while compiling with bcc55
       (didn't check it with other compilers)
   * source/winapi/guimain.prg
     * hwg_KeyToUtf8() added for compatibility with GTK version
@@ -155,12 +160,12 @@
 
 2022-10-29 18:55 UTC+0200 Wilfried Brunken DF7BE
   * contrib/qrencode/qrencode.c
-   ! Project QR encoding: 
+   ! Project QR encoding:
    ! Finished for GTK.
    ! To be continued:
    ! Color is blue instead for black on GTK,
    ! zoom funcion need to be coded in C.
-     
+
 
 
 2022-10-29 12:35 UTC+0200 Wilfried Brunken DF7BE
@@ -175,10 +180,10 @@
   * source/gtk/hmisc.prg
   * source/winapi/drawwidg.prg
   * source/winapi/hmisc.prg
-   ! Project QR encoding: 
+   ! Project QR encoding:
    ! Finished for WinAPI, to be
    ! continued with GTK and
-   ! other Windows compiler.  
+   ! other Windows compiler.
 
 
 
@@ -191,8 +196,8 @@
   * contrib/qrencode/include/empty.txt (new)
    ! Project QR encoding started.
    ! Clean only HWGUI basic libraries, also
-   ! *.lib from BCC.   
-  
+   ! *.lib from BCC.
+
 
 2022-10-21 21:00 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
@@ -223,7 +228,7 @@
    ! Different behavior of Combobox
    ! described.
    ! New common functions for QR encoding added
-   ! (To be continued) 
+   ! (To be continued)
 
 
 
@@ -231,7 +236,7 @@
   * doc/MSysInst.txt (New)
    ! Support ticket 55:
    ! Installation instructions for Msys2 added.
-   
+
 
 
 2022-10-09 21:00 UTC+0200 Wilfried Brunken DF7BE
@@ -242,7 +247,7 @@
   * source/winapi/dialog.c
    ! Support ticket 55:
    ! See post to ticket.
-  
+
 
 2022-10-06 12:25 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
@@ -261,8 +266,8 @@
   * source/winapi/draw.c
   * test/testbmpcr.prg
    ! Ticket 114: Warnings in "for" loop
-   ! in draw.c with GCC 12  
-  
+   ! in draw.c with GCC 12
+
 
 2022-10-04 11:20 UTC+0200 Wilfried Brunken DF7BE
   * clean.bat
@@ -273,8 +278,8 @@
   * source/winapi/hmisc.prg
   * test/testbmpcr.prg
    ! Raw bitmap support, part 3
-   ! (To be continued) 
-   
+   ! (To be continued)
+
 
 2022-10-02 18:30 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
@@ -282,7 +287,7 @@
   * source/winapi/draw.c
    ! Raw bitmap support, part 2
    ! Ready for LINUX/GTK.
-   ! (To be continued)  
+   ! (To be continued)
 
 
 2022-10-02 18:30 UTC+0200 Wilfried Brunken DF7BE
@@ -298,13 +303,13 @@
   * utils/devtools/Readme.txt
   * utils/devtools/bcc_comp.bat (New)
     ! Raw bitmap support, part 1 (creation for QR encoding)
-    ! (To be continued)  
+    ! (To be continued)
 
 2022-09-26 12:35 UTC+0200 Wilfried Brunken DF7BE
   * doc/hwgdoc_commands.html
     ! Ticket #109 closed:
     ! Additional information GET CHECKBOX
-  
+
 
 2022-09-22 12:50 UTC+0200 Wilfried Brunken DF7BE
   * clean.sh
@@ -314,7 +319,7 @@
   * test/ticket112.hbp
   * test/ticket112.prg
     ! Added instructions for ticket 112
-    ! Raw bitmap support (to be continued) 
+    ! Raw bitmap support (to be continued)
 
 2022-09-20 14:45 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/hmisc.prg
@@ -324,7 +329,7 @@
   * utils/bincnt/file2hex.prg
     ! New mode 5 (hexdump for C mode array 0x..)
     ! in function hwg_HEX_DUMP().
-    ! Test program for all modes added.   
+    ! Test program for all modes added.
 
 
 2022-09-16 11:10 UTC+0200 Wilfried Brunken DF7BE
@@ -347,7 +352,7 @@
     ! Old changelog archived in directory "oldlogs"
     ! Started projects QR code encoding
     ! and support for PNG on Windows
-    ! (to be continued) 
+    ! (to be continued)
 
 2022-09-08 11:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
@@ -380,7 +385,7 @@
   * test/ChTooltip.hbp (New)
   * test/ChTooltip.prg (New)
   * test/designer/frm_ChTT.xml (New)
-        ! Tickets #52 and #53  
+        ! Tickets #52 and #53
         ! METHOD SetTooltip() added to
         ! classes HControl and HCheckButton
         ! For details see posts to tickets.

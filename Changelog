@@ -16,6 +16,12 @@
 */
 
 
+
+2022-11-23 11:05 UTC+0100 Wilfried Brunken DF7BE
+  * samples/dev/env/pfad_msys.bat
+    ! PATH to Msys2 system programs corrected
+    ! for example "awk" and "sed".  
+
 2022-11-23 13:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/hbpad/hbpad.prg
     ! Small fix

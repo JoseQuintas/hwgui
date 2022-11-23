@@ -39,6 +39,11 @@ REQUEST HB_BASE64ENCODE, HB_BASE64DECODE
 #define MENU_UPPER       1910
 #define MENU_LOWER       1911
 #define MENU_TCASE       1912
+#define MENU_CTRL_C_1    1913
+#define MENU_CTRL_X_1    1914
+#define MENU_UPPER_1     1915
+#define MENU_LOWER_1     1916
+#define MENU_TCASE_1     1917
 
 #define MAX_RECENT_FILES    6
 
@@ -48,7 +53,7 @@ STATIC oEdit
 STATIC cSearch := "", aPointFound, lSeaCase := .T.
 STATIC lSelected := .F., lIsUndo := .F.
 STATIC aFilesRecent := {}, lOptChg := .F.
-STATIC oFontMain, cpDef := "RU1251"
+STATIC oFontMain, oMenu, cpDef := "RU1251"
 STATIC aPlugins := {}
 
 FUNCTION Main ( fName )
@@ -75,10 +80,8 @@ FUNCTION Main ( fName )
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
    ENDIF
-   //IF !Empty( cpSource )
-      //oEdit:cpSource := cpSource
-   //ENDIF
    oEdit:bAfter := {||f_bAfter()}
+   oEdit:bRClick := {||on_RClick()}
 //#ifdef _USE_HILIGHT_
    oEdit:SetHili( HILIGHT_KEYW, oEdit:oFont:SetFontStyle( .T. ), 8388608, oEdit:bColor )  // 8388608
    oEdit:SetHili( HILIGHT_FUNC, - 1, 8388608, 16777215 )   // Blue on White // 8388608
@@ -86,9 +89,6 @@ FUNCTION Main ( fName )
    oEdit:SetHili( HILIGHT_COMM, oEdit:oFont:SetFontStyle( ,, .T. ), 32768, 16777215 )    // Green on White //4176740
 //#endif
    oEdit:bColorCur := oEdit:bColor
-   //oEdit:nBoundL := 24
-   //oEdit:nBoundT := 12
-   //oEdit:nMarginR := 36
 
    MENU OF oMainWindow
       MENU TITLE "&File"
@@ -149,6 +149,16 @@ FUNCTION Main ( fName )
       ENDMENU
    ENDMENU
 
+   CONTEXT MENU oMenu
+      MENUITEM "Cut" + Chr( 9 ) + "Ctrl+X" ID MENU_CTRL_X_1 ACTION oEdit:onKeyDown(88,,hwg_SetBit(0,FBITCTRL))
+      MENUITEM "Copy" + Chr( 9 ) + "Ctrl+C" ID MENU_CTRL_C_1 ACTION oEdit:onKeyDown(67,,hwg_SetBit(0,FBITCTRL))
+      MENUITEM "Paste" + Chr( 9 ) + "Ctrl+V" ACTION oEdit:onKeyDown(86,,hwg_SetBit(0,FBITCTRL))
+      SEPARATOR
+      MENUITEM "to &UPPER CASE" ID MENU_UPPER_1 ACTION CnvCase( 1 )
+      MENUITEM "To &lower case" ID MENU_LOWER_1 ACTION CnvCase( 2 )
+      MENUITEM "To &Title case" ID MENU_TCASE_1 ACTION CnvCase( 3 )
+   ENDMENU
+
    hwg_Enablemenuitem( , MENU_CTRL_C, lSelected, .T. )
    hwg_Enablemenuitem( , MENU_CTRL_X, lSelected, .T. )
    hwg_Enablemenuitem( , MENU_UNDO, lIsUndo, .T. )
@@ -185,6 +195,20 @@ STATIC FUNCTION f_bAfter()
    ENDIF
 
    RETURN -1
+
+STATIC FUNCTION on_RClick()
+
+   LOCAL lSelected := !Empty( oEdit:aPointM2[P_Y] )
+
+   hwg_Enablemenuitem( oMenu, MENU_CTRL_C_1, lSelected, .T. )
+   hwg_Enablemenuitem( oMenu, MENU_CTRL_X_1, lSelected, .T. )
+   hwg_Enablemenuitem( oMenu, MENU_UPPER_1, lSelected, .T. )
+   hwg_Enablemenuitem( oMenu, MENU_LOWER_1, lSelected, .T. )
+   hwg_Enablemenuitem( oMenu, MENU_TCASE_1, lSelected, .T. )
+
+   oMenu:Show( HWindow():GetMain() )
+
+   RETURN Nil
 
 STATIC FUNCTION NewFile()
 
@@ -259,7 +283,7 @@ STATIC FUNCTION SaveFile( lAs )
          cFile := oEdit:cFileName
       ENDIF
 
-      INIT DIALOG oDlg TITLE "Save file" AT 50, 50 SIZE 400, 230 FONT HWindow():GetMain():oFont
+      INIT DIALOG oDlg TITLE "Save file" AT 50, 50 SIZE 400, 230 FONT oFontMain
 
       @ 20, 30 GET oGet VAR cFile SIZE 320, 24 STYLE ES_AUTOHSCROLL MAXLENGTH 0
 #ifdef __GTK__

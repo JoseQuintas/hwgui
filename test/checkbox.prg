@@ -37,6 +37,18 @@
  * RETURN .T.
  *  // return nil   && This crashes !!!!!!
  *
+ * Now the status field for number of checked items
+ * appeared in tab "Stats"
+ *
+ * - Added a "public" MEMVAR "osay"
+ * - This memvar is initialized in tab page definition of "Stats"
+ * - The SAY based not on oDlg, but on oSay
+ *   @ 173,20 say oSay CAPTION cNbChecked of oTab SIZE 60,22 STYLE WS_DLGFRAME
+ * - In function update_count()
+ *   the value is set with call of method
+ *   oSay:SetText(cNbChecked)
+ *
+ *
  * Copyright 2022 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
  *
@@ -56,7 +68,7 @@
    #include "ttable.ch"
 #endif
 
-MEMVAR oDlg, nbChecked, cNbChecked 
+MEMVAR oDlg, nbChecked, cNbChecked ,oTab, osay
 
 * ---------------------------------------------
 Function Main
@@ -85,11 +97,12 @@ FUNCTION _frm_checkbox
 
 LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6 , oButton7 , oButton8
 LOCAL oButton9 
-LOCAL oTab, oStatus
+// LOCAL oTab
+LOCAL oStatus
 LOCAL oCheckbox1, oCheckbox2, oCheckbox3 , oCheckbox4 , oCheckbox5,  oCheckbox6 
 LOCAL lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6
 
-MEMVAR oDlg, nbChecked, cNbChecked 
+MEMVAR oDlg, nbChecked, cNbChecked , oTab , oSay
 
 nbChecked  := 0
 cNbChecked := "0"
@@ -115,7 +128,9 @@ INIT DIALOG oDlg TITLE "Checkboxes and tabs" ;
    BEGIN PAGE "Stats" of oTab
 
       @ 30,20 say " Nb checked" SIZE 120,22 STYLE WS_DLGFRAME
-      @ 150,20 say cNbChecked SIZE 60,22 STYLE WS_DLGFRAME
+//      @ 150,20 say cNbChecked SIZE 60,22 STYLE WS_DLGFRAME
+      @ 173,20 say oSay CAPTION cNbChecked of oTab SIZE 60,22 STYLE WS_DLGFRAME
+
 
       @ 300,166 BUTTON oButton9 CAPTION "OK"   SIZE 120,32 ;
                 STYLE WS_TABSTOP+BS_FLAT ;
@@ -130,19 +145,34 @@ INIT DIALOG oDlg TITLE "Checkboxes and tabs" ;
                 STYLE WS_TABSTOP+BS_FLAT ;
                 ON CLICK {|| oCheckbox1:Value(.T.) , ;
                              oCheckbox2:Value(.T.) , ;
-                             oCheckbox3:Value(.T.)}
+                             oCheckbox3:Value(.T.) , ;
+                             nbChecked := count_checked(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) , ;
+                             oStatus:SetText(" Checked : "+ltrim(str(nbChecked))), ;
+                             cNbChecked=ltrim(str(nbChecked)), ;
+                             IIF(nbChecked==0,oStatus:SetText(""),nothing(.t.) ), ;
+                             update_count() }
 
       @ 300,112 BUTTON oButton2 CAPTION "Unselect all"   SIZE 120,32 ;
                 STYLE WS_TABSTOP+BS_FLAT ;
                 ON CLICK {|| oCheckbox1:Value(.F.) , ;
                              oCheckbox2:Value(.F.) , ;
-                             oCheckbox3:Value(.F.)}
+                             oCheckbox3:Value(.F.) , ;
+                             nbChecked := count_checked(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) , ;
+                             oStatus:SetText(" Checked : "+ltrim(str(nbChecked))), ;
+                             cNbChecked=ltrim(str(nbChecked)), ;
+                             IIF(nbChecked==0,oStatus:SetText(""),nothing(.t.) ), ;
+                             update_count() }
 
       @ 300,28  BUTTON oButton3 CAPTION "Invert all"   SIZE 120,32 ;
                 STYLE WS_TABSTOP+BS_FLAT ;
                 ON CLICK {|| oCheckbox1:Invert() , ;
                              oCheckbox2:Invert() , ;
-                             oCheckbox3:Invert()}
+                             oCheckbox3:Invert() , ;
+                             nbChecked := count_checked(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) , ;
+                             oStatus:SetText(" Checked : "+ltrim(str(nbChecked))), ;
+                             cNbChecked=ltrim(str(nbChecked)), ;
+                             IIF(nbChecked==0,oStatus:SetText(""),nothing(.t.) ), ;
+                             update_count() }
 
       @ 300,166 BUTTON oButton4 CAPTION "OK"   SIZE 120,32 ;
                 STYLE WS_TABSTOP+BS_FLAT ;
@@ -178,19 +208,34 @@ INIT DIALOG oDlg TITLE "Checkboxes and tabs" ;
                 STYLE WS_TABSTOP+BS_FLAT ;
                 ON CLICK {|| oCheckbox4:Value(.T.) , ;
                              oCheckbox5:Value(.T.) , ;
-                             oCheckbox6:Value(.T.)}
+                             oCheckbox6:Value(.T.) , ;
+                             nbChecked := count_checked(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) , ;
+                             oStatus:SetText(" Checked : "+ltrim(str(nbChecked))), ;
+                             cNbChecked=ltrim(str(nbChecked)), ;
+                             IIF(nbChecked==0,oStatus:SetText(""),nothing(.t.) ), ;
+                             update_count() }
 
       @ 300,112 BUTTON oButton6 CAPTION "Unselect all"   SIZE 120,32 ;
                 STYLE WS_TABSTOP+BS_FLAT ;
                 ON CLICK {|| oCheckbox4:Value(.F.) , ;
                              oCheckbox5:Value(.F.) , ;
-                             oCheckbox6:Value(.F.)}
+                             oCheckbox6:Value(.F.) , ;
+                             nbChecked := count_checked(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) , ;
+                             oStatus:SetText(" Checked : "+ltrim(str(nbChecked))), ;
+                             cNbChecked=ltrim(str(nbChecked)), ;
+                             IIF(nbChecked==0,oStatus:SetText(""),nothing(.t.) ), ;
+                             update_count() }
 
       @ 300,28  BUTTON oButton7 CAPTION "Invert all"   SIZE 120,32 ;
                 STYLE WS_TABSTOP+BS_FLAT ;
                 ON CLICK {|| oCheckbox4:Invert() , ;
                              oCheckbox5:Invert() , ;
-                             oCheckbox6:Invert()}
+                             oCheckbox6:Invert() , ;
+                             nbChecked := count_checked(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) , ;
+                             oStatus:SetText(" Checked : "+ltrim(str(nbChecked))), ;
+                             cNbChecked=ltrim(str(nbChecked)), ;
+                             IIF(nbChecked==0,oStatus:SetText(""),nothing(.t.) ), ;
+                             update_count() }
 
       @ 300,166 BUTTON oButton8 CAPTION "OK"   SIZE 120,32 ;
                 STYLE WS_TABSTOP+BS_FLAT ;
@@ -226,11 +271,21 @@ RETURN NIL
 
 
 function update_count()
+LOCAL ntabs
 
-MEMVAR oDlg, cNbChecked, nbChecked
+MEMVAR  cNbChecked, nbChecked , oTab , oSay  && oDlg not used
+
 cNbChecked=ltrim(str(nbChecked))
+// hwg_Msginfo(cNbChecked)
+ntabs := oTab:GetActivePage(1,3)
 
-@ 173,58 say cNbChecked of oDlg SIZE 60,22 STYLE WS_DLGFRAME
+IF ntabs == 1 
+// @ 173,20 say cNbChecked of oTab SIZE 60,22 STYLE WS_DLGFRAME  
+@ 173,20 say oSay CAPTION cNbChecked of oTab SIZE 60,22 STYLE WS_DLGFRAME
+
+ELSE
+ oSay:SetText(cNbChecked) 
+ENDIF
 
 RETURN .T.
 // return nil   && This crashes !!!!!!
@@ -256,6 +311,29 @@ RETURN "Off"
 FUNCTION nothing(xpara)
 RETURN xpara
 
+FUNCTION count_checked(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6)
+LOCAL nchkd
+  nchkd := 0
 
+  IF lCheckbox1
+     nchkd++
+  ENDIF
+  IF lCheckbox2
+     nchkd++
+  ENDIF  
+  IF lCheckbox3
+     nchkd++
+  ENDIF  
+  IF lCheckbox4
+     nchkd++
+  ENDIF  
+  IF lCheckbox5
+     nchkd++
+  ENDIF  
+  IF lCheckbox6
+     nchkd++
+  ENDIF
+  
+RETURN nchkd  
 
 * ============================== EOF of checkbox.prg ========================

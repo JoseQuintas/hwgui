@@ -453,7 +453,7 @@ STATIC FUNCTION SaveFile( lAs, lHtml )
          cFile := oEdit:cFileName
       ENDIF
 
-      INIT DIALOG oDlg TITLE "Save file" AT 50, 50 SIZE 400, 230 FONT HWindow():GetMain():oFont
+      INIT DIALOG oDlg TITLE "Save file" AT 50, 50 SIZE 400, 230 FONT oFontMain
 
       @ 20, 30 GET oGet VAR cFile SIZE 320, 24 STYLE ES_AUTOHSCROLL
 #ifdef __GTK__

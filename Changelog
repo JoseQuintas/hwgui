@@ -16,6 +16,15 @@
 */
 
 
+2022-11-23 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/editor.prg
+    ! Small fix
+  + utils/hbpad/plugins/
+  + utils/hbpad/plugins/plug_cipher.prg
+  + utils/hbpad/plugins/plugins.ini
+  + utils/hbpad/plugins/Readme.txt
+    + Plugin added to hbpad to encrypt/decrypt text snippets
+
 2022-11-21 21:00 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * source/gtk/hmisc.prg

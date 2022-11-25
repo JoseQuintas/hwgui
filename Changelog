@@ -16,6 +16,13 @@
 */
 
 
+2022-11-25 11:50 UTC+0100 Wilfried Brunken DF7BE
+  * include/gtk3missing.h (New)
+  * samples/dev/env/pfad_msys.bat
+    ! Project Port to GTK3 started
+    ! (first with cross development environment
+    ! on Windows 11)  
+
 2022-11-23 15:27 UTC-0200 Jose Quintas
    * samples/a.prg
    * samples/testget1.prg

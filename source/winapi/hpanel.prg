@@ -260,7 +260,7 @@ METHOD Hide() CLASS HPanel
       ::acontrols[ i ]:hide()
    NEXT
    ::super:hide()
-   hwg_Sendmessage( ::oParent:Handle, WM_SIZE, 0, 0 )
+   //hwg_Sendmessage( ::oParent:Handle, WM_SIZE, 0, 0 )
 
    RETURN Nil
 
@@ -283,7 +283,7 @@ METHOD Show() CLASS HPanel
       hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    ENDIF
    ::nWidth := ::nsize
-   hwg_Sendmessage( ::oParent:Handle, WM_SIZE, 0, 0 )
+   //hwg_Sendmessage( ::oParent:Handle, WM_SIZE, 0, 0 )
    ::super:Show()
    FOR i := 1 TO Len( ::aControls )
       ::aControls[ i ]:Show()
@@ -356,12 +356,12 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
       bColor := 0xeeeeee
    ENDIF
 
-/*   
+/*
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
       oWndParent:nWidth, nHeight, bInit, { |o, w, h|o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
-    Block reverted to old value with HB_SYMBOL_UNUSED( w )  
+    Block reverted to old value with HB_SYMBOL_UNUSED( w )
 */
-  
+
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
       oWndParent:nWidth, nHeight, bInit, { |o, w, h| HB_SYMBOL_UNUSED( w ) ,  o:Move( 0, h - o:nHeight ) }, bPaint, bcolor )
    ::Anchor := ANCHOR_LEFTABS+ANCHOR_RIGHTABS
@@ -381,7 +381,7 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
 METHOD Write( cText, nPart, lRedraw ) CLASS HPanelStS
 
    ::aText[Iif(nPart==Nil,1,nPart)] := cText
-   IF Valtype( lRedraw ) != "L" .OR. lRedraw
+   IF !::lHide .AND. (Valtype( lRedraw ) != "L" .OR. lRedraw)
       hwg_Invalidaterect( ::handle, 0 )
    ENDIF
 
@@ -454,7 +454,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
    cText, xt, yt, lBtnClose, lBtnMax, lBtnMin ) CLASS HPanelHea
- 
+
    LOCAL nBtnSize, btnClose, btnMax, btnMin, x1
 
    oWndParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
@@ -501,17 +501,17 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oSty
    ENDIF
 
    RETURN Self
-   
+
 METHOD SetText( c , lrefresh) CLASS HPanelHea
 * DF7BE: Set lrefresh to .T. for refreshing the header text
 * (compatibility to INLINE definition)
 
 LOCAL pps, hDC
- 
+
  IF lrefresh == NIL
    lrefresh := .F.
  ENDIF
- 
+
  ::title := c
 
  IF lrefresh
@@ -521,13 +521,13 @@ LOCAL pps, hDC
   ::PaintText( hDC )
 
   hwg_Endpaint( ::handle, pps )
-  
+
    // hwg_Sendmessage( ::oParent:handle, WM_SIZE , 0, 0 )  && Does not refresh
    hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
-  
- ENDIF 
-  
-RETURN NIL   
+
+ ENDIF
+
+RETURN NIL
 
 METHOD SetSysbtnColor( tColor, bColor )
 
@@ -643,4 +643,3 @@ STATIC FUNCTION fPaintBtn( oBtn )
    RETURN Nil
 
 * =================================== EOF of hpanel.prg ======================================
-   

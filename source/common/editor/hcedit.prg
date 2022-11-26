@@ -2544,7 +2544,7 @@ METHOD Move( x1, y1, width, height ) CLASS HCEdit
       Iif( Valtype(::oTrack)=="N", ::oTrack, ::oTrack:nWidth ) )
 
    //hwg_writelog( "1> "+Iif(x1==nil,"nil",str(x1)) + " " + Iif(width==nil,"nil",str(width)) + " " + str(nw) + " " + str(::nWidth) )
-   ::Super:Move( x1, y1, Iif(!Empty(width),width-nw,width), height )
+   ::Super:Move( x1, y1, Iif(Empty(width),::nWidth,width)-nw, height )
    ::nWidth += nw
    IF !Empty(::oTrack) .AND. !::oTrack:lHide
       x1 := ::nLeft + ::nWidth - nw

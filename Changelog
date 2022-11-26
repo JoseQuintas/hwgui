@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-11-26 16:03 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+    ! Fixes
 
 2022-11-25 11:50 UTC+0100 Wilfried Brunken DF7BE
   * include/gtk3missing.h (New)

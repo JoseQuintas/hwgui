@@ -16,6 +16,12 @@
 */
 
 
+2022-11-28 13:12 UTC-0200 Jose Quintas
+   * samples/dbview.prg
+     ! use HB_VER_REVID (same as hmisc.prg) about euro codepage
+   * samples/*
+     formatting source code and correct previous error on format
+
 2022-11-28 14:30 UTC+0100 Wilfried Brunken DF7BE
   * clean.sh
   * hwguiGTK3.hbc (New)
@@ -31,8 +37,8 @@
    ! Project Port to GTK3 (1)
    ! First steps done, template programs run
    ! without trouble.
-   ! The compatibility to GTK2 is always preseved. 
-   ! (To be continued) 
+   ! The compatibility to GTK2 is always preseved.
+   ! (To be continued)
 
 
 2022-11-28 15:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
@@ -52,7 +58,7 @@
   * samples/dev/env/pfad_msys.bat
     ! Project Port to GTK3 started
     ! (first with cross development environment
-    ! on Windows 11)  
+    ! on Windows 11)
 
 2022-11-23 15:27 UTC-0200 Jose Quintas
    * samples/a.prg

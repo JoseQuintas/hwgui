@@ -75,7 +75,7 @@ FUNCTION OnDispInfo( o, x, y )
 
    LOCAL result := ''
 
-   DBGoto(x)
+   DBGoto( x )
 
    result := field->line
 
@@ -83,9 +83,9 @@ RETURN result
 
 FUNCTION FileOpen()
 
-   LOCALfname
+   LOCAL fname
 
-   fname := hwg_Selectfile( "Select File", "*.*")
+   fname := hwg_Selectfile( "Select File", "*.*" )
 
    ZAP
    APPEND FROM ( fname ) SDF

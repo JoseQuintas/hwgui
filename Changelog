@@ -16,11 +16,16 @@
 */
 
 
+2022-11-28 19:14 UTC-200 Jose QUintas
+   * samples/*.prg
+     * continue format source code
+     ! please check samples/helpstatic.prg lines 124-134 about codepage
+
 2022-11-28 13:12 UTC-0200 Jose Quintas
    * samples/dbview.prg
      ! use HB_VER_REVID (same as hmisc.prg) about euro codepage
    * samples/*
-     formatting source code and correct previous error on format
+     * formatting source code and correct previous error on format
 
 2022-11-28 14:30 UTC+0100 Wilfried Brunken DF7BE
   * clean.sh

@@ -18,17 +18,17 @@
 /*
  Modifications (March 2021):
  - Port from Borland resource file to HWGUI commands
-   
+
  - The contents of old rc file is listed in a command line comment
-   at end of program text. 
-   
+   at end of program text.
+
   Severe bug fixed:
   missing function(s): hb_enumIndex()
-  
+
   Different behavior to BCC version:
   Background color is white instead of grey,
   can not mofified yet, the REDEFINE freezes the program.
-  
+
 
 */
 
@@ -44,16 +44,17 @@
 MEMVAR oFont
 
 FUNCTION Main()
-LOCAL oWinMain
 
-PUBLIC oFont
+   LOCAL oWinMain
 
- PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT 8
- 
- 
-INIT WINDOW oWinMain MAIN  ;
-     TITLE "Sample program Tabs" AT 0, 0 SIZE 600,400;
-     STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
+   PUBLIC oFont
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT 8
+
+
+   INIT WINDOW oWinMain MAIN  ;
+      TITLE "Sample program Tabs" AT 0, 0 SIZE 600,400;
+      STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
 
    MENU OF oWinMain
       MENU TITLE "&File"
@@ -66,29 +67,25 @@ INIT WINDOW oWinMain MAIN  ;
 
    oWinMain:Activate()
 
-RETURN NIL
-
-
- RETURN NIL
- 
-
+RETURN Nil
 
 FUNCTION Teste()
-Local oDlg1,oDlg2,oDlg3,oTab
-Local aDlg1, aDlg2, aCombo := { "Aaaa","Bbbb" }
-Local oBrw1, oBrw2
-Local aSample1 := { {"Alex",17}, {"Victor",42}, {"John",31} }
-Local aSample2 := { {"Line 1",10}, {"Line 2",22}, {"Line 3",40} }
-Local e1 := "Xxxx"
-Local e2 := "Xxxx"
-Local e3 := "Xxxx"
-LOCAL oCombobox1 
 
-* from resource DIALOG_1
-init dialog oDlg1 TITLE "DIALOG_1" clipper NOEXIT NOEXITESC AT 10, 25 SIZE 545, 394 ;
-FONT oFont ;
-STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_THICKFRAME+WS_MINIMIZEBOX+WS_MAXIMIZEBOX ;
-ON EXIT {||hwg_Msginfo("Exit"),.T.}
+   LOCAL oDlg1,oDlg2,oDlg3,oTab
+   LOCAL aDlg1, aDlg2, aCombo := { "Aaaa","Bbbb" }
+   LOCAL oBrw1, oBrw2
+   LOCAL aSample1 := { {"Alex",17}, {"Victor",42}, {"John",31} }
+   LOCAL aSample2 := { {"Line 1",10}, {"Line 2",22}, {"Line 3",40} }
+   LOCAL e1 := "Xxxx"
+   LOCAL e2 := "Xxxx"
+   LOCAL e3 := "Xxxx"
+   LOCAL oCombobox1
+
+   * from resource DIALOG_1
+   INIT DIALOG oDlg1 TITLE "DIALOG_1" clipper NOEXIT NOEXITESC AT 10, 25 SIZE 545, 394 ;
+      FONT oFont ;
+      STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_THICKFRAME + WS_MINIMIZEBOX + WS_MAXIMIZEBOX ;
+      ON EXIT { || hwg_Msginfo( "Exit" ), .T. }
 
 * on init {|| buildtabPages(oTab,{adlg1,adlg2},{"pagina1","pagina2"})} ;
 
@@ -101,40 +98,40 @@ oTab:StartPage( "pagina2",aDlg2 ),    oTab:EndPage(),otab:changepage(1)
 }
 */
 
-@ 20 , 40 TAB oTab ITEMS {} ID IDC_1 SIZE 504, 341 STYLE WS_CHILD+WS_VISIBLE
+   @ 20 , 40 TAB oTab ITEMS {} ID IDC_1 SIZE 504, 341 STYLE WS_CHILD+WS_VISIBLE
 
 * REDEFINE TAB oTab ID IDC_1
- 
+
 * If set, crashees at exit
 * oDlg1:lRouteCommand := .T.
 
-  BEGIN PAGE "pagina 1" of oTab
+   BEGIN PAGE "pagina 1" of oTab
 
 *  FROM RESOURCE  PAGE_1
 //   INIT DIALOG aDlg1 AT 6, 15 SIZE 161, 114 ;
 //   FONT oFont ;
 //   STYLE WS_CHILD+WS_VISIBLE ;
-//   CLIPPER NOEXIT NOEXITESC ; 
+//   CLIPPER NOEXIT NOEXITESC ;
 //   ON EXIT {||hwg_Msginfo("Exit"),.T.}
-   
- 
-   @ 65,92  CHECKBOX "Checkbox" SIZE 149,22
-   
-   @ 65,123 CHECKBOX "Checkbox" SIZE 149,22
-   
-   @ 65,163  EDITBOX e1 ID 103 SIZE 134,24 ;
-        STYLE WS_CHILD+WS_TABSTOP+WS_BORDER    
-   @ 65,201  EDITBOX e2 ID 104 SIZE 134,24 ;
-        STYLE WS_CHILD+WS_TABSTOP+WS_BORDER
-   @ 65,240  EDITBOX e3 ID 105 SIZE 134,24 ;
-        STYLE WS_CHILD+WS_TABSTOP+WS_BORDER
+
+
+      @ 65,92  CHECKBOX "Checkbox" SIZE 149,22
+
+      @ 65,123 CHECKBOX "Checkbox" SIZE 149,22
+
+      @ 65,163  EDITBOX e1 ID 103 SIZE 134,24 ;
+           STYLE WS_CHILD + WS_TABSTOP + WS_BORDER
+      @ 65,201  EDITBOX e2 ID 104 SIZE 134,24 ;
+           STYLE WS_CHILD + WS_TABSTOP + WS_BORDER
+      @ 65,240  EDITBOX e3 ID 105 SIZE 134,24 ;
+           STYLE WS_CHILD + WS_TABSTOP + WS_BORDER
 
 *   REDEFINE GET e1 ID 103
 *   REDEFINE GET e2 ID 104
 *   REDEFINE GET e3 ID 105
 
    END PAGE of oTab
-   
+
    BEGIN PAGE "pagina 2" of oTab
 
 *  FROM RESOURCE  PAGE_2
@@ -142,41 +139,41 @@ oTab:StartPage( "pagina2",aDlg2 ),    oTab:EndPage(),otab:changepage(1)
 //   FONT oFont ;
 //   STYLE WS_CHILD+WS_VISIBLE ;
 //   CLIPPER NOEXIT NOEXITESC ON EXIT {||hwg_Msginfo("Exit"),.T.}
-   
-   @ 36,108 COMBOBOX oCombobox1 ITEMS aCombo SIZE 87,96 ;
-     STYLE CBS_DROPDOWNLIST+WS_TABSTOP   
 
-   @ 38,153 CHECKBOX "Checkbox" SIZE 80,22   
-   
-   @ 165,81 BROWSE oBrw1 ARRAY SIZE 103,135 ;  && ID 104
-     STYLE WS_CHILD+WS_VISIBLE+WS_BORDER+WS_VSCROLL+WS_HSCROLL+WS_TABSTOP
+      @ 36,108 COMBOBOX oCombobox1 ITEMS aCombo SIZE 87,96 ;
+         STYLE CBS_DROPDOWNLIST + WS_TABSTOP
 
-    hwg_CREATEARLIST( oBrw1,aSample1 )
+      @ 38,153 CHECKBOX "Checkbox" SIZE 80,22
 
-   @ 300,81 BROWSE oBrw2 ARRAY SIZE 103,135 ; && ID 105
-     STYLE WS_CHILD+WS_VISIBLE+WS_BORDER+WS_VSCROLL+WS_HSCROLL+WS_TABSTOP 
+      @ 165,81 BROWSE oBrw1 ARRAY SIZE 103,135 ;  && ID 104
+         STYLE WS_CHILD + WS_VISIBLE + WS_BORDER + WS_VSCROLL + WS_HSCROLL + WS_TABSTOP
 
-    hwg_CREATEARLIST( oBrw2,aSample2 )
+      hwg_CREATEARLIST( oBrw1,aSample1 )
 
-   
+      @ 300,81 BROWSE oBrw2 ARRAY SIZE 103,135 ; && ID 105
+         STYLE WS_CHILD + WS_VISIBLE + WS_BORDER + WS_VSCROLL + WS_HSCROLL + WS_TABSTOP
+
+      hwg_CREATEARLIST( oBrw2,aSample2 )
+
+
 *   REDEFINE COMBOBOX aCombo ID 101
 *   REDEFINE BROWSE oBrw1 ARRAY ID 104
 *   REDEFINE BROWSE oBrw2 ARRAY ID 105
-   
-   END PAGE of oTab  
 
-* TO DO: To modify colors, program running dead   
-* REDEFINE TAB oTab ID IDC_1 COLOR 65280 BACKCOLOR 255 
-   
-   
-  activate dialog oDlg1
-  
-return nil
+   END PAGE of oTab
+
+* TO DO: To modify colors, program running dead
+* REDEFINE TAB oTab ID IDC_1 COLOR 65280 BACKCOLOR 255
+
+
+  ACTIVATE DIALOG oDlg1
+
+RETURN Nil
 
 /*
 
  This function now obselete
- 
+
 function buildtabPages(oTab,aPage,aTitle)
 Local n , ind
 ind := 0
@@ -184,7 +181,7 @@ ind := 0
 for each n in aPage
    n:oParent := oTab
    n:activate(.t.)
-   ind := ind + 1 
+   ind := ind + 1
    oTab:startpage(aTitle[ind],n)  && hb_enumindex()
    otab:endpage()
    n:oParent := nil
@@ -245,5 +242,3 @@ Contents of tab.rh:
 */
 
 * =============================== EOF of tab.prg ==========================================
-
-

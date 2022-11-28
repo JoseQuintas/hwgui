@@ -4,7 +4,7 @@
  * This sample demonstrates reading/writing XML file and handling menu items
  * while run-time.
  */
- 
+
     * Status:
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
@@ -14,7 +14,7 @@
   - Ready for GTK
   - GET problem fixed
   - Russian charset (windows-1251) modified to windows-1252 / UTF-8 + Euro currency sign
-  
+
   Additional instructions:
   Store XML file with correct coding:
   1.) In header line of XML set encoding:
@@ -26,11 +26,11 @@
       Dos\Windows  Windows-1252
   3.) If creating a new XML file with method Save():
       Create object of class cl HXMLDoc , method New(encoding),
-      Set for encoding the desired encoding.  
+      Set for encoding the desired encoding.
   4.) If using a font ,
       create it with CHARSET clause: 0 for windows1252 and
       204 for windows1251 russian.
-  
+
    Fix as soon as possible:
    Symtom:
    GET ignores here keys only reachable together with "AltGr" key like
@@ -38,18 +38,18 @@
    Reason:
    The  X Size of the GET control must big enough to display all
    characters of the variable.
-   More description look at command documentation vor @ <x>,<y> GET ...   
+   More description look at command documentation vor @ <x>,<y> GET ...
 */
 
 * reduced from 100:
 #define CINFOLEN 40
 
-REQUEST HB_LANG_DE 
+REQUEST HB_LANG_DE
 REQUEST HB_CODEPAGE_DEWIN
 #ifdef __LINUX__
 * LINUX Codepage
 REQUEST HB_CODEPAGE_UTF8
-#endif 
+#endif
 
 
 #include "windows.ch"
@@ -58,19 +58,19 @@ REQUEST HB_CODEPAGE_UTF8
 
 MEMVAR oXmlDoc, lIniChanged, nCurrentItem , oMainWindow, oFont
 
-Function Main
-Local oXmlNode
-Local i, j, fname := ""
-Private oXmlDoc, lIniChanged := .F., nCurrentItem
-Private oMainWindow, oFont
+FUNCTION Main()
 
+   LOCAL oXmlNode
+   LOCAL i, j, fname := ""
+   PRIVATE oXmlDoc, lIniChanged := .F., nCurrentItem
+   PRIVATE oMainWindow, oFont
 
 #ifdef __LINUX__
-     hb_cdpSelect( "UTF8" )
+   hb_cdpSelect( "UTF8" )
 #else
-     hb_cdpSelect( "DEWIN" )
+   hb_cdpSelect( "DEWIN" )
 #endif
-HB_LANGSELECT("DE")
+   HB_LANGSELECT("DE")
 
    oXmlDoc := HXMLDoc():Read( "testxml.xml" )
 
@@ -95,7 +95,7 @@ HB_LANGSELECT("DE")
             * other behavior on GTK:
             * the new item was appended at the end of the menu in the recent run.
             * After restart the program (in case of new reading of the
-            * XML file) the new item appears at the same position like the WinAPI sample. 
+            * XML file) the new item appears at the same position like the WinAPI sample.
             NEXT
             SEPARATOR
          ENDIF
@@ -103,20 +103,20 @@ HB_LANGSELECT("DE")
       ENDMENU
 
       MENU TITLE "Help"
-         MENUITEM "About" ACTION p_about() 
+         MENUITEM "About" ACTION p_about()
       ENDMENU
    ENDMENU
 
    ACTIVATE WINDOW oMainWindow
 
-Return Nil
+RETURN Nil
 
-Function NewItem( nItem )
-Local oDlg, oItemFont, oFontNew
-Local oXmlNode, fname, i, j, aMenu, nId
-Local cName, cInfo
-Local oGet1, oGet2
+FUNCTION NewItem( nItem )
 
+   LOCAL oDlg, oItemFont, oFontNew
+   LOCAL oXmlNode, fname, i, j, aMenu, nId
+   LOCAL cName, cInfo
+   LOCAL oGet1, oGet2
 
    IF nItem > 0
       oXmlNode := oXmlDoc:aItems[1]:aItems[nItem]
@@ -128,7 +128,7 @@ Local oGet1, oGet2
             oItemFont := FontFromXML( oXmlNode:aItems[i] )
          ENDIF
       NEXT
-      * Trim variables for GET 
+      * Trim variables for GET
       cName := PADR(cName, 30)
       cInfo := PADR(cInfo, CINFOLEN)
    ELSE
@@ -136,20 +136,19 @@ Local oGet1, oGet2
       cInfo := Space(CINFOLEN)
       oItemFont := oFont
    ENDIF
-   
-    cName := hwg_GET_Helper(cName,30)
-    cInfo := hwg_GET_Helper(cInfo,CINFOLEN)
-   
+
+   cName := hwg_GET_Helper(cName,30)
+   cInfo := hwg_GET_Helper(cInfo,CINFOLEN)
 
    INIT DIALOG oDlg TITLE Iif( nItem==0,"New item","Change item" )  ;
    AT 210,10  SIZE 700,150 FONT oFont  && old SIZE 300,150
 
    @ 20,20 SAY "Name:" SIZE 60, 22
-   
+
    /*
    @ 80,20 GET cName SIZE 150, 26    STYLE WS_BORDER
-   */    
-   
+   */
+
    @ 80,20 GET oGet1 VAR cName SIZE 500, 26 ;  && old SIZE 150, 26
      STYLE WS_BORDER
 
@@ -164,12 +163,12 @@ Local oGet1, oGet2
    @ 180,110 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
 
    ACTIVATE DIALOG oDlg
-   
+
    * Trim from GET
-   
+
    cInfo := AllTrim(cInfo)
    cName := AllTrim(cName)
-   
+
     IF oDlg:lResult .AND. !Empty(cName) .AND. !Empty(cInfo)
       IF nItem == 0
          oXmlNode := oXmlDoc:aItems[1]:Add( HXMLNode():New( "item" ) )
@@ -184,7 +183,7 @@ Local oGet1, oGet2
               &( "{||NewItem("+LTrim(Str(nId-1020,2))+")}" ), Len(aMenu[1])-1 )
 
       ELSE
-         * Modified  
+         * Modified
          IF oXmlNode:GetAttribute( "name" ) != cName
             oXmlNode:SetAttribute( "name", cName )
             lIniChanged := .T.
@@ -208,15 +207,16 @@ Local oGet1, oGet2
       ENDIF
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Function FontFromXML( oXmlNode )
-Local width  := oXmlNode:GetAttribute( "width" )
-Local height := oXmlNode:GetAttribute( "height" )
-Local weight := oXmlNode:GetAttribute( "weight" )
-Local charset := oXmlNode:GetAttribute( "charset" )
-Local ita   := oXmlNode:GetAttribute( "italic" )
-Local under := oXmlNode:GetAttribute( "underline" )
+FUNCTION FontFromXML( oXmlNode )
+
+   LOCAL width  := oXmlNode:GetAttribute( "width" )
+   LOCAL height := oXmlNode:GetAttribute( "height" )
+   LOCAL weight := oXmlNode:GetAttribute( "weight" )
+   LOCAL charset := oXmlNode:GetAttribute( "charset" )
+   LOCAL ita   := oXmlNode:GetAttribute( "italic" )
+   LOCAL under := oXmlNode:GetAttribute( "underline" )
 
   IF width != Nil
      width := Val( width )
@@ -236,15 +236,16 @@ Local under := oXmlNode:GetAttribute( "underline" )
   IF under != Nil
      under := Val( under )
   ENDIF
-  
-  // default charset is NIL 
 
-Return HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
+  // default charset is NIL
+
+RETURN HFont():Add( oXmlNode:GetAttribute( "name" ),  ;
                     width, height, weight, charset,   ;
                     ita, under )
 
-Function hwg_Font2XML( oFont )
-Local aAttr := {}
+FUNCTION hwg_Font2XML( oFont )
+
+   LOCAL aAttr := {}
 
    Aadd( aAttr, { "name",oFont:name } )
    Aadd( aAttr, { "width",Ltrim(Str(oFont:width,5)) } )
@@ -261,30 +262,32 @@ Local aAttr := {}
    IF oFont:Underline != 0
       Aadd( aAttr, { "underline",Ltrim(Str(oFont:Underline,5)) } )
    ENDIF
-   
-Return HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
 
-Function SaveOptions()
+RETURN HXMLNode():New( "font", HBXML_TYPE_SINGLE, aAttr )
+
+FUNCTION SaveOptions()
+
    IF lIniChanged
       oXmlDoc:Save( "testxml.xml" )
    ENDIF
    CLOSE ALL
-Return Nil
 
-FUNCTION p_about
+RETURN Nil
+
+FUNCTION p_about()
+
 #ifdef __GTK__
- hwg_MsgInfo("This sample demonstrates reading/writing" + CHR(10) + ;
- "XML file and handling menu items","HWGUI sample testxml.prg" + CHR(10) + ;
- "while run-time" + ;
- "OS() = " + OS() )
+   hwg_MsgInfo("This sample demonstrates reading/writing" + CHR(10) + ;
+      "XML file and handling menu items","HWGUI sample testxml.prg" + CHR(10) + ;
+      "while run-time" + ;
+      "OS() = " + OS() )
 #else
- hwg_Shellabout("","")  && Windows only, shows the OS internal Win version display
-                      && For multi platform application use OS(), shows
-                      && in a short string the OS and it's version number.
-                      && Sample output for Windows 10: "Windows 8 6.2" (2020)
-#endif 
-RETURN NIL
+   hwg_Shellabout("","")  && Windows only, shows the OS internal Win version display
+                         && For multi platform application use OS(), shows
+                         && in a short string the OS and it's version number.
+                         && Sample output for Windows 10: "Windows 8 6.2" (2020)
+#endif
 
-
+RETURN Nil
 
 * ==================== EOF of testxml.prg ======================

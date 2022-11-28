@@ -3,18 +3,19 @@
 
 MEMVAR oFont , cImageDir , cDirSep , cBitmap1, cbitmap2 , cppath
 
-Function Main
-Local oMainWindow
-Private oFont := HFont():Add( "MS Sans Serif",0,-13 )
-Private cppath := ".."
-Private cDirSep := hwg_GetDirSep()
-Private cImageDir := cppath + cDirSep + "image" + cDirSep
-Private cBitmap1 := cImageDir + "cl_fl.bmp"
-Private cbitmap2 := cImageDir + "op_fl.bmp"
+FUNCTION Main()
 
+   LOCAL oMainWindow
 
-CHECK_FILE(cBitmap1)
-CHECK_FILE(cbitmap2)
+   PRIVATE oFont := HFont():Add( "MS Sans Serif",0,-13 )
+   PRIVATE cppath := ".."
+   PRIVATE cDirSep := hwg_GetDirSep()
+   PRIVATE cImageDir := cppath + cDirSep + "image" + cDirSep
+   PRIVATE cBitmap1 := cImageDir + "cl_fl.bmp"
+   PRIVATE cbitmap2 := cImageDir + "op_fl.bmp"
+
+   CHECK_FILE( cBitmap1 )
+   CHECK_FILE( cbitmap2 )
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150
@@ -25,17 +26,18 @@ CHECK_FILE(cbitmap2)
    ENDMENU
 
    ACTIVATE WINDOW oMainWindow
-Return Nil
 
-Function DlgGet
-Local oDlg
-Local oTree, oXmlDoc
-Local fname
-Local oSplit, oSay
+RETURN Nil
 
+FUNCTION DlgGet()
 
-fname := hwg_Selectfile( "XML files( *.xml )", "*.xml" )
-// fname := hwg_Selectfile( "All files( *.* )", "*.*" )
+   LOCAL oDlg
+   LOCAL oTree, oXmlDoc
+   LOCAL fname
+   LOCAL oSplit, oSay
+
+   fname := hwg_Selectfile( "XML files( *.xml )", "*.xml" )
+   // fname := hwg_Selectfile( "All files( *.* )", "*.*" )
 
    IF Empty( fname )
       Return Nil
@@ -45,34 +47,35 @@ fname := hwg_Selectfile( "XML files( *.xml )", "*.xml" )
    ENDIF
 
    INIT DIALOG oDlg TITLE CutPath(fname)    ;
-   AT 210,10  SIZE 430,300                  ;
-   FONT oFont                               ;
-   ON INIT {||BuildTree(oTree,oXmlDoc:aItems,oSay)}
+      AT 210,10  SIZE 430,300                  ;
+      FONT oFont                               ;
+      ON INIT {||BuildTree(oTree,oXmlDoc:aItems,oSay)}
 
    @ 10,10 TREE oTree OF oDlg SIZE 200,280 ;
-        EDITABLE ;
-        BITMAP { cBitmap1, cbitmap2 } ;
-        ON SIZE {|o,x,y|o:Move(,,,y-20)}
+      EDITABLE ;
+      BITMAP { cBitmap1, cbitmap2 } ;
+      ON SIZE {|o,x,y|o:Move(,,,y-20)}
 
    @ 214,10 SAY oSay CAPTION "" SIZE 206,280 STYLE WS_BORDER ;
-        ON SIZE {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth-10,y-20)}
+      ON SIZE {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth-10,y-20)}
 
    @ 214,10 EDITBOX oSay CAPTION "" SIZE 206,280 STYLE WS_VSCROLL+WS_HSCROLL+ES_MULTILINE+ES_READONLY ;
-        ON SIZE {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth-10,y-20)} ;
-        ON GETFOCUS {||hwg_Sendmessage(oSay:handle,EM_SETSEL,0,0)}
+      ON SIZE {|o,x,y|o:Move(,,x-oSplit:nLeft-oSplit:nWidth-10,y-20)} ;
+      ON GETFOCUS {||hwg_Sendmessage(oSay:handle,EM_SETSEL,0,0)}
 
    @ 210,10 SPLITTER oSplit SIZE 4,260 ;
-         DIVIDE {oTree} FROM {oSay} ;
-         ON SIZE {|o,x,y|o:Move(,,,y-20)}
+      DIVIDE {oTree} FROM {oSay} ;
+      ON SIZE {|o,x,y|o:Move(,,,y-20)}
 
    oSplit:bEndDrag := {||hwg_Redrawwindow( oSay:handle,RDW_ERASE+RDW_INVALIDATE+RDW_INTERNALPAINT+RDW_UPDATENOW)}
 
    ACTIVATE DIALOG oDlg NOMODAL
 
-Return Nil
+RETURN Nil
 
-Function BuildTree( oParent,aItems,oSay )
-Local oNode, i, j, alen := Len(aItems), cText
+FUNCTION BuildTree( oParent,aItems,oSay )
+
+   LOCAL oNode, i, j, alen := Len(aItems), cText
 
    FOR i := 1 TO alen
       IF ValType( aItems[i] ) == "C"
@@ -97,9 +100,9 @@ Local oNode, i, j, alen := Len(aItems), cText
       ENDIF
    NEXT
 
-Return Nil
+RETURN Nil
 
-Static Function NodeOut( o,oSay )
+STATIC FUNCTION NodeOut( o,oSay )
 
    IF o == Nil
       oSay:SetText("")
@@ -107,14 +110,16 @@ Static Function NodeOut( o,oSay )
       oSay:SetText(o:cargo)
    ENDIF
 
-Return Nil
+RETURN Nil
 
-FUNCTION CHECK_FILE ( cfi )
-* Check, if file exist, otherwise terminate program
- IF .NOT. FILE( cfi )
-  Hwg_MsgStop("File >" + cfi + "< not found, program terminated","File ERROR !")
-  QUIT
- ENDIF 
+FUNCTION CHECK_FILE( cfi )
+
+   * Check, if file exist, otherwise terminate program
+   IF .NOT. FILE( cfi )
+      Hwg_MsgStop("File >" + cfi + "< not found, program terminated","File ERROR !")
+      QUIT
+   ENDIF
+
 RETURN Nil
 
 
@@ -149,7 +154,7 @@ static char * utfConvert( char * psz1, short int b2Utf, short int bKoi )
    char * codePage = (bKoi)? "KOI8-R" : "CP866";
    iconv_t it;
    /* int nLen1; */
-   size_t nLen1; 
+   size_t nLen1;
    /* int nLen2, nLen; */
    size_t nLen;
    size_t nLen2;
@@ -330,6 +335,4 @@ HB_FUNC( ICONV_CLOSE )
 
 #endif
 
-
 * ======================================= EOF of xmltree.prg ===================================
-

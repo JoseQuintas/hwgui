@@ -20,25 +20,23 @@ MEMVAR oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDel
 // MEMVAR COD  && contains a database name, but nowhere initialized ??
 // why "demodbf.prg(313) Warning W0001  Ambiguous reference 'COD'" ??
 
+FUNCTION Main()
 
-*---------------------------------------------------------------------------------------
-Function Main
-*---------------------------------------------------------------------------------------
-//Local oFontBtn
-Local oFont := Nil
-LOCAL cDirSep
+   //Local oFontBtn
+   LOCAL oFont := Nil
+   LOCAL cDirSep
 
-Private Form_Main
+   PRIVATE Form_Main
 
-cDirSep := hwg_GetDirSep()
+   cDirSep := hwg_GetDirSep()
 
-Public oDir := cDirSep + Curdir() + cDirSep
+   Public oDir := cDirSep + Curdir() + cDirSep
 
-SET DELETE ON
-SET DATE BRIT
-SET CENT ON
+   SET DELETE ON
+   SET DATE BRIT
+   SET CENT ON
 
-//   PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
+   //   PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
 
    INIT WINDOW Form_Main MAIN TITLE "HwGUI Harbour Win32 Gui"
 
@@ -58,18 +56,16 @@ SET CENT ON
 
    Form_Main:Activate()
 
-return nil
+RETURN Nil
 
+FUNCTION Cadastro()
 
-*---------------------------------------------------------------------------------------
-Function Cadastro()
-*---------------------------------------------------------------------------------------
-Local Tel_Ferramentas, oFontBtn, Titulo:="Tab Forneced"
+   LOCAL Tel_Ferramentas, oFontBtn, Titulo:="Tab Forneced"
 
-Private Gt_Cod, Gt_Name, Gt_Adress, Gt_Fone, Gt_e_Mail
-Private oCod, oName, oAdress, oFone, oe_Mail //Declaracao das variaveis de tabela
-Private oOper:=1
-Private oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDelete, oBotClose, oBotPrint
+   PRIVATE Gt_Cod, Gt_Name, Gt_Adress, Gt_Fone, Gt_e_Mail
+   PRIVATE oCod, oName, oAdress, oFone, oe_Mail //Declaracao das variaveis de tabela
+   PRIVATE oOper:=1
+   PRIVATE oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDelete, oBotClose, oBotPrint
 
    PREPARE FONT oFontBtn NAME "Arial" WIDTH 0 HEIGHT -12
 
@@ -77,264 +73,256 @@ Private oBotNew, oBotEdit,oBotRet, oBotNext, oBotSave, oBottop, oBotBott, oBotDe
 
    OpenDbf()
 
-   Select TabDbf
-   Set Order to 1
-   Go Top
+   SELECT TabDbf
+   SET ORDER TO 1
+   GO TOP
    GetVars() //Inicializa as variaveis
 
    CreateGets()
 
 
-    @ 2,3 OWNERBUTTON oBotNew OF Tel_Ferramentas  ON CLICK {|| CreateVariable(), CloseBotons(), Gt_Cod:Setfocus()  } ;
+   @  2,3 OWNERBUTTON oBotNew OF Tel_Ferramentas  ON CLICK {|| CreateVariable(), CloseBotons(), Gt_Cod:Setfocus()  } ;
        SIZE 44,38 FLAT ;
        TEXT "New"
 
-   @ 46,3 OWNERBUTTON oBotEdit OF Tel_Ferramentas ON CLICK {||EditRecord()} ;
+   @  46,3 OWNERBUTTON oBotEdit OF Tel_Ferramentas ON CLICK {||EditRecord()} ;
        SIZE 44,38 FLAT ;
        TEXT "Edit"
 
-   @ 89,3 OWNERBUTTON oBotSave OF Tel_Ferramentas ON CLICK {||OpenBotons(),SaveTab()} ;
+   @  89,3 OWNERBUTTON oBotSave OF Tel_Ferramentas ON CLICK {||OpenBotons(),SaveTab()} ;
        SIZE 44,38 FLAT ;
        TEXT "Save"
 
-   @132,3 OWNERBUTTON oBotRet OF Tel_Ferramentas  ON CLICK {||SkipTab(1)} ;
+   @ 132,3 OWNERBUTTON oBotRet OF Tel_Ferramentas  ON CLICK {||SkipTab(1)} ;
        SIZE 44,38 FLAT ;
        TEXT "<--"
 
-   @175,3 OWNERBUTTON oBotNext OF Tel_Ferramentas  ON CLICK {||SkipTab(2)} ;
+   @ 175,3 OWNERBUTTON oBotNext OF Tel_Ferramentas  ON CLICK {||SkipTab(2)} ;
        SIZE 44,38 FLAT ;
        TEXT "-->"
 
-   @218,3 OWNERBUTTON oBotTop OF Tel_Ferramentas  ON CLICK {||SkipTab(3)} ;
+   @ 218,3 OWNERBUTTON oBotTop OF Tel_Ferramentas  ON CLICK {||SkipTab(3)} ;
        SIZE 44,38 FLAT ;
        TEXT "<-|"
 
-   @261,3 OWNERBUTTON oBotBott OF Tel_Ferramentas  ON CLICK {||SkipTab(4)} ;
+   @ 261,3 OWNERBUTTON oBotBott OF Tel_Ferramentas  ON CLICK {||SkipTab(4)} ;
        SIZE 44,38 FLAT ;
        TEXT "|->"
 
-   @304,3 OWNERBUTTON oBotprint OF Tel_Ferramentas  ON CLICK {||hwg_Msginfo("In development")} ;
+   @ 304,3 OWNERBUTTON oBotprint OF Tel_Ferramentas  ON CLICK {||hwg_Msginfo("In development")} ;
        SIZE 44,38 FLAT ;
        TEXT "Print"
 
-   @347,3 OWNERBUTTON oBotDelete OF Tel_Ferramentas ON CLICK {||DeleteRecord()} ;
+   @ 347,3 OWNERBUTTON oBotDelete OF Tel_Ferramentas ON CLICK {||DeleteRecord()} ;
        SIZE 44,38 FLAT ;
        TEXT "Delete"
 
-   @390,3 OWNERBUTTON oBotClose OF Tel_Ferramentas  ON CLICK {||hwg_EndDialog()} ;
+   @ 390,3 OWNERBUTTON oBotClose OF Tel_Ferramentas  ON CLICK {||hwg_EndDialog()} ;
        SIZE 44,38 FLAT ;
        TEXT "Close"
 
 
    Tel_Ferramentas:Activate()
 
-Return Nil
-*---------------------------------------------------------------------------------------
-Function OpenBotons
-*---------------------------------------------------------------------------------------
-oBotNew:Enable()
-oBotEdit:Enable()
-oBotRet:Enable()
-oBotNext:Enable()
-oBotSave:Disable()
-oBottop:Enable()
-oBotBott:Enable()
-oBotDelete:Enable()
-oBotClose:Enable()
-oBotPrint:Enable()
-Return Nil
-*---------------------------------------------------------------------------------------
-Function CloseBotons
-*---------------------------------------------------------------------------------------
-oBotNew:Disable()
-oBotEdit:Disable()
-oBotRet:Disable()
-oBotNext:Disable()
-oBotSave:Enable()
-oBottop:Disable()
-oBotBott:Disable()
-oBotDelete:Disable()
-oBotClose:Enable()
-oBotPrint:Disable()
-Return Nil
-*---------------------------------------------------------------------------------------
-Function CreateGets()
-*---------------------------------------------------------------------------------------
+RETURN Nil
 
-@ 2, 60 Say "Cod"  SIZE 40,20
-@65, 60 Get Gt_Cod VAR oCod PICTURE "999" STYLE WS_DISABLED  SIZE 100, 20
+FUNCTION OpenBotons()
 
-@ 2,85 Say "Name" SIZE 50, 20
-@65,85 Get Gt_Name VAR oName  PICTURE REPLICATE("X",50)  STYLE WS_DISABLED  SIZE 310, 20
+   oBotNew:Enable()
+   oBotEdit:Enable()
+   oBotRet:Enable()
+   oBotNext:Enable()
+   oBotSave:Disable()
+   oBottop:Enable()
+   oBotBott:Enable()
+   oBotDelete:Enable()
+   oBotClose:Enable()
+   oBotPrint:Enable()
 
-@ 2,110 Say "Adress" SIZE 50, 20
-@65,110 Get Gt_Adress VAR oAdress  PICTURE REPLICATE("X",50) STYLE WS_DISABLED SIZE 310, 20
+RETURN Nil
 
-@ 2,135 Say "Fone" SIZE 50, 20
-@65,135 Get Gt_Fone VAR oFone PICTURE REPLICATE("X",50) STYLE WS_DISABLED  SIZE 310, 20
+FUNCTION CloseBotons()
 
-@ 2,160 Say "e_Mail" SIZE 50, 20
-@65,160 Get Gt_e_Mail VAR oe_Mail PICTURE REPLICATE("X",30)  STYLE WS_DISABLED  SIZE 190, 20
+   oBotNew:Disable()
+   oBotEdit:Disable()
+   oBotRet:Disable()
+   oBotNext:Disable()
+   oBotSave:Enable()
+   oBottop:Disable()
+   oBotBott:Disable()
+   oBotDelete:Disable()
+   oBotClose:Enable()
+   oBotPrint:Disable()
 
-Return Nil
+RETURN Nil
 
+FUNCTION CreateGets()
 
-*---------------------------------------------------------------------------------------
-Function EditRecord()
-*---------------------------------------------------------------------------------------
-CloseBotons()
-OpenGets()
-Gt_Name:Setfocus()
-Return Nil
+   @  2, 60 Say "Cod"  SIZE 40,20
+   @ 65, 60 Get Gt_Cod VAR oCod PICTURE "999" STYLE WS_DISABLED  SIZE 100, 20
 
-*---------------------------------------------------------------------------------------
-Function CreateVariable()
-*---------------------------------------------------------------------------------------
+   @  2,85 Say "Name" SIZE 50, 20
+   @ 65,85 Get Gt_Name VAR oName  PICTURE REPLICATE("X",50)  STYLE WS_DISABLED  SIZE 310, 20
 
-oCod:=SPACE(5)
-oName:=SPACE(50)
-oAdress:=SPACE(50)
-oFone:=SPACE(50)
-oe_Mail:=SPACE(30)
-GetRefresh()
-OpenGets()
-oOper:=1 //Operacao para Inclusao
-Return Nil
+   @  2,110 Say "Adress" SIZE 50, 20
+   @ 65,110 Get Gt_Adress VAR oAdress  PICTURE REPLICATE("X",50) STYLE WS_DISABLED SIZE 310, 20
 
-*---------------------------------------------------------------------------------------
-Function GetRefresh()
-*---------------------------------------------------------------------------------------
+   @  2,135 Say "Fone" SIZE 50, 20
+   @ 65,135 Get Gt_Fone VAR oFone PICTURE REPLICATE("X",50) STYLE WS_DISABLED  SIZE 310, 20
 
-//Local oDlg:=hwg_GetModalHandle()
-Gt_Cod:Refresh()
-Gt_Name:Refresh()
-Gt_Adress:Refresh()
-Gt_Fone:Refresh()
-Gt_e_Mail:Refresh()
-Return Nil
+   @  2,160 Say "e_Mail" SIZE 50, 20
+   @ 65,160 Get Gt_e_Mail VAR oe_Mail PICTURE REPLICATE("X",30)  STYLE WS_DISABLED  SIZE 190, 20
 
-*---------------------------------------------------------------------------------------
-Function GetVars()
-*---------------------------------------------------------------------------------------
+RETURN Nil
 
-oCod   :=TabDbf->Cod
-oName    :=TabDbf->Name
-oAdress :=TabDbf->Adress
-oFone :=TabDbf->Fone
-oe_Mail :=TabDbf->e_Mail
-Return Nil
+FUNCTION EditRecord()
 
-*---------------------------------------------------------------------------------------
-Function SaveTab()
-*---------------------------------------------------------------------------------------
+   CloseBotons()
+   OpenGets()
+   Gt_Name:Setfocus()
 
-if oOper=1
-   Select TabDbf
-   oCod:=StrZero(val(oCod),3)
-   Seek oCod
-   If Found()
-      hwg_Msginfo("Cod."+oCod+" no valid...","Mensagem")
-      Return Nil
-   Endif
-   Append Blank
-   TabDbf->Cod:=oCod
-   TabDbf->Name:=oName
-   TabDbf->Adress:=oAdress
-   TabDbf->Fone:=oFone
-   TabDbf->e_Mail:=oe_Mail
-   Unlock
-Else
-   RLock()
-   TabDbf->Name:=oName
-   TabDbf->Adress:=oAdress
-   TabDbf->Fone:=oFone
-   TabDbf->e_Mail:=oe_Mail
-   Unlock
-EndIf
-CloseGets()
-oOper:=1
-Return Nil
+RETURN Nil
 
+FUNCTION CreateVariable()
 
-*---------------------------------------------------------------------------------------
-Function SkipTab(oSalto)
-*---------------------------------------------------------------------------------------
-CloseGets()
-Select TabDbf
-If oSalto=1
-   Skip -1
-Elseif oSalto=2
-   Skip
-Elseif oSalto=3
-   Go Top
-Else
-   Go Bottom
-Endif
-GetVars()
-GetRefresh()
-Return Nil
+   oCod:=SPACE(5)
+   oName:=SPACE(50)
+   oAdress:=SPACE(50)
+   oFone:=SPACE(50)
+   oe_Mail:=SPACE(30)
+   GetRefresh()
+   OpenGets()
+   oOper:=1 //Operacao para Inclusao
 
-*---------------------------------------------------------------------------------------
-Function DeleteRecord()
-*---------------------------------------------------------------------------------------
+RETURN Nil
 
-Select TabDbf
-Seek oCod
-If Found()
-   If hwg_Msgyesno("Delete Cod "+oCod ,"Mensagem")
+FUNCTION GetRefresh()
+
+   //Local oDlg:=hwg_GetModalHandle()
+   Gt_Cod:Refresh()
+   Gt_Name:Refresh()
+   Gt_Adress:Refresh()
+   Gt_Fone:Refresh()
+   Gt_e_Mail:Refresh()
+
+RETURN Nil
+
+FUNCTION GetVars()
+
+   oCod   :=TabDbf->Cod
+   oName    :=TabDbf->Name
+   oAdress :=TabDbf->Adress
+   oFone :=TabDbf->Fone
+   oe_Mail :=TabDbf->e_Mail
+
+RETURN Nil
+
+FUNCTION SaveTab()
+
+   IF oOper=1
+      Select TabDbf
+      oCod := StrZero( val( oCod ), 3 )
+      SEEK oCod
+      If Found()
+         hwg_Msginfo("Cod."+oCod+" no valid...","Mensagem")
+         RETURN Nil
+      ENDIF
+      APPEND BLANK
+      TabDbf->Cod    := oCod
+      TabDbf->Name   := oName
+      TabDbf->Adress := oAdress
+      TabDbf->Fone   := oFone
+      TabDbf->e_Mail := oe_Mail
+      UNLOCK
+   ELSE
       RLock()
-      Delete
-      Unlock
-   Endif
-EndIf
-Go Bottom
-GetVars()
-GetRefresh()
-Return Nil
+      TabDbf->Name:=oName
+      TabDbf->Adress:=oAdress
+      TabDbf->Fone:=oFone
+      TabDbf->e_Mail:=oe_Mail
+      UNLOCK
+   ENDIF
+   CloseGets()
+   oOper := 1
 
-*---------------------------------------------------------------------------------------
-Function OpenDbf()
-*---------------------------------------------------------------------------------------
+RETURN Nil
 
-Local vTab:={}
-Local vArq:=oDir+"FORNECED.DBF"
-Local vInd1:=oDir+"FORNECED.NTX"
+FUNCTION SkipTab( oSalto )
 
-If !File(vArq)
-   AADD(vTab,{"Cod    ", "C", 3, 0 })
-   AADD(vTab,{"Name     ", "C",50, 0 })
-   AADD(vTab,{"Adress  ", "C",50, 0 })
-   AADD(vTab,{"Fone  ", "C",50, 0 })
-   AADD(vTab,{"e_Mail  ", "C",30, 0 })
-   dBCreate(vArq, vTab)
-EndIf
-Use (vArq) Shared Alias TabDbf
-If !File(vInd1)
-   fLock()
-   Index on field->Cod   to (vInd1)
-   Unlock
-Else
-   Set Index to (vInd1)
-EndIf
-Return Nil
+   CloseGets()
+   SELECT TabDbf
+   IF oSalto = 1
+      SKIP -1
+   ELSEIF oSalto = 2
+      SKIP
+   ELSEIF oSalto = 3
+      GOTO TOP
+   ELSE
+      GO BOTTOM
+   ENDIF
+   GetVars()
+   GetRefresh()
 
-*---------------------------------------------------------------------------------------
-Function OpenGets
-*---------------------------------------------------------------------------------------
-Gt_Cod:Enable()
-Gt_Name:Enable()
-Gt_Adress:Enable()
-Gt_Fone:Enable()
-Gt_e_Mail:Enable()
-Return Nil
+RETURN Nil
 
-*---------------------------------------------------------------------------------------
-Function CloseGets
-*---------------------------------------------------------------------------------------
-Gt_Cod:Disable()
-Gt_Name:Disable()
-Gt_Adress:Disable()
-Gt_Fone:Disable()
-Gt_e_Mail:Disable()
-Return Nil
+FUNCTION DeleteRecord()
 
+   SELECT TabDbf
+   SEEK oCod
+   IF Found()
+      IF hwg_Msgyesno("Delete Cod "+oCod ,"Mensagem")
+         RLock()
+         DELETE
+         UNLOCK
+      ENDIF
+   ENDIF
+   GO BOTTOM
+   GetVars()
+   GetRefresh()
+
+RETURN Nil
+
+FUNCTION OpenDbf()
+
+   LOCAL vTab:={}
+   LOCAL vArq:=oDir+"FORNECED.DBF"
+   LOCAL vInd1:=oDir+"FORNECED.NTX"
+
+   IF !File(vArq)
+      AADD(vTab,{"Cod    ", "C", 3, 0 })
+      AADD(vTab,{"Name     ", "C",50, 0 })
+      AADD(vTab,{"Adress  ", "C",50, 0 })
+      AADD(vTab,{"Fone  ", "C",50, 0 })
+      AADD(vTab,{"e_Mail  ", "C",30, 0 })
+      dBCreate(vArq, vTab)
+   ENDIF
+   USE (vArq) SHARED ALIAS TabDbf
+   IF !File(vInd1)
+      fLock()
+      INDEX ON field->Cod   TO (vInd1)
+      UNLOCK
+   ELSE
+      SET INDEX TO (vInd1)
+   ENDIF
+
+RETURN Nil
+
+FUNCTION OpenGets()
+
+   Gt_Cod:Enable()
+   Gt_Name:Enable()
+   Gt_Adress:Enable()
+   Gt_Fone:Enable()
+   Gt_e_Mail:Enable()
+
+RETURN Nil
+
+FUNCTION CloseGets()
+
+   Gt_Cod:Disable()
+   Gt_Name:Disable()
+   Gt_Adress:Disable()
+   Gt_Fone:Disable()
+   Gt_e_Mail:Disable()
+
+RETURN Nil

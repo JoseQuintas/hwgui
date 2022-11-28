@@ -71,6 +71,7 @@ rm samples/a.log 2>/dev/null
 rm samples/temp_a2.ps 2>/dev/null
 rm samples/temp_a2.pdf 2>/dev/null
 rm samples/tstbrw.dbf 2>/dev/null
+rm samples/test.bmp  2>/dev/null
 
 #
 # Utils exe and logs
@@ -99,6 +100,7 @@ rm test/ChTooltip 2>/dev/null
 rm test/testfilehex 2>/dev/null
 rm test/ticket112 2>/dev/null
 rm test/testbmpcr 2>/dev/null
+rm test/template  2>/dev/null
 
 # Other files created by test programs
 rm test/hexdump.txt 2>/dev/null

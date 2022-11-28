@@ -303,6 +303,7 @@
 
    # --- Harbour and HWGUI --
    HARBOUR_INSTALL=$HOME/Harbour/core-master
+   export HARBOUR_INSTALL
    HWGUI_INSTALL=$HOME/hwgui
    PATH=$PATH:$HARBOUR_INSTALL/bin/linux/gcc:$HWGUI_INSTALL/bin
    export PATH
@@ -406,6 +407,22 @@ These are bugs in the operation system.
 
 Forever update your system to the recent version !!
 
+
+Appendix 3:
+-----------
+
+Information for port to GTK3
+
+Now the port to GTK3 is under construction !!!!
+
+The first steps are done, but
+there is to do some work.
+
+On ubuntu, you need to install the GTK3 developper package:
+sudo apt-get install libgtk-3-dev
+
+DF7BE, November 2022 
+ 
 
 * =============== EOF of install.txt ====================
  

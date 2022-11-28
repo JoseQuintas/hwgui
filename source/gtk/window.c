@@ -14,7 +14,10 @@
 #include "hbvm.h"
 #include "item.api"
 #include <locale.h>
+
+//#if ( GTK_MAJOR_VERSION -0 < 3 )
 #include "gtk/gtk.h"
+//#endif
 #include "gdk/gdkkeysyms.h"
 #ifdef __XHARBOUR__
 #include "hbfast.h"
@@ -25,6 +28,17 @@
 
 /* Avoid warnings from GCC */
 #include "warnings.h"
+
+/* Migration to GTK 3 */
+
+#if ! ( GTK_MAJOR_VERSION -0 < 3 )
+// #include <gtk/gdkx.h>
+#ifndef __PLATFORM__WINDOWS
+#include <gdk/gdk.h>
+#else
+#include <gdk/gdkwin32.h>
+#endif
+#endif
 
 #define WM_MOVE                           3
 #define WM_SIZE                           5
@@ -113,7 +127,14 @@ HB_FUNC( HWG_INITMAINWINDOW )
    GtkWidget * hWnd ;
    GtkWidget * vbox;
    GtkFixed * box;
+#if GTK_MAJOR_VERSION -0 < 3   
    GdkPixmap * background;
+#else
+   /* GdkPixbuf * background; */
+   GtkWidget * background;
+   GtkStyleContext * context;
+   GtkApplication *app;
+#endif
    GtkStyle * style;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    gchar *gcTitle = hwg_convert_to_utf8( hb_parcx( 3 ) );
@@ -128,17 +149,42 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
    /* Background style*/
    style = gtk_style_new();
+   
    if (szBackFile)
    {
+#if GTK_MAJOR_VERSION -0 < 3 
+      /* GTK 2 */  
       gdk_pixbuf_render_pixmap_and_mask(szBackFile->handle, &background, NULL, 0);
       if ( ! background ) g_error("%s\n","Error loading background image");
       style->bg_pixmap[0] = background ;
+#endif
    }
-
+  
+#if GTK_MAJOR_VERSION -0 < 3  
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
+#else
+  app = gtk_application_new ("net.sourceforge.projects.hwgui.gtk.sample", G_APPLICATION_FLAGS_NONE);
+  hWnd = gtk_application_window_new (app);
+//  gtk_window_set_default_size (GTK_WINDOW (hWnd), 200, 200);
+// hwg_writelog(NULL,"Hier");   
+  gtk_widget_show_all (hWnd);  
+#endif
 
+  
+#if ! ( GTK_MAJOR_VERSION -0 < 3 )
+  /* GTK 3 */
+  /* To be contiued  
+//  background = gtk_image_new_from_file( szBackFile->handle );
+
+  if ( background )
+   gdk_window_set_back_pixmap( GDK_WINDOW (hWnd), background, (gboolean) TRUE);
+  */
+#endif
+   
    gtk_window_set_title( GTK_WINDOW(hWnd), gcTitle );
+  
    g_free( gcTitle );
+ 
    //gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_resizable( GTK_WINDOW(hWnd), TRUE);
    gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
@@ -175,8 +221,9 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
 /* Set default icon
    DF7BE:
-   gtk_window_set_icon() does not work
+   gtk_window_set_icon() does not work (GTK2)
 */
+
    if (szFile)
    {
         gtk_window_set_default_icon( szFile->handle );
@@ -196,7 +243,14 @@ HB_FUNC( HWG_CREATEDLG )
    GtkWidget * hWnd;
    GtkWidget * vbox;
    GtkFixed  * box;
+#if GTK_MAJOR_VERSION -0 < 3
    GdkPixmap * background;
+#else
+   /* GdkPixbuf * background; */
+  GtkWidget * background;
+  GtkStyleContext * context;
+#endif
+
    GtkStyle * style;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
    gchar *gcTitle = hwg_convert_to_utf8 ( hb_itemGetCPtr( GetObjectVar( pObject, "TITLE" ) ) );
@@ -223,12 +277,24 @@ HB_FUNC( HWG_CREATEDLG )
    style = gtk_style_new();
    if (szBackFile)
    {
+#if GTK_MAJOR_VERSION -0 < 3
+      /* GTK 2 */
       gdk_pixbuf_render_pixmap_and_mask(szBackFile->handle, &background, NULL, 0);
       if ( ! background ) g_error("%s\n","Error loading background image");
       style->bg_pixmap[0] = background ;
+#endif
    }
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
+   
+#if ! ( GTK_MAJOR_VERSION -0 < 3 )
+  /* GTK 3 */
+  background = gtk_image_new_from_pixbuf( szBackFile->handle );
+  /* To be contiued 
+  if ( background )
+     gdk_window_set_back_pixmap( GDK_WINDOW (hWnd), background, (gboolean) TRUE);
+  */
+#endif
 
    if (szFile)
    {

@@ -1,0 +1,49 @@
+#
+# $Id$
+#
+
+# Include this file in hbmk2 command line to build an app:
+#   'hbmk2 hwgui.hbc test.prg'
+
+incpaths=include
+libpaths=lib
+
+{win}gt=gtgui
+
+{!hblib}libs=hwgui procmisc hbxml hwgdebug
+
+# --- Outdated, out of support ---
+#{win&!allmingw&!watcom&!hblib}libs=hbactivex hwg_extctrl hwg_qhtm
+
+{unix}ldflags+="`pkg-config --libs gtk+-3.0`"
+# {win}ldflags+=$(shell pkg-config --libs gtk+-3.0)
+# {win}ldflags+=-LC:/msys64/mingw64/bin/../lib -lgtk-3 -lgdk-3 -lz -lgdi32 -limm32 -lshell32 -lole32 -luuid -lwinmm -ldwmapi -lsetupapi -lcfgmgr32 -lhid -lwinspool -lcomctl32 -lcomdlg32 -lpangowin32-1.0 -lpangocairo-1.0 -lpango-1.0 -lharfbuzz -latk-1.0 -lcairo-gobject -lcairo -lgdk_pixbuf-2.0 -lgio-2.0 -lgobject-2.0 -lglib-2.0 -lintl
+
+
+# Change 3 lines to build HwGUI in Unicode mode
+
+#PRGFLAGS=-DUNICODE -q -m -n -es2
+#{win}CFLAGS=-DUNICODE -DHWG_USE_POINTER_ITEM
+#{unix}CFLAGS=-DUNICODE -DHWG_USE_POINTER_ITEM "`pkg-config --cflags gtk+-3.0 | sed -e 's/-Wl,//g'`"
+
+PRGFLAGS=-q -m -n -es2
+#{win}CFLAGS=-DHWG_USE_POINTER_ITEM "`pkg-config --cflags gtk+-3.0 | sed -e 's/-Wl,//g'`"
+{win}CFLAGS=-DHWG_USE_POINTER_ITEM
+# {win}CFLAGS=+-IC:/Msys64/usr/include/gtk-3.0 -IC:/Msys64/usr/include/pango-1.0 -IC:/Msys64/usr/include -IC:/Msys64/usr/include/glib-2.0 -IC:/Msys64/usr/lib/glib-2.0/include -IC:/Msys64/usr/include/harfbuzz -IC:/Msys64/usr/include/freetype2 -IC:/Msys64/usr/include/libpng16 -IC:/Msys64/usr/include/fribidi -IC:/Msys64/usr/include/cairo -IC:/Msys64/usr/include/lzo -IC:/Msys64/usr/include/pixman-1 -IC:/Msys64/usr/include/gdk-pixbuf-2.0 -IC:/Msys64/usr/include/atk-1.0 -pthread
+
+
+{unix}CFLAGS=-DHWG_USE_POINTER_ITEM "`pkg-config --cflags gtk+-3.0 | sed -e 's/-Wl,//g'`"
+
+# Activate for GCC > V8
+# -Wold-style-cast
+# Always done in "warnings.h" as PRAGMA declaration
+
+# "{unix}-cflag=`pkg-config --cflags gtk+-3.0 | sed -e 's/-Wl,//g'`"
+
+# Additional C flags for debugging
+# CFLAGS+="-DGTK_DISABLE_SINGLE_INCLUDES"
+# CFLAGS+="-DGDK_DISABLE_DEPRECATED -DGTK_DISABLE_DEPRECATED"
+
+
+# =============================== EOF of hwguiGTK3.hbc ====================================
+

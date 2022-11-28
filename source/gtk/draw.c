@@ -567,8 +567,11 @@ HB_FUNC( HWG_SAVEBITMAP )
 {
    PHWGUI_PIXBUF hpix = HB_PARHANDLE(2);
    const char * szType = (HB_ISCHAR(3))? hb_parc(3) : "bmp";
- 
+#if GTK_MAJOR_VERSION -0 < 3 
    hb_retl( gdk_pixbuf_save( hpix->handle, hb_parc(1), szType, NULL, NULL ) );
+#else
+   hb_retl( gdk_pixbuf_save_to_stream( ( GdkPixbuf *) hb_parc(1),(GOutputStream * ) hpix->handle,  szType, NULL, NULL) );
+#endif
 } 
 
 /* hwg_Openimage( name , ltype )

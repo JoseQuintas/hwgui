@@ -1,0 +1,23 @@
+#
+# $Id$
+#
+
+
+# Special parameters for LINUX/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+-n -w
+
+-otemplate
+
+template.prg
+
+..\hwgui.hbc
+# Free this for GTK3
+# ../hwguiGTK3.hbc
+
+# ===================== EOF of template.hbp ====================
+

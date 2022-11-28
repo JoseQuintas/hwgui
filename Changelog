@@ -15,6 +15,26 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2022-11-28 14:30 UTC+0100 Wilfried Brunken DF7BE
+  * clean.sh
+  * hwguiGTK3.hbc (New)
+  * install.txt
+  * source/gtk/Makefile.linux-gtk3 (New)
+  * source/gtk/buildGTK3.sh (New)
+  * source/gtk/control.c
+  * source/gtk/draw.c
+  * source/gtk/misc.c
+  * source/gtk/window.c
+  * test/template.hbp (New)
+  * test/template.prg (New)
+   ! Project Port to GTK3 (1)
+   ! First steps done, template programs run
+   ! without trouble.
+   ! The compatibility to GTK2 is always preseved. 
+   ! (To be continued) 
+
+
 2022-11-28 15:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
     ! Print method fixed

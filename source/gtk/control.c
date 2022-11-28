@@ -21,7 +21,8 @@
 #include "item.api"
 
 #include <cairo.h>
-#include "gtk/gtk.h"
+// #include "gtk/gtk.h"
+#include <gtk/gtk.h>
 
 #include "hwgtk.h"
 #include "hbdate.h"
@@ -30,6 +31,7 @@
 #endif
 /* Avoid warnings from GCC */
 #include "warnings.h"
+
 
 
 #define SS_CENTER           1
@@ -1183,7 +1185,11 @@ HB_FUNC( HWG_RESETPROGRESSBAR )
 
 
     gtk_progress_bar_set_fraction( GTK_PROGRESS_BAR( widget ), 0.0 );
+#if GTK_MAJOR_VERSION -0 < 3
     gtk_progress_bar_update( GTK_PROGRESS_BAR( widget ), 0.0 );
+#else
+    gtk_progress_bar_pulse( GTK_PROGRESS_BAR( widget ) );
+#endif
     while( gtk_events_pending(  ) )
    {
       gtk_main_iteration(  );

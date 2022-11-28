@@ -1,7 +1,7 @@
 #include "windows.ch"
 #include "guilib.ch"
 
-FUNCTION Main
+FUNCTION Main()
 
    LOCAL oMain, oPaneHea, oPaneTop, oGraph, oFont
    LOCAL oStyleNormal, oStylePressed, oStyleOver
@@ -41,9 +41,10 @@ FUNCTION Main
 
    ACTIVATE WINDOW oMain
 
-   RETURN nil
+RETURN Nil
 
-STATIC FUNCTION Graph1
+STATIC FUNCTION Graph1()
+
    LOCAL oGraph, i, aGraph := { {}, {} }
 
    FOR i := - 40 TO 40
@@ -57,9 +58,10 @@ STATIC FUNCTION Graph1
 
    oGraph:Rebuild( aGraph, 1 )
 
-   RETURN Nil
+RETURN Nil
 
-STATIC FUNCTION Graph2
+STATIC FUNCTION Graph2()
+
    LOCAL oGraph, i, aGraph := { {} }
 
    FOR i := 1 TO 8
@@ -71,9 +73,10 @@ STATIC FUNCTION Graph2
 
    oGraph:Rebuild( aGraph, 2 )
 
-   RETURN Nil
+RETURN Nil
 
-STATIC FUNCTION Graph3
+STATIC FUNCTION Graph3()
+
    LOCAL oGraph, i, aGraph := { {} }
 
    FOR i := 1 TO 6
@@ -85,4 +88,4 @@ STATIC FUNCTION Graph3
 
    oGraph:Rebuild( aGraph, 3 )
 
-   RETURN Nil
+RETURN Nil

@@ -1,7 +1,7 @@
 #include "windows.ch"
 #include "guilib.ch"
 
-FUNCTION main
+FUNCTION main()
 
    LOCAL oMain, i
 
@@ -10,10 +10,10 @@ FUNCTION main
         STYLE WS_VSCROLL + WS_HSCROLL
 
    FOR i := 0 TO 200 STEP 20
-      @ 0, i  say StrZero(i, 3) + "  -  " + "01234567890123456789012345678901234567890" + "  -  " + StrZero(i, 3) size 420, 20
-   next
+      @ 0, i  say StrZero( i, 3 ) + "  -  " + "01234567890123456789012345678901234567890" + "  -  " + StrZero( i, 3 ) size 420, 20
+   NEXT
 
    ACTIVATE window oMain
 
-   RETURN nil
+RETURN Nil
 

@@ -18,49 +18,50 @@
 #include "windows.ch"
 #include "guilib.ch"
 
-Static oMain, oForm, oFont, oBar := Nil
+STATIC oMain, oForm, oFont, oBar := Nil
 
-Function Main()
+FUNCTION Main()
 
-        INIT WINDOW oMain MAIN TITLE "Progress Bar Sample"
+   INIT WINDOW oMain MAIN TITLE "Progress Bar Sample"
 
-        MENU OF oMain
-             MENUITEM "&Exit" ACTION oMain:Close()
-             MENUITEM "&Demo" ACTION Test()
-        ENDMENU
+   MENU OF oMain
+      MENUITEM "&Exit" ACTION oMain:Close()
+      MENUITEM "&Demo" ACTION Test()
+   ENDMENU
 
-        ACTIVATE WINDOW oMain MAXIMIZED
-Return Nil
+   ACTIVATE WINDOW oMain MAXIMIZED
 
-Function Test()
-Local cMsgErr := "Bar doesn't exist"
+RETURN Nil
 
-        PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
+FUNCTION Test()
 
-        INIT DIALOG oForm CLIPPER NOEXIT TITLE "Progress Bar Demo";
-             FONT oFont ;
-             AT 0, 0 SIZE 700, 425 ;
-             STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
-             ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
+   LOCAL cMsgErr := "Bar doesn't exist"
 
-             @ 300, 395 BUTTON 'Reset Bar'  SIZE 75,25 ;
-               ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),oBar:Reset()) }
+   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
 
-             @ 380, 395 BUTTON 'Step Bar'   SIZE 75,25 ;
-               ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),oBar:Step()) }
+   INIT DIALOG oForm CLIPPER NOEXIT TITLE "Progress Bar Demo" ;
+      FONT oFont ;
+      AT 0, 0 SIZE 700, 425 ;
+      STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU ;
+      ON EXIT { || Iif( oBar == Nil, .T., ( oBar:Close(),.T. ) ) }
 
-             @ 460, 395 BUTTON 'Create Bar' SIZE 75,25 ;
-               ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 10, 100 ) }
+      @ 300, 395 BUTTON 'Reset Bar'  SIZE 75,25 ;
+         ON CLICK { || Iif( oBar == Nil, hwg_Msgstop( cMsgErr ), oBar:Reset() ) }
 
-             @ 540, 395 BUTTON 'Close Bar'  SIZE 75,25 ;
-               ON CLICK {|| Iif(oBar==Nil,hwg_Msgstop(cMsgErr),(oBar:Close(),oBar:=Nil)) }
+      @ 380, 395 BUTTON 'Step Bar'   SIZE 75,25 ;
+         ON CLICK { || Iif(oBar == Nil, hwg_Msgstop( cMsgErr ), oBar:Step() ) }
 
-             @ 620, 395 BUTTON 'Close'      SIZE 75,25 ;
-               ON CLICK {|| oForm:Close() }
+      @ 460, 395 BUTTON 'Create Bar' SIZE 75,25 ;
+         ON CLICK { || oBar := HProgressBar():NewBox( "Testing ...",,,,, 10, 100 ) }
 
-        ACTIVATE DIALOG oForm
+      @ 540, 395 BUTTON 'Close Bar'  SIZE 75,25 ;
+         ON CLICK { || Iif( oBar == Nil, hwg_Msgstop( cMsgErr ), ( oBar:Close(), oBar := Nil ) ) }
 
-Return Nil
+      @ 620, 395 BUTTON 'Close'      SIZE 75,25 ;
+         ON CLICK { || oForm:Close() }
+
+      ACTIVATE DIALOG oForm
+
+RETURN Nil
 
 * ============================= EOF of progbars.prg =============================
-

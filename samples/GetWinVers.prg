@@ -10,7 +10,7 @@
  * www - http://kresin.belgorod.su
  * Copyright 2020 Wilfried Brunken, DF7BE
  *
-*/ 
+*/
     * Status:
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
@@ -20,12 +20,13 @@
    return values on non Windows operation systems (GTK)
 */
 
-#include "windows.ch" 
+#include "windows.ch"
 #include "guilib.ch"
 
-Function Main
-Local oMainWindow
-LOCAL nmin, nmaj, bwin, bwin7, bwin10
+FUNCTION Main()
+
+   LOCAL oMainWindow
+   LOCAL nmin, nmaj, bwin, bwin7, bwin10
 
    bwin    := hwg_isWindows()
    bwin7   := hwg_isWin7()
@@ -33,21 +34,21 @@ LOCAL nmin, nmaj, bwin, bwin7, bwin10
    nmin    := hwg_GetWinMinorVers()
    nmaj    := hwg_GetWinMajorVers()
 
-
    INIT WINDOW oMainWindow MAIN TITLE "Windows Version" ;
      AT 0,0 SIZE 100,100
 
    hwg_MsgInfo( ;
    "Windows    : " + LOGICAL2STR(bwin)   + CHR(10) + ;
-   "Windows 7  : " + LOGICAL2STR(bwin7)  + CHR(10) + ; 
+   "Windows 7  : " + LOGICAL2STR(bwin7)  + CHR(10) + ;
    "Windows 10 : " + LOGICAL2STR(bwin10) + CHR(10) + ;
-   "Major= " + ALLTRIM(STR(nmaj)) + CHR(10) + ;
-   "Minor= " + ALLTRIM(STR(nmin)), "Windows Version")
+   "Major= " + ALLTRIM( STR( nmaj ) ) + CHR(10) + ;
+   "Minor= " + ALLTRIM( STR( nmin ) ), "Windows Version" )
   ACTIVATE WINDOW oMainWindow
 
-RETURN NIL
+RETURN Nil
 
-FUNCTION LOGICAL2STR(bl)
-RETURN IIF(bl,"True","False")
+FUNCTION LOGICAL2STR( bl )
 
-* ====================== EOF of GetWinVers.prg ==================== 
+RETURN IIF( bl, "True", "False" )
+
+* ====================== EOF of GetWinVers.prg ====================

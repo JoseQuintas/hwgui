@@ -7,13 +7,13 @@
  *
  *
  * Sample program for QR encoding and
- * converts its output to 
+ * converts its output to
  * monochrome bitmaps for multi platform usage.
  *
- * Copyright 2022 Wilfried Brunken, DF7BE 
+ * Copyright 2022 Wilfried Brunken, DF7BE
  * https://sourceforge.net/projects/cllog/
 
- 
+
     * Status:
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
@@ -25,53 +25,50 @@
 
 FUNCTION Main()
 
-LOCAL oMainWindow, oButton1, oButton2
+   LOCAL oMainWindow, oButton1, oButton2
 
-INIT WINDOW oMainWindow MAIN TITLE "Creating QR code" AT 168,50 SIZE 250,150
+   INIT WINDOW oMainWindow MAIN TITLE "Creating QR code" AT 168,50 SIZE 250,150
 
-  @ 20,50 BUTTON oButton1 CAPTION "Test";
-        ON CLICK {|| Testen()} ;
-        SIZE 80,32
+   @ 20,50 BUTTON oButton1 CAPTION "Test" ;
+      ON CLICK { || Testen() } ;
+      SIZE 80,32
 
-  @ 120,50 BUTTON oButton2 CAPTION "Quit";
-        ON CLICK {|| oMainWindow:Close } ;
-        SIZE 80,32
+   @ 120,50 BUTTON oButton2 CAPTION "Quit";
+      ON CLICK { || oMainWindow:Close } ;
+      SIZE 80,32
 
-ACTIVATE WINDOW oMainWindow
+   ACTIVATE WINDOW oMainWindow
 
-RETURN NIL
+RETURN Nil
 
-
-
-* Ask for string to convert, zoom factor and 
+* Ask for string to convert, zoom factor and
 * store to bitmap file
 * Convert to bitmap and show the qrcode,
-* Store the QR code to bitmap file "test.bmp 
+* Store the QR code to bitmap file "test.bmp
+
 FUNCTION Testen()
 
-LOCAL cqrc, cbitmap
+   LOCAL cqrc, cbitmap
 
-// cqrc := hwg_QRCodeTxtGen("https://www.darc.de",1)
+   // cqrc := hwg_QRCodeTxtGen("https://www.darc.de",1)
 
-cqrc := hwg_QRCodeTxtGen("https://sourceforge.net/projects/hwgui",1)
+   cqrc := hwg_QRCodeTxtGen( "https://sourceforge.net/projects/hwgui", 1 )
 
 
-cqrc := hwg_QRCodeZoom(cqrc,3)
+   cqrc := hwg_QRCodeZoom( cqrc, 3 )
 
-// cqrc := hwg_QRCodeZoom_C(cqrc,LEN(cqrc),3)
+   // cqrc := hwg_QRCodeZoom_C(cqrc,LEN(cqrc),3)
 
-hwg_WriteLog(cqrc)
+   hwg_WriteLog( cqrc )
 
-cbitmap := hwg_QRCodetxt2BPM(cqrc)
+   cbitmap := hwg_QRCodetxt2BPM( cqrc )
 
-* Store to bitmap file
-MEMOWRIT("test.bmp",cbitmap)
+   * Store to bitmap file
+   MEMOWRIT( "test.bmp", cbitmap )
 
-* And show the new bitmap image
-hwg_ShowBitmap(cbitmap,"test",0,hwg_ColorC2N("080808") ) // Color = 526344
+   * And show the new bitmap image
+   hwg_ShowBitmap( cbitmap, "test", 0, hwg_ColorC2N( "080808" ) ) // Color = 526344
 
-RETURN NIL
-
+RETURN Nil
 
 *  ================== EOF of qrencode.prg ======================
- 

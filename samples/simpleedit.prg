@@ -6,7 +6,7 @@
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
- * Copyright 2021 DF7BE 
+ * Copyright 2021 DF7BE
  *
 */
 
@@ -20,68 +20,65 @@
 
 STATIC fname , mmemofield
 
-Function Main()
+FUNCTION Main()
 
 LOCAL oMain
 
    mmemofield := ""
 
-       INIT WINDOW oMain MAIN TITLE "File Viewer" ;
-             AT 0,0 ;
-             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
+   INIT WINDOW oMain MAIN TITLE "File Viewer" ;
+      AT 0,0 ;
+      SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
-                MENU OF oMain
-                    MENU TITLE "&Exit"
-                        MENUITEM "&Quit" ACTION oMain:Close()
-                    ENDMENU
-                    MENU TITLE "&Open"
-                        MENUITEM "&Open File" ACTION FileOpen()
-                    ENDMENU                        
-                ENDMENU
+   MENU OF oMain
+      MENU TITLE "&Exit"
+         MENUITEM "&Quit" ACTION oMain:Close()
+      ENDMENU
+      MENU TITLE "&Open"
+         MENUITEM "&Open File" ACTION FileOpen()
+      ENDMENU
+   ENDMENU
 
-        ACTIVATE WINDOW oMain
-        
-Return Nil
+   ACTIVATE WINDOW oMain
 
-Function Test()
+RETURN Nil
 
-LOCAL oFont , mreturn
+FUNCTION Test()
+
+   LOCAL oFont , mreturn
 
 #ifdef __PLATFORM__WINDOWS
- PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
+   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
 #else
- PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 12
-#endif 
+   PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 12
+#endif
 
-* Start editing
- mreturn := hwg_MemoEdit(mmemofield , , , , , ,  oFont ) 
-* Modified ?
- IF hwg_MemoCmp(mmemofield , mreturn ) 
-  hwg_MsgInfo("Nothing to save","Memo Edit") 
- ELSE
-  * Save file
-   IF MemoWrit(fname,mreturn)
-    hwg_MsgInfo("File written: " + fname,"Editor")
+   * Start editing
+   mreturn := hwg_MemoEdit(mmemofield , , , , , ,  oFont )
+   * Modified ?
+   IF hwg_MemoCmp(mmemofield , mreturn )
+       hwg_MsgInfo( "Nothing to save", "Memo Edit" )
    ELSE
-    hwg_MsgStop("Write error file : " + fname,"Editor" )
+      * Save file
+      IF MemoWrit(fname,mreturn)
+         hwg_MsgInfo("File written: " + fname,"Editor")
+      ELSE
+         hwg_MsgStop("Write error file : " + fname,"Editor" )
+      ENDIF
    ENDIF
- ENDIF
 
-Return Nil
+RETURN Nil
 
 Function FileOpen()
 
+   fname := hwg_Selectfile( "Select File", "*.*")
 
-        fname := hwg_Selectfile( "Select File", "*.*")
+   IF EMPTY( fname )
+      RETURN NIL
+   ENDIF
+   * Read file
+   mmemofield := MemoRead( fname )
 
-        IF EMPTY(fname)
-         RETURN NIL
-        ENDIF
-    * Read file
-    mmemofield := MemoRead(fname)
-
-Return Test()
-
+RETURN Test()
 
 * ======================= EOF of simpleedit.prg ==========================
-

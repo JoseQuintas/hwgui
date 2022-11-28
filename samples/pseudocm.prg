@@ -1,10 +1,10 @@
-/* 
+/*
   pseudocm.prg
 
   $Id$
   HWGUI example
   Pseudo context menu (mouse right click) for BRWOSE.
-  
+
 
 */
 #include "windows.ch"
@@ -13,7 +13,8 @@
 STATIC oMenuBrw, nrp
 MEMVAR aSample
 
-FUNCTION Main
+FUNCTION Main()
+
    LOCAL oBmp
    LOCAL oBrw, Form_Main
    // LOCAL oFontBtn
@@ -23,7 +24,6 @@ FUNCTION Main
    // PREPARE FONT oFontBtn NAME "MS Sans Serif" WIDTH 0 HEIGHT - 12
 
    INIT WINDOW Form_Main MAIN TITLE "HwGUI Sample Pseudo Context Menu in BROWSE" SIZE 360, 300
-
 
    MENU OF Form_Main
       MENU TITLE "&File"
@@ -53,12 +53,7 @@ FUNCTION Main
 
    ACTIVATE WINDOW Form_Main
 
-   RETURN NIL
-
-   /* End of Main */
-
-
-   // ====================================
+RETURN Nil
 
 FUNCTION SUBMNU_BRW( nCol, nRow )
 
@@ -66,10 +61,11 @@ FUNCTION SUBMNU_BRW( nCol, nRow )
       nrp := ncol
       oMenuBrw:Show( HWindow():GetMain() )
    ENDIF
-   RETURN NIL
 
-FUNCTION st_f4(n, c)
+RETURN Nil
+
+FUNCTION st_f4( n, c )
 
    hwg_MsgInfo( "This is the status window of Line " + AllTrim( Str(n ) ) + " : " + c, "Bingo !" )
 
-   RETURN 0
+RETURN 0

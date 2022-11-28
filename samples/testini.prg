@@ -2,25 +2,25 @@
  *$Id: testini.prg,v 1.1 2004/03/19 12:58:06 sandrorrfreire Exp $
  *
  * HwGUI Samples
- * testini.prg - Test to use files ini 
+ * testini.prg - Test to use files ini
  */
 
 #include "windows.ch"
 #include "guilib.ch"
 
-Function Main
+FUNCTION Main()
 
-   Local oMainWindow
-   Local cIniFile:="HwGui.ini"
+   LOCAL oMainWindow
+   LOCAL cIniFile:="HwGui.ini"
 
    //Create the inifile
-   if !file( cIniFile )
+   IF ! file( cIniFile )
 
       Hwg_WriteIni( 'Config', 'WallParer' , "No Paper", cIniFile )
       Hwg_WriteIni( 'Config', 'DirHwGUima', "C:\HwGUI" , cIniFile )
       Hwg_WriteIni( 'Print',  'Spoll'   ,   "Epson LX 80" , cIniFile )
 
-    endif 
+    ENDIF
 
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
@@ -32,11 +32,15 @@ Function Main
    ENDMENU
 
    ACTIVATE WINDOW oMainWindow
-Return Nil
 
-Function ReadIni()
-Local cIniFile:="HwGui.ini"
-hwg_Msginfo( Hwg_GetIni( 'Config', 'WallParer' ,, cIniFile ) )
-hwg_Msginfo( Hwg_GetIni( 'Config', 'DirHwGUima',, cIniFile ) )
-hwg_Msginfo( Hwg_GetIni( 'Print',  'Spoll'     ,, cIniFile ) )
-Return Nil
+RETURN Nil
+
+FUNCTION ReadIni()
+
+   LOCAL cIniFile := "HwGui.ini"
+
+   hwg_Msginfo( Hwg_GetIni( 'Config', 'WallParer' ,, cIniFile ) )
+   hwg_Msginfo( Hwg_GetIni( 'Config', 'DirHwGUima',, cIniFile ) )
+   hwg_Msginfo( Hwg_GetIni( 'Print',  'Spoll'     ,, cIniFile ) )
+
+RETURN Nil

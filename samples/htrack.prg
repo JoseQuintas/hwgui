@@ -10,16 +10,16 @@
 
 FUNCTION Main()
 
-LOCAL oWinMain
+   LOCAL oWinMain
 
-INIT WINDOW oWinMain MAIN  ;
-     TITLE "Sample program new progbar" AT 0, 0 SIZE 600,400;
-     STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
+   INIT WINDOW oWinMain MAIN  ;
+      TITLE "Sample program new progbar" AT 0, 0 SIZE 600,400 ;
+      STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
 
    MENU OF oWinMain
       MENU TITLE "&File"
-          MENUITEM "&Exit"              ACTION hwg_EndWindow()
-     ENDMENU
+         MENUITEM "&Exit"              ACTION hwg_EndWindow()
+      ENDMENU
       MENU TITLE "&Test"
          MENUITEM "Start test"     ACTION Test()
       ENDMENU
@@ -27,17 +27,17 @@ INIT WINDOW oWinMain MAIN  ;
 
    oWinMain:Activate()
 
-RETURN NIL
+RETURN Nil
 
+FUNCTION Test()
 
-Function Test
-Local oDlg, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif",0,-13 )
-Local bVolChange := {|o,n| 
-      HB_SYMBOL_UNUSED( o )
-      HB_SYMBOL_UNUSED( n )
-      oSay:SetText( Ltrim(Str(oTrack:value)) )
-      RETURN .T.
-   }
+   LOCAL oDlg, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+   LOCAL bVolChange := { | o, n |
+         HB_SYMBOL_UNUSED( o )
+         HB_SYMBOL_UNUSED( n )
+         oSay:SetText( Ltrim( Str( oTrack:value ) ) )
+         RETURN .T.
+         }
 
    INIT DIALOG oDlg TITLE "Track bar control"  ;
          AT 210,10  SIZE 300,200 FONT oFont BACKCOLOR CLR_BROWN_1
@@ -53,8 +53,6 @@ Local bVolChange := {|o,n|
    ACTIVATE DIALOG oDlg
    oFont:Release()
 
-Return Nil
+RETURN Nil
 
-   
 * ============================ EOF of htrack.prg ==============================
-   

@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-11-28 15:24 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+    ! Print method fixed
+  * utils/hbpad/hbpad.prg
+    * Status line added
+
 2022-11-26 16:03 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/gtk/hpanel.prg

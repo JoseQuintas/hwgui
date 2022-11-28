@@ -2494,7 +2494,7 @@ METHOD PrintLine( oPrinter, yPos, nL ) CLASS HCEdit
 
                //oPrinter:Say( cTemp, nMarginL, yPos, nMarginL+arrS[1], yPos+nHeight, ::nAlign, ::aFonts[Asc(i)] )
                //hwg_writelog( cTemp+"//-- "+str(::nMarginR)+" "+str(::nBoundR) )
-               Aadd( aTemp, { cTemp, Asc(i), arrS[1] } )
+               Aadd( aTemp, { cTemp, Asc(i), arrS[1]+2 } )
                nMarginL += arrS[1]
                IF x1 > Len(cAttr)
                   EXIT

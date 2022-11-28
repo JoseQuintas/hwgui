@@ -39,17 +39,20 @@ REQUEST HB_BASE64ENCODE, HB_BASE64DECODE
 #define MENU_UPPER       1910
 #define MENU_LOWER       1911
 #define MENU_TCASE       1912
-#define MENU_CTRL_C_1    1913
-#define MENU_CTRL_X_1    1914
-#define MENU_UPPER_1     1915
-#define MENU_LOWER_1     1916
-#define MENU_TCASE_1     1917
+#define MENU_STATUS      1913
+#define MENU_CTRL_C_1    1914
+#define MENU_CTRL_X_1    1915
+#define MENU_UPPER_1     1916
+#define MENU_LOWER_1     1917
+#define MENU_TCASE_1     1918
 
 #define MAX_RECENT_FILES    6
 
+#define STATUS_HEIGHT      28
+
 MEMVAR cIniPath
 
-STATIC oEdit
+STATIC oEdit, lStatus := .T.
 STATIC cSearch := "", aPointFound, lSeaCase := .T.
 STATIC lSelected := .F., lIsUndo := .F.
 STATIC aFilesRecent := {}, lOptChg := .F.
@@ -58,7 +61,7 @@ STATIC aPlugins := {}
 
 FUNCTION Main ( fName )
 
-   LOCAL oMainWindow, i, s
+   LOCAL oMainWindow, oStatus, i
    PRIVATE cIniPath := hb_fnameDir( hb_ArgV( 0 ) )
 
    ReadIni( cIniPath )
@@ -76,7 +79,8 @@ FUNCTION Main ( fName )
       ON GETFOCUS { || iif( oEdit != Nil, hwg_Setfocus( oEdit:handle ), .T. ) } ;
       FONT oFontMain SYSCOLOR - 1
 
-   @ 0, 0 HCEDIT oEdit SIZE 600, 270 ON SIZE { |o, x, y|o:Move( , , x, y ) }
+   @ 0, 0 HCEDIT oEdit SIZE 600, 270-STATUS_HEIGHT ;
+      ON SIZE {|o,x,y|o:Move( ,, x, y-Iif(lStatus,STATUS_HEIGHT,0) ) }
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
    ENDIF
@@ -89,6 +93,8 @@ FUNCTION Main ( fName )
    oEdit:SetHili( HILIGHT_COMM, oEdit:oFont:SetFontStyle( ,, .T. ), 32768, 16777215 )    // Green on White //4176740
 //#endif
    oEdit:bColorCur := oEdit:bColor
+
+   ADD STATUS PANEL oStatus TO oMainWindow HEIGHT STATUS_HEIGHT PARTS 160,80,70,0
 
    MENU OF oMainWindow
       MENU TITLE "&File"
@@ -123,6 +129,7 @@ FUNCTION Main ( fName )
          MENUITEM "Insert date/time" ACTION oEdit:InsText( oEdit:aPointC, Dtoc(Date())+" "+Time() )
       ENDMENU
       MENU TITLE "&View"
+         MENUITEMCHECK "Show status pane" ID MENU_STATUS ACTION ShowStatus()
          MENUITEMCHECK "Wrap" ID MENU_WRAP ACTION hwg_Checkmenuitem(,MENU_WRAP,!oEdit:SetWrap(!oEdit:SetWrap()))
          MENUITEMCHECK "Show line numbers" ID MENU_NUMB ACTION ( hwg_Checkmenuitem(,MENU_NUMB,oEdit:lShowNumbers := !oEdit:lShowNumbers), oEdit:Refresh() )
          MENUITEMCHECK "Hilight current line" ID MENU_CURLINE ACTION ( hwg_Checkmenuitem(,MENU_CURLINE,(oEdit:bColorCur==oEdit:bColor)), oEdit:bColorCur := Iif(oEdit:bColorCur==oEdit:bColor,16449510,oEdit:bColor), oEdit:Refresh() )
@@ -165,6 +172,8 @@ FUNCTION Main ( fName )
    hwg_Enablemenuitem( , MENU_UPPER, lSelected, .T. )
    hwg_Enablemenuitem( , MENU_LOWER, lSelected, .T. )
    hwg_Enablemenuitem( , MENU_TCASE, lSelected, .T. )
+   ShowStatus()
+   oStatus:Write( cpDef, 2 )
 
    IF fname != Nil
       __OpenFile( fname )
@@ -181,6 +190,8 @@ FUNCTION Main ( fName )
 
 STATIC FUNCTION f_bAfter()
 
+   STATIC nCurrLine := 0, nLines := 0, nCurrPos := 0, lIns := Nil
+
    IF lSelected != !Empty( oEdit:aPointM2[P_Y] )
       lSelected := !lSelected
       hwg_Enablemenuitem( , MENU_CTRL_C, lSelected, .T. )
@@ -192,6 +203,16 @@ STATIC FUNCTION f_bAfter()
    IF lIsUndo != !Empty( oEdit:aUndo )
       lIsUndo := !lIsUndo
       hwg_Enablemenuitem( , MENU_UNDO, lIsUndo, .T. )
+   ENDIF
+   IF oEdit:aPointC[P_Y] != nCurrLine .OR. oEdit:aPointC[P_X] != nCurrPos .OR. oEdit:nTextLen != nLines
+      nCurrLine := oEdit:aPointC[P_Y]
+      nCurrPos := oEdit:aPointC[P_X]
+      nLines := oEdit:nTextLen
+      HWindow():GetMain():oStatus:Write( Ltrim(Str(nCurrLine))+"/"+Ltrim(Str(nLines))+"  ["+Ltrim(Str(nCurrPos))+"]", 1, .T. )
+   ENDIF
+   IF lIns == Nil .OR. lIns != oEdit:lInsert
+      lIns := oEdit:lInsert
+      HWindow():GetMain():oStatus:Write( Iif( lIns, "Ins", "Repl" ), 3, .T. )
    ENDIF
 
    RETURN -1
@@ -210,10 +231,30 @@ STATIC FUNCTION on_RClick()
 
    RETURN Nil
 
+STATIC FUNCTION ShowStatus()
+
+   LOCAL oWnd := HWindow():GetMain()
+
+   lStatus := !lStatus
+   IF lStatus
+      oEdit:Move( ,,, oEdit:nHeight-(STATUS_HEIGHT) )
+      oWnd:oStatus:Show()
+      //oWnd:oStatus:Move( ,,, STATUS_HEIGHT )
+   ELSE
+      oWnd:oStatus:Hide()
+      //oWnd:oStatus:Move( ,,, 0 )
+      oEdit:Move( ,,, oEdit:nHeight+STATUS_HEIGHT )
+   ENDIF
+   hwg_Checkmenuitem( , MENU_STATUS, lStatus )
+   oEdit:Refresh()
+
+   RETURN Nil
+
 STATIC FUNCTION NewFile()
 
    //oEdit:SetText( , oEdit:cpSource, cpDef )
    oEdit:SetText( ,, cpDef )
+   HWindow():GetMain():oStatus:Write( cpDef, 2, .T. )
 
    RETURN Nil
 
@@ -255,13 +296,14 @@ FUNCTION __OpenFile( fname, cp )
 //#endif
       oEdit:Open( cFile, Iif( Empty(cp), Nil, cp ), SetCpDef( cp ) )
       Add2Recent( cFile )
+      HWindow():GetMain():oStatus:Write( Iif( Empty(cp), SetCpDef(), cp ), 2, .T. )
    ENDIF
 
    RETURN Nil
 
 STATIC FUNCTION SaveFile( lAs )
 
-   LOCAL oDlg, oGet, cFile := "", fname
+   LOCAL oWnd, oDlg, oGet, cFile := "", fname
    LOCAL aCps, nCp := 1, cp := ""
 
    IF lAs .OR. Empty( oEdit:cFileName )
@@ -311,6 +353,9 @@ STATIC FUNCTION SaveFile( lAs )
       oEdit:lUpdated := .F.
       oEdit:cpSource := cp
       Add2Recent( cFile )
+      IF !Empty( oWnd := HWindow():GetMain() )
+         oWnd:oStatus:Write( Iif( Empty(cp), SetCpDef(), cp ), 2, .T. )
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -415,13 +460,13 @@ STATIC FUNCTION Find()
    IF oDlg:lResult
       aPointFound := Nil
       IF !lSeaCase
-         cSearch := Iif( ::lUtf8, edi_utf8_Lower(cSearch), Lower(cSearch) )
+         cSearch := Iif( oEdit:lUtf8, edi_utf8_Lower(cSearch), Lower(cSearch) )
       ENDIF
       FOR i := 1 TO oEdit:nTextLen
          IF lSeaCase
             j := At( cSearch, oEdit:aText[i] )
          ELSE
-            j := At( cSearch, Iif( ::lUtf8, edi_utf8_Lower(oEdit:aText[i]), Lower(oEdit:aText[i]) ) )
+            j := At( cSearch, Iif( oEdit:lUtf8, edi_utf8_Lower(oEdit:aText[i]), Lower(oEdit:aText[i]) ) )
          ENDIF
          IF j != 0
             aPointFound := { j, i }
@@ -456,7 +501,7 @@ STATIC FUNCTION FindNext()
          IF lSeaCase
             j := hb_At( cSearch, oEdit:aText[i], Iif( i==nLineStart,nPosStart,1 ) )
          ELSE
-            j := hb_At( cSearch, Iif(::lUtf8,edi_utf8_Lower(oEdit:aText[i]),Lower(oEdit:aText[i])), ;
+            j := hb_At( cSearch, Iif(oEdit:lUtf8,edi_utf8_Lower(oEdit:aText[i]),Lower(oEdit:aText[i])), ;
                Iif( i==nLineStart,nPosStart,1 ) )
          ENDIF
          IF j != 0
@@ -567,7 +612,7 @@ FUNCTION Add2Recent( cFile )
 STATIC FUNCTION ReadIni( cPath )
 
    LOCAL oIni := HXMLDoc():Read( cPath + "hbpad.ini" )
-   LOCAL oNode, i, j, xTemp
+   LOCAL oNode, i, j
 
    IF !Empty( oIni ) .AND. !Empty( oIni:aItems )
       FOR i := 1 TO Len( oIni:aItems[1]:aItems )
@@ -579,17 +624,6 @@ STATIC FUNCTION ReadIni( cPath )
             NEXT
          ELSEIF oNode:title == "font"
             oFontMain := FontFromXML( oNode )
-         ELSEIF oNode:title == "codepage"
-            /*
-            xTemp := oNode:GetAttribute( "main" )
-            IF !Empty( xTemp ) .AND. hb_cdpExists( xTemp )
-               cpDef := xTemp
-            ENDIF
-            xTemp := oNode:GetAttribute( "source" )
-            IF !Empty( xTemp ) .AND. hb_cdpExists( xTemp )
-               cpSource := xTemp
-            ENDIF
-            */
          ENDIF
       NEXT
    ENDIF
@@ -672,7 +706,7 @@ STATIC FUNCTION FontToXML( oFont, cTitle )
 STATIC FUNCTION SetPlugins()
 
    LOCAL oIni
-   LOCAL oNode, i, j, xTemp
+   LOCAL oNode, i, xTemp
 
    IF File( xTemp := (cIniPath + "plugins" + hb_ps() + "plugins.ini") )
       oIni := HXMLDoc():Read( xTemp )

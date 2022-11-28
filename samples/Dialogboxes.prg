@@ -8,20 +8,20 @@
  * Copyright 2006 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
  *
- * Copyright 2021 Wilfried Brunken, DF7BE 
+ * Copyright 2021 Wilfried Brunken, DF7BE
  * https://sourceforge.net/projects/cllog/
  */
- 
+
     * Status:
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
     *  GTK/Win  :  Yes
 
-/* 
- 
+/*
+
    It is an extract vom the tutorial:
    ==> Getting started / Standard dialogs
- 
+
  */
 
 #include "hwgui.ch"
@@ -29,11 +29,11 @@
 
 FUNCTION Main()
 
-LOCAL oWinMain
+   LOCAL oWinMain
 
-INIT WINDOW oWinMain MAIN  ;
-     TITLE "Sample program new progbar" AT 0, 0 SIZE 600,400;
-     STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
+   INIT WINDOW oWinMain MAIN  ;
+      TITLE "Sample program new progbar" AT 0, 0 SIZE 600,400;
+      STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
 
    MENU OF oWinMain
       MENU TITLE "&File"
@@ -46,20 +46,18 @@ INIT WINDOW oWinMain MAIN  ;
 
    oWinMain:Activate()
 
-RETURN NIL
+RETURN Nil
 
+FUNCTION Test()
 
-Function Test
-
-   Local oDlg, oFont, oFontSay, oFontC, oSay3, oSay4, oSay5, oSay6, oSay7, y1 := 50, n
-   Local nChoic, cRes, arr := {"White","Blue","Green","Red"}
+   LOCAL oDlg, oFont, oFontSay, oFontC, oSay3, oSay4, oSay5, oSay6, oSay7, y1 := 50, n
+   LOCAL nChoic, cRes, arr := {"White","Blue","Green","Red"}
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
    PREPARE FONT oFontSay NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 WEIGHT 700
    PREPARE FONT oFontC NAME "Georgia" WIDTH 0 HEIGHT -15
 
    INIT DIALOG oDlg TITLE "Standard dialogs" AT 100, 100 SIZE 340, 440 FONT oFont
-
 
    @ 20,12 SAY "Press any button to see a dialog" SIZE 260, 24 ;
          FONT oFontSay COLOR 8404992
@@ -98,7 +96,7 @@ Function Test
       ON CLICK {||hwg_MsgRetryCancel("Retry action","Tutorial")}
 
    y1 += 30
-#endif 
+#endif
 
    @ 20,y1 BUTTON "hwg_MsgYesNoCancel()" SIZE 180,28 ;
       ON CLICK {||oSay5:SetText( Ltrim(Str(hwg_MsgYesNoCancel("Do you like it?","Tutorial"))) )}
@@ -111,7 +109,6 @@ Function Test
       ON CLICK {||hwg_MsgExclamation("Happy birthday!","Tutorial")}
 
    y1 += 30
-
 
    @ 20,y1 BUTTON "hwg_MsgGet()" SIZE 180,28 ;
       ON CLICK {||oSay6:SetText( Iif( (cRes := hwg_MsgGet("Input something","Tutorial")) == Nil, "", cRes ) )}
@@ -132,8 +129,6 @@ Function Test
 
    ACTIVATE DIALOG oDlg
 
-Return Nil
+RETURN Nil
 
 * ============================= EOF of Dialogboxes.prg ===========================
-
-      

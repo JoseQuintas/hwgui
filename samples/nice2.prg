@@ -14,7 +14,7 @@
  * www - http://www.kresin.ru
  *
  */
- 
+
     * Status:
     *  WinAPI   :  Yes
     *  GTK/Linux:  No
@@ -24,19 +24,19 @@
 #include "guilib.ch"
 #include "windows.ch"
 #include "nice.h"
-request hwg_NICEBUTTPROC
+REQUEST hwg_NICEBUTTPROC
 
 #define DIALOG_1    1
 #define IDC_1     101
 
-
 FUNCTION Main()
-LOCAL oWinMain
 
-INIT WINDOW oWinMain MAIN  ;
-     SYSCOLOR COLOR_3DLIGHT+1 ;
-     TITLE "Sample program NICEBUTTON" AT 0, 0 SIZE 600,400;
-     STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
+   LOCAL oWinMain
+
+   INIT WINDOW oWinMain MAIN  ;
+      SYSCOLOR COLOR_3DLIGHT+1 ;
+      TITLE "Sample program NICEBUTTON" AT 0, 0 SIZE 600,400;
+      STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
 
    MENU OF oWinMain
       MENU TITLE "&Exit"
@@ -49,29 +49,29 @@ INIT WINDOW oWinMain MAIN  ;
 
    oWinMain:Activate()
 
-RETURN NIL
+RETURN Nil
 
 FUNCTION _Testen()
 
-local odlg
-Local o1
-LOCAL oFont
+   LOCAL odlg
+   LOCAL o1
+   LOCAL oFont
 
-  PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT 8
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT 8
 
 * from resource DIALOG_1
-init dialog odlg  title "nice button test" ; 
-AT 6, 15 SIZE 161, 127 FONT oFont ;
-STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_THICKFRAME+WS_MINIMIZEBOX+WS_MAXIMIZEBOX
-* 
-@ 10 ,10 NICEBUTTON o1 CAPTION "NICEBUTT" of odlg id IDC_1 size 40,40
+   INIT DIALOG odlg TITLE "nice button test" ;
+      AT 6, 15 SIZE 161, 127 FONT oFont ;
+      STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_THICKFRAME + WS_MINIMIZEBOX + WS_MAXIMIZEBOX
 
-* redefine nicebutton o1  caption "teste" of odlg id IDC_1 Red 125 Green 201 blue 36 ;
-*  STYLE WS_CHILD+WS_VISIBLE
+   @ 10 ,10 NICEBUTTON o1 CAPTION "NICEBUTT" OF odlg ID IDC_1 SIZE 40,40
 
-activate dialog odlg
+   * redefine nicebutton o1  caption "teste" of odlg id IDC_1 Red 125 Green 201 blue 36 ;
+   *  STYLE WS_CHILD+WS_VISIBLE
 
-return nil
+   ACTIVATE DIALOG odlg
+
+RETURN Nil
 
 /*
 Error BASE/1070  Argument error: ==
@@ -103,4 +103,3 @@ FONT 8, "MS Sans Serif"
 */
 
 * ============================ EOF of nice2.prg ===============================
-

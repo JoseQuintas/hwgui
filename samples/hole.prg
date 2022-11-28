@@ -5,12 +5,13 @@
 #xtranslate HB_AT(<x,...>) => AT(<x>)
 #endif
 
-Function Main
-Local oFont
-Local oEdit
-Private oMainWindow, oChar, oBtnSpeak, oBtnPause, oUpDown, lPause := .F.
-Private oReq, cText, nPos, nPosOld
-Public oAgent, oTimer
+FUNCTION Main()
+
+   LOCAL oFont
+   LOCAL oEdit
+   PRIVATE oMainWindow, oChar, oBtnSpeak, oBtnPause, oUpDown, lPause := .F.
+   PRIVATE oReq, cText, nPos, nPosOld
+   PUBLIC oAgent, oTimer
 
    PREPARE FONT oFont NAME "Times New Roman" WIDTH 0 HEIGHT -17 CHARSET 204
 
@@ -46,10 +47,11 @@ Public oAgent, oTimer
 
    ACTIVATE WINDOW oMainWindow
 
-Return Nil
+RETURN Nil
 
-Static Function SpeakIt( oEdit )
-// Local aTop := hwg_Clienttoscreen( oMainWindow:handle,0,0 )
+STATIC FUNCTION SpeakIt( oEdit )
+
+   // Local aTop := hwg_Clienttoscreen( oMainWindow:handle,0,0 )
 
    oBtnSpeak:Disable()
    cText := hwg_Getedittext( oEdit:oParent:handle, oEdit:id )
@@ -65,10 +67,11 @@ Static Function SpeakIt( oEdit )
       oChar:Hide( 1 )
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function SpeakLine()
-Local cLine, lEnd := .F., cUpd := "10"
+STATIC FUNCTION SpeakLine()
+
+   LOCAL cLine, lEnd := .F., cUpd := "10"
 
    IF ( nPos := hb_At( ".", cText, nPosOld ) ) == 0
       cLine := Substr( cText, nPosOld )
@@ -86,9 +89,9 @@ Local cLine, lEnd := .F., cUpd := "10"
       oBtnSpeak:Enable()
    ENDIF
 
-Return lEnd
+RETURN lEnd
 
-Static Function SetPause()
+STATIC FUNCTION SetPause()
 
    IF lPause
       oBtnPause:SetText( "Pause" )
@@ -97,10 +100,11 @@ Static Function SetPause()
    ENDIF
    lPause := !lPause
 
-Return Nil
+RETURN Nil
 
-Static Function TimerFunc()
-Local nReq
+STATIC FUNCTION TimerFunc()
+
+   LOCAL nReq
 
    IF !lPause .AND. !Empty( oReq ) .AND. ( nReq := oReq:Status() ) != 2 .AND. nReq != 4
       oReq := Nil
@@ -109,7 +113,7 @@ Local nReq
       ENDIF
    ENDIF
 
-Return Nil
+RETURN Nil
 
 EXIT PROCEDURE EXI
 
@@ -119,4 +123,4 @@ EXIT PROCEDURE EXI
    ENDIF
    oTimer:End()
 
-Return Nil
+RETURN Nil

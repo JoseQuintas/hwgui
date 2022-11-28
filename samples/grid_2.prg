@@ -18,85 +18,69 @@
 
 #translate hwg_ColorRgb2N( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )
 
-Static oMain, oForm, oFont, oGrid, oServer, oQuery
+STATIC oMain, oForm, oFont, oGrid, oServer, oQuery
 
-Function Main()
+FUNCTION Main()
 
-        ConnectGrid()
-        
-        INIT WINDOW oMain MAIN TITLE "Grid Postgres Sample Using TPostgres" ;
-             AT 0,0 ;
-             SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
+   ConnectGrid()
 
-                MENU OF oMain
-                        MENUITEM "&Exit"   ACTION oMain:Close()
-                        MENUITEM "&Demo" ACTION Test()
-                ENDMENU
+   INIT WINDOW oMain MAIN TITLE "Grid Postgres Sample Using TPostgres" ;
+      AT 0,0 ;
+      SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
 
-        ACTIVATE WINDOW oMain
-        
-        oServer:Close()
-        
-Return Nil
+   MENU OF oMain
+      MENUITEM "&Exit"   ACTION oMain:Close()
+      MENUITEM "&Demo" ACTION Test()
+   ENDMENU
 
-Function Test()
-        PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
-        
-        INIT DIALOG oForm CLIPPER NOEXIT TITLE "Postgres Sample";
-             FONT oFont ;
-             AT 0, 0 SIZE 700, 425 ;
-             STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
-                
-             @ 10,10 GRID oGrid OF oForm SIZE 680,375;
-                     ITEMCOUNT oQuery:Lastrec() ;
-                     COLOR hwg_ColorC2N('D3D3D3');
-                     BACKCOLOR hwg_ColorRgb2N(220,220,220) ;
-                     ON DISPINFO {|oCtrl, nRow, nCol| valtoprg(oQuery:FieldGet( nRow, nCol )) } 
+   ACTIVATE WINDOW oMain
 
-             ADD COLUMN TO GRID oGrid HEADER "Column 1" WIDTH  50
-             ADD COLUMN TO GRID oGrid HEADER "Column 2" WIDTH 200
-             ADD COLUMN TO GRID oGrid HEADER "Column 3" WIDTH 100
-                                                              
-             @ 620, 395 BUTTON 'Close' SIZE 75,25 ON CLICK {|| oForm:Close() }                            
-             
-        ACTIVATE DIALOG oForm
-Return Nil
+   oServer:Close()
 
-Function ConnectGrid()
-    Local cHost := 'Localhost'
-    Local cDatabase := 'test'
-    Local cUser := 'Rodrigo'
-    Local cPass := 'moreno'
-    Local oRow, i
-    
-    oServer := TPQServer():New(cHost, cDatabase, cUser, cPass)
-
-    if oServer:NetErr()
-        ? oServer:Error()
-        quit
-    end
-    
-    if oServer:TableExists('test')
-        oServer:DeleteTable('Test')
-    endif        
-    
-    oServer:CreateTable('Test', {{'col1', 'N', 6, 0},;
-                                 {'col2', 'C', 40,0},;
-                                 {'col3', 'D', 8, 0}})
-        
-    oQuery := oServer:Query('SELECT * FROM test')
-                                     
-    For i := 1 to 100
-        oRow := oQuery:blank()
-        
-        oRow:Fieldput(1, i)
-        oRow:Fieldput(2, 'teste line ' + str(i))
-        oRow:Fieldput(3, date() + i)
-        
-        oQuery:Append(oRow)
-    Next  
-    
-    oQuery:refresh()                                              
-    
-return nil        
+RETURN Nil
 
+FUNCTION Test()
+
+   PREPARE FONT oFont NAME "Courier New" WIDTH 0 HEIGHT -11
+
+   INIT DIALOG oForm CLIPPER NOEXIT TITLE "Postgres Sample";
+      FONT oFont ;
+      AT 0, 0 SIZE 700, 425 ;
+      STYLE DS_CENTER + WS_VISIBLE + WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU
+
+   @ 10,10 GRID oGrid OF oForm SIZE 680,375;
+      ITEMCOUNT oQuery:Lastrec() ;
+      COLOR hwg_ColorC2N('D3D3D3');
+      BACKCOLOR hwg_ColorRgb2N(220,220,220) ;
+      ON DISPINFO {|oCtrl, nRow, nCol| valtoprg(oQuery:FieldGet( nRow, nCol )) }
+
+   ADD COLUMN TO GRID oGrid HEADER "Column 1" WIDTH  50
+   ADD COLUMN TO GRID oGrid HEADER "Column 2" WIDTH 200
+   ADD COLUMN TO GRID oGrid HEADER "Column 3" WIDTH 100
+
+   @ 620, 395 BUTTON 'Close' SIZE 75,25 ON CLICK {|| oForm:Close() }
+
+   ACTIVATE DIALOG oForm
+
+RETURN Nil
+
+FUNCTION ConnectGrid()
+
+   LOCAL cHost := 'Localhost'   LOCAL cDatabase := 'test'   LOCAL cUser := 'Rodrigo'   LOCAL cPass := 'moreno'   LOCAL oRow, i
+   oServer := TPQServer():New( cHost, cDatabase, cUser, cPass )
+   IF oServer:NetErr()      ? oServer:Error()      quit   ENDIF   IF oServer:TableExists('test')      oServer:DeleteTable('Test')
+   ENDIF   oServer:CreateTable('Test', {{'col1', 'N', 6, 0}, ;                                {'col2', 'C', 40,0}, ;                                {'col3', 'D', 8, 0}})
+
+   oQuery := oServer:Query( 'SELECT * FROM test' )
+
+   FOR i := 1 to 100
+      oRow := oQuery:blank()
+      oRow:Fieldput(1, i)
+      oRow:Fieldput(2, 'teste line ' + str(i))
+      oRow:Fieldput(3, date() + i)
+      oQuery:Append(oRow)
+   NEXT
+
+   oQuery:refresh()
+
+RETURN Nil

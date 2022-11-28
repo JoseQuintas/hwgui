@@ -3,7 +3,7 @@
  * Testado.prg
  *
  * Test program sample for ADO Browse.
- * 
+ *
  * $Id$
  *
  * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
@@ -11,8 +11,8 @@
  *
  * Copyright 2020 Itamar M. Lins Jr. Junior and
  * José Quintas (TNX)
- * See ticket #55 
- 
+ * See ticket #55
+
 */
    * Status:
     *  WinAPI   :  Yes
@@ -21,8 +21,9 @@
 
 #include "hwgui.ch"
 
-Function Main
-Local oMainWindow
+FUNCTION Main()
+
+   LOCAL oMainWindow
 
    INIT WINDOW oMainWindow MAIN TITLE "ADO Example" ;
      AT 200,0 SIZE 400,150
@@ -34,7 +35,8 @@ Local oMainWindow
    ENDMENU
 
    ACTIVATE WINDOW oMainWindow
-Return Nil
+
+RETURN Nil
 
 FUNCTION DlgADO()
 
@@ -47,7 +49,7 @@ FUNCTION DlgADO()
    INIT DIALOG oModDlg TITLE "ADO BROWSE" AT 0,0 SIZE 1024,600
 
    @ 20,10 BROWSE ARRAY oBrw SIZE 800,500 STYLE WS_BORDER + WS_VSCROLL + WS_HSCROLL
-   oBrw:bOther := {|oBrw, msg, wParam, lParam| fKeyDown(oBrw, msg, wParam, lParam)}   
+   oBrw:bOther := {|oBrw, msg, wParam, lParam| fKeyDown(oBrw, msg, wParam, lParam)}
 
    @ 500,540 OWNERBUTTON ON CLICK {||  hwg_EndDialog()} SIZE 180,36 FLAT TEXT "Close" COLOR hwg_ColorC2N("0000FF")
 
@@ -68,33 +70,39 @@ FUNCTION DlgADO()
    ACTIVATE DIALOG oModDlg
 
    cnSQL:Close()
-Return Nil
+
+RETURN Nil
 
 FUNCTION ADOSkipper( cnSQL, nSkip )
 
    LOCAL nRec := cnSQL:AbsolutePosition()
-      IF ! cnSQL:Eof()
-         cnSQL:Move( nSkip )
-         IF cnSQL:Eof()
-            cnSQL:MoveLast()
-         ENDIF
-         IF cnSQL:Bof()
-            cnSQL:MoveFirst()
-         ENDIF
+
+   IF ! cnSQL:Eof()
+      cnSQL:Move( nSkip )
+      IF cnSQL:Eof()
+         cnSQL:MoveLast()
       ENDIF
-      RETURN cnSQL:AbsolutePosition() - nRec
-
-
-Static FUNCTION fKeyDown(oBrw, msg, wParam, lParam)
-LOCAL nKEY := hwg_PtrToUlong( wParam ) //wParam
-IF msg == WM_KEYDOWN
-   IF nKey = VK_F2
-      hwg_Msginfo("nRecords: " + Str(oBrw:nRecords) + hb_eol() +;
-                  "Total:    " + Str(oBrw:aArray:RecordCount()) + hb_eol() + ;
-                  "Recno:    " + Str(oBrw:nCurrent) + hb_eol() + ;
-                  "Abs:      " + Str(oBrw:aArray:AbsolutePosition)  )
+      IF cnSQL:Bof()
+         cnSQL:MoveFirst()
+      ENDIF
    ENDIF
-ENDIF
+
+RETURN cnSQL:AbsolutePosition() - nRec
+
+
+STATIC FUNCTION fKeyDown(oBrw, msg, wParam, lParam)
+
+   LOCAL nKEY := hwg_PtrToUlong( wParam ) //wParam
+
+   IF msg == WM_KEYDOWN
+      IF nKey = VK_F2
+         hwg_Msginfo("nRecords: " + Str(oBrw:nRecords) + hb_eol() +;
+                     "Total:    " + Str(oBrw:aArray:RecordCount()) + hb_eol() + ;
+                     "Recno:    " + Str(oBrw:nCurrent) + hb_eol() + ;
+                     "Abs:      " + Str(oBrw:aArray:AbsolutePosition)  )
+      ENDIF
+   ENDIF
+
 RETURN .T.
 
 // --- Recordset ADO ---
@@ -120,18 +128,19 @@ FUNCTION RecordsetADO()
       :MoveFirst()
    ENDWITH
 
-   RETURN cnSQL
+RETURN cnSQL
 
 FUNCTION DlgDBF()
 
    LOCAL oModDlg, oBrw
+
    CreateDBF( "test" )
-   USE test 
+   USE test
 
    INIT DIALOG oModDlg TITLE "ADO BROWSE" AT 0,0 SIZE 1024,600
 
    @ 20,10 BROWSE oBrw DATABASE SIZE 800,500 STYLE WS_BORDER + WS_VSCROLL + WS_HSCROLL
-   oBrw:bOther := {|oBrw, msg, wParam, lParam| fKeyDown(oBrw, msg, wParam, lParam)}   
+   oBrw:bOther := {|oBrw, msg, wParam, lParam| fKeyDown(oBrw, msg, wParam, lParam)}
 
    @ 500,540 OWNERBUTTON ON CLICK {|| hwg_EndDialog()} SIZE 180,36 FLAT TEXT "Close" COLOR hwg_ColorC2N("0000FF")
 
@@ -139,14 +148,15 @@ FUNCTION DlgDBF()
    Add column FieldBlock("ADRESS") to oBrw Header 'Adress' Length 30 justify Line DT_LEFT
 
    ACTIVATE DIALOG oModDlg
-   close database
-Return Nil
+   CLOSE DATABASE
+
+RETURN Nil
 
 // --- DBF ---
 FUNCTION CreateDbf( cName )
 
    IF hb_vfExists( cName )
-      RETURN NIL 
+      RETURN NIL
    ENDIF
 
    dbCreate( cName, { ;

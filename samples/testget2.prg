@@ -54,9 +54,9 @@ FUNCTION DlgGet( lColor )
    SET KEY 0, VK_F3 TO hwg_Msginfo( "F3" )
    SET KEY 0, VK_RETURN TO hwg_Msginfo( "Return" )
 
-   If lColor <> Nil
+   IF lColor <> Nil
       hwg_SetColorinFocus( lColor )
-   EndIf
+   ENDIF
 
    @ 20, 10 SAY "Input something:" SIZE 260, 22
 
@@ -119,7 +119,6 @@ STATIC FUNCTION TimerFunc()
    oSayT:SetText( Time() )
 
 RETURN Nil
-
 
 FUNCTION TestBallon()
 

@@ -7,10 +7,10 @@
  * Copyright 2006 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
  */
- 
+
 * Windows only:
 * Needed to link with HWGUI contrib library libhbactivex.a
-* Needed external prerequisites: Development environment for ActiveX. 
+* Needed external prerequisites: Development environment for ActiveX.
 *
 * Attention !
 * Sample program needs ActiveX and contrib library "libhbactivex.a".
@@ -18,11 +18,11 @@
 * !!!!!!  Sample is outdated.  !!!!!!
 *
 * Original file from:
-* iesample.prg,v 1.2 2006/10/05 11:02:42 alkresin Exp 
-* 
+* iesample.prg,v 1.2 2006/10/05 11:02:42 alkresin Exp
+*
 * Warning fixed:
 * iesample.prg(43) Warning W0005  RETURN statement with no return value in function
-* iesample.prg(54) Warning W0005  RETURN statement with no return value in function 
+* iesample.prg(54) Warning W0005  RETURN statement with no return value in function
 *
 * If error appeared:
 * ../../../../contrib/activex/htmlcore.h:17:119: fatal error: mshtmhst.h: No such file or directory
@@ -31,9 +31,10 @@
 
 #include "hwgui.ch"
 
-Function Main
-Local oMainWnd, oPanelTool, oPanelIE, oFont
-Local oEdit, cUrl, oIE
+FUNCTION Main()
+
+   LOCAL oMainWnd, oPanelTool, oPanelIE, oFont
+   LOCAL oEdit, cUrl, oIE
 
    PREPARE FONT oFont NAME "Times New Roman" WIDTH 0 HEIGHT -15
    INIT WINDOW oMainWnd TITLE "Example" AT 200,0 SIZE 500,400 FONT oFont
@@ -61,21 +62,23 @@ Local oEdit, cUrl, oIE
 
     ACTIVATE WINDOW oMainWnd
 
-Return NIL
+RETURN Nil
 
-Static Function OpenFile( oIE,oEdit )
-Local mypath := "\" + Curdir() + Iif( Empty( Curdir() ), "", "\" )
-Local fname := hwg_Selectfile( "HTML files", "*.htm;*.html", mypath )
+STATIC FUNCTION OpenFile( oIE,oEdit )
+
+   LOCAL mypath := "\" + Curdir() + Iif( Empty( Curdir() ), "", "\" )
+   LOCAL fname := hwg_Selectfile( "HTML files", "*.htm;*.html", mypath )
 
    IF !Empty( fname )
       oEdit:SetText( fname )
       oIE:DisplayPage( fname )
    ENDIF
 
-Return NIL
+RETURN Nil
 
-Static Function FindInGoogle( cQuery,oIE,oEdit )
-Local cUrl := "http://www.google.com/search?q=", cItem
+STATIC FUNCTION FindInGoogle( cQuery,oIE,oEdit )
+
+   LOCAL cUrl := "http://www.google.com/search?q=", cItem
 
    IF !Empty( cItem := NextItem( cQuery,.T.,' ' ) )
       cUrl += cItem
@@ -85,6 +88,7 @@ Local cUrl := "http://www.google.com/search?q=", cItem
       oEdit:SetText( cUrl )
       oIE:DisplayPage( cUrl )
    ENDIF
-Return Nil
+
+RETURN Nil
 
 * =============== EOF of iesample.prg =========================

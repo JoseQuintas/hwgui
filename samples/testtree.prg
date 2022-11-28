@@ -2,16 +2,17 @@
  * $Id: testtree.prg,v 1.2 2005/09/19 10:00:35 alkresin Exp $
  *
  * This sample demonstrates the using of a TREE control
- * 
+ *
  */
 
 #include "hwgui.ch"
 
-Function Main
-Local oMainWindow
+FUNCTION Main()
+
+   LOCAL oMainWindow
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
-     AT 200,0 SIZE 400,150
+      AT 200,0 SIZE 400,150
 
    MENU OF oMainWindow
       MENUITEM "&Exit" ACTION hwg_EndWindow()
@@ -19,21 +20,23 @@ Local oMainWindow
    ENDMENU
 
    ACTIVATE WINDOW oMainWindow
-Return Nil
 
-Function DlgGet
-Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
-Local oTree, oSplit, oSay, oPopup
+RETURN Nil
+
+FUNCTION DlgGet()
+
+   LOCAL oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+   LOCAL oTree, oSplit, oSay, oPopup
 
    INIT DIALOG oDlg TITLE "TreeView control sample"  ;
-   AT 210,10  SIZE 430,300                  ;
-   FONT oFont                               ;
-   ON INIT {||BuildTree(oDlg,oTree,oSay)}
+      AT 210,10  SIZE 430,300                  ;
+      FONT oFont                               ;
+      ON INIT { || BuildTree( oDlg, oTree, oSay ) }
 
    CONTEXT MENU oPopup
-      MENUITEM "Add child"  ACTION {||AddNode( oTree,0 )}
-      MENUITEM "Add after"  ACTION {||AddNode( oTree,1 )}
-      MENUITEM "Add before" ACTION {||AddNode( oTree,2 )}
+      MENUITEM "Add child"  ACTION { || AddNode( oTree,0 ) }
+      MENUITEM "Add after"  ACTION { || AddNode( oTree,1 ) }
+      MENUITEM "Add before" ACTION { || AddNode( oTree,2 ) }
    ENDMENU
 
    @ 10,10 TREE oTree OF oDlg SIZE 200,280 ;
@@ -55,10 +58,11 @@ Local oTree, oSplit, oSay, oPopup
    ACTIVATE DIALOG oDlg
    oFont:Release()
 
-Return Nil
+RETURN Nil
 
-Function BuildTree( oDlg,oTree,oSay )
-Local oNode
+FUNCTION BuildTree( oDlg,oTree,oSay )
+
+   LOCAL oNode
 
    INSERT NODE "First" TO oTree ON CLICK {||NodeOut(1,oSay)}
    INSERT NODE "Second" TO oTree ON CLICK {||NodeOut(2,oSay)}
@@ -69,15 +73,16 @@ Local oNode
 
    oTree:bExpand := {||.T.}
 
-Return Nil
+RETURN Nil
 
-Static Function NodeOut( n, oSay )
-Local aText := { ;
-  "This is a sample application, which demonstrates using of TreeView control in HwGUI.", ;
-  "'Second' item is selected", ;
-  "'Third-1' item is selected", ;
-  "'Third-2' item is selected", ;
-  "'Forth' item is selected", ;
+STATIC FUNCTION NodeOut( n, oSay )
+
+   LOCAL aText := { ;
+      "This is a sample application, which demonstrates using of TreeView control in HwGUI.", ;
+      "'Second' item is selected", ;
+      "'Third-1' item is selected", ;
+      "'Third-2' item is selected", ;
+      "'Forth' item is selected", ;
                }
 
    IF n == 0
@@ -86,16 +91,16 @@ Local aText := { ;
       oSay:SetText(aText[n])
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function TreeMenuShow( oTree, oPopup, oNode )
+STATIC FUNCTION TreeMenuShow( oTree, oPopup, oNode )
 
    oTree:Select( oNode )
    oPopup:Show( oTree:oParent )
 
-Return Nil
+RETURN Nil
 
-Static Function AddNode( oTree, nType )
+STATIC FUNCTION AddNode( oTree, nType )
 
    LOCAL cName, oTo
 
@@ -109,4 +114,5 @@ Static Function AddNode( oTree, nType )
          INSERT NODE cName TO oTo BEFORE oTree:oSelected
       ENDIF
    ENDIF
-Return Nil
+
+RETURN Nil

@@ -1,15 +1,15 @@
 /*
 
  testhgt.prg
- 
+
  $Id$
 
- HWGUI Sample program for usage of 
- class HGT for combined usage of HWGUI control elements in 
+ HWGUI Sample program for usage of
+ class HGT for combined usage of HWGUI control elements in
  Harbour gtwvg programs in multithread mode.
- 
+
  Delivered by José M. C. Quintas (TNX)
- 
+
 */
 
    * Status:
@@ -18,7 +18,7 @@
     *  GTK/Win  :  No
 
 /*
- 
+
  Additional instructions:
  - Pressing the "Close" button the hwg_MsgInfo() dialog appears.
  - Only pressing the <ESC> key terminates the program
@@ -28,7 +28,7 @@
 
 */
 
- 
+
 #include "hbclass.ch"
 #include "hbgtinfo.ch"
 #include "hwgui.ch"
@@ -42,15 +42,15 @@ REQUEST HB_GT_WVG_DEFAULT
 THREAD STATIC MainWVT
 
 CLASS HGT INHERIT HWindow
-METHOD New() INLINE ::Super:New() , ::Handle := hb_gtInfo(HB_GTI_WINHANDLE), Self
+   METHOD New() INLINE ::Super:New() , ::Handle := hb_gtInfo(HB_GTI_WINHANDLE), Self
 ENDCLASS
 
-
-
 PROCEDURE Main
+
    hb_ThreadStart( { || Test() } )
    hb_ThreadWaitForAll()
-   RETURN
+
+RETURN
 
 FUNCTION Test()
 
@@ -92,21 +92,18 @@ FUNCTION Test()
    @ 340,10 SHADEBUTTON SIZE 100,36 EFFECT SHS_METAL  PALETTE PAL_METAL GRANULARITY 33 ;
          HIGHLIGHT 20 TEXT "Close" FONT oFont ;
      ON CLICK {|| hwg_msginfo("Close Button pressed") }
-     * 
+     *
    @ 340,50 SHADEBUTTON SIZE 100,36 EFFECT SHS_SOFTBUMP  PALETTE PAL_METAL GRANULARITY 33 HIGHLIGHT 20
 
    DO WHILE nKey != 27
       nKey := Inkey(1)
    ENDDO
 
-   RETURN Nil
+RETURN Nil
 
 //PROCEDURE HB_GTSYS
 //   REQUEST HB_GT_WVG_DEFAULT
 //   RETURN
-
-FUNCTION AppUserName(); RETURN ""
-FUNCTION AppVersaoExe(); RETURN ""
 
 FUNCTION MainGT()
 
@@ -117,6 +114,6 @@ FUNCTION MainGT()
       //MainWVT:IsGT := .T.
    ENDIF
 
-   RETURN MainWVT
+RETURN MainWVT
 
 * ===================== EOF of testhgt.prg ======================

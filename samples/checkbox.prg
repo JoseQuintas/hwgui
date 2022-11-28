@@ -4,11 +4,11 @@
  * $Id$
  *
  * Test program HWGUI sample for checkboxes
- * 
+ *
  * Copyright 2022 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
  *
- * Copyright 2020-2022 Wilfried Brunken, DF7BE 
+ * Copyright 2020-2022 Wilfried Brunken, DF7BE
  *
 
     * Status:
@@ -23,10 +23,9 @@
    #include "ttable.ch"
 #endif
 
-* ---------------------------------------------
-Function Main
-* ---------------------------------------------
- LOCAL oMainWindow 
+FUNCTION Main()
+
+ LOCAL oMainWindow
 
   INIT WINDOW oMainWindow MAIN TITLE "Checkboxes and tabs" ;
      AT 0,0 SIZE hwg_Getdesktopwidth(), hwg_Getdesktopheight() - 28
@@ -41,26 +40,25 @@ Function Main
    ENDMENU
 
    ACTIVATE WINDOW oMainWindow
- 
-RETURN NIL
 
+RETURN Nil
 
-FUNCTION _frm_checkbox
+FUNCTION _frm_checkbox()
 
-LOCAL oDlg, oButton1, oButton2, oButton3, oButton4, oButton5, oButton6 , oButton7 , oButton8
-LOCAL oTab
-LOCAL oCheckbox1, oCheckbox2, oCheckbox3 , oCheckbox4 , oCheckbox5,  oCheckbox6 
-LOCAL lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6
+   LOCAL oDlg, oButton1, oButton2, oButton3, oButton4, oButton5, oButton6 , oButton7 , oButton8
+   LOCAL oTab
+   LOCAL oCheckbox1, oCheckbox2, oCheckbox3 , oCheckbox4 , oCheckbox5,  oCheckbox6
+   LOCAL lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6
 
-lCheckbox1 := .F.
-lCheckbox2 := .F.
-lCheckbox3 := .F.
-lCheckbox4 := .F.
-lCheckbox5 := .F.
-lCheckbox6 := .F.
+   lCheckbox1 := .F.
+   lCheckbox2 := .F.
+   lCheckbox3 := .F.
+   lCheckbox4 := .F.
+   lCheckbox5 := .F.
+   lCheckbox6 := .F.
 
   INIT DIALOG oDlg TITLE "Checkboxes and tabs" ;
-    AT 390,197 SIZE 516,323 ;
+     AT 390,197 SIZE 516,323 ;
      STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
 
    @ 20, 20 TAB oTab ITEMS {} SIZE 440, 250 ;
@@ -78,7 +76,7 @@ lCheckbox6 := .F.
 
       @ 300,28 BUTTON oButton7 CAPTION "Invert all"   SIZE 120,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
-        ON CLICK {|| oCheckbox1:Invert() , oCheckbox2:Invert() , oCheckbox3:Invert()}   
+        ON CLICK {|| oCheckbox1:Invert() , oCheckbox2:Invert() , oCheckbox3:Invert()}
 
 
       @ 300,166 BUTTON oButton3 CAPTION "OK"   SIZE 120,32 ;
@@ -86,17 +84,16 @@ lCheckbox6 := .F.
            ON CLICK {|| DisplayResults(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) ;
                       , oDlg:Close() }
 
-   @ 45,70  GET CHECKBOX oCheckbox1 VAR lCheckbox1 CAPTION  "Check 1" SIZE 80,22
-  
-   @ 45,110 GET CHECKBOX oCheckbox2 VAR lCheckbox2 CAPTION  "Check 2" SIZE 80,22
- 
-   @ 45,150 GET CHECKBOX oCheckbox3 VAR lCheckbox3 CAPTION  "Check 2" SIZE 80,22
- 
+      @ 45,70  GET CHECKBOX oCheckbox1 VAR lCheckbox1 CAPTION  "Check 1" SIZE 80,22
+
+      @ 45,110 GET CHECKBOX oCheckbox2 VAR lCheckbox2 CAPTION  "Check 2" SIZE 80,22
+
+      @ 45,150 GET CHECKBOX oCheckbox3 VAR lCheckbox3 CAPTION  "Check 2" SIZE 80,22
 
    END PAGE of oTab
 
    BEGIN PAGE "Tab 2" of oTab
-   
+
       @ 300,61 BUTTON oButton4 CAPTION "Select all"   SIZE 120,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK {|| oCheckbox4:Value(.T.) , oCheckbox5:Value(.T.) , oCheckbox6:Value(.T.)}
@@ -111,38 +108,39 @@ lCheckbox6 := .F.
 
       @ 300,166 BUTTON oButton6 CAPTION "OK"   SIZE 120,32 ;
            STYLE WS_TABSTOP+BS_FLAT ;
-          ON CLICK {|| DisplayResults(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) ; 
+          ON CLICK {|| DisplayResults(lCheckbox1, lCheckbox2, lCheckbox3 , lCheckbox4 , lCheckbox5,  lCheckbox6) ;
                      , oDlg:Close() }
 
-   @ 45,70  GET CHECKBOX oCheckbox4 VAR lCheckbox4 CAPTION  "Check 4" SIZE 80,22
-  
-   @ 45,110 GET CHECKBOX oCheckbox5 VAR lCheckbox5 CAPTION  "Check 5" SIZE 80,22
- 
-   @ 45,150 GET CHECKBOX oCheckbox6 VAR lCheckbox6 CAPTION  "Check 6" SIZE 80,22  
-   
+      @ 45,70  GET CHECKBOX oCheckbox4 VAR lCheckbox4 CAPTION  "Check 4" SIZE 80,22
 
-   END PAGE of oTab 
+      @ 45,110 GET CHECKBOX oCheckbox5 VAR lCheckbox5 CAPTION  "Check 5" SIZE 80,22
 
+      @ 45,150 GET CHECKBOX oCheckbox6 VAR lCheckbox6 CAPTION  "Check 6" SIZE 80,22
+
+   END PAGE of oTab
 
    ACTIVATE DIALOG oDlg
-   
-RETURN NIL
+
+RETURN Nil
 
 FUNCTION DisplayResults(Checkbox1, Checkbox2, Checkbox3 , Checkbox4 , Checkbox5,  Checkbox6)
-LOCAL cergstr
 
-cergstr := "Check 1= " + bool2onoff(Checkbox1) + CHR(10) + "Check 2= " + bool2onoff(Checkbox2) + CHR(10) +  ;
-            "Check 3= " + bool2onoff(Checkbox3) + CHR(10) + "Check 4= " + bool2onoff(Checkbox4) + CHR(10) +  ;
-            "Check 5= " + bool2onoff(Checkbox5) + CHR(10) + "Check 6= " + bool2onoff(Checkbox6)
+   LOCAL cergstr
 
-hwg_MsgInfo(cergstr,"Result")
+   cergstr := "Check 1= " + bool2onoff(Checkbox1) + CHR(10) + "Check 2= " + bool2onoff(Checkbox2) + CHR(10) +  ;
+              "Check 3= " + bool2onoff(Checkbox3) + CHR(10) + "Check 4= " + bool2onoff(Checkbox4) + CHR(10) +  ;
+              "Check 5= " + bool2onoff(Checkbox5) + CHR(10) + "Check 6= " + bool2onoff(Checkbox6)
 
-RETURN NIL
+   hwg_MsgInfo(cergstr,"Result")
 
-FUNCTION bool2onoff(lbool)
-IF lbool
- RETURN "On"
-ENDIF
-RETURN "Off" 
+RETURN Nil
+
+FUNCTION bool2onoff( lbool )
+
+   IF lbool
+      RETURN "On"
+   ENDIF
+
+RETURN "Off"
 
 * ============================== EOF of checkbox.prg ========================

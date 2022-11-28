@@ -18,9 +18,9 @@
 
 //================================================================//
 
-Function Main
+FUNCTION Main()
 
-   Local oWnd
+   LOCAL oWnd
 
    SET DATE BRITISH
    SET CENTURY ON
@@ -38,15 +38,13 @@ Function Main
 
    ACTIVATE WINDOW oWnd
 
-   Return Nil
+RETURN Nil
 
-//================================================================//
+FUNCTION Dlg1()
 
-Function Dlg1
-
-   Local oDlg
-   Local oMC
-   Local oFont
+   LOCAL oDlg
+   LOCAL oMC
+   LOCAL oFont
 
    INIT DIALOG oDlg TITLE "Calendário - Exemplo 1" ;
       AT 20,20 SIZE 500,300
@@ -55,27 +53,25 @@ Function Dlg1
 
    @ 20,20 MONTHCALENDAR oMC ;
       SIZE 250,250 ;
-      INIT ctod("01/01/2004") ;
-      ON INIT {||hwg_Msginfo("Evento On Init","MonthCalendar")} ;
-      ON CHANGE {||hwg_Msginfo("Evento On Change","MonthCalendar")} ;
+      INIT ctod( "01/01/2004" ) ;
+      ON INIT { || hwg_Msginfo( "Evento On Init","MonthCalendar" ) } ;
+      ON CHANGE { || hwg_Msginfo( "Evento On Change","MonthCalendar" ) } ;
       NOTODAY NOTODAYCIRCLE WEEKNUMBERS ;
       FONT oFont ;
       TOOLTIP "MonthCalendar - NoToday - NoTodayCircle - WeekNumbers"
 
-   @ 300,20 BUTTON "Get Date" ON CLICK {||hwg_Msginfo(dtoc(oMC:Value))} SIZE 100,40
-   @ 300,60 BUTTON "Set Date" ON CLICK {||oMC:Value := Date()} SIZE 100,40
+   @ 300,20 BUTTON "Get Date" ON CLICK { || hwg_Msginfo( dtoc( oMC:Value ) ) } SIZE 100,40
+   @ 300,60 BUTTON "Set Date" ON CLICK { || oMC:Value := Date() } SIZE 100,40
 
    ACTIVATE DIALOG oDlg
 
-   Return Nil
+RETURN Nil
 
-//================================================================//
+FUNCTION Dlg2()
 
-Function Dlg2
-
-   Local oDlg
-   Local oMC
-   Local oFont
+   LOCAL oDlg
+   LOCAL oMC
+   LOCAL oFont
 
    INIT DIALOG oDlg TITLE "Calendário - Exemplo 2" ;
       AT 20,20 SIZE 500,300
@@ -92,7 +88,6 @@ Function Dlg2
 
    ACTIVATE DIALOG oDlg
 
-   Return Nil
+RETURN Nil
 
 //================================================================//
-

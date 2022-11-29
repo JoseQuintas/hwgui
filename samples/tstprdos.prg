@@ -1,6 +1,6 @@
 /*
  * HWGUI using sample
- * 
+ *
  * Demo for PrintDos CLASS
  * Copyright 2003 Sandro R. R. Freire <sandrorrfreire@yahoo.com.br>
  * www - http://www.lumainformatica.com.br
@@ -19,8 +19,8 @@
 * SET DEVICE TO SCREEN
 *
 *
-* In HwGUI    
-* SET PRINTER TO "LPT1" OF oPrint 
+* In HwGUI
+* SET PRINTER TO "LPT1" OF oPrint
 * //SET DEVICE TO PRINTER
 * @ 10, 10 PSAY "PRINTER THIS DEMO" OF oPrint
 * @ hwg_wProw(oPrint), hwg_wPCol(oPrint)+1 PSAY " PROW AND PCOL+1 " OF oPrint
@@ -36,15 +36,15 @@
 #include "windows.ch"
 #include "guilib.ch"
 #include "fileio.ch"
- 
+
 #define PF_BUFFERS   2048
 
-function Main
-Local oMain 
-  
-   INIT WINDOW oMain MAIN TITLE "Example for PrintDos Class" 
-  
- 
+FUNCTION Main()
+
+   LOCAL oMain
+
+   INIT WINDOW oMain MAIN TITLE "Example for PrintDos Class"
+
    MENU OF oMain
       MENU TITLE "&Test to File"
          MENUITEM "&Print DOS CLASS"     ACTION TestDosClass("Test.prn")
@@ -56,12 +56,12 @@ Local oMain
          SEPARATOR
          MENUITEM "&Exit" ACTION hwg_EndWindow()
       ENDMENU
- 
+
       MENU TITLE "T&est to Print"
          MENUITEM "&Print DOS CLASS"     ACTION TestDosClass()
          MENUITEM "&CLASS Style Clipper" ACTION TestDosClipper()
          MENUITEM "&Print in DeskJet   " ACTION DeskJet("LPT2")
-  
+
       ENDMENU
       MENU TITLE "Te&st to WinPrinters"
          MENUITEM "&Using Select   "        ACTION TestDosClass("SELECT")
@@ -70,224 +70,232 @@ Local oMain
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION hwg_Shellabout("Test PrintDos","By Sandro R. R. Freire")
       ENDMENU
-       
+
    ENDMENU
 
    oMain:Activate()
 
-return nil
+RETURN Nil
 
-Function TestDosClass(oTest)
+FUNCTION TestDosClass( oTest )
 
-If hwg_Msgyesno("Printing PrintDos Class to "+Iif(oTest==Nil,"LPT1",oTest),"PrintDos Class Demo")
+   IF hwg_Msgyesno("Printing PrintDos Class to "+Iif(oTest==Nil,"LPT1",oTest),"PrintDos Class Demo")
 
-   oPrint:=Printdos():New(oTest)   //oTest=Nil LPT1  
-   
-   oPrint:Say(0,  1,  "LINE 0 COL 1")
-   oPrint:Say(10, 11, "LINE 10 COL 11")
-   oPrint:Say(10, 31, "LINE 10 COL 31")
-   oPrint:Say(14, 21, "LINE 14 COL 21")
-   oPrint:Say(30, 34, "LINE 30 COL 34")
-   oPrint:Say(oPrint:nProw, oPrint:nPCol, "LINE "+STR(oPrint:nProw)+ " COL "+STR(oPrint:nPcol))
-   oPrint:Say(40, 24, "11222333000144","@r 99.999.999/9999-99") 
-   oPrint:Say(oPrint:nProw+1, oPrint:nPcol,"Valor" )
-   oPrint:Say(oPrint:nProw, oPrint:nPcol, 996659.8, "@E 999,999,999.99" )
-   oPrint:Say(oPrint:nProw, oPrint:nPcol+2,22.11)
-   oPrint:Say(oPrint:nProw, oPrint:nPcol+1, DATE())
- 
-   oPrint:Eject()
-   
-   oPrint:Say(01, 10,"End of printer text, the PrintDos Class")
+      oPrint := Printdos():New( oTest )   //oTest=Nil LPT1
 
-   oPrint:SetPrc(0,0)
-   
-   oPrint:End()
- 
-   if !Empty(oTest)
-      OpenRel(oTest)
-   EndIF  
-   
-Endif
+      oPrint:Say(0,  1,  "LINE 0 COL 1")
+      oPrint:Say(10, 11, "LINE 10 COL 11")
+      oPrint:Say(10, 31, "LINE 10 COL 31")
+      oPrint:Say(14, 21, "LINE 14 COL 21")
+      oPrint:Say(30, 34, "LINE 30 COL 34")
+      oPrint:Say(oPrint:nProw, oPrint:nPCol, "LINE "+STR(oPrint:nProw)+ " COL "+STR(oPrint:nPcol))
+      oPrint:Say(40, 24, "11222333000144","@r 99.999.999/9999-99")
+      oPrint:Say(oPrint:nProw+1, oPrint:nPcol,"Valor" )
+      oPrint:Say(oPrint:nProw, oPrint:nPcol, 996659.8, "@E 999,999,999.99" )
+      oPrint:Say(oPrint:nProw, oPrint:nPcol+2,22.11)
+      oPrint:Say(oPrint:nProw, oPrint:nPcol+1, DATE())
 
-Return Nil
+      oPrint:Eject()
 
-Function TestDosClipper(oTest)
-Local oPrinter
+      oPrint:Say(01, 10,"End of printer text, the PrintDos Class")
 
-If hwg_Msgyesno("Printing style clipper to "+Iif(oTest==Nil,"LPT1",oTest),"PrintDos Class Demo")
+      oPrint:SetPrc(0,0)
 
-   SET PRINTER TO oTest OF oPrinter
+      oPrint:End()
 
-   @  0,  1 PSAY  "LINE 0 COL 1"  OF oPrinter
-   @ 10, 11 PSAY "LINE 10 COL 11" OF oPrinter
-   @ 10, 31 PSAY "LINE 10 COL 31" OF oPrinter
-   @ 14, 21 PSAY "LINE 14 COL 21" OF oPrinter
-   @ 30, 34 PSAY "LINE 30 COL 34" OF oPrinter
-   @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter) PSAY "LINE "+STR(hwg_wProw(oPrinter))+ " COL "+STR(hwg_wPCol(oPrinter)) OF oPrinter
-   @ 40, 24 PSAY "11222333000144" PICTURE "@r 99.999.999/9999-99"  OF oPrinter
-   @ hwg_wProw(oPrinter)+1, hwg_wPCol(oPrinter) PSAY "Valor" OF oPrinter
-   @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)   PSAY 996659.85 PICTURE "@E 999,999,999.99" OF oPrinter
-   @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)+1 PSAY  22.11  OF oPrinter
-   @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)+1 PSAY DATE() OF oPrinter
-   
-   EJECT OF oPrinter
-   
-   @ 01, 10 PSAY "End of printer text, the PrintDos Class - Style Clipper" OF oPrinter
+      IF !Empty( oTest )
+         OpenRel( oTest )
+      ENDIF
 
-   hwg_wSetPrc(0,0,oPrinter)
-   
-   END PRINTER oPrinter
+   ENDIF
 
-   If !Empty(oTest)
-     OpenRel(oTest)
-   EndIF  
+RETURN Nil
 
-Endif
+FUNCTION TestDosClipper( oTest )
 
-Return Nil
+   LOCAL oPrinter
 
-FUNCTION OpenRel(oText)
-LOCAL oDlg
-Local oFont
-Local lText   := MemoRead( oText ) 
+   IF hwg_Msgyesno("Printing style clipper to "+Iif(oTest==Nil,"LPT1",oTest),"PrintDos Class Demo")
+
+      SET PRINTER TO oTest OF oPrinter
+
+      @  0,  1 PSAY  "LINE 0 COL 1"  OF oPrinter
+      @ 10, 11 PSAY "LINE 10 COL 11" OF oPrinter
+      @ 10, 31 PSAY "LINE 10 COL 31" OF oPrinter
+      @ 14, 21 PSAY "LINE 14 COL 21" OF oPrinter
+      @ 30, 34 PSAY "LINE 30 COL 34" OF oPrinter
+      @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter) PSAY "LINE "+STR(hwg_wProw(oPrinter))+ " COL "+STR(hwg_wPCol(oPrinter)) OF oPrinter
+      @ 40, 24 PSAY "11222333000144" PICTURE "@r 99.999.999/9999-99"  OF oPrinter
+      @ hwg_wProw(oPrinter)+1, hwg_wPCol(oPrinter) PSAY "Valor" OF oPrinter
+      @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)   PSAY 996659.85 PICTURE "@E 999,999,999.99" OF oPrinter
+      @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)+1 PSAY  22.11  OF oPrinter
+      @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)+1 PSAY DATE() OF oPrinter
+
+      EJECT OF oPrinter
+
+      @ 01, 10 PSAY "End of printer text, the PrintDos Class - Style Clipper" OF oPrinter
+
+      hwg_wSetPrc( 0, 0, oPrinter )
+
+      END PRINTER oPrinter
+
+      IF !Empty( oTest )
+         OpenRel( oTest )
+      ENDIF
+
+   ENDIF
+
+RETURN Nil
+
+FUNCTION OpenRel( oText )
+
+   LOCAL oDlg
+   LOCAL oFont
+   LOCAL lText   := MemoRead( oText )
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -12
 
    INIT DIALOG oDlg TITLE "Open File:"+oText ;
         AT 204,25 SIZE 777, 440 FONT oFont
-        
-   @ 1,3 EDITBOX lText SIZE 772,384 STYLE WS_VSCROLL + WS_HSCROLL + ES_MULTILINE 
 
-   @ 332,402 BUTTON "Close" ON CLICK {||hwg_EndDialog()} SIZE 80,32 
+   @ 1,3 EDITBOX lText SIZE 772,384 STYLE WS_VSCROLL + WS_HSCROLL + ES_MULTILINE
+
+   @ 332,402 BUTTON "Close" ON CLICK {||hwg_EndDialog()} SIZE 80,32
 
    ACTIVATE DIALOG oDlg
 
 RETURN
 
-Function TestPrinterFile(oTest)
+FUNCTION TestPrinterFile( oTest )
 
-If hwg_Msgyesno("Printing File "+oTest)
+   IF hwg_Msgyesno("Printing File "+oTest)
 
-   oPrint:=Printdos():New()   //oTest=Nil LPT1  
-   oPrint:PrinterFile(oTest)
-   oPrint:End()
+      oPrint:=Printdos():New()   //oTest=Nil LPT1
+      oPrint:PrinterFile(oTest)
+      oPrint:End()
 
-EndIf
+   ENDIF
 
-Return Nil
+RETURN Nil
 
-Function TestGraphic()
-Local oPrint, oPrint1
+FUNCTION TestGraphic()
 
-oPrint:=Printdos():New("Graphic.txt")
+   LOCAL oPrint, oPrint1
 
-oPrint:Say(0,0,"*************************************************************************************")
-oPrint:Say(1,0,"* Example to conversion")
-oPrint:Say(2,0,"*")
-oPrint:Say(3,0,"* In Clipper")
-oPrint:Say(4,0,"* SET PRINTER TO LPT1")
-oPrint:Say(5,0,"* SET DEVICE TO PRINTER")
-oPrint:Say(6,0,"* @ 10, 10 SAY 'PRINTER THIS DEMO'")
-oPrint:Say(7,0,"* @ PROW(), PCOL()+1 SAY 'PROW AND PCOL+1 '")
-oPrint:Say(8,0,"* EJECT")
-oPrint:Say(9,0,"* SETPRC(0,0)")
-oPrint:Say(10,0,"* SET DEVICE TO SCREEN")
-oPrint:Say(11,0,"*")
-oPrint:Say(12,0,"*")
-oPrint:Say(13,0,"* In HwGUI    ")
-oPrint:Say(14,0,"* SET PRINTER TO 'LPT1' OF oPrint ")
-oPrint:Say(15,0,"* //SET DEVICE TO PRINTER")
-oPrint:Say(16,0,"* @ 10, 10 PSAY 'PRINTER THIS DEMO' OF oPrint")
-oPrint:Say(17,0,"* @ hwg_wProw(oPrint), hwg_wPCol(oPrint)+1 PSAY 1 PROW AND PCOL+1 1 OF oPrint')")
-oPrint:Say(18,0,"* EJECT OF oPrint")
-oPrint:Say(19,0,"* hwg_wSetPrc(0,0,oPrint)")
-oPrint:Say(20,0,"* //SET DEVICE TO SCREEN                                                               ")
-oPrint:Say(21,0,"* END PRINTER oPrint                                                                   ")
-oPrint:Say(22,0,"*                                                                                    ")
-oPrint:Say(23,0,"*************************************************************************************")
-oPrint:Eject()
-oPrint:Say(0,0,"New Page 02")
-oPrint:end()
+   oPrint := Printdos():New("Graphic.txt")
 
-oPrint1:=Printdos():New("GRAPHIC")
-oPrint1:txttoGraphic("Graphic.txt", -6,.T.) //Parameters Name graphic, Size, Preview
+   oPrint:Say(0,0,"*************************************************************************************")
+   oPrint:Say(1,0,"* Example to conversion")
+   oPrint:Say(2,0,"*")
+   oPrint:Say(3,0,"* In Clipper")
+   oPrint:Say(4,0,"* SET PRINTER TO LPT1")
+   oPrint:Say(5,0,"* SET DEVICE TO PRINTER")
+   oPrint:Say(6,0,"* @ 10, 10 SAY 'PRINTER THIS DEMO'")
+   oPrint:Say(7,0,"* @ PROW(), PCOL()+1 SAY 'PROW AND PCOL+1 '")
+   oPrint:Say(8,0,"* EJECT")
+   oPrint:Say(9,0,"* SETPRC(0,0)")
+   oPrint:Say(10,0,"* SET DEVICE TO SCREEN")
+   oPrint:Say(11,0,"*")
+   oPrint:Say(12,0,"*")
+   oPrint:Say(13,0,"* In HwGUI    ")
+   oPrint:Say(14,0,"* SET PRINTER TO 'LPT1' OF oPrint ")
+   oPrint:Say(15,0,"* //SET DEVICE TO PRINTER")
+   oPrint:Say(16,0,"* @ 10, 10 PSAY 'PRINTER THIS DEMO' OF oPrint")
+   oPrint:Say(17,0,"* @ hwg_wProw(oPrint), hwg_wPCol(oPrint)+1 PSAY 1 PROW AND PCOL+1 1 OF oPrint')")
+   oPrint:Say(18,0,"* EJECT OF oPrint")
+   oPrint:Say(19,0,"* hwg_wSetPrc(0,0,oPrint)")
+   oPrint:Say(20,0,"* //SET DEVICE TO SCREEN                                                               ")
+   oPrint:Say(21,0,"* END PRINTER oPrint                                                                   ")
+   oPrint:Say(22,0,"*                                                                                    ")
+   oPrint:Say(23,0,"*************************************************************************************")
+   oPrint:Eject()
+   oPrint:Say(0,0,"New Page 02")
+   oPrint:end()
 
-oPrint1:End()
-Return Nil
+   oPrint1:=Printdos():New("GRAPHIC")
+   oPrint1:txttoGraphic("Graphic.txt", -6,.T.) //Parameters Name graphic, Size, Preview
 
-Function TestPreview()
-Local oPrint, oPrint1
+   oPrint1:End()
 
-oPrint:=Printdos():New("Preview.txt")
+RETURN Nil
 
-oPrint:Say(0,0,"*************************************************************************************")
-oPrint:Say(1,0,"* Example to conversion")
-oPrint:Say(2,0,"*")
-oPrint:Say(3,0,"* In Clipper")
-oPrint:Say(4,0,"* SET PRINTER TO LPT1")
-oPrint:Say(5,0,"* SET DEVICE TO PRINTER")
-oPrint:Say(6,0,"* @ 10, 10 SAY 'PRINTER THIS DEMO'")
-oPrint:Say(7,0,"* @ PROW(), PCOL()+1 SAY 'PROW AND PCOL+1 '")
-oPrint:Say(8,0,"* EJECT")
-oPrint:Say(9,0,"* SETPRC(0,0)")
-oPrint:Say(10,0,"* SET DEVICE TO SCREEN")
-oPrint:Say(11,0,"*")
-oPrint:Say(12,0,"*")
-oPrint:Say(13,0,"* In HwGUI    ")
-oPrint:Say(14,0,"* SET PRINTER TO 'LPT1' OF oPrint ")
-oPrint:Say(15,0,"* //SET DEVICE TO PRINTER")
-oPrint:Say(16,0,"* @ 10, 10 PSAY 'PRINTER THIS DEMO' OF oPrint")
-oPrint:Say(17,0,"* @ hwg_wProw(oPrint), hwg_wPCol(oPrint)+1 PSAY 1 PROW AND PCOL+1 1 OF oPrint')")
-oPrint:Say(18,0,"* EJECT OF oPrint")
-oPrint:Say(19,0,"* hwg_wSetPrc(0,0,oPrint)")
-oPrint:Say(20,0,"* //SET DEVICE TO SCREEN                                                               ")
-oPrint:Say(21,0,"* END PRINTER oPrint                                                                   ")
-oPrint:Say(22,0,"*                                                                                    ")
-oPrint:Say(23,0,"*************************************************************************************")
-oPrint:Eject()
-oPrint:Say(0,0,"New Page 02")
-oPrint:Eject()
-oPrint:Say(0,0,"New Page 03")
-oPrint:end()
+FUNCTION TestPreview()
 
-oPrint1:=Printdos():New("PREVIEW")
-oPrint1:Preview("Preview.txt")
-oPrint1:End()
+   LOCAL oPrint, oPrint1
 
-Return Nil
+   oPrint := Printdos():New("Preview.txt")
 
-Function DeskJet(oTest)
-Local oPrinter
+   oPrint:Say(0,0,"*************************************************************************************")
+   oPrint:Say(1,0,"* Example to conversion")
+   oPrint:Say(2,0,"*")
+   oPrint:Say(3,0,"* In Clipper")
+   oPrint:Say(4,0,"* SET PRINTER TO LPT1")
+   oPrint:Say(5,0,"* SET DEVICE TO PRINTER")
+   oPrint:Say(6,0,"* @ 10, 10 SAY 'PRINTER THIS DEMO'")
+   oPrint:Say(7,0,"* @ PROW(), PCOL()+1 SAY 'PROW AND PCOL+1 '")
+   oPrint:Say(8,0,"* EJECT")
+   oPrint:Say(9,0,"* SETPRC(0,0)")
+   oPrint:Say(10,0,"* SET DEVICE TO SCREEN")
+   oPrint:Say(11,0,"*")
+   oPrint:Say(12,0,"*")
+   oPrint:Say(13,0,"* In HwGUI    ")
+   oPrint:Say(14,0,"* SET PRINTER TO 'LPT1' OF oPrint ")
+   oPrint:Say(15,0,"* //SET DEVICE TO PRINTER")
+   oPrint:Say(16,0,"* @ 10, 10 PSAY 'PRINTER THIS DEMO' OF oPrint")
+   oPrint:Say(17,0,"* @ hwg_wProw(oPrint), hwg_wPCol(oPrint)+1 PSAY 1 PROW AND PCOL+1 1 OF oPrint')")
+   oPrint:Say(18,0,"* EJECT OF oPrint")
+   oPrint:Say(19,0,"* hwg_wSetPrc(0,0,oPrint)")
+   oPrint:Say(20,0,"* //SET DEVICE TO SCREEN                                                               ")
+   oPrint:Say(21,0,"* END PRINTER oPrint                                                                   ")
+   oPrint:Say(22,0,"*                                                                                    ")
+   oPrint:Say(23,0,"*************************************************************************************")
+   oPrint:Eject()
+   oPrint:Say(0,0,"New Page 02")
+   oPrint:Eject()
+   oPrint:Say(0,0,"New Page 03")
+   oPrint:end()
 
-If hwg_Msgyesno("Printing InkJet/DeskJet "+Iif(oTest==Nil,"LPT1",oTest),"PrintDos Class Demo")
+   oPrint1:=Printdos():New("PREVIEW")
+   oPrint1:Preview("Preview.txt")
+   oPrint1:End()
 
-   SET PRINTER TO oTest OF oPrinter
-   oPrinter:oPrintStyle:=3
-   oPrinter:Double()
-   @  0,  1 PSAY  "LINE 0 COL 1"  OF oPrinter
-   @ 10, 11 PSAY "LINE 10 COL 11" OF oPrinter
-   oPrinter:Compress()
-   @ 10, 31 PSAY "LINE 10 COL 31" OF oPrinter
-   @ 14, 21 PSAY "LINE 14 COL 21" OF oPrinter
-   @ 30, 34 PSAY "LINE 30 COL 34" OF oPrinter
-   @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter) PSAY "LINE "+STR(hwg_wProw(oPrinter))+ " COL "+STR(hwg_wPCol(oPrinter)) OF oPrinter
-   oPrinter:Descompress()
-   @ 40, 24 PSAY "11222333000144" PICTURE "@r 99.999.999/9999-99"  OF oPrinter
-   @ hwg_wProw(oPrinter)+1, hwg_wPCol(oPrinter) PSAY "Valor" OF oPrinter
-   @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)   PSAY 996659.85 PICTURE "@E 999,999,999.99" OF oPrinter
-   @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)+1 PSAY  22.11  OF oPrinter
-   @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)+1 PSAY DATE() OF oPrinter
-   
-   EJECT OF oPrinter
-   
-   @ 01, 10 PSAY "End of printer text, the PrintDos Class - Style Clipper" OF oPrinter
+RETURN Nil
 
-   hwg_wSetPrc(0,0,oPrinter)
-   
-   END PRINTER oPrinter
+FUNCTION DeskJet( oTest )
 
-   If !Empty(oTest)
-     OpenRel(oTest)
-   EndIF  
+   LOCAL oPrinter
 
-Endif
+   IF hwg_Msgyesno("Printing InkJet/DeskJet "+Iif(oTest==Nil,"LPT1",oTest),"PrintDos Class Demo")
+
+      SET PRINTER TO oTest OF oPrinter
+      oPrinter:oPrintStyle:=3
+      oPrinter:Double()
+      @  0,  1 PSAY  "LINE 0 COL 1"  OF oPrinter
+      @ 10, 11 PSAY "LINE 10 COL 11" OF oPrinter
+      oPrinter:Compress()
+      @ 10, 31 PSAY "LINE 10 COL 31" OF oPrinter
+      @ 14, 21 PSAY "LINE 14 COL 21" OF oPrinter
+      @ 30, 34 PSAY "LINE 30 COL 34" OF oPrinter
+      @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter) PSAY "LINE "+STR(hwg_wProw(oPrinter))+ " COL "+STR(hwg_wPCol(oPrinter)) OF oPrinter
+      oPrinter:Descompress()
+      @ 40, 24 PSAY "11222333000144" PICTURE "@r 99.999.999/9999-99"  OF oPrinter
+      @ hwg_wProw(oPrinter)+1, hwg_wPCol(oPrinter) PSAY "Valor" OF oPrinter
+      @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)   PSAY 996659.85 PICTURE "@E 999,999,999.99" OF oPrinter
+      @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)+1 PSAY  22.11  OF oPrinter
+      @ hwg_wProw(oPrinter), hwg_wPCol(oPrinter)+1 PSAY DATE() OF oPrinter
+
+      EJECT OF oPrinter
+
+      @ 01, 10 PSAY "End of printer text, the PrintDos Class - Style Clipper" OF oPrinter
+
+      hwg_wSetPrc(0,0,oPrinter)
+
+      END PRINTER oPrinter
+
+      IF !Empty( oTest )
+         OpenRel( oTest )
+      ENDIF
+
+   ENDIF
+
+   RETURN Nil

@@ -13,15 +13,15 @@ STATIC oPrinter,aSize:={280,220}
 
 MEMVAR oMainWindow, oPanel , oFont , nColor, oBmp2 , cDir
 
-function Main
-Private oMainWindow, oPanel
-Private oFont := Nil, cDir := "\"+Curdir()+"\"
-Private nColor, oBmp2
+FUNCTION Main()
 
+   PRIVATE oMainWindow, oPanel
+   PRIVATE oFont := Nil, cDir := "\"+Curdir()+"\"
+   PRIVATE nColor, oBmp2
 
    INIT WINDOW oMainWindow MDI TITLE "Example" ;
          MENUPOS 3
-  
+
    MENU OF oMainWindow
       MENU TITLE "&File"
          MENUITEM "&Test RTF" ACTION TestRTF()
@@ -35,23 +35,23 @@ Private nColor, oBmp2
 
    oMainWindow:Activate()
 
-return nil
+RETURN Nil
 
 FUNCTION TestRtf()
-LOCAL cOutFile, oRtf, anchos, i
-LOCAL j, aMarca, lFormato := .F.
-LOCAL cTexto
+
+   LOCAL cOutFile, oRtf, anchos, i
+   LOCAL j, aMarca, lFormato := .F.
+   LOCAL cTexto
 
    cOutFile := hwg_Savefile( "*.rtf","RTF files( *.rtf )","*.rtf" )
    IF Empty( cOutFile )
-      Return Nil
+      RETURN Nil
    ENDIF
    IF File( cOutFile ) .AND. !hwg_Msgyesno( "Recreate it ?",cOutFile+" already exists!" )
-      Return Nil
+      RETURN Nil
    ENDIF
 
    //      Open the output file & set some defaults
-
 
    cOutFile:=alltrim(cOutFile)
 
@@ -151,7 +151,7 @@ LOCAL cTexto
             "Nº Tubos","","",""};       // Titulos. Cada linea es una matriz
             HEADERSHADE 0;
             HEADERFONTSIZE 10;
-            HEADERHALIGN CENTER 
+            HEADERHALIGN CENTER
                                                       // 2,3 y 5,6 de la primera linea de titulos
                                                       // van a estar unidas en una sola.
 
@@ -184,38 +184,37 @@ LOCAL cTexto
 
    hwg_Msginfo( cOutFile + " is created !" )
 
-RETURN NIL
-
-
+RETURN Nil
 
 STATIC FUNCTION SetupRTF(cOutFile)
-*********************************************************************
-* Description:
-* Arguments:
-* Return:
-*
-*--------------------------------------------------------------------
-* Date       Developer   Comments
-* 01/28/97   TRM         Creation
-*
-*********************************************************************
-LOCAL oRTF,i,nWidth:=0,lLandScape:=.F.
-LOCAL  ancpag
-MEMVAR nom_hosp1,nom_hosp2,nom_ser
-MEMVAR cNomUser
 
-DEFINE RTF oRTF FILE cOutFile ;
-    FONTS "Times New Roman", "Arial", "Courier New" ;
-    FONTFAMILY "froman","fswiss","fmodern";
-        CHARSET 0,0,10;
-    FONTSIZE 12 ;
-    TWIPFACTOR 1440
+   *********************************************************************
+   * Description:
+   * Arguments:
+   * Return:
+   *--------------------------------------------------------------------
+   * Date       Developer   Comments
+   * 01/28/97   TRM         Creation
+   *********************************************************************
 
-// Estilos. Despues de la definicion del oRtf
+   LOCAL oRTF,i,nWidth:=0,lLandScape:=.F.
+   LOCAL  ancpag
 
-BEGIN ESTILOS oRTF
+   MEMVAR nom_hosp1,nom_hosp2,nom_ser
+   MEMVAR cNomUser
 
-DEFINE ESTILO oRtf;
+   DEFINE RTF oRTF FILE cOutFile ;
+       FONTS "Times New Roman", "Arial", "Courier New" ;
+       FONTFAMILY "froman","fswiss","fmodern";
+           CHARSET 0,0,10;
+       FONTSIZE 12 ;
+       TWIPFACTOR 1440
+
+   // Estilos. Despues de la definicion del oRtf
+
+   BEGIN ESTILOS oRTF
+
+   DEFINE ESTILO oRtf;
         NAME "Prueba";          //Nombre del estilo
         TYPE PARAGRAPH;         // Tipo del estilo
         FONTNUMBER 3;           // Fuente
@@ -225,20 +224,20 @@ DEFINE ESTILO oRtf;
         SHADE 25;               // Sombreado
         LUPDATE
 
-END ESTILOS oRTF
+   END ESTILOS oRTF
 
-// Informacion del documento.
+   // Informacion del documento.
 
-INFO oRTF TITLE "Prueba";                      // Titulo
-    SUBJECT "Informe en RTF";                  // Materia
-    AUTHOR "Jose Ignacio Jimenez Alarcon";     // Autor
-    MANAGER "Jose Ignacio Jimenez Alarcon" ;   // Director
-    COMPANY "Servicio Canario de Salud" ;      // Compañia
-    OPERATOR "Jose Ignacio Jimenez Alarcon"    // Operador
+   INFO oRTF TITLE "Prueba";                      // Titulo
+       SUBJECT "Informe en RTF";                  // Materia
+       AUTHOR "Jose Ignacio Jimenez Alarcon";     // Autor
+       MANAGER "Jose Ignacio Jimenez Alarcon" ;   // Director
+       COMPANY "Servicio Canario de Salud" ;      // Compañia
+       OPERATOR "Jose Ignacio Jimenez Alarcon"    // Operador
 
-// Formato del documento. Se puede cambiar luego con el setup. Tiene
-// que ir siempre detras del bloque de informacion si existe
-DOCUMENT FORMAT oRtf;
+   // Formato del documento. Se puede cambiar luego con el setup. Tiene
+   // que ir siempre detras del bloque de informacion si existe
+   DOCUMENT FORMAT oRtf;
         TAB 0.5;                // Tabuladores
         LINE 1;                 // Linea Inicial
         BACKUP;                 // Backup al grabar
@@ -252,19 +251,19 @@ DOCUMENT FORMAT oRtf;
         FACING;                 // Diferencia entre paginas pares o impares
         GUTTER 1.0              // Encuadernado 0.5
 
-// Trim trailing spaces from data, to save file space.
-oRTF:lTrimSpaces := .T.
+   // Trim trailing spaces from data, to save file space.
+   oRTF:lTrimSpaces := .T.
 
-DEFINE PAGESETUP oRTF MARGINS 0.5, 0.5, 0.5, 0.5 ;
-    PAGEWIDTH (aSize[2]/25.4) ;
-    PAGEHEIGHT (aSize[1]/25.4);
-    TABWIDTH .5 ;
-    ALIGN TOP;
-        LANDSCAPE
+   DEFINE PAGESETUP oRTF MARGINS 0.5, 0.5, 0.5, 0.5 ;
+       PAGEWIDTH (aSize[2]/25.4) ;
+       PAGEHEIGHT (aSize[1]/25.4) ;
+       TABWIDTH .5 ;
+       ALIGN TOP ;
+       LANDSCAPE
 
-BEGIN HEADER oRTF
+   BEGIN HEADER oRTF
 
-     DEFINE NEWTABLE oRTF ;           // Specify the RTF object
+      DEFINE NEWTABLE oRTF ;           // Specify the RTF object
         ALIGN LEFT ;                  // Center table horizontally on page
         FONTNUMBER 2 ;                // Use font #2 for the body rows
         FONTSIZE 9 ;                  // Use 9 Pt. font for the body rows
@@ -275,49 +274,45 @@ BEGIN HEADER oRTF
         CELLBORDERS NONE              // Outline cells with thin border
 
 
-    WRITE NEWCELL oRTF TEXT "";
-                FONTNUMBER 2;
-        FONTSIZE 8 ;
-        ALIGN LEFT
+         WRITE NEWCELL oRTF TEXT "";
+            FONTNUMBER 2;
+            FONTSIZE 8 ;
+            ALIGN LEFT
 
-    WRITE NEWCELL oRTF TEXT "Clase RichText";
-                FONTNUMBER 2;
-        FONTSIZE 14 ;
-                FONTCOLOR 2;                            // Colores
-        APPEARANCE BOLD_ON+CAPS_ON+ITALIC_ON ;
-        ALIGN CENTER
+         WRITE NEWCELL oRTF TEXT "Clase RichText";
+            FONTNUMBER 2;
+            FONTSIZE 14 ;
+            FONTCOLOR 2;                            // Colores
+            APPEARANCE BOLD_ON+CAPS_ON+ITALIC_ON ;
+            ALIGN CENTER
 
-        WRITE NEWCELL oRtf TEXT ""
+         WRITE NEWCELL oRtf TEXT ""
 
-        WRITE NEWCELL oRTF TEXT ""
-        WRITE NEWCELL oRTF TEXT ""
-        WRITE NEWCELL oRtf TEXT ""
+         WRITE NEWCELL oRTF TEXT ""
+         WRITE NEWCELL oRTF TEXT ""
+         WRITE NEWCELL oRtf TEXT ""
 
-        WRITE NEWCELL oRTF TEXT ""
-        WRITE NEWCELL oRTF TEXT ""
-        WRITE NEWCELL oRtf TEXT ""
+         WRITE NEWCELL oRTF TEXT ""
+         WRITE NEWCELL oRTF TEXT ""
+         WRITE NEWCELL oRtf TEXT ""
 
-END TABLE oRTF
+      END TABLE oRTF
 
-END HEADER oRTF
+   END HEADER oRTF
 
-BEGIN FOOTER oRTF
-    NEW PARAGRAPH oRTF TEXT "Pagina " ;
-        FONTNUMBER 2;
-        FONTSIZE 8 ;
-        BORDER "TOP";
-        ALIGN LEFT
-        
-// Nuevo. Escribe en ese lugar el numero de pagina actual.
+   BEGIN FOOTER oRTF
+      NEW PARAGRAPH oRTF TEXT "Pagina " ;
+         FONTNUMBER 2;
+         FONTSIZE 8 ;
+         BORDER "TOP";
+         ALIGN LEFT
 
-    SETPAGE oRtf
+      // Nuevo. Escribe en ese lugar el numero de pagina actual.
 
-END FOOTER oRTF
+      SETPAGE oRtf
+
+   END FOOTER oRTF
 
 RETURN oRTF
-**********************  END OF SetupRTF()  ***********************
 
 * ====================== EOF of testrtf.prg ===========================
- 
-
-

@@ -16,6 +16,11 @@
 */
 
 
+2022-11-20 13:00 UTC-0200 Jose Quintas
+   * samples/*.prg
+     * end format samples source code
+     ! no change because codepage or other: winprn.prg icons2.prg hexbincnt.prg
+
 2022-11-28 19:14 UTC-200 Jose QUintas
    * samples/*.prg
      * continue format source code

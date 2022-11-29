@@ -16,6 +16,13 @@
 */
 
 
+2022-11-29 19:30 UTC+0100 Wilfried Brunken DF7BE
+  * samples/helpstatic.hbp
+   ! Refer to Commit [r3163]:
+   ! please check samples/helpstatic.prg lines 124-134 about codepage: OK
+   ! Prepared for GTK3
+
+
 2022-11-29 19:10 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * linux-env.sh (new)

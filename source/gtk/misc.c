@@ -339,7 +339,7 @@ HB_FUNC( HWG_RUNAPP )
    hb_retl( g_spawn_command_line_async( hb_parc(1), NULL ) );
 #else
   /* GTK3 */
-  g_application_run (G_APPLICATION ( hb_parc(1) ) , 0 , NULL  );
+  hb_retni(g_application_run (G_APPLICATION ( hb_parc(1) ) , 0 , NULL  ) );
 #endif
 }
 
@@ -710,5 +710,13 @@ HB_FUNC( HWG_TOGGLE_HALFBYTE_C )
 
 }
 
+HB_FUNC( HWG_GUITYPE )
+{
+#if ( GTK_MAJOR_VERSION -0 < 3 )
+  hb_retc( "GTK2" );
+#else
+  hb_retc( "GTK3" );
+#endif  
+}
 
 /* ========= EOF of misc.c ============ */

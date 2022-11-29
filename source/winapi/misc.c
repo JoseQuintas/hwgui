@@ -1438,4 +1438,9 @@ HB_FUNC( HWG_TOGGLE_HALFBYTE_C )
 }
 
 
+HB_FUNC( HWG_GUITYPE )
+{
+  hb_retc( "WinAPI" );
+}
+
 /* ========= EOF of misc.c ============ */

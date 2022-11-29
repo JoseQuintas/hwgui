@@ -37,7 +37,8 @@
  hwg_GetCursorType() && GTK only
  hwg_IsLeapYear ( nyear )
  hwg_MsgYesNoCancel(...)
-
+ hwg_GUIType()
+ hwg_RunApp()
  hwg_Has_Win_Euro_Support()
  hwg_FileModTimeU()
  hwg_FileModTime()
@@ -68,7 +69,7 @@ FUNCTION MAIN()
    LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
    LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
    LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
-   LOCAL oButton26, oButton27
+   LOCAL oButton26, oButton27, oButton28, oButton29
 
    PUBLIC cDirSep := hwg_GetDirSep()
    PUBLIC bgtk , ndefaultcsrtype
@@ -206,6 +207,15 @@ FUNCTION MAIN()
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | Test_MsgYesNoCancel() }
 
+   @ 25 ,250 BUTTON oButton28 CAPTION "hwg_GUIType()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+       { | | Funkt(hwg_GUIType(),"C","hwg_GUIType()") }
+
+   @ 180 ,250 BUTTON oButton29 CAPTION "hwg_RunApp()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+       { | | do_the_RunApp() }
+
+
    /* Disable buttons for Windows only functions */
 #ifndef __PLATFORM__WINDOWS
    oButton8:Disable()
@@ -303,6 +313,10 @@ FUNCTION N2STR( numb )
 FUNCTION TotF( btf )
 
 RETURN IIF( btf, "True", "False" )
+
+FUNCTION ToLogical( btf )
+
+RETURN IIF( btf, ".T.", ".F." )
 
 FUNCTION TstButt_Deact( obo )
 
@@ -446,5 +460,57 @@ FUNCTION Test_MsgYesNoCancel()
    hwg_MsgInfo( STR( nretu ) , "Return value of hwg_MsgYesNoCancel()" )
 
 RETURN Nil
+
+
+FUNCTION do_the_RunApp()
+LOCAL cCmd , rc , cgt
+
+cCmd := _hwg_RunApp()
+IF EMPTY(cCmd)
+ RETURN NIL
+ENDIF
+
+rc := hwg_RunApp(cCmd)
+
+cgt := hwg_GUIType()
+
+DO CASE   
+ CASE cgt == "WinAPI"
+  hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
+ CASE cgt == "GTK2"
+//  hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
+//  hwg_MsgInfo("Return Code: " + ToLogical(),"Result of hwg_RunApp()")
+ CASE cgt == "GTK3"
+  hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
+ ENDCASE
+ 
+RETURN NIL
+
+FUNCTION _hwg_RunApp()
+
+LOCAL _hwg_RunApp_test
+LOCAL oLabel1, oEditbox1, oButton1, oButton2
+LOCAL cCmd
+
+  cCmd := SPACE(80)
+
+  INIT DIALOG _hwg_RunApp_test TITLE "hwg_RunApp()" ;
+    AT 315,231 SIZE 940,239 ;
+    STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+
+
+   @ 80,32 SAY oLabel1 CAPTION "Enter command line for run an external program"  SIZE 587,22
+   @ 80,71 GET oEditbox1 VAR cCmd  SIZE 772,24 ;
+        STYLE WS_BORDER
+   @ 115,120 BUTTON oButton1 CAPTION "Run" SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK {|| _hwg_RunApp_test:Close() } 
+   @ 809,120 BUTTON oButton2 CAPTION "Cancel" SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK {|| cCmd := "" , _hwg_RunApp_test:Close() }
+
+   ACTIVATE DIALOG _hwg_RunApp_test
+* RETURN _hwg_RunApp_test:lresult
+RETURN cCmd
 
 * ============================== EOF of testfunc.prg ==============================

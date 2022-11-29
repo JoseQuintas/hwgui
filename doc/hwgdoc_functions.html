@@ -2792,8 +2792,27 @@ See sample program "testspli.prg" for details.<br>
    If for example your datebase uses a Euro currency sign, you<br>
    can set this codepage at opening time of a database with<br>
    the USE command.<br>
-   The UTF-8 codepage supports forever the Euro currency sign.<br>   
+   The UTF-8 codepage supports forever the Euro currency sign.<br> 
+   <br>
+   Use the compiler switch to REQUEST the<br>
+   codepage, if available in used Harbour version<br>
+   like this sample code snippet:<br>
+   #if ( HB_VER_REVID - 0 ) >= 2002101634<br>
+   * 858 : same as 850 with Euro Currency sign<br>
+   &nbsp;REQUEST HB_CODEPAGE_DE858<br>
+   #endif<br>
+   <br>  
    </p>
+
+  <br><strong class="subhead"> hwg_GUIType()</strong>
+  <p>
+   Returns the linked in GUI type as string,<br>
+   return values are:<br>
+   "WinAPI"<br>
+   "GTK2"<br>
+   "GTK3"<br>
+  <br>  
+  </p>
    
    <br><strong class="subhead"> hwg_ValType(xxxx)</strong>
    <p>

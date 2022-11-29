@@ -16,6 +16,19 @@
 */
 
 
+2022-11-29 19:10 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * linux-env.sh (new)
+  * samples/testfunc.hbp
+  * samples/testfunc.prg
+  * source/gtk/misc.c
+  * source/winapi/misc.c
+   ! Project Port to GTK3 (2)
+   ! linux-env.sh for Knoppix
+   ! (To be continued)
+
+
+
 2022-11-20 13:00 UTC-0200 Jose Quintas
    * samples/*.prg
      * end format samples source code

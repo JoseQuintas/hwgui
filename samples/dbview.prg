@@ -59,104 +59,103 @@ REQUEST DBFFPT
 REQUEST ORDKEYNO
 REQUEST ORDKEYCOUNT
 
-Static aFieldTypes := { "C","N","D","L" }
-Static dbv_cLocate, dbv_nRec, dbv_cSeek
+STATIC aFieldTypes := { "C","N","D","L" }
+STATIC dbv_cLocate, dbv_nRec, dbv_cSeek
 
+MEMVAR oBrw, oFont , oSay1, oSay2, nBrwCharset
 
-Memvar oBrw, oFont , oSay1, oSay2, nBrwCharset
+FUNCTION Main()
 
-Function Main
-Local oWndMain, oPanel
+   LOCAL oWndMain, oPanel
 
-Private oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname , nBrwCharset
+   PRIVATE oBrw, oSay1, oSay2, oFont, DataCP, currentCP, currFname , nBrwCharset
 
-nBrwCharset := 0  && Do not modify with UTF-8 on LINUX
+   nBrwCharset := 0  && Do not modify with UTF-8 on LINUX
 
-* Best default index format is NTX
+   * Best default index format is NTX
    RDDSETDEFAULT( "DBFNTX" )
-*  RDDSETDEFAULT( "DBFCDX" )
+   * RDDSETDEFAULT( "DBFCDX" )
 
    oFont := HFont():Add( "Courier",0,-14, , 0 )
-
 
    INIT WINDOW oWndMain MAIN TITLE "Dbf browse" AT 200,100 SIZE 300,300
 
    * Attention ! Menu Structure errors were not be detected by the Harbour compiler.
    *             In this case, the menu completely disappeared at run time.
    MENU OF oWndMain
-     MENU TITLE "&File"
-       MENUITEM "&New" ACTION ModiStru( .T. )
-       MENUITEM "&Open"+Chr(9)+"Alt+O" ACTION FileOpen() ACCELERATOR FALT,Asc("O")
-       SEPARATOR
-       MENUITEM "&Exit" ACTION oWndMain:Close()
-     ENDMENU
-     MENU TITLE "&Index" ID 31010
-       MENUITEM "&Select order" ACTION SelectIndex()
-       MENUITEM "&New order" ACTION NewIndex()
-       MENUITEM "&Open index file" ACTION OpenIndex()
-       SEPARATOR
-       MENUITEM "&Reindex all" ACTION ReIndex()
-       SEPARATOR
-       MENUITEM "&Close all indexes" ACTION CloseIndex()
-     ENDMENU
-     MENU TITLE "&Structure" ID 31020
-       MENUITEM "&Modify structure" ACTION ModiStru( .F. )
-     ENDMENU
-     MENU TITLE "&Move" ID 31030
-       MENUITEM "&Go To" ACTION dbv_Goto()
-       MENUITEM "&Seek" ACTION dbv_Seek()
-       MENUITEM "&Locate" ACTION dbv_Locate()
-       MENUITEM "&Continue" ACTION dbv_Continue()
-     ENDMENU
-     MENU TITLE "&Command" ID 31040
-       MENUITEM "&Append record"+Chr(9)+"Alt+A" ACTION dbv_AppRec() ACCELERATOR FALT,Asc("A")
-       MENUITEM "&Delete record" ACTION dbv_DelRec()
-       MENUITEM "&Pack" ACTION dbv_Pack()
-       MENUITEM "&Zap" ACTION dbv_Zap()
-     ENDMENU
-     MENU TITLE "&View"
-       MENUITEM "&Font" ACTION ChangeFont()
-       MENU TITLE "&Local codepage"
-          MENUITEMCHECK "EN" ACTION hb_cdpSelect( "EN" )
-          MENUITEMCHECK "RUKOI8" ACTION hb_cdpSelect( "RUKOI8" )
-          MENUITEMCHECK "RU1251" ACTION hb_cdpSelect( "RU1251" )
-          MENUITEMCHECK "DEWIN"  ACTION hb_cdpSelect( "DEWIN" )
+      MENU TITLE "&File"
+         MENUITEM "&New" ACTION ModiStru( .T. )
+         MENUITEM "&Open"+Chr(9)+"Alt+O" ACTION FileOpen() ACCELERATOR FALT,Asc("O")
+         SEPARATOR
+         MENUITEM "&Exit" ACTION oWndMain:Close()
+      ENDMENU
+      MENU TITLE "&Index" ID 31010
+         MENUITEM "&Select order" ACTION SelectIndex()
+         MENUITEM "&New order" ACTION NewIndex()
+         MENUITEM "&Open index file" ACTION OpenIndex()
+         SEPARATOR
+         MENUITEM "&Reindex all" ACTION ReIndex()
+         SEPARATOR
+         MENUITEM "&Close all indexes" ACTION CloseIndex()
+      ENDMENU
+      MENU TITLE "&Structure" ID 31020
+         MENUITEM "&Modify structure" ACTION ModiStru( .F. )
+      ENDMENU
+      MENU TITLE "&Move" ID 31030
+         MENUITEM "&Go To" ACTION dbv_Goto()
+         MENUITEM "&Seek" ACTION dbv_Seek()
+         MENUITEM "&Locate" ACTION dbv_Locate()
+         MENUITEM "&Continue" ACTION dbv_Continue()
+      ENDMENU
+      MENU TITLE "&Command" ID 31040
+         MENUITEM "&Append record"+Chr(9)+"Alt+A" ACTION dbv_AppRec() ACCELERATOR FALT,Asc("A")
+         MENUITEM "&Delete record" ACTION dbv_DelRec()
+         MENUITEM "&Pack" ACTION dbv_Pack()
+         MENUITEM "&Zap" ACTION dbv_Zap()
+      ENDMENU
+      MENU TITLE "&View"
+         MENUITEM "&Font" ACTION ChangeFont()
+         MENU TITLE "&Local codepage"
+            MENUITEMCHECK "EN" ACTION hb_cdpSelect( "EN" )
+            MENUITEMCHECK "RUKOI8" ACTION hb_cdpSelect( "RUKOI8" )
+            MENUITEMCHECK "RU1251" ACTION hb_cdpSelect( "RU1251" )
+            MENUITEMCHECK "DEWIN"  ACTION hb_cdpSelect( "DEWIN" )
 #ifdef __LINUX__
-          MENUITEMCHECK "UTF-8" ACTION  hb_cdpSelect( "UTF8EX" )
+            MENUITEMCHECK "UTF-8" ACTION  hb_cdpSelect( "UTF8EX" )
 #endif
-       ENDMENU
-       MENU TITLE "&Data's codepage"
-          MENUITEMCHECK "EN"              ACTION  SetDtCP_EN()          && SetDataCP( "EN" )
-          MENUITEMCHECK "RUKOI8"          ACTION  SetDtCP_RUKOI8()      && SetDataCP( "RUKOI8" )
-          MENUITEMCHECK "RU1251"          ACTION  SetDtCP_RU1251()      && SetDataCP( "RU1251" )
-          MENUITEMCHECK "RU866"           ACTION  SetDtCP_RU866()       && SetDataCP( "RU866" )
-          MENUITEMCHECK "DEWIN"           ACTION  SetDtCP_DEWIN()       && SetDataCP( "DEWIN" )
-          MENUITEMCHECK "IBM858DE (Euro)" ACTION  SetDtCP_DE858()       && SetDataCP( "DE858" )
+         ENDMENU
+         MENU TITLE "&Data's codepage"
+            MENUITEMCHECK "EN"              ACTION  SetDtCP_EN()          && SetDataCP( "EN" )
+            MENUITEMCHECK "RUKOI8"          ACTION  SetDtCP_RUKOI8()      && SetDataCP( "RUKOI8" )
+            MENUITEMCHECK "RU1251"          ACTION  SetDtCP_RU1251()      && SetDataCP( "RU1251" )
+            MENUITEMCHECK "RU866"           ACTION  SetDtCP_RU866()       && SetDataCP( "RU866" )
+            MENUITEMCHECK "DEWIN"           ACTION  SetDtCP_DEWIN()       && SetDataCP( "DEWIN" )
+            MENUITEMCHECK "IBM858DE (Euro)" ACTION  SetDtCP_DE858()       && SetDataCP( "DE858" )
 #ifdef __LINUX__
-          MENUITEMCHECK "UTF-8"           ACTION SetDtCP_UTF8EX()       && SetDataCP( "UTF8EX" )
+            MENUITEMCHECK "UTF-8"           ACTION SetDtCP_UTF8EX()       && SetDataCP( "UTF8EX" )
 #endif
-       ENDMENU
-       MENU TITLE "Se&ttings"
-        MENU TITLE "&Century"
-          MENUITEM "Get recent setting" ACTION FSET_CENT_GET()
-          SEPARATOR
-          MENUITEMCHECK "ON"  ACTION FSET_CENT_ON()
-          MENUITEMCHECK "OFF" ACTION FSET_CENT_OFF()
-        ENDMENU
-        MENU TITLE "&Date Format"
-           MENUITEMCHECK "AMERICAN       (MM/DD/YY)" ACTION SET_DATE_F("AMERICAN")
-           MENUITEMCHECK "ANSI           (YY.MM.DD)" ACTION SET_DATE_F("ANSI")
-           MENUITEMCHECK "USA            (MM-DD-YY)" ACTION SET_DATE_F("USA")
-           MENUITEMCHECK "BRITISH/FRENCH (DD/MM/YY)" ACTION SET_DATE_F("BRITISH")
-           MENUITEMCHECK "GERMAN         (DD.MM.YY)" ACTION SET_DATE_F("GERMAN" )
-           MENUITEMCHECK "ITALIAN        (DD-MM-YY)" ACTION SET_DATE_F("ITALIAN")
-           MENUITEMCHECK "JAPAN          (YY.MM.DD)" ACTION SET_DATE_F("JAPAN")
-        ENDMENU
-       ENDMENU
-     ENDMENU
-     MENU TITLE "&Help"
-       MENUITEM "&About" ACTION hwg_Msginfo("Dbf Files Browser" + Chr(10) + "2005" )
-     ENDMENU
+         ENDMENU
+         MENU TITLE "Se&ttings"
+            MENU TITLE "&Century"
+               MENUITEM "Get recent setting" ACTION FSET_CENT_GET()
+               SEPARATOR
+               MENUITEMCHECK "ON"  ACTION FSET_CENT_ON()
+               MENUITEMCHECK "OFF" ACTION FSET_CENT_OFF()
+            ENDMENU
+            MENU TITLE "&Date Format"
+               MENUITEMCHECK "AMERICAN       (MM/DD/YY)" ACTION SET_DATE_F("AMERICAN")
+               MENUITEMCHECK "ANSI           (YY.MM.DD)" ACTION SET_DATE_F("ANSI")
+               MENUITEMCHECK "USA            (MM-DD-YY)" ACTION SET_DATE_F("USA")
+               MENUITEMCHECK "BRITISH/FRENCH (DD/MM/YY)" ACTION SET_DATE_F("BRITISH")
+               MENUITEMCHECK "GERMAN         (DD.MM.YY)" ACTION SET_DATE_F("GERMAN" )
+               MENUITEMCHECK "ITALIAN        (DD-MM-YY)" ACTION SET_DATE_F("ITALIAN")
+               MENUITEMCHECK "JAPAN          (YY.MM.DD)" ACTION SET_DATE_F("JAPAN")
+            ENDMENU
+         ENDMENU
+      ENDMENU
+      MENU TITLE "&Help"
+         MENUITEM "&About" ACTION hwg_Msginfo("Dbf Files Browser" + Chr(10) + "2005" )
+      ENDMENU
    ENDMENU
 
    @ 0,0 BROWSE oBrw                 ;
@@ -180,23 +179,24 @@ nBrwCharset := 0  && Do not modify with UTF-8 on LINUX
 
    ACTIVATE WINDOW oWndMain
 
-Return Nil
+RETURN Nil
 
-Static Function FileOpen( fname )
-Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
+STATIC FUNCTION FileOpen( fname )
+
+   LOCAL mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
+   MEMVAR oBrw, oSay1, oSay2, DataCP, currentCP, currFname
 
    IF Empty( fname )
       fname := hwg_Selectfile( "xBase files( *.dbf )", "*.dbf", mypath )
    ENDIF
    IF !Empty( fname )
-      close all
+      CLOSE ALL
 
       IF DataCP != Nil
-         use (fname) new codepage (DataCP)
+         USE ( fname ) NEW CODEPAGE (DataCP)
          currentCP := DataCP
       ELSE
-         use (fname) new
+         USE (fname) NEW
       ENDIF
       currFname := CutExten( fname )
 
@@ -221,11 +221,12 @@ Memvar oBrw, oSay1, oSay2, DataCP, currentCP, currFname
 
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function ChangeFont()
-Local oBrwFont
-Memvar oBrw, oFont
+STATIC FUNCTION ChangeFont()
+
+   LOCAL oBrwFont
+   MEMVAR oBrw, oFont
 
    IF ( oBrwFont := HFont():Select(oFont) ) != Nil
 
@@ -235,24 +236,28 @@ Memvar oBrw, oFont
       oBrw:ReFresh()
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function SetDataCP( cp )
-Memvar DataCP
+STATIC FUNCTION SetDataCP( cp )
+
+   MEMVAR DataCP
+
    nBrwCharset := 0
    IF cp == "RUKOI8" .OR. cp == "RU1251" .OR. cp == "RU866"
      nBrwCharset := 204
    ENDIF
    DataCP := cp
-Return Nil
 
-Static Function SelectIndex()
-Local aIndex := { { "None","   ","   " } }, i, indname, iLen := 0
-Local oDlg, oBrowse, width, height, nChoice := 0, nOrder := OrdNumber()+1
-Memvar oBrw, oFont
+RETURN Nil
+
+STATIC FUNCTION SelectIndex()
+
+   LOCAL aIndex := { { "None","   ","   " } }, i, indname, iLen := 0
+   LOCAL oDlg, oBrowse, width, height, nChoice := 0, nOrder := OrdNumber()+1
+   MEMVAR oBrw, oFont
 
    IF Len( oBrw:aColumns ) == 0
-      Return Nil
+      RETURN Nil
    ENDIF
 
    i := 1
@@ -293,16 +298,17 @@ Memvar oBrw, oFont
       UpdBrowse()
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function NewIndex()
-Local oDlg, of := HFont():Add( "Courier",0,-12 )
-Local cName := "", lMulti := .T., lUniq := .F., cTag := "", cExpr := "", cCond := ""
-Local oMsg
-Memvar oBrw
+STATIC FUNCTION NewIndex()
+
+   LOCAL oDlg, of := HFont():Add( "Courier",0,-12 )
+   LOCAL cName := "", lMulti := .T., lUniq := .F., cTag := "", cExpr := "", cCond := ""
+   LOCAL oMsg
+   MEMVAR oBrw
 
    IF Len( oBrw:aColumns ) == 0
-      Return Nil
+      RETURN Nil
    ENDIF
 
    INIT DIALOG oDlg TITLE "Create Order" ;
@@ -354,27 +360,29 @@ Memvar oBrw
       ENDIF
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function OpenIndex()
-Local mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-Local fname := hwg_Selectfile( "index files( *.ntx )", "*.ntx", mypath )
-Memvar oBrw
+STATIC FUNCTION OpenIndex()
+
+   LOCAL mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
+   LOCAL fname := hwg_Selectfile( "index files( *.ntx )", "*.ntx", mypath )
+   MEMVAR oBrw
 
    IF Len( oBrw:aColumns ) == 0
-      Return Nil
+      RETURN Nil
    ENDIF
 
    IF !Empty( fname )
-      Set Index To (fname)
+      SET INDEX TO ( fname )
       UpdBrowse()
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function ReIndex()
-Local oMsg
-Memvar oBrw
+STATIC FUNCTION ReIndex()
+
+   LOCAL oMsg
+   MEMVAR oBrw
 
    IF Len( oBrw:aColumns ) == 0
       Return Nil
@@ -385,23 +393,25 @@ Memvar oBrw
    oMsg:Close()
    oBrw:Refresh()
 
-Return Nil
+RETURN Nil
 
-Static Function CloseIndex()
-Memvar oBrw
+STATIC FUNCTION CloseIndex()
+
+   MEMVAR oBrw
 
    IF Len( oBrw:aColumns ) == 0
-      Return Nil
+      RETURN Nil
    ENDIF
 
    OrdListClear()
-   Set Order To 0
+   SET ORDER TO 0
    UpdBrowse()
 
-Return Nil
+RETURN Nil
 
-Static Function UpdBrowse()
-Memvar oBrw, oSay1
+STATIC FUNCTION UpdBrowse()
+
+   MEMVAR oBrw, oSay1
 
    IF OrdNumber() == 0
       oBrw:bRcou := &( "{||" + oBrw:alias + "->(RECCOUNT())}" )
@@ -413,10 +423,12 @@ Memvar oBrw, oSay1
    oBrw:Refresh()
    oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
    oSay2:SetText( "" )
-Return Nil
 
-Static Function DlgWait( cTitle )
-Local oDlg
+RETURN Nil
+
+STATIC FUNCTION DlgWait( cTitle )
+
+   LOCAL oDlg
 
    INIT DIALOG oDlg TITLE cTitle ;
          AT 0,0                  ;
@@ -426,15 +438,16 @@ Local oDlg
 
    ACTIVATE DIALOG oDlg NOMODAL
 
-Return oDlg
+RETURN oDlg
 
-Static Function ModiStru( lNew )
-Local oDlg, oBrowse, of := HFont():Add( "Courier",0,-12 ), oMsg
-Local oGet1, oGet2, oGet3, oGet4
-Local af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i
-Local aTypes := { "Character","Numeric","Date","Logical" }
-Local fname, cAlias, nRec, nOrd, lOverFlow := .F., xValue
-Memvar oBrw, currentCP, currFname
+STATIC FUNCTION ModiStru( lNew )
+
+   LOCAL oDlg, oBrowse, of := HFont():Add( "Courier",0,-12 ), oMsg
+   LOCAL oGet1, oGet2, oGet3, oGet4
+   LOCAL af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i
+   LOCAL aTypes := { "Character","Numeric","Date","Logical" }
+   LOCAL fname, cAlias, nRec, nOrd, lOverFlow := .F., xValue
+   MEMVAR oBrw, currentCP, currFname
 
    IF lNew
       af := { {"","",0,0} }
@@ -484,7 +497,7 @@ Memvar oBrw, currentCP, currFname
          CLOSE ALL
          fname := hwg_MsgGet("File creation","Input new file name")
          IF Empty( fname )
-            Return Nil
+            RETURN Nil
          ENDIF
          dbCreate( fname,af )
          FileOpen( fname )
@@ -498,9 +511,9 @@ Memvar oBrw, currentCP, currFname
          fname := "a0_new"
          dbCreate( fname,af )
          IF currentCP != Nil
-            use (fname) new codepage (currentCP)
+            USE (fname) NEW CODEPAGE (currentCP)
          ELSE
-            use (fname) new
+            USE (fname) NEW
          ENDIF
          dbSelectArea( cAlias )
 
@@ -554,9 +567,9 @@ Memvar oBrw, currentCP, currFname
          ENDIF
 
          IF currentCP != Nil
-            use (currFname) new codepage (currentCP)
+            USE (currFname) NEW CODEPAGE (currentCP)
          ELSE
-            use (currFname) new
+            USE (currFname) NEW
          ENDIF
          REINDEX
 
@@ -568,10 +581,9 @@ Memvar oBrw, currentCP, currFname
 
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function brw_onPosChg( oBrowse, oGet1, oGet2, oGet3, oGet4 )
-
+STATIC FUNCTION brw_onPosChg( oBrowse, oGet1, oGet2, oGet3, oGet4 )
 
    oGet1:SetGet( oBrowse:aArray[oBrowse:nCurrent,1] )
    oGet1:Refresh()
@@ -584,10 +596,11 @@ Static Function brw_onPosChg( oBrowse, oGet1, oGet2, oGet3, oGet4 )
    oGet4:SetGet( Ltrim(Str(oBrowse:aArray[oBrowse:nCurrent,4])) )
    oGet4:Refresh()
 
-Return Nil
+RETURN Nil
 
-Static Function UpdStru( oBrowse, oGet1, oGet2, oGet3, oGet4, nOperation )
-Local cName, cType, nLen, nDec
+STATIC FUNCTION UpdStru( oBrowse, oGet1, oGet2, oGet3, oGet4, nOperation )
+
+   LOCAL cName, cType, nLen, nDec
 
    IF nOperation == 4
       Adel( oBrowse:aArray,oBrowse:nCurrent )
@@ -616,11 +629,12 @@ Local cName, cType, nLen, nDec
    ENDIF
    oBrowse:Refresh()
 
-Return Nil
+RETURN Nil
 
-Static Function dbv_Goto()
-Local nRec := Val( GetData( Ltrim(Str(dbv_nRec)),"Go to ...","Input record number:" ) )
-Memvar oBrw
+STATIC FUNCTION dbv_Goto()
+
+   LOCAL nRec := Val( GetData( Ltrim(Str(dbv_nRec)),"Go to ...","Input record number:" ) )
+   MEMVAR oBrw
 
    IF nRec != 0
       dbv_nRec := nRec
@@ -632,11 +646,12 @@ Memvar oBrw
       Eval( oBrw:bScrollPos,oBrw,0 )
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function dbv_Seek()
-Local cKey, nRec
-Memvar oBrw, oSay2
+STATIC FUNCTION dbv_Seek()
+
+   LOCAL cKey, nRec
+   MEMVAR oBrw, oSay2
 
    IF OrdNumber() == 0
       hwg_Msgstop( "No active order !","Seek record" )
@@ -656,12 +671,13 @@ Memvar oBrw, oSay2
       ENDIF
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function dbv_Locate()
-Local cLocate := dbv_cLocate
-Local bOldError, cType, nRec
-Memvar oBrw, oSay2
+STATIC FUNCTION dbv_Locate()
+
+   LOCAL cLocate := dbv_cLocate
+   LOCAL bOldError, cType, nRec
+   MEMVAR oBrw, oSay2
 
    DO WHILE .T.
 
@@ -698,11 +714,12 @@ Memvar oBrw, oSay2
       Eval( oBrw:bGoTo, oBrw, nRec )
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function dbv_Continue()
-Local nRec
-Memvar oBrw, oSay2
+STATIC FUNCTION dbv_Continue()
+
+   LOCAL nRec
+   MEMVAR oBrw, oSay2
 
    IF !Empty( dbv_cLocate )
       nRec := Eval( oBrw:bRecNo, oBrw )
@@ -717,10 +734,11 @@ Memvar oBrw, oSay2
       ENDIF
    ENDIF
 
-Return Nil
+RETURN Nil
 
-Static Function GetData( cRes, cTitle, cText )
-Local oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
+STATIC FUNCTION GetData( cRes, cTitle, cText )
+
+   LOCAL oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
 
    INIT DIALOG oModDlg TITLE cTitle AT 0,0 SIZE 300,140 ;
         FONT oFont CLIPPER STYLE WS_POPUP+WS_VISIBLE+WS_CAPTION+WS_SYSMENU+WS_SIZEBOX+DS_CENTER
@@ -740,26 +758,29 @@ Local oModDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
       cRes := ""
    ENDIF
 
-Return cRes
+RETURN cRes
 
 STATIC FUNCTION MacroError( e )
 
    hwg_Msgstop( hwg_ErrMsg(e),"Expression error" )
    BREAK
+
 RETURN .T.
 
-Static Function dbv_AppRec()
+STATIC FUNCTION dbv_AppRec()
 
    APPEND BLANK
    oBrw:Refresh()
    Eval( oBrw:bScrollPos,oBrw,0 )
    oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
    oSay2:SetText( "" )
+
 RETURN .T.
 
-Static Function dbv_Pack()
-Local oMsg, cTitle := "Packing database"
-Memvar oBrw, oSay1, oSay2
+STATIC FUNCTION dbv_Pack()
+
+   LOCAL oMsg, cTitle := "Packing database"
+   MEMVAR oBrw, oSay1, oSay2
 
    IF hwg_Msgyesno( "Are you really want it ?",cTitle )
       oMsg = DlgWait( cTitle )
@@ -770,11 +791,13 @@ Memvar oBrw, oSay1, oSay2
       oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
       oSay2:SetText( "" )
    ENDIF
-Return Nil
 
-Static Function dbv_Zap()
-Local oMsg, cTitle := "Zap database"
-Memvar oBrw, oSay1, oSay2
+RETURN Nil
+
+STATIC FUNCTION dbv_Zap()
+
+   LOCAL oMsg, cTitle := "Zap database"
+   MEMVAR oBrw, oSay1, oSay2
 
    IF hwg_Msgyesno( "ALL DATA WILL BE LOST !!! Are you really want it ?",cTitle )
       oMsg = DlgWait( cTitle )
@@ -785,10 +808,12 @@ Memvar oBrw, oSay1, oSay2
       oSay1:SetText( "Records: "+Ltrim(Str(Eval(oBrw:bRcou,oBrw))) )
       oSay2:SetText( "" )
    ENDIF
-Return Nil
 
-Static Function dbv_DelRec()
-Memvar oBrw
+RETURN Nil
+
+STATIC FUNCTION dbv_DelRec()
+
+   MEMVAR oBrw
 
    IF !Empty( Alias() )
       IF Deleted()
@@ -799,41 +824,49 @@ Memvar oBrw
       oBrw:RefreshLine()
    ENDIF
 
-Return Nil
-
-FUNCTION FSET_CENT_GET
- LOCAL bC
- IIF( hwg_getCentury(), bC := "ON", bC := "OFF")
-  hwg_MsgInfo("The current setting is: SET CENTURY " + bC, "Display Century Setting")
 RETURN Nil
 
-FUNCTION FSET_CENT_ON
- SET CENTURY ON
+FUNCTION FSET_CENT_GET()
+
+   LOCAL bC
+
+   bC := IIF( hwg_getCentury(), "ON", "OFF" )
+   hwg_MsgInfo("The current setting is: SET CENTURY " + bC, "Display Century Setting")
+
 RETURN Nil
 
-FUNCTION FSET_CENT_OFF
-SET CENTURY OFF
+FUNCTION FSET_CENT_ON()
+
+   SET CENTURY ON
+
+RETURN Nil
+
+FUNCTION FSET_CENT_OFF()
+
+   SET CENTURY OFF
+
 RETURN Nil
 
 
 FUNCTION SET_DATE_F(cc)
-  * SET DATE does not accept macro operator & or (...), syntax error
-  DO CASE
+
+   * SET DATE does not accept macro operator & or (...), syntax error
+   DO CASE
    CASE cc == "GERMAN"
-    SET DATE GERMAN
+      SET DATE GERMAN
    CASE cc == "ANSI"
-     SET DATE ANSI
-  CASE cc == "USA"
-     SET DATE USA
-  CASE cc == "JAPAN"
-     SET DATE JAPAN
+      SET DATE ANSI
+   CASE cc == "USA"
+      SET DATE USA
+   CASE cc == "JAPAN"
+      SET DATE JAPAN
    CASE cc == "BRITISH"
-     SET DATE BRITISH
+      SET DATE BRITISH
    CASE cc == "ITALIAN"
-     SET DATE ITALIAN
+      SET DATE ITALIAN
    OTHERWISE
-    SET DATE AMERICAN
- ENDCASE
+      SET DATE AMERICAN
+   ENDCASE
 
 RETURN Nil
 
@@ -843,40 +876,52 @@ RETURN Nil
 * ~~~~~~~~~~~~~~~~~~~~~~~~
 
 FUNCTION SetDtCP_EN()
-SetDataCP( "EN" )
-nBrwCharset := 0
-RETURN NIL
+
+   SetDataCP( "EN" )
+   nBrwCharset := 0
+
+RETURN Nil
 
 FUNCTION SetDtCP_RUKOI8()
-SetDataCP( "RUKOI8" )
-nBrwCharset := 206
-RETURN NIL
+
+   SetDataCP( "RUKOI8" )
+   nBrwCharset := 206
+
+RETURN Nil
 
 FUNCTION SetDtCP_RU1251()
-SetDataCP(  "RU1251" )
-nBrwCharset := 204
-RETURN NIL
+
+   SetDataCP(  "RU1251" )
+   nBrwCharset := 204
+
+RETURN Nil
 
 FUNCTION SetDtCP_RU866()
-SetDataCP( "RU866" )
-nBrwCharset := 204
-RETURN NIL
+
+   SetDataCP( "RU866" )
+   nBrwCharset := 204
+
+RETURN Nil
 
 FUNCTION SetDtCP_DEWIN()
-SetDataCP( "DEWIN" )
-nBrwCharset := 0
-RETURN NIL
+
+   SetDataCP( "DEWIN" )
+   nBrwCharset := 0
+
+RETURN Nil
 
 FUNCTION SetDtCP_DE858()
-SetDataCP( "DE858" )
-nBrwCharset := 15
-RETURN NIL
+
+   SetDataCP( "DE858" )
+   nBrwCharset := 15
+
+RETURN Nil
 
 FUNCTION SetDtCP_UTF8EX()
-SetDataCP( "UTF8EX" )
-nBrwCharset := 0
-RETURN NIL
+
+   SetDataCP( "UTF8EX" )
+   nBrwCharset := 0
+
+RETURN Nil
 
 * ================================ EOF of dbview.prg =========================================
-
-

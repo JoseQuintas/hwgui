@@ -11,7 +11,7 @@
    make_vc.bat    - Microsoft Visual C
    make_w32.bat   - Open Watcom C
    makemngw.bat   - Mingw (32bit, special instructions follow above)
-   makemngw64.bat - Mingw (64bit, special instructions follow above) 
+   makemngw64.bat - Mingw (64bit, special instructions follow above)
 
    Read special build instructions for every compiler in files of directory:
    samples\dev\compiler\<compiler>\...
@@ -54,7 +54,7 @@
      Details in file
       samples\dev\MingW-GTK\Readme.txt
      Be care of the Warning mentioned in this file
-     and dependent source files. 
+     and dependent source files.
 
 
    1.1) Special instructions for MinGW64 (x86_64):
@@ -104,7 +104,7 @@
    they are listed at the bottom of these instructions.
 
    Sources for the Linux GTK version are located in the source/gtk/ directory.
-   In the base directory is a shell file make_gtk.sh, which is intended for building HwGUI Linux 
+   In the base directory is a shell file make_gtk.sh, which is intended for building HwGUI Linux
    libraries. The environment variable HB_ROOT is set there, based on the 
    assumption, that HwGUI directory is within the Harbour directory. If no,
    you need to write the correct path to your Harbour directory, for example:
@@ -120,7 +120,7 @@
       libhwgdebug.a
       libprocmisc.a
 
-   For xHarbour platform set first parameter to "-xhb".    
+   For xHarbour platform set first parameter to "-xhb".
 
    You will find few samples in samples/gtk_samples directory and a shell file 
     ./build.sh <prg file>.
@@ -133,7 +133,7 @@
    Start the script "./make_hbmk.sh" to run the HWGUI build with hbmk2.
 
 
- 
+
    3) Common instructions to build samples, utils and your application
       (for all operating systems)
 
@@ -148,7 +148,7 @@
    and write a bat or shell script with only one active line (for example on Windows): 
     hbmk2 <main.prg> <main.rc> -I%HWGUI_INSTALL%\include -L%HWGUI_INSTALL%\lib -lhwgui -lprocmisc -lhbxml -lhwgdebug -gui
    (-gui option only for windows necessary, for LINUX add options -d__LINUX__ -d__GTK__ , no *.rc files )
-  
+
     All simple "all build":
     (for use with hbmk2 utility):
 
@@ -197,105 +197,105 @@
      hwgui.lib
      hwguimt.lib
      procmisc.lib
-  
 
-  
+
+
     5) Additional instructions for Windows 11
-	
-	On Windows 11, all HWGUI applications run as well.
-	The default terminal is now the "Windows Power Shell",
-	it cannot execute *.bat jobs.
-	To get the command line terminal, search in the system dialog for
-	"cmd.exe" and start it. If running, pin it at the task bar for
-	quick call.
-	
-	A new feature of Windows 11 is a scalable view. The
-	default value is 150 %. This could be to high for bigger
-	dialog windows. If a dialog has no space on the desktop, go to
-	the system settings and reduce it to 125 or 100 %.
-	
-	In the Power shell you can run Harbour console applications direct,
-	but in most cases you need to setup the lines to 25 and the columns to 80.
-	
-	
-	
+
+    On Windows 11, all HWGUI applications run as well.
+    The default terminal is now the "Windows Power Shell",
+    it cannot execute *.bat jobs.
+    To get the command line terminal, search in the system dialog for
+    "cmd.exe" and start it. If running, pin it at the task bar for
+    quick call.
+
+    A new feature of Windows 11 is a scalable view. The
+    default value is 150 %. This could be to high for bigger
+    dialog windows. If a dialog windo whas no space on the desktop, go to
+    the system settings and reduce it to 125 or 100 %.
+
+    In the Power shell you can run Harbour console applications direct,
+    but in most cases you need to setup the lines to 25 and the columns to 80.
+
+
+
 
  Appendix 1: List of packages for Ubuntu Linux and LinuxMINT
  -----------------------------------------------------------
- 
+
  Instructions for more LINUX distributions see "Appendix 2".
-  
+
   Install packages as system administrator:
-  
+
   LinuxMINT:
   ~~~~~~~~~~
-  
+
    sudo apt-get install build-essential linux-headers-generic dkms
    sudo apt-get install libgtk2.0-dev
    sudo apt install wmctrl  *1)
-   
+ 
    Optional installations:
    The default text editor:
      sudo apt-get install gedit 
-	 
+
    DKMS extensions:	 
    git clone https://github.com/tomaspinho/rtl8821ce
    cd rtl8821ce
    chmod +x dkms-install.sh 
    chmod +x dkms-remove.sh
    sudo ./dkms-install.sh   # needs some time
-   sudo modprobe -v 8821ce	 
-   
+   sudo modprobe -v 8821ce
+
    Ubuntu 18:
    ~~~~~~~~~~
-   
+
    sudo apt-get install linux-headers-generic
    sudo apt-get install libgtk2.0-dev
    sudo apt install wmctrl  *1)
-   
+
    Ubuntu 20.04.2.0 LTS:
    ~~~~~~~~~~~~~~~~~~~~~
-   
+
    sudo apt-get install linux-headers-generic
    sudo apt-get update -y
-   
+
    For installation of GTK2 package you need the installation media, confirm
    mount with <ENTER> key during installation:
    sudo apt-get install -y libgtk2.0-dev
 
    sudo apt install wmctrl  *1)
-   
+
    If the following message after start of HWGUI application appeared:
        Failed to load module "canberra-gtk-module"
    install packages:
-       sudo apt-get install libcanberra-gtk-module libcanberra-gtk3-module 
-   
-   
-  
+       sudo apt-get install libcanberra-gtk-module libcanberra-gtk3-module
+
+
+
    Optional for all distributions (resolve dependencies), install them, if needed:
     sudo apt-get install libxmu-dev libxaw7-dev libxt-dev
-   
+
   For higher security and easier development we recommend a "non root" installation
   of Harbour and HWGUI (You can ever use the newest code snapshot of Harbour and HWGUI).
 
-  
+
   To avoid the Gtk-WARNING "Unable to locate theme engine in module_path: "adwaita":
     sudo apt-get install gnome-themes-standard
-   
+
    *1) This is necessary for set focus on progress bars, see sample program
-       "samples/gtk_samples/progbars.prg". 
-	   
-	   
-	Knoppix by Klaus Knopper:
-	~~~~~~~~~~~~~~~~~~~~~~~~~
+       "samples/gtk_samples/progbars.prg".
+
+
+    Knoppix by Klaus Knopper:
+    ~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Knoppix does not support GTK2.
     So be patient, the port of HWGUI to GTK3
     will start as soon as possible.
     Harbour is compilable without any trouble.
     All development packages are installed with
-    the regular system installation.	
-	   
+    the regular system installation.
+
 
 
   1.) You need some entries in the .profile in the home directory of the desired
@@ -309,30 +309,30 @@
    export PATH
    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HARBOUR_INSTALL/lib/linux/gcc
    export LD_LIBRARY_PATH
-   #  
-  
+   #
+
    Modify the path entries to your own needs.
-   
+
    Login to this userid new after modification, so that the
    entries become valid.
- 
- 
+
+
    2.) Build Harbour
    Get the recent code snapshot and build Harbour following the installation instructions.
    If Harbour was build complete, it is ready for HWGUI.
    Some error messages appeared because of missing dependencies, ignore them.
    Take care of them, if referenced Harbour extensions are used by your application.    
 
-   
+
    3.) Build HWGUI following instructions above.
 
    Now you should be able to build your application. 
-   
+
    On Ubuntu 20.04.2.0 LTS some warnings like
    "‘GTimeVal’ is deprecated:"
    appeared, but dont care of them.
-   
-   
+
+
 Appendix 2:
 -----------
 
@@ -358,8 +358,8 @@ Contents of .profile:
    HB_INSTALL_PREFIX=$HARBOUR_INSTALL
    export HB_INSTALL_PREFIX
 #
-  
-- Use full path for HARBOUR_INSTALL  
+
+- Use full path for HARBOUR_INSTALL
 - New variables HB_COMPILER and HB_INSTALL_PREFIX.
 
 (solve trouble with autodetect).
@@ -395,7 +395,7 @@ sudo apt-get install libpq-dev
 sudo apt-get install libcurl4-openssl-dev
 sudo apt-get install libgtk2.0-dev
 
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Urgent instructions (2022-06-21)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
@@ -418,12 +418,12 @@ Now the port to GTK3 is under construction !!!!
 The first steps are done, but
 there is to do some work.
 
-On ubuntu, you need to install the GTK3 developper package:
+On Ubuntu, you need to install the GTK3 developper package:
 sudo apt-get install libgtk-3-dev
 
-DF7BE, November 2022 
- 
+DF7BE, November 2022
+
 
 * =============== EOF of install.txt ====================
- 
- 
+
+

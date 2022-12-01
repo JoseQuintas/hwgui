@@ -54,7 +54,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/control.o \
    $(OBJ_DIR)/draw.o \
    $(OBJ_DIR)/drawtext.o \
-   $(OBJ_DIR)/window.o \
+   $(OBJ_DIR)/window3.o \
    $(OBJ_DIR)/wprint.o \
    $(OBJ_DIR)/menu_c.o \
    $(OBJ_DIR)/message.o \
@@ -119,3 +119,6 @@ $(LIB_DIR)/libhwgdebug.a : \
 
 clean:
 	-(rm -fR obj/ lib/)
+
+# ======================== EOF of Makefile.linus-gtk3 ====================================
+

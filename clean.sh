@@ -10,10 +10,10 @@
 # 
 # === Remove all HWGUI basic libraries ===
 #rm lib/*.a 2>/dev/null
-rm lib\libhbxml.a 2>/dev/null
-rm lib\libhwgdebug.a 2>/dev/null
-rm lib\libhwgui.a 2>/dev/null
-rm lib\libprocmisc.a 2>/dev/null
+rm lib/libhbxml.a 2>/dev/null
+rm lib/libhwgdebug.a 2>/dev/null
+rm lib/libhwgui.a 2>/dev/null
+rm lib/libprocmisc.a 2>/dev/null
 # 
 rm -rf lib/.hbmk 2>/dev/null
 rm obj/*.o 2>/dev/null

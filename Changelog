@@ -15,7 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-
+2022-12-01 21:30 UTC+0100 Wilfried Brunken DF7BE
+  * clean.sh
+  * source/gtk/Makefile.linux-gtk3
+   ! Project Port to GTK3 (5)
+   ! Little correction clean.sh
+   ! (To be continued)
+     
 
 2022-12-01 14:55 UTC+0100 Wilfried Brunken DF7BE
   * make_gtk3.sh (New)

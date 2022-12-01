@@ -16,6 +16,14 @@
 */
 
 
+
+2022-12-01 14:55 UTC+0100 Wilfried Brunken DF7BE
+  * make_gtk3.sh (New)
+   ! Project Port to GTK3 (4)
+   ! Compile script
+   ! (To be continued)     
+
+
 2022-11-30 21:53 UTC-0200 Jose Quintas
    * samples/iesample.hbp
      ! changed output name from sample to iesample

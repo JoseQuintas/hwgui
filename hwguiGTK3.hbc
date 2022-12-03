@@ -26,7 +26,7 @@ libpaths=lib
 #{win}CFLAGS=-DUNICODE -DHWG_USE_POINTER_ITEM
 #{unix}CFLAGS=-DUNICODE -DHWG_USE_POINTER_ITEM "`pkg-config --cflags gtk+-3.0 | sed -e 's/-Wl,//g'`"
 
-PRGFLAGS=-q -m -n -es2
+PRGFLAGS=-d___GTK3___ -q -m -n -es2
 #{win}CFLAGS=-DHWG_USE_POINTER_ITEM "`pkg-config --cflags gtk+-3.0 | sed -e 's/-Wl,//g'`"
 {win}CFLAGS=-DHWG_USE_POINTER_ITEM
 # {win}CFLAGS=+-IC:/Msys64/usr/include/gtk-3.0 -IC:/Msys64/usr/include/pango-1.0 -IC:/Msys64/usr/include -IC:/Msys64/usr/include/glib-2.0 -IC:/Msys64/usr/lib/glib-2.0/include -IC:/Msys64/usr/include/harfbuzz -IC:/Msys64/usr/include/freetype2 -IC:/Msys64/usr/include/libpng16 -IC:/Msys64/usr/include/fribidi -IC:/Msys64/usr/include/cairo -IC:/Msys64/usr/include/lzo -IC:/Msys64/usr/include/pixman-1 -IC:/Msys64/usr/include/gdk-pixbuf-2.0 -IC:/Msys64/usr/include/atk-1.0 -pthread

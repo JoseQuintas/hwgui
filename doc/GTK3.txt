@@ -1,0 +1,83 @@
+
+ GTK3.txt
+ 
+ $Id$
+
+ Special instructions for migration of HWGUI from GTK2 to GTK3
+ 
+ 
+1.) Additional instructions for developers of HWGUI applications
+
+The migration must be done carefully "Step by Step".
+So be patient, if all sample programs for GTK2 are running on
+GTK3 with no trouble.
+
+2.1) Compiling the HWGUI application
+
+Look into a sample hbp file in directoy samples to
+include the hbc files 
+
+{win}../hwgui.hbc
+# GTK2
+{linux}../hwgui.hbc
+# GTK3: Deactivate previous line
+# and activate following line
+#{linux}../hwguiGTK3.hbc
+
+so modify to:
+# {linux}../hwgui.hbc
+ ...
+{linux}../hwguiGTK3.hbc
+
+2.2) Compiler switches
+
+Use these compiler switches to make code for
+GTK2 and GTK3:
+
+C files:
+
+
+#if GTK_MAJOR_VERSION -0 < 3   
+   /* GTK2 */
+   ...
+#else
+   /* GTK3 */
+   ...
+#endif
+
+or
+
+
+#if ! ( GTK_MAJOR_VERSION -0 < 3 )   
+   /* GTK3 */
+   ...
+#endif   
+
+PRG files:
+
+#ifdef ___GTK3___
+   * GTK3
+   ...
+#else   
+   * GTK2
+   ...
+#endif
+
+
+
+2.) Run the application with GTK3
+
+Ignore this message at start displayed in the terminal window:  
+Gtk-CRITICAL : New application windows must be added after the GApplication::startup signal has been emitted.
+
+
+3.) TO-DO list and list of problems to solve
+
+- INIT DIALOG crashes with access violation
+- How to set a background image
+- How to display an icon (see test/icon.c)
+- Check all samples for GTK3, only those running on GTK2. 
+
+============================== EOF of GTK3.txt =================================
+
+

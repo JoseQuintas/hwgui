@@ -111,7 +111,12 @@ STATIC FUNCTION onDestroy( oWnd )
 CLASS HWindow INHERIT HCustomWindow
 
    CLASS VAR aWindows   SHARED INIT {}
+* On GTK3 the app name may not contain "_"
+#ifdef ___GTK3___
+   CLASS VAR szAppName  SHARED INIT "HwGUI.App"
+#else   
    CLASS VAR szAppName  SHARED INIT "HwGUI_App"
+#endif   
    CLASS VAR aKeysGlobal SHARED INIT {}
    DATA fbox
    DATA menu, oPopup, hAccel

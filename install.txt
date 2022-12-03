@@ -132,6 +132,17 @@
    As alternative method use the hbmk2 utility, it works also at it's best.
    Start the script "./make_hbmk.sh" to run the HWGUI build with hbmk2.
 
+   Build instructions for GTK3:
+   See also "Appendix 3"
+    chmod 755 make_gtk3.sh
+    ./make_gtk3.sh
+
+   Ignore the lot's of compiler warnings and notes.
+
+   Then go to the sample directory and look into the file
+   "Readme.txt"
+   to get instructions for build sample programs and
+   get template snippets to build your own HWGUI application.
 
 
    3) Common instructions to build samples, utils and your application
@@ -224,6 +235,7 @@
  -----------------------------------------------------------
 
  Instructions for more LINUX distributions see "Appendix 2".
+ For GTK3 see "Appendix 3".
 
   Install packages as system administrator:
 
@@ -421,7 +433,11 @@ there is to do some work.
 On Ubuntu, you need to install the GTK3 developper package:
 sudo apt-get install libgtk-3-dev
 
-DF7BE, November 2022
+Look into the recent state of GTK3 migration in text file
+
+doc/GTK3.txt
+
+DF7BE, December 2022
 
 
 * =============== EOF of install.txt ====================

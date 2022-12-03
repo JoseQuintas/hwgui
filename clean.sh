@@ -101,6 +101,8 @@ rm test/testfilehex 2>/dev/null
 rm test/ticket112 2>/dev/null
 rm test/testbmpcr 2>/dev/null
 rm test/template  2>/dev/null
+rm test/hello 2>/dev/null
+rm test/icon 2>/dev/null
 
 # Other files created by test programs
 rm test/hexdump.txt 2>/dev/null

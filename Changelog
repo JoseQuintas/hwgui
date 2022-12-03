@@ -15,6 +15,30 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+
+2022-12-03 19:15 UTC+0100 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/GTK3.txt (New)
+  * hwguiGTK3.hbc
+  * image/hwgui_48x48.png (New)
+  * install.txt
+  * samples/Readme.txt
+  * samples/helpstatic.prg
+  * samples/image/hwgui.png  (New)
+  * source/gtk/hwindow.prg
+  * source/gtk/window3.c  (New)
+  * test/hello.c  (New)
+  * test/icon.c  (New)
+  * test/image/hwgui_48x48.png (New)
+  * test/image/hwgui.png (New)
+   ! Project Port to GTK3 (6)
+   ! must be realized carefully 
+   ! "step by step".
+   ! For details see "doc/GTK3.txt"
+   ! (To be continued)
+
+
 2022-12-01 21:30 UTC+0100 Wilfried Brunken DF7BE
   * clean.sh
   * source/gtk/Makefile.linux-gtk3

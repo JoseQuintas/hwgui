@@ -43,7 +43,7 @@ MEMVAR CAGUML, COGUML , CUGUML , CAKUML, COKUML , CUKUML , CSZUML , EURO
 
 FUNCTION MAIN()
 
-LOCAL oMain , oFontMain
+LOCAL oMain , oFontMain, oIcon , cDirSep
 
 #ifdef __PLATFORM__WINDOWS
    PREPARE FONT oFontMain NAME "MS Sans Serif" WIDTH 0 HEIGHT -14
@@ -51,8 +51,13 @@ LOCAL oMain , oFontMain
    PREPARE FONT oFontMain NAME "Sans" WIDTH 0 HEIGHT 12
 #endif
 
-   INIT WINDOW oMain MAIN TITLE "" ;
-      FONT oFontMain SIZE 200, 100
+   cDirSep := hwg_GetDirSep()
+
+   oIcon := HIcon():AddFile("." + cDirSep + "image" + cDirSep + "hwgui_32x32.ico")
+
+   INIT WINDOW oMain MAIN TITLE "Sample for static help text" ;
+      FONT oFontMain SIZE 200, 100 ;
+      ICON oIcon   
 
 * Main Menu
    MENU OF oMain

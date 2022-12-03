@@ -151,6 +151,10 @@ For beginners:
       # {linux}../hwgui.hbc
        ...
       {linux}../hwguiGTK3.hbc
+      
+    Ignore warning at build time:
+      Unknown option -e
+
 
 
  Sample program     GTK2    GTK3  NLS MinGW64 Purpose

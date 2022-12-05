@@ -17,6 +17,22 @@
 
 
 
+2022-12-05 10:00 UTC+0100 Wilfried Brunken DF7BE
+  * clean.sh
+  * samples/icons.hbp
+  * samples/icons.prg
+  * samples/image/hwgui_48x48.png (New)
+  * samples/testfunc.hbp
+  * source/gtk/hdialog.prg
+  * source/gtk/window.c
+  * source/gtk/window3.c
+  * test/icon.c
+   ! Project Port to GTK3 (7)
+   ! Background image in main window solved
+   ! (To be continued)
+
+
+
 2022-12-03 19:15 UTC+0100 Wilfried Brunken DF7BE
   * clean.sh
   * doc/GTK3.txt (New)
@@ -36,21 +52,6 @@
    ! must be realized carefully 
    ! "step by step".
    ! For details see "doc/GTK3.txt"
-   ! (To be continued)
-
-
-022-12-05 10:00 UTC+0100 Wilfried Brunken DF7BE
-  *  clean.sh
-  *  samples/icons.hbp
-  *  samples/icons.prg
-  *  samples/image/hwgui_48x48.png (New)
-  *  samples/testfunc.hbp
-  *  source/gtk/hdialog.prg
-  *  source/gtk/window.c
-  *  source/gtk/window3.c
-  * test/icon.c
-   ! Project Port to GTK3 (6)
-   ! Background image in main window solved
    ! (To be continued)
 
 

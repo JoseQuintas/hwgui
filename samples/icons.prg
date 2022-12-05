@@ -38,13 +38,14 @@ FUNCTION Main()
    nPosY := 400
 
 * decides for samples/gtk_samples or samples/
-#ifdef __GTK__
-   cImagepath := ".."+ cDirSep + ".." + cDirSep + "image" + cDirSep
-#else
+// #ifdef __GTK__
+//   cImagepath := ".."+ cDirSep + ".." + cDirSep + "image" + cDirSep
+// #else
    cImagepath := ".."+ cDirSep + "image" + cDirSep
-#endif
+// #endif
 
-   cImageMain := cImagepath + "hwgui.bmp"
+//   cImageMain := cImagepath + "hwgui.png"
+   cImageMain := cImagepath + "hwgui_48x48.png"
    IF .NOT. FILE( cImageMain )
       hwg_msgstop( "File not existing: " + cImageMain )
       QUIT
@@ -60,7 +61,7 @@ FUNCTION Main()
 
 * The background image was tiled, if size is smaller than window.
    INIT WINDOW oFormMain MAIN APPNAME "Hwgui sample" ;
-      FONT oFontMain BACKGROUND BITMAP HBitmap():AddFile( cImageMain ) ;
+      FONT oFontMain BACKGROUND BITMAP oBmp ;   && HBitmap():AddFile( cImageMain ) ;
       TITLE "Icon sample" AT 0,0 SIZE nPosX,nPosY - 30 ;
       ICON oIconEXE STYLE WS_POPUP +  WS_CAPTION + WS_SYSMENU
 

@@ -20,6 +20,7 @@ rm obj/*.o 2>/dev/null
 #
 rm contrib/hwreport/hwreport 2>/dev/null
 #
+# exe and files in utils
 rm utils/debugger/sample 2>/dev/null
 rm utils/designer/designer 2>/dev/null
 rm utils/editor/editor 2>/dev/null
@@ -27,6 +28,7 @@ rm utils/tutorial/hwgrun 2>/dev/null
 rm utils/tutorial/tutor 2>/dev/null
 rm utils/dbc/a1 2>/dev/null
 rm utils/tutorial/__tmp.hrb 2>/dev/null
+rm utils/hbpad/hbpad 2>/dev/null
 #
 # Samples only for LINUX/GTK
 rm samples/gtk_samples/GetWinVers 2>/dev/null
@@ -103,6 +105,7 @@ rm test/testbmpcr 2>/dev/null
 rm test/template  2>/dev/null
 rm test/hello 2>/dev/null
 rm test/icon 2>/dev/null
+rm test/checkbox 2>/dev/null
 
 # Other files created by test programs
 rm test/hexdump.txt 2>/dev/null

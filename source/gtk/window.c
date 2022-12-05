@@ -238,6 +238,10 @@ HB_FUNC( HWG_INITMAINWINDOW )
    HB_RETHANDLE( hWnd );
 }
 
+/* 
+  hwg_CreateDlg(nhandle) 
+*/
+
 HB_FUNC( HWG_CREATEDLG )
 {
    GtkWidget * hWnd;
@@ -286,6 +290,7 @@ HB_FUNC( HWG_CREATEDLG )
    }
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
+   
    
 #if ! ( GTK_MAJOR_VERSION -0 < 3 )
   /* GTK 3 */
@@ -340,6 +345,7 @@ HB_FUNC( HWG_CREATEDLG )
    {
      gtk_widget_set_style(GTK_WIDGET(hWnd), GTK_STYLE(style) );
    }
+
 
    HB_RETHANDLE( hWnd );
 

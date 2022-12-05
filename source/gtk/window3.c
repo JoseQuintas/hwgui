@@ -70,6 +70,9 @@
 #define WM_RBUTTONUP                    517    // 0x0205
 
 
+#define NEW_GTK_DESTROY(WIDGET)  if (GTK_IS_WIDGET(WIDGET)) \
+{ gtk_widget_destroy(GTK_WIDGET(WIDGET)); }
+
 extern void hwg_writelog( const char * sFile, const char * sTraceMsg, ... );
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue );
@@ -140,7 +143,10 @@ HB_FUNC( HWG_GTK_EXIT )
 }
 
 /*  Creates main application window
-    hwg_InitMainWindow( pObject, szAppName, cTitle, cMenu, hIcon, nStyle, nLeft, nTop, nWidth, nHeight, hbackground )
+    hwg_InitMainWindow( pObject, szAppName, cTitle, cMenu, hIcon,
+     nStyle, nLeft, nTop, nWidth, nHeight, hbackground )
+    
+    DF7BE: background missing, added as 11th parameter  
 */
 HB_FUNC( HWG_INITMAINWINDOW )
 {
@@ -154,8 +160,10 @@ HB_FUNC( HWG_INITMAINWINDOW )
    GtkWidget * background;
    GdkPixbuf * icon;
    GtkStyleContext * context;
-   GtkApplication *app;
+   GtkApplication * app;
+   GtkWidget * layout;
    char * szAppName;
+   GError *error = NULL;   
 #endif
    GtkStyle * style;
    PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT );
@@ -173,17 +181,20 @@ HB_FUNC( HWG_INITMAINWINDOW )
    PHWGUI_PIXBUF szBackFile = HB_ISPOINTER(11) ? (PHWGUI_PIXBUF) HB_PARHANDLE(11): NULL;
 
    /* Background style*/
-   style = gtk_style_new();
+//   style = gtk_style_new();
    
-   if (szBackFile)
-   {
-#if GTK_MAJOR_VERSION -0 < 3 
+
+// #if GTK_MAJOR_VERSION -0 < 3
+//   if (szBackFile)
+//   { 
       /* GTK 2 */  
-      gdk_pixbuf_render_pixmap_and_mask(szBackFile->handle, &background, NULL, 0);
-      if ( ! background ) g_error("%s\n","Error loading background image");
-      style->bg_pixmap[0] = background ;
-#endif
-   }
+//      gdk_pixbuf_render_pixmap_and_mask(szBackFile->handle, &background, NULL, 0);
+//      if ( ! background ) g_error("%s\n","Error loading background image");
+//      style->bg_pixmap[0] = background ;
+//   }      
+// #endif
+
+
   
 #if GTK_MAJOR_VERSION -0 < 3  
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
@@ -196,21 +207,28 @@ HB_FUNC( HWG_INITMAINWINDOW )
 #endif 
 //     app = gtk_application_new ("net.sourceforge.projects.hwgui.gtk.sample", G_APPLICATION_FLAGS_NONE);  
 /* Attention ! The app name may not include "_", otherwise crash with invalid (null) pointer 
-  The delivered default value by class definition of CLASS HWindow  is "HwGUI.App" */
+  The delivered default value by class definition of CLASS HWindow  is "HwGUI.App"
+ */
 
-  app = gtk_application_new ( default_appname  , G_APPLICATION_FLAGS_NONE);
+//  app = gtk_application_new ( default_appname  , G_APPLICATION_FLAGS_NONE);
 
-  hWnd = gtk_application_window_new (app);
+//  hWnd = gtk_application_window_new (app);
+  hWnd = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   gtk_window_set_default_size (GTK_WINDOW (hWnd), width, height);
+  
+  /* For setting background images need to work with "layouts" */
+   layout = gtk_layout_new(NULL, NULL);
+   gtk_container_add (GTK_CONTAINER(hWnd), layout);
   
 /* Set default icon
    DF7BE:
    gtk_window_set_icon() does not work (GTK2)
 */
 
-   if (szFile)
-   {
-   g_print ("Set Icon\n");
+
+//   if (szFile)
+//   {
+//   g_print ("Set Icon\n");
 //      gtk_window_set_icon(GTK_WINDOW(hWnd),szFile->handle );
    /* TO-DO: this does not work !!! */
 //     gtk_window_set_icon(GTK_WINDOW(hWnd),create_pixbuf("image/hwgui.png") );      
@@ -218,21 +236,33 @@ HB_FUNC( HWG_INITMAINWINDOW )
 //      gtk_window_set_default_icon( szFile->handle );
 // gtk_window_set_default_icon(create_pixbuf("image/hwgui.png") );
 
-   }  
-  
+//   }  
+ 
   gtk_widget_show_all (hWnd);  
+  
 #endif
 
   
 #if ! ( GTK_MAJOR_VERSION -0 < 3 )
   /* GTK 3 */
-  /* To be contiued  
-//  background = gtk_image_new_from_file( szBackFile->handle );
-
-  if ( background )
-   gdk_window_set_back_pixmap( GDK_WINDOW (hWnd), background, (gboolean) TRUE);
-  */
+  if ( szBackFile )
+  {
+//     background = gtk_image_new_from_file( szBackFile->handle );
+//    background = gtk_image_new_from_file("image/hwgui_48x48.png");
+   background = gtk_image_new_from_pixbuf (szBackFile->handle);
+   if ( background )
+   {
+//   gdk_window_set_back_pixmap( GDK_WINDOW (hWnd), background, (gboolean) TRUE);
+     gtk_layout_put(GTK_LAYOUT(layout), background, 0, 0);
+   }
+   else
+   {
+     g_print ("Error loading background image\n");   
+   }
+  }
 #endif
+
+
    
    gtk_window_set_title( GTK_WINDOW(hWnd), gcTitle );
   
@@ -249,10 +279,17 @@ HB_FUNC( HWG_INITMAINWINDOW )
    box = (GtkFixed*)gtk_fixed_new();
    gtk_box_pack_start( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
 
+
    g_object_set_data( ( GObject * ) hWnd, "window", ( gpointer ) 1 );
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "vbox", (gpointer) vbox );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
+   
+
+
+   gtk_layout_put(GTK_LAYOUT(layout),vbox,0,0);
+   gtk_layout_put(GTK_LAYOUT(layout),box,0,0);
+
 
    gtk_widget_add_events( hWnd, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK |
@@ -266,23 +303,21 @@ HB_FUNC( HWG_INITMAINWINDOW )
    g_signal_connect (G_OBJECT (hWnd), "destroy",
 	 	      G_CALLBACK (gtk_main_quit), NULL);
 
-   set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
-   set_event( (gpointer)hWnd, "focus_in_event", 0, 0, 0 );
+   set_event( (gpointer) hWnd, "configure_event", 0, 0, 0 );
+   set_event( (gpointer) hWnd, "focus_in_event", 0, 0, 0 );
 
    g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    //g_signal_connect_after( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
 
-   /* Set Background */
-   if (szBackFile)
-   {
-     gtk_widget_set_style(GTK_WIDGET(hWnd), GTK_STYLE(style) );
-   }
 
    hMainWindow = hWnd;
    HB_RETHANDLE( hWnd );
 }
 
+/* 
+  hwg_CreateDlg(nhandle) 
+*/
 
 HB_FUNC( HWG_CREATEDLG )
 {
@@ -335,7 +370,7 @@ HB_FUNC( HWG_CREATEDLG )
    
 #if ! ( GTK_MAJOR_VERSION -0 < 3 )
   /* GTK 3 */
-  background = gtk_image_new_from_pixbuf( szBackFile->handle );
+//  background = gtk_image_new_from_pixbuf( szBackFile->handle );
   /* To be contiued 
   if ( background )
      gdk_window_set_back_pixmap( GDK_WINDOW (hWnd), background, (gboolean) TRUE);

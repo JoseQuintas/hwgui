@@ -63,6 +63,7 @@ CLASS HDialog INHERIT HWindow
    DATA oIcon, oBmp
    DATA xResourceID
    DATA lModal
+   
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
       bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor )

@@ -16,6 +16,13 @@
 */
 
 
+2022-12-06 11:45 UTC+0100 Wilfried Brunken DF7BE
+  * doc/GTK3.txt
+  * source/gtk/window3.c
+   ! Project Port to GTK3 (8)
+   ! Now paused.
+   ! (To be continued)
+
 
 2022-12-05 10:00 UTC+0100 Wilfried Brunken DF7BE
   * clean.sh

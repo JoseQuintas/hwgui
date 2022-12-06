@@ -5,6 +5,23 @@
 
  Special instructions for migration of HWGUI from GTK2 to GTK3
  
+0.) Preface
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! The migration of HWGUI to GTK3 is under construction !
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+It is very hard to migrate a GTK2 application to GTK3, because
+lot of old functions are removed.
+In most cases these are functions for drawing.
+The must be substituted by usage of the cairo graphic function library.
+
+Scripts and makefiles to build HWGUI and programs
+are ready to use.
+
+So all sample programs must be tested step by step. 
+ 
+ 
  
 1.) Additional instructions for developers of HWGUI applications
 
@@ -63,6 +80,12 @@ PRG files:
    ...
 #endif
 
+or
+
+#ifdef ___GTK3___
+   * GTK2
+   ...
+#endif
 
 
 2.) Run the application with GTK3
@@ -76,7 +99,8 @@ Gtk-CRITICAL : New application windows must be added after the GApplication::sta
 - INIT DIALOG crashes with access violation
 - How to set a background image
 - How to display an icon (see test/icon.c)
-- Check all samples for GTK3, only those running on GTK2. 
+- Check all samples for GTK3, only those running on GTK2.
+ 
 
 ============================== EOF of GTK3.txt =================================
 

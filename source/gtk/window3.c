@@ -56,6 +56,8 @@
 #endif
 #endif
 
+#include <cairo.h>
+
 #define WM_MOVE                           3
 #define WM_SIZE                           5
 #define WM_SETFOCUS                       7
@@ -87,6 +89,9 @@ void set_event( gpointer handle, char * cSignal, long int p1, long int p2, long 
 /* Function prototypes only for GTK3 */
 
 // static GdkPixbuf *create_pixbuf(const gchar * filename);
+// void hwg_pixbuf_render(pixbuf, pixmap_return);
+// void hwg_pixbuf_render_cairo(GtkWidget * window, GtkWidget * widget, int x, int y);
+
 
 PHB_DYNS pSym_onEvent = NULL;
 PHB_DYNS pSym_keylist = NULL;
@@ -249,7 +254,10 @@ HB_FUNC( HWG_INITMAINWINDOW )
   {
 //     background = gtk_image_new_from_file( szBackFile->handle );
 //    background = gtk_image_new_from_file("image/hwgui_48x48.png");
+
    background = gtk_image_new_from_pixbuf (szBackFile->handle);
+//   hwg_pixbuf_render(szBackFile->handle, &background);
+//   hwg_pixbuf_render_cairo(GDK_WINDOW (hWnd), background , width, height); // memory access violation 
    if ( background )
    {
 //   gdk_window_set_back_pixmap( GDK_WINDOW (hWnd), background, (gboolean) TRUE);
@@ -1253,6 +1261,95 @@ static GdkPixbuf *create_pixbuf(const gchar * filename)
 }
 */
 
+/* Substitute for gdk_pixbuf_render_pixmap_and_mask() of GTK2 */
+
+/*
+void hwg_pixbuf_render(pixbuf, pixmap_return)
+{
+ GdkColormap * colormap = gdk_rgb_get_colormap ();
+ GdkScreen * screen;
+ GdkGC *gc;
+
+ g_return_if_fail (GDK_IS_PIXBUF (pixbuf));
+ g_return_if_fail (GDK_IS_COLORMAP (colormap));
+
+ screen = gdk_colormap_get_screen (colormap);
+  
+ if (pixmap_return)
+ {
+
+  * pixmap_return = gdk_pixmap_new (gdk_screen_get_root_window (screen),
+                    gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
+                    gdk_colormap_get_visual (colormap)->depth);
+
+      gdk_drawable_set_colormap (GDK_DRAWABLE (*pixmap_return), colormap);
+      gc = _gdk_drawable_get_scratch_gc (*pixmap_return, FALSE);
+
+      if (gdk_pixbuf_get_has_alpha (pixbuf))
+        gdk_draw_rgb_32_image (*pixmap_return, gc,
+                               0, 0,
+                               gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
+                               GDK_RGB_DITHER_NORMAL,
+                               gdk_pixbuf_get_pixels (pixbuf), gdk_pixbuf_get_rowstride (pixbuf));
+      else
+      {
+        gdk_draw_pixbuf (*pixmap_return, gc, pixbuf, 
+                         0, 0, 0, 0,
+                         gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf),
+                         GDK_RGB_DITHER_NORMAL,
+                         0, 0);
+                         
+      }
+                         
+}
+*/
+
+/*
+void hwg_pixbuf_render_cairo(GtkWidget * window, GtkWidget * widget, int width, int height)
+{
+GdkGCValues gc_values;
+GdkGC *gc;
+
+ // setup 
+ gc = gtk_widget_get_style (widget)->black_gc;
+ gdk_gc_set_tile (gc, pixmap);
+ gdk_gc_set_fill (gc, GDK_TILED);
+ gdk_gc_set_ts_origin (gc, width, height);
+ // use 
+ gdk_draw_rectangle (window, gc, TRUE, 0, 0, width, height);
+ // restore
+ gdk_gc_set_tile (gc, NULL);
+ gdk_gc_set_fill (gc, GDK_SOLID);
+ gdk_gc_set_ts_origin (gc, 0, 0);
+}
+*/
+
+/*
+  crashes with memory access violation 
+void hwg_pixbuf_render_cairo(GtkWidget * window, GtkWidget * widget, int x, int y)
+{
+cairo_t * cr = gdk_cairo_create (window);
+gdk_cairo_set_source_pixbuf (cr, widget, x, y);  // pixbuf
+cairo_paint (cr);
+cairo_destroy (cr);
+}
+*/
+
+/*
+void hwg_pixbuf_render_cairo(window, widget, width, height)
+{
+cairo_t *cr;
+cairo_surface_t *surface;
+
+surface = ...
+cr = gdk_cairo_create (window);
+cairo_set_source_surface (cr, surface, x_origin, y_origin);
+cairo_pattern_set_extend (cairo_get_source (cr), CAIRO_EXTEND_REPEAT);
+cairo_rectangle (cr, 0, 0, width, height);
+cairo_fill (cr);
+cairo_destroy (cr);
+}
+*/
 
 /* ==================== EOF of window.c ==================== */
 

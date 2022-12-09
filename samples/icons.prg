@@ -10,6 +10,16 @@
  *
  * Copyright 2020 Wilfried Brunken, DF7BE
  * https://sourceforge.net/projects/cllog/
+ *
+ * GTK2, bug in windows.c, function hwg_CreateDlg(nhandle)
+ * (need to fix):
+ * (icons:12333): GdkPixbuf-CRITICAL **: 20:44:38.526: gdk_pixbuf_get_width: assertion 'GDK_IS_PIXBUF (pixbuf)' failed
+ * Speicherzugriffsfehler
+ *
+ * This line returns invalid handle:
+ *   PHB_ITEM pBmp = GetObjectVar( pObject, "OBMP" );
+ *
+ * Runs best on Windows 11 
  */
 
     * Status:
@@ -45,7 +55,8 @@ FUNCTION Main()
 // #endif
 
 //   cImageMain := cImagepath + "hwgui.png"
-   cImageMain := cImagepath + "hwgui_48x48.png"
+//   cImageMain := cImagepath + "hwgui_48x48.png"
+     cImageMain := cImagepath + "hwgui.bmp"
    IF .NOT. FILE( cImageMain )
       hwg_msgstop( "File not existing: " + cImageMain )
       QUIT
@@ -71,9 +82,11 @@ FUNCTION Main()
       MENU TITLE "&Exit"
          MENUITEM "&Quit" ACTION oFormMain:Close()
       ENDMENU
+#ifdef __PLATFORM__WINDOWS      
       MENU TITLE "&Dialog"
-         MENUITEM "&With Background" ACTION Teste( cImagepath )
+         MENUITEM "&With Background" ACTION Teste( cImagepath )  && Bug GTK
       ENDMENU
+#endif
    ENDMENU
 
    oFormMain:Activate()
@@ -83,16 +96,30 @@ RETURN Nil
 * Dialog with background
 FUNCTION Teste( cimgpfad )
 
-   LOCAL oModDlg, obg
+   LOCAL oModDlg, obg , obitmap , oIcon , cbitmap
+   
+   cbitmap := "astro.bmp" 
+   
+   obitmap := HBitmap():AddFile(cimgpfad + cbitmap )
+   oIcon := HIcon():AddFile( cimgpfad + "hwgui_24x24.ico" )
+   
+     hwg_msginfo( cimgpfad + cbitmap + CHR(10) +  cimgpfad + "hwgui_24x24.ico" )
+
 
    obg := NIL
+   
    IF .NOT. FILE( cimgpfad + "astro.bmp" )
       hwg_msgStop( "File " + cimgpfad + "astro.bmp" + " not found" )
    ENDIF
+   
+   IF .NOT. FILE( cimgpfad + "hwgui_24x24.ico" )
+      hwg_msgStop( "File " + cimgpfad + "hwgui_24x24.ico" + " not found" )
+   ENDIF   
 
    INIT DIALOG oModDlg TITLE "Dialog with background image" ;
       AT 210,10  SIZE 300,300 ;
-      BACKGROUND BITMAP HBitmap():AddFile(cimgpfad + "astro.bmp" )
+      ICON oIcon ;
+      BACKGROUND BITMAP obitmap  && HBitmap():AddFile(cimgpfad + "astro.bmp" )
 
    ACTIVATE DIALOG oModDlg
 

@@ -8,12 +8,29 @@
 {linux}-d__LINUX__
 {linux}-d__GTK__
 
-../hwgui.hbc
+# QR encode linking
+#-dWITH_QRENCDLL
+#-dWITH_QRENCST
+
+
+{win}../hwgui.hbc
+# GTK2
+{linux}../hwgui.hbc
+# GTK3: Deactivate previous line
+# and activate following line
+#{linux}../hwguiGTK3.hbc
+
 # hbwin.hbc
 xhb.hbc
 
 -n
 -w
+
+-L../lib
+
+# Free this entries for static link of QR encoding library
+#-lqrcodegen
+#-lhbqrencode
 
 -owinprn
 

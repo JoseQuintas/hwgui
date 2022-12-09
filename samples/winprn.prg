@@ -9,6 +9,10 @@
  * Modified by DF7BE: New parameter "nCharset" for 
  * selecting international character sets
  * NLS and Main menu for more experiments
+ *
+ * More modifications mentioned in the above lines.
+ *
+ * Special instructions for QR code support also above.
 */
 
     * Status:
@@ -73,8 +77,65 @@
     Test for METHOD NewLine()
     Charsets for LINUX: METHOD New()
     The option nPrCharset is Windows only and ignored on GTK/LINUX
-    The Option cdp is for LINUX/GTK and ignored on Windows 
+    The Option cdp is for LINUX/GTK and ignored on Windows
 
+    December 2022:
+
+    Added full support for QR code encoding:
+     - Static link of QR encoding library (LINUX, Windows)
+     - Usage of DLL for QR encoding (Windows only)
+
+*/
+
+/*
+  Instruction activation QR code encoding.
+  
+  For details to build the QR encode library see file
+  contrib\qrencode\Readme.txt
+  
+  The last page can be filled with a QR code image.
+  Follow the instructions:
+
+  1.) Modify the string to convert to QR code in variable
+      cQR in Function Main().
+      Encoding must be UTF-8, use function HB_TRANSLATE()
+      to convert at your opinion.
+  
+  2.) Library setting:
+      DLL: copy the DLL "qrcodegen.dll" into the
+      directory running the program (here: samples).
+      Compile the DLL with MinGW32 yourself following instructions
+      in contrib\qrencode\Readme.txt
+      or download a "ready to use" dll from the "Files"
+      section of the HWGUI project site at sourgeforge.net.
+  
+      Static link:
+      Be shure, that the following libraries are available in directory "lib":
+       libhbqrencode.a
+       libqrcodegen.a
+      
+   3.)Edit "winprn.hbp" to select the mode:
+      # QR encode linking
+      # -dWITH_QRENCDLL   ==> activate for DLL usage (Windows only)
+      # -dWITH_QRENCST    ==> activate for static link (Windows and LINUX)
+
+      # Free this entries for static link of QR encoding library
+       -lqrcodegen
+       -lhbqrencode
+        ==> must be done, if activated "-dWITH_QRENCST"
+   4.) Compile this sample:
+       hbmk2 winprn.hbp
+  
+   5.) Run this sample:
+       winprn.exe (or LINUX: ./winprn)
+   
+       The QR code appeared in the last page.
+       Use the "(+)" Button to zoom and check the QR code
+       for example with your smartphone.
+   
+   The properitary DLL as alternative can be download from:
+   https://github.com/VFPX/FoxBarcodeQR
+   
 */
 
 /*
@@ -629,28 +690,109 @@ LOCAL cFile
      hwg_msginfo(aMessages[22])
    ENDIF
 #else
-    #ifdef __PLATFORM__WINDOWS
-      cFile := CreateQRtoBMP( cQR, cImageDir + "QR.bmp" )
-      oWinPrn:PrintBitmap( cFile )
-    #endif
+*    #ifdef __PLATFORM__WINDOWS
+        cFile := CreateQRtoBMP( cQR, cImageDir + "QR.bmp" )
+        IF .NOT. EMPTY(cFile)
+         oWinPrn:PrintBitmap( cFile )
+        ENDIF
+*    #endif
 #endif
    
    oWinPrn:End()
 
 Return Nil
 
+* QR encoding:
+* The FUNCTION CreateQRtoBMP returns empty string, if encoding fails
+* (because of for example of missing DLL)
+* If OK, the return value is the name of a temporary bitmap
+* file containing the requested QR code from passed string.
+
 #ifdef __PLATFORM__WINDOWS
+#ifdef WITH_QRENCDLL
+
 #require "hbxpp"
 
-FUNC CreateQRtoBMP( cStr, cFile )
-   LOCAL qrDLL
-   cFile:=IIF(HB_ISNIL(cFile),hwg_CreateTempfileName("QR","*.bmp"), cFile )
-   qrDLL:=DLLLoad("QRCodelib.Dll" )
-   DllCall(qrDLL,0x0020,"FastQRCode",cStr,cFile)
-   DLLUnload(qrDLL)
+FUNCTION CreateQRtoBMP( cStr, cFile )
+   LOCAL qrDLL, cqrc, cbitmap , ctxtfi
+   cFile := IIF(HB_ISNIL(cFile),hwg_CreateTempfileName("QR","*.bmp"), cFile )
+   * Some trouble on Windows 11 with the created temporary file !
+//   ctxtfi := hwg_CreateTempfileName("QR","*.txt")
+    ctxtfi := "QRCodetemp.txt"
+// hwg_msginfo("DLL")   
+   * Properitary libraray
+   * IF CHECK_FILE2("QRCodelib.Dll")   
+   *  qrDLL := DLLLoad("QRCodelib.Dll" )
+   *  DllCall(qrDLL,0x0020,"FastQRCode",cStr,cFile)
+   *  DLLUnload(qrDLL)
+   * ELSE 
+   *  cFile:= ""
+   * ENDIF
+
+   * Open source library
+   IF CHECK_FILE2("qrcodegen.dll")
+    qrDLL := DLLLoad( "qrcodegen.dll" )
+    DllCall( qrDLL, 0x0000, "FastQRCode", cStr, ctxtfi )
+    DLLUnload(qrDLL)
+
+    cqrc := MEMOREAD(ctxtfi)
+    cqrc := hwg_QRCodeZoom(cqrc,4)
+    cbitmap := hwg_QRCodetxt2BPM( cqrc )
+    MEMOWRIT( cFile, cbitmap )
+    DELETE FILE &ctxtfi
+   ELSE
+     cFile := ""
+   ENDIF
+
 RETURN cFile
 
-#endif   
+#endif
+#endif
+
+#ifdef __PLATFORM__WINDOWS
+* Static link Win
+#ifdef WITH_QRENCST
+FUNCTION CreateQRtoBMP( cStr, cFile )
+ LOCAL cqrc, cbitmap
+ cFile := IIF(HB_ISNIL(cFile),hwg_CreateTempfileName("QR","*.bmp"), cFile )
+ cqrc := hwg_QRCodeTxtGen(cStr,1)
+* If desired to zoom
+  cqrc := hwg_QRCodeZoom( cqrc, 4 ) 
+  cbitmap := hwg_QRCodetxt2BPM( cqrc )
+* Store to bitmap file
+   MEMOWRIT( cFile, cbitmap ) 
+RETURN cFile
+#endif
+#endif
+* With no dll
+
+#ifndef __PLATFORM__WINDOWS
+* --- LINUX ---
+#ifdef WITH_QRENCST
+* LINUX (static link)
+FUNCTION CreateQRtoBMP( cStr, cFile )
+ LOCAL cqrc, cbitmap
+ cFile := IIF(HB_ISNIL(cFile),hwg_CreateTempfileName("QR","*.bmp"), cFile )
+ cqrc := hwg_QRCodeTxtGen(cStr,1)
+* If desired to zoom
+  cqrc := hwg_QRCodeZoom( cqrc, 4 ) 
+  cbitmap := hwg_QRCodetxt2BPM( cqrc )
+* Store to bitmap file
+   MEMOWRIT( cFile, cbitmap ) 
+RETURN cFile
+
+#endif
+#endif
+
+* Without QRCODE (use dummy function)
+#ifndef WITH_QRENCST
+#ifndef WITH_QRENCDLL
+FUNCTION CreateQRtoBMP( cStr, cFile )
+HB_SYMBOL_UNUSED(cStr)
+HB_SYMBOL_UNUSED(cFile)
+RETURN ""
+#endif
+#endif
 
 * ---------------------------------------------
 FUNCTION XWIN_SR(clang)
@@ -1181,6 +1323,16 @@ FUNCTION CHECK_FILE ( cfi )
   QUIT
  ENDIF 
 RETURN Nil
+
+* --------------------------------------------
+FUNCTION CHECK_FILE2 ( cfi )
+* Check, if file exist,
+* if not, return .F.
+* --------------------------------------------
+ IF FILE( cfi )
+  RETURN .T.
+ ENDIF 
+RETURN .F.
 
 * ========================================================
 * Template for messages

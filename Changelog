@@ -16,6 +16,19 @@
 */
 
 
+
+2022-12-09 11:30 UTC+0100 Wilfried Brunken DF7BE
+  * samples/icons.hbp
+  * samples/icons.prg
+  * samples/winprn.hbp
+  * samples/winprn.prg
+  * source/gtk/window.c
+   ! Ticket: #53 Winprn and QR code
+   ! Finished with open source library and LINUX (GTK2)
+   ! Bug in icons.prg with background in dialog
+   ! decribed (To be continued).
+
+
 2022-12-06 11:45 UTC+0100 Wilfried Brunken DF7BE
   * doc/GTK3.txt
   * source/gtk/window3.c

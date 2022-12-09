@@ -6,6 +6,15 @@
  *
  * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
+ * 
+ * Some debugging info:
+ *
+ * Write messages to console window by example:
+ * g_print ("Hello\n");
+ *
+ * Also format expressions are possible:
+ * g_print ("%s\n",gcTitle);
+ *
 */
 
 #include "guilib.h"
@@ -248,7 +257,7 @@ HB_FUNC( HWG_CREATEDLG )
    GtkWidget * vbox;
    GtkFixed  * box;
 #if GTK_MAJOR_VERSION -0 < 3
-   GdkPixmap * background;
+   GdkPixmap * background = NULL;
 #else
    /* GdkPixbuf * background; */
   GtkWidget * background;

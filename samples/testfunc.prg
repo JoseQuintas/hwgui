@@ -478,10 +478,11 @@ DO CASE
  CASE cgt == "WinAPI"
   hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
  CASE cgt == "GTK2"
-//  hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
+  hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
 //  hwg_MsgInfo("Return Code: " + ToLogical(),"Result of hwg_RunApp()")
  CASE cgt == "GTK3"
   hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
+//  hwg_MsgInfo("Return Code: " + ToLogical(),"Result of hwg_RunApp()")
  ENDCASE
  
 RETURN NIL
@@ -492,7 +493,9 @@ LOCAL _hwg_RunApp_test
 LOCAL oLabel1, oEditbox1, oButton1, oButton2
 LOCAL cCmd
 
+
   cCmd := SPACE(80)
+  cCmd := hwg_GET_Helper(cCmd, 80)
 
   INIT DIALOG _hwg_RunApp_test TITLE "hwg_RunApp()" ;
     AT 315,231 SIZE 940,239 ;

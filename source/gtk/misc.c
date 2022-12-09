@@ -335,12 +335,15 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
 
 HB_FUNC( HWG_RUNAPP )
 {
-#if GTK_MAJOR_VERSION -0 < 3
-   hb_retl( g_spawn_command_line_async( hb_parc(1), NULL ) );
-#else
-  /* GTK3 */
-  hb_retni(g_application_run (G_APPLICATION ( hb_parc(1) ) , 0 , NULL  ) );
-#endif
+   GError * error = NULL;
+   gint rc = 0;
+   g_spawn_command_line_async( hb_parc(1),  &error );
+   if (error)
+    {
+        rc = error->code ;
+        g_error_free(error);
+    }
+  hb_retni ( rc );  
 }
 
 HB_FUNC( HWG_SHELLEXECUTE )

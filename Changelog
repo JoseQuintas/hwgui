@@ -17,6 +17,14 @@
 
 
 
+2022-12-09 20:45 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * samples/testfunc.prg
+  * source/gtk/misc.c
+   ! Bugfix return values for
+   ! hwg_RunApp(), GTK2 and GTK3
+
+
 2022-12-09 11:30 UTC+0100 Wilfried Brunken DF7BE
   * samples/icons.hbp
   * samples/icons.prg

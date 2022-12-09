@@ -2479,9 +2479,11 @@ See sample program "testspli.prg" for details.<br>
     <br> &nbsp;.T. : Function CreateProcess(..) of WinAPI used,
     <br> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; returns NIL. 
     <br> 
-    <br>LINUX: asynchronious start:
+    <br>LINUX (GTK2 and GTK3): asynchronious start:
     <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; uses function g_spawn_command_line_async(),
     <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Parameters 2 and 3 are ignored.
+    <br>
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return value is of type N, if function succeeds, the value is greater than 0
     <p></p>
 
    <br><strong class="subhead"> hwg_onAnchor( oWnd, wold, hold, wnew, hnew )</strong>

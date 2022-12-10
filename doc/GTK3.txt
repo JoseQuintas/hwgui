@@ -93,14 +93,23 @@ or
 Ignore this message at start displayed in the terminal window:  
 Gtk-CRITICAL : New application windows must be added after the GApplication::startup signal has been emitted.
 
+Other messages, but have no effect on function:
+gtk_container_propagate_draw: assertion '_gtk_widget_get_parent (child) == GTK_WIDGET (container)' failed
+
 
 3.) TO-DO list and list of problems to solve
 
-- INIT DIALOG crashes with access violation
-- How to set a background image
+- INIT DIALOG crashes with access violation if background image is set.
+  ==> How to set a background image
 - How to display an icon (see test/icon.c)
 - Check all samples for GTK3, only those running on GTK2.
  
+
+4.) To be modified in the appliation by the programs:
+
+- Design troubles:
+  Buttons need more space, see sample program testfunc.prg.
+  
 
 ============================== EOF of GTK3.txt =================================
 

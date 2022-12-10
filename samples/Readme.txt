@@ -172,7 +172,7 @@ For beginners:
  demohlist.prg       S       S         Y      Demo for listbox
  demohlistsub.prg    Y                 Y      Multi platform substitute for listbox by BROWSE.
  Dialogboxes.prg     Y                        Demonstrates few ready to use dialog boxes (extract from tutor)
- escrita.prg   +)    Y                        Tool buttons with bitmaps ("Accent Test")
+ escrita.prg   +)    Y       Y                Tool buttons with bitmaps ("Accent Test")
  fileselect.prg      Y                        Sample for file selection menues
  getupdown.prg       Y                        Usage of @ <x> <y> GET UPDOWN ..
  GetWinVers.prg      Y                        Functions for get recent hwg_SaveFile() Windows version
@@ -212,10 +212,10 @@ For beginners:
  testchild.prg       N  #    N         -      Create a child windows; child window not created ! command seems to be outdated.
  testget1.prg        Y                        Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
  testget2.prg        P                        Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
- testfunc.prg        Y                 Y      Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button. 
+ testfunc.prg        Y       Y         Y      Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button. 
  testhgt.prg         N       N                class HGT for combined usage of HWGUI control elements in Harbour gtwvg programs in multithread mode.
  testhmonth.prg      Y                 Y      Calendar, Datepicker, TOOLTIP
- testimage.prg       Y                        Displaying images and usage of FreeImage library (IMAGE, BITMAP).
+ testimage.prg       Y       Y                Displaying images and usage of FreeImage library (IMAGE, BITMAP).
  testini.prg         P                        Use INI file: create and read
  testmenubitmap.prg  P                        Menu with bitmaps
  testrtf.prg  1)     N  #    N          -      Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 

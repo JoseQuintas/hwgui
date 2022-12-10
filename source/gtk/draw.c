@@ -265,6 +265,10 @@ HB_FUNC( HWG_REDRAWWINDOW )
         alloc.width, alloc.height );
 }
 
+/*
+  hwg_DrawButton(handle,nleft,ntop,nright,nbottom,niType)
+*/  
+
 HB_FUNC( HWG_DRAWBUTTON )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);

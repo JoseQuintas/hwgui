@@ -12,7 +12,13 @@
 {unix}-d__GTK__
 
 -L../..
-hwgui.hbc
+
+{win}../../hwgui.hbc
+# GTK2
+#{linux}../../hwgui.hbc
+# GTK3: Deactivate previous line
+# and activate following line
+{linux}../../hwguiGTK3.hbc
 
 # -o../../bin/hwgrun
 -o./hwgrun

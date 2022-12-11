@@ -67,6 +67,11 @@ rm samples/imageview 2>/dev/null
 rm samples/checkbox 2>/dev/null
 rm samples/testbmpcr 2>/dev/null
 rm samples/qrencode 2>/dev/null
+rm samples/graph 2>/dev/null
+rm samples/helpstatic 2>/dev/null
+rm samples/icons 2>/dev/null
+rm samples/testfehl.bmp 2>/dev/null
+rm samples/testimage 2>/dev/null
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null

@@ -16,6 +16,18 @@
 */
 
 
+2022-12-11 09:10 UTC+0100 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/GTK3.txt
+  * utils/Readme.txt
+  * utils/tutorial/hbmk.sh
+  * utils/tutorial/hwgrun.hbp
+  * utils/tutorial/tutor.hbp
+   ! Project Port to GTK3 (10)
+   ! Tutor
+   ! (To be continued)
+
+
 2022-12-10 19:10 UTC+0100 Wilfried Brunken DF7BE
   * doc/GTK3.txt
   * samples/Readme.txt

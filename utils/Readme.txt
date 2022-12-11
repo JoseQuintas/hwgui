@@ -9,7 +9,11 @@
  
  For details for every utililty read the files Readme.txt
  in the listed subdirectory above and the
- recent HWGUI HTML documentation in main directory "doc". 
+ recent HWGUI HTML documentation in main directory "doc".
+ 
+ The port to GTK3 is under construction.
+ There are some trouble with the design of dialog elements, see
+ file doc/GTK3.txt for details.
 
 
   bincnt \
@@ -118,7 +122,14 @@
    hbmk.sh       alternative script using the Harbour hbmk2 utility, 
                  calls hwgrun.hbp and tutor.hbp
          
-
+   For GTK3 edit files hwgrun.hbp and tutor.hbp:
+   #{linux}../../hwgui.hbc
+   # GTK3: Deactivate previous line
+   # and activate following line
+   {linux}../../hwguiGTK3.hbc
     
+   and build the tutor by typing:
+   chmod 755 *.sh
+   ./hbmk.sh
 
 ========================== EOF of Readme.txt ==================================

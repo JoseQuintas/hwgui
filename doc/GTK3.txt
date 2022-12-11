@@ -12,15 +12,20 @@
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 It is very hard to migrate a GTK2 application to GTK3, because
-lot of old functions are removed.
+lots of old functions are removed.
 In most cases these are functions for drawing.
 The must be substituted by usage of the cairo graphic function library.
+
+The design of dialog elements differ very significant.
+For example, the size of buttons need more space.
 
 Scripts and makefiles to build HWGUI and programs
 are ready to use.
 
 So all sample programs must be tested step by step. 
  
+At this time it is recommended, to use GTK2, if your
+OS supports it ! 
  
  
 1.) Additional instructions for developers of HWGUI applications
@@ -32,7 +37,7 @@ GTK3 with no trouble.
 2.1) Compiling the HWGUI application
 
 Look into a sample hbp file in directoy samples to
-include the hbc files 
+modify the hbc files:  
 
 {win}../hwgui.hbc
 # GTK2
@@ -100,7 +105,7 @@ gtk_container_propagate_draw: assertion '_gtk_widget_get_parent (child) == GTK_W
 3.) TO-DO list and list of problems to solve
 
 - INIT DIALOG crashes with access violation if background image is set.
-  ==> How to set a background image
+  ==> How to set a background image with CAIRO ?
 - How to display an icon (see test/icon.c)
 - Check all samples for GTK3, only those running on GTK2.
  
@@ -109,7 +114,18 @@ gtk_container_propagate_draw: assertion '_gtk_widget_get_parent (child) == GTK_W
 
 - Design troubles:
   Buttons need more space, see sample program testfunc.prg.
+  It seems, that FONT and SIZE options are ignored and the
+  size is rendered by CAPTION string.
+  Also the underline character "_" is omitted.
   
+- Lot's of messages displayed in the terminal running the program, for example:
+  Gtk-CRITICAL **: 08:01:20.521: gtk_container_propagate_draw: assertion '_gtk_widget_get_parent (child) == GTK_WIDGET (container)' failed
+     
+- BROWSE: The Move() fnction has no effect to increase the browse window with increasing
+  the main window manually (CLLOG).
+    
+- The task bar overlappes the menu (CLLOG)    
+
 
 ============================== EOF of GTK3.txt =================================
 

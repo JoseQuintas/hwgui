@@ -16,6 +16,19 @@
 */
 
 
+2022-12-11 18:30 UTC+0100 Wilfried Brunken DF7BE
+  * doc/GTK3.txt
+  * samples/Readme.txt
+  * samples/a.hbp
+  * samples/a.prg
+  * samples/dbview.hbp
+  * samples/dbview.prg
+   ! Project Port to GTK3 (11)
+   ! Describing design trouble
+   ! (To be continued)
+
+
+
 2022-12-11 09:10 UTC+0100 Wilfried Brunken DF7BE
   * clean.sh
   * doc/GTK3.txt

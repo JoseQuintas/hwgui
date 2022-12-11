@@ -121,12 +121,34 @@ gtk_container_propagate_draw: assertion '_gtk_widget_get_parent (child) == GTK_W
 - Lot's of messages displayed in the terminal running the program, for example:
   Gtk-CRITICAL **: 08:01:20.521: gtk_container_propagate_draw: assertion '_gtk_widget_get_parent (child) == GTK_WIDGET (container)' failed
      
-- BROWSE: The Move() fnction has no effect to increase the browse window with increasing
-  the main window manually (CLLOG).
+- BROWSE: The Move() function has no effect to increase the browse window with increasing
+  the main window manually (dbview.prg).
     
-- The task bar overlappes the menu (CLLOG)    
+- The task bar overlappes the menu,so overalpped menu item are not reachable (dbview.prg).
+
+- The menu needs about 25 pixels, so start for example the BROWSE at y = 25 + 1.
+  Also other y positions of following dialog elements must increase the vertical position
+  for 25 pixels (dbview.prg).    
 
 
+5.) Miscanellous 
+
+- Quick change between GTK2 and GTK3 for developing and test (example session):
+   ./clean.sh
+   ./make_gtk.sh -hb   ==> GTK2
+   cd samples
+   ==> edit dbview.hbp for GTK2
+   hbmk2 dbview.hbp
+   ./dbview
+   cd ..
+   ./clean.sh
+   ./make_gtk3.sh  ==> GTK3
+   cd samples
+   ==> edit dbview.hbp for GTK3
+   hbmk2 dbview.hbp
+   ./dbview
+   ...
+   
 ============================== EOF of GTK3.txt =================================
 
 

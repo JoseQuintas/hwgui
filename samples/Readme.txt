@@ -159,7 +159,7 @@ For beginners:
 
  Sample program     GTK2    GTK3  NLS MinGW64 Purpose
  =================   ====   ====  === ======= =======
- a.prg   +) 9)       R            CN          Some HWGUI basics (Open DBF's, GET's, ...)
+ a.prg   +) 9)       R       N    CN          Some HWGUI basics (Open DBF's, GET's, ...)
  arraybrowse.prg     Y                        Array BROWSE avoiding crashes because of bugs (see inline comments)
  bindbf.prg 10)      Y                        Usage of images from Binary DBF container
  bincnts.prg 10) +)  Y                        Usage of images from Binary container
@@ -167,7 +167,7 @@ For beginners:
  checkbox.prg        Y                        Checkboxes and tabs
  colrbloc.prg        Y                 Y      BROWSE: arrays and DBF's with colored lines and columns
  datepicker.prg      Y                        Multiplatform substitute of Windows only DATEPICKER
- dbview.prg          Y                 Y      DBF access (Browse, Indexing, Codepages, Structure, ... )
+ dbview.prg          Y       Y         Y      DBF access (Browse, Indexing, Codepages, Structure, ... )
  demodbf.prg         Y                 Y      Demo for Edit using command NOEXIT
  demohlist.prg       S       S         Y      Demo for listbox
  demohlistsub.prg    Y                 Y      Multi platform substitute for listbox by BROWSE.

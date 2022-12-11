@@ -8,7 +8,12 @@
 {linux}-d__LINUX__
 {linux}-d__GTK__
 
-../hwgui.hbc
+{win}../hwgui.hbc
+# GTK2
+{linux}../hwgui.hbc
+# GTK3: Deactivate previous line
+# and activate following line
+#{linux}../hwguiGTK3.hbc
 
 -n
 -w
@@ -17,4 +22,4 @@
 
 dbview.prg
 
-# ==================== EOF of a.hbp ===============
+# ==================== EOF of dbview.hbp ===============

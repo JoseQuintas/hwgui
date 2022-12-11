@@ -158,17 +158,31 @@ FUNCTION Main()
       ENDMENU
    ENDMENU
 
-   @ 0,0 BROWSE oBrw                 ;
+* The menu needs about 25 pixels, so start BROWSE at y = 25 + 1 
+#ifdef ___GTK3___
+   @ 0,26 BROWSE oBrw                 ;
       SIZE 300,272                   ;
       STYLE WS_VSCROLL + WS_HSCROLL  ;
       FONT oFont                     ;
       ON SIZE {|o,x,y|o:Move(,,x-1,y-28)}
+#else
+  @ 0,0 BROWSE oBrw                 ;
+      SIZE 300,272                   ;
+      STYLE WS_VSCROLL + WS_HSCROLL  ;
+      FONT oFont                     ;
+      ON SIZE {|o,x,y|o:Move(,,x-1,y-28)}
+#endif
 
    oBrw:nHCCharset := nBrwCharset  && Set to 204 for Russian
 
    oBrw:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
 
+
+#ifdef ___GTK3___
+   @ 0,297 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1)}
+#else
    @ 0,272 PANEL oPanel SIZE 0,26 ON SIZE {|o,x,y|o:Move(0,y-26,x-1)}
+#endif   
    @ 5,4 SAY oSay1 CAPTION "" OF oPanel SIZE 150,22 FONT oFont
    @ 160,4 SAY oSay2 CAPTION "" OF oPanel SIZE 100,22 FONT oFont
 
@@ -183,8 +197,15 @@ RETURN Nil
 
 STATIC FUNCTION FileOpen( fname )
 
-   LOCAL mypath := "\" + CURDIR() + IIF( EMPTY( CURDIR() ), "", "\" )
-   MEMVAR oBrw, oSay1, oSay2, DataCP, currentCP, currFname
+   LOCAL mypath, cdirsep
+   
+   MEMVAR oBrw, oSay1, oSay2, DataCP, currentCP, currFname   
+   
+   cdirsep := hwg_GetDirSep()
+   
+   mypath := cdirsep + CURDIR() + IIF( EMPTY( CURDIR() ), "", cdirsep )
+
+
 
    IF Empty( fname )
       fname := hwg_Selectfile( "xBase files( *.dbf )", "*.dbf", mypath )
@@ -447,7 +468,18 @@ STATIC FUNCTION ModiStru( lNew )
    LOCAL af, af0, cName := "", nType := 1, cLen := "0", cDec := "0", i
    LOCAL aTypes := { "Character","Numeric","Date","Logical" }
    LOCAL fname, cAlias, nRec, nOrd, lOverFlow := .F., xValue
+   
+   LOCAL nxdia
+   
    MEMVAR oBrw, currentCP, currFname
+   
+   
+#ifdef ___GTK3___
+ nxdia := 600
+#else
+ nxdia := 1000
+#endif   
+   
 
    IF lNew
       af := { {"","",0,0} }
@@ -461,7 +493,7 @@ STATIC FUNCTION ModiStru( lNew )
 
    INIT DIALOG oDlg TITLE "Modify structure" ;
          AT 0,0                  ;
-         SIZE 400,330            ;
+         SIZE nxdia,330            ;
          FONT of
 
    @ 10,10 BROWSE oBrowse ARRAY  ;
@@ -475,10 +507,18 @@ STATIC FUNCTION ModiStru( lNew )
    oBrowse:AddColumn( HColumn():New( "Length",{|v,o|o:aArray[o:nCurrent,3]},"N",5,0 ) )
    oBrowse:AddColumn( HColumn():New( "Dec",{|v,o|o:aArray[o:nCurrent,4]},"N",2,0 ) )
 
+
+#ifdef ___GTK3___
+   @ 10,230 GET oGet1 VAR cName SIZE 100,24
+   @ 180,230 GET COMBOBOX oGet2 VAR nType ITEMS aTypes SIZE 100,24
+   @ 390,230 GET oGet3 VAR cLen SIZE 50,24
+   @ 560,230 GET oGet4 VAR cDec SIZE 40,24
+#else
    @ 10,230 GET oGet1 VAR cName SIZE 100,24
    @ 120,230 GET COMBOBOX oGet2 VAR nType ITEMS aTypes SIZE 100,24
    @ 230,230 GET oGet3 VAR cLen SIZE 50,24
    @ 290,230 GET oGet4 VAR cDec SIZE 40,24
+#endif   
 
    @ 20,270 BUTTON "Add" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,1)}
    @ 110,270 BUTTON "Insert" SIZE 80,30 ON CLICK {||UpdStru(oBrowse,oGet1,oGet2,oGet3,oGet4,2)}

@@ -4,6 +4,14 @@
  *
  * Copyright 2001 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
+ *
+ * For GTK need to port or search for substitutes:
+ *  HWG_GETCURRENTDIR()
+ *  HMDICHILDWINDOW()
+ *  HDATEPICKER()
+ *  HRECT()
+ *  HWG_RECT()
+ *
 */
 
   * Status:

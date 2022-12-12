@@ -1926,10 +1926,26 @@ See sample program "testspli.prg" for details.<br>
    </p>
 
    <br><strong class="subhead"> hwg_HdSerial( cDrive )</strong> (Windows only)
-   <p></p>
+   <p>
+   Returns the drive serial number as hex value.<br>
+   cDrive must be a path to the device, for<br>
+   example "C:\".<br>
+   cDrive may be empty for recent drive.<br>
+   For compatibility purposes on GTK this function<br>
+   exists and returns forever an empty string "".<br> 
+   </p>
 
    <br><strong class="subhead"> hwg_HdGetSerial( cDrive )</strong> (Windows only)
-   <p></p>
+   <p>
+   Returns the drive serial number as numeric value.
+   cDrive must be a path to the device, for
+   example "C:\".
+   cDrive may be empty for recent drive.
+   This is the same as Harbour function VolSerial() on contrib/hbct.
+   In case of errors, the funtion return -1.
+   For compatibility purposes on GTK this function
+   exists and returns forever -1.
+   </p>
 
    <br><strong class="subhead"> Hwg_GetIni( cSection, cEntry, cDefault, cFile )</strong> (Windows only)
    <p>

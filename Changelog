@@ -16,6 +16,20 @@
 */
 
 
+
+2022-12-12 17:00 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * samples/testfunc.prg
+  * source/gtk/commond.c
+  * source/gtk/hmisc.prg
+  * source/winapi/commond.c
+  * test/Ticket116.hbp (New)
+  * test/Ticket116.prg (New)
+   ! Bug Ticket #116 fixed,
+   ! for details see post to ticket.  
+
+
+
 2022-12-11 18:30 UTC+0100 Wilfried Brunken DF7BE
   * doc/GTK3.txt
   * samples/Readme.txt

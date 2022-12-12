@@ -502,5 +502,11 @@ HB_FUNC( HWG_SELECTFOLDER )
     gtk_widget_destroy (selector_archivo);
 }
 
+
+HB_FUNC( HWG_HDGETSERIAL )
+{
+   hb_retnl(-1);
+}
+
 /* =================== EOF of commond.c =========================== */
 

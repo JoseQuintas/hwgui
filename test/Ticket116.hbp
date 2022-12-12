@@ -1,0 +1,18 @@
+#
+# Ticket116.hbp
+#
+# $Id$
+#
+
+-stop={linux}
+
+-n
+-w
+
+hbct.hbc
+
+-oTicket116
+
+Ticket116.prg
+
+# ==================== EOF of Ticket116.hbp =========================

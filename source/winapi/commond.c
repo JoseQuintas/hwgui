@@ -330,22 +330,54 @@ HB_FUNC( HWG_CHOOSECOLOR )
       hb_ret(  );
 }
 
-
+/* Ticket 116: returns wrong serial number
+ 
 static unsigned long Get_SerialNumber( LPCTSTR RootPathName )
 {
+
+
+
    unsigned long SerialNumber;
 
    GetVolumeInformation( RootPathName, NULL, 0, &SerialNumber,
          NULL, NULL, NULL, 0 );
+ 
    return SerialNumber;
 }
+*/
+
 
 HB_FUNC( HWG_HDGETSERIAL )
 {
+/*
    void *hStr;
    hb_retnl( Get_SerialNumber( HB_PARSTR( 1, &hStr, NULL ) ) );
    hb_strfree( hStr );
+*/ 
+ 
+   DWORD dwSerial = 0;
+   void * hDrive;
+   HB_SIZE nLen;
+   LPCTSTR lpRootPath = HB_PARSTR( 1, &hDrive, &nLen );
+
+   if( GetVolumeInformation( nLen > 0 ? lpRootPath : NULL,
+                             NULL,
+                             0,
+                             &dwSerial,
+                             NULL,
+                             NULL,
+                             NULL,
+                             0 ) )
+ 
+      hb_retnint( dwSerial );   
+   /* hb_retnl( dwSerial ); */
+   else 
+     hb_retni( -1 );
+
+   hb_strfree( hDrive );
+   
 }
+
 
 /*
  The functions added by extract for the Minigui Lib Open Source project

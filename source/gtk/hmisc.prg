@@ -1325,5 +1325,9 @@ RETURN 0
 FUNCTION hwg_nothing(xpara)
 RETURN xpara
 
+FUNCTION hwg_HdSerial( cDrive )
+HB_SYMBOL_UNUSED(cDrive)
+RETURN ""
+
 * ============== EOF of hmisc.prg =================
 

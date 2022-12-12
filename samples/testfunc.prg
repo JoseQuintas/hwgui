@@ -70,6 +70,7 @@ FUNCTION MAIN()
    LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
    LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
    LOCAL oButton26, oButton27, oButton28, oButton29
+   LOCAL oButton30, oButton31
    
    LOCAL nspcbutton
   
@@ -227,6 +228,14 @@ FUNCTION MAIN()
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
        { | | do_the_RunApp() }
 
+   @ 25 ,nspcbutton * 11 BUTTON oButton30 CAPTION "hwg_HdSerial()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_hwg_HdSerial() }
+
+   @ 180 ,nspcbutton * 11 BUTTON oButton31 CAPTION "hwg_HdGetSerial()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_hwg_HdGetSerial() }
+
 
    /* Disable buttons for Windows only functions */
 #ifndef __PLATFORM__WINDOWS
@@ -281,7 +290,7 @@ FUNCTION HIDE_CURSOR ( oFont , nheight , Testfunc )
 RETURN Nil
 
 FUNCTION Funkt( rval, cType , cfunkt)
-
+   * ====================================
    * Executes a function and displays the
    * result in a info messagebox.
    * rval: Return value of the called function
@@ -527,5 +536,105 @@ LOCAL cCmd
    ACTIVATE DIALOG _hwg_RunApp_test
 * RETURN _hwg_RunApp_test:lresult
 RETURN cCmd
+
+FUNCTION GetCValue(cPreset,cTitle,cQuery,nlaenge,lcaval)
+* An universal function for getting a C value
+*
+* lcaval  : if set to .T., old value is returned
+*           .F. : empty string returned
+*           Default is .T. 
+* nlaenge : Max length of string to get.
+*           Default value is LEN(cPreset)
+LOCAL _enterC, oLabel1, oEditbox1, oButton1 , oButton2 , cNewValue, lcancel
+
+ IF cTitle == NIL
+  cTitle := ""
+ ENDIF
+
+ IF cQuery == NIL
+  cQuery := ""
+ ENDIF
+
+ IF cPreset == NIL
+  cPreset := " "
+ ENDIF
+ 
+ IF lcaval == NIL
+  lcaval := .T.
+ ENDIF 
+ 
+ IF nlaenge == NIL
+  nlaenge := LEN(cPreset)
+ ELSE
+  IF EMPTY(cpreset)
+   cpreset := SPACE(nlaenge)
+  ELSE
+   cpreset := PADR(cpreset,nlaenge)
+  ENDIF  
+ ENDIF  
+
+ lcancel := .T.
+ 
+ cPreset := hwg_GET_Helper(cPreset, nlaenge )
+ 
+ cNewValue := cPreset
+
+ INIT DIALOG _enterC TITLE cTitle ;
+    AT 315,231 SIZE 940,239 ;
+    STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+  @ 80,32 SAY oLabel1 CAPTION cQuery SIZE 587,22
+   @ 80,71 GET oEditbox1 VAR cNewValue  SIZE 772,24 ;
+        STYLE WS_BORDER
+   @ 115,120 BUTTON oButton1 CAPTION "OK" SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK {|| lcancel := .F. , _enterC:Close() } 
+   @ 809,120 BUTTON oButton2 CAPTION "Cancel" SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK {|| _enterC:Close() }
+
+   ACTIVATE DIALOG _enterC
+   
+   IF lcancel
+    IF lcaval
+     cNewValue := cPreset
+    ELSE
+          cNewValue := ""
+    ENDIF
+   ENDIF
+
+RETURN cNewValue   
+
+FUNCTION Test_hwg_HdSerial()
+LOCAL cDriveletter
+
+cDriveletter := GetCValue("C","hwg_HdSerial()", "Enter drive letter:",1,.F.)
+IF .NOT. EMPTY(cDriveletter)
+ cDriveletter := cDriveletter + ":\"
+ENDIF 
+
+IF .NOT. EMPTY(cDriveletter)
+ hwg_MsgInfo("Serial number of drive " + cDriveletter + " is:" + CHR(10) + ;
+  hwg_HdSerial(ALLTRIM(cDriveletter)))
+ENDIF
+  
+
+RETURN NIL
+
+FUNCTION Test_hwg_HdGetSerial()
+LOCAL cDriveletter
+
+
+cDriveletter := GetCValue("C","hwg_HdGetSerial()", "Enter drive letter:",1,.F.)
+IF .NOT. EMPTY(cDriveletter)
+ cDriveletter := cDriveletter + ":\"
+ENDIF 
+
+IF .NOT. EMPTY(cDriveletter)
+ hwg_MsgInfo("Serial number of drive " + cDriveletter + " is:" + CHR(10) + ;
+  ALLTRIM(STR(hwg_HdGetSerial(ALLTRIM(cDriveletter)))))
+ENDIF
+  
+
+RETURN NIL
 
 * ============================== EOF of testfunc.prg ==============================

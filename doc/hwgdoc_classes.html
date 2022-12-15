@@ -11,7 +11,7 @@
  +-------------------!---------------------------------!--------------------------------------------+ 
  ! Date (YYYY-MM-DD) ! Name and/or E-Mail or Call Sign !  Modification                              !
  +-------------------!---------------------------------!--------------------------------------------+
- ! 2022-09-01        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
+ ! 2022-12-15        ! Wilfried Brunken, DF7BE         ! Recent State of development                !
  +-------------------!---------------------------------!--------------------------------------------+
  ! 2020-08-05        ! Wilfried Brunken, DF7BE         ! HBITMAP update                             !
  +-------------------!---------------------------------!--------------------------------------------+
@@ -29,7 +29,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_functions.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, September 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, December 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_misc.html">next</a></td>
   </tr>
 </table>
@@ -1007,7 +1007,10 @@
       aTabs                    (R)
       aPages                   (R)
       hIml, aImages, Image1, Image2 
-      oTemp 
+      oTemp
+      aTooltips   INIT {}  // Array with tooltips messages
+                           // One element for every tab
+                      
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
@@ -1019,7 +1022,7 @@
       Activate()
       Init()
       onEvent( msg, wParam, lParam )
-      StartPage( cname )
+      StartPage( cname , [cToolTip] )
       EndPage()
       ChangePage( nPage )
       DeletePage( nPage )

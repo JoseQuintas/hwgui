@@ -16,6 +16,17 @@
 */
 
 
+2022-12-15 15:00 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * include/guilib.ch
+  * source/gtk/control.c
+  * source/gtk/hdialog.prg
+  * source/gtk/htab.prg (New)
+  * test/Test_tab.hbp (New)
+   ! Support ticket #54 Tooltip for tabs ?
+   ! For GTK2/GTK3, port to WinAPI follows.
+
+
 
 2022-12-12 17:00 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html

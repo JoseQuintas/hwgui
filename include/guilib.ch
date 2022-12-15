@@ -601,6 +601,10 @@
 #xcommand BEGIN PAGE <cname> OF <oTab> ;
           => ;
     <oTab>:StartPage( <cname> )
+    
+#xcommand BEGIN PAGE <cname> OF <oTab> TOOLTIP <ctooltip>;
+          => ;
+    <oTab>:StartPage( <cname> , <ctooltip> )
 
 #xcommand END PAGE OF <oTab> ;
           => ;

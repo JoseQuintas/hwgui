@@ -72,6 +72,7 @@ rm samples/helpstatic 2>/dev/null
 rm samples/icons 2>/dev/null
 rm samples/testfehl.bmp 2>/dev/null
 rm samples/testimage 2>/dev/null
+rm samples/tab 2>/dev/null
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null
@@ -111,6 +112,7 @@ rm test/template  2>/dev/null
 rm test/hello 2>/dev/null
 rm test/icon 2>/dev/null
 rm test/checkbox 2>/dev/null
+rm test/Test_tab 2>/dev/null
 
 # Other files created by test programs
 rm test/hexdump.txt 2>/dev/null

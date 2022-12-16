@@ -721,6 +721,11 @@ HB_FUNC( HWG_INITTABCONTROL )
    }
 }
 
+
+/*
+  hwg_AddTab(handle, npos, cCaption)
+*/
+
 HB_FUNC( HWG_ADDTAB )
 {
    TC_ITEM tie;

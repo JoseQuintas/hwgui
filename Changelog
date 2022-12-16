@@ -16,6 +16,19 @@
 */
 
 
+
+2022-12-16 22:00 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * include/guilib.ch
+  * source/winapi/control.c
+  * source/winapi/htab.prg
+  * test/Test_tab.hbp
+  * test/Test_tab.prg
+   ! Support ticket #54 Tooltip for tabs ?
+   ! Port to WinAPI. 
+
+
 2022-12-15 15:00 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * include/guilib.ch

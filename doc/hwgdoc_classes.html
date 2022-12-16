@@ -1022,13 +1022,15 @@
       Activate()
       Init()
       onEvent( msg, wParam, lParam )
-      StartPage( cname , [cToolTip] )
+      StartPage( cname , [cToolTip] )         // GTK
+      StartPage( cName, oDlg , [ctooltip] )   // WinAPI
       EndPage()
       ChangePage( nPage )
       DeletePage( nPage )
       HidePage( nPage )
       ShowPage( nPage )
       Notify( lParam )
+      SetTooltip( nhandle, ntab )  // WinAPI 
    </pre>
 
    <br><strong class="subhead"><a name="Classes3_3_18" href="#_Classes3_3_18">

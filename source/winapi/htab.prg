@@ -23,6 +23,8 @@ CLASS HTab INHERIT HControl
    DATA  oTemp
    DATA  bAction
    DATA  lResourceTab INIT .F.
+   DATA  aTooltips   INIT {}  // Array with tooltips messages
+                             // One element for every tab   
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, ;
@@ -31,7 +33,7 @@ CLASS HTab INHERIT HControl
    METHOD Init()
    //METHOD onEvent( msg, wParam, lParam )
    METHOD SetTab( n )
-   METHOD StartPage( cName, oDlg )
+   METHOD StartPage( cName, oDlg , ctooltip )
    METHOD EndPage()
    METHOD ChangePage( nPage )
    METHOD DeletePage( nPage )
@@ -41,7 +43,7 @@ CLASS HTab INHERIT HControl
    METHOD Notify( lParam )
    METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aItem )
-
+   METHOD SetTooltip( nhandle, ntab )
    HIDDEN:
    DATA  nActive  INIT 0         // Active Page
 
@@ -136,7 +138,7 @@ METHOD SetTab( n ) CLASS HTab
 
    RETURN Nil
 
-METHOD StartPage( cname, oDlg ) CLASS HTab
+METHOD StartPage( cname, oDlg , ctooltip ) CLASS HTab
 
    ::oTemp := ::oDefaultParent
    ::oDefaultParent := Self
@@ -150,11 +152,16 @@ METHOD StartPage( cname, oDlg ) CLASS HTab
    ELSE
       AAdd( ::aPages, { Len( ::aControls ), 0 } )
    ENDIF
+   
+  * Collect tooltips in the array
+   AAdd( ::aTooltips , IIF ( ctooltip == NIL , "" , ctooltip ) ) 
+ 
    IF ::nActive > 1 .AND. !Empty( ::handle )
       ::HidePage( ::nActive )
    ENDIF
    ::nActive := Len( ::aPages )
-
+   * Set tooltip
+   ::SetTooltip( ::handle, ::nActive )
    RETURN Nil
 
 METHOD EndPage() CLASS HTab
@@ -189,6 +196,7 @@ METHOD ChangePage( nPage ) CLASS HTab
       ::HidePage( ::nActive )
 
       ::nActive := nPage
+  
 
       ::ShowPage( ::nActive )
 
@@ -197,6 +205,11 @@ METHOD ChangePage( nPage ) CLASS HTab
    IF ::bChange2 != Nil
       Eval( ::bChange2, Self, nPage )
    ENDIF
+
+   IF !Empty( ::aPages )
+      * Set tooltip
+      ::SetTooltip( ::handle, ::nActive )
+   ENDIF  
 
    RETURN Nil
 
@@ -283,6 +296,10 @@ Local nFirst, nEnd, i
       ADel( :: aTabs, nPage )
       ASize( :: aTabs, Len( :: aTabs) - 1 )
 
+      * Delete the tooltip
+      ADel( ::aTooltips , nPage )
+      ASize( ::aTooltips, Len( ::aTooltips ) - 1 )
+
       IF nPage > 1
          ::nActive := nPage - 1
          ::SetTab( ::nActive )
@@ -337,5 +354,27 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::style := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
 
    RETURN Self
+   
+METHOD SetTooltip( nhandle, ntab ) CLASS hTab
+ 
+  LOCAL cText
+  
+  IF nhandle == NIL
+   RETURN NIL && Nothing to do, avoid crash
+  ENDIF 
+
+  cText := ::aTooltips[ntab]
+  
+  IF cText == NIL
+    RETURN NIL  
+  ENDIF
+  IF EMPTY(cText)
+    RETURN NIL  
+  ENDIF
+  hwg_Deltooltip( nhandle )
+  IF .NOT. EMPTY(cText)
+   hwg_Addtooltip( nhandle, cText )
+  ENDIF
+RETURN NIL   
 
 * ============================ EOF of htab.prg ===========================

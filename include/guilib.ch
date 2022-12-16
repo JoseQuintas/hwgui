@@ -601,10 +601,20 @@
 #xcommand BEGIN PAGE <cname> OF <oTab> ;
           => ;
     <oTab>:StartPage( <cname> )
+
+#ifdef __GTK__
     
 #xcommand BEGIN PAGE <cname> OF <oTab> TOOLTIP <ctooltip>;
           => ;
     <oTab>:StartPage( <cname> , <ctooltip> )
+
+#else
+
+#xcommand BEGIN PAGE <cname> OF <oTab> TOOLTIP <ctooltip>;
+          => ;
+    <oTab>:StartPage( <cname> , , <ctooltip> )
+
+#endif
 
 #xcommand END PAGE OF <oTab> ;
           => ;

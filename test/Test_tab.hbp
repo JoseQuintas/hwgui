@@ -3,7 +3,7 @@
 #
 
 # -stop={linux}
--stop={win}
+# -stop={win}
 
 # Special parameters for LINUX/GTK
 {linux}-lm
@@ -11,7 +11,7 @@
 {linux}-d__LINUX__
 {linux}-d__GTK__
 
-#{win}../hwgui.hbc
+{win}../hwgui.hbc
 # GTK2
 {linux}../hwgui.hbc
 # GTK3: Deactivate previous line

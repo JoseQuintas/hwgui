@@ -48,7 +48,7 @@ RETURN Nil
 
 FUNCTION Testen()
 
-   LOCAL cqrc, cbitmap
+   LOCAL cqrc, cbitmap , narrsize
 
    // cqrc := hwg_QRCodeTxtGen("https://www.darc.de",1)
 
@@ -58,6 +58,16 @@ FUNCTION Testen()
    cqrc := hwg_QRCodeZoom( cqrc, 3 )
 
    // cqrc := hwg_QRCodeZoom_C(cqrc,LEN(cqrc),3)
+  
+  
+   * Add border 10 pixels
+   cqrc := hwg_QRCodeAddBorder(cqrc,10)
+   
+   * Get size of QR code and display it
+   narrsize := hwg_QRCodeGetSize(cqrc)
+
+   hwg_MsgInfo("x=" + ALLTRIM(STR(narrsize[1])) + " y=" +  ;
+   ALLTRIM(STR(narrsize[2])),"Size of QR code")
 
    hwg_WriteLog( cqrc )
 
@@ -70,5 +80,7 @@ FUNCTION Testen()
    hwg_ShowBitmap( cbitmap, "test", 0, hwg_ColorC2N( "080808" ) ) // Color = 526344
 
 RETURN Nil
+
+ 
 
 *  ================== EOF of qrencode.prg ======================

@@ -1484,6 +1484,92 @@ cBMP  := cBMP + CHR(10)
 
 RETURN cBMP
 
+* ====
+* Add border to QR code image 
+* cqrcode : The QR code in text format
+* nborder : The number of border pixels to add 1 ... n
+* Return the new QR code text string
+FUNCTION hwg_QRCodeAddBorder(cqrcode,nborder)
+LOCAL cBMP,  i , nx , cLine , cLineOut
+LOCAL leofq
+
+IF nborder == NIL
+  RETURN cqrcode
+ENDIF
+
+IF nborder < 1
+ RETURN cqrcode
+ENDIF  
+
+cBMP  := ""
+cLineOut := ""
+ 
+leofq := .F.
+* i:        Position in cqrcode
+
+  * Add nborder lines to begin
+  * Preread first line getting the x size of the QR code
+  nx := AT(CHR(10),cqrcode)
+  cLine := SPACE( nx + nborder + nborder - 1 ) + CHR(10) && Empty line new
+  FOR i := 1 TO nborder
+   cBMP  := cBMP + cLine
+  NEXT
+
+
+FOR i := 1 TO LEN(cqrcode)
+ IF .NOT. leofq
+   IF SUBSTR(cqrcode,i,1) == CHR(10)
+    IF .NOT. ( SUBSTR(cqrcode, i + 1 , 1) == " ")
+      * Empty line following, stop here
+      leofq := .T.
+    ENDIF
+   * Count line ending and start with new line
+    cBMP := cBMP + SPACE(nborder) + cLineOut + SPACE(nborder) + CHR(10)
+    cLineOut := ""
+  ELSE  && SUBSTR " "
+    cLineOut := cLineOut + SUBSTR(cqrcode,i,1)
+  ENDIF && is CHR(10)
+ ENDIF && .NOT. leofq
+
+NEXT
+
+  FOR i := 1 TO nborder
+   cBMP  := cBMP + cLine
+  NEXT 
+
+RETURN cBMP
+
+* Get the size of a QR code
+* Returns an array with 2 elements: xSize,ySize
+FUNCTION hwg_QRCodeGetSize(cqrcode)
+LOCAL aret, xSize, ySize, i, leofq
+
+  aret := {}
+  ySize := 0
+  leofq := .F.
+
+  xSize := AT(CHR(10),cqrcode)
+  
+  FOR i := 1 TO LEN(cqrcode)
+ IF .NOT. leofq
+   IF SUBSTR(cqrcode,i,1) == CHR(10)
+    IF .NOT. ( SUBSTR(cqrcode, i + 1 , 1) == " ")
+      * Empty line following, stop here
+      leofq := .T.
+    ENDIF
+    * Count lines
+    ySize := ySize + 1
+    
+   ENDIF && is CHR(10)
+ ENDIF && .NOT. leofq
+
+NEXT
+  
+  AADD(aret,xSize)
+  AADD(aret,ySize)
+ 
+RETURN aret
+
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 *   End of Functions for QR encoding
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

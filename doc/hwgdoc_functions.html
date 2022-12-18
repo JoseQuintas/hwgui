@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, November 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, December 2022</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -3478,6 +3478,22 @@ See sample program "testspli.prg" for details.<br>
     Background color is white, pixel color is black.<br> 
 
    <p></p>
+   
+   <br><strong class="subhead"> hwg_QRCodeAddBorder(cqrcode,nborder)</strong><br>
+ 
+    <p>
+    Add border to QR code image.<br> 
+    cqrcode : The QR code in text format<br>
+    nborder : The number of border pixels to add 1 ... n<br>
+    Returns the new QR code text string.<br>
+    For best performance call this function after hwg_QRCodeZoom()<br> 
+    </p>
+
+   <br><strong class="subhead"> hwg_QRCodeGetSize(cqrcode)</strong><br>
+   <p>
+    Get the size of a QR code in text format "cqrcode"<br>
+    Returns an array with 2 elements: xSize,ySize.<br>
+   </p>   
 
    <!-- End of QR code functions -->
    

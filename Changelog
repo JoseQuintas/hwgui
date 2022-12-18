@@ -17,6 +17,23 @@
 
 
 
+2022-12-18 11:50 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * samples/dev/compiler/MS-VisualStudio/MS-Visual-Studio.txt (New)
+  * samples/dev/env/pfad_msc.bat (New)
+  * samples/qrencode.hbp
+  * samples/qrencode.prg
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+  * test/template.hbp
+   ! New functions hwg_QRCodeAddBorder() and
+   ! hwg_QRCodeGetSize().
+   ! Microsoft Visual Studio Community Version 2022
+   ! Under construction: First tries, but
+   ! compile of Harbour fails, need to create a 
+   ! Ticket for Harbour.
+
+
 2022-12-16 22:00 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_commands.html

@@ -15,9 +15,13 @@
 
 template.prg
 
-..\hwgui.hbc
-# Free this for GTK3
-# ../hwguiGTK3.hbc
+{win}../hwgui.hbc
+# GTK2
+{linux}../hwgui.hbc
+# GTK3: Deactivate previous line
+# and activate following line
+#{linux}../hwguiGTK3.hbc
+
 
 # ===================== EOF of template.hbp ====================
 

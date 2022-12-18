@@ -257,26 +257,26 @@ FUNCTION GridEdit( cAlias, aFields, lAppend, bChange )
             nStyle += WS_DISABLED
          ENDIF
 
-         aFields[i, GET_OBJECT] := HEdit():New( oForm, ;
-            3000 + i,;
-            aFields[i, GET_VALUE],;
-            FieldBlock(aFields[i, GET_FIELD]),;
-            nStyle,;
-            nCol,;
-            nRow,;
-            aFields[i, GET_LEN] * nGetSize,;
-            aFields[i, GET_HEIGHT],;
-            NIL,;
-            NIL,NIL,NIL,;
-            NIL,;
-            {|value, oCtrl| __valid(value, oCtrl, aFields, bChange) },;
-            NIL,;
-            NIL,;
-            NIL,;
-            aFields[i, GET_PICT],;
-            .F.)
+         aFields[i, GET_OBJECT] := HEdit():New( oForm, ;  && oWndParent
+            3000 + i,;   && nId
+            aFields[i, GET_VALUE],;   && vari
+            FieldBlock(aFields[i, GET_FIELD]),; && bSetGet
+            nStyle,;     && nStyle
+            nCol,;       && nLeft
+            nRow,;       && nTop
+            aFields[i, GET_LEN]  ,;    && nWidth
+            aFields[i, GET_HEIGHT],;   && nHeight
+            NIL,;   && oFont
+            NIL,NIL,NIL,;  && bInit, bSize, bGfocus
+            NIL,;  && bLfocus
+            {|value, oCtrl| __valid(value, oCtrl, aFields, bChange) },; && ctooltip
+            NIL,; && tcolor
+            NIL,; && bcolor
+            aFields[i, GET_PICT],; && cPicture
+            NIL,; && lNoBorder
+            .F.)   && bChange
       ENDIF
-
+//  nMaxLength, lPassword, bKeyDown, bChange
       nRow += aFields[i, GET_HEIGHT] + 5
 
    NEXT
@@ -366,10 +366,12 @@ STATIC FUNCTION OnKey( o, k, aItems , oGrid )
       IF GridEdit('temp', aItems, .T., {|oCtrl, colpos| myblock(oCtrl, colpos)})
          o:SetItemCount(lastrec())
       ELSE
-         MyDelete(oGrid)
+//         MyDelete(oGrid)
+         MyDelete(o)
       ENDIF
    ELSEIF k == VK_DELETE .and. hwg_Msgyesno("Delete this record ?", "Warning")
-      MyDelete(oGrid)
+//      MyDelete(oGrid)
+         MyDelete(o)
    ENDIF
 
 RETURN Nil

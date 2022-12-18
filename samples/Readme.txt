@@ -181,7 +181,7 @@ For beginners:
  grid_2.prg 2)  +)   N       N         -      Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
  grid_3.prg 2)  +)   N       N         -      Grid demo, use Postgres Library, you need to link libpq.lib and libhbpg.lib
  grid_4.prg     +)   N       N         Y      File Viewer
- grid_5.prg     +)   N  #    N         -      Grid Editor  (crashes, if click on button "Insert","Change","Delete")
+ grid_5.prg     +)   N       N         -      Grid Editor
  hello.prg      +)   R                        Some elements: Edit field, tabs, tree view, combobox, ...
  helpdemo.prg 6) 7)  N       N                Context help using windows help (Shellexecute crashes)
  helpstatic.prg      Y                        Static help text

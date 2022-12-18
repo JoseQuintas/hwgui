@@ -16,6 +16,13 @@
 */
 
 
+2022-12-18 21:00 UTC+0100 Wilfried Brunken DF7BE
+  * samples/Readme.txt
+  * samples/grid_5.prg
+  * source/winapi/hedit.prg
+   ! Sample program grid_5.prg:
+   ! Crash fixed.
+
 
 2022-12-18 11:50 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html

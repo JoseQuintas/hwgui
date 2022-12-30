@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2022-12-30 16:30 UTC+0100 Wilfried Brunken DF7BE
+  * utils/designer/resource/f_hwgprg.prg
+   ! Starting bugfix designer:
+   ! Crash at storing as HWGUI source,
+   ! if form contains a checkbox.
+   ! Some comments added.
+   ! Translate portuguese comments to english.
+   ! (To be continued)
+
+
 
 2022-12-18 21:00 UTC+0100 Wilfried Brunken DF7BE
   * samples/Readme.txt

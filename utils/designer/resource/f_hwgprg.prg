@@ -236,6 +236,7 @@ FUNCTION Browse2Prg
       aTypes := &cTmpalias -> ( dbStruct() )
 
       // CRIAR AS RELA€OES E O LINK
+      // CREATE THE RELATIONS AND THE LINK
       temp := iif( ( temp := oCtrl:GetProp("childorder" ) ) != Nil .AND. !Empty( temp ), Trim( temp ), "" )
       cKey := ""
       IF !Empty( temp )
@@ -252,14 +253,14 @@ FUNCTION Browse2Prg
          cfilter := crelexpr + "=" + clink + "->(" + crelexpr + ")"
          cBrowser += Space( 4 ) + calias + "->(DBSETFILTER( {|| " + cfilter + "}, '" + cfilter + "' ))" + hb_OsNewline() + "    *-" + hb_OsNewline()
       ENDIF
-      // fim dos relacionamentos
+      // fim dos relacionamentos   End of relationships
    ELSE
       caArray := Trim( iif( (temp := oCtrl:GetProp("aarray" ) ) != Nil .AND. !Empty(temp ),temp , "{}" ) )
       cBrowser += Space( 4 ) + cname + ":aArray := " + caArray + "" + hb_OsNewline()
       nColumns := iif( nColumns = 0, 1, nColumns )
    ENDIF
 
-   IF Len( oCtrl:aControls ) = 0 //nColunas = 0 // gerar automaticamente o BROWSE completo
+   IF Len( oCtrl:aControls ) = 0 //nColunas = 0 // gerar automaticamente o BROWSE completo   Automatically generate the complete BROWSE
       i := 1
       DO WHILE i <= nColumns
          IF nType = BRW_DATABASE
@@ -287,7 +288,7 @@ FUNCTION Browse2Prg
                cCampo := StrTran( cCampo, cTmpAlias, cAlias )
             ENDIF
             temp := StrTran( Upper( cCampo ), Upper( cAlias ) + "->", "" )
-            // verificar se tem mais de um campo
+            // verificar se tem mais de um campo  Check if there is more than one field
             temp := SubStr( temp, 1, iif( At('+',temp ) > 0,At('+',temp ) - 1,Len(temp ) ) )
             j := {}
             AEval( aTypes, { |aField| AAdd( j,aField[1] ) } )
@@ -471,6 +472,7 @@ FUNCTION Style2Prg
    ENDIF
 
    IF oCtrl:cClass == "checkbox"
+* DF7BE: Crashes here, if store a checkbox as HWGUI code
       cStyle := cStyle + iif( oCtrl:GetProp( "alignment" ) = "Top", "+BS_TOP ", ;
          iif( oCtrl:GetProp( "alignment" ) = "Bottom", "+BS_BOTTOM ", " " ) )
       cStyle := cStyle + iif( "Right" $ oCtrl:GetProp( "alignment" ), "+BS_RIGHTBUTTON ", " " )
@@ -577,6 +579,7 @@ FUNCTION Ctrl2Prg
       ENDIF
 
       // verificar se o combo tem check
+      // Check if the combo has checked
       //IF oCtrl:cClass == "combobox"
       // aName[i] := IIF(oCtrl:GetProp("check") != Nil,{"GET COMBOBOXEX","GET COMBOBOXEX"}, {"COMBOBOX","GET COMBOBOX"})
       //ENDIF
@@ -665,6 +668,9 @@ FUNCTION Ctrl2Prg
          //endif
       ELSE
          // colocar o group para depois dos demais objetos
+         // Put the group after the other objects
+
+
          IF !Empty( cGroup )
             FWrite( han, hb_OsNewline() + cGroup )
          ENDIF
@@ -673,6 +679,7 @@ FUNCTION Ctrl2Prg
       ENDIF
       // ANTES DO SIZE
       // BASSO
+      // BEFORE SIZE BASSO
       IF oCtrl:cClass == "link"
          IF ( temp := oCtrl:GetProp( "Link" ) ) != Nil .AND. !Empty( temp )
             stroka += " ;" + hb_OsNewline() + Space( 8 ) + "LINK '" + Trim( temp ) + "' "
@@ -721,11 +728,12 @@ FUNCTION Ctrl2Prg
          ENDIF
       ELSE
          // aqui que esta o SIZE
+         // Here is the SIZE
          stroka += "SIZE " + LTrim( Str( oCtrl:nWidth ) ) + "," + LTrim( Str( oCtrl:nHeight * nHeight ) ) + " "
       ENDIF
-
+// DF7BE: This is the only location the function Style2Prg() is called   
       stroka += CallFunc( "Style2Prg", { oCtrl } ) + " "
-      // barraprogress
+      // barraprogress PROGRESSBAR
       IF ( temp := oCtrl:GetProp( "BarWidth" ) ) != Nil //.AND. temp == "True"
          stroka += " BARWIDTH " + temp
       ENDIF
@@ -777,7 +785,7 @@ FUNCTION Ctrl2Prg
             IF oCtrl:GetProp( "Textcolor", @j ) != Nil .AND. !IsDefault( oCtrl, oCtrl:aProp[j] )
                stroka += "COLOR " + LTrim( Str( oCtrl:tcolor ) ) + " "
             ENDIF
-            // VERIFICAR COORDENADAS
+            // VERIFICAR COORDENADAS Check koordinates Koordinaten ueberpruefen
             nLeft   := oCtrl:GetProp( "TextLeft" )
             nTop    := oCtrl:GetProp( "TextTop" )
             nHeight := '0'
@@ -787,7 +795,7 @@ FUNCTION Ctrl2Prg
                   iif( oCtrl:cClass != "shadebutton", ", " + LTrim( nHeight ) + ", " + LTrim( nWidth ) + " ", " " )
             ENDIF
          ENDIF
-         // VERIFICAR BMP
+         // VERIFICAR BMP    Check bitmap
          IF ( temp := oCtrl:GetProp( "BtnBitmap" ) ) != Nil .AND. !Empty( temp )
             nLeft   := oCtrl:GetProp( "BmpLeft" )
             nTop    := oCtrl:GetProp( "BmpTop" )
@@ -885,6 +893,7 @@ FUNCTION Ctrl2Prg
       i := 1
       DO WHILE i <= Len( oCtrl:aMethods )
          // NANDO POS PARA TIRAR COISAS QUE NÇO TEM EM GETS
+         // DOING POSE TO REMOVE THINGS THAT DON'T HAVE IN GETS
          IF Upper( SubStr( oCtrl:aMethods[i,1],3 ) ) = "INIT" .AND. ( oCtrl:cClass == "combobox" )
             i ++
             LOOP
@@ -963,13 +972,13 @@ FUNCTION Ctrl2Prg
       ENDDO
 
    ENDIF
-   // gerar o codigo da TOOLBAR
+   // gerar o codigo da TOOLBAR Generate code of TOOLBAR
    IF oCtrl:cClass == "toolbar"
       stroka := CallFunc( "Tool2Prg", { oCtrl } )
       FWrite( han, hb_OsNewline() + stroka )
    ENDIF
 
-   // gerar o codigo do browse
+   // gerar o codigo do browse  Generate code of BROWSE
    IF oCtrl:cClass == "browse"
       stroka := CallFunc( "Browse2Prg", { oCtrl } )
       FWrite( han, hb_OsNewline() + stroka )
@@ -1047,7 +1056,7 @@ FUNCTION Ctrl2Prg
       { "PROGRESSBAR" }, { "ADD STATUS" }, { "SAY ''" }, { "LISTBOX", "GET LISTBOX" }, ;
       { "GRIDEX" }, { "MENU" }, { "SAY" } }
 
-   // NANDO POS
+   // NANDO POS   Watching post
    PRIVATE nMaxId := 0
    PRIVATE cFormName := ""
    PRIVATE cStyle := "", cFunction
@@ -1091,7 +1100,7 @@ FUNCTION Ctrl2Prg
       //Fwrite( han, stroka )
       aParameters := hb_atokens( stroka, ", " )
 
-      stroka := ""
+      stroka := ""   && Stroka = profession
       i := 1
       WHILE i <= Len(  aParameters )
          IF Len( stroka ) < 76
@@ -1154,6 +1163,7 @@ FUNCTION Ctrl2Prg
       stroka :=  hb_OsNewline()
       DO WHILE j <= Len( temp )
          // nando adicionu o PRIVATE PARA EVITAR ERROS NO CODIGO
+         // Doing added PRIVATE TO AVOID CODE ERRORS
          stroka += "PRIVATE "+temp[j] + hb_OsNewline()
          //stroka += "LOCAL " + temp[j] + hb_OsNewline()
          j ++
@@ -1261,7 +1271,7 @@ FUNCTION Ctrl2Prg
    ENDIF
 
 
-   // NANDO POS
+   // NANDO POS  Doing POS
    IF oForm:GetProp( "lClipper" ) = "True"
       FWrite( han, ' CLIPPER '  )
    ENDIF
@@ -1323,6 +1333,7 @@ FUNCTION Ctrl2Prg
    temp := ""
    IF "DLG" $ Upper(  oForm:GetProp( "FormType" ) )
       // colocar uma expressao para retornar na FUNCAO
+      // Put an expression to return in the FUNCTION
       IF ( temp := oForm:GetProp( "ReturnExpr" ) ) != Nil .AND. !Empty( temp )
          temp := "" + TEMP  // nando pos  return
       ELSE
@@ -1451,4 +1462,7 @@ FUNCTION Ctrl2Prg
    FClose( han )
 
 #endscript
+
+
+* ============================ EOF of f_hwgprg.prg ========================
 

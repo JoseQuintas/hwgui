@@ -2281,6 +2281,26 @@ See sample program "testspli.prg" for details.<br>
     in the same way as "\".<br>
     This function works also on GTK cross development environment.<BR> 
    </p>
+   
+
+   <br><strong class="subhead"> hwg_ProcFileExt(pFiname,pFiext,lupper)</strong>
+   <p>
+     Process file name extension:<br>
+     Add file extension, if not available<br>
+     or replace an existing extension.<br>
+     pFiname : The filename to be processed<br>
+     pFiext  : The new file extension<br>
+     lupper  : Windows only (parameter ignored on UNIX/LINUX):<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set to .T. , if extension is set to upper case<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .F. : preserve case (default)<br>  
+     <br>
+     Sample call: hwg_ProcFileExt("TEST.TXT","PRG")<br>
+     returns the value "TEST.PRG"<br>
+     pFiname may contain a full path.<br>
+     DOS, Windows and UNIX/LINUX filenames<br>
+     are supported.<br>
+     Sample usage the sample program "samples\testfunc.prg".<br>
+   </p>   
 
    <br><strong class="subhead"> hwg_Postquitmessage( nExitCode )</strong> (Windows only)
    <p></p>

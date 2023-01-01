@@ -11,7 +11,7 @@
  *
  * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
- * Copyright 2020 Wilfried Brunken, DF7BE
+ * Copyright 2020-2023 Wilfried Brunken, DF7BE
 */
 #include "windows.ch"
 #include "hbclass.ch"
@@ -158,7 +158,7 @@ FOR ncount := 1 TO LEN(chexstr)
   * if odd, return error
   IF ( nodd % 2 ) != 0
    RETURN ""
-  ENDIF 
+  ENDIF
   IF ldebug 
     hwg_xvalLog(cbin)
   ENDIF  
@@ -233,8 +233,8 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
    IF nmode == 5
      coutfield := "{"
    ELSE
-   coutfield := ""  && collects out line
-  ENDIF 
+     coutfield := ""  && collects out line
+   ENDIF
   ENDIF 
   // cccprint := ""   && collects printable char
   cccprline := ""  && collects printable chars
@@ -272,7 +272,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
      * Add a blank between a hex value pair
      cccprline := cccprline + cccprint + " "
      ccchexline := ccchexline + ccchex + " "
-    ENDIF
+     ENDIF
     ENDIF
     * end of line with 16 bytes reached
     IF nlinepos > 15
@@ -298,7 +298,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
       cccprline := ""
       IF nmode == 2
        ccchexline := CHR(34) && start new line with double quote
-      ELSE  
+      ELSE
        ccchexline := ""
       ENDIF
     ENDIF
@@ -1189,7 +1189,7 @@ IF cfilename == NIL
  cfilename := "a.log"
 ENDIF 
 hwg_WriteLog(cttype + hwg_ValType(xxx) + " " +  cttval + hwg_xVal2C(xxx), cfilename )
-RETURN NIL 
+RETURN NIL
 
 
 FUNCTION hwg_ChangeCharInString(cinp,nposi,cval)
@@ -1285,7 +1285,7 @@ LOCAL cret , ipos , csingle, lpair, lignore
 
 
 RETURN cret
- 
+
 
 FUNCTION hwg_Toggle_HalfByte( cchar )
 LOCAL ci
@@ -1322,12 +1322,80 @@ FUNCTION hwg_COUNT_CHAR(stri,such)
   ENDDO
 RETURN 0
 
+
 FUNCTION hwg_nothing(xpara)
 RETURN xpara
 
 FUNCTION hwg_HdSerial( cDrive )
 HB_SYMBOL_UNUSED(cDrive)
 RETURN ""
+
+FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper)
+* Process file name extension:
+* Add file extension, if not available
+* or replace an existing extension.
+* pFiname : The filename to be processed
+* pFiext  : The new file extension
+* lupper  : Windows only (parameter ignored on UNIX/LINUX):
+*           Set to .T. , if extension is set to upper case
+*           .F. : preserve case (default)  
+*
+* Sample call: hwg_ProcFileExt("TEST.TXT","PRG")
+* returns the value "TEST.PRG"
+* pFiname may contain a full path.
+* DOS, Windows and UNIX/LINUX filenames
+* are supported.
+
+
+* ================================= *
+LOCAL sfifullnam , sFiname , sFiext , nSlash , nPunkt
+
+#ifndef __PLATFORM__WINDOWS
+ HB_SYMBOL_UNUSED(lupper)
+#endif
+
+IF lupper == NIL
+  lupper := .F.
+ENDIF  
+* Trim strings
+sFiext := ALLTRIM(pFiext)
+
+sFiname := ALLTRIM(hwg_CleanPathname( pFiname ))
+
+#ifdef __PLATFORM__WINDOWS
+  IF lupper
+      sFiext := UPPER(sFiext)
+  ENDIF
+#endif
+  * UNIX/LINUX : preserve case as passed
+  * Attention !
+  * Also path names may contain dots!
+  nSlash := RAT(hwg_GetDirSep(),sFiname)
+  nPunkt := RAT(".", sFiname )
+  IF nPunkt == 0
+     * Without extension: add extension
+      sfifullnam := sFiname + "." + sFiext
+  ELSE
+    IF nSlash > nPunkt
+     * Special case:
+     * Without extension, but dot in path name
+     sfifullnam := sFiname + "." + sFiext
+    ELSE
+     IF nPunkt == 1
+     * Special : hidden file in UNIX, for example .profile
+     * so add extension
+      sfifullnam := sFiname + "." + sFiext
+     ELSE
+    * The rest:
+    * Cut existing extension
+     sFiname := SUBSTR(sFiname,1,nPunkt - 1)
+    * Add new extension
+     sfifullnam := sFiname + "." + sFiext
+    ENDIF
+   ENDIF
+  ENDIF
+
+RETURN sfifullnam
 
 * ============== EOF of hmisc.prg =================
 

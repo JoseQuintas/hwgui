@@ -9,7 +9,7 @@
  * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
  *
- * Copyright 2020-2022 Wilfried Brunken, DF7BE
+ * Copyright 2020-2023 Wilfried Brunken, DF7BE
 */
 
     * Status:
@@ -43,6 +43,7 @@
  hwg_FileModTimeU()
  hwg_FileModTime()
  hwg_Get_Time_Shift()
+ hwg_ProcFileExt()
 
 
  Harbour functions:
@@ -70,7 +71,7 @@ FUNCTION MAIN()
    LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
    LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
    LOCAL oButton26, oButton27, oButton28, oButton29
-   LOCAL oButton30, oButton31
+   LOCAL oButton30, oButton31, oButton32
    
    LOCAL nspcbutton
   
@@ -235,6 +236,10 @@ FUNCTION MAIN()
    @ 180 ,nspcbutton * 11 BUTTON oButton31 CAPTION "hwg_HdGetSerial()" SIZE 140,nheight FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | Test_hwg_HdGetSerial() }
+
+   @ 25 ,nspcbutton * 12 BUTTON oButton32 CAPTION "Test_hwg_ProcFileExt()" SIZE 140,nheight FONT oFont  ;
+            STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_hwg_ProcFileExt() }
 
 
    /* Disable buttons for Windows only functions */
@@ -634,6 +639,46 @@ IF .NOT. EMPTY(cDriveletter)
   ALLTRIM(STR(hwg_HdGetSerial(ALLTRIM(cDriveletter)))))
 ENDIF
   
+
+RETURN NIL
+
+FUNCTION Test_hwg_ProcFileExt()
+
+LOCAL oDlg
+LOCAL oLabel1, oLabel2, oLabel3, oLabel4, oLabel5, oLabel6, oLabel7, oLabel8
+LOCAL oLabel9, oLabel10, oLabel11, oLabel12, oLabel13, oLabel14, oLabel15, oLabel16, oButton1
+
+  INIT DIALOG oDlg TITLE "hwg_ProcFileExt()" ;
+    AT 488,108 SIZE 528,465 ;
+     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+
+
+   @ 130,13 SAY oLabel16 CAPTION "Set to file extension .prg"  SIZE 271,22   
+   @ 40,50 SAY oLabel1 CAPTION "test.txt"  SIZE 152,22   
+   @ 237,50 SAY oLabel2 CAPTION ">"  SIZE 29,22   
+   @ 338,50 SAY oLabel3 CAPTION hwg_ProcFileExt("test.txt","prg")  SIZE 162,22
+   
+   @ 40,100 SAY oLabel4 CAPTION "C:\temp.dir\test.txt"  SIZE 135,22   
+   @ 237,100 SAY oLabel5 CAPTION ">"  SIZE 29,20   
+   @ 338,100 SAY oLabel6 CAPTION hwg_ProcFileExt("C:\temp.dir\test.txt","prg")  SIZE 155,22
+   
+   @ 40,150 SAY oLabel7 CAPTION "C:\temp.\test"  SIZE 97,22   
+   @ 237,150 SAY oLabel8 CAPTION ">"  SIZE 29,22   
+   @ 338,150 SAY oLabel9 CAPTION hwg_ProcFileExt("C:\temp.\test","prg")  SIZE 158,22
+   
+   @ 40,200 SAY oLabel10 CAPTION "/home/temp.dir/test.txt"  SIZE 169,22   
+   @ 237,200 SAY oLabel11 CAPTION ">"  SIZE 29,22   
+   @ 338,200 SAY oLabel12 CAPTION hwg_ProcFileExt("/home/temp.dir/test.txt","prg")  SIZE 161,22 
+   
+   @ 40,250 SAY oLabel13 CAPTION "/home/temp./test"  SIZE 133,22   
+   @ 237,250 SAY oLabel14 CAPTION ">"  SIZE 29,22   
+   @ 338,250 SAY oLabel15 CAPTION hwg_ProcFileExt("/home/temp./test","prg")  SIZE 157,22
+   
+   @ 205,348 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK {|| oDlg:Close() } 
+
+   ACTIVATE DIALOG oDlg
 
 RETURN NIL
 

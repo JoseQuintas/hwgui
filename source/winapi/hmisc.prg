@@ -11,7 +11,7 @@
  *
  * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
- * Copyright 2020 Wilfried Brunken, DF7BE
+ * Copyright 2020-2023 Wilfried Brunken, DF7BE
 */
 #include "windows.ch"
 #include "hbclass.ch"
@@ -158,7 +158,7 @@ FOR ncount := 1 TO LEN(chexstr)
   * if odd, return error
   IF ( nodd % 2 ) != 0
    RETURN ""
-  ENDIF   
+  ENDIF
   IF ldebug 
     hwg_xvalLog(cbin)
   ENDIF  
@@ -1225,7 +1225,7 @@ FOR i := 1 TO LEN(cinp)
  ENDIF
 NEXT
 
-RETURN cout 
+RETURN cout
 
 
 FUNCTION hwg_hex2binchar(cchar)
@@ -1326,6 +1326,72 @@ RETURN 0
 FUNCTION hwg_nothing(xpara)
 RETURN xpara
 
+FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper)
+* Process file name extension:
+* Add file extension, if not available
+* or replace an existing extension.
+* pFiname : The filename to be processed
+* pFiext  : The new file extension
+* lupper  : Windows only (parameter ignored on UNIX/LINUX):
+*           Set to .T. , if extension is set to upper case
+*           .F. : preserve case (default)  
+*
+* Sample call: hwg_ProcFileExt("TEST.TXT","PRG")
+* returns the value "TEST.PRG"
+* pFiname may contain a full path.
+* DOS, Windows and UNIX/LINUX filenames
+* are supported.
+
+
+* ================================= *
+LOCAL sfifullnam , sFiname , sFiext , nSlash , nPunkt
+
+#ifndef __PLATFORM__WINDOWS
+ HB_SYMBOL_UNUSED(lupper)
+#endif
+
+IF lupper == NIL
+  lupper := .F.
+ENDIF  
+* Trim strings
+sFiext := ALLTRIM(pFiext)
+
+sFiname := ALLTRIM(hwg_CleanPathname( pFiname ))
+
+#ifdef __PLATFORM__WINDOWS
+  IF lupper
+      sFiext := UPPER(sFiext)
+  ENDIF
+#endif
+  * UNIX/LINUX : preserve case as passed
+  * Attention !
+  * Also path names may contain dots!
+  nSlash := RAT(hwg_GetDirSep(),sFiname)
+  nPunkt := RAT(".", sFiname )
+  IF nPunkt == 0
+     * Without extension: add extension
+      sfifullnam := sFiname + "." + sFiext
+  ELSE
+    IF nSlash > nPunkt
+     * Special case:
+     * Without extension, but dot in path name
+     sfifullnam := sFiname + "." + sFiext
+    ELSE
+     IF nPunkt == 1
+     * Special : hidden file in UNIX, for example .profile
+     * so add extension
+      sfifullnam := sFiname + "." + sFiext
+     ELSE
+    * The rest:
+    * Cut existing extension
+     sFiname := SUBSTR(sFiname,1,nPunkt - 1)
+    * Add new extension
+     sfifullnam := sFiname + "." + sFiext
+    ENDIF
+   ENDIF
+  ENDIF
+
+RETURN sfifullnam
 
 * ============== EOF of hmisc.prg =================
 

@@ -15,6 +15,17 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2023-01-01 11:40 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_functions.html
+  * samples/testfunc.prg
+  * source/gtk/hmisc.prg
+  * source/winapi/hmisc.prg
+   ! New function hwg_ProcFileExt()
+   ! for better handling of
+   ! file extensions on all platforms.
+
+
 2022-12-30 16:30 UTC+0100 Wilfried Brunken DF7BE
   * utils/designer/resource/f_hwgprg.prg
    ! Starting bugfix designer:

@@ -8,7 +8,9 @@
 incpaths=include
 libpaths=lib
 
+#ifndef GT_NO_GUI
 {win}gt=gtgui
+#endif
 
 {!hblib}libs=hwgui procmisc hbxml hwgdebug
 

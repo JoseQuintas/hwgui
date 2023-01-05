@@ -17,7 +17,9 @@
 #define EVENTS_ACTIONS  2
 
 #ifndef __XHARBOUR__
+#ifndef GT_NO_GUI
 REQUEST HB_GT_GUI_DEFAULT
+#endif
 #endif
 
 
@@ -256,7 +258,7 @@ METHOD OnError() CLASS HCustomWindow
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
    LOCAL iItem, oCtrl, nCode, res, n
-   
+
    * Not used parameter
    // (lParam)
 
@@ -338,7 +340,7 @@ STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
 
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    LOCAL iItem, iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
-   
+
    HB_SYMBOL_UNUSED(lParam)
 
    IF oWnd:aEvents != NIL .AND. ;
@@ -353,9 +355,9 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
    LOCAL aControls := oWnd:aControls, oItem
-   
+
     * Not used parameter
-   (wParam)   
+   (wParam)
 
    FOR EACH oItem IN aControls
       IF oItem:bSize != NIL
@@ -369,7 +371,7 @@ STATIC FUNCTION onSize( oWnd, wParam, lParam )
 FUNCTION hwg_onTrackScroll( oWnd, msg, wParam, lParam )
 
    LOCAL oCtrl := oWnd:FindControl( , lParam )
-   
+
 
    IF oCtrl != NIL
       msg := hwg_Loword( wParam )

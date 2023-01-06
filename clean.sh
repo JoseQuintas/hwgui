@@ -93,6 +93,11 @@ rm utils/devtools/test.txt 2>/dev/null
 rm utils/devtools/lbldump 2>/dev/null
 rm utils/bincnt/a.log 2>/dev/null
 rm utils/bincnt/bindbf 2>/dev/null
+rm utils/statichelp/stathlpconv 2>/dev/null
+rm utils/statichelp/stathlpsample 2>/dev/null
+rm utils/statichelp/helptxt1_en.prg 2>/dev/null
+rm utils/statichelp/helptxt2_de.prg 2>/dev/null
+
 
 
 # contrib exe

@@ -42,6 +42,9 @@ del utils\dbc\*.exe 2> NUL
 del utils\debugger\*.exe 2> NUL
 del utils\designer\*.exe 2> NUL
 del utils\editor\*.exe 2> NUL
+del utils\statichelp\*.exe 2> NUL
+del utils\statichelp\helptxt1_en.prg 2> NUL
+del utils\statichelp\helptxt2_de.prg 2> NUL 
 REM 4. contrib
 del contrib\hwlabel\*.exe 2> NUL
 REM 5. test

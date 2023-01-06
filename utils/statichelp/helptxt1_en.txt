@@ -1,0 +1,6 @@
+This is help text 1
+(pure ASCII)
+OK for text in English language
+[]{}\@|<>$"'test the quick brown fox
+jumps over the lazy dog'"
+%&/()=!#*?

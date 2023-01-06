@@ -132,4 +132,23 @@
    chmod 755 *.sh
    ./hbmk.sh
 
+   
+  statichelp \
+  ============
+
+  Create static help texts, that will be contained
+  in your created EXE file, so no external files or
+  databases containing the help text's.
+  Allows easy handling of help text's.
+
+  Also the codepage is predefined to UTF-8,
+  so that you have no display trouble on
+  Windows, which is not supported UTF-8 by the
+  system.
+
+  See the instructions in the Readme.txt file
+  in the sub directory.
+  
+  
+   
 ========================== EOF of Readme.txt ==================================

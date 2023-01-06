@@ -15,6 +15,23 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2023-01-06 18:30 UTC+0100 Wilfried Brunken DF7BE
+  * utils/statichelp/stathlpconv.prg (New)
+  * utils/statichelp/stathlpconv.hbp (New)
+  * utils/statichelp/helptxt2_de.txt (New)
+  * utils/statichelp/stathlpsample.prg (New)
+  * utils/statichelp/helptxt1_en.txt (New)
+  * utils/statichelp/stathlpsample.hbp (New)
+  * utils/statichelp/Readme.txt (New)
+  * clean.bat
+  * clean.sh
+  * utils/Readme.txt
+   ! New utility: Creating static
+   ! help texts to be inserted into EXE files
+   ! for multi platform usage.
+
+
 2023-01-04 21:42 UTC-0200 Jose Quintas
    * hwgui.hbc
    * source/winapi/hcwindow.prg

@@ -1,0 +1,4 @@
+This is help text 2 (German)
+(UTF-8)
+Deutsche Umlaute und Euro-Währungszeichen.
+ÄÖÜäöüß€@

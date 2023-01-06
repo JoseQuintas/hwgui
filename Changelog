@@ -16,6 +16,13 @@
 */
 
 
+2023-01-06 18:55 UTC+0100 Wilfried Brunken DF7BE
+  * hwguiGTK3.hbc
+   ! José M. C. Quintas committed [r3189]:
+   ! option to do not force gtgui as default
+   ! Modification copied for GTK3
+
+
 2023-01-06 18:30 UTC+0100 Wilfried Brunken DF7BE
   * utils/statichelp/stathlpconv.prg (New)
   * utils/statichelp/stathlpconv.hbp (New)

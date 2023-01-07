@@ -31,6 +31,29 @@
     0   : Default
     204 : Russian
     15  : IBM 858 with Euro currency sign
+    
+  January 2023:
+  Port to GTK3:
+  The Move() method has no effect with the browse window.
+  hcontrol.prg:METHOD Move( x1, y1, width, height, lMoveParent )  CLASS HControl
+  ==> hwg_MoveWidget() ==> control.c:HB_FUNC( HWG_MOVEWIDGET ) 
+  
+  The following messages seem to be relevant for this
+  bug:
+  
+  dbview:4761): Gtk-WARNING **: 14:33:10.767: Attempting to add a widget with type GtkVBox to a GtkWindow,
+   but as a GtkBin subclass a GtkWindow can only contain one widget at a time;
+   it already contains a widget of type GtkLayout
+
+   (dbview:4761): Gtk-WARNING **: 14:33:10.767: Can't set a parent on widget which has a parent
+
+  (dbview:4761): Gtk-CRITICAL **: 14:33:10.796: gtk_container_propagate_draw:
+   assertion '_gtk_widget_get_parent (child) == GTK_WIDGET (container)' failed
+
+  
+  More info for debugging:
+  hbmk2 dbview.hbp -info -trace
+  
 */
 
 #include "hwgui.ch"

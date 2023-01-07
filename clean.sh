@@ -44,6 +44,7 @@ rm samples/gtk_samples/winprn 2>/dev/null
 rm samples/gtk_samples/temp_a2.ps 2>/dev/null
 #
 # Samples for multi plattform (exe)
+# and optional generated C source file
 rm samples/testget1 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/datepicker 2>/dev/null
@@ -53,6 +54,7 @@ rm samples/escrita 2>/dev/null
 rm samples/night   2>/dev/null
 rm samples/TwoLstSub 2>/dev/null
 rm samples/dbview 2>/dev/null
+rm samples/dbview.c 2>/dev/null
 rm samples/testfunc 2>/dev/null
 rm samples/winprn 2>/dev/null
 rm samples/tstcombo.c  2>/dev/null

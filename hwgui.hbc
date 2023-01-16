@@ -8,11 +8,10 @@
 incpaths=include
 libpaths=lib
 
-#ifndef GT_NO_GUI
-{win}gt=gtgui
-#endif
+{win&!HB_NO_GTGUI=YES}gt=gtgui
+{!hblib&!HB_NO_HWGDEBUG=YES}libs=hwgdebug
 
-{!hblib}libs=hwgui procmisc hbxml hwgdebug
+{!hblib}libs=hwgui procmisc hbxml
 
 # --- Outdated, out of support ---
 #{win&!allmingw&!watcom&!hblib}libs=hbactivex hwg_extctrl hwg_qhtm

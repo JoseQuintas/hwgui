@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-01-16 16:51 UTC+0200 Jose Quintas
+   * hwgui.hbc
+   * hwguiGTK3.hbc
+    ! changed #ifndef because do not works with libs=
+    ! changed GT_NO_GUI to HB_NO_GTGUI and added HB_NO_HWGDEBUG
+    ! On this way, at least on windows, set HB shows all harbour variables
+    ! Nothing changes if do not create the variables with YES
+    ! these will be used only if wants to mix hwgui with another gui default
+
 
 2023-01-07 15:55 UTC+0100 Wilfried Brunken DF7BE
   * clean.sh

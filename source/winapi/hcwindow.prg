@@ -17,7 +17,7 @@
 #define EVENTS_ACTIONS  2
 
 #ifndef __XHARBOUR__
-#ifndef GT_NO_GUI
+#ifndef HB_NO_GTGUI
 REQUEST HB_GT_GUI_DEFAULT
 #endif
 #endif

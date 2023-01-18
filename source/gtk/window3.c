@@ -24,6 +24,30 @@
  *  New application windows must be added after the GApplication::startup signal has been emitted.
 */
 
+/*
+ Object Hierarchy
+
+    GObject
+    !---GInitiallyUnowned
+        !--- GtkWidget
+             !--- GtkContainer
+                 !--- GtkBox
+                    !--- GtkAppChooserWidget
+                    !--- GtkButtonBox
+                    !--- GtkColorChooserWidget
+                    !--- GtkColorSelection
+                    !--- GtkFileChooserButton
+                    !--- GtkFileChooserWidget
+                    !--- GtkFontChooserWidget
+                    !--- GtkFontSelection
+                    !--- GtkHBox
+                    !--- GtkInfoBar
+                    !--- GtkRecentChooserWidget
+                    !--- GtkStackSwitcher
+                    !--- GtkStatusbar
+                    !--- GtkVBox
+*/
+
 #include "guilib.h"
 #include "hbapifs.h"
 #include "hbapiitm.h"
@@ -203,8 +227,9 @@ HB_FUNC( HWG_INITMAINWINDOW )
   
 #if GTK_MAJOR_VERSION -0 < 3  
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
-#else
+// #else
   /* Application name (GTK3) */
+#endif  
   
 #if ! ( GTK_MAJOR_VERSION -0 < 3 )
    char default_appname[] = "net.sourceforge.projects.hwgui.gtk.sample";   
@@ -222,6 +247,8 @@ HB_FUNC( HWG_INITMAINWINDOW )
   gtk_window_set_default_size (GTK_WINDOW (hWnd), width, height);
   
   /* For setting background images need to work with "layouts" */
+  
+// Trouble with layouts ??   
    layout = gtk_layout_new(NULL, NULL);
    gtk_container_add (GTK_CONTAINER(hWnd), layout);
   
@@ -242,10 +269,12 @@ HB_FUNC( HWG_INITMAINWINDOW )
 // gtk_window_set_default_icon(create_pixbuf("image/hwgui.png") );
 
 //   }  
- 
-  gtk_widget_show_all (hWnd);  
+
+/* must be called later (in function HWG_ACTIVATEMAINWINDOW)
+  gtk_widget_show_all (hWnd);
+*/    
   
-#endif
+// #endif
 
   
 #if ! ( GTK_MAJOR_VERSION -0 < 3 )
@@ -278,24 +307,42 @@ HB_FUNC( HWG_INITMAINWINDOW )
  
    //gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_resizable( GTK_WINDOW(hWnd), TRUE);
-//   gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
+   gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
    gtk_window_move( GTK_WINDOW(hWnd), x, y );
 
-   vbox = gtk_vbox_new (FALSE, 0);
+/*
+  gtk_vbox_new has been deprecated since version 3.2 and should not be used in newly-written code.
+  You can use gtk_box_new() with GTK_ORIENTATION_VERTICAL instead
+*/
+
+
+//   vbox = gtk_vbox_new (FALSE, 0);
+   vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL,10);
+   
+//   gtk_box_pack_start(GTK_BOX(vbox),label,0,0,0); 
+
+
+
+/*
+ Gtk-WARNING **: 18:54:01.408: Attempting to add a widget with type GtkBox to a GtkWindow, but as a GtkBin subclass a GtkWindow can only contain one widget at a time; it already contains a widget of type GtkLayout
+*/
    gtk_container_add (GTK_CONTAINER(hWnd), vbox);
-
+   
+   
    box = (GtkFixed*)gtk_fixed_new();
+   
    gtk_box_pack_start( GTK_BOX(vbox), (GtkWidget*)box, TRUE, TRUE, 0 );
-
 
    g_object_set_data( ( GObject * ) hWnd, "window", ( gpointer ) 1 );
    SetWindowObject( hWnd, pObject );
    g_object_set_data( (GObject*) hWnd, "vbox", (gpointer) vbox );
    g_object_set_data( (GObject*) hWnd, "fbox", (gpointer) box );
-   
-
 
    gtk_layout_put(GTK_LAYOUT(layout),vbox,0,0);
+
+/*
+Gtk-WARNING **: 18:58:05.533: Can't set a parent on widget which has a parent
+*/   
    gtk_layout_put(GTK_LAYOUT(layout),box,0,0);
 
 
@@ -317,9 +364,8 @@ HB_FUNC( HWG_INITMAINWINDOW )
    g_signal_connect_after( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    //g_signal_connect_after( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
 
-
-
    hMainWindow = hWnd;
+  
    HB_RETHANDLE( hWnd );
 }
 
@@ -453,6 +499,10 @@ HB_FUNC( HWG_ACTIVATEMAINWINDOW )
 
    gtk_widget_show_all( hWnd );
 */
+
+
+   GtkWidget * hWnd = (GtkWidget*) HB_PARHANDLE(1);
+   gtk_widget_show_all(hWnd);
    gtk_main();
 }
 

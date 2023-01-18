@@ -10,10 +10,10 @@
 
 {win}../hwgui.hbc
 # GTK2
-{linux}../hwgui.hbc
+#{linux}../hwgui.hbc
 # GTK3: Deactivate previous line
 # and activate following line
-#{linux}../hwguiGTK3.hbc
+{linux}../hwguiGTK3.hbc
 
 -n
 -w

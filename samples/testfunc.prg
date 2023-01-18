@@ -54,7 +54,6 @@
 
 #include "hwgui.ch"
 #include "common.ch"
-// #include "windows.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
@@ -72,9 +71,9 @@ FUNCTION MAIN()
    LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
    LOCAL oButton26, oButton27, oButton28, oButton29
    LOCAL oButton30, oButton31, oButton32
-   
+
    LOCAL nspcbutton
-  
+
    PUBLIC cDirSep := hwg_GetDirSep()
    PUBLIC bgtk , ndefaultcsrtype
 
@@ -85,8 +84,8 @@ FUNCTION MAIN()
   nspcbutton := 25   && Windows and GTK2
 #ifdef ___GTK3___
   nspcbutton := 35
-#endif  
- 
+#endif
+
    * Detect GTK build
    bgtk := .F.
 
@@ -500,7 +499,7 @@ rc := hwg_RunApp(cCmd)
 
 cgt := hwg_GUIType()
 
-DO CASE   
+DO CASE
  CASE cgt == "WinAPI"
   hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
  CASE cgt == "GTK2"
@@ -510,7 +509,7 @@ DO CASE
   hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunApp()")
 //  hwg_MsgInfo("Return Code: " + ToLogical(),"Result of hwg_RunApp()")
  ENDCASE
- 
+
 RETURN NIL
 
 FUNCTION _hwg_RunApp()
@@ -533,7 +532,7 @@ LOCAL cCmd
         STYLE WS_BORDER
    @ 115,120 BUTTON oButton1 CAPTION "Run" SIZE 80,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
-        ON CLICK {|| _hwg_RunApp_test:Close() } 
+        ON CLICK {|| _hwg_RunApp_test:Close() }
    @ 809,120 BUTTON oButton2 CAPTION "Cancel" SIZE 80,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK {|| cCmd := "" , _hwg_RunApp_test:Close() }
@@ -547,7 +546,7 @@ FUNCTION GetCValue(cPreset,cTitle,cQuery,nlaenge,lcaval)
 *
 * lcaval  : if set to .T., old value is returned
 *           .F. : empty string returned
-*           Default is .T. 
+*           Default is .T.
 * nlaenge : Max length of string to get.
 *           Default value is LEN(cPreset)
 LOCAL _enterC, oLabel1, oEditbox1, oButton1 , oButton2 , cNewValue, lcancel
@@ -563,11 +562,11 @@ LOCAL _enterC, oLabel1, oEditbox1, oButton1 , oButton2 , cNewValue, lcancel
  IF cPreset == NIL
   cPreset := " "
  ENDIF
- 
+
  IF lcaval == NIL
   lcaval := .T.
- ENDIF 
- 
+ ENDIF
+
  IF nlaenge == NIL
   nlaenge := LEN(cPreset)
  ELSE
@@ -575,13 +574,13 @@ LOCAL _enterC, oLabel1, oEditbox1, oButton1 , oButton2 , cNewValue, lcancel
    cpreset := SPACE(nlaenge)
   ELSE
    cpreset := PADR(cpreset,nlaenge)
-  ENDIF  
- ENDIF  
+  ENDIF
+ ENDIF
 
  lcancel := .T.
- 
+
  cPreset := hwg_GET_Helper(cPreset, nlaenge )
- 
+
  cNewValue := cPreset
 
  INIT DIALOG _enterC TITLE cTitle ;
@@ -592,13 +591,13 @@ LOCAL _enterC, oLabel1, oEditbox1, oButton1 , oButton2 , cNewValue, lcancel
         STYLE WS_BORDER
    @ 115,120 BUTTON oButton1 CAPTION "OK" SIZE 80,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
-        ON CLICK {|| lcancel := .F. , _enterC:Close() } 
+        ON CLICK {|| lcancel := .F. , _enterC:Close() }
    @ 809,120 BUTTON oButton2 CAPTION "Cancel" SIZE 80,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK {|| _enterC:Close() }
 
    ACTIVATE DIALOG _enterC
-   
+
    IF lcancel
     IF lcaval
      cNewValue := cPreset
@@ -607,7 +606,7 @@ LOCAL _enterC, oLabel1, oEditbox1, oButton1 , oButton2 , cNewValue, lcancel
     ENDIF
    ENDIF
 
-RETURN cNewValue   
+RETURN cNewValue
 
 FUNCTION Test_hwg_HdSerial()
 LOCAL cDriveletter
@@ -615,13 +614,13 @@ LOCAL cDriveletter
 cDriveletter := GetCValue("C","hwg_HdSerial()", "Enter drive letter:",1,.F.)
 IF .NOT. EMPTY(cDriveletter)
  cDriveletter := cDriveletter + ":\"
-ENDIF 
+ENDIF
 
 IF .NOT. EMPTY(cDriveletter)
  hwg_MsgInfo("Serial number of drive " + cDriveletter + " is:" + CHR(10) + ;
   hwg_HdSerial(ALLTRIM(cDriveletter)))
 ENDIF
-  
+
 
 RETURN NIL
 
@@ -632,13 +631,13 @@ LOCAL cDriveletter
 cDriveletter := GetCValue("C","hwg_HdGetSerial()", "Enter drive letter:",1,.F.)
 IF .NOT. EMPTY(cDriveletter)
  cDriveletter := cDriveletter + ":\"
-ENDIF 
+ENDIF
 
 IF .NOT. EMPTY(cDriveletter)
  hwg_MsgInfo("Serial number of drive " + cDriveletter + " is:" + CHR(10) + ;
   ALLTRIM(STR(hwg_HdGetSerial(ALLTRIM(cDriveletter)))))
 ENDIF
-  
+
 
 RETURN NIL
 
@@ -653,30 +652,30 @@ LOCAL oLabel9, oLabel10, oLabel11, oLabel12, oLabel13, oLabel14, oLabel15, oLabe
      STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
 
 
-   @ 130,13 SAY oLabel16 CAPTION "Set to file extension .prg"  SIZE 271,22   
-   @ 40,50 SAY oLabel1 CAPTION "test.txt"  SIZE 152,22   
-   @ 237,50 SAY oLabel2 CAPTION ">"  SIZE 29,22   
+   @ 130,13 SAY oLabel16 CAPTION "Set to file extension .prg"  SIZE 271,22
+   @ 40,50 SAY oLabel1 CAPTION "test.txt"  SIZE 152,22
+   @ 237,50 SAY oLabel2 CAPTION ">"  SIZE 29,22
    @ 338,50 SAY oLabel3 CAPTION hwg_ProcFileExt("test.txt","prg")  SIZE 162,22
-   
-   @ 40,100 SAY oLabel4 CAPTION "C:\temp.dir\test.txt"  SIZE 135,22   
-   @ 237,100 SAY oLabel5 CAPTION ">"  SIZE 29,20   
+
+   @ 40,100 SAY oLabel4 CAPTION "C:\temp.dir\test.txt"  SIZE 135,22
+   @ 237,100 SAY oLabel5 CAPTION ">"  SIZE 29,20
    @ 338,100 SAY oLabel6 CAPTION hwg_ProcFileExt("C:\temp.dir\test.txt","prg")  SIZE 155,22
-   
-   @ 40,150 SAY oLabel7 CAPTION "C:\temp.\test"  SIZE 97,22   
-   @ 237,150 SAY oLabel8 CAPTION ">"  SIZE 29,22   
+
+   @ 40,150 SAY oLabel7 CAPTION "C:\temp.\test"  SIZE 97,22
+   @ 237,150 SAY oLabel8 CAPTION ">"  SIZE 29,22
    @ 338,150 SAY oLabel9 CAPTION hwg_ProcFileExt("C:\temp.\test","prg")  SIZE 158,22
-   
-   @ 40,200 SAY oLabel10 CAPTION "/home/temp.dir/test.txt"  SIZE 169,22   
-   @ 237,200 SAY oLabel11 CAPTION ">"  SIZE 29,22   
-   @ 338,200 SAY oLabel12 CAPTION hwg_ProcFileExt("/home/temp.dir/test.txt","prg")  SIZE 161,22 
-   
-   @ 40,250 SAY oLabel13 CAPTION "/home/temp./test"  SIZE 133,22   
-   @ 237,250 SAY oLabel14 CAPTION ">"  SIZE 29,22   
+
+   @ 40,200 SAY oLabel10 CAPTION "/home/temp.dir/test.txt"  SIZE 169,22
+   @ 237,200 SAY oLabel11 CAPTION ">"  SIZE 29,22
+   @ 338,200 SAY oLabel12 CAPTION hwg_ProcFileExt("/home/temp.dir/test.txt","prg")  SIZE 161,22
+
+   @ 40,250 SAY oLabel13 CAPTION "/home/temp./test"  SIZE 133,22
+   @ 237,250 SAY oLabel14 CAPTION ">"  SIZE 29,22
    @ 338,250 SAY oLabel15 CAPTION hwg_ProcFileExt("/home/temp./test","prg")  SIZE 157,22
-   
+
    @ 205,348 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
-        ON CLICK {|| oDlg:Close() } 
+        ON CLICK {|| oDlg:Close() }
 
    ACTIVATE DIALOG oDlg
 

@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 CLASS HTab INHERIT HControl
@@ -24,7 +23,7 @@ CLASS HTab INHERIT HControl
    DATA  bAction
    DATA  lResourceTab INIT .F.
    DATA  aTooltips   INIT {}  // Array with tooltips messages
-                             // One element for every tab   
+                             // One element for every tab
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, aTabs, bChange, aImages, lResour, nBC, ;
@@ -152,10 +151,10 @@ METHOD StartPage( cname, oDlg , ctooltip ) CLASS HTab
    ELSE
       AAdd( ::aPages, { Len( ::aControls ), 0 } )
    ENDIF
-   
+
   * Collect tooltips in the array
-   AAdd( ::aTooltips , IIF ( ctooltip == NIL , "" , ctooltip ) ) 
- 
+   AAdd( ::aTooltips , IIF ( ctooltip == NIL , "" , ctooltip ) )
+
    IF ::nActive > 1 .AND. !Empty( ::handle )
       ::HidePage( ::nActive )
    ENDIF
@@ -196,7 +195,7 @@ METHOD ChangePage( nPage ) CLASS HTab
       ::HidePage( ::nActive )
 
       ::nActive := nPage
-  
+
 
       ::ShowPage( ::nActive )
 
@@ -209,7 +208,7 @@ METHOD ChangePage( nPage ) CLASS HTab
    IF !Empty( ::aPages )
       * Set tooltip
       ::SetTooltip( ::handle, ::nActive )
-   ENDIF  
+   ENDIF
 
    RETURN Nil
 
@@ -344,7 +343,7 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
     HB_SYMBOL_UNUSED(cCaption)
     HB_SYMBOL_UNUSED(lTransp)
     HB_SYMBOL_UNUSED(aItem)
-  
+
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor )
@@ -354,27 +353,27 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::style := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
 
    RETURN Self
-   
+
 METHOD SetTooltip( nhandle, ntab ) CLASS hTab
- 
+
   LOCAL cText
-  
+
   IF nhandle == NIL
    RETURN NIL && Nothing to do, avoid crash
-  ENDIF 
+  ENDIF
 
   cText := ::aTooltips[ntab]
-  
+
   IF cText == NIL
-    RETURN NIL  
+    RETURN NIL
   ENDIF
   IF EMPTY(cText)
-    RETURN NIL  
+    RETURN NIL
   ENDIF
   hwg_Deltooltip( nhandle )
   IF .NOT. EMPTY(cText)
    hwg_Addtooltip( nhandle, cText )
   ENDIF
-RETURN NIL   
+RETURN NIL
 
 * ============================ EOF of htab.prg ===========================

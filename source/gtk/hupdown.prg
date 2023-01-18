@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 #ifndef UDS_SETBUDDYINT
 #define UDS_SETBUDDYINT     2
@@ -83,7 +82,7 @@ METHOD Activate() CLASS HUpDown
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HUpDown
 
-   * Variables not used 
+   * Variables not used
    * LOCAL oParent := ::oParent
    * LOCAL nPos
 
@@ -161,4 +160,3 @@ STATIC FUNCTION __Valid( oCtrl )
    RETURN .T.
 
 * ============================ EOF of hupdown.prg ===============================
-   

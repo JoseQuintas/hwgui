@@ -20,8 +20,7 @@
    return values on non Windows operation systems (GTK)
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 FUNCTION Main()
 

@@ -8,10 +8,9 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "inkey.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 CLASS HOwnButton INHERIT HControl

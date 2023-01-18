@@ -8,10 +8,9 @@
  * www - http://sites.uol.com.br/culikr/
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "inkey.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 #define TRANSPARENT 1
@@ -161,11 +160,11 @@ METHOD Create( ) CLASS HNICEButton
    LOCAL Rct
    LOCAL w
    LOCAL h
-   
+
 * Not used variables
 *   LOCAL x
 *   LOCAL y
-   
+
    Rct    := hwg_Getclientrect( ::handle )
 *   x      := Rct[ 1 ]
 *   y      := Rct[ 2 ]
@@ -199,9 +198,9 @@ METHOD MouseMove( wParam, lParam ) CLASS HNICEButton
 * Not used variables
 *     LOCAL aCoors
 *     LOCAL xPos
-*     LOCAL yPos   
+*     LOCAL yPos
 
-* Not used parameters   
+* Not used parameters
    HB_SYMBOL_UNUSED( wParam )
    HB_SYMBOL_UNUSED( lParam )
 

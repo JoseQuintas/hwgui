@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 #define  MENU_FIRST_ID   32000
 #define  CONTEXTMENU_FIRST_ID   32900
@@ -96,7 +95,7 @@ FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos )
       AIns( aMenu[ 1 ], nPos )
       IF Empty( lSubMenu )
          aMenu[ 1, nPos ] := { bItem, cItem, nMenuId, 0 }
-         
+
       ELSE
          aMenu[ 1, nPos ] := { { }, cItem, nMenuId, 0, hSubMenu }
       ENDIF

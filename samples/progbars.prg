@@ -15,8 +15,7 @@
     *  GTK/Linux:  Yes  ==> other sample
     *  GTK/Win  :  Yes  ==> other sample
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 STATIC oMain, oForm, oFont, oBar := Nil
 

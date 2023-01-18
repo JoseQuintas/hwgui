@@ -12,8 +12,7 @@
  *
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "common.ch"
 
 #translate hwg_ColorRgb2N( <nRed>, <nGreen>, <nBlue> ) => ( <nRed> + ( <nGreen> * 256 ) + ( <nBlue> * 65536 ) )

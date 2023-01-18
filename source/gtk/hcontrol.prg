@@ -14,9 +14,8 @@
 
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 REQUEST HWG_ENDWINDOW
 
@@ -59,7 +58,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD Move( x1, y1, width, height, lMoveParent )
    METHOD End()
    METHOD onAnchor( x, y, w, h )
-   METHOD SetTooltip( cText )   
+   METHOD SetTooltip( cText )
 
 ENDCLASS
 
@@ -120,19 +119,19 @@ METHOD INIT() CLASS HControl
    ENDIF
 
    RETURN Nil
-   
+
 METHOD SetTooltip( cText ) CLASS HControl
 
      IF cText == NIL
        ::tooltip := ""
-     ELSE 
+     ELSE
        ::tooltip := cText
-     ENDIF 
+     ENDIF
      hwg_Deltooltip( ::handle )
      IF .NOT. EMPTY(::tooltip)
       hwg_Addtooltip( ::handle, ::tooltip )
      ENDIF
-RETURN NIL   
+RETURN NIL
 
 METHOD Disable() CLASS HControl
 
@@ -451,14 +450,14 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HButton
    ENDIF
 
    RETURN  NIL
-   
-   
+
+
 METHOD SetText( c ) CLASS HButton
 
    hwg_button_SetText( ::handle, ::title := c )
- 
- RETURN NIL   
-   
+
+ RETURN NIL
+
 
 CLASS HButtonEX INHERIT HButton
 

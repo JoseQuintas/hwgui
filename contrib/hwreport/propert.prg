@@ -6,8 +6,7 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "repbuild.h"
 #include "repmain.h"
 

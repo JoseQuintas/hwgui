@@ -1,7 +1,6 @@
 //--------------------------------------------------------------------------//
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 STATIC oWnd
 STATIC oDlg1

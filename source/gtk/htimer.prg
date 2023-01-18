@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 #define  TIMER_FIRST_ID   33900
 

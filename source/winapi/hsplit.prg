@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 CLASS HSplitter INHERIT HControl
@@ -212,4 +211,4 @@ METHOD DragAll( xPos, yPos ) CLASS HSplitter
    RETURN Nil
 
  * ======================== EOF of hsplit.prg ================================
- 
+

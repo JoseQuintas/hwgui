@@ -11,8 +11,7 @@
  * This sample show how to edit records with grid control
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 #define GET_FIELD   1
 #define GET_LABEL   2

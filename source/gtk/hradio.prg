@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 CLASS HRadioGroup INHERIT HObject
 
@@ -145,7 +144,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    IF ::oGroup != Nil
       AAdd( ::oGroup:aButtons, Self )
       IF ::oGroup:bSetGet != Nil
-         hwg_SetSignal( ::handle, "released", WM_LBUTTONUP, 0, 0 ) 
+         hwg_SetSignal( ::handle, "released", WM_LBUTTONUP, 0, 0 )
       ENDIF
    ENDIF
 
@@ -204,4 +203,3 @@ STATIC FUNCTION __Valid( oCtrl )
    RETURN .T.
 
 * =================================== EOF of hradio.prg =============================================
-   

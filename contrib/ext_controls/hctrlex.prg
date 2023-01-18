@@ -8,9 +8,8 @@
  * www - http://sites.uol.com.br/culikr/
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 #translate :hBitmap       => :m_csbitmaps\[ 1 \]
@@ -542,15 +541,15 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    bPaint := { | o, p | o:paint( p ) }
    ::Super:Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
       cTooltip, tcolor, bColor, cCaption,  bGFocus  )
-   ::bPaint  := bPaint	  
+   ::bPaint  := bPaint
    ::m_bLButtonDown := .F.
    ::m_bIsToggle := .F.
    ::m_bLButtonDown := .F.
    ::m_bSent := .F.
-  
+
    ::title := cCaption
    ::Caption := cCaption
-   ::iStyle  := iStyle 
+   ::iStyle  := iStyle
    ::hBitmap := hBitmap
    ::hIcon   := hIcon
    ::m_crColors[ BTNST_COLOR_BK_IN ]    := hwg_Getsyscolor( COLOR_BTNFACE )
@@ -560,10 +559,10 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ;
    ::m_crColors[ BTNST_COLOR_BK_FOCUS ] := hwg_Getsyscolor( COLOR_BTNFACE )
    ::m_crColors[ BTNST_COLOR_FG_FOCUS ] := hwg_Getsyscolor( COLOR_BTNTEXT )
    ::PictureMargin                      := nPictureMargin
-   ::m_bDrawTransparent  := Transp   
+   ::m_bDrawTransparent  := Transp
    ::lnoThemes           := lnoThemes
-   
-                  
+
+
    ::title := cCaption
    ::Caption := cCaption
 
@@ -1434,7 +1433,7 @@ METHOD SetTextPanel( nPart, cText, lRedraw ) CLASS HStatusEx
    ENDIF
 
    RETURN Nil
-   
+
 METHOD SetIconPanel( nPart, cIcon, nWidth, nHeight ) CLASS HStatusEx
    Local oIcon
 
@@ -1453,13 +1452,13 @@ METHOD SetIconPanel( nPart, cIcon, nWidth, nHeight ) CLASS HStatusEx
 
    RETURN Nil
 
-METHOD Resize( xIncrSize ) CLASS HStatusEx   
+METHOD Resize( xIncrSize ) CLASS HStatusEx
    LOCAL i
-   
-   IF ! Empty( ::aParts ) 
+
+   IF ! Empty( ::aParts )
       FOR i := 1 TO LEN( ::aParts )
          ::aParts[ i ] := ROUND( ::aParts[ i ] * xIncrSize, 0 )
-      NEXT   
+      NEXT
       hwg_InitStatus( ::oParent:handle, ::handle, Len( ::aParts ), ::aParts )
    ENDIF
    RETURN NIL

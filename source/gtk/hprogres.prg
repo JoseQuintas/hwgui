@@ -13,12 +13,11 @@
  *
  * Bugfix by DF7BE September 2020
  * Checked on Windows Cross Development Environment and
- * Ubuntu-Linux 
+ * Ubuntu-Linux
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 CLASS HProgressBar INHERIT HControl
 
@@ -73,7 +72,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit ) CLA
    INIT DIALOG ::oParent TITLE cTitle       ;
       AT nLeft, nTop SIZE nWidth, nHeight   ;
       STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_SIZEBOX + iif( nTop == 0, DS_CENTER, nTop ) + DS_SYSMODAL
-      * DF7BE: iif( nTop == 0, DS_CENTER, 0 )  ??? 
+      * DF7BE: iif( nTop == 0, DS_CENTER, 0 )  ???
 
    IF bExit != Nil
       ::oParent:bDestroy := bExit
@@ -122,22 +121,22 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
        assertion 'percentage >= 0 && percentage <= 1.0' failed
        if progbar reached end.
       */
-      IF ( nPos >= 0  ) .AND. (nPos <= 1 ) 
+      IF ( nPos >= 0  ) .AND. (nPos <= 1 )
        hwg_Setprogressbar( ::handle, nPos )
       END
    ENDIF
 
    RETURN Nil
- 
+
 
 METHOD RESET() CLASS HProgressBar
  IF ::handle != NIL
     ::nCount := 0
     hwg_Resetprogressbar( ::handle )
-    * hwg_Updateprogressbar( ::handle )    
+    * hwg_Updateprogressbar( ::handle )
  ENDIF
 RETURN NIL
- 
+
 
 METHOD CLOSE()
 
@@ -149,4 +148,4 @@ METHOD CLOSE()
    RETURN Nil
 
 * ==================== EOF of hprogres.prg ======================
-   
+

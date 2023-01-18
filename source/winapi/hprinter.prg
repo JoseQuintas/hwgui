@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 STATIC crlf := e"\r\n"
@@ -67,12 +66,12 @@ CLASS HPrinter INHERIT HObject
    // After call of Init method, you can update the array with messages in your
    // desired language.
    // Sample: Preview( , , aTooltips, )
-   // Structure of array look at 
+   // Structure of array look at
    // METHOD SetLanguage(apTooltips) CLASS HWinPrn
    // in file hwinprn.prg.
    // List of classes calling print preview
    // HWINPRN, HRepTmpl , ...
-   // For more details see inline comments in sample program "nlsdemo.prg" 
+   // For more details see inline comments in sample program "nlsdemo.prg"
 
    METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn )
    // FUNCTION hwg_HPrinter_LangArray_EN()
@@ -123,7 +122,7 @@ FUNCTION hwg_HPrinter_LangArray_EN()
   /* 6  */ AAdd(aTooltips,"Last page")
   /* 7  */ AAdd(aTooltips,"Zoom out")
   /* 8  */ AAdd(aTooltips,"Zoom in")
-  /* 9  */ AAdd(aTooltips,"Print dialog") 
+  /* 9  */ AAdd(aTooltips,"Print dialog")
   // added (Titles and other Buttons)
   /* 10 */ AAdd(aTooltips,"Print preview -") && Title
   /* 11 */ AAdd(aTooltips,"Print")           && Button
@@ -137,16 +136,16 @@ FUNCTION hwg_HPrinter_LangArray_EN()
   /* 18 */ AAdd(aTooltips,"Pages")           && Radio Button              "Pages"
   /* 19 */ AAdd(aTooltips,"Print")           && Button                    "Print"
   /* 20 */ AAdd(aTooltips,"Cancel")          && Button                    "Cancel"
-  /* 21 */ AAdd(aTooltips,"Enter range of pages") && Tooltip              "Enter range of pages"  
-  
-RETURN aTooltips  
+  /* 21 */ AAdd(aTooltips,"Enter range of pages") && Tooltip              "Enter range of pages"
+
+RETURN aTooltips
 
 METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, hDCPrn ) CLASS HPrinter
 
    LOCAL aPrnCoors, cPrinterName, nTemp
 
    ::DefaultLang()
-   
+
    IF ValType( nFormType ) == "N"
       // A3 - DMPAPER_A3, A4 - DMPAPER_A4
       ::FormType := nFormType
@@ -230,7 +229,7 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
 
 METHOD DefaultLang() CLASS HPrinter
   ::aLangTexts := hwg_HPrinter_LangArray_EN()
-RETURN NIL  
+RETURN NIL
 
 METHOD SetMode( nOrientation, nDuplex ) CLASS HPrinter
 
@@ -409,14 +408,14 @@ METHOD Say( cString, x1, y1, x2, y2, nOpt, oFont, nTextColor, nBkColor ) CLASS H
          ENDIF
       ENDIF
 
-      // hwg_xvalLog(x1)  
+      // hwg_xvalLog(x1)
 
       /* DF7BE: x1 is not forever of type N, so STR() crashes with argument error */
       IF hwg_ValType(x1) != "N"
          x1 := 0
       ENDIF
 
-  
+
       ::aPages[::nPage] += "txt," + LTrim( Str( x1 ) ) + "," + LTrim( Str( y1 ) ) + "," + ;
          LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
          Iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + cString + crlf
@@ -483,13 +482,13 @@ METHOD GetTextWidth( cString, oFont ) CLASS HPrinter
 METHOD StartDoc( lPreview, cScriptFile , lprbutton ) CLASS HPrinter
 
    LOCAL nRes := 0
-   
+
    IF lprbutton == NIL
       ::lprbutton := .T.
    ELSE
       ::lprbutton := lprbutton
-   ENDIF  
-   
+   ENDIF
+
    IF !Empty( lPreview ) .OR. ::lBuffPrn
       ::lPreview := .T.
       IF ::lUseMeta
@@ -515,7 +514,7 @@ METHOD StartDoc( lPreview, cScriptFile , lprbutton ) CLASS HPrinter
 METHOD EndDoc() CLASS HPrinter
 
    LOCAL  nRes := 0
-   
+
    * Variables not used
    * i, han
 
@@ -532,9 +531,9 @@ METHOD EndDoc() CLASS HPrinter
 METHOD StartPage() CLASS HPrinter
 
    LOCAL nRes := 0
-   
+
    * Variables not used
-   * fname 
+   * fname
 
    ::nPage ++
    IF ::lPreview
@@ -641,11 +640,11 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser) CLASS HPrinter
 
 /*
 aBootUser[ 1 ] : oBtn:bClick
-aBootUser[ 2 ] : AddResource(Bitmap)   
+aBootUser[ 2 ] : AddResource(Bitmap)
 aBootUser[ 3 ] : "User Button", Tooltip ==> cBootUser3
 aBootUser[ 4 ] : "User Button"          ==> cBootUser4
 
-Default values in array aTooltips see 
+Default values in array aTooltips see
 FUNCTION hwg_HPrinter_LangArray_EN()
 */
 
@@ -654,7 +653,7 @@ FUNCTION hwg_HPrinter_LangArray_EN()
    LOCAL oFont := HFont():Add( "Times New Roman", 0, - 13, 700 )
    LOCAL lTransp := ( aBitmaps != Nil .AND. Len( aBitmaps ) > 9 .AND. aBitmaps[ 10 ] != Nil .AND. aBitmaps[ 10 ] )
 
-   * Variables not used   
+   * Variables not used
    * cBootUser3, cBootUser4
 
    aPage := Array( Len( ::aPages ) )
@@ -670,24 +669,24 @@ FUNCTION hwg_HPrinter_LangArray_EN()
 *   cBootUser3     := "User Button"
 *   cBootUser4     := "User Button"
    cmTitle        := "Print preview - " + ::cPrinterName
-   
+
    /* Parameter cTitle preferred */
    IF cTitle == Nil
-    cTitle := cmTitle  
-    IF aTooltips != Nil  
+    cTitle := cmTitle
+    IF aTooltips != Nil
       cTitle := aTooltips[ 10 ] + " " + ::cPrinterName
     ENDIF
    ELSE
-    cTitle := cmTitle     
+    cTitle := cmTitle
    ENDIF
    IF aTooltips != Nil
-      cmPrint    := aTooltips[ 11 ]   
+      cmPrint    := aTooltips[ 11 ]
       cmExit     := aTooltips[ 12 ]
       cmDialog   := aTooltips[ 13 ]
  *     cBootUser3 := aTooltips[ 14 ]
  *     cBootUser4 := aTooltips[ 15 ]
    ENDIF
- 
+
    ::nZoom := 0
    ::nCurrPage := 1
 
@@ -730,7 +729,7 @@ FUNCTION hwg_HPrinter_LangArray_EN()
 
    @ 1, 31 LINE LENGTH oToolBar:nWidth - 1
 
-  IF ::lprbutton  
+  IF ::lprbutton
    @ 3, 36 OWNERBUTTON oBtn OF oToolBar ON CLICK { || ::PrintDoc() } ;
       SIZE oToolBar:nWidth - 6, 24 TEXT cmPrint FONT oFont           ;  && "Print"
       TOOLTIP Iif( aTooltips != Nil, aTooltips[ 2 ], "Print file" )
@@ -1172,7 +1171,7 @@ METHOD PrintDlg(aTooltips) CLASS HPrinter
    IF aTooltips == Nil
     aTooltips := ::aLangTexts
    ENDIF
-   
+
    INIT DIALOG oDlg TITLE aTooltips[9]  ; && "Print dialog"
       At 40, 10 SIZE 220, 230 STYLE DS_CENTER
 
@@ -1332,7 +1331,7 @@ Static Function MessProc( oPrinter, oPanel, lParam )
 
    nHRes := (oPrinter:x2-oPrinter:x1)/Iif( oPrinter:lmm, oPrinter:nWidth, oPrinter:nWidth/oPrinter:nHRes )
    nVRes := (oPrinter:y2-oPrinter:y1)/Iif( oPrinter:lmm, oPrinter:nHeight, oPrinter:nHeight/oPrinter:nVRes )
-   
+
    arr := hb_aTokens( oPrinter:aPages[nPage], crlf )
    FOR i := 1 TO Len( arr )
       nPos := 0

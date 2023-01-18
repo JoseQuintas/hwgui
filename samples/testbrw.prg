@@ -25,8 +25,7 @@
 * Obscure behavior on editable field "Age" need to fix !
 * The modified value not accepted.
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 FUNCTION Main()
 

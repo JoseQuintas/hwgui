@@ -33,8 +33,7 @@
 * Go to tray and call with right mouse click
 *
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 
 FUNCTION Main()

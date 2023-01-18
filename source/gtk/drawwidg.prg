@@ -38,8 +38,7 @@
 
 
 #include "hbclass.ch"
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 Static oResCnt
 
@@ -166,8 +165,8 @@ METHOD Release() CLASS HFont
    RETURN Nil
 
 
-/* DF7BE: For debugging purposes */   
-METHOD PrintFont()  CLASS HFont   
+/* DF7BE: For debugging purposes */
+METHOD PrintFont()  CLASS HFont
 //        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
 // Type:  C         N       N         N         N           N          N             N
 // - 9999 means NIL
@@ -182,17 +181,17 @@ METHOD PrintFont()  CLASS HFont
    fdwItalic    := iif( ::Italic == Nil, - 9999 , ::Italic )
    fdwUnderline := iif( ::Underline == Nil, - 9999 , ::Underline )
    fdwStrikeOut := iif( ::StrikeOut == Nil, - 9999 , ::StrikeOut )
- 
 
- 
- 
+
+
+
 RETURN "Font Name=" + fontName + " Width=" + ALLTRIM(STR(nWidth)) + " Height=" + ALLTRIM(STR(nHeight)) + ;
        " Weight=" + ALLTRIM(STR(fnWeight)) + " CharSet=" + ALLTRIM(STR(fdwCharSet)) + ;
        " Italic=" + ALLTRIM(STR(fdwItalic)) + " Underline=" + ALLTRIM(STR(fdwUnderline)) + ;
        " StrikeOut=" + ALLTRIM(STR(fdwStrikeOut))
 
 
-/* 
+/*
   Returns an array with font properties (for creating a copy of a font entry)
   Copy sample
    apffrarr := oFont1:Props2Arr()
@@ -201,7 +200,7 @@ RETURN "Font Name=" + fontName + " Width=" + ALLTRIM(STR(nWidth)) + " Height=" +
  */
 METHOD Props2Arr() CLASS HFont
 //        fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut
-//        1         2       3         4         5           6          7             8  
+//        1         2       3         4         5           6          7             8
    LOCAL fontName , nWidth , nHeight , fnWeight , fdwCharSet , fdwItalic , fdwUnderline , fdwStrikeOut
    LOCAL aFontprops := {}
 
@@ -213,9 +212,9 @@ METHOD Props2Arr() CLASS HFont
    fdwItalic    := iif( ::Italic == Nil, - 9999 , ::Italic )
    fdwUnderline := iif( ::Underline == Nil, - 9999 , ::Underline )
    fdwStrikeOut := iif( ::StrikeOut == Nil, - 9999 , ::StrikeOut )
-   
+
    AADD (aFontprops, fontName)  && C
-   AADD (aFontprops, nWidth)    && all other of type N 
+   AADD (aFontprops, nWidth)    && all other of type N
    AADD (aFontprops, nHeight)
    AADD (aFontprops, fnWeight)
    AADD (aFontprops, fdwCharSet)
@@ -404,7 +403,7 @@ CLASS HBitmap INHERIT HObject
    DATA name
    DATA nWidth, nHeight
    DATA nTransparent    INIT -1
-   DATA nCounter        INIT 1  
+   DATA nCounter        INIT 1
 
    METHOD AddResource( name )
    METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight)
@@ -427,22 +426,22 @@ METHOD OBMP2FILE( cfilename , name ) CLASS HBitmap
    hbmp := NIL
    * Search for bitmap in object
    FOR EACH i IN ::aBitmaps
-      IF i:name == name 
+      IF i:name == name
          hbmp := i:handle
       ELSE
         * not found
         RETURN NIL
       ENDIF
    NEXT
-   
+
    hwg_SaveBitMap(cfilename, hbmp )
 
-RETURN NIL    
+RETURN NIL
 
 
 METHOD AddResource( name ) CLASS HBitmap
 /*
- *  name : resource name in container, not file name. 
+ *  name : resource name in container, not file name.
  *  returns an object to bitmap, if resource successfully added
  */
    LOCAL oBmp   && cVal
@@ -459,12 +458,12 @@ METHOD AddResource( name ) CLASS HBitmap
     * DF7BE: AddString method loads image from file or
     * binary container and added it to resource container.
    */
-   
+
    * oResCnt (Static Memvar) is object of HBinC class
    IF !Empty( oResCnt )
       IF !Empty( i := oResCnt:Get( name ) )
-       * DF7BE: 
-       * Store bmp in a temporary file 
+       * DF7BE:
+       * Store bmp in a temporary file
        * (otherwise the bmp is not loadable)
        * Load from temporary file
        *  ::handle := hwg_OpenImage( i, .T. )
@@ -473,7 +472,7 @@ METHOD AddResource( name ) CLASS HBitmap
          ::handle := hwg_OpenImage( cTmp )
       ENDIF
    ENDIF
-   
+
    /*
    IF !Empty( oResCnt ) .AND. !Empty( cVal := oResCnt:Get( name ) )
       IF !Empty( oBmp := ::AddString( name, cVal ) )
@@ -481,12 +480,12 @@ METHOD AddResource( name ) CLASS HBitmap
       ENDIF
    ENDIF
    */
-   
+
    IF Empty( ::handle )
       hwg_MsgStop("Can not add bitmap to resource container: >" + name + "<" )
       RETURN Nil
    // ELSE
-   //     hwg_MsgInfo("Bitmap resource successfully loaded >" + name + "<" )     
+   //     hwg_MsgInfo("Bitmap resource successfully loaded >" + name + "<" )
    ENDIF
    ::name   := name
    AAdd( ::aBitmaps, Self )
@@ -497,7 +496,7 @@ METHOD AddResource( name ) CLASS HBitmap
 
 METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight ) CLASS HBitmap
    LOCAL i, aBmpSize
-   
+
     * Parameters not used
     HB_SYMBOL_UNUSED(HDC)
     HB_SYMBOL_UNUSED(lTransparent)
@@ -523,7 +522,7 @@ METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight ) CLASS HBitmap
       RETURN Nil
    ENDIF
 
-   RETURN Self 
+   RETURN Self
 
 METHOD AddString( name, cVal ) CLASS HBitmap
 /*
@@ -546,10 +545,10 @@ METHOD AddString( name, cVal ) CLASS HBitmap
    /* Try to load image from file */
    ::handle := hwg_Openimage( cVal  )  && 2nd parameter not .T. !
    IF Empty( ::handle )
-      * Otherwise:   
+      * Otherwise:
       * Write image from binary container into temporary file
       * (as a bitmap file)
-       
+
 *      hb_memowrit( cTmp := "/tmp/e" + Ltrim(Str(Int(Seconds()*100))), cVal )
 *      DF7BE: Ready for multi platform use
        hb_memowrit( cTmp := hwg_CreateTempfileName() , cVal )
@@ -564,7 +563,7 @@ METHOD AddString( name, cVal ) CLASS HBitmap
       ::nHeight := aBmpSize[2]
       AAdd( ::aBitmaps, Self )
    ELSE
-      hwg_MsgStop("Bitmap not loaded >" + name + "<" ) 
+      hwg_MsgStop("Bitmap not loaded >" + name + "<" )
       RETURN Nil
    ENDIF
 
@@ -617,7 +616,7 @@ METHOD Draw( hDC, x1, y1, width, height ) CLASS HBitmap
    ELSE
       hwg_Drawtransparentbitmap( hDC, ::handle, x1, y1, ::nTransparent )
    ENDIF
-   
+
    RETURN Nil
 
 METHOD Release() CLASS HBitmap
@@ -667,19 +666,19 @@ CLASS HIcon INHERIT HObject
 ENDCLASS
 
 METHOD AddResource( name , nWidth, nHeight , nFlags, lOEM ) CLASS HIcon
-* For compatibility to WinAPI the parameters nFlags and lOEM are dummys  
+* For compatibility to WinAPI the parameters nFlags and lOEM are dummys
    LOCAL i , cTmp
-   
+
    * Variables not used
    * lPreDefined := .F.
- 
+
      * Parameters not used
     HB_SYMBOL_UNUSED(nWidth)
     HB_SYMBOL_UNUSED(nHeight)
     HB_SYMBOL_UNUSED(nFlags)
-    HB_SYMBOL_UNUSED(lOEM) 
- 
-/* 
+    HB_SYMBOL_UNUSED(lOEM)
+
+/*
    IF nWidth == nil
       nWidth := 0
    ENDIF
@@ -702,8 +701,8 @@ METHOD AddResource( name , nWidth, nHeight , nFlags, lOEM ) CLASS HIcon
    * oResCnt (Static Memvar) is object of HBinC class
    IF !Empty( oResCnt )
       IF !Empty( i := oResCnt:Get( name ) )
-       * DF7BE: 
-       * Store icon in a temporary file 
+       * DF7BE:
+       * Store icon in a temporary file
        * (otherwise the icon is not loadable)
        * Load from temporary file
        *  ::handle := hwg_OpenImage( i, .T. )
@@ -724,13 +723,13 @@ METHOD AddResource( name , nWidth, nHeight , nFlags, lOEM ) CLASS HIcon
 METHOD AddFile( name , nWidth, nHeight ) CLASS HIcon
 
    LOCAL i, aBmpSize
-   
+
    IF nWidth == nil
       nWidth := 0
    ENDIF
    IF nHeight == nil
       nHeight := 0
-   ENDIF   
+   ENDIF
 
    For EACH i IN  ::aIcons
       IF i:name == name
@@ -768,16 +767,16 @@ METHOD AddFile( name , nWidth, nHeight ) CLASS HIcon
    ENDIF
 
    RETURN Self
-   
-   
+
+
  /* Added by DF7BE
  name : Name of resource
- cVal : Binary contents of *.ico file 
+ cVal : Binary contents of *.ico file
  */
 METHOD AddString( name, cVal , nWidth, nHeight ) CLASS HIcon
 
  LOCAL i , cTmp , aBmpSize
- 
+
    IF nWidth == nil
       nWidth := 0
    ENDIF
@@ -807,9 +806,9 @@ METHOD AddString( name, cVal , nWidth, nHeight ) CLASS HIcon
       hwg_MsgStop("Can not load icon: >" + name + "<")
       RETURN Nil
    ENDIF
-  
-   RETURN Self  
-   
+
+   RETURN Self
+
 
 METHOD RELEASE() CLASS HIcon
    LOCAL i, nlen := Len( ::aIcons )
@@ -947,16 +946,16 @@ FUNCTION hwg_BmpFromRes( cBmp )
 
    RETURN handle
 
-/* 
+/*
 
  Functions for Binary Container handling
- List of array elements: 
+ List of array elements:
  OBJ_NAME      1
  OBJ_TYPE      2
  OBJ_VAL       3
  OBJ_SIZE      4
  OBJ_ADDR      5
-*/   
+*/
 
 FUNCTION hwg_SetResContainer( cName )
 * Returns .T., if container is opened successfully
@@ -978,8 +977,8 @@ FUNCTION hwg_GetResContainerOpen()
 IF !Empty( oResCnt )
  RETURN .T.
 ENDIF
-RETURN .F.   
-   
+RETURN .F.
+
 FUNCTION hwg_GetResContainer()
 * Returns the object of opened container,
 * otherwise NIL
@@ -1007,7 +1006,7 @@ RETURN .F.
 
 FUNCTION hwg_ExtractResContItemType(cname)
 * Extracts the type of item with name cname of an opened
-* container 
+* container
 * Returns the type (bmp,png,ico,jpg)
 * as a string.
 * Empty string "", of container not open or no match
@@ -1025,7 +1024,7 @@ FUNCTION hwg_ResContItemPosition(cname)
 LOCAL i := 0
 IF hwg_GetResContainerOpen()
  i := oResCnt:GetPos( cname )
-ENDIF 
+ENDIF
 RETURN i
 
 FUNCTION hwg_Bitmap2tmpfile(objBitmap , cname , cfextn)
@@ -1053,22 +1052,22 @@ LOCAL ctmpfilename
 
 IF cfextn == NIL
  cfextn := "bmp"
-ENDIF 
+ENDIF
 
  ctmpfilename := hwg_CreateTempfileName("img","." + cfextn )
  objBitmap:OBMP2FILE( ctmpfilename , cname )
-  
-  
+
+
 IF .NOT. FILE(ctmpfilename)
  RETURN ""
 ENDIF
 
-RETURN ctmpfilename 
+RETURN ctmpfilename
 
 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 * End of Binary Container functions
 * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   
+
 
    EXIT PROCEDURE CleanDrawWidg
    LOCAL i
@@ -1097,20 +1096,20 @@ RETURN ctmpfilename
 /*
    DF7BE: only needed for WinAPI, on GTK/LINUX charset is UTF-8 forever.
    All other attributes are not modified.
- */   
+ */
 FUNCTION hwg_FontSetCharset ( oFont, nCharSet  )
    LOCAL i, nlen := Len( oFont:aFonts )
-   
-   IF nCharSet == NIL .OR. nCharSet == -1 
+
+   IF nCharSet == NIL .OR. nCharSet == -1
     RETURN oFont
    ENDIF
-   
+
    oFont:charset := nCharSet
-   
+
  FOR i := 1 TO nlen
         oFont:aFonts[ i ]:CharSet := nCharSet
  NEXT
-  
+
 RETURN oFont
 
 
@@ -1143,8 +1142,8 @@ FUNCTION hwg_ShowBitmap(cbmp,cbmpname,ncolbg,ncolfg)
 * ncolbg    : Background color (system, if NIL)
 * ncolfg    : foreground colors (ignored, if no background color is set)
 * You can use
-* hwg_ColorC2N( cColor ): 
-*  Converts color representation from string to numeric format. 
+* hwg_ColorC2N( cColor ):
+*  Converts color representation from string to numeric format.
 *  cColor - a string in #RRGGBB
 
 LOCAL frm_bitmap , oButton1 , nx , ny , oBitmap
@@ -1158,11 +1157,11 @@ LOCAL obmp, ldefc
 ldefc := .F.
 IF ncolbg != NIL
   ldefc := .T.
-ENDIF 
+ENDIF
 
 IF ncolfg != NIL
   ldefc := .T.
-ENDIF 
+ENDIF
 
 obmp := HBitmap():AddString( cbmpname , cbmp )
 
@@ -1174,11 +1173,11 @@ ny := hwg_GetBitmapHeight( obmp:handle )
 
 IF nx > 1277
   nx := 1277
-ENDIF 
+ENDIF
 
 IF ny > 640
   ny := 640
-ENDIF 
+ENDIF
 
 IF ldefc
 
@@ -1188,16 +1187,16 @@ IF ldefc
      STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
 
    @ 747,667 SAY oLabel1 CAPTION "Size:  x:"  SIZE 87,22 ;
-        COLOR ncolfg  BACKCOLOR ncolbg ;  
+        COLOR ncolfg  BACKCOLOR ncolbg ;
         STYLE SS_RIGHT
 
    @ 866,667 SAY oLabel2 CAPTION ALLTRIM(STR(nx))  SIZE 80,22  ;
-        COLOR ncolfg  BACKCOLOR ncolbg  
+        COLOR ncolfg  BACKCOLOR ncolbg
    @ 988,667 SAY oLabel3 CAPTION "y:"  SIZE 80,22 ;
         COLOR ncolfg  BACKCOLOR ncolbg ;
-        STYLE SS_RIGHT   
+        STYLE SS_RIGHT
    @ 1130,667 SAY oLabel4 CAPTION ALLTRIM(STR(ny))  SIZE 80,22 ;
-        COLOR ncolfg  BACKCOLOR ncolbg ;   
+        COLOR ncolfg  BACKCOLOR ncolbg ;
 
 
 #ifdef __GTK__
@@ -1209,25 +1208,25 @@ IF ldefc
         SHOW obmp OF frm_bitmap
 #endif
 
- 
+
    @ 590,663 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
         COLOR ncolfg  BACKCOLOR ncolbg ;
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK { || frm_bitmap:Close() }
 
 ELSE
-* System colors 
+* System colors
 
   INIT DIALOG frm_bitmap TITLE "Bitmap Image" ;
     AT 20,20 SIZE 1324,772 ;
      STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
 
    @ 747,667 SAY oLabel1 CAPTION "Size:  x:"  SIZE 87,22 ;
-        STYLE SS_RIGHT   
-   @ 866,667 SAY oLabel2 CAPTION ALLTRIM(STR(nx))  SIZE 80,22   
+        STYLE SS_RIGHT
+   @ 866,667 SAY oLabel2 CAPTION ALLTRIM(STR(nx))  SIZE 80,22
    @ 988,667 SAY oLabel3 CAPTION "y:"  SIZE 80,22 ;
-        STYLE SS_RIGHT   
-   @ 1130,667 SAY oLabel4 CAPTION ALLTRIM(STR(ny))  SIZE 80,22    
+        STYLE SS_RIGHT
+   @ 1130,667 SAY oLabel4 CAPTION ALLTRIM(STR(ny))  SIZE 80,22
 
 
 #ifdef __GTK__
@@ -1239,7 +1238,7 @@ ELSE
         SHOW obmp OF frm_bitmap
 #endif
 
- 
+
    @ 590,663 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK { || frm_bitmap:Close() }
@@ -1275,14 +1274,14 @@ FUNCTION hwg_BMPSetMonochromePalette(pcBMP)
 * CBMP := HWG_BMPNEWIMAGE(nx, ny, 1, 2, 2835, 2835 )
 * HWG_BMPDESTROY()
 * CBMP := hwg_BMPSetMonochromePalette(CBMP)
-LOCAL npoffset, CBMP 
+LOCAL npoffset, CBMP
 CBMP := pcBMP
 * Get Offset to palette data, expected value by default is 54
 npoffset := HWG_BMPCALCOFFSPAL()
 CBMP := hwg_ChangeCharInString(CBMP,npoffset     , CHR(255) )
 CBMP := hwg_ChangeCharInString(CBMP,npoffset + 1 , CHR(255) )
 CBMP := hwg_ChangeCharInString(CBMP,npoffset + 2 , CHR(255) )
-CBMP := hwg_ChangeCharInString(CBMP,npoffset + 3 , CHR(255) ) 
+CBMP := hwg_ChangeCharInString(CBMP,npoffset + 3 , CHR(255) )
 RETURN CBMP
 
 
@@ -1300,12 +1299,12 @@ RETURN oBmp
 *   End of Functions for raw bitmap support
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   
+
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~
 *   Functions for QR encoding
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-/* Convert QR code to bitmap */ 
+/* Convert QR code to bitmap */
 FUNCTION hwg_QRCodetxt2BPM(cqrcode)
 
 LOCAL cBMP , nlines, ncol , x , i , n
@@ -1313,10 +1312,10 @@ LOCAL leofq
 
 IF cqrcode == NIL
  RETURN ""
-ENDIF 
+ENDIF
 
 * Count the columns in QR code text string
-* ( Appearance of line end in first line ) 
+* ( Appearance of line end in first line )
 ncol   := AT(CHR(10),cqrcode ) - 1
 
 
@@ -1334,7 +1333,7 @@ FOR i := 1 TO LEN(cqrcode)
      ELSE
      * Count line ending
        nlines := nlines + 1
-     ENDIF 
+     ENDIF
   ENDIF
  ENDIF
 
@@ -1349,7 +1348,7 @@ HWG_BMPDESTROY()
 cBMP := hwg_BMPSetMonochromePalette(cBMP)
 
 
-* Convert to bitmap 
+* Convert to bitmap
 
 
 leofq := .F.
@@ -1374,7 +1373,7 @@ FOR i := 1 TO LEN(cqrcode)
   ENDIF && is CHR(10)
  ENDIF && .NOT. leofq
 
-NEXT 
+NEXT
 
 
 RETURN cBMP
@@ -1382,7 +1381,7 @@ RETURN cBMP
 * Set a single pixel into QR code bitmap string
 * Background color is white, pixel color is black
 FUNCTION hwg_QR_SetPixel(cmbp,x,y,xw,yh)
-LOCAL cbmret, noffset, nbit , y1 
+LOCAL cbmret, noffset, nbit , y1
 LOCAL nolbyte
 LOCAL nbline, nbyt , nline , nbint
 
@@ -1391,7 +1390,7 @@ cbmret := cmbp
 * Range check
 IF ( x > xw ) .OR. ( y > yh ) .OR. ( x < 1 ) .OR. ( y < 1 )
  RETURN cbmret
-ENDIF 
+ENDIF
 
 * Add 1 to pixel data offset, this is done with call of HWG_SETBITBYTE()
 noffset := hwg_BMPCalcOffsPixArr(2);  && For 2 colors
@@ -1412,7 +1411,7 @@ nbyt := ( y1 - 1 ) *  nline
 nbline := INT( x / 8 )
 nbyt := nbyt + nbline + 1   && Added 1 padding byte at begin of a line
 
-nbint :=  INT( x % 8 ) // + 1  
+nbint :=  INT( x % 8 ) // + 1
 
 * Reverse x value in a byte
 nbint := 8 - nbint + 1 && 1 ... 8
@@ -1425,14 +1424,14 @@ ENDIF
 * Extract old byte value
 nolbyte := ASC(SUBSTR(cbmret,noffset + nbyt,1))
 
-nbit := CHR(HWG_SETBITBYTE(0,nbint,1))  
+nbit := CHR(HWG_SETBITBYTE(0,nbint,1))
 nbit := CHR(HWG_BITOR_INT(ASC(nbit), nolbyte) )
 
 cbmret := hwg_ChangeCharInString(cbmret,noffset + nbyt , nbit)
 
 RETURN cbmret
 
-* Increases the size of a QR code image 
+* Increases the size of a QR code image
 * cqrcode : The QR code in text format
 * nzoom   : The zoom factor 1 ... n
 * Return the new QR code text string
@@ -1446,7 +1445,7 @@ ENDIF
 
 IF nzoom < 1
  RETURN cqrcode
-ENDIF  
+ENDIF
 
 cBMP  := ""
 cLine := ""
@@ -1464,13 +1463,13 @@ FOR i := 1 TO LEN(cqrcode)
      * Count line ending and start with new line
 
      * Replicate line with zoom factor
-       FOR j := 1 TO nzoom 
+       FOR j := 1 TO nzoom
         cBMP  := cBMP + cLine + CHR(10)
        NEXT
-       * 
-       cLine := ""   
+       *
+       cLine := ""
   ELSE  && SUBSTR " "
-  cLine := cLine + REPLICATE(SUBSTR(cqrcode,i,1),nzoom) 
+  cLine := cLine + REPLICATE(SUBSTR(cqrcode,i,1),nzoom)
   ENDIF && is CHR(10)
  ENDIF && .NOT. leofq
 
@@ -1485,7 +1484,7 @@ cBMP  := cBMP + CHR(10)
 RETURN cBMP
 
 * ====
-* Add border to QR code image 
+* Add border to QR code image
 * cqrcode : The QR code in text format
 * nborder : The number of border pixels to add 1 ... n
 * Return the new QR code text string
@@ -1499,11 +1498,11 @@ ENDIF
 
 IF nborder < 1
  RETURN cqrcode
-ENDIF  
+ENDIF
 
 cBMP  := ""
 cLineOut := ""
- 
+
 leofq := .F.
 * i:        Position in cqrcode
 
@@ -1535,7 +1534,7 @@ NEXT
 
   FOR i := 1 TO nborder
    cBMP  := cBMP + cLine
-  NEXT 
+  NEXT
 
 RETURN cBMP
 
@@ -1549,7 +1548,7 @@ LOCAL aret, xSize, ySize, i, leofq
   leofq := .F.
 
   xSize := AT(CHR(10),cqrcode)
-  
+
   FOR i := 1 TO LEN(cqrcode)
  IF .NOT. leofq
    IF SUBSTR(cqrcode,i,1) == CHR(10)
@@ -1559,15 +1558,15 @@ LOCAL aret, xSize, ySize, i, leofq
     ENDIF
     * Count lines
     ySize := ySize + 1
-    
+
    ENDIF && is CHR(10)
  ENDIF && .NOT. leofq
 
 NEXT
-  
+
   AADD(aret,xSize)
   AADD(aret,ySize)
- 
+
 RETURN aret
 
 *   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -8,10 +8,9 @@
  * www - http://sites.uol.com.br/culikr/
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "inkey.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 #define TRANSPARENT 1
@@ -55,7 +54,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    * Parameters not used
    HB_SYMBOL_UNUSED(cCaption)
-   HB_SYMBOL_UNUSED(lTransp)   
+   HB_SYMBOL_UNUSED(lTransp)
 
    Default  aItem to {}
    ::Super:New( oWndParent,nId,nStyle,nLeft,nTop,nWidth,nHeight,oFont,bInit, ;

@@ -13,9 +13,8 @@
  * www - http://www.kresin.ru
  * Copyright 2020-2023 Wilfried Brunken, DF7BE
 */
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 * ================================= *
 FUNCTION hwg_IsLeapYear ( nyear )
@@ -43,11 +42,11 @@ RETURN cPath
 
 FUNCTION hwg_CreateTempfileName( cPrefix , cSuffix )
  LOCAL cPre , cSuff
-  
+
   cPre  := IIF( cPrefix == NIL , "e" , cPrefix )
   cSuff := IIF( cSuffix == NIL , ".tmp" , cSuffix )
   RETURN hwg_CompleteFullPath( hwg_GetTempDir() ) + cPre + Ltrim(Str(Int(Seconds()*100))) + cSuff
-  
+
 FUNCTION hwg_CurDrive
 #ifdef __PLATFORM__WINDOWS
 RETURN hb_CurDrive() + ":\"
@@ -68,14 +67,14 @@ RETURN SUBSTR(hwg_GetUTCTimeDate(), 3 , 8 )
 
 FUNCTION hwg_GetUTCTime
 * Format: HH:MM:SS
-RETURN SUBSTR(hwg_GetUTCTimeDate(), 12 , 8 ) 
+RETURN SUBSTR(hwg_GetUTCTimeDate(), 12 , 8 )
 
-* ================================= * 
+* ================================= *
 FUNCTION hwg_cHex2Bin (chexstr,cdebug)
 * Converts a hex string to binary
 * Returns empty string, if error
 * or number of hex characters is
-* odd. 
+* odd.
 * chexstr:
 * Valid characters:
 * 0 ... 9 , A ... F , a ... f
@@ -99,9 +98,9 @@ nvalue := 0
 nodd := 0
 IF (chexstr == NIL)
  RETURN ""
-ENDIF 
+ENDIF
 chexstr := UPPER(chexstr)
- IF ldebug 
+ IF ldebug
   hwg_xvalLog(chexstr)
  ENDIF
 FOR ncount := 1 TO LEN(chexstr)
@@ -110,9 +109,9 @@ FOR ncount := 1 TO LEN(chexstr)
   nodd := nodd + 1  && Count valid chars for odd/even check
   DO CASE
    CASE chs == "0"
-    nvalu := 0 
+    nvalu := 0
    CASE chs == "1"
-    nvalu := 1   
+    nvalu := 1
    CASE chs == "2"
     nvalu := 2
    CASE chs == "3"
@@ -140,7 +139,7 @@ FOR ncount := 1 TO LEN(chexstr)
    CASE chs == "E"
     nvalu := 14
    CASE chs == "F"
-    nvalu := 15    
+    nvalu := 15
    ENDCASE
     IF lpos
      * MSB
@@ -153,28 +152,28 @@ FOR ncount := 1 TO LEN(chexstr)
      cbin := cbin + CHR(nvalue)
      * nvalue := 0
     ENDIF
-   ENDIF  && IF 0..9,A..F 
+   ENDIF  && IF 0..9,A..F
   NEXT
   * if odd, return error
   IF ( nodd % 2 ) != 0
    RETURN ""
   ENDIF
-  IF ldebug 
+  IF ldebug
     hwg_xvalLog(cbin)
-  ENDIF  
+  ENDIF
 RETURN cbin
 
 
-* ================================= * 
+* ================================= *
 FUNCTION hwg_HEX_DUMP (cinfield, npmode, cpVarName)
 * Hex dump from a C field (binary)
 * into C field (Character type).
 * In general,
 * every byte value (2 hex digits)
 * separated by a blank.
-* 
+*
 * npmode:
-* Selects the output format. 
+* Selects the output format.
 * 0 : All hex values in one line,
 *     without quotes and trailing EOL.
 * 1 : 16 bytes per line,
@@ -183,7 +182,7 @@ FUNCTION hwg_HEX_DUMP (cinfield, npmode, cpVarName)
 *     not inserted in quotes,
 *     but columns with printable
 *     characters are separated with
-*     ">> " in every line. 
+*     ">> " in every line.
 * 2 : As variable definition
 *     for copy and paste into prg source
 *     code file, 16 bytes per line,
@@ -207,11 +206,11 @@ FUNCTION hwg_HEX_DUMP (cinfield, npmode, cpVarName)
 * Preset for variable name,
 * Default is "cVar".
 * For other modes, this parameter
-* is ignored.     
+* is ignored.
 *
 * Sample writing hex dump to text file
 * MEMOWRIT("hexdump.txt",HEX_DUMP(varbuf))
-* ================================= *  
+* ================================= *
 LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccprint, ;
    cccprline, ccchexline, nmode , cVarName , ncomma
  IIF(npmode == NIL , nmode := 2 , nmode := npmode )
@@ -235,7 +234,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
    ELSE
      coutfield := ""  && collects out line
    ENDIF
-  ENDIF 
+  ENDIF
   // cccprint := ""   && collects printable char
   cccprline := ""  && collects printable chars
   ccchexline := "" && collects hex chars
@@ -254,7 +253,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
       ELSE
         cccprint := cccchar
       ENDIF
-    ELSE 
+    ELSE
      * other characters represented by "."
      cccprint := "."
     ENDIF
@@ -293,7 +292,7 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
        coutfield := coutfield + ccchexline + hwg_EOLStyle()
     ENDCASE
 
-      * ready for new line  
+      * ready for new line
       nlinepos := 0
       cccprline := ""
       IF nmode == 2
@@ -326,16 +325,16 @@ LOCAL nlength, coutfield,  nindexcnt , cccchar, nccchar, ccchex, nlinepos, cccpr
     ENDCASE
 
   ENDIF
-RETURN coutfield 
- 
+RETURN coutfield
+
 * ================================= *
 FUNCTION hwg_NUMB2HEX (nascchar)
-* Converts 
+* Converts
 * 0 ... 255 TO HEX 00 ... FF
 * (2 Bytes String)
 * ================================= *
 LOCAL chexchars := ;
-   {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"}  
+   {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"}
 LOCAL n1, n2
   * Range 0 ... 255
   IF nascchar > 255
@@ -344,9 +343,9 @@ LOCAL n1, n2
   IF nascchar < 0
    RETURN "  "
   ENDIF
-  * split bytes 
+  * split bytes
   * MSB: n1, LSB: n2
-   n1 := nascchar / 16 
+   n1 := nascchar / 16
    n2 := nascchar % 16
    * combine return value
 RETURN chexchars[ n1 + 1 ] + chexchars[ n2 + 1 ]
@@ -364,7 +363,7 @@ FUNCTION hwg_EOLStyle
 * ================================= *
 
 #ifdef __PLATFORM__WINDOWS
- RETURN CHR(13) + CHR(10)  
+ RETURN CHR(13) + CHR(10)
 #else
  RETURN CHR(10)
 #endif
@@ -393,7 +392,7 @@ FUNCTION hwg_BaseName ( pFullpath )
  ENDIF
 
  RETURN ALLTRIM(cFilename)
- 
+
 * ================================= *
 FUNCTION hwg_Dirname ( pFullpath )
 * ================================= *
@@ -425,7 +424,7 @@ FUNCTION hwg_Dirname ( pFullpath )
        * recent directory (only filename)
        * or only drive letter
        * for example C:name
-       * ==> set directory with "cd".   
+       * ==> set directory with "cd".
        IF SUBSTR(sFullpath,2,1) == ":"
          * Only drive letter with ":" (for example C: )
          sFilePath := SUBSTR(sFullpath,1,2)
@@ -461,12 +460,12 @@ FUNCTION hwg_CleanPathname ( pSwithdbl )
  ENDDO
  RETURN sSwithdbl
 
-* ================================= * 
+* ================================= *
 FUNCTION hwg_Array_Len(ato_check)
 * ================================= *
 IF ato_check == NIL
  RETURN 0
-ENDIF 
+ENDIF
 RETURN IIF(EMPTY(ato_check), 0 , LEN(ato_check)  )
 
 FUNCTION hwg_MemoCmp(mmemo1,mmemo2)
@@ -479,7 +478,7 @@ IF nlen1 != nlen2
  RETURN .F.
 ENDIF
 DO WHILE ( nnum <= nlen1 ) .AND. lende
- IF SUBSTR(mmemo1,nnum,1) != SUBSTR(mmemo2,nnum,1) 
+ IF SUBSTR(mmemo1,nnum,1) != SUBSTR(mmemo2,nnum,1)
    lende := .F.
  ENDIF
  nnum := nnum + 1
@@ -515,11 +514,11 @@ LOCAL mvarbuff , varbuf , oModDlg , oEdit , owb1 , owb2 , bMemoMod
 
    mvarbuff := mpmemo
    varbuf   := mpmemo
-   
+
    INIT DIALOG oModDlg title cTextTitME AT 0, 0 SIZE 400, 300 ON INIT { |o|o:center() }
 
    IF oHCfont == NIL
-    @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240   
+    @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240
    ELSE
     @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
        FONT  oHCfont
@@ -628,12 +627,12 @@ RETURN cm * 0.3937
 FUNCTION  hwg_FT2METER( ft )
 RETURN ft * 0.3048
 
-FUNCTION hwg_METER2FT( m )  
+FUNCTION hwg_METER2FT( m )
 RETURN m * 3.2808
 
 * mile / km
 
-FUNCTION hwg_MILES2KM( mi ) 
+FUNCTION hwg_MILES2KM( mi )
 RETURN mi * 1.6093
 
 FUNCTION hwg_KM2MILES( km )
@@ -644,15 +643,15 @@ RETURN  km * 0.6214
 FUNCTION hwg_SQIN2SQCM( sqin )
 RETURN sqin * 6.4516
 
-FUNCTION hwg_SQCM2SQIN( sqcm ) 
+FUNCTION hwg_SQCM2SQIN( sqcm )
 RETURN sqcm * 0.155
 
 * sqft / sq m
 
-FUNCTION hwg_SQFT2SQM( sqft ) 
+FUNCTION hwg_SQFT2SQM( sqft )
 RETURN sqft * 0.0929
 
-FUNCTION hwg_SQM2SQFT( sqm ) 
+FUNCTION hwg_SQM2SQFT( sqm )
 RETURN sqm * 10.7642
 
 * usoz / c.c. (Cubic cm)
@@ -660,15 +659,15 @@ RETURN sqm * 10.7642
 FUNCTION hwg_USOZ2CC( usoz )
 RETURN usoz * 29.574
 
-FUNCTION hwg_CC2USOZ( cc ) 
+FUNCTION hwg_CC2USOZ( cc )
 RETURN cc * 0.0338
 
 * usgal / liter
 
-FUNCTION hwg_USGAL2L( usgal ) 
+FUNCTION hwg_USGAL2L( usgal )
 RETURN usgal * 3.7854
 
-FUNCTION hwg_L2USGAL( l ) 
+FUNCTION hwg_L2USGAL( l )
 RETURN l * 0.2642
 
 * lb / kg
@@ -676,12 +675,12 @@ RETURN l * 0.2642
 FUNCTION  hwg_LB2KG( lb )
 RETURN lb * 0.4536
 
-FUNCTION hwg_KG2LB( kg ) 
+FUNCTION hwg_KG2LB( kg )
 RETURN kg * 2.2046
 
 * oz / g
 
-FUNCTION hwg_OZ2GR( oz ) 
+FUNCTION hwg_OZ2GR( oz )
 RETURN oz * 28.35
 
 FUNCTION hwg_GR2OZ( gr )
@@ -702,7 +701,7 @@ RETURN km * 0.5399568034557235
 FUNCTION hwg_KEYESCCLDLG (odlg)
 * ================================= *
  odlg:Close()
-RETURN NIL 
+RETURN NIL
 
 * ================================= *
 FUNCTION hwg_ShowHelp(cHelptxt,cTitle,cClose,opFont,blmodus)
@@ -711,10 +710,10 @@ FUNCTION hwg_ShowHelp(cHelptxt,cTitle,cClose,opFont,blmodus)
  LOCAL oDlg , oheget
 
 * T: not modal (default is .F.)
- IF blmodus == NIL 
+ IF blmodus == NIL
   blmodus := .F.
  ENDIF
- 
+
  IF cTitle == NIL
   cTitle := "No title for help window"
  ENDIF
@@ -725,17 +724,17 @@ ENDIF
 
 IF cClose == NIL
  cClose := "Close"
-ENDIF 
- 
+ENDIF
+
 IF opFont == NIL
 #ifdef __PLATFORM__WINDOWS
    PREPARE FONT opFont NAME "Courier" WIDTH 0 HEIGHT -16
 #else
-   PREPARE FONT opFont NAME "Sans" WIDTH 0 HEIGHT 12 
+   PREPARE FONT opFont NAME "Sans" WIDTH 0 HEIGHT 12
 #endif
-ENDIF 
+ENDIF
 
-  
+
    INIT DIALOG oDlg TITLE cTitle ;
         AT 204,25 SIZE 777, 440 FONT opFont
 
@@ -743,22 +742,22 @@ ENDIF
    @ 1,3 GET oheget VAR cHelptxt SIZE 772,384 NOBORDER ;
       STYLE WS_VSCROLL + ES_AUTOHSCROLL + ES_MULTILINE + ES_READONLY + WS_BORDER + ES_NOHIDESEL
 
-   @ 322,402 BUTTON cClose SIZE 100,32 ; 
+   @ 322,402 BUTTON cClose SIZE 100,32 ;
     ON CLICK {||oDlg:Close() }
 
-   IF blmodus  
+   IF blmodus
     ACTIVATE DIALOG oDlg NOMODAL
    ELSE
     ACTIVATE DIALOG oDlg
    ENDIF
 
- SET KEY 0,VK_ESCAPE TO  
+ SET KEY 0,VK_ESCAPE TO
 RETURN NIL
 
 * =======================================================
 FUNCTION hwg_PI()
 * =======================================================
-* high accuracy  
+* high accuracy
 RETURN 3.141592653589793285
 
 * =======================================================
@@ -768,7 +767,7 @@ LOCAL cres
   IF xParchk == NIL
    cres := "NIL"
   ELSE
-   cres := "not NIL" 
+   cres := "not NIL"
   ENDIF
 RETURN cres
 
@@ -779,14 +778,14 @@ LOCAL cres
  IF ltoCheck
    cres := ".T."
   ELSE
-   cres := ".F." 
+   cres := ".F."
   ENDIF
 RETURN cres
 
 * =======================================================
 FUNCTION hwg_IsNIL(xpara)
 * =======================================================
- 
+
  IF xpara == NIL
   RETURN .T.
  ENDIF
@@ -816,7 +815,7 @@ ELSE
    ELSE
      hwg_MsgInfo("NOT NIL",ctitle)
    ENDIF
-ENDIF    
+ENDIF
 RETURN lrvalue
 
 
@@ -830,8 +829,8 @@ LOCAL oFont
 #ifdef __PLATFORM__WINDOWS
  PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
 #else
- PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 12 
-#endif 
+ PREPARE FONT oFont NAME "Sans" WIDTH 0 HEIGHT 12
+#endif
 
 RETURN oFont
 
@@ -860,13 +859,13 @@ FUNCTION hwg_leading0(ce)
 LOCAL vni , e1 , crvalue, lstop
 
 lstop := .F.
- 
+
   e1 := ce
   IF LEN(e1) == 0
      RETURN ""
   ENDIF
   FOR vni := 1 TO LEN(ce)
-   IF .NOT. lstop  
+   IF .NOT. lstop
      if SUBSTR(e1,vni,1) == " "
       e1 := STUFF(e1,vni,1,"0")  && modify character at position vni to "0"
      ELSE
@@ -892,13 +891,13 @@ FUNCTION hwg_checkANSIDate(cANSIDate)
 * Check, if an ANSI Date is valid.
 * cANSIDate: ANSI date as string
 * of Format YYYYMMDD
-* 
+*
 * =================================
 LOCAL ddate, cdate
 IF cANSIDate == NIL
  RETURN .F.
 ENDIF
-cANSIDate := ALLTRIM(cANSIDate) 
+cANSIDate := ALLTRIM(cANSIDate)
 IF EMPTY(cANSIDate)
  RETURN .F.
 ENDIF
@@ -939,18 +938,18 @@ nday   := DAY(dDate)
     IF nmonth <= 2
        nmonth := nmonth + 12
        nyear :=  nyear - 1
-    ENDIF 
+    ENDIF
 
    ngreg :=  ( nyear / 400 ) - ( nyear / 100 ) + ( nyear / 4 )  && Gregorian calendar
 
 RETURN 2400000.5 + 365 * nyear - 679004 + ngreg ;
            + INT(30.6001 * ( nmonth + 1 )) + nday + ( nhour / 24 ) ;
            + ( nminutes / 1440 ) + ( nseconds / 86400 )
-   
-   
+
+
 * =================================
 FUNCTION hwg_JulianDay2Date(z)
-* Converts julian date of mem files into 
+* Converts julian date of mem files into
 * String , Format YYYYMMDD (ANSI)
 * z: double (of type N)
 * Returns string
@@ -969,21 +968,21 @@ LOCAL njoff , nRound_4 , nFour , nYear , d , d1 , i , jz  , sz ,  k ,  cYear ,  
  d  := z - nRound_4
  i  := 1
  d1 := 0
-   DO WHILE (d1 >= 0) .AND. (i < 5) 
-      IF i == 1 
+   DO WHILE (d1 >= 0) .AND. (i < 5)
+      IF i == 1
        jz := 366
       ELSE
        jz := 365
       ENDIF
       d1 := d - jz
-      IF d1 >= 0 
+      IF d1 >= 0
         d := d1
         nYear := nYear + 1
       ENDIF
      i := i + 1
     ENDDO
     nYear := nYear - njoff
-    cYear := STR( nYear , 4 , 0 )   
+    cYear := STR( nYear , 4 , 0 )
 
     cYear := hwg_leading0(cYear)
     * Check for valid year range
@@ -991,8 +990,8 @@ LOCAL njoff , nRound_4 , nFour , nYear , d , d1 , i , jz  , sz ,  k ,  cYear ,  
        RETURN ""
     ENDIF
 
-    d := d + 1;     && 0 .. 364 => 1 .. 365 
-   
+    d := d + 1;     && 0 .. 364 => 1 .. 365
+
     IF ( nYear % 4 ) == 0   && Leap year 1901 ... 2099
       sz := -1
     ELSE
@@ -1003,7 +1002,7 @@ LOCAL njoff , nRound_4 , nFour , nYear , d , d1 , i , jz  , sz ,  k ,  cYear ,  
          cMonth := "02"
          cday := "29"
     ELSE
-         * All other days 
+         * All other days
          IF (d > 60) .AND. (sz == -1)
            d := d - 1
          ENDIF  && Correction Leap Year
@@ -1057,12 +1056,12 @@ LOCAL njoff , nRound_4 , nFour , nYear , d , d1 , i , jz  , sz ,  k ,  cYear ,  
              k := 334
          ENDIF
          d := d - k
-         cday := STR( d , 2 ,0 ) 
+         cday := STR( d , 2 ,0 )
         ENDIF
    cday := hwg_leading0(cday)
-   
-   * Check for Errors 
-   * Could be for example "20991232". 
+
+   * Check for Errors
+   * Could be for example "20991232".
    IF .NOT. hwg_checkANSIDate(cYear + cMonth + cday)
     RETURN ""
    ENDIF
@@ -1093,7 +1092,7 @@ IF cfilename == NIL
 ENDIF
 IF cext == NIL
  RETURN cfilename
-ENDIF 
+ENDIF
 IF EMPTY(cext)
  RETURN cfilename
 ENDIF
@@ -1110,7 +1109,7 @@ ENDIF
 nposi := RAT(ce,cfilename)
 IF nposi == 0
  fna := fna + "." + cext
-ENDIF 
+ENDIF
 RETURN fna
 
 
@@ -1127,7 +1126,7 @@ IF xxxx == NIL
  crtype := "U"
 ELSE
  crtype := VALTYPE(xxxx)
-ENDIF 
+ENDIF
 RETURN crtype
 
 
@@ -1140,8 +1139,8 @@ ctyp := hwg_ValType(xxx)
 
  DO CASE
    CASE ctyp == "U"
-     cval := "NIL"    
-   CASE ctyp == "A" 
+     cval := "NIL"
+   CASE ctyp == "A"
      cval := "<ARRAY>"
    CASE ctyp == "L"
      cval := IIF(xxx, ".T.",".F.")
@@ -1152,10 +1151,10 @@ ctyp := hwg_ValType(xxx)
    CASE ctyp == "D"
      cval := DTOS(xxx)
    CASE ctyp == "O"
-     cval := "<OBJECT>"   
+     cval := "<OBJECT>"
    OTHERWISE
       cval := "<UNKNOWN>"
-  ENDCASE 
+  ENDCASE
 RETURN cval
 
 FUNCTION hwg_xvalMsg(xxx,cttype,cttval,cttitle)
@@ -1168,7 +1167,7 @@ IF cttval == NIL
 ENDIF
 IF cttitle == NIL
  cttitle := "Debug"
-ENDIF 
+ENDIF
 hwg_MsgInfo(cttype + hwg_ValType(xxx) + CHR(10) +  cttval + hwg_xVal2C(xxx) )
 
 RETURN NIL
@@ -1187,7 +1186,7 @@ IF cttitle == NIL
 ENDIF
 IF cfilename == NIL
  cfilename := "a.log"
-ENDIF 
+ENDIF
 hwg_WriteLog(cttype + hwg_ValType(xxx) + " " +  cttval + hwg_xVal2C(xxx), cfilename )
 RETURN NIL
 
@@ -1197,7 +1196,7 @@ LOCAL cout, i
 
 IF cinp == NIL
  RETURN ""
-ENDIF 
+ENDIF
 
 IF cval == NIL
  RETURN cinp
@@ -1271,7 +1270,7 @@ LOCAL cret , ipos , csingle, lpair, lignore
    CASE csingle == "F"
      cret := cret + "1111 "
    OTHERWISE
-     lignore := .T.   
+     lignore := .T.
   ENDCASE
   * Ignore invalid character
   IF .NOT. lignore
@@ -1280,7 +1279,7 @@ LOCAL cret , ipos , csingle, lpair, lignore
    ENDIF
    * toggle for hex pair to add a space
    lpair := .NOT. lpair
-  ENDIF   
+  ENDIF
  NEXT
 
 
@@ -1300,7 +1299,7 @@ FUNCTION hwg_COUNT_CHAR(stri,such)
 * in "stri".
 * This function has a subset
 * of parameters of the function
-* AFTERATNUM() for better handling.  
+* AFTERATNUM() for better handling.
   LOCAL l,i,c,t
   l := LEN (stri)
   IF l == 0
@@ -1338,7 +1337,7 @@ FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper)
 * pFiext  : The new file extension
 * lupper  : Windows only (parameter ignored on UNIX/LINUX):
 *           Set to .T. , if extension is set to upper case
-*           .F. : preserve case (default)  
+*           .F. : preserve case (default)
 *
 * Sample call: hwg_ProcFileExt("TEST.TXT","PRG")
 * returns the value "TEST.PRG"
@@ -1356,7 +1355,7 @@ LOCAL sfifullnam , sFiname , sFiext , nSlash , nPunkt
 
 IF lupper == NIL
   lupper := .F.
-ENDIF  
+ENDIF
 * Trim strings
 sFiext := ALLTRIM(pFiext)
 

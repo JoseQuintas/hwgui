@@ -1,6 +1,6 @@
 *
 * ChTooltip.prg
-* 
+*
 * Test program for Changeing tooltips for:
 *
 * - Buttons
@@ -8,18 +8,17 @@
 *
 *
 * Reference: Ticket #53
-* HCustomWindow 
+* HCustomWindow
 *   ==> HStatus
 *      ==> HControl
-* 
+*
 *   HButton
 *      ==> HControl
 *   HCheckButton
 *      ==> HControl
 
-  
-#include "windows.ch"
-#include "guilib.ch"
+
+#include "hwgui.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
@@ -59,7 +58,7 @@ bcheck := .T.
 
 
    @ 30,25 BUTTON oButton1 CAPTION "TT to change"   SIZE 135,32 ;
-        STYLE WS_TABSTOP+BS_FLAT   ; 
+        STYLE WS_TABSTOP+BS_FLAT   ;
          ON CLICK {|| hwg_MsgInfo("Button 1 pressed") } ;
         TOOLTIP "First tooltip"
 
@@ -74,12 +73,12 @@ bcheck := .T.
 
    @ 30,125 GET CHECKBOX oCheck VAR bcheck CAPTION "Checkbox"  SIZE 180,22 ;
          TOOLTIP "First TT of checkbox" STYLE WS_BORDER
- 
+
 
    @ 260,118 BUTTON oButton5 CAPTION "<=== Change Tooltip"   SIZE 216,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
-        ON CLICK {|| oCheck:SetTooltip("Second TT of checkbox") }  
-   
+        ON CLICK {|| oCheck:SetTooltip("Second TT of checkbox") }
+
    @ 260,160 BUTTON oButton6 CAPTION "<=== Remove Tooltip"   SIZE 216,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK {|| oCheck:SetTooltip() }

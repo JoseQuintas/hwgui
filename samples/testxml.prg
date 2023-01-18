@@ -52,8 +52,7 @@ REQUEST HB_CODEPAGE_UTF8
 #endif
 
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "hxml.ch"
 
 MEMVAR oXmlDoc, lIniChanged, nCurrentItem , oMainWindow, oFont

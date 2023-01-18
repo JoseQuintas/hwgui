@@ -10,7 +10,7 @@
  * www - http://kresin.belgorod.su
  * Copyright 2020 Wilfried Brunken, DF7BE
  *
-*/ 
+*/
     * Status:
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
@@ -20,8 +20,7 @@
    return values on non Windows operation systems (GTK)
 */
 
-#include "windows.ch" 
-#include "guilib.ch"
+#include "hwgui.ch"
 
 Function Main
 Local oMainWindow
@@ -39,7 +38,7 @@ LOCAL nmin, nmaj, bwin, bwin7, bwin10
 
    hwg_MsgInfo( ;
    "Windows    : " + LOGICAL2STR(bwin)   + CHR(10) + ;
-   "Windows 7  : " + LOGICAL2STR(bwin7)  + CHR(10) + ; 
+   "Windows 7  : " + LOGICAL2STR(bwin7)  + CHR(10) + ;
    "Windows 10 : " + LOGICAL2STR(bwin10) + CHR(10) + ;
    "Major= " + ALLTRIM(STR(nmaj)) + CHR(10) + ;
    "Minor= " + ALLTRIM(STR(nmin)), "Windows Version")
@@ -50,4 +49,4 @@ RETURN NIL
 FUNCTION LOGICAL2STR(bl)
 RETURN IIF(bl,"True","False")
 
-* ====================== EOF of GetWinVers.prg ==================== 
+* ====================== EOF of GetWinVers.prg ====================

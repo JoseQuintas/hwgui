@@ -1,5 +1,4 @@
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 MEMVAR oFont , cImageDir , cDirSep , cBitmap1, cbitmap2 , cppath
 

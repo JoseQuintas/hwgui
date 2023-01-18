@@ -5,8 +5,7 @@
  * testini.prg - Test to use files ini
  */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 FUNCTION Main()
 

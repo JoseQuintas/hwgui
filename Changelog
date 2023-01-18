@@ -16,6 +16,13 @@
 */
 
 
+2023-01-18 20:21 UTC+0200 Jose Quintas
+   * *.prg
+    ! changed all prg with #include "guilib.ch" and "windows.ch" by "hwgui.ch"
+    ! no change if do not have both files
+    ! deleted these old includes found commented on prgs already changed to hwgui.ch
+
+
 2023-01-18 18:05 UTC+0100 Wilfried Brunken DF7BE
   * samples/dbview.hbp
   * source/gtk/window3.c

@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 #define  FIRST_MDICHILD_ID     501
 #define  MAX_MDICHILD_WINDOWS   18

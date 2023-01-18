@@ -8,10 +8,9 @@
  * www - http://sites.uol.com.br/culikr/
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "inkey.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 #define TRANSPARENT 1

@@ -29,7 +29,6 @@
 
 #include "hwgui.ch"
 #include "common.ch"
-// #include "windows.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif

@@ -8,9 +8,8 @@
  * www - http://geocities.yahoo.com.br/marcosgambeta/
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 CLASS HAnimation INHERIT HControl
 

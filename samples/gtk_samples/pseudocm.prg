@@ -1,14 +1,13 @@
-/* 
+/*
   pseudocm.prg
 
   $Id$
   HWGUI example
   Pseudo context menu (mouse right click) for BRWOSE.
-  
+
 
 */
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 STATIC oMenuBrw, nrp
 MEMVAR aSample
@@ -16,7 +15,7 @@ MEMVAR aSample
 FUNCTION Main
    LOCAL oBmp
    LOCAL oBrw, Form_Main
-   // LOCAL oFontBtn 
+   // LOCAL oFontBtn
 
    PUBLIC aSample := { { .T. ,"Line 1",10 }, { .T. ,"Line 2",22 }, { .F. ,"Line 3",40 } }
 

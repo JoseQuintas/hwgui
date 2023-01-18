@@ -14,8 +14,7 @@
  * - Need for GTK : Port of function HCHILDWINDOW()
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 STATIC aChilds := {}
 

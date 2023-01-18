@@ -8,8 +8,7 @@
  *
  */
 #include "hbclass.ch"
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "fileio.ch"
 
 #define PF_BUFFERS   2048
@@ -54,13 +53,13 @@ CLASS PrintDos
    // After call of Init method, you can update the array with messages in your
    // desired language.
    // Sample: Preview( , , aLangTexts, )
-   // Structure of array look at 
+   // Structure of array look at
    // hwg_HPrinter_LangArray_EN() in file hprinter.prg
    // Copy your own language message array direct after
-   // call of METHOD ::New()   
+   // call of METHOD ::New()
 
    METHOD New( oPorta ) CONSTRUCTOR
-   
+
    METHOD DefaultLang()
 
    METHOD Say( oProw, oCol, oTexto, oPicture )
@@ -104,7 +103,7 @@ METHOD New( oPorta ) CLASS PrintDos
    LOCAL oBold    := { oMATRIXBOLD,     oINKJETBOLD,     oLASERBOLD  }       //Added by  por Fernando Athayde
    LOCAL oUnBold  := { oMATRIXUNBOLD,   oINKJETUNBOLD,   oLASERUNBOLD }       //Added by  por Fernando Athayde
    LOCAL oPtrSetup, oPtrName
-   
+
    ::DefaultLang()
 
    ::cCompr   := oCompress[ ::oPrintStyle ]

@@ -8,9 +8,8 @@
  *
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 CLASS HListBox INHERIT HControl
@@ -251,14 +250,14 @@ METHOD onChange( oCtrl ) CLASS HListBox
 
 METHOD When( oCtrl ) CLASS HListBox
    LOCAL res := .t.
-   
+
    * Variable not used
    * nSkip
 
    HB_SYMBOL_UNUSED( oCtrl )
 
 *    nSkip := IIf( hwg_Getkeystate( VK_UP ) < 0 .or. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
-*    Warning W0027  Meaningless use of expression 'Numeric'   
+*    Warning W0027  Meaningless use of expression 'Numeric'
 *   IIf( hwg_Getkeystate( VK_UP ) < 0 .or. ( hwg_Getkeystate( VK_TAB ) < 0 .AND. hwg_Getkeystate( VK_SHIFT ) < 0 ), - 1, 1 )
 
    IF ::bSetGet != Nil
@@ -266,7 +265,7 @@ METHOD When( oCtrl ) CLASS HListBox
    ENDIF
    IF ::bGetFocus != Nil
       res := Eval( ::bGetFocus, ::Value, Self )
-      ::Setfocus()      
+      ::Setfocus()
    ENDIF
    RETURN res
 

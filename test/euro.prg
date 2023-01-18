@@ -3,11 +3,10 @@
 *
 * Test program for display Euro currency sign, locale and fonts.
 *
-* 
+*
 * Function hb_cdpSelect() returns "EN" as default
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
@@ -53,15 +52,15 @@ FUNCTION _MoreInfo()
 hwg_MsgInfo( ;
  "Unicode support: " + Local2str(hwg__isUnicode() ) + CHR(10) + ;
  "Win Euro support: " + Local2str(hwg_Has_Win_Euro_Support() ) + CHR(10) + ;
- "Codepage: " + hb_cdpSelect() ; 
+ "Codepage: " + hb_cdpSelect() ;
  , ;
- "More Information" )  
+ "More Information" )
 
 RETURN NIL
 
 FUNCTION Local2str(clo)
-IF clo 
+IF clo
   RETURN "True"
 ENDIF
-RETURN "False"  
+RETURN "False"
 * ======================== EOF of euro.prg ====================

@@ -15,8 +15,7 @@
     *  GTK/Linux:  Yes
     *  GTK/Win  :  Yes
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 STATIC fname , mmemofield
 

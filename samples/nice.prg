@@ -19,8 +19,7 @@
     *  GTK/Linux:  No
     *  GTK/Win  :  No
 
-#include "guilib.ch"
-#include "windows.ch"
+#include "hwgui.ch"
 
 #define DIALOG_1    1
 #define IDC_1     101

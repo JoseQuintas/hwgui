@@ -5,8 +5,7 @@
  * testget2.prg - GET system and Timer in dialog box.
  */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 MEMVAR var1, oSayT
 

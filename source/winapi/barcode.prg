@@ -9,8 +9,7 @@
 */
 
 #include "hbclass.ch"
-#include "guilib.ch"
-#include "windows.ch"
+#include "hwgui.ch"
 
 
 //#DEFINE __DEVELOP__

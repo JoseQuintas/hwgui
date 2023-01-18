@@ -5,10 +5,9 @@
 *
 * HWGUI template
 *
-* 
+*
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
@@ -43,7 +42,7 @@ LOCAL otest
 #ifdef __PLATFORM__WINDOWS
    PREPARE FONT otest NAME "MS Sans Serif" WIDTH 0 HEIGHT -14
 #else
-   PREPARE FONT otest NAME "Sans" WIDTH 0 HEIGHT 12 
+   PREPARE FONT otest NAME "Sans" WIDTH 0 HEIGHT 12
 #endif
 
 
@@ -52,5 +51,5 @@ hwg_MsgInfo("HWGUI template","template.prg")
 
 RETURN NIL
 
-  
+
 * ======================== EOF of template.prg ====================

@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 #define STM_SETIMAGE        370    // 0x0172
 
@@ -50,7 +49,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
 
    RETURN Self
 
-/* Parameters bClick, bDblClick were removed a long time ago */   
+/* Parameters bClick, bDblClick were removed a long time ago */
 METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip ) CLASS HSayImage
 
    ::Super:New( oWndParent, nId, 0, 0, 0, 0, 0,, bInit, bSize,, ctooltip )
@@ -132,7 +131,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    RETURN Self
 
-/* Image ==> xImage */   
+/* Image ==> xImage */
 METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp ) CLASS HSayBmp
 
    ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
@@ -254,7 +253,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
    RETURN Self
 
 
-/* Image ==> xImage */   
+/* Image ==> xImage */
 METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip ) CLASS HSayIcon
 
    ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
@@ -277,9 +276,9 @@ METHOD Init() CLASS HSayIcon
    ENDIF
 
    RETURN Nil
-   
-   
-   
+
+
+
    FUNCTION hwg_GetBitmapHeight( handle )
    LOCAL aBmpSize
    aBmpSize  := hwg_Getbitmapsize( handle )
@@ -289,8 +288,8 @@ METHOD Init() CLASS HSayIcon
    FUNCTION hwg_GetBitmapWidth( handle )
    LOCAL aBmpSize
    aBmpSize  := hwg_Getbitmapsize( handle )
-   
-   RETURN aBmpSize[1]   
+
+   RETURN aBmpSize[1]
 
 * ======================== EOF of hsayimg.prg =========================
 

@@ -1,5 +1,4 @@
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 #ifdef __XHARBOUR__
 #xtranslate HB_AT(<x,...>) => AT(<x>)

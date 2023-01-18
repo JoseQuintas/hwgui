@@ -7,9 +7,8 @@
  * Copyright 2004 Ricardo de Moura Marques <ricardo.m.marques@caixa.gov.br>
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 #DEFINE TRANSPARENT 1

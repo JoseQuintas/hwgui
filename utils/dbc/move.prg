@@ -7,8 +7,7 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "dbchw.h"
 #ifdef RDD_ADS
 #include "ads.ch"
@@ -165,7 +164,7 @@ FUNCTION F_Filter( oBrw, cExpres )
       oBrw:bEof   := {|o|  (o:alias)->(Eof())}
       oBrw:bBof   := {|o|  (o:alias)->(Bof())}
       oBrw:bGoTo  := {|o,n|(o:alias)->(dbGoto(n) ) }
-      oBrw:bRecno := {|o|  (o:alias)->(RecNo()) }     
+      oBrw:bRecno := {|o|  (o:alias)->(RecNo()) }
       hwg_WriteStatus( HMainWindow():GetMdiActive(), 1, LTrim( Str(RecCount(),10 ) ) + " records" )
    ENDIF
 

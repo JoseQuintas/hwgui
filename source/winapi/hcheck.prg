@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 CLASS HCheckButton INHERIT HControl
 
@@ -29,7 +28,7 @@ CLASS HCheckButton INHERIT HControl
    METHOD Enable()
    METHOD Value( lValue ) SETGET
    METHOD Invert()
-   METHOD SetTooltip( cText )   
+   METHOD SetTooltip( cText )
 
 ENDCLASS
 
@@ -52,7 +51,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::bClick := bClick
    ::bLostFocus := bLFocus
    ::bGetFocus  := bGFocus
-                                                                      
+
    ::oParent:AddEvent( BN_CLICKED, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
    IF bGFocus != Nil
       ::oParent:AddEvent( BN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) } )
@@ -62,19 +61,19 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ENDIF
 
    RETURN Self
-   
+
 METHOD SetTooltip( cText ) CLASS HCheckButton
 
      IF cText == NIL
        ::tooltip := ""
-     ELSE 
+     ELSE
        ::tooltip := cText
-     ENDIF 
+     ENDIF
      hwg_Deltooltip( ::handle )
      IF .NOT. EMPTY(::tooltip)
       hwg_Addtooltip( ::handle, ::tooltip )
      ENDIF
-RETURN NIL   
+RETURN NIL
 
 METHOD Activate() CLASS HCheckButton
 
@@ -140,7 +139,7 @@ METHOD Enable() CLASS HCheckButton
 
    RETURN Nil
 
-   
+
 METHOD Invert() CLASS HCheckButton
 
    LOCAL lValue
@@ -207,4 +206,3 @@ STATIC FUNCTION __When( oCtrl )
    RETURN .T.
 
    * ===================================== EOF of hcheck.prg ===========================================
-   

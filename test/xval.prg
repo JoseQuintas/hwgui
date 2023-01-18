@@ -6,10 +6,9 @@
 * Test program for functions
 * hwg_ValType(), hwg_xVal2C(), hwg_xvalMsg() and hwg_xvalLog().
 *
-* 
+*
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
@@ -44,7 +43,7 @@ LOCAL otest
 #ifdef __PLATFORM__WINDOWS
    PREPARE FONT otest NAME "MS Sans Serif" WIDTH 0 HEIGHT -14
 #else
-   PREPARE FONT otest NAME "Sans" WIDTH 0 HEIGHT 12 
+   PREPARE FONT otest NAME "Sans" WIDTH 0 HEIGHT 12
 #endif
 
 
@@ -68,7 +67,7 @@ hwg_xvalLog("Test")
 * "D" (today)
 hwg_xvalMsg( DATE() )
 hwg_xvalLog( DATE() )
-* "O" 
+* "O"
 hwg_xvalMsg(otest)
 hwg_xvalLog(otest)
 
@@ -76,5 +75,5 @@ hwg_MsgInfo("Values also written to file a.log","Sample xval.prg")
 
 RETURN NIL
 
-  
+
 * ======================== EOF of xval.prg ====================

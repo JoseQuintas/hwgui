@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 STATIC crlf := e"\r\n"
 #define SCREEN_PRINTER ".buffer"
@@ -46,7 +45,7 @@ CLASS HPrinter INHERIT HObject
    DATA nZoom, nCurrPage, hMeta
    DATA x1, y1, x2, y2
    DATA oBrush1, oBrush2
-   DATA lprbutton      INIT .T.   
+   DATA lprbutton      INIT .T.
    // --- International Language Support for internal dialogs --
    DATA aLangTexts
    // Print Preview Dialog with sub dialog:
@@ -55,16 +54,16 @@ CLASS HPrinter INHERIT HObject
    // After call of Init method, you can update the array with messages in your
    // desired language.
    // Sample: Preview( , , aTooltips, )
-   // Structure of array look at 
+   // Structure of array look at
    // METHOD SetLanguage(apTooltips) CLASS HWinPrn
    // in file hwinprn.prg.
    // List of classes calling print preview
    // HWINPRN, HRepTmpl , ...
-   // For more details see inline comments in sample program "nlsdemo.prg" 
+   // For more details see inline comments in sample program "nlsdemo.prg"
 
    METHOD New( cPrinter, lmm, nFormType , cdp )
    // FUNCTION hwg_HPrinter_LangArray_EN()
-   METHOD DefaultLang()   
+   METHOD DefaultLang()
    METHOD SetMode( nOrientation, nDuplex )
    METHOD Recalc( x1, y1, x2, y2 )
    METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset )
@@ -105,7 +104,7 @@ FUNCTION hwg_HPrinter_LangArray_EN()
   /* 6  */ AAdd(aTooltips,"Last page")
   /* 7  */ AAdd(aTooltips,"Zoom out")
   /* 8  */ AAdd(aTooltips,"Zoom in")
-  /* 9  */ AAdd(aTooltips,"Print dialog") 
+  /* 9  */ AAdd(aTooltips,"Print dialog")
   // added (Titles and other Buttons)
   /* 10 */ AAdd(aTooltips,"Print preview -") && Title
   /* 11 */ AAdd(aTooltips,"Print")           && Button
@@ -119,16 +118,16 @@ FUNCTION hwg_HPrinter_LangArray_EN()
   /* 18 */ AAdd(aTooltips,"Pages")           && Radio Button              "Pages"
   /* 19 */ AAdd(aTooltips,"Print")           && Button                    "Print"
   /* 20 */ AAdd(aTooltips,"Cancel")          && Button                    "Cancel"
-  /* 21 */ AAdd(aTooltips,"Enter range of pages") && Tooltip              "Enter range of pages"  
-  
-RETURN aTooltips  
+  /* 21 */ AAdd(aTooltips,"Enter range of pages") && Tooltip              "Enter range of pages"
+
+RETURN aTooltips
 
 METHOD New( cPrinter, lmm, nFormType , cdp) CLASS HPrinter
 
    LOCAL aPrnCoors
 
    ::DefaultLang()
-   
+
    IF lmm != Nil
       ::lmm := lmm
    ENDIF
@@ -140,10 +139,10 @@ METHOD New( cPrinter, lmm, nFormType , cdp) CLASS HPrinter
 
    IF cdp != NIL
      ::cdp := cdp
-   ENDIF  
+   ENDIF
 
    * hb_cdpSelect() returns "EN" as default
-   ::cdpIn := iif( Empty( ::cdp ), hb_cdpSelect(), ::cdp ) 
+   ::cdpIn := iif( Empty( ::cdp ), hb_cdpSelect(), ::cdp )
 
    IF cPrinter != Nil .AND. cPrinter == SCREEN_PRINTER
       ::lBuffPrn := .T.
@@ -179,7 +178,7 @@ METHOD New( cPrinter, lmm, nFormType , cdp) CLASS HPrinter
 
 METHOD DefaultLang() CLASS HPrinter
   ::aLangTexts := hwg_HPrinter_LangArray_EN()
-RETURN NIL  
+RETURN NIL
 
 METHOD SetMode( nOrientation, nDuplex ) CLASS HPrinter
    LOCAL x
@@ -210,12 +209,12 @@ METHOD Recalc( x1, y1, x2, y2 ) CLASS HPrinter
 
    RETURN Nil
 
-/* Added: , nCharset */   
+/* Added: , nCharset */
 METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset ) CLASS HPrinter
    LOCAL oFont
-   
+
    * Parameters not used
-   HB_SYMBOL_UNUSED(nCharset)   
+   HB_SYMBOL_UNUSED(nCharset)
 
    IF ::lmm .AND. nHeight != Nil
       nHeight *= ::nVRes
@@ -342,7 +341,7 @@ METHOD Say( cString, x1, y1, x2, y2, nOpt, oFont ) CLASS HPrinter
     // hwg_WriteLog( "Printer:Txt " + "txt," + LTrim( Str( x1 ) ) + "," + LTrim( Str( y1 ) ) + "," + ;
     //  LTrim( Str( x2 ) ) + "," + LTrim( Str( y2 ) ) + "," + ;
     //  iif( nOpt == Nil, ",", LTrim( Str(nOpt ) ) + "," ) + hb_StrToUtf8( cString, ::cdpIn ) + crlf )
-  
+
    RETURN Nil
 
 METHOD Bitmap( x1, y1, x2, y2, nOpt, hBitmap, cImageName ) CLASS HPrinter
@@ -372,7 +371,7 @@ METHOD StartDoc( lPreview, cScriptFile , lprbutton ) CLASS HPrinter
       ::lprbutton := .T.
    ELSE
       ::lprbutton := lprbutton
-   ENDIF 
+   ENDIF
 
    ::nPage := 0
    ::aPages := {}
@@ -473,11 +472,11 @@ METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
 
 /*
 aBootUser[ 1 ] : oBtn:bClick
-aBootUser[ 2 ] : AddResource(Bitmap)   
+aBootUser[ 2 ] : AddResource(Bitmap)
 aBootUser[ 3 ] : "User Button", Tooltip ==> cBootUser3
 aBootUser[ 4 ] : "User Button"          ==> cBootUser4
 
-Default values in array aTooltips see 
+Default values in array aTooltips see
 FUNCTION hwg_HPrinter_LangArray_EN()
 */
 
@@ -488,8 +487,8 @@ FUNCTION hwg_HPrinter_LangArray_EN()
    * Variables not used
    * LOCAL oTimer
    * LOCAL cmDialog, cBootUser3, cBootUser4
-   
-   
+
+
    // Button and title default captions
    // "Print preview -", see above
    cmExit         := "Exit"
@@ -498,15 +497,15 @@ FUNCTION hwg_HPrinter_LangArray_EN()
    * cBootUser3     := "User Button"
    * cBootUser4     := "User Button"
    cmTitle        := "Print preview"
-   
+
    /* Parameter cTitle preferred */
    IF cTitle == Nil
-    cTitle := cmTitle  
-    IF aTooltips != Nil  
+    cTitle := cmTitle
+    IF aTooltips != Nil
       cTitle := aTooltips[ 10 ]
     ENDIF
    ELSE
-    cTitle := cmTitle     
+    cTitle := cmTitle
    ENDIF
    IF aTooltips != Nil
       cmPrint    := aTooltips[ 11 ]
@@ -550,11 +549,11 @@ FUNCTION hwg_HPrinter_LangArray_EN()
 
    @ 1, 31 LINE LENGTH TOOL_SIDE_WIDTH - 1
 
-  IF ::lprbutton 
+  IF ::lprbutton
    @ 3, 36 OWNERBUTTON oBtn  ON CLICK { || ::PrintDoc() } ;
       SIZE TOOL_SIDE_WIDTH - 6, 24 TEXT cmPrint FONT oFont         ;  && "Print"
       TOOLTIP iif( aTooltips != Nil, aTooltips[ 2 ], "Print file" )
-  ENDIF  
+  ENDIF
 
    IF aBitmaps != Nil .AND. Len( aBitmaps ) > 2 .AND. aBitmaps[ 3 ] != Nil
       oBtn:oBitmap := iif( aBitmaps[ 1 ], HBitmap():AddResource( aBitmaps[ 3 ] ), HBitmap():AddFile( aBitmaps[ 3 ] ) )

@@ -10,8 +10,7 @@
  *
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 STATIC oMain, oForm, oFont, oGrid
 

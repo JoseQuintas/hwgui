@@ -59,11 +59,10 @@
 
 #include "common.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
-#include "windows.ch"
+#include "hwgui.ch"
 #include "halert.ch"
 
-#define GW_OWNER            4 
+#define GW_OWNER            4
 #define WS_POPUPWINDOW      (WS_POPUP + WS_BORDER + WS_SYSMENU)
 #define ALERTSTYLE          WS_POPUPWINDOW + WS_VISIBLE + WS_CLIPSIBLINGS + WS_DLGFRAME + WS_OVERLAPPED + ;
                             DS_3DLOOK + DS_MODALFRAME + DS_CENTER
@@ -485,7 +484,7 @@ FUNCTION HWG_Alert_CenterWindow( hWnd )
   LOCAL aParent      // Logical Coordinates of Parent Window  && [ 4 ]
   LOCAL aPoint       // Multiple Uses                         && [ 2 ]
   LOCAL aChild       // Screen Coordinates of Child Window    && [ 4 ]
-  
+
   aChild   := Hwg_GetWindowRect( hWnd )
   nCWidth  := aChild[ 3 ] - aChild[ 1 ]
   nCHeight := aChild[ 4 ] - aChild[ 2 ]

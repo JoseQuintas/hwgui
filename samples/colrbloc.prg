@@ -47,8 +47,7 @@
 #define x_GRAY        8421504
 #define x_YELLOW        65535
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 MEMVAR cImgTop , cImgBottom , cImgPrev, cImgNext
 

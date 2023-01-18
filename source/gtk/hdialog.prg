@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 REQUEST HWG_ENDWINDOW
 
@@ -64,7 +63,7 @@ CLASS HDialog INHERIT HWindow
    DATA xResourceID
    DATA lModal
 //   DATA handle
-   
+
 
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
       bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor )

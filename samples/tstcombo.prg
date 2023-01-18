@@ -26,8 +26,6 @@
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
-// #include "windows.ch"
-// #include "guilib.ch"
 
 Static oMain,  oFont && oBar && oForm,
 

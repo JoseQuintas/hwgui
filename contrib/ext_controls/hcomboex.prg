@@ -14,9 +14,8 @@
  * www - http://kresin.belgorod.su
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 #DEFINE CB_SHOWDROPDOWN             335
@@ -135,7 +134,7 @@ CLASS HComboBoxEx INHERIT HControl
    METHOD onSelect()
    METHOD InteractiveChange( )
    METHOD onChange( lForce )
-   METHOD Populate() 
+   METHOD Populate()
    METHOD GetValueBound( xItem )
    METHOD RowSource( xSource ) SETGET
    METHOD DisplayValue( cValue ) SETGET
@@ -155,7 +154,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       nDisplay := 6
    ENDIF
    nHeight := iif( Empty( nHeight ), 24,  nHeight )
-   ::nHeightBox := Int( nHeight * 0.75 ) 
+   ::nHeightBox := Int( nHeight * 0.75 )
    nHeight := nHeight + ( iif( Empty( nhItem ), 16.250, ( nhItem += 0.10 ) ) * nDisplay )
 
    IF lEdit == Nil
@@ -774,7 +773,7 @@ METHOD Valid( ) CLASS HComboBoxEx
          hwg_GetSkip( ::oparent, ::handle, , nSkip )
       ENDIF
       // ::oparent:lSuspendMsgsHandling := .F.
-      IF Empty( hwg_Getfocus() ) // getfocus return pointer = 0 
+      IF Empty( hwg_Getfocus() ) // getfocus return pointer = 0
          hwg_GetSkip( ::oParent, ::handle, , ::nGetSkip )
       ENDIF
    ENDIF
@@ -942,15 +941,15 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
       bChange, ctooltip, bGFocus, acheck, aImages ) CLASS hCheckComboBox
-      bPaint := { | o, p | o:paint( p ) }   
+      bPaint := { | o, p | o:paint( p ) }
      ::acheck := iif( acheck == Nil, {}, acheck )
      ::lCheck := iif( aImages == Nil, .T. , .F. )
      ::aImages := aImages
      ::Super:Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
       bChange, ctooltip, bGFocus,, , , , , ,aCheck )
-      
+
    ::lResource := .T.
-  
+
 
    RETURN Self
 
@@ -959,7 +958,7 @@ METHOD INIT() CLASS hCheckComboBox
 
    IF !::lInit
       ::Super:Init()
-     
+
       IF Len( ::acheck ) > 0
          AEval( ::aCheck, { | a ,v| ::Setcheck(v, a ) } )
       ENDIF
@@ -1026,7 +1025,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS hCheckComboBox
       ENDIF
 
    ELSEIF msg == WM_CHAR
-      
+
       IF ( wParam == VK_SPACE )
          nIndex := hwg_Sendmessage( ::handle, CB_GETCURSEL, wParam, lParam ) + 1
          rcItem := hwg_Combogetitemrect( ::handle, nIndex - 1 )
@@ -1231,7 +1230,7 @@ METHOD Paint( lpDis ) CLASS hCheckComboBox
       ::RecalcText()
 
       strtext := ::m_strText
-      
+
 
       ncheck := 0
 
@@ -1442,4 +1441,3 @@ FUNCTION hwg_multibitor( ... )
    NEXT
 
    RETURN result
-   

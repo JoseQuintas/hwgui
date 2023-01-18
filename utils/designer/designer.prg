@@ -8,8 +8,7 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
 #include "hxml.ch"
 #include "designer.ch"
@@ -34,7 +33,7 @@
    #define DIR_SEP  '\'
 #else
    #define DIR_SEP  '/'
-#endif   
+#endif
 
 REQUEST DBCREATE, DBUSEAREA, DBCREATEINDEX, DBSEEK, HB_ATOKENS, HB_FNAMENAME, HB_FNAMEDIR
 REQUEST HB_OSNEWLINE
@@ -381,7 +380,7 @@ STATIC FUNCTION ReadIniFiles()
    NEXT
 
    oDesigner:cBmpPath := cBmpPath
-   
+
    IF ValType( cWidgetsFileName ) == "C"
       oDesigner:oWidgetsSet := HXMLDoc():Read( cCurDir + cWidgetsFileName )
    ENDIF

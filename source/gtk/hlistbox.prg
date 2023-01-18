@@ -22,11 +22,11 @@
  These files are only commited as preparation for
  the port to GTK, in the hope, that the bug is fixed
  in future GTK versions.
- 
+
  The coding follows the sample "listbox_sample.c"
  from Eric Harlow. Some lines are commented out,
  activate them during development in the future.
- 
+
  To actiave the port, add these two lines into the
  makefiles for GTK:
  $(LIB_DIR)/libhwgui.a : \
@@ -35,8 +35,8 @@
 ...
   $(OBJ_DIR)/listbox.o \
   $(OBJ_DIR)/hlistbox.o
-...  
- 
+...
+
 */
 
 /* Special info for GTK:
@@ -45,16 +45,15 @@
      That are:
       > Positions x,y,
       > width, heigth,
-      > style. 
+      > style.
 */
 
 
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 #include "common.ch"
 
 CLASS HListBox INHERIT HControl
@@ -113,7 +112,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ::bKeydown := bKeydown
    ::bDblclick := bDblclick
    ::bOther := bOther
-   
+
     /* Create Listbox */
    ::handle := HWG_CREATELISTBOX()
 
@@ -123,8 +122,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
     ::Activate()
     /* Add items */
     ::AddItems(::handle,::aItems)
-    
-    
+
+
     hwg_ListBoxShowMain(::oParent,::handle)
 /*
    IF bSetGet != Nil
@@ -148,13 +147,13 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
 */
    RETURN Self
 
-   
+
 METHOD Activate() CLASS HListBox
 * Make listbox visible
 
    IF ! Empty( ::oParent:handle )
      HWG_LISTBOXSHOW(::handle)
-/* 
+/*
       ::handle := hwg_Createlistbox( ::oParent:handle, ::id, ;
                                  ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
@@ -162,10 +161,10 @@ METHOD Activate() CLASS HListBox
       hwg_Setwindowobject( ::handle, Self )
       hwg_WriteLog("hier")
    ENDIF
-   
+
    RETURN Nil
 
-   
+
 METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bPaint, ;
                  bChange, cTooltip, bKeydown, bOther )  CLASS HListBox
 
@@ -190,7 +189,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    ENDIF
    RETURN Self
 */
- RETURN NIL   
+ RETURN NIL
 
 METHOD Init() CLASS HListBox
 
@@ -241,7 +240,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HListBox
    ELSEIF  msg = WM_GETDLGCODE .AND. ( wParam = VK_RETURN .OR.wParam = VK_ESCAPE ) .AND. ::bKeyDown != Nil
       RETURN DLGC_WANTALLKEYS  //DLGC_WANTARROWS + DLGC_WANTTAB + DLGC_WANTCHARS
    ENDIF
-*/   
+*/
    RETURN -1
 
 METHOD Requery() CLASS HListBox
@@ -254,7 +253,7 @@ METHOD Requery() CLASS HListBox
    NEXT
    hwg_Listboxsetstring( ::handle, ::value )
    ::refresh()
-*/   
+*/
    Return Nil
 
 
@@ -267,7 +266,7 @@ METHOD Refresh() CLASS HListBox
 
    ::value := IIf( vari == Nil .OR. ValType( vari ) != "N", 0, vari )
    ::SetItem( ::value )
-  
+
    RETURN Nil
 
 METHOD SetItem( nPos ) CLASS HListBox
@@ -282,7 +281,7 @@ METHOD SetItem( nPos ) CLASS HListBox
    IF ::bChangeSel != Nil
       Eval( ::bChangeSel, ::value, Self )
    ENDIF
-   
+
    RETURN Nil
 
 METHOD onDblClick()  CLASS HListBox
@@ -290,9 +289,9 @@ METHOD onDblClick()  CLASS HListBox
   IF ::bDblClick != Nil
       Eval( ::bDblClick, self, ::value )
    ENDIF
-  
+
    RETURN Nil
-   
+
 
 METHOD AddItems( p ) CLASS HListBox
 
@@ -300,7 +299,7 @@ METHOD AddItems( p ) CLASS HListBox
    hwg_Listboxaddstring( ::handle, p )
 //   hwg_Listboxsetstring( ::handle, ::value )
    RETURN Self
-   
+
 
 METHOD DeleteItem( nPos ) CLASS HListBox
 
@@ -313,7 +312,7 @@ METHOD DeleteItem( nPos ) CLASS HListBox
       ENDIF
       RETURN .T.
 //   ENDIF
- 
+
    RETURN .F.
 
 METHOD Clear() CLASS HListBox
@@ -322,7 +321,7 @@ METHOD Clear() CLASS HListBox
    ::value := 0
 //   hwg_Sendmessage( ::handle, LB_RESETCONTENT, 0, 0 )
 //   hwg_Listboxsetstring( ::handle, ::value )
- 
+
    RETURN .T.
 
 
@@ -350,11 +349,11 @@ METHOD When( oCtrl ) CLASS HListBox
    ENDIF
    IF ::bGetFocus != Nil
       res := Eval( ::bGetFocus, ::Value, Self )
-      ::Setfocus()      
+      ::Setfocus()
    ENDIF
    RETURN res
 */
- RETURN .F.   
+ RETURN .F.
 
 
 METHOD Valid( oCtrl ) CLASS HListBox
@@ -388,15 +387,15 @@ METHOD Valid( oCtrl ) CLASS HListBox
    IF Empty( hwg_Getfocus() )
        hwg_GetSkip( ::oParent, ::handle, 1 )
    ENDIF
-*/   
+*/
    RETURN .T.
-/*   
+/*
 STATIC FUNCTION AddLItems (h,it)
 * h = Handle, it = array with items
     LOCAL i
     IF it == Nil
       it := { }
-    ENDIF  
+    ENDIF
     IF .NOT. EMPTY(it)
      FOR i := 1 TO LEN(it)
        HWG_LISTBOXADDSTRING( h,it[ i ] )

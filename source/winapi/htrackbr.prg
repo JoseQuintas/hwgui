@@ -11,9 +11,8 @@
  * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 #define TBS_AUTOTICKS                1
 #define TBS_VERT                     2
@@ -319,7 +318,7 @@ METHOD Drag( xPos, yPos ) CLASS HTrack
 
    LOCAL nCurr := ::nCurr
    LOCAL nHalf := Int(::nSize/2), x1, y1
-   
+
 
    HB_SYMBOL_UNUSED(nhalf)
 
@@ -349,7 +348,7 @@ METHOD Drag( xPos, yPos ) CLASS HTrack
 METHOD Move( x1, y1, width, height ) CLASS HTrack
 
    LOCAL xValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)
-   
+
    HB_SYMBOL_UNUSED(x1)
    HB_SYMBOL_UNUSED(y1)
 

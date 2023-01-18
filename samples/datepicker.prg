@@ -24,8 +24,7 @@
     *  GTK/Win  :  No
 
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 FUNCTION Main()
 

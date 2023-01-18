@@ -7,8 +7,7 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "dbchw.h"
 #ifdef RDD_ADS
 #include "ads.ch"

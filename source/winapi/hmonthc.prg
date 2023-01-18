@@ -10,9 +10,8 @@
 
 //--------------------------------------------------------------------------//
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 #define MCS_DAYSTATE             1
 #define MCS_MULTISELECT          2
@@ -136,7 +135,7 @@ HB_FUNC( HWG_INITMONTHCALENDAR )
                          MONTHCAL_CLASS,
                          "",
                          (LONG) hb_parnl(3), /* 0,0,0,0, */
-                         hb_parni(4), hb_parni(5),      /* x, y       */   
+                         hb_parni(4), hb_parni(5),      /* x, y       */
                          hb_parni(6), hb_parni(7),      /* nWidth, nHeight */
                          (HWND) HB_PARHANDLE(1),
                          (HMENU) ( UINT_PTR ) hb_parni(2),
@@ -146,7 +145,7 @@ HB_FUNC( HWG_INITMONTHCALENDAR )
    MonthCal_GetMinReqRect( hMC, &rc );
 
    //Setwindowpos( hMC, NULL, hb_parni(4), hb_parni(5), rc.right, rc.bottom, SWP_NOZORDER );
-   SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), hb_parni(6),hb_parni(7), SWP_NOZORDER ); 
+   SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), hb_parni(6),hb_parni(7), SWP_NOZORDER );
 
     HB_RETHANDLE(  hMC );
 }
@@ -201,7 +200,7 @@ FUNCTION hwg_pCalendar(dstartdate, cTitle , cOK, cCancel , nx , ny , wid, hei )
 * Date picker command for all platforms in the design of original
 * Windows only DATEPICKER command
 
-   LOCAL oDlg, oMC , oFont , dolddate , dnewdate,  lcancel 
+   LOCAL oDlg, oMC , oFont , dolddate , dnewdate,  lcancel
 
   IF cTitle == NIL
     cTitle := "Calendar"
@@ -222,7 +221,7 @@ FUNCTION hwg_pCalendar(dstartdate, cTitle , cOK, cCancel , nx , ny , wid, hei )
   IF nx == NIL
    nx := 0  && old: 20
   ENDIF
-  
+
   IF ny == NIL
    ny := 0  && old: 20
   ENDIF
@@ -232,7 +231,7 @@ FUNCTION hwg_pCalendar(dstartdate, cTitle , cOK, cCancel , nx , ny , wid, hei )
   ENDIF
 
   IF hei == NIL
-   hei := 160 && old: 20 
+   hei := 160 && old: 20
   ENDIF
 
   oFont := hwg_DefaultFont()
@@ -241,28 +240,28 @@ FUNCTION hwg_pCalendar(dstartdate, cTitle , cOK, cCancel , nx , ny , wid, hei )
 
   * Remember old date
   dolddate := dstartdate
-    
+
    INIT DIALOG oDlg TITLE cTitle ;
       AT nx,ny SIZE  wid , hei + 23 && wid , hei , 22 = height of buttons
 
    @ 0,0 MONTHCALENDAR oMC ;
       SIZE wid - 1 , hei - 1 ;
-      INIT dstartdate ;   && Date(), if NIL 
-      FONT oFont 
+      INIT dstartdate ;   && Date(), if NIL
+      FONT oFont
 
    @ 0 ,hei BUTTON cOK FONT oFont ;
-    ON CLICK {|| lcancel := .F., dnewdate := oMC:Value , oDlg:Close() } SIZE 80 , 22 
+    ON CLICK {|| lcancel := .F., dnewdate := oMC:Value , oDlg:Close() } SIZE 80 , 22
    @ 81,hei BUTTON cCancel FONT oFont ;
-    ON CLICK {|| oDlg:Close() } SIZE 80, 22 
+    ON CLICK {|| oDlg:Close() } SIZE 80, 22
 
 
    ACTIVATE DIALOG oDlg
 
-   
+
    IF lcancel
     dnewdate := dolddate
    ENDIF
-     
+
    RETURN dnewdate
 
   * --------------------------------------------------------------------------

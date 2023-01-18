@@ -10,8 +10,7 @@
 
 
 #include "hbclass.ch"
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #include "common.ch"
 #define BUF_SIZE  200
 

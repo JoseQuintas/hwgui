@@ -8,10 +8,9 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
 #include "hblang.ch"
-#include "guilib.ch"
 
 #define WM_IME_CHAR      646
 
@@ -60,7 +59,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    nStyle := Hwg_BitOr( iif( nStyle == Nil,0,nStyle ), ;
       WS_TABSTOP + iif( lNoBorder == Nil .OR. !lNoBorder, WS_BORDER, 0 ) + ;
       iif( lPassword == Nil .OR. !lPassword, 0, ES_PASSWORD )  )
- 
+
       && DF7BE: Crashes here , sample program grid_5.prg
       && 2022-12-18 fixed, error in sample program
 
@@ -142,7 +141,7 @@ METHOD Init()  CLASS HEdit
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, cClipboardText
    LOCAL nexthandle
-   
+
    * Not used variables
    * nctrl, cKeyb
 
@@ -611,7 +610,7 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
    RETURN 0
 
 STATIC FUNCTION KeyLeft( oEdit, nPos )
-   
+
    * Not used
    * LOCAL i
 
@@ -728,7 +727,7 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
 STATIC FUNCTION GetApplyKey( oEdit, cKey )
    LOCAL nPos, nGetLen, nLen, vari, x, newPos, oParent
    LOCAL nDecimals, xTmp, lMinus := .F.
-   
+
    * Not used variables
    * i
 
@@ -1156,16 +1155,16 @@ FUNCTION hwg_Len( cString )
 #endif
 
 FUNCTION hwg_GET_Helper(cp_get,nlen)
- 
-LOCAL c_get 
+
+LOCAL c_get
 
 #ifndef __GTK__
   HB_SYMBOL_UNUSED(nlen)
-#endif 
+#endif
 
   c_get := cp_get
 
-#ifdef __GTK__  
+#ifdef __GTK__
   IF EMPTY(c_get)
     c_get := ""
   ELSE

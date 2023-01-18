@@ -21,8 +21,7 @@
     *  GTK/Win  :  No
 
 
-#include "guilib.ch"
-#include "windows.ch"
+#include "hwgui.ch"
 #include "nice.h"
 REQUEST hwg_NICEBUTTPROC
 

@@ -8,8 +8,7 @@
  * www - http://sites.uol.com.br/culikr/
 */
 #include "hbclass.ch"
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 #include "common.ch"
 

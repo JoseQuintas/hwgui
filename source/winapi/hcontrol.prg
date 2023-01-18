@@ -8,9 +8,8 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
+#include "hwgui.ch"
 #include "hbclass.ch"
-#include "guilib.ch"
 
 FUNCTION hwg_SetCtrlName( oCtrl, cName )
    LOCAL nPos
@@ -48,7 +47,7 @@ CLASS HControl INHERIT HCustomWindow
    METHOD SetText( c )  INLINE hwg_Setwindowtext( ::Handle, ::title := c )
    METHOD End()
    METHOD onAnchor( x, y, w, h )
-   METHOD SetTooltip( cText )   
+   METHOD SetTooltip( cText )
 
 ENDCLASS
 
@@ -102,19 +101,19 @@ METHOD INIT() CLASS HControl
    ENDIF
 
    RETURN NIL
-   
+
 METHOD SetTooltip( cText ) CLASS HControl
 
      IF cText == NIL
        ::tooltip := ""
-     ELSE 
+     ELSE
        ::tooltip := cText
-     ENDIF 
+     ENDIF
      hwg_Deltooltip( ::handle )
      IF .NOT. EMPTY(::tooltip)
       hwg_Addtooltip( ::handle, ::tooltip )
      ENDIF
-RETURN NIL   
+RETURN NIL
 
 METHOD Disable() CLASS HControl
 
@@ -326,8 +325,8 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::aparts := aparts
 
    RETURN Self
-   
-   
+
+
 
    //- HStatic
 
@@ -479,7 +478,7 @@ CLASS HButton INHERIT HControl
       tcolor, bColor, cCaption )
    METHOD Init()
    METHOD GetText()     INLINE hwg_Getwindowtext( ::handle )
-   METHOD SetText( c )    
+   METHOD SetText( c )
 
 ENDCLASS
 
@@ -542,11 +541,11 @@ METHOD Init() CLASS HButton
    RETURN  NIL
 
  METHOD SetText( c ) CLASS HButton
- 
+
    hwg_Setwindowtext( ::Handle, ::title := c )
    hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )
-   
- RETURN NIL   
+
+ RETURN NIL
 
    //- HGroup
 
@@ -665,4 +664,3 @@ STATIC FUNCTION onClick( oParent, id )
    RETURN .T.
 
 * =================================== EOF of hcontrol.prg ==============================
-   

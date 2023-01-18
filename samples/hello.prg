@@ -48,8 +48,7 @@
  * for differences.
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 MEMVAR aGetsTab
 

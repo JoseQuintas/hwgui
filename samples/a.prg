@@ -19,8 +19,7 @@
     *  GTK/Linux:  No
     *  GTK/Win  :  NO
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 // REQUEST HB_CODEPAGE_RU866
 // REQUEST HB_CODEPAGE_RU1251

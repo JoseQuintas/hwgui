@@ -8,8 +8,7 @@
  * www - http://www.kresin.ru
 */
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 
 #ifdef __XHARBOUR__
 #xtranslate hb_processOpen([<x,...>])   => hb_openProcess(<x>)
@@ -550,7 +549,7 @@ FUNCTION HWG_ScrollHV( oForm, msg, wParam, lParam )
       nDelta := - HORZ_PTS * nInc
       hwg_Scrollwindow( oForm:handle, nDelta, 0 )
       hwg_Setscrollpos( oForm:Handle, SB_HORZ, oForm:nHscrollPos, .T. )
-   ENDIF  
+   ENDIF
 
    RETURN Nil
 

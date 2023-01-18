@@ -2,11 +2,10 @@
 * testfilehex.prg
 *
 * Test program for for all modes of function
-* hwg_HEX_DUMP() 
+* hwg_HEX_DUMP()
 *
 
-#include "windows.ch"
-#include "guilib.ch"
+#include "hwgui.ch"
 #ifdef __GTK__
 #include "gtk.ch"
 #endif
@@ -14,7 +13,7 @@
 FUNCTION MAIN
 LOCAL cBinVal
 
-cBinVal := CHR(0) + CHR(1) + CHR(2) + CHR(3)+ CHR(4) 
+cBinVal := CHR(0) + CHR(1) + CHR(2) + CHR(3)+ CHR(4)
 
 hwg_MsgInfo(hwg_HEX_DUMP(cBinVal,1) ,"Hexdump mode = 1")
 hwg_MsgInfo(hwg_HEX_DUMP(cBinVal,2,"cNewVar") ,"Hexdump mode = 2")
@@ -24,5 +23,5 @@ hwg_MsgInfo(hwg_HEX_DUMP(cBinVal,5) ,"Hexdump mode = 5")
 
 RETURN NIL
 
- 
+
 * ===================== EOF of testfilehex.prg ===================================

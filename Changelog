@@ -16,6 +16,14 @@
 */
 
 
+2023-01-18 21:44 UTC+0200 Jose Quintas
+   + test/mixed/dlgempty.prg
+   + test/mixed/menu.prg
+   + test/mixed/readme.txt
+   + test/mixed/test.hbp
+    ! samples to mixed use, not on samples/ until heavy tests using more features
+
+
 2023-01-18 20:21 UTC+0200 Jose Quintas
    * *.prg
     ! changed all prg with #include "guilib.ch" and "windows.ch" by "hwgui.ch"

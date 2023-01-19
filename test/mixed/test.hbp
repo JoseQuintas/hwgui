@@ -1,0 +1,14 @@
+skip={!allwin}
+
+-otest
+-w3
+-es2
+-gui
+-mt
+
+../../hwgui.hbc
+
+gtwvg.hbc
+
+menu.prg
+dlgempty.prg

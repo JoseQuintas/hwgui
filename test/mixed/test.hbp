@@ -1,5 +1,3 @@
-skip={!allwin}
-
 -otest
 -w3
 -es2

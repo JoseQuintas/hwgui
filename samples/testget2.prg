@@ -7,20 +7,18 @@
 
 #include "hwgui.ch"
 
-MEMVAR var1, oSayT
+MEMVAR oSayT
 
 FUNCTION Main()
 
    LOCAL oMainWindow
-
-   PRIVATE var1 := 10320.54
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 400,150
 
    MENU OF oMainWindow
       MENUITEM "&Exit" ACTION hwg_EndWindow()
-      MENUITEM "&Get a value" ACTION DlgGet(.F.)
+      MENUITEM "&Get values" ACTION DlgGet(.F.)
       MENUITEM "&Get using SetcolorinFocus" ACTION DlgGet(.T.)
       MENUITEM "&Text Ballon" ACTION TestBallon()
       MENUITEM "&Hd Serial  " ACTION hwg_Msginfo( hwg_HdSerial( "C:\" ), "HD Serial number" )
@@ -30,7 +28,7 @@ FUNCTION Main()
 
 RETURN Nil
 
-FUNCTION DlgGet( lColor )
+FUNCTION DlgGet( lColorInFocus )
 
    LOCAL oModDlg, oFont := HFont():Add( "MS Sans Serif", 0, -13 ), oTimer
    LOCAL e1 := "Dialog from prg"
@@ -43,45 +41,35 @@ FUNCTION DlgGet( lColor )
 
    PRIVATE oSayT
 
-   INIT DIALOG oModDlg CLIPPER NOEXIT TITLE "Get a value"  ;
+   INIT DIALOG oModDlg CLIPPER NOEXIT TITLE "Get values"  ;
       AT 210,10  SIZE 300,320                  ;
       FONT oFont ;
-      ON INIT { || hwg_Settimer( oModDlg, @oTimer ) }
+      ON INIT { || Dlg_Settimer( oModDlg, @oTimer ) }
 
    SET KEY FSHIFT, VK_F3 TO hwg_Msginfo( "Shift-F3" )
    SET KEY FCONTROL, VK_F3 TO hwg_Msginfo( "Ctrl-F3" )
    SET KEY 0, VK_F3 TO hwg_Msginfo( "F3" )
    SET KEY 0, VK_RETURN TO hwg_Msginfo( "Return" )
 
-   IF lColor <> Nil
-      hwg_SetColorinFocus( lColor )
+   IF lColorInFocus <> Nil
+      hwg_SetColorinFocus( lColorInFocus )
    ENDIF
 
-   @ 20, 10 SAY "Input something:" SIZE 260, 22
+   @ 20, 10  SAY "Input something:" SIZE 260, 22
 
-   @ 20, 35 GET e1                       ;
-        PICTURE "XXXXXXXXXXXXXXX"       ;
-        SIZE 260, 26
+   @ 20, 35  GET e1 PICTURE "XXXXXXXXXXXXXXX" SIZE 260, 26
 
-   @ 20, 65 GET e6                       ;
-        MAXLENGTH 15                    ;
-        SIZE 260, 26
+   @ 20, 65  GET e6 MAXLENGTH 15 SIZE 260, 26
 
-   @ 20, 95 GET e2  SIZE 260, 26
+   @ 20, 95  GET e2  SIZE 260, 26
 
    @ 20, 125 GET e3  SIZE 260, 26
 
-   @ 20, 155 GET e4                      ;
-        PICTURE "@R 99.999.999/9999-99" ;
-        SIZE 260, 26
+   @ 20, 155 GET e4 PICTURE "@R 99.999.999/9999-99" SIZE 260, 26
 
-   @ 20, 185 GET e5                      ;
-        PICTURE "@e 999,999,999.9999"     ;
-        SIZE 260, 26
+   @ 20, 185 GET e5 PICTURE "@e 999,999,999.9999" SIZE 260, 26
 
-   @ 20, 215 GET e7                      ;
-        PASSWORD                        ;
-        SIZE 260, 26
+   @ 20, 215 GET e7 PASSWORD SIZE 260, 26
 
    @  20, 250  BUTTON "Ok" SIZE 100, 32 ON CLICK { || oModDlg:lResult := .T., hwg_EndDialog() }
    @ 180, 250 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
@@ -107,7 +95,7 @@ FUNCTION DlgGet( lColor )
 
 RETURN Nil
 
-STATIC FUNCTION hwg_Settimer( oDlg,oTimer )
+STATIC FUNCTION Dlg_Settimer( oDlg,oTimer )
 
    SET TIMER oTimer OF oDlg VALUE 1000 ACTION { || TimerFunc() }
 

@@ -18,9 +18,11 @@ FUNCTION Menu()
       @ 2, 5         PROMPT "Exit"
       @ Row() + 1, 5 PROMPT "Show gt name"
       @ Row() + 1, 5 PROMPT "this menu on new thread"
+      @ Row() + 1, 5 PROMPT "Menu hwgui"
       @ Row() + 1, 5 PROMPT "Empty dialog"
       @ Row() + 1, 5 PROMPT "Empty dialog on new thread"
-      @ 1, 3 TO Row() + 1, 40
+      @ Row() + 1, 5 PROMPT "Dialog with get colorized new thread"
+      @ 1, 3 TO Row() + 1, 50
       MENU TO nOpc
       DO CASE
       CASE nOpc == 1 .OR. LastKey() == K_ESC
@@ -30,9 +32,13 @@ FUNCTION Menu()
       CASE nOpc == 3
          hb_ThreadStart( { || hb_gtReload( "WVG" ), menu() } )
       CASE nOpc == 4
-         DlgEmpty()
+         hb_ThreadStart( { || Menuhwgui() } )
       CASE nOpc == 5
+         DlgEmpty()
+      CASE nOpc == 6
          hb_ThreadStart( { || DlgEmpty() } )
+      CASE nOpc == 7
+         hb_ThreadStart( { || DlgGet(.T.) } )
       ENDCASE
    ENDDO
    CLS

@@ -6,7 +6,7 @@
 
 ../../hwgui.hbc
 
-gtwvg.hbc
-
 menu.prg
 dlgempty.prg
+dlgget.prg
+dlgmenu.prg

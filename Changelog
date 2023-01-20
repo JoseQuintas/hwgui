@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-01-20 19:06 UTC+0200 José Quintas
+   * test/menu.prg
+   * test/test.hbp
+   + test/dlgget.prg
+   + test/menuhwgui.prg
+    ! added modified testget2.prg from samples, added a hwgui menu
+    ! removed gtwvg.hbc to use harbour gui default
+
+
 2023-01-19 12:36 UTC+0200 José Quintas
    * samples/testget2.prg
     ! removed not used variable, renamed variable

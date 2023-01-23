@@ -15,6 +15,22 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+
+2023-01-23 18:10 UTC+0100 Wilfried Brunken DF7BE
+  * clean.sh
+  * doc/hwgdoc_commands.html
+  * samples/Readme.txt
+  * samples/testget2.hbp
+  * samples/testget2.prg
+    ! #117 Fail on Linux OS. (MAXLENGTH)
+    ! Behaviour documentated,
+    ! But defined MAXLENGTH has effect
+    ! if storing the value of the edited
+    ! variable.
+    ! Sample program checked for GTK3.
+
+
 2023-01-20 19:06 UTC+0200 José Quintas
    * test/menu.prg
    * test/test.hbp

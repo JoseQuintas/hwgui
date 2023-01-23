@@ -211,7 +211,7 @@ For beginners:
  testbrw.prg         Y  #                     Another BROWSE test (bug on GTK see docu)
  testchild.prg       N  #    N         -      Create a child windows; child window not created ! command seems to be outdated.
  testget1.prg        Y                        Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
- testget2.prg        P                        Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
+ testget2.prg        Y       Y                Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
  testfunc.prg        Y       Y         Y      Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button. 
  testhgt.prg         N       N                class HGT for combined usage of HWGUI control elements in Harbour gtwvg programs in multithread mode.
  testhmonth.prg      Y                 Y      Calendar, Datepicker, TOOLTIP

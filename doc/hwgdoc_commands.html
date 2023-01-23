@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
-      <td width="70%" align="center">Alexander S.Kresin, December 2022</td>
+      <td width="70%" align="center">Alexander S.Kresin, January 2023</td>
       <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
     </tr>
   </table>
@@ -1519,6 +1519,19 @@
     <img src="./image/ticket79gtk_win.png" align=center wborder=0 alt="GET color WinGtKCrossEnv"><br>
     LINUX:<br>
     <img src="./image/ticket79linux.png" align=center wborder=0 alt="GET color LINUX"><br> 
+    </p>
+    
+    <p><br>
+    <b>More restrictions on GTK:</b><br>
+    1.) VALID: Outputs in the called VALID functions are not displayed<br>
+    (functions like hwg_MsgInfo() or hwg_MsgStop() )<br>
+    2.) MAXLENGTH:<br>
+    The Input field can be filled with more characters than with the<br>
+    parameter MAXLENGTH defined, but they are not stored in the variable.<br>
+    Moving the focus to another input field and go back to the input field<br>
+    with the length rectricted field, the content is displayed with the defined MAXLENGTH.<br>
+    3.) The function hwg_SetColorinFocus() does not work correct.<br>
+    The entry field in focus became only a simple border.<br>
     </p>
 
     <br><a name="Commands4-3" href="#_Commands4-3">4.4.3.  @ &lt;x&gt;,&lt;y&gt; GET CHECKBOX</a>

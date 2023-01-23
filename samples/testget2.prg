@@ -4,6 +4,27 @@
  * HwGUI Samples
  * testget2.prg - GET system and Timer in dialog box.
  */
+ 
+    * Status:
+    *  WinAPI   :  Yes
+    *  GTK/Linux:  Yes
+    *  GTK/Win  :  No
+    
+    * Port to GTK3 was successful
+    
+/*
+  Some trouble on GTK.
+  - The function hwg_SetColorinFocus() does not work correct.
+    The entry field in focus became only a simple border.
+  - The Background color of the clock in menu
+    (light green on WinAPI and GTK2) not visible (GTK3).
+  - Ticket #117 by Itamar M. Lins Jr.:
+    Fail on Linux OS. (MAXLENGTH).
+    The Input field can be filled with more characters than with the
+    parameter MAXLENGTH defined, but they are not stored in the variable.
+    Moving the focus to another input field and go back to the input field
+    with the length rectricted field, the content is displayed with the defined MAXLENGTH.
+*/    
 
 #include "hwgui.ch"
 
@@ -38,6 +59,7 @@ FUNCTION DlgGet( lColorInFocus )
    LOCAL e5 := 10320.54
    LOCAL e6 := "Max Lenght = 15"
    LOCAL e7 := "Password"
+   LOCAL oget6
 
    PRIVATE oSayT
 
@@ -59,7 +81,7 @@ FUNCTION DlgGet( lColorInFocus )
 
    @ 20, 35  GET e1 PICTURE "XXXXXXXXXXXXXXX" SIZE 260, 26
 
-   @ 20, 65  GET e6 MAXLENGTH 15 SIZE 260, 26
+   @ 20, 65  GET oget6 VAR e6 MAXLENGTH 15 SIZE 260, 26 
 
    @ 20, 95  GET e2  SIZE 260, 26
 
@@ -123,3 +145,15 @@ FUNCTION TestBallon()
    ACTIVATE DIALOG oWnd
 
 RETURN Nil
+
+
+FUNCTION MAXLEN_VALID(nlen,cstring)
+ IF LEN(cstring) > nlen
+   hwg_MsgInfo("Entry field length exceeds " + ALLTRIM(STR(nlen)) ) 
+   RETURN .F.
+ ENDIF
+RETURN .T.   
+
+
+* ============================= EOF of testget2.prg ================================================
+

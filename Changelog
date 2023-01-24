@@ -16,6 +16,16 @@
 */
 
 
+2023-01-24 20:12 UTC+0200 José Quintas
+   - test/mixed/dlgempty.prg
+   + test/mixed/dlgtextview.prg
+   * test/mixed/dlget.prg
+   * test/mixed/dlgmenu.prg
+   * test/mixed/readme.txt
+   * test/mixed/test.hbp
+    ! removed dlgempty, add dlgtextview, change hwg_enddialog() to oDlg:Close()
+    ! return gtwvg.hbc on hbp after tests with better results than others gts
+
 
 2023-01-23 18:10 UTC+0100 Wilfried Brunken DF7BE
   * clean.sh

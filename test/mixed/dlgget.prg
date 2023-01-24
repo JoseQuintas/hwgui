@@ -6,7 +6,7 @@ partial code from samples/testget2.prg with some changes
 
 FUNCTION DlgGet( lColorInFocus )
 
-   LOCAL oModDlg, oFont := HFont():Add( "MS Sans Serif", 0, -13 )
+   LOCAL oDlg, oFont := HFont():Add( "MS Sans Serif", 0, -13 )
    LOCAL e1 := "DlgGet"
    LOCAL e2 := Date()
    LOCAL e3 := 10320.54
@@ -15,7 +15,7 @@ FUNCTION DlgGet( lColorInFocus )
    LOCAL e6 := "Max Lenght = 15"
    LOCAL e7 := "Password"
 
-   INIT DIALOG oModDlg CLIPPER NOEXIT TITLE "Get with color in focus"  ;
+   INIT DIALOG oDlg CLIPPER TITLE "Get with color in focus"  ;
       AT 210,10  SIZE 300,320                  ;
       FONT oFont
 
@@ -44,13 +44,13 @@ FUNCTION DlgGet( lColorInFocus )
 
    @ 20, 215 GET e7 PASSWORD SIZE 72, 26
 
-   @  20, 250 BUTTON "Ok" SIZE 100, 32 ON CLICK { || oModDlg:lResult := .T., hwg_EndDialog() }
+   @  20, 250 BUTTON "Ok" SIZE 100, 32 ON CLICK { || oDlg:lResult := .T., oDlg:Close() }
    @ 180, 250 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
 
    ReadExit( .T. )
-   ACTIVATE DIALOG oModDlg
+   ACTIVATE DIALOG oDlg
 
-   IF oModDlg:lResult
+   IF oDlg:lResult
       hwg_Msginfo( e1 + hb_Eol() +   ;
                e6 + hb_Eol() +       ;
                Dtoc( e2 ) + hb_Eol() + ;

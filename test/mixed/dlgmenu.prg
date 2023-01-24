@@ -15,12 +15,13 @@ FUNCTION Menuhwgui()
 
    MENU OF oDlg
       MENU TITLE "Exit"
-         MENUITEM "&Exit" ACTION hwg_EndDialog()
+         MENUITEM "&Exit" ACTION oDlg:Close()
       ENDMENU
       MENU TITLE "&Tests"
-         MENUITEM "&Show gt name" ACTION hwg_MsgInfo( hb_gtinfo( HB_GTI_VERSION ) )
-         MENUITEM "Empty dialog" ACTION DlgEmpty(.T.)
-         MENUITEM "Dialog with get colorized" ACTION DlgGet(.T.)
+         MENUITEM "&Show gt name"        ACTION hwg_MsgInfo( hb_gtinfo( HB_GTI_VERSION ) )
+         MENUITEM "Menu gtwvg"           ACTION hb_ThreadStart( { || hb_gtReload( "WVG" ), menu() } )
+         MENUITEM "Dialog get colorized" ACTION DlgGet(.T.)
+         MENUITEM "Dialog Textview"      ACTION DlgTextView()
       ENDMENU
    ENDMENU
 

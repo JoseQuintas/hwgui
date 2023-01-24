@@ -4,9 +4,11 @@
 -gui
 -mt
 
+gtwvg.hbc
+
 ../../hwgui.hbc
 
 menu.prg
-dlgempty.prg
 dlgget.prg
 dlgmenu.prg
+dlgtextview.prg

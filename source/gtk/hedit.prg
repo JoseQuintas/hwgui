@@ -98,29 +98,30 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       hwg_SetSignal( ::handle, "paste-clipboard", WM_PASTE, 0, 0 )
       hwg_SetSignal( ::handle, "copy-clipboard", WM_COPY, 0, 0 )
    ENDIF
-   
+
 //   ::aColorOld[1] := iif( tcolor = Nil, 0, ::tcolor )
 //   ::aColorOld[2] := ::bcolor
 
    RETURN Self
 
 METHOD Activate() CLASS HEdit
-  
+
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createedit( ::oParent:handle, ::id, ;
          ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       hwg_Setwindowobject( ::handle, Self )
       ::Init()
    ENDIF
-   
+
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
+
    LOCAL oParent
    LOCAL nPos
 
    // hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
-   
+
    IF ::bAnyEvent != Nil .AND. Eval( ::bAnyEvent, Self, msg, wParam, lParam ) != 0
       RETURN 0
    ENDIF
@@ -130,7 +131,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
       // hwg_WriteLog("Edit: " + hwg_StrDebLog(lColorinFocus) + " " + ;
       //   Str(oParent:tColorinFocus,10) + " " + Str(oParent:bColorinFocus,10) + " " + ;
-      //   hwg_StrDebNIL(::bColorBlock) ) 
+      //   hwg_StrDebNIL(::bColorBlock) )
 
       IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
          ::aColorOld[1] := ::tcolor
@@ -283,11 +284,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             RETURN 0
          ENDIF
       ENDIF
-
 /*
    ELSE
 
- 
+
       IF msg == WM_MOUSEWHEEL
          nPos := hwg_Hiword( wParam )
          nPos := iif( nPos > 32768, nPos - 65535, nPos )
@@ -308,6 +308,7 @@ METHOD Init()  CLASS HEdit
    RETURN Nil
 
 METHOD Refresh()  CLASS HEdit
+
    LOCAL vari
 
    IF ::bSetGet != Nil
@@ -361,6 +362,7 @@ METHOD Value( xValue ) CLASS HEdit
    RETURN vari
 
 METHOD ParsePict( cPicture, vari ) CLASS HEdit
+
    LOCAL nAt, i, masklen, cChar
 
    IF ::bSetGet == Nil
@@ -419,12 +421,12 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
    IF !Empty( ::nMaxLength ) .AND. Len( ::cPicMask ) < ::nMaxLength
       ::cPicMask := PadR( ::cPicMask, ::nMaxLength, "X" )
    ENDIF
-
    //                                         ------------- end of added code
 
    RETURN Nil
 
 STATIC FUNCTION IsEditable( oEdit, nPos )
+
    LOCAL cChar
 
    IF Empty( oEdit:cPicMask )
@@ -449,7 +451,9 @@ STATIC FUNCTION IsEditable( oEdit, nPos )
    RETURN .F.
 
 STATIC FUNCTION KeyRight( oEdit, nPos )
-   LOCAL masklen, newpos 
+
+   LOCAL masklen, newpos
+
    * Variables not used
    * i , vari
 
@@ -485,6 +489,7 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
    RETURN 1
 
 STATIC FUNCTION KeyLeft( oEdit, nPos )
+
    * Variables not used
    * LOCAL i
 
@@ -508,6 +513,7 @@ STATIC FUNCTION KeyLeft( oEdit, nPos )
    RETURN 1
 
 STATIC FUNCTION DeleteChar( oEdit, lBack )
+
    LOCAL nPos := hwg_edit_Getpos( oEdit:handle ) + iif( !lBack, 1, 0 )
    LOCAL nGetLen := Len( oEdit:cPicMask ), nLen
 
@@ -536,6 +542,7 @@ STATIC FUNCTION DeleteChar( oEdit, lBack )
    RETURN Nil
 
 STATIC FUNCTION INPUT( oEdit, cChar, nPos )
+
    LOCAL cPic
 
    IF !Empty( oEdit:cPicMask ) .AND. nPos > Len( oEdit:cPicMask )
@@ -595,6 +602,7 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
    RETURN cChar
 
 STATIC FUNCTION GetApplyKey( oEdit, cKey )
+
    LOCAL nPos, nGetLen, nLen, vari, i, newPos
 
    // hwg_WriteLog( "GetApplyKey "+str(asc(ckey)) )
@@ -684,6 +692,7 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    RETURN 1
 
 STATIC FUNCTION __setInitPos( oCtrl )
+
    LOCAL n := 1
 
    IF !Empty( oCtrl:cPicMask )
@@ -696,6 +705,7 @@ STATIC FUNCTION __setInitPos( oCtrl )
    RETURN Nil
 
 STATIC FUNCTION __When( oCtrl )
+
    LOCAL res := .T.
 
    oCtrl:Refresh()
@@ -710,6 +720,7 @@ STATIC FUNCTION __When( oCtrl )
    RETURN res
 
 STATIC FUNCTION __valid( oCtrl )
+
    LOCAL vari, oDlg
 
    IF oCtrl:bSetGet != Nil
@@ -752,6 +763,7 @@ STATIC FUNCTION __valid( oCtrl )
    RETURN .T.
 
 STATIC FUNCTION Untransform( oEdit, cBuffer )
+
    LOCAL xValue, cChar, nFor, minus
 
    IF oEdit:cType == "C"
@@ -845,6 +857,7 @@ STATIC FUNCTION Untransform( oEdit, cBuffer )
    RETURN xValue
 
 STATIC FUNCTION FirstEditable( oEdit )
+
    LOCAL nFor, nMaxLen := Len( oEdit:cPicMask )
 
    IF IsEditable( oEdit, 1 )
@@ -860,6 +873,7 @@ STATIC FUNCTION FirstEditable( oEdit )
    RETURN 0
 
 STATIC FUNCTION  LastEditable( oEdit )
+
    LOCAL nFor, nMaxLen := Len( oEdit:cPicMask )
 
    FOR nFor := nMaxLen TO 1 step - 1
@@ -871,6 +885,7 @@ STATIC FUNCTION  LastEditable( oEdit )
    RETURN 0
 
 STATIC FUNCTION IsBadDate( cBuffer )
+
    LOCAL i, nLen
 
    IF !Empty( CToD( cBuffer ) )
@@ -894,6 +909,7 @@ STATIC FUNCTION DoCopy( oEdit )
    ELSE
       hwg_Copystringtoclipboard( UnTransform( oEdit, cClipboardText ) )
    ENDIF
+
    RETURN Nil
 
 STATIC FUNCTION DoPaste( oEdit )
@@ -1000,39 +1016,40 @@ FUNCTION hwg_SetColorinFocus( lDef, tColor, bColor )
    RETURN .T.
 
 FUNCTION hwg_Chr( nCode )
+
    RETURN Iif( hb_cdpSelect()=="UTF8", hwg_keyToUtf8( nCode ), Chr( nCode ) )
 
 FUNCTION hwg_Substr( cString, nPos, nLen )
+
    RETURN Iif( hb_cdpSelect()=="UTF8", ;
       Iif( nLen==Nil, hb_utf8Substr( cString, nPos ), hb_utf8Substr( cString, nPos, nLen ) ), ;
       Iif( nLen==Nil, Substr( cString, nPos ), Substr( cString, nPos, nLen ) ) )
 
 FUNCTION hwg_Left( cString, nLen )
+
    RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Left( cString, nLen ), Left( cString, nLen ) )
 
 FUNCTION hwg_Len( cString )
+
    RETURN Iif( hb_cdpSelect()=="UTF8", hb_utf8Len( cString ), Len( cString ) )
 
 
 FUNCTION hwg_GET_Helper(cp_get,nlen)
- 
-LOCAL c_get 
 
-  c_get := cp_get
+   LOCAL c_get
 
-#ifdef __GTK__  
-  IF EMPTY(c_get)
-    c_get := ""
-  ELSE
-   IF nlen == NIL
-    c_get := RTRIM(c_get)
+   c_get := cp_get
+
+#ifdef __GTK__
+   IF EMPTY(c_get)
+      c_get := ""
    ELSE
-    c_get := PADR(c_get,nlen)
+      IF nlen == NIL
+         c_get := RTRIM(c_get)
+      ELSE
+         c_get := PADR(c_get,nlen)
+      ENDIF
    ENDIF
-  ENDIF
 #endif
 
 RETURN c_get
-
-* ================================= EOF of hedit.prg ===============================
-

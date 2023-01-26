@@ -293,11 +293,13 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
 
 
 METHOD DefaultLang() CLASS HBrowse
+
    ::cTextTitME := "Memo Edit"
    ::cTextClose := "Close"   // Button
    ::cTextSave  := "Save"
    ::cTextMod   := "Memo was modified, save ?"
    ::cTextLockRec := "Can't lock the record!"
+
    RETURN Self
 
 METHOD Activate() CLASS HBrowse
@@ -418,7 +420,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          ::ButtonRDown( lParam )
 
       ELSEIF msg == WM_MOUSEMOVE
-         // hwg_WriteLog( "Brw: WM_MOUSEMOVE" ) 
+         // hwg_WriteLog( "Brw: WM_MOUSEMOVE" )
          ::MouseMove( wParam, lParam )
 
       ELSEIF msg == WM_MOUSEWHEEL
@@ -497,6 +499,7 @@ STATIC FUNCTION InitColumn( oBrw, oColumn, n )
       oColumn:length := Max(oColumn:length,10)
      ENDIF
    ENDIF
+
    RETURN Nil
 
 METHOD DelColumn( nPos ) CLASS HBrowse
@@ -667,7 +670,7 @@ METHOD Paint()  CLASS HBrowse
 
    LOCAL aCoors, i, l, tmp, nRows
    LOCAL  hDC
- 
+
    * Variables not used
    * LOCAL oldAlias, pps
    * LOCAL oldBkColor, oldTColor
@@ -1038,7 +1041,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
    LOCAL lColumnFont := .F.
    LOCAL aCores, oColumn, aCB, block
    * Variables not used
-   * dx, shablon, fldname, slen  
+   * dx, shablon, fldname, slen
    x := ::x1
    IF lClear == Nil ; lClear := .F. ; ENDIF
 
@@ -1263,7 +1266,7 @@ STATIC FUNCTION LINELEFT( oBrw, lRefresh )
 METHOD DoVScroll( wParam ) CLASS HBrowse
 
    LOCAL nScrollV := hwg_getAdjValue( ::hScrollV )
-   
+
    * Parameters not used
    HB_SYMBOL_UNUSED(wParam)
 
@@ -1747,8 +1750,8 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
 
    * Parameters not used
    HB_SYMBOL_UNUSED(nXPos)
-   HB_SYMBOL_UNUSED(nYPos)   
-  
+   HB_SYMBOL_UNUSED(nYPos)
+
    // hwg_WriteLog( "Brw: MouseWheel" )
    IF Hwg_BitAnd( nKeys, MK_MBUTTON ) != 0
       IF nDelta > 0
@@ -1777,16 +1780,16 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
    lSaveMem := .T.
 
-   * Variables not used   
+   * Variables not used
    * lReadExit
-   
+
    * Parameters not used
    HB_SYMBOL_UNUSED(wParam)
    HB_SYMBOL_UNUSED(lParam)
 
-   
-   bclsbutt := .T. 
-   
+
+   bclsbutt := .T.
+
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
    oColumn := ::aColumns[fipos]
@@ -1896,7 +1899,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
 METHOD Repaint() CLASS HBrowse
    /*
-     only internal usage: 
+     only internal usage:
      DF7BE : blank lines repainted, if lost.
      Reference: Bug Ticket #33
    */
@@ -1923,7 +1926,7 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo )
    LOCAL oColumn := oBrw:aColumns[fipos], nRec, fif
    LOCAL cErrMsgRecLock, bESCkey
    LOCAL nChoic := NIL
-   
+
    /* Mysterious behavior of Harbour on Ubuntu and LinuxMINT:
       Not ever found, that  ::cTextLockRec is not here
       reachable, this function not member of HBROWSE class */
@@ -1931,7 +1934,7 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo )
 
    // Added case for memo edit (bmemo = .T.), because HCEDIT used
    IF bmemo == NIL
-    bmemo := .F.
+      bmemo := .F.
    ENDIF
 
    // ESC key pressed ?
@@ -2033,7 +2036,7 @@ METHOD Refresh( lFull ) CLASS HBrowse
 
 STATIC FUNCTION FldStr( oBrw, numf )
 
-   LOCAL cRes, vartmp, type 
+   LOCAL cRes, vartmp, type
    LOCAL pict
 
    IF numf <= Len( oBrw:aColumns )
@@ -2245,6 +2248,3 @@ FUNCTION hwg_getPaintCB( arr, nId )
    ENDIF
 
    RETURN aRes
-  
-* ======================= EOF of hbrowse.prg =====================
-

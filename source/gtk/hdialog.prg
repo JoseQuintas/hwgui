@@ -64,7 +64,6 @@ CLASS HDialog INHERIT HWindow
    DATA lModal
 //   DATA handle
 
-
    METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSize, ;
       bPaint, bGfocus, bLfocus, bOther, lClipper, oBmp, oIcon, lExitOnEnter, nHelpId, xResourceID, lExitOnEsc, bColor )
    METHOD Activate( lNoModal , lMaximized, lMinimized, lCentered, bActivate )
@@ -121,6 +120,7 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
 
 /* Added: lMaximized, lMinimized, lCentered, bActivate */
 METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS HDialog
+
    LOCAL hParent, oWnd, aCoors, aRect
 
    hwg_CreateGetList( Self )
@@ -186,6 +186,7 @@ METHOD Activate( lNoModal, lMaximized, lMinimized, lCentered, bActivate ) CLASS 
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HDialog
+
    LOCAL i
 
    IF ( i := Ascan( aMessModalDlg, { |a|a[1] == msg } ) ) != 0
@@ -203,6 +204,7 @@ METHOD AddItem( oWnd, lModal ) CLASS HDialog
    RETURN Nil
 
 METHOD DelItem( oWnd, lModal ) CLASS HDialog
+
    LOCAL i
 
    IF lModal
@@ -224,6 +226,7 @@ METHOD FindDialog( hWnd ) CLASS HDialog
    RETURN hwg_Getwindowobject( hWnd )
 
 METHOD GetActive() CLASS HDialog
+
    LOCAL handle := hwg_Getfocus()
    LOCAL i := Ascan( ::Getlist, { |o|o:handle == handle } )
 
@@ -233,6 +236,7 @@ METHOD GetActive() CLASS HDialog
    // ------------------------------------
 
 STATIC FUNCTION InitModalDlg( oDlg )
+
    * Variables not used
    * LOCAL iCont
 

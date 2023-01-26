@@ -45,10 +45,10 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 FUNCTION hwg_onMove( oWnd, wParam, lParam )
 
    LOCAL apos := hwg_getwindowpos( oWnd:handle )
-   
+
    * Parameters not used
    HB_SYMBOL_UNUSED(wParam)
-   HB_SYMBOL_UNUSED(lParam)   
+   HB_SYMBOL_UNUSED(lParam)
 
    //hwg_WriteLog( "onMove: "+str(oWnd:nLeft)+" "+str(oWnd:nTop)+" -> "+str(hwg_Loword(lParam))+str(hwg_Hiword(lParam))+" "+str(apos[1])+" "+str(apos[2]) )
    oWnd:nLeft := apos[1] //hwg_Loword( lParam )
@@ -114,9 +114,9 @@ CLASS HWindow INHERIT HCustomWindow
 * On GTK3 the app name may not contain "_"
 #ifdef ___GTK3___
    CLASS VAR szAppName  SHARED INIT "HwGUI.App"
-#else   
+#else
    CLASS VAR szAppName  SHARED INIT "HwGUI_App"
-#endif   
+#endif
    CLASS VAR aKeysGlobal SHARED INIT {}
    DATA fbox
    DATA menu, oPopup, hAccel
@@ -145,7 +145,7 @@ CLASS HWindow INHERIT HCustomWindow
    METHOD Minimize() INLINE hwg_WindowMinimize( ::handle )
    METHOD CLOSE()    INLINE iif( !onDestroy( Self ), .F. , hwg_DestroyWindow( ::handle ) )
    METHOD SetTitle( cTitle ) INLINE hwg_Setwindowtext( ::handle, ::title := cTitle )
-   
+
 
 ENDCLASS
 
@@ -283,7 +283,11 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
    HB_SYMBOL_UNUSED(nPos)
    HB_SYMBOL_UNUSED(nExclude)
 
-    IIF ( oBmp == NIL , hbackground := NIL , hbackground := oBmp:handle )
+   IF oBmp == NIL
+      hbackground := NIL
+   ELSE
+      hbackground := oBmp:handle )
+   ENDIF
 
    ::Super:New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther,  ;
@@ -375,24 +379,27 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
    RETURN 0
 
 METHOD InitTray() CLASS HMainWindow
+
    RETURN Nil
-   
-METHOD DEICONIFY() CLASS HMainWindow 
+
+METHOD DEICONIFY() CLASS HMainWindow
    hwg_deiconify(::handle)
-  RETURN NIL
+
+   RETURN NIL
 
 METHOD ICONIFY()  CLASS HMainWindow
    hwg_iconify(::handle)
-  RETURN NIL  
+
+   RETURN NIL
 
 FUNCTION hwg_ReleaseAllWindows( hWnd )
 
    * LOCAL oItem, iCont, nCont
-   
+
    * Parameters not used
    HB_SYMBOL_UNUSED(hWnd)
 
-   return - 1
+   RETURN -1
 
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
@@ -402,7 +409,6 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
 
    * Parameters not used
    HB_SYMBOL_UNUSED(lParam)
-
 
    iParHigh := hwg_Hiword( wParam )
    iParLow := hwg_Loword( wParam )
@@ -437,11 +443,7 @@ STATIC FUNCTION onGetFocus( oDlg, w, l )
 
    RETURN 0
 
-
-* Prepare for future (if available on next GTK versions)   
+* Prepare for future (if available on next GTK versions)
 * FUNCTION hwg_GTKShellnotifyicon( oIcon )
 *       hwg_ShellModifyIcon ( iif( oIcon != Nil, oIcon:handle, Nil ) )
 *   RETURN NIL
-
-* ===================== EOF of hwindow.prg ==============================
-

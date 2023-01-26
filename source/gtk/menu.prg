@@ -24,6 +24,7 @@ STATIC aKeysTable := { { VK_F1,GDK_F1 }, { VK_F2,GDK_F2 }, { VK_F3,GDK_F3 }, ;
       { VK_F12, GDK_F12 }, { VK_HOME, GDK_Home }, { VK_LEFT, GDK_Left }, { VK_END, GDK_End }, ;
       { VK_RIGHT, GDK_Right }, { VK_DOWN, GDK_Down }, { VK_UP, GDK_Up } }
 */
+
 CLASS HMenu INHERIT HObject
 
    DATA handle
@@ -46,6 +47,7 @@ METHOD Show( oWnd ) CLASS HMenu
    RETURN Nil
 
 FUNCTION Hwg_CreateMenu
+
    LOCAL hMenu
 
    IF ( Empty( hMenu := hwg__CreateMenu() ) )
@@ -76,6 +78,7 @@ FUNCTION Hwg_SetMenu( oWnd, aMenu )
  */
 
 FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos, hWnd )
+
    LOCAL hSubMenu
 
    IF nPos == Nil
@@ -107,6 +110,7 @@ FUNCTION Hwg_AddMenuItem( aMenu, cItem, nMenuId, lSubMenu, bItem, nPos, hWnd )
    RETURN Nil
 
 FUNCTION Hwg_FindMenuItem( aMenu, nId, nPos )
+
    LOCAL nPos1, aSubMenu
 
    nPos := 1
@@ -125,6 +129,7 @@ FUNCTION Hwg_FindMenuItem( aMenu, nId, nPos )
    RETURN Nil
 
 FUNCTION Hwg_GetSubMenuHandle( aMenu, nId )
+
    LOCAL aSubMenu := Hwg_FindMenuItem( aMenu, nId )
 
    RETURN iif( aSubMenu == Nil, 0, aSubMenu[5] )
@@ -179,6 +184,7 @@ FUNCTION hwg_BuildMenu( aMenuInit, hWnd, oWnd, nPosParent, lPopup )
    RETURN Nil
 
 FUNCTION Hwg_BeginMenu( oWnd, nId, cTitle )
+
    LOCAL aMenu, i
 
    IF oWnd != Nil
@@ -283,6 +289,7 @@ FUNCTION Hwg_DefineMenuItem( cItem, nId, bItem, lDisabled, accFlag, accKey, lBit
    RETURN .T.
 
 FUNCTION Hwg_DefineAccelItem( nId, bItem, accFlag, accKey )
+
    LOCAL aMenu, i
 
    aMenu := _aMenuDef
@@ -296,6 +303,7 @@ FUNCTION Hwg_DefineAccelItem( nId, bItem, accFlag, accKey )
    RETURN .T.
 
 STATIC FUNCTION hwg_Createacceleratortable( oWnd )
+
    LOCAL hTable := hwg__Createacceleratortable( oWnd:handle )
    LOCAL i, nPos, aSubMenu, nKey
    * Variables not used
@@ -315,6 +323,7 @@ STATIC FUNCTION hwg_Createacceleratortable( oWnd )
    RETURN hTable
 
 STATIC FUNCTION GetMenuByHandle( hWnd )
+
    LOCAL i, aMenu, oDlg
 
    IF hWnd == Nil
@@ -338,7 +347,7 @@ STATIC FUNCTION GetMenuByHandle( hWnd )
    RETURN aMenu
 
 // hwg_CheckMenuItem( xMenu, idItem, lCheck )
-// xMenu: oMenu - context menu object OR window object 
+// xMenu: oMenu - context menu object OR window object
 //   OR hWnd - handle of a window OR hMenu - menu handle
 FUNCTION hwg_CheckMenuItem( hWnd, nId, lValue )
 
@@ -437,5 +446,3 @@ FUNCTION hwg_gtk_convertkey( nKey )
    ENDIF
 
    RETURN nKey
-
-* =============================== EOF of menu.prg ========================================

@@ -71,6 +71,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
    RETURN Self
 
 METHOD Activate() CLASS HLenta
+
    LOCAL handle := ::oParent:handle
 
    IF !Empty( handle )
@@ -160,7 +161,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HLenta
       hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 METHOD Paint() CLASS HLenta
 
@@ -262,9 +263,9 @@ METHOD Paint() CLASS HLenta
    ENDIF
 
 #ifdef __PLATFORM__UNIX
-      hwg_Releasedc( ::handle, hDC )
+   hwg_Releasedc( ::handle, hDC )
 #else
-      hwg_Endpaint( ::handle, pps )
+   hwg_Endpaint( ::handle, pps )
 #endif
 
    RETURN Nil
@@ -272,6 +273,7 @@ METHOD Paint() CLASS HLenta
 METHOD Drag( xPos, yPos ) CLASS HLenta
 
    LOCAL nLength := Iif( ::lVertical, ::nHeight, ::nWidth ), nKolItems := Len( ::aItems )
+
    //hwg_Writelog( "   " + Ltrim(Str(yPos)) + " " + Ltrim(Str(::yPos)) + " " + Ltrim(Str(::nShift)) )
    IF nLength < ::nItemSize * nKolItems - 4 .AND. ;
       ( ( ::lVertical .AND. Abs( yPos-::yPos ) > 2 ) .OR. ( !::lVertical .AND. Abs( xPos-::xPos ) > 2 ) )

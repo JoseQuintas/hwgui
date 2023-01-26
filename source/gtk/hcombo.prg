@@ -204,6 +204,7 @@ METHOD SetItem( nPos ) CLASS HComboBox
    RETURN Nil
 
 METHOD GetValue( nItem ) CLASS HComboBox
+
    LOCAL nPos := hwg_ComboGet( ::handle )
    LOCAL vari := iif( !Empty( ::aItems ) .AND. nPos > 0, ;
       iif( ValType( ::aItems[1] ) == "A", ::aItems[nPos,1], ::aItems[nPos] ), "" )
@@ -253,6 +254,7 @@ STATIC FUNCTION __Valid( oCtrl )
    RETURN .T.
 
 STATIC FUNCTION __When( oCtrl )
+
    LOCAL res
 
    IF oCtrl:bGetFocus != Nil
@@ -264,6 +266,3 @@ STATIC FUNCTION __When( oCtrl )
    ENDIF
 
    RETURN .T.
-
-* ================================ EOF of hcombo.prg =============================================
-

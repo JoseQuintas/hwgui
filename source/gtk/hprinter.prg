@@ -90,37 +90,41 @@ CLASS HPrinter INHERIT HObject
 ENDCLASS
 
 FUNCTION hwg_HPrinter_LangArray_EN()
-/* Returns array with captions for titles and controls of print preview dialog
-  in default language english.
-  Use this code snippet as template to set to your own desired language. */
-  LOCAL aTooltips
-  aTooltips := {}
 
-  /* 1  */ AAdd(aTooltips,"Exit Preview")
-  /* 2  */ AAdd(aTooltips,"Print file")
-  /* 3  */ AAdd(aTooltips,"First page")
-  /* 4  */ AAdd(aTooltips,"Next page")
-  /* 5  */ AAdd(aTooltips,"Previous page")
-  /* 6  */ AAdd(aTooltips,"Last page")
-  /* 7  */ AAdd(aTooltips,"Zoom out")
-  /* 8  */ AAdd(aTooltips,"Zoom in")
-  /* 9  */ AAdd(aTooltips,"Print dialog")
-  // added (Titles and other Buttons)
-  /* 10 */ AAdd(aTooltips,"Print preview -") && Title
-  /* 11 */ AAdd(aTooltips,"Print")           && Button
-  /* 12 */ AAdd(aTooltips,"Exit")            && Button
-  /* 13 */ AAdd(aTooltips,"Dialog")          && Button
-  /* 14 */ AAdd(aTooltips,"User Button")     && aBootUser[ 3 ], Tooltip
-  /* 15 */ AAdd(aTooltips,"User Button")     && aBootUser[ 4 ]
-  // Subdialog "Printer Dialog"
-  /* 16 */ AAdd(aTooltips,"All")             && Radio Button              "All"
-  /* 17 */ AAdd(aTooltips,"Current")         && Radio Button              "Current"
-  /* 18 */ AAdd(aTooltips,"Pages")           && Radio Button              "Pages"
-  /* 19 */ AAdd(aTooltips,"Print")           && Button                    "Print"
-  /* 20 */ AAdd(aTooltips,"Cancel")          && Button                    "Cancel"
-  /* 21 */ AAdd(aTooltips,"Enter range of pages") && Tooltip              "Enter range of pages"
+   /* Returns array with captions for titles and controls of print preview dialog
+   in default language english.
+   Use this code snippet as template to set to your own desired language.
+   */
 
-RETURN aTooltips
+   LOCAL aTooltips
+
+   aTooltips := {}
+
+   /* 1  */ AAdd(aTooltips,"Exit Preview")
+   /* 2  */ AAdd(aTooltips,"Print file")
+   /* 3  */ AAdd(aTooltips,"First page")
+   /* 4  */ AAdd(aTooltips,"Next page")
+   /* 5  */ AAdd(aTooltips,"Previous page")
+   /* 6  */ AAdd(aTooltips,"Last page")
+   /* 7  */ AAdd(aTooltips,"Zoom out")
+   /* 8  */ AAdd(aTooltips,"Zoom in")
+   /* 9  */ AAdd(aTooltips,"Print dialog")
+   // added (Titles and other Buttons)
+   /* 10 */ AAdd(aTooltips,"Print preview -") && Title
+   /* 11 */ AAdd(aTooltips,"Print")           && Button
+   /* 12 */ AAdd(aTooltips,"Exit")            && Button
+   /* 13 */ AAdd(aTooltips,"Dialog")          && Button
+   /* 14 */ AAdd(aTooltips,"User Button")     && aBootUser[ 3 ], Tooltip
+   /* 15 */ AAdd(aTooltips,"User Button")     && aBootUser[ 4 ]
+   // Subdialog "Printer Dialog"
+   /* 16 */ AAdd(aTooltips,"All")             && Radio Button              "All"
+   /* 17 */ AAdd(aTooltips,"Current")         && Radio Button              "Current"
+   /* 18 */ AAdd(aTooltips,"Pages")           && Radio Button              "Pages"
+   /* 19 */ AAdd(aTooltips,"Print")           && Button                    "Print"
+   /* 20 */ AAdd(aTooltips,"Cancel")          && Button                    "Cancel"
+   /* 21 */ AAdd(aTooltips,"Enter range of pages") && Tooltip              "Enter range of pages"
+
+   RETURN aTooltips
 
 METHOD New( cPrinter, lmm, nFormType , cdp) CLASS HPrinter
 
@@ -177,10 +181,13 @@ METHOD New( cPrinter, lmm, nFormType , cdp) CLASS HPrinter
    RETURN Self
 
 METHOD DefaultLang() CLASS HPrinter
-  ::aLangTexts := hwg_HPrinter_LangArray_EN()
-RETURN NIL
+
+   ::aLangTexts := hwg_HPrinter_LangArray_EN()
+
+   RETURN NIL
 
 METHOD SetMode( nOrientation, nDuplex ) CLASS HPrinter
+
    LOCAL x
 
    IF ( nOrientation == 1 .OR. nOrientation == 2 ) .AND. nOrientation != ::nOrient
@@ -211,6 +218,7 @@ METHOD Recalc( x1, y1, x2, y2 ) CLASS HPrinter
 
 /* Added: , nCharset */
 METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset ) CLASS HPrinter
+
    LOCAL oFont
 
    * Parameters not used
@@ -226,6 +234,7 @@ METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset ) CLASS
    RETURN oFont
 
 METHOD SetFont( oFont )  CLASS HPrinter
+
    LOCAL oFontOld := ::oFont
 
    ::oFont := oFont
@@ -233,6 +242,7 @@ METHOD SetFont( oFont )  CLASS HPrinter
    RETURN oFontOld
 
 METHOD AddPen( nWidth, style, color ) CLASS HPrinter
+
    LOCAL oPen
 
    IF ::lmm .AND. nWidth != Nil
@@ -243,6 +253,7 @@ METHOD AddPen( nWidth, style, color ) CLASS HPrinter
    RETURN oPen
 
 METHOD SetPen( nWidth, style, color )  CLASS HPrinter
+
    LOCAL oPenOld := ::oPen
 
    ::oPen := HGP_Pen():Add( nWidth, style, color )
@@ -470,15 +481,15 @@ METHOD SaveScript( cScriptFile ) CLASS HPrinter
 
 METHOD Preview( cTitle, aBitmaps, aTooltips, aBootUser ) CLASS HPrinter
 
-/*
-aBootUser[ 1 ] : oBtn:bClick
-aBootUser[ 2 ] : AddResource(Bitmap)
-aBootUser[ 3 ] : "User Button", Tooltip ==> cBootUser3
-aBootUser[ 4 ] : "User Button"          ==> cBootUser4
+   /*
+   aBootUser[ 1 ] : oBtn:bClick
+   aBootUser[ 2 ] : AddResource(Bitmap)
+   aBootUser[ 3 ] : "User Button", Tooltip ==> cBootUser3
+   aBootUser[ 4 ] : "User Button"          ==> cBootUser4
 
-Default values in array aTooltips see
-FUNCTION hwg_HPrinter_LangArray_EN()
-*/
+   Default values in array aTooltips see
+   FUNCTION hwg_HPrinter_LangArray_EN()
+   */
 
    LOCAL cmExit, cmPrint, cmTitle
    LOCAL oDlg, oSayPage, oBtn, oCanvas, i, nLastPage := Len( ::aPages ), aPage := { }
@@ -517,7 +528,6 @@ FUNCTION hwg_HPrinter_LangArray_EN()
    FOR i := 1 TO nLastPage
       AAdd( aPage, Str( i, 4 ) + ":" + Str( nLastPage, 4 ) )
    NEXT
-
 
    ::nZoom := 0
    ::ChangePage( , , , 1 )
@@ -653,6 +663,7 @@ FUNCTION hwg_HPrinter_LangArray_EN()
    RETURN Nil
 
 METHOD PaintDoc( oCanvas ) CLASS HPrinter
+
    LOCAL pps, hDC, aCoors, nWidth, nHeight, nZoom, nShiftV := 0, nShiftH := 0
 
    pps := hwg_Definepaintstru()
@@ -704,6 +715,7 @@ METHOD PaintDoc( oCanvas ) CLASS HPrinter
    RETURN Nil
 
 METHOD PrintDoc()
+
    LOCAL nOper := 0, cExt
 
    IF !Empty( ::cPrinterName ) .AND. ( cExt := Lower( FilExten( ::cPrinterName ) ) ) $ "pdf;ps;png;svg;"
@@ -719,6 +731,7 @@ METHOD PrintDoc()
    RETURN Nil
 
 METHOD ChangePage( oCanvas, oSayPage, n, nPage ) CLASS HPrinter
+
    LOCAL nCurrPage := ::nCurrPage, cMetaName
 
    IF nPage == Nil
@@ -768,6 +781,7 @@ CLASS HGP_Font INHERIT HObject
 ENDCLASS
 
 METHOD Add( fontName, nHeight , fnWeight, fdwItalic, fdwUnderline ) CLASS HGP_Font
+
    LOCAL i, nlen := Len( ::aFonts )
 
    nHeight  := iif( nHeight == Nil, 13, Abs( nHeight ) )
@@ -807,6 +821,7 @@ METHOD Equal( fontName, nHeight , fnWeight, fdwItalic, fdwUnderline )
    RETURN .F.
 
 METHOD RELEASE( lAll ) CLASS HGP_Font
+
    LOCAL i, nlen := Len( ::aFonts )
 
    IF lAll != Nil .AND. lAll
@@ -838,6 +853,7 @@ CLASS HGP_Pen INHERIT HObject
 ENDCLASS
 
 METHOD Add( nWidth, style, color ) CLASS HGP_Pen
+
    LOCAL i
 
    nWidth := iif( nWidth == Nil, 1, nWidth )
@@ -889,6 +905,7 @@ STATIC FUNCTION FScrollH( oCanvas )
    RETURN Nil
 
 STATIC FUNCTION MessProc( oPrinter, oPanel, lParam )
+
    LOCAL xPos, yPos, nPage := oPrinter:nCurrPage, arr, i, j, nPos, x1, y1, x2, y2, cTemp, cl
    LOCAL nHRes, nVRes
 
@@ -930,7 +947,4 @@ STATIC FUNCTION MessProc( oPrinter, oPanel, lParam )
       ENDIF
    ENDIF
 
-Return 1
-
-* ============================ EOF of hprinter.prg =================================
-
+   RETURN 1

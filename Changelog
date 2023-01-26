@@ -16,6 +16,12 @@
 */
 
 
+2023-01-26 09:30 UTC+0200 José Quintas
+   * source/gtk/*.prg
+    | single format source code
+    ! change some if;endif and iif() to if/endif block to avoid confusion
+
+
 2023-01-25 21:32 UTC+0200 José Quintas
    * source/winapi/*.prg
     ! single format source code

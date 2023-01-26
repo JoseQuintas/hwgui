@@ -12,10 +12,10 @@
 #include "hbclass.ch"
 #include "error.ch"
 
-   //ANNOUNCE HB_GTSYS
-   REQUEST HB_GT_CGI_DEFAULT
+//ANNOUNCE HB_GTSYS
+REQUEST HB_GT_CGI_DEFAULT
 
-   STATIC aCustomEvents := { ;
+STATIC aCustomEvents := { ;
       { WM_PAINT, WM_COMMAND, WM_SIZE, WM_DESTROY }, ;
       { ;
       { |o, w|iif( o:bPaint != Nil, Eval( o:bPaint,o,w ), - 1 ) }, ;
@@ -75,6 +75,7 @@ CLASS HCustomWindow INHERIT HObject
 ENDCLASS
 
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
+
    LOCAL i
 
    IF Valtype( nId ) == "C"
@@ -88,6 +89,7 @@ METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
    RETURN Iif( i == 0, Nil, ::aControls[i] )
 
 METHOD DelControl( oCtrl ) CLASS HCustomWindow
+
    LOCAL id := oCtrl:id, h
    LOCAL i := Ascan( ::aControls, { |o|o == oCtrl } )
 
@@ -176,6 +178,7 @@ METHOD Setcolor( tcolor, bcolor, lRepaint ) CLASS HCustomWindow
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HCustomWindow
+
    LOCAL i
 
    // hwg_WriteLog( "== "+::Classname()+Str(msg)+Iif(wParam!=Nil,Str(wParam),"Nil")+Iif(lParam!=Nil,Str(lParam),"Nil") )
@@ -188,6 +191,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCustomWindow
    RETURN 0
 
 METHOD End()  CLASS HCustomWindow
+
    LOCAL aControls := ::aControls
    LOCAL i, nLen := Len( aControls )
 
@@ -237,6 +241,7 @@ STATIC FUNCTION onDestroy( oWnd )
    RETURN 0
 
 STATIC FUNCTION onCommand( oWnd, wParam )
+
    LOCAL iItem, iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
 
    IF oWnd:aEvents != Nil .AND. ;
@@ -247,6 +252,7 @@ STATIC FUNCTION onCommand( oWnd, wParam )
    RETURN 1
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
+
    LOCAL aControls := oWnd:aControls, oItem, x, y
 
    FOR EACH oItem in aControls
@@ -289,6 +295,7 @@ FUNCTION hwg_onTrackScroll( oWnd, wParam, lParam )
 FUNCTION hwg_GetItemByName( arr, cName )
 
    LOCAL oItem
+
    FOR EACH oItem IN arr
       IF !Empty( oItem:objname ) .AND. oItem:objname == cName
          RETURN oItem
@@ -298,9 +305,11 @@ FUNCTION hwg_GetItemByName( arr, cName )
    RETURN Nil
 
 FUNCTION HB_GT_TRM
+
    RETURN Nil
 
 FUNCTION HB_GT_TRM_DEFAULT
+
    RETURN Nil
 
 INIT PROCEDURE HWGINIT
@@ -313,6 +322,7 @@ INIT PROCEDURE HWGINIT
    RETURN
 
 EXIT PROCEDURE Hwg_ExitProcedure
+
    Hwg_ExitProc()
 
    RETURN

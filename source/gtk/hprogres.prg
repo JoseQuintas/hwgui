@@ -128,15 +128,15 @@ METHOD SET( cTitle, nPos ) CLASS HProgressBar
 
    RETURN Nil
 
-
 METHOD RESET() CLASS HProgressBar
- IF ::handle != NIL
-    ::nCount := 0
-    hwg_Resetprogressbar( ::handle )
-    * hwg_Updateprogressbar( ::handle )
- ENDIF
-RETURN NIL
 
+   IF ::handle != NIL
+      ::nCount := 0
+      hwg_Resetprogressbar( ::handle )
+      * hwg_Updateprogressbar( ::handle )
+   ENDIF
+
+   RETURN NIL
 
 METHOD CLOSE()
 
@@ -146,6 +146,3 @@ METHOD CLOSE()
    ENDIF
 
    RETURN Nil
-
-* ==================== EOF of hprogres.prg ======================
-

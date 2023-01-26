@@ -62,6 +62,7 @@ METHOD NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeig
    RETURN Self
 
 METHOD EndGroup( nSelected )  CLASS HRadioGroup
+
    LOCAL nLen
 
    IF ::oGroupCurrent != Nil .AND. ( nLen := Len( ::oGroupCurrent:aButtons ) ) > 0
@@ -77,6 +78,7 @@ METHOD EndGroup( nSelected )  CLASS HRadioGroup
    RETURN Nil
 
 METHOD Value( nValue ) CLASS HRadioGroup
+
    LOCAL nLen
 
    IF nValue != Nil
@@ -156,6 +158,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    RETURN Self
 
 METHOD Activate() CLASS HRadioButton
+
    LOCAL groupHandle := ::oGroup:handle
 
    IF !Empty( ::oParent:handle )
@@ -185,9 +188,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HRadioButton
    RETURN Nil
 
 METHOD Value( lValue ) CLASS HRadioButton
+
    IF lValue != Nil
       hwg_CheckButton( ::handle, .T. )
    ENDIF
+
    RETURN hwg_isButtonChecked( ::handle )
 
 STATIC FUNCTION __Valid( oCtrl )
@@ -201,5 +206,3 @@ STATIC FUNCTION __Valid( oCtrl )
    ENDIF
 
    RETURN .T.
-
-* =================================== EOF of hradio.prg =============================================

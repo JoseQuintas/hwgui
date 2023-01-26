@@ -105,7 +105,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    RETURN Self
 
-
 METHOD Activate() CLASS HStaticLink
 
    IF !Empty( ::oParent:handle )
@@ -114,7 +113,7 @@ METHOD Activate() CLASS HStaticLink
       ::Init()
    ENDIF
 
-RETURN NIL
+   RETURN NIL
 
 METHOD Init() CLASS HStaticLink
 
@@ -141,7 +140,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
       ::OnClicked()
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 METHOD GoToLinkUrl( csLink ) CLASS HStaticLink
 
@@ -231,5 +230,3 @@ METHOD Paint() CLASS HStaticLink
    hwg_Endpaint( ::handle, pps )
 
    RETURN 0
-
-* =============================== EOF of hhyper.prg =======================================

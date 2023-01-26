@@ -59,7 +59,7 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages ) CLASS HTreeN
 
    * Variables not used
    * LOCAL im1, im2, cImage
-   
+
 
    ::oTree := oTree
    ::oParent := oParent
@@ -112,12 +112,14 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages ) CLASS HTreeN
    RETURN Self
 
 METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages ) CLASS HTreeNode
+
    LOCAL oParent := Self
    LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bClick, aImages )
 
    RETURN oNode
 
 METHOD DELETE( lInternal ) CLASS HTreeNode
+
    LOCAL h := ::handle, j, alen, aItems
 
    IF ! Empty( ::aItems )
@@ -137,6 +139,7 @@ METHOD DELETE( lInternal ) CLASS HTreeNode
    RETURN Nil
 
 METHOD getNodeIndex() CLASS HTreeNode
+
    LOCAL aItems := ::oParent:aItems, nNode
 
    FOR nNode := 1 TO Len( aItems )
@@ -148,6 +151,7 @@ METHOD getNodeIndex() CLASS HTreeNode
    RETURN nNode
 
 METHOD PrevNode( nNode, lSkip ) CLASS HTreeNode
+
    LOCAL oNode
 
    IF nNode == Nil
@@ -173,6 +177,7 @@ METHOD PrevNode( nNode, lSkip ) CLASS HTreeNode
    RETURN oNode
 
 METHOD NextNode( nNode, lSkip ) CLASS HTreeNode
+
    LOCAL oNode
 
    IF nNode == Nil
@@ -248,7 +253,8 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, color, bcolor, aImages, lResour, lEditLabels, bClick, nBC ) CLASS HTree
-   LOCAL i 
+
+   LOCAL i
 
    * Variables not used
    * LOCAL aBmpSize
@@ -257,8 +263,12 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    HB_SYMBOL_UNUSED(lEditLabels)
    HB_SYMBOL_UNUSED(nBC)
 
-   IF color == Nil; color := 0; ENDIF
-   IF bcolor == Nil; bcolor := CLR_WHITE; ENDIF
+   IF color == Nil
+      color := 0
+   ENDIF
+   IF bcolor == Nil
+      bcolor := CLR_WHITE
+   ENDIF
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, , , color, bcolor )
 
@@ -301,7 +311,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HTree
 
    LOCAL retValue := - 1
    * Variables not used
-   * LOCAL aCoors 
+   * LOCAL aCoors
 
    IF ::bOther != Nil
       Eval( ::bOther, Self, msg, wParam, lParam )
@@ -370,6 +380,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HTree
    RETURN retValue
 
 METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages ) CLASS HTree
+
    LOCAL oNode := HTreeNode():New( Self, Self, oPrev, oNext, cTitle, bClick, aImages )
 
    ::lEmpty := .F.
@@ -416,11 +427,12 @@ METHOD Refresh() CLASS HTree
    RETURN Nil
 
 METHOD Paint() CLASS HTree
+
    LOCAL hDC
    LOCAL aCoors, aMetr, y1, y2, oNode, nNode, nLine := 1
    * Variables not used
    * LOCAL pps
-   * LOCAL x1, x2   
+   * LOCAL x1, x2
 
    hDC := hwg_Getdc( ::area )
 
@@ -471,6 +483,7 @@ METHOD Paint() CLASS HTree
 
 /* Added: nNode */
 METHOD PaintNode( hDC, oNode, nNode, nLine ) CLASS HTree
+
    LOCAL y1 := ( ::height + 1 ) * ( nLine - 1 ) + 1, x1 := 10 + oNode:nLevel * ::nIndent
    LOCAL i, hBmp, aBmpSize, nTextWidth
 
@@ -524,6 +537,7 @@ METHOD PaintNode( hDC, oNode, nNode, nLine ) CLASS HTree
    RETURN Nil
 
 METHOD ButtonDown( lParam )  CLASS HTree
+
    LOCAL nLine := Int( hwg_Hiword( lParam ) / ( ::height + 1 ) ) + 1
    LOCAL xm := hwg_Loword( lParam ), x1, hDC, oNode, nWidth, lRedraw := .F.
 
@@ -559,6 +573,7 @@ METHOD ButtonUp( lParam ) CLASS HTree
    RETURN 0
 
 METHOD ButtonDbl( lParam ) CLASS HTree
+
    LOCAL nLine := Int( hwg_Hiword( lParam ) / ( ::height + 1 ) ) + 1
    LOCAL xm := hwg_Loword( lParam ), x1, hDC, oNode, nWidth
 
@@ -582,6 +597,7 @@ METHOD ButtonDbl( lParam ) CLASS HTree
    RETURN 0
 
 METHOD ButtonRDown( lParam ) CLASS HTree
+
    LOCAL nLine := Int( hwg_Hiword( lParam ) / ( ::height + 1 ) ) + 1
    LOCAL xm := hwg_Loword( lParam ), x1, hDC, oNode, nWidth
 
@@ -661,6 +677,7 @@ METHOD DoHScroll() CLASS HTree
    RETURN 0
 
 METHOD DoVScroll() CLASS HTree
+
    LOCAL nScrollV := hwg_getAdjValue( ::hScrollV )
 
    IF nScrollV - ::nScrollV == 1
@@ -704,6 +721,7 @@ METHOD End() CLASS HTree
    RETURN Nil
 
 STATIC PROCEDURE ReleaseTree( aItems, lDelImages )
+
    LOCAL i, j, iLen := Len( aItems )
 
    FOR i := 1 TO iLen
@@ -719,5 +737,3 @@ STATIC PROCEDURE ReleaseTree( aItems, lDelImages )
    NEXT
 
    RETURN
-
-* ============================== EOF of htree.prg ===============================================

@@ -65,28 +65,25 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    ::Activate()
 
-Return Self
+   RETURN Self
 
 METHOD Activate() CLASS hToolBar
+
    IF !empty(::oParent:handle )
 
       ::handle := hwg_Createtoolbar(::oParent:handle )
       hwg_Setwindowobject( ::handle,Self )
       ::Init()
    ENDIF
-RETURN Nil
+
+   RETURN Nil
 
 METHOD INIT() CLASS hToolBar
-Local n
-Local aButton := {}
-Local oImage
-Local aItem
-* Variables not used
-* Local n1
-* Local aTemp
-* Local hIm
-* Local aBmpSize
-* Local nPos
+
+   LOCAL n
+   LOCAL aButton := {}
+   LOCAL oImage
+   LOCAL aItem
 
    IF !::lInit
       ::Super:Init()
@@ -137,21 +134,25 @@ Local aItem
       endif
 
    ENDIF
-RETURN Nil
+
+   RETURN Nil
 
 METHOD AddButton(nBitIp,nId,bState,bStyle,cText,bClick,c,aMenu) CLASS hToolBar
-   Local hMenu := Nil
+
+   LOCAL hMenu := Nil
+
    DEFAULT nBitIp to -1
    DEFAULT bstate to TBSTATE_ENABLED
    DEFAULT bstyle to 0x0000
    DEFAULT c to ""
    DEFAULT ctext to ""
    AAdd( ::aItem ,{ nBitIp, nId, bState, bStyle, 0, cText, bClick, c, aMenu, hMenu ,0} )
-RETURN Self
+
+   RETURN Self
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HToolbar
 
-   Local nPos
+   LOCAL nPos
 
    * Parameters not used
    HB_SYMBOL_UNUSED(lParam)
@@ -164,35 +165,46 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HToolbar
          ENDIF
       endif
    ENDIF
-Return  NIL
+
+   RETURN Nil
 
 METHOD REFRESH() class htoolbar
+
    if ::lInit
       ::lInit := .f.
    endif
    ::init()
-return nil
+
+   RETURN Nil
 
 METHOD EnableAllButtons() class htoolbar
-   Local xItem
+
+   LOCAL xItem
+
    For Each xItem in ::aItem
       hwg_Enablewindow( xItem[ 11 ], .T. )
    Next
-RETURN Self
+
+   RETURN Self
 
 METHOD DisableAllButtons() class htoolbar
-   Local xItem
+
+   LOCAL xItem
+
    For Each xItem in ::aItem
       hwg_Enablewindow( xItem[ 11 ], .F. )
    Next
-RETURN Self
+
+   RETURN Self
 
 METHOD EnableButtons(n) class htoolbar
+
    hwg_Enablewindow( ::aItem[n, 11 ], .T. )
-RETURN Self
+
+   RETURN Self
 
 METHOD DisableButtons(n) class htoolbar
-   hwg_Enablewindow( ::aItem[n, 11 ], .T. )
-RETURN Self
 
-* ================================== EOF of htool.prg ==================================
+   hwg_Enablewindow( ::aItem[n, 11 ], .T. )
+
+   RETURN Self

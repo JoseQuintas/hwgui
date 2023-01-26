@@ -71,6 +71,7 @@ METHOD Interval( n ) CLASS HTimer
    RETURN nOld
 
 METHOD End() CLASS HTimer
+
    LOCAL i
 
    //hwg_KillTimer( ::tag )
@@ -113,5 +114,3 @@ FUNCTION hwg_ReleaseTimers()
    hwg_ReleaseTimers()
 
    RETURN
-
-* ============================== EOF of htimer.prg =============================

@@ -68,11 +68,13 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    RETURN Self
 
 METHOD Activate() CLASS HTrack
+
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
          ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
+
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HTrack
@@ -108,7 +110,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrack
       ::END()
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 METHOD Init() CLASS HTrack
 
@@ -264,5 +266,3 @@ METHOD Value( xValue ) CLASS HTrack
    ENDIF
 
    RETURN xValue
-
-* ================== EOF of htrackbr.prg =======================

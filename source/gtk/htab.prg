@@ -45,11 +45,11 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    * Variables not used
    * LOCAL i, aBmpSize
-   
+
    * Parameters not used
    HB_SYMBOL_UNUSED(aImages)
    HB_SYMBOL_UNUSED(lResour)
-   HB_SYMBOL_UNUSED(nBC)   
+   HB_SYMBOL_UNUSED(nBC)
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint )
@@ -81,6 +81,7 @@ METHOD Activate() CLASS HTab
    RETURN Nil
 
 METHOD Init() CLASS HTab
+
    LOCAL i, h
 
    IF !::lInit
@@ -91,7 +92,7 @@ METHOD Init() CLASS HTab
       NEXT
 
       hwg_Setwindowobject( ::handle, Self )
-   
+
    ENDIF
 
    RETURN Nil
@@ -102,7 +103,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTab
 
    * Parameters not used
    HB_SYMBOL_UNUSED(lParam)
-   
 
    IF msg == WM_USER
       ::nActive := wParam
@@ -113,32 +113,33 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTab
 
   * Change tooltip concerning the selected tab
    n := ::nActive
-      
+
    IF n > 0
     IF .NOT. EMPTY(::aTooltips[n])
      hwg_Addtooltip( ::aPages[ n,4 ],  ::aTooltips[n]  )
-    ENDIF 
-   ENDIF 
- 
+    ENDIF
+   ENDIF
+
    RETURN 0
 
 METHOD SetTab( n ) CLASS HTab
 
    hwg_SetCurrentTab( ::handle, n )
 
-   * If the tab is changed, need to set tooltip for this page 
+   * If the tab is changed, need to set tooltip for this page
    * for the whole notebook
-   
+
    IF n > 0
     IF .NOT. EMPTY(::aTooltips[n])
      hwg_Addtooltip( ::aPages[ n,4 ],  ::aTooltips[n]  )
     ENDIF
-   ENDIF  
-   
+   ENDIF
+
 
    RETURN Nil
 
 METHOD StartPage( cname , ctooltip ) CLASS HTab
+
    LOCAL i
 
    ::oTemp := ::oDefaultParent
@@ -147,20 +148,19 @@ METHOD StartPage( cname , ctooltip ) CLASS HTab
    AAdd( ::aTabs, cname )
    i := Len( ::aTabs )
    AAdd( ::aPages, { Len( ::aControls ), 0, .F., 0 } )
-  
+
    * Collect tooltips in the array
    AAdd( ::aTooltips , IIF ( ctooltip == NIL , "" , ctooltip ) )
-   
+
    ::nActive := i
- 
+
 //   ::aPages[ i,4 ] := hwg_Addtab( ::handle, ::aTabs[i] )
-   
+
    IF  cToolTip == NIL
     ::aPages[ i,4 ] := hwg_Addtab( ::handle, ::aTabs[i] , "" )
    ELSE
     ::aPages[ i,4 ] := hwg_Addtab( ::handle, ::aTabs[i] , cToolTip )
    ENDIF
-  
 
    RETURN Nil
 
@@ -187,7 +187,8 @@ METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
    Return ::nActive
 
 METHOD DeletePage( nPage ) CLASS HTab
-Local nFirst, nEnd, i
+
+   LOCAL nFirst, nEnd, i
 
    nFirst := ::aPages[ nPage,1 ] + 1
    nEnd   := ::aPages[ nPage,1 ] + ::aPages[ nPage,2 ]
@@ -205,7 +206,7 @@ Local nFirst, nEnd, i
 
    ADel( :: aTabs, nPage )
    ASize( :: aTabs, Len( :: aTabs) - 1 )
-   
+
    * Delete the tooltip
    ADel( ::aTooltips , nPage )
    ASize( ::aTooltips, Len( ::aTooltips ) - 1 )
@@ -218,7 +219,5 @@ Local nFirst, nEnd, i
       ::SetTab( 1 )
    ENDIF
 
-   Return ::nActive
+   RETURN ::nActive
 
-* =============================== EOF of htab.prg ==================================================
-   

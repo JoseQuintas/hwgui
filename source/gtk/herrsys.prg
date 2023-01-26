@@ -22,6 +22,7 @@ PROCEDURE hwg_ErrSys
    RETURN
 
 STATIC FUNCTION DefError( oError )
+
    LOCAL cMessage
    LOCAL cDOSError
 
@@ -78,6 +79,7 @@ STATIC FUNCTION DefError( oError )
    RETURN .F.
 
 FUNCTION hwg_ErrMsg( oError )
+
    LOCAL cMessage
 
    // start error message
@@ -129,11 +131,11 @@ FUNCTION hwg_WriteLog( cText, fname )
    RETURN nil
 
 STATIC FUNCTION ErrorPreview( cMess )
+
    LOCAL oDlg, oEdit
 
    INIT DIALOG oDlg TITLE "Error.log" ;
       AT 92, 61 SIZE 400, 400
-
 
    @ 10, 10 EDITBOX oEdit CAPTION cMess SIZE 380, 340 STYLE WS_VSCROLL + WS_HSCROLL + ES_MULTILINE + ES_READONLY ;
       COLOR 16777088 BACKCOLOR 0
@@ -143,6 +145,3 @@ STATIC FUNCTION ErrorPreview( cMess )
    oDlg:Activate()
 
    RETURN Nil
-
-* ====================================== EOF of herrsys.prg ===============================================
-

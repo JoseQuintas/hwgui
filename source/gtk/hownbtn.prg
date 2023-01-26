@@ -173,12 +173,12 @@ METHOD Init() CLASS HOwnButton
    RETURN Nil
 
 METHOD Paint() CLASS HOwnButton
+
    LOCAL hDC := hwg_Getdc( ::handle )
    LOCAL aCoors, aMetr, x1, y1, x2, y2, n
    LOCAL nwidthb  && for ::widthb
 
    aCoors := hwg_Getclientrect( ::handle )
-   
 
    IF !Empty( ::aStyle )
       n := Len( ::aStyle )
@@ -216,14 +216,14 @@ METHOD Paint() CLASS HOwnButton
          nwidthb := 0
       ELSE
          nwidthb := ::widthb
-      ENDIF 
-      // hwg_MsgIsNIL(aCoors[1],"aCoors[1]") 
-      // hwg_MsgIsNIL(aCoors[3],"aCoors[3]") 
+      ENDIF
+      // hwg_MsgIsNIL(aCoors[1],"aCoors[1]")
+      // hwg_MsgIsNIL(aCoors[3],"aCoors[3]")
       // hwg_MsgIsNIL(::widthb,"::widthb")    && passed NIL
-      
+
       // hwg_WriteLog("aCoors[3]=" + STR(aCoors[3]) + CHR(10) + "aCoors[1]=" + STR(aCoors[1]) )
       // hwg_WriteLog("::widthb=" + STR(::widthb) )
-          
+
       x1 := Iif( ::xb != Nil .AND. ::xb != 0, ::xb, ;
          Round( ( aCoors[3] - aCoors[1] - nwidthb ) / 2, 0 ) )
       y1 := Iif( ::yb != Nil .AND. ::yb != 0, ::yb, ;
@@ -267,6 +267,7 @@ METHOD Paint() CLASS HOwnButton
    RETURN Nil
 
 METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
+
    LOCAL lEnter := ( hwg_BitAnd( wParam,16 ) > 0 )
    * Variables not used
    * LOCAL res := .F.
@@ -396,6 +397,3 @@ STATIC FUNCTION OwnBtnTimerProc( oBtn, nType )
    ENDIF
 
    RETURN Nil
-
-* ====================== EOF of hownbtn.prg ===========================
-

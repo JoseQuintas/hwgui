@@ -111,6 +111,7 @@ METHOD Init() CLASS HSplitter
    RETURN Nil
 
 METHOD Paint() CLASS HSplitter
+
    LOCAL hDC, aCoors
 
    IF ::bPaint != Nil
@@ -135,6 +136,7 @@ METHOD Move( x1, y1, width, height )  CLASS HSplitter
    RETURN Nil
 */
 METHOD Drag( xPos, yPos ) CLASS HSplitter
+
    LOCAL nFrom, nTo
 
    nFrom := iif( ::nFrom == Nil, 1, ::nFrom )
@@ -160,6 +162,7 @@ METHOD Drag( xPos, yPos ) CLASS HSplitter
    RETURN Nil
 
 METHOD DragAll( xPos, yPos ) CLASS HSplitter
+
    LOCAL i, oCtrl, nDiff, wold, hold
 
    IF xPos != Nil .OR. yPos != Nil
@@ -194,5 +197,3 @@ METHOD DragAll( xPos, yPos ) CLASS HSplitter
    ::lMoved := .F.
 
    RETURN Nil
-
-* =============================== EOF of hsplit.prg =========================================

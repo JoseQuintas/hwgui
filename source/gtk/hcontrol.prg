@@ -21,7 +21,8 @@ REQUEST HWG_ENDWINDOW
 
 #define  CONTROL_FIRST_ID   34000
 
-Function hwg_SetCtrlName( oCtrl, cName )
+FUNCTION hwg_SetCtrlName( oCtrl, cName )
+
    LOCAL nPos
 
    IF !Empty( cName ) .AND. ValType( cName ) == "C" .AND. ! "[" $ cName
@@ -90,9 +91,10 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, bInit,
 
 /* Removed:  lDop  */
 METHOD NewId() CLASS HControl
-LOCAL nId := ::oParent:nChildId++
 
-RETURN nId
+   LOCAL nId := ::oParent:nChildId++
+
+   RETURN nId
 
 METHOD INIT() CLASS HControl
 
@@ -122,28 +124,29 @@ METHOD INIT() CLASS HControl
 
 METHOD SetTooltip( cText ) CLASS HControl
 
-     IF cText == NIL
-       ::tooltip := ""
-     ELSE
-       ::tooltip := cText
-     ENDIF
-     hwg_Deltooltip( ::handle )
-     IF .NOT. EMPTY(::tooltip)
+   IF cText == NIL
+      ::tooltip := ""
+   ELSE
+      ::tooltip := cText
+   ENDIF
+   hwg_Deltooltip( ::handle )
+   IF .NOT. EMPTY(::tooltip)
       hwg_Addtooltip( ::handle, ::tooltip )
-     ENDIF
-RETURN NIL
+   ENDIF
+
+   RETURN NIL
 
 METHOD Disable() CLASS HControl
 
    hwg_Enablewindow( ::handle, .F. )
 
-RETURN NIL
+   RETURN NIL
 
 METHOD Enable() CLASS HControl
 
    hwg_Enablewindow( ::handle, .T. )
 
-RETURN NIL
+   RETURN NIL
 
 METHOD Enabled( lEnabled ) CLASS HControl
 
@@ -161,6 +164,7 @@ METHOD Enabled( lEnabled ) CLASS HControl
 
 /* Added: lMoveParent */
 METHOD Move( x1, y1, width, height, lMoveParent )  CLASS HControl
+
    LOCAL lMove := .F. , lSize := .F.
 
    IF x1 != Nil .AND. x1 != ::nLeft
@@ -197,6 +201,7 @@ METHOD End() CLASS HControl
    RETURN Nil
 
 METHOD onAnchor( x, y, w, h ) CLASS HControl
+
    LOCAL nAnchor, nXincRelative, nYincRelative, nXincAbsolute, nYincAbsolute
    LOCAL x1, y1, w1, h1, x9, y9, w9, h9
 
@@ -389,7 +394,7 @@ METHOD Init()  CLASS HStatic
    ENDIF
    RETURN Nil
 
-   //- HButton
+//- HButton
 
 CLASS HButton INHERIT HControl
 
@@ -581,6 +586,3 @@ METHOD Activate() CLASS HLine
    ENDIF
 
    RETURN Nil
-
-* ===================== EOF of hcontrol.prg ===================
-

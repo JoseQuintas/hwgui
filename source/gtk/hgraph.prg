@@ -88,6 +88,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HGraph
    RETURN 0
 
 METHOD CalcMinMax() CLASS HGraph
+
    LOCAL i, j, nLen, l1
 
    IF ::nType == 0 .OR. ::nType > 3 .OR. Empty( ::aValues )
@@ -147,6 +148,7 @@ METHOD CalcMinMax() CLASS HGraph
    RETURN Nil
 
 METHOD Paint() CLASS HGraph
+
    LOCAL hDC := hwg_Getdc( ::handle )
    LOCAL x1 := 0, y1 := 0, x2 := ::nWidth, y2 := ::nHeight, scaleX, scaleY
    LOCAL i, j, nLen, l1
@@ -308,5 +310,3 @@ METHOD Rebuild( aValues, nType, nLineType, nPointSize ) CLASS HGraph
    hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
 
    RETURN Nil
-
-* =============================== EOF of hgraph.prg =======================================

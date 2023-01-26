@@ -28,7 +28,7 @@ DF7BE, September 2022
 #include "hbclass.ch"
 #include "hwgui.ch"
 
-Static oResCnt
+STATIC oResCnt
 
    //- HFont
 
@@ -101,6 +101,7 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, ;
    RETURN Self
 
 METHOD SELECT( oFont, nCharSet  ) CLASS HFont
+
    LOCAL af := hwg_Selectfont( oFont )
 
    IF af == Nil
@@ -110,6 +111,7 @@ METHOD SELECT( oFont, nCharSet  ) CLASS HFont
    RETURN ::Add( af[ 2 ], af[ 3 ], af[ 4 ], af[ 5 ], iif( Empty( nCharSet ), af[ 6 ], nCharSet ), af[ 7 ], af[ 8 ], af[ 9 ], af[ 1 ] )
 
 METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS HFont
+
    LOCAL  weight, Italic, Underline, StrikeOut
 
    IF lBold != Nil
@@ -127,6 +129,7 @@ METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS 
       nCharSet, Italic, Underline, StrikeOut ) // ::handle )
 
 METHOD RELEASE() CLASS HFont
+
    LOCAL i, nlen := Len( ::aFonts )
 
    ::nCounter --
@@ -171,9 +174,6 @@ METHOD PrintFont()  CLASS HFont
    fdwUnderline := iif( ::Underline == Nil, - 9999 , ::Underline )
    fdwStrikeOut := iif( ::StrikeOut == Nil, - 9999 , ::StrikeOut )
 
-
-
-
 RETURN "Font Name=" + fontName + " Width=" + ALLTRIM(STR(nWidth)) + " Height=" + ALLTRIM(STR(nHeight)) + ;
        " Weight=" + ALLTRIM(STR(fnWeight)) + " CharSet=" + ALLTRIM(STR(fdwCharSet)) + ;
        " Italic=" + ALLTRIM(STR(fdwItalic)) + " Underline=" + ALLTRIM(STR(fdwUnderline)) + ;
@@ -211,9 +211,9 @@ METHOD Props2Arr() CLASS HFont
    AADD (aFontprops, fdwUnderline)
    AADD (aFontprops, fdwStrikeOut)
 
- RETURN aFontprops
+   RETURN aFontprops
 
-   //- HPen
+//- HPen
 
 CLASS HPen INHERIT HObject
 
@@ -229,6 +229,7 @@ CLASS HPen INHERIT HObject
 ENDCLASS
 
 METHOD Add( nStyle, nWidth, nColor ) CLASS HPen
+
    LOCAL i
 
    nStyle := iif( nStyle == Nil, BS_SOLID, nStyle )
@@ -257,6 +258,7 @@ METHOD Add( nStyle, nWidth, nColor ) CLASS HPen
    RETURN Self
 
 METHOD Get( nStyle, nWidth, nColor ) CLASS HPen
+
    LOCAL i
 
    nStyle := iif( nStyle == Nil, PS_SOLID, nStyle )
@@ -278,6 +280,7 @@ METHOD Get( nStyle, nWidth, nColor ) CLASS HPen
    RETURN Nil
 
 METHOD RELEASE() CLASS HPen
+
    LOCAL i, nlen := Len( ::aPens )
 
    ::nCounter --
@@ -321,6 +324,7 @@ CLASS HBrush INHERIT HObject
 ENDCLASS
 
 METHOD Add( nColor, nHatch ) CLASS HBrush
+
    LOCAL i
 
    IF nHatch == Nil
@@ -346,6 +350,7 @@ METHOD Add( nColor, nHatch ) CLASS HBrush
    RETURN Self
 
 METHOD RELEASE() CLASS HBrush
+
    LOCAL i, nlen := Len( ::aBrushes )
 
    ::nCounter --
@@ -421,6 +426,7 @@ LOCAL i , hbmp
 RETURN NIL
 
 METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
+
    LOCAL lPreDefined := .F. , i, aBmpSize
 
    IF nFlags == nil
@@ -464,6 +470,7 @@ METHOD AddResource( name, nFlags, lOEM, nWidth, nHeight ) CLASS HBitmap
    RETURN Self
 
 METHOD AddStandard( nId ) CLASS HBitmap
+
    LOCAL i, aBmpSize, name := "s" + LTrim( Str( nId ) )
 
    FOR EACH i  IN  ::aBitmaps
@@ -486,6 +493,7 @@ METHOD AddStandard( nId ) CLASS HBitmap
    RETURN Self
 
 METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
+
    LOCAL i, aBmpSize, cname := CutPath( name ), cCurDir
 
    IF nWidth == nil
@@ -535,6 +543,7 @@ METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
    RETURN Self
 
 METHOD AddString( name, cVal , nWidth, nHeight ) CLASS HBitmap
+
    LOCAL oBmp, aBmpSize
 
    IF nWidth == nil
@@ -566,6 +575,7 @@ METHOD AddString( name, cVal , nWidth, nHeight ) CLASS HBitmap
    RETURN Self
 
 METHOD AddWindow( oWnd, x1, y1, width, height ) CLASS HBitmap
+
    LOCAL aBmpSize
 
    IF x1 == Nil .OR. y1 == Nil
@@ -592,6 +602,7 @@ METHOD Draw( hDC, x1, y1, width, height ) CLASS HBitmap
    RETURN Nil
 
 METHOD RELEASE() CLASS HBitmap
+
    LOCAL i, nlen := Len( ::aBitmaps )
 
    ::nCounter --
@@ -643,6 +654,7 @@ CLASS HIcon INHERIT HObject
 ENDCLASS
 
 METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
+
    LOCAL lPreDefined := .F. , i, aIconSize
 
    IF nWidth == nil
@@ -692,14 +704,14 @@ METHOD AddResource( name, nWidth, nHeight, nFlags, lOEM ) CLASS HIcon
    RETURN Self
 
 
-
  /* Added by DF7BE
  name : Name of resource
  cVal : Binary contents of *.ico file
  */
 METHOD AddString( name, cVal , nWidth, nHeight) CLASS HIcon
- LOCAL cTmp    && , oreturn
- LOCAL aIconSize
+
+   LOCAL cTmp    && , oreturn
+   LOCAL aIconSize
 
    IF nWidth == nil
       nWidth := 0
@@ -708,28 +720,29 @@ METHOD AddString( name, cVal , nWidth, nHeight) CLASS HIcon
       nHeight := 0
    ENDIF
 
- * Write contents into temporary file
- hb_memowrit( cTmp := hwg_CreateTempfileName( , ".ico") , cVal )
- * Load icon from temporary file
- ::handle := hwg_Loadimage( 0, cTmp, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )
- ::name := name
-  aIconSize := hwg_Geticonsize( ::handle )
- ::nWidth  := aIconSize[ 1 ]
- ::nHeight := aIconSize[ 2 ]
+   * Write contents into temporary file
+   hb_memowrit( cTmp := hwg_CreateTempfileName( , ".ico") , cVal )
+   * Load icon from temporary file
+   ::handle := hwg_Loadimage( 0, cTmp, IMAGE_ICON, nWidth, nHeight, LR_DEFAULTSIZE + LR_LOADFROMFILE + LR_SHARED )
+   ::name := name
+   aIconSize := hwg_Geticonsize( ::handle )
+   ::nWidth  := aIconSize[ 1 ]
+   ::nHeight := aIconSize[ 2 ]
 
    AAdd( ::aIcons, Self )
 
-  * oreturn := ::AddFile( name )
- FERASE(cTmp)
+   * oreturn := ::AddFile( name )
+   FERASE(cTmp)
 
-RETURN  Self   && oreturn
+   RETURN  Self   && oreturn
 
 
 /* Added by DF7BE Sept. 2022 */
 METHOD AddPngString( name, cVal ) CLASS HIcon
-* Not used :  nWidth, nHeight
- LOCAL cTmp
- LOCAL aIconSize
+
+   * Not used :  nWidth, nHeight
+   LOCAL cTmp
+   LOCAL aIconSize
 
 /*
    IF nWidth == nil
@@ -739,22 +752,21 @@ METHOD AddPngString( name, cVal ) CLASS HIcon
       nHeight := 0
    ENDIF
 */
- * Write contents into temporary file
- hb_memowrit( cTmp := hwg_CreateTempfileName( , ".png") , cVal )
- * Load PNG from temporary file
- ::handle :=  HWG_LOADPNG( 0, cTmp )
- ::name := name
-  aIconSize := hwg_Geticonsize( ::handle )
- ::nWidth  := aIconSize[ 1 ]
- ::nHeight := aIconSize[ 2 ]
+   * Write contents into temporary file
+   hb_memowrit( cTmp := hwg_CreateTempfileName( , ".png") , cVal )
+   * Load PNG from temporary file
+   ::handle :=  HWG_LOADPNG( 0, cTmp )
+   ::name := name
+    aIconSize := hwg_Geticonsize( ::handle )
+   ::nWidth  := aIconSize[ 1 ]
+   ::nHeight := aIconSize[ 2 ]
 
    AAdd( ::aIcons, Self )
 
-  * oreturn := ::AddFile( name )
- FERASE(cTmp)
+   * oreturn := ::AddFile( name )
+   FERASE(cTmp)
 
-RETURN  Self
-
+   RETURN  Self
 
 METHOD AddPngFile( name , nWidth, nHeight) CLASS HIcon
 
@@ -804,8 +816,8 @@ METHOD AddPngFile( name , nWidth, nHeight) CLASS HIcon
 
    RETURN Self
 
-
 METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
+
    LOCAL i, aIconSize, cname := CutPath( name ), cCurDir
 
    IF nWidth == nil
@@ -848,6 +860,7 @@ METHOD AddFile( name, nWidth, nHeight ) CLASS HIcon
    RETURN Self
 
 METHOD RELEASE() CLASS HIcon
+
    LOCAL i, nlen := Len( ::aIcons )
 
    ::nCounter --
@@ -932,6 +945,7 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
 METHOD Draw( hDC, nLeft, nTop, nRight, nBottom ) CLASS HStyle
 
    LOCAL n1, n2
+
    IF ::oBitmap == Nil
       hwg_drawGradient( hDC, nLeft, nTop, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
    ELSE

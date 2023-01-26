@@ -18,9 +18,9 @@
 #define SIZE_MINIMIZED           1
 
 #ifdef MT_EXPERIMENTAL
-   THREAD STATIC aWindows := {}
+THREAD STATIC aWindows := {}
 
-   FUNCTION aWindows()
+FUNCTION aWindows()
 
    RETURN aWindows
 #endif
@@ -69,7 +69,8 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
    RETURN Iif( !Empty(oWnd:type) .AND. oWnd:type >= WND_DLG_RESOURCE, 0, - 1 )
 
 FUNCTION hwg_onAnchor( oWnd, wold, hold, wnew, hnew )
-LOCAL aControls := oWnd:aControls, oItem, w, h
+
+   LOCAL aControls := oWnd:aControls, oItem, w, h
 
    FOR EACH oItem IN aControls
       IF oItem:Anchor > 0
@@ -79,6 +80,7 @@ LOCAL aControls := oWnd:aControls, oItem, w, h
          hwg_onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
       ENDIF
    NEXT
+
    RETURN Nil
 
 STATIC FUNCTION onActivate( oDlg, wParam, lParam )
@@ -100,8 +102,10 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
    RETURN 0
 
 STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
+
    LOCAL oItem, b
    LOCAL aCoors, aRect
+
    IF ( Empty( wParam ) .AND. ( oItem := Atail( HDialog():aModalDialogs ) ) != Nil ;
          .AND. hwg_Isptreq( oItem:handle, lParam ) )
       oDlg := oItem
@@ -123,7 +127,8 @@ STATIC FUNCTION onEnterIdle( oDlg, wParam, lParam )
    RETURN 0
 
 FUNCTION hwg_onDestroy( oWnd )
-Local i, nHandle := oWnd:handle
+
+   LOCAL i, nHandle := oWnd:handle
 
    IF oWnd:oEmbedded != Nil
       oWnd:oEmbedded:End()
@@ -182,7 +187,6 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
    METHOD SetTitle( cTitle ) INLINE hwg_Setwindowtext( ::handle, ::title := cTitle )
 
 ENDCLASS
-
 
 METHOD New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
       bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
@@ -430,7 +434,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HMainWindow
       Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
-   Return - 1
+   RETURN -1
 
 METHOD InitTray( oNotifyIcon, bNotify, oNotifyMenu, cTooltip ) CLASS HMainWindow
 
@@ -585,7 +589,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HChildWindow
       Return ::Super:onEvent( msg, wParam, lParam )
    ENDIF
 
-   Return - 1
+   RETURN -1
 
 FUNCTION hwg_ReleaseAllWindows( hWnd )
 
@@ -617,7 +621,7 @@ FUNCTION hwg_ReleaseAllWindows( hWnd )
       hwg_Postquitmessage( 0 )
    ENDIF
 
-   return - 1
+   RETURN -1
 
 #define  FLAG_CHECK      2
 
@@ -677,9 +681,10 @@ STATIC FUNCTION onMove( oWnd )
    oWnd:nLeft := aControls[1]
    oWnd:nTop  := aControls[2]
 
-   Return - 1
+   RETURN -1
 
 STATIC FUNCTION onEraseBk( oWnd, hDC )
+
    LOCAL aCoors
 
    IF oWnd:oBmp != Nil
@@ -691,7 +696,7 @@ STATIC FUNCTION onEraseBk( oWnd, hDC )
       RETURN 1
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 STATIC FUNCTION onSysCommand( oWnd, wParam )
 
@@ -719,7 +724,7 @@ STATIC FUNCTION onSysCommand( oWnd, wParam )
       ENDIF
    ENDIF
 
-   Return - 1
+   RETURN -1
 
 STATIC FUNCTION onEndSession( oWnd )
 
@@ -733,7 +738,7 @@ STATIC FUNCTION onEndSession( oWnd )
       ENDIF
    ENDIF
 
-   Return - 1
+   RETURN -1
 
 STATIC FUNCTION onNotifyIcon( oWnd, wParam, lParam )
 
@@ -754,7 +759,7 @@ STATIC FUNCTION onNotifyIcon( oWnd, wParam, lParam )
       ENDIF
    ENDIF
 
-   Return - 1
+   RETURN -1
 
 STATIC FUNCTION onMdiCreate( oWnd, lParam )
 
@@ -766,7 +771,7 @@ STATIC FUNCTION onMdiCreate( oWnd, lParam )
       Eval( oWnd:bInit, oWnd )
    ENDIF
 
-   Return - 1
+   RETURN -1
 
 STATIC FUNCTION onMdiCommand( oWnd, wParam )
 
@@ -794,7 +799,7 @@ STATIC FUNCTION onMdiNcActivate( oWnd, wParam )
       Eval( oWnd:bLostFocus, oWnd )
    ENDIF
 
-   Return - 1
+   RETURN -1
 
    //add by sauli
 
@@ -806,8 +811,8 @@ STATIC FUNCTION onCloseQuery( o )
       end
    ELSE
       hwg_ReleaseAllWindows( o:handle )
-   end
+   ENDIF
 
-   return - 1
+   RETURN -1
 
    // end sauli

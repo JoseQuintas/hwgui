@@ -424,6 +424,7 @@ FUNCTION hwg_SelectMultipleFiles( cDescr, cTip, cIniDir, cTitle )
    RETURN( aFiles )
 
 FUNCTION hwg_Version( n )
+
    LOCAL s
 
    IF !Empty( n )
@@ -451,9 +452,11 @@ FUNCTION hwg_Version( n )
    RETURN s
 
 FUNCTION hwg_getParentForm( o )
+
    DO WHILE o:oParent != Nil .AND. !__ObjHasMsg( o, "GETLIST" )
       o := o:oParent
    ENDDO
+
    RETURN o
 
 FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
@@ -554,4 +557,5 @@ FUNCTION HWG_ScrollHV( oForm, msg, wParam, lParam )
    RETURN Nil
 
 FUNCTION hwg_KeyToUtf8( nCode )
+
    RETURN hb_utf8Chr( nCode )

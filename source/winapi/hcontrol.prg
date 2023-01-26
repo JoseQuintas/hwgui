@@ -12,6 +12,7 @@
 #include "hbclass.ch"
 
 FUNCTION hwg_SetCtrlName( oCtrl, cName )
+
    LOCAL nPos
 
    IF !Empty( cName ) .AND. ValType( cName ) == "C" .AND. ! ( "[" $ cName )
@@ -78,6 +79,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    RETURN Self
 
 METHOD NewId() CLASS HControl
+
    LOCAL nId := ::oParent:nChildId ++
 
    RETURN nId
@@ -104,16 +106,17 @@ METHOD INIT() CLASS HControl
 
 METHOD SetTooltip( cText ) CLASS HControl
 
-     IF cText == NIL
-       ::tooltip := ""
-     ELSE
-       ::tooltip := cText
-     ENDIF
-     hwg_Deltooltip( ::handle )
-     IF .NOT. EMPTY(::tooltip)
+   IF cText == NIL
+      ::tooltip := ""
+   ELSE
+      ::tooltip := cText
+   ENDIF
+   hwg_Deltooltip( ::handle )
+   IF .NOT. EMPTY(::tooltip)
       hwg_Addtooltip( ::handle, ::tooltip )
-     ENDIF
-RETURN NIL
+   ENDIF
+
+   RETURN NIL
 
 METHOD Disable() CLASS HControl
 
@@ -153,6 +156,7 @@ METHOD End() CLASS HControl
    RETURN NIL
 
 METHOD onAnchor( x, y, w, h ) CLASS HControl
+
    LOCAL nAnchor, nXincRelative, nYincRelative, nXincAbsolute, nYincAbsolute
    LOCAL x1, y1, w1, h1, x9, y9, w9, h9
 
@@ -268,7 +272,6 @@ CLASS HStatus INHERIT HControl
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, aParts )
    METHOD SetText( cText, nPart ) INLINE  hwg_WriteStatus( ::oParent, nPart, cText )
 
-
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint ) CLASS HStatus
@@ -287,6 +290,7 @@ METHOD New( oWndParent, nId, nStyle, oFont, aParts, bInit, bSize, bPaint ) CLASS
    RETURN Self
 
 METHOD Activate() CLASS HStatus
+
    LOCAL aCoors
 
    IF !Empty( ::oParent:handle )
@@ -325,8 +329,6 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::aparts := aparts
 
    RETURN Self
-
-
 
    //- HStatic
 
@@ -425,6 +427,7 @@ METHOD Init() CLASS HStatic
    RETURN  NIL
 
 METHOD Paint( lpDis ) CLASS HStatic
+
    LOCAL drawInfo := hwg_Getdrawiteminfo( lpDis )
    LOCAL hDC := drawInfo[ 3 ], x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ], x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
@@ -630,6 +633,7 @@ METHOD Activate() CLASS HLine
    RETURN NIL
 
 METHOD Paint( lpdis ) CLASS HLine
+
    LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
    LOCAL hDC := drawInfo[3]
    LOCAL x1  := drawInfo[4], y1 := drawInfo[5]
@@ -662,5 +666,3 @@ STATIC FUNCTION onClick( oParent, id )
    ENDIF
 
    RETURN .T.
-
-* =================================== EOF of hcontrol.prg ==============================

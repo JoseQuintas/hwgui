@@ -24,7 +24,6 @@
 #define CLR_WHITE    0xffffff
 #define CLR_BLACK    0x000000
 
-
 CLASS HTrackBar INHERIT HControl
 
    CLASS VAR winclass   INIT "msctls_trackbar32"
@@ -76,16 +75,19 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight,;
 RETURN Self
 
 METHOD Activate() CLASS HTrackBar
+
    IF !Empty( ::oParent:handle )
       ::handle := hwg_inittrackbar ( ::oParent:handle, ::id, ::style, ;
                                  ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
                                  ::nLow, ::nHigh )
       ::Init()
    ENDIF
+
 RETURN NIL
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HTrackBar
-LOCAL aCoors
+
+   LOCAL aCoors
 
    IF msg == WM_PAINT
       IF ::bPaint != NIL
@@ -145,10 +147,9 @@ METHOD Value( nValue ) CLASS HTrackBar
 
    RETURN ::nValue
 
-
 CLASS HTrack INHERIT HControl
 
-CLASS VAR winclass INIT "STATIC"
+   CLASS VAR winclass INIT "STATIC"
 
    DATA lVertical
    DATA oStyleBar, oStyleSlider
@@ -195,11 +196,13 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    RETURN Self
 
 METHOD Activate() CLASS HTrack
+
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
+
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HTrack
@@ -237,7 +240,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HTrack
       ::END()
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 METHOD Init() CLASS HTrack
 
@@ -318,7 +321,6 @@ METHOD Drag( xPos, yPos ) CLASS HTrack
 
    LOCAL nCurr := ::nCurr
    LOCAL nHalf := Int(::nSize/2), x1, y1
-
 
    HB_SYMBOL_UNUSED(nhalf)
 
@@ -419,5 +421,3 @@ HB_FUNC( HWG_TRACKBARSETRANGE )
 }
 
 #pragma ENDDUMP
-
-* ========================== EOF of htrackbr.prg =============================

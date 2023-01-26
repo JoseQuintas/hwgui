@@ -108,9 +108,12 @@ CLASS HPrinter INHERIT HObject
 ENDCLASS
 
 FUNCTION hwg_HPrinter_LangArray_EN()
-/* Returns array with captions for titles and controls of print preview dialog
+
+  /* Returns array with captions for titles and controls of print preview dialog
   in default language english.
-  Use this code snippet as template to set to your own desired language. */
+  Use this code snippet as template to set to your own desired language.
+  */
+
   LOCAL aTooltips
   aTooltips := {}
 
@@ -228,7 +231,9 @@ METHOD New( cPrinter, lmm, nFormType, nBin, lLandScape, nCopies, lProprierties, 
    RETURN Self
 
 METHOD DefaultLang() CLASS HPrinter
+
   ::aLangTexts := hwg_HPrinter_LangArray_EN()
+
 RETURN NIL
 
 METHOD SetMode( nOrientation, nDuplex ) CLASS HPrinter
@@ -262,6 +267,7 @@ METHOD SetMode( nOrientation, nDuplex ) CLASS HPrinter
          RETURN .T.
       ENDIF
    ENDIF
+
    RETURN .F.
 
 METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset ) CLASS HPrinter
@@ -274,6 +280,7 @@ METHOD AddFont( fontName, nHeight , lBold, lItalic, lUnderline, nCharset ) CLASS
    oFont := HFont():Add( fontName, , nHeight,          ;
       Iif( lBold != Nil .AND. lBold, 700, 400 ), nCharset, ;
       Iif( lItalic != Nil .AND. lItalic, 255, 0 ), Iif( lUnderline != Nil .AND. lUnderline, 1, 0 ) )
+
    RETURN oFont
 
 METHOD End() CLASS HPrinter
@@ -295,6 +302,7 @@ METHOD End() CLASS HPrinter
    RETURN Nil
 
 METHOD ReleaseRes() CLASS HPrinter
+
    LOCAL i
 
    IF !Empty( ::aFonts )
@@ -1100,6 +1108,7 @@ METHOD PaintDoc( oWnd ) CLASS HPrinter
    RETURN Nil
 
 METHOD PrintDoc( nPage ) CLASS HPrinter
+
    LOCAL hDCBuff, cPrinterName, cTemp, lBuffPrn := ::lBuffPrn, arr
    LOCAL aPrnCoors, nWidth, nHeight, nHres, nVres
 
@@ -1166,6 +1175,7 @@ METHOD PrintDoc( nPage ) CLASS HPrinter
    RETURN Nil
 
 METHOD PrintDlg(aTooltips) CLASS HPrinter
+
    LOCAL oDlg, oGet, nChoic := 1, cpages := "", arr, arrt, i, j, n1, n2, nPos
 
    IF aTooltips == Nil
@@ -1322,7 +1332,8 @@ METHOD PrintScript( hDC, nPage, x1, y1, x2, y2 ) CLASS HPrinter
 
    RETURN Nil
 
-Static Function MessProc( oPrinter, oPanel, lParam )
+STATIC FUNCTION MessProc( oPrinter, oPanel, lParam )
+
    LOCAL xPos, yPos, nPage := oPrinter:nCurrPage, arr, i, j, nPos, x1, y1, x2, y2, cTemp
    LOCAL nHRes, nVRes
 
@@ -1361,7 +1372,4 @@ Static Function MessProc( oPrinter, oPanel, lParam )
       ENDIF
    ENDIF
 
-Return 1
-
-* ============================ EOF of hprinter.prg =================================
-
+   RETURN 1

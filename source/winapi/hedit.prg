@@ -139,6 +139,7 @@ METHOD Init()  CLASS HEdit
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
+
    LOCAL oParent := ::oParent, nPos, cClipboardText
    LOCAL nexthandle
 
@@ -361,7 +362,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
    ENDIF
 
-   Return - 1
+   RETURN -1
 
 METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, ;
       bGfocus, bLfocus, ctooltip, tcolor, bcolor, cPicture, nMaxLength )  CLASS HEdit
@@ -397,6 +398,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, oFont, bInit, bSize, ;
    RETURN Self
 
 METHOD Refresh()  CLASS HEdit
+
    LOCAL vari
 
    IF hb_isBlock( ::bSetGet )
@@ -477,6 +479,7 @@ METHOD SelLength( nLength ) CLASS HEdit
    RETURN nLength
 
 METHOD ParsePict( cPicture, vari ) CLASS HEdit
+
    LOCAL nAt, i, masklen, cChar
 
    IF ::bSetGet == Nil
@@ -540,8 +543,8 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
 
    RETURN Nil
 
-
 FUNCTION hwg_IsCtrlShift( lCtrl, lShift )
+
    LOCAL cKeyb := hwg_Getkeyboardstate()
 
    IF lCtrl == Nil; lCtrl := .T. ; ENDIF
@@ -551,6 +554,7 @@ FUNCTION hwg_IsCtrlShift( lCtrl, lShift )
       ( lShift .AND. ( Asc(SubStr(cKeyb,VK_SHIFT + 1,1 ) ) >= 128 ) )
 
 STATIC FUNCTION IsEditable( oEdit, nPos )
+
    LOCAL cChar
 
    IF Empty( oEdit:cPicMask )
@@ -575,7 +579,9 @@ STATIC FUNCTION IsEditable( oEdit, nPos )
    RETURN .F.
 
 STATIC FUNCTION KeyRight( oEdit, nPos )
+
    LOCAL masklen, newpos
+
    * Not used variables
    * i, vari
 
@@ -634,6 +640,7 @@ STATIC FUNCTION KeyLeft( oEdit, nPos )
    RETURN 0
 
 STATIC FUNCTION DeleteChar( oEdit, lBack )
+
    LOCAL nPos := hwg_Hiword( hwg_Sendmessage( oEdit:handle, EM_GETSEL, 0, 0 ) ) + iif( !lBack, 1, 0 )
    LOCAL nGetLen := Len( oEdit:cPicMask ), nLen
 
@@ -662,6 +669,7 @@ STATIC FUNCTION DeleteChar( oEdit, lBack )
    RETURN Nil
 
 STATIC FUNCTION INPUT( oEdit, cChar, nPos )
+
    LOCAL cPic
 
    IF !Empty( oEdit:cPicMask ) .AND. nPos > Len( oEdit:cPicMask )
@@ -722,9 +730,11 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
          ENDIF
       ENDIF
    ENDIF
+
    RETURN cChar
 
 STATIC FUNCTION GetApplyKey( oEdit, cKey )
+
    LOCAL nPos, nGetLen, nLen, vari, x, newPos, oParent
    LOCAL nDecimals, xTmp, lMinus := .F.
 
@@ -838,6 +848,7 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    RETURN 0
 
 STATIC FUNCTION __When( oCtrl )
+
    LOCAL res := .T., n := 0
 
    oCtrl:Refresh()
@@ -859,6 +870,7 @@ STATIC FUNCTION __When( oCtrl )
    RETURN res
 
 STATIC FUNCTION __valid( oCtrl )
+
    LOCAL vari, oDlg, nLen
 
    IF oCtrl:bSetGet != Nil
@@ -905,6 +917,7 @@ STATIC FUNCTION __valid( oCtrl )
    RETURN .T.
 
 STATIC FUNCTION Untransform( oEdit, cBuffer )
+
    LOCAL xValue, cChar, nFor, minus
 
    IF oEdit:cType == "C"
@@ -998,6 +1011,7 @@ STATIC FUNCTION Untransform( oEdit, cBuffer )
    RETURN xValue
 
 STATIC FUNCTION FirstEditable( oEdit )
+
    LOCAL nFor, nMaxLen := Len( oEdit:cPicMask )
 
    IF IsEditable( oEdit, 1 )
@@ -1013,6 +1027,7 @@ STATIC FUNCTION FirstEditable( oEdit )
    RETURN 0
 
 STATIC FUNCTION  LastEditable( oEdit )
+
    LOCAL nFor, nMaxLen := Len( oEdit:cPicMask )
 
    FOR nFor := nMaxLen TO 1 step - 1
@@ -1024,6 +1039,7 @@ STATIC FUNCTION  LastEditable( oEdit )
    RETURN 0
 
 STATIC FUNCTION IsBadDate( cBuffer )
+
    LOCAL i, nLen
 
    IF !Empty( CToD( cBuffer ) )
@@ -1156,27 +1172,24 @@ FUNCTION hwg_Len( cString )
 
 FUNCTION hwg_GET_Helper(cp_get,nlen)
 
-LOCAL c_get
+   LOCAL c_get
 
 #ifndef __GTK__
-  HB_SYMBOL_UNUSED(nlen)
+   HB_SYMBOL_UNUSED(nlen)
 #endif
 
-  c_get := cp_get
+   c_get := cp_get
 
 #ifdef __GTK__
-  IF EMPTY(c_get)
-    c_get := ""
-  ELSE
-   IF nlen == NIL
-    c_get := RTRIM(c_get)
+   IF EMPTY(c_get)
+      c_get := ""
    ELSE
-    c_get := PADR(c_get,nlen)
+      IF nlen == NIL
+         c_get := RTRIM(c_get)
+      ELSE
+         c_get := PADR(c_get,nlen)
+      ENDIF
    ENDIF
-  ENDIF
 #endif
 
-RETURN c_get
-
-* ================================= EOF of hedit.prg ===============================
-
+   RETURN c_get

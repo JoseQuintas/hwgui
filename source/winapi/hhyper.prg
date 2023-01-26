@@ -17,7 +17,6 @@
 #define LBL_MOUSEOVER      3
 #define TRANSPARENT        1
 
-
 CLASS HStaticLink FROM HSTATIC
 
    DATA state
@@ -156,13 +155,15 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    RETURN Self
 
 METHOD Activate() CLASS HStaticLink
+
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
                                 ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
       ::Init()
    ENDIF
-RETURN NIL
+
+   RETURN NIL
 
 METHOD Init() CLASS HStaticLink
 
@@ -197,7 +198,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HStaticLink
       ENDIF
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 METHOD GoToLinkUrl( csLink ) CLASS HStaticLink
 
@@ -307,6 +308,3 @@ METHOD Paint() CLASS HStaticLink
    hwg_Endpaint( ::handle, pps )
 
    RETURN 0
-   
-* ============================== EOF of hhyper.prg ================================
-   

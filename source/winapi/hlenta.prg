@@ -17,7 +17,7 @@
 
 CLASS HLenta INHERIT HControl
 
-CLASS VAR winclass INIT "PANEL"
+   CLASS VAR winclass INIT "PANEL"
 
 #ifdef __PLATFORM__UNIX
    DATA hBox
@@ -71,6 +71,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
    RETURN Self
 
 METHOD Activate() CLASS HLenta
+
    LOCAL handle := ::oParent:handle
 
    IF !Empty( handle )
@@ -160,7 +161,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HLenta
       hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 METHOD Paint() CLASS HLenta
 

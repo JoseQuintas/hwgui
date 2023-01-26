@@ -43,6 +43,7 @@ ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       bInit, bSize, bPaint, bcolor, oStyle ) CLASS HPanel
+
    LOCAL oParent := iif( oWndParent == Nil, ::oDefaultParent, oWndParent )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, iif( nWidth == Nil, 0, nWidth ), ;
@@ -75,6 +76,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
    RETURN Self
 
 METHOD Activate() CLASS HPanel
+
    LOCAL handle := ::oParent:handle
 
    IF !Empty( handle )
@@ -185,6 +187,7 @@ METHOD DrawItems( hDC, aCoors ) CLASS HPanel
    RETURN Nil
 
 METHOD Paint() CLASS HPanel
+
    LOCAL pps, hDC, aCoors, block, oPenLight, oPenGray
 
    IF ::bPaint != Nil
@@ -237,6 +240,7 @@ METHOD Release() CLASS HPanel
    RETURN Nil
 
 METHOD Hide() CLASS HPanel
+
    LOCAL i
 
    IF ::lHide
@@ -264,6 +268,7 @@ METHOD Hide() CLASS HPanel
    RETURN Nil
 
 METHOD Show() CLASS HPanel
+
    LOCAL i
 
    IF !::lHide
@@ -322,6 +327,7 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
 METHOD Drag( xPos, yPos ) CLASS HPanel
 
    LOCAL oWnd := hwg_getParentForm( Self )
+
    IF xPos > 32000
       xPos -= 65535
    ENDIF
@@ -502,31 +508,31 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oSty
    RETURN Self
 
 METHOD SetText( c , lrefresh) CLASS HPanelHea
-* DF7BE: Set lrefresh to .T. for refreshing the header text
-* (compatibility to INLINE definition)
+   * DF7BE: Set lrefresh to .T. for refreshing the header text
+   * (compatibility to INLINE definition)
 
-LOCAL pps, hDC
+   LOCAL pps, hDC
 
- IF lrefresh == NIL
-   lrefresh := .F.
- ENDIF
+   IF lrefresh == NIL
+      lrefresh := .F.
+   ENDIF
 
- ::title := c
+   ::title := c
 
- IF lrefresh
-  pps := hwg_Definepaintstru()
-  hDC := hwg_Beginpaint( ::handle, pps )
+   IF lrefresh
+      pps := hwg_Definepaintstru()
+      hDC := hwg_Beginpaint( ::handle, pps )
 
-  ::PaintText( hDC )
+      ::PaintText( hDC )
 
-  hwg_Endpaint( ::handle, pps )
+      hwg_Endpaint( ::handle, pps )
 
-   // hwg_Sendmessage( ::oParent:handle, WM_SIZE , 0, 0 )  && Does not refresh
-   hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      // hwg_Sendmessage( ::oParent:handle, WM_SIZE , 0, 0 )  && Does not refresh
+      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
 
- ENDIF
+   ENDIF
 
-RETURN NIL
+   RETURN NIL
 
 METHOD SetSysbtnColor( tColor, bColor )
 
@@ -547,6 +553,7 @@ METHOD SetSysbtnColor( tColor, bColor )
       oBtn:SetColor( tColor, bColor )
       oBtn:oPen1 := oPen1; oBtn:oPen2 := oPen2
    ENDIF
+
    RETURN Nil
 
 METHOD PaintText( hDC ) CLASS HPanelHea
@@ -570,6 +577,7 @@ METHOD PaintText( hDC ) CLASS HPanelHea
    RETURN Nil
 
 METHOD Paint() CLASS HPanelHea
+
    LOCAL pps, hDC, block, aCoors, i
 
    IF ::bPaint != Nil
@@ -640,5 +648,3 @@ STATIC FUNCTION fPaintBtn( oBtn )
    hwg_Endpaint( oBtn:handle, pps )
 
    RETURN Nil
-
-* =================================== EOF of hpanel.prg ======================================

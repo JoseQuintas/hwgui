@@ -34,6 +34,7 @@ CLASS VAR aImages   INIT { }
 ENDCLASS
 
 METHOD AddFile( name ) CLASS HFreeImage
+
    LOCAL i
 
    #ifdef __XHARBOUR__
@@ -90,6 +91,7 @@ METHOD Draw( hDC, nLeft, nTop, nWidth, nHeight ) CLASS HFreeImage
    RETURN Nil
 
 METHOD Release() CLASS HFreeImage
+
    LOCAL i, nlen := Len( ::aImages )
 
    ::nCounter --
@@ -181,6 +183,7 @@ METHOD ReplaceImage( Image, cType )
    RETURN Nil
 
 METHOD Paint( lpdis ) CLASS HSayFImage
+
    LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
    LOCAL hDC := drawInfo[ 3 ] // , x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ], x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
 
@@ -194,8 +197,8 @@ METHOD Paint( lpdis ) CLASS HSayFImage
 
    RETURN Self
 
+EXIT PROCEDURE CleanImages
 
-   EXIT PROCEDURE CleanImages
    LOCAL i
 
    FOR i := 1 TO Len( HFreeImage():aImages )
@@ -207,4 +210,3 @@ METHOD Paint( lpdis ) CLASS HSayFImage
    hwg_Fi_end()
 
    RETURN
-

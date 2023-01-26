@@ -10,7 +10,6 @@
 #include "windows.ch"
 #include "hbclass.ch"
 
-//-----------------------------------------------------------------
 CLASS HRect INHERIT HControl
 
    DATA oLine1
@@ -22,8 +21,8 @@ CLASS HRect INHERIT HControl
 
 ENDCLASS
 
-//----------------------------------------------------------------
 METHOD New( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nStyle ) CLASS HRect
+
    LOCAL nCor1, nCor2
 
    IF nStyle = NIL
@@ -56,10 +55,9 @@ METHOD New( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nStyle ) CLASS HRe
 
    RETURN Self
 
-//---------------------------------------------------------------------------
 CLASS HRect_Line INHERIT HControl
 
-CLASS VAR winclass   INIT "STATIC"
+   CLASS VAR winclass   INIT "STATIC"
    DATA lVert
    DATA oPen
 
@@ -69,8 +67,6 @@ CLASS VAR winclass   INIT "STATIC"
 
 ENDCLASS
 
-
-//---------------------------------------------------------------------------
 METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, nColor ) CLASS HRect_Line
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop,,,,, bSize, { | o, lp | o:Paint( lp ) } )
@@ -91,20 +87,20 @@ METHOD New( oWndParent, nId, lVert, nLeft, nTop, nLength, bSize, nColor ) CLASS 
 
    RETURN Self
 
-//---------------------------------------------------------------------------
 METHOD Activate() CLASS HRect_Line
+
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
+
    RETURN Nil
 
-//---------------------------------------------------------------------------
 METHOD Paint( lpdis ) CLASS HRect_Line
+
    LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
    LOCAL hDC := drawInfo[ 3 ], x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ], x2 := drawInfo[ 6 ], y2 := drawInfo[ 7 ]
-
 
    hwg_Selectobject( hDC, ::oPen:handle )
 
@@ -113,7 +109,6 @@ METHOD Paint( lpdis ) CLASS HRect_Line
    ELSE
       hwg_Drawline( hDC, x1, y1, x2, y1 )
    ENDIF
-
 
    RETURN Nil
 
@@ -144,14 +139,11 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, nBorder, nCurvature, 
 
    RETURN oSelf
 
-//---------------------------------------------------------------------------
-
 CLASS HContainer INHERIT HControl
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, nStyle, bSize, lnoBorder, bInit )  //, bClick, bDblClick)
 
 ENDCLASS
-
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, nStyle, bSize, lnoBorder, bInit ) CLASS HContainer
 
@@ -164,12 +156,10 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, nStyle, bSize, lnoBor
 
    RETURN oSelf
 
-
-//---------------------------------------------------------------------------
-
 CLASS HDrawShape INHERIT HControl
 
 CLASS VAR winclass   INIT "STATIC"
+
    DATA oPen, oBrush
    DATA ncStyle, nbStyle, nfStyle
    DATA nCurvature
@@ -220,8 +210,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, bSize, tcolor, bColor
 
    RETURN Self
 
-//---------------------------------------------------------------------------
 METHOD Activate() CLASS HDrawShape
+
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
@@ -254,8 +244,8 @@ METHOD Curvature( nCurvature ) CLASS HDrawShape
    ENDIF
    RETURN Nil
 
-//---------------------------------------------------------------------------
 METHOD Paint( lpdis ) CLASS HDrawShape
+
    LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
    LOCAL hDC := drawInfo[ 3 ], oBrush
    LOCAL  x1 := drawInfo[ 4 ], y1 := drawInfo[ 5 ]
@@ -291,20 +281,16 @@ METHOD Paint( lpdis ) CLASS HDrawShape
          hwg_Roundrect( hDC, x1, y1, x2, y2 , ::nCurvature, ::nCurvature )
       ENDIF
    ENDIF
+
    RETURN Nil
 
 // END NEW CLASSE
 
 
-//-----------------------------------------------------------------
 FUNCTION hwg_Rect( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nST )
-
 
    IF lPress = NIL
       lPress := .f.
    ENDIF
 
    RETURN  HRect():New( oWndParent, nLeft, nTop, nRight, nBottom, lPress, nST )
-
-* ================================== EOF of hrect.prg =====================================
-

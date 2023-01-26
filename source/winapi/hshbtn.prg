@@ -48,9 +48,11 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
    ::hShade := hwg_Shade_new( 0, 0, nWidth, nHeight, lFlat )
    hwg_Shade_set( ::hShade, shadeID, palette, granularity, highlight, coloring, shcolor )
+
    RETURN Self
 
 METHOD Paint() CLASS HShadeButton
+
    LOCAL pps, hDC
    LOCAL nState
 
@@ -74,6 +76,7 @@ METHOD Paint() CLASS HShadeButton
    ::DrawItems( hDC )
 
    hwg_Endpaint( ::handle, pps )
+
    RETURN Nil
 
 METHOD END() CLASS HShadeButton
@@ -83,4 +86,5 @@ METHOD END() CLASS HShadeButton
       hwg_Shade_release( ::hShade )
       ::hShade := Nil
    ENDIF
+
    RETURN Nil

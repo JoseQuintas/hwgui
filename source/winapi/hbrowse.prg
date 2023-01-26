@@ -59,10 +59,10 @@ REQUEST DBGOTOP, DBGOTO, DBGOBOTTOM, DBSKIP, RECCOUNT, RECNO, EOF, BOF
 
    // #define DLGC_WANTALLKEYS    0x0004      /* Control wants all keys */
 
-   STATIC ColSizeCursor := 0
-   STATIC arrowCursor := 0
-   STATIC oCursor     := 0
-   STATIC xDrag
+STATIC ColSizeCursor := 0
+STATIC arrowCursor := 0
+STATIC oCursor     := 0
+STATIC xDrag
 
 CLASS HColumn INHERIT HObject
 
@@ -1833,15 +1833,15 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL oEdit,mvarbuff,bMemoMod, oHCfont
    LOCAL apffrarr, nchrs
    LOCAL lCancel, lSaveMem    && DF7BE
-   
+
    lCancel  := .T.
-   lSaveMem := .T.   
+   lSaveMem := .T.
 
    fipos := ::colpos + ::nLeftCol - 1 - ::freeze
 
    IF ::oFont != Nil
       /* Preset charset for displaying special characters of other languages
-         for example Russian ::nHCCharset = 204 
+         for example Russian ::nHCCharset = 204
          default is 0 */
      // ::nHCCharset := 15 && IBM 858 With Euro currency sign
 
@@ -2373,6 +2373,3 @@ FUNCTION hwg_getPaintCB( arr, nId )
    ENDIF
 
    RETURN aRes
-
-
-* ========================== EOF of hbrowse.prg ============================

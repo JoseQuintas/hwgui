@@ -41,8 +41,6 @@ CLASS TMci
 
 ENDCLASS
 
-//----------------------------------------------------------------------------//
-
 METHOD New( cDevice, cFileName ) CLASS TMci
 
    DEFAULT cDevice TO ""
@@ -55,8 +53,6 @@ METHOD New( cDevice, cFileName ) CLASS TMci
 
    RETURN Self
 
-//----------------------------------------------------------------------------//
-
 METHOD SendStr( cMciStr ) CLASS TMci
 
    LOCAL cBuffer := ::cBuffer
@@ -66,14 +62,19 @@ METHOD SendStr( cMciStr ) CLASS TMci
 
    RETURN nil
 
-//----------------------------------------------------------------------------//
 METHOD lOpen() CLASS TMci
+
    LOCAL nId
+
    ::nError := hwg_Nmciopen( ::cType, ::cFileName, @nId )
    ::nId := nId
+
    RETURN ::nError == 0
 
 METHOD cGetError() CLASS Tmci
+
    LOCAL cError
+
    hwg_Mcigeterrorstring( ::nError, @cError )
+
    RETURN    cError

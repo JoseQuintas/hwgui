@@ -14,7 +14,7 @@
 
 CLASS HSplitter INHERIT HControl
 
-CLASS VAR winclass INIT "STATIC"
+   CLASS VAR winclass INIT "STATIC"
 
    DATA aLeft
    DATA aRight
@@ -58,11 +58,13 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    RETURN Self
 
 METHOD Activate() CLASS HSplitter
+
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
+
    RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
@@ -103,7 +105,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HSplitter
       ::END()
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 METHOD Init() CLASS HSplitter
 
@@ -117,6 +119,7 @@ METHOD Init() CLASS HSplitter
    RETURN Nil
 
 METHOD Paint() CLASS HSplitter
+
    LOCAL pps, hDC, aCoors, x1, y1, x2, y2
 
    IF ::bPaint != Nil
@@ -141,6 +144,7 @@ METHOD Paint() CLASS HSplitter
    RETURN Nil
 
 METHOD Drag( xPos, yPos ) CLASS HSplitter
+
    LOCAL nFrom, nTo
 
    nFrom := Iif( ::nFrom == Nil, 1, ::nFrom )
@@ -166,6 +170,7 @@ METHOD Drag( xPos, yPos ) CLASS HSplitter
    RETURN Nil
 
 METHOD DragAll( xPos, yPos ) CLASS HSplitter
+
    LOCAL i, oCtrl, nDiff, wold, hold
    LOCAL nLeft, nTop, nWidth, nHeight
 
@@ -209,6 +214,3 @@ METHOD DragAll( xPos, yPos ) CLASS HSplitter
    ::lMoved := .F.
 
    RETURN Nil
-
- * ======================== EOF of hsplit.prg ================================
-

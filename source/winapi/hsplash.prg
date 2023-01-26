@@ -33,8 +33,6 @@ Build HWGUI only with command:
 #pragma ENDDUMP
 */
 
-
-
 CLASS HSplash
 
    DATA oTimer
@@ -45,6 +43,7 @@ CLASS HSplash
 ENDCLASS
 
 METHOD Create( cFile, oTime, oResource ) CLASS HSplash
+
    LOCAL aWidth, aHeigth
    LOCAL bitmap, oDlg
 
@@ -73,7 +72,3 @@ METHOD CountSeconds( oTime, oDlg )
    SET TIMER ::oTimer OF oDlg VALUE oTime  ACTION { || hwg_EndDialog( hwg_GetModalHandle() ) }
 
    RETURN Nil
-
-
-
-* ====================== EOF of hsplash.prg =======================

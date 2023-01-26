@@ -183,7 +183,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       ENDIF
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 METHOD Init() CLASS HOwnButton
 
@@ -242,6 +242,7 @@ METHOD Redefine( oWndParent, nId, bInit, bSize, bPaint, bClick, lflat, ;
    RETURN Self
 
 METHOD Paint() CLASS HOwnButton
+
    LOCAL pps, hDC, aCoors, n
 
    pps := hwg_Definepaintstru()
@@ -289,6 +290,7 @@ METHOD Paint() CLASS HOwnButton
    RETURN Nil
 
 METHOD DrawItems( hDC ) CLASS HOwnButton
+
    LOCAL x1, y1, x2, y2,  aCoors
 
    aCoors := hwg_Getclientrect( ::handle )
@@ -342,6 +344,7 @@ METHOD DrawItems( hDC ) CLASS HOwnButton
    RETURN Nil
 
 METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
+
    LOCAL xPos, yPos
    LOCAL res := .F.
 
@@ -484,6 +487,3 @@ STATIC FUNCTION OwnBtnTimerProc( oBtn, nType )
    ENDIF
 
    RETURN Nil
-
-* ====================== EOF of hownbtn.prg ===========================
-

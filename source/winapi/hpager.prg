@@ -50,7 +50,6 @@ CLASS HPager INHERIT HControl
 
 ENDCLASS
 
-
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
             bSize, bPaint, ctooltip, tcolor, bcolor, lvert ) CLASS HPager
 
@@ -69,8 +68,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
 
    RETURN Self
 
-
-
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
                  bSize, bPaint, ctooltip, tcolor, bcolor, lVert )  CLASS HPager
 
@@ -85,7 +82,6 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
 
    RETURN Self
 
-
 METHOD Activate() CLASS HPager
 
    IF ! Empty( ::oParent:handle )
@@ -95,6 +91,7 @@ METHOD Activate() CLASS HPager
 
       ::Init()
    ENDIF
+
    RETURN Nil
 
 METHOD INIT() CLASS HPager
@@ -102,6 +99,7 @@ METHOD INIT() CLASS HPager
    IF ! ::lInit
       ::Super:Init()
    ENDIF
+
    RETURN Nil
 
 METHOD Notify( lParam ) CLASS HPager
@@ -115,6 +113,3 @@ METHOD Notify( lParam ) CLASS HPager
    ENDIF
 
    RETURN 0
-
-* ================================= EOF of hpager.prg ==================================
-

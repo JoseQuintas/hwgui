@@ -60,6 +60,7 @@ METHOD Interval( n ) CLASS HTimer
    RETURN nOld
 
 METHOD End() CLASS HTimer
+
    LOCAL i
 
    hwg_Killtimer( ::oParent:handle, ::id )
@@ -104,5 +105,3 @@ EXIT PROCEDURE CleanTimers
    hwg_ReleaseTimers()
 
    RETURN
-
-* ====================================== EOF of htimer.prg =========================================

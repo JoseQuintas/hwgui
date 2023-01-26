@@ -8,7 +8,7 @@
  * www - http://www.kresin.ru
  *
  * Modifications by DF7BE:
- * - New parameter "nCharset" for 
+ * - New parameter "nCharset" for
  *   selecting international charachter sets
  *   Data and methods for National Language Support
  *
@@ -23,13 +23,13 @@
 /*
   Some notes how to explain the work flow of the
   HWINPRN class:
-  Every method adding lines or settings into the document to print  
+  Every method adding lines or settings into the document to print
   collect records in an Array aPages[] initialized by method New() of HPRINTER class.
   These methods are for example:
   SetMode(), PrintLine(), PrintBitmap(), NextPage().
   When running method End() of HWINPRN class to close the print job,
   all collected records in the array
-  are written in a script file with default filename "temp_a2.ps". 
+  are written in a script file with default filename "temp_a2.ps".
   This script builds the complete layout of the printing job in background.
   After this, the layout is diplayed in the print preview dialog, the last step
   is send the data to the printer device.
@@ -53,13 +53,12 @@
    the features of the Cairo graphic library.
    Function draw_page() interprets the values of the array and
    builds the pixbuffer for one page.
- 
+
 
 */
 
 #include "hwgui.ch"
 #include "hbclass.ch"
-
 
 #define   STD_HEIGHT      4
 
@@ -96,9 +95,9 @@ CLASS HWinPrn
    DATA   nBottom   INIT 5
    DATA   nLeft     INIT 5
    DATA   nRight    INIT 5
-   
+
    DATA   nCharset  INIT 0   &&  Charset (N) Default: 0  , 204 = Russian
-                             &&  Ignored on GTK   
+                             &&  Ignored on GTK
 
    // --- International Language Support for internal dialogs --
    DATA aTooltips   INIT {}  // Array with tooltips messages for print preview dialog
@@ -153,39 +152,40 @@ METHOD New( cPrinter, cpFrom, cpTo, nFormType , nCharset ) CLASS HWinPrn
    IF nFormType != Nil
       ::nFormType := nFormType
    ENDIF
-   
+
    IF nCharset != Nil
       :: nCharset := nCharset
    ENDIF
- 
 
    RETURN Self
 
-
 METHOD SetCPTo(cpTo) CLASS HWinPrn
 
-IF cpTo != NIL
-  ::cpTo   := cpTo
-  ::oPrinter:cdpIn := cpTo
-ENDIF
+   IF cpTo != NIL
+      ::cpTo   := cpTo
+      ::oPrinter:cdpIn := cpTo
+   ENDIF
 
-RETURN NIL 
+   RETURN NIL
 
 
 METHOD SetLanguage(apTooltips, apBootUser) CLASS HWinPrn
-* NLS: Sets the message and control texts to print preview dialog
-* Are stored in arrays:   ::aTooltips[], ::aBootUser[]
+   * NLS: Sets the message and control texts to print preview dialog
+   * Are stored in arrays:   ::aTooltips[], ::aBootUser[]
 
-* Parameters not used
- HB_SYMBOL_UNUSED(apBootUser)
+   * Parameters not used
+   HB_SYMBOL_UNUSED(apBootUser)
 
-* Default settings (English)
-  ::aTooltips := hwg_HPrinter_LangArray_EN()
-* Overwrite default, if array with own language served 
-   IF apTooltips != NIL ; ::aTooltips := apTooltips ; ENDIF
-/* Activate, if necessary */   
-//   IF apBootUser != NIL ; ::aBootUser := apBootUser ; ENDIF  
-RETURN Nil
+   * Default settings (English)
+   ::aTooltips := hwg_HPrinter_LangArray_EN()
+   * Overwrite default, if array with own language served
+   IF apTooltips != NIL
+      ::aTooltips := apTooltips
+   ENDIF
+   /* Activate, if necessary */
+   //   IF apBootUser != NIL ; ::aBootUser := apBootUser ; ENDIF
+
+   RETURN Nil
 
 METHOD InitValues( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCharset ) CLASS HWinPrn
 
@@ -225,7 +225,7 @@ METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCh
          ELSEIF ::nFormType == 8 .AND. ( nPWidth > 300 .OR. nPWidth < 280 )
             nPWidth := 290
          ENDIF
-         
+
          oFont := ::oPrinter:AddFont( cFont, ::nStdHeight * ::oPrinter:nVRes )
 
          nWidth := ::oPrinter:GetTextWidth( Replicate( 'A', Iif( ::nFormType==8, 113, 80 ) ), oFont ) / ::oPrinter:nHRes
@@ -250,7 +250,7 @@ METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCh
       IF ::oFont != Nil
          ::oFont:Release()
       ENDIF
-      
+
       ::oFont := oFont
 
       ::oPrinter:SetFont( ::oFont )
@@ -265,32 +265,31 @@ METHOD SetMode( lElite, lCond, nLineInch, lBold, lItalic, lUnder, nLineMax , nCh
   Added by DF7BE:
   Should act like a "printer reset"
   (Set back to default values).
-*/   
+*/
+
 METHOD SetDefaultMode() CLASS HWinPrn
 
    ::SetMode( .F., .F. , 6, .F. , .F. , .F. , 0 , 0 )
 
    RETURN Nil
 
-
 METHOD SetY( nYvalue ) CLASS HWinPrn
 
-  IF nYvalue == NIL
-   nYvalue := 0
-  ENDIF
-  ::Y := nYvalue
-  
- RETURN nYvalue
- 
- METHOD SetX( nYvalue ) CLASS HWinPrn
+   IF nYvalue == NIL
+      nYvalue := 0
+   ENDIF
+   ::Y := nYvalue
 
-  IF nYvalue == NIL
-   nYvalue := 0
-  ENDIF
-  ::X := nYvalue
-  
- RETURN nYvalue
+   RETURN nYvalue
 
+METHOD SetX( nYvalue ) CLASS HWinPrn
+
+   IF nYvalue == NIL
+      nYvalue := 0
+   ENDIF
+   ::X := nYvalue
+
+   RETURN nYvalue
 
 METHOD StartDoc( lPreview, cMetaName , lprbutton ) CLASS HWinPrn
 * Set lprbutton to .F., if preview dialog not shows the print button
@@ -329,45 +328,44 @@ METHOD NextPage() CLASS HWinPrn
 
    RETURN Nil
 
-   
 /*
    DF7BE:
    Recovered from r2536 2016-06-16
    added support for bitmap object
 
-   xBitmap     : Name and path to bitmap file 
+   xBitmap     : Name and path to bitmap file
                  or bitmap object variable
    nAlign      : 0 - left, 1 - center, 2 - right, default = 0
    cBitmapName  : Name of resource, if xBitmap is bitmap object
- */   
+ */
 METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
 
    LOCAL i , cTmp
    LOCAL hBitmap, aBmpSize , cImageName
-   
+
    * Variables not used
    * LOCAL oBitmap
 
    IF ! ::lDocStart
       ::StartDoc()
    ENDIF
-   
+
    IF nAlign == NIL
      nAlign := 0  // 0 - left, 1 - center, 2 - right
    ENDIF
 
-   cTmp := hwg_CreateTempfileName( , ".bmp")   
-   
+   cTmp := hwg_CreateTempfileName( , ".bmp")
+
    IF VALTYPE( xBitmap ) == "C" && does not work on GTK
      * from file
      IF ! hb_fileexists( xBitmap )
        RETURN NIL
-     ENDIF  
+     ENDIF
      hBitmap := hwg_Openbitmap( xBitmap, ::oPrinter:hDC )
      // hwg_msginfo(hb_valtostr(hBitmap))
      IF hb_ValToStr(hBitmap) == "0x00000000"
        RETURN NIL
-     ENDIF  
+     ENDIF
      cImageName := IIF(EMPTY (cBitmapName), xBitmap, cBitmapName)
      aBmpSize  := hwg_Getbitmapsize( hBitmap )
    ELSE
@@ -382,9 +380,9 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
      ENDIF
      aBmpSize  := hwg_Getbitmapsize( hBitmap )
      FERASE(cTmp)
-   ENDIF  
-   
-/* Page size overflow  ? ==> next page */ 
+   ENDIF
+
+/* Page size overflow  ? ==> next page */
 #ifdef __GTK__
    IF ::y + aBmpSize[2] + ::nLined > ::oPrinter:nHeight
 #else
@@ -392,13 +390,13 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
 #endif
       ::NextPage()
    ENDIF
-   
+
    ::x := ::nLeft * ::oPrinter:nHRes
    ::y += ::nLineHeight + ::nLined
 
-   IF nAlign == 1 .AND. ::x + aBmpSize[2] < ::oPrinter:nWidth 
+   IF nAlign == 1 .AND. ::x + aBmpSize[2] < ::oPrinter:nWidth
      ::x += ROUND( (::oPrinter:nWidth - ::x - aBmpSize[1] ) / 2, 0)
-   * HKrzak 2020-10-27 
+   * HKrzak 2020-10-27
    ELSEIF nAlign == 2
      ::x += ROUND( (::oPrinter:nWidth - ::x - aBmpSize[1]), 0)
    ENDIF
@@ -407,21 +405,20 @@ METHOD PrintBitmap( xBitmap, nAlign , cBitmapName ) CLASS HWinPrn
    ENDIF
    * Paint bitmap
    ::oPrinter:Bitmap( ::x, ::y, ::x + aBmpSize[1], ::y + aBmpSize[2],, hBitmap, cImageName )
-        
+
    i := aBmpSize[2] - ::nLineHeight
    IF i > 0
-     ::Y +=  i 
-   ENDIF  
+     ::Y +=  i
+   ENDIF
 
    // hwg_WriteLog(STR(::x) + CHR(10) + STR(::y) + CHR(10) ;
    // + STR(aBmpSize[1]) + CHR(10) +  STR(aBmpSize[2]) + CHR(10) +  STR(i) )
 
    RETURN Nil
-   
 
 METHOD NewLine()  CLASS HWinPrn
-    
-    ::old_y := ::y 
+
+    ::old_y := ::y
 //    ::PrintLine( "" , .T. )
     ::PrintLine(  , .T. )
     ::SetX()
@@ -434,24 +431,25 @@ METHOD NewLine()  CLASS HWinPrn
      ENDIF
 
      // hwg_WriteLog("::y=" + STR(::y) + " ::nLineHeight=" + STR(::nLineHeight)  )
-   RETURN Nil   
+   RETURN Nil
 
 METHOD PrintLine2( cLine ) CLASS HWinPrn
 * Special for Umlaute and other characters
 
-  IF ! ::lDocStart
+   IF ! ::lDocStart
       ::StartDoc()
-  ENDIF
-  ::NewLine()
-  
-  ::PrintText("  " + cLine)  && Try to get same behavior as PrintLine(), left margin not 0
-  
- 
+   ENDIF
+   ::NewLine()
+
+   ::PrintText("  " + cLine)  && Try to get same behavior as PrintLine(), left margin not 0
+
+
  //  ::PrintLine( IIf( ::cpFrom != ::cpTo, hb_Translate( cLine, ::cpFrom, ::cpTo ), cLine ), lNewLine )
 
-RETURN NIL
-   
+   RETURN NIL
+
 METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn
+
    LOCAL i, i0, j, slen, c
 
    IF ! ::lDocStart
@@ -461,7 +459,7 @@ METHOD PrintLine( cLine, lNewLine ) CLASS HWinPrn
    IF lNewLine == Nil
      lNewLine := .T.
    ENDIF
-   
+
 * HKrzak.Start 2020-10-25
 * Bug Ticket #64
 IF cLine != Nil .AND. VALTYPE(cLine) == "N"
@@ -470,8 +468,7 @@ IF cLine != Nil .AND. VALTYPE(cLine) == "N"
        ::y := 0
      ENDIF
    ENDIF
-* HKrzak.End   
-   
+* HKrzak.End
 
 #ifdef __GTK__
    IF ::y + 3 * ( ::nLineHeight + ::nLined ) > ::oPrinter:nHeight
@@ -572,7 +569,7 @@ IF cLine != Nil .AND. VALTYPE(cLine) == "N"
 
 METHOD PrintText( cText ) CLASS HWinPrn
 
-LOCAL x , y 
+   LOCAL x , y
 
    IF ::lChanged
       ::SetMode()
@@ -580,29 +577,29 @@ LOCAL x , y
 
 // hwg_writelog( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ) )
 
-   
+
    x := ::x
    y := ::y
 
- 
+
    IF hwg_ValType(x) != "N"
     x := 0
     ::x := 0
    ENDIF
-   
+
    IF hwg_ValType(y) != "N"
     y := 0
-   ENDIF   
-   
+   ENDIF
+
    ::oPrinter:Say( IIf( ::cpFrom != ::cpTo, hb_Translate( cText, ::cpFrom, ::cpTo ), cText ), ;
          x, y, ::oPrinter:nWidth, y + ::nLineHeight + ::nLined )
 
    ::x += ( ::nCharW * Len( cText ) )
 
-
    RETURN Nil
 
 METHOD PutCode( cLine ) CLASS HWinPrn
+
    STATIC aCodes := {   ;
           { Chr( 27 ) + '@', .f., .f., 6, .f., .f., .f. },  ;     /* Reset */
           { Chr( 27 ) + 'M', .t.,,,,, },  ;     /* Elite */
@@ -658,5 +655,3 @@ METHOD END() CLASS HWinPrn
    ::oPrinter:END()
 
    RETURN Nil
-   
-* ================================ EOF of hwinprn.prg ==========================   

@@ -12,11 +12,7 @@
 
 #include "common.ch"
 
-
-//----------------------------------------------------------------------------//
-
 CLASS TVideo FROM hControl
-
 
    DATA   oMci
    DATA   cAviFile
@@ -31,8 +27,6 @@ CLASS TVideo FROM hControl
    METHOD Play( nFrom, nTo ) INLINE  ::oMci:Play( nFrom, nTo, ::oparent:handle )
 
 ENDCLASS
-
-//----------------------------------------------------------------------------//
 
 /*  removed: bWhen , bValid */
 METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd, lNoBorder, nid ) CLASS TVideo
@@ -61,8 +55,6 @@ METHOD New( nRow, nCol, nWidth, nHeight, cFileName, oWnd, lNoBorder, nid ) CLASS
 
    RETURN Self
 
-//----------------------------------------------------------------------------//
-
 METHOD ReDefine( nId, cFileName, oDlg, bWhen, bValid ) CLASS TVideo
 
    ::nId      = nId
@@ -76,8 +68,6 @@ METHOD ReDefine( nId, cFileName, oDlg, bWhen, bValid ) CLASS TVideo
 
    RETURN Self
 
-//----------------------------------------------------------------------------//
-
 METHOD Initiate( ) CLASS TVideo
 
    ::Super:Init(  )
@@ -85,5 +75,3 @@ METHOD Initiate( ) CLASS TVideo
    ::oMci:SetWindow( Self )
 
    RETURN nil
-
-//----------------------------------------------------------------------------//

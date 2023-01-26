@@ -161,6 +161,7 @@ METHOD StartPage( cname, oDlg , ctooltip ) CLASS HTab
    ::nActive := Len( ::aPages )
    * Set tooltip
    ::SetTooltip( ::handle, ::nActive )
+
    RETURN Nil
 
 METHOD EndPage() CLASS HTab
@@ -191,14 +192,9 @@ METHOD EndPage() CLASS HTab
 METHOD ChangePage( nPage ) CLASS HTab
 
    IF !Empty( ::aPages )
-
       ::HidePage( ::nActive )
-
       ::nActive := nPage
-
-
       ::ShowPage( ::nActive )
-
    ENDIF
 
    IF ::bChange2 != Nil
@@ -213,6 +209,7 @@ METHOD ChangePage( nPage ) CLASS HTab
    RETURN Nil
 
 METHOD HidePage( nPage ) CLASS HTab
+
    LOCAL i, nFirst, nEnd
 
    IF !::lResourceTab
@@ -228,6 +225,7 @@ METHOD HidePage( nPage ) CLASS HTab
    RETURN Nil
 
 METHOD ShowPage( nPage ) CLASS HTab
+
    LOCAL i, nFirst, nEnd
 
    IF !::lResourceTab
@@ -269,7 +267,8 @@ METHOD GetActivePage( nFirst, nEnd ) CLASS HTab
    Return ::nActive
 
 METHOD DeletePage( nPage ) CLASS HTab
-Local nFirst, nEnd, i
+
+   LOCAL nFirst, nEnd, i
 
    if ::lResourceTab
       ADel( ::m_arrayStatusTab, nPage, , .T. )
@@ -308,9 +307,10 @@ Local nFirst, nEnd, i
       ENDIF
    ENDIF
 
-   Return ::nActive
+   RETURN ::nActive
 
 METHOD Notify( lParam ) CLASS HTab
+
    LOCAL nCode := hwg_Getnotifycode( lParam )
 
    //hwg_writelog( str(ncode) )
@@ -333,7 +333,7 @@ METHOD Notify( lParam ) CLASS HTab
       ENDIF
    ENDCASE
 
-   Return - 1
+   RETURN -1
 
 /* aItem and cCaption added */
 METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
@@ -374,6 +374,5 @@ METHOD SetTooltip( nhandle, ntab ) CLASS hTab
   IF .NOT. EMPTY(cText)
    hwg_Addtooltip( nhandle, cText )
   ENDIF
-RETURN NIL
 
-* ============================ EOF of htab.prg ===========================
+   RETURN NIL

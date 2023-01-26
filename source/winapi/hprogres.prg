@@ -190,6 +190,3 @@ METHOD CLOSE()
    ENDIF
 
    RETURN Nil
-
-* ============================ EOF of hprogres.prg =============================
-

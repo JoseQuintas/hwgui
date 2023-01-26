@@ -23,9 +23,9 @@ PROCEDURE hwg_ErrSys
    RETURN
 
 STATIC FUNCTION DefError( oError )
+
    LOCAL cMessage
    LOCAL cDOSError
-
    LOCAL n
 
    // By default, division by zero results in zero
@@ -83,8 +83,8 @@ STATIC FUNCTION DefError( oError )
 
    RETURN .F.
 
-
 FUNCTION hwg_ErrMsg( oError )
+
    LOCAL cMessage
 
    // start error message
@@ -126,6 +126,7 @@ FUNCTION hwg_ErrMsg( oError )
    RETURN cMessage
 
 FUNCTION hwg_WriteLog( cText, fname )
+
    LOCAL nHand
 
    fname := LogInitialPath + IIf( fname == Nil, "a.log", fname )
@@ -141,6 +142,7 @@ FUNCTION hwg_WriteLog( cText, fname )
    RETURN nil
 
 STATIC FUNCTION ErrorPreview( cMess )
+
    LOCAL oDlg, oEdit
 
    INIT DIALOG oDlg TITLE "Error.log" ;
@@ -153,4 +155,5 @@ STATIC FUNCTION ErrorPreview( cMess )
    @ 200, 460 BUTTON "Close" ON CLICK { || hwg_EndDialog() } SIZE 100, 32
 
    oDlg:Activate()
+
    RETURN Nil

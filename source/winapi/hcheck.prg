@@ -73,7 +73,8 @@ METHOD SetTooltip( cText ) CLASS HCheckButton
      IF .NOT. EMPTY(::tooltip)
       hwg_Addtooltip( ::handle, ::tooltip )
      ENDIF
-RETURN NIL
+
+   RETURN NIL
 
 METHOD Activate() CLASS HCheckButton
 
@@ -139,7 +140,6 @@ METHOD Enable() CLASS HCheckButton
 
    RETURN Nil
 
-
 METHOD Invert() CLASS HCheckButton
 
    LOCAL lValue
@@ -153,7 +153,6 @@ METHOD Invert() CLASS HCheckButton
    ::Value(lValue)
 
    RETURN Nil
-
 
 METHOD Value( lValue ) CLASS HCheckButton
 
@@ -171,6 +170,7 @@ METHOD Value( lValue ) CLASS HCheckButton
    RETURN ( ::lValue := ( hwg_Sendmessage( ::handle, BM_GETCHECK, 0, 0 ) == 1 ) )
 
 STATIC FUNCTION __Valid( oCtrl )
+
    LOCAL l := hwg_Sendmessage( oCtrl:handle, BM_GETCHECK, 0, 0 )
 
    IF l == BST_INDETERMINATE
@@ -191,6 +191,7 @@ STATIC FUNCTION __Valid( oCtrl )
    RETURN .T.
 
 STATIC FUNCTION __When( oCtrl )
+
    LOCAL res
 
    oCtrl:Refresh()
@@ -204,5 +205,3 @@ STATIC FUNCTION __When( oCtrl )
    ENDIF
 
    RETURN .T.
-
-   * ===================================== EOF of hcheck.prg ===========================================

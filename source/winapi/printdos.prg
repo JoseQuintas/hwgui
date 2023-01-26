@@ -59,44 +59,28 @@ CLASS PrintDos
    // call of METHOD ::New()
 
    METHOD New( oPorta ) CONSTRUCTOR
-
    METHOD DefaultLang()
-
    METHOD Say( oProw, oCol, oTexto, oPicture )
-
    METHOD SetCols( nRow, nCol )
-
    METHOD gWrite( oText )
-
    METHOD NewLine()
-
    METHOD Eject()
-
    METHOD Compress()
-
    METHOD Double()
-
    METHOD DesCompress()
-
    METHOD Bold()       //Added by  por Fernando Athayde
-
    METHOD UnBold()     //Added by  por Fernando Athayde
-
    METHOD Comando()
-
    METHOD SetPrc( x, y )
-
    METHOD PrinterFile( oFile )
-
    METHOD TxttoGraphic( oFile, osize, oPreview )
-
    METHOD Preview( fname, cTitle )
-
    METHOD END()
 
 ENDCLASS
 
 METHOD New( oPorta ) CLASS PrintDos
+
    LOCAL oDouble  := { oMATRIXDOUBLE,   oINKJETDOUBLE,   oLASER10CPI }
    LOCAL oNormal  := { oMATRIXNORMAL,   oINKJETNORMAL,   oLASER12CPI }
    LOCAL oCompress := { oMATRIXCOMPRESS, oINKJETCOMPRESS, oLASER18CPI }
@@ -175,8 +159,10 @@ METHOD New( oPorta ) CLASS PrintDos
    RETURN Self
 
 METHOD DefaultLang() CLASS PrintDos
+
   ::aLangTexts := hwg_HPrinter_LangArray_EN()
-RETURN NIL
+
+   RETURN NIL
 
 METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
                 oComm8, oComm9, oComm10 )  CLASS PrintDos
@@ -203,7 +189,6 @@ METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
    ENDIF
 
    RETURN Nil
-
 
 METHOD gWrite( oText )  CLASS PrintDos
 
@@ -270,7 +255,6 @@ METHOD UnBold() CLASS PrintDos
 
    RETURN Nil
 
-
 METHOD NewLine() CLASS PrintDos
 
    IF ::oAns2Oem
@@ -279,9 +263,11 @@ METHOD NewLine() CLASS PrintDos
       ::oText += Chr( 13 ) + Chr( 10 )
    ENDIF
    ::nPcol := 0
+
    RETURN Nil
 
 METHOD Say( oProw, oPcol, oTexto, oPicture ) CLASS PrintDos
+
    // tracelog(oProw, oPcol, oTexto, oPicture)
    IF ValType( oTexto ) == "N"
 
@@ -329,6 +315,7 @@ METHOD SetCols( nProw, nPcol ) CLASS PrintDos
    RETURN Nil
 
 METHOD SetPrc( x, y ) CLASS PrintDos
+
    ::nProw := x
    ::nPCol := y
    RETURN Nil
@@ -341,6 +328,7 @@ METHOD END() CLASS PrintDos
    RETURN Nil
 
 METHOD PrinterFile( fname ) CLASS PrintDos
+
    LOCAL strbuf := Space( PF_BUFFERS )
    LOCAL han, nRead
 
@@ -446,6 +434,7 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
    RETURN .T.
 
 METHOD Preview( fName, cTitle ) CLASS PrintDos
+
    LOCAL oedit1
    LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
    LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
@@ -520,8 +509,10 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
    RETURN .T.
 
 STATIC FUNCTION PrintDosPrint( oText, oPrt )
+
    LOCAL i
    LOCAL nText := FCreate( oPrt )
+
    FOR i := 1 TO Len( oText )
       FWrite( nText, oText[ i ] )
    NEXT
@@ -530,7 +521,9 @@ STATIC FUNCTION PrintDosPrint( oText, oPrt )
 
 
 STATIC FUNCTION PrintDosAnt( nPage, oText )
+
    LOCAL oDlg := hwg_GetModalHandle()
+
    nPage := -- nPage
    IF nPage < 1 ; nPage := 1 ; ENDIF
    IF nPage = 1  //Added by  Por Fernando Exclui 1 byte do oText nao sei de onde ele aparece
@@ -538,13 +531,19 @@ STATIC FUNCTION PrintDosAnt( nPage, oText )
    ELSE
       hwg_Setdlgitemtext( oDlg, 1001, oText[ nPage ] )
    ENDIF
+
    RETURN nPage
 
 STATIC FUNCTION PrintDosNext( oPage, nPage, oText )
+
    LOCAL oDlg := hwg_GetModalHandle()
+
    nPage := ++ nPage
-   IF nPage > oPage ; nPage := oPage ; ENDIF
+   IF nPage > oPage
+      nPage := oPage
+   ENDIF
    hwg_Setdlgitemtext( oDlg, 1001, oText[ nPage ] )
+
    RETURN nPage
 
 FUNCTION hwg_regenfile( o, new )
@@ -575,7 +574,6 @@ FUNCTION hwg_regenfile( o, new )
    NEXT
 
    RETURN Nil
-
 
 #PRAGMA BEGINDUMP
 /*
@@ -701,4 +699,3 @@ HB_FUNC( HWG_WIN_ANSITOOEM )
 }
 
 #PRAGMA ENDDUMP
-

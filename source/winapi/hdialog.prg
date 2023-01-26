@@ -27,16 +27,16 @@ STATIC aMessModalDlg := { ;
       }
 
 #ifdef MT_EXPERIMENTAL
-   THREAD STATIC aDialogs := {}
-   THREAD STATIC aModalDialogs := {}
+THREAD STATIC aDialogs := {}
+THREAD STATIC aModalDialogs := {}
 
-   FUNCTION aDialogs()
+FUNCTION aDialogs()
 
-      RETURN aDialogs
+   RETURN aDialogs
 
-   FUNCTION aModalDialogs()
+FUNCTION aModalDialogs()
 
-      RETURN aModalDialogs
+   RETURN aModalDialogs
 #endif
 
    // Class HDialog

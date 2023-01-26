@@ -14,6 +14,7 @@
 CLASS HGraph INHERIT HControl
 
 CLASS VAR winclass   INIT "STATIC"
+
    DATA aValues                      // Data array
    DATA aSignX, aSignY               // Signs arrays for X and Y axes
    DATA nGraphs    INIT 1            // Number of lines in a line chart
@@ -64,20 +65,25 @@ METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
    RETURN Self
 
 METHOD Activate() CLASS HGraph
+
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
                                 ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
+
    RETURN Nil
 
 METHOD Init()  CLASS HGraph
+
    IF ! ::lInit
       ::Super:Init()
    ENDIF
+
    RETURN Nil
 
 METHOD CalcMinMax() CLASS HGraph
+
    LOCAL i, j, nLen, l1
 
    IF ::nType == 0 .OR. ::nType > 3 .OR. Empty( ::aValues )

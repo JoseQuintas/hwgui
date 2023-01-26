@@ -14,7 +14,6 @@
 CLASS HRichEdit INHERIT HControl
 
 #ifdef UNICODE
-
    CLASS VAR winclass INIT "RichEdit20W"
 #else
    CLASS VAR winclass INIT "RichEdit20A"
@@ -154,7 +153,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HRichEdit
       ::End()
    ENDIF
 
-   Return - 1
+   RETURN -1
 
 METHOD Setcolor( tColor, bColor, lRedraw )  CLASS HRichEdit
 

@@ -21,7 +21,6 @@ REQUEST HB_GT_GUI_DEFAULT
 #endif
 #endif
 
-
 STATIC aCustomEvents := { ;
       { WM_NOTIFY, WM_PAINT, WM_CTLCOLORSTATIC, WM_CTLCOLOREDIT, WM_CTLCOLORBTN, ;
       WM_COMMAND, WM_DRAWITEM, WM_SIZE, WM_DESTROY }, ;
@@ -38,12 +37,11 @@ STATIC aCustomEvents := { ;
       } ;
       }
 
-
-
 CLASS HObject
 
    DATA cargo
    DATA objName
+
 ENDCLASS
 
 CLASS HCustomWindow INHERIT HObject
@@ -93,6 +91,7 @@ CLASS HCustomWindow INHERIT HObject
 ENDCLASS
 
 METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
+
    LOCAL i
 
    IF Valtype( nId ) == "C"
@@ -106,6 +105,7 @@ METHOD FindControl( nId, nHandle ) CLASS HCustomWindow
    RETURN Iif( i == 0, Nil, ::aControls[i] )
 
 METHOD DelControl( oCtrl ) CLASS HCustomWindow
+
    LOCAL h := oCtrl:handle, id := oCtrl:id
    LOCAL i := Ascan( ::aControls, { |o| hwg_Isptreq( o:handle,h ) } )
 
@@ -188,8 +188,8 @@ METHOD SetColor( tcolor, bColor, lRepaint ) CLASS HCustomWindow
 
    RETURN NIL
 
-
 METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
+
    LOCAL i
    STATIC iCount := 0
 
@@ -210,6 +210,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HCustomWindow
    RETURN - 1
 
 METHOD End()  CLASS HCustomWindow
+
    LOCAL aControls, i, nLen
 
    IF ::nHolder != 0
@@ -256,6 +257,7 @@ METHOD OnError() CLASS HCustomWindow
    RETURN NIL
 
 STATIC FUNCTION onNotify( oWnd, wParam, lParam )
+
    LOCAL iItem, oCtrl, nCode, res, n
 
    * Not used parameter
@@ -292,6 +294,7 @@ STATIC FUNCTION onNotify( oWnd, wParam, lParam )
    RETURN - 1
 
 STATIC FUNCTION onDestroy( oWnd )
+
    LOCAL aControls := oWnd:aControls
    LOCAL i, nLen   := Len( aControls )
 
@@ -303,6 +306,7 @@ STATIC FUNCTION onDestroy( oWnd )
    RETURN 1
 
 STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
+
    LOCAL oCtrl := oWnd:FindControl( , lParam )
 
    IF oCtrl != NIL
@@ -325,6 +329,7 @@ STATIC FUNCTION onCtlColor( oWnd, wParam, lParam )
    RETURN - 1
 
 STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
+
    LOCAL oCtrl
 
    wParam := hwg_PtrToUlong( wParam )
@@ -338,6 +343,7 @@ STATIC FUNCTION onDrawItem( oWnd, wParam, lParam )
    RETURN - 1
 
 STATIC FUNCTION onCommand( oWnd, wParam, lParam )
+
    LOCAL iItem, iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )
 
    HB_SYMBOL_UNUSED(lParam)
@@ -353,6 +359,7 @@ STATIC FUNCTION onCommand( oWnd, wParam, lParam )
    RETURN 1
 
 STATIC FUNCTION onSize( oWnd, wParam, lParam )
+
    LOCAL aControls := oWnd:aControls, oItem
 
     * Not used parameter
@@ -395,7 +402,7 @@ FUNCTION hwg_onTrackScroll( oWnd, msg, wParam, lParam )
       ENDIF
    ENDIF
 
-   RETURN - 1
+   RETURN -1
 
 CLASS HScrollArea INHERIT HObject
 
@@ -438,6 +445,7 @@ METHOD RedefineScrollbars() CLASS HScrollArea
    RETURN Nil
 
 METHOD SetupScrollbars() CLASS HScrollArea
+
    LOCAL tempRect, nwMax, nhMax , aMenu, nPos
 
    tempRect := hwg_Getclientrect( ::handle )
@@ -533,6 +541,7 @@ INIT PROCEDURE HWGINIT
    RETURN
 
 EXIT PROCEDURE Hwg_ExitProcedure
+
    Hwg_ExitProc()
 
    RETURN

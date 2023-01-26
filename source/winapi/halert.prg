@@ -158,7 +158,6 @@ CLASS HAlert
 
 ENDCLASS
 
-
 METHOD Init(cTitle, cFont, nFontSize, nIcon, acOptions, nAlign, lModal, nTime, lBeep, nBeepSound, lTitleIcon, ;
         lCloseButton, abOptionActions, nCharSet) CLASS HAlert
 
@@ -166,7 +165,6 @@ METHOD Init(cTitle, cFont, nFontSize, nIcon, acOptions, nAlign, lModal, nTime, l
         lCloseButton, abOptionActions, nCharSet)
 
 RETURN Self
-
 
 METHOD SetVars(cTitle, cFont, nFontSize, nIcon, acOptions, nAlign, lModal, nTime, lBeep, nBeepSound, lTitleIcon, ;
         lCloseButton, abOptionActions, nCharSet) CLASS HAlert
@@ -190,7 +188,6 @@ METHOD SetVars(cTitle, cFont, nFontSize, nIcon, acOptions, nAlign, lModal, nTime
 
 RETURN Nil
 
-
 METHOD ResetVars() CLASS HAlert
 
     ::Title := "Alert"
@@ -212,7 +209,6 @@ METHOD ResetVars() CLASS HAlert
 
 RETURN Nil
 
-
 METHOD ReleaseNonModalAlert(lViaCode) CLASS HAlert
 
     DEFAULT lViaCode TO .t.
@@ -230,7 +226,6 @@ METHOD ReleaseNonModalAlert(lViaCode) CLASS HAlert
     ENDIF
 
 RETURN .T.
-
 
 METHOD SetupTimer() CLASS HAlert
 
@@ -260,7 +255,6 @@ METHOD RemoveTimer(nTimerID) CLASS HAlert
     ENDIF
 
 RETURN .T.
-
 
 METHOD Alert(cMessage, acOptions) CLASS HAlert
 
@@ -422,8 +416,7 @@ procedure SetDefaultAlert(cTitle, cFont, nFontSize, nIcon, acOptions, nAlign, lM
 
 RETURN
 
-
-procedure ResetDefaultAlert()
+PROCEDURE ResetDefaultAlert()
 
     if soDefaultAlert == Nil
         soDefaultAlert := HAlert():New()
@@ -433,7 +426,6 @@ procedure ResetDefaultAlert()
 
 RETURN
 
-
 FUNCTION hwg_GetDefaultAlert()
 
     IF soDefaultAlert == Nil
@@ -442,7 +434,6 @@ FUNCTION hwg_GetDefaultAlert()
 
 RETURN soDefaultAlert
 
-
 FUNCTION hwg_ReleaseDefaultAlert()
 
     IF soDefaultAlert != Nil
@@ -450,8 +441,6 @@ FUNCTION hwg_ReleaseDefaultAlert()
     ENDIF
 
 RETURN Nil
-
-
 
 /* Utility functions */
 
@@ -470,46 +459,43 @@ STATIC FUNCTION StringToArray(cString, cDelimiter)
 
 RETURN aStrings
 
-
 FUNCTION HWG_Alert_CenterWindow( hWnd )
-/*
- Zentriert ein Kind-Fenster inmitten des Vater Fensters,
- als Antwort auf eine WM_INITDIALOG Nachricht.
- hWnd: Handle des Kind-Fensters.
-*/
 
-  LOCAL hWndParent   // handle to the Parent Window
-  LOCAL nCWidth      // Width of Child Window
-  LOCAL nCHeight     // Height of Child Window
-  LOCAL aParent      // Logical Coordinates of Parent Window  && [ 4 ]
-  LOCAL aPoint       // Multiple Uses                         && [ 2 ]
-  LOCAL aChild       // Screen Coordinates of Child Window    && [ 4 ]
+   /*
+   Zentriert ein Kind-Fenster inmitten des Vater Fensters,
+   als Antwort auf eine WM_INITDIALOG Nachricht.
+   hWnd: Handle des Kind-Fensters.
+   */
 
-  aChild   := Hwg_GetWindowRect( hWnd )
-  nCWidth  := aChild[ 3 ] - aChild[ 1 ]
-  nCHeight := aChild[ 4 ] - aChild[ 2 ]
+   LOCAL hWndParent   // handle to the Parent Window
+   LOCAL nCWidth      // Width of Child Window
+   LOCAL nCHeight     // Height of Child Window
+   LOCAL aParent      // Logical Coordinates of Parent Window  && [ 4 ]
+   LOCAL aPoint       // Multiple Uses                         && [ 2 ]
+   LOCAL aChild       // Screen Coordinates of Child Window    && [ 4 ]
 
-  hWndParent := hwg_Alert_GetWindow(hWnd, GW_OWNER)
-  IF EMPTY(hWndParent)
-     hWndParent := Hwg_GetParent(hWnd)
-  ENDIF
+   aChild   := Hwg_GetWindowRect( hWnd )
+   nCWidth  := aChild[ 3 ] - aChild[ 1 ]
+   nCHeight := aChild[ 4 ] - aChild[ 2 ]
 
-  IF !Hwg_IsWindowVisible(hWndParent)
+   hWndParent := hwg_Alert_GetWindow(hWnd, GW_OWNER)
+   IF EMPTY(hWndParent)
+      hWndParent := Hwg_GetParent(hWnd)
+   ENDIF
+
+   IF ! Hwg_IsWindowVisible(hWndParent)
       RETURN Nil
-  ENDIF
+   ENDIF
 
-  aParent := Hwg_GetClientRect(hWndParent)
-  aPoint := Hwg_ClientToScreen(hWndParent, aParent[ 3 ] / 2 , aParent[ 4 ] / 2)
-  aPoint[1] -= (nCWidth  / 2)
-  aPoint[2] -= (nCHeight / 2)
-  aPoint := Hwg_ScreenToClient(hWndParent, aPoint[ 1 ], aPoint[ 2 ] )
-  aPoint[1] := MAX(0, aPoint[ 1 ] )
-  aPoint[2] := MAX(0, aPoint[ 2 ] )
-  aPoint := Hwg_ClientToScreen(hWndParent, aPoint[1], aPoint[2])
+   aParent := Hwg_GetClientRect(hWndParent)
+   aPoint := Hwg_ClientToScreen(hWndParent, aParent[ 3 ] / 2 , aParent[ 4 ] / 2)
+   aPoint[1] -= (nCWidth  / 2)
+   aPoint[2] -= (nCHeight / 2)
+   aPoint := Hwg_ScreenToClient(hWndParent, aPoint[ 1 ], aPoint[ 2 ] )
+   aPoint[1] := MAX(0, aPoint[ 1 ] )
+   aPoint[2] := MAX(0, aPoint[ 2 ] )
+   aPoint := Hwg_ClientToScreen(hWndParent, aPoint[1], aPoint[2])
 
-    Hwg_MoveWindow(hWnd, aPoint[ 1 ], aPoint[ 2 ], nCWidth, nCHeight, .F.)
+   Hwg_MoveWindow(hWnd, aPoint[ 1 ], aPoint[ 2 ], nCWidth, nCHeight, .F.)
 
 RETURN Nil
-
-
-* ==================== EOF of alert.prg ======================

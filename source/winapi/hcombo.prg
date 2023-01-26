@@ -70,7 +70,6 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       Eval( ::bSetGet, ::xValue, Self )
    ENDIF
 
-
    ::aItems  := aItems
 
    ::Activate()
@@ -130,6 +129,7 @@ METHOD Redefine( oWndParent, nId, vari, bSetGet, aItems, oFont, bInit, bSize, bP
    RETURN Self
 
 METHOD Init() CLASS HComboBox
+
    LOCAL i, nHeightBox, nHeightItem
 
    IF !::lInit
@@ -168,6 +168,7 @@ METHOD Init() CLASS HComboBox
    RETURN Nil
 
 METHOD Refresh( xVal ) CLASS HComboBox
+
    LOCAL vari, i
 
    IF !Empty( ::aItems )
@@ -224,6 +225,7 @@ METHOD SetItem( nPos ) CLASS HComboBox
    RETURN Nil
 
 METHOD GetValue( nItem ) CLASS HComboBox
+
    LOCAL nPos, l := .F.
 
    IF ::lEdit
@@ -259,6 +261,7 @@ METHOD Value ( xValue ) CLASS HComboBox
    RETURN ::GetValue()
 
 STATIC FUNCTION __Valid( oCtrl )
+
    LOCAL nPos
    LOCAL lESC
 
@@ -299,6 +302,7 @@ STATIC FUNCTION __Valid( oCtrl )
    RETURN .T.
 
 STATIC FUNCTION __When( oCtrl )
+
    LOCAL res
 
    //oCtrl:Refresh()

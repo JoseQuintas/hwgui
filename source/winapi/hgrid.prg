@@ -36,7 +36,7 @@ TODO: 1) In line edit
 
 CLASS HGrid INHERIT HControl
 
-CLASS VAR winclass INIT "SYSLISTVIEW32"
+   CLASS VAR winclass INIT "SYSLISTVIEW32"
    DATA aBitMaps   INIT { }
    DATA ItemCount
    DATA color
@@ -70,6 +70,7 @@ CLASS VAR winclass INIT "SYSLISTVIEW32"
    METHOD SetItemCount( nItem )                    INLINE hwg_Listview_setitemcount( ::handle, nItem )
    METHOD Row()                                  INLINE hwg_Listview_getfirstitem( ::handle )
    METHOD Notify( lParam )
+
 ENDCLASS
 
 
@@ -106,14 +107,17 @@ METHOD New( oWnd, nId, nStyle, x, y, width, height, oFont, bInit, bSize, bPaint,
    RETURN Self
 
 METHOD Activate() CLASS HGrid
+
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Listview_create ( ::oParent:handle, ::id, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::style, ::lNoHeader, ::lNoScroll )
 
       ::Init()
    ENDIF
+
    RETURN Nil
 
 METHOD Init() CLASS HGrid
+
    LOCAL i, nPos
    LOCAL aButton := { }
    LOCAL aBmpSize
@@ -169,9 +173,11 @@ METHOD Init() CLASS HGrid
          hwg_Listview_settextbkcolor( ::handle, ::bkcolor )
       ENDIF
    ENDIF
+
    RETURN Nil
 
 METHOD Refresh() CLASS HGrid
+
    LOCAL iFirst, iLast
 
    iFirst := hwg_Listview_gettopindex( ::handle )
@@ -179,9 +185,11 @@ METHOD Refresh() CLASS HGrid
    iLast := iFirst + hwg_Listview_getcountperpage( ::handle )
 
    hwg_Listview_redrawitems( ::handle , iFirst, iLast )
+
    RETURN Nil
 
 METHOD Notify( lParam ) CLASS HGrid
+
    RETURN hwg_ListViewNotify( Self, lParam )
 
 FUNCTION hwg_ListViewNotify( oCtrl, lParam )
@@ -221,6 +229,5 @@ FUNCTION hwg_ListViewNotify( oCtrl, lParam )
       hwg_Listview_setdispinfo( lParam, Eval( oCtrl:bDispInfo, oCtrl, oCtrl:nRow, oCtrl:nCol ) )
 
    ENDIF
+
    RETURN 0
-
-

@@ -33,7 +33,7 @@
 #define OBJ_SIZE      4
 #define OBJ_ADDR      5
 
-Static  cHead := "hwgbc"
+STATIC cHead := "hwgbc"
 
 CLASS HBinC
 
@@ -59,12 +59,12 @@ CLASS HBinC
    METHOD Exist( cObjName )
    METHOD Get( cObjName )
    METHOD GetPos( cObjName )
-   METHOD GetType( cObjName )   
+   METHOD GetType( cObjName )
 
 ENDCLASS
 
 METHOD Create( cName, n ) CLASS HBinC
-   
+
    IF n == Nil; n := 16; ENDIF
 
    IF ( ::handle := FCreate( cName ) ) == -1
@@ -87,6 +87,7 @@ METHOD Create( cName, n ) CLASS HBinC
    RETURN Self
 
 METHOD Open( cName, lWr ) CLASS HBinC
+
    LOCAL cBuf, i, nLen, arr, nAddr := 0
 
    ::cName := cName
@@ -134,9 +135,11 @@ METHOD Open( cName, lWr ) CLASS HBinC
 METHOD Close() CLASS HBinC
 
    FClose( ::handle )
+
    RETURN Nil
 
 METHOD Add( cObjName, cType, cVal ) CLASS HBinC
+
    LOCAL nAddress, nSize, cAddress, cSize, nAddr
 
    IF !::lWriteAble
@@ -179,6 +182,7 @@ METHOD Add( cObjName, cType, cVal ) CLASS HBinC
 
 /* Removed: cType */
 METHOD Del( cObjName ) CLASS HBinC
+
    LOCAL n
 
    IF !::lWriteAble
@@ -196,9 +200,10 @@ METHOD Del( cObjName ) CLASS HBinC
    RETURN .T.
 
 METHOD Pack() CLASS HBinC
+
    LOCAL i, nItems := 0, nCntLen := 0
    LOCAL nAddr, cAddr, cSize, a
-   Local s := cHead + Chr(::nVerHigh) + Chr(::nVerLow) + Chr(0), handle, cTempName
+   LOCAL s := cHead + Chr(::nVerHigh) + Chr(::nVerLow) + Chr(0), handle, cTempName
 
    IF !::lWriteAble
       RETURN .F.
@@ -257,6 +262,7 @@ METHOD Pack() CLASS HBinC
    RETURN .T.
 
 METHOD Get( cObjName ) CLASS HBinC
+
    LOCAL n, cBuf
 
    cObjName := Lower( cObjName )
@@ -273,30 +279,26 @@ METHOD Get( cObjName ) CLASS HBinC
 METHOD Exist( cObjName )  CLASS HBinC
 
    cObjName := Lower( cObjName )
+
    RETURN ( Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) ) != 0
-   
+
 METHOD GetPos( cObjName )  CLASS HBinC
 
   cObjName := Lower( cObjName )
-  
-  RETURN  Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) 
-  
-  
+
+  RETURN  Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} )
+
+
 METHOD GetType( cObjName )
 
   LOCAL n, crettype := ""
 
   cObjName := Lower( cObjName )
-  
-  n:=  Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} ) 
+
+  n:=  Ascan( ::aObjects, {|a|a[OBJ_NAME] == cObjName} )
 
   IF n > 0
     crettype := ::aObjects[n,OBJ_TYPE]
   ENDIF
-  
+
   RETURN crettype
-  
-
-
-* ================================= EOF of hbincnt.prg =======================================
-  

@@ -61,6 +61,7 @@ METHOD NewRg( oWndParent, nId, nStyle, vari, bSetGet, nLeft, nTop, nWidth, nHeig
    RETURN Self
 
 METHOD EndGroup( nSelected )  CLASS HRadioGroup
+
    LOCAL nLen
 
    IF ::oGroupCurrent != Nil .AND. ( nLen := Len( ::oGroupCurrent:aButtons ) ) > 0
@@ -87,6 +88,7 @@ METHOD EndGroup( nSelected )  CLASS HRadioGroup
    RETURN Nil
 
 METHOD Value( nValue ) CLASS HRadioGroup
+
    LOCAL nLen
 
    IF nValue != Nil
@@ -214,9 +216,11 @@ METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, ctooltip,
    RETURN Self
 
 METHOD Value( lValue ) CLASS HRadioButton
+
    IF lValue != Nil
       hwg_Sendmessage( ::handle, BM_SETCHECK, Iif(lValue,BST_CHECKED,BST_UNCHECKED), 0 )
    ENDIF
+
    RETURN ( hwg_Sendmessage( ::handle,BM_GETCHECK,0,0 ) == 1 )
 
 STATIC FUNCTION __Valid( oCtrl )

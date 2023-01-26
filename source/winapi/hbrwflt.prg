@@ -254,4 +254,3 @@ STATIC FUNCTION FltRecNo( oBrw )
    HB_SYMBOL_UNUSED(oBrw)
 
    RETURN RecNo()
-

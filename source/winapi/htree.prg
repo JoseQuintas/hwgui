@@ -90,6 +90,7 @@ CLASS HTreeNode INHERIT HObject
 ENDCLASS
 
 METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages ) CLASS HTreeNode
+
    LOCAL aItems, i, h, im1, im2, cImage, op, nPos
 
    ::oTree := oTree
@@ -164,12 +165,14 @@ METHOD New( oTree, oParent, oPrev, oNext, cTitle, bClick, aImages ) CLASS HTreeN
    RETURN Self
 
 METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages ) CLASS HTreeNode
+
    LOCAL oParent := Self
    LOCAL oNode := HTreeNode():New( ::oTree, oParent, oPrev, oNext, cTitle, bClick, aImages )
 
    RETURN oNode
 
 METHOD Delete( lInternal ) CLASS HTreeNode
+
    LOCAL h := ::handle, j, alen, aItems
 
    IF ! Empty( ::aItems )
@@ -192,7 +195,9 @@ METHOD Delete( lInternal ) CLASS HTreeNode
    RETURN Nil
 
 METHOD FindChild( h ) CLASS HTreeNode
+
    LOCAL aItems := ::aItems, i, alen := Len( aItems ), oNode
+
    FOR i := 1 TO alen
       IF aItems[ i ]:handle == h
          RETURN aItems[ i ]
@@ -202,12 +207,12 @@ METHOD FindChild( h ) CLASS HTreeNode
          ENDIF
       ENDIF
    NEXT
-   RETURN Nil
 
+   RETURN Nil
 
 CLASS HTree INHERIT HControl
 
-CLASS VAR winclass   INIT "SysTreeView32"
+   CLASS VAR winclass   INIT "SysTreeView32"
 
    DATA aItems INIT { }
    DATA oSelected
@@ -285,12 +290,17 @@ METHOD Activate() CLASS HTree
    RETURN Nil
 
 METHOD AddNode( cTitle, oPrev, oNext, bClick, aImages ) CLASS HTree
+
    LOCAL oNode := HTreeNode():New( Self, Nil, oPrev, oNext, cTitle, bClick, aImages )
+
    ::lEmpty := .F.
+
    RETURN oNode
 
 METHOD FindChild( h ) CLASS HTree
+
    LOCAL aItems := ::aItems, i, alen := Len( aItems ), oNode
+
    FOR i := 1 TO alen
       IF aItems[ i ]:handle == h
          RETURN aItems[ i ]
@@ -300,6 +310,7 @@ METHOD FindChild( h ) CLASS HTree
          ENDIF
       ENDIF
    NEXT
+
    RETURN Nil
 
 METHOD Clean() CLASS HTree
@@ -312,6 +323,7 @@ METHOD Clean() CLASS HTree
    RETURN Nil
 
 METHOD Notify( lParam )  CLASS HTree
+
    LOCAL nCode := hwg_Getnotifycode( lParam ), oItem, cText, nAct
 
    IF nCode == TVN_SELCHANGED .OR. nCode == TVN_SELCHANGEDW
@@ -358,6 +370,7 @@ METHOD Notify( lParam )  CLASS HTree
          Eval( ::bRClick, Self, oItem, nAct )
       ENDIF
    ENDIF
+
    RETURN 0
 
 METHOD End() CLASS HTree
@@ -370,6 +383,7 @@ METHOD End() CLASS HTree
    RETURN Nil
 
 STATIC PROCEDURE ReleaseTree( aItems )
+
    LOCAL i, iLen := Len( aItems )
 
    FOR i := 1 TO iLen
@@ -378,4 +392,3 @@ STATIC PROCEDURE ReleaseTree( aItems )
    NEXT
 
    RETURN
-

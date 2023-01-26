@@ -82,7 +82,6 @@ METHOD New( oWndParent, nId, nStyle, nStyleEx, nLeft, nTop, nWidth, nHeight, ;
 
    RETURN Self
 
-
 METHOD Redefine( oWndParent, nId, nStyleEx, ;
                  bInit, bClick, ;
                  cText, cTooltip, r, g, b ) CLASS HNiceButton
@@ -114,6 +113,7 @@ METHOD Activate() CLASS HNiceButton
                                  ::Style, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::ExStyle, ::Text )
       ::Init()
    ENDIF
+
    RETURN Nil
 
 METHOD INIT() CLASS HNiceButton
@@ -122,12 +122,13 @@ METHOD INIT() CLASS HNiceButton
       ::Super:Init()
       ::Create()
    ENDIF
+
    RETURN Nil
 
 FUNCTION hwg_NICEBUTTPROC( hBtn, msg, wParam, lParam )
 
-
    LOCAL oBtn
+
    IF msg != WM_CREATE
       IF AScan( { WM_MOUSEMOVE, WM_PAINT, WM_LBUTTONDOWN, WM_LBUTTONUP, WM_LBUTTONDBLCLK, WM_DESTROY, WM_MOVING, WM_SIZE }, msg ) > 0
          IF ( oBtn := hwg_FindSelf( hBtn ) ) == Nil
@@ -152,6 +153,7 @@ FUNCTION hwg_NICEBUTTPROC( hBtn, msg, wParam, lParam )
       ENDIF
 
    ENDIF
+
    RETURN .F.
 
 METHOD Create( ) CLASS HNICEButton
@@ -191,7 +193,6 @@ METHOD Moving( ) CLASS HNICEButton
    RETURN Self
 
 METHOD MouseMove( wParam, lParam ) CLASS HNICEButton
-
 
    LOCAL otmp
 
@@ -341,6 +342,3 @@ FUNCTION hwg_SetNiceBtnSelected( oBtn )
    ENDIF
 
    RETURN otmp
-
-* =============================== EOF of hnice.prg ===================
-

@@ -96,6 +96,7 @@ METHOD Enabled( lEnabled ) CLASS HToolButton
    RETURN ::lEnabled
 
 METHOD Pressed( lPressed ) CLASS HToolButton
+
    LOCAL nState
 
    IF lPressed != Nil
@@ -108,6 +109,7 @@ METHOD Pressed( lPressed ) CLASS HToolButton
    RETURN ::lPressed
 
 METHOD Checked( lcheck ) CLASS HToolButton
+
    LOCAL nState
 
    IF lCheck != Nil
@@ -262,6 +264,7 @@ METHOD INIT() CLASS hToolBar
    RETURN Nil
 
 METHOD CREATETOOL() CLASS hToolBar
+
    LOCAL n, n1
    LOCAL aTemp
    LOCAL aButton := {}
@@ -382,7 +385,6 @@ METHOD Notify( lParam ) CLASS hToolBar
 
    LOCAL nCode :=  hwg_Getnotifycode( lParam )
    LOCAL nId
-
    LOCAL nButton
    LOCAL nPos
 
@@ -417,6 +419,7 @@ METHOD Notify( lParam ) CLASS hToolBar
    RETURN 0
 
 METHOD AddButton( nBitIp, nId, bState, bStyle, cText, bClick, c, aMenu, cName, nIndex ) CLASS hToolBar
+
    LOCAL hMenu := Nil, oButton
 
    DEFAULT nBitIp to - 1
@@ -450,6 +453,7 @@ METHOD AddButton( nBitIp, nId, bState, bStyle, cText, bClick, c, aMenu, cName, n
    RETURN oButton
 
 METHOD RESIZE( xIncrSize, lWidth, lHeight  ) CLASS hToolBar
+
    LOCAL nSize
 
    IF ::Anchor = 0 .OR. ( ! lWidth .AND. ! lHeight )

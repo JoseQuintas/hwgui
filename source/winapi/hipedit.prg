@@ -53,7 +53,6 @@ METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeig
    HWG_InitCommonControlsEx()
    ::Activate()
 
-
    IF bKillFocus != Nil
       ::oParent:AddEvent( IPN_FIELDCHANGED, ::id, ::bKillFocus, .t., "onChange" )
    ENDIF
@@ -63,15 +62,16 @@ METHOD New( oWndParent, nId, aValue, bSetGet, nStyle, nLeft, nTop, nWidth, nHeig
    ::oParent:AddEvent( EN_SETFOCUS , ::id, { | o, id | __GetFocus( o:FindControl( id ) ) },, "onGotFocus" )
    ::oParent:AddEvent( EN_KILLFOCUS, ::id, { | o, id | __KillFocus( o:FindControl( id ) ) },, "onLostFocus" )
 
-
    RETURN Self
 
 METHOD Activate() CLASS HIPedit
+
    IF ! Empty( ::oParent:handle )
       ::handle := hwg_Initipaddress ( ::oParent:handle, ::id, ::style , ;
                                   ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
+
    RETURN Nil
 
 METHOD Init() CLASS HIPedit
@@ -95,12 +95,12 @@ METHOD Value( aValue ) CLASS HIPedit
 
    RETURN ::aValue
 
-
 METHOD Clear( ) CLASS HIPedit
+
    hwg_Clearipaddress( ::handle )
    ::aValue := { 0, 0, 0, 0 }
-   RETURN ( ::aValue )
 
+   RETURN ( ::aValue )
 
 METHOD END() CLASS HIPedit
 
@@ -109,8 +109,8 @@ METHOD END() CLASS HIPedit
 
    RETURN Nil
 
-
 STATIC FUNCTION __GetFocus( oCtrl )
+
    LOCAL xRet
 
    IF ValType( oCtrl:bGetFocus ) == "B"
@@ -119,8 +119,8 @@ STATIC FUNCTION __GetFocus( oCtrl )
 
    RETURN xRet
 
-
 STATIC FUNCTION __KillFocus( oCtrl )
+
    LOCAL xRet
 
    IF ValType( oCtrl:bKillFocus ) == "B"

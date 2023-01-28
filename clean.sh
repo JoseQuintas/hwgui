@@ -122,6 +122,7 @@ rm test/hello 2>/dev/null
 rm test/icon 2>/dev/null
 rm test/checkbox 2>/dev/null
 rm test/Test_tab 2>/dev/null
+rm test/gtk3testvbox 2>/dev/null
 
 # Other files created by test programs
 rm test/hexdump.txt 2>/dev/null

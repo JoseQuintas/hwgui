@@ -16,6 +16,15 @@
 */
 
 
+
+2023-01-28 11:50 UTC+0100 Wilfried Brunken DF7BE
+  * clean.sh
+  * samples/dbview.hbp
+  * source/gtk/hwindow.prg
+    ! Urgent bugfix compile GTK2
+    ! (Syntax error)
+    
+
 2023-01-26 09:30 UTC+0200 José Quintas
    * source/gtk/*.prg
     | single format source code

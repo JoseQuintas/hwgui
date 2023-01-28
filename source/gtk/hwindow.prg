@@ -286,7 +286,7 @@ METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,
    IF oBmp == NIL
       hbackground := NIL
    ELSE
-      hbackground := oBmp:handle )
+      hbackground := oBmp:handle
    ENDIF
 
    ::Super:New( oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, oFont, ;
@@ -447,3 +447,6 @@ STATIC FUNCTION onGetFocus( oDlg, w, l )
 * FUNCTION hwg_GTKShellnotifyicon( oIcon )
 *       hwg_ShellModifyIcon ( iif( oIcon != Nil, oIcon:handle, Nil ) )
 *   RETURN NIL
+
+* =================================== EOF of hwindow.prg ========================================
+

@@ -70,7 +70,7 @@ jobs:
          cd \temp\harbour34
          mingw32-make clean install
          cd c:\temp\hwgui
-         hbmk2 hwgui.hbp
-         hbmk2 hbxml.hbp
-         hbmk2 procmisc.hbp -DHB_VERSION_REVID=1
-         hbmk2 hwgdebug.hbp
+         hbmk2 hwgui.hbp -DHB_VER_REVID=1
+         hbmk2 hbxml.hbp -DHB_VER_REVID=1
+         hbmk2 procmisc.hbp -DHB_VER_REVID=1
+         hbmk2 hwgdebug.hbp -DHB_VER_REVID=1

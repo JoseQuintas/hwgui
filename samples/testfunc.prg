@@ -240,6 +240,10 @@ FUNCTION MAIN()
             STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | Test_hwg_ProcFileExt() }
 
+   @ 25 ,nspcbutton * 13 BUTTON oButton22 CAPTION "hwg_MsgOkCancel()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_hwg_MsgOkCancel() }
+
 
    /* Disable buttons for Windows only functions */
 #ifndef __PLATFORM__WINDOWS
@@ -486,6 +490,19 @@ FUNCTION Test_MsgYesNoCancel()
 
 RETURN Nil
 
+FUNCTION Test_hwg_MsgOkCancel()
+
+   LOCAL nretu
+
+   nretu := hwg_MsgOkCancel("Press a button")
+   
+#ifdef __PLATFORM__WINDOWS   
+   hwg_MsgInfo( STR( nretu ) , "Return value of hwg_MsgOkCancel()" )
+#else
+  hwg_MsgInfo( IIF( nretu , ".T.",".F." ) , "Return value of hwg_MsgOkCancel()" )
+#endif   
+
+RETURN Nil   
 
 FUNCTION do_the_RunApp()
 LOCAL cCmd , rc , cgt

@@ -15,10 +15,19 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2023-01-29 17:07 UTC+0200 José Quintas
+   + .github/workflows/checkubuntu.yml
+   + .github/workflows/checkwindows.yml
+    ! first try to test compilation under ubuntu and windows on github
+    ! not sure if git will save these files on sourceforge
+    ! need help for ubuntu
+
+
 2023-01-29 10:00 UTC+0100 Wilfried Brunken DF7BE
   * doc/hwgdoc_functions.html
   * samples/testfunc.prg
-    ! Return value of hwg_MsgOkCancel()  
+    ! Return value of hwg_MsgOkCancel()
 
 
 2023-01-28 11:50 UTC+0100 Wilfried Brunken DF7BE
@@ -27,7 +36,7 @@
   * source/gtk/hwindow.prg
     ! Urgent bugfix compile GTK2
     ! (Syntax error)
-    
+
 
 2023-01-26 09:30 UTC+0200 José Quintas
    * source/gtk/*.prg

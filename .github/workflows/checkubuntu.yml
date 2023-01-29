@@ -1,0 +1,40 @@
+
+name: checkubuntu
+
+on:
+  push:
+  #schedule:
+  # - cron: "15 5 1 * *"
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'hwgui test'
+        default: 'checkonly'
+        required: true
+
+jobs:
+
+  Build:
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Build
+      env:
+         HB_BUILD_STRIP: all
+         HB_COMPILER: mingw
+      run: |
+         sudo apt-get install gcc
+         sudo apt-get install make
+         sudo apt-get install build-essential libgtk2.0-dev
+         sudo apt-get install gnome-themes-standard
+         sudo apt-get install git
+         git clone https://github.com/vszakats/hb /tmp/harbour --depth 1
+         git clone https://github.com/JoseQuintas/hwgui /tmp/hwgui --depth 1
+         cd /tmp/harbour
+         sudo make install
+         cd /tmp/hwgui
+         hbmk2 hwgui.hbp -workdir=/tmp -DHB_VER_REVID=1
+         hbmk2 hbxml.hbp -workdir=/tmp -DHB_VER_REVID=1
+         hbmk2 procmisc.hbp -workdir=/tmp -DHB_VER_REVID=1
+         hbmk2 hwgdebug.hbp -workdir=/tmp -DHB_VER_REVID=1
+

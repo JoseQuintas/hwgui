@@ -16,6 +16,10 @@
 */
 
 
+2023-01-30 17:30 UTC+0100 Wilfried Brunken DF7BE
+  * contrib/Readme.txt
+    ! Format too long lines
+
 2023-01-29 17:37 UTC+0200 José Quintas
    * .github/workflows/checkubuntu.yml
    * .github/workflows/checkwindows.yml

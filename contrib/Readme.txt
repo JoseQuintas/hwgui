@@ -86,7 +86,12 @@ Project "HwMake"
 
 HWMake is a tool to build for HwGUI and Harbour applications or libs. 
 
-This tool was originally created from HwMake which came with HwGui, but was then only available for Windows. It was rewritten to work under Linux and has been greatly improved, in order to manage as many operations as possible to complete the creation and maintenance of applications or libs written in harbour/hwgui.
+This tool was originally created from HwMake which came with HwGui,
+but was then only available for Windows.
+It was rewritten to work under Linux and has been greatly improved,
+in order to manage as many operations as possible to complete the
+creation and maintenance of applications or libs written
+in harbour/hwgui.
 
 You find this project at:
 https://sourceforge.net/projects/hwmake/
@@ -103,8 +108,10 @@ hwreport:
  For build and usage instructions see file
  "contrib\hwreport\hwreport.txt".
 
- The usage together with the WinPrn class will be checked as soon as possible
- for validation with modern computers without (outdated) parallel printer interface
+ The usage together with the WinPrn class
+ will be checked as soon as possible
+ for validation with modern computers without
+ (outdated) parallel printer interface
  and platforms Windows and Linux.
 
 gthwg:

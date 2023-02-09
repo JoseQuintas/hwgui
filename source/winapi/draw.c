@@ -996,6 +996,12 @@ HB_FUNC( HWG_SAVEBITMAP )
    hb_retl( 1 );
 }
 
+HB_FUNC( HWG_DRAWICONEX )
+{
+   DrawIconEx( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 3 ), hb_parni( 4 ),
+         ( HICON ) HB_PARHANDLE( 2 ), hb_parni( 5 ), hb_parni( 6 ), 0, NULL, DI_NORMAL | DI_COMPAT );
+}
+
 HB_FUNC( HWG_DRAWICON )
 {
    DrawIcon( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 3 ), hb_parni( 4 ),
@@ -2709,7 +2715,7 @@ HB_FUNC( HWG_BMPLINESIZE )
 /*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
 
 /*
-* Increases the size of a QR code image 
+* Increases the size of a QR code image
 * cqrcode : The QR code in text format
 * nlen    : Pass LEN(cqrcode)
 * nzoom   : The zoom factor 1 ... n
@@ -2730,40 +2736,40 @@ HB_FUNC ( HWG_QRCODEZOOM_C )
   char cout[16385];
   char cLine[8192];
   const char *hString;
-  
 
-  
- 
+
+
+
   nlen  =  hb_parni( 2 );
-  nzoom =  ( HB_ISNIL( 3 ) ? 1 : hb_parni( 3 )  ); 
- 
+  nzoom =  ( HB_ISNIL( 3 ) ? 1 : hb_parni( 3 )  );
 
-  lptr = 0;  // Position in a line 
-  cptr = 0;  // Position in cout 
+
+  lptr = 0;  // Position in a line
+  cptr = 0;  // Position in cout
   memset(&cout , 0x00, 16385 );
-  memset(&cLine , 0x00, 8192 ); 
+  memset(&cLine , 0x00, 8192 );
 
   // Copy the image into char array
   hString = hb_parc( 1 );
   memcpy(&cqrcode,hString,nlen);
 
-  
- 
+
+
   if ( nzoom < 1 )
   {
     hb_retclen(cqrcode,nlen);
   }
-  
+
 
 leofq = 0;
 // i: Position in cqrcode
 
-for (i = 0 ; i < nlen ; i++ ) 
+for (i = 0 ; i < nlen ; i++ )
 {
  if ( leofq == 0 )
  {
   if ( cqrcode[i] == 10 )
-  { 
+  {
     if ( ! ( cqrcode[ i + 1 ] == 32 )  )
     {
       // Empty line following, stop here
@@ -2771,17 +2777,17 @@ for (i = 0 ; i < nlen ; i++ )
     }
     // Count line ending and start with new line
 
-    // Replicate line with zoom factor 
+    // Replicate line with zoom factor
     // and add line to output string
         for(j = 1 ; j <= nzoom ; j++ )
         {
           memcpy(&cout[cptr],&cLine,lptr);
           cout[cptr + lptr + 1 ] = 10;
-          cptr = cptr + lptr + 2; // Next line 
+          cptr = cptr + lptr + 2; // Next line
         }
         lptr = 0;
         memset(&cLine , 0x00, 8192 );
-  }   
+  }
   else  // SUBSTR " "
   {
     // Replicate characters in line with zoom factor
@@ -2791,9 +2797,9 @@ for (i = 0 ; i < nlen ; i++ )
       cLine[lptr] = cqrcode[i];
       lptr++;
     }
-    // Set line ending 
+    // Set line ending
     cLine[lptr] = 10;
-    
+
 
   }  // is CHR(10)
  }   // .NOT. leofq
@@ -2804,7 +2810,7 @@ for (i = 0 ; i < nlen ; i++ )
   {
       memcpy(&cout[cptr],&cLine,lptr);
       cout[cptr + lptr + 1] = 10;
-      cptr = cptr + lptr + 2; // Next line     
+      cptr = cptr + lptr + 2; // Next line
   }
 
 // Empty line as mark for EOF

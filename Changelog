@@ -16,6 +16,17 @@
 */
 
 
+2023-02-09 15:54 UTC+0200 José Quintas
+  * source/winapi/draw.c
+  * source/winapi/hownbtn.prg
+   ! resize icon was not working, ok after to change from DrawIcon() to DrawIconEx()
+   ! based on DrawIcon() need revision about C code including prevent errors (I do not know about C)
+   ! It exists since W2000, not available on previous windows versions
+   ! Need more tests with different options
+   ! After more tests may be it's needed to review icon use (hicon:AddResource() about resize on load as example)
+   ! Seems it works with PNG icons, but ... how to load png icons?
+
+
 2023-01-30 17:30 UTC+0100 Wilfried Brunken DF7BE
   * contrib/Readme.txt
     ! Format too long lines

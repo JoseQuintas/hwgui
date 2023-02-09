@@ -309,7 +309,8 @@ METHOD DrawItems( hDC ) CLASS HOwnButton
          Round( ( ::nHeight - ::heightb ) / 2, 0 ) )
       IF ::lEnabled
          IF ::oBitmap:ClassName() == "HICON"
-            hwg_Drawicon( hDC, ::oBitmap:handle, x1, y1 )
+            // hwg_Drawicon( hDC, ::oBitmap:handle, x1, y1 )
+            hwg_DrawiconEx( hDC, ::oBitmap:handle, x1, y1, ::widthb, ::heightb )
          ELSE
             IF ::lTransp
                hwg_Drawtransparentbitmap( hDC, ::oBitmap:handle, x1, y1, ::trColor )

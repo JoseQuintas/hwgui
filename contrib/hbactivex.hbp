@@ -6,6 +6,7 @@
 
 -hblib
 -o../lib/hbactivex
+-hbx=../hbactivex.hbx
 
 -n -q0 -w -es2
 

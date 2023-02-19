@@ -7,6 +7,7 @@
 
 -hblib
 -o../lib/hwg_extctrl
+-hbx=../hwg_extctrl.hbx
 
 -n -q0 -w -es2
 # Activate for GCC > V8

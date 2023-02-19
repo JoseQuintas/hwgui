@@ -13,6 +13,8 @@ hwgui.hbc
 
 -olib/hwgui
 
+-hbx=hwgui.hbx
+
 -w
 
 # Uncomment these two lines to build HwGUI in Unicode mode

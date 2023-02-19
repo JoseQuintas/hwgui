@@ -7,6 +7,9 @@ hwgui.hbc
 -hblib
 
 -olib/hbxml
+-hbx=../hbxml.hbx
+
+-hbx=include/procmisc.hbx
 
 -w
 

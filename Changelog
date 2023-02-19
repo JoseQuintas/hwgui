@@ -16,6 +16,32 @@
 */
 
 
+2023-02-19 10:21 UTC+0200 José Quintas
+   * .github/workflow/checkubuntu.yml
+     ! changed to harbour 3.2
+   * hwgui.hbp
+   * hbxml.hbp
+   * hwgdebug.hbp
+   * procmisc.hbp
+   * contrib/hbactivex.hbp
+   * contrib/hwg_extctrl.hbp
+   * contrib/hwg_misc.hbp
+   * contrib/hwg_qhtm.hbp
+     ! added hbx creation
+     note: to hbmk2, harbour/addons has same features as harbour/contrib
+        save hbx on harbour/addons or save hwgui on harbour/addons/hwgui
+     example of hbmk2 find:
+        hbmk2 -find hwg_getup*
+        addons\hwgui.hbc (not installed):
+        hwg_getupdaterect()
+        hwg_getupdown()
+     example of hint on compilation:
+        hbmk2 test.hbp
+        test.o:test.c:(.data+0x38): undefined reference to `HB_FUN_HWG_GETUPDOWN'
+        hbmk2: Hint: Install package hwgui and input file 'addons\hwgui.hbc' for
+          missing Harbour function(s): hwg_getupdown()
+
+
 2023-02-09 15:54 UTC+0200 José Quintas
   * source/winapi/draw.c
   * source/winapi/hownbtn.prg

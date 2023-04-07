@@ -160,6 +160,10 @@ typedef struct
    int      CloseMode;
    HB_BOOL  IgnoreWM_SYSCHAR;
 
+   void *   hWindowTitle;
+
+   TCHAR szTitle[256];
+
 } HB_GTHWG, * PHB_GTHWG;
 
 extern void hwg_writelog( const char * sFile, const char * sTraceMsg, ... );
@@ -1408,6 +1412,9 @@ static void hb_gt_hwg_Exit( PHB_GT pGT )
 
    if( pHWG )
    {
+      if( pHWG->hWindowTitle )
+         hb_strfree( pHWG->hWindowTitle );
+
       if( pHWG->TextLine )
          hb_xfree( pHWG->TextLine );
 
@@ -1820,6 +1827,24 @@ static HB_BOOL hb_gt_hwg_Info( PHB_GT pGT, int iType, PHB_GT_INFO pInfo )
                pHWG->CloseMode = iVal;
                if( pHWG->hWnd )
                   gthwg_SetCloseButton( pHWG );
+            }
+         }
+         break;
+
+      case HB_GTI_WINTITLE:
+         GetWindowText( pHWG->hWnd, pHWG->szTitle, 128 );
+         pInfo->pResult = HB_ITEMPUTSTR( pInfo->pResult, pHWG->szTitle );
+            //HB_ITEMGETSTR( pHWG->szTitle, &pHWG->hWindowTitle, NULL ) );
+         if( hb_itemType( pInfo->pNewVal ) & HB_IT_STRING )
+         {
+            if( pHWG->hWnd )
+            {
+               if( pHWG->hWindowTitle )
+               {
+                  hb_strfree( pHWG->hWindowTitle );
+                  pHWG->hWindowTitle = 0;
+               }
+               SetWindowText( pHWG->hWnd, HB_ITEMGETSTR( pInfo->pNewVal, &pHWG->hWindowTitle, NULL ) );
             }
          }
          break;

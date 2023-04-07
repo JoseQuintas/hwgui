@@ -802,6 +802,7 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       p1 = WM_KEYDOWN;
       p2 = ( ( (GdkEventScroll*)event )->direction == GDK_SCROLL_DOWN )? 0xFF54 : 0xFF52;
       p3 = 0;
+      gthwg_AddCharToInputQueue( pHWGMain, gthwg_KeyConvert( p2, p3 ) );
    }
    else if( event->type == GDK_BUTTON_PRESS ||
             event->type == GDK_2BUTTON_PRESS ||
@@ -892,7 +893,7 @@ static GtkWidget * gthwg_CreatePane( int iLeft, int iTop, int iWidth, int iHeigh
 
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
-         GDK_POINTER_MOTION_MASK | GDK_FOCUS_CHANGE_MASK );
+         GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK | GDK_FOCUS_CHANGE_MASK );
 
    g_signal_connect( hCtrl, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    gthwg_set_event( ( gpointer ) hCtrl, "focus_in_event", 0, 0, 0 );
@@ -902,6 +903,7 @@ static GtkWidget * gthwg_CreatePane( int iLeft, int iTop, int iWidth, int iHeigh
    gthwg_set_event( ( gpointer ) hCtrl, "motion_notify_event", 0, 0, 0 );
    gthwg_set_event( ( gpointer ) hCtrl, "key_press_event", 0, 0, 0 );
    gthwg_set_event( ( gpointer ) hCtrl, "key_release_event", 0, 0, 0 );
+   gthwg_set_event( ( gpointer ) hCtrl, "scroll_event", 0, 0, 0 );
 
    gthwg_set_signal( ( gpointer ) hCtrl, "destroy", 2 );
    hPaneMain = hCtrl;
@@ -1508,6 +1510,15 @@ static HB_BOOL hb_gt_hwg_Info( PHB_GT pGT, int iType, PHB_GT_INFO pInfo )
 
       case HB_GTI_WINHANDLE:
          pInfo->pResult = hb_itemPutPtr( pInfo->pResult, hWndMain );
+         break;
+
+      case HB_GTI_WINTITLE:
+         pInfo->pResult = hb_itemPutC( pInfo->pResult,
+            (char*) gtk_window_get_title( GTK_WINDOW(hWndMain) ) );
+         if( hb_itemType( pInfo->pNewVal ) & HB_IT_STRING )
+         {
+            gtk_window_set_title( GTK_WINDOW(hWndMain), hb_itemGetC( pInfo->pNewVal ) );
+         }
          break;
 
       default:

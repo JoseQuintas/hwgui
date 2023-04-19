@@ -701,6 +701,11 @@ static HB_LONG gthwg_KeyConvert( HB_LONG ulKeyRaw, HB_LONG ulFlags )
       case GDK_F12:
          ulKey = HB_KX_F12;
          break;
+      case GDK_KP_Add:
+      case GDK_KP_Divide:
+      case GDK_KP_Multiply:
+      case GDK_KP_Subtract:
+      case GDK_KP_Enter:
       case GDK_KP_0:
       case GDK_KP_1:
       case GDK_KP_2:

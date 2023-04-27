@@ -222,7 +222,7 @@
 
     A new feature of Windows 11 is a scalable view. The
     default value is 150 %. This could be to high for bigger
-    dialog windows. If a dialog windo whas no space on the desktop, go to
+    dialog windows. If a dialog window has no space on the desktop, go to
     the system settings and reduce it to 125 or 100 %.
 
     In the Power shell you can run Harbour console applications direct,

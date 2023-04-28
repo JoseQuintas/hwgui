@@ -70,7 +70,8 @@ ext_controls:
   - "HGridEX"
   - "HContainerEx"
   No detailed description available.
-  (Windows only)
+  (The feature "HComboBoxEx" is Windows only
+   and is not part of the LINUX library)
 
   
 hwmake:

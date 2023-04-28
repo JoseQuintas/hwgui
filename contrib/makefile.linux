@@ -3,11 +3,13 @@
 # Building of contrib libs - HWGUI
 
 # Modify path to Harbour to your own needs
- HRB_DIR = ../../
-#HRB_DIR = $(HOME)/Harbour/core-master
+#HRB_DIR = ../../../..
+# HRB_DIR = ../../
+HRB_DIR = $(HOME)/Harbour/core-master
 
 HRB_EXE = $(HRB_DIR)/bin/linux/gcc/harbour
 INC_DIR = ../include
+#INC_DIR = /usr/include/hwgui
 OBJ_DIR = obj
 LIB_DIR = ../lib
 HWGQHTM_DIR  = qhtm
@@ -20,7 +22,9 @@ CFLAGS = -Wall -O3
 
 all: \
    $(LIB_DIR)/libhwg_misc.a \
+   $(LIB_DIR)/libhwg_extctrl.a \
    $(LIB_DIR)/libgthwg.a
+
 
 #   $(LIB_DIR)/libhwg_qhtm.a
 #   $(LIB_DIR)/libhwg_extctrl.a \
@@ -46,13 +50,14 @@ $(LIB_DIR)/libgthwg.a : \
 #   $(OBJ_DIR)/hwg_qhtm.o
 #	ar rc $@ $^
 
-#$(LIB_DIR)/libhwg_extctrl.a : \
-#   $(OBJ_DIR)/hbrowsex.o \
-#   $(OBJ_DIR)/hctrlex.o \
+$(LIB_DIR)/libhwg_extctrl.a : \
+   $(OBJ_DIR)/hbrowsex.o \
+   $(OBJ_DIR)/hctrlex.o \
+   $(OBJ_DIR)/hrectex.o \
+   $(OBJ_DIR)/hgridex.o
+	ar rc $@ $^
+
 #   $(OBJ_DIR)/hcomboex.o \
-#   $(OBJ_DIR)/hrectex.o \
-#   $(OBJ_DIR)/hgridex.o
-#	ar rc $@ $^
 
 .prg.c:
 	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
@@ -84,11 +89,13 @@ $(OBJ_DIR)/%.o : $(GTHWG_DIR)/%.c
 #	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 
-#$(OBJ_DIR)/%.c : $(EXTCONTROL_DIR)/%.prg
-#	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
+$(OBJ_DIR)/%.c : $(EXTCONTROL_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
-#$(OBJ_DIR)/%.o : $(EXTCONTROL_DIR)/%.c
-#	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+$(OBJ_DIR)/%.o : $(EXTCONTROL_DIR)/%.c
+	gcc $(CFLAGS) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
 
 # MS ActiveX seems to be outdated
 # mshtmhst.h needed
+
+# =================== EOF of makefile.linux ========================

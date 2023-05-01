@@ -163,6 +163,8 @@
 * FUNCTION hwlabel_DOS_INIT_DE      && Initialisation sequence for DOS / CP437 and CP858
 * FUNCTION hwlabel_MSGS_EN          && Set Message array for english language
 * FUNCTION hwlabel_MSGS_DE          && Set message array for german language
+* FUNCTION hwlabel_MSGS_FR          && Set message array for french language
+* FUNCTION XWIN_FR                  && Translates UTF8 to Windows charset (French)
 *
 * =========================================================================================
 *
@@ -188,7 +190,7 @@
 *
 * =========================================================================================
 *
-* This version of "hwlabel" supports the english (default) and german language.
+* This version of "hwlabel" supports the english (default), german and french languages.
 * Feel free to extend the source code of hwlabel with your language.
 * Here the instructions to add a new language.
 * Send us the modified source code to commit it in the subversion repository to add
@@ -201,13 +203,16 @@
 * For example german:
 *   clangset := "Deutsch" 
 *   clang    := "DE"
+* For example french:
+*   clangset := "Français" 
+*   clang    := "FR"
 * For example russian:
 *   clangset := "Russian"
 *   clang    := "RU"
 *
 *
 * - Add REQUEST command(s) needed for codepage(s) for the language to add.
-*   (For Windows and LINUX, mostly UTF-8  )
+*   (For Windows and LINUX, mostly UTF-8 an xxWIN  )
 *
 * - hwlabel_helptxt_xx()
 *   Create a new function and fill it with help text,
@@ -236,6 +241,10 @@
 * - FUNCTION hwlabel_DOS_INIT_xx:
 *   Create a new function and initialisize special characters outside ASCII
 *   for Windows codepages and UTF-8, optional
+*
+* - FUNCTION XWIN_xx 
+*   Copy the FUNCTION XWIN_FR() as template
+*   Call this function before displaying a message text in your language
 *
 * - Add the new functions to the function list.
 *
@@ -288,8 +297,11 @@ REQUEST HB_CODEPAGE_UTF8EX
 
 * ==== German ====
 REQUEST HB_LANG_DE
-* Windows codepage
-REQUEST HB_CODEPAGE_DEWIN
+* Windows codepages
+#ifndef __PLATFORM__WINDOWS
+REQUEST HB_CODEPAGE_DEWIN   && German
+REQUEST HB_CODEPAGE_FRWIN   && French
+#endif
 * For label with Euro currency sign
 REQUEST HB_CODEPAGE_DE858
 
@@ -369,11 +381,11 @@ hwlabel_maininit()
 #ifdef HWLBLEDIT
         INIT DIALOG olbleditMain TITLE aMsg[1] ;
         ICON oIcon ;
-        FONT oFontMain SIZE 300, 100
+        FONT oFontMain SIZE 350, 100
 #else
         INIT WINDOW olbleditMain MAIN TITLE aMsg[1] ;
         ICON oIcon ;
-        FONT oFontMain SIZE 300, 100
+        FONT oFontMain SIZE 350, 100
 #endif
 
 
@@ -468,8 +480,10 @@ FUNCTION hwlabel_langinit(clangf)
 * if not existing, set to default "English".
 * ============================================================
 
+LOCAL cfrancais :=  XWIN_FR("Français")
+
 /* Names of supported languages, use only ANSI charset, displayed in language selection dialog */ 
-   aLanguages := { "English", "Deutsch" }
+   aLanguages := { "English", "Deutsch", cfrancais }
 
 /* Initialization with default language english */
 
@@ -497,6 +511,7 @@ FUNCTION hwlabel_lbledit(clangf,cCpLocWin,cCpLocLINUX,cCpLabel)
 * clangf : Set Dialog language:
 *         "English" (Default)
 *         "Deutsch" : German
+*         "Français" : French
 *         "??" : Feel free to add your language,
 *                see for instructions in the
 *                inline comments.
@@ -535,17 +550,20 @@ lblname := aMsg[26]   && "<NO LABEL>"
 
         MENU OF olbldlg
          MENU TITLE aMsg[4]    && File
-             MENUITEM aMsg[5] ACTION  {|| olbldlg:Close() }  && Quit
-             MENUITEM aMsg[32] ACTION  {|| hwlabel_newlbl() , ;
-                lblname := aMsg[26] ,  oSay:SetText(lblname)  }  && New
              MENUITEM aMsg[6] ACTION  {|| lblname := hwlabel_LOAD_LABEL(lblname,cCpLocWin,cCpLocLINUX,cCpLabel) , ;
                 oSay:SetText(lblname) }  && Load
+             MENUITEM aMsg[32] ACTION  {|| hwlabel_newlbl() , ;
+                lblname := aMsg[26] ,  oSay:SetText(lblname)  }  && New
+             SEPARATOR
              MENUITEM aMsg[7] ACTION  {|| lblname := hwlabel_SAVE_LABEL(lblname,cCpLocWin,cCpLocLINUX,cCpLabel) , ;
                 oSay:SetText(lblname) }  && Save 
+             SEPARATOR
+             MENUITEM aMsg[5] ACTION  {|| olbldlg:Close() }  && Quit
          ENDMENU
 
          MENU TITLE aMsg[8]    && Edit
              MENUITEM aMsg[9]  ACTION _frm_hwlabel_par()  && Parameters 
+             SEPARATOR
              MENUITEM aMsg[10] ACTION ;
              hwlabel_frm_lbl_contents(hwlabel__LBL_LINES(),"")  && Contents
                                                                         &&  cHelp added later
@@ -554,6 +572,7 @@ lblname := aMsg[26]   && "<NO LABEL>"
 
          MENU TITLE aMsg[11]  && Help
              MENUITEM aMsg[15] ACTION  hwlabel_Mainhlp(clangset,0) && Help
+             SEPARATOR
              MENUITEM aMsg[12] ACTION  hwlabel_About()          && About
         ENDMENU
 
@@ -608,7 +627,7 @@ mypath := hwg_CurDir()
 
 #ifdef __GTK__
 *                                                   v "Label files( *.lbl )"  
-*                                                   v                     v All files
+*                                                   v                v All files
  cfilename := hwg_SelectFileEx(,,{{ aMsg[31] ,"*.lbl" },{ aMsg[30] ,"*"}} )
 
 #else
@@ -1281,7 +1300,7 @@ noldheigth := NUMZ
    @ ngetlmr,265 GET oEditbox4 VAR LM SIZE 85,24 ;
         STYLE WS_BORDER ;
         PICTURE "999" VALID {|| hwlabel_valid_num(LM,0,250) }
-   @ 30,266 SAY oLabel6 CAPTION aMsg[19] + ":"  SIZE 94,22    && "Left margin:"
+   @ 30,266 SAY oLabel6 CAPTION aMsg[19] + ":"  SIZE 120,22    && "Left margin:" more X size for french (old 94)
    @ ngetlmr2,266 SAY oLabel14 CAPTION "0..250 (0)"  SIZE 80,22
 
 
@@ -1298,11 +1317,11 @@ noldheigth := NUMZ
    @ 30,336 SAY oLabel8 CAPTION aMsg[21] + ":" SIZE 169,22   && "Spaces between labels:" 
    @ ngetlmr2,336 SAY oLabel16 CAPTION "0 ... 120 (0)"  SIZE 91,22
 
-
+ 
    @ ngetlmr,370 GET oEditbox7 VAR LPZ SIZE 85,24 ;
         STYLE WS_BORDER ;
         PICTURE "9" VALID {|| hwlabel_valid_num(LPZ,1,5) }
-   @ 30,371 SAY oLabel9 CAPTION aMsg[22] + ":"  SIZE 166,22  && "Number of label across:"  
+   @ 30,371 SAY oLabel9 CAPTION aMsg[22] + ":"  SIZE 200,22  && "Number of label across:" more X size for french (old 166)  
    @ ngetlmr2,371 SAY oLabel17 CAPTION "1 .. 5 (1)"  SIZE 89,22
 
 IF clangset <> "English"
@@ -1333,7 +1352,7 @@ ENDIF
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK { | | frm_hwlabel_par:Close() }
 
-   @ 336,415 BUTTON oButton4 CAPTION aMsg[54]    SIZE 169,32 ;  && "Set default values"
+   @ 336,415 BUTTON oButton4 CAPTION aMsg[54]    SIZE 250,32 ;  && "Set default values" more X size for french (old 200
         STYLE WS_TABSTOP+BS_FLAT  ;
         ON CLICK { | | ;
          REM   := Space(60) , ;
@@ -2258,6 +2277,88 @@ RETURN aMsg
 
 
 * ------------------------------------------
+FUNCTION hwlabel_MSGS_FR()
+* Set message array for french language
+* Total number of messages: 33, reserved: 0
+* ------------------------------------------
+* Don't forget, that strings containing "&" are part of a menu system.
+LOCAL aMsg
+aMsg := {}
+
+/*  1  */ AADD(aMsg,"HWLABEL Editeur de label")     && Title of main window
+/*  2  */ AADD(aMsg,XWIN_FR("Erreur d'écriture"))
+/*  3  */ AADD(aMsg,XWIN_FR("Erreur d'accès fichier"))
+* Main Menu
+/*  4  */ AADD(aMsg,"&Fichier")
+/*  5  */ AADD(aMsg,"&Quitter")
+/*  6  */ AADD(aMsg,"&Ouvrir")
+/*  7  */ AADD(aMsg,"&Enregistrer")
+/*  8  */ AADD(aMsg,"&Edition")
+/*  9  */ AADD(aMsg,XWIN_FR("&Paramètres"))
+/* 10  */ AADD(aMsg,"&Contenus")
+/* 11  */ AADD(aMsg,"&Aide")
+/* 12  */ AADD(aMsg,"&A propos")
+/* 13  */ AADD(aMsg,"&Langue")
+/* 14  */ AADD(aMsg,"&Configuration")
+/* 15  */ AADD(aMsg,"Aide")
+* Label Parameters  / Range as comment
+/* 16  */ AADD(aMsg,"Remarques")                   && L=60
+/* 17  */ AADD(aMsg,"Hauteur du label")            && 1..16
+/* 18  */ AADD(aMsg,"Largeur du label")            && 1..120
+/* 19  */ AADD(aMsg,"Marge gauche")                && 0..250
+/* 20  */ AADD(aMsg,"Lignes entre labels")         && 0..16
+/* 21  */ AADD(aMsg,"Espaces entre labels")        && 0 ... 120
+/* 22  */ AADD(aMsg,XWIN_FR("Nombre de labels parallèles")) && 1 .. 5
+* Other messages
+/* 23  */ AADD(aMsg,"Fermer")
+/* 24  */ AADD(aMsg,"Erreur de lecture du label, != 1034 octets")
+/* 25  */ AADD(aMsg,"Fichiers label")
+/* 26  */ AADD(aMsg,"<AUCUN LABEL>")
+/* 27  */ AADD(aMsg,XWIN_FR("Après le changement de langue, relancer le programme"))
+/* 28  */ AADD(aMsg,"Editeur de Label")
+/* 29  */ AADD(aMsg,"&Label")
+/* 30  */ AADD(aMsg,"Tous les fichiers")
+/* 31  */ AADD(aMsg,"Fichiers Label")
+/* 32  */ AADD(aMsg,"&Nouveau")
+/* 33  */ AADD(aMsg,"Contenus du label")
+/* 34  */ AADD(aMsg,"OK")
+/* 35  */ AADD(aMsg,"Annuler")
+/* 36  */ AADD(aMsg,"Continuer")
+/* 37  */ AADD(aMsg,"Erreur de lecture du fichier label")
+/* 38  */ AADD(aMsg,"Erreur d'ouverture du fichier label")
+/* 39  */ AADD(aMsg,XWIN_FR("Paramètres du label"))
+/* 40  */ AADD(aMsg,XWIN_FR("Editer les paramètres"))
+/* 41  */ AADD(aMsg,XWIN_FR("60 caractères maximum" ))
+/* 42  */ AADD(aMsg,XWIN_FR("Plage, défaut entre crochets" ))
+/* 43  */ AADD(aMsg,XWIN_FR("Fichier existant, l'écraser ?"))
+/* 44  */ AADD(aMsg,XWIN_FR("Des paramètre(s) ont été modifiés, Enregistrer ?"))
+/* 45  */ AADD(aMsg,XWIN_FR("Le label a été modifié, ignorer les modifications ?"))
+/* 46  */ AADD(aMsg,XWIN_FR("Rien à sauver"))
+/* 47  */ AADD(aMsg,"Fichiers label (*.lbl)")                  && cloctext
+/* 48  */ AADD(aMsg,"*.lbl")                                   && clocmsk
+/* 49  */ AADD(aMsg,"Tous les fichiers (*.*)")                 && clocallf (GTK)
+/* 50  */ AADD(aMsg,"Donnez le nom du nouveau fichier label")  && cTextadd1 (Windows)
+/* 51  */ AADD(aMsg,"Enregistrer le fichier label")            && cTextadd2 (Windows)
+/* 52  */ AADD(aMsg,"Attention")
+/* 53  */ AADD(aMsg,XWIN_FR("Si la hauteur est réduite, le contenu correspondant est perdu" + CHR(10) + "Non = Annuler"))
+/* 54  */ AADD(aMsg,XWIN_FR("Restaurer les valeurs par défaut"))
+/* 55  */ AADD(aMsg,"Dernier label non sauvé, Oui=Ignorer et recharger, non=Annuler")
+/* 56  */ AADD(aMsg,"Charger le fichier label")
+/* 57  */ AADD(aMsg,"Dernier label non sauvé, Oui=défaire, non=annuler")
+/* 58  */ AADD(aMsg,"Nouveau Label")
+/* 59  */ AADD(aMsg,"Erreur: Taille du buffer non de 1034 bytes")
+/* 60  */ AADD(aMsg,"Charger le fichier label")
+/* 61  */ AADD(aMsg,"Aide HWLABEL")
+/* 62  */ AADD(aMsg,"Aucune aide disponible")
+/* 63  */ AADD(aMsg,"Attention !" + CHR(10) + "Longeur de ligne  ")
+/* 64  */ AADD(aMsg," pourrait dépasser la largeur du label.")
+/* 65  */ AADD(aMsg,"La longueur actuelle est de : ")
+
+
+RETURN aMsg
+
+
+* ------------------------------------------
 FUNCTION hwlabel_MSGS_DE()
 * Set message array for german language
 * 
@@ -2553,6 +2654,195 @@ RETURN ""
 
 
 * ------------------------------------------
+FUNCTION hwlabel_helptxt_FR(ntopic)
+* Help text for label contents
+* ntopic : A numeric value for specifying
+* the displayed help text.
+* 0 : (Default) Main menu of label editor
+* 1 : Label parameter 
+* 2 : Label contents
+* ------------------------------------------
+LOCAL lf := CHR(13) + CHR(10)
+
+IF ntopic == NIL
+  ntopic := 0
+ENDIF
+
+IF ntopic == 0
+
+ RETURN XWIN_FR("L'éditeur de label par HWGUI" + lf + ;
+ "Copyright 2022 Wilfried Brunken, DF7BE" + lf + ;
+ "https://sourceforge.net/projects/cllog/" + lf +;
+ lf +;
+ "License:  GNU General Public License avec quelques exceptions liées à HWGUI." + lf + ;
+ "Voir le fichier " + CHR(34) + "license.txt" + CHR(34) + " pour plus de détails du projet HwGUI à" + lf + ;
+ "https://sourceforge.net/projects/hwgui/" + lf + ;
+ lf + ;
+ CHR(34) + "Label" + CHR(34) + " est une fonctionnalité importante dans les applications professionnelles" + lf + ;
+ "par exemple pour les enveloppes de lettres aux clients." + lf + ;
+ lf + ;
+ "L'éditeur de label est aussi implémementé dans Clipper avec l'utilitaire RL.EXE,"+ lf +;
+ "de la version Summer 87 en LABEL.EXE." + lf + ;
+ lf + ;
+ CHR(34) + "hwlabel" + CHR(34) + " est le portage de cette fonctionnalité pour HwGUI en utilisant la classe" + lf + ;
+ "WinPrn," + lf + ;
+ "aussi, il est multi platform et indépendant du modèle d'imprimante utilisé." + lf + ;
+ lf + ;
+ "Pour plus de détails, lire le fichier " + CHR(34) + "Readme.txt" + CHR(34) + " ainsi que les informations" ;
+ + lf + "des autres aides." )
+
+ENDIF
+
+IF ntopic == 1
+ RETURN XWIN_FR("Parametres de l'éditeur de label." + lf + ;
+    "Les paramètres suivants servent pour l'édition:" + lf + lf + ;  
+    "Marge gauche:" + lf +  ;
+    "Définie la position de départ lors de l'impression du" + lf + ;
+    "premier label. Cette valeur est ajoutée à la valeur de SET MARGIN." + lf +  ;
+     "La plage va de 0 à 250." + lf + lf +  ;
+     "Espaces entre labels:" ;
+       + lf +  ;
+      "A utiliser lors d'utilisation de labels à plusieurs colonnes :" ;
+       + lf +  ;
+      "Ce paramètre définie l'espace entre deux colonnes verticales." ;
+       + lf +  ;
+      "Cette option pourrait aussi être utilisée pour définir la marge gauche " + lf + ;
+      "des labels fsuivant le premier label."  ;
+       + lf  +  ;
+      "La plage va de 0 à 16, la valeur par défaut est 0." ;
+       + lf + lf + ;
+      "Définie à 0 si les labels n'utilisent qu'une seule colonne."  ;
+      + lf + lf + ;
+      "Nombre de lignes entre les labels: " + lf +  ;
+      "Définit le nombre de lignes vierges entre" + lf + ;
+      "des series horizontales de labels." + lf + ;
+      "La plage va de 0 à 120" + lf + lf + ;
+      "Nombre d'étiquettes sur :" + lf + ;
+      "Nombre de voies en parallèle."  + lf + ;
+      "S'il y a plus d'une voie, l'impression de la dernière" + lf + ;
+      "ligne a été ajustée automatiquement." + lf + ;
+      "La plage est de 1 à 5" )
+ENDIF  
+
+IF ntopic == 2
+RETURN  XWIN_FR("Contenus du label:" + lf + lf + ;
+     "Conformement à votre réglage pour la hauteur" + ;
+     "d'étiquette, voici un nombre identique" + lf + ;
+     "de lignes servies pour l'édition. " + lf + ;
+     "Dans cette zone, il est nécessaire d'insérer des" + lf + ;
+     "expressions clipper pour créer le contenu" + ;
+     "de cette étiquette." + lf + ;
+     "Le nombre maximum de lignes est de 16. " + lf + ;
+     "Dans les colonnes de gauche, le numéro de ligne est affiché. " + lf + ;
+     "Veuillez faire attention à une syntaxe valide." + lf + ;
+     "Les erreurs dans les expressions provoque des erreurs d'exécution !" + lf + ;
+     "L'éditeur d'étiquettes ne peut pas vérifier la justesse de vos expressions." + lf + ;
+     "Le résultat de l'expression dans une ligne doit être une chaîne (Type = C !)" + ;
+     + lf + lf + ;
+     "Exemples : " + ;
+      lf +  ;
+      lf +  ;
+      "TRIM(VORNAME)+" + CHR(34) + " " + CHR(34) + "+NACHNAME" + ;
+      lf +  ;
+      "STRASSE" + ;
+      lf +  ;
+      "PLZ" + ;
+      lf +  ;
+      "ORT" +;
+      lf +  ;
+      lf +  ;
+      "Vous pouvez utiliser les fonctions standard de Clipper." + lf + ;
+      "Ces fonctions sont décrites dans 'Harbour Language Reference'" + lf + ;
+      "( par exemple, TRANSFORM() ou TRIM() ). Sont également autorisées"+lf +;
+      "les fonctions définies par l'utilisateur du " + lf + ;
+      "programme en cours d'utilisation, s'ils sont documentés" ;
+      + lf + "par l'équipe de développeurs et " + ;
+      "mis en œuvre dans le programme." + lf + ;
+      "Bien qu'une ligne ne comporte que 60 caractères, " + lf + ;
+      "il est possible que la sortie d'impression soit " + lf + ;
+      "beaucoup plus longue." + lf + ;
+      "La longueur maximale de sortie est limitée par l'attribut " + lf + ;
+      "[Largeur], les caractères dépassés sont omis." + lf + ;
+       lf + ;
+      "Normalement, des lignes vierges sont visibles sur l'impression de l'étiquette. " + lf + ;
+      "Exemple :" + ;
+      lf +  ;
+      lf +  ;
+      "TRIM(VORNAME)+" + CHR(34) + " " + CHR(34) + "+NACHNAME" + ;
+      lf +  ;
+      "STRASSE" + ;
+      lf +  ;
+      lf +  ;
+      "PLZ" + ;
+      lf +  ;
+      "ORT" +;
+      lf +  ;
+      lf +  ;
+      "Dans cet exemple, la ligne entre STRASSE et PLZ est vide." + lf + ;
+      "Si une expression renvoie en effet une chaîne vide, " + lf + ;
+      "( dans ce cas exprimé par " + lf + ;
+      CHR(34) + CHR(34) + " ou un champ de la base de données est vide), donc la " + lf + ;
+      "ligne est omise. Il y a " + lf + ;
+      "différentes méthodes pour éviter cette chaîne vide. " + lf + ;
+      "Il doit être envoyé un caractère non imprimable, " + lf + ;
+      "le plus indiqué étant CHR(255). " + lf + ;
+      "En utilisant une expression IF, la sortie de CHR(255)" + lf + ;
+      "peut être forcée par ce qui suit :" + ;
+      lf +  ;
+      "  IF(!EMPTY(<stringfield>),<stringfield>,CHR(255) )" + ;
+      lf +  ;
+      "Sample:" + ;
+      lf +  ;
+      "  IF(!EMPTY(ADRESSE),ADRESSE,CHR(255) )" + ;
+      lf +  ;
+      lf +  ;
+      "Le développeur peut créer une fonction définie par l'utilisateur (UDF)" + lf +;
+      "gestion très facile de ce cas : " + ;
+      lf +  ;
+      " FUNCTION NOSKIP(e)" + ;
+      lf +  ;
+      "   RETURN IF(!EMPTY(e),e,CHR(255) )" + ;
+      lf +  ;
+      lf +  ;
+      "Appelez maintenant cette fonction par : NOSKIP(ADRESSE). Cela économise " + lf + ;
+      "beaucoup d'espace dans la section contenu." + ;
+      lf + ;
+     "La fonction NOSKIP() est aussi disponible dans le module bibliothèque" ;
+       + lf  + CHR(34) + "libhwlabel.prg" + CHR(34) + "." + lf + lf + ;
+      lf + ;
+      "Si votre modification de la section de contenu est terminée," +lf + ;
+      "vous pouvez enregistrer le fichier d'étiquette, " +lf+ ;
+      "(sauf si vous avez appuyé sur la touche ESC ou sur le bouton d'annulation)." + ;
+      lf + ;
+      "L'extrait de code suivant montre comment une étiquette est imprimée." + lf + ;
+      "Comme cet extrait que vous pouvez trouver dans chaque application Clipper" + ;
+      lf +  ;
+      "USE <database> INDEX <indexfile>" + ;
+      lf +  ;
+      "LABEL FORM <label file> TO PRINTER" + ;
+      lf + lf + ;
+      "Utilisation de variables dans le label:" + ;
+      lf +  ;
+      "Vous pouvez utiliser des variables:" + ;
+      lf + lf +  ;
+      " - Champs de la base active" + ;
+      lf +  ;
+      " - toute variable PUBLIC"  + ;
+      lf +  ;
+      " - toute courante variable LOCAL ou PRIVATE" +  ;
+      lf + lf + ;
+      "Les variables utilisables sont décrites " + lf + ;
+      "dans la documentation du programme concerné.")
+ENDIF
+
+* Not specified topic
+* No help available
+hwg_MsgStop(aMsg[62],aMsg[61]) 
+
+RETURN ""
+
+
+* ------------------------------------------
 FUNCTION hwlabel_helptxt_DE(ntopic)
 * Help text for label contents (German)
 * ------------------------------------------
@@ -2812,6 +3102,11 @@ IF clang == "Deutsch"
 * 61 =  "HWLABEL Hilfe" , 23 = "Schliessen"
 hwg_ShowHelp(hwlabel_helptxt_DE(ndlg),aMsg[61],aMsg[23],,.T.)
 ENDIF
+* Other languages
+IF clang == XWIN_FR("Français")
+* 61 =  "Aide HwLabel" , 23 = "Fermer"
+hwg_ShowHelp(hwlabel_helptxt_FR(ndlg),aMsg[61],aMsg[23],,.T.)
+ENDIF
 
 
 RETURN NIL
@@ -2831,6 +3126,7 @@ STATIC FUNCTION hwlabel_NLS_SetLang(cname)
 * Default: "English"
 * Additional languages:
 * "Deutsch" Germany @ Euro
+* "Français" France @ Euro
 * ---------------------------------------------
 
 /* Add case block for every new language */
@@ -2839,6 +3135,10 @@ STATIC FUNCTION hwlabel_NLS_SetLang(cname)
       clangset := "Deutsch"
       clang    := "DE"
       aMsg     := hwlabel_MSGS_DE()
+   CASE cname == XWIN_FR("Français")  && France @ Euro
+      clangset := XWIN_FR("Français")
+      clang    := "FR"
+      aMsg     := hwlabel_MSGS_FR()
    * Add here more languages
    *  CASE cname == "xxxxxx"
    OTHERWISE                && Default EN
@@ -2866,7 +3166,8 @@ LOCAL result
    200 , "OK" , "Cancel", "Help" , "Need Help : " , "HELP !" )
  IF result != 0
   * set to new language, if modified
-  clangset := aLanguages[result] 
+  clangset := aLanguages[result]
+//  hwg_Msginfo("clangset=" + clangset)  
   hwlabel_NLS_SetLang(clangset)
   hwg_MsgInfo("Language set to " + clangset,"Language Setting")
   * Write to ini file, if modified
@@ -2975,6 +3276,7 @@ yofs := nOffset + 120
 
    ACTIVATE DIALOG oDlgcCombo1
 * RETURN oDlgcCombo1:lresult
+//  hwg_MsgInfo("Result=" + STR(nRetu))
 RETURN nRetu
 
 * ================================= *
@@ -3147,6 +3449,34 @@ FUNCTION hwlabel__LBL_LINES()
 * (type = N)
 * ==============================================
 RETURN n_NUMZ
+
+
+FUNCTION XWIN_FR(clang)
+* ~~~~~~~~~~ French ~~~~~~~~~~~~~~~~~~~~~~~~~~
+* Translates UTF8 to Windows charset
+* ---------------------------------------------
+#ifdef __PLATFORM__WINDOWS
+// The function HB_TRANSLATE() crashes with "Argument Error", but i don't
+// know, why ?
+// RETURN HB_TRANSLATE( clang, "UTF8", "DEWIN" )
+// So own solution for translation
+// This runs OK also on Windows
+LOCAL cltxt
+cltxt := clang
+
+cltxt := STRTRAN(cltxt,"à",CHR(224))
+cltxt := STRTRAN(cltxt,"é",CHR(233))
+cltxt := STRTRAN(cltxt,"è",CHR(232))
+cltxt := STRTRAN(cltxt,"ê",CHR(234))
+cltxt := STRTRAN(cltxt,"î",CHR(238))
+cltxt := STRTRAN(cltxt,"œ",CHR(156))    && oe
+cltxt := STRTRAN(cltxt,"ç",CHR(231))
+cltxt := STRTRAN(cltxt,"€",CHR(128))   && EURO 
+RETURN cltxt
+#else
+* On LINUX using UTF-8
+RETURN clang
+#endif
 
 * ================================= *
 FUNCTION hwlbl_IconHex()

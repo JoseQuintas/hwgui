@@ -16,6 +16,13 @@
 */
 
 
+2023-05-04 11:10 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/hwlabel/hwlbledt.prg
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_functions.html
+    ! Ticket #118: Trouble with non modal help dialog,
+    ! Behaviour also documentated (different between WinAPI and GTK)
+
 2023-05-01 19:00 UTC+0200 Wilfried Brunken DF7BE
   * contrib/hwlabel/hwlbledt.prg
     ! French language added (TNX Alain Aupaix)

@@ -3087,6 +3087,20 @@ FUNCTION hwlabel_Mainhlp(clang,ndlg)
 * For valid value see
 * FUNCTION hwlabel_langinit()
 * ------------------------------------------
+LOCAL lnmodal
+
+#ifdef __PLATFORM__WINDOWS
+lnmodal := .T.
+#else
+lnmodal := .F.
+#endif
+
+* Trouble with NOMODAL on LINUX:
+* The window with help text freezes, it closes
+* only, if the calling dialog is closed.
+* For example:
+* Pressing the "Close" button or the cross in the header bar
+* has no effect.
 
 IF clang == NIL
  clang := "English"
@@ -3095,17 +3109,17 @@ ENDIF
 * Default 
 IF clang == "English"
 * 61 = "HWLABEL Help" , 23 = "Close"
-hwg_ShowHelp(hwlabel_helptxt_EN(ndlg),aMsg[61],aMsg[23],,.T.) 
+hwg_ShowHelp(hwlabel_helptxt_EN(ndlg),aMsg[61],aMsg[23],,lnmodal) 
 ENDIF
 * Other languages
 IF clang == "Deutsch"
 * 61 =  "HWLABEL Hilfe" , 23 = "Schliessen"
-hwg_ShowHelp(hwlabel_helptxt_DE(ndlg),aMsg[61],aMsg[23],,.T.)
+hwg_ShowHelp(hwlabel_helptxt_DE(ndlg),aMsg[61],aMsg[23],,lnmodal)
 ENDIF
 * Other languages
 IF clang == XWIN_FR("Français")
 * 61 =  "Aide HwLabel" , 23 = "Fermer"
-hwg_ShowHelp(hwlabel_helptxt_FR(ndlg),aMsg[61],aMsg[23],,.T.)
+hwg_ShowHelp(hwlabel_helptxt_FR(ndlg),aMsg[61],aMsg[23],,lnmodal)
 ENDIF
 
 

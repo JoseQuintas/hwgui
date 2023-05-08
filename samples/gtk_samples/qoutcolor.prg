@@ -43,11 +43,11 @@
   . <path>/colors.sh
 
   This writes the environment values into the active shell.
-  
+
   Add this command to your .profile of your userid running the
   script and the standard settings of colors are available for
-  all scripts running on this userid. 
-  
+  all scripts running on this userid.
+
   Additional unstructions for UNIX with the Bourne shell:
   The setting of an environment variable must be splitted in two
   commands, for example:
@@ -55,7 +55,7 @@
   #!/bin/sh
   bBla='\033[40m'
   export bBla
-  
+
 */
 
 

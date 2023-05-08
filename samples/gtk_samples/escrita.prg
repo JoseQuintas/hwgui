@@ -5,7 +5,7 @@
 *
 * HWGUI sample program:
 * Tool buttons with bitmaps
-* "Teste da Acentuação"
+* "Teste da AcentuaÃ§Ã£o"
 *
 
     * Status:
@@ -24,14 +24,14 @@ FUNCTION Main()
 
 
 cbmppref := ".." + hwg_GetDirSep() + ".." + hwg_GetDirSep() + "image" + hwg_GetDirSep()
-* Check, if all bitmaps are existing, otherwise the program crashes or freezes   
+* Check, if all bitmaps are existing, otherwise the program crashes or freezes
 CHECK_FILE(cbmppref + "new.bmp")
 CHECK_FILE(cbmppref + "book.bmp")
 CHECK_FILE(cbmppref + "ok.ico")
 CHECK_FILE(cbmppref + "door.bmp")
 CHECK_FILE(cbmppref + "cancel.ico")
 
-   INIT DIALOG oModDlg TITLE "Teste da Acentuação" ;
+   INIT DIALOG oModDlg TITLE "Teste da AcentuaÃ§Ã£o" ;
       AT 210, 10  SIZE 300, 300 ON INIT { ||otool:refresh(), hwg_Enablewindow( oTool:aItem[2,11], .F. ) }
 
    @ 0, 0 toolbar oTool of oModDlg size 50, 100 ID 700

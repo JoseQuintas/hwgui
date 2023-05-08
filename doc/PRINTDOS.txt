@@ -76,7 +76,7 @@ Metodos
 ::NewLine() - Nova linha retornando nPcol=0 and nProw+1
 ::Compres() - Envia o caracter Chr(15) 
 ::DesCompres() - Envia o caracter Chr(18) 
-::Comando() - Executa a fun‡Æo Chr() 
+::Comando() - Executa a functiono Chr() 
 ::SetPrc(x,y) - Similar a SetPrc
 
 ::PrinterFile(oFile) - Imprime arquivo texto 

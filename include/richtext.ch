@@ -1,39 +1,41 @@
 /*
  * $Id$
  *
-ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-³        Class: RichText                                                   ³
-³  Description: System for generating simple RTF files.                    ³
-³     Language: Clipper/Fivewin                                            ³
-³      Version: 0.90 -- This is a usable, but incomplete, version that is  ³
-³               being distributed in case anyone cares to use it as-is,    ³
-³               or wants to comment on it.                                 ³
-³         Date: 01/28/97                                                   ³
-³       Author: Tom Marchione                                              ³
-³     Internet: 73313,3626@compuserve.com                                  ³
-³                                                                          ³
-³    Copyright: (C) 1997, Thomas R. Marchione                              ³
-³       Rights: Use/modify freely for applicaton work, under the condition ³
-³               that you include the original author's credits (i.e., this ³
-³               header), and you do not offer the source code for sale.    ³
-³               The author may or may not supply updates and revisions     ³
-³               to this code as "freeware".                                ³
-³                                                                          ³
-³   Warranties: None. The code has not been rigorously tested in a formal  ³
-³               development environment, and is offered as-is.  The author ³
-³               assumes no responsibility for its use.                     ³
-³                                                                          ³
-³    Revisions:                                                            ³
-³                                                                          ³
-³    DATE       AUTHOR  COMMENTS                                           ³
-³ÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ³
-³    01/28/97   TRM     Date of initial release                            ³
-³                                                                          ³
-³                                                                          ³
-³                                                                          ³
-³                                                                          ³
-³                                                                          ³
-ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
++=========================================================================+
+!       Class: RichText                                                   !
+! Description: System for generating simple RTF files.                    !
+!    Language: Clipper/Fivewin                                            !
+!     Version: 0.90 -- This is a usable, but incomplete, version that is  !
+!              being distributed in case anyone cares to use it as-is,    !
+!              or wants to comment on it.                                 !
+!        Date: 01/28/1997                                                 !
+!      Author: Tom Marchione                                              !
+!    Internet: 73313,3626@compuserve.com                                  !
+!                                                                         !
+!   Copyright: (C) 1997, Thomas R. Marchione                              !
+!      Rights: Use/modify freely for applicaton work, under the condition !
+!              that you include the original author's credits (i.e., this !
+!              header), and you do not offer the source code for sale.    !
+!              The author may or may not supply updates and revisions     !
+!              to this code as "freeware".                                !
+!                                                                         !
+!  Warranties: None. The code has not been rigorously tested in a formal  !
+!              development environment, and is offered as-is.  The author !
+!              assumes no responsibility for its use.                     !
+!                                                                         !
+!                                                                         !
+!   Revisions:                                                            !
+!                                                                         !
+!   DATE         AUTHOR  COMMENTS                                         !
+!-------------------------------------------------------------------------!
+!   01/28/1997   TRM     Date of initial release                          !
+!                                                                         !
+!                                                                         !
+!                                                                         !
+!                                                                         !
+!                                                                         !
++-------------------------------------------------------------------------+
+
 */
 
 #ifndef __RICHTEXT_CH__
@@ -467,3 +469,5 @@
       <oRTF>:CurrDate(<"cFormat">)
 
 #endif /* __RICHTEXT_CH__ */
+
+/* ============================= EOF of richtext.ch =============================== */

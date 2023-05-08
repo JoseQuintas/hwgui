@@ -32,7 +32,7 @@ __________________
 
 Build the editor with the following build scripts:
 
-bld.bat      Borland C    
+bld.bat      Borland C
 bldedgw.bat  MinGW32
 bldow.bat    Open Watcom C
 build.sh     gcc, GTK/LINUX 
@@ -47,7 +47,7 @@ For prerequisites read the file "install.txt" in the base directory of the HWGUI
 ________
 
 
-editor.hwge  Documentation file 
+editor.hwge  Documentation file
 
 Source code:
 
@@ -63,8 +63,4 @@ editor_linux.hbp  Makefile for hbmk2 utility on GTK/LINUX
 
 
 -------------------------- EOF of Readme.txt -------------------------
-
-
- 
-
 

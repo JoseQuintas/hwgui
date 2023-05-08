@@ -1,7 +1,7 @@
 *
 * testunitc.prg
 *
-* $Id$ 
+* $Id$
 *
 * HWGUI - Harbour Win32 and Linux (GTK) GUI library
 *
@@ -10,12 +10,12 @@
 * Copyright 2021 Wilfried Brunken, DF7BE 
 * https://sourceforge.net/projects/cllog/
 *
- 
+
     * Status:
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
-    *  GTK/Win  :  Yes 
- 
+    *  GTK/Win  :  Yes
+
 #include "hwgui.ch"
 
 FUNCTION Main
@@ -31,9 +31,9 @@ INIT WINDOW oFormMain MAIN  ;
       MENU TITLE "&Test"
         MENUITEM "&Teste" ACTION TESTS()
       ENDMENU
-   ENDMENU    
+   ENDMENU
    oFormMain:Activate()
-RETURN NIL    
+RETURN NIL
 
 FUNCTION TESTS
  TESTF("hwg_TEMP_C2F (0.0)", hwg_TEMP_C2F (0.0), 32 )
@@ -47,7 +47,7 @@ FUNCTION TESTS
  TESTF("hwg_TEMP_F2C (77.0)" , hwg_TEMP_F2C (77.0) , 25.0 )
  TESTF("hwg_TEMP_F2K (257.0)" , hwg_TEMP_F2K (257.0) , 398.15 )
  TESTF("hwg_TEMP_F2RA (212.0)" , hwg_TEMP_F2RA (212.0) , 671.67 )
- TESTF("hwg_TEMP_F2R (0.0)" , hwg_TEMP_F2R (0.0) , -14.22 ) 
+ TESTF("hwg_TEMP_F2R (0.0)" , hwg_TEMP_F2R (0.0) , -14.22 )
  TESTF("hwg_TEMP_RA2C (716.67)" , hwg_TEMP_RA2C (716.67) , 125.0 )
  TESTF("hwg_TEMP_RA2F (545.67)" , hwg_TEMP_RA2F (545.67) , 86.0 )
  TESTF("hwg_TEMP_RA2K (545.67)" , hwg_TEMP_RA2K (545.67) , 303.15 )
@@ -58,7 +58,7 @@ FUNCTION TESTS
  TESTF("hwg_TEMP_R2K (-218.52)" , hwg_TEMP_R2K (-218.52) , 0.0 )
  TESTF("hwg_TEMP_R2RA (29.6)" , hwg_TEMP_R2RA (29.6) , 558.27 )
  TESTF("hwg_KM2NML(1.852)" , hwg_KM2NML(1.852) , 1.0 )
- 
+
  RETURN NIL
 
  FUNCTION TESTF(cFunkt, nFunkt, nExpected)
@@ -67,7 +67,7 @@ FUNCTION TESTS
      "Result: " + ALLTRIM(STR(nFunkt)) + CHR(10) + ;
      "Expected: " + ALLTRIM(STR(nExpected)) ;
   ,  "Test of Unit conversion functions")
- 
+
  RETURN NIL
 
 * ======================= EOF of testunitc.prg =============================

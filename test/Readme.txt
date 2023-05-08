@@ -16,4 +16,3 @@ These programs are no official sample programs !
 
 * =============== EOF of Readme.txt ===============
 
-

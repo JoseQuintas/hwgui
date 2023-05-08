@@ -16,6 +16,22 @@
 */
 
 
+2023-05-08 18:20 UTC+0200 Wilfried Brunken DF7BE
+  * doc/PRINTDOS.txt
+  * include/freeimage.h
+  * include/richtext.ch
+  * samples/gtk_samples/escrita.prg
+  * samples/gtk_samples/qoutcolor.prg
+  * test/Readme.txt
+  * test/Ticket27.hbp
+  * test/Ticket27.prg
+  * test/testunitc.prg
+  * utils/debugger/sample.hbp
+  * utils/debugger/sample.prg
+  * utils/designer/readme_es.txt
+  * utils/designer/resource/f_hwgprg.prg
+  * utils/editor/Readme.txt
+    ! Ticket #58: Conversions to UTF8 and incorrect right.
 
 2023-05-08 16:15 UTC+0200 Wilfried Brunken DF7BE
   * contrib/hwlabel/hwlblsample.prg

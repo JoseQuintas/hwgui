@@ -235,7 +235,7 @@ FUNCTION Browse2Prg
       //
       aTypes := &cTmpalias -> ( dbStruct() )
 
-      // CRIAR AS RELA€OES E O LINK
+      // CRIAR AS RELAâ‚¬OES E O LINK
       // CREATE THE RELATIONS AND THE LINK
       temp := iif( ( temp := oCtrl:GetProp("childorder" ) ) != Nil .AND. !Empty( temp ), Trim( temp ), "" )
       cKey := ""
@@ -892,7 +892,7 @@ FUNCTION Ctrl2Prg
       // Methods ( events ) for the control
       i := 1
       DO WHILE i <= Len( oCtrl:aMethods )
-         // NANDO POS PARA TIRAR COISAS QUE NÇO TEM EM GETS
+         // NANDO POS PARA TIRAR COISAS QUE NÃ‡O TEM EM GETS
          // DOING POSE TO REMOVE THINGS THAT DON'T HAVE IN GETS
          IF Upper( SubStr( oCtrl:aMethods[i,1],3 ) ) = "INIT" .AND. ( oCtrl:cClass == "combobox" )
             i ++

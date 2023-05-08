@@ -16,6 +16,13 @@
 */
 
 
+
+2023-05-08 16:15 UTC+0200 Wilfried Brunken DF7BE
+  * contrib/hwlabel/hwlblsample.prg
+    ! Ticket #118: Build error solved.
+    ! Ticket closed
+
+
 2023-05-04 11:10 UTC+0200 Wilfried Brunken DF7BE
   * contrib/hwlabel/hwlbledt.prg
   * doc/hwgdoc_commands.html

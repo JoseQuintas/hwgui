@@ -106,7 +106,7 @@ LOCAL cValicon , oIcon
 
 PUBLIC EC 
  
-SET PROCEDURE TO libhwlabel
+// SET PROCEDURE TO libhwlabel
 * Alternative:
 * - Add libhwlabel.prg into your *.hbp file
 * or

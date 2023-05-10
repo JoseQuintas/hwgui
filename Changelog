@@ -17,6 +17,14 @@
 
 
 
+2023-05-10 16:20 UTC+0200 Wilfried Brunken DF7BE
+  * samples/testrtf.prg
+  * samples/testrtf.hbp
+  * samples/Readme.txt
+  * samples/sample.rtf (New)
+    ! Port of sample program to GTK
+
+
 2023-05-10 15:10 UTC+0200 Wilfried Brunken DF7BE
   * utils/devtools/dbfstru.prg
     ! Ticket #58,optimize for Harbour

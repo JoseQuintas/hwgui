@@ -218,7 +218,7 @@ For beginners:
  testimage.prg       Y       Y                Displaying images and usage of FreeImage library (IMAGE, BITMAP).
  testini.prg         P                        Use INI file: create and read
  testmenubitmap.prg  P                        Menu with bitmaps
- testrtf.prg  1)     N  #    N          -      Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 
+ testrtf.prg  1)     Y  #    N          -      Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 
  testsdi.prg         Y                        Tree control
  testspli.prg        Y                        Split windows
  testtray.prg        Y                 Y      Tray Message : Be care of different behavior between WinAPI and GTK

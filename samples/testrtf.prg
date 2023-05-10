@@ -4,9 +4,20 @@
  * The sample implemented by Sandro Freire <sandrorrfreire@yahoo.com.br>
  */
 
-#include "common.ch"
-#include "richtext.ch"
+    * Status:
+    *  WinAPI   :  Yes
+    *  GTK/Linux:  Yes
+    *  GTK/Win  :  No
+
+* Note: The function hwg_Shellabout() is Windows only and 
+* is substituted by a simple hwg_MsgInfo().
+* MDI is also Windows only
+
 #include "hwgui.ch"
+// #include "common.ch"
+#include "richtext.ch"
+// #include "windows.ch"
+// #include "guilib.ch"
 
 STATIC oPrinter,aSize:={280,220}
 
@@ -18,8 +29,13 @@ FUNCTION Main()
    PRIVATE oFont := Nil, cDir := "\"+Curdir()+"\"
    PRIVATE nColor, oBmp2
 
+#ifdef __GTK__
+  INIT WINDOW oMainWindow MAIN TITLE "Example" ;
+     AT 200,0 SIZE 400,150
+#else
    INIT WINDOW oMainWindow MDI TITLE "Example" ;
          MENUPOS 3
+#endif
 
    MENU OF oMainWindow
       MENU TITLE "&File"
@@ -28,7 +44,11 @@ FUNCTION Main()
          MENUITEM "&Exit" ACTION hwg_EndWindow()
       ENDMENU
       MENU TITLE "&Help"
+#ifdef __GTK__
+         MENUITEM "&About" ACTION hwg_MsgInfo("RTF Demo (GTK)","Info")
+#else
          MENUITEM "&About" ACTION hwg_Shellabout("Info","RTF Demo")
+#endif
       ENDMENU
    ENDMENU
 
@@ -41,8 +61,16 @@ FUNCTION TestRtf()
    LOCAL cOutFile, oRtf, anchos, i
    LOCAL j, aMarca, lFormato := .F.
    LOCAL cTexto
+   
 
+#ifdef __GTK__
+   LOCAL cPath
+   cPath := Curdir()
+   cOutFile := hwg_Selectfile( {"RTF files( *.rtf )"}, ;
+      {"*.rtf" }, cPath ) 
+#else
    cOutFile := hwg_Savefile( "*.rtf","RTF files( *.rtf )","*.rtf" )
+#endif
    IF Empty( cOutFile )
       RETURN Nil
    ENDIF
@@ -56,16 +84,16 @@ FUNCTION TestRtf()
 
    oRtf := SetupRTF( cOutFile)
 
-   // Metodos nuevos que se han introducido
+   // Metodos nuevos que se han introducido / New methods that have been introduced
 
    BEGIN BOOKMARK oRTF ;
      TEXT "Marcadores"
    END BOOKMARK oRTF
 
-   // Cajas de Texto
+   // Cajas de Texto / Text Boxes
 
    BEGIN TEXTBOX oRtf;
-    SIZE {9.0,0.30} ;   // Tamaño Caja de texto
+    SIZE {9.0,0.30} ;   // Tamano Caja de texto / Size Text Box
     TEXT "Cajas de Texto";
     FONTNUMBER 2;
     FONTSIZE 12 ;
@@ -80,7 +108,7 @@ FUNCTION TestRtf()
 
    SETDATE oRtf FORMAT LONGFORMAT
 
-   // Parrafos con estilo
+   // Parrafos con estilo / stylish paragraphs
 
    NEW PARAGRAPH oRTF TEXT "Estilo Prueba";
         STYLE 2
@@ -92,12 +120,12 @@ FUNCTION TestRtf()
         STYLE 1;
         ALIGN CENTER
 
-   // Lineas
+   // Lineas / Lines
 
    LINEA oRtf;
-        INICIO {0.1,1.0};         //Inicio
+        INICIO {0.1,1.0};         //Inicio / Start
         FIN {10.0,1.0};          // Final
-        TIPO "SOLIDA"      // Tipo de linea
+        TIPO "SOLIDA"      // Tipo de linea / Type of line
 
    NEW PARAGRAPH oRTF TEXT ""
    NEW PARAGRAPH oRTF TEXT ""
@@ -193,7 +221,7 @@ STATIC FUNCTION SetupRTF(cOutFile)
    * Return:
    *--------------------------------------------------------------------
    * Date       Developer   Comments
-   * 01/28/97   TRM         Creation
+   * 01/28/1997   TRM         Creation
    *********************************************************************
 
    LOCAL oRTF,i,nWidth:=0,lLandScape:=.F.
@@ -231,7 +259,7 @@ STATIC FUNCTION SetupRTF(cOutFile)
        SUBJECT "Informe en RTF";                  // Materia
        AUTHOR "Jose Ignacio Jimenez Alarcon";     // Autor
        MANAGER "Jose Ignacio Jimenez Alarcon" ;   // Director
-       COMPANY "Servicio Canario de Salud" ;      // Compañia
+       COMPANY "Servicio Canario de Salud" ;      // Compania
        OPERATOR "Jose Ignacio Jimenez Alarcon"    // Operador
 
    // Formato del documento. Se puede cambiar luego con el setup. Tiene

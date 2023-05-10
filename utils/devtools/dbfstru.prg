@@ -1,7 +1,7 @@
 *
 *  DBFSTRU.PRG
 *
-*  Copyright (c) 1997-2020 DF7BE
+*  Copyright (c) 1997-2023 DF7BE
 *  Free Software under property of the
 *  GNU General Public License
 *
@@ -10,7 +10,7 @@
 *   HWGUI - Harbour Win32 and Linux (GTK) GUI library
 *
 *   Structure display of DBF files
-*   Harbour 3.x.x, Clipper Summer 1987
+*   Harbour 3.x.x
 *
 * License:
 * GNU General Public License
@@ -25,29 +25,31 @@
 *  +------------+-------------------------+----------------------------------+
 *  + Date       ! Name and Call           ! Modification                     !
 *  +------------+-------------------------+----------------------------------+
+*  ! 10.05.2023 ! W.Brunken        DF7BE  ! Ticket #58,optimize for Harbour  !
+*  +------------+-------------------------+----------------------------------+
 *  ! 31.05.2022 ! W.Brunken        DF7BE  ! first creation                   !
 *  +------------+-------------------------+----------------------------------+
 *
 * Compile with:
 *  hbmk2 dbfstru.prg
 
-* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-* ~ Modifications for Clipper S'87 here
-* ~ and the instructions in ELSE 
-*   (about line 100)  
-* ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* SET PROCEDURE TO dbfstru && Clipper S87
+MEMVAR HF_NAME,HF_TYP,HF_LEN,HF_DEC
+MEMVAR F_NAME,F_TYP,F_LEN,F_DEC
+MEMVAR temps,n,nmax,dez,l,zz,DB
+//MEMVAR zahl,zl,zr
+
+// --------------------------------------------------
 PROCEDURE MAIN   && HARBOUR
+// --------------------------------------------------
 PARAMETERS db
+
 PUBLIC CLIPPER
 CLIPPER = .F.  && Set to .T. for Clipper
 
 PUBLIC temps,n,nmax,dez,l,zz
-
-
 PUBLIC HF_NAME,HF_TYP,HF_LEN,HF_DEC
-
+PUBLIC F_NAME,F_TYP,F_LEN,F_DEC
 
 
 IF PCOUNT() != 1
@@ -64,10 +66,7 @@ SET DATE GERMAN  && Format: DD.MM.YYYY, modify to your own needs
 USE &db
 TEMPS = DTOS(LUPDATE())
 
- ? "Copyright (c) 1999-2020 DF7BE"
- IF CLIPPER
- ? "Copyright (c) 1985-1993, Computer Associates International, Inc."
- ENDIF
+ ? "Copyright (c) 1999-2023 DF7BE"
  ? "Under the Property of the GNU General Public Licence"
  ? "with special exceptions of HWGUI."
  ? "See file " , CHR(34) , "license.txt" , CHR(34) , "for details of HWGUI project at"
@@ -160,10 +159,9 @@ RETURN    && END OF MAIN FOR HARBOUR AND CLIPPER
 * they are substituted here
 
 * ================================= *
-FUNCTION PADRIGHT    && = PADR
-  PARAMETERS padr_stri,padr_laen,fzeichen
+FUNCTION PADRIGHT(padr_stri,padr_laen,fzeichen)    && = PADR
 * ================================= *
-  IF PCOUNT() < 3
+  IF fzeichen == NIL
     fzeichen = " "
   ENDIF
 * Avoid crash of SUBSTR()
@@ -176,11 +174,12 @@ FUNCTION PADRIGHT    && = PADR
 RETURN SUBSTR(padr_stri,1,padr_laen) + REPLICATE(fzeichen,padr_laen - LEN(SUBSTR(padr_stri,1,padr_laen)))
 
 * ================================= *
-FUNCTION PADCENTER    && = PADC
-  PARAMETERS padc_stri,padc_laen,fzeichen
+FUNCTION PADCENTER(padc_stri,padc_laen,fzeichen)    && = PADC
 * ================================= *
-  PRIVATE zahl,zl,zr
-  IF PCOUNT() < 3
+
+  LOCAL zahl,zl,zr
+
+  IF fzeichen == NIL
     fzeichen = " "
   ENDIF
 * Avoid crash of SUBSTR()

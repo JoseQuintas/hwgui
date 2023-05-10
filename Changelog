@@ -16,6 +16,12 @@
 */
 
 
+
+2023-05-10 15:10 UTC+0200 Wilfried Brunken DF7BE
+  * utils/devtools/dbfstru.prg
+    ! Ticket #58,optimize for Harbour
+
+
 2023-05-08 18:20 UTC+0200 Wilfried Brunken DF7BE
   * doc/PRINTDOS.txt
   * include/freeimage.h

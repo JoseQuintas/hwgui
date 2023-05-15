@@ -8,14 +8,13 @@
 {linux}-d__LINUX__
 {linux}-d__GTK__
 
-# -mt
 -n -w
 
--oticket112
+-oTicket113
 
-ticket112.prg
+Ticket113.prg
 
 ..\hwgui.hbc
 
-# ===================== EOF of ticket112.hbp ====================
+# ===================== EOF of Ticket113.hbp ====================
 

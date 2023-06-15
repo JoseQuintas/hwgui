@@ -5,6 +5,7 @@
 -mt
 
 gtwvg.hbc
+hbct.hbc
 
 ../../hwgui.hbc
 
@@ -12,3 +13,7 @@ menu.prg
 dlgget.prg
 dlgmenu.prg
 dlgtextview.prg
+dlgauto.prg
+dlgautodat.prg
+dlgautobtn.prg
+test.rc

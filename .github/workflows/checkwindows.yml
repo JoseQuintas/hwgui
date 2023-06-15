@@ -21,9 +21,8 @@ jobs:
     - name: Load Source Code
       run: |
          c:
-         git clone https://github.com/vszakats/hb /temp/harbour34 --depth 1
+         git clone https://github.com/harbour/core /temp/harbour32 --depth 1
          git clone https://github.com/JoseQuintas/hwgui /temp/hwgui --depth 1
-         cd \temp\harbour34
 
     - name: mingw 7.3
       uses: dawidd6/action-download-artifact@v2
@@ -32,7 +31,7 @@ jobs:
          workflow_conclusion: success
          name: mingw_0703
          path: c:\temp
-         repo: JoseQuintas/addons
+         repo: JoseQuintas/sefazclass
 
     - name: Unzip
       env:
@@ -48,29 +47,29 @@ jobs:
          HB_BUILD_STRIP: all
          HB_COMPILER: mingw
          HB_INSTALL_PREFIX: c:\temp\harbour
-         PATH: c:\temp\comp\mingw64\bin;c:\temp\harbour\bin
+         PATH: c:\temp\comp\mingw32\bin;c:\temp\harbour\bin
       run: |
          c:
-         cd c:\temp\harbour34
+         cd c:\temp\harbour32
          mingw32-make clean install
          cd c:\temp\hwgui
-         hbmk2 hwgui.hbp -DHB_VER_REVID=1
-         hbmk2 hbxml.hbp -DHB_VER_REVID=1
-         hbmk2 procmisc.hbp -DHB_VER_REVID=1
-         hbmk2 hwgdebug.hbp -DHB_VER_REVID=1
+         hbmk2 hwgui.hbp -w3
+         hbmk2 hbxml.hbp -w3
+         hbmk2 procmisc.hbp -w3
+         hbmk2 hwgdebug.hbp -w3
 
-    - name: Build 64 bits
-      env:
-         HB_BUILD_STRIP: all
-         HB_COMPILER: mingw64
-         HB_INSTALL_PREFIX: c:\temp\harbour
-         PATH: c:\temp\comp\mingw64\bin;c:\temp\harbour\bin
-      run: |
-         c:
-         cd \temp\harbour34
-         mingw32-make clean install
-         cd c:\temp\hwgui
-         hbmk2 hwgui.hbp -DHB_VER_REVID=1
-         hbmk2 hbxml.hbp -DHB_VER_REVID=1
-         hbmk2 procmisc.hbp -DHB_VER_REVID=1
-         hbmk2 hwgdebug.hbp -DHB_VER_REVID=1
+    #- name: Build 64 bits
+    #  env:
+    #     HB_BUILD_STRIP: all
+    #     HB_COMPILER: mingw64
+    #     HB_INSTALL_PREFIX: c:\temp\harbour
+    #     PATH: c:\temp\comp\mingw64\bin;c:\temp\harbour\bin
+    #  run: |
+    #     c:
+    #     cd \temp\harbour32
+    #     mingw32-make clean install
+    #     cd c:\temp\hwgui
+    #     hbmk2 hwgui.hbp
+    #     hbmk2 hbxml.hbp
+    #     hbmk2 procmisc.hbp
+    #     hbmk2 hwgdebug.hbp

@@ -33,7 +33,7 @@ jobs:
          cd /tmp/harbour
          sudo make install
          cd /tmp/hwgui
-         hbmk2 hwgui.hbp -workdir=/tmp
-         hbmk2 hbxml.hbp -workdir=/tmp
-         hbmk2 procmisc.hbp -workdir=/tmp
-         hbmk2 hwgdebug.hbp -workdir=/tmp
+         hbmk2 hwgui.hbp -workdir=/tmp -w3
+         hbmk2 hbxml.hbp -workdir=/tmp -w3
+         hbmk2 procmisc.hbp -workdir=/tmp -w3
+         hbmk2 hwgdebug.hbp -workdir=/tmp -w3

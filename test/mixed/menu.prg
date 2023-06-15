@@ -22,6 +22,7 @@ FUNCTION Menu()
       @ Row() + 1, 5 PROMPT "Menu hwgui"
       @ Row() + 1, 5 PROMPT "Dialog with get colorized"
       @ Row() + 1, 5 PROMPT "Dialog of text view"
+      @ Row() + 1, 5 PROMPT "Dialog Auto"
       @ 1, 3 TO Row() + 1, 50
       MENU TO nOpc
       bCode := Nil
@@ -38,6 +39,8 @@ FUNCTION Menu()
          hb_ThreadStart( { || hb_gtReload( "WVG" ), DlgGet(.T.) } )
       CASE nOpc == 6
          hb_ThreadStart( { || hb_gtReload( "WVG" ), DlgTextView() } )
+      CASE nOpc == 7
+         hb_ThreadStart( { || hb_gtReload( "WVG" ), DlgAuto() } )
       ENDCASE
    ENDDO
    CLS

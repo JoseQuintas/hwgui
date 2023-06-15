@@ -15,6 +15,20 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-06-15 08:10 UTC-0200 José Quintas
+   * .github/workflows/checkubuntu.yml
+   * .github/workflows/checkwindows.yml
+      ! Changed to harbour 3.2
+   * test/mixed/dlgmenu.prg
+   * test/mixed/menu.prg
+   * test/mixed/test.hbp
+   + test/mixed/dlgauto.prg
+   + test/mixed/dlgautobtn.prg
+   + test/mixed/dlgautodat.prg
+   + test/mixed/exe.manifest
+   + test/mixed/icobook.ico
+   + test/mixed/test.rc
+     ! test dialog
 
 2023-05-15 13:35 UTC+0200 Wilfried Brunken DF7BE
   * test/Ticket113.hbp (New)
@@ -76,7 +90,7 @@
 
 2023-04-28 14:00 UTC+0200 Wilfried Brunken DF7BE
   * contrib/Readme.txt
-  * contrib/makefile.linux 
+  * contrib/makefile.linux
     ! Ticket #119: The library libhwg_extctrl.a
     ! now available on LINUX, but without
     ! "hcomboex", it is "Windows only".

@@ -19,7 +19,7 @@ FUNCTION Menuhwgui()
       ENDMENU
       MENU TITLE "&Tests"
          MENUITEM "&Show gt name"        ACTION hwg_MsgInfo( hb_gtinfo( HB_GTI_VERSION ) )
-         MENUITEM "Menu gtwvg"           ACTION hb_ThreadStart( { || hb_gtReload( "WVG" ), menu() } )
+         //MENUITEM "Menu gtwvg"           ACTION hb_ThreadStart( { || hb_gtReload( "WVG" ), menu() } )
          MENUITEM "Dialog get colorized" ACTION DlgGet(.T.)
          MENUITEM "Dialog Textview"      ACTION DlgTextView()
          MENUITEM "Dialog Auto"          ACTION DlgAuto()

@@ -15,6 +15,19 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-06-18 13:33 UTC-0200 José Quintas
+   * test/mixed/dlgauto.prg
+   * test/mixed/dlgautobtn.prg
+   - test/mixed/dlgautodat.prg
+   + test/mixed/dlgautoedit.prg
+   + test/mixed/dlgautomain.prg
+   * test/mixed/dlgmenu.prg
+   * test/mixed/test.hbp
+     ! separated edit manipulation on dlgautoedit.prg
+     ! renamed main class to dlgautomain.prg
+     ! removed wvg call on dlgmenu, if want compile using hwgui only
+     TODO: numeric get need to be edited from right ?
+
 2023-06-15 08:10 UTC-0200 José Quintas
    * .github/workflows/checkubuntu.yml
    * .github/workflows/checkwindows.yml

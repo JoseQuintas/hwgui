@@ -58,7 +58,7 @@ FUNCTION Execute( cFile )
 
    RETURN Nil
 
-CREATE CLASS ThisDlgClass INHERIT DlgAutoDataClass
+CREATE CLASS ThisDlgClass INHERIT DlgAutoMainClass
 
    METHOD ShowCtlList()
 

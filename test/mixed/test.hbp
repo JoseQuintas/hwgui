@@ -14,6 +14,7 @@ dlgget.prg
 dlgmenu.prg
 dlgtextview.prg
 dlgauto.prg
-dlgautodat.prg
-dlgautobtn.prg
+dlgautomain.prg
+DlgautoEdit.prg
+dlgautoBtn.prg
 test.rc

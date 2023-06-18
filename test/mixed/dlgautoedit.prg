@@ -14,94 +14,47 @@
 #define TEXT_SIZE    20
 #define BUTTON_SPACE 3
 
-CREATE CLASS DlgAutoDataClass INHERIT DlgAutoButtonClass
+CREATE CLASS DlgAutoEditClass INHERIT DlgAutoBtnClass
 
    VAR cTitle
    VAR cFileDBF
    VAR aEditList INIT {}
-   METHOD Execute()
-   METHOD View()    INLINE Nil
-   METHOD Edit()
-   METHOD Delete()      INLINE Nil
-   METHOD Insert()      INLINE Nil
-   METHOD First()       INLINE &( ::cFileDbf )->( dbgotop() ),    ::ScreenUpdate()
-   METHOD Last()        INLINE &( ::cFileDbf )->( dbgobottom() ), ::ScreenUpdate()
-   METHOD Next()        INLINE &( ::cFileDbf )->( dbSkip() ),     ::ScreenUpdate()
-   METHOD Previous()    INLINE &( ::cFileDbf )->( dbSkip( -1 ) ), ::ScreenUpdate()
-   METHOD Exit()        INLINE ::oDlg:Close()
-   METHOD Save()
-   METHOD Cancel()
-   METHOD ScreenUpdate()
-   METHOD ScreenCreate()
+   METHOD EditSetup()
+   METHOD EditUpdate()
+   METHOD EditCreate()
+   METHOD EditOn()
+   METHOD EditOff()
    VAR oDlg
 
    ENDCLASS
 
-METHOD Edit() CLASS DlgAutoDataClass
+METHOD EditOn() CLASS DlgAutoEditClass
 
    LOCAL aItem
 
    FOR EACH aItem IN ::aControlList
       IF aItem[1] == TYPE_EDIT
          aItem[2]:Enable()
-      ELSEIF aItem[ 1 ] == TYPE_BUTTON
-         IF aItem[ 3 ] $ "Save,Cancel"
-            aItem[ 2 ]:Enable()
-         ELSE
-            aItem[ 2 ]:Disable()
-         ENDIF
       ENDIF
    NEXT
+   ::ButtonSaveOn()
 
    RETURN Nil
 
-METHOD Save()
-
-   LOCAL aItem
-
-   RLock()
-   FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_EDIT
-         IF ! Empty( aItem[ EDIT_NAME ] )
-            FieldPut( FieldNum( aItem[ EDIT_NAME ] ), aItem[ EDIT_VALUE ] )
-         ENDIF
-      ENDIF
-   NEXT
-   SKIP 0
-   UNLOCK
-   FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_EDIT
-         aItem[2]:Disable()
-      ELSEIF aItem[1] == TYPE_BUTTON
-         IF aItem[3] $ "Save,Cancel"
-            aItem[2]:Disable()
-         ELSE
-            aItem[2]:Enable()
-         ENDIF
-      ENDIF
-   NEXT
-
-   RETURN Nil
-
-METHOD Cancel()
+METHOD EditOff() CLASS DlgAutoEditClass
 
    LOCAL aItem
 
    FOR EACH aItem IN ::aControlList
       IF aItem[1] == TYPE_EDIT
          aItem[2]:Disable()
-      ELSEIF aItem[1] == TYPE_BUTTON
-         IF aItem[3] $ "Save,Cancel"
-            aItem[2]:Disable()
-         ELSE
-            aItem[2]:Enable()
-         ENDIF
       ENDIF
    NEXT
+   ::ButtonSaveOff()
 
    RETURN Nil
 
-METHOD ScreenCreate() CLASS DlgAutoDataClass
+METHOD EditCreate() CLASS DlgAutoEditClass
 
    LOCAL nRow, nCol, aItem
 
@@ -136,7 +89,7 @@ METHOD ScreenCreate() CLASS DlgAutoDataClass
 
    RETURN Nil
 
-METHOD ScreenUpdate() CLASS DlgAutoDataClass
+METHOD EditUpdate() CLASS DlgAutoEditClass
 
    LOCAL aItem
 
@@ -146,31 +99,16 @@ METHOD ScreenUpdate() CLASS DlgAutoDataClass
             aItem[2]:Value := FieldGet( FieldNum( aItem[ EDIT_NAME ] ) )
             aItem[2]:Refresh()
          ENDIF
-      ELSEIF aItem[1] == TYPE_BUTTON
-         IF aItem[ 3 ] $ "Save,Cancel"
-            aItem[ 2 ]:Disable()
-         ENDIF
       ENDIF
    NEXT
 
    RETURN Nil
 
-METHOD Execute() CLASS DlgAutoDataClass
+METHOD EditSetup() CLASS DlgAutoEditClass
 
-   SELECT 0
-   USE ( ::cFileDBF )
    IF Empty( ::aEditList )
       ::aEditList := dbStruct()
    ENDIF
-
-   INIT DIALOG ::oDlg CLIPPER NOEXIT TITLE ::cTitle ;
-      AT 0, 0 SIZE ::nDlgWidth, ::nDlgHeight ;
-      BACKCOLOR STYLE_BACK ;
-      ON EXIT hwg_EndDialog() ;
-      ON INIT { || ::ScreenUpdate() }
-   ::CreateButtons()
-   ::ScreenCreate()
-   ACTIVATE DIALOG ::oDlg CENTER
 
    RETURN Nil
 

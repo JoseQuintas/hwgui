@@ -7,18 +7,20 @@
 #define TYPE_BUTTON      1
 #define TYPE_EDIT        2
 
-CREATE CLASS DlgAutoButtonClass
+CREATE CLASS DlgAutoBtnClass
 
    VAR cOptions     INIT "IED"
    VAR aOptionList  INIT {}
    VAR aControlList INIT {}
    VAR nDlgWidth    INIT 1024
    VAR nDlgHeight   INIT 768
-   METHOD CreateButtons()
+   METHOD ButtonCreate()
+   METHOD ButtonSaveOn()
+   METHOD ButtonSaveOff()
 
    ENDCLASS
 
-METHOD CreateButtons() CLASS DlgAutoButtonClass
+METHOD ButtonCreate() CLASS DlgAutoBtnClass
 
    LOCAL nRow, nCol, nRowLine := 1, aItem, aList := {}
 
@@ -68,6 +70,38 @@ METHOD CreateButtons() CLASS DlgAutoButtonClass
          nCol := ::nDlgWidth - BUTTON_SIZE - BUTTON_SPACE
       ENDIF
       nCol += iif( nRowLine == 1, 1, -1 ) * ( BUTTON_SIZE + BUTTON_SPACE )
+   NEXT
+
+   RETURN Nil
+
+METHOD ButtonSaveOn() CLASS DlgAutoBtnClass
+
+   LOCAL aItem
+
+   FOR EACH aItem IN ::aControlList
+      IF aItem[1] == TYPE_BUTTON
+         IF aItem[ 3 ] $ "Save,Cancel"
+            aItem[ 2 ]:Enable()
+         ELSE
+            aItem[ 2 ]:Disable()
+         ENDIF
+      ENDIF
+   NEXT
+
+   RETURN Nil
+
+METHOD ButtonSaveOff() CLASS DlgAutoBtnClass
+
+   LOCAL aItem
+
+   FOR EACH aItem IN ::aControlList
+      IF aItem[1] == TYPE_BUTTON
+         IF aItem[ 3 ] $ "Save,Cancel"
+            aItem[ 2 ]:Disable()
+         ELSE
+            aItem[ 2 ]:Enable()
+         ENDIF
+      ENDIF
    NEXT
 
    RETURN Nil

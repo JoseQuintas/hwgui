@@ -1,18 +1,7 @@
 #include "hbclass.ch"
 #include "hwgui.ch"
 #include "dbstruct.ch"
-#define EDIT_NAME  3
-#define EDIT_TYPE  4
-#define EDIT_LEN   5
-#define EDIT_DEC   6
-#define EDIT_VALUE 7
-#define STYLE_BACK       WIN_RGB( 13, 16, 51 )
-#define STYLE_FORE       WIN_RGB( 255, 255, 255 )
-#define TYPE_BUTTON      1
-#define TYPE_EDIT        2
-#define BUTTON_SIZE  50
-#define TEXT_SIZE    20
-#define BUTTON_SPACE 3
+#include "dlgauto.ch"
 
 CREATE CLASS DlgAutoMainClass INHERIT DlgAutoEditClass
 
@@ -48,9 +37,9 @@ METHOD Save() CLASS DlgAutoMainClass
    ::EditOff()
    RLock()
    FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_EDIT
-         IF ! Empty( aItem[ EDIT_NAME ] )
-            FieldPut( FieldNum( aItem[ EDIT_NAME ] ), aItem[ EDIT_VALUE ] )
+      IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT
+         IF ! Empty( aItem[ CFG_NAME ] )
+            FieldPut( FieldNum( aItem[ CFG_NAME ] ), aItem[ CFG_VALUE ] )
          ENDIF
       ENDIF
    NEXT

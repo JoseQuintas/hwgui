@@ -1,11 +1,6 @@
 #include "hbclass.ch"
 #include "hwgui.ch"
-
-#define BUTTON_SIZE  50
-#define TEXT_SIZE    20
-#define BUTTON_SPACE 3
-#define TYPE_BUTTON      1
-#define TYPE_EDIT        2
+#include "dlgauto.ch"
 
 CREATE CLASS DlgAutoBtnClass
 
@@ -56,14 +51,14 @@ METHOD ButtonCreate() CLASS DlgAutoBtnClass
       AAdd( ::aControlList, { TYPE_BUTTON, Nil, aItem[ 1 ], aItem[ 2 ] } )
    NEXT
    FOR EACH aItem IN ::aControlList
-      @ nCol, nRow BUTTON aItem[2] ;
+      @ nCol, nRow BUTTON aItem[ CFG_OBJ ] ;
          CAPTION Nil ;
          OF ::oDlg SIZE BUTTON_SIZE, BUTTON_SIZE ;
          STYLE BS_TOP ;
-         ON CLICK aItem[4] ;
+         ON CLICK aItem[ CFG_ACTION ] ;
          ON INIT { || ;
-            BtnSetImageText( aItem[2]:Handle, aItem[3] ) } ;
-         TOOLTIP aItem[1]
+            BtnSetImageText( aItem[ CFG_OBJ ]:Handle, aItem[ CFG_NAME ] ) } ;
+            TOOLTIP aItem[ CFG_NAME ]
       IF nCol > ::nDlgWidth - ( BUTTON_SIZE - BUTTON_SPACE ) * 2
          nRowLine += 1
          nRow += BUTTON_SIZE + BUTTON_SPACE
@@ -79,11 +74,11 @@ METHOD ButtonSaveOn() CLASS DlgAutoBtnClass
    LOCAL aItem
 
    FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_BUTTON
-         IF aItem[ 3 ] $ "Save,Cancel"
-            aItem[ 2 ]:Enable()
+      IF aItem[ CFG_CTLTYPE ] == TYPE_BUTTON
+         IF aItem[ CFG_NAME ] $ "Save,Cancel"
+            aItem[ CFG_OBJ ]:Enable()
          ELSE
-            aItem[ 2 ]:Disable()
+            aItem[ CFG_OBJ ]:Disable()
          ENDIF
       ENDIF
    NEXT
@@ -95,11 +90,11 @@ METHOD ButtonSaveOff() CLASS DlgAutoBtnClass
    LOCAL aItem
 
    FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_BUTTON
-         IF aItem[ 3 ] $ "Save,Cancel"
-            aItem[ 2 ]:Disable()
+      IF aItem[ CFG_CTLTYPE ] == TYPE_BUTTON
+         IF aItem[ CFG_NAME ] $ "Save,Cancel"
+            aItem[ CFG_OBJ ]:Disable()
          ELSE
-            aItem[ 2 ]:Enable()
+            aItem[ CFG_OBJ ]:Enable()
          ENDIF
       ENDIF
    NEXT

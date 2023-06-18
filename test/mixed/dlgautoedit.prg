@@ -1,18 +1,7 @@
 #include "hbclass.ch"
 #include "hwgui.ch"
 #include "dbstruct.ch"
-#define EDIT_NAME  3
-#define EDIT_TYPE  4
-#define EDIT_LEN   5
-#define EDIT_DEC   6
-#define EDIT_VALUE 7
-#define STYLE_BACK       WIN_RGB( 13, 16, 51 )
-#define STYLE_FORE       WIN_RGB( 255, 255, 255 )
-#define TYPE_BUTTON      1
-#define TYPE_EDIT        2
-#define BUTTON_SIZE  50
-#define TEXT_SIZE    20
-#define BUTTON_SPACE 3
+#include "dlgauto.ch"
 
 CREATE CLASS DlgAutoEditClass INHERIT DlgAutoBtnClass
 
@@ -30,14 +19,19 @@ CREATE CLASS DlgAutoEditClass INHERIT DlgAutoBtnClass
 
 METHOD EditOn() CLASS DlgAutoEditClass
 
-   LOCAL aItem
+   LOCAL aItem, oFirstEdit, lFound := .F.
 
    FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_EDIT
-         aItem[2]:Enable()
+      IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT
+         aItem[ CFG_OBJ ]:Enable()
+         IF ! lFound
+            lFound := .T.
+            oFirstEdit := aItem[ CFG_OBJ ]
+         ENDIF
       ENDIF
    NEXT
    ::ButtonSaveOn()
+   oFirstEdit:SetFocus()
 
    RETURN Nil
 
@@ -46,8 +40,8 @@ METHOD EditOff() CLASS DlgAutoEditClass
    LOCAL aItem
 
    FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_EDIT
-         aItem[2]:Disable()
+      IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT
+         aItem[ CFG_OBJ ]:Disable()
       ENDIF
    NEXT
    ::ButtonSaveOff()
@@ -60,32 +54,33 @@ METHOD EditCreate() CLASS DlgAutoEditClass
 
    FOR EACH aItem IN ::aEditList
       AAdd( ::aControlList, { TYPE_EDIT, Nil, aItem[ DBS_NAME ], aItem[ DBS_TYPE ], aItem[ DBS_LEN ], aItem[ DBS_DEC ], Nil } )
-      ATail( ::aControlList )[ EDIT_VALUE ] := &( ::cFileDbf )->( FieldGet( aItem[ DBS_NAME ] ) )
+      ATail( ::aControlList )[ CFG_VALUE ] := &( ::cFileDbf )->( FieldGet( aItem[ DBS_NAME ] ) )
    NEXT
    nRow := 110
    nCol := 5
    FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_EDIT
-      IF nCol + 50 + aItem[ EDIT_LEN ] * 12 + 50 > 1024 - 20
+      IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT
+      IF nCol + 50 + aItem[ CFG_LEN ] * 12 + 50 > 1024 - 20
          nCol := 5
          nRow += 25
       ENDIF
-      @ nCol, nRow SAY aItem[ EDIT_NAME ] SIZE 100, 20 COLOR STYLE_FORE TRANSPARENT
-      @ nCol + 110, nRow GET aItem[2] ;
-         VAR aItem[ EDIT_VALUE ] ;
-         SIZE ( aItem[ EDIT_LEN ] + 1 ) * 12, 20 ;
-         STYLE WS_DISABLED + iif( aItem[ EDIT_TYPE ] == "N", ES_RIGHT, ES_LEFT ) ;
-         MAXLENGTH aItem[ EDIT_LEN ] ;
+      @ nCol, nRow SAY aItem[ CFG_NAME ] SIZE 100, 20 COLOR STYLE_FORE TRANSPARENT
+      @ nCol + 110, nRow GET aItem[ CFG_OBJ ] ;
+         VAR aItem[ CFG_VALUE ] ;
+         SIZE ( aItem[ CFG_LEN ] + 1 ) * 12, 20 ;
+         STYLE WS_DISABLED + iif( aItem[ CFG_VALTYPE ] == "N", ES_RIGHT, ES_LEFT ) ;
+         MAXLENGTH aItem[ CFG_LEN ] ;
          PICTURE PictureFromValue( aItem )
+      aItem[ CFG_OBJ ]:cType := aItem[ CFG_VALTYPE ] // teste ref bug
       IF aItem:__EnumIndex < 5
          nCol += 5000
       ELSE
-         nCol += 100 + ( ( aItem[ EDIT_LEN ] + 1 ) * 12 ) + 50
+         nCol += 100 + ( ( aItem[ CFG_LEN ] + 1 ) * 12 ) + 50
       ENDIF
       ENDIF
    NEXT
    AAdd( ::aControlList, { TYPE_EDIT, Nil, "", "C", 1, 0, "" } )
-   @ nCol, nRow GET Atail( ::aControlList )[2] VAR Atail( ::aControlList )[ EDIT_VALUE ] SIZE 0, 0
+   @ nCol, nRow GET Atail( ::aControlList )[ CFG_OBJ ] VAR Atail( ::aControlList )[ CFG_VALUE ] SIZE 0, 0
 
    RETURN Nil
 
@@ -94,10 +89,10 @@ METHOD EditUpdate() CLASS DlgAutoEditClass
    LOCAL aItem
 
    FOR EACH aItem IN ::aControlList
-      IF aItem[1] == TYPE_EDIT
-         IF ! Empty( aItem[ EDIT_NAME ] )
-            aItem[2]:Value := FieldGet( FieldNum( aItem[ EDIT_NAME ] ) )
-            aItem[2]:Refresh()
+      IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT
+         IF ! Empty( aItem[ CFG_NAME ] )
+            aItem[ CFG_OBJ ]:Value := FieldGet( FieldNum( aItem[ CFG_NAME ] ) )
+            aItem[ CFG_OBJ ]:Refresh()
          ENDIF
       ENDIF
    NEXT
@@ -116,9 +111,9 @@ STATIC FUNCTION PictureFromValue( oValue )
 
    LOCAL cPicture, cType, nLen, nDec
 
-   cType := oValue[ EDIT_TYPE ]
-   nLen  := oValue[ EDIT_LEN ]
-   nDec  := oValue[ EDIT_DEC ]
+   cType := oValue[ CFG_VALTYPE ]
+   nLen  := oValue[ CFG_LEN ]
+   nDec  := oValue[ CFG_DEC ]
    DO CASE
    CASE cType == "D"
       cPicture := "@D"

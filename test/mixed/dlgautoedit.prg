@@ -54,7 +54,7 @@ METHOD EditCreate() CLASS DlgAutoEditClass
 
    FOR EACH aItem IN ::aEditList
       AAdd( ::aControlList, { TYPE_EDIT, Nil, aItem[ DBS_NAME ], aItem[ DBS_TYPE ], aItem[ DBS_LEN ], aItem[ DBS_DEC ], Nil } )
-      ATail( ::aControlList )[ CFG_VALUE ] := &( ::cFileDbf )->( FieldGet( aItem[ DBS_NAME ] ) )
+      Atail( ::aControlList)[ CFG_VALUE ] := &( ::cFileDbf )->( FieldGet( FieldNum( aItem[ DBS_NAME ] ) ) )
    NEXT
    nRow := 110
    nCol := 5
@@ -71,7 +71,6 @@ METHOD EditCreate() CLASS DlgAutoEditClass
          STYLE WS_DISABLED + iif( aItem[ CFG_VALTYPE ] == "N", ES_RIGHT, ES_LEFT ) ;
          MAXLENGTH aItem[ CFG_LEN ] ;
          PICTURE PictureFromValue( aItem )
-      aItem[ CFG_OBJ ]:cType := aItem[ CFG_VALTYPE ] // teste ref bug
       IF aItem:__EnumIndex < 5
          nCol += 5000
       ELSE

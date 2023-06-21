@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-06-21 11:10 UTC-0200 José Quintas
+   * test/mixed/dlgauto.ch
+   * test/mixed/dlgautoedit.prg
+     ! tab and panel when EditList > 30
+
 2023-06-19 02:01 UTC-0200 José Quintas
    * test/mixed/dlgautoedit.prg
      ! FieldNum() on EditCreate(): Now initial values are not Nil, and HEdit uses correct valtype

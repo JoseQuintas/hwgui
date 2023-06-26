@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-06-26 14:00 UTC-0200 José Quintas
+   * test/mixed/dlgauto.ch
+   * test/mixed/dlgauto.prg
+   * test/mixed/dlgautobtn.prg
+   * test/mixed/dlgautoedit.prg
+   * test/mixed/dlgautomain.prg
+     ! label as title of hedit, option to change label text
+
 2023-06-21 11:10 UTC-0200 José Quintas
    * test/mixed/dlgauto.ch
    * test/mixed/dlgautoedit.prg

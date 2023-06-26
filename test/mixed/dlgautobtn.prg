@@ -2,20 +2,21 @@
 #include "hwgui.ch"
 #include "dlgauto.ch"
 
-CREATE CLASS DlgAutoBtnClass
+CREATE CLASS DlgAutoBtn
 
    VAR cOptions     INIT "IED"
    VAR aOptionList  INIT {}
    VAR aControlList INIT {}
-   VAR nDlgWidth    INIT 1024
-   VAR nDlgHeight   INIT 768
+   VAR nButtonSize  INIT 50
+   VAR nButtonSpace INIT 3
+   VAR nTextSize    INIT 20
    METHOD ButtonCreate()
    METHOD ButtonSaveOn()
    METHOD ButtonSaveOff()
 
    ENDCLASS
 
-METHOD ButtonCreate() CLASS DlgAutoBtnClass
+METHOD ButtonCreate() CLASS DlgAutoBtn
 
    LOCAL nRow, nCol, nRowLine := 1, aItem, aList := {}
 
@@ -53,23 +54,23 @@ METHOD ButtonCreate() CLASS DlgAutoBtnClass
    FOR EACH aItem IN ::aControlList
       @ nCol, nRow BUTTON aItem[ CFG_OBJ ] ;
          CAPTION Nil ;
-         OF ::oDlg SIZE BUTTON_SIZE, BUTTON_SIZE ;
+         OF ::oDlg SIZE ::nButtonSize, ::nButtonSize ;
          STYLE BS_TOP ;
          ON CLICK aItem[ CFG_ACTION ] ;
          ON INIT { || ;
-            BtnSetImageText( aItem[ CFG_OBJ ]:Handle, aItem[ CFG_NAME ] ) } ;
+            BtnSetImageText( aItem[ CFG_OBJ ]:Handle, aItem[ CFG_NAME ], Self ) } ;
             TOOLTIP aItem[ CFG_NAME ]
-      IF nCol > ::nDlgWidth - ( BUTTON_SIZE - BUTTON_SPACE ) * 2
+      IF nCol > ::nDlgWidth - ( ::nButtonSize - ::nButtonSpace ) * 2
          nRowLine += 1
-         nRow += BUTTON_SIZE + BUTTON_SPACE
-         nCol := ::nDlgWidth - BUTTON_SIZE - BUTTON_SPACE
+         nRow += ::nButtonSize + ::nButtonSpace
+         nCol := ::nDlgWidth - ::nButtonSize - ::nButtonSpace
       ENDIF
-      nCol += iif( nRowLine == 1, 1, -1 ) * ( BUTTON_SIZE + BUTTON_SPACE )
+      nCol += iif( nRowLine == 1, 1, -1 ) * ( ::nButtonSize + ::nButtonSpace )
    NEXT
 
    RETURN Nil
 
-METHOD ButtonSaveOn() CLASS DlgAutoBtnClass
+METHOD ButtonSaveOn() CLASS DlgAutoBtn
 
    LOCAL aItem
 
@@ -85,7 +86,7 @@ METHOD ButtonSaveOn() CLASS DlgAutoBtnClass
 
    RETURN Nil
 
-METHOD ButtonSaveOff() CLASS DlgAutoBtnClass
+METHOD ButtonSaveOff() CLASS DlgAutoBtn
 
    LOCAL aItem
 
@@ -101,7 +102,7 @@ METHOD ButtonSaveOff() CLASS DlgAutoBtnClass
 
    RETURN Nil
 
-STATIC FUNCTION BtnSetImageText( hHandle, cCaption )
+STATIC FUNCTION BtnSetImageText( hHandle, cCaption, oAuto )
 
    LOCAL oIcon, nPos, cResName, hIcon
    LOCAL aList := { ;
@@ -122,7 +123,7 @@ STATIC FUNCTION BtnSetImageText( hHandle, cCaption )
 
    IF ( nPos := hb_AScan( aList, { | e | e[1] == cCaption } ) ) != 0
       cResName := aList[ nPos, 2 ]
-      oIcon := HICON():AddResource( cResName, BUTTON_SIZE - TEXT_SIZE, BUTTON_SIZE - TEXT_SIZE )
+      oIcon := HICON():AddResource( cResName, oAuto:nButtonSize - oAuto:nTextSize, oAuto:nButtonSize - oAuto:nTextSize )
       IF ValType( oIcon ) == "O"
          hIcon := oIcon:Handle
       ENDIF

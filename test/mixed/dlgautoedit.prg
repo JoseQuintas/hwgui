@@ -3,12 +3,13 @@
 #include "dbstruct.ch"
 #include "dlgauto.ch"
 
-CREATE CLASS DlgAutoEditClass INHERIT DlgAutoBtnClass
+CREATE CLASS DlgAutoEdit
 
    VAR cTitle
    VAR cFileDBF
-   VAR aEditList  INIT {}
-   VAR lWithTab   INIT .F.
+   VAR aEditList   INIT {}
+   VAR lWithTab    INIT .F.
+   VAR nLineHeight INIT 25
    METHOD EditSetup()
    METHOD EditUpdate()
    METHOD EditCreate()
@@ -18,7 +19,7 @@ CREATE CLASS DlgAutoEditClass INHERIT DlgAutoBtnClass
 
    ENDCLASS
 
-METHOD EditOn() CLASS DlgAutoEditClass
+METHOD EditOn() CLASS DlgAutoEdit
 
    LOCAL aItem, oFirstEdit, lFound := .F.
 
@@ -36,7 +37,7 @@ METHOD EditOn() CLASS DlgAutoEditClass
 
    RETURN Nil
 
-METHOD EditOff() CLASS DlgAutoEditClass
+METHOD EditOff() CLASS DlgAutoEdit
 
    LOCAL aItem
 
@@ -49,26 +50,27 @@ METHOD EditOff() CLASS DlgAutoEditClass
 
    RETURN Nil
 
-METHOD EditCreate() CLASS DlgAutoEditClass
+METHOD EditCreate() CLASS DlgAutoEdit
 
-   LOCAL nRow, nCol, aItem, oTab := Nil, nPageCount := 0, oPanel
+   LOCAL nRow, nCol, aItem, oTab := Nil, nPageCount := 0, oPanel, nLen
 
    FOR EACH aItem IN ::aEditList
-      AAdd( ::aControlList, { TYPE_EDIT, Nil, aItem[ DBS_NAME ], aItem[ DBS_TYPE ], aItem[ DBS_LEN ], aItem[ DBS_DEC ], Nil } )
+      AAdd( ::aControlList, { TYPE_EDIT, Nil, aItem[ DBS_NAME ], aItem[ DBS_TYPE ], aItem[ DBS_LEN ], aItem[ DBS_DEC ], aItem[ 5 ], Nil } )
       Atail( ::aControlList)[ CFG_VALUE ] := &( ::cFileDbf )->( FieldGet( FieldNum( aItem[ DBS_NAME ] ) ) )
    NEXT
    IF ::lWithTab
-      @ 5, 110 TAB oTab ITEMS {} OF ::oDlg ID 101 SIZE 1000, 800  STYLE WS_CHILD + WS_VISIBLE
-      AAdd( ::aControlList, { TYPE_TAB, oTab, Nil, Nil, Nil, Nil, Nil } )
-      @ 1, 24 PANEL oPanel OF oTab SIZE 998, 790 BACKCOLOR STYLE_BACK
-      AAdd( ::aControlList, { TYPE_PANEL, oPanel, Nil, Nil, Nil, Nil, Nil } )
+      @ 5, 70 TAB oTab ITEMS {} OF ::oDlg ID 101 SIZE ::nDlgWidth - 10, ::nDlgHeight - 140 STYLE WS_CHILD + WS_VISIBLE
+      AAdd( ::aControlList, { TYPE_TAB, oTab, Nil, Nil, Nil, Nil, Nil, Nil  } )
+      @ 1, 23 PANEL oPanel OF oTab SIZE ::nDlgWidth - 12, ::nDlgHeight - 165 BACKCOLOR STYLE_BACK
+      AAdd( ::aControlList, { TYPE_PANEL, oPanel, Nil, Nil, Nil, Nil, Nil, Nil } )
       nCol := 9999
    ENDIF
-   nRow := 120
+   nRow := 80
    nCol := 10
    FOR EACH aItem IN ::aControlList
       IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT
-         IF nCol + 50 + aItem[ CFG_LEN ] * 12 + 50 > 1024 - 20
+         nLen := Max( aItem[ CFG_LEN ], Len( aItem[ CFG_CAPTION ] ) )
+         IF nCol + 30 + ( nLen * 12 ) > ::nDlgWidth - 40
             IF ::lWithTab .AND. ( nRow > 300 .OR. nPageCount == 0 )
                IF nPageCount > 0
                   END PAGE OF oTab
@@ -76,26 +78,22 @@ METHOD EditCreate() CLASS DlgAutoEditClass
                nPageCount += 1
                BEGIN PAGE "Pag." + Str( nPageCount, 2 ) OF oTab
                nCol := 10
-               nRow := 120
+               nRow := 80
             ENDIF
             nCol := 10
-            nRow += 25
+            nRow += ( ::nLineHeight * 2 )
          ENDIF
-         @ nCol, nRow SAY aItem[ CFG_NAME ] OF iif( ::lWithTab, oTab, ::oDlg ) SIZE 100, 20 COLOR STYLE_FORE TRANSPARENT
-         @ nCol + 110, nRow GET aItem[ CFG_OBJ ] ;
+         @ nCol, nRow SAY aItem[ CFG_CAPTION ] OF iif( ::lWithTab, oTab, ::oDlg ) SIZE nLen * 12, 20 COLOR STYLE_FORE TRANSPARENT
+         @ nCol, nRow + ::nLineHeight GET aItem[ CFG_OBJ ] ;
             VAR aItem[ CFG_VALUE ] OF iif( ::lWithTab, oTab, ::oDlg ) ;
-            SIZE ( aItem[ CFG_LEN ] + 1 ) * 12, 20 ;
+            SIZE aItem[ CFG_LEN ] * 12, 20 ;
             STYLE WS_DISABLED + iif( aItem[ CFG_VALTYPE ] == "N", ES_RIGHT, ES_LEFT ) ;
             MAXLENGTH aItem[ CFG_LEN ] ;
             PICTURE PictureFromValue( aItem )
-         //IF aItem:__EnumIndex < 5
-         //   nCol += 5000
-         //ELSE
-            nCol += 100 + ( ( aItem[ CFG_LEN ] + 1 ) * 12 ) + 50
-         //ENDIF
+            nCol += ( nLen * 12 ) + 30
       ENDIF
    NEXT
-   AAdd( ::aControlList, { TYPE_EDIT, Nil, "", "C", 1, 0, "" } )
+   AAdd( ::aControlList, { TYPE_EDIT, Nil, "", "C", 1, 0, "", "" } )
    @ nCol, nRow GET Atail( ::aControlList )[ CFG_OBJ ] VAR Atail( ::aControlList )[ CFG_VALUE ] SIZE 0, 0
    IF ::lWithTab
       END PAGE OF oTab
@@ -103,7 +101,7 @@ METHOD EditCreate() CLASS DlgAutoEditClass
 
    RETURN Nil
 
-METHOD EditUpdate() CLASS DlgAutoEditClass
+METHOD EditUpdate() CLASS DlgAutoEdit
 
    LOCAL aItem
 
@@ -118,10 +116,16 @@ METHOD EditUpdate() CLASS DlgAutoEditClass
 
    RETURN Nil
 
-METHOD EditSetup() CLASS DlgAutoEditClass
+METHOD EditSetup() CLASS DlgAutoEdit
+
+   LOCAL aItem
 
    IF Empty( ::aEditList )
       ::aEditList := dbStruct()
+      FOR EACH aItem IN ::aEditList
+         aSize( aItem, 5 )
+         aItem[ 5 ] := Upper( Left( aItem[ DBS_NAME ], 1 ) ) + Lower( Substr( aItem[ DBS_NAME ], 2 ) )
+      NEXT
    ENDIF
    IF Len( ::aEditList ) > 30
       ::lWithTab := .T.

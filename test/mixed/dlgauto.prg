@@ -48,7 +48,7 @@ FUNCTION Execute( cFile )
 
    LOCAL oDlg
 
-   oDlg := ThisDlgClass():New()
+   oDlg := ThisDlg():New()
    oDlg:cFileDBF := cFile
    oDlg:cTitle   := "test of " + cFile
    oDlg:cOptions := "IEDP"
@@ -58,13 +58,13 @@ FUNCTION Execute( cFile )
 
    RETURN Nil
 
-CREATE CLASS ThisDlgClass INHERIT DlgAutoMainClass
+CREATE CLASS ThisDlg INHERIT DlgAutoMain
 
    METHOD ShowCtlList()
 
    ENDCLASS
 
-METHOD ShowCtlList() CLASS ThisDlgClass
+METHOD ShowCtlList() CLASS ThisDlg
 
    LOCAL oControl, cTxt := "", cTxtTmp := ""
 

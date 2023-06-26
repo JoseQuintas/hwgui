@@ -3,8 +3,10 @@
 #include "dbstruct.ch"
 #include "dlgauto.ch"
 
-CREATE CLASS DlgAutoMainClass INHERIT DlgAutoEditClass
+CREATE CLASS DlgAutoMain INHERIT DlgAutoBtn, DlgAutoEdit
 
+   VAR nDlgWidth    INIT 1024
+   VAR nDlgHeight   INIT 768
    VAR cTitle
    VAR cFileDBF
    VAR aEditList INIT {}
@@ -24,13 +26,13 @@ CREATE CLASS DlgAutoMainClass INHERIT DlgAutoEditClass
 
    ENDCLASS
 
-METHOD Edit() CLASS DlgAutoMainClass
+METHOD Edit() CLASS DlgAutoMain
 
    ::EditOn()
 
    RETURN Nil
 
-METHOD Save() CLASS DlgAutoMainClass
+METHOD Save() CLASS DlgAutoMain
 
    LOCAL aItem
 
@@ -48,14 +50,14 @@ METHOD Save() CLASS DlgAutoMainClass
 
    RETURN Nil
 
-METHOD Cancel() CLASS DlgAutoMainClass
+METHOD Cancel() CLASS DlgAutoMain
 
    ::EditOff()
    ::EditUpdate()
 
    RETURN Nil
 
-METHOD Execute() CLASS DlgAutoMainClass
+METHOD Execute() CLASS DlgAutoMain
 
    SELECT 0
    USE ( ::cFileDBF )

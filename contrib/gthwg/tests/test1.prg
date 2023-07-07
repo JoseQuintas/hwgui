@@ -5,16 +5,18 @@
  *
  * test1.prg - simple test program
  *
- * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2021 - 2023 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  */
 
 #include "hbgtinfo.ch"
 
-FUNCTION Main
+STATIC shadow1
+STATIC hImage, img_x1, img_y1, img_width, img_height
 
-   LOCAL nKey, nh, nw, GetList := {}
-   LOCAL cLogin := Space( 16 )
+FUNCTION Main( _par1 )
+
+   LOCAL choice, frame
 
    REQUEST HB_GT_HWGUI
    REQUEST HB_GT_HWGUI_DEFAULT
@@ -22,36 +24,122 @@ FUNCTION Main
    REQUEST HB_CODEPAGE_RU866
    REQUEST HB_CODEPAGE_UTF8
 
+   SET DATE BRITISH
+   SET WRAP ON
    SET SCORE OFF
    hb_cdpSelect( "RU866" )
 
    CreateWindow()
 
-   SetMode( 30,90 )
+   SetMode( 30,100 )
    nw := Min( 1920, hb_gtinfo( HB_GTI_DESKTOPWIDTH ) ) - 20
    nh := Min( 1080, hb_gtinfo( HB_GTI_DESKTOPHEIGHT ) ) - 84
    hb_gtinfo( HB_GTI_FONTWIDTH, Int( nw / ( MaxCol() + 1 ) ) )
    hb_gtinfo( HB_GTI_FONTSIZE, Int( nh / ( MaxRow() + 1 ) ) )
-   //hwg_writelog( "gt: " + hb_gtVersion() + " " + hwg_version() )
 
-   SetColor( "W+/B" )
-   clear screen
-   @ 0, 0, MaxRow(), MaxCol() BOX "******** "
-   @ 4,5 SAY "Test"
-   @ MaxRow() - 1, 1 SAY "---- " + Str( MaxRow() + 1, 3 ) + " X " + Str( MaxCol() + 1, 3 ) + " Desktop:" + Str( hb_gtinfo( HB_GTI_DESKTOPROWS ), 3 )
-   @ MaxRow() - 1, 70 SAY "----"
-   @ MaxRow(), 1 SAY "===="
-   @ MaxRow(), 70 SAY "===="
-   @ 3,5 SAY "‚¢¥¤¨â¥ â¥ªáâ:" GET cLogin
-   READ
+   frame   := Replicate( Chr( 219 ), 9 )
+   shadow1 := Replicate( Chr( 220 ), 9 )
 
-   hwg_writelog( "Login: " + cLogin )
+   choice := 1
+   DO WHILE choice != 3 .AND. choice != 0
+      SET COLOR TO N +/ N
+      @  0,  0, 29, 99 BOX frame
+      @  2,  7, 2, 30 BOX shadow1
+      @  1, 30 SAY Chr( 223 )
+      @  4,  7, 4, 30 BOX shadow1
+      @  3, 30 SAY Chr( 223 )
+      @  6,  7, 6, 30 BOX shadow1
+      @  5, 30 SAY Chr( 223 )
+      DO ZAGOL
+      SET COLOR TO B/W, + GR/B
+      @ 01, 06 PROMPT "   GET SYSTEM DIALOG    "
+      @ 03, 06 PROMPT "    SHOW SCREEN INFO    "
+      @ 05, 06 PROMPT "        E X I T         "
+      MENU TO choice
 
-   nKey := Inkey( 5 )
-   hwg_writelog( "Key " + Str( nKey ) )
+      DO CASE
+      CASE choice = 1
+         DO PGM1
+      CASE choice = 2
+         DO PGM2
+      ENDCASE
+   ENDDO
+
+   SET COLOR TO W/N
+   @  0,  0 CLEAR TO 29, 99
+
    gthwg_CloseWindow()
 
-   RETURN Nil
+   RETURN
+
+STATIC PROCEDURE ZAGOL
+
+   DO SHADOW WITH 04, 63, 13, 94
+   SET COLOR TO + GR/B
+   @  4, 63, 13, 94 BOX "ÚÄ¿³ÙÄÀ³ "
+   @  5, 70 SAY "GTHWGUI DEMO PROGRAM"
+   @  6, 75 SAY "Version 1.1"
+   @ 09, 64, 09, 93 BOX "ÃÄ´´´ÄÃÃÄ"
+   SET COLOR TO + RB/B
+
+   RETURN
+
+STATIC PROCEDURE SHADOW( y1, x1, y2, x2 )
+
+   SET COLOR TO N +/ N
+   @ y2 + 1, x1 + 1, y2 + 1, x2 + 1 BOX shadow1
+   @ y1 + 1, x2 + 1 CLEAR TO y2, x2 + 1
+   @ y1, x2 + 1 SAY Chr( 223 )
+
+   RETURN
+
+STATIC PROCEDURE PGM1
+
+   LOCAL bufsc := SaveScreen( 6, 10, 14, 74 ), aBmpSize
+   LOCAL x1, x2, x3
+
+   @  6, 10, 14, 74 BOX "ÚÄ¿³ÙÄÀ³ "
+
+   hImage := hwg_OpenImage( "../../../image/hwgui.bmp" )
+   IF !Empty( hImage )
+      img_x1 := Int( hb_gtinfo( HB_GTI_SCREENWIDTH ) / MaxCol() ) * 50
+      img_y1 := Int( hb_gtinfo( HB_GTI_SCREENHEIGHT ) / MaxRow() ) * 8
+      aBmpSize  := hwg_Getbitmapsize( hImage )
+      img_width := aBmpSize[ 1 ]
+      img_height := aBmpSize[ 2 ]
+      hwg_Invalidaterect( hb_gtinfo(HB_GTI_WINHANDLE), 0 )
+   ENDIF
+
+   x1 := x2 := x3 := Space( 32 )
+   @  8, 12 SAY "1:" GET x1
+   @  10, 12 SAY "2:" GET x2
+   @  12, 12 SAY "3:" GET x3
+   READ
+
+   IF !Empty( hImage )
+      hwg_Deleteobject( hImage )
+      hImage := Nil
+   ENDIF
+   RestScreen( 6, 10, 14, 74, bufsc )
+
+   RETURN
+
+STATIC PROCEDURE PGM2
+
+   LOCAL bufsc := SaveScreen( 6, 20, 15, 44 )
+
+   @  6, 20, 15, 44 BOX "ÚÄ¿³ÙÄÀ³ "
+
+   @  08, 22 SAY "Rows: " + Ltrim( Str( MaxRow() ) )
+   @  09, 22 SAY "Cols: " + Ltrim( Str( MaxCol() ) )
+   @  10, 22 SAY "Height: " + Ltrim( Str( hb_gtinfo( HB_GTI_SCREENHEIGHT ) ) )
+   @  11, 22 SAY "Width: " + Ltrim( Str( hb_gtinfo( HB_GTI_SCREENWIDTH ) ) )
+   @  13, 22 SAY "Press any key"
+   Inkey(0)
+
+   RestScreen( 6, 20, 15, 44, bufsc )
+
+   RETURN
 
 #include "hwgui.ch"
 
@@ -71,3 +159,11 @@ STATIC FUNCTION CreateWindow()
    ENDMENU
 
    RETURN oWnd
+
+FUNCTION gthwg_PaintCB( hDC )
+
+   IF !Empty( hImage )
+      hwg_Drawbitmap( hDC, hImage,, img_x1, img_y1, img_width, img_height )
+   ENDIF
+
+   RETURN Nil

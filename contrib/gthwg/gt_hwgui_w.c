@@ -249,7 +249,23 @@ static HFONT gthwg_GetFont( LPCTSTR lpFace, int iHeight, int iWidth, int iWeight
       return (HFONT) hb_parptr( -1 );
    }
    return NULL;
+}
 
+static HFONT gthwg_PaintCB( HDC hdc )
+{
+   static PHB_DYNS s_pSymTest = NULL;
+
+   if( s_pSymTest == NULL )
+      s_pSymTest = hb_dynsymGetCase( "GTHWG_PAINTCB" );
+
+   if( hb_dynsymIsFunction( s_pSymTest ) )
+   {
+      hb_vmPushDynSym( s_pSymTest );
+      hb_vmPushNil();   /* places NIL at self */
+      hb_vmPushPointer( ( void * ) hdc );
+      hb_vmDo( 1 );
+   }
+   return NULL;
 }
 
 #if ! defined( UNICODE )
@@ -1127,6 +1143,7 @@ static void gthwg_PaintText( PHB_GTHWG pHWG )
       if( len > 0 )
          gthwg_TextOut( pHWG, hdc, startCol, iRow, iOldColor, pHWG->TextLine, ( UINT ) len );
    }
+   gthwg_PaintCB( hdc );
    EndPaint( pHWG->hWnd, &ps );
 }
 

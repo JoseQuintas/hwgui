@@ -126,6 +126,8 @@ static int iNewPosX = -1, iNewPosY = -1;
 static HB_MAXUINT iCaretMs = 0;
 static int bCaretShow = 0;
 
+static HWGUI_HDC hDC;
+
 static int s_GtId;
 static HB_GT_FUNCS SuperTable;
 
@@ -133,6 +135,23 @@ static HB_GT_FUNCS SuperTable;
 #define HB_GTID_PTR  ( &s_GtId )
 
 //static HB_LONG prevp2 = -1;
+
+static HFONT gthwg_PaintCB( PHWGUI_HDC hdc )
+{
+   static PHB_DYNS s_pSymTest = NULL;
+
+   if( s_pSymTest == NULL )
+      s_pSymTest = hb_dynsymGetCase( "GTHWG_PAINTCB" );
+
+   if( hb_dynsymIsFunction( s_pSymTest ) )
+   {
+      hb_vmPushDynSym( s_pSymTest );
+      hb_vmPushNil();   /* places NIL at self */
+      hb_vmPushPointer( ( void * ) hdc );
+      hb_vmDo( 1 );
+   }
+   return NULL;
+}
 
 static void gthwg_GetWindowRect( GtkWidget* hWnd, LPRECT lpRect )
 {
@@ -583,6 +602,16 @@ static void gthwg_PaintText( PHB_GTHWG pHWG, GdkRectangle *pArea )
          bCursor = -1;
       }
    }
+
+   //hDC = (PHWGUI_HDC) hb_xgrab( sizeof(HWGUI_HDC) );
+   memset( &hDC, 0, sizeof(HWGUI_HDC) );
+   hDC.widget = hPaneMain;
+   hDC.window = gtk_widget_get_window( hPaneMain );
+   hDC.cr = cr;
+   hDC.layout = layout;
+   hDC.fcolor = hDC.bcolor = -1;
+   gthwg_PaintCB( &hDC );
+   //hb_xfree( hDC );
 
    if( layout )
       g_object_unref( (GObject*) layout );

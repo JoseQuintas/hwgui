@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-08 08:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+   * contrib/gthwg/gt_hwgui_l.c
+   * contrib/gthwg/gt_hwgui_w.c
+     * Added new fuction, gthwg_paint_SetCallback( cFuncName ), to set a name of
+       a callback painting function.
+   * contrib/tests/test1.prg
+
 2023-07-07 09:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
    * contrib/gthwg/gt_hwgui_l.c
    * contrib/gthwg/gt_hwgui_w.c

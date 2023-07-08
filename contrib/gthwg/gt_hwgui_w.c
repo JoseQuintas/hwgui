@@ -180,6 +180,8 @@ static int iNewWidth = -1, iNewHeight = -1;
 static int s_GtId;
 static HB_GT_FUNCS SuperTable;
 
+static PHB_DYNS s_pSymTest_paint = NULL;
+
 #define HB_GTSUPER   ( &SuperTable )
 #define HB_GTID_PTR  ( &s_GtId )
 
@@ -251,21 +253,30 @@ static HFONT gthwg_GetFont( LPCTSTR lpFace, int iHeight, int iWidth, int iWeight
    return NULL;
 }
 
-static HFONT gthwg_PaintCB( HDC hdc )
+static int gthwg_PaintCB( HDC hdc )
 {
-   static PHB_DYNS s_pSymTest = NULL;
 
-   if( s_pSymTest == NULL )
-      s_pSymTest = hb_dynsymGetCase( "GTHWG_PAINTCB" );
-
-   if( hb_dynsymIsFunction( s_pSymTest ) )
+   if( hb_dynsymIsFunction( s_pSymTest_paint ) )
    {
-      hb_vmPushDynSym( s_pSymTest );
+      hb_vmPushDynSym( s_pSymTest_paint );
       hb_vmPushNil();   /* places NIL at self */
       hb_vmPushPointer( ( void * ) hdc );
       hb_vmDo( 1 );
+      return hb_parni( -1 );
    }
-   return NULL;
+   return -1;
+}
+
+HB_FUNC( GTHWG_PAINT_SETCALLBACK )
+{
+   if( hb_pcount() > 0 && HB_ISCHAR(1) )
+   {
+      s_pSymTest_paint = hb_dynsymGetCase( hb_parc(1) );
+   }
+   else
+   {
+      s_pSymTest_paint = NULL;
+   }
 }
 
 #if ! defined( UNICODE )
@@ -1143,7 +1154,10 @@ static void gthwg_PaintText( PHB_GTHWG pHWG )
       if( len > 0 )
          gthwg_TextOut( pHWG, hdc, startCol, iRow, iOldColor, pHWG->TextLine, ( UINT ) len );
    }
-   gthwg_PaintCB( hdc );
+
+   if( s_pSymTest_paint )
+      gthwg_PaintCB( hdc );
+
    EndPaint( pHWG->hWnd, &ps );
 }
 

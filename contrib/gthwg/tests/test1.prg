@@ -107,6 +107,7 @@ STATIC PROCEDURE PGM1
       aBmpSize  := hwg_Getbitmapsize( hImage )
       img_width := aBmpSize[ 1 ]
       img_height := aBmpSize[ 2 ]
+      gthwg_paint_SetCallback( "GTHWG_PAINTCB" )
       hwg_Invalidaterect( hb_gtinfo(HB_GTI_WINHANDLE), 0 )
    ENDIF
 
@@ -120,6 +121,7 @@ STATIC PROCEDURE PGM1
       hwg_Deleteobject( hImage )
       hImage := Nil
    ENDIF
+   gthwg_paint_SetCallback()
    RestScreen( 6, 10, 14, 74, bufsc )
 
    RETURN

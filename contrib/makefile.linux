@@ -4,8 +4,8 @@
 
 # Modify path to Harbour to your own needs
 #HRB_DIR = ../../../..
-# HRB_DIR = ../../
-HRB_DIR = $(HOME)/Harbour/core-master
+HRB_DIR = ../../
+#HRB_DIR = $(HOME)/Harbour/core-master
 
 HRB_EXE = $(HRB_DIR)/bin/linux/gcc/harbour
 INC_DIR = ../include

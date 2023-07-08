@@ -12,7 +12,6 @@
 #include "hbgtinfo.ch"
 
 STATIC shadow1
-STATIC hImage, img_x1, img_y1, img_width, img_height
 
 FUNCTION Main( _par1 )
 
@@ -95,21 +94,12 @@ STATIC PROCEDURE SHADOW( y1, x1, y2, x2 )
 
 STATIC PROCEDURE PGM1
 
-   LOCAL bufsc := SaveScreen( 6, 10, 14, 74 ), aBmpSize
+   LOCAL bufsc := SaveScreen( 6, 10, 14, 74 )
    LOCAL x1, x2, x3
 
    @  6, 10, 14, 74 BOX "ÚÄ¿³ÙÄÀ³ "
 
-   hImage := hwg_OpenImage( "../../../image/hwgui.bmp" )
-   IF !Empty( hImage )
-      img_x1 := Int( hb_gtinfo( HB_GTI_SCREENWIDTH ) / MaxCol() ) * 50
-      img_y1 := Int( hb_gtinfo( HB_GTI_SCREENHEIGHT ) / MaxRow() ) * 8
-      aBmpSize  := hwg_Getbitmapsize( hImage )
-      img_width := aBmpSize[ 1 ]
-      img_height := aBmpSize[ 2 ]
-      gthwg_paint_SetCallback( "GTHWG_PAINTCB" )
-      hwg_Invalidaterect( hb_gtinfo(HB_GTI_WINHANDLE), 0 )
-   ENDIF
+   gthwg_PaintCB( , "../../../image/hwgui.bmp" )
 
    x1 := x2 := x3 := Space( 32 )
    @  8, 12 SAY "1:" GET x1
@@ -117,11 +107,7 @@ STATIC PROCEDURE PGM1
    @  12, 12 SAY "3:" GET x3
    READ
 
-   IF !Empty( hImage )
-      hwg_Deleteobject( hImage )
-      hImage := Nil
-   ENDIF
-   gthwg_paint_SetCallback()
+   gthwg_PaintCB()
    RestScreen( 6, 10, 14, 74, bufsc )
 
    RETURN
@@ -162,9 +148,31 @@ STATIC FUNCTION CreateWindow()
 
    RETURN oWnd
 
-FUNCTION gthwg_PaintCB( hDC )
+FUNCTION gthwg_PaintCB( hDC, cFileName )
 
-   IF !Empty( hImage )
+   LOCAL aBmpSize
+   STATIC hImage, img_x1, img_y1, img_width, img_height
+
+   IF Empty( hDC )
+      IF Empty( cFileName )
+         gthwg_paint_SetCallback()
+         IF !Empty( hImage )
+            hwg_Deleteobject( hImage )
+            hImage := Nil
+         ENDIF
+      ELSE
+         hImage := hwg_OpenImage( cFileName )
+         IF !Empty( hImage )
+            img_x1 := Int( hb_gtinfo( HB_GTI_SCREENWIDTH ) / MaxCol() ) * 50
+            img_y1 := Int( hb_gtinfo( HB_GTI_SCREENHEIGHT ) / MaxRow() ) * 8
+            aBmpSize  := hwg_Getbitmapsize( hImage )
+            img_width := aBmpSize[ 1 ]
+            img_height := aBmpSize[ 2 ]
+            gthwg_paint_SetCallback( "GTHWG_PAINTCB" )
+            hwg_Invalidaterect( hb_gtinfo(HB_GTI_WINHANDLE), 0 )
+         ENDIF
+      ENDIF
+   ELSEIF !Empty( hImage )
       hwg_Drawbitmap( hDC, hImage,, img_x1, img_y1, img_width, img_height )
    ENDIF
 

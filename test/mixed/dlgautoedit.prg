@@ -10,6 +10,8 @@ CREATE CLASS DlgAutoEdit
    VAR aEditList   INIT {}
    VAR lWithTab    INIT .F.
    VAR nLineHeight INIT 25
+   VAR nEditStyle  INIT 1
+   VAR nPageLimit  INIT 300
    METHOD EditSetup()
    METHOD EditUpdate()
    METHOD EditCreate()
@@ -52,8 +54,10 @@ METHOD EditOff() CLASS DlgAutoEdit
 
 METHOD EditCreate() CLASS DlgAutoEdit
 
-   LOCAL nRow, nCol, aItem, oTab := Nil, nPageCount := 0, oPanel, nLen
+   LOCAL nRow, nCol, aItem, oTab := Nil, nPageCount := 0, oPanel, nLen, aList := {}
+   LOCAL nRow2, nCol2, nTab, nPageNext, nLenList
 
+   hwg_SetColorInFocus(.T., ,WIN_RGB(255,255,0) )
    FOR EACH aItem IN ::aEditList
       AAdd( ::aControlList, { TYPE_EDIT, Nil, aItem[ DBS_NAME ], aItem[ DBS_TYPE ], aItem[ DBS_LEN ], aItem[ DBS_DEC ], aItem[ 5 ], Nil } )
       Atail( ::aControlList)[ CFG_VALUE ] := &( ::cFileDbf )->( FieldGet( FieldNum( aItem[ DBS_NAME ] ) ) )
@@ -63,41 +67,76 @@ METHOD EditCreate() CLASS DlgAutoEdit
       AAdd( ::aControlList, { TYPE_TAB, oTab, Nil, Nil, Nil, Nil, Nil, Nil  } )
       @ 1, 23 PANEL oPanel OF oTab SIZE ::nDlgWidth - 12, ::nDlgHeight - 165 BACKCOLOR STYLE_BACK
       AAdd( ::aControlList, { TYPE_PANEL, oPanel, Nil, Nil, Nil, Nil, Nil, Nil } )
-      nCol := 9999
+      nRow := 999
+   ELSE
+      nRow := 80
    ENDIF
-   nRow := 80
    nCol := 10
+   nLenList := Len( ::aControlList )
    FOR EACH aItem IN ::aControlList
+      IF aItem:__EnumIndex > nLenList
+         EXIT
+      ENDIF
       IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT
-         nLen := Max( aItem[ CFG_LEN ], Len( aItem[ CFG_CAPTION ] ) )
-         IF nCol + 30 + ( nLen * 12 ) > ::nDlgWidth - 40
-            IF ::lWithTab .AND. ( nRow > 300 .OR. nPageCount == 0 )
+         IF ::nEditStyle == 1 .OR. ::nEditStyle == 2
+            nLen := Len( aItem[ CFG_CAPTION ] ) + aItem[ CFG_LEN ] + 3
+         ELSE
+            nLen := Max( aItem[ CFG_LEN ], Len( aItem[ CFG_CAPTION ] ) )
+         ENDIF
+         IF ::nEditStyle == 1 .OR. nCol + 30 + ( nLen * 12 ) > ::nDlgWidth - 40 .OR. nRow > ::nPageLimit
+            IF ::lWithTab .AND. nRow > ::nPageLimit
                IF nPageCount > 0
+                  AAdd( ::aControlList, { TYPE_EDIT, Nil, "", "C", 1, 0, "", "" } )
+                  @ nCol, nRow GET Atail( ::aControlList )[ CFG_OBJ ] VAR Atail( ::aControlList )[ CFG_VALUE ] ;
+                     OF oTab SIZE 0, 0 STYLE WS_DISABLED
+                  AAdd( Atail( aList ), Atail( ::aControlList )[ CFG_OBJ ] )
                   END PAGE OF oTab
                ENDIF
                nPageCount += 1
                BEGIN PAGE "Pag." + Str( nPageCount, 2 ) OF oTab
-               nCol := 10
-               nRow := 80
+               nRow := 40
+               AAdd( aList, {} )
             ENDIF
             nCol := 10
             nRow += ( ::nLineHeight * 2 )
          ENDIF
+         IF ::nEditStyle == 1 .OR. ::nEditStyle == 2
+            nRow2 := nRow
+            nCol2 := nCol + ( Len( aItem[ CFG_CAPTION ] ) * 12 )
+         ELSE
+            nRow2 := nRow + ::nLineHeight
+            nCol2 := nCol
+         ENDIF
          @ nCol, nRow SAY aItem[ CFG_CAPTION ] OF iif( ::lWithTab, oTab, ::oDlg ) SIZE nLen * 12, 20 COLOR STYLE_FORE TRANSPARENT
-         @ nCol, nRow + ::nLineHeight GET aItem[ CFG_OBJ ] ;
+         @ nCol2, nRow2 GET aItem[ CFG_OBJ ] ;
             VAR aItem[ CFG_VALUE ] OF iif( ::lWithTab, oTab, ::oDlg ) ;
             SIZE aItem[ CFG_LEN ] * 12, 20 ;
             STYLE WS_DISABLED + iif( aItem[ CFG_VALTYPE ] == "N", ES_RIGHT, ES_LEFT ) ;
             MAXLENGTH aItem[ CFG_LEN ] ;
             PICTURE PictureFromValue( aItem )
             nCol += ( nLen * 12 ) + 30
+         IF ::lWithTab
+            AAdd( Atail( aList ), aItem[ CFG_OBJ ] )
+         ENDIF
       ENDIF
    NEXT
    AAdd( ::aControlList, { TYPE_EDIT, Nil, "", "C", 1, 0, "", "" } )
-   @ nCol, nRow GET Atail( ::aControlList )[ CFG_OBJ ] VAR Atail( ::aControlList )[ CFG_VALUE ] SIZE 0, 0
+   @ nCol, nRow GET Atail( ::aControlList )[ CFG_OBJ ] VAR Atail( ::aControlList )[ CFG_VALUE ] ;
+      OF iif( ::lWithTab, oTab, ::oDlg ) SIZE 0, 0 STYLE WS_DISABLED
    IF ::lWithTab
+      AAdd( ATail( aList ), Atail( ::aControlList )[ CFG_OBJ ] )
       END PAGE OF oTab
+      FOR nTab = 1 TO Len( aList )
+         nPageNext  := iif( nTab == Len( aList ), 1, nTab + 1 )
+         SetLostFocus( aList[ nTab, Len( aList[ nTab ] ) - 1 ], oTab, nPageNext, aList[ nPageNext, 1 ] )
+      NEXT
    ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION SetLostFocus( oEdit, oTab, nPageNext, oEditNext )
+
+   oEdit:bLostFocus := { || oTab:ChangePage( nPageNext ), oTab:SetTab( nPageNext ), oEditNext:SetFocus(), .T. }
 
    RETURN Nil
 

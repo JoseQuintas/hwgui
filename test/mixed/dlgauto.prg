@@ -12,11 +12,18 @@ PROCEDURE DlgAuto( cModule, cTitle, ... )
    IF Len( Directory( "*.dbf" ) ) == 0
       dbCreate( "test", { ;
          { "IDSTOCK", "N", 6, 0 }, ;
-         { "NAME", "C", 50, 0 }, ;
-         { "VALUE", "N", 10, 2 }, ;
-         { "QTD", "N", 6, 0 }, ;
+         { "NAME",    "C", 50, 0 }, ;
+         { "VALUE",   "N", 10, 2 }, ;
+         { "QTD",     "N", 6, 0 }, ;
          { "BARCODE", "N", 10, 0 }, ;
-         { "OTHER", "C", 50, 0 } } )
+         { "NCM",     "C", 14, 0 }, ;
+         { "GROUP",   "C", 20, 0 }, ;
+         { "LOCAT",   "C", 20, 0 }, ;
+         { "EQUIV",   "C", 20, 0 }, ;
+         { "TAX",     "N", 5, 2 }, ;
+         { "SHOP",    "C", 10, 0 }, ;
+         { "TEST",    "C", 10, 0 }, ;
+         { "OTHER",   "C", 50, 0 } } )
       USE test
       FOR nCont = 1 TO 9
          APPEND BLANK
@@ -49,9 +56,11 @@ FUNCTION Execute( cFile )
    LOCAL oDlg
 
    oDlg := ThisDlg():New()
-   oDlg:cFileDBF := cFile
-   oDlg:cTitle   := "test of " + cFile
-   oDlg:cOptions := "IEDP"
+   oDlg:cFileDBF   := cFile
+   oDlg:cTitle     := "test of " + cFile
+   oDlg:cOptions   := "IEDP"
+   oDlg:lWithTab   := .T.
+   oDlg:nEditStyle := 3 // from 1 to 3
    AAdd( oDlg:aOptionList, { "Mail", { || Nil } } )
    AAdd( oDlg:aOptionList, { "CtlList",  { || oDlg:ShowCtl() } } )
    oDlg:Execute()

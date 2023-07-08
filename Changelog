@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-08 19L02 UTC-0200 José Quintas
+   * test/mixed/dlgauto.prg
+   * text/mixed/dlgautoedit.prg
+     ! 3 edit style options, color in get focus, page change
+
 2023-07-08 13:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
    * contrib/tests/test1.prg
      * Put painting related code in one function

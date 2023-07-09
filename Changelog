@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-09 15:30 UTC-0200 José Quintas
+   * test/mixed/dlgautomain.prg
+     ! my mistake on delete method declaration
+
 2023-07-09 13:39 UTC-0200 José Quintas
    * samples/grid_5.prg
      ! close dbf. Now can run dialog again without error.

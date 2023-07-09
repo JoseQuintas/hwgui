@@ -13,7 +13,7 @@ CREATE CLASS DlgAutoMain INHERIT DlgAutoBtn, DlgAutoEdit
    METHOD Execute()
    METHOD View()    INLINE Nil
    METHOD Edit()
-   METHOD Delete()      INLINE ::Delete()
+   METHOD Delete()
    METHOD Insert()      INLINE Nil
    METHOD First()       INLINE &( ::cFileDbf )->( dbgotop() ),    ::EditUpdate()
    METHOD Last()        INLINE &( ::cFileDbf )->( dbgobottom() ), ::EditUpdate()

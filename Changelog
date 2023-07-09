@@ -15,7 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-2023-07-08 19L02 UTC-0200 José Quintas
+2023-07-09 13:39 UTC-0200 José Quintas
+   * samples/grid_5.prg
+     ! close dbf. Now can run dialog again without error.
+   * test/mixed/dlgautomain.prg
+     ! delete method
+
+2023-07-08 19:02 UTC-0200 José Quintas
    * test/mixed/dlgauto.prg
    * text/mixed/dlgautoedit.prg
      ! 3 edit style options, color in get focus, page change

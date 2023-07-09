@@ -111,6 +111,7 @@ FUNCTION Test()
    @ 620, 395 BUTTON 'Close' SIZE 75,25 ON CLICK {|| oForm:close() }
 
    ACTIVATE DIALOG oForm
+   CLOSE DATABASES
 
 RETURN Nil
 

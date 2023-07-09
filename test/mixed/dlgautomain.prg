@@ -13,7 +13,7 @@ CREATE CLASS DlgAutoMain INHERIT DlgAutoBtn, DlgAutoEdit
    METHOD Execute()
    METHOD View()    INLINE Nil
    METHOD Edit()
-   METHOD Delete()      INLINE Nil
+   METHOD Delete()      INLINE ::Delete()
    METHOD Insert()      INLINE Nil
    METHOD First()       INLINE &( ::cFileDbf )->( dbgotop() ),    ::EditUpdate()
    METHOD Last()        INLINE &( ::cFileDbf )->( dbgobottom() ), ::EditUpdate()
@@ -29,6 +29,18 @@ CREATE CLASS DlgAutoMain INHERIT DlgAutoBtn, DlgAutoEdit
 METHOD Edit() CLASS DlgAutoMain
 
    ::EditOn()
+
+   RETURN Nil
+
+METHOD Delete() CLASS DlgAutoMain
+
+   IF hwg_MsgYesNo( "Delete" )
+      IF rLock()
+         DELETE
+         SKIP 0
+         UNLOCK
+      ENDIF
+   ENDIF
 
    RETURN Nil
 

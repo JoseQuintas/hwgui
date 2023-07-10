@@ -3,6 +3,12 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI 2.23 build 4 ( 10.07.2023 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[*] Painting possibility added to GTHWG
+[*] Progress in GTK3 support
+[!] Some warnings and bugs fixed, cleanup
+
                                    $Id$
 
 HWGUI recent code snapshot

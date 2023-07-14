@@ -15,11 +15,22 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-14 13:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  - utils/dbc/dbchw
+  - utils/dbc/dbc.bmp
+  - utils/dbc/dbchw.rc
+  - utils/dbc/dbchw2.rc
+    - Files removed. Guys, be more accurate, please, don't put here your local binaries.
+  * utils/dbc/dbchw.prg
+    ! Small fix
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 dev build 4
+
 2023-07-10 14:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * HwGUI version is changed to 2.23 build 3
   * whatsnew.txt
-    * Updated for v2.23 build 4
+    * Updated for v2.23 build 3
 
 2023-07-09 15:30 UTC-0200 José Quintas
    * test/mixed/dlgautomain.prg

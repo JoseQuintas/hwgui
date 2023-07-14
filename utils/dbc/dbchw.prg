@@ -153,8 +153,8 @@ FUNCTION Main( ... )
       cServerPath += "\"
    ENDIF
    hb_cdpSelect( cAppCpage )
-#ifdef __GTK__
    hwg_SetResContainer(  cExePath + "dbchw.bin" )
+#ifdef __GTK__
    PREPARE FONT oMainFont NAME "MS Sans Serif" WIDTH 0 HEIGHT - 12
 #else
    PREPARE FONT oMainFont NAME "MS Sans Serif" WIDTH 0 HEIGHT - 13

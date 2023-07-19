@@ -749,6 +749,10 @@ HB_FUNC( HWG_ENDPAINT )
 
    if( hDC->layout )
       g_object_unref( (GObject*) hDC->layout );
+   if( hDC->surface )
+      cairo_surface_destroy( hDC->surface );
+   cairo_destroy( hDC->cr );
+
    hb_xfree( hDC );
    hb_xfree( pps );
 }

@@ -666,3 +666,62 @@ STATIC FUNCTION onClick( oParent, id )
    ENDIF
 
    RETURN .T.
+
+CLASS HOwnDrawn INHERIT HControl
+
+   DATA winclass   INIT "OWNDRAWN"
+
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
+
+   METHOD Activate()
+   METHOD onEvent( msg, wParam, lParam )
+   METHOD Init()
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor ) CLASS HOwnDrawn
+
+   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
+      bSize, bPaint, cTooltip, tcolor, bColor )
+
+   hwg_RegOwnBtn()
+   ::Activate()
+
+   RETURN Self
+
+METHOD Activate() CLASS HOwnDrawn
+
+   IF !Empty( ::oParent:handle )
+      ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
+         ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      ::Init()
+   ENDIF
+
+   RETURN Nil
+
+METHOD onEvent( msg, wParam, lParam )  CLASS HOwnDrawn
+
+   IF ::bOther != Nil .AND. ;
+      Eval( ::bOther, Self, msg, wParam, lParam ) == 0
+      RETURN -1
+   ENDIF
+
+   IF msg == WM_PAINT
+      IF !Empty( ::bPaint )
+         Eval( ::bPaint, Self )
+      ENDIF
+   ENDIF
+
+   RETURN -1
+
+METHOD Init() CLASS HOwnDrawn
+
+   IF ! ::lInit
+      ::nHolder := 1
+      hwg_Setwindowobject( ::handle, Self )
+      ::Super:Init()
+   ENDIF
+
+   RETURN Nil

@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-19 15:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/draw.c
+    ! Bug fixed in hwg_EndPaint()
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * New control added HOwnDrawn as a base for other ownerdrawn controls with mouse events support
+
 2023-07-14 13:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   - utils/dbc/dbchw
   - utils/dbc/dbc.bmp

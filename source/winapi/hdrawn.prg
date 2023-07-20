@@ -13,6 +13,9 @@
 
 CLASS HDrawn INHERIT HObject
 
+   CLASS VAR oOver SHARED
+   CLASS VAR oPressed SHARED
+
    DATA oParent
    DATA title
    DATA nTop, nLeft, nWidth, nHeight
@@ -110,7 +113,18 @@ METHOD Move( x1, y1, width, height ) CLASS HDrawn
 
 METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
 
-   IF nState != ::nState
+   LOCAL o
+
+   IF Empty( ::aDrawn )
+      o := Self
+   ELSE
+      o := ::GetByPos( nPosX, nPosY )
+   ENDIF
+   IF nState == ::nState
+      IF nState > 0
+         IF o == Iif( nState == 1, ::oOver, ::oPressed )
+         ENDIF
+      ENDIF
    ENDIF
 
    RETURN Nil

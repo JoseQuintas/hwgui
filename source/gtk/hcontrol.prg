@@ -624,7 +624,7 @@ METHOD Activate() CLASS HBoard
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
-   LOCAL nRes, o
+   LOCAL nRes, o, nPosX, nPosY
 
    IF ::bOther != Nil
       IF ( nRes := Eval( ::bOther, Self, msg, wParam, lParam ) ) == 0
@@ -635,13 +635,20 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
    ENDIF
 
    IF msg == WM_MOUSEMOVE
-      IF ( o := HDrawn():GetByPos( hwg_Loword( lParam ), hwg_Hiword( lParam ), Self ) ) != Nil
+      IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
+         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         o:SetState( 1, nPosX, nPosY )
       ENDIF
 
    ELSEIF msg == WM_PAINT
       ::Paint()
 
    ELSEIF msg == WM_LBUTTONDOWN
+      IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
+         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         o:SetState( 2, nPosX, nPosY )
+      ENDIF
+
    ELSEIF msg == WM_LBUTTONUP
    ENDIF
 

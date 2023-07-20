@@ -45,6 +45,7 @@
 {win}source/winapi/hcontrol.prg
 {win}source/winapi/hcwindow.prg
 {win}source/winapi/hdatepic.prg
+{win}source/winapi/hdrawn.prg
 {win}source/winapi/hdialog.prg
 {win}source/winapi/hedit.prg
 {win}source/winapi/hfreeimg.prg
@@ -105,6 +106,7 @@
 {unix}source/gtk/hcheck.prg
 {unix}source/gtk/hcombo.prg
 {unix}source/gtk/hcontrol.prg
+{unix}source/gtk/hdrawn.prg
 {unix}source/gtk/hdialog.prg
 {unix}source/gtk/hedit.prg
 {unix}source/gtk/hfrmtmpl.prg

@@ -590,6 +590,7 @@ METHOD Activate() CLASS HLine
 CLASS HBoard INHERIT HControl
 
    DATA winclass   INIT "HBOARD"
+   DATA aDrawn     INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
@@ -597,6 +598,7 @@ CLASS HBoard INHERIT HControl
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
+   METHOD Paint()
 
 ENDCLASS
 
@@ -622,6 +624,8 @@ METHOD Activate() CLASS HBoard
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
+   LOCAL nRes
+
    IF ::bOther != Nil
       IF ( nRes := Eval( ::bOther, Self, msg, wParam, lParam ) ) == 0
          RETURN -1
@@ -631,9 +635,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
    ENDIF
 
    IF msg == WM_PAINT
-      IF !Empty( ::bPaint )
-         Eval( ::bPaint, Self )
-      ENDIF
+      ::Paint()
    ENDIF
 
    RETURN -1
@@ -647,3 +649,24 @@ METHOD Init() CLASS HBoard
 
    RETURN Nil
 
+METHOD Paint()
+
+   LOCAL i
+   LOCAL pps, hDC
+
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( ::handle, pps )
+
+   IF !Empty( ::bPaint )
+      IF Eval( ::bPaint, Self, hDC ) == 0
+         RETURN Nil
+      ENDIF
+   ENDIF
+
+   FOR i := 1 TO Len( ::aDrawn )
+      ::aDrawn[i]:Paint( hDC )
+   NEXT
+
+   hwg_Endpaint( ::handle, pps )
+
+   RETURN Nil

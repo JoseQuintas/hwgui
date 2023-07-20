@@ -15,6 +15,29 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-20 13:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + source/gtk/hdrawn.prg
+  + source/winapi/hdrawn.prg
+    + HDrawn class added - for items to be drawn on HBoard and working as controls
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * HBoard fixes and enhancements
+  * source/gtk/draw.c
+    * hwg_Roundrect() fixed
+  * hwgui.hbm
+  * makedll.bc
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * Makefile.scr
+  * makefile.vc
+  * makefile.wc
+  * source/gtk/Makefile.linux
+  * source/gtk/Makefile.linux-gtk3
+  * source/gtk/Makefile.mingw
+  * source/gtk/Makefile.scr
+    * Makefiles updated for hdrawn.prg
+
 2023-07-20 09:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
   * source/winapi/hcontrol.prg

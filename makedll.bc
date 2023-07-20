@@ -62,6 +62,7 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\hcontrol.obj \
    $(OBJ_DIR)\hcwindow.obj \
    $(OBJ_DIR)\hdatepic.obj \
+   $(OBJ_DIR)\hdrawn.obj \
    $(OBJ_DIR)\hdialog.obj \
    $(OBJ_DIR)\hedit.obj \
    $(OBJ_DIR)\hfreeimg.obj \

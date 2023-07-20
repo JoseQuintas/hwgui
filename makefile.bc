@@ -140,6 +140,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hcontrol.obj \
    $(HWGUI_OBJ_DIR)\hcwindow.obj \
    $(HWGUI_OBJ_DIR)\hdatepic.obj \
+   $(HWGUI_OBJ_DIR)\hdrawn.obj \
    $(HWGUI_OBJ_DIR)\hdialog.obj \
    $(HWGUI_OBJ_DIR)\hedit.obj \
    $(HWGUI_OBJ_DIR)\hfreeimg.obj \

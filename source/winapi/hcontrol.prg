@@ -667,9 +667,10 @@ STATIC FUNCTION onClick( oParent, id )
 
    RETURN .T.
 
-CLASS HOwnDrawn INHERIT HControl
+CLASS HBoard INHERIT HControl
 
-   DATA winclass   INIT "OWNDRAWN"
+   DATA winclass   INIT "HBOARD"
+   DATA aDrawn     INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
@@ -677,11 +678,12 @@ CLASS HOwnDrawn INHERIT HControl
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
+   METHOD Paint()
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor ) CLASS HOwnDrawn
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor ) CLASS HBoard
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
@@ -691,7 +693,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 
    RETURN Self
 
-METHOD Activate() CLASS HOwnDrawn
+METHOD Activate() CLASS HBoard
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
@@ -701,7 +703,7 @@ METHOD Activate() CLASS HOwnDrawn
 
    RETURN Nil
 
-METHOD onEvent( msg, wParam, lParam )  CLASS HOwnDrawn
+METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
    LOCAL nRes
 
@@ -714,19 +716,39 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnDrawn
    ENDIF
 
    IF msg == WM_PAINT
-      IF !Empty( ::bPaint )
-         Eval( ::bPaint, Self )
-      ENDIF
+      ::Paint()
    ENDIF
 
    RETURN -1
 
-METHOD Init() CLASS HOwnDrawn
+METHOD Init() CLASS HBoard
 
    IF ! ::lInit
       ::nHolder := 1
       hwg_Setwindowobject( ::handle, Self )
       ::Super:Init()
    ENDIF
+
+   RETURN Nil
+
+METHOD Paint()
+
+   LOCAL i
+   LOCAL pps, hDC
+
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( ::handle, pps )
+
+   IF !Empty( ::bPaint )
+      IF Eval( ::bPaint, Self, hDC ) == 0
+         RETURN Nil
+      ENDIF
+   ENDIF
+
+   FOR i := 1 TO Len( ::aDrawn )
+      ::aDrawn[i]:Paint( hDC )
+   NEXT
+
+   hwg_Endpaint( ::handle, pps )
 
    RETURN Nil

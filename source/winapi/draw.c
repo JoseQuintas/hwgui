@@ -351,6 +351,26 @@ HB_FUNC( HWG_ARC )
  */
 HB_FUNC( HWG_ROUNDRECT )
 {
+   HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
+   int iWidth = hb_parni( 6 );
+   int iHeight = ( HB_ISNIL( 7 ) ) ? iWidth : hb_parni( 7 );
+   HBRUSH hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
+   HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+   hb_parl( RoundRect( hdc,       // handle of device context
+               hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner
+               hb_parni( 3 ),   // y-coord. of bounding rectangle's upper-left corner
+               hb_parni( 4 ),   // x-coord. of bounding rectangle's lower-right corner
+               hb_parni( 5 ),   // y-coord. of bounding rectangle's lower-right corner
+               iWidth * 2,      // width of ellipse used to draw rounded corners
+               iHeight * 2      // height of ellipse used to draw rounded corners
+          ) );
+    SelectObject(hdc, hOldBrush);
+    DeleteObject(hBrush);
+}
+
+HB_FUNC( HWG_ROUNDRECT_FILLED )
+{
    int iWidth = hb_parni( 6 );
    int iHeight = ( HB_ISNIL( 7 ) ) ? iWidth : hb_parni( 7 );
 

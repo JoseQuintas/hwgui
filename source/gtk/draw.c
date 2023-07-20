@@ -262,8 +262,11 @@ HB_FUNC( HWG_ROUNDRECT_FILLED )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
    gdouble radius = hb_parnd( 6 );
+   PHWGUI_BRUSH brush = ( HB_ISNIL( 8 ) ) ? NULL : (PHWGUI_BRUSH) HB_PARHANDLE(8);
 
    cairo_new_sub_path( hDC->cr );
+   if( brush )
+      hwg_setcolor( hDC->cr, brush->color );
    cairo_arc( hDC->cr, x1+radius, y1+radius, radius, M_PI, 3*M_PI/2 );
    cairo_arc( hDC->cr, x2-radius, y1+radius, radius, 3*M_PI/2, 0 );
    cairo_arc( hDC->cr, x2-radius, y2-radius, radius, 0, M_PI/2 );

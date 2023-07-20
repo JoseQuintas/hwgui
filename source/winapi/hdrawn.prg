@@ -23,28 +23,35 @@ CLASS HDrawn INHERIT HObject
    DATA aStyles
    DATA aDrawn        INIT {}
 
-   DATA bPaint
+   DATA bPaint, bClick
 
-   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, title, oFont, bPaint  )
+   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, title, oFont, bPaint, bClick )
    METHOD GetParentBoard()
+   METHOD GetByPos( xPos, yPos, oBoard )
    METHOD Paint( hDC )
    METHOD Move( x1, y1, width, height )
+   METHOD SetState( nState, nPosX, nPosY )
    METHOD Refresh()
 
 ENDCLASS
 
-METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, title, oFont, bPaint  ) CLASS HDrawn
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, title, oFont, bPaint, bClick ) CLASS HDrawn
 
    ::oParent := oWndParent
    ::nLeft   := nLeft
    ::nTop    := nTop
    ::nWidth  := nWidth
    ::nHeight := nHeight
+   ::tcolor  := tcolor
+   ::bColor  := bColor
    ::title   := title
    ::oFont   := oFont
    ::bPaint  := bPaint
-   ::tcolor  := tcolor
-   ::bColor  := bColor
+   ::bClick  := bClick
+
+   IF bColor != NIL
+      ::brush := HBrush():Add( bColor )
+   ENDIF
 
    AAdd( ::oParent:aDrawn, Self )
 
@@ -58,6 +65,20 @@ METHOD GetParentBoard() CLASS HDrawn
 
    RETURN oParent
 
+METHOD GetByPos( xPos, yPos, oBoard ) CLASS HDrawn
+
+   LOCAL aDrawn := Iif( !Empty( oBoard ), oBoard:aDrawn, ::aDrawn ), i, o
+
+   FOR i := 1 TO Len( aDrawn )
+      o := aDrawn[i]
+      IF xPos >= o:nLeft .AND. xPos < o:nLeft + o:nWidth .AND. ;
+         yPos >= o:nTop .AND. yPos < o:nTop + o:nHeight
+         RETURN o
+      ENDIF
+   NEXT
+
+   RETURN Nil
+
 METHOD Paint( hDC ) CLASS HDrawn
 
    LOCAL i
@@ -69,6 +90,7 @@ METHOD Paint( hDC ) CLASS HDrawn
       IF Eval( ::bPaint, Self, hDC ) == 0
          RETURN Nil
       ENDIF
+   ELSE
    ENDIF
 
    FOR i := 1 TO Len( ::aDrawn )
@@ -86,7 +108,14 @@ METHOD Move( x1, y1, width, height ) CLASS HDrawn
 
    RETURN Nil
 
+METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
+
+   IF nState != ::nState
+   ENDIF
+
+   RETURN Nil
+
 METHOD Refresh() CLASS HDrawn
 
-   hwg_Invalidaterect( GetParentBoard():handle, 0, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1 )
+   hwg_Invalidaterect( ::GetParentBoard():handle, 0, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1 )
    RETURN Nil

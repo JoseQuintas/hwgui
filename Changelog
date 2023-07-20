@@ -15,6 +15,17 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-20 16:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+  * source/gtk/draw.c
+  * source/winapi/draw.c
+    * 8-th parameter, hBrush, added to hwg_RoundRect_Filled()
+  * source/gtk/hdrawn.prg
+  * source/gtk/hcontrol.prg
+  * source/winapi/hdrawn.prg
+  * source/winapi/hcontrol.prg
+    * HBoard, HDrawn fixes and enhancements
+
 2023-07-20 13:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
   * source/gtk/draw.c

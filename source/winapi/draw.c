@@ -369,12 +369,21 @@ HB_FUNC( HWG_ROUNDRECT )
     DeleteObject(hBrush);
 }
 
+/*
+ * hwg_RoundRect_Filled( hDC, x1, y1, x2, y2, iRadiusH [, iRadiusV] [, hBrush] )
+ */
 HB_FUNC( HWG_ROUNDRECT_FILLED )
 {
+   HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
    int iWidth = hb_parni( 6 );
    int iHeight = ( HB_ISNIL( 7 ) ) ? iWidth : hb_parni( 7 );
+   HBRUSH hBrush = ( HB_ISNIL( 8 ) ) ? NULL : ( HBRUSH ) HB_PARHANDLE( 8 );
+   HBRUSH hOldBrush = NULL;
 
-   hb_parl( RoundRect( ( HDC ) HB_PARHANDLE( 1 ),       // handle of device context
+   if( hBrush )
+      hOldBrush = (HBRUSH) SelectObject( hdc, hBrush);
+
+   hb_parl( RoundRect( hdc,     // handle of device context
                hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner
                hb_parni( 3 ),   // y-coord. of bounding rectangle's upper-left corner
                hb_parni( 4 ),   // x-coord. of bounding rectangle's lower-right corner
@@ -382,6 +391,10 @@ HB_FUNC( HWG_ROUNDRECT_FILLED )
                iWidth * 2,      // width of ellipse used to draw rounded corners
                iHeight * 2      // height of ellipse used to draw rounded corners
           ) );
+
+   if( hOldBrush )
+      SelectObject( hdc, hOldBrush );
+
 }
 
 HB_FUNC( HWG_REDRAWWINDOW )

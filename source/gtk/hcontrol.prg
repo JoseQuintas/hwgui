@@ -587,9 +587,9 @@ METHOD Activate() CLASS HLine
 
    RETURN Nil
 
-CLASS HOwnDrawn INHERIT HControl
+CLASS HBoard INHERIT HControl
 
-   DATA winclass   INIT "OWNDRAWN"
+   DATA winclass   INIT "HBOARD"
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
@@ -601,7 +601,7 @@ CLASS HOwnDrawn INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor ) CLASS HOwnDrawn
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor ) CLASS HBoard
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
@@ -610,21 +610,24 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 
    RETURN Self
 
-METHOD Activate() CLASS HOwnDrawn
+METHOD Activate() CLASS HBoard
 
    IF ! Empty( ::oParent:handle )
-      ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
-         ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      ::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
+         SS_OWNERDRAW, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
 
    RETURN Nil
 
-METHOD onEvent( msg, wParam, lParam )  CLASS HOwnDrawn
+METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
-   IF ::bOther != Nil .AND. ;
-      Eval( ::bOther, Self, msg, wParam, lParam ) == 0
-      RETURN -1
+   IF ::bOther != Nil
+      IF ( nRes := Eval( ::bOther, Self, msg, wParam, lParam ) ) == 0
+         RETURN -1
+      ELSEIF nRes == 1
+         RETURN 1
+      ENDIF
    ENDIF
 
    IF msg == WM_PAINT
@@ -635,7 +638,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnDrawn
 
    RETURN -1
 
-METHOD Init() CLASS HOwnDrawn
+METHOD Init() CLASS HBoard
 
    IF ! ::lInit
       ::Super:Init()
@@ -643,3 +646,4 @@ METHOD Init() CLASS HOwnDrawn
    ENDIF
 
    RETURN Nil
+

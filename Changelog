@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-20 09:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    ! Small corrections
+    * HOwnDrawn is renamed to HBoard
+
 2023-07-19 15:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/draw.c
     ! Bug fixed in hwg_EndPaint()

@@ -703,9 +703,14 @@ METHOD Activate() CLASS HOwnDrawn
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HOwnDrawn
 
-   IF ::bOther != Nil .AND. ;
-      Eval( ::bOther, Self, msg, wParam, lParam ) == 0
-      RETURN -1
+   LOCAL nRes
+
+   IF ::bOther != Nil
+      IF ( nRes := Eval( ::bOther, Self, msg, wParam, lParam ) ) == 0
+         RETURN -1
+      ELSEIF nRes == 1
+         RETURN 1
+      ENDIF
    ENDIF
 
    IF msg == WM_PAINT

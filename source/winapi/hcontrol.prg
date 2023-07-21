@@ -705,7 +705,7 @@ METHOD Activate() CLASS HBoard
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
-   LOCAL nRes, o
+   LOCAL nRes, o, nPosX, nPosY
 
    IF ::bOther != Nil
       IF ( nRes := Eval( ::bOther, Self, msg, wParam, lParam ) ) == 0
@@ -719,6 +719,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
          o:SetState( 1, nPosX, nPosY )
+      ELSEIF !Empty( HDrawn():oOver )
+         HDrawn():oOver:SetState( 0, nPosX, nPosY )
+         HDrawn():oOver := Nil
       ENDIF
 
    ELSEIF msg == WM_PAINT
@@ -731,6 +734,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       ENDIF
 
    ELSEIF msg == WM_LBUTTONUP
+      IF !Empty( HDrawn():oPressed )
+         HDrawn():oPressed:SetState( 3, nPosX := hwg_Loword( lParam ), nPosY := hwg_Hiword( lParam ) )
+         HDrawn():oPressed := Nil
+      ENDIF
    ENDIF
 
    RETURN -1

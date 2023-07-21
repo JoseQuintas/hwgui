@@ -654,7 +654,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
    ELSEIF msg == WM_LBUTTONUP
       IF !Empty( HDrawn():oPressed )
-         HDrawn():oPressed:SetState( 3, nPosX := hwg_Loword( lParam ), nPosY := hwg_Hiword( lParam ) )
+         HDrawn():oPressed:SetState( 3, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
          HDrawn():oPressed := Nil
       ENDIF
    ENDIF

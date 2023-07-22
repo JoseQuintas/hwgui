@@ -12,12 +12,12 @@
 #include "hbclass.ch"
 
 #define  STATE_NORMAL    0
-#define  STATE_MOVER     1
-#define  STATE_PRESSED   2
+#define  STATE_PRESSED   1
+#define  STATE_MOVER     2
 
 CLASS HDrawn INHERIT HObject
 
-   CLASS VAR oOver SHARED
+   CLASS VAR oOver, oOver0 SHARED
    CLASS VAR oPressed SHARED
 
    DATA oParent
@@ -31,9 +31,10 @@ CLASS HDrawn INHERIT HObject
    DATA aStyles
    DATA aDrawn        INIT {}
 
-   DATA bPaint, bClick
+   DATA bPaint, bClick, bChgState
 
-   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, title, oFont, bPaint, bClick )
+   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      title, oFont, bPaint, bClick, bChgState )
    METHOD GetParentBoard()
    METHOD GetByPos( xPos, yPos, oBoard )
    METHOD Paint( hDC )
@@ -43,7 +44,8 @@ CLASS HDrawn INHERIT HObject
 
 ENDCLASS
 
-METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, title, oFont, bPaint, bClick ) CLASS HDrawn
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+   title, oFont, bPaint, bClick, bChgState ) CLASS HDrawn
 
    ::oParent := oWndParent
    ::nLeft   := nLeft
@@ -57,6 +59,7 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, t
    ::oFont   := Iif( oFont == Nil, oWndParent:oFont, oFont )
    ::bPaint  := bPaint
    ::bClick  := bClick
+   ::bChgState := bChgState
 
    IF bColor != NIL
       ::brush := HBrush():Add( bColor )
@@ -138,23 +141,46 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
 
    LOCAL o, nOldstate := ::nState
 
-   IF !Empty( ::aDrawn ) .AND. !Empty( o := ::GetByPos( nPosX, nPosY ) )
-      RETURN o:SetState( nState, nPosX, nPosY )
+   IF !Empty( ::aDrawn )
+      //IF nOldstate != nState; hwg_writelog( "1> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
+      IF  !Empty( o := ::GetByPos( nPosX, nPosY ) )
+         IF nOldstate != nState .AND. !Empty( ::bChgState ) .AND. Eval( ::bChgState, Self, nState ) == 0
+            RETURN Nil
+         ENDIF
+         IF nState != STATE_PRESSED
+            ::nState := nState
+         ENDIF
+         //IF nOldstate != nState; hwg_writelog( "2> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
+         RETURN o:SetState( nState, nPosX, nPosY )
+      ELSEIF !Empty( ::oOver ) .AND. !( ::oOver == Self )
+         ::oOver:SetState( 0, nPosX, nPosY )
+         ::oOver := Nil
+      ENDIF
    ENDIF
-   IF nState == nOldstate
-      IF nState > 0
-         IF o == Iif( nState == STATE_MOVER, ::oOver, ::oPressed )
+   IF nState != nOldstate
+      //IF nOldstate != nState; hwg_writelog( "3> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
+      IF !Empty( ::bChgState )
+         IF Eval( ::bChgState, Self, nState ) == 0
+            RETURN Nil
          ENDIF
       ENDIF
-   ELSE
       IF nState == STATE_MOVER
          ::nState := STATE_MOVER
-         ::oOver := Self
+         IF !Empty( ::oOver ) .AND. !( ::oOver == Self )
+            ::oOver:SetState( 0, nPosX, nPosY )
+         ENDIF
+         IF Empty( ::aDrawn )
+            ::oOver := Self
+         ELSE
+            ::oOver0 := Self
+         ENDIF
       ELSEIF nState == STATE_NORMAL
          ::nState := STATE_NORMAL
       ELSEIF nState == STATE_PRESSED
          ::nState := STATE_PRESSED
-         ::oPressed := Self
+         IF Empty( ::aDrawn )
+            ::oPressed := Self
+         ENDIF
       ELSEIF nState == 3  // Unpressed
          ::nState := Iif( nPosX >= ::nLeft .AND. nPosX < ::nLeft + ::nWidth .AND. ;
             nPosY >= ::nTop .AND. nPosY < ::nTop + ::nHeight, STATE_MOVER, STATE_NORMAL )

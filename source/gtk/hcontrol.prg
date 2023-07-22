@@ -637,10 +637,16 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
    IF msg == WM_MOUSEMOVE
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
-         o:SetState( 1, nPosX, nPosY )
-      ELSEIF !Empty( HDrawn():oOver )
-         HDrawn():oOver:SetState( 0, nPosX, nPosY )
-         HDrawn():oOver := Nil
+         o:SetState( 2, nPosX, nPosY )
+      ELSE
+         IF !Empty( HDrawn():oOver )
+            HDrawn():oOver:SetState( 0, nPosX, nPosY )
+            HDrawn():oOver := Nil
+         ENDIF
+         IF !Empty( HDrawn():oOver0 )
+            HDrawn():oOver0:SetState( 0, nPosX, nPosY )
+            HDrawn():oOver0 := Nil
+         ENDIF
       ENDIF
 
    ELSEIF msg == WM_PAINT
@@ -649,7 +655,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
    ELSEIF msg == WM_LBUTTONDOWN
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
-         o:SetState( 2, nPosX, nPosY )
+         o:SetState( 1, nPosX, nPosY )
       ENDIF
 
    ELSEIF msg == WM_LBUTTONUP

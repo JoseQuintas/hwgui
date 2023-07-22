@@ -85,7 +85,7 @@ HB_FUNC( HWG_DRAWTEXT )
       if( !HB_ISNIL(7) && ( hb_parni(7) & ( DT_CENTER | DT_RIGHT ) ) &&
             ( rc.width < ( iWidth-10 ) ) )
       {
-         pango_layout_set_alignment( hDC->layout, 
+         pango_layout_set_alignment( hDC->layout,
              (hb_parni(7) & DT_CENTER)? PANGO_ALIGN_CENTER : PANGO_ALIGN_RIGHT );
       }
       else
@@ -94,6 +94,7 @@ HB_FUNC( HWG_DRAWTEXT )
       hwg_setcolor( hDC->cr, (hDC->fcolor != -1)? hDC->fcolor : 0 );
       cairo_move_to( hDC->cr, (gdouble)hb_parni(3), (gdouble)hb_parni(4) );
       pango_cairo_show_layout( hDC->cr, hDC->layout );
+      cairo_stroke( hDC->cr );
       g_free( cText );
    }
 }
@@ -120,7 +121,7 @@ HB_FUNC( HWG_GETTEXTMETRIC )
                pango_font_metrics_get_descent( metrics ) ) / PANGO_SCALE;
       width = pango_font_metrics_get_approximate_char_width(metrics) / PANGO_SCALE;
       pango_font_metrics_unref( metrics );
-      
+
       temp = _itemPutNL( NULL, height );
       _itemArrayPut( aMetr, 1, temp );
       _itemRelease( temp );
@@ -134,9 +135,9 @@ HB_FUNC( HWG_GETTEXTMETRIC )
       _itemRelease( temp );
 
       _itemReturn( aMetr );
-      _itemRelease( aMetr );  
+      _itemRelease( aMetr );
    }
-   
+
 }
 
 HB_FUNC( HWG_GETTEXTSIZE )
@@ -255,7 +256,7 @@ HB_FUNC( HWG_WINDOWFROMDC )
 
 }
 
-/* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet], 
+/* CreateFont( fontName, nWidth, hHeight [,fnWeight] [,fdwCharSet],
                [,fdwItalic] [,fdwUnderline] [,fdwStrikeOut]  )
 */
 HB_FUNC( HWG_CREATEFONT )
@@ -287,7 +288,7 @@ HB_FUNC( HWG_CREATEFONT )
    else
       h->attrs = NULL;
    HB_RETHANDLE( h );
-   
+
 }
 
 /*
@@ -297,7 +298,7 @@ HB_FUNC( HWG_CREATEFONT )
 HB_FUNC( HWG_SETCTRLFONT )
 {
    GtkWidget * hCtrl = (GtkWidget*) HB_PARHANDLE(1);
-   GtkWidget * hLabel = (GtkWidget*) g_object_get_data( (GObject*) hCtrl,"label" );   
+   GtkWidget * hLabel = (GtkWidget*) g_object_get_data( (GObject*) hCtrl,"label" );
 
    if( GTK_IS_BUTTON( hCtrl ) )
       hCtrl = gtk_bin_get_child( GTK_BIN( hCtrl ) );
@@ -305,7 +306,7 @@ HB_FUNC( HWG_SETCTRLFONT )
       hCtrl = gtk_bin_get_child( GTK_BIN( hCtrl ) );
    else if( hLabel )
       hCtrl = (GtkWidget*) hLabel;
-      
+
    gtk_widget_modify_font( hCtrl, ( (PHWGUI_FONT) HB_PARHANDLE(3) )->hFont );
 }
 #else
@@ -322,7 +323,7 @@ HB_FUNC( HWG_SETCTRLFONT )
       gint iHeight = pango_font_description_get_size( pFont->hFont );
       int iIta = (pango_font_description_get_style( pFont->hFont ) == PANGO_STYLE_ITALIC)? 1 : 0;
       int iBold = (pango_font_description_get_weight( pFont->hFont ) == PANGO_WEIGHT_BOLD)? 1 : 0;
-         
+
       sprintf( szData, "#%s { font-family: %s; font-size: %dpx; font-weight: %s;  font-style: %s; }",
          pName, szFamily, iHeight/PANGO_SCALE,
          (iBold)? "bold" : "normal",

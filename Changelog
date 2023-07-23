@@ -15,8 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-2023-07-22 18:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
+2023-07-23 19:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
+  * source/gtk/hdrawn.prg
+  * source/winapi/hdrawn.prg
+    ! Further steps for HBoard, HDrawn
+  * source/gtk/control.c
+    ! hwg_CreateBoard() added
+
+2023-07-22 18:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdrawn.prg
   * source/winapi/hcontrol.prg
   * source/winapi/hdrawn.prg
   * source/winapi/hcontrol.prg

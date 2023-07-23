@@ -461,7 +461,7 @@ METHOD SetText( c ) CLASS HButton
 
    hwg_button_SetText( ::handle, ::title := c )
 
- RETURN NIL
+   RETURN NIL
 
 
 CLASS HButtonEX INHERIT HButton
@@ -615,8 +615,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HBoard
 
    IF ! Empty( ::oParent:handle )
-      ::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
-         SS_OWNERDRAW, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      ::handle := hwg_CreateBoard( ::oParent:handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
 

@@ -30,6 +30,7 @@ CLASS HDrawn INHERIT HObject
    DATA oFont
    DATA aStyles
    DATA aDrawn        INIT {}
+   DATA xValue        INIT Nil
 
    DATA bPaint, bClick, bChgState
 
@@ -40,6 +41,8 @@ CLASS HDrawn INHERIT HObject
    METHOD Paint( hDC )
    METHOD Move( x1, y1, width, height )
    METHOD SetState( nState, nPosX, nPosY )
+   METHOD SetText( cText )
+   METHOD Value( xValue ) SETGET
    METHOD Refresh()
 
 ENDCLASS
@@ -200,6 +203,23 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
    ENDIF
 
    RETURN Nil
+
+METHOD SetText( cText ) CLASS HDrawn
+
+   ::title := cText
+   ::Refresh()
+
+   RETURN Nil
+
+METHOD Value( xValue ) CLASS HDrawn
+
+   IF xValue != Nil
+      ::xValue := xValue
+      ::Refresh()
+      RETURN xValue
+   ENDIF
+
+   RETURN ::xValue
 
 METHOD Refresh() CLASS HDrawn
 

@@ -1,14 +1,37 @@
+/*
+ * hello.prg
+ *
+ * HWGUI - Harbour Win32 and Linux (GTK) GUI library
+ *
+ * Sample program to demonstrate
+ *   HGraph class to draw graphs and
+ *   HBoard, HDrawn classes to draw control items on a drawing area
+ *
+ * Copyright 2005-2023 Alexander S.Kresin <alex@kresin.ru>
+ * www - http://www.kresin.ru
+ */
+
 #include "hwgui.ch"
+
+#define CLR_BLACK           0
+#define CLR_DGRAY1   0x222222
+#define CLR_DGRAY2   0x555555
+#define CLR_DGRAY3   0x888888
+#define CLR_WHITE    0xFFFFFF
 
 FUNCTION Main()
 
-   LOCAL oMain, oPaneHea, oPaneTop, oGraph, oFont
+   LOCAL oMain, oPaneHea, oPaneTop, oGraph, oPaneDrawn, oFont
    LOCAL oStyleNormal, oStylePressed, oStyleOver
+   LOCAL aCorners := { 4,4,4,4 }
+   LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
+      HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
+      HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
 
    PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 ITALIC
 
    oStyleNormal := HStyle():New( {0x7b7680,0x5b5760}, 1 )
-   oStylePressed := HStyle():New( {0x7b7680}, 1,, 2, 0xffffff )
+   oStylePressed := HStyle():New( {0x7b7680}, 1,, 2, CLR_WHITE )
    oStyleOver := HStyle():New( {0x7b7680}, 1 )
 
    INIT WINDOW oMain MAIN TITLE "Example" AT 200, 0 SIZE 400, 320 ;
@@ -19,24 +42,14 @@ FUNCTION Main()
 
    oPaneHea:SetSysbtnColor( 0xffffff, 0x7b7680 )
 
-   @ 0, 32 PANEL oPaneTop SIZE 400, 48 HSTYLE oStyleNormal ;
-      ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 30, 50 GRAPH oGraph DATA Nil SIZE 340, 250 COLOR 65280
 
-   @ 0,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
-         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "1" ;
-         ON CLICK {||Graph1()}
-   @ 64,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
-         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "2" ;
-         ON CLICK {||Graph2()}
-   //@ 128,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
-   //      HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "3" ;
-   //      ON CLICK {||Graph3()}
-
-   @ 332,0 OWNERBUTTON OF oPaneTop SIZE 64,48 ;
-         HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Exit" ;
-         ON CLICK {||hwg_EndWindow()}
-
-   @ 50, 100 GRAPH oGraph DATA Nil SIZE 300, 200 COLOR 65280
+   oPaneDrawn := HDrawn():New( oGraph, 4, 4, 96, 180, CLR_WHITE, CLR_BLACK,,,,,, ;
+      {|o,n|o:lHide:=(n==0),o:Refresh(),-1} )
+   HDrawn():New( oPaneDrawn, 12, 12, 40, 30, CLR_WHITE, CLR_BLACK, aStyles, '1', oFont,, {|| Graph1() } )
+   HDrawn():New( oPaneDrawn, 12, 56, 40, 30, CLR_WHITE, CLR_BLACK, aStyles, '2', oFont,, {|| Graph2() } )
+   HDrawn():New( oPaneDrawn, 12, 96, 40, 30, CLR_WHITE, CLR_BLACK, aStyles, '3', oFont,, {|| Graph3() } )
+   HDrawn():New( oPaneDrawn, 12, 136, 80, 30, CLR_WHITE, CLR_BLACK, aStyles, 'Exit', oFont,, {|| hwg_EndWindow() } )
 
    ACTIVATE WINDOW oMain
 

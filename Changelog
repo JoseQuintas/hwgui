@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-24 16:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * samples/graph.prg
+  * samples/gtk_samples/graph.prg
+    * Graph sample changed to demonstrate using of HDrawn as control items on a drawing area
+
 2023-07-24 15:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hdrawn.prg
   * source/gtk/hcontrol.prg

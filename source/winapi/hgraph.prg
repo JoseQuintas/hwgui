@@ -1,19 +1,17 @@
 /*
  * $Id$
  *
- * HWGUI - Harbour Win32 GUI library source code:
+ * HWGUI - Harbour Linux (GTK) GUI library source code:
  * HGraph class
  *
- * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
+ * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
 */
 
 #include "hwgui.ch"
 #include "hbclass.ch"
 
-CLASS HGraph INHERIT HControl
-
-CLASS VAR winclass   INIT "STATIC"
+CLASS HGraph INHERIT HBoard
 
    DATA aValues                      // Data array
    DATA aSignX, aSignY               // Signs arrays for X and Y axes
@@ -33,54 +31,33 @@ CLASS VAR winclass   INIT "STATIC"
    DATA colorCoor INIT 0xffffff      // A color for signs
    DATA colorGrid INIT 0xaaaaaa      // A color for axes and grid lines
    DATA aColors                      // Colors for each line
-   DATA ymaxSet, yMinSet
+   DATA ymaxSet, yminSet
    DATA tbrush
    DATA aPens
    DATA oPen, oPenGrid
+   DATA bPaintItems
    DATA xmax, ymax, xmin, ymin PROTECTED
 
    METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
                bSize, ctooltip, tcolor, bcolor )
-   METHOD Activate()
-   METHOD Init()
    METHOD CalcMinMax()
-   METHOD Paint(lpdis)
-   METHOD Rebuild( aValues ,nType, nLineType, nPointSize )
+   METHOD Paint()
+   METHOD Rebuild( aValues, nType, nLineType, nPointSize )
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
-            bSize, ctooltip, tcolor, bcolor ) CLASS HGraph
+      bSize, ctooltip, tcolor, bcolor ) CLASS HGraph
 
-   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont,, ;
-              bSize, { | o, lpdis | o:Paint( lpdis ) }, ctooltip, ;
-              IIf( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), IIf( bcolor == Nil, 0, bcolor ) )
+   ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, , ;
+      bSize,, ctooltip, ;
+      iif( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), iif( bcolor == Nil, 0, bcolor ) )
 
    ::aValues := aValues
    ::nType   := 1
    ::nGraphs := 1
 
-   ::Activate()
-
    RETURN Self
-
-METHOD Activate() CLASS HGraph
-
-   IF ! Empty( ::oParent:handle )
-      ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
-                                ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-      ::Init()
-   ENDIF
-
-   RETURN Nil
-
-METHOD Init()  CLASS HGraph
-
-   IF ! ::lInit
-      ::Super:Init()
-   ENDIF
-
-   RETURN Nil
 
 METHOD CalcMinMax() CLASS HGraph
 
@@ -142,15 +119,16 @@ METHOD CalcMinMax() CLASS HGraph
 
    RETURN Nil
 
-METHOD Paint( lpdis ) CLASS HGraph
+METHOD Paint() CLASS HGraph
 
-   LOCAL drawInfo := hwg_Getdrawiteminfo( lpdis )
-   LOCAL hDC := drawInfo[ 3 ]
+   LOCAL hDC := hwg_Getdc( ::handle )
    LOCAL x1 := 0, y1 := 0, x2 := ::nWidth, y2 := ::nHeight, scaleX, scaleY
    LOCAL i, j, nLen, l1
    LOCAL x0, y0, px1, px2, py1, py2, nWidth
 
    IF ::nType == 0 .OR. ::nType > 3 .OR. Empty( ::aValues )
+      ::Super:Paint( hDC )
+      hwg_Releasedc( ::handle, hDC )
       RETURN Nil
    ENDIF
    IF ::xmax == Nil
@@ -181,6 +159,7 @@ METHOD Paint( lpdis ) CLASS HGraph
          ::aPens[i] := HPen():Add( PS_SOLID, 2, ::aColors[i] )
       NEXT
    ENDIF
+
    x0 := x1 + ( 0 - ::xmin ) / scaleX
    y0 := Iif( ::lPositive, y2, y2 - ( 0 - ::ymin ) / scaleY )
 
@@ -278,6 +257,13 @@ METHOD Paint( lpdis ) CLASS HGraph
          ENDIF
       NEXT
    ENDIF
+
+   IF !Empty( ::bPaintItems )
+      Eval( ::bPaintItems, Self, hDC )
+   ENDIF
+
+   ::Super:Paint( hDC )
+   hwg_Releasedc( ::handle, hDC )
 
    RETURN Nil
 

@@ -589,7 +589,7 @@ METHOD Activate() CLASS HLine
 
 CLASS HBoard INHERIT HControl
 
-   DATA winclass   INIT "HBOARD"
+   DATA winclass   INIT "OWNBTN"
    DATA aDrawn     INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
@@ -598,7 +598,7 @@ CLASS HBoard INHERIT HControl
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
-   METHOD Paint()
+   METHOD Paint( hDC )
 
 ENDCLASS
 
@@ -675,13 +675,16 @@ METHOD Init() CLASS HBoard
 
    RETURN Nil
 
-METHOD Paint()
+METHOD Paint( hDC )
 
    LOCAL i
-   LOCAL pps, hDC
+   LOCAL pps, l := .F.
 
-   pps := hwg_Definepaintstru()
-   hDC := hwg_Beginpaint( ::handle, pps )
+   IF hDC == Nil
+      pps := hwg_Definepaintstru()
+      hDC := hwg_Beginpaint( ::handle, pps )
+      l := .T.
+   ENDIF
 
    IF !Empty( ::bPaint )
       IF Eval( ::bPaint, Self, hDC ) == 0
@@ -693,6 +696,8 @@ METHOD Paint()
       ::aDrawn[i]:Paint( hDC )
    NEXT
 
-   hwg_Endpaint( ::handle, pps )
+   IF l
+      hwg_Endpaint( ::handle, pps )
+   ENDIF
 
    RETURN Nil

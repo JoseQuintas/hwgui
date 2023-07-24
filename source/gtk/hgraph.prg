@@ -11,9 +11,8 @@
 #include "hwgui.ch"
 #include "hbclass.ch"
 
-CLASS HGraph INHERIT HControl
+CLASS HGraph INHERIT HBoard
 
-   CLASS VAR winclass   INIT "STATIC"
    DATA aValues                      // Data array
    DATA aSignX, aSignY               // Signs arrays for X and Y axes
    DATA nGraphs    INIT 1            // Number of lines in a line chart
@@ -41,8 +40,6 @@ CLASS HGraph INHERIT HControl
 
    METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
                bSize, ctooltip, tcolor, bcolor )
-   METHOD Activate()
-   METHOD onEvent( msg, wParam, lParam )
    METHOD CalcMinMax()
    METHOD Paint()
    METHOD Rebuild( aValues, nType, nLineType, nPointSize )
@@ -52,40 +49,15 @@ ENDCLASS
 METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
       bSize, ctooltip, tcolor, bcolor ) CLASS HGraph
 
-   ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, , ;
-      bSize, { |o, lpdis|o:Paint( lpdis ) }, ctooltip, ;
+   ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, , ;
+      bSize,, ctooltip, ;
       iif( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), iif( bcolor == Nil, 0, bcolor ) )
 
    ::aValues := aValues
    ::nType   := 1
    ::nGraphs := 1
 
-   ::Activate()
-
    RETURN Self
-
-METHOD Activate() CLASS HGraph
-
-   IF !Empty( ::oParent:handle )
-      ::handle := hwg_Createstatic( ::oParent:handle, ::id, ;
-         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-      hwg_Setwindowobject( ::handle, Self )
-      ::Init()
-   ENDIF
-
-   RETURN Nil
-
-METHOD onEvent( msg, wParam, lParam ) CLASS HGraph
-
-   * Parameters not used
-   HB_SYMBOL_UNUSED(wParam)
-   HB_SYMBOL_UNUSED(lParam)
-
-   IF msg == WM_PAINT
-      ::Paint()
-   ENDIF
-
-   RETURN 0
 
 METHOD CalcMinMax() CLASS HGraph
 
@@ -155,6 +127,8 @@ METHOD Paint() CLASS HGraph
    LOCAL x0, y0, px1, px2, py1, py2, nWidth
 
    IF ::nType == 0 .OR. ::nType > 3 .OR. Empty( ::aValues )
+      ::Super:Paint( hDC )
+      hwg_Releasedc( ::handle, hDC )
       RETURN Nil
    ENDIF
    IF ::xmax == Nil
@@ -288,6 +262,7 @@ METHOD Paint() CLASS HGraph
       Eval( ::bPaintItems, Self, hDC )
    ENDIF
 
+   ::Super:Paint( hDC )
    hwg_Releasedc( ::handle, hDC )
 
    RETURN Nil

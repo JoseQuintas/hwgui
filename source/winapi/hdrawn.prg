@@ -14,6 +14,7 @@
 #define  STATE_NORMAL    0
 #define  STATE_PRESSED   1
 #define  STATE_MOVER     2
+#define  STATE_UNPRESS   3
 
 CLASS HDrawn INHERIT HObject
 
@@ -184,7 +185,7 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
          IF Empty( ::aDrawn )
             ::oPressed := Self
          ENDIF
-      ELSEIF nState == 3  // Unpressed
+      ELSEIF nState == STATE_UNPRESS
          ::nState := Iif( nPosX >= ::nLeft .AND. nPosX < ::nLeft + ::nWidth .AND. ;
             nPosY >= ::nTop .AND. nPosY < ::nTop + ::nHeight, STATE_MOVER, STATE_NORMAL )
          IF Self == ::oPressed
@@ -225,3 +226,36 @@ METHOD Refresh() CLASS HDrawn
 
    hwg_Invalidaterect( ::GetParentBoard():handle, 0, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1 )
    RETURN Nil
+
+CLASS HDrawnCheck INHERIT HDrawn
+
+   DATA cForTitle   INIT 'x'
+
+   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      title, oFont, bPaint, bClick, bChgState )
+   METHOD SetState( nState, nPosX, nPosY )
+
+ENDCLASS
+
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      title, oFont, bPaint, bClick, bChgState ) CLASS HDrawnCheck
+
+   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      ' ', oFont, bPaint, bClick, bChgState )
+
+   IF !Empty( title )
+      ::cForTitle := title
+   ENDIF
+   ::xValue := .F.
+
+   RETURN Self
+
+METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawnCheck
+
+   IF nState == STATE_UNPRESS .AND. ::nState == STATE_PRESSED
+      ::xValue := !::xValue
+      ::title := Iif( ::xValue, ::cForTitle, ' ' )
+      ::Refresh()
+   ENDIF
+
+   RETURN ::Super:SetState( nState, nPosX, nPosY )

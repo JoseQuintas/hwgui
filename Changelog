@@ -15,6 +15,17 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-24 15:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdrawn.prg
+  * source/gtk/hcontrol.prg
+  * source/winapi/hdrawn.prg
+  * source/winapi/hcontrol.prg
+    * HDrawnCheck class added, inherited from HDrawn
+  * source/gtk/hgraph.prg
+  * source/winapi/hgraph.prg
+    * HGraph inherits now from HBoard to be possible to handle mouse events
+      and use HDrawn widgets.
+
 2023-07-23 19:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
   * source/gtk/hdrawn.prg
@@ -25,7 +36,7 @@
 
 2023-07-22 18:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hdrawn.prg
-  * source/winapi/hcontrol.prg
+  * source/gtk/hcontrol.prg
   * source/winapi/hdrawn.prg
   * source/winapi/hcontrol.prg
     ! Further steps for HBoard, HDrawn

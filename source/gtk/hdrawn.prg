@@ -259,3 +259,97 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawnCheck
    ENDIF
 
    RETURN ::Super:SetState( nState, nPosX, nPosY )
+
+CLASS HDrawnRadio INHERIT HDrawn
+
+   DATA cForTitle   INIT 'o'
+   DATA xGroup
+
+   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      title, oFont, bPaint, bClick, bChgState, xGroup, lInitVal )
+   METHOD SetState( nState, nPosX, nPosY )
+   METHOD GetGroupValue()
+   METHOD SetGroupValue( nVal )
+
+ENDCLASS
+
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      title, oFont, bPaint, bClick, bChgState, xGroup, lInitVal ) CLASS HDrawnRadio
+
+   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      ' ', oFont, bPaint, bClick, bChgState )
+
+   IF !Empty( title )
+      ::cForTitle := title
+   ENDIF
+   ::xValue := Iif( lInitVal == Nil, .F., lInitVal )
+   ::xGroup := xGroup
+
+   RETURN Self
+
+METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawnRadio
+
+   IF nState == STATE_UNPRESS .AND. ::nState == STATE_PRESSED .AND. !::xValue
+      ::SetGroupValue()
+      ::title := ::cForTitle
+      ::Refresh()
+   ENDIF
+
+   RETURN ::Super:SetState( nState, nPosX, nPosY )
+
+METHOD GetGroupValue() CLASS HDrawnRadio
+
+   LOCAL i, aDrawn := ::oParent:aDrawn, xGroup := ::xGroup, nVal := 0
+
+   FOR i := 1 TO Len( aDrawn )
+      IF __ObjHasMsg( aDrawn[i], "XGROUP" ) .AND. Valtype(aDrawn[i]:xGroup) == Valtype(xGroup) ;
+         .AND. aDrawn[i]:xGroup == xGroup
+         nVal ++
+         IF aDrawn[i]:xValue
+            RETURN nVal
+         ENDIF
+      ENDIF
+   NEXT
+
+   RETURN 0
+
+METHOD SetGroupValue( nVal ) CLASS HDrawnRadio
+
+   LOCAL i, aDrawn := ::oParent:aDrawn, xGroup := ::xGroup, n := 0, o
+
+   IF nVal != Nil .AND. Valtype( nVal ) != "N" .OR. nVal <= 0
+      RETURN 0
+   ENDIF
+   FOR i := 1 TO Len( aDrawn )
+      IF __ObjHasMsg( aDrawn[i], "XGROUP" ) .AND. Valtype(aDrawn[i]:xGroup) == Valtype(xGroup) ;
+         .AND. aDrawn[i]:xGroup == xGroup
+         n ++
+         IF aDrawn[i]:xValue
+            o := aDrawn[i]:xValue
+         ENDIF
+         IF nVal == Nil
+            IF !(aDrawn[i] == Self) .AND. aDrawn[i]:xValue
+               aDrawn[i]:xValue := .F.
+               aDrawn[i]:title := ' '
+               aDrawn[i]:Redraw()
+            ENDIF
+         ELSE
+            IF aDrawn[i]:xValue != (n == nVal)
+               aDrawn[i]:xValue := (n == nVal)
+               aDrawn[i]:title := Iif( n == nVal, aDrawn[i]:cForTitle, ' ' )
+               aDrawn[i]:Redraw()
+            ENDIF
+         ENDIF
+      ENDIF
+   NEXT
+   IF nVal == Nil
+      ::xValue := .T.
+      ::title := ::cForTitle
+      ::Redraw()
+   ELSEIF n <= nVal .AND. !Empty( o )
+      o:xValue := .T.
+      o:title := o:cForTitle
+      o:Redraw()
+   ENDIF
+
+   RETURN 0

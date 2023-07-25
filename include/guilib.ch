@@ -1858,4 +1858,36 @@ Added by Marcos Antonio Gambeta
        <.lNoVScr.>,<.lNoBord.> );
     [; hwg_SetCtrlName( <oTEdit>,<(oTEdit)> )]
 
+#xcommand @ <x>,<y> BOARD [ <oBoard> ] ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON INIT <bInit> ]        ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ FONT <oFont> ]           ;
+            [ TOOLTIP <ctoolt> ]       ;
+          => ;
+    [<oBoard> := ] HBoard():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
+        <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor> );
+    [; hwg_SetCtrlName( <oBoard>,<(oBoard)> )]
+
+#xcommand @ <x>,<y> DRAWN [ <oDrawn> ] ;
+            OF <oWnd>                  ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ HSTYLES <aStyles> ]      ;
+            [ TEXT <cText> ]           ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CLICK <bClick> ]      ;
+            [ ON CHANGESTATE <bChg> ]  ;
+            [ FONT <oFont> ]           ;
+          => ;
+    [<oDrawn> := ] HDrawn():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <aStyles>,<cText>,<oFont>,<bDraw>,<bClick>,<bChg> );
+    [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
+
 /* ================= EOF of guilib.ch ==================== */

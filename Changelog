@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-25 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdrawn.prg
+  * source/winapi/hdrawn.prg
+    * HDrawnRadio class added, inherited from HDrawn
+  * include/guilib.ch
+    @ ... BOARD ..., @ ... DRAWN ... commands added
+  * samples/graph.prg
+  * samples/gtk_samples/graph.prg
+    * Changed to use new commands instead of methods calls
+
 2023-07-24 16:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * samples/graph.prg
   * samples/gtk_samples/graph.prg

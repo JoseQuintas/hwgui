@@ -1,5 +1,5 @@
 /*
- * hello.prg
+ * graph.prg
  *
  * HWGUI - Harbour Win32 and Linux (GTK) GUI library
  *
@@ -44,12 +44,17 @@ FUNCTION Main()
 
    @ 30, 50 GRAPH oGraph DATA Nil SIZE 340, 250 COLOR 65280
 
-   oPaneDrawn := HDrawn():New( oGraph, 4, 4, 96, 180, CLR_WHITE, CLR_BLACK,,,,,, ;
-      {|o,n|o:lHide:=(n==0),o:Refresh(),-1} )
-   HDrawn():New( oPaneDrawn, 12, 12, 40, 30, CLR_WHITE, CLR_BLACK, aStyles, '1', oFont,, {|| Graph1() } )
-   HDrawn():New( oPaneDrawn, 12, 56, 40, 30, CLR_WHITE, CLR_BLACK, aStyles, '2', oFont,, {|| Graph2() } )
-   HDrawn():New( oPaneDrawn, 12, 96, 40, 30, CLR_WHITE, CLR_BLACK, aStyles, '3', oFont,, {|| Graph3() } )
-   HDrawn():New( oPaneDrawn, 12, 136, 80, 30, CLR_WHITE, CLR_BLACK, aStyles, 'Exit', oFont,, {|| hwg_EndWindow() } )
+   @ 4, 4 DRAWN oPaneDrawn OF oGraph SIZE 96, 180 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+      ON CHANGESTATE {|o,n|o:lHide:=(n==0),o:Refresh(),-1}
+
+   @ 12, 12 DRAWN OF oPaneDrawn SIZE 40, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+      HSTYLES aStyles TEXT '1' FONT oFont ON CLICK {|| Graph1() }
+   @ 12, 56 DRAWN OF oPaneDrawn SIZE 40, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+      HSTYLES aStyles TEXT '2' FONT oFont ON CLICK {|| Graph2() }
+   @ 12, 96 DRAWN OF oPaneDrawn SIZE 40, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+      HSTYLES aStyles TEXT '3' FONT oFont ON CLICK {|| Graph3() }
+   @ 12, 136 DRAWN OF oPaneDrawn SIZE 40, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+      HSTYLES aStyles TEXT 'Exit' FONT oFont ON CLICK {|| hwg_EndWindow() }
 
    ACTIVATE WINDOW oMain
 

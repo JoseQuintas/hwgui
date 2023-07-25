@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-25 20:14 UTC-0200 José Quintas
+   - test/mixed/*
+   + test/dlgauto/*
+     ! no more mixed, now single autoapp for tests purpose
+
 2023-07-25 14:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcontrol.prg
     ! Fixed

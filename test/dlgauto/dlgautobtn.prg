@@ -39,7 +39,7 @@ METHOD ButtonCreate() CLASS DlgAutoBtn
       AAdd( aList, { "Cancel",   { || ::Cancel() } } )
    ENDIF
    IF "P" $ ::cOptions
-      AAdd( aList, { "Print",    { || Nil } } )
+      AAdd( aList, { "Print",    { || ::Print() } } )
    ENDIF
    FOR EACH aItem IN ::aOptionList
       AAdd( aList, { aItem[1], aItem[2] } )
@@ -49,7 +49,10 @@ METHOD ButtonCreate() CLASS DlgAutoBtn
    nCol := 10
    nRow := 10
    FOR EACH aItem IN aList
-      AAdd( ::aControlList, { TYPE_BUTTON, Nil, aItem[ 1 ], aItem[ 2 ] } )
+      AAdd( ::aControlList, CFG_EDITEMPTY )
+      Atail( ::aControlList )[ CFG_CTLTYPE ] := TYPE_BUTTON
+      Atail( ::aControlList )[ CFG_NAME ]    := aItem[1]
+      Atail( ::aCOntrolList )[ CFG_ACTION ]  := aItem[ 2 ]
    NEXT
    FOR EACH aItem IN ::aControlList
       @ nCol, nRow BUTTON aItem[ CFG_OBJ ] ;

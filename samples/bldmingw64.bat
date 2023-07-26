@@ -26,7 +26,7 @@ SET OBJ_LIST=%PRGNAME%.o
 SET MINGW_ARCH=-march=x86-64
 
 REM Windows DLLs
-SET WIN_DLLS=-luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm
+SET WIN_DLLS=-luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdiplus -lgdi32 -lole32 -loleaut32 -luuid -lwinmm
 
 REM Harbour libs
 SET HRB_LIBS=

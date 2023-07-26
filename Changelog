@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-26 13:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * samples/bldgw.bat
+  * samples/bldmingw64.bat
+  * utils/tutorial/bldgw.bat
+    * -lgdiplus option added to mingw build scripts
+
 2023-07-26 12:53 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwingui.ch
   * include/hwgextern.ch

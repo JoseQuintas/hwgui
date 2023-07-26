@@ -14,11 +14,11 @@ windres %1.rc %1_res.o
 set OBJ_LIST=%OBJ_LIST% %1_res.o
 :link
 if exist %HRB_LIB_DIR%\libhbvm.a goto hrb
-gcc -Wall -mwindows -o%1.exe %OBJ_LIST% -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib -mno-cygwin -Wl,--allow-multiple-definition -Wl,--start-group -lhwgui -lprocmisc -lhbxml -lvm -lrdd -lmacro -lpp -lrtl -lpp -lcodepage -llang -lcommon -lnulsys  -ldbfntx  -ldbfcdx -ldbffpt -lhbsix -lgtgui -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -Wl,--end-group
+gcc -Wall -mwindows -o%1.exe %OBJ_LIST% -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib -mno-cygwin -Wl,--allow-multiple-definition -Wl,--start-group -lhwgui -lprocmisc -lhbxml -lvm -lrdd -lmacro -lpp -lrtl -lpp -lcodepage -llang -lcommon -lnulsys  -ldbfntx  -ldbfcdx -ldbffpt -lhbsix -lgtgui -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdiplus -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -Wl,--end-group
 goto common
 
 :hrb
-gcc -Wall -mwindows -o%1.exe %OBJ_LIST% -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib -mno-cygwin -Wl,--allow-multiple-definition -Wl,--start-group -lhwgui -lprocmisc -lhbxml -lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhbcpage -lhblang -lhbcommon -lrddntx  -lrddcdx -lrddfpt -lhbsix -lgtgui -lgtwin -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -Wl,--end-group
+gcc -Wall -mwindows -o%1.exe %OBJ_LIST% -L%MINGW%\lib -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib -mno-cygwin -Wl,--allow-multiple-definition -Wl,--start-group -lhwgui -lprocmisc -lhbxml -lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhbcpage -lhblang -lhbcommon -lrddntx  -lrddcdx -lrddfpt -lhbsix -lgtgui -lgtwin -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdiplus -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -Wl,--end-group
 
 :common
 del %1.c

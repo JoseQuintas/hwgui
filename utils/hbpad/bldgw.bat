@@ -17,7 +17,7 @@ echo 1 24 "../../image/WindowsXP.Manifest" > hwgui_xp.rc
 
 gcc -I. -I%HRB_DIR%\include -Wall -c hbpad.c -ohbpad.o
 windres hwgui_xp.rc hwgui_xp.o
-gcc -Wall -mwindows -ohbpad.exe hbpad.o hwgui_xp.o -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib -Wl,--allow-multiple-definition -Wl,--start-group %HWGUI_LIBS% %HRB_LIBS% -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -Wl,--end-group
+gcc -Wall -mwindows -ohbpad.exe hbpad.o hwgui_xp.o -L%HRB_LIB_DIR% -L%HWGUI_INSTALL%\lib -Wl,--allow-multiple-definition -Wl,--start-group %HWGUI_LIBS% %HRB_LIBS% -luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdiplus -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -Wl,--end-group
 
 del *.c
 del *.o

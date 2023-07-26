@@ -24,7 +24,8 @@ CLASS HDrawn INHERIT HObject
    DATA oParent
    DATA title
    DATA nTop, nLeft, nWidth, nHeight
-   DATA tcolor, bcolor, brush
+   DATA tcolor, bcolor, oBrush, oPen
+   DATA tBorderColor  INIT Nil
    DATA lHide         INIT .F.
    DATA lStatePaint   INIT .F.
    DATA nState        INIT 0
@@ -66,7 +67,7 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
    ::bChgState := bChgState
 
    IF bColor != NIL
-      ::brush := HBrush():Add( bColor )
+      ::oBrush := HBrush():Add( bColor )
    ENDIF
 
    AAdd( ::oParent:aDrawn, Self )
@@ -112,8 +113,12 @@ METHOD Paint( hDC ) CLASS HDrawn
       ENDIF
       IF !Empty( oStyle )
          oStyle:Draw( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1 )
-      ELSEIF !Empty( ::brush )
-         hwg_RoundRect_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, 4,, ::brush:handle )
+      ELSEIF !Empty( ::oBrush )
+         IF Empty( ::oPen )
+            ::oPen := HPen():Add( BS_SOLID, 1, Iif( ::tBorderColor == Nil, ::bcolor, ::tBorderColor ) )
+         ENDIF
+         hwg_SelectObject( hDC, ::oPen:handle )
+         hwg_RoundRect_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, 4,, ::oBrush:handle )
       ENDIF
       IF !Empty( ::title )
          hwg_Settransparentmode( hDC, .T. )
@@ -317,7 +322,7 @@ METHOD SetGroupValue( nVal ) CLASS HDrawnRadio
 
    LOCAL i, aDrawn := ::oParent:aDrawn, xGroup := ::xGroup, n := 0, o
 
-   IF nVal != Nil .AND. Valtype( nVal ) != "N" .OR. nVal <= 0
+   IF nVal != Nil .AND. ( Valtype( nVal ) != "N" .OR. nVal <= 0 )
       RETURN 0
    ENDIF
    FOR i := 1 TO Len( aDrawn )
@@ -331,13 +336,13 @@ METHOD SetGroupValue( nVal ) CLASS HDrawnRadio
             IF !(aDrawn[i] == Self) .AND. aDrawn[i]:xValue
                aDrawn[i]:xValue := .F.
                aDrawn[i]:title := ' '
-               aDrawn[i]:Redraw()
+               aDrawn[i]:Refresh()
             ENDIF
          ELSE
             IF aDrawn[i]:xValue != (n == nVal)
                aDrawn[i]:xValue := (n == nVal)
                aDrawn[i]:title := Iif( n == nVal, aDrawn[i]:cForTitle, ' ' )
-               aDrawn[i]:Redraw()
+               aDrawn[i]:Refresh()
             ENDIF
          ENDIF
       ENDIF
@@ -345,11 +350,11 @@ METHOD SetGroupValue( nVal ) CLASS HDrawnRadio
    IF nVal == Nil
       ::xValue := .T.
       ::title := ::cForTitle
-      ::Redraw()
+      ::Refresh()
    ELSEIF n <= nVal .AND. !Empty( o )
       o:xValue := .T.
       o:title := o:cForTitle
-      o:Redraw()
+      o:Refresh()
    ENDIF
 
    RETURN 0

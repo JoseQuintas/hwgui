@@ -1890,4 +1890,38 @@ Added by Marcos Antonio Gambeta
         <aStyles>,<cText>,<oFont>,<bDraw>,<bClick>,<bChg> );
     [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
 
+#xcommand @ <x>,<y> DRAWN CHECK [ <oDrawn> ] ;
+            OF <oWnd>                  ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ HSTYLES <aStyles> ]      ;
+            [ TEXT <cText> ]           ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CLICK <bClick> ]      ;
+            [ ON CHANGESTATE <bChg> ]  ;
+            [ FONT <oFont> ]           ;
+          => ;
+    [<oDrawn> := ] HDrawnCheck():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <aStyles>,<cText>,<oFont>,<bDraw>,<bClick>,<bChg> );
+    [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
+
+#xcommand @ <x>,<y> DRAWN RADIO [ <oDrawn> ] ;
+            OF <oWnd>                  ;
+            GROUP <xGroup>             ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ HSTYLES <aStyles> ]      ;
+            [ TEXT <cText> ]           ;
+            [ INIT <lInit> ]           ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CLICK <bClick> ]      ;
+            [ ON CHANGESTATE <bChg> ]  ;
+            [ FONT <oFont> ]           ;
+          => ;
+    [<oDrawn> := ] HDrawnRadio():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <aStyles>,<cText>,<oFont>,<bDraw>,<bClick>,<bChg>,<xGroup>,<lInit> );
+    [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
+
 /* ================= EOF of guilib.ch ==================== */

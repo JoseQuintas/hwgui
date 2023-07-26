@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-26 14:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdrawn.prg
+  * source/winapi/hdrawn.prg
+    * Fixes
+  * include/guilib.ch
+    @ ... DRAWN CHECK ..., @ ... DRAWN RADIO ... commands added
+  * samples/graph.prg
+  * samples/gtk_samples/graph.prg
+    * Samples updated
+
 2023-07-26 13:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * samples/bldgw.bat
   * samples/bldmingw64.bat

@@ -133,7 +133,12 @@ typedef struct _TRIVERTEX
 #define LO_NIBBLE    1
 #define MINIMUM(a, b) ((a) < (b) ? (a) : (b))
 
+#if defined( __USE_GDIPLUS )
 
+#include <gdiplus.h>
+static GdiplusStartupInput gdiplusStartupInput;
+static ULONG_PTR gdiplusToken = 0;
+#endif
 
 typedef int ( _stdcall * GRADIENTFILL ) ( HDC, PTRIVERTEX, int, PVOID, int, int );
 
@@ -1310,6 +1315,75 @@ HB_FUNC( HWG_OPENIMAGE )
    pPic->Release(  );
 #else
    pPic->lpVtbl->Release( pPic );
+#endif
+}
+
+#if defined( __USE_GDIPLUS )
+
+void hwg_GdiplusInit( void )
+{
+   if( !gdiplusToken )
+   {
+      memset( &gdiplusStartupInput, 0, sizeof( GdiplusStartupInput ) );
+      gdiplusStartupInput.GdiplusVersion = 1;
+
+      GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+   }
+}
+
+void hwg_GdiplusExit( void )
+{
+   if( !gdiplusToken )
+      GdiplusShutdown(gdiplusToken);
+   gdiplusToken = 0;
+}
+
+HBITMAP GpBitmapToHBITMAP(GpBitmap* bitmap)
+{
+    HBITMAP hBitmap = NULL;
+    GpStatus status;
+    GpGraphics* tempGraphics;
+
+    status = GdipCreateFromHWND(NULL, &tempGraphics);
+
+    //hwg_writelog( "ac.log", "cnv-1 %d\r\n", status );
+    if (status == Ok) {
+        status = GdipCreateHBITMAPFromBitmap(bitmap, &hBitmap, 0);
+        GdipDeleteGraphics(tempGraphics);
+    }
+
+    return hBitmap;
+}
+
+#endif
+
+HB_FUNC( HWG_GDIPLUSOPENIMAGE )
+{
+#if defined( __USE_GDIPLUS )
+   GpBitmap* bitmap = NULL;
+   HBITMAP hBitmap;
+   wchar_t* wcharString;
+
+   int wstrSize = MultiByteToWideChar( CP_UTF8, 0, hb_parc(1), -1, NULL, 0 );
+   if( wstrSize == 0 )
+       return;
+
+   wcharString = (wchar_t*) malloc( sizeof(wchar_t) * wstrSize );
+   if( wcharString == NULL )
+        return;
+
+   MultiByteToWideChar( CP_UTF8, 0, hb_parc(1), -1, wcharString, wstrSize );
+
+   hwg_GdiplusInit();
+   GdipCreateBitmapFromFile( wcharString, &bitmap );
+   free((void*)wcharString);
+
+   if( bitmap ) {
+      hBitmap = GpBitmapToHBITMAP( bitmap );
+      GdipDisposeImage(bitmap);
+      if( hBitmap )
+         hb_retptr( hBitmap );
+   }
 #endif
 }
 

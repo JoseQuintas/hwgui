@@ -118,6 +118,10 @@
 
 #endif
 
+#if ( defined( __MINGW32__ ) || defined( __MINGW64__ ) ) && !defined( __NO_GDIPLUS )
+   #define __USE_GDIPLUS
+#endif
+
 HB_EXTERN_BEGIN
 
 extern void hwg_writelog( const char * sFile, const char * sTraceMsg, ... );

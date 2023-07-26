@@ -15,6 +15,19 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-26 12:53 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwingui.ch
+  * include/hwgextern.ch
+  * source/winapi/draw.c
+  * source/winapi/window.c
+  * source/winapi/drawwidg.prg
+  * hwgui.hbc
+    * Gdi+ support added - currently, for mingw compiler
+     ( borland doesn't support it, don't know about OpenWatcom and others ).
+     It allows to open image files in additional formats, png and tiff.
+     hwg_GdiplusOpenImage() function added, HBitmap():Addfile() changed to
+     use hwg_Gdiplus_OpenImage(), if hwg_OpenImage() is failed.
+
 2023-07-25 20:14 UTC-0200 José Quintas
    - test/mixed/*
    + test/dlgauto/*

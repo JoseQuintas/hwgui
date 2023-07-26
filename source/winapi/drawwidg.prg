@@ -522,7 +522,9 @@ METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
       IF Lower( Right( name, 4 ) ) == ".bmp"
          ::handle := hwg_Openbitmap( name, hDC )
       ELSE
-         ::handle := hwg_Openimage( name )
+         IF Empty( ::handle := hwg_Openimage( name ) )
+            ::handle := hwg_GdiplusOpenimage( name )
+         ENDIF
       ENDIF
    ELSE
       IF lTransparent != Nil .AND. lTransparent

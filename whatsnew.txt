@@ -1,15 +1,25 @@
+             $Id$
+
                       HWGUI - Harbour Win32 GUI library
                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-HWGUI 2.23 build 4 ( 10.07.2023 )
+
+HWGUI 2.23 build 4 ( 27.07.2023 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] Gdi+ basic support added for Mingw C compiler to allow to open png and tiff files
+[+] New commands added for new classes: 
+ @ ... BOARD ..., @ ... DRAWN ..., @ ... DRAWN CHECK ..., @ ... DRAWN RADIO ...
+[+] New classes added: HBoard, HDrawn, HDrawnCheck, HDrawnRadio,
+    samples/graph.prg updated to demonstrate it
+[!] Few important fixes in GTK drawing
+
+HWGUI 2.23 build 3 ( 10.07.2023 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [*] Painting possibility added to GTHWG
 [*] Progress in GTK3 support
 [!] Some warnings and bugs fixed, cleanup
-
-                                   $Id$
 
 HWGUI recent code snapshot
 ~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-28 12:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 dev build 5
+    * BMP_DRAW_SPREAD, BMP_DRAW_CENTER, BMP_DRAW_FULL macros added
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    * ::nBmpStyle added to HStyle class, and appropriate parameter in HStyle():New() method.
+      It defines, how the bitmap is drawing, spreading, centered, or stretchedþ
+
 2023-07-27 09:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * HwGUI version is changed to 2.23 build 4

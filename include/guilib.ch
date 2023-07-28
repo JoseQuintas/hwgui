@@ -5,9 +5,9 @@
   ========== Define HWGUI release version ============
 */ 
 /* For note of latest official release version number */  
-#define HWG_VERSION         "2.23"
+#define HWG_VERSION         "2.23 dev"
 /* For note of latest official release build */
-#define HWG_BUILD               4
+#define HWG_BUILD               5
 /* ----- End of HWGUI version definition ----- */
 
 #define	WND_MAIN                1
@@ -25,6 +25,10 @@
 #define	OBTN_NORMAL             1
 #define	OBTN_MOUSOVER           2
 #define	OBTN_PRESSED            3
+
+#define	BMP_DRAW_SPREAD         0
+#define	BMP_DRAW_CENTER         1
+#define	BMP_DRAW_FULL           2
 
 #define SHS_NOISE               0
 #define SHS_DIAGSHADE           1

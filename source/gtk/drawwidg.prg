@@ -855,16 +855,17 @@ CLASS HStyle INHERIT HObject
    DATA nOrient
    DATA aColors
    DATA oBitmap
+   DATA nBmpStyle
    DATA nBorder
    DATA tColor
    DATA oPen
    DATA aCorners
 
-   METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap )
+   METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap, nBmpStyle )
    METHOD Draw( hDC, nLeft, nTop, nRight, nBottom )
 ENDCLASS
 
-METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
+METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap, nBmpStyle ) CLASS HStyle
 
    LOCAL i, nlen := Len( ::aStyles )
 
@@ -892,6 +893,7 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap ) CLASS HStyle
    ::tColor   := tColor
    ::aCorners := aCorners
    ::oBitmap := oBitmap
+   ::nBmpStyle := Iif( nBmpStyle==Nil, BMP_DRAW_SPREAD, nBmpStyle )
    IF nBorder > 0
       ::oPen := HPen():Add( BS_SOLID, nBorder, tColor )
    ENDIF
@@ -905,6 +907,12 @@ METHOD Draw( hDC, nLeft, nTop, nRight, nBottom ) CLASS HStyle
 
    IF ::oBitmap == Nil
       hwg_drawGradient( hDC, nLeft, nTop, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
+   ELSEIF ::nBmpStyle == BMP_DRAW_CENTER
+      n1 := Round( ( nRight-nLeft - ::oBitmap:nWidth ) / 2, 0 )
+      n2 := Round( ( nBottom-nTop - ::oBitmap:nHeight ) / 2, 0 )
+      hwg_Drawbitmap( hDC, ::oBitmap:handle,, n1, n2, ::oBitmap:nWidth, ::oBitmap:nHeight )
+   ELSEIF ::nBmpStyle == BMP_DRAW_FULL
+      hwg_Drawbitmap( hDC, ::oBitmap:handle,, nLeft, nTop, nRight-nLeft+1, nBottom-nTop+1 )
    ELSE
       hwg_SpreadBitmap( hDC, ::oBitmap:handle, nLeft, nTop, nRight, nBottom )
    ENDIF

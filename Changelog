@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-28 17:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+    ! Warnings fixed
+
 2023-07-28 13:27 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcheck.prg
   * source/gtk/hradio.prg

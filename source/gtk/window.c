@@ -6,7 +6,7 @@
  *
  * Copyright 2004 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
- * 
+ *
  * Some debugging info:
  *
  * Write messages to console window by example:
@@ -136,7 +136,7 @@ HB_FUNC( HWG_INITMAINWINDOW )
    GtkWidget * hWnd ;
    GtkWidget * vbox;
    GtkFixed * box;
-#if GTK_MAJOR_VERSION -0 < 3   
+#if GTK_MAJOR_VERSION -0 < 3
    GdkPixmap * background;
 #else
    /* GdkPixbuf * background; */
@@ -158,42 +158,42 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
    /* Background style*/
    style = gtk_style_new();
-   
+
    if (szBackFile)
    {
-#if GTK_MAJOR_VERSION -0 < 3 
-      /* GTK 2 */  
+#if GTK_MAJOR_VERSION -0 < 3
+      /* GTK 2 */
       gdk_pixbuf_render_pixmap_and_mask(szBackFile->handle, &background, NULL, 0);
       if ( ! background ) g_error("%s\n","Error loading background image");
       style->bg_pixmap[0] = background ;
 #endif
    }
-  
-#if GTK_MAJOR_VERSION -0 < 3  
+
+#if GTK_MAJOR_VERSION -0 < 3
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
 #else
   app = gtk_application_new ("net.sourceforge.projects.hwgui.gtk.sample", G_APPLICATION_FLAGS_NONE);
   hWnd = gtk_application_window_new (app);
 //  gtk_window_set_default_size (GTK_WINDOW (hWnd), 200, 200);
-// hwg_writelog(NULL,"Hier");   
-  gtk_widget_show_all (hWnd);  
+// hwg_writelog(NULL,"Hier");
+  gtk_widget_show_all (hWnd);
 #endif
 
-  
+
 #if ! ( GTK_MAJOR_VERSION -0 < 3 )
   /* GTK 3 */
-  /* To be contiued  
+  /* To be contiued
 //  background = gtk_image_new_from_file( szBackFile->handle );
 
   if ( background )
    gdk_window_set_back_pixmap( GDK_WINDOW (hWnd), background, (gboolean) TRUE);
   */
 #endif
-   
+
    gtk_window_set_title( GTK_WINDOW(hWnd), gcTitle );
-  
+
    g_free( gcTitle );
- 
+
    //gtk_window_set_policy( GTK_WINDOW(hWnd), TRUE, TRUE, FALSE );
    gtk_window_set_resizable( GTK_WINDOW(hWnd), TRUE);
    gtk_window_set_default_size( GTK_WINDOW(hWnd), width, height );
@@ -247,8 +247,8 @@ HB_FUNC( HWG_INITMAINWINDOW )
    HB_RETHANDLE( hWnd );
 }
 
-/* 
-  hwg_CreateDlg(nhandle) 
+/*
+  hwg_CreateDlg(nhandle)
 */
 
 HB_FUNC( HWG_CREATEDLG )
@@ -299,12 +299,12 @@ HB_FUNC( HWG_CREATEDLG )
    }
 
    hWnd = ( GtkWidget * ) gtk_window_new( GTK_WINDOW_TOPLEVEL );
-   
-   
+
+
 #if ! ( GTK_MAJOR_VERSION -0 < 3 )
   /* GTK 3 */
   background = gtk_image_new_from_pixbuf( szBackFile->handle );
-  /* To be contiued 
+  /* To be contiued
   if ( background )
      gdk_window_set_back_pixmap( GDK_WINDOW (hWnd), background, (gboolean) TRUE);
   */
@@ -1145,7 +1145,7 @@ HB_FUNC( HWG_DEICONIFY ) /* maximize  */
 gtk_window_deiconify(  (GtkWindow*) (HB_PARHANDLE(1) ) );
 }
 
-HB_FUNC( HWG_ICONIFY )   /* minimize */ 
+HB_FUNC( HWG_ICONIFY )   /* minimize */
 {
 gtk_window_iconify(  (GtkWindow*) (HB_PARHANDLE(1) ) );
 }
@@ -1155,12 +1155,12 @@ gtk_window_iconify(  (GtkWindow*) (HB_PARHANDLE(1) ) );
   * TOOLTIP not supported
   * Comment out for experimental purposes
   */
-/*  
+/*
 HB_FUNC( HWG_SHELLMODIFYICON )
 {
 
 
-  PHWGUI_PIXBUF szFile = HB_ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL; 
+  PHWGUI_PIXBUF szFile = HB_ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL;
   if (szFile)
    {
         gtk_window_set_icon( (GtkWindow*) (HB_PARHANDLE(1) ), szFile->handle);

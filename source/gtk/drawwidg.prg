@@ -905,6 +905,8 @@ METHOD New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap, nBmpStyle ) CL
 
 METHOD Draw( hDC, nLeft, nTop, nRight, nBottom ) CLASS HStyle
 
+   LOCAL n1, n2
+
    IF ::oBitmap == Nil
       hwg_drawGradient( hDC, nLeft, nTop, nRight, nBottom, ::nOrient, ::aColors,, ::aCorners )
    ELSEIF ::nBmpStyle == BMP_DRAW_CENTER

@@ -232,9 +232,9 @@ METHOD EvalKeyList( nKey, nctrl ) CLASS HWindow
    LOCAL nPos
 
    nctrl := iif( nctrl == 2, FCONTROL, iif( nctrl == 1, FSHIFT, iif( nctrl == 4,FALT,0 ) ) )
-   //hwg_writelog( str(nKey)+"/"+str(nctrl) )
    IF !Empty( ::KeyList )
       IF ( nPos := Ascan( ::KeyList,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
+         //hwg_writelog( "ev-2 " + str(nKey)+"/"+str(nctrl) )
          Eval( ::KeyList[ nPos,3 ], ::FindControl( ,hwg_Getfocus() ) )
       ENDIF
    ENDIF

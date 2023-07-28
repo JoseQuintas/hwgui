@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-28 13:27 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcheck.prg
+  * source/gtk/hradio.prg
+    ! Fixes
+
 2023-07-28 12:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * HwGUI version is changed to 2.23 dev build 5

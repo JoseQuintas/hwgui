@@ -151,8 +151,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ENDIF
 
    IF Left( ::oParent:ClassName(),6 ) == "HPANEL" .AND. hwg_BitAnd( ::oParent:style,SS_OWNERDRAW ) != 0
-      ::oParent:SetPaintCB( PAINT_ITEM, {|h|Iif(!::lHide,hwg__DrawRadioBtn(h,::nLeft,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1,hwg_isButtonChecked(::handle),::title),.T.)}, "rb"+Ltrim(Str(::id)) )
-*      ::oParent:SetPaintCB( PAINT_ITEM, {|o,h|Iif(!::lHide,hwg__DrawRadioBtn(h,::nLeft,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1,hwg_isButtonChecked(::handle),::title),.T.)}, "rb"+Ltrim(Str(::id)) )
+      ::oParent:SetPaintCB( PAINT_ITEM, {|o,h|HB_SYMBOL_UNUSED(o),Iif(!::lHide,hwg__DrawRadioBtn(h,::nLeft,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1,hwg_isButtonChecked(::handle),::title),.T.)}, "rb"+Ltrim(Str(::id)) )
    ENDIF
 
    RETURN Self

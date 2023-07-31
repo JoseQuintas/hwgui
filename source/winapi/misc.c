@@ -466,6 +466,23 @@ HB_FUNC( HWG_GETDESKTOPHEIGHT )
    hb_retni( GetSystemMetrics( SM_CYSCREEN ) );
 }
 
+HB_FUNC( HWG_GETWORKAREA )
+{
+   PHB_ITEM aRect = hb_itemArrayNew( 4 );
+   PHB_ITEM element = hb_itemNew( NULL );
+   RECT rc;
+   SystemParametersInfo( SPI_GETWORKAREA, 0, &rc, 0 );
+
+   hb_arraySet( aRect, 1, hb_itemPutNL( element, rc.left ) );
+   hb_arraySet( aRect, 2, hb_itemPutNL( element, rc.top ) );
+   hb_arraySet( aRect, 3, hb_itemPutNL( element, rc.right ) );
+   hb_arraySet( aRect, 4, hb_itemPutNL( element, rc.bottom ) );
+   hb_itemRelease( element );
+   hb_itemReturn( aRect );
+   hb_itemRelease( aRect );
+
+}
+
 HB_FUNC( HWG_GETHELPDATA )
 {
    HB_RETHANDLE( ( LONG ) ( ( ( HELPINFO FAR * ) HB_PARHANDLE( 1 ) )->hItemHandle ) );

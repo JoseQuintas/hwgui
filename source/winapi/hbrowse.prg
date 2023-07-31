@@ -151,7 +151,7 @@ METHOD SetPaintCB( nId, block, cId ) CLASS HColumn
 
 CLASS HBrowse INHERIT HControl
 
-   DATA winclass   INIT "BROWSE"
+   DATA winclass   INIT "HBOARD"
    DATA active     INIT .T.
    DATA lChanged   INIT .F.
    DATA lDispHead  INIT .T.                    // Should I display headers ?
@@ -297,7 +297,7 @@ METHOD New( lType, oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont,
       ::aSelected := {}
    ENDIF
 
-   hwg_RegBrowse()
+   hwg_RegBoard()
    ::InitBrw()
    ::Activate()
 
@@ -315,7 +315,7 @@ METHOD DefaultLang() CLASS HBrowse
 METHOD Activate() CLASS HBrowse
 
    IF !Empty( ::oParent:handle )
-      ::handle := hwg_Createbrowse( ::oParent:handle, ::id, ;
+      ::handle := hwg_CreateBoard( ::oParent:handle, ::id, ;
          ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -475,7 +475,7 @@ METHOD Redefine( lType, oWndParent, nId, oFont, bInit, bSize, bPaint, bEnter, bG
    ::bGetFocus  := bGFocus
    ::bLostFocus := bLFocus
 
-   hwg_RegBrowse()
+   hwg_RegBoard()
    ::InitBrw()
 
    RETURN Self

@@ -76,7 +76,7 @@ LRESULT APIENTRY TrackSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
 LRESULT APIENTRY TabSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
       LPARAM lParam );
 LRESULT APIENTRY TreeViewSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam,
-      LPARAM lParam );         
+      LPARAM lParam );
 static void CALLBACK s_timerProc( HWND, UINT, UINT, DWORD );
 
 static HWND hWndTT = 0;
@@ -150,7 +150,7 @@ HB_FUNC( HWG_CREATEPROGRESSBAR )
          hParentWindow,         /* parent window    */
          ( HMENU ) NULL, GetModuleHandle( NULL ), NULL );
 
-   SendMessage( hPBar, PBM_SETRANGE, 0, MAKELPARAM( 0, hb_parni(2) ) );
+   SendMessage( hPBar, PBM_SETRANGE, 0, (MAKELPARAM( 0, hb_parni(2) )) );
    SendMessage( hPBar, PBM_SETSTEP, ( WPARAM ) 1, 0 );
 
    HB_RETHANDLE( hPBar );
@@ -187,8 +187,8 @@ HB_FUNC( HWG_SETRANGEPROGRESSBAR )
 {
 
    SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETRANGE, 0, MAKELPARAM( 0, hb_parni( 2 ) ) );
-   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETSTEP, 1 , 0 ); 
-}   
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), PBM_SETSTEP, 1 , 0 );
+}
 
 /*
    CreatePanel( hParentWindow, nPanelControlID, nStyle, x1, y1, nWidth, nHeight )
@@ -212,20 +212,22 @@ HB_FUNC( HWG_CREATEPANEL )
 /*
    CreateOwnBtn( hParentWIndow, nBtnControlID, x, y, nWidth, nHeight )
 */
+/*
 HB_FUNC( HWG_CREATEOWNBTN )
 {
    HWND hWndPanel;
-   hWndPanel = CreateWindow( TEXT( "OWNBTN" ),  /* predefined class  */
-         NULL,                  /* no window title   */
-         WS_CHILD | WS_VISIBLE | SS_GRAYRECT | SS_OWNERDRAW,    /* style  */
-         hb_parni( 3 ), hb_parni( 4 ),  /* x, y       */
-         hb_parni( 5 ), hb_parni( 6 ),  /* nWidth, nHeight */
-         ( HWND ) HB_PARHANDLE( 1 ),    /* parent window    */
-         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
+   hWndPanel = CreateWindow( TEXT( "HBOARD" ),
+         NULL,
+         WS_CHILD | WS_VISIBLE | SS_GRAYRECT | SS_OWNERDRAW,
+         hb_parni( 3 ), hb_parni( 4 ),
+         hb_parni( 5 ), hb_parni( 6 ),
+         ( HWND ) HB_PARHANDLE( 1 ),
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),
          GetModuleHandle( NULL ), NULL );
 
    HB_RETHANDLE( hWndPanel );
 }
+*/
 
 /*
    CreateStatic( hParentWyndow, nControlID, nStyle, x, y, nWidth, nHeight )
@@ -352,7 +354,7 @@ HB_FUNC( HWG_CREATEBROWSE )
    void * hStr;
 
    hWndBrw = CreateWindowEx( ( dwStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0,    /* extended style */
-         TEXT( "BROWSE" ),              /* predefined class */
+         TEXT( "HBOARD" ),              /* predefined class */
          HB_PARSTR( 8, &hStr, NULL ),           /* button text   */
          WS_CHILD | WS_VISIBLE | dwStyle,       /* style */
          hb_parni( 4 ), hb_parni( 5 ),  /* x, y  */
@@ -363,6 +365,25 @@ HB_FUNC( HWG_CREATEBROWSE )
    hb_strfree( hStr );
 
    HB_RETHANDLE( hWndBrw );
+
+}
+
+HB_FUNC( HWG_CREATEBOARD )
+{
+   HWND h;
+   DWORD dwStyle = hb_parnl( 3 );
+
+   h = CreateWindowEx( ( dwStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0,    /* extended style */
+         TEXT( "HBOARD" ),              /* predefined class */
+         NULL,
+         WS_CHILD | WS_VISIBLE | dwStyle,
+         hb_parni( 4 ), hb_parni( 5 ),  /* x, y  */
+         hb_parni( 6 ), hb_parni( 7 ),  /* nWidth, nHeight */
+         ( HWND ) HB_PARHANDLE( 1 ),    /* parent window */
+         ( HMENU )( UINT_PTR ) hb_parni( 2 ),       /* control ID  */
+         GetModuleHandle( NULL ), NULL );
+
+   HB_RETHANDLE( h );
 
 }
 
@@ -1175,7 +1196,7 @@ HB_FUNC( HWG_LOADCURSOR )
    hb_strfree( hStr );
 }
 
-/*       hwg_LoadCursorFromFile(ccurFname) */ 
+/*       hwg_LoadCursorFromFile(ccurFname) */
 HB_FUNC( HWG_LOADCURSORFROMFILE )
 {
    void * hStr;
@@ -1243,7 +1264,7 @@ HB_FUNC( HWG_REGPANEL )
    }
 }
 
-HB_FUNC( HWG_REGOWNBTN )
+void hwg_regboard( void )
 {
    static BOOL bRegistered = FALSE;
 
@@ -1251,22 +1272,31 @@ HB_FUNC( HWG_REGOWNBTN )
 
    if( !bRegistered )
    {
-      wndclass.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW | CS_DBLCLKS;
+      wndclass.style = CS_DBLCLKS; // | CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
       wndclass.lpfnWndProc = WinCtrlProc;
       wndclass.cbClsExtra = 0;
       wndclass.cbWndExtra = 0;
       wndclass.hInstance = GetModuleHandle( NULL );
       wndclass.hIcon = NULL;
       wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
-      wndclass.hbrBackground = ( HBRUSH ) ( COLOR_3DFACE + 1 );
+      //wndclass.hbrBackground = ( HBRUSH ) ( COLOR_3DFACE + 1 );
+      //wndclass.hCursor = LoadCursor( NULL, IDC_IBEAM );
+      wndclass.hbrBackground = NULL;
+
       wndclass.lpszMenuName = NULL;
-      wndclass.lpszClassName = TEXT( "OWNBTN" );
+      wndclass.lpszClassName = TEXT( "HBOARD" );
 
       RegisterClass( &wndclass );
       bRegistered = TRUE;
    }
 }
 
+HB_FUNC( HWG_REGBOARD )
+{
+   hwg_regboard();
+}
+
+/*
 HB_FUNC( HWG_REGBROWSE )
 {
 
@@ -1281,7 +1311,6 @@ HB_FUNC( HWG_REGBROWSE )
       wndclass.cbClsExtra = 0;
       wndclass.cbWndExtra = 0;
       wndclass.hInstance = GetModuleHandle( NULL );
-      // wndclass.hIcon         = LoadIcon (NULL, IDI_APPLICATION) ;
       wndclass.hIcon = NULL;
       wndclass.hCursor = LoadCursor( NULL, IDC_ARROW );
       wndclass.hbrBackground = ( HBRUSH ) ( COLOR_WINDOW + 1 );
@@ -1292,6 +1321,7 @@ HB_FUNC( HWG_REGBROWSE )
       bRegistered = TRUE;
    }
 }
+*/
 
 static void CALLBACK s_timerProc( HWND hWnd, UINT message, UINT idTimer, DWORD dwTime )
   /* DWORD dwTime as last parameter unused */
@@ -1827,7 +1857,7 @@ HB_FUNC( HWG_TOOLBARADDBUTTONS )
    ULONG ulID;
    DWORD style = GetWindowLong( hWndCtrl, GWL_STYLE );
 
-   //SendMessage(hWndCtrl, CCM_SETVERSION, (WPARAM) 4, 0);   
+   //SendMessage(hWndCtrl, CCM_SETVERSION, (WPARAM) 4, 0);
 
    SetWindowLongPtr( hWndCtrl, GWL_STYLE,
          style | TBSTYLE_TOOLTIPS | TBSTYLE_FLAT );
@@ -1872,7 +1902,7 @@ HB_FUNC( HWG_TOOLBAR_SETBUTTONINFO )
    tb.dwMask = TBIF_TEXT;
    tb.pszText = ( LPTSTR ) HB_PARSTR( 3, &hStr, NULL );
    //tb.cchText = 1000  ;
-   
+
    SendMessage( hWndCtrl, TB_SETBUTTONINFO, iIDB, ( LPARAM ) & tb );
 }
 
@@ -1880,7 +1910,7 @@ HB_FUNC( HWG_TOOLBAR_LOADIMAGE )
 {
    TBADDBITMAP tbab;
    HWND hWndCtrl = ( HWND ) HB_PARHANDLE( 1 );
-   
+
 
    tbab.hInst = NULL;
    if ( HB_ISPOINTER( 2 ) )

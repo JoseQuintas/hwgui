@@ -19,7 +19,8 @@
 
 CLASS HTrack INHERIT HControl
 
-CLASS VAR winclass INIT "STATIC"
+//CLASS VAR winclass INIT "STATIC"
+CLASS VAR winclass INIT "HBOARD"
 
    DATA lVertical
    DATA oStyleBar, oStyleSlider
@@ -70,8 +71,8 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HTrack
 
    IF ! Empty( ::oParent:handle )
-      ::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
-         ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      //::handle := hwg_Createsplitter( ::oParent:handle, ::id, ;
+      ::handle := hwg_CreateBoard( ::oParent:handle,,, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
 
@@ -191,7 +192,7 @@ METHOD Paint() CLASS HTrack
          ENDIF
       ELSE
          y1 := Int(::nHeight/2)
-         nw := Min( nHalf, x1 - 2 )
+         nw := Min( nHalf, y1 - 2 )
          IF ::lAxis .AND. ::nCurr - nHalf > ::nFrom
             hwg_Drawline( hDC, ::nFrom, y1, ::nCurr-nHalf, y1 )
          ENDIF

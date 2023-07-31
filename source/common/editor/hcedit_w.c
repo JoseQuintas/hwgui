@@ -185,7 +185,7 @@ TEDFONT * ted_setfont( TEDIT * pted, HFONT hFont, int iNum, short int bPrn  )
 }
 
 /*
- * ted_CalcItemWidth() returns the text width in pixels, 
+ * ted_CalcItemWidth() returns the text width in pixels,
  * writes to the 4 parameter (iRealLen) the width in chars
  */
 
@@ -235,7 +235,7 @@ int ted_CalcItemWidth( TEDIT * pted, char *szText, TEDATTR * pattr, int *iRealLe
    {
       xpos = sz.cx;
       i1 = iReal;
-      
+
       if( bWrap && iReal < *iRealLen )
       {
          i = i1;
@@ -277,7 +277,7 @@ int ted_CalcLineWidth( TEDIT * pted, char *szText, int iLen, int iWidth, int * i
    *iRealWidth = 0;
    for( i = 0, lasti = 0; i <= iLen; i++ )
    {
-      // if the color or font changes, then need to output 
+      // if the color or font changes, then need to output
       if( i == iLen || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
       {
          iRealLen = i - lasti;
@@ -351,7 +351,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
    if( iPrinted )
       for( i = 0, lasti = 0; i <= iPrinted; i++ )
       {
-         // if the color or font changes, then need to output 
+         // if the color or font changes, then need to output
          if( i == iPrinted ||
                ( pattr + i )->fg != ( pattr + lasti )->fg ||
                ( pattr + i )->bg != ( pattr + lasti )->bg ||
@@ -368,7 +368,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
             lasti = i;
          }
       }
-   
+
    if( !pted->hDCPrn )
    {
       RECT rect;
@@ -381,7 +381,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
       }
       ExtTextOut( pted->hDCScr, 0, 0, ETO_OPAQUE, &rect, 0, 0, 0 );
    }
-   
+
    return x1;
 }
 
@@ -396,6 +396,8 @@ TEDIT * ted_init( void )
    static short int bRegistered = FALSE;
    TEDIT *pted;
 
+   hwg_regboard();
+/*
    if( !bRegistered )
    {
       WNDCLASS wndclass;
@@ -415,7 +417,7 @@ TEDIT * ted_init( void )
       RegisterClass( &wndclass );
       bRegistered = TRUE;
    }
-
+*/
    pted = ( TEDIT * ) hb_xgrab( sizeof( TEDIT ) );
    memset( pted, 0, sizeof( TEDIT ) );
 
@@ -437,9 +439,9 @@ HWND ted_create( HWND hwndParent, int id, DWORD dwStyle, int x, int y,
       int iWidth, int iHeight )
 {
 
-   return CreateWindowEx( 
+   return CreateWindowEx(
          ( dwStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0,
-         TEXT( "TEDIT" ), _T( "" ), dwStyle,
+         TEXT( "HBOARD" ), _T( "" ), dwStyle,
          x, y, iWidth, iHeight, hwndParent, ( HMENU )(UINT_PTR) id,
          GetModuleHandle( 0 ), 0 );
 }
@@ -490,7 +492,7 @@ HB_FUNC( HCED_SETFONT )
    int iFont = hb_parni(3);
 
    if( iFont > 0 ) iFont --;
-   ted_setfont( ( TEDIT * ) HB_PARHANDLE( 1 ), ( HFONT ) HB_PARHANDLE( 2 ), 
+   ted_setfont( ( TEDIT * ) HB_PARHANDLE( 1 ), ( HFONT ) HB_PARHANDLE( 2 ),
          iFont, (short int)((HB_ISNIL(4))? 0 : hb_parl(4)) );
 }
 
@@ -532,7 +534,7 @@ HB_FUNC( HCED_SETATTR )
    //hwg_writelog( NULL, "%lu %lu\r\n", hb_parni(2),i );
 
    if( iPos + i >= pted->iAttrLen )
-   {     
+   {
       iLen = pted->iAttrLen;
       pted->iAttrLen = iPos + i + 128;
       //hwg_writelog( NULL, "realloc %lu %lu\r\n", iLen,pted->iAttrLen );
@@ -583,7 +585,7 @@ HB_FUNC( HCED_SETVSCROLL )
    si.nPage = hb_parni(3);
    si.nMin  = 0;
    si.nMax  = hb_parni(3) * ( (iPages)? iPages-1:iPages );
-        
+
    SetScrollInfo( pted->handle, SB_VERT, &si, TRUE );
 }
 
@@ -630,7 +632,7 @@ HB_FUNC( HCED_FILLRECT )
 
    if( !pted->hDCPrn )
    {
-      SetRect( &rect, (HB_ISNIL(2))? 0:hb_parni(2), hb_parni(3), 
+      SetRect( &rect, (HB_ISNIL(2))? 0:hb_parni(2), hb_parni(3),
             (HB_ISNIL(4))? pted->iWidth:hb_parni(4), hb_parni(5) );
       if( pted->bg != pted->bg_curr )
       {
@@ -846,7 +848,7 @@ HB_FUNC( HCED_LINEOUT )
    while( i < TEDATTRF_MAX )
    {
       iFont = *( pted->pattrf + i );
-      font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
+      font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) +
             (iFont? iFont-1 : 0) ;
       iHeight = max( iHeight, font->tm.tmHeight + font->tm.tmExternalLeading ) + 1;
       iMaxAscent = max( iMaxAscent, font->tm.tmAscent );
@@ -859,7 +861,7 @@ HB_FUNC( HCED_LINEOUT )
    for( i = 0, lasti = 0; i <= iPrinted; i++ )
       if( i == iPrinted || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
       {
-         font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) + 
+         font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) +
                ( pattr + lasti )->iFont;
          iHeight = max( iHeight, font->tm.tmHeight + font->tm.tmExternalLeading ) + 1;
          iMaxAscent = max( iMaxAscent, font->tm.tmAscent );

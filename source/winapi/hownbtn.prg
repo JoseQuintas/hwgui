@@ -16,7 +16,7 @@
 CLASS HOwnButton INHERIT HControl
 
    CLASS VAR cPath SHARED
-   DATA winclass   INIT "OWNBTN"
+   DATA winclass   INIT "HBOARD"
    DATA lFlat
    DATA aStyle
    DATA state
@@ -110,7 +110,7 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
    ::lTransp := iif( lTr != Nil, lTr, .F. )
    ::trColor := trColor
 
-   hwg_RegOwnBtn()
+   hwg_RegBoard()
    ::Activate()
 
    RETURN Self
@@ -118,7 +118,7 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
 METHOD Activate() CLASS HOwnButton
 
    IF ! Empty( ::oParent:handle )
-      ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
+      ::handle := hwg_CreateBoard( ::oParent:handle, ::id, 0, ;
          ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
       IF ! ::lEnabled
@@ -237,7 +237,7 @@ METHOD Redefine( oWndParent, nId, bInit, bSize, bPaint, bClick, lflat, ;
    ::widthb  := iif( widthb == Nil, 0, widthb )
    ::heightb := iif( heightb == Nil, 0, heightb )
    ::lTransp := iif( lTr != Nil, lTr, .F. )
-   hwg_RegOwnBtn()
+   hwg_RegBoard()
 
    RETURN Self
 

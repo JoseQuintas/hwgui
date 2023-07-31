@@ -121,14 +121,17 @@ METHOD CalcMinMax() CLASS HGraph
 
 METHOD Paint() CLASS HGraph
 
-   LOCAL hDC := hwg_Getdc( ::handle )
+   LOCAL pps, hDC
    LOCAL x1 := 0, y1 := 0, x2 := ::nWidth, y2 := ::nHeight, scaleX, scaleY
    LOCAL i, j, nLen, l1
    LOCAL x0, y0, px1, px2, py1, py2, nWidth
 
+   pps := hwg_Definepaintstru()
+   hDC := hwg_Beginpaint( ::handle, pps )
+
    IF ::nType == 0 .OR. ::nType > 3 .OR. Empty( ::aValues )
       ::Super:Paint( hDC )
-      hwg_Releasedc( ::handle, hDC )
+      hwg_Endpaint( ::handle, pps )
       RETURN Nil
    ENDIF
    IF ::xmax == Nil
@@ -263,7 +266,7 @@ METHOD Paint() CLASS HGraph
    ENDIF
 
    ::Super:Paint( hDC )
-   hwg_Releasedc( ::handle, hDC )
+   hwg_Endpaint( ::handle, pps )
 
    RETURN Nil
 

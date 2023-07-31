@@ -615,7 +615,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HBoard
 
    IF ! Empty( ::oParent:handle )
-      ::handle := hwg_CreateBoard( ::oParent:handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      ::handle := hwg_CreateBoard( ::oParent:handle,,, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
 

@@ -1554,7 +1554,7 @@ HB_FUNC( HWG_CREATESPLITTER )
 }
 
 /*
-   CreateBoard( hParentWindow, x, y, nWidth, nHeight )
+   CreateBoard( hParentWindow, nId, nStyle, x, y, nWidth, nHeight )
 */
 HB_FUNC( HWG_CREATEBOARD )
 {
@@ -1566,8 +1566,8 @@ HB_FUNC( HWG_CREATEBOARD )
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
 
    if( box )
-      gtk_fixed_put( box, hCtrl, hb_parni( 2 ), hb_parni( 3 ) );
-   gtk_widget_set_size_request( hCtrl, hb_parni( 4 ), hb_parni( 5 ) );
+      gtk_fixed_put( box, hCtrl, hb_parni( 4 ), hb_parni( 5 ) );
+   gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
 
 #if GTK_MAJOR_VERSION -0 < 3
    set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );

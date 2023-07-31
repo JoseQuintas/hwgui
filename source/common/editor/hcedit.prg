@@ -126,6 +126,10 @@
 #define GDK_MOD1_MASK     4
 #endif
 
+#ifndef __GTK__
+static hCursor
+#endif
+
 STATIC cNewLine := e"\r\n"
 
 * For multi OS request UTF8 forever
@@ -137,7 +141,7 @@ REQUEST  HB_CODEPAGE_UTF8
 
 CLASS HCEdit INHERIT HControl
 
-   CLASS VAR winclass  INIT "TEDIT"
+   CLASS VAR winclass  INIT "HBOARD"
 
    DATA   hEdit
    DATA   oTrack
@@ -335,9 +339,13 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::hEdit := hced_InitTextEdit()
 
 #ifdef __GTK__
-      IF ::nTrackWidth > 0 .AND. Empty( ::oTrack )
-         ::ShowTrackBar( .T., ::nTrackWidth )
-      ENDIF
+   IF ::nTrackWidth > 0 .AND. Empty( ::oTrack )
+      ::ShowTrackBar( .T., ::nTrackWidth )
+   ENDIF
+#else
+   IF Empty( hCursor )
+      hCursor := hwg_Loadcursor( IDC_IBEAM )
+   ENDIF
 #endif
 
    ::Activate()
@@ -557,6 +565,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ENDIF
 
    ELSEIF msg == WM_MOUSEMOVE
+#ifndef __GTK__
+      Hwg_SetCursor( hCursor )
+#endif
       IF ::lMDown
          IF ::nCaret > 0
             //::nCaret := 0

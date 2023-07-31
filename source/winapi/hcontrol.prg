@@ -669,7 +669,7 @@ STATIC FUNCTION onClick( oParent, id )
 
 CLASS HBoard INHERIT HControl
 
-   DATA winclass   INIT "OWNBTN"
+   DATA winclass   INIT "HBOARD"
    DATA aDrawn     INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
@@ -688,7 +688,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
 
-   hwg_RegOwnBtn()
+   hwg_RegBoard()
    ::Activate()
 
    RETURN Self
@@ -696,7 +696,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HBoard
 
    IF !Empty( ::oParent:handle )
-      ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
+      ::handle := hwg_CreateBoard( ::oParent:handle, ::id, 0, ;
          ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF

@@ -34,7 +34,7 @@ CLASS HStaticLink FROM HSTATIC
    DATA m_sLinkColor
    DATA m_sVisitedColor
 
-   CLASS VAR winclass INIT "STATIC"
+   CLASS VAR winclass INIT "HBOARD"
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFont, bInit, ;
       bSize, bPaint, ctooltip, tcolor, bcolor, lTransp, cLink, vColor, lColor, hColor )
@@ -107,7 +107,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, cCaption, oFo
    ENDIF
    ::dwFlags  += ( DT_VCENTER + DT_END_ELLIPSIS )
 
-   hwg_RegOwnBtn()
+   hwg_RegBoard()
    ::Activate()
 
    RETURN Self
@@ -150,15 +150,15 @@ METHOD Redefine( oWndParent, nId, cCaption, oFont, bInit, ;
    ::title   := cCaption
    ::style   := ::nLeft := ::nTop := ::nWidth := ::nHeight := 0
 
-   hwg_RegOwnBtn()
+   hwg_RegBoard()
 
    RETURN Self
 
 METHOD Activate() CLASS HStaticLink
 
    IF !Empty( ::oParent:handle )
-      ::handle := hwg_Createownbtn( ::oParent:handle, ::id, ;
-                                ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      ::handle := hwg_CreateBoard( ::oParent:handle, ::id, 0, ;
+          ::nLeft, ::nTop, ::nWidth, ::nHeight )
 
       ::Init()
    ENDIF

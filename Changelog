@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-07-31 21:05 UTC-0200 José Quintas
+  * source/winapi/tmci.prg
+    * removed wrong descripton.
+
 2023-07-31 10:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/misc.c
     * hwg_GetWorkArea() function added, which returns the size of a desktop without taskbar

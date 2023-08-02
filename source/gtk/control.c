@@ -958,23 +958,20 @@ HB_FUNC( HWG_CREATEOWNBTN )
 
    hCtrl = gtk_drawing_area_new();
    g_object_set_data( ( GObject * ) hCtrl, "draw", ( gpointer ) hCtrl );
-
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
+
    if( box )
-   {
       gtk_fixed_put( box, hCtrl, hb_parni( 3 ), hb_parni( 4 ) );
-      gtk_widget_set_size_request( hCtrl, hb_parni( 5 ), hb_parni( 6 ) );
-   }
+   gtk_widget_set_size_request( hCtrl, hb_parni( 5 ), hb_parni( 6 ) );
+
 #if GTK_MAJOR_VERSION -0 < 3
    set_event( ( gpointer ) hCtrl, "expose_event", WM_PAINT, 0, 0 );
 #else
    set_event( ( gpointer ) hCtrl, "draw", WM_PAINT, 0, 0 );
 #endif
    gtk_widget_set_can_focus(hCtrl,1);
-   //GTK_WIDGET_SET_FLAGS( hCtrl, GTK_CAN_FOCUS );
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
-         GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK |
-         GDK_LEAVE_NOTIFY_MASK );
+         GDK_BUTTON_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK );
    set_event( ( gpointer ) hCtrl, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) hCtrl, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) hCtrl, "enter_notify_event", 0, 0, 0 );
@@ -1561,7 +1558,7 @@ HB_FUNC( HWG_CREATEBOARD )
    GtkWidget *hCtrl;
    GtkFixed *box;
 
-   hCtrl = gtk_drawing_area_new(  );
+   hCtrl = gtk_drawing_area_new();
    g_object_set_data( ( GObject * ) hCtrl, "draw", ( gpointer ) hCtrl );
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
 
@@ -1575,12 +1572,12 @@ HB_FUNC( HWG_CREATEBOARD )
    set_event( ( gpointer ) hCtrl, "draw", WM_PAINT, 0, 0 );
 #endif
    gtk_widget_set_can_focus(hCtrl,1);
-
    gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
-         GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK );
+         GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK );
    set_event( ( gpointer ) hCtrl, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) hCtrl, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) hCtrl, "motion_notify_event", 0, 0, 0 );
+   set_event( ( gpointer ) hCtrl, "leave_notify_event", 0, 0, 0 );
 
    all_signal_connect( ( gpointer ) hCtrl );
    HB_RETHANDLE( hCtrl );

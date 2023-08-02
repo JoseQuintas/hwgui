@@ -387,6 +387,16 @@ HB_FUNC( HWG_CREATEBOARD )
 
 }
 
+HB_FUNC( HWG_TRACKMOUSEEVENT )
+{
+   TRACKMOUSEEVENT tme;
+
+   tme.cbSize = sizeof(TRACKMOUSEEVENT);
+   tme.dwFlags = TME_LEAVE;
+   tme.hwndTrack = (HWND) HB_PARHANDLE( 1 );
+   hb_retl( TrackMouseEvent( &tme ) );
+}
+
 /* CreateStatusWindow - creates a status window and divides it into
      the specified number of parts.
  Returns the handle to the status window.
@@ -1329,6 +1339,7 @@ static void CALLBACK s_timerProc( HWND hWnd, UINT message, UINT idTimer, DWORD d
    static PHB_DYNS s_pSymTest = NULL;
 
    HB_SYMBOL_UNUSED( message );
+   HB_SYMBOL_UNUSED( dwTime );
 
    if( s_pSymTest == NULL )
       s_pSymTest = hb_dynsymGetCase( "HWG_TIMERPROC" );
@@ -1345,6 +1356,7 @@ static void CALLBACK s_timerProc( HWND hWnd, UINT message, UINT idTimer, DWORD d
    }
 }
 
+/*
 BOOL RegisterWinCtrl( void )    // Added by jamaj - Used by WinCtrl
 {
    WNDCLASS wndclass;
@@ -1361,6 +1373,7 @@ BOOL RegisterWinCtrl( void )    // Added by jamaj - Used by WinCtrl
 
    return RegisterClass( &wndclass );
 }
+*/
 
 HB_FUNC( HWG_INITTREEVIEW )
 {

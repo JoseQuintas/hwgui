@@ -587,9 +587,15 @@ METHOD Activate() CLASS HLine
 
    RETURN Nil
 
+#define  STATE_NORMAL    0
+#define  STATE_PRESSED   1
+#define  STATE_MOVER     2
+#define  STATE_UNPRESS   3
+
 CLASS HBoard INHERIT HControl
 
-   DATA winclass   INIT "OWNBTN"
+   DATA winclass   INIT "HBOARD"
+   DATA lMouseOver INIT .F.
    DATA aDrawn     INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
@@ -614,7 +620,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 
 METHOD Activate() CLASS HBoard
 
-   IF ! Empty( ::oParent:handle )
+   IF !Empty( ::oParent:handle )
       ::handle := hwg_CreateBoard( ::oParent:handle,,, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
@@ -634,33 +640,34 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
    ENDIF
 
    IF msg == WM_MOUSEMOVE
+      IF !::lMouseOver
+         ::lMouseOver := .T.
+      ENDIF
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
-         o:SetState( 2, nPosX, nPosY )
+         o:SetState( STATE_MOVER, nPosX, nPosY )
       ELSE
-         IF !Empty( HDrawn():oOver )
-            HDrawn():oOver:SetState( 0, nPosX, nPosY )
-            HDrawn():oOver := Nil
-         ENDIF
-         IF !Empty( HDrawn():oOver0 )
-            HDrawn():oOver0:SetState( 0, nPosX, nPosY )
-            HDrawn():oOver0 := Nil
-         ENDIF
+         HDrawn():GetByState( STATE_MOVER, ::aDrawn, {|o|o:SetState(STATE_NORMAL,nPosX,nPosY)}, .T. )
       ENDIF
 
    ELSEIF msg == WM_PAINT
       ::Paint()
 
+   ELSEIF msg == WM_MOUSELEAVE
+      ::lMouseOver := .F.
+      nPosX := hwg_Loword( lParam )
+      nPosY := hwg_Hiword( lParam )
+      HDrawn():GetByState( STATE_MOVER, ::aDrawn, {|o|o:SetState(STATE_NORMAL,nPosX,nPosY)}, .T. )
+
    ELSEIF msg == WM_LBUTTONDOWN
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
-         o:SetState( 1, nPosX, nPosY )
+         o:SetState( STATE_PRESSED, nPosX, nPosY )
       ENDIF
 
    ELSEIF msg == WM_LBUTTONUP
-      IF !Empty( HDrawn():oPressed )
-         HDrawn():oPressed:SetState( 3, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
-         HDrawn():oPressed := Nil
+      IF !Empty( o := HDrawn():GetByState( STATE_PRESSED, ::aDrawn ) )
+         o:SetState( 3, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
       ENDIF
    ENDIF
 

@@ -153,6 +153,20 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HOwnButton
       hwg_Setfocus( h )
    ELSEIF msg == WM_MOUSEMOVE
       ::MouseMove( wParam, lParam )
+
+   ELSEIF msg == WM_MOUSELEAVE
+      IF ::state != OBTN_INIT
+         IF !Empty( ::oTimer )
+            OwnBtnTimerProc( Self, 2 )
+            ::oTimer:End()
+            ::oTimer := Nil
+         ENDIF
+         IF !::lPress
+            ::state := OBTN_NORMAL
+            hwg_Redrawwindow( ::handle )
+         ENDIF
+     ENDIF
+
    ELSEIF msg == WM_DESTROY
       ::End()
    ENDIF
@@ -269,24 +283,10 @@ METHOD Paint() CLASS HOwnButton
 METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
 
    LOCAL lEnter := ( hwg_BitAnd( wParam,16 ) > 0 )
-   * Variables not used
-   * LOCAL res := .F.
 
-   * Parameters not used
    HB_SYMBOL_UNUSED(lParam)
 
    IF ::state != OBTN_INIT
-      IF !lEnter
-         IF !Empty( ::oTimer )
-            OwnBtnTimerProc( Self, 2 )
-            ::oTimer:End()
-            ::oTimer := Nil
-         ENDIF
-         IF !::lPress
-            ::state := OBTN_NORMAL
-            hwg_Redrawwindow( ::handle )
-         ENDIF
-      ENDIF
       IF lEnter .AND. ::state == OBTN_NORMAL
          ::state := OBTN_MOUSOVER
          hwg_Redrawwindow( ::handle )

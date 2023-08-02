@@ -18,8 +18,7 @@
 
 CLASS HDrawn INHERIT HObject
 
-   CLASS VAR oOver, oOver0 SHARED
-   CLASS VAR oPressed SHARED
+   //CLASS VAR oOver, oOver0 SHARED
 
    DATA oParent
    DATA title
@@ -40,6 +39,7 @@ CLASS HDrawn INHERIT HObject
       title, oFont, bPaint, bClick, bChgState )
    METHOD GetParentBoard()
    METHOD GetByPos( xPos, yPos, oBoard )
+   METHOD GetByState( nState, aDrawn, block, lAll )
    METHOD Paint( hDC )
    METHOD Move( x1, y1, width, height )
    METHOD SetState( nState, nPosX, nPosY )
@@ -91,6 +91,33 @@ METHOD GetByPos( xPos, yPos, oBoard ) CLASS HDrawn
       IF xPos >= o:nLeft .AND. xPos < o:nLeft + o:nWidth .AND. ;
          yPos >= o:nTop .AND. yPos < o:nTop + o:nHeight
          RETURN o
+      ENDIF
+   NEXT
+
+   RETURN Nil
+
+METHOD GetByState( nState, aDrawn, block, lAll ) CLASS HDrawn
+
+   LOCAL i, o
+
+   IF Empty( aDrawn )
+      aDrawn := ::aDrawn
+   ENDIF
+   IF lAll == Nil .OR. block == Nil; lAll := .F.; ENDIF
+
+   FOR i := 1 TO Len( aDrawn )
+      IF !Empty( aDrawn[i]:aDrawn )
+         IF !Empty( o := aDrawn[i]:GetByState( nState,, block, lAll ) ) .AND. !lAll
+            RETURN o
+         ENDIF
+      ENDIF
+      IF aDrawn[i]:nState == nState
+         IF block != Nil
+            Eval( block, aDrawn[i] )
+         ENDIF
+         IF !lAll
+            RETURN aDrawn[i]
+         ENDIF
       ENDIF
    NEXT
 
@@ -148,7 +175,7 @@ METHOD Move( x1, y1, width, height ) CLASS HDrawn
 
 METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
 
-   LOCAL o, nOldstate := ::nState
+   LOCAL o, nOldstate := ::nState, op
 
    IF !Empty( ::aDrawn )
       //IF nOldstate != nState; hwg_writelog( "1> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
@@ -161,9 +188,9 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
          ENDIF
          //IF nOldstate != nState; hwg_writelog( "2> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
          RETURN o:SetState( nState, nPosX, nPosY )
-      ELSEIF !Empty( ::oOver ) .AND. !( ::oOver == Self )
-         ::oOver:SetState( 0, nPosX, nPosY )
-         ::oOver := Nil
+      //ELSEIF !Empty( ::oOver ) .AND. !( ::oOver == Self )
+         //::oOver:SetState( 0, nPosX, nPosY )
+         //::oOver := Nil
       ENDIF
    ENDIF
    IF nState != nOldstate
@@ -174,7 +201,11 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
          ENDIF
       ENDIF
       IF nState == STATE_MOVER
+         IF ( o := ::GetByState( STATE_MOVER, ::oParent:aDrawn ) ) != Nil
+            o:SetState( STATE_NORMAL, nPosX, nPosY )
+         ENDIF
          ::nState := STATE_MOVER
+         /*
          IF !Empty( ::oOver ) .AND. !( ::oOver == Self )
             ::oOver:SetState( 0, nPosX, nPosY )
          ENDIF
@@ -183,25 +214,23 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
          ELSE
             ::oOver0 := Self
          ENDIF
+         */
       ELSEIF nState == STATE_NORMAL
          ::nState := STATE_NORMAL
       ELSEIF nState == STATE_PRESSED
          ::nState := STATE_PRESSED
-         IF Empty( ::aDrawn )
-            ::oPressed := Self
-         ENDIF
       ELSEIF nState == STATE_UNPRESS
+         op := HDrawn():GetByState( STATE_PRESSED, ::oParent:aDrawn )
          ::nState := Iif( nPosX >= ::nLeft .AND. nPosX < ::nLeft + ::nWidth .AND. ;
             nPosY >= ::nTop .AND. nPosY < ::nTop + ::nHeight, STATE_MOVER, STATE_NORMAL )
-         IF Self == ::oPressed
+         IF Self == op
             IF !Empty( ::bClick )
                Eval( ::bClick, Self )
             ENDIF
-         ELSEIF !Empty( ::oPressed )
-            ::oPressed:nState := Iif( nPosX >= ::oPressed:nLeft .AND. nPosX < ::oPressed:nLeft + ::oPressed:nWidth .AND. ;
-               nPosY >= ::oPressed:nTop .AND. nPosY < ::oPressed:nTop + ::oPressed:nHeight, STATE_MOVER, STATE_NORMAL )
+         ELSEIF !Empty( op )
+            op:nState := Iif( nPosX >= op:nLeft .AND. nPosX < op:nLeft + op:nWidth .AND. ;
+               nPosY >= op:nTop .AND. nPosY < op:nTop + op:nHeight, STATE_MOVER, STATE_NORMAL )
          ENDIF
-         ::oPressed := Nil
       ENDIF
       IF nOldstate != ::nState .AND. ( ::lStatePaint .OR. ( !Empty(::aStyles) .AND. Len(::aStyles) > 1 ) )
          ::Refresh()

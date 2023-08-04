@@ -313,6 +313,9 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
       ::cForTitle := title
    ENDIF
    ::xValue := Iif( lInitVal == Nil, .F., lInitVal )
+   IF !Empty( ::xValue )
+      ::title := ::cForTitle
+   ENDIF
    ::xGroup := xGroup
 
    RETURN Self

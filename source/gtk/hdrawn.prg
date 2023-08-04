@@ -18,8 +18,6 @@
 
 CLASS HDrawn INHERIT HObject
 
-   //CLASS VAR oOver, oOver0 SHARED
-
    DATA oParent
    DATA title
    DATA nTop, nLeft, nWidth, nHeight
@@ -46,6 +44,10 @@ CLASS HDrawn INHERIT HObject
    METHOD SetText( cText )
    METHOD Value( xValue ) SETGET
    METHOD Refresh()
+   METHOD onMouseMove( xPos, yPos ) VIRTUAL
+   METHOD onMouseLeave() VIRTUAL
+   METHOD onButtonDown( xPos, yPos ) VIRTUAL
+   METHOD onButtonUp( xPos, yPos ) VIRTUAL
 
 ENDCLASS
 
@@ -188,9 +190,8 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
          ENDIF
          //IF nOldstate != nState; hwg_writelog( "2> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
          RETURN o:SetState( nState, nPosX, nPosY )
-      //ELSEIF !Empty( ::oOver ) .AND. !( ::oOver == Self )
-         //::oOver:SetState( 0, nPosX, nPosY )
-         //::oOver := Nil
+      ELSEIF !Empty( o := ::GetByState( STATE_MOVER ) ) .OR. !Empty( o := ::GetByState( STATE_PRESSED ) )
+         o:SetState( STATE_NORMAL, nPosX, nPosY )
       ENDIF
    ENDIF
    IF nState != nOldstate
@@ -204,18 +205,13 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
          IF ( o := ::GetByState( STATE_MOVER, ::oParent:aDrawn ) ) != Nil
             o:SetState( STATE_NORMAL, nPosX, nPosY )
          ENDIF
-         ::nState := STATE_MOVER
-         /*
-         IF !Empty( ::oOver ) .AND. !( ::oOver == Self )
-            ::oOver:SetState( 0, nPosX, nPosY )
+         IF ::nState != STATE_PRESSED
+            ::nState := STATE_MOVER
          ENDIF
-         IF Empty( ::aDrawn )
-            ::oOver := Self
-         ELSE
-            ::oOver0 := Self
-         ENDIF
-         */
       ELSEIF nState == STATE_NORMAL
+         IF ::nState == STATE_MOVER .OR. ::nState == STATE_PRESSED
+            ::onMouseLeave()
+         ENDIF
          ::nState := STATE_NORMAL
       ELSEIF nState == STATE_PRESSED
          ::nState := STATE_PRESSED
@@ -258,7 +254,7 @@ METHOD Value( xValue ) CLASS HDrawn
 
 METHOD Refresh() CLASS HDrawn
 
-   hwg_Invalidaterect( ::GetParentBoard():handle, 0, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1 )
+   hwg_Invalidaterect( ::GetParentBoard():handle, 0, ::nLeft, ::nTop, ::nLeft+::nWidth, ::nTop+::nHeight )
    RETURN Nil
 
 CLASS HDrawnCheck INHERIT HDrawn

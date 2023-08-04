@@ -728,19 +728,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
          o:SetState( STATE_MOVER, nPosX, nPosY )
+         o:onMouseMove( nPosX, nPosY )
       ELSE
          HDrawn():GetByState( STATE_MOVER, ::aDrawn, {|o|o:SetState(STATE_NORMAL,nPosX,nPosY)}, .T. )
-         //HDrawn():oOver := HDrawn():oOver0 := Nil
-         /*
-         IF !Empty( HDrawn():oOver )
-            HDrawn():oOver:SetState( 0, nPosX, nPosY )
-            HDrawn():oOver := Nil
-         ENDIF
-         IF !Empty( HDrawn():oOver0 )
-            HDrawn():oOver0:SetState( 0, nPosX, nPosY )
-            HDrawn():oOver0 := Nil
-         ENDIF
-         */
       ENDIF
 
    ELSEIF msg == WM_PAINT
@@ -750,29 +740,25 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       ::lMouseOver := .F.
       nPosX := hwg_Loword( lParam )
       nPosY := hwg_Hiword( lParam )
+      HDrawn():GetByState( STATE_PRESSED, ::aDrawn, {|o|o:SetState(STATE_NORMAL,nPosX,nPosY)}, .T. )
       HDrawn():GetByState( STATE_MOVER, ::aDrawn, {|o|o:SetState(STATE_NORMAL,nPosX,nPosY)}, .T. )
-      //HDrawn():oOver := HDrawn():oOver0 := Nil
-      /*
-      IF !Empty( HDrawn():oOver )
-         HDrawn():oOver:SetState( 0, nPosX, nPosY )
-         HDrawn():oOver := Nil
-      ENDIF
-      IF !Empty( HDrawn():oOver0 )
-         HDrawn():oOver0:SetState( 0, nPosX, nPosY )
-         HDrawn():oOver0 := Nil
-      ENDIF
-      */
 
    ELSEIF msg == WM_LBUTTONDOWN
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
          o:SetState( STATE_PRESSED, nPosX, nPosY )
+         o:onButtonDown( nPosX, nPosY )
       ENDIF
 
    ELSEIF msg == WM_LBUTTONUP
       IF !Empty( o := HDrawn():GetByState( STATE_PRESSED, ::aDrawn ) )
          o:SetState( 3, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+         o:onButtonUp( nPosX, nPosY )
       ENDIF
+
+   ELSE
+      RETURN ::Super:onEvent( msg, wParam, lParam )
+
    ENDIF
 
    RETURN -1
@@ -787,7 +773,7 @@ METHOD Init() CLASS HBoard
 
    RETURN Nil
 
-METHOD Paint( hDC )
+METHOD Paint( hDC ) CLASS HBoard
 
    LOCAL i
    LOCAL pps, l := .F.

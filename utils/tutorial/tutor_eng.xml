@@ -644,13 +644,15 @@ Local bVolChange := {|o,n|
 
    @ 40, 20 SAY "Just drag the slider:" SIZE 220, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
 
-   oTrack1 := HTrack():New( ,, 20, 50, 140, 28,,, CLR_WHITE, CLR_BROWN_1, 16 )
+   @ 20, 50 TRACK oTrack1 SIZE 140, 28 COLOR CLR_WHITE ;
+      BACKCOLOR CLR_BROWN_1 SLIDER SIZE 16 AXIS
    oTrack1:bChange := bVolChange
    oTrack1:Value := 0.5
 
    @ 200, 50 SAY oSay1 CAPTION "" SIZE 80, 22 STYLE SS_CENTER BACKCOLOR CLR_BROWN_3
 
-   oTrack2 := HTrack():New( ,, 40, 120, 28, 100,,, CLR_WHITE, CLR_BROWN_1, 16 )
+   @ 40, 120 TRACK oTrack2 SIZE 28, 100 COLOR CLR_WHITE ;
+      BACKCOLOR CLR_BROWN_1 SLIDER SIZE 16 AXIS
    oTrack2:bChange := bVolChange
    oTrack2:Value := 0.5
 

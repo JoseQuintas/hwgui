@@ -56,6 +56,7 @@
 #define WM_KEYDOWN                      256    // 0x0100
 #define WM_KEYUP                        257    // 0x0101
 #define WM_MOUSEMOVE                    512    // 0x0200
+#define WM_MOUSELEAVE                   675    // 0x02A3
 #define WM_LBUTTONDOWN                  513    // 0x0201
 #define WM_LBUTTONUP                    514    // 0x0202
 #define WM_LBUTTONDBLCLK                515    // 0x0203
@@ -731,11 +732,19 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
                  ( ( ((GdkEventConfigure*)event)->y << 16 ) & 0xFFFF0000 );
          }
       }
-      else if( event->type == GDK_ENTER_NOTIFY || event->type == GDK_LEAVE_NOTIFY )
+      else if( event->type == GDK_LEAVE_NOTIFY ) // event->type == GDK_ENTER_NOTIFY ||
+      {
+         p1 = WM_MOUSELEAVE;
+         p2 = 0;
+         //p2 = ( ((GdkEventCrossing*)event)->state & GDK_BUTTON1_MASK )? 1:0 |
+         //     ( event->type == GDK_ENTER_NOTIFY )? 0x10:0;
+         p3 = ( ((HB_ULONG)(((GdkEventCrossing*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
+      }
+      else if( event->type == GDK_ENTER_NOTIFY )
       {
          p1 = WM_MOUSEMOVE;
-         p2 = ( ((GdkEventCrossing*)event)->state & GDK_BUTTON1_MASK )? 1:0 |
-              ( event->type == GDK_ENTER_NOTIFY )? 0x10:0;
+         p2 = 0;
+         p2 = ( ( ((GdkEventCrossing*)event)->state & GDK_BUTTON1_MASK )? 1:0 ) | 0x10;
          p3 = ( ((HB_ULONG)(((GdkEventCrossing*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
       }
       else if( event->type == GDK_FOCUS_CHANGE )

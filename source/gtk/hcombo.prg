@@ -79,7 +79,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    hwg_SetSignal( ::handle, "changed", CBN_SELCHANGE, 0, 0 )
 
    IF Left( ::oParent:ClassName(), 6 ) == "HPANEL" .AND. hwg_BitAnd( ::oParent:style, SS_OWNERDRAW ) != 0
-      ::oParent:SetPaintCB( PAINT_ITEM, { |o,h|HB_SYMBOL_UNUSED(o),iif( !::lHide,hwg__DrawCombo(h,::nLeft + ::nWidth - 22,::nTop,::nLeft + ::nWidth - 1,::nTop + ::nHeight - 1 ), .T. ) }, "hc" + LTrim( Str(::id ) ) )
+      ::oParent:SetPaintCB( PAINT_ITEM, {|o,h|HB_SYMBOL_UNUSED(o),iif( !::lHide,hwg__DrawCombo(h,::nLeft + ::nWidth - 22,::nTop,::nLeft + ::nWidth - 1,::nTop + ::nHeight - 1 ), .T. ) }, "hc" + LTrim( Str(::id ) ) )
    ENDIF
 
    RETURN Self

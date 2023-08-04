@@ -1603,7 +1603,7 @@ Added by Marcos Antonio Gambeta
              <bInit>,<bClick>,<caption>,<ctoolt>,<r>,<g>,<b> );
     [; hwg_SetCtrlName( <oBut>,<(oBut)> )]
 
-// trackbar control
+// trackbar control (deprecated)
 #xcommand @ <x>,<y> TRACKBAR [ <oTrackBar> ]  ;
             [ OF <oWnd> ]                 ;
             [ ID <nId> ]                  ;
@@ -1629,6 +1629,24 @@ Added by Marcos Antonio Gambeta
         Iif(<.autoticks.>,1,Iif(<.noticks.>,16,0)), ;
         Iif(<.both.>,8,Iif(<.top.>.or.<.left.>,4,0)) );
     [; hwg_SetCtrlName( <oTrackBar>,<(oTrackBar)> )]
+
+// trackbar control
+#xcommand @ <x>,<y> TRACK [ <oTrack> ]    ;
+            [ OF <oWnd> ]                 ;
+            [ ID <nId> ]                  ;
+            [ SIZE <width>, <height> ]    ;
+            [ COLOR <color> ]             ;
+            [ BACKCOLOR <bcolor> ]        ;
+            [ SLIDER SIZE <nsize> ]       ;
+            [ SLIDER HSTYLE <ostyles> ]   ;
+            [ BAR HSTYLE <ostyleb> ]      ;
+            [<laxis: AXIS>]               ;
+            [ ON SIZE <bSize> ]           ;
+            [ ON PAINT <bDraw> ]          ;
+          => ;
+    [<oTrack> :=] HTrack():New( <oWnd>,<nId>,<x>,<y>, ;
+        <width>,<height>,<bSize>,<bDraw>,<color>, <bcolor>, <nsize>, <ostyleb>, <ostyles>, <.laxis.> );
+    [; hwg_SetCtrlName( <oTrack>,<(oTrack)> )]
 
 // animation control
 #xcommand @ <x>,<y>  ANIMATION [ <oAnimation> ] ;
@@ -1927,5 +1945,20 @@ Added by Marcos Antonio Gambeta
     [<oDrawn> := ] HDrawnRadio():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
         <aStyles>,<cText>,<oFont>,<bDraw>,<bClick>,<bChg>,<xGroup>,<lInit> );
     [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
+
+#xcommand @ <x>,<y> DRAWN TRACK [ <oTrack> ]    ;
+            [ OF <oWnd> ]                 ;
+            [ SIZE <width>, <height> ]    ;
+            [ COLOR <color> ]             ;
+            [ BACKCOLOR <bcolor> ]        ;
+            [ SLIDER SIZE <nsize> ]       ;
+            [ SLIDER HSTYLE <ostyles> ]   ;
+            [ BAR HSTYLE <ostyleb> ]      ;
+            [<laxis: AXIS>]               ;
+            [ ON PAINT <bDraw> ]          ;
+          => ;
+    [<oTrack> :=] HDrawnTrack():New( <oWnd>,<x>,<y>, ;
+        <width>,<height>,<bDraw>,<color>, <bcolor>, <nsize>, <ostyleb>, <ostyles>, <.laxis.> );
+    [; hwg_SetCtrlName( <oTrack>,<(oTrack)> )]
 
 /* ================= EOF of guilib.ch ==================== */

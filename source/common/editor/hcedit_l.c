@@ -475,109 +475,9 @@ void ted_ClearAttr( TEDIT *pted )
 
 HB_FUNC( HCED_INITTEXTEDIT )
 {
-}
-
-HB_FUNC( HCED_CREATETEXTEDIT )
-{
    TEDIT *pted = ( TEDIT * ) hb_xgrab( sizeof( TEDIT ) );
-   GtkWidget *vbox, *hbox;
-   GtkWidget *vscroll, *hscroll;
-   GtkWidget *area;
-   GtkFixed *box;
-   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
-   GObject *handle;
-   int nLeft = hb_itemGetNI( GetObjectVar( pObject, "NLEFT" ) );
-   int nTop = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
-   int nWidth = hb_itemGetNI( GetObjectVar( pObject, "NCLIENTWIDTH" ) );
-   int nHeight = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
-   unsigned long int ulStyle =
-         hb_itemGetNL( GetObjectVar( pObject, "STYLE" ) );
-
-   temp = GetObjectVar( pObject, "OPARENT" );
-   handle = ( GObject * ) HB_GETHANDLE( GetObjectVar( temp, "HANDLE" ) );
-
-   hbox = gtk_hbox_new( FALSE, 0 );
-   vbox = gtk_vbox_new( FALSE, 0 );
-
-   area = gtk_drawing_area_new();
-
-   gtk_box_pack_start( GTK_BOX( hbox ), vbox, TRUE, TRUE, 0 );
-   if( ulStyle & WS_VSCROLL )
-   {
-#if GTK_MAJOR_VERSION -0 < 3
-      GtkObject *adjV;
-#else
-      GtkAdjustment *adjV;
-#endif
-      adjV = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
-      vscroll = gtk_vscrollbar_new( GTK_ADJUSTMENT( adjV ) );
-      gtk_box_pack_end( GTK_BOX( hbox ), vscroll, FALSE, FALSE, 0 );
-
-      temp = HB_PUTHANDLE( NULL, adjV );
-      SetObjectVar( pObject, "_HSCROLLV", temp );
-      hb_itemRelease( temp );
-
-      SetWindowObject( ( GtkWidget * ) adjV, pObject );
-      set_signal( ( gpointer ) adjV, "value_changed", WM_VSCROLL, 0, 0 );
-   }
-
-   gtk_box_pack_start( GTK_BOX( vbox ), area, TRUE, TRUE, 0 );
-   if( ulStyle & WS_HSCROLL )
-   {
-#if GTK_MAJOR_VERSION -0 < 3
-      GtkObject *adjH;
-#else
-      GtkAdjustment *adjH;
-#endif
-      adjH = gtk_adjustment_new( 0.0, 0.0, 101.0, 1.0, 10.0, 10.0 );
-      hscroll = gtk_hscrollbar_new( GTK_ADJUSTMENT( adjH ) );
-      gtk_box_pack_end( GTK_BOX( vbox ), hscroll, FALSE, FALSE, 0 );
-
-      temp = HB_PUTHANDLE( NULL, adjH );
-      SetObjectVar( pObject, "_HSCROLLH", temp );
-      hb_itemRelease( temp );
-
-      SetWindowObject( ( GtkWidget * ) adjH, pObject );
-      set_signal( ( gpointer ) adjH, "value_changed", WM_HSCROLL, 0, 0 );
-   }
-
-   box = getFixedBox( handle );
-   if( box )
-      gtk_fixed_put( box, hbox, nLeft, nTop );
-   gtk_widget_set_size_request( hbox, nWidth, nHeight );
-
-   temp = HB_PUTHANDLE( NULL, area );
-   SetObjectVar( pObject, "_AREA", temp );
-   hb_itemRelease( temp );
-
-   SetWindowObject( area, pObject );
-#if GTK_MAJOR_VERSION -0 < 3
-      set_event( ( gpointer ) area, "expose_event", WM_PAINT, 0, 0 );
-#else
-      set_event( ( gpointer ) area, "draw", WM_PAINT, 0, 0 );
-#endif
-
-   gtk_widget_set_can_focus( area, 1 );
-
-   gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK |
-         GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK |
-         GDK_POINTER_MOTION_MASK | GDK_SCROLL_MASK | GDK_FOCUS_CHANGE_MASK );
-   g_signal_connect( area, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
-   set_event( ( gpointer ) area, "focus_in_event", 0, 0, 0 );
-   set_event( ( gpointer ) area, "focus_out_event", 0, 0, 0 );
-   set_event( ( gpointer ) area, "button_press_event", 0, 0, 0 );
-   set_event( ( gpointer ) area, "button_release_event", 0, 0, 0 );
-   set_event( ( gpointer ) area, "motion_notify_event", 0, 0, 0 );
-   set_event( ( gpointer ) area, "key_press_event", 0, 0, 0 );
-   set_event( ( gpointer ) area, "key_release_event", 0, 0, 0 );
-   set_event( ( gpointer ) area, "scroll_event", 0, 0, 0 );
-
-   all_signal_connect( ( gpointer ) area );
 
    memset( pted, 0, sizeof( TEDIT ) );
-
-   pted->widget = hbox;
-   pted->area = area;
    pted->iInterline = 3;
    pted->iFonts = NUMBER_OF_FONTS;
    pted->pFontsScr = ( TEDFONT * ) hb_xgrab( sizeof( TEDFONT ) * NUMBER_OF_FONTS );
@@ -589,15 +489,59 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    ted_ClearAttr( pted );
 
    HB_RETHANDLE( pted );
+
 }
 
-HB_FUNC( HCED_GETHANDLE )
+HB_FUNC( HCED_CREATETEXTEDIT )
 {
-   HB_RETHANDLE( ( void * ) ( ( TEDIT * ) HB_PARHANDLE( 1 ) )->widget );
+   GtkWidget *area;
+   GtkFixed *box;
+   PHB_ITEM pObject = hb_param( 1, HB_IT_OBJECT ), temp;
+   GObject *handle;
+   int nLeft = hb_itemGetNI( GetObjectVar( pObject, "NLEFT" ) );
+   int nTop = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
+   int nWidth = hb_itemGetNI( GetObjectVar( pObject, "NCLIENTWIDTH" ) );
+   int nHeight = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
+
+   temp = GetObjectVar( pObject, "OPARENT" );
+   handle = ( GObject * ) HB_GETHANDLE( GetObjectVar( temp, "HANDLE" ) );
+
+   area = gtk_drawing_area_new();
+   g_object_set_data( ( GObject * ) area, "draw", ( gpointer ) area );
+   box = getFixedBox( handle );
+
+   if( box )
+      gtk_fixed_put( box, area, nLeft, nTop );
+   gtk_widget_set_size_request( area, nWidth, nHeight );
+
+#if GTK_MAJOR_VERSION -0 < 3
+   set_event( ( gpointer ) area, "expose_event", WM_PAINT, 0, 0 );
+#else
+   set_event( ( gpointer ) area, "draw", WM_PAINT, 0, 0 );
+#endif
+
+   gtk_widget_set_can_focus( area, 1 );
+
+   gtk_widget_add_events( area, GDK_BUTTON_PRESS_MASK |
+         GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK |
+         GDK_FOCUS_CHANGE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK );
+   g_signal_connect( area, "size-allocate", G_CALLBACK (cb_signal_size), "1" );
+   set_event( ( gpointer ) area, "focus_in_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "focus_out_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "key_press_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "key_release_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "button_press_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "button_release_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "motion_notify_event", 0, 0, 0 );
+   set_event( ( gpointer ) area, "leave_notify_event", 0, 0, 0 );
+
+   all_signal_connect( ( gpointer ) area );
+   HB_RETHANDLE( area );
 }
 
 HB_FUNC( HCED_SETHANDLE )
 {
+   ( ( TEDIT * ) HB_PARHANDLE( 1 ) )->area = ( GtkWidget* ) HB_PARHANDLE( 2 );
 }
 
 HB_FUNC( HCED_RELEASE )

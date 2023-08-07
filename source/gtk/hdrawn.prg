@@ -21,6 +21,7 @@ CLASS HDrawn INHERIT HObject
    DATA oParent
    DATA title
    DATA nTop, nLeft, nWidth, nHeight
+   DATA nTextStyle    INIT DT_CENTER
    DATA tcolor, bcolor, oBrush, oPen
    DATA tBorderColor  INIT Nil
    DATA lHide         INIT .F.
@@ -155,7 +156,7 @@ METHOD Paint( hDC ) CLASS HDrawn
          IF !Empty( ::oFont )
             hwg_SelectObject( hDC, ::oFont:handle )
          ENDIF
-         hwg_Drawtext( hDC, ::title, ::nLeft+4, ::nTop+6, ::nLeft+::nWidth-4, ::nTop+::nHeight-6, DT_CENTER )
+         hwg_Drawtext( hDC, ::title, ::nLeft+4, ::nTop+6, ::nLeft+::nWidth-4, ::nTop+::nHeight-6, ::nTextStyle )
          hwg_Settransparentmode( hDC, .F. )
       ENDIF
    ENDIF

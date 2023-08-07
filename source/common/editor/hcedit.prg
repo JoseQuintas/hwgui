@@ -299,7 +299,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    ::DefaultLang()
 
-   //::lVScroll := ( lNoVScroll == Nil .OR. !lNoVScroll )
    IF Valtype( lNoVScroll ) == "N"
       ::nTrackWidth := lNoVScroll
    ELSEIF Valtype( lNoVScroll ) == "L" .AND. lNoVScroll
@@ -309,7 +308,6 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, oFont, ;
    ENDIF
    nStyle := Hwg_BitOr( Iif( nStyle == Nil,0,nStyle ), WS_CHILD + WS_VISIBLE +  ;
       Iif( lNoBorder = Nil .OR. !lNoBorder, WS_BORDER, 0 ) ) //+          ;
-      //Iif( ::lVScroll, WS_VSCROLL, 0 ) )
 
    ::Super:New( oWndParent, nId, nStyle, nLeft, nTop, Iif( nWidth == Nil,0,nWidth ), ;
       Iif( nHeight == Nil, 0, nHeight ), oFont, bInit, bSize, bPaint, , ;
@@ -365,24 +363,13 @@ METHOD Open( cFileName, cPageIn, cPageOut ) CLASS HCEdit
 
 METHOD Activate() CLASS HCEdit
 
-#ifdef __GTK__
-   LOCAL nw
-#endif
-
    IF !Empty( ::oParent:handle )
-
+      ::handle := hwg_CreateBoard( ::oParent:handle, ::id, ;
+         ::style, ::nLeft, ::nTop, ::nClientWidth, ::nHeight, .T. )
 #ifdef __GTK__
-      nw := ::nWIdth
-      ::nWidth := ::nClientWidth
-      ::hEdit := hced_CreateTextEdit( Self )
-      ::nWIdth := nw
-      ::handle := hced_GetHandle( ::hEdit )
       IF hwg_bitand( ::style, WS_BORDER ) != 0
          ::SetBorder( 2 )
       ENDIF
-#else
-      ::handle := hced_CreateTextEdit( ::oParent:handle, ::id, ;
-         ::style, ::nLeft, ::nTop, ::nClientWidth, ::nHeight )
 #endif
       ::Init()
 
@@ -412,12 +399,8 @@ METHOD Init() CLASS HCEdit
          ::aWrap := Array( ::nTextLen )
          ::Scan()
       ENDIF
-#ifdef __GTK__
-      IF !Empty( ::oTrack )
-         //::Move( ::nLeft, ::nTop, ::nWidth, ::nHeight )
-         //::oTrack:Value := 0
-      ENDIF
-#else
+
+#ifndef __GTK__
       IF ::nTrackWidth > 0 .AND. Empty( ::oTrack )
          ::ShowTrackBar( .T., ::nTrackWidth )
       ENDIF
@@ -448,15 +431,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
    LOCAL n, lRes := - 1, x, aPointC[P_LENGTH], nLinesAll
    LOCAL n1 , n2, lctrls
 
-   * Variables not used
-   * arr
-
-   //hwg_writelog(STR(msg) )
    ::PCopy( ::aPointC, aPointC )
    IF ::bOther != Nil
-*  Warning W0032  Variable 'N' is assigned but not used in function ...
-*      IF ( n := Eval( ::bOther,Self,msg,wParam,lParam ) ) != - 1
-*  Devide into 2 instructions:
       n := Eval( ::bOther,Self,msg,wParam,lParam )
       IF n != - 1
          RETURN n
@@ -707,10 +683,8 @@ METHOD Paint( lReal ) CLASS HCEdit
 #endif
       pps := hwg_DefinePaintStru()
 #ifdef __GTK__
-      hDCReal := hwg_BeginPaint( ::area, pps )
-      aCoors := hwg_GetClientRect( ::area )
-      //hDC := hwg_CreateCompatibleDC( hDCReal, ;
-      //      Iif( !Empty(nDocWidth), nDocWidth, aCoors[3]-aCoors[1] ), aCoors[4]-aCoors[2] )
+      hDCReal := hwg_BeginPaint( ::handle, pps )
+      aCoors := hwg_GetClientRect( ::handle )
       hDC := hDCReal
       IF ::nShiftL > 0
          hwg_cairo_translate( hDC, -::nShiftL, 0 )
@@ -728,11 +702,7 @@ METHOD Paint( lReal ) CLASS HCEdit
       ::nClientWidth := aCoors[3] - aCoors[1]
       lReal := .T.
    ELSE
-#ifdef __GTK__
-      hDCReal := hwg_Getdc( ::area )
-#else
       hDCReal := hwg_Getdc( ::handle )
-#endif
       hDC := hDCReal
    ENDIF
 
@@ -2240,19 +2210,15 @@ METHOD Scan( nl1, nl2, hDC, nWidth, nHeight ) CLASS HCEdit
 
    IF !lNested
 #ifdef __GTK__
-      aCoors := hwg_GetClientRect( ::area )
+      aCoors := hwg_GetClientRect( ::handle )
       IF !::lPainted
          ::lNeedScan := .T.
          RETURN Nil
       ENDIF
-      hDC := hwg_Getdc( ::area )
+      hDC := hwg_Getdc( ::handle )
 #else
       aCoors := hwg_GetClientRect( ::handle )
       hDC := hwg_Getdc( ::handle )
-      //hDCR := hwg_Getdc( ::handle )
-      //hDC := hwg_CreateCompatibleDC( hDCR )
-      //hBitmap := hwg_CreateCompatibleBitmap( hDCR, aCoors[3] - aCoors[1], aCoors[4] - aCoors[2] )
-      //hwg_Selectobject( hDC, hBitmap )
 #endif
       IF Empty( ::nKoeffScr )
          i := hwg_Getdevicearea( hDC )

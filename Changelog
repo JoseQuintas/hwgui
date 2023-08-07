@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-07 11:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hdrawn.prg
+  * source/winapi/hdrawn.prg
+    * :nTextStyle added
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_l.c
+    * Some changes in internals to use board control as a base
+
 2023-08-04 11:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hdrawn.prg
   * source/winapi/hdrawn.prg

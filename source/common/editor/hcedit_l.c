@@ -839,13 +839,13 @@ HB_FUNC( HCED_INVALIDATERECT )
         x2 - x1 + 1, y2 - y1 + 1 );
 
 }
-
+/*
 HB_FUNC( HCED_SETFOCUS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
    gtk_widget_grab_focus( (GtkWidget*) pted->area );
 }
-
+*/
 
 /*
  * hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, Len(cLine), nAlign, lPaint )

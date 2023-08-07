@@ -513,11 +513,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 #endif
    ELSEIF msg == WM_LBUTTONDOWN .OR. msg == WM_RBUTTONDOWN
 #ifdef __GTK__
-      hced_SetFocus( ::hEdit )
+      //hced_SetFocus( ::hEdit )
+      hwg_SetFocus( ::handle )
 #endif
       IF msg == WM_LBUTTONDOWN .AND. !Empty( ::aPointM2[P_Y] )
          ::PCopy( , ::aPointM2 )
-         hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+         //hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+         hwg_Invalidaterect( ::handle, 0, 0, 0, ::nClientWidth, ::nHeight )
       ENDIF
       hced_ShowCaret( ::hEdit )
       IF ::nCaret > 0 .AND. ::nLines > 0
@@ -555,11 +557,11 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
             ::PCopy( ::aPointC, ::aPointM2 )
          ENDIF
          IF ::nLineC >= n
-            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[n,AL_Y1], ::nClientWidth, ;
-               ::aLines[::nLineC,AL_Y2] )
+            //hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[n,AL_Y1], ::nClientWidth, ::aLines[::nLineC,AL_Y2] )
+            hwg_Invalidaterect( ::handle, 0, 0, ::aLines[n,AL_Y1], ::nClientWidth, ::aLines[::nLineC,AL_Y2] )
          ELSE
-            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
-               ::aLines[n,AL_Y2] )
+            //hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ::aLines[n,AL_Y2] )
+            hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ::aLines[n,AL_Y2] )
          ENDIF
       ENDIF
 
@@ -582,7 +584,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ENDIF
 
    ELSEIF msg == WM_MOUSEACTIVATE
-      hced_SetFocus( ::hEdit )
+      //hced_SetFocus( ::hEdit )
+      hwg_SetFocus( ::handle )
       lRes := MA_ACTIVATE
 
    ELSEIF msg == WM_SETFOCUS
@@ -626,7 +629,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
 #ifdef __GTK__
          ENDIF
 #endif
-         hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+         //hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+         hwg_Invalidaterect( ::handle, 0, 0, 0, ::nClientWidth, ::nHeight )
       ENDIF
 
    ELSEIF msg == WM_DESTROY
@@ -773,7 +777,8 @@ METHOD Paint( lReal ) CLASS HCEdit
       hwg_Releasedc( ::handle, hDCReal )
    ENDIF
    IF ::lSetFocus
-      hced_SetFocus( ::hEdit )
+      //hced_SetFocus( ::hEdit )
+      hwg_SetFocus( ::handle )
       ::lSetFocus := .F.
    ENDIF
    IF n4Separ != ::n4Separ
@@ -1053,7 +1058,8 @@ METHOD SetText( xText, cPageIn, cPageOut ) CLASS HCEdit
    ENDIF
    ::lSetFocus := .T.
    IF ::lInit
-      hced_Invalidaterect( ::hEdit, 0 )
+      //hwg_Invalidaterect( ::handle, 0 )
+      hwg_Invalidaterect( ::handle, 0 )
    ENDIF
 
    RETURN Nil
@@ -1208,14 +1214,20 @@ METHOD SetCaretPos( nType, p1, p2 ) CLASS HCEdit
    IF !lInfo
       IF nLinePrev != ::nLineC
          IF nLinePrev <= ::nLines
-            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
+            //hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
+            //   ::aLines[nLinePrev,AL_Y2] )
+            hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
                ::aLines[nLinePrev,AL_Y2] )
          ENDIF
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
+         //hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
+         //   ::aLines[::nLineC,AL_Y2] )
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
             ::aLines[::nLineC,AL_Y2] )
 #ifdef __GTK__
       ELSE
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
+         //hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
+         //   ::aLines[nLinePrev,AL_Y2] )
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLinePrev,AL_Y1], ::nClientWidth, ;
             ::aLines[nLinePrev,AL_Y2] )
 #endif
       ENDIF
@@ -1328,7 +1340,9 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
+         //hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
+         //   ::aLines[nLine,AL_Y2] )
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
 
@@ -1365,7 +1379,9 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
+         //hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
+         //   ::aLines[nLine,AL_Y2] )
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
    ELSEIF nKeyCode == VK_HOME  // Home
@@ -1379,7 +1395,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
    ELSEIF nKeyCode == VK_END   // End
@@ -1396,7 +1412,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       IF hwg_checkBit( nctrl,FBITSHIFT )
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
             ::aLines[nLine,AL_Y2] )
       ENDIF
    ELSEIF nKeyCode == VK_UP     // Cursor up
@@ -1405,7 +1421,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
          IF Len( ::aLines ) > ::nLineC
-            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
+            hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC,AL_Y1], ::nClientWidth, ;
                ::aLines[::nLineC+1,AL_Y2] )
          ENDIF
       ENDIF
@@ -1414,7 +1430,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
       IF hwg_checkBit( nctrl,FBITSHIFT ) .AND. ::nLineC > 1
          ::PCopy( ::aPointC, ::aPointM2 )
          lUnSel := .F.
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC-1,AL_Y1], ::nClientWidth, ;
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC-1,AL_Y1], ::nClientWidth, ;
             ::aLines[::nLineC,AL_Y2] )
       ENDIF
    ELSEIF nKeyCode == VK_NEXT    // Page Down
@@ -1464,7 +1480,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
                cLine := Strtran( cLine, Chr(9), Space(::nTablen) )
             ENDIF
             ::InsText( ::aPointC, cLine )
-            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
+            hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ;
                ::nHeight )
          ENDIF
       ENDIF
@@ -1495,7 +1511,7 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
             cLine := Strtran( cLine, Chr(9), Space(::nTablen) )
          ENDIF
          ::InsText( ::aPointC, cLine )
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ::nHeight )
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[nLine,AL_Y1], ::nClientWidth, ::nHeight )
       ENDIF
    ELSEIF ( nKeyCode == 88 .OR. nKeyCode == 120 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'X'
       IF !Empty( ::aPointM2[P_Y] )
@@ -1522,12 +1538,12 @@ METHOD onKeyDown( nKeyCode, lParam, nCtrl ) CLASS HCEdit
          lInvAll := .T.
       ENDIF
       IF !lInvAll
-         hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::aPointM1[P_Y] - ::nLineF + 1, AL_Y1], ;
+         hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::aPointM1[P_Y] - ::nLineF + 1, AL_Y1], ;
             ::nClientWidth, ::aLines[nLine - ::nLineF + 1, AL_Y2] )
       ENDIF
    ENDIF
    IF lInvAll
-      hced_Invalidaterect( ::hEdit, 0 )
+      hwg_Invalidaterect( ::handle, 0 )
    ENDIF
    ::lSetFocus := .T.
 
@@ -1616,7 +1632,7 @@ METHOD LineDown() CLASS HCEdit
    y := ::aLines[::nLineC,AL_Y2] - 4
    ::Paint( .F. )
    ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), y )
-   hced_Invalidaterect( ::hEdit, 0 )
+   hwg_Invalidaterect( ::handle, 0 )
 
    RETURN Nil
 
@@ -1656,7 +1672,7 @@ METHOD LineUp( lChgPos ) CLASS HCEdit
       y := ::aLines[::nLineC,AL_Y2] - 4
       ::Paint( .F. )
       ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), y )
-      hced_Invalidaterect( ::hEdit, 0 )
+      hwg_Invalidaterect( ::handle, 0 )
    ENDIF
 
    RETURN Nil
@@ -1687,7 +1703,7 @@ METHOD PageDown() CLASS HCEdit
    y := ::aLines[::nLineC,AL_Y2] - 4
    ::Paint( .F. )
    ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), y )
-   hced_Invalidaterect( ::hEdit, 0 )
+   hwg_Invalidaterect( ::handle, 0 )
 
    RETURN Nil
 
@@ -1721,7 +1737,7 @@ METHOD PageUp() CLASS HCEdit
       y := ::aLines[::nLineC,AL_Y2] - 4
       ::Paint( .F. )
       ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), y )
-      hced_Invalidaterect( ::hEdit, 0 )
+      hwg_Invalidaterect( ::handle, 0 )
    ELSE
       ::Top()
    ENDIF
@@ -1737,7 +1753,7 @@ METHOD Top() CLASS HCEdit
       ::Paint( .F. )
 
       ::SetCaretPos( SETC_COORS, 0, 0 )
-      hced_Invalidaterect( ::hEdit, 0 )
+      hwg_Invalidaterect( ::handle, 0 )
    ENDIF
 
    RETURN Nil
@@ -1774,7 +1790,7 @@ METHOD Bottom() CLASS HCEdit
       ::Paint( .F. )
 
       ::SetCaretPos( SETC_COORS, ::nClientWidth, ::nHeight )
-      hced_Invalidaterect( ::hEdit, 0 )
+      hwg_Invalidaterect( ::handle, 0 )
    ENDIF
 
    RETURN Nil
@@ -1790,18 +1806,18 @@ METHOD GOTO( nLine ) CLASS HCEdit
       IF ::lWrap
          ::nLineF := nLine
          ::nLineC := 1
-         hced_Invalidaterect( ::hEdit, 0 )
+         hwg_Invalidaterect( ::handle, 0 )
       ELSE
          IF nLine > ::nLineF .AND. nLine - ::nLineF + 1 < n
-            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
+            hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC,AL_Y1], ;
                ::nClientWidth, ::aLines[::nLineC,AL_Y2] )
             ::nLineC := nLine - ::nLineF + 1
-            hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
+            hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC,AL_Y1], ;
                ::nClientWidth, ::aLines[::nLineC,AL_Y2] )
          ELSE
             ::nLineC := Min( Int( n/2 ), nLine )
             ::nLineF := nLine - ::nLineC + 1
-            hced_Invalidaterect( ::hEdit, 0 )
+            hwg_Invalidaterect( ::handle, 0 )
          ENDIF
       ENDIF
       ::SetCaretPos( SETC_XFIRST )
@@ -1857,7 +1873,7 @@ METHOD onVScroll( wParam ) CLASS HCEdit
             ::Paint( .F. )
 
             ::SetCaretPos( SETC_COORS, hced_GetXCaretPos( ::hEdit ), hced_GetYCaretPos( ::hEdit ) )
-            hced_Invalidaterect( ::hEdit, 0 )
+            hwg_Invalidaterect( ::handle, 0 )
          ENDIF
       ENDIF
    ENDIF
@@ -1988,7 +2004,7 @@ METHOD DelText( P1, P2, lChgPos ) CLASS HCEdit
       ::nPosC := nPos - ::nPosF + 1
    ENDIF
 
-   hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[::nLineC,AL_Y1], ;
+   hwg_Invalidaterect( ::handle, 0, 0, ::aLines[::nLineC,AL_Y1], ;
       ::nClientWidth, ::nHeight )
    IF lChgPos
       ::SetCaretPos( SETC_XY )
@@ -2089,9 +2105,9 @@ METHOD InsText( aPoint, cText, lOver, lChgPos ) CLASS HCEdit
    ENDIF
 
    IF Len( aText ) > 1 .OR. lInvAll
-      hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+      hwg_Invalidaterect( ::handle, 0, 0, 0, ::nClientWidth, ::nHeight )
    ELSE
-      hced_Invalidaterect( ::hEdit, 0, 0, ::aLines[Max(Min(::nLineC,nLineC)-1,1),AL_Y1], ;
+      hwg_Invalidaterect( ::handle, 0, 0, ::aLines[Max(Min(::nLineC,nLineC)-1,1),AL_Y1], ;
          ::nClientWidth, Iif( ::nLineC==nLineC .AND. ;
          nSubl == Iif(::lWrap.AND.::aWrap[nLine]!=Nil,Len(::aWrap[nLine]),0), ;
          ::aLines[nLineC,AL_Y2], ::nHeight ) )
@@ -2132,7 +2148,7 @@ METHOD DelLine( nLine ) CLASS HCEdit
 
 METHOD Refresh() CLASS HCEdit
 
-   hced_Invalidaterect( ::hEdit, 0, 0, 0, ::nClientWidth, ::nHeight )
+   hwg_Invalidaterect( ::handle, 0, 0, 0, ::nClientWidth, ::nHeight )
 
    RETURN Nil
 
@@ -2709,7 +2725,7 @@ STATIC FUNCTION onTrack( oEdit, oTrack )
       IF lChg
          oEdit:Paint( .F. )
          oEdit:SetCaretPos( SETC_COORS, hced_GetXCaretPos( oEdit:hEdit ), hced_GetYCaretPos( oEdit:hEdit ) )
-         hced_Invalidaterect( oEdit:hEdit, 0 )
+         hwg_Invalidaterect( oEdit:handle, 0 )
       ENDIF
    ENDIF
 

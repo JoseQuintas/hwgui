@@ -1206,6 +1206,54 @@ Return Nil
 
 ]]>
     </module>
+    <module name="HcEdit">
+      <![CDATA[#include "hwgui.ch"
+Function Test
+Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oEdit
+
+   INIT DIALOG oDlg TITLE "Get a value"  ;
+         AT 210,10  SIZE 400,250         ;
+         FONT oFont NOEXIT
+
+   MENU OF oDlg
+      MENU TITLE "&File"
+         MENUITEM "&New"+Chr(9)+"Ctrl+N" ACTION _NewFile( oEdit )
+         MENUITEM "&Open"+Chr(9)+"Ctrl+O" ACTION _OpenFile( oEdit )
+         SEPARATOR
+         MENUITEM "E&xit" ACTION oDlg:Close()
+      ENDMENU
+   ENDMENU
+
+   @ 0, 0 HCEDIT oEdit SIZE 400, 250 ON SIZE {|o,x,y|o:Move( ,, x, y ) }
+   IF hwg__isUnicode()
+      oEdit:lUtf8 := .T.
+   ENDIF
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
+
+Return Nil
+
+FUNCTION _NewFile( oEdit )
+
+   oEdit:SetText()
+
+   RETURN Nil
+
+FUNCTION _OpenFile( oEdit )
+
+   LOCAL cFile
+
+   cFile := hwg_Selectfile( { "Text files (*.txt)", "All files" }, { "*.txt", "*.*" }, Curdir() )
+
+   IF !Empty( cFile )
+      oEdit:Open( cFile )
+      dirChange( hb_dirBase() )
+   ENDIF
+
+   RETURN Nil
+]]>
+    </module>
   </chapter>
   <chapter name="Get system" >
     <module name="Dialog with various Gets" ver="win">

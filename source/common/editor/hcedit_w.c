@@ -788,13 +788,13 @@ HB_FUNC( HCED_INVALIDATERECT )
          hb_parni( 2 )          // erase-background flag
           );
 }
-
+/*
 HB_FUNC( HCED_SETFOCUS )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
    SetFocus( ( HWND ) pted->handle );
 }
-
+*/
 /*
  * hced_LineOut( ::hEdit, @x1, @yPos, @x2, cLine, Len(cLine), nAlign, lPaint, lCalc )
  */

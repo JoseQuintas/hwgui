@@ -92,7 +92,7 @@ CLASS HDrawnTrack INHERIT HDrawn
    METHOD Value ( xValue ) SETGET
    METHOD onMouseMove( xPos, yPos )
    METHOD onMouseLeave()
-   METHOD onButtonDown( xPos, yPos )
+   METHOD onButtonDown( msg, xPos, yPos )
    METHOD onButtonUp( xPos, yPos )
 
 ENDCLASS
@@ -271,11 +271,13 @@ METHOD onMouseLeave() CLASS HDrawnTrack
 
    RETURN Nil
 
-METHOD onButtonDown( xPos, yPos ) CLASS HDrawnTrack
+METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnTrack
 
-   ::lCaptured := .T.
-   //hwg_Setcapture( ::handle )
-   ::Drag( xPos, yPos )
+   IF msg == WM_LBUTTONDOWN
+      ::lCaptured := .T.
+      //hwg_Setcapture( ::handle )
+      ::Drag( xPos, yPos )
+   ENDIF
 
    RETURN Nil
 

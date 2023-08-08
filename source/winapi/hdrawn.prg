@@ -47,8 +47,9 @@ CLASS HDrawn INHERIT HObject
    METHOD Refresh()
    METHOD onMouseMove( xPos, yPos ) VIRTUAL
    METHOD onMouseLeave() VIRTUAL
-   METHOD onButtonDown( xPos, yPos ) VIRTUAL
+   METHOD onButtonDown( msg, xPos, yPos ) VIRTUAL
    METHOD onButtonUp( xPos, yPos ) VIRTUAL
+   METHOD onKey( msg, wParam, lParam ) VIRTUAL
 
 ENDCLASS
 

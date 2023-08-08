@@ -15,6 +15,18 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-08 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit_w.c
+  * source/winapi/window.c
+    ! Warnings fixed
+  * source/gtk/hcontrol.prg
+  * source/gtk/hdrawn.prg
+  * source/gtk/htrackbr.prg
+  * source/winapi/hcontrol.prg
+  * source/winapi/hdrawn.prg
+  * source/winapi/htrackbr.prg
+    * Some changes in board and drawn controls to handle keyboard events
+
 2023-08-07 16:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/common/editor/hcedit_l.c

@@ -594,9 +594,11 @@ METHOD Activate() CLASS HLine
 
 CLASS HBoard INHERIT HControl
 
-   DATA winclass   INIT "HBOARD"
-   DATA lMouseOver INIT .F.
-   DATA aDrawn     INIT {}
+   DATA winclass    INIT "HBOARD"
+   DATA lKeybEvents INIT .F.
+   DATA lMouseOver  INIT .F.
+   DATA oInFocus
+   DATA aDrawn      INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
@@ -621,7 +623,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HBoard
 
    IF !Empty( ::oParent:handle )
-      ::handle := hwg_CreateBoard( ::oParent:handle,,, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+      ::handle := hwg_CreateBoard( ::oParent:handle,,, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::lKeybEvents )
       ::Init()
    ENDIF
 
@@ -665,13 +667,29 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
          o:SetState( STATE_PRESSED, nPosX, nPosY )
-         o:onButtonDown( nPosX, nPosY )
+         o:onButtonDown( msg, nPosX, nPosY )
+      ENDIF
+
+   ELSEIF msg == WM_RBUTTONDOWN
+      IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
+         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         o:onButtonDown( msg, nPosX, nPosY )
       ENDIF
 
    ELSEIF msg == WM_LBUTTONUP
       IF !Empty( o := HDrawn():GetByState( STATE_PRESSED, ::aDrawn ) )
          o:SetState( 3, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
          o:onButtonUp( nPosX, nPosY )
+      ENDIF
+
+   ELSEIF msg == WM_GETDLGCODE
+      IF ::lKeybEvents
+         RETURN DLGC_WANTALLKEYS
+      ENDIF
+
+   ELSEIF msg == WM_KEYDOWN .OR. msg == WM_CHAR
+      IF !Empty( ::oInFocus )
+         ::oInFocus:onKey( msg, wParam, lParam )
       ENDIF
 
    ELSE

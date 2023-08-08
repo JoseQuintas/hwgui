@@ -35,6 +35,10 @@
 #define  FIRST_MDICHILD_ID     501
 #define  WND_MDICHILD          3
 
+#if defined( __USE_GDIPLUS )
+extern void hwg_GdiplusExit( void );
+#endif
+
 static LRESULT CALLBACK s_MainWndProc( HWND, UINT, WPARAM, LPARAM );
 static LRESULT CALLBACK s_FrameWndProc( HWND, UINT, WPARAM, LPARAM );
 static LRESULT CALLBACK s_MDIChildWndProc( HWND, UINT, WPARAM, LPARAM );

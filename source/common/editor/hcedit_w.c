@@ -68,6 +68,7 @@
 #include "hbapicdp.h"
 #include "guilib.h"
 
+extern void hwg_regboard( void );
 LRESULT CALLBACK WinCtrlProc( HWND, UINT, WPARAM, LPARAM );
 
 typedef struct
@@ -393,32 +394,10 @@ void ted_ClearAttr( TEDIT *pted )
 
 TEDIT * ted_init( void )
 {
-   static short int bRegistered = FALSE;
-   TEDIT *pted;
+   TEDIT *pted = ( TEDIT * ) hb_xgrab( sizeof( TEDIT ) );
 
    hwg_regboard();
-/*
-   if( !bRegistered )
-   {
-      WNDCLASS wndclass;
 
-      wndclass.style = CS_DBLCLKS; //| CS_PARENTDC;   // | CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
-      wndclass.lpfnWndProc = WinCtrlProc;
-      wndclass.cbClsExtra = 0;
-      wndclass.cbWndExtra = 0;
-      wndclass.hInstance = GetModuleHandle( NULL );
-      wndclass.hIcon = NULL;
-      wndclass.hCursor = LoadCursor( NULL, IDC_IBEAM );
-      wndclass.hbrBackground = NULL; //( HBRUSH ) 0;
-      // wndclass.hbrBackground = (HBRUSH)( COLOR_WINDOW+1 );
-      wndclass.lpszMenuName = NULL;
-      wndclass.lpszClassName = TEXT( "TEDIT" );
-
-      RegisterClass( &wndclass );
-      bRegistered = TRUE;
-   }
-*/
-   pted = ( TEDIT * ) hb_xgrab( sizeof( TEDIT ) );
    memset( pted, 0, sizeof( TEDIT ) );
 
    pted->iFonts = NUMBER_OF_FONTS;
@@ -857,17 +836,6 @@ HB_FUNC( HCED_LINEOUT )
       i ++;
    }
    iHeight ++;
-   /*
-   for( i = 0, lasti = 0; i <= iPrinted; i++ )
-      if( i == iPrinted || ( pattr + i )->iFont != ( pattr + lasti )->iFont )
-      {
-         font = ( (pted->hDCPrn)? pted->pFontsPrn : pted->pFontsScr ) +
-               ( pattr + lasti )->iFont;
-         iHeight = max( iHeight, font->tm.tmHeight + font->tm.tmExternalLeading ) + 1;
-         iMaxAscent = max( iMaxAscent, font->tm.tmAscent );
-         lasti = i;
-      }
-   */
    //hwg_writelog( NULL, "ypos: %d iHeight: %d iLen %d iPrinted %d bCalc %d\r\n", ypos, iHeight, iLen, iPrinted, bCalc );
    if( iRight )
    {

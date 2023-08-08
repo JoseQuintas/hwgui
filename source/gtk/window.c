@@ -407,10 +407,16 @@ HB_FUNC( HWG_PROCESSMESSAGE )
 
 gint cb_signal_size( GtkWidget *widget, GtkAllocation *allocation, gpointer data )
 {
-   gpointer gObject = g_object_get_data( (GObject*)
-      gtk_widget_get_parent( gtk_widget_get_parent(widget) ), "obj" );
+   gpointer gObject; // = g_object_get_data( (GObject*)
+      //gtk_widget_get_parent( gtk_widget_get_parent(widget) ), "obj" );
    //gpointer gObject = g_object_get_data( (GObject*) widget, "obj" );
-   HB_SYMBOL_UNUSED( data );
+   //HB_SYMBOL_UNUSED( data );
+
+   if( data )
+      gObject = g_object_get_data( (GObject*) widget, "obj" );
+   else
+      gObject = g_object_get_data( (GObject*)
+         gtk_widget_get_parent( gtk_widget_get_parent(widget) ), "obj" );
 
    if( !pSym_onEvent )
       pSym_onEvent = hb_dynsymFindName( "ONEVENT" );

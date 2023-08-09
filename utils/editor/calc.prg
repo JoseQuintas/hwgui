@@ -96,7 +96,7 @@ FUNCTION EditScr( oEdit, aStru )
       ENDIF
    ENDIF
 
-   hced_Setfocus( oEdit:hEdit )
+   hwg_Setfocus( oEdit:handle )
 
    RETURN Nil
 
@@ -201,7 +201,7 @@ STATIC FUNCTION CalcScr( aStru, nL, iTD, nL1 )
          oEdiCurr:RestoreEnv( nL, iTD )
       ENDIF
    ENDIF
-   hced_Setfocus( oEdiCurr:hEdit )
+   hwg_Setfocus( oEdiCurr:handle )
 
    RETURN Nil
 
@@ -400,7 +400,7 @@ FUNCTION Calc( oEdit, nL, iTD, nL1 )
    IF lAll
       __mvSetBase()
    ENDIF
-   hced_Setfocus( oEdit:hEdit )
+   hwg_Setfocus( oEdit:handle )
    
    RETURN Nil
 

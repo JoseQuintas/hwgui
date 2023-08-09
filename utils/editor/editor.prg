@@ -294,25 +294,25 @@ FUNCTION Main ( fName )
       ENDMENU
       MENU TITLE "&Insert"
          MENU TITLE "&Url"
-            MENUITEM "&External"+Chr(9)+"Ctrl+I" ACTION (InsUrl( 1 ),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("I")
-            MENUITEM "&Internal" ACTION (InsUrl( 2 ),hced_Setfocus(oEdit:hEdit))
+            MENUITEM "&External"+Chr(9)+"Ctrl+I" ACTION (InsUrl( 1 ),hwg_Setfocus(oEdit:handle)) ACCELERATOR FCONTROL,Asc("I")
+            MENUITEM "&Internal" ACTION (InsUrl( 2 ),hwg_Setfocus(oEdit:handle))
          ENDMENU
-         MENUITEM "&Image" ACTION (setImage( .T. ),hced_Setfocus(oEdit:hEdit))
-         MENUITEM "&Table" ID MENU_INS_TABLE ACTION (setTable( .T. ),hced_Setfocus(oEdit:hEdit))
-         MENUITEM "&Block" ID MENU_INS_BLOCK ACTION (insBlock(),hced_Setfocus(oEdit:hEdit))
+         MENUITEM "&Image" ACTION (setImage( .T. ),hwg_Setfocus(oEdit:handle))
+         MENUITEM "&Table" ID MENU_INS_TABLE ACTION (setTable( .T. ),hwg_Setfocus(oEdit:handle))
+         MENUITEM "&Block" ID MENU_INS_BLOCK ACTION (insBlock(),hwg_Setfocus(oEdit:handle))
          MENUITEM "&Script" ACTION EditScr(oEdit)
       ENDMENU
       MENU TITLE "F&ormat"
          MENU TITLE "&Selected" ID MENU_SPAN
-            MENUITEM "&Properties"+Chr(9)+"Ctrl+E" ACTION (setSpan(),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("E")
+            MENUITEM "&Properties"+Chr(9)+"Ctrl+E" ACTION (setSpan(),hwg_Setfocus(oEdit:handle)) ACCELERATOR FCONTROL,Asc("E")
             MENUITEM "to &UPPER CASE" ACTION CnvCase( 1 )
             MENUITEM "To &lower case" ACTION CnvCase( 2 )
             MENUITEM "To &Title case" ACTION CnvCase( 3 )
          ENDMENU
          SEPARATOR
-         MENUITEM "&Document" ACTION (setDoc(),hced_Setfocus(oEdit:hEdit))
+         MENUITEM "&Document" ACTION (setDoc(),hwg_Setfocus(oEdit:handle))
          MENU TITLE "&Paragraph"
-            MENUITEM "&Properties"+Chr(9)+"Ctrl+H" ACTION (setPara(),hced_Setfocus(oEdit:hEdit)) ACCELERATOR FCONTROL,Asc("H")
+            MENUITEM "&Properties"+Chr(9)+"Ctrl+H" ACTION (setPara(),hwg_Setfocus(oEdit:handle)) ACCELERATOR FCONTROL,Asc("H")
             SEPARATOR
             MENUITEM "h1" ACTION oEdit:StyleDiv( ,, "h1" )
             MENUITEM "h2" ACTION oEdit:StyleDiv( ,, "h2" )
@@ -322,20 +322,20 @@ FUNCTION Main ( fName )
             MENUITEM "cite" ACTION oEdit:StyleDiv( ,, "cite" )
          ENDMENU
          SEPARATOR
-         MENUITEM "&Image" ID MENU_IMAGE ACTION (setImage( .F. ),hced_Setfocus(oEdit:hEdit))
+         MENUITEM "&Image" ID MENU_IMAGE ACTION (setImage( .F. ),hwg_Setfocus(oEdit:handle))
          MENU TITLE "&Table" ID MENU_TABLE
-            MENUITEM "&Properties" ACTION (setTable( .F. ),hced_Setfocus(oEdit:hEdit))
+            MENUITEM "&Properties" ACTION (setTable( .F. ),hwg_Setfocus(oEdit:handle))
             SEPARATOR
-            MENUITEM "&Insert row" ACTION (InsRows(),hced_Setfocus(oEdit:hEdit))
+            MENUITEM "&Insert row" ACTION (InsRows(),hwg_Setfocus(oEdit:handle))
             MENUITEM "&Delete row" ACTION DelRow()
             SEPARATOR
             MENUITEM "Insert column" ACTION InsCols( .F. )
             MENUITEM "Add column" ACTION InsCols( .T. )
             MENUITEM "Delete column" ACTION DelCol()
             SEPARATOR
-            MENUITEM "&Cell properties" ACTION (setCell(),hced_Setfocus(oEdit:hEdit))
+            MENUITEM "&Cell properties" ACTION (setCell(),hwg_Setfocus(oEdit:handle))
          ENDMENU
-         MENUITEM "&Block" ID MENU_BLOCK ACTION (setBlock(),hced_Setfocus(oEdit:hEdit))
+         MENUITEM "&Block" ID MENU_BLOCK ACTION (setBlock(),hwg_Setfocus(oEdit:handle))
       ENDMENU
       MENU TITLE "&Tools"
          MENUITEM "Calculate"+Chr(9)+"F9" ACTION Calc( oEdit ) ACCELERATOR 0,VK_F9
@@ -1949,7 +1949,7 @@ STATIC FUNCTION setImage( lNew )
          oEdit:lUpdated := .T.
       ENDIF
    ENDIF
-   hced_Setfocus( oEdit:hEdit )
+   hwg_Setfocus( oEdit:handle )
 
    RETURN Nil
 
@@ -2050,7 +2050,7 @@ STATIC FUNCTION InsCols( l2End )
    oEdit:Scan()
    oEdit:Paint( .F. )
    hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
-   hced_Setfocus( oEdit:hEdit )
+   hwg_Setfocus( oEdit:handle )
 
    RETURN Nil
 
@@ -2066,7 +2066,7 @@ STATIC FUNCTION DelCol()
    oEdit:Scan()
    oEdit:Paint( .F. )
    hced_Invalidaterect( oEdit:hEdit, 0, 0, 0, oEdit:nClientWidth, oEdit:nHeight )
-   hced_Setfocus( oEdit:hEdit )
+   hwg_Setfocus( oEdit:handle )
 
    RETURN Nil
 
@@ -2176,7 +2176,7 @@ STATIC FUNCTION Find()
          ENDIF
       ENDIF
    ENDIF
-   hced_Setfocus( oEdit:hEdit )
+   hwg_Setfocus( oEdit:handle )
 
    RETURN Nil
 
@@ -2248,7 +2248,7 @@ STATIC FUNCTION PasteFormatted()
          oEdit:nLines := nLines; oEdit:nLineF := nLineF; oEdit:nLineC := nLineC; oEdit:nPosF := nPosF; oEdit:nPosC := nPosC; oEdit:nWCharF := nWCharF; oEdit:nWSublF := nWSublF
          oEdit:PCopy( { nPosC, nLineC }, oEdit:aPointC )
          oEdit:SetCaretPos( SETC_XY )
-         hced_Setfocus( oEdit:hEdit )
+         hwg_Setfocus( oEdit:handle )
       ENDIF
    ENDIF
 
@@ -2543,7 +2543,7 @@ STATIC FUNCTION About()
 
    ACTIVATE DIALOG oDlg CENTER
 
-   hced_Setfocus( oEdit:hEdit )
+   hwg_Setfocus( oEdit:handle )
 
    RETURN Nil
 

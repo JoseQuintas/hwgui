@@ -484,7 +484,7 @@ STATIC FUNCTION Find()
          hwg_MsgStop( "String isn't found." )
       ENDIF
    ENDIF
-   hced_Setfocus( oEdit:hEdit )
+   hwg_Setfocus( oEdit:handle )
 
    RETURN Nil
 

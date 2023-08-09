@@ -601,7 +601,7 @@ CLASS HBoard INHERIT HControl
    DATA aDrawn      INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb )
 
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
@@ -611,10 +611,14 @@ CLASS HBoard INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor ) CLASS HBoard
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb ) CLASS HBoard
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
+
+   IF !Empty( lKeyb )
+      ::lKeybEvents := .T.
+   ENDIF
 
    ::Activate()
 

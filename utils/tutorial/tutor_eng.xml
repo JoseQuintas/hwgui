@@ -1257,7 +1257,6 @@ FUNCTION _OpenFile( oEdit )
 
    IF !Empty( cFile )
       oEdit:Open( cFile )
-      dirChange( hb_dirBase() )
    ENDIF
 
    RETURN Nil

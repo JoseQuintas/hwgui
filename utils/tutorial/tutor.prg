@@ -295,6 +295,7 @@ STATIC FUNCTION RunSample( oItem )
       RETURN Nil
    ENDIF
 
+   dirChange( hb_dirBase() )
    FOR i := 1 TO oText:nTextLen
       cLine := oText:aText[i]
       IF "INIT WINDOW" $ Upper( cLine )

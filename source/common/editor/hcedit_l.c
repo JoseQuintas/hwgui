@@ -449,7 +449,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
    {
       hwg_setcolor( pted->hDCScr->cr, pted->bg );
       cairo_rectangle( pted->hDCScr->cr, (gdouble)x1, (gdouble)ypos,
-            (gdouble)(iRight), (gdouble)iHeight );
+            (gdouble)(iRight-x1), (gdouble)iHeight );
       cairo_fill( pted->hDCScr->cr );
    }
    if( pted->iyCaretPos - pted->nBorder == ypos )

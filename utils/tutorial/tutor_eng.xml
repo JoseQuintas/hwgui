@@ -1210,7 +1210,7 @@ Return Nil
     <module name="HcEdit">
       <![CDATA[#include "hwgui.ch"
 Function Test
-Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oEdit
+Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oEdit, oMenu
 
    INIT DIALOG oDlg TITLE "Get a value"  ;
          AT 210,10  SIZE 400,250         ;
@@ -1225,10 +1225,18 @@ Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oEdit
       ENDMENU
    ENDMENU
 
+   CONTEXT MENU oMenu
+      MENUITEM "New" ACTION _NewFile( oEdit )
+      MENUITEM "Open" ACTION _OpenFile( oEdit )
+      SEPARATOR
+      MENUITEM "Exit" ACTION oDlg:Close()
+   ENDMENU
+
    @ 0, 0 HCEDIT oEdit SIZE 400, 250 ON SIZE {|o,x,y|o:Move( ,, x, y ) }
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
    ENDIF
+   oEdit:bRClick := {|| oMenu:Show( oDlg ) }
 
    ACTIVATE DIALOG oDlg
    oFont:Release()

@@ -1891,9 +1891,10 @@ Added by Marcos Antonio Gambeta
             [ ON PAINT <bDraw> ]       ;
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
+            [<lKeyb: KEYBOARD>]        ;
           => ;
     [<oBoard> := ] HBoard():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor> );
+        <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lKeyb.> );
     [; hwg_SetCtrlName( <oBoard>,<(oBoard)> )]
 
 #xcommand @ <x>,<y> DRAWN [ <oDrawn> ] ;

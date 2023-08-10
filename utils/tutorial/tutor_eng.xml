@@ -509,6 +509,7 @@ Local aSample := { {"Alex",17,1200}, {"Victor",42,1600}, {"John",31,1000} }
    // for example:
    oBrw:aColumns[1]:heading := "Name"
    oBrw:aColumns[2]:heading := "Age"
+   oBrw:aColumns[2]:lEditable := .T.
 
    @ 100,180 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:Close() } ;
          ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 

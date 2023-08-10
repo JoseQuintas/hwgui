@@ -636,7 +636,8 @@ HB_FUNC( HCED_INITCARET )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
 
-   CreateCaret( pted->handle, (HBITMAP)NULL, 2, pted->pFontsScr->tm.tmHeight );
+   if( !pted->iCaretHeight )
+      CreateCaret( pted->handle, (HBITMAP)NULL, 2, pted->pFontsScr->tm.tmHeight );
    ShowCaret( pted->handle );
    SetCaretPos( 0,0 );
    pted->iCaretHeight = pted->pFontsScr->tm.tmHeight;
@@ -649,6 +650,7 @@ HB_FUNC( HCED_KILLCARET )
 
    HideCaret( pted->handle );
    DestroyCaret();
+   pted->iCaretHeight = 0;
    InvalidateRect( pted->handle, NULL, 0 );
 }
 
@@ -836,7 +838,7 @@ HB_FUNC( HCED_LINEOUT )
       i ++;
    }
    iHeight ++;
-   //hwg_writelog( NULL, "ypos: %d iHeight: %d iLen %d iPrinted %d bCalc %d\r\n", ypos, iHeight, iLen, iPrinted, bCalc );
+   //hwg_writelog( NULL, "x1: %d iRight: %d ypos: %d iHeight: %d iLen %d iPrinted %d bCalc %d\r\n", x1, iRight, ypos, iHeight, iLen, iPrinted, bCalc );
    if( iRight )
    {
       pted->x2 = ted_LineOut( pted, x1, ypos, szText, iPrinted, iHeight, iMaxAscent, iRight );

@@ -50,6 +50,8 @@ CLASS HDrawn INHERIT HObject
    METHOD onButtonDown( msg, xPos, yPos ) VIRTUAL
    METHOD onButtonUp( xPos, yPos ) VIRTUAL
    METHOD onKey( msg, wParam, lParam ) VIRTUAL
+   METHOD onKillFocus() VIRTUAL
+   METHOD End() VIRTUAL
 
 ENDCLASS
 

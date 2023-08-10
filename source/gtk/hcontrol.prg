@@ -607,6 +607,7 @@ CLASS HBoard INHERIT HControl
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Paint( hDC )
+   METHOD End()
 
 ENDCLASS
 
@@ -670,6 +671,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
    ELSEIF msg == WM_LBUTTONDOWN
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         IF !Empty( ::oInFocus ) .AND. !( o == ::oInFocus )
+            ::oInFocus:onKillFocus()
+            ::oInFocus := Nil
+         ENDIF
          o:SetState( STATE_PRESSED, nPosX, nPosY )
          o:onButtonDown( msg, nPosX, nPosY )
       ENDIF
@@ -677,6 +682,10 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
    ELSEIF msg == WM_RBUTTONDOWN
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
          nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         IF !Empty( ::oInFocus ) .AND. !( o == ::oInFocus )
+            ::oInFocus:onKillFocus()
+            ::oInFocus := Nil
+         ENDIF
          o:onButtonDown( msg, nPosX, nPosY )
       ENDIF
 
@@ -694,6 +703,12 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
    ELSEIF msg == WM_KEYDOWN .OR. msg == WM_CHAR
       IF !Empty( ::oInFocus )
          ::oInFocus:onKey( msg, wParam, lParam )
+      ENDIF
+
+   ELSEIF msg == WM_KILLFOCUS
+      IF !Empty( ::oInFocus )
+         ::oInFocus:onKillFocus()
+         ::oInFocus := Nil
       ENDIF
 
    ELSE
@@ -736,5 +751,16 @@ METHOD Paint( hDC ) CLASS HBoard
    IF l
       hwg_Endpaint( ::handle, pps )
    ENDIF
+
+   RETURN Nil
+
+METHOD End() CLASS HBoard
+
+   LOCAL i
+
+   ::Super:End()
+   FOR i := 1 TO Len( ::aDrawn )
+      ::aDrawn[i]:End()
+   NEXT
 
    RETURN Nil

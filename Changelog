@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-10 13:57 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcontrol.prg
+  * source/gtk/hdrawn.prg
+  * source/winapi/hcontrol.prg
+  * source/winapi/hdrawn.prg
+  * source/common/editor/hcedit_w.c
+    * Further enhancements of HBoard and Drawn
+  * utils/tutorial/tutor_eng.xml
+    * Small change in "Browse" module
+
 2023-08-09 16:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
   * source/winapi/hcontrol.prg

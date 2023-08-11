@@ -818,7 +818,7 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
                DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
                   oParent := oParent:oParent
                ENDDO
-               onDlgCommand( oParent, hwg_MakeWParam( IDOK, 0 ) )
+               hwg_DlgCommand( oParent, hwg_MakeWParam( IDOK, 0 ) )
             ENDIF
             Return 0
          ENDIF

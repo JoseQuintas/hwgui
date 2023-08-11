@@ -15,7 +15,7 @@
 
 STATIC aSheet := Nil
 STATIC aMessModalDlg := { ;
-      { WM_COMMAND, { |o,w,l|onDlgCommand( o,w,l ) } },       ;
+      { WM_COMMAND, { |o,w,l|hwg_DlgCommand( o,w,l ) } },     ;
       { WM_SYSCOMMAND, { |o,w,l| onSysCommand( o, w, l ) } }, ;
       { WM_SIZE, { |o,w,l|hwg_onWndSize( o,w,l ) } },         ;
       { WM_ERASEBKGND, { |o,w|onEraseBk( o,w ) } },           ;
@@ -354,7 +354,7 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
 
 #define  FLAG_CHECK      2
 
-FUNCTION onDlgCommand( oDlg, wParam, lParam )
+FUNCTION hwg_DlgCommand( oDlg, wParam, lParam )
 
 
    LOCAL iParHigh := hwg_Hiword( wParam ), iParLow := hwg_Loword( wParam )

@@ -93,9 +93,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF bSetGet != Nil
       ::bGetFocus := bGFocus
       ::bLostFocus := bLFocus
-      //IF bGfocus != Nil
-         ::oParent:AddEvent( EN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) }  )
-      //ENDIF
+      ::oParent:AddEvent( EN_SETFOCUS, ::id, { |o, id|__When( o:FindControl(id ) ) }  )
       ::oParent:AddEvent( EN_KILLFOCUS, ::id, { |o, id|__Valid( o:FindControl(id ) ) } )
       ::bValid := { |o|__Valid( o ) }
    ELSE
@@ -143,16 +141,13 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    LOCAL oParent := ::oParent, nPos, cClipboardText
    LOCAL nexthandle
 
-   * Not used variables
-   * nctrl, cKeyb
-
    IF ::bOther != Nil .AND. ( nPos := Eval( ::bOther, Self, msg, wParam, lParam ) ) != - 1
       RETURN nPos
    ENDIF
    wParam := hwg_PtrToUlong( wParam )
    IF !::lMultiLine
 
-      IF ::bSetGet != Nil
+      IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask ) //::bSetGet != Nil
          IF msg == WM_CHAR
             IF wParam == VK_BACK
                ::lFirst := .F.
@@ -356,8 +351,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    ELSEIF msg == WM_KILLFOCUS
       oParent := hwg_getParentForm( Self )
       IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
-         //::tColor := ::aColorOld[1]
-         //::bColor := ::aColorOld[2]
          ::Setcolor( ::aColorOld[1], ::aColorOld[2], .T. )
       ENDIF
    ENDIF
@@ -403,20 +396,22 @@ METHOD Refresh()  CLASS HEdit
 
    IF hb_isBlock( ::bSetGet )
       vari := Eval( ::bSetGet, , self )
-      IF vari == Nil
-         vari := ""
-      ENDIF
-
-      IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
-         vari := Transform( vari, ::cPicFunc + iif( Empty(::cPicFunc ),""," " ) + ::cPicMask )
-      ELSE
-         vari := iif( ::cType == "D", Dtoc( vari ), iif( ::cType == "N",Str(vari ),iif(::cType == "C",vari,"" ) ) )
-      ENDIF
-      ::title := vari
-      hwg_Setdlgitemtext( ::oParent:handle, ::id, vari )
    ELSE
-      hwg_Setdlgitemtext( ::oParent:handle, ::id, ::title )
+      vari := ::title
    ENDIF
+
+   IF vari == Nil
+      vari := ""
+   ENDIF
+
+   IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
+      vari := Transform( vari, ::cPicFunc + iif( Empty(::cPicFunc ),""," " ) + ::cPicMask )
+   ELSE
+      vari := iif( ::cType == "D", Dtoc( vari ), iif( ::cType == "N",Str(vari ),iif(::cType == "C",vari,"" ) ) )
+   ENDIF
+   ::title := vari
+   hwg_Setdlgitemtext( ::oParent:handle, ::id, vari )
+
    IF ::bColorBlock != Nil .AND. hwg_Isptreq( ::handle, hwg_Getfocus() )
       Eval( ::bColorBlock, Self )
    ENDIF
@@ -482,9 +477,6 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
 
    LOCAL nAt, i, masklen, cChar
 
-   IF ::bSetGet == Nil
-      RETURN Nil
-   ENDIF
    ::cPicFunc := ::cPicMask := ""
    IF cPicture != Nil
       IF Left( cPicture, 1 ) == "@"
@@ -534,11 +526,9 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
    ENDIF
 
    //  ------------ added by Maurizio la Cecilia
-
    IF !Empty( ::nMaxLength ) .AND. Len( ::cPicMask ) < ::nMaxLength
       ::cPicMask := PadR( ::cPicMask, ::nMaxLength, "X" )
    ENDIF
-
    //  ------------- end of added code
 
    RETURN Nil
@@ -582,9 +572,6 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
 
    LOCAL masklen, newpos
 
-   * Not used variables
-   * i, vari
-
    IF oEdit == Nil
       Return - 1
    ENDIF
@@ -616,9 +603,6 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
    RETURN 0
 
 STATIC FUNCTION KeyLeft( oEdit, nPos )
-
-   * Not used
-   * LOCAL i
 
    IF oEdit == Nil
       Return - 1
@@ -738,9 +722,6 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
    LOCAL nPos, nGetLen, nLen, vari, x, newPos, oParent
    LOCAL nDecimals, xTmp, lMinus := .F.
 
-   * Not used variables
-   * i
-
    x := hwg_Sendmessage( oEdit:handle, EM_GETSEL, 0, 0 )
    IF hwg_Hiword( x ) != hwg_Loword( x )
       hwg_Sendmessage( oEdit:handle, WM_CLEAR, hwg_Loword( x ), hwg_Hiword( x ) - 1 )
@@ -813,7 +794,8 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
             ENDIF
          ENDIF
          hwg_Setdlgitemtext( oEdit:oParent:handle, oEdit:id, oEdit:title )
-         IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. nPos == Len( oEdit:cPicMask )
+         IF oEdit:cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. ;
+            nPos == Len( oEdit:cPicMask ) .AND. !Empty( oEdit:bSetGet )
             IF !hwg_GetSkip( oParent := oEdit:oParent, oEdit:handle, 1 )
                DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
                   oParent := oParent:oParent
@@ -869,7 +851,7 @@ STATIC FUNCTION __When( oCtrl )
 
    RETURN res
 
-STATIC FUNCTION __valid( oCtrl )
+STATIC FUNCTION __Valid( oCtrl )
 
    LOCAL vari, oDlg, nLen
 

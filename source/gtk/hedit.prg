@@ -12,12 +12,6 @@
 #include "hblang.ch"
 #include "hwgui.ch"
 
-#ifndef DLGC_WANTARROWS
-#define DLGC_WANTARROWS     1      /* Control wants arrow keys         */
-#define DLGC_WANTTAB        2      /* Control wants tab keys           */
-#define DLGC_WANTCHARS    128      /* Want WM_CHAR messages            */
-#endif
-
 STATIC lColorinFocus := .F.
 STATIC tColorinFocus := 0
 STATIC bColorinFocus := 16777164
@@ -54,7 +48,6 @@ CLASS HEdit INHERIT HControl
 
 ENDCLASS
 
-/* Added: lPassword */
 METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bGfocus, bLfocus, ctoolt, ;
       tcolor, bcolor, cPicture, lNoBorder, nMaxLength, lPassword ) CLASS HEdit
@@ -99,9 +92,6 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       hwg_SetSignal( ::handle, "copy-clipboard", WM_COPY, 0, 0 )
    ENDIF
 
-//   ::aColorOld[1] := iif( tcolor = Nil, 0, ::tcolor )
-//   ::aColorOld[2] := ::bcolor
-
    RETURN Self
 
 METHOD Activate() CLASS HEdit
@@ -128,10 +118,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
    IF msg == WM_SETFOCUS   && msg = 7
       oParent := hwg_getParentForm( Self )
-
-      // hwg_WriteLog("Edit: " + hwg_StrDebLog(lColorinFocus) + " " + ;
-      //   Str(oParent:tColorinFocus,10) + " " + Str(oParent:bColorinFocus,10) + " " + ;
-      //   hwg_StrDebNIL(::bColorBlock) )
 
       IF lColorinFocus .OR. oParent:tColorinFocus >= 0 .OR. oParent:bColorinFocus >= 0 .OR. ::bColorBlock != Nil
          ::aColorOld[1] := ::tcolor
@@ -284,15 +270,6 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             RETURN 0
          ENDIF
       ENDIF
-/*
-   ELSE
-
-
-      IF msg == WM_MOUSEWHEEL
-         nPos := hwg_Hiword( wParam )
-         nPos := iif( nPos > 32768, nPos - 65535, nPos )
-      ENDIF
-*/
    ENDIF
 
    RETURN 0
@@ -313,17 +290,16 @@ METHOD Refresh()  CLASS HEdit
 
    IF ::bSetGet != Nil
       vari := Eval( ::bSetGet, , self )
-
-      IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
-         vari := Transform( vari, ::cPicFunc + iif( Empty(::cPicFunc ),""," " ) + ::cPicMask )
-      ELSE
-         vari := iif( ::cType == "D", Dtoc( vari ), iif( ::cType == "N",Str(vari ),iif(::cType == "C",vari,"" ) ) )
-      ENDIF
-      ::title := vari
-      hwg_Edit_SetText( ::handle, vari )
    ELSE
-      hwg_Edit_SetText( ::handle, ::title )
+      vari := ::title
    ENDIF
+   IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
+      vari := Transform( vari, ::cPicFunc + iif( Empty(::cPicFunc ),""," " ) + ::cPicMask )
+   ELSE
+      vari := iif( ::cType == "D", Dtoc( vari ), iif( ::cType == "N",Str(vari ),iif(::cType == "C",vari,"" ) ) )
+   ENDIF
+   ::title := vari
+   hwg_Edit_SetText( ::handle, vari )
    IF ::bColorBlock != Nil .AND. hwg_Isptreq( ::handle, hwg_Getfocus() )
       Eval( ::bColorBlock, Self )
    ENDIF
@@ -365,9 +341,6 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
 
    LOCAL nAt, i, masklen, cChar
 
-   IF ::bSetGet == Nil
-      RETURN Nil
-   ENDIF
    ::cPicFunc := ::cPicMask := ""
    IF cPicture != Nil
       IF Left( cPicture, 1 ) == "@"
@@ -416,12 +389,12 @@ METHOD ParsePict( cPicture, vari ) CLASS HEdit
       NEXT
    ENDIF
 
-   //                                         ------------ added by Maurizio la Cecilia
+   //  ------------ added by Maurizio la Cecilia
 
    IF !Empty( ::nMaxLength ) .AND. Len( ::cPicMask ) < ::nMaxLength
       ::cPicMask := PadR( ::cPicMask, ::nMaxLength, "X" )
    ENDIF
-   //                                         ------------- end of added code
+   //  ------------- end of added code
 
    RETURN Nil
 
@@ -454,9 +427,6 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
 
    LOCAL masklen, newpos
 
-   * Variables not used
-   * i , vari
-
    IF oEdit == Nil
       RETURN 0
    ENDIF
@@ -469,7 +439,6 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
       masklen := Len( oEdit:cPicMask )
       DO WHILE nPos <= masklen
          IF IsEditable( oEdit, ++ nPos )
-            // hwg_WriteLog( "KeyRight-2 "+str(nPos) )
             hwg_edit_Setpos( oEdit:handle, nPos - 1 )
             EXIT
          ENDIF
@@ -489,9 +458,6 @@ STATIC FUNCTION KeyRight( oEdit, nPos )
    RETURN 1
 
 STATIC FUNCTION KeyLeft( oEdit, nPos )
-
-   * Variables not used
-   * LOCAL i
 
    IF oEdit == Nil
       RETURN 0
@@ -553,7 +519,6 @@ STATIC FUNCTION INPUT( oEdit, cChar, nPos )
          IF nPos != 1
             RETURN Nil
          ENDIF
-         // ::minus := .t.
       ELSEIF !( cChar $ "0123456789" )
          RETURN Nil
       ENDIF
@@ -673,7 +638,6 @@ STATIC FUNCTION GetApplyKey( oEdit, cKey )
             ENDIF
          ENDIF
          hwg_edit_Settext( oEdit:handle, oEdit:title )
-         // hwg_WriteLog( "GetApplyKey "+oEdit:title+str(nPos-1) )
          KeyRight( oEdit, nPos )
          //Added By Sandro Freire
          IF oEdit:cType == "N"
@@ -709,7 +673,6 @@ STATIC FUNCTION __When( oCtrl )
    LOCAL res := .T.
 
    oCtrl:Refresh()
-   //oCtrl:lFirst := .T.
    IF oCtrl:bGetFocus != Nil
       res := Eval( oCtrl:bGetFocus, oCtrl:title, oCtrl )
       IF !res

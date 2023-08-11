@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-11 15:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    * Changed to use PICTURE in the EDITBOX
+  * include/guilib.ch
+    * PICTURE clause added to @ ... EDITBOX ... command
+   * contrib/gthwg/gt_hwg.prg
+     * Third parameter, oIcon, added to gthwg_CreateMainWindow()
+
 2023-08-11 10:51 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit_w.c
     ! Fixes for caret

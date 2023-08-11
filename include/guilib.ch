@@ -447,6 +447,7 @@
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
+            [ PICTURE <cPicture> ]     ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON GETFOCUS <bGfocus> ]  ;
@@ -461,7 +462,7 @@
           => ;
     [<oEdit> := ] HEdit():New( <oWnd>,<nId>,<caption>,,<nStyle>,<x>,<y>,<width>, ;
                     <height>,<oFont>,<bInit>,<bSize>,<bGfocus>, ;
-                    <bLfocus>,<ctoolt>,<color>,<bcolor>,,<.lnoborder.>,,<.lPassword.>, <bKeyDown>, <bChange> );
+                    <bLfocus>,<ctoolt>,<color>,<bcolor>,<cPicture>,<.lnoborder.>,,<.lPassword.>, <bKeyDown>, <bChange> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
 

@@ -30,13 +30,13 @@ FUNCTION HB_GT_WIN_DEFAULT
    RETURN Nil
 #endif
 
-FUNCTION gthwg_CreateMainWindow( cTitle, oFont )
+FUNCTION gthwg_CreateMainWindow( cTitle, oFont, oIcon )
 
    LOCAL oWnd, oPane
    LOCAL nStyle, x := 0, y := 0, width := 400, height := 200
    LOCAL bSize
 
-   oWnd := HMainWindow():New( 1,,, nStyle, x, y, width, height, ;
+   oWnd := HMainWindow():New( 1, oIcon,, nStyle, x, y, width, height, ;
       Iif( Empty(cTitle),"gt_HwGUI",cTitle ),,, oFont,, {||gthwg_CloseWindow()}, ;
       ,,,,,,,,,, WS_THICKFRAME )
 

@@ -147,7 +147,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
    wParam := hwg_PtrToUlong( wParam )
    IF !::lMultiLine
 
-      IF !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask ) //::bSetGet != Nil
+      IF ::bSetGet != Nil .OR. !Empty( ::cPicFunc ) .OR. !Empty( ::cPicMask )
          IF msg == WM_CHAR
             IF wParam == VK_BACK
                ::lFirst := .F.

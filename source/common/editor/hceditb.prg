@@ -81,6 +81,8 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   tcolorSel    INIT 16777215
    DATA   bcolorSel    INIT 16744448
 
+   DATA   oPicture
+
    DATA   nAlign       INIT 0
    DATA   nPosF        INIT 1
    DATA   nPosC        INIT 1
@@ -145,7 +147,6 @@ METHOD Paint( hDC ) CLASS HDrawnEdit
    ENDIF
 
    hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
-   //hced_SetPaint( ::hEdit, hDC,, ::nWidth-::nBoundL-::nBoundR, .F.,, ::nWidth-::nBoundL-::nBoundR )
    hced_SetPaint( ::hEdit, hDC,, ::nLeft+::nWidth-::nBoundR, .F.,, ::nLeft+::nWidth-::nBoundR )
    hced_FillRect( ::hEdit, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1 )
    /*
@@ -192,6 +193,7 @@ METHOD InsText( nPosC, cText, lOver ) CLASS HDrawnEdit
    IF Empty( lOver )
       ::title := hced_Left( Self, ::title, nPos-1 ) + cText + hced_Substr( Self, ::title, nPos )
    ELSE
+      ::title := hced_Left( Self, ::title, nPos-1 ) + cText + hced_Substr( Self, ::title, nPos + nLen )
    ENDIF
 
    ::nPosC += nLen
@@ -205,10 +207,9 @@ METHOD InsText( nPosC, cText, lOver ) CLASS HDrawnEdit
 
    RETURN Nil
 
-METHOD SetCaretPos( nType, p1, p2 ) CLASS HDrawnEdit
-   LOCAL lSet := .T. , x1, xPos, yPos := ::nTop+::nBoundT, cLine
+METHOD SetCaretPos( nType, p1 ) CLASS HDrawnEdit
 
-   HB_SYMBOL_UNUSED( p2 )
+   LOCAL lSet := .T. , x1, xPos, yPos := ::nTop + ::nBoundT, cLine
 
    IF Empty( nType )
       hced_SetCaretPos( ::hEdit, ::nLeft+::nBoundL, ::nTop+::nBoundT )

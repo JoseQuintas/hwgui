@@ -236,8 +236,7 @@ HB_FUNC( HWG_CREATESTATIC )
 {
    ULONG ulStyle = hb_parnl( 3 );
    ULONG ulExStyle =
-         ( ( !HB_ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ?
-         WS_EX_CLIENTEDGE : 0 );
+         ( ( !HB_ISNIL( 8 ) ) ? hb_parnl( 8 ) : 0 ) | ( ( ulStyle & WS_BORDER ) ? WS_EX_CLIENTEDGE : 0 );
    HWND hWndCtrl = CreateWindowEx( ulExStyle,   /* extended style */
          TEXT( "STATIC" ),      /* predefined class  */
          NULL,                  /* title   */
@@ -2216,6 +2215,18 @@ HB_FUNC( HWG_ADDBARCOLORS )
 
    hb_retl( AddBar1( pParent, pBar, clrFore, clrBack, pszText, dwStyle ) );
    hb_strfree( hStr );
+}
+
+HB_FUNC( HWG_EDIT_GETPOS )
+{
+
+   hb_retni( ( ( SendMessage( ( HWND ) HB_PARHANDLE( 1 ), EM_GETSEL, 0, 0 ) >> 16 ) & 0xFFFF ) + 1 );
+}
+
+HB_FUNC( HWG_EDIT_SETPOS )
+{
+   int iPos = hb_parni(2) - 1;
+   SendMessage( ( HWND ) HB_PARHANDLE( 1 ), EM_SETSEL, (WPARAM) iPos, (LPARAM) iPos );
 }
 
 HB_FUNC( HWG_COMBOGETITEMRECT )

@@ -703,7 +703,7 @@ METHOD GetApplyKey( cText, nPos, cKey, lFirst ) CLASS HPicture
             IF nGetLen > nLen
                cText += Space( nGetLen-nLen )
             ELSEIF nGetLen < nLen
-               cText := hwg_Left( ::title, nGetLen )
+               cText := hwg_Left( cText, nGetLen )
             ENDIF
          ENDIF
          IF ( x := ::KeyRight( nPos ) ) > 0

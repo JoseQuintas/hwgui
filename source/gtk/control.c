@@ -368,12 +368,12 @@ HB_FUNC( HWG_EDIT_GETTEXT )
 HB_FUNC( HWG_EDIT_SETPOS )
 {
    gtk_editable_set_position( ( GtkEditable * ) HB_PARHANDLE( 1 ),
-         hb_parni( 2 ) );
+         hb_parni( 2 ) - 1 );
 }
 
 HB_FUNC( HWG_EDIT_GETPOS )
 {
-   hb_retni( gtk_editable_get_position( ( GtkEditable * ) HB_PARHANDLE( 1 ) ) );
+   hb_retni( gtk_editable_get_position( ( GtkEditable * ) HB_PARHANDLE( 1 ) ) + 1 );
 }
 
 HB_FUNC( HWG_EDIT_GETSELPOS )

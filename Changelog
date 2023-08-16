@@ -15,6 +15,21 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-16 10:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\gtk\hedit.prg
+  * source\winapi\hedit.prg
+    * Redesigned. All stuff, related to the picture, has been isolated and separated to a HPicture class
+      for better readability and to make it possible to use it in other places.
+  * source\common\editor\hcedit_w.c
+    ! Fix
+  * include\hwgextern.ch
+    * request for hwg_edit_GetPos(), hwg_edit_SetPos() added
+  * source\gtk\control.c
+    * hwg_edit_GetPos(), hwg_edit_SetPos() changed - position begins from 1 now
+  * source\gtk\hbrowse.prg
+  * samples\MariaDb\hwgui_crud.prg
+    * Calls of hwg_edit_SetPos() changed
+
 2023-08-14 13:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/control.c
     * hwg_edit_Getpos(), hwg_edit_Setpos() functions added for conpatibility with gtk version

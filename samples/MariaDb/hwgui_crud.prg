@@ -179,7 +179,7 @@ Static Function NewContact()
    oIdContact:Refresh()
    oName:SetGet(cName)
    oName:SetFocus()
-   hwg_edit_SetPos( oName:Handle, 0) //Set 1 position edit of get
+   hwg_edit_SetPos( oName:Handle, 1 ) //Set 1 position edit of get
 
 return .T.
 
@@ -190,7 +190,7 @@ Local cSQL
    If empty(cName)
       hwg_msgStop("Please enter with a name")
       oName:SetFocus()
-      hwg_edit_SetPos( oName:Handle, 0) //Set 1 position edit of get
+      hwg_edit_SetPos( oName:Handle, 1 ) //Set 1 position edit of get
       return .t.        
    EndIf
 

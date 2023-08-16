@@ -123,6 +123,7 @@ typedef struct
    int       ixCaretPos;
    int       iyCaretPos;
    int     iCaretHeight;
+   int        iCaretSet;
    int          nBorder;
    COLORREF  lBorderClr;
 } TEDIT;
@@ -636,8 +637,9 @@ HB_FUNC( HCED_INITCARET )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
 
-   if( !pted->iCaretHeight )
+   if( !pted->iCaretSet )
       CreateCaret( pted->handle, (HBITMAP)NULL, 2, pted->pFontsScr->tm.tmHeight );
+   pted->iCaretSet = 1;
    ShowCaret( pted->handle );
    SetCaretPos( 0,0 );
    pted->iCaretHeight = pted->pFontsScr->tm.tmHeight;
@@ -650,7 +652,7 @@ HB_FUNC( HCED_KILLCARET )
 
    HideCaret( pted->handle );
    DestroyCaret();
-   pted->iCaretHeight = 0;
+   pted->iCaretSet = 0;
    InvalidateRect( pted->handle, NULL, 0 );
 }
 

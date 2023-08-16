@@ -1839,17 +1839,17 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          ::nGetRec := Eval( ::bRecno, Self )
          ::lEditing := .T.
          IF type <> "M"
-         @ x1+::nLeft, y1+::nTop GET ::oGet VAR ::varbuf      ;
-            OF ::oParent                   ;
-            SIZE nWidth, ::height + 1      ;
-            STYLE ES_AUTOHSCROLL           ;
-            FONT ::oFont                   ;
-            PICTURE oColumn:picture        ;
-            VALID { ||VldBrwEdit( Self, fipos ) }
-         ::oGet:Show()
-         hwg_Setfocus( ::oGet:handle )
-         hwg_edit_SetPos( ::oGet:handle, 0 )
-         ::oGet:bAnyEvent := { |o, msg, c| HB_SYMBOL_UNUSED(o),  GetEventHandler( Self, msg, c ) }
+            @ x1+::nLeft, y1+::nTop GET ::oGet VAR ::varbuf      ;
+               OF ::oParent                   ;
+               SIZE nWidth, ::height + 1      ;
+               STYLE ES_AUTOHSCROLL           ;
+               FONT ::oFont                   ;
+               PICTURE oColumn:picture        ;
+               VALID { ||VldBrwEdit( Self, fipos ) }
+            ::oGet:Show()
+            hwg_Setfocus( ::oGet:handle )
+            hwg_edit_SetPos( ::oGet:handle, 1 )
+            ::oGet:bAnyEvent := { |o, msg, c| HB_SYMBOL_UNUSED(o),  GetEventHandler( Self, msg, c ) }
          ELSE  // memo edit
          * ===================================== *
          * Special dialog for memo edit (DF7BE)

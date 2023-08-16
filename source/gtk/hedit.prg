@@ -179,10 +179,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             hwg_SetGetUpdated( Self )
             IF !Empty( ::oPicture ) .AND. ::oPicture:lPicComplex
                nPos := hwg_edit_GetPos( ::handle ) - 1
-               cText := ::oPicture:Delete( hwg_edit_GetText( ::handle ), @nPos )
                IF nPos > 0
-                  hwg_edit_Settext( ::handle, ::title := cText )
-                  hwg_edit_Setpos( ::handle, nPos )
+                  cText := ::oPicture:Delete( hwg_edit_GetText( ::handle ), @nPos )
+                  IF nPos > 0
+                     hwg_edit_Settext( ::handle, ::title := cText )
+                     hwg_edit_Setpos( ::handle, nPos )
+                  ENDIF
                ENDIF
                RETURN 1
             ENDIF
@@ -292,7 +294,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             IF !Empty( ::oPicture )
                nPos := hwg_edit_Getpos( ::handle )
                ::title := cText := hwg_edit_Gettext( ::handle )
-               cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_Chr(wParam), ::lFirst )
+               cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_Chr(wParam), ::lFirst, Set( _SET_INSERT ) )
                ::lFirst := .F.
                IF !( cText == ::title )
                   hwg_edit_Settext( ::handle, ::title := cText )
@@ -387,7 +389,7 @@ CLASS HPicture INHERIT HObject
    METHOD KeyLeft( nPos )
    METHOD Delete( cText, nPos )
    METHOD Input( cChar, nPos )
-   METHOD GetApplyKey( cText, nPos, cKey, lFirst )
+   METHOD GetApplyKey( cText, nPos, cKey, lFirst, lIns )
    METHOD Transform( vari )
    METHOD UnTransform( cBuffer )
 
@@ -637,7 +639,7 @@ METHOD Input( cChar, nPos ) CLASS HPicture
 
    RETURN cChar
 
-METHOD GetApplyKey( cText, nPos, cKey, lFirst ) CLASS HPicture
+METHOD GetApplyKey( cText, nPos, cKey, lFirst, lIns ) CLASS HPicture
 
    LOCAL nGetLen, nLen, vari, x, newPos
    LOCAL nDecimals, lMinus := .F.
@@ -676,7 +678,7 @@ METHOD GetApplyKey( cText, nPos, cKey, lFirst ) CLASS HPicture
       ENDIF
       cKey := ::Input( cKey, nPos )
       IF cKey != Nil
-         IF Set( _SET_INSERT )
+         IF lIns
             IF ::lPicComplex
                nGetLen := Len( ::cPicMask )
                FOR nLen := 0 TO nGetLen
@@ -718,7 +720,7 @@ METHOD GetApplyKey( cText, nPos, cKey, lFirst ) CLASS HPicture
                ENDIF
                newPos := Len( ::cPicMask ) - nDecimals
                IF "E" $ ::cPicFunc .AND. nPos == newPos
-                  cText := ::GetApplyKey( cText, nPos, ",", .F. )
+                  cText := ::GetApplyKey( cText, nPos, ",", .F., lIns )
                ENDIF
             ENDIF
          ENDIF
@@ -923,7 +925,7 @@ STATIC FUNCTION DoPaste( oEdit )
       nPos := hwg_edit_Getpos( oEdit:handle )
       FOR i := 1 TO nLen
          //GetApplyKey( oEdit, hwg_SubStr( cClipboardText , nPos, 1 ) )
-         cText := oEdit:oPicture:GetApplyKey( cText, @nPos, hwg_SubStr( cClipboardText,i,1 ), oEdit:lFirst )
+         cText := oEdit:oPicture:GetApplyKey( cText, @nPos, hwg_SubStr( cClipboardText,i,1 ), oEdit:lFirst, Set( _SET_INSERT ) )
          oEdit:lFirst := .F.
       NEXT
       oEdit:title := Iif( Empty(oEdit:oPicture), cText, oEdit:oPicture:UnTransform( cText ) )

@@ -148,10 +148,12 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                hwg_SetGetUpdated( Self )
                IF !Empty( ::oPicture ) .AND. ::oPicture:lPicComplex
                   nPos := hwg_edit_GetPos( ::handle ) - 1
-                  cText := ::oPicture:Delete( hwg_Getedittext( ::oParent:handle, ::id ), @nPos )
                   IF nPos > 0
-                     hwg_Setwindowtext( ::handle, ::title := cText )
-                     hwg_edit_Setpos( ::handle, nPos )
+                     cText := ::oPicture:Delete( hwg_Getedittext( ::oParent:handle, ::id ), @nPos )
+                     IF nPos > 0
+                        hwg_Setwindowtext( ::handle, ::title := cText )
+                        hwg_edit_Setpos( ::handle, nPos )
+                     ENDIF
                   ENDIF
                   RETURN 0
                ENDIF
@@ -165,7 +167,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                DeleteSel( Self )
                nPos := hwg_edit_Getpos( ::handle )
                ::title := cText := hwg_Getedittext( ::oParent:handle, ::id )
-               cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_Chr(wParam), ::lFirst )
+               cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_Chr(wParam), ::lFirst, Set( _SET_INSERT ) )
                ::lFirst := .F.
                IF !( cText == ::title )
                   hwg_Setwindowtext( ::handle, ::title := cText )
@@ -188,7 +190,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             DeleteSel( Self )
             nPos := hwg_edit_Getpos( ::handle )
             ::title := cText := hwg_Getedittext( oParent:handle, ::id )
-            cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_Chr(wParam), ::lFirst )
+            cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_Chr(wParam), ::lFirst, Set( _SET_INSERT ) )
             ::lFirst := .F.
             IF !( cText == ::title )
                hwg_Setwindowtext( ::handle, ::title := cText )
@@ -308,7 +310,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                cText := hwg_Getedittext( ::oParent:handle, ::id )
                nPos := hwg_edit_Getpos( ::handle )
                FOR i := 1 TO hwg_Len( cClipboardText )
-                  cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_SubStr( cClipboardText,i,1 ), ::lFirst )
+                  cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_SubStr( cClipboardText,i,1 ), ::lFirst, Set( _SET_INSERT ) )
                   ::lFirst := .F.
                NEXT
                ::title := Iif( Empty(::oPicture), cText, ::oPicture:UnTransform( cText ) )
@@ -534,7 +536,7 @@ CLASS HPicture INHERIT HObject
    METHOD KeyLeft( nPos )
    METHOD Delete( cText, nPos )
    METHOD Input( cChar, nPos )
-   METHOD GetApplyKey( cText, nPos, cKey, lFirst )
+   METHOD GetApplyKey( cText, nPos, cKey, lFirst, lIns )
    METHOD Transform( vari )
    METHOD UnTransform( cBuffer )
 
@@ -784,7 +786,7 @@ METHOD Input( cChar, nPos ) CLASS HPicture
 
    RETURN cChar
 
-METHOD GetApplyKey( cText, nPos, cKey, lFirst ) CLASS HPicture
+METHOD GetApplyKey( cText, nPos, cKey, lFirst, lIns ) CLASS HPicture
 
    LOCAL nGetLen, nLen, vari, x, newPos, oParent
    LOCAL nDecimals, lMinus := .F.
@@ -819,7 +821,7 @@ METHOD GetApplyKey( cText, nPos, cKey, lFirst ) CLASS HPicture
       ENDIF
       cKey := ::Input( cKey, nPos )
       IF cKey != Nil
-         IF Set( _SET_INSERT )
+         IF lIns
             IF ::lPicComplex
                nGetLen := Len( ::cPicMask )
                FOR nLen := 0 TO nGetLen
@@ -861,7 +863,7 @@ METHOD GetApplyKey( cText, nPos, cKey, lFirst ) CLASS HPicture
                ENDIF
                newPos := Len( ::cPicMask ) - nDecimals
                IF "E" $ ::cPicFunc .AND. nPos == newPos
-                  cText := ::GetApplyKey( cText, nPos, ",", .F. )
+                  cText := ::GetApplyKey( cText, nPos, ",", .F., lIns )
                ENDIF
             ENDIF
          ENDIF

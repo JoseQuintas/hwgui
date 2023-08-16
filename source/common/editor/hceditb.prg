@@ -34,19 +34,19 @@ CLASS HCEditBasic INHERIT HBoard
    DATA   oDrawn
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
-      bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus )
+      bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, xInitVal, cPicture )
    METHOD SetText( cText )
    METHOD Value( xValue ) SETGET
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
-      bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus )  CLASS HCEditBasic
+      bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, xInitVal, cPicture )  CLASS HCEditBasic
 
-   ::oDrawn := HDrawnEdit():New( Self, 0, 0, nWidth, nHeight, bPaint, tcolor, bcolor )
+   ::oDrawn := HDrawnEdit():New( Self, 0, 0, nWidth, nHeight, bPaint, tcolor, bcolor, xInitVal, cPicture )
 
-   ::bGetFocus  := bGFocus
-   ::bLostFocus := bLFocus
+   ::bGetFocus  := ::oDrawn:bGetFocus  := bGFocus
+   ::bLostFocus := ::oDrawn:bLostFocus := bLFocus
 
    oWndParent := iif( oWndParent == NIL, ::oDefaultParent, oWndParent )
 
@@ -81,12 +81,13 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   tcolorSel    INIT 16777215
    DATA   bcolorSel    INIT 16744448
 
-   DATA   oPicture
+   DATA   cType, oPicture
 
    DATA   nAlign       INIT 0
    DATA   nPosF        INIT 1
    DATA   nPosC        INIT 1
    DATA   bChangePos, bKeyDown, bClickDoub, bRClick
+   DATA   bGetFocus, bLostFocus
    DATA   bAfter
 
    DATA   nMaxUndo     INIT 10
@@ -95,7 +96,7 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   lInit        INIT .F.  PROTECTED
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, ;
-               bPaint, tcolor, bcolor )
+               bPaint, tcolor, bcolor, xInitVal, cPicture )
    METHOD Paint( hDC )
    METHOD Value( xValue ) SETGET
    METHOD DelText( nPos1, nPos2 )
@@ -112,12 +113,12 @@ CLASS HDrawnEdit INHERIT HDrawn
 
 ENDCLASS
 
-METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, bPaint, tcolor, bcolor ) CLASS HDrawnEdit
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, bPaint, tcolor, bcolor, ;
+   xInitVal, cPicture ) CLASS HDrawnEdit
 
    ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor,, ' ',, bPaint )
 
    ::hEdit := hced_InitTextEdit()
-   ::title  := ""
 #ifndef __GTK__
    IF Empty( hCursor )
       hCursor := hwg_Loadcursor( IDC_IBEAM )
@@ -125,6 +126,17 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, bPaint, tcolor, bcolor ) C
 #endif
    IF hwg__isUnicode()
       ::lUtf8 := .T.
+   ENDIF
+
+   ::cType := ValType( xInitVal )
+   ::xValue := xInitVal
+   IF !Empty( cPicture ) .OR. ( xInitVal != Nil .AND. Valtype( xInitVal ) != "C" )
+      ::oPicture := HPicture():New( cPicture, xInitVal )
+      ::title := ::oPicture:Transform( xInitVal )
+   ELSEIF !Empty( xInitVal )
+      ::title := xInitVal
+   ELSE
+      ::title  := ""
    ENDIF
 
    RETURN Self
@@ -169,12 +181,23 @@ METHOD Paint( hDC ) CLASS HDrawnEdit
 METHOD Value( xValue ) CLASS HDrawnEdit
 
    IF xValue != Nil
-      ::title := xValue
+      ::xValue := xValue
+      IF !Empty( ::oPicture )
+         ::title := ::oPicture:Transform( xValue )
+      ELSE
+         ::title := xValue
+      ENDIF
       ::Refresh()
       RETURN xValue
+   ELSE
+      IF !Empty( ::oPicture )
+         ::xValue := ::oPicture:UnTransform( ::title )
+      ELSE
+         ::xValue := ::title
+      ENDIF
    ENDIF
 
-   RETURN ::title
+   RETURN ::xValue
 
 METHOD DelText( nPos1, nPos2 ) CLASS HDrawnEdit
 
@@ -185,24 +208,30 @@ METHOD DelText( nPos1, nPos2 ) CLASS HDrawnEdit
 
 METHOD InsText( nPosC, cText, lOver ) CLASS HDrawnEdit
 
-   LOCAL nPos, nLen := hced_Len( Self, cText )
+   LOCAL nPos, nLen := hced_Len( Self, cText ), i
 
    IF nPosC == Nil; nPosC := ::nPosC; ENDIF
 
-   nPos := ::nPosF + nPosC - 1
-   IF Empty( lOver )
-      ::title := hced_Left( Self, ::title, nPos-1 ) + cText + hced_Substr( Self, ::title, nPos )
-   ELSE
-      ::title := hced_Left( Self, ::title, nPos-1 ) + cText + hced_Substr( Self, ::title, nPos + nLen )
-   ENDIF
+   FOR i := 1 TO nLen
+      nPos := ::nPosF + nPosC - 1
+      IF !Empty( ::oPicture )
+         ::title := ::oPicture:GetApplyKey( ::title, @nPos, hced_Substr( Self, cText,i,1 ), .F., !lOver )
+         ::nPosC := nPos - ::nPosF + 1
+      ELSE
+         IF Empty( lOver )
+            ::title := hced_Left( Self, ::title, nPos-1 ) + hced_Substr( Self, cText,i,1 ) + hced_Substr( Self, ::title, nPos )
+         ELSE
+            ::title := hced_Left( Self, ::title, nPos-1 ) + hced_Substr( Self, cText,i,1 ) + hced_Substr( Self, ::title, nPos + nLen )
+         ENDIF
+         ::nPosC += 1
+         nPos += 1
+      ENDIF
 
-   ::nPosC += nLen
-   nPos += nLen
-   ::SetCaretPos( SETC_XY )
-   IF ::nPosC < nPos - ::nPosF + 1
-      ::nPosF += nPos - ::nPosF + 1 - ::nPosC
-   ENDIF
-
+      ::SetCaretPos( SETC_XY )
+      IF ::nPosC < nPos - ::nPosF + 1
+         ::nPosF += nPos - ::nPosF + 1 - ::nPosC
+      ENDIF
+   NEXT
    ::Refresh()
 
    RETURN Nil
@@ -262,7 +291,7 @@ METHOD SetCaretPos( nType, p1 ) CLASS HDrawnEdit
 
 METHOD PutChar( wParam ) CLASS HDrawnEdit
 
-   LOCAL nPos, oParent
+   LOCAL nPos, oParent, cTemp
 
    //hwg_writelog( "putchar: " + str(wParam) )
    IF ::lReadOnly
@@ -282,13 +311,25 @@ METHOD PutChar( wParam ) CLASS HDrawnEdit
 
    ELSEIF wParam == VK_BACK .OR. wParam == 7
       nPos := ::nPosF + ::nPosC - 1
-      IF wParam == VK_BACK
-         IF nPos > 1
-            ::DelText( nPos-1, nPos-1 )
-            ::SetCaretPos( SETC_LEFT )
+      IF nPos > 1 .OR. wParam == 7
+         IF !Empty( ::oPicture ) .AND. ::oPicture:lPicComplex
+            IF wParam == VK_BACK
+               nPos --
+            ENDIF
+            cTemp := ::oPicture:Delete( ::title, @nPos )
+            IF nPos > 0
+               ::title := cTemp
+               ::nPosC := nPos - ::nPosF + 1
+               ::SetCaretPos( SETC_XY )
+            ENDIF
+         ELSE
+            nPos := Iif( wParam == VK_BACK, nPos - 1, nPos )
+            ::DelText( nPos, nPos )
+            IF wParam == VK_BACK
+               ::SetCaretPos( SETC_LEFT )
+            ENDIF
          ENDIF
-      ELSE
-         ::DelText( nPos, nPos )
+         ::Refresh()
       ENDIF
    ELSE        // Insert or overwrite any character
       ::InsText( , hced_Chr( Self,wParam ), !::lInsert )
@@ -323,9 +364,16 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnEdit
 
       IF wParam == VK_RIGHT
 
-         IF ::nPosC + ::nPosF - 1 <= hced_Len( Self, ::title )
-            ::nPosC ++
-            nPos := ::nPosC + ::nPosF - 1
+         IF ( nPos := (::nPosC + ::nPosF - 1) ) <= hced_Len( Self, ::title )
+            IF !Empty( ::oPicture )
+               IF ( nPos := ::oPicture:KeyRight( nPos ) ) < 0
+                  RETURN Nil
+               ENDIF
+               ::nPosC := nPos - ::nPosF + 1
+            ELSE
+               ::nPosC ++
+               nPos := ::nPosC + ::nPosF - 1
+            ENDIF
             ::SetCaretPos( SETC_XY )
             IF ::nPosC < nPos - ::nPosF + 1
                ::nPosF += nPos - ::nPosF + 1 - ::nPosC
@@ -335,13 +383,24 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnEdit
 
       ELSEIF wParam == VK_LEFT
 
-         IF ::nPosC + ::nPosF - 1 > 1
-            IF ::nPosF > 1 .AND. ::nPosC == 1
-               ::nPosF --
-               ::Refresh()
+         IF ( nPos := (::nPosC + ::nPosF - 1) ) > 1
+            IF !Empty( ::oPicture )
+               IF ( n := ::oPicture:KeyLeft( nPos ) ) < 0
+                  RETURN Nil
+               ENDIF
+               n := nPos - n
             ELSE
-               ::SetCaretPos( SETC_LEFT )
+               n := 1
             ENDIF
+            DO WHILE n > 0
+              IF ::nPosF > 1 .AND. ::nPosC == 1
+                 ::nPosF --
+                 ::Refresh()
+              ELSE
+                 ::SetCaretPos( SETC_LEFT )
+              ENDIF
+              n --
+            ENDDO
          ENDIF
 
       ELSEIF wParam == VK_HOME  // Home
@@ -460,11 +519,11 @@ METHOD SetFocus() CLASS HDrawnEdit
 
    hwg_SetFocus( oBoard:handle )
    oBoard:oInFocus := Self
-   /*
+
    IF ::bGetFocus != Nil
       Eval( ::bGetFocus, Self )
    ENDIF
-   */
+
    hced_InitCaret( ::hEdit )
    ::SetCaretPos( SETC_XY )
 
@@ -472,11 +531,10 @@ METHOD SetFocus() CLASS HDrawnEdit
 
 METHOD onKillFocus() CLASS HDrawnEdit
 
-   /*
    IF ::bLostFocus != Nil
       Eval( ::bLostFocus, Self )
    ENDIF
-   */
+
    hced_KillCaret( ::hEdit )
 
    RETURN Nil

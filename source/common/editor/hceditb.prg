@@ -43,7 +43,8 @@ ENDCLASS
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
       bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, xInitVal, cPicture )  CLASS HCEditBasic
 
-   ::oDrawn := HDrawnEdit():New( Self, 0, 0, nWidth, nHeight, bPaint, tcolor, bcolor, xInitVal, cPicture )
+   ::oDrawn := HDrawnEdit():New( Self, 0, 0, nWidth, nHeight, tcolor, bcolor, ;
+      oFont, xInitVal, cPicture, bPaint )
 
    ::bGetFocus  := ::oDrawn:bGetFocus  := bGFocus
    ::bLostFocus := ::oDrawn:bLostFocus := bLFocus
@@ -96,12 +97,12 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   lInit        INIT .F.  PROTECTED
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, ;
-               bPaint, tcolor, bcolor, xInitVal, cPicture )
+               tcolor, bcolor, oFont, xInitVal, cPicture, oFont, bPaint, bChgState )
    METHOD Paint( hDC )
    METHOD Value( xValue ) SETGET
    METHOD DelText( nPos1, nPos2 )
    METHOD InsText( nPosC, cText, lOver )
-   METHOD SetCaretPos( nType, p1, p2 )
+   METHOD SetCaretPos( nType, p1 )
    METHOD PutChar( wParam )
    METHOD onKey( msg, wParam, lParam )
    METHOD onMouseMove( xPos, yPos )
@@ -113,10 +114,10 @@ CLASS HDrawnEdit INHERIT HDrawn
 
 ENDCLASS
 
-METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, bPaint, tcolor, bcolor, ;
-   xInitVal, cPicture ) CLASS HDrawnEdit
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, ;
+   oFont, xInitVal, cPicture, bPaint, bChgState ) CLASS HDrawnEdit
 
-   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor,, ' ',, bPaint )
+   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor,, ' ', oFont, bPaint,, bChgState )
 
    ::hEdit := hced_InitTextEdit()
 #ifndef __GTK__

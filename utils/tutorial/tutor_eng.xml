@@ -1323,7 +1323,7 @@ Return Nil
     <module name="Dialog with text Gets" >
       <![CDATA[#include "hwgui.ch"
 Function DlgGet()
-Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oTimer
+Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oTimer, ed5
 Local e1 := "Dialog from prg"
 Local e2 := Date()
 Local e3 := 10320.54
@@ -1352,7 +1352,7 @@ Local e7 := "Password"
 
    @ 20,125 GET e3  SIZE 260, 26
 
-   @ 20,155 GET e4 PICTURE "@R 99.999.999/9999-99" ;
+   @ 20,155 GET ed5 VAR e4 PICTURE "@R 99.999.999/9999-99" ;
         SIZE 260, 26
 
    @ 20,185 GET e5 PICTURE "@e 999,999,999.9999" ;
@@ -1715,9 +1715,10 @@ FUNCTION Test
    }
 
    INIT DIALOG oDlg TITLE "Board and drawn items"  ;
-      AT 210, 10  SIZE 300, 240 FONT oFont BACKCOLOR CLR_DGRAY2
+      AT 210, 10  SIZE 440, 240 FONT oFont BACKCOLOR CLR_DGRAY2
 
-   @ 20, 20 BOARD oBoard SIZE 260, 200 BACKCOLOR CLR_BLACK ON PAINT {|o,h|FPaint(o,h)}
+   @ 4, 4 BOARD oBoard SIZE 432, 232 BACKCOLOR CLR_BLACK ;
+      ON PAINT {|o,h|FPaint(o,h)} ON SIZE {|o,x,y|o:Move(,,x-8,y-8)} KEYBOARD
 
    @ 12, 12 DRAWN RADIO OF oBoard GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont INIT .T.
@@ -1738,6 +1739,9 @@ FUNCTION Test
       TEXT 'Check 1' FONT oFont
    @ 164, 56 DRAWN OF oBoard SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Check 2' FONT oFont
+
+   @ 280, 12 DRAWN EDIT Date() OF oBoard SIZE 80, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
+   @ 280, 56 DRAWN EDIT "Sample Drawn Edit Control" OF oBoard SIZE 140, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
 
    @ 80, 140 DRAWN oSay OF oBoard SIZE 100, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT '0.00' FONT oFont

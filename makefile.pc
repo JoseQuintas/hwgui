@@ -59,6 +59,7 @@ PROCMISC_LIB_OBJS = \
    $(OBJ_DIR)\procscri.obj \
    $(OBJ_DIR)\scrdebug.obj \
    $(OBJ_DIR)\hcedit.obj \
+   $(OBJ_DIR)\hceditb.obj \
    $(OBJ_DIR)\hcedit_w.obj \
    $(OBJ_DIR)\hilight.obj \
    $(OBJ_DIR)\cfuncs.obj
@@ -575,7 +576,13 @@ $(OBJ_DIR)\hcedit_w.obj : $(EDITOR_DIR)\hcedit_w.c
 $(OBJ_DIR)\hcedit.c : $(EDITOR_DIR)\hcedit.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
+$(OBJ_DIR)\hceditb.c : $(EDITOR_DIR)\hceditb.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
 $(OBJ_DIR)\hcedit.obj : $(OBJ_DIR)\hcedit.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**
+
+$(OBJ_DIR)\hceditb.obj : $(OBJ_DIR)\hceditb.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
 
 $(OBJ_DIR)\hilight.c : $(EDITOR_DIR)\hilight.prg

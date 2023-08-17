@@ -111,6 +111,7 @@ $(LIB_DIR)/libprocmisc.a : \
    $(OBJ_DIR)/procscri.o \
    $(OBJ_DIR)/scrdebug.o \
    $(OBJ_DIR)/hcedit.o \
+   $(OBJ_DIR)/hceditb.o \
    $(OBJ_DIR)/hcedit_w.o \
    $(OBJ_DIR)/hilight.o \
    $(OBJ_DIR)/cfuncs.o

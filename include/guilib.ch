@@ -1963,4 +1963,18 @@ Added by Marcos Antonio Gambeta
         <width>,<height>,<bDraw>,<color>, <bcolor>, <nsize>, <ostyleb>, <ostyles>, <.laxis.> );
     [; hwg_SetCtrlName( <oTrack>,<(oTrack)> )]
 
+#xcommand @ <x>,<y> DRAWN EDIT [ <oEdit> CAPTION ] <caption> ;
+            OF <oWnd>                  ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGESTATE <bChg> ]  ;
+            [ FONT <oFont> ]           ;
+            [ PICTURE <cPicture> ]     ;
+          => ;
+    [<oEdit> := ] HDrawnEdit():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <oFont>,<caption>,<cPicture>,<bDraw>,<bChg> );
+    [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
+
 /* ================= EOF of guilib.ch ==================== */

@@ -15,6 +15,25 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-17 11:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hceditb.prg
+    ! Fixes
+  * makefile.bc
+  * makefile.gcc
+  * makefile.pc
+  * makefile.vc
+  * makefile.wc
+  * source/gtk/Makefile.linux
+  * source/gtk/Makefile.linux-gtk3
+  * source/gtk/Makefile.mingw
+    * Makefiles updated for hceditb.prg
+  * include/guilib.ch
+    * @ ... DRAWN EDIT ... command added
+  * include\hwgextern.ch
+    Few new requests added
+  * utils/tutorial/tutor_eng.xml
+    * DRAWN EDIT added to the "Board and drawn items" module
+
 2023-08-16 16:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\gtk\hedit.prg
   * source\winapi\hedit.prg

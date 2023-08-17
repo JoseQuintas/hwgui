@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-17 16:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hceditb.prg
+  * utils/tutorial/tutor_eng.xml
+    * Enhancements
+  * source\gtk\hcwindow.prg
+  * source\winapi\hcwindow.prg
+    * Support of drawn widgets added to :onError()
+
 2023-08-17 12:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hceditb.prg
     ! Small fix

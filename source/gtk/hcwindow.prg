@@ -212,6 +212,15 @@ METHOD OnError() CLASS HCustomWindow
    IF !Empty( oItem := hwg_GetItemByName( ::aControls, cMsg ) )
       RETURN oItem
    ENDIF
+   IF __ObjHasMsg( Self, "ADRAWN" )
+      FOR EACH oItem IN ::aDrawn
+         IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg
+            RETURN oItem
+         ELSEIF !Empty( oItem:aDrawn ) .AND. !Empty( oItem := hwg_GetItemByName( ::aDrawn, cMsg ) )
+            RETURN oItem
+         ENDIF
+      NEXT
+   ENDIF
    FOR EACH oItem IN HTimer():aTimers
       IF !Empty( oItem:objname ) .AND. oItem:objname == cMsg .AND. hwg_Isptreq( ::handle, oItem:oParent:handle )
          RETURN oItem

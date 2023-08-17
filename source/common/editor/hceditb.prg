@@ -110,6 +110,7 @@ CLASS HDrawnEdit INHERIT HDrawn
    METHOD onButtonUp( xPos, yPos )
    METHOD SetFocus()
    METHOD onKillFocus()
+   METHOD Skip( n )
    METHOD End()
 
 ENDCLASS
@@ -203,6 +204,7 @@ METHOD Value( xValue ) CLASS HDrawnEdit
 METHOD DelText( nPos1, nPos2 ) CLASS HDrawnEdit
 
    ::title := hced_Left( Self, ::title, nPos1-1 ) + hced_Substr( Self, ::title, nPos2+1 )
+   ::lUpdated := .T.
    ::Refresh()
 
    RETURN Nil
@@ -233,6 +235,7 @@ METHOD InsText( nPosC, cText, lOver ) CLASS HDrawnEdit
          ::nPosF += nPos - ::nPosF + 1 - ::nPosC
       ENDIF
    NEXT
+   ::lUpdated := .T.
    ::Refresh()
 
    RETURN Nil
@@ -294,15 +297,13 @@ METHOD PutChar( wParam ) CLASS HDrawnEdit
 
    LOCAL nPos, oParent, cTemp
 
-   //hwg_writelog( "putchar: " + str(wParam) )
+   //hwg_writelog( "putchar: " + str(hwg_PtrToUlong(wParam)) )
    IF ::lReadOnly
       RETURN Nil
    ENDIF
 
    IF wParam == VK_RETURN
       hwg_DlgCommand( hwg_getParentForm( ::GetParentBoard() ), IDOK, 0 )
-
-   ELSEIF wParam == VK_TAB
 
    ELSEIF wParam == VK_ESCAPE
       oParent := hwg_getParentForm( ::GetParentBoard() )
@@ -346,10 +347,10 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnEdit
    wParam := hwg_PtrToUlong( wParam )
 #endif
 
-   //hwg_writelog( "onkey: " + str( wParam ) )
    cLine := hwg_Getkeyboardstate( lParam )
    nCtrl := Iif( Asc( SubStr(cLine,0x12,1 ) ) >= 128, FCONTROL, 0 ) + ;
          Iif( Asc(SubStr(cLine,0x11,1 ) ) >= 128,FSHIFT,0 )
+   //hwg_writelog( "onkey: " + str( wParam ) + str( nCtrl ) )
    IF ::bKeyDown != Nil .AND. ( n := Eval( ::bKeyDown, Self, wParam, nCtrl, 0 ) ) != -1
       RETURN n
    ENDIF
@@ -405,7 +406,7 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnEdit
          ENDIF
 
       ELSEIF wParam == VK_HOME  // Home
-         ::nPosC := 1
+         ::nPosC := Iif( !Empty( ::oPicture ), ::oPicture:KeyRight( 0 ), 1 )
          IF ::nPosF > 1
             ::nPosF := 1
             ::Refresh()
@@ -420,6 +421,9 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnEdit
             ::nPosF += nPos - ::nPosF + 1 - ::nPosC
             ::Refresh()
          ENDIF
+
+      ELSEIF wParam == VK_TAB
+         ::Skip( Iif( hwg_checkBit( nctrl,FBITSHIFT ), -1, 1 ) )
 
       ELSEIF wParam == VK_DELETE   // Delete
          ::putChar( 7 )   // for to not interfere with '.'
@@ -537,6 +541,25 @@ METHOD onKillFocus() CLASS HDrawnEdit
    ENDIF
 
    hced_KillCaret( ::hEdit )
+
+   RETURN Nil
+
+METHOD Skip( n ) CLASS HDrawnEdit
+
+   LOCAL oBoard := ::GetParentBoard(), i, l
+
+   n := Iif( n == Nil, 1, n )
+   i := Iif( n > 0, 1, Len( oBoard:aDrawn ) )
+   l := .F.
+   DO WHILE ( n > 0 .AND. i <= Len( oBoard:aDrawn ) ) .OR. ( n < 0 .AND. i > 0 )
+      IF !l .AND. oBoard:aDrawn[i] == Self
+         l := .T.
+      ELSEIF l .AND. __objHasMsg( oBoard:aDrawn[i], "OPICTURE" )
+         oBoard:aDrawn[i]:SetFocus()
+         EXIT
+      ENDIF
+      i += n
+   ENDDO
 
    RETURN Nil
 

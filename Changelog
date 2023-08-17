@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-17 12:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hceditb.prg
+    ! Small fix
+
 2023-08-17 11:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hceditb.prg
     ! Fixes

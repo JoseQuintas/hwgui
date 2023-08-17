@@ -97,7 +97,7 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   lInit        INIT .F.  PROTECTED
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, ;
-               tcolor, bcolor, oFont, xInitVal, cPicture, oFont, bPaint, bChgState )
+               tcolor, bcolor, oFont, xInitVal, cPicture, bPaint, bChgState )
    METHOD Paint( hDC )
    METHOD Value( xValue ) SETGET
    METHOD DelText( nPos1, nPos2 )

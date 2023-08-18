@@ -87,12 +87,8 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   nAlign       INIT 0
    DATA   nPosF        INIT 1
    DATA   nPosC        INIT 1
-   DATA   bChangePos, bKeyDown, bClickDoub, bRClick
+   DATA   bKeyDown, bRClick
    DATA   bGetFocus, bLostFocus
-   DATA   bAfter
-
-   DATA   nMaxUndo     INIT 10
-   DATA   aUndo
 
    DATA   lInit        INIT .F.  PROTECTED
 
@@ -448,9 +444,6 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnEdit
 
       ELSEIF ( wParam == 67 .OR. wParam == 99 ) .AND. hwg_checkBit( nctrl,FBITCTRL )   // 'C'
             hwg_Copystringtoclipboard( ::Value )
-
-      ELSEIF ( wParam == 90 .OR. wParam == 122 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'Z'
-         //::Undo()
 
       ELSEIF ( wParam == 86 .OR. wParam == 118 ) .AND. hwg_checkBit( nctrl,FBITCTRL )  // 'V'
          IF !::lReadOnly .AND. !::lNoPaste

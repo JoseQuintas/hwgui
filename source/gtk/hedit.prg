@@ -68,6 +68,11 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::lMultiLine := .T.
    ENDIF
 
+   IF !Empty( cPicture ) .OR. ::cType != "C" .OR. !Empty( bSetGet )
+      ::oPicture := HPicture():New( cPicture, vari, nMaxLength )
+      ::nMaxLength := ::oPicture:nMaxLength
+   ENDIF
+/*
    IF !Empty( cPicture ) .OR. ::cType != "C"
       ::oPicture := HPicture():New( cPicture, vari )
       ::nMaxLength := ::oPicture:nMaxLength
@@ -78,7 +83,7 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    IF nMaxLength != Nil
       ::nMaxLength := nMaxLength
    ENDIF
-
+*/
    ::Activate()
 
    ::bGetFocus := bGFocus
@@ -381,7 +386,7 @@ CLASS HPicture INHERIT HObject
    DATA cType
    DATA nMaxLength     INIT Nil
 
-   METHOD New( cPicture, vari )
+   METHOD New( cPicture, vari, nMaxLength )
    METHOD IsEditable( nPos )
    METHOD FirstEditable()
    METHOD LastEditable()
@@ -395,7 +400,7 @@ CLASS HPicture INHERIT HObject
 
    ENDCLASS
 
-METHOD New( cPicture, vari ) CLASS HPicture
+METHOD New( cPicture, vari, nMaxLength ) CLASS HPicture
 
    LOCAL nAt, i, masklen
 
@@ -445,6 +450,13 @@ METHOD New( cPicture, vari ) CLASS HPicture
             EXIT
          ENDIF
       NEXT
+   ENDIF
+
+   IF Empty( ::nMaxLength ) .AND. ::cType == "C"
+      ::nMaxLength := hwg_Len( vari )
+   ENDIF
+   IF nMaxLength != Nil
+      ::nMaxLength := nMaxLength
    ENDIF
 
    //  ------------ added by Maurizio la Cecilia

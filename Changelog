@@ -14,6 +14,9 @@
  "oldlogs".
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+2023-08-18 19:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\gtk\draw.c
+    ! Typo fixed
 
 2023-08-18 15:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\gtk\draw.c

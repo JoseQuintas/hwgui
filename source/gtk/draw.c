@@ -101,7 +101,7 @@ HB_FUNC( HWG_ALPHA2PIXBUF )
       obj->handle = handle;
       obj->trcolor = nColor;
    }
-   
+
 }
 
 HB_FUNC( HWG_INVALIDATERECT )
@@ -123,11 +123,11 @@ HB_FUNC( HWG_INVALIDATERECT )
 
       x1 = y1 = 0;
       x2 = alloc.width;
-      y2 = alloc.height;      
+      y2 = alloc.height;
    }
    gtk_widget_queue_draw_area( widget, x1, y1,
         x2 - x1 + 1, y2 - y1 + 1 );
-   
+
 }
 
 HB_FUNC( HWG_RECTANGLE )
@@ -135,7 +135,7 @@ HB_FUNC( HWG_RECTANGLE )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
 
-   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1, 
+   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1,
         (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
    cairo_stroke( hDC->cr );
 }
@@ -145,7 +145,7 @@ HB_FUNC( HWG_RECTANGLE_FILLED )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
 
-   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1, 
+   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1,
         (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
    cairo_fill( hDC->cr );
 }
@@ -189,13 +189,13 @@ HB_FUNC( HWG_ELLIPSE )
    cairo_stroke( hDC->cr );
 }
 
-HB_FUNC( HWG_ELLIPSE )
+HB_FUNC( HWG_ELLIPSE_FILLED )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
 
    cairo_arc( hDC->cr, (double)x1+(x2-x1)/2, (double)y1+(y2-y1)/2, (double) (x2-x1)/2, 0, 6.28 );
-   cairo_filled( hDC->cr );
+   cairo_fill( hDC->cr );
 }
 
 /*
@@ -235,7 +235,7 @@ HB_FUNC( HWG_FILLRECT )
    PHWGUI_BRUSH brush = (PHWGUI_BRUSH) HB_PARHANDLE(6);
 
    hwg_setcolor( hDC->cr, brush->color );
-   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1, 
+   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1,
          (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
    cairo_fill( hDC->cr );
 }
@@ -307,7 +307,7 @@ HB_FUNC( HWG_REDRAWWINDOW )
 
 /*
   hwg_DrawButton(handle,nleft,ntop,nright,nbottom,niType)
-*/  
+*/
 
 HB_FUNC( HWG_DRAWBUTTON )
 {
@@ -322,20 +322,20 @@ HB_FUNC( HWG_DRAWBUTTON )
    if( iType == 0 )
    {
       hwg_setcolor( hDC->cr, hwg_gdk_color( style->bg ) );
-      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
            (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
       cairo_fill( hDC->cr );
    }
    else
    {
       hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->mid : style->light ) );
-      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
            (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
       cairo_fill( hDC->cr );
 
       left ++; top ++;
       hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->light : ( (iType & 4)? style->dark : style->mid ) ) );
-      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
            (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
       cairo_fill( hDC->cr );
 
@@ -344,20 +344,20 @@ HB_FUNC( HWG_DRAWBUTTON )
       if( iType & 4 )
       {
          hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->mid : style->light ) );
-         cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+         cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
               (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
          cairo_fill( hDC->cr );
 
          left ++; top ++;
          hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->light : style->mid ) );
-         cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+         cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
               (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
          cairo_fill( hDC->cr );
 
          right --; bottom --;
       }
       hwg_setcolor( hDC->cr, hwg_gdk_color( style->bg ) );
-      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
            (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
       cairo_fill( hDC->cr );
    }
@@ -369,13 +369,13 @@ void hwg_gtk_drawedge( PHWGUI_HDC hDC, int left, int top, int right, int bottom,
    GtkStyle * style = gtk_widget_get_style( hDC->widget );
 
    hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->mid : style->light ) );
-   cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+   cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
         (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
    cairo_stroke( hDC->cr );
 
    left ++; top ++;
    hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->light : ( (iType & 4)? style->dark : style->mid ) ) );
-   cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+   cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
         (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
    cairo_stroke( hDC->cr );
 
@@ -384,20 +384,20 @@ void hwg_gtk_drawedge( PHWGUI_HDC hDC, int left, int top, int right, int bottom,
    if( iType & 4 )
    {
       hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->mid : style->light ) );
-      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
            (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
       cairo_stroke( hDC->cr );
 
       left ++; top ++;
       hwg_setcolor( hDC->cr, hwg_gdk_color( (iType & 2)? style->light : style->mid ) );
-      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+      cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
            (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
       cairo_stroke( hDC->cr );
 
       right --; bottom --;
    }
    hwg_setcolor( hDC->cr, hwg_gdk_color( style->bg ) );
-   cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top, 
+   cairo_rectangle( hDC->cr, (gdouble)left, (gdouble)top,
         (gdouble)(right-left+1), (gdouble)(bottom-top+1) );
    cairo_stroke( hDC->cr );
 
@@ -580,7 +580,7 @@ HB_FUNC( HWG_GETBITMAPSIZE )
 
    _itemReturn( aMetr );
    _itemRelease( aMetr );
-   
+
 }
 
 
@@ -593,7 +593,7 @@ HB_FUNC( HWG_OPENBITMAP )
 {
    PHWGUI_PIXBUF hpix;
    GdkPixbuf * handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
-   
+
    if( handle )
    {
       hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
@@ -611,17 +611,17 @@ HB_FUNC( HWG_SAVEBITMAP )
 {
    PHWGUI_PIXBUF hpix = HB_PARHANDLE(2);
    const char * szType = (HB_ISCHAR(3))? hb_parc(3) : "bmp";
-#if GTK_MAJOR_VERSION -0 < 3 
+#if GTK_MAJOR_VERSION -0 < 3
    hb_retl( gdk_pixbuf_save( hpix->handle, hb_parc(1), szType, NULL, NULL ) );
 #else
    hb_retl( gdk_pixbuf_save_to_stream( ( GdkPixbuf *) hb_parc(1),(GOutputStream * ) hpix->handle,  szType, NULL, NULL) );
 #endif
-} 
+}
 
 /* hwg_Openimage( name , ltype )
   ltype : .F. : from image file
           .T. : from GDK pixbuffer
-  returns handle to pixbuffer  
+  returns handle to pixbuffer
   */
 HB_FUNC( HWG_OPENIMAGE )
 {
@@ -631,7 +631,7 @@ HB_FUNC( HWG_OPENIMAGE )
 
    if( iString )
    {
-   /* Load image from GDK pixbuffer */ 
+   /* Load image from GDK pixbuffer */
       guint8 *buf = (guint8 *) hb_parc(1);
       GdkPixbufLoader *loader = gdk_pixbuf_loader_new();
 
@@ -641,7 +641,7 @@ HB_FUNC( HWG_OPENIMAGE )
    else
    /* Load image from file */
       handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
-   
+
    if( handle )
    {
       hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
@@ -687,7 +687,7 @@ HB_FUNC( HWG_CREATESOLIDBRUSH )
 
    hbrush->type = HWGUI_OBJECT_BRUSH;
    hbrush->color = hb_parnl(1);
-   
+
    HB_RETHANDLE( hbrush );
 }
 
@@ -757,7 +757,7 @@ HB_FUNC( HWG_DELETEOBJECT )
 HB_FUNC( HWG_DEFINEPAINTSTRU )
 {
    PHWGUI_PPS pps = (PHWGUI_PPS) hb_xgrab( sizeof(HWGUI_PPS) );
-   
+
    pps->hDC = NULL;
    HB_RETHANDLE( pps );
 }
@@ -766,8 +766,8 @@ HB_FUNC( HWG_BEGINPAINT )
 {
    GtkWidget * widget = (GtkWidget*) HB_PARHANDLE(1);
    PHWGUI_PPS pps = (PHWGUI_PPS) HB_PARHANDLE(2);
-   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_xgrab( sizeof(HWGUI_HDC) );   
-   
+   PHWGUI_HDC hDC = (PHWGUI_HDC) hb_xgrab( sizeof(HWGUI_HDC) );
+
    memset( hDC, 0, sizeof(HWGUI_HDC) );
    hDC->widget = widget;
 
@@ -776,7 +776,7 @@ HB_FUNC( HWG_BEGINPAINT )
 
    hDC->layout = pango_cairo_create_layout( hDC->cr );
    hDC->fcolor = hDC->bcolor = -1;
-   
+
    pps->hDC = hDC;
 
    HB_RETHANDLE( hDC );
@@ -888,7 +888,7 @@ HB_FUNC( HWG_GETCLIENTAREA )
 {
    PHWGUI_PPS pps = ( PHWGUI_PPS ) HB_PARHANDLE( 1 );
    GtkWidget * widget = pps->hDC->widget;
-   PHB_ITEM aMetr = hb_itemArrayNew( 4 );    
+   PHB_ITEM aMetr = hb_itemArrayNew( 4 );
    GtkAllocation alloc;
 
    if( getFixedBox( (GObject *) widget ) )
@@ -936,7 +936,7 @@ HB_FUNC( HWG_GETWINDOWRECT )
 void hwg_prepare_cairo_colors( long int nColor, gdouble *r, gdouble *g, gdouble *b )
 {
    short int int_r, int_g, int_b;
-  
+
    nColor %= ( 65536 * 256 );
    int_r = nColor % 256;
    int_g = ( ( nColor - int_r ) % 65536 ) / 256;
@@ -976,7 +976,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
    {
       // type of gradient
       type = ( type >= 1 && type <= 9 ) ? type : 1;
-      switch( type ) 
+      switch( type )
       {
          case 1:
             // vertical and down
@@ -1168,7 +1168,7 @@ HB_FUNC( HWG__DRAWRADIOBTN )
 }
 
 
-/* As preparation to further versions */ 
+/* As preparation to further versions */
 HB_FUNC( HWG_LOADPNG )
 {
 }
@@ -1181,12 +1181,12 @@ HB_FUNC( HWG_LOADPNG )
 /* Some more functions for bitmap support
    (for example painting and stretching of bitmap images)
    are implemented in source code file "cxshade.c".
-*/   
+*/
 
 /*
- === Bitmap structures == 
+ === Bitmap structures ==
 
- Not used structures are inserted for future realeases of HWGUI. 
+ Not used structures are inserted for future realeases of HWGUI.
 
  */
 
@@ -1194,9 +1194,9 @@ HB_FUNC( HWG_LOADPNG )
 
 /*
  Summary of bitmap structures:
- 
+
  fileheader l=14
- 
+
  bitmapinfoheader l=40
 
  bitmapheader3x l=54
@@ -1226,7 +1226,7 @@ HB_FUNC( HWG_LOADPNG )
    - color
 
  BMPImage
-   - bitmap4x 
+   - bitmap4x
    - pixel **
    - color
 
@@ -1240,13 +1240,13 @@ HB_FUNC( HWG_LOADPNG )
 typedef struct <name> {
  ...
 }  __attribute__((packed)) <name> ;
-*/   
+*/
 
 typedef struct{
     uint8_t signature[2];              /* 0  "BM" */
-    uint32_t filesize;                 /* 2  Size of file in bytes */ 
+    uint32_t filesize;                 /* 2  Size of file in bytes */
     uint32_t reserved;                 /* 6  reserved, forever 0 */
-    uint32_t fileoffset_to_pixelarray; /* 10 Start position of image data in bytes */ 
+    uint32_t fileoffset_to_pixelarray; /* 10 Start position of image data in bytes */
 } fileheader;                          /* 14 l = 14 */
 
 /* Win 3.x info header */
@@ -1265,14 +1265,14 @@ typedef struct{
 } bitmapinfoheader;                    /* 54 l = 40 */
 
 
-/* Color components (Win3x palette element)  */ 
+/* Color components (Win3x palette element)  */
 typedef struct {
     uint8_t b; /* Blue */
     uint8_t g; /* Green */
     uint8_t r; /* Red component */
     uint8_t a; /* Reserved = 0 */
 } color;
- 
+
 typedef struct
 {
     uint8_t b;
@@ -1287,7 +1287,7 @@ typedef struct {
     bitmapinfoheader bitmapinfoheader; /* l = 40 */
 } bitmapheader3x;  /* l=54 */
 
-typedef struct { 
+typedef struct {
    char Blue;      /* Blue component */
    char Green;     /* Green component */
    char Red;       /* Red component */
@@ -1351,7 +1351,7 @@ typedef struct {
     bitmapinfoheader4x bitmapinfoheader4x;  /* l = 68 */
 } bitmap4x;  /* l=122 */
 
-typedef struct 
+typedef struct
 {
     bitmap4x bmp_header;   /* full Header of the bitmap */
     pixel **pixel_data;    /* Pixel matrix (jagged array) */
@@ -1360,7 +1360,7 @@ typedef struct
 
 #pragma pack(pop)
 
-static unsigned int cc_null(uint32_t wert) 
+static unsigned int cc_null(uint32_t wert)
 {
     unsigned int zae ;
 
@@ -1387,13 +1387,13 @@ uint32_t hwg_BMPFileSizeC(
     int bmp_bit_depth,
     unsigned int colors
     )
-{           
+{
     uint32_t image_size;
     uint32_t pad;
     uint32_t fileoffset_to_pixelarray;
     uint32_t filesize ;
 
- 
+
     pad = (4 - (bmp_bit_depth * bmp_width + 7 ) / 8 % 4) % 4;
     image_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad ) * bmp_height;
 
@@ -1401,7 +1401,7 @@ uint32_t hwg_BMPFileSizeC(
     colors * 4 ;
     filesize = fileoffset_to_pixelarray + image_size ;
 
-    return filesize; 
+    return filesize;
 }
 
 /* Creates a C element with bitmap file image */
@@ -1420,7 +1420,7 @@ void * hwg_BMPNewImageC(
     uint32_t image_size;
     uint32_t pad;
     uint32_t fileoffset_to_pixelarray;
-    
+
     uint32_t filesize ;
     uint32_t max_colors;
 //    int i;
@@ -1436,7 +1436,7 @@ void * hwg_BMPNewImageC(
     uint32_t bmp_bit_depth;
 
     /* uint8_t mask1[8]; */
-    uint8_t mask4[2]; 
+    uint8_t mask4[2];
 
     /* Reserved for later releases
     mask1[0] = 128;
@@ -1448,10 +1448,10 @@ void * hwg_BMPNewImageC(
     mask1[6] = 2;
     mask1[7] = 1;
    */
-   
+
     mask4[0] = 240,
     mask4[1] = 15;
- 
+
     max_colors = (uint32_t) 1;
 
     /* Fixed signature "BM" */
@@ -1476,7 +1476,7 @@ void * hwg_BMPNewImageC(
        return NULL;
     }
 
- 
+
     for (i = 0; i < bmp_bit_depth; ++i)
     {
         max_colors *= 2;
@@ -1492,29 +1492,29 @@ void * hwg_BMPNewImageC(
     image_size = ((bmp_bit_depth * bmp_width + 7 ) / 8 + pad ) * bmp_height;
 
 
-    
-    /* Pre init with 0 */
-    memset(&pbitmap,0x00,sizeof(BMPImage3x) ); 
 
-   
+    /* Pre init with 0 */
+    memset(&pbitmap,0x00,sizeof(BMPImage3x) );
+
+
     fileoffset_to_pixelarray = sizeof (fileheader) + sizeof(bitmapinfoheader) +
     colors * 4 ;
     filesize = fileoffset_to_pixelarray + image_size ;
- 
+
     /* Allocate memory for full file size */
     bmp_fileimg = malloc(filesize);
- 
- 
+
+
     /* Bitmap file header */
 
-    memcpy( &pbitmap.bmp_header.fileheader.signature,csig,2);                     /* fixed signature */ 
+    memcpy( &pbitmap.bmp_header.fileheader.signature,csig,2);                     /* fixed signature */
     pbitmap.bmp_header.fileheader.filesize = filesize;                            /* Size of file in bytes */
     pbitmap.bmp_header.fileheader.reserved = 0;
     pbitmap.bmp_header.fileheader.fileoffset_to_pixelarray = fileoffset_to_pixelarray; /* Start position of image data in bytes */
 
     /* Bitmap information header 3.x*/
     pbitmap.bmp_header.bitmapinfoheader.dibheadersize = (uint32_t) sizeof(bitmapinfoheader); /* Size of this header in bytes */
-    pbitmap.bmp_header.bitmapinfoheader.width =  bmp_width;            /* Image width in pixels */ 
+    pbitmap.bmp_header.bitmapinfoheader.width =  bmp_width;            /* Image width in pixels */
     pbitmap.bmp_header.bitmapinfoheader.height = bmp_height;          /* Image height in pixels */
     pbitmap.bmp_header.bitmapinfoheader.planes = (uint32_t) _planes;             /* Number of color planes (must be 1) */
     pbitmap.bmp_header.bitmapinfoheader.bitsperpixel = (uint16_t) bmp_bit_depth; /* Number of bits per pixel `*/
@@ -1552,7 +1552,7 @@ void * hwg_BMPNewImageC(
     /* Alloc color palette */
     pbitmap.palette = (color*) calloc(colors, sizeof (color));
     memset(&pbitmap.palette, 0x00, sizeof (color));
- 
+
     /* Copy structure pbitmap (BMPImage3x) to file buffer */
     memcpy(bmp_fileimg,&pbitmap, sizeof(BMPImage3x) );
 
@@ -1566,18 +1566,18 @@ void * hwg_BMPNewImageC(
 
     /* Move pointer to end of block : start position of pixel data */
     bmp_locpointer = bmp_fileimg + fileoffset_to_pixelarray;
-    
+
     /* Process initialization of  pixel data */
 
     /* allocate buffer for bitmap pixel data */
     bitmap_buffer = (uint8_t *) calloc(1, image_size);
     memset(bitmap_buffer,0x00,image_size);
     buf = bitmap_buffer;
-    
+
     /* convert pixel data into bitmap format */
     switch (bmp_bit_depth)
     {
-    /* Each byte of data represents 8 pixels, with the most significant 
+    /* Each byte of data represents 8 pixels, with the most significant
        bit mapped into the leftmost pixel */
     case 1:
        for (i = 0; i < bmp_height; ++i)
@@ -1628,8 +1628,8 @@ void * hwg_BMPNewImageC(
          for (j = 0; j < bmp_width; ++j)
          {
            *buf++ = pbitmap.pixel_data[i][j].i;
-         }  
-           
+         }
+
            /* each row has a padding to a 4 byte alignment */
            buf += pad;
         }
@@ -1642,9 +1642,9 @@ void * hwg_BMPNewImageC(
           for (j = 0; j < bmp_width; ++j)
           {
             uint16_t *px = (uint16_t*) buf;
-            *px = 
+            *px =
              (pbitmap.pixel_data[i][j].b << cc_null(pbitmap.palette->b)) +
-             (pbitmap.pixel_data[i][j].g << cc_null(pbitmap.palette->g)) + 
+             (pbitmap.pixel_data[i][j].g << cc_null(pbitmap.palette->g)) +
              (pbitmap.pixel_data[i][j].r << cc_null(pbitmap.palette->r));
             buf += 2;
           }
@@ -1667,7 +1667,7 @@ void * hwg_BMPNewImageC(
        }
        break;
      }
-    
+
 
     /* Copy the image data to the file buffer */
     memcpy(bmp_locpointer,bitmap_buffer, image_size );
@@ -1678,7 +1678,7 @@ void * hwg_BMPNewImageC(
       free(bitmap_buffer);
 //    if ( bmp_locpointer )
 //     free(bmp_locpointer);
-//    if (buf) 
+//    if (buf)
 //     free(buf);
 
 
@@ -1693,7 +1693,7 @@ void * hwg_BMPNewImageC(
 
 /* Calculates the offset to pixel array (image data) */
 uint32_t hwg_BMPCalcOffsPixArrC(unsigned int colors)
-   {  
+   {
     uint32_t fileoffset_to_pixelarray;
 
     fileoffset_to_pixelarray = sizeof (fileheader) + sizeof(bitmapinfoheader) +
@@ -1729,15 +1729,15 @@ HB_FUNC( HWG_BMPNEWIMAGE )
     unsigned int colors;
     uint32_t xpixelpermeter;
     uint32_t ypixelpermeter;
-    void * rci; 
+    void * rci;
     char rcbuff[BMPFILEIMG_MAXSZ];
     uint32_t filesize ;
-   
+
     bmp_width = hb_parni(1);
     bmp_height = hb_parni(2);
     bmp_bit_depth = hb_parni(3);
     colors = hb_parni(4);
-    xpixelpermeter = hb_parnl(5); 
+    xpixelpermeter = hb_parnl(5);
     ypixelpermeter = hb_parnl(6);
 
 
@@ -1749,24 +1749,24 @@ HB_FUNC( HWG_BMPNEWIMAGE )
      colors,
      xpixelpermeter,
      ypixelpermeter );
-     
+
 
      if ( ! rci )
-     { 
+     {
       hb_retc("Error");
-     }  
+     }
 
     /* Calculate the file size */
     filesize = hwg_BMPFileSizeC(bmp_width, bmp_height, bmp_bit_depth, colors) ;
 
     if ( filesize > BMPFILEIMG_MAXSZ )
     {
-      hb_retc("Error");      
+      hb_retc("Error");
     }
 
      memcpy(&rcbuff,rci,filesize);
- 
-    
+
+
      hb_retclen_buffer(rcbuff,filesize);
 
     /* HB_RETSTR(rcbuff) stops writing bytes at first appearence of 0x00 */
@@ -1808,7 +1808,7 @@ HB_FUNC( HWG_BMPFILESIZE )
     colors * 4 ;
     filesize = fileoffset_to_pixelarray + image_size ;
 
-    hb_retnl(filesize); 
+    hb_retnl(filesize);
 }
 
 /* Returns the size of BMPImage3x structure */
@@ -1836,7 +1836,7 @@ HB_FUNC( HWG_BMPCALCOFFSPIXARR )
     colors = hb_parni(1);
 
     fileoffset_to_pixelarray = hwg_BMPCalcOffsPixArrC(colors);
-    hb_retnl(fileoffset_to_pixelarray); 
+    hb_retnl(fileoffset_to_pixelarray);
 
 }
 
@@ -1845,7 +1845,7 @@ HB_FUNC( HWG_BMPCALCOFFSPAL )
 {
   uint32_t rc;
   int bmp_height;
-  
+
   bmp_height = hb_parni(1);
   rc = hwg_BMPCalcOffsPalC(bmp_height);
   hb_retnl(rc);
@@ -1859,7 +1859,7 @@ HB_FUNC( HWG_BMPCALCOFFSPAL )
 HB_FUNC( HWG_BMPIMAGESIZE )
 {
     uint32_t image_size;
- 
+
     int bmp_width;
     int bmp_height;
     int bmp_bit_depth;
@@ -1877,7 +1877,7 @@ HB_FUNC( HWG_BMPIMAGESIZE )
    hb_retnl(image_size);
 
 }
-   
+
 
 /*
   hwg_BMPLineSize(width,bitsperpixel)
@@ -1887,7 +1887,7 @@ HB_FUNC( HWG_BMPIMAGESIZE )
 HB_FUNC( HWG_BMPLINESIZE )
 {
     uint32_t line_size;
- 
+
     int bmp_width;
     int bmp_bit_depth;
 
@@ -1909,7 +1909,7 @@ HB_FUNC( HWG_BMPLINESIZE )
 /*   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~   */
 
 /*
-* Increases the size of a QR code image 
+* Increases the size of a QR code image
 * cqrcode : The QR code in text format
 * nlen    : Pass LEN(cqrcode)
 * nzoom   : The zoom factor 1 ... n
@@ -1930,40 +1930,40 @@ HB_FUNC ( HWG_QRCODEZOOM_C )
   char cout[16385];
   char cLine[8192];
   const char *hString;
-  
 
-  
- 
+
+
+
   nlen  =  hb_parni( 2 );
-  nzoom =  ( HB_ISNIL( 3 ) ? 1 : hb_parni( 3 )  ); 
- 
+  nzoom =  ( HB_ISNIL( 3 ) ? 1 : hb_parni( 3 )  );
 
-  lptr = 0;  // Position in a line 
-  cptr = 0;  // Position in cout 
+
+  lptr = 0;  // Position in a line
+  cptr = 0;  // Position in cout
   memset(&cout , 0x00, 16385 );
-  memset(&cLine , 0x00, 8192 ); 
+  memset(&cLine , 0x00, 8192 );
 
   // Copy the image into char array
   hString = hb_parc( 1 );
   memcpy(&cqrcode,hString,nlen);
 
-  
- 
+
+
   if ( nzoom < 1 )
   {
     hb_retclen(cqrcode,nlen);
   }
-  
+
 
 leofq = 0;
 // i: Position in cqrcode
 
-for (i = 0 ; i < nlen ; i++ ) 
+for (i = 0 ; i < nlen ; i++ )
 {
  if ( leofq == 0 )
  {
   if ( cqrcode[i] == 10 )
-  { 
+  {
     if ( ! ( cqrcode[ i + 1 ] == 32 )  )
     {
       // Empty line following, stop here
@@ -1971,17 +1971,17 @@ for (i = 0 ; i < nlen ; i++ )
     }
     // Count line ending and start with new line
 
-    // Replicate line with zoom factor 
+    // Replicate line with zoom factor
     // and add line to output string
         for(j = 1 ; j <= nzoom ; j++ )
         {
           memcpy(&cout[cptr],&cLine,lptr);
           cout[cptr + lptr + 1 ] = 10;
-          cptr = cptr + lptr + 2; // Next line 
+          cptr = cptr + lptr + 2; // Next line
         }
         lptr = 0;
         memset(&cLine , 0x00, 8192 );
-  }   
+  }
   else  // SUBSTR " "
   {
     // Replicate characters in line with zoom factor
@@ -1991,9 +1991,9 @@ for (i = 0 ; i < nlen ; i++ )
       cLine[lptr] = cqrcode[i];
       lptr++;
     }
-    // Set line ending 
+    // Set line ending
     cLine[lptr] = 10;
-    
+
 
   }  // is CHR(10)
  }   // .NOT. leofq
@@ -2004,7 +2004,7 @@ for (i = 0 ; i < nlen ; i++ )
   {
       memcpy(&cout[cptr],&cLine,lptr);
       cout[cptr + lptr + 1] = 10;
-      cptr = cptr + lptr + 2; // Next line     
+      cptr = cptr + lptr + 2; // Next line
   }
 
 // Empty line as mark for EOF

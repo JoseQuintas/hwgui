@@ -1694,6 +1694,33 @@ STATIC FUNCTION Graph2
    RETURN Nil
 ]]>
     </module>
+    <module name="Drawing on the board">
+      <![CDATA[// Board and drawn items
+#include "hwgui.ch"
+
+FUNCTION Test
+   LOCAL oDlg, oBoard
+
+   INIT DIALOG oDlg TITLE "Drawing on the board" AT 210, 10  SIZE 440, 220
+
+   @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR 0x999999 ;
+      ON PAINT {|o,h|FPaint(o,h)} ON SIZE {|o,x,y|o:Move(,,x-8,y-8)}
+
+   ACTIVATE DIALOG oDlg
+
+   RETURN Nil
+
+STATIC FUNCTION FPaint( o, hDC )
+
+   hwg_Fillrect( hDC, 0, 0, o:nWidth, o:nHeight, o:brush:handle )
+
+   // Draw what you want
+
+   hwg_RoundRect( hDC, 10, 10, 40, 40, 4 )
+
+   RETURN Nil
+]]>
+    </module>
     <module name="Board and drawn items">
       <![CDATA[// Board and drawn items
 #include "hwgui.ch"
@@ -1704,7 +1731,7 @@ STATIC FUNCTION Graph2
 #define CLR_DGRAY3   0x888888
 
 FUNCTION Test
-   LOCAL oDlg, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
+   LOCAL oDlg, oBoard, oTrack, oSay, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aCorners := { 4,4,4,4 }
    LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_WHITE }, 2, aCorners ), ;

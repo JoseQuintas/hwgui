@@ -255,7 +255,7 @@ HB_FUNC( HWG_RECTANGLE )
    LineTo( hDC, x1, y1 );
 }
 
-HB_FUNC( HWG_BOX )
+HB_FUNC( HWG_RECTANGLE_FILLED )
 {
    Rectangle( ( HDC ) HB_PARHANDLE( 1 ),        // handle of device context
          hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
@@ -288,6 +288,23 @@ HB_FUNC( HWG_PIE )
 }
 
 HB_FUNC( HWG_ELLIPSE )
+{
+   HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
+   HBRUSH hBrush = (HBRUSH) GetStockObject( NULL_BRUSH );
+   HBRUSH hOldBrush = (HBRUSH) SelectObject( hdc, hBrush );
+   int res = Ellipse( hdc,      // handle to device context
+         hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
+         hb_parni( 3 ),         // y-coord. of bounding rectangle's upper-left corner
+         hb_parni( 4 ),         // x-coord. of bounding rectangle's lower-right corner
+         hb_parni( 5 )          // y-coord. bounding rectangle's f lower-right corner
+          );
+
+   hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
+   SelectObject(hdc, hOldBrush);
+   DeleteObject(hBrush);
+}
+
+HB_FUNC( HWG_ELLIPSE_FILLED )
 {
    int res = Ellipse( ( HDC ) HB_PARHANDLE( 1 ),        // handle to device context
          hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
@@ -359,8 +376,8 @@ HB_FUNC( HWG_ROUNDRECT )
    HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
    int iWidth = hb_parni( 6 );
    int iHeight = ( HB_ISNIL( 7 ) ) ? iWidth : hb_parni( 7 );
-   HBRUSH hBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
-   HBRUSH hOldBrush = (HBRUSH)SelectObject(hdc, hBrush);
+   HBRUSH hBrush = (HBRUSH) GetStockObject( NULL_BRUSH );
+   HBRUSH hOldBrush = (HBRUSH) SelectObject( hdc, hBrush );
 
    hb_parl( RoundRect( hdc,       // handle of device context
                hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner

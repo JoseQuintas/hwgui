@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-18 15:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\gtk\draw.c
+  * source\winapi\draw.c
+    * hwg_rectangle_filled() instead of hwg_box(), hwg_ellipse_filled() added
+  * utils/tutorial/tutor_eng.xml
+    * Module added "Drawing on the board"
+  * include/hwgcompat.ch
+  * include/hwgextern.ch
+
 2023-08-18 09:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hceditb.prg
   * source\gtk\hedit.prg

@@ -140,6 +140,16 @@ HB_FUNC( HWG_RECTANGLE )
    cairo_stroke( hDC->cr );
 }
 
+HB_FUNC( HWG_RECTANGLE_FILLED )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
+
+   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1, 
+        (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
+   cairo_fill( hDC->cr );
+}
+
 HB_FUNC( HWG_MOVETO )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
@@ -178,6 +188,16 @@ HB_FUNC( HWG_ELLIPSE )
    cairo_arc( hDC->cr, (double)x1+(x2-x1)/2, (double)y1+(y2-y1)/2, (double) (x2-x1)/2, 0, 6.28 );
    cairo_stroke( hDC->cr );
 }
+
+HB_FUNC( HWG_ELLIPSE )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
+
+   cairo_arc( hDC->cr, (double)x1+(x2-x1)/2, (double)y1+(y2-y1)/2, (double) (x2-x1)/2, 0, 6.28 );
+   cairo_filled( hDC->cr );
+}
+
 /*
 HB_FUNC( HWG_ARC )
 {

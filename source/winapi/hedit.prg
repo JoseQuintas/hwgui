@@ -171,7 +171,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
             IF !hwg_IsCtrlShift( , .F. )
                DeleteSel( Self )
-               nPos := hwg_edit_Getpos( ::handle )
+               nPos := i := hwg_edit_Getpos( ::handle )
                ::title := cText := hwg_Getedittext( ::oParent:handle, ::id )
                cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_Chr(wParam), ::lFirst, Set( _SET_INSERT ) )
                ::lFirst := .F.
@@ -181,7 +181,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ENDIF
                hwg_edit_SetPos( ::handle, nPos )
                IF ::cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. ;
-                  nPos == ::nMaxLength .AND. !Empty( ::bSetGet )
+                  i == ::nMaxLength .AND. !Empty( ::bSetGet )
                   IF !hwg_GetSkip( oParent := ::oParent, ::handle, 1 )
                      DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
                         oParent := oParent:oParent

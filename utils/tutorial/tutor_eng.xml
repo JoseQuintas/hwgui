@@ -11,17 +11,17 @@ results of your changes.
 
      The tutorial is very simple to navigate, it has minimum of tools.
 Just click on a tree node to see appropriate content is a text editor.
-If this is a code fragment, double clicking on this tree node or 
+If this is a code fragment, double clicking on this tree node or
 clicking on a button, which is in a right top corner of a window above
 the editor will execute this code. That's all.
 
      There is a configuration file, tutor.xml, which, possible, you
 will need to tune.
      It contains a tag with a path to HwGUI directory:
-     
+
      <hwgui_dir path="..\.." />
 
-     This path is needed for internal compiler to find the HwGUI 
+     This path is needed for internal compiler to find the HwGUI
 include/ directory with header file hwgui.ch, if the path is wrong,
 you will get a message "compile error", when you will try to execute
 a code. By default it is set to "..\.." due to the default location
@@ -55,7 +55,7 @@ Function Test
     *   and the application goes to the main loop of handling messages.
     */
    ACTIVATE WINDOW oMain
-  
+
 Return Nil
       ]]>
     </module>
@@ -91,7 +91,7 @@ Function Test
    ENDMENU
 
    ACTIVATE WINDOW oMain
-  
+
 Return Nil
       ]]>
     </module>
@@ -136,9 +136,9 @@ Return Nil
 #include "hwgui.ch"
 Function Test
 Local oMain
- 
+
   INIT WINDOW oMain MAIN TITLE "Maximized"
-        
+
   MENU OF oMain
     MENU TITLE "&Action"
        // Note a hwg_SetWindowText() HwGUI function, which changes a window title
@@ -154,7 +154,7 @@ Local oMain
 
   // The window is actived maximized
   ACTIVATE WINDOW oMain MAXIMIZED
- 
+
 Return Nil
       ]]>
     </module>
@@ -184,7 +184,7 @@ Function Test
    ENDMENU
 
    ACTIVATE WINDOW oMain
-  
+
 Return Nil
 
 Function CreateChildWindow
@@ -217,7 +217,7 @@ Function Test
          ON CLICK {|| oDlg:Close() }
 
    ACTIVATE DIALOG oDlg
-  
+
 Return Nil
       ]]>
     </module>
@@ -242,7 +242,7 @@ Function Test
 
    // You see, we add here a magic word NOMODAL
    ACTIVATE DIALOG oDlg NOMODAL
-  
+
 Return Nil
       ]]>
     </module>
@@ -287,8 +287,8 @@ Function Test
    @ 168,92 RADIOBUTTON "Radio 2" SIZE 90, 20 ON CLICK {||nChoic := 2}
    END RADIOGROUP SELECTED 1
 
-   // Combo box is a well known control, which combines much of the 
-   // functionality of a list box and an edit control. 
+   // Combo box is a well known control, which combines much of the
+   // functionality of a list box and an edit control.
    @ 20,150 COMBOBOX oCombo ITEMS aCombo SIZE 100, 28
 
    // An up-down control is an edit control, combined with a pair of
@@ -302,7 +302,7 @@ Function Test
    @ 100,220 BUTTON "Close" SIZE 100,30 ON CLICK bExit
 
    ACTIVATE DIALOG oDlg
-  
+
 Return Nil
       ]]>
     </module>
@@ -325,7 +325,7 @@ Function Test
    @ 20,y1 BUTTON "hwg_MsgInfo()" SIZE 180,28 ;
       ON CLICK {||hwg_MsgInfo("Info dialog","Tutorial")}
    y1 += 30
-   
+
    @ 20,y1 BUTTON "hwg_MsgStop()" SIZE 180,28 ;
       ON CLICK {||hwg_MsgStop("Error message","Tutorial")}
    y1 += 30
@@ -349,14 +349,14 @@ Function Test
       ON CLICK {||hwg_MsgRetryCancel("Retry action","Tutorial")}
    y1 += 30
 
-#endif 
+#endif
 
    @ 20,y1 BUTTON "hwg_MsgYesNoCancel()" SIZE 180,28 ;
       ON CLICK {||oSay5:SetText( Ltrim(Str(hwg_MsgYesNoCancel("Do you like it?","Tutorial"))) )}
    @ 230,y1 SAY oSay5 CAPTION "" SIZE 80,24 COLOR 8404992
    y1 += 30
-   
-  
+
+
 
    @ 20,y1 BUTTON "hwg_MsgExclamation()" SIZE 180,28 ;
       ON CLICK {||hwg_MsgExclamation("Happy birthday!","Tutorial")}
@@ -375,7 +375,7 @@ Function Test
    @ 120,oDlg:nHeight-40 BUTTON "Close" SIZE 100,30 ON CLICK {||oDlg:Close()}
 
    ACTIVATE DIALOG oDlg
-  
+
 Return Nil
       ]]>
     </module>
@@ -441,7 +441,7 @@ Local oMainWindow, oPanel, oStatus
 
    INIT WINDOW oMainWindow MAIN TITLE "Example" ;
      AT 200,0 SIZE 420,240
-     
+
    @ 20, 20 SAY "Press button to view current time in status bar" SIZE 380, 26 TRANSPARENT
 
    @ 160,120 BUTTON "Get Time" ;
@@ -476,7 +476,7 @@ Local bCombo1 := {||
    @ 20,20 COMBOBOX oCombo1 ITEMS aCombo1 SIZE 100, 25 ON CHANGE bCombo1
 
    @ 150,20 COMBOBOX oCombo2 ITEMS aCombo2 SIZE 100, 25
-     
+
    @ 150,120 BUTTON "Close" OF oDlg ;
         SIZE 100, 32 ON CLICK {||oDlg:Close()}
 
@@ -498,7 +498,7 @@ Local aSample := { {"Alex",17,1200}, {"Victor",42,1600}, {"John",31,1000} }
          FONT HFont():Add( "MS Sans Serif",0,-13 )
 
    @ 10,20 BROWSE oBrw ARRAY SIZE 280,140 STYLE WS_BORDER + WS_VSCROLL ;
-         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    // hwg_CreateArList() sets the array to browse and creates columns
    // You may use oBrw:AddColumn( HColumn():New(...) ) instead to set
@@ -512,7 +512,7 @@ Local aSample := { {"Alex",17,1200}, {"Victor",42,1600}, {"John",31,1000} }
    oBrw:aColumns[2]:lEditable := .T.
 
    @ 100,180 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:Close() } ;
-         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    ACTIVATE DIALOG oDlg
 Return Nil
@@ -537,7 +537,7 @@ Local oDlg, oTree, oSay
 Return Nil
 
 Static Function BuildTree( oTree, oSay )
-Local oItem 
+Local oItem
 
    INSERT NODE "First" TO oTree ON CLICK {||oSay:SetText("First")}
    INSERT NODE "Second" TO oTree ON CLICK {||oSay:SetText("Second")}
@@ -566,7 +566,7 @@ Local oDlg, oSplitV, oSplitH, oEdit1, oEdit2, oEdit3
    @ 160,10 SPLITTER oSplitV SIZE 3,100 DIVIDE {oEdit1} FROM {oEdit2} LIMITS 100,300
 
    @ 20,113 EDITBOX oEdit3 CAPTION "Example" SIZE 344,130 STYLE ES_MULTILINE ;
-         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    // This horizontal splitter separates twp edot controls and vertical splitter
    // from the third edit control
@@ -612,7 +612,7 @@ Local nTop := Iif( "windows" $ Lower(Os()), 24, 0 )
    END PAGE of oTab
 
    @ 140,220 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:Close() } ;
-         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
 
    ACTIVATE DIALOG oDlg
 
@@ -630,7 +630,7 @@ Return Nil
 
 Function Test
 Local oDlg, oTrack1, oSay1, oTrack2, oSay2, oFont := HFont():Add( "MS Sans Serif",0,-13 )
-Local bVolChange := {|o,n| 
+Local bVolChange := {|o,n|
       HB_SYMBOL_UNUSED( n )
       IF o:lVertical
          oSay2:SetText( Ltrim(Str(o:value)) )
@@ -869,7 +869,7 @@ Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"John",31,15000} }
    @ 0,0 OWNERBUTTON oBtn1 OF oTopPanel SIZE 64,48 ;
          HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Date" ;
          ON CLICK {||hwg_WriteStatus(oDlg,1,Dtoc(Date()),.T.)}
-       
+
    @ 64,0 OWNERBUTTON oBtn2 OF oTopPanel SIZE 64,48 ;
          HSTYLES oStyleNormal, oStylePressed, oStyleOver TEXT "Time" ;
          ON CLICK {||hwg_WriteStatus(oDlg,2,Time(),.T.)}
@@ -879,7 +879,7 @@ Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"John",31,15000} }
          ON CLICK {||hwg_WriteStatus(oDlg,3,hwg_Version(),.T.)}
 
    @ 30,72 BROWSE oBrw ARRAY SIZE 320,140 STYLE WS_BORDER + WS_VSCROLL ;
-         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
    oBrw:oStyleHead := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
    oBrw:aArray := aSample
    oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
@@ -950,7 +950,7 @@ Local bDrawOrd := {|o,h,x1,y1,x2,y2|
    @ 20,16 SAY "Press on a column head to change order" SIZE 340,24 ;
          TRANSPARENT STYLE DT_CENTER COLOR 8404992
    @ 20,40 BROWSE oBrw ARRAY SIZE 340,200 STYLE WS_BORDER + WS_VSCROLL ;
-         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
    oBrw:oStyleHead := oStyle
    oBrw:bcolorSel := 0xeeeeee
    oBrw:tcolorSel := 0
@@ -1095,7 +1095,7 @@ Local bCol2 := {|o,h,x1,y1,x2,y2|
          FONT HFont():Add( "MS Sans Serif",0,-15 )
 
    @ 20,20 BROWSE oBrw ARRAY SIZE 340,280 STYLE WS_BORDER + WS_VSCROLL ;
-         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS 
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
    oBrw:oStyleHead := oStyle
    oBrw:bcolorSel := oBrw:htbColor := 0xeeeeee
    oBrw:tcolorSel := oBrw:httColor := 0
@@ -1199,11 +1199,11 @@ Local nSch := 10
 
 Return Nil
 
-// You find the implementation of 
+// You find the implementation of
 //  CLASS HTrack
 // in source code file
 // htrackbr.prg
-// ( is now part of HWGUI library )  
+// ( is now part of HWGUI library )
 
 ]]>
     </module>
@@ -1277,7 +1277,7 @@ Local upd := 12, d1 := Date()+1
          AT 210,10  SIZE 300,300         ;
          FONT oFont NOEXIT
 
-   SET KEY 0,VK_F3 TO hwg_Msginfo("F3")   
+   SET KEY 0,VK_F3 TO hwg_Msginfo("F3")
 
    @ 20,10 SAY "Input something:" SIZE 260, 22
    @ 20,35 GET oGet VAR e1  ;
@@ -1335,12 +1335,12 @@ Local e7 := "Password"
    INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Get a value"  ;
          AT 210,10  SIZE 300,320 FONT oFont
 
-   SET KEY FSHIFT,VK_F3 TO hwg_Msginfo("Shift-F3") 
-   SET KEY FCONTROL,VK_F3 TO hwg_Msginfo("Ctrl-F3") 
-   SET KEY 0,VK_F3 TO hwg_Msginfo("F3") 
+   SET KEY FSHIFT,VK_F3 TO hwg_Msginfo("Shift-F3")
+   SET KEY FCONTROL,VK_F3 TO hwg_Msginfo("Ctrl-F3")
+   SET KEY 0,VK_F3 TO hwg_Msginfo("F3")
 
    hwg_SetColorinFocus( oDlg,, 13172680 )
-   
+
    @ 20,10 SAY "Input something:" SIZE 260, 22
 
    @ 20,35 GET e1 PICTURE "XXXXXXXXXXXXXXX" ;
@@ -1391,7 +1391,7 @@ Local aSample := { {"Alex",17}, {"Victor",42}, {"John",31} }
          FONT HFont():Add( "MS Sans Serif",0,-13 )
 
    @ 10,20 BROWSE oBrw ARRAY SIZE 180,140 STYLE WS_BORDER + WS_VSCROLL ;
-         ON SIZE ANCHOR_TOPABS + ANCHOR_BOTTOMABS 
+         ON SIZE ANCHOR_TOPABS + ANCHOR_BOTTOMABS
 
    // Set aSample as an array to browse
    oBrw:aArray := aSample
@@ -1408,10 +1408,10 @@ Local aSample := { {"Alex",17}, {"Victor",42}, {"John",31} }
    oBrw:aPadding[2] := oBrw:aPadding[4] := 4
 
    @ 200,20 SAY "Input 1:" SIZE 100, 22
-   @ 200,44 GET s1 SIZE 100, 26 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+   @ 200,44 GET s1 SIZE 100, 26 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    @ 200,80 SAY "Input 2:" SIZE 100, 22
-   @ 200,104 GET s2 SIZE 100, 26 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS 
+   @ 200,104 GET s2 SIZE 100, 26 ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS
 
    @ 110,180 BUTTON 'Close' SIZE 100,28 ON CLICK {|| oDlg:lResult:=.T.,oDlg:Close() } ;
          ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
@@ -1439,7 +1439,7 @@ Function Colors
 
    INIT DIALOG oDlg TITLE "Colors"     ;
         AT 0,0  SIZE 480,310 CLIPPER ON INIT {|| hwg_Settimer(oDlg,oPanel,oEditC,oUpR,oUpG,oUpB,oEditN)}
-       
+
    @ 60, 20 PANEL oPanel SIZE 360, 120 STYLE SS_OWNERDRAW ON SIZE {||.t.}
    oPanel:bPaint := {|o|ppaint(o,oEditN)}
 
@@ -1543,7 +1543,7 @@ Function Gradients
 
    INIT DIALOG oDlg TITLE "Gradients" ;
          AT 0,0 SIZE 1000,500
-     
+
    @ 0,0 PANEL oPanel SIZE 1000,450 STYLE SS_OWNERDRAW ON PAINT {||PPanel(oPanel)}
 
    ACTIVATE DIALOG oDlg CENTER
@@ -1566,14 +1566,14 @@ Function PPanel( oPanel )
 
    hwg_drawGradient( hDC, 730, 20, 900, 76, 1,  { hwg_ColorC2N("7FA40E"), hwg_ColorC2N("B7EF8E")},, {16,16,16,16} )
    hwg_drawGradient( hDC, 730, 92, 900, 148, 1, { hwg_ColorC2N("255779"), hwg_ColorC2N("3E7492"), hwg_ColorC2N("A6C0CD")},, {16,16,16,16} )
-   
-   hwg_drawGradient( hDC, 50, 180, 149, 450, 1, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )   
-   hwg_drawGradient( hDC, 200,180, 299, 450, 2, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )   
+
+   hwg_drawGradient( hDC, 50, 180, 149, 450, 1, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )
+   hwg_drawGradient( hDC, 200,180, 299, 450, 2, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )
 
    hwg_drawGradient( hDC, 350, 180, 949, 280, 3, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )
    hwg_drawGradient( hDC, 350, 300, 949, 400, 4, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0,0.05,0.1,0.15,0.2,0.25,0.3,0.35,0.4,0.9,1} )
    hwg_drawGradient( hDC, 350, 420, 949, 450, 4, {0x99,0,0x9900,0,0x990000,0,0x999900,0,0x9999,0,0x990099}, {0.3,0.35,0.4,0.45,0.5,0.55,0.6,0.65,0.7,0.75,0.8} )
-   
+
    hwg_Endpaint( oPanel:handle, pps )
 
 Return Nil]]>
@@ -1699,6 +1699,7 @@ STATIC FUNCTION Graph2
 #include "hwgui.ch"
 #define CLR_BLUE  16711680
 #define CLR_LGRAY 0xDDDDDD
+#define CLR_WHITE 0xFFFFFF
 
 FUNCTION Test
    LOCAL oDlg, oBoard
@@ -1711,11 +1712,13 @@ FUNCTION Test
    oBoard:cargo := hb_hash()
    oBoard:cargo["p2b"] := HPen():Add( PS_SOLID, 1, CLR_BLUE )
    oBoard:cargo["blg"] := HBrush():Add( CLR_LGRAY )
+   oBoard:cargo["bw"] := HBrush():Add( CLR_WHITE )
 
    ACTIVATE DIALOG oDlg
 
    oBoard:cargo["p2b"]:Release()
    oBoard:cargo["blg"]:Release()
+   oBoard:cargo["bw"]:Release()
 
    RETURN Nil
 
@@ -1724,7 +1727,7 @@ STATIC FUNCTION FPaint( o, hDC )
    hwg_Fillrect( hDC, 0, 0, o:nWidth, o:nHeight, o:brush:handle )
 
    // Draw what you want
-
+   hwg_SelectObject( hDC, o:cargo["bw"]:handle )
    hwg_Rectangle( hDC, 10, 10, 50, 40, o:cargo["p2b"]:handle )
    hwg_Rectangle_Filled( hDC, 60, 10, 100, 40 )
    hwg_Rectangle_Filled( hDC, 110, 10, 150, 40, .F., o:cargo["blg"]:handle )

@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-23 20:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\gtk\draw.c
+    * Synhronized with winapi changes
+  * utils/tutorial/tutor_eng.xml
+    * Module updated "Drawing on the board"
+
 2023-08-23 17:06 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\winapi\draw.c
     * Few drawing functions modified:
@@ -27,7 +33,7 @@
   * source\winapi\hbrowse.prg
     ! Small fix, provided by Andrey Tarasov
   * utils/tutorial/tutor_eng.xml
-    * Module updateded "Drawing on the board"
+    * Module updated "Drawing on the board"
 
 2023-08-21 10:29 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\winapi\hedit.prg

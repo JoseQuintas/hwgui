@@ -38,6 +38,8 @@
 #define LO_NIBBLE    1
 #define MINIMUM(a, b) ((a) < (b) ? (a) : (b))
 
+#define  PS_SOLID   0
+
 extern GtkWidget * hMainWindow;
 extern GtkFixed *getFixedBox( GObject * handle );
 
@@ -72,6 +74,37 @@ void hwg_setcolor( cairo_t * cr, long int nColor )
    cairo_set_source_rgb( cr, ( ( double ) r ) / 255.,
           ( ( double ) g ) / 255., ( ( double ) b ) / 255. );
 
+}
+
+
+void hwg_SelectObject( PHWGUI_HDC hDC, HWGUI_HDC_OBJECT * obj )
+{
+
+   if( obj->type == HWGUI_OBJECT_PEN )
+   {
+      hwg_setcolor( hDC->cr, ((PHWGUI_PEN)obj)->color );
+      cairo_set_line_width( hDC->cr, ((PHWGUI_PEN)obj)->width );
+      if( ((PHWGUI_PEN)obj)->style == PS_SOLID )
+         cairo_set_dash( hDC->cr, NULL, 0, 0 );
+      else
+      {
+         static const double dashed[] = {2.0, 2.0};
+         cairo_set_dash( hDC->cr, dashed, 2, 0 );
+      }
+   }
+   else if( obj->type == HWGUI_OBJECT_BRUSH )
+   {
+      hwg_setcolor( hDC->cr, ((PHWGUI_BRUSH)obj)->color );
+   }
+   else if( obj->type == HWGUI_OBJECT_FONT )
+   {
+      hDC->hFont = ((PHWGUI_FONT)obj)->hFont;
+      pango_layout_set_font_description( hDC->layout, hDC->hFont );
+      if( ((PHWGUI_FONT)obj)->attrs )
+      {
+         pango_layout_set_attributes( hDC->layout, ((PHWGUI_FONT)obj)->attrs );
+      }
+   }
 }
 
 GdkPixbuf * alpha2pixbuf( GdkPixbuf * hPixIn, long int nColor )
@@ -130,26 +163,6 @@ HB_FUNC( HWG_INVALIDATERECT )
 
 }
 
-HB_FUNC( HWG_RECTANGLE )
-{
-   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
-
-   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1,
-        (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
-   cairo_stroke( hDC->cr );
-}
-
-HB_FUNC( HWG_RECTANGLE_FILLED )
-{
-   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
-
-   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1,
-        (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
-   cairo_fill( hDC->cr );
-}
-
 HB_FUNC( HWG_MOVETO )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
@@ -180,22 +193,206 @@ HB_FUNC( HWG_PIE )
 {
 }
 
+HB_FUNC( HWG_RECTANGLE )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
+   PHWGUI_PEN hPen = ( HB_ISNIL( 6 ) ) ? NULL : ( PHWGUI_PEN ) HB_PARHANDLE( 6 );
+
+   if( hPen )
+   {
+      cairo_save( hDC->cr );
+      hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hPen );
+   }
+
+   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1,
+        (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
+   cairo_stroke( hDC->cr );
+
+   if( hPen )
+      cairo_restore( hDC->cr );
+}
+
+HB_FUNC( HWG_RECTANGLE_FILLED )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 );
+   PHWGUI_PEN hPen;
+   PHWGUI_BRUSH hBrush = ( HB_ISNIL( 7 ) ) ? NULL : (PHWGUI_BRUSH) HB_PARHANDLE( 7 );
+   int bNullPen = 0;
+   int bSave = ( ( !HB_ISNIL( 6 ) && !HB_ISLOG( 6 ) ) || !HB_ISNIL( 7 ) );
+
+   if( bSave )
+      cairo_save( hDC->cr );
+
+   if( hBrush )
+      hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hBrush );
+
+   cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1,
+        (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
+   cairo_fill( hDC->cr );
+
+   if( !HB_ISNIL( 6 ) )
+   {
+      if( HB_ISLOG( 6 ) )
+      {
+         if( !hb_parl(6) )
+            bNullPen = 1;
+      }
+      else
+      {
+         hPen = (PHWGUI_PEN) HB_PARHANDLE( 6 );
+         hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hPen );
+      }
+   }
+   if( !bNullPen )
+   {
+      cairo_rectangle( hDC->cr, (gdouble)x1, (gdouble)y1,
+           (gdouble)(hb_parni(4)-x1+1), (gdouble)(hb_parni(5)-y1+1) );
+      cairo_stroke( hDC->cr );
+   }
+
+   if( bSave )
+      cairo_restore( hDC->cr );
+}
+
 HB_FUNC( HWG_ELLIPSE )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
+   PHWGUI_PEN hPen = ( HB_ISNIL( 6 ) ) ? NULL : ( PHWGUI_PEN ) HB_PARHANDLE( 6 );
+
+   if( hPen )
+   {
+      cairo_save( hDC->cr );
+      hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hPen );
+   }
 
    cairo_arc( hDC->cr, (double)x1+(x2-x1)/2, (double)y1+(y2-y1)/2, (double) (x2-x1)/2, 0, 6.28 );
    cairo_stroke( hDC->cr );
+
+   if( hPen )
+      cairo_restore( hDC->cr );
 }
 
 HB_FUNC( HWG_ELLIPSE_FILLED )
 {
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
+   PHWGUI_BRUSH hBrush = ( HB_ISNIL( 7 ) ) ? NULL : (PHWGUI_BRUSH) HB_PARHANDLE( 7 );
+   PHWGUI_PEN hPen;
+   int bNullPen = 0;
+   int bSave = ( ( !HB_ISNIL( 6 ) && !HB_ISLOG( 6 ) ) || !HB_ISNIL( 7 ) );
+
+   if( bSave )
+      cairo_save( hDC->cr );
+
+   if( hBrush )
+      hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hBrush );
 
    cairo_arc( hDC->cr, (double)x1+(x2-x1)/2, (double)y1+(y2-y1)/2, (double) (x2-x1)/2, 0, 6.28 );
    cairo_fill( hDC->cr );
+
+   if( !HB_ISNIL( 6 ) )
+   {
+      if( HB_ISLOG( 6 ) )
+      {
+         if( !hb_parl(6) )
+            bNullPen = 1;
+      }
+      else
+      {
+         hPen = (PHWGUI_PEN) HB_PARHANDLE( 6 );
+         hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hPen );
+      }
+   }
+   if( !bNullPen )
+   {
+      cairo_arc( hDC->cr, (double)x1+(x2-x1)/2, (double)y1+(y2-y1)/2, (double) (x2-x1)/2, 0, 6.28 );
+      cairo_stroke( hDC->cr );
+   }
+
+   if( bSave )
+      cairo_restore( hDC->cr );
+
+}
+
+HB_FUNC( HWG_ROUNDRECT )
+{
+
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
+   gdouble radius = hb_parnd( 6 );
+   PHWGUI_PEN hPen = ( HB_ISNIL( 7 ) ) ? NULL : ( PHWGUI_PEN ) HB_PARHANDLE( 7 );
+
+   if( hPen )
+   {
+      cairo_save( hDC->cr );
+      hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hPen );
+   }
+
+   cairo_new_sub_path( hDC->cr );
+   cairo_arc( hDC->cr, x1+radius, y1+radius, radius, M_PI, 3*M_PI/2 );
+   cairo_arc( hDC->cr, x2-radius, y1+radius, radius, 3*M_PI/2, 0 );
+   cairo_arc( hDC->cr, x2-radius, y2-radius, radius, 0, M_PI/2 );
+   cairo_arc( hDC->cr, x1+radius, y2-radius, radius, M_PI/2, M_PI );
+   cairo_close_path(hDC->cr);
+   cairo_stroke( hDC->cr );
+
+   if( hPen )
+      cairo_restore( hDC->cr );
+}
+
+HB_FUNC( HWG_ROUNDRECT_FILLED )
+{
+
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
+   gdouble radius = hb_parnd( 6 );
+   PHWGUI_BRUSH brush = ( HB_ISNIL( 8 ) ) ? NULL : (PHWGUI_BRUSH) HB_PARHANDLE(8);
+   PHWGUI_PEN hPen;
+   int bNullPen = 0;
+   int bSave = ( ( !HB_ISNIL( 7 ) && !HB_ISLOG( 7 ) ) || !HB_ISNIL( 8 ) );
+
+   if( bSave )
+      cairo_save( hDC->cr );
+
+   cairo_new_sub_path( hDC->cr );
+   if( brush )
+      hwg_setcolor( hDC->cr, brush->color );
+   cairo_arc( hDC->cr, x1+radius, y1+radius, radius, M_PI, 3*M_PI/2 );
+   cairo_arc( hDC->cr, x2-radius, y1+radius, radius, 3*M_PI/2, 0 );
+   cairo_arc( hDC->cr, x2-radius, y2-radius, radius, 0, M_PI/2 );
+   cairo_arc( hDC->cr, x1+radius, y2-radius, radius, M_PI/2, M_PI );
+   cairo_close_path(hDC->cr);
+   cairo_fill( hDC->cr );
+
+   if( !HB_ISNIL( 7 ) )
+   {
+      if( HB_ISLOG( 7 ) )
+      {
+         if( !hb_parl(7) )
+            bNullPen = 1;
+      }
+      else
+      {
+         hPen = (PHWGUI_PEN) HB_PARHANDLE( 7 );
+         hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hPen );
+      }
+   }
+   if( !bNullPen )
+   {
+      cairo_arc( hDC->cr, x1+radius, y1+radius, radius, M_PI, 3*M_PI/2 );
+      cairo_arc( hDC->cr, x2-radius, y1+radius, radius, 3*M_PI/2, 0 );
+      cairo_arc( hDC->cr, x2-radius, y2-radius, radius, 0, M_PI/2 );
+      cairo_arc( hDC->cr, x1+radius, y2-radius, radius, M_PI/2, M_PI );
+      cairo_close_path(hDC->cr);
+      cairo_stroke( hDC->cr );
+   }
+
+   if( bSave )
+      cairo_restore( hDC->cr );
+
 }
 
 /*
@@ -258,41 +455,6 @@ HB_FUNC( HWG_ARC )
    cairo_arc( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
    //cairo_close_path(hDC->cr);
    cairo_stroke( hDC->cr );
-}
-
-HB_FUNC( HWG_ROUNDRECT )
-{
-
-   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
-   gdouble radius = hb_parnd( 6 );
-
-   cairo_new_sub_path( hDC->cr );
-   cairo_arc( hDC->cr, x1+radius, y1+radius, radius, M_PI, 3*M_PI/2 );
-   cairo_arc( hDC->cr, x2-radius, y1+radius, radius, 3*M_PI/2, 0 );
-   cairo_arc( hDC->cr, x2-radius, y2-radius, radius, 0, M_PI/2 );
-   cairo_arc( hDC->cr, x1+radius, y2-radius, radius, M_PI/2, M_PI );
-   cairo_close_path(hDC->cr);
-   cairo_stroke( hDC->cr );
-}
-
-HB_FUNC( HWG_ROUNDRECT_FILLED )
-{
-
-   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
-   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 ), x2 = hb_parnd( 4 ), y2 = hb_parnd( 5 );
-   gdouble radius = hb_parnd( 6 );
-   PHWGUI_BRUSH brush = ( HB_ISNIL( 8 ) ) ? NULL : (PHWGUI_BRUSH) HB_PARHANDLE(8);
-
-   cairo_new_sub_path( hDC->cr );
-   if( brush )
-      hwg_setcolor( hDC->cr, brush->color );
-   cairo_arc( hDC->cr, x1+radius, y1+radius, radius, M_PI, 3*M_PI/2 );
-   cairo_arc( hDC->cr, x2-radius, y1+radius, radius, 3*M_PI/2, 0 );
-   cairo_arc( hDC->cr, x2-radius, y2-radius, radius, 0, M_PI/2 );
-   cairo_arc( hDC->cr, x1+radius, y2-radius, radius, M_PI/2, M_PI );
-   cairo_close_path(hDC->cr);
-   cairo_fill( hDC->cr );
 }
 
 HB_FUNC( HWG_REDRAWWINDOW )
@@ -666,8 +828,6 @@ HB_FUNC( HWG_GETSYSCOLOR )
    else
       hb_retnl( 0 );
 }
-
-#define  PS_SOLID   0
 
 HB_FUNC( HWG_CREATEPEN )
 {

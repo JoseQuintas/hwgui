@@ -243,32 +243,225 @@ HB_FUNC( HWG_LINETO )
    LineTo( hDC, x1, y1 );
 }
 
+HB_FUNC( HWG_DRAWLINE )
+{
+   MoveToEx( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ), NULL );
+   LineTo( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 4 ), hb_parni( 5 ) );
+}
+
 HB_FUNC( HWG_RECTANGLE )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
-   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 =
-         hb_parni( 5 );
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
+   HPEN hPen = ( HB_ISNIL( 6 ) ) ? NULL : ( HPEN ) HB_PARHANDLE( 6 );
+   HPEN hOldPen = NULL;
+
+   if( hPen )
+      hOldPen = (HPEN) SelectObject( hDC, hPen );
+
    MoveToEx( hDC, x1, y1, NULL );
    LineTo( hDC, x2, y1 );
    LineTo( hDC, x2, y2 );
    LineTo( hDC, x1, y2 );
    LineTo( hDC, x1, y1 );
+
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+
 }
 
 HB_FUNC( HWG_RECTANGLE_FILLED )
 {
-   Rectangle( ( HDC ) HB_PARHANDLE( 1 ),        // handle of device context
+   HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
+   HPEN hPen = NULL, hOldPen = NULL;
+   HBRUSH hBrush = ( HB_ISNIL( 7 ) ) ? NULL : (HBRUSH) HB_PARHANDLE( 7 );
+   HBRUSH hOldBrush = NULL;
+   int bNullPen = 0;
+
+   if( !HB_ISNIL( 6 ) )
+   {
+      if( HB_ISLOG( 6 ) )
+      {
+         if( !hb_parl(6) )
+         {
+            hPen = (HPEN) GetStockObject( NULL_PEN );
+            hOldPen = (HPEN) SelectObject( hDC, hPen );
+            bNullPen = 1;
+         }
+      }
+      else
+      {
+         hPen = ( HPEN ) HB_PARHANDLE( 6 );
+         hOldPen = (HPEN) SelectObject( hDC, hPen );
+      }
+   }
+   if( hBrush )
+      hOldBrush = (HBRUSH) SelectObject( hDC, hBrush );
+
+   Rectangle( hDC,              // handle of device context
          hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
          hb_parni( 3 ),         // y-coord. of bounding rectangle's upper-left corner
          hb_parni( 4 ),         // x-coord. of bounding rectangle's lower-right corner
          hb_parni( 5 )          // y-coord. of bounding rectangle's lower-right corner
           );
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+   if( bNullPen )
+      DeleteObject( hPen );
+   if( hOldBrush )
+      SelectObject( hDC, hOldBrush );
+
 }
 
-HB_FUNC( HWG_DRAWLINE )
+HB_FUNC( HWG_ELLIPSE )
 {
-   MoveToEx( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 2 ), hb_parni( 3 ), NULL );
-   LineTo( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 4 ), hb_parni( 5 ) );
+   HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
+   HBRUSH hBrush = (HBRUSH) GetStockObject( NULL_BRUSH );
+   HBRUSH hOldBrush = (HBRUSH) SelectObject( hDC, hBrush );
+   HPEN hPen = ( HB_ISNIL( 6 ) ) ? NULL : ( HPEN ) HB_PARHANDLE( 6 );
+   HPEN hOldPen = NULL;
+   int res;
+
+   if( hPen )
+      hOldPen = (HPEN) SelectObject( hDC, hPen );
+
+   res = Ellipse( hDC,      // handle to device context
+         hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
+         hb_parni( 3 ),         // y-coord. of bounding rectangle's upper-left corner
+         hb_parni( 4 ),         // x-coord. of bounding rectangle's lower-right corner
+         hb_parni( 5 )          // y-coord. bounding rectangle's f lower-right corner
+          );
+
+   hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+   SelectObject(hDC, hOldBrush);
+   DeleteObject( hBrush );
+}
+
+HB_FUNC( HWG_ELLIPSE_FILLED )
+{
+   HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
+   HBRUSH hBrush = ( HB_ISNIL( 7 ) ) ? NULL : (HBRUSH) HB_PARHANDLE( 7 );
+   HBRUSH hOldBrush = NULL;
+   HPEN hPen = NULL, hOldPen = NULL;
+   int bNullPen = 0;
+   int res;
+
+   if( !HB_ISNIL( 6 ) )
+   {
+      if( HB_ISLOG( 6 ) )
+      {
+         if( !hb_parl(6) )
+         {
+            hPen = (HPEN) GetStockObject( NULL_PEN );
+            hOldPen = (HPEN) SelectObject( hDC, hPen );
+            bNullPen = 1;
+         }
+      }
+      else
+      {
+         hPen = ( HPEN ) HB_PARHANDLE( 6 );
+         hOldPen = (HPEN) SelectObject( hDC, hPen );
+      }
+   }
+   if( hBrush )
+      hOldBrush = (HBRUSH) SelectObject( hDC, hBrush );
+
+   res = Ellipse( hDC,      // handle to device context
+         hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
+         hb_parni( 3 ),         // y-coord. of bounding rectangle's upper-left corner
+         hb_parni( 4 ),         // x-coord. of bounding rectangle's lower-right corner
+         hb_parni( 5 )          // y-coord. bounding rectangle's f lower-right corner
+          );
+
+   hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+   if( bNullPen )
+      DeleteObject( hPen );
+   if( hOldBrush )
+      SelectObject( hDC, hOldBrush );
+}
+
+/*
+ * hwg_RoundRect( hDC, x1, y1, x2, y2, iRadius [, hPen | lPen] )
+ */
+HB_FUNC( HWG_ROUNDRECT )
+{
+   HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
+   int iWidth = hb_parni( 6 );
+   HBRUSH hBrush = (HBRUSH) GetStockObject( NULL_BRUSH );
+   HBRUSH hOldBrush = (HBRUSH) SelectObject( hDC, hBrush );
+   HPEN hPen = ( HB_ISNIL( 7 ) ) ? NULL : ( HPEN ) HB_PARHANDLE( 7 );
+   HPEN hOldPen = NULL;
+
+   if( hPen )
+      hOldPen = (HPEN) SelectObject( hDC, hPen );
+
+   hb_parl( RoundRect( hDC,       // handle of device context
+               hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner
+               hb_parni( 3 ),   // y-coord. of bounding rectangle's upper-left corner
+               hb_parni( 4 ),   // x-coord. of bounding rectangle's lower-right corner
+               hb_parni( 5 ),   // y-coord. of bounding rectangle's lower-right corner
+               iWidth * 2,      // width of ellipse used to draw rounded corners
+               iWidth * 2       // height of ellipse used to draw rounded corners
+          ) );
+
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+    SelectObject(hDC, hOldBrush);
+    DeleteObject(hBrush);
+}
+
+/*
+ * hwg_RoundRect_Filled( hDC, x1, y1, x2, y2, iRadius [, hPen | lPen] [, hBrush] )
+ */
+HB_FUNC( HWG_ROUNDRECT_FILLED )
+{
+   HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
+   int iWidth = hb_parni( 6 );
+   HBRUSH hBrush = ( HB_ISNIL( 8 ) ) ? NULL : ( HBRUSH ) HB_PARHANDLE( 8 );
+   HBRUSH hOldBrush = NULL;
+   HPEN hPen = NULL, hOldPen = NULL;
+   int bNullPen = 0;
+
+   if( !HB_ISNIL( 7 ) )
+   {
+      if( HB_ISLOG( 7 ) )
+      {
+         if( !hb_parl(7) )
+         {
+            hPen = (HPEN) GetStockObject( NULL_PEN );
+            hOldPen = (HPEN) SelectObject( hDC, hPen );
+            bNullPen = 1;
+         }
+      }
+      else
+      {
+         hPen = ( HPEN ) HB_PARHANDLE( 7 );
+         hOldPen = (HPEN) SelectObject( hDC, hPen );
+      }
+   }
+   if( hBrush )
+      hOldBrush = (HBRUSH) SelectObject( hDC, hBrush);
+
+   hb_parl( RoundRect( hDC,     // handle of device context
+               hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner
+               hb_parni( 3 ),   // y-coord. of bounding rectangle's upper-left corner
+               hb_parni( 4 ),   // x-coord. of bounding rectangle's lower-right corner
+               hb_parni( 5 ),   // y-coord. of bounding rectangle's lower-right corner
+               iWidth * 2,      // width of ellipse used to draw rounded corners
+               iWidth * 2       // height of ellipse used to draw rounded corners
+          ) );
+
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+   if( bNullPen )
+      DeleteObject( hPen );
+   if( hOldBrush )
+      SelectObject( hDC, hOldBrush );
+
 }
 
 HB_FUNC( HWG_PIE )
@@ -282,35 +475,6 @@ HB_FUNC( HWG_PIE )
          hb_parni( 7 ),         // y-coord. of first radial's endpoint
          hb_parni( 8 ),         // x-coord. of second radial's endpoint
          hb_parni( 9 )          // y-coord. of second radial's endpoint
-          );
-
-   hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
-}
-
-HB_FUNC( HWG_ELLIPSE )
-{
-   HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
-   HBRUSH hBrush = (HBRUSH) GetStockObject( NULL_BRUSH );
-   HBRUSH hOldBrush = (HBRUSH) SelectObject( hdc, hBrush );
-   int res = Ellipse( hdc,      // handle to device context
-         hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
-         hb_parni( 3 ),         // y-coord. of bounding rectangle's upper-left corner
-         hb_parni( 4 ),         // x-coord. of bounding rectangle's lower-right corner
-         hb_parni( 5 )          // y-coord. bounding rectangle's f lower-right corner
-          );
-
-   hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
-   SelectObject(hdc, hOldBrush);
-   DeleteObject(hBrush);
-}
-
-HB_FUNC( HWG_ELLIPSE_FILLED )
-{
-   int res = Ellipse( ( HDC ) HB_PARHANDLE( 1 ),        // handle to device context
-         hb_parni( 2 ),         // x-coord. of bounding rectangle's upper-left corner
-         hb_parni( 3 ),         // y-coord. of bounding rectangle's upper-left corner
-         hb_parni( 4 ),         // x-coord. of bounding rectangle's lower-right corner
-         hb_parni( 5 )          // y-coord. bounding rectangle's f lower-right corner
           );
 
    hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
@@ -366,57 +530,6 @@ HB_FUNC( HWG_ARC )
       (DWORD) radius,
       (FLOAT) iAngle2,
       (FLOAT) iAngle1 );
-}
-
-/*
- * hwg_RoundRect( hDC, x1, y1, x2, y2, iRadiusH [, iRadiusV] )
- */
-HB_FUNC( HWG_ROUNDRECT )
-{
-   HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
-   int iWidth = hb_parni( 6 );
-   int iHeight = ( HB_ISNIL( 7 ) ) ? iWidth : hb_parni( 7 );
-   HBRUSH hBrush = (HBRUSH) GetStockObject( NULL_BRUSH );
-   HBRUSH hOldBrush = (HBRUSH) SelectObject( hdc, hBrush );
-
-   hb_parl( RoundRect( hdc,       // handle of device context
-               hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner
-               hb_parni( 3 ),   // y-coord. of bounding rectangle's upper-left corner
-               hb_parni( 4 ),   // x-coord. of bounding rectangle's lower-right corner
-               hb_parni( 5 ),   // y-coord. of bounding rectangle's lower-right corner
-               iWidth * 2,      // width of ellipse used to draw rounded corners
-               iHeight * 2      // height of ellipse used to draw rounded corners
-          ) );
-    SelectObject(hdc, hOldBrush);
-    DeleteObject(hBrush);
-}
-
-/*
- * hwg_RoundRect_Filled( hDC, x1, y1, x2, y2, iRadiusH [, iRadiusV] [, hBrush] )
- */
-HB_FUNC( HWG_ROUNDRECT_FILLED )
-{
-   HDC hdc = ( HDC ) HB_PARHANDLE( 1 );
-   int iWidth = hb_parni( 6 );
-   int iHeight = ( HB_ISNIL( 7 ) ) ? iWidth : hb_parni( 7 );
-   HBRUSH hBrush = ( HB_ISNIL( 8 ) ) ? NULL : ( HBRUSH ) HB_PARHANDLE( 8 );
-   HBRUSH hOldBrush = NULL;
-
-   if( hBrush )
-      hOldBrush = (HBRUSH) SelectObject( hdc, hBrush);
-
-   hb_parl( RoundRect( hdc,     // handle of device context
-               hb_parni( 2 ),   // x-coord. of bounding rectangle's upper-left corner
-               hb_parni( 3 ),   // y-coord. of bounding rectangle's upper-left corner
-               hb_parni( 4 ),   // x-coord. of bounding rectangle's lower-right corner
-               hb_parni( 5 ),   // y-coord. of bounding rectangle's lower-right corner
-               iWidth * 2,      // width of ellipse used to draw rounded corners
-               iHeight * 2      // height of ellipse used to draw rounded corners
-          ) );
-
-   if( hOldBrush )
-      SelectObject( hdc, hOldBrush );
-
 }
 
 HB_FUNC( HWG_REDRAWWINDOW )

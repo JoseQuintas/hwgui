@@ -1697,6 +1697,8 @@ STATIC FUNCTION Graph2
     <module name="Drawing on the board">
       <![CDATA[// Board and drawn items
 #include "hwgui.ch"
+#define CLR_BLUE  16711680
+#define CLR_LGRAY 0xDDDDDD
 
 FUNCTION Test
    LOCAL oDlg, oBoard
@@ -1706,7 +1708,14 @@ FUNCTION Test
    @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR 0x999999 ;
       ON PAINT {|o,h|FPaint(o,h)} ON SIZE {|o,x,y|o:Move(,,x-8,y-8)}
 
+   oBoard:cargo := hb_hash()
+   oBoard:cargo["p2b"] := HPen():Add( PS_SOLID, 1, CLR_BLUE )
+   oBoard:cargo["blg"] := HBrush():Add( CLR_LGRAY )
+
    ACTIVATE DIALOG oDlg
+
+   oBoard:cargo["p2b"]:Release()
+   oBoard:cargo["blg"]:Release()
 
    RETURN Nil
 
@@ -1716,7 +1725,15 @@ STATIC FUNCTION FPaint( o, hDC )
 
    // Draw what you want
 
-   hwg_RoundRect( hDC, 10, 10, 40, 40, 4 )
+   hwg_Rectangle( hDC, 10, 10, 50, 40, o:cargo["p2b"]:handle )
+   hwg_Rectangle_Filled( hDC, 60, 10, 100, 40 )
+   hwg_Rectangle_Filled( hDC, 110, 10, 150, 40, .F., o:cargo["blg"]:handle )
+
+   hwg_Ellipse( hDC, 160, 10, 200, 40 )
+   hwg_Ellipse_Filled( hDC, 210, 10, 250, 40 )
+
+   hwg_RoundRect( hDC, 10, 50, 50, 80, 4 )
+   hwg_Roundrect_Filled( hDC, 60, 50, 100, 80, 4 )
 
    RETURN Nil
 ]]>

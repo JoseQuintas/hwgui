@@ -788,6 +788,9 @@ METHOD Paint( lLostFocus )  CLASS HBrowse
          tmp := Eval( ::bRecno, Self )
          IF ::rowPos > 1
             Eval( ::bSkip, Self, - ( ::rowPos - 1 ) )
+            IF Eval( ::bBof, Self )
+               Eval( ::bGoTop, Self )
+            ENDIF
          ENDIF
          i := 1
          l := .F.

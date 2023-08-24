@@ -250,7 +250,7 @@ HB_FUNC( HWG_DRAWLINE )
 }
 
 /*
- * hwg_Triangle( hDC, x1, y1, x2, y2, x3, y3 [, hPen | lPen] )
+ * hwg_Triangle( hDC, x1, y1, x2, y2, x3, y3 [, hPen] )
  */
 HB_FUNC( HWG_TRIANGLE )
 {
@@ -324,7 +324,7 @@ HB_FUNC( HWG_TRIANGLE_FILLED )
 }
 
 /*
- * hwg_Rectangle( hDC, x1, y1, x2, y2 [, hPen | lPen] )
+ * hwg_Rectangle( hDC, x1, y1, x2, y2 [, hPen] )
  */
 HB_FUNC( HWG_RECTANGLE )
 {
@@ -394,7 +394,7 @@ HB_FUNC( HWG_RECTANGLE_FILLED )
 }
 
 /*
- * hwg_Ellipse( hDC, x1, y1, x2, y2 [, hPen | lPen] )
+ * hwg_Ellipse( hDC, x1, y1, x2, y2 [, hPen] )
  */
 HB_FUNC( HWG_ELLIPSE )
 {
@@ -471,7 +471,7 @@ HB_FUNC( HWG_ELLIPSE_FILLED )
 }
 
 /*
- * hwg_RoundRect( hDC, x1, y1, x2, y2, iRadius [, hPen | lPen] )
+ * hwg_RoundRect( hDC, x1, y1, x2, y2, iRadius [, hPen] )
  */
 HB_FUNC( HWG_ROUNDRECT )
 {
@@ -540,6 +540,87 @@ HB_FUNC( HWG_ROUNDRECT_FILLED )
                iWidth * 2,      // width of ellipse used to draw rounded corners
                iWidth * 2       // height of ellipse used to draw rounded corners
           ) );
+
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+   if( bNullPen )
+      DeleteObject( hPen );
+   if( hOldBrush )
+      SelectObject( hDC, hOldBrush );
+
+}
+
+/*
+ * hwg_CircleSector( hDC, xc, yc, radius, iAngleStart, iAngleEnd [, hPen] )
+ * Draws a circle sector with a center in xc, yc, with a radius from an angle
+ * iAngleStart to iAngleEnd. Angles are passed in degrees.
+ */
+HB_FUNC( HWG_CIRCLESECTOR )
+{
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
+   int xc = hb_parni(2), yc = hb_parni(3);
+   int radius = hb_parni(4);
+   int iAngle1 = hb_parni(5), iAngle2 = hb_parni(6);
+   HPEN hPen = ( HB_ISNIL( 7 ) ) ? NULL : ( HPEN ) HB_PARHANDLE( 7 );
+   HPEN hOldPen = NULL;
+
+   if( hPen )
+      hOldPen = (HPEN) SelectObject( hDC, hPen );
+
+   BeginPath( hDC );
+   MoveToEx( hDC, xc, yc, (LPPOINT) NULL );
+   AngleArc( hDC, xc, yc, radius, iAngle1, iAngle2 );
+   LineTo( hDC, xc, yc );
+   EndPath( hDC );
+   StrokePath( hDC );
+
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+
+}
+
+/*
+ * hwg_CircleSector_Filled( hDC, xc, yc, radius, iAngleStart, iAngleEnd  [, hPen | lPen] [, hBrush] )
+ * Draws a circle sector with a center in xc, yc, with a radius from an angle
+ * iAngleStart to iAngleEnd. Angles are passed in degrees.
+ */
+HB_FUNC( HWG_CIRCLESECTOR_FILLED )
+{
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
+   int xc = hb_parni(2), yc = hb_parni(3);
+   int radius = hb_parni(4);
+   int iAngle1 = hb_parni(5), iAngle2 = hb_parni(6);
+   HBRUSH hBrush = ( HB_ISNIL( 8 ) ) ? NULL : ( HBRUSH ) HB_PARHANDLE( 8 );
+   HBRUSH hOldBrush = NULL;
+   HPEN hPen = NULL, hOldPen = NULL;
+   int bNullPen = 0;
+
+   if( !HB_ISNIL( 7 ) )
+   {
+      if( HB_ISLOG( 7 ) )
+      {
+         if( !hb_parl(7) )
+         {
+            hPen = (HPEN) GetStockObject( NULL_PEN );
+            hOldPen = (HPEN) SelectObject( hDC, hPen );
+            bNullPen = 1;
+         }
+      }
+      else
+      {
+         hPen = ( HPEN ) HB_PARHANDLE( 7 );
+         hOldPen = (HPEN) SelectObject( hDC, hPen );
+      }
+   }
+   if( hBrush )
+      hOldBrush = (HBRUSH) SelectObject( hDC, hBrush);
+
+   BeginPath( hDC );
+   MoveToEx( hDC, xc, yc, (LPPOINT) NULL );
+   AngleArc( hDC, xc, yc, radius, iAngle1, iAngle2 );
+   LineTo( hDC, xc, yc );
+   EndPath( hDC );
+   StrokeAndFillPath( hDC );
 
    if( hOldPen )
       SelectObject( hDC, hOldPen );

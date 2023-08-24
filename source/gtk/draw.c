@@ -197,7 +197,7 @@ HB_FUNC( HWG_PIE )
 }
 
 /*
- * hwg_Triangle( hDC, x1, y1, x2, y2, x3, y3 [, hPen | lPen] )
+ * hwg_Triangle( hDC, x1, y1, x2, y2, x3, y3 [, hPen] )
  */
 HB_FUNC( HWG_TRIANGLE )
 {
@@ -284,7 +284,7 @@ HB_FUNC( HWG_TRIANGLE_FILLED )
 }
 
 /*
- * hwg_Rectangle( hDC, x1, y1, x2, y2 [, hPen | lPen] )
+ * hwg_Rectangle( hDC, x1, y1, x2, y2 [, hPen] )
  */
 HB_FUNC( HWG_RECTANGLE )
 {
@@ -359,7 +359,7 @@ HB_FUNC( HWG_RECTANGLE_FILLED )
 }
 
 /*
- * hwg_Ellipse( hDC, x1, y1, x2, y2 [, hPen | lPen] )
+ * hwg_Ellipse( hDC, x1, y1, x2, y2 [, hPen] )
  */
 HB_FUNC( HWG_ELLIPSE )
 {
@@ -432,7 +432,7 @@ HB_FUNC( HWG_ELLIPSE_FILLED )
 }
 
 /*
- * hwg_RoundRect( hDC, x1, y1, x2, y2, iRadius [, hPen | lPen] )
+ * hwg_RoundRect( hDC, x1, y1, x2, y2, iRadius [, hPen] )
  */
 HB_FUNC( HWG_ROUNDRECT )
 {
@@ -519,6 +519,80 @@ HB_FUNC( HWG_ROUNDRECT_FILLED )
 
    //if( bSave )
    //   cairo_restore( hDC->cr );
+}
+
+/*
+ * hwg_CircleSector( hDC, xc, yc, radius, iAngleStart, iAngleEnd [, hPen] )
+ * Draws a circle sector with a center in xc, yc, with a radius from an angle
+ */
+HB_FUNC( HWG_CIRCLESECTOR )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 );
+   gdouble radius = hb_parnd( 4 );
+   int iAngle1 = -hb_parni(5), iAngle2 = iAngle1-hb_parni(6);
+   PHWGUI_PEN hPen = ( HB_ISNIL( 7 ) ) ? NULL : ( PHWGUI_PEN ) HB_PARHANDLE( 7 );
+
+   if( hPen )
+      hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hPen );
+   else
+      hwg_setcolor( hDC->cr, nCurrPenClr );
+
+   cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
+   cairo_line_to ( hDC->cr, x1, y1 );
+   cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
+   cairo_line_to ( hDC->cr, x1, y1 );
+   cairo_stroke ( hDC->cr );
+}
+
+/*
+ * hwg_CircleSector_Filled( hDC, xc, yc, radius, iAngleStart, iAngleEnd [, hPen] )
+ * Draws a circle sector with a center in xc, yc, with a radius from an angle
+ */
+HB_FUNC( HWG_CIRCLESECTOR_FILLED )
+{
+   PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
+   gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 );
+   gdouble radius = hb_parnd( 4 );
+   int iAngle1 = hb_parni(5), iAngle2 = hb_parni(6);
+   PHWGUI_BRUSH brush = ( HB_ISNIL( 8 ) ) ? NULL : (PHWGUI_BRUSH) HB_PARHANDLE(8);
+   PHWGUI_PEN hPen = NULL;
+   int bNullPen = 0;
+
+   if( brush )
+      hwg_setcolor( hDC->cr, brush->color );
+   else
+      hwg_setcolor( hDC->cr, nCurrBrushClr );
+
+   cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
+   cairo_line_to ( hDC->cr, x1, y1 );
+   cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
+   cairo_line_to ( hDC->cr, x1, y1 );
+   cairo_fill( hDC->cr );
+
+   if( !HB_ISNIL( 7 ) )
+   {
+      if( HB_ISLOG( 7 ) )
+      {
+         if( !hb_parl(7) )
+            bNullPen = 1;
+      }
+      else
+      {
+         hPen = (PHWGUI_PEN) HB_PARHANDLE( 7 );
+         hwg_SelectObject( hDC, (HWGUI_HDC_OBJECT*)hPen );
+      }
+   }
+   if( !bNullPen )
+   {
+      if( !hPen )
+         hwg_setcolor( hDC->cr, nCurrPenClr );
+      cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
+      cairo_line_to ( hDC->cr, x1, y1 );
+      cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
+      cairo_line_to ( hDC->cr, x1, y1 );
+      cairo_stroke( hDC->cr );
+   }
 
 }
 

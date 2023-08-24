@@ -1749,6 +1749,9 @@ STATIC FUNCTION FPaint( o, hDC )
    hwg_RoundRect( hDC, 10, 50, 50, 80, 4 )
    hwg_Roundrect_Filled( hDC, 60, 50, 100, 80, 4 )
 
+   hwg_CircleSector( hDC, 30, 120, 20, 10, 45 )
+   hwg_CircleSector( hDC, 60, 120, 20, 10, -45 )
+
    RETURN Nil
 ]]>
     </module>

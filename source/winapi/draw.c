@@ -249,6 +249,83 @@ HB_FUNC( HWG_DRAWLINE )
    LineTo( ( HDC ) HB_PARHANDLE( 1 ), hb_parni( 4 ), hb_parni( 5 ) );
 }
 
+/*
+ * hwg_Triangle( hDC, x1, y1, x2, y2, x3, y3 [, hPen | lPen] )
+ */
+HB_FUNC( HWG_TRIANGLE )
+{
+   HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
+   int x1 = hb_parni( 2 ), y1 = hb_parni( 3 ), x2 = hb_parni( 4 ), y2 = hb_parni( 5 );
+   int x3 = hb_parni( 6 ), y3 = hb_parni( 7 );
+   HPEN hPen = ( HB_ISNIL( 8 ) ) ? NULL : ( HPEN ) HB_PARHANDLE( 8 );
+   HPEN hOldPen = NULL;
+
+   if( hPen )
+      hOldPen = (HPEN) SelectObject( hDC, hPen );
+
+   MoveToEx( hDC, x1, y1, NULL );
+   LineTo( hDC, x2, y2 );
+   LineTo( hDC, x3, y3 );
+   LineTo( hDC, x1, y1 );
+
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+
+}
+
+/*
+ * hwg_Triangle_Filled( hDC, x1, y1, x2, y2, x3, y3 [, hPen | lPen] [, hBrush] )
+ */
+HB_FUNC( HWG_TRIANGLE_FILLED )
+{
+   HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
+   POINT apt[3];
+   HPEN hPen = NULL, hOldPen = NULL;
+   HBRUSH hBrush = ( HB_ISNIL( 9 ) ) ? NULL : (HBRUSH) HB_PARHANDLE( 9 );
+   HBRUSH hOldBrush = NULL;
+   int bNullPen = 0;
+
+   if( !HB_ISNIL( 8 ) )
+   {
+      if( HB_ISLOG( 8 ) )
+      {
+         if( !hb_parl(8) )
+         {
+            hPen = (HPEN) GetStockObject( NULL_PEN );
+            hOldPen = (HPEN) SelectObject( hDC, hPen );
+            bNullPen = 1;
+         }
+      }
+      else
+      {
+         hPen = ( HPEN ) HB_PARHANDLE( 8 );
+         hOldPen = (HPEN) SelectObject( hDC, hPen );
+      }
+   }
+   if( hBrush )
+      hOldBrush = (HBRUSH) SelectObject( hDC, hBrush );
+
+   apt[0].x = (long) hb_parni( 2 );
+   apt[0].y = (long) hb_parni( 3 );
+   apt[1].x = (long) hb_parni( 4 );
+   apt[1].y = (long) hb_parni( 5 );
+   apt[2].x = (long) hb_parni( 6 );
+   apt[2].y = (long) hb_parni( 7 );
+
+   Polygon( hDC, apt, 3 );
+
+   if( hOldPen )
+      SelectObject( hDC, hOldPen );
+   if( bNullPen )
+      DeleteObject( hPen );
+   if( hOldBrush )
+      SelectObject( hDC, hOldBrush );
+
+}
+
+/*
+ * hwg_Rectangle( hDC, x1, y1, x2, y2 [, hPen | lPen] )
+ */
 HB_FUNC( HWG_RECTANGLE )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
@@ -270,6 +347,9 @@ HB_FUNC( HWG_RECTANGLE )
 
 }
 
+/*
+ * hwg_Rectangle_Filled( hDC, x1, y1, x2, y2 [, hPen | lPen] [, hBrush] )
+ */
 HB_FUNC( HWG_RECTANGLE_FILLED )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
@@ -313,6 +393,9 @@ HB_FUNC( HWG_RECTANGLE_FILLED )
 
 }
 
+/*
+ * hwg_Ellipse( hDC, x1, y1, x2, y2 [, hPen | lPen] )
+ */
 HB_FUNC( HWG_ELLIPSE )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
@@ -339,6 +422,9 @@ HB_FUNC( HWG_ELLIPSE )
    DeleteObject( hBrush );
 }
 
+/*
+ * hwg_Ellipse_Filled( hDC, x1, y1, x2, y2 [, hPen | lPen] [, hBrush] )
+ */
 HB_FUNC( HWG_ELLIPSE_FILLED )
 {
    HDC hDC = ( HDC ) HB_PARHANDLE( 1 );
@@ -480,19 +566,6 @@ HB_FUNC( HWG_PIE )
    hb_retnl( res ? 0 : ( LONG ) GetLastError(  ) );
 }
 
-HB_FUNC( HWG_DRAWGRID )
-{
-   HDC hDC = (HDC) HB_PARHANDLE( 1 );
-   int x1 = hb_parni(2), y1 = hb_parni(3), x2 = hb_parni(4), y2 = hb_parni(5);
-   int n = ( HB_ISNIL( 6 ) ) ? 4 : hb_parni( 6 );
-   COLORREF lColor = ( HB_ISNIL( 7 ) ) ? 0 : ( COLORREF ) hb_parnl( 7 );
-   int i, j;
-
-   for( i = x1+n; i < x2; i+=n )
-      for( j = y1+n; j < y2; j+=n )
-         SetPixel( hDC, i, j, lColor );
-}
-
 HB_FUNC( HWG_FILLRECT )
 {
    RECT rc;
@@ -502,8 +575,8 @@ HB_FUNC( HWG_FILLRECT )
    rc.right = hb_parni( 4 );
    rc.bottom = hb_parni( 5 );
 
-   FillRect( ( HDC ) HB_PARHANDLE( 1 ), &rc,
-         HB_ISPOINTER( 6 ) ? ( HBRUSH )HB_PARHANDLE( 6 ) : ( HBRUSH )hb_parnl(6) );
+   FillRect( ( HDC ) HB_PARHANDLE( 1 ), &rc, ( HBRUSH )HB_PARHANDLE( 6 ) );
+         //HB_ISPOINTER( 6 ) ? ( HBRUSH )HB_PARHANDLE( 6 ) : ( HBRUSH )hb_parnl(6) );
 }
 
 /*
@@ -552,6 +625,19 @@ HB_FUNC( HWG_REDRAWWINDOW )
          NULL,                  // handle of update region
          ( UINT ) hb_parni( 2 ) // array of redraw flags
           );
+}
+
+HB_FUNC( HWG_DRAWGRID )
+{
+   HDC hDC = (HDC) HB_PARHANDLE( 1 );
+   int x1 = hb_parni(2), y1 = hb_parni(3), x2 = hb_parni(4), y2 = hb_parni(5);
+   int n = ( HB_ISNIL( 6 ) ) ? 4 : hb_parni( 6 );
+   COLORREF lColor = ( HB_ISNIL( 7 ) ) ? 0 : ( COLORREF ) hb_parnl( 7 );
+   int i, j;
+
+   for( i = x1+n; i < x2; i+=n )
+      for( j = y1+n; j < y2; j+=n )
+         SetPixel( hDC, i, j, lColor );
 }
 
 HB_FUNC( HWG_DRAWBUTTON )

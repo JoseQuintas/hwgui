@@ -1697,13 +1697,21 @@ STATIC FUNCTION Graph2
     <module name="Drawing on the board">
       <![CDATA[// Board and drawn items
 #include "hwgui.ch"
-#define CLR_BLUE  16711680
-#define CLR_LGRAY 0xDDDDDD
-#define CLR_WHITE 0xFFFFFF
+#define CLR_BLUE     16711680
+#define CLR_LGRAY    0xDDDDDD
+#define CLR_DGRAY2   0x555555
+#define CLR_DGRAY3   0x888888
+#define CLR_WHITE    0xFFFFFF
+#define CLR_BROWN    0x154780
 
 FUNCTION Test
-   LOCAL oDlg, oBoard
+   LOCAL oDlg, oBoard, oFont
+   LOCAL aCorners := { 4,4,4,4 }
+   LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
+      HStyle():New( { CLR_LGRAY }, 2, aCorners ), ;
+      HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
 
+   PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 ITALIC
    INIT DIALOG oDlg TITLE "Drawing on the board" AT 210, 10  SIZE 440, 220
 
    @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR 0x999999 ;
@@ -1712,13 +1720,16 @@ FUNCTION Test
    oBoard:cargo := hb_hash()
    oBoard:cargo["p2b"] := HPen():Add( PS_SOLID, 1, CLR_BLUE )
    oBoard:cargo["blg"] := HBrush():Add( CLR_LGRAY )
-   oBoard:cargo["bw"] := HBrush():Add( CLR_WHITE )
+   oBoard:cargo["bb"] := HBrush():Add( CLR_BROWN )
+
+   @ 164, 172 DRAWN OF oBoard SIZE 100, 32 COLOR CLR_WHITE ;
+      HSTYLES aStyles TEXT 'Exit' FONT oFont ON CLICK {|| oDlg:Close() }
 
    ACTIVATE DIALOG oDlg
 
    oBoard:cargo["p2b"]:Release()
    oBoard:cargo["blg"]:Release()
-   oBoard:cargo["bw"]:Release()
+   oBoard:cargo["bb"]:Release()
 
    RETURN Nil
 
@@ -1727,9 +1738,9 @@ STATIC FUNCTION FPaint( o, hDC )
    hwg_Fillrect( hDC, 0, 0, o:nWidth, o:nHeight, o:brush:handle )
 
    // Draw what you want
-   hwg_SelectObject( hDC, o:cargo["bw"]:handle )
    hwg_Rectangle( hDC, 10, 10, 50, 40, o:cargo["p2b"]:handle )
    hwg_Rectangle_Filled( hDC, 60, 10, 100, 40 )
+   hwg_Triangle_Filled( hDC, 70, 20, 82, 26, 70, 32, .F., o:cargo["bb"]:handle )
    hwg_Rectangle_Filled( hDC, 110, 10, 150, 40, .F., o:cargo["blg"]:handle )
 
    hwg_Ellipse( hDC, 160, 10, 200, 40 )

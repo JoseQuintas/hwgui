@@ -15,6 +15,18 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-24 13:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\gtk\draw.c
+    * Some internal changes to make drawing more compatible with winapi version logic
+    * hwg_Triangle( hDC, x1, y1, x2, y2 [, hPen] ),
+      hwg_Triangle_Filled( hDC, x1, y1, x2, y2 [, hPen [, hBrush]] ) added
+  * source\winapi\draw.c
+      hwg_Triangle(), hwg_Triangle_Filled() added
+  * utils/tutorial/tutor_eng.xml
+    * Module updated "Drawing on the board"
+  * include/hwgextern.ch
+    Requests for new functions added
+
 2023-08-23 20:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\gtk\draw.c
     * Synhronized with winapi changes

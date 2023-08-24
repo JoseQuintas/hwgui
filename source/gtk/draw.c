@@ -522,7 +522,7 @@ HB_FUNC( HWG_ROUNDRECT_FILLED )
 }
 
 /*
- * hwg_CircleSector( hDC, xc, yc, radius, iAngleStart, iAngleEnd [, hPen] )
+ * hwg_CircleSector( hDC, xc, yc, radius, iAngleStart, iAngle [, hPen] )
  * Draws a circle sector with a center in xc, yc, with a radius from an angle
  */
 HB_FUNC( HWG_CIRCLESECTOR )
@@ -530,7 +530,7 @@ HB_FUNC( HWG_CIRCLESECTOR )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 );
    gdouble radius = hb_parnd( 4 );
-   int iAngle1 = -hb_parni(5), iAngle2 = iAngle1-hb_parni(6);
+   int iAngle1 = -hb_parni(5), iAngle2 = iAngle1-hb_parni(6), i;
    PHWGUI_PEN hPen = ( HB_ISNIL( 7 ) ) ? NULL : ( PHWGUI_PEN ) HB_PARHANDLE( 7 );
 
    if( hPen )
@@ -538,6 +538,12 @@ HB_FUNC( HWG_CIRCLESECTOR )
    else
       hwg_setcolor( hDC->cr, nCurrPenClr );
 
+   if( iAngle2 < iAngle1 )
+   {
+      i = iAngle1;
+      iAngle1 = iAngle2;
+      iAngle2 = i;
+   }
    cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
    cairo_line_to ( hDC->cr, x1, y1 );
    cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
@@ -546,7 +552,7 @@ HB_FUNC( HWG_CIRCLESECTOR )
 }
 
 /*
- * hwg_CircleSector_Filled( hDC, xc, yc, radius, iAngleStart, iAngleEnd [, hPen] )
+ * hwg_CircleSector_Filled( hDC, xc, yc, radius, iAngleStart, iAngle [, hPen] )
  * Draws a circle sector with a center in xc, yc, with a radius from an angle
  */
 HB_FUNC( HWG_CIRCLESECTOR_FILLED )
@@ -554,7 +560,7 @@ HB_FUNC( HWG_CIRCLESECTOR_FILLED )
    PHWGUI_HDC hDC = (PHWGUI_HDC) HB_PARHANDLE(1);
    gdouble x1 = hb_parnd( 2 ), y1 = hb_parnd( 3 );
    gdouble radius = hb_parnd( 4 );
-   int iAngle1 = hb_parni(5), iAngle2 = hb_parni(6);
+   int iAngle1 = -hb_parni(5), iAngle2 = iAngle1-hb_parni(6), i;
    PHWGUI_BRUSH brush = ( HB_ISNIL( 8 ) ) ? NULL : (PHWGUI_BRUSH) HB_PARHANDLE(8);
    PHWGUI_PEN hPen = NULL;
    int bNullPen = 0;
@@ -564,6 +570,12 @@ HB_FUNC( HWG_CIRCLESECTOR_FILLED )
    else
       hwg_setcolor( hDC->cr, nCurrBrushClr );
 
+   if( iAngle2 < iAngle1 )
+   {
+      i = iAngle1;
+      iAngle1 = iAngle2;
+      iAngle2 = i;
+   }
    cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );
    cairo_line_to ( hDC->cr, x1, y1 );
    cairo_arc ( hDC->cr, x1, y1, radius, iAngle1 * M_PI / 180., iAngle2 * M_PI / 180. );

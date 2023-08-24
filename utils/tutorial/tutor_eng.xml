@@ -1750,7 +1750,9 @@ STATIC FUNCTION FPaint( o, hDC )
    hwg_Roundrect_Filled( hDC, 60, 50, 100, 80, 4 )
 
    hwg_CircleSector( hDC, 30, 120, 20, 10, 45 )
-   hwg_CircleSector( hDC, 60, 120, 20, 10, -45 )
+   hwg_CircleSector_Filled( hDC, 80, 120, 20, 30, 60 )
+   hwg_CircleSector_Filled( hDC, 80, 120, 20, 90, 140, .F., o:cargo["bb"]:handle )
+   hwg_CircleSector_Filled( hDC, 80, 120, 20, 230, 160, .F., o:cargo["blg"]:handle )
 
    RETURN Nil
 ]]>

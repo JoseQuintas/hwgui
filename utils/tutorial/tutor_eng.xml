@@ -1262,6 +1262,65 @@ FUNCTION _OpenFile( oEdit )
    RETURN Nil
 ]]>
     </module>
+    <module name="A replacement for a colorized tab">
+      <![CDATA[// Lenta and panels, used as a replacement of a colorized tab
+#include "hwgui.ch"
+
+#define CLR_LIGHTGRAY_2 0xaaaaaa
+#define CLR_BROWN_1     0x154780
+#define CLR_BROWN_2     0x396eaa
+#define CLR_BROWN_3     0x6a9cd4
+#define CLR_BROWN_4     0x9dc7f6
+#define CLR_DLGBACK     0x154780
+
+FUNCTION Test
+   LOCAL oDlg, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
+   LOCAL oPane1, oPane2, oLenta, nTab := 1
+   LOCAL aStyleLenta := { HStyle():New( { CLR_BROWN_2 }, 1 ), ;
+      HStyle():New( { CLR_BROWN_3, CLR_BROWN_4 }, 1, , 2, CLR_LIGHTGRAY_2 ) }
+   LOCAL bTab := { |o|
+      IF nTab != o:nSelected
+         nTab := o:nSelected
+         IF nTab == 1
+            oPane2:Hide()
+            oPane1:Show()
+         ELSEIF nTab == 2
+            oPane1:Hide()
+            oPane2:Show()
+         ENDIF
+      ENDIF
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Lenta control"  ;
+      AT 210, 10 SIZE 400, 300 FONT oFont BACKCOLOR CLR_DLGBACK
+
+   oLenta := HLenta():New( , , 20, 16, 160, 28, oFont, , , bTab, , , ;
+      { "First", "Second" }, 80, aStyleLenta )
+   oLenta:Value := nTab
+
+   @ 20, 50 PANEL oPane2 SIZE 360, 220 STYLE SS_OWNERDRAW BACKCOLOR CLR_BROWN_2 ON SIZE { || .T. }
+   oPane2:oFont := oFont
+   @ 20, 16 EDITBOX "Sergei" OF oPane2 SIZE 200, 26
+   @ 20, 46 EDITBOX "Vasilievich" OF oPane2 SIZE 200, 26
+   @ 20, 76 EDITBOX "Rachmaninoff" OF oPane2 SIZE 200, 26
+   @ 20, 106 EDITBOX "01/04/1873" OF oPane2 SIZE 100, 26
+   oPane2:Hide()
+
+   @ 20, 50 PANEL oPane1 SIZE 360, 220 STYLE SS_OWNERDRAW BACKCOLOR CLR_BROWN_3 ON SIZE { || .T. }
+   oPane1:oFont := oFont
+   @ 20, 16 EDITBOX "Pyotr" OF oPane1 SIZE 200, 26
+   @ 20, 46 EDITBOX "Ilyich" OF oPane1 SIZE 200, 26
+   @ 20, 76 EDITBOX "Tchaikovsky" OF oPane1 SIZE 200, 26
+   @ 20, 106 EDITBOX "07/05/1840" OF oPane1 SIZE 100, 26
+
+   ACTIVATE DIALOG oDlg
+
+   oFont:Release()
+
+   RETURN Nil
+]]>
+    </module>
   </chapter>
   <chapter name="Get system" >
     <module name="Dialog with various Gets" ver="win">
@@ -1712,7 +1771,7 @@ FUNCTION Test
       HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
 
    PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 ITALIC
-   INIT DIALOG oDlg TITLE "Drawing on the board" AT 210, 10  SIZE 440, 220
+   INIT DIALOG oDlg TITLE "Drawing on the board" AT 210, 10  SIZE 400, 220
 
    @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR 0x999999 ;
       ON PAINT {|o,h|FPaint(o,h)} ON SIZE {|o,x,y|o:Move(,,x-8,y-8)}
@@ -1721,8 +1780,9 @@ FUNCTION Test
    oBoard:cargo["p2b"] := HPen():Add( PS_SOLID, 1, CLR_BLUE )
    oBoard:cargo["blg"] := HBrush():Add( CLR_LGRAY )
    oBoard:cargo["bb"] := HBrush():Add( CLR_BROWN )
+   oBoard:cargo["bbl"] := HBrush():Add( CLR_BLUE )
 
-   @ 164, 172 DRAWN OF oBoard SIZE 100, 32 COLOR CLR_WHITE ;
+   @ 134, 172 DRAWN OF oBoard SIZE 100, 32 COLOR CLR_WHITE ;
       HSTYLES aStyles TEXT 'Exit' FONT oFont ON CLICK {|| oDlg:Close() }
 
    ACTIVATE DIALOG oDlg
@@ -1730,6 +1790,7 @@ FUNCTION Test
    oBoard:cargo["p2b"]:Release()
    oBoard:cargo["blg"]:Release()
    oBoard:cargo["bb"]:Release()
+   oBoard:cargo["bbl"]:Release()
 
    RETURN Nil
 
@@ -1747,12 +1808,13 @@ STATIC FUNCTION FPaint( o, hDC )
    hwg_Ellipse_Filled( hDC, 210, 10, 250, 40 )
 
    hwg_RoundRect( hDC, 10, 50, 50, 80, 4 )
+   hwg_CircleSector( hDC, 20, 65, 20, -20, 45 )
    hwg_Roundrect_Filled( hDC, 60, 50, 100, 80, 4 )
 
-   hwg_CircleSector( hDC, 30, 120, 20, 10, 45 )
-   hwg_CircleSector_Filled( hDC, 80, 120, 20, 30, 60 )
-   hwg_CircleSector_Filled( hDC, 80, 120, 20, 90, 140, .F., o:cargo["bb"]:handle )
-   hwg_CircleSector_Filled( hDC, 80, 120, 20, 230, 160, .F., o:cargo["blg"]:handle )
+   hwg_CircleSector_Filled( hDC, 180, 100, 40, 30, 60 )
+   hwg_CircleSector_Filled( hDC, 180, 100, 40, 90, 120, .F., o:cargo["bb"]:handle )
+   hwg_CircleSector_Filled( hDC, 180, 100, 40, 210, 90, .F., o:cargo["bbl"]:handle )
+   hwg_CircleSector_Filled( hDC, 180, 100, 40, 300, 90, .F., o:cargo["blg"]:handle )
 
    RETURN Nil
 ]]>

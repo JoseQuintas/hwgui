@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-25 11:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/tutor_eng.xml
+    * Module added "A replacement for a colorized tab" to "Advanced using of controls" section
+
 2023-08-25 09:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\gtk\hedit.prg
   * source\winapi\hedit.prg

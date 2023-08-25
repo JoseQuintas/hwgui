@@ -35,6 +35,8 @@ CLASS HPanel INHERIT HControl
    METHOD DrawItems( hDC, aCoors )
    METHOD Paint()
    METHOD Move( x1, y1, width, height )
+   METHOD Hide()
+   METHOD Show()
    METHOD SetPaintCB( nId, block, cId )
    METHOD Drag( xPos, yPos )
 
@@ -180,6 +182,36 @@ METHOD Move( x1, y1, width, height )  CLASS HPanel
          hwg_Redrawwindow( ::handle )
       ENDIF
    ENDIF
+
+   RETURN Nil
+
+METHOD Hide() CLASS HPanel
+
+   LOCAL i
+
+   IF ::lHide
+      RETURN Nil
+   ENDIF
+
+   FOR i := 1 TO Len( ::aControls )
+      ::aControls[ i ]:Hide()
+   NEXT
+   ::Super:Hide()
+
+   RETURN Nil
+
+METHOD Show() CLASS HPanel
+
+   LOCAL i
+
+   IF !::lHide
+      RETURN Nil
+   ENDIF
+
+   ::Super:Show()
+   FOR i := 1 TO Len( ::aControls )
+      ::aControls[ i ]:Show()
+   NEXT
 
    RETURN Nil
 

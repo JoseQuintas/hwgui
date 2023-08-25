@@ -809,7 +809,7 @@ METHOD GetApplyKey( cText, nPos, cKey, lFirst, lIns ) CLASS HPicture
          vari := 0
       ELSE
          vari := Val( LTrim( ::UnTransform( Trim( cText ) ) ) )
-         lMinus := Iif( Left( Ltrim(vari),1 ) == "-", .T., .F. )
+         lMinus := Iif( Left( Ltrim(cText),1 ) == "-", .T., .F. )
       ENDIF
       cText := ::Transform( vari )
       IF ( x := ::KeyRight( nPos - 1 ) ) > 0

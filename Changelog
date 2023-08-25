@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-25 14:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\gtk\hlenta.prg
+  * source\winapi\hlenta.prg
+    * HLenta inherits from HBoard now, gtk and winapi versions code are identical.
+
 2023-08-25 12:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\gtk\hpanel.prg
     * HPanel(): Hide(), Show() methods added, as in winapi version

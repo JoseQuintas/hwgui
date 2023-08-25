@@ -15,13 +15,8 @@
 #define CLR_GRAY_1   0xcccccc
 #define CLR_GRAY_2   0x999999
 
-CLASS HLenta INHERIT HControl
+CLASS HLenta INHERIT HBoard
 
-   CLASS VAR winclass INIT "PANEL"
-
-#ifdef __PLATFORM__UNIX
-   DATA hBox
-#endif
    DATA lVertical
    DATA aItems
    DATA nItemSize
@@ -40,9 +35,7 @@ CLASS HLenta INHERIT HControl
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
                bSize, bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle )
-   METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
-   METHOD Init()
    METHOD Paint()
    METHOD Drag( xPos, yPos )
    METHOD Value( nValue ) SETGET
@@ -54,7 +47,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    color := Iif( color == Nil, CLR_BLACK, color )
    bColor := Iif( bColor == Nil, CLR_WHITE, bColor )
-   ::Super:New( oWndParent, nId, WS_CHILD + WS_VISIBLE + SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont,, ;
+   ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont,, ;
               bSize, bPaint,, color, bcolor )
 
    ::title  := ""
@@ -66,38 +59,9 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
    ::nItemSize := nItemSize
    ::oPen := HPen():Add( PS_SOLID, 1, color )
 
-   ::Activate()
+   //::Activate()
 
    RETURN Self
-
-METHOD Activate() CLASS HLenta
-
-   LOCAL handle := ::oParent:handle
-
-   IF !Empty( handle )
-#ifdef __PLATFORM__UNIX
-      ::handle := hwg_Createpanel( Self, ::id, ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-#else
-      ::handle := hwg_Createpanel( handle, ::id, ::style, ::nLeft, ::nTop, ::nWidth, ::nHeight )
-#endif
-      ::Init()
-   ENDIF
-
-   RETURN Nil
-
-METHOD Init() CLASS HLenta
-
-   IF !::lInit
-
-      ::Super:Init()
-      hwg_Setwindowobject( ::handle, Self )
-#ifndef __PLATFORM__UNIX
-      ::nHolder := 1
-      Hwg_InitWinCtrl( ::handle )
-#endif
-   ENDIF
-
-   RETURN Nil
 
 METHOD onEvent( msg, wParam, lParam ) CLASS HLenta
 
@@ -165,12 +129,8 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HLenta
 
 METHOD Paint() CLASS HLenta
 
-#ifdef __PLATFORM__UNIX
-   LOCAL hDC := hwg_Getdc( ::handle )
-#else
    LOCAL pps := hwg_Definepaintstru()
    LOCAL hDC := hwg_Beginpaint( ::handle, pps )
-#endif
    LOCAL i, y1, ob, nCurr, nItemSize := ::nItemSize, oStyle, cText
    LOCAL lVertical := ::lVertical, l1
    LOCAL nW := Iif( ::lVertical, ::nWidth, ::nHeight ), nLength := Iif( ::lVertical, ::nHeight, ::nWidth )
@@ -262,11 +222,7 @@ METHOD Paint() CLASS HLenta
 
    ENDIF
 
-#ifdef __PLATFORM__UNIX
-      hwg_Releasedc( ::handle, hDC )
-#else
-      hwg_Endpaint( ::handle, pps )
-#endif
+   hwg_Endpaint( ::handle, pps )
 
    RETURN Nil
 

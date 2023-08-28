@@ -115,7 +115,10 @@ METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::picture   := cPict
    ::bValid    := bValid
    ::bWhen     := bWhen
-   ::aList     := aItem
+   IF !Empty( aItem )
+      ::aList := aItem
+      ::lEditable := .T.
+   ENDIF
    ::bColorBlock := bColorBlock
    ::bHeadClick  := bHeadClick
 
@@ -324,13 +327,18 @@ METHOD Activate() CLASS HBrowse
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
 
-   LOCAL nPos, iParHigh, iParLow
+   LOCAL nPos, iParHigh, iParLow, nRet
 
    //hwg_WriteLog( "Brw: " + Str(msg,6) +" "+Str(hwg_PtrToUlong(wParam),10)+" "+Str(hwg_PtrToUlong(lParam),10) )
    IF ::active .AND. !Empty( ::aColumns )
 
-      IF ::bOther != Nil
-         Eval( ::bOther, Self, msg, wParam, lParam )
+       IF ::bOther != NIL
+         IF ValType( nRet := Eval( ::bOther, Self, msg, wParam, lParam ) ) != "N"
+            nRet := iif( ValType( nRet ) = "L" .AND. ! nRet, 0, - 1 )
+         ENDIF
+         IF nRet >= 0
+            RETURN - 1
+         ENDIF
       ENDIF
 
       IF msg == WM_PAINT

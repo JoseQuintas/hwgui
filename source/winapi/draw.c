@@ -656,8 +656,8 @@ HB_FUNC( HWG_FILLRECT )
    rc.right = hb_parni( 4 );
    rc.bottom = hb_parni( 5 );
 
-   FillRect( ( HDC ) HB_PARHANDLE( 1 ), &rc, ( HBRUSH )HB_PARHANDLE( 6 ) );
-         //HB_ISPOINTER( 6 ) ? ( HBRUSH )HB_PARHANDLE( 6 ) : ( HBRUSH )hb_parnl(6) );
+   FillRect( ( HDC ) HB_PARHANDLE( 1 ), &rc,
+         HB_ISPOINTER( 6 ) ? ( HBRUSH )HB_PARHANDLE( 6 ) : ( HBRUSH )hb_parnl(6) );
 }
 
 /*

@@ -100,7 +100,7 @@ METHOD NewBox( cTitle, nLeft, nTop, nWidth, nHeight, maxPos, nRange, bExit, lPer
       STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + /* WS_SYSMENU + */ WS_SIZEBOX + iif( nTop == 0, DS_CENTER, 0 ) + /* DS_SYSMODAL + */ DS_SETFOREGROUND + MB_USERICON
 
    @ ::nLeft, nTop + 5 SAY ::LabelBox CAPTION iif( Empty( lPercent ), "", "%" )  SIZE ::nWidth, 19 ;
-      STYLE SS_CENTER
+      STYLE SS_CENTER TRANSPARENT
 
    IF bExit != Nil
       ::oParent:bDestroy := bExit

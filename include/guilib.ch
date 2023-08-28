@@ -3,8 +3,8 @@
  */
 /*
   ========== Define HWGUI release version ============
-*/ 
-/* For note of latest official release version number */  
+*/
+/* For note of latest official release version number */
 #define HWG_VERSION         "2.23 dev"
 /* For note of latest official release build */
 #define HWG_BUILD               5
@@ -285,8 +285,8 @@
                        <nHeight>,<maxpos>,<nRange> );
             [; hwg_SetCtrlName( <oPBar>,<(oPBar)> )]
 
-            
-#xcommand REDEFINE progress  [ <oBmp>  ] ;            
+
+#xcommand REDEFINE progress  [ <oBmp>  ] ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
             [ ON INIT <bInit> ]        ;
@@ -297,9 +297,9 @@
           => ;
     [<oBmp> := ] HProgressBar():Redefine( <oWnd>,<nId>,<mpos>,<nRange>, ;
         <bInit>,<bSize>,,<ctoolt> );
-    [; hwg_SetCtrlName( <oBmp>,<(oBmp)> )]            
-        
-            
+    [; hwg_SetCtrlName( <oBmp>,<(oBmp)> )]
+
+
 #xcommand ADD STATUS [<oStat>] [ TO <oWnd> ] ;
             [ ID <nId> ]           ;
             [ ON INIT <bInit> ]    ;
@@ -488,7 +488,7 @@
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
-            [<lallowtabs: ALLOWTABS>]  ; 
+            [<lallowtabs: ALLOWTABS>]  ;
             [ ON INIT <bInit> ]        ;
             [ ON SIZE <bSize> ]        ;
             [ ON GETFOCUS <bGfocus> ]  ;
@@ -608,7 +608,7 @@
     <oTab>:StartPage( <cname> )
 
 #ifdef __GTK__
-    
+
 #xcommand BEGIN PAGE <cname> OF <oTab> TOOLTIP <ctooltip>;
           => ;
     <oTab>:StartPage( <cname> , <ctooltip> )
@@ -1672,7 +1672,7 @@ Added by Marcos Antonio Gambeta
 //New Control
 #xcommand @ <x>,<y> SAY [ <oSay> CAPTION ] <caption> ;
             [ OF <oWnd> ]              ;
-            LINK <cLink>               ;   
+            LINK <cLink>               ;
             [ ID <nId> ]               ;
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
@@ -1697,7 +1697,7 @@ Added by Marcos Antonio Gambeta
 #xcommand REDEFINE SAY [ <oSay> CAPTION ] <cCaption>      ;
             [ OF <oWnd> ]              ;
             ID <nId>                   ;
-            LINK <cLink>               ;   
+            LINK <cLink>               ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
             [<lTransp: TRANSPARENT>]   ;
@@ -1799,7 +1799,7 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oSay> := ] HStatus():Redefine( <oWnd>,<nId>,,  ,<bInit>,<bSize>,<bDraw>, , , , ,\{<bChange>\} ) ;
     [; hwg_SetCtrlName( <oSay>,<(oSay)> )]
-                                                                                      
+
 
 #xcommand REDEFINE GRID  <oSay>  ;
             [ OF <oWnd> ]              ;
@@ -1881,6 +1881,24 @@ Added by Marcos Antonio Gambeta
        <.lNoVScr.>,<.lNoBord.> );
     [; hwg_SetCtrlName( <oTEdit>,<(oTEdit)> )]
 
+#xcommand @ <x>,<y> LENTA [ <oLenta> ] ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CLICK <bClick> ]      ;
+            [ FONT <oFont> ]           ;
+            [ ITEMS <aItems> ]         ;
+            [ ITEMSIZE <nItemSize> ]   ;
+            [ HSTYLES <aItemStyle> ]   ;
+          => ;
+    [<oLenta> := ] HLenta():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
+        <height>,<oFont>,<bSize>,<bDraw>,<bClick>,<color>,<bcolor>,<aItems>,<nItemSize>,<aItemStyle> );
+    [; hwg_SetCtrlName( <oLenta>,<(oLenta)> )]
+
 #xcommand @ <x>,<y> BOARD [ <oBoard> ] ;
             [ OF <oWnd> ]              ;
             [ ID <nId> ]               ;
@@ -1893,9 +1911,10 @@ Added by Marcos Antonio Gambeta
             [ FONT <oFont> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
             [<lKeyb: KEYBOARD>]        ;
+            [<lTransp: TRANSPARENT>]   ;
           => ;
     [<oBoard> := ] HBoard():New( <oWnd>,<nId>,<x>,<y>,<width>, ;
-        <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lKeyb.> );
+        <height>,<oFont>,<bInit>,<bSize>,<bDraw>,<ctoolt>,<color>,<bcolor>,<.lKeyb.>,<.lTransp.> );
     [; hwg_SetCtrlName( <oBoard>,<(oBoard)> )]
 
 #xcommand @ <x>,<y> DRAWN [ <oDrawn> ] ;

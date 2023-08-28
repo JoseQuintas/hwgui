@@ -15,6 +15,17 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-28 10:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\winapi\hcontrol.prg
+    ! Small fix
+    * New parameter, lTransparent, and appropriate logic, added to HBoard():New()
+  * source\winapi\hprogres.prg
+    * The bar label is transparent now
+  * include/guilib.ch
+    * @ ... LENTA ... command added
+      TRANSPARENT flag added to @ ... HBOARD ... command
+  * utils/tutorial/tutor_eng.xml
+
 2023-08-25 14:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\gtk\hlenta.prg
   * source\winapi\hlenta.prg

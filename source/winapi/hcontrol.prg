@@ -96,6 +96,9 @@ METHOD INIT() CLASS HControl
          ::oFont := ::oParent:oFont
          hwg_Setctrlfont( ::oParent:handle, ::id, ::oParent:oFont:handle )
       ENDIF
+      IF ::lHide
+         hwg_Hidewindow( ::handle )
+      ENDIF
       IF HB_ISBLOCK( ::bInit )
          Eval( ::bInit, Self )
       ENDIF
@@ -677,19 +680,23 @@ CLASS HBoard INHERIT HControl
    DATA aDrawn      INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb )
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb, lTransp )
 
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Paint( hDC )
+   METHOD Refresh()
    METHOD End()
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb ) CLASS HBoard
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb, lTransp ) CLASS HBoard
 
+   IF lTransp != NIL .AND. lTransp
+      ::extStyle += WS_EX_TRANSPARENT
+   ENDIF
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
 
@@ -831,6 +838,17 @@ METHOD Paint( hDC ) CLASS HBoard
    ENDIF
 
    RETURN Nil
+
+METHOD Refresh() CLASS HBoard
+
+   IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0
+      hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight )
+      hwg_Sendmessage( ::oParent:handle, WM_PAINT, 0, 0 )
+   ELSE
+      ::Super:Refresh()
+   ENDIF
+
+   RETURN NIL
 
 METHOD End() CLASS HBoard
 

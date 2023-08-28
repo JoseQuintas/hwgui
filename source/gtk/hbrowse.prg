@@ -323,7 +323,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
    IF ::active .AND. !Empty( ::aColumns )
 
       IF ::bOther != NIL
-         IF ValType( nRet := Eval( ::bOther, Self, msg, wParam, lParam ) ) != "N"
+         IF ValType( retValue := Eval( ::bOther, Self, msg, wParam, lParam ) ) != "N"
             retValue := Iif( ValType( retValue ) = "L" .AND. ! retValue, 0, - 1 )
          ENDIF
          IF retValue >= 0

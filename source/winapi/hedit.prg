@@ -76,18 +76,6 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
       ::nMaxLength := ::oPicture:nMaxLength
    ENDIF
 
-/*
-   IF !Empty( cPicture ) .OR. ::cType != "C"
-      ::oPicture := HPicture():New( cPicture, vari )
-      ::nMaxLength := ::oPicture:nMaxLength
-   ENDIF
-   IF Empty( ::nMaxLength ) .AND. !Empty( ::bSetGet ) .AND. Valtype( vari ) == "C"
-      ::nMaxLength := hwg_Len( vari )
-   ENDIF
-   IF nMaxLength != Nil
-      ::nMaxLength := nMaxLength
-   ENDIF
-*/
    ::Activate()
 
    IF bSetGet != Nil
@@ -181,7 +169,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                ENDIF
                hwg_edit_SetPos( ::handle, nPos )
                IF ::cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. ;
-                  i == ::nMaxLength .AND. !Empty( ::bSetGet )
+                  i == Len(::oPicture:cPicMask) .AND. !Empty( ::bSetGet )
                   IF !hwg_GetSkip( oParent := ::oParent, ::handle, 1 )
                      DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
                         oParent := oParent:oParent

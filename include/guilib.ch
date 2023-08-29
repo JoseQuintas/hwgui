@@ -1996,4 +1996,20 @@ Added by Marcos Antonio Gambeta
         <oFont>,<caption>,<cPicture>,<bDraw>,<bChg> );
     [; hwg_SetCtrlName( <oEdit>,<(oEdit)> )]
 
+#xcommand @ <x>,<y> DRAWN LENTA [ <oLenta> ] ;
+            [ OF <oWnd> ]              ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CLICK <bClick> ]      ;
+            [ FONT <oFont> ]           ;
+            [ ITEMS <aItems> ]         ;
+            [ ITEMSIZE <nItemSize> ]   ;
+            [ HSTYLES <aItemStyle> ]   ;
+          => ;
+    [<oLenta> := ] HDrawnLenta():New( <oWnd>,<x>,<y>,<width>, ;
+        <height>,<oFont>,<bDraw>,<bClick>,<color>,<bcolor>,<aItems>,<nItemSize>,<aItemStyle> );
+    [; hwg_SetCtrlName( <oLenta>,<(oLenta)> )]
+
 /* ================= EOF of guilib.ch ==================== */

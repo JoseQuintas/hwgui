@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-29 14:21 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\gtk\hlenta.prg
+  * source\winapi\hlenta.prg
+    * HDrawnLenta class added, inherited from HDrawn
+    * HLenta implementation changed, it uses now HDrawnLenta
+  * include/guilib.ch
+    * @ ... DRAWN LENTA ... command added
+  * utils/tutorial/tutor_eng.xml
+
 2023-08-29 09:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\winapi\hedit.prg
     ! Bug fixed

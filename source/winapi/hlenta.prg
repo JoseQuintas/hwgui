@@ -17,6 +17,59 @@
 
 CLASS HLenta INHERIT HBoard
 
+   DATA oDrawn
+
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
+               bSize, bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle )
+   METHOD Move( x1, y1, width, height )
+   METHOD aItems ( arr ) SETGET
+   METHOD bClick ( b ) SETGET
+   METHOD Value ( xValue ) SETGET
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
+               bSize, bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle ) CLASS HLenta
+
+   color := Iif( color == Nil, CLR_BLACK, color )
+   bColor := Iif( bColor == Nil, CLR_WHITE, bColor )
+   ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont,, ;
+              bSize, bPaint,, color, bcolor )
+
+   ::oDrawn := HDrawnLenta():New( Self, 0, 0, nWidth, nHeight, oFont, ;
+               bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle )
+
+   RETURN Self
+
+METHOD Move( x1, y1, width, height ) CLASS HLenta
+
+   ::oDrawn:Move( 0, 0, width, height )
+   ::Super:Move( x1, y1, width, height )
+
+   RETURN Nil
+
+METHOD aItems ( arr ) CLASS HLenta
+
+   IF !Empty( arr )
+      ::oDrawn:aItems := arr
+   ENDIF
+
+   RETURN ::oDrawn:aItems
+
+METHOD bClick ( b ) CLASS HLenta
+
+   IF !Empty( b )
+      ::oDrawn:bCli := b
+   ENDIF
+
+   RETURN ::oDrawn:bCli
+
+METHOD Value( xValue ) CLASS HLenta
+
+   RETURN ::oDrawn:Value( xValue )
+
+CLASS HDrawnLenta INHERIT HDrawn
+
    DATA lVertical
    DATA aItems
    DATA nItemSize
@@ -31,106 +84,40 @@ CLASS HLenta INHERIT HBoard
    DATA nShift       INIT 0
    DATA nDragKoef    INIT 1
    DATA xPos, yPos
-   DATA bClick
+   DATA bCli
 
-   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
-               bSize, bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle )
-   METHOD onEvent( msg, wParam, lParam )
-   METHOD Paint()
+   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, oFont, ;
+               bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle )
+   METHOD Paint( hDC )
    METHOD Drag( xPos, yPos )
    METHOD Value( nValue ) SETGET
+   METHOD onMouseMove( xPos, yPos )
+   METHOD onMouseLeave()
+   METHOD onButtonDown( msg, xPos, yPos )
+   METHOD onButtonUp( xPos, yPos )
 
 ENDCLASS
 
-METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
-            bSize, bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle ) CLASS HLenta
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, oFont, ;
+            bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle ) CLASS HDrawnLenta
 
-   color := Iif( color == Nil, CLR_BLACK, color )
-   bColor := Iif( bColor == Nil, CLR_WHITE, bColor )
-   ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont,, ;
-              bSize, bPaint,, color, bcolor )
+   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, color, bColor,, ' ',, bPaint )
 
    ::title  := ""
+   ::oFont := oFont
    ::lVertical := ( ::nHeight > ::nWidth )
-   ::bClick := bClick
+   ::bCli := bClick
    ::aItems := aItems
    ::aItemStyle := Iif( Empty(aItemStyle), { HStyle():New( { CLR_WHITE, CLR_GRAY_1 }, 3 ), ;
       HStyle():New( { CLR_GRAY_2 }, 3 ) }, aItemStyle )
    ::nItemSize := nItemSize
    ::oPen := HPen():Add( PS_SOLID, 1, color )
 
-   //::Activate()
-
    RETURN Self
 
-METHOD onEvent( msg, wParam, lParam ) CLASS HLenta
+METHOD Paint( hDC ) CLASS HDrawnLenta
 
-   LOCAL xPos, yPos, nPos, lRedraw := .F., y1
-
-   HB_SYMBOL_UNUSED( wParam )
-
-   IF msg == WM_MOUSEMOVE
-      hwg_SetCapture( ::handle )
-      xPos := hwg_Loword( lParam ); yPos := hwg_Hiword( lParam )
-      //hwg_writelog( ltrim(str(xpos)) + " " + ltrim(str(ypos)) )
-      IF xPos < 0 .OR. xPos > ::nWidth .OR. yPos < 0 .OR. yPos > ::nHeight
-         ::lPressed := .F.
-         ::nOver := 0
-         hwg_Releasecapture()
-         lRedraw := .T.
-      ELSE
-         IF ::lPressed
-            ::Drag( xPos, yPos )
-         ELSE
-            y1 := Int( ::nShift % ::nItemSize )
-            IF y1 > 0; y1 := ::nItemSize - y1; ENDIF
-            nPos := Iif( ::lVertical, yPos - y1, xPos - y1 )
-            IF nPos > 0
-               IF ( nPos := Int( nPos / ::nItemSize ) + ::nFirst ) > Len( ::aItems )
-                  nPos := 0
-               ENDIF
-               lRedraw := ( ::nOver != nPos )
-               ::nOver := nPos
-            ENDIF
-         ENDIF
-      ENDIF
-
-   ELSEIF msg == WM_PAINT
-      ::Paint()
-
-   ELSEIF msg == WM_LBUTTONDOWN
-      xPos := hwg_Loword( lParam ); yPos := hwg_Hiword( lParam )
-      ::lPressed := .T.
-      ::lMoved := .F.
-      ::xPos := xPos
-      ::yPos := yPos
-
-   ELSEIF msg == WM_LBUTTONUP
-      ::lPressed := .F.
-      IF !::lMoved
-         IF ::nSelected != ::nOver .AND. ::nOver != 0
-            ::nSelected := ::nOver
-            lRedraw := .T.
-            IF !Empty( ::bClick )
-               Eval( ::bClick, Self, ::nSelected )
-            ENDIF
-         ENDIF
-      ENDIF
-
-   ELSEIF msg == WM_DESTROY
-      ::End()
-   ENDIF
-
-   IF lRedraw
-      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
-   ENDIF
-
-   RETURN -1
-
-METHOD Paint() CLASS HLenta
-
-   LOCAL pps := hwg_Definepaintstru()
-   LOCAL hDC := hwg_Beginpaint( ::handle, pps )
+   LOCAL x := ::nLeft, y := ::nTop
    LOCAL i, y1, ob, nCurr, nItemSize := ::nItemSize, oStyle, cText
    LOCAL lVertical := ::lVertical, l1
    LOCAL nW := Iif( ::lVertical, ::nWidth, ::nHeight ), nLength := Iif( ::lVertical, ::nHeight, ::nWidth )
@@ -150,9 +137,9 @@ METHOD Paint() CLASS HLenta
          IF y1 > 0; y1 := nItemSize - y1; ENDIF
          IF y1 > 0
             IF lVertical
-               aItemStyle[1]:Draw( hDC, 0, 0, nW, y1 )
+               aItemStyle[1]:Draw( hDC, x, y, x+nW, y+y1 )
             ELSE
-               aItemStyle[1]:Draw( hDC, 0, 0, y1, nW )
+               aItemStyle[1]:Draw( hDC, x, y, x+y1, y+nW )
             ENDIF
          ENDIF
          i := 1
@@ -161,25 +148,25 @@ METHOD Paint() CLASS HLenta
                Iif( nCurr == ::nOver .AND. lStyleOver, aItemStyle[3], aItemStyle[1] ) )
             cText := Iif( l1,::aItems[nCurr,1],::aItems[nCurr] )
             IF lVertical
-               oStyle:Draw( hDC, 0, y1, nW, y1 + nItemSize )
+               oStyle:Draw( hDC, x, y+y1, x+nW, y+y1+nItemSize )
                IF !Empty( cText )
                   hwg_SetTextColor( hDC, ::tcolor )
                   hwg_Settransparentmode( hDC, .T. )
-                  hwg_Drawtext( hDC, cText, 4, y1+4, nW-4, y1+nItemSize-4, ;
+                  hwg_Drawtext( hDC, cText, x+4, y+y1+4, x+nW-4, y+y1+nItemSize-4, ;
                      DT_LEFT + DT_VCENTER + DT_SINGLELINE )
                ENDIF
             ELSE
-               oStyle:Draw( hDC, y1, 0, y1 + nItemSize, nW )
+               oStyle:Draw( hDC, x+y1, y, x+y1 + nItemSize, y+nW )
                IF !Empty( cText )
                   hwg_SetTextColor( hDC, ::tcolor )
                   hwg_Settransparentmode( hDC, .T. )
-                  hwg_Drawtext( hDC, cText, y1+4, 4, y1+nItemSize-4, nW-4, ;
+                  hwg_Drawtext( hDC, cText, x+y1+4, y+4, x+y1+nItemSize-4, y+nW-4, ;
                      DT_CENTER + DT_VCENTER + DT_SINGLELINE )
                ENDIF
             ENDIF
             hwg_Settransparentmode( hDC, .F. )
             IF l1 .AND. Len(::aItems[nCurr]) > 1 .AND. !Empty( ob := ::aItems[nCurr,2] )
-               ob:Draw( hDC, Int( (nW - ob:nWidth)/2 ), Int( (nItemSize - ob:nHeight)/2 ), ;
+               ob:Draw( hDC, x+Int( (nW - ob:nWidth)/2 ), y+Int( (nItemSize - ob:nHeight)/2 ), ;
                   ob:nWidth, ob:nHeight )
             ENDIF
             y1 += nItemSize
@@ -187,9 +174,9 @@ METHOD Paint() CLASS HLenta
          ENDDO
          IF y1 < nLength
             IF lVertical
-               aItemStyle[1]:Draw( hDC, 0, y1, nW, nLength )
+               aItemStyle[1]:Draw( hDC, x, y+y1, x+nW, y+nLength )
             ELSE
-               aItemStyle[1]:Draw( hDC, y1, 0, nLength, nW )
+               aItemStyle[1]:Draw( hDC, x+y1, y, x+nLength, y+nW )
             ENDIF
          ENDIF
          IF ::lDrawNext
@@ -197,24 +184,24 @@ METHOD Paint() CLASS HLenta
             i := Int( nw/2 )
             IF ::nShift > 0
                IF lVertical
-                  hwg_Rectangle( hDC, i-1, 1, i, 2 )
-                  hwg_Rectangle( hDC, i-7, 1, i-6, 2 )
-                  hwg_Rectangle( hDC, i+6, 1, i+7, 2 )
+                  hwg_Rectangle( hDC, x+i-1, y+1, x+i, y+2 )
+                  hwg_Rectangle( hDC, x+i-7, y+1, x+i-6, y+2 )
+                  hwg_Rectangle( hDC, x+i+6, y+1, x+i+7, y+2 )
                ELSE
-                  hwg_Rectangle( hDC, 1, i-1, 2, i )
-                  hwg_Rectangle( hDC, 1, i-7, 2, i-6 )
-                  hwg_Rectangle( hDC, 1, i+6, 2, i+7 )
+                  hwg_Rectangle( hDC, x+1, y+i-1, x+2, y+i )
+                  hwg_Rectangle( hDC, x+1, y+i-7, x+2, y+i-6 )
+                  hwg_Rectangle( hDC, x+1, y+i+6, x+2, y+i+7 )
                ENDIF
             ENDIF
             IF nCurr < Len( ::aItems )
                IF lVertical
-                  hwg_Rectangle( hDC, i-1, nLength-3, i, nLength-2 )
-                  hwg_Rectangle( hDC, i-7, nLength-3, i-6, nLength-2 )
-                  hwg_Rectangle( hDC, i+6, nLength-3, i+7, nLength-2 )
+                  hwg_Rectangle( hDC, x+i-1, y+nLength-3, x+i, y+nLength-2 )
+                  hwg_Rectangle( hDC, x+i-7, y+nLength-3, x+i-6, y+nLength-2 )
+                  hwg_Rectangle( hDC, x+i+6, y+nLength-3, x+i+7, y+nLength-2 )
                ELSE
-                  hwg_Rectangle( hDC, nLength-1, i-1, nLength-3, i )
-                  hwg_Rectangle( hDC, nLength-1, i-7, nLength-3, i-6 )
-                  hwg_Rectangle( hDC, nLength-1, i+6, nLength-3, i+7 )
+                  hwg_Rectangle( hDC, x+nLength-1, y+i-1, x+nLength-3, y+i )
+                  hwg_Rectangle( hDC, x+nLength-1, y+i-7, x+nLength-3, y+i-6 )
+                  hwg_Rectangle( hDC, x+nLength-1, y+i+6, x+nLength-3, y+i+7 )
                ENDIF
             ENDIF
          ENDIF
@@ -222,14 +209,12 @@ METHOD Paint() CLASS HLenta
 
    ENDIF
 
-   hwg_Endpaint( ::handle, pps )
-
    RETURN Nil
 
-METHOD Drag( xPos, yPos ) CLASS HLenta
+METHOD Drag( xPos, yPos ) CLASS HDrawnLenta
 
    LOCAL nLength := Iif( ::lVertical, ::nHeight, ::nWidth ), nKolItems := Len( ::aItems )
-   //hwg_Writelog( "   " + Ltrim(Str(yPos)) + " " + Ltrim(Str(::yPos)) + " " + Ltrim(Str(::nShift)) )
+
    IF nLength < ::nItemSize * nKolItems - 4 .AND. ;
       ( ( ::lVertical .AND. Abs( yPos-::yPos ) > 2 ) .OR. ( !::lVertical .AND. Abs( xPos-::xPos ) > 2 ) )
       ::lMoved := .T.
@@ -244,18 +229,80 @@ METHOD Drag( xPos, yPos ) CLASS HLenta
       ::nFirst := Int( ::nShift/::nItemSize )
       ::nFirst += Iif( ::nShift > ::nFirst * ::nItemSize, 2, 1 )
       //hwg_Writelog( Ltrim(Str(::nShift)) + " " + Ltrim(Str(::nFirst))  )
-      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      ::Refresh()
    ENDIF
 
    RETURN Nil
 
-METHOD Value( nValue ) CLASS HLenta
+METHOD Value( nValue ) CLASS HDrawnLenta
 
    IF nValue != Nil .AND. nValue >= 0 .AND. !Empty( ::aItems ) .AND. nValue <= Len( ::aItems )
       ::nSelected := nValue
-      hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      ::Refresh()
    ELSE
       nValue := ::nSelected
    ENDIF
 
    RETURN nValue
+
+METHOD onMouseMove( xPos, yPos ) CLASS HDrawnLenta
+
+   LOCAL lRedraw := .F., y1, nPos
+
+   IF xPos < ::nLeft .OR. xPos > ::nLeft+::nWidth .OR. yPos < ::nTop .OR. yPos > ::nTop+::nHeight
+   ELSE
+      IF ::lPressed
+         ::Drag( xPos, yPos )
+      ELSE
+         y1 := Int( ::nShift % ::nItemSize )
+         IF y1 > 0; y1 := ::nItemSize - y1; ENDIF
+         nPos := Iif( ::lVertical, yPos - ::nTop - y1, xPos - ::nLeft - y1 )
+         IF nPos > 0
+            IF ( nPos := Int( nPos / ::nItemSize ) + ::nFirst ) > Len( ::aItems )
+               nPos := 0
+            ENDIF
+            lRedraw := ( ::nOver != nPos )
+            ::nOver := nPos
+         ENDIF
+      ENDIF
+   ENDIF
+   IF lRedraw
+      ::Refresh()
+   ENDIF
+
+   RETURN Nil
+
+METHOD onMouseLeave() CLASS HDrawnLenta
+
+   ::lPressed := .F.
+   ::nOver := 0
+
+   RETURN Nil
+
+METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnLenta
+
+   IF msg == WM_LBUTTONDOWN
+      ::lPressed := .T.
+      ::lMoved := .F.
+      ::xPos := xPos
+      ::yPos := yPos
+   ENDIF
+   RETURN Nil
+
+METHOD onButtonUp( xPos, yPos ) CLASS HDrawnLenta
+
+   HB_SYMBOL_UNUSED( xPos )
+   HB_SYMBOL_UNUSED( yPos )
+
+   ::lPressed := .F.
+   IF !::lMoved
+      IF ::nSelected != ::nOver .AND. ::nOver != 0
+         ::nSelected := ::nOver
+         IF !Empty( ::bCli )
+            Eval( ::bCli, Self, ::nSelected )
+         ENDIF
+         ::Refresh()
+      ENDIF
+   ENDIF
+
+   RETURN Nil

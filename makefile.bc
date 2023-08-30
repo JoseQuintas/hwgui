@@ -151,6 +151,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hlistbox.obj \
    $(HWGUI_OBJ_DIR)\htool.obj \
    $(HWGUI_OBJ_DIR)\hmonthc.obj \
+   $(HWGUI_OBJ_DIR)\htrack.obj \
    $(HWGUI_OBJ_DIR)\htrackbr.obj \
    $(HWGUI_OBJ_DIR)\hnice.obj \
    $(HWGUI_OBJ_DIR)\hownbtn.obj \

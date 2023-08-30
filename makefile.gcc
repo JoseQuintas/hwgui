@@ -72,6 +72,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hfrmtmpl.o \
    $(OBJ_DIR)/hgraph.o \
    $(OBJ_DIR)/hgrid.o \
+   $(OBJ_DIR)/htrack.o \
    $(OBJ_DIR)/htrackbr.o \
    $(OBJ_DIR)/hanimat.o \
    $(OBJ_DIR)/hlistbox.o \

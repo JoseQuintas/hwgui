@@ -124,6 +124,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hsplash.obj \
    $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\hgrid.obj \
+   $(OBJ_DIR)\htrack.obj \
    $(OBJ_DIR)\htrackbr.obj \
    $(OBJ_DIR)\animat.obj \
    $(OBJ_DIR)\hanimat.obj \
@@ -293,6 +294,12 @@ $(OBJ_DIR)\hgrid.c : $(SRC_DIR)\hgrid.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hgrid.obj : $(OBJ_DIR)\hgrid.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\htrackbr.c : $(CROSS_DIR)\htrack.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrack.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\htrackbr.c : $(SRC_DIR)\htrackbr.prg

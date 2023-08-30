@@ -55,6 +55,7 @@
 {win}source/winapi/hlistbox.prg
 {win}source/winapi/htool.prg
 {win}source/winapi/hmonthc.prg
+{win}source/cross/htrack.prg
 {win}source/winapi/htrackbr.prg
 {win}source/winapi/hanimat.prg
 {win}source/winapi/hnice.prg

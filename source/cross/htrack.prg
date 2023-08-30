@@ -1,16 +1,14 @@
 /*
  * $Id$
  *
- * HWGUI - Harbour Linux (GTK) GUI library source code:
- * HTrack class - Substitute for WinAPI HTRACKBAR
+ * HWGUI - Harbour Win32 GUI library source code:
+ * HTrack, HDrawnTrack classes
  *
  * Copyright 2021 Alexander S.Kresin <alex@kresin.ru>
- * www - http://www.kresin.ru
  *
  * Copyright 2021 DF7BE
 */
 
-#include "gtk.ch"
 #include "hwgui.ch"
 #include "hbclass.ch"
 
@@ -24,7 +22,6 @@ CLASS HTrack INHERIT HBoard
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
                bSize, bPaint, color, bcolor, nSize, oStyleBar, oStyleSlider, lAxis )
    METHOD Set( nSize, oStyleBar, oStyleSlider, lAxis, bPaint )
-   //METHOD Drag( xPos, yPos )
    METHOD Move( x1, y1, width, height )
    METHOD bChange ( b ) SETGET
    METHOD Value ( xValue ) SETGET
@@ -46,12 +43,6 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 METHOD Set( nSize, oStyleBar, oStyleSlider, lAxis, bPaint ) CLASS HTrack
 
    RETURN ::oDrawn:Set( nSize, oStyleBar, oStyleSlider, lAxis, bPaint )
-
-/*
-METHOD Drag( xPos, yPos ) CLASS HTrack
-
-   RETURN ::oDrawn:Drag( xPos, yPos )
-*/
 
 METHOD Move( x1, y1, width, height ) CLASS HTrack
 
@@ -195,6 +186,7 @@ METHOD Paint( hDC ) CLASS HDrawnTrack
             hwg_Drawline( hDC, ::nLeft+::nCurr+nHalf+1, ::nTop+y1, ::nLeft+::nTo, ::nTop+y1 )
          ENDIF
       ENDIF
+
    ENDIF
 
    RETURN Nil
@@ -285,10 +277,10 @@ METHOD onButtonUp( xPos, yPos ) CLASS HDrawnTrack
    HB_SYMBOL_UNUSED( yPos )
 
    ::lCaptured := .F.
-   //hwg_Releasecapture()
    IF ::bEndDrag != Nil
       Eval( ::bEndDrag, Self )
    ENDIF
    ::Refresh()
 
    RETURN Nil
+

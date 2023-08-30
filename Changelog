@@ -15,6 +15,30 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-30 13:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  - source\gtk\hbincnt.prg
+  - source\winapi\hbincnt.prg
+  - source\gtk\hdrawn.prg
+  - source\winapi\hdrawn.prg
+  - source\gtk\hgraph.prg
+  - source\winapi\hgraph.prg
+  - source\gtk\hlenta.prg
+  - source\winapi\hlenta.prg
+  + source/cross
+  + source/cross/hbincnt.prg
+  + source/cross/hdrawn.prg
+  + source/cross/hgraph.prg
+  + source/cross/hlenta.prg
+    * 4 files, which are the same, moved from source/gtk and source/winapi to source/cross directory
+  * hwgui.hbm
+  * makefile.bc
+  * makefile.gcc
+  * makefile.vc
+  * makefile.wc
+  * source/gtk/Makefile.linux
+  * source/gtk/Makefile.linux-gtk3
+    * Makefiles updated.
+
 2023-08-29 14:21 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\gtk\hlenta.prg
   * source\winapi\hlenta.prg

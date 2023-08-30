@@ -14,6 +14,7 @@ INC_DIR = include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source\winapi
+CROSS_DIR = source\cross
 PROCMISC_DIR = source\common\procmisc
 EDITOR_DIR = source\common\editor
 HBXML_DIR    = source\common\xml
@@ -139,6 +140,9 @@ $(OBJ_DIR)/%.c : $(SRC_DIR)/%.prg
 
 $(OBJ_DIR)/%.o : $(SRC_DIR)/%.c
 	gcc $(CFLAG) -c -I$(INC_DIR) -I$(HRB_DIR)/include -o $@ $^
+
+$(OBJ_DIR)/%.c : $(CROSS_DIR)/%.prg
+	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^
 
 $(OBJ_DIR)/%.c : $(PROCMISC_DIR)/%.prg
 	$(HRB_EXE) $^ -n -w -I$(HRB_DIR)/include -i$(INC_DIR) $(HARBOURFLAG) -o$@ $^

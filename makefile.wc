@@ -10,6 +10,7 @@ INCLUDE_DIR = include;$(HRB_DIR)\include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source\winapi
+CROSS_DIR = source\cross
 PROCMISC_DIR = source\common\procmisc
 EDITOR_DIR = source\common\editor
 XML_DIR = source\common\xml
@@ -180,7 +181,7 @@ $(OBJ_DIR)\barcode.c : $(SRC_DIR)\barcode.prg
 $(OBJ_DIR)\barcode.obj : $(OBJ_DIR)\barcode.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-$(OBJ_DIR)\hbincnt.c : $(SRC_DIR)\hbincnt.prg
+$(OBJ_DIR)\hbincnt.c : $(CROSS_DIR)\hbincnt.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hbincnt.obj : $(OBJ_DIR)\hbincnt.c
@@ -228,7 +229,7 @@ $(OBJ_DIR)\hdatepic.c : $(SRC_DIR)\hdatepic.prg
 $(OBJ_DIR)\hdatepic.obj : $(OBJ_DIR)\hdatepic.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-$(OBJ_DIR)\hdrawn.c : $(SRC_DIR)\hdrawn.prg
+$(OBJ_DIR)\hdrawn.c : $(CROSS_DIR)\hdrawn.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hdrawn.obj : $(OBJ_DIR)\hdrawn.c
@@ -264,7 +265,7 @@ $(OBJ_DIR)\hfrmtmpl.c : $(SRC_DIR)\hfrmtmpl.prg
 $(OBJ_DIR)\hfrmtmpl.obj : $(OBJ_DIR)\hfrmtmpl.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-$(OBJ_DIR)\hgraph.c : $(SRC_DIR)\hgraph.prg
+$(OBJ_DIR)\hgraph.c : $(CROSS_DIR)\hgraph.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hgraph.obj : $(OBJ_DIR)\hgraph.c
@@ -546,7 +547,7 @@ $(OBJ_DIR)\hrebar.c : $(SRC_DIR)\hrebar.prg
 $(OBJ_DIR)\hrebar.obj : $(OBJ_DIR)\hrebar.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-$(OBJ_DIR)\hlenta.c : $(SRC_DIR)\hlenta.prg
+$(OBJ_DIR)\hlenta.c : $(CROSS_DIR)\hlenta.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hlenta.obj : $(OBJ_DIR)\hlenta.c

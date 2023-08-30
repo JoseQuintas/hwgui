@@ -19,6 +19,7 @@ PROCMISC_DIR=../common/procmisc
 XML_DIR=../common/xml
 DEBUG_DIR=../common/debug
 EDITOR_DIR=../common/editor
+CROSS_DIR=../cross
 SRC_DIR=./
 
 CFLAGS = -Wall -Wunused -Wno-deprecated-declarations -O3 -DHWG_USE_POINTER_ITEM 
@@ -27,7 +28,7 @@ HB_FLAGS = -d__LINUX__ -w3 -es2
 vpath %.a $(LIB_DIR)
 vpath %.o $(OBJ_DIR)
 vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR)
-vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR)
+vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR):$(CROSS_DIR)
 
 $(OBJ_DIR)/%.c : %.prg
 	$(HRB_BIN)/harbour -n -q -w -es2 $(HB_FLAGS) -I$(HRB_INC) -I$(INC_DIR) -o$@ $<

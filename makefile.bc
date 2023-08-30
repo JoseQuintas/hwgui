@@ -59,6 +59,7 @@ DEBUG_OBJ_DIR      = $(OBJ_DIR)
 PROCMISC_DIR = source\common\procmisc
 EDITOR_DIR   = source\common\editor
 HWGUI_DIR    = source\winapi
+CROSS_DIR    = source\cross
 HBXML_DIR    = source\common\xml
 DEBUG_DIR    = source\common\debug
 
@@ -140,8 +141,8 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\hcontrol.obj \
    $(HWGUI_OBJ_DIR)\hcwindow.obj \
    $(HWGUI_OBJ_DIR)\hdatepic.obj \
-   $(HWGUI_OBJ_DIR)\hdrawn.obj \
    $(HWGUI_OBJ_DIR)\hdialog.obj \
+   $(HWGUI_OBJ_DIR)\hdrawn.obj \
    $(HWGUI_OBJ_DIR)\hedit.obj \
    $(HWGUI_OBJ_DIR)\hfreeimg.obj \
    $(HWGUI_OBJ_DIR)\hfrmtmpl.obj \
@@ -285,6 +286,12 @@ $(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
     $(CC_CMD)
 
 {$(HWGUI_DIR)}.c{$(OBJ_DIR)}.obj:
+    $(CC_CMD)
+
+{$(CROSS_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+.c.obj:
     $(CC_CMD)
 
 #

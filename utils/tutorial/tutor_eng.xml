@@ -963,7 +963,8 @@ Local bDrawOrd := {|o,h,x1,y1,x2,y2|
    //First column we draw ourselves, using the nCol1 codeblock, so we may to not set the
    // column codeblock.
    oBrw:AddColumn( HColumn():New( "",,"C",2,0 ) )
-   oBrw:aColumns[1]:setPaintCB( PAINT_LINE_ALL, bCol1 )
+   oBrw:aColumns[1]:oPaintCB := HPaintCB():New()
+   oBrw:aColumns[1]:oPaintCB:Set( PAINT_LINE_ALL, bCol1 )
 
    oBrw:AddColumn( HColumn():New( "Name",{|v,o|o:aArray[o:nCurrent,1]},"C",16,0 ) )
    oBrw:AddColumn( HColumn():New( ";Age",{|v,o|o:aArray[o:nCurrent,2]},"N",6,0 ) )
@@ -972,14 +973,18 @@ Local bDrawOrd := {|o,h,x1,y1,x2,y2|
    oBrw:aColumns[3]:cGrid := "W;WN"
    oBrw:aColumns[4]:cGrid := "E;WEN"
 
-   // Add a codeblock to draw column hraders bacground
-   oBrw:aColumns[3]:setPaintCB( PAINT_HEAD_BACK, bBack )
-   oBrw:aColumns[4]:setPaintCB( PAINT_HEAD_BACK, bBack )
+   // Add a codeblock to draw column headers background
+   oBrw:aColumns[2]:oPaintCB := HPaintCB():New()
+   oBrw:aColumns[3]:oPaintCB := HPaintCB():New()
+   oBrw:aColumns[4]:oPaintCB := HPaintCB():New()
+
+   oBrw:aColumns[3]:oPaintCB:Set( PAINT_HEAD_BACK, bBack )
+   oBrw:aColumns[4]:oPaintCB:Set( PAINT_HEAD_BACK, bBack )
 
    // Add a codeblock to draw the current order
-   oBrw:aColumns[2]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
-   oBrw:aColumns[3]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
-   oBrw:aColumns[4]:setPaintCB( PAINT_HEAD_ITEM, bDrawOrd )
+   oBrw:aColumns[2]:oPaintCB:Set( PAINT_HEAD_ITEM, bDrawOrd )
+   oBrw:aColumns[3]:oPaintCB:Set( PAINT_HEAD_ITEM, bDrawOrd )
+   oBrw:aColumns[4]:oPaintCB:Set( PAINT_HEAD_ITEM, bDrawOrd )
 
    // Set a codeblock to change order
    oBrw:aColumns[2]:bHeadClick := oBrw:aColumns[3]:bHeadClick := ;
@@ -1108,7 +1113,8 @@ Local bCol2 := {|o,h,x1,y1,x2,y2|
    oBrw:AddColumn( HColumn():New( "Name",{|v,o|aStockNames[o:nCurrent]},"C",20,0 ) )
    oBrw:AddColumn( HColumn():New( "Bitmap",,"C",10,0 ) )
 
-   oBrw:aColumns[2]:setPaintCB( PAINT_LINE_ALL, bCol2 )
+   oBrw:aColumns[2]:oPaintCB := HPaintCB():New()
+   oBrw:aColumns[2]:oPaintCB:Set( PAINT_LINE_ALL, bCol2 )
 
    @ 120,320 OWNERBUTTON oBtnOk SIZE 140,32 ;
          TEXT "Ok" COORDINATES 80,0,0,0 ;

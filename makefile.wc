@@ -81,6 +81,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\shellapi.obj  \
    $(OBJ_DIR)\window.obj \
    $(OBJ_DIR)\wprint.obj \
+   $(OBJ_DIR)\common.obj \
    $(OBJ_DIR)\drawwidg.obj \
    $(OBJ_DIR)\herrsys.obj \
    $(OBJ_DIR)\guimain.obj \
@@ -566,6 +567,11 @@ $(OBJ_DIR)\hhyper.c : $(SRC_DIR)\hhyper.prg
 $(OBJ_DIR)\hhyper.obj : $(OBJ_DIR)\hhyper.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
+$(OBJ_DIR)\common.c : $(CROSS_DIR)\common.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\common.obj : $(OBJ_DIR)\common.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 # ========================== 
 # PROCMISC.LIB Dependencies

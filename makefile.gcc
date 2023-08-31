@@ -53,6 +53,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/shellapi.o \
    $(OBJ_DIR)/window.o \
    $(OBJ_DIR)/wprint.o \
+   $(OBJ_DIR)/common.o \
    $(OBJ_DIR)/drawwidg.o \
    $(OBJ_DIR)/herrsys.o \
    $(OBJ_DIR)/guimain.o \

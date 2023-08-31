@@ -54,7 +54,8 @@ METHOD New( oWndParent, nId, vari, bSetGet, nStyle, nLeft, nTop, nWidth, nHeight
    ENDIF
 
    IF Left( ::oParent:ClassName(),6 ) == "HPANEL" .AND. hwg_BitAnd( ::oParent:style,SS_OWNERDRAW ) != 0
-      ::oParent:SetPaintCB( PAINT_ITEM, {|o,h|HB_SYMBOL_UNUSED(o),Iif(!::lHide,hwg__DrawCheckBtn(h,::nLeft,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1,::lValue,::title),.T.)}, "ch"+Ltrim(Str(::id)) )
+      ::oParent:oPaintCB := HPaintCB():New()
+      ::oParent:oPaintCB:Set( PAINT_ITEM, {|o,h|HB_SYMBOL_UNUSED(o),Iif(!::lHide,hwg__DrawCheckBtn(h,::nLeft,::nTop,::nLeft+::nWidth-1,::nTop+::nHeight-1,::lValue,::title),.T.)}, "ch"+Ltrim(Str(::id)) )
    ENDIF
 
    RETURN Self

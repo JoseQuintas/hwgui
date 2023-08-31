@@ -43,39 +43,6 @@ FUNCTION hwg_InitControls( oWnd, lNoActivate )
 
    RETURN .T.
 
-FUNCTION hwg_FindParent( hCtrl, nLevel )
-
-   LOCAL i, oParent, hParent := hwg_Getparent( hCtrl )
-
-   IF !Empty( hParent )
-      IF ( i := Ascan( HDialog():aModalDialogs,{ |o|o:handle == hParent } ) ) != 0
-         RETURN HDialog():aModalDialogs[i]
-      ELSEIF ( oParent := HDialog():FindDialog( hParent ) ) != Nil
-         RETURN oParent
-      ELSEIF ( oParent := HWindow():FindWindow( hParent ) ) != Nil
-         RETURN oParent
-      ENDIF
-   ENDIF
-   IF nLevel == Nil; nLevel := 0; ENDIF
-   IF nLevel < 2
-      IF ( oParent := hwg_FindParent( hParent,nLevel + 1 ) ) != Nil
-         RETURN oParent:FindControl( , hParent )
-      ENDIF
-   ENDIF
-
-   RETURN Nil
-
-FUNCTION hwg_FindSelf( hCtrl )
-
-   LOCAL oParent
-
-   oParent := hwg_FindParent( hCtrl )
-   IF oParent != Nil
-      RETURN oParent:FindControl( , hCtrl )
-   ENDIF
-
-   RETURN Nil
-
 FUNCTION hwg_WriteStatus( oWnd, nPart, cText, lRedraw )
 
    LOCAL aControls, i
@@ -94,56 +61,6 @@ FUNCTION hwg_WriteStatus( oWnd, nPart, cText, lRedraw )
    ENDIF
 
    RETURN Nil
-
-FUNCTION hwg_ColorC2N( cColor )
-
-   LOCAL i, res := 0, n := 1, iValue
-
-   IF Left( cColor,1 ) == "#"
-      cColor := Substr( cColor,2 )
-   ENDIF
-   cColor := Trim( cColor )
-   FOR i := 1 TO Len( cColor )
-      iValue := Asc( SubStr( cColor,i,1 ) )
-      IF iValue < 58 .AND. iValue > 47
-         iValue -= 48
-      ELSEIF iValue >= 65 .AND. iValue <= 70
-         iValue -= 55
-      ELSEIF iValue >= 97 .AND. iValue <= 102
-         iValue -= 87
-      ELSE
-         RETURN 0
-      ENDIF
-      iValue *= n
-      IF i % 2 == 1
-         iValue *= 16
-      ELSE
-         n *= 256
-      ENDIF
-      res += iValue
-   NEXT
-
-   RETURN res
-
-FUNCTION hwg_ColorN2C( nColor )
-
-   LOCAL s := "", n1, n2, i
-
-   FOR i := 0 to 2
-      n1 := hb_BitAnd( hb_BitShift( nColor,-i*8-4 ), 15 )
-      n2 := hb_BitAnd( hb_BitShift( nColor,-i*8 ), 15 )
-      s += Chr( Iif(n1<10,n1+48,n1+55) ) + Chr( Iif(n2<10,n2+48,n2+55) )
-   NEXT
-
-   RETURN s
-
-FUNCTION hwg_ColorN2RGB( nColor, nr, ng, nb )
-
-   nr := nColor % 256
-   ng := Int( nColor/256 ) % 256
-   nb := Int( nColor/65536 )
-
-   RETURN { nr, ng, nb }
 
 FUNCTION hwg_MsgGet( cTitle, cText, nStyle, x, y, nDlgStyle, cRes )
 
@@ -337,14 +254,6 @@ FUNCTION hwg_ShowProgress( nStep, maxPos, nRange, cTitle, oWnd, x1, y1, width, h
 
    RETURN Nil
 
-FUNCTION hwg_EndWindow()
-
-   IF HWindow():GetMain() != Nil
-      hwg_Sendmessage( HWindow():aWindows[1]:handle, WM_SYSCOMMAND, SC_CLOSE, 0 )
-   ENDIF
-
-   RETURN Nil
-
 FUNCTION hwg_HdSerial( cDrive )
 
    LOCAL cHex := hb_Numtohex( hwg_Hdgetserial( cDrive ) )
@@ -369,12 +278,6 @@ FUNCTION hwg_SetHelpFileName ( cNewName )
    ENDIF
 
    RETURN cOldName
-
-FUNCTION hwg_RefreshAllGets( oDlg )
-
-   AEval( oDlg:GetList, { |o|o:Refresh() } )
-
-   RETURN Nil
 
 FUNCTION hwg_SelectMultipleFiles( cDescr, cTip, cIniDir, cTitle )
 
@@ -450,14 +353,6 @@ FUNCTION hwg_Version( n )
 #endif
 
    RETURN s
-
-FUNCTION hwg_getParentForm( o )
-
-   DO WHILE o:oParent != Nil .AND. !__ObjHasMsg( o, "GETLIST" )
-      o := o:oParent
-   ENDDO
-
-   RETURN o
 
 FUNCTION hwg_TxtRect( cTxt, oWin, oFont )
 

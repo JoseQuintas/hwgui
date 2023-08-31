@@ -129,6 +129,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\shellapi.obj  \
    $(HWGUI_OBJ_DIR)\window.obj \
    $(HWGUI_OBJ_DIR)\wprint.obj \
+   $(HWGUI_OBJ_DIR)\common.obj \
    $(HWGUI_OBJ_DIR)\drawwidg.obj \
    $(HWGUI_OBJ_DIR)\guimain.obj \
    $(HWGUI_OBJ_DIR)\barcode.obj \

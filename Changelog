@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-08-31 16:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hbincnt.prg
+  * source/cross/common.prg
+  * source/gtk/drawwidg.prg
+  * source/gtk/hedit.prg
+  * source/winapi/drawwidg.prg
+  * source/winapi/hedit.prg
+    * Few functions moved to cross/* prg's form gtk and winapi
+
 2023-08-31 10:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + source/cross/common.prg
     * Few functions from gtk/gtkmain.prg and winapi/guimain.prg moved here

@@ -789,7 +789,7 @@ METHOD Input( cChar, nPos ) CLASS HPicture
 
 METHOD GetApplyKey( cText, nPos, cKey, lFirst, lIns ) CLASS HPicture
 
-   LOCAL nGetLen, nLen, vari, x, newPos, oParent
+   LOCAL nGetLen, nLen, vari, x, newPos
    LOCAL nDecimals, lMinus := .F.
 
    IF ::cType == "N" .AND. cKey $ ".," .AND. ( nPos := At( ".",::cPicMask ) ) != 0
@@ -1058,71 +1058,6 @@ STATIC FUNCTION DeleteSel( oEdit )
 
    IF hwg_Hiword( x ) != hwg_Loword( x )
       hwg_Sendmessage( oEdit:handle, WM_CLEAR, hwg_Loword( x ), hwg_Hiword( x ) - 1 )
-   ENDIF
-
-   RETURN Nil
-
-FUNCTION hwg_CreateGetList( oDlg )
-
-   LOCAL i, j, aLen1 := Len( oDlg:aControls ), aLen2
-
-   FOR i := 1 TO aLen1
-      IF __ObjHasMsg( oDlg:aControls[i], "BSETGET" ) .AND. oDlg:aControls[i]:bSetGet != Nil
-         AAdd( oDlg:GetList, oDlg:aControls[i] )
-      ELSEIF !Empty( oDlg:aControls[i]:aControls )
-         aLen2 := Len( oDlg:aControls[i]:aControls )
-         FOR j := 1 TO aLen2
-            IF __ObjHasMsg( oDlg:aControls[i]:aControls[j], "BSETGET" ) .AND. oDlg:aControls[i]:aControls[j]:bSetGet != Nil
-               AAdd( oDlg:GetList, oDlg:aControls[i]:aControls[j] )
-            ENDIF
-         NEXT
-      ENDIF
-   NEXT
-
-   RETURN Nil
-
-FUNCTION hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )
-
-   LOCAL i, aLen
-
-   DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
-      oParent := oParent:oParent
-   ENDDO
-   IF oParent == Nil .OR. ( lClipper != Nil .AND. lClipper .AND. !oParent:lClipper )
-      RETURN .F.
-   ENDIF
-   IF hCtrl == Nil
-      i := 0
-   ENDIF
-   IF hCtrl == Nil .OR. ( i := Ascan( oParent:Getlist,{ |o|o:handle == hCtrl } ) ) != 0
-      IF i > 0 .AND. __ObjHasMsg( oParent:Getlist[i], "LFIRST" )
-         oParent:Getlist[i]:lFirst := .T.
-      ENDIF
-      IF nSkip > 0
-         aLen := Len( oParent:Getlist )
-         DO WHILE ( i := i + nSkip ) <= aLen
-            IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
-               hwg_Setfocus( oParent:Getlist[i]:handle )
-               RETURN .T.
-            ENDIF
-         ENDDO
-      ELSE
-         DO WHILE ( i := i + nSkip ) > 0
-            IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle )
-               hwg_Setfocus( oParent:Getlist[i]:handle )
-               RETURN .T.
-            ENDIF
-         ENDDO
-      ENDIF
-   ENDIF
-
-   RETURN .F.
-
-FUNCTION hwg_SetGetUpdated( o )
-
-   o:lChanged := .T.
-   IF ( o := hwg_getParentForm( o ) ) != Nil
-      o:lUpdated := .T.
    ENDIF
 
    RETURN Nil

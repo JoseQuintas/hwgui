@@ -2,7 +2,7 @@
  * $Id$
  *
  * HWGUI - Harbour Win32 GUI library source code:
- * HPaintCB class, common functions
+ * HPaintCB class
  *
  * Copyright 2023 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
@@ -113,12 +113,6 @@ FUNCTION hwg_FindSelf( hCtrl )
 
    RETURN Nil
 
-FUNCTION hwg_RefreshAllGets( oDlg )
-
-   AEval( oDlg:GetList, { |o|o:Refresh() } )
-
-   RETURN Nil
-
 FUNCTION hwg_getParentForm( o )
 
    DO WHILE o:oParent != Nil .AND. !__ObjHasMsg( o, "GETLIST" )
@@ -177,3 +171,73 @@ FUNCTION hwg_ColorN2RGB( nColor, nr, ng, nb )
 
    RETURN { nr, ng, nb }
 
+FUNCTION hwg_RefreshAllGets( oDlg )
+
+   AEval( oDlg:GetList, { |o|o:Refresh() } )
+
+   RETURN Nil
+
+FUNCTION hwg_CreateGetList( oDlg )
+
+   LOCAL i, j, aLen1 := Len( oDlg:aControls ), aLen2
+
+   FOR i := 1 TO aLen1
+      IF __ObjHasMsg( oDlg:aControls[i], "BSETGET" ) .AND. oDlg:aControls[i]:bSetGet != Nil
+         AAdd( oDlg:GetList, oDlg:aControls[i] )
+      ELSEIF !Empty( oDlg:aControls[i]:aControls )
+         aLen2 := Len( oDlg:aControls[i]:aControls )
+         FOR j := 1 TO aLen2
+            IF __ObjHasMsg( oDlg:aControls[i]:aControls[j], "BSETGET" ) .AND. oDlg:aControls[i]:aControls[j]:bSetGet != Nil
+               AAdd( oDlg:GetList, oDlg:aControls[i]:aControls[j] )
+            ENDIF
+         NEXT
+      ENDIF
+   NEXT
+
+   RETURN Nil
+
+FUNCTION hwg_GetSkip( oParent, hCtrl, nSkip, lClipper )
+
+   LOCAL i, aLen
+
+   DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
+      oParent := oParent:oParent
+   ENDDO
+   IF oParent == Nil .OR. ( lClipper != Nil .AND. lClipper .AND. !oParent:lClipper )
+      RETURN .F.
+   ENDIF
+   IF hCtrl == Nil
+      i := 0
+   ENDIF
+   IF ( hCtrl == Nil .OR. ( i := Ascan( oParent:Getlist,{ |o|o:handle == hCtrl } ) ) != 0 ) .AND. ;
+      ( aLen := Len( oParent:Getlist ) ) > 1
+      IF i > 0 .AND. __ObjHasMsg( oParent:Getlist[i], "LFIRST" )
+         oParent:Getlist[i]:lFirst := .T.
+      ENDIF
+      IF nSkip > 0
+         DO WHILE ( i := i + nSkip ) <= aLen
+            IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle ) // Now tab and enter goes trhow the check, combo, etc...
+               hwg_Setfocus( oParent:Getlist[i]:handle )
+               RETURN .T.
+            ENDIF
+         ENDDO
+      ELSE
+         DO WHILE ( i := i + nSkip ) > 0
+            IF !oParent:Getlist[i]:lHide .AND. hwg_Iswindowenabled( oParent:Getlist[i]:Handle )
+               hwg_Setfocus( oParent:Getlist[i]:handle )
+               RETURN .T.
+            ENDIF
+         ENDDO
+      ENDIF
+   ENDIF
+
+   RETURN .F.
+
+FUNCTION hwg_SetGetUpdated( o )
+
+   o:lChanged := .T.
+   IF ( o := hwg_getParentForm( o ) ) != Nil
+      o:lUpdated := .T.
+   ENDIF
+
+   RETURN Nil

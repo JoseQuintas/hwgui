@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-01 08:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source\winapi\htrackbr.prg
+    * Forgot to upload updated file while 2023-08-30 13:45
+  * utils/dbc/dbchw.prg
+    * Small changes, related to HPaintCB
+
 2023-08-31 16:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hbincnt.prg
   * source/cross/common.prg

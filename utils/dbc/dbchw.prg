@@ -809,7 +809,8 @@ FUNCTION OpenDbf( fname, alsname, hChild, pass )
       oBrowse:aColumns := {}
       oBrowse:AddColumn( { "",, "C", 2, 0 } )
       oBrowse:aColumns[1]:cargo := oBrowse
-      oBrowse:aColumns[1]:setPaintCB( PAINT_LINE_ALL, bCol1 )
+      oBrowse:aColumns[1]:oPaintCB := HPaintCB():New()
+      oBrowse:aColumns[1]:oPaintCB:Set( PAINT_LINE_ALL, bCol1 )
       FOR i := 1 TO kolf
          oBrowse:AddColumn( { FieldName( i ),        ;
             FieldWBlock( FieldName( i ), nArea ), ;

@@ -44,7 +44,7 @@ CLASS HDrawn INHERIT HObject
    METHOD SetState( nState, nPosX, nPosY )
    METHOD SetText( cText )
    METHOD Value( xValue ) SETGET
-   METHOD Refresh()
+   METHOD Refresh( x1, y1, x2, y2 )
    METHOD onMouseMove( xPos, yPos ) VIRTUAL
    METHOD onMouseLeave() VIRTUAL
    METHOD onButtonDown( msg, xPos, yPos ) VIRTUAL
@@ -92,7 +92,7 @@ METHOD GetByPos( xPos, yPos, oBoard ) CLASS HDrawn
 
    LOCAL aDrawn := Iif( !Empty( oBoard ), oBoard:aDrawn, ::aDrawn ), i, o
 
-   FOR i := 1 TO Len( aDrawn )
+   FOR i := Len( aDrawn ) TO 1 STEP -1
       o := aDrawn[i]
       IF xPos >= o:nLeft .AND. xPos < o:nLeft + o:nWidth .AND. ;
          yPos >= o:nTop .AND. yPos < o:nTop + o:nHeight
@@ -111,7 +111,7 @@ METHOD GetByState( nState, aDrawn, block, lAll ) CLASS HDrawn
    ENDIF
    IF lAll == Nil .OR. block == Nil; lAll := .F.; ENDIF
 
-   FOR i := 1 TO Len( aDrawn )
+   FOR i := Len( aDrawn ) TO 1 STEP -1
       IF !Empty( aDrawn[i]:aDrawn )
          IF !Empty( o := aDrawn[i]:GetByState( nState,, block, lAll ) ) .AND. !lAll
             RETURN o
@@ -255,9 +255,11 @@ METHOD Value( xValue ) CLASS HDrawn
 
    RETURN ::xValue
 
-METHOD Refresh() CLASS HDrawn
+METHOD Refresh( x1, y1, x2, y2 ) CLASS HDrawn
 
-   hwg_Invalidaterect( ::GetParentBoard():handle, 0, ::nLeft, ::nTop, ::nLeft+::nWidth, ::nTop+::nHeight )
+   hwg_Invalidaterect( ::GetParentBoard():handle, 0, Iif( x1 == Nil, ::nLeft, x1 ), ;
+      Iif( y1 == Nil, ::nTop, y1 ), Iif( x2 == Nil, ::nLeft+::nWidth, x2 ), ;
+      Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
    RETURN Nil
 
 CLASS HDrawnCheck INHERIT HDrawn

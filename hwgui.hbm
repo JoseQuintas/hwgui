@@ -36,6 +36,7 @@
 {win}source/cross/common.prg
 {win}source/cross/hbincnt.prg
 {win}source/cross/hdrawn.prg
+{win}source/cross/hdrawnbrw.prg
 {win}source/cross/hgraph.prg
 {win}source/cross/hlenta.prg
 {win}source/cross/htrack.prg
@@ -103,6 +104,7 @@
 {unix}source/cross/common.prg
 {unix}source/cross/hbincnt.prg
 {unix}source/cross/hdrawn.prg
+{unix}source/cross/hdrawnbrw.prg
 {unix}source/cross/hgraph.prg
 {unix}source/cross/hlenta.prg
 {unix}source/cross/htrack.prg

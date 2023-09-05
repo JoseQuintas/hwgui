@@ -150,8 +150,7 @@ METHOD Paint( hDC ) CLASS HDrawn
          IF Empty( ::oPen )
             ::oPen := HPen():Add( BS_SOLID, 1, Iif( ::tBorderColor == Nil, ::bcolor, ::tBorderColor ) )
          ENDIF
-         hwg_SelectObject( hDC, ::oPen:handle )
-         hwg_RoundRect_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, 4,, ::oBrush:handle )
+         hwg_RoundRect_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, 4, ::oPen:handle, ::oBrush:handle )
       ENDIF
       IF !Empty( ::title )
          hwg_Settransparentmode( hDC, .T. )

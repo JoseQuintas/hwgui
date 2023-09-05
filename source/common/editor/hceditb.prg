@@ -79,6 +79,10 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   nBoundR      INIT 2
    DATA   nBoundT      INIT 2
 
+   DATA   oPenBorder
+   DATA   nBorder       INIT 0
+   DATA   nBorderColor  INIT 0
+
    DATA   tcolorSel    INIT 16777215
    DATA   bcolorSel    INIT 16744448
 
@@ -141,7 +145,7 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, ;
 
 METHOD Paint( hDC ) CLASS HDrawnEdit
 
-   LOCAL x1 := ::nLeft+::nBoundL, x2 := ::nLeft+::nWidth-1, cLine
+   LOCAL x1 := ::nLeft+::nBoundL+::nBorder, x2 := ::nLeft+::nWidth-1-::nBorder, cLine
 
    IF !::lInit
       hced_SetHandle( ::hEdit, ::GetParentBoard():handle )
@@ -153,26 +157,26 @@ METHOD Paint( hDC ) CLASS HDrawnEdit
          ENDIF
       ENDIF
       hced_SetFont( ::hEdit, ::oFont:handle, 1 )
+      IF Empty( ::oPenBorder) .AND. ::nBorder > 0
+         ::oPenBorder := HPen():Add( PS_SOLID, ::nBorder, ::nBorderColor )
+      ENDIF
       ::lInit := .T.
    ENDIF
 
    hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
-   hced_SetPaint( ::hEdit, hDC,, ::nLeft+::nWidth-::nBoundR, .F.,, ::nLeft+::nWidth-::nBoundR )
+   hced_SetPaint( ::hEdit, hDC,, ::nLeft+::nWidth-::nBoundR-::nBorder, .F.,, ::nLeft+::nWidth-::nBoundR-::nBorder )
    hced_FillRect( ::hEdit, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1 )
-   /*
-   IF Empty( ::oPen )
-      ::oPen := HPen():Add( BS_SOLID, 1, Iif( ::tBorderColor == Nil, ::tcolor, ::tBorderColor ) )
+
+   IF !Empty( ::oPenBorder )
+      hwg_Rectangle( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::oPenBorder:handle )
    ENDIF
-   hwg_SelectObject( hDC, ::oPen:handle )
-   hwg_Rectangle( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1 )
-   */
 
    IF ::bPaint != Nil
       Eval( ::bPaint, Self, hDC )
    ENDIF
 
    cLine := Iif( ::nPosF == 1, ::title, hced_Substr( Self, ::title,::nPosF ) )
-   hced_LineOut( ::hEdit, @x1, ::nTop+::nBoundT, @x2, cLine, hced_Len( Self, cLine ), ::nAlign, ::nLeft+::nWidth-::nBoundR-1 )
+   hced_LineOut( ::hEdit, @x1, ::nTop+::nBoundT+::nBorder, @x2, cLine, hced_Len( Self, cLine ), ::nAlign, ::nLeft+::nWidth-::nBoundR-1 )
 
    RETURN Nil
 
@@ -559,6 +563,7 @@ METHOD Skip( n ) CLASS HDrawnEdit
 METHOD End() CLASS HDrawnEdit
 
    IF !Empty( ::hEdit )
+      hced_KillCaret( ::hEdit )
       hced_Release( ::hEdit )
       ::hEdit := Nil
    ENDIF

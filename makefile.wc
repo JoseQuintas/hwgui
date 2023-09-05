@@ -95,6 +95,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hcwindow.obj \
    $(OBJ_DIR)\hdatepic.obj \
    $(OBJ_DIR)\hdrawn.obj \
+   $(OBJ_DIR)\hdrawnbrw.obj \
    $(OBJ_DIR)\hdialog.obj \
    $(OBJ_DIR)\hedit.obj \
    $(OBJ_DIR)\hfreeimg.obj \
@@ -235,6 +236,12 @@ $(OBJ_DIR)\hdrawn.c : $(CROSS_DIR)\hdrawn.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hdrawn.obj : $(OBJ_DIR)\hdrawn.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+
+$(OBJ_DIR)\hdrawnbrw.c : $(CROSS_DIR)\hdrawnbrw.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hdrawnbrw.obj : $(OBJ_DIR)\hdrawnbrw.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\hdialog.c : $(SRC_DIR)\hdialog.prg

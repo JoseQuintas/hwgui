@@ -904,7 +904,8 @@ METHOD DrawHeader( hDC, nColumn, x1, y1, x2, y2 ) CLASS HBrowse
 METHOD HeaderOut( hDC ) CLASS HBrowse
 
    LOCAL i, x, y1, oldc, fif, xSize
-   LOCAL nRows := Min( ::nRecords + iif( ::lAppMode,1,0 ), ::rowCount )
+   //LOCAL nRows := Min( ::nRecords + iif( ::lAppMode,1,0 ), ::rowCount )
+   LOCAL nRows := ::rowCurrCount
 
    IF ::lDispSep
       hwg_Selectobject( hDC, ::oPenSep:handle )

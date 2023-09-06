@@ -36,6 +36,7 @@ CLASS HDrawn INHERIT HObject
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
       title, oFont, bPaint, bClick, bChgState )
+   METHOD Delete()
    METHOD GetParentBoard()
    METHOD GetByPos( xPos, yPos, oBoard )
    METHOD GetByState( nState, aDrawn, block, lAll )
@@ -79,6 +80,19 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
    AAdd( ::oParent:aDrawn, Self )
 
    RETURN Self
+
+METHOD Delete() CLASS HDrawn
+
+   LOCAL i
+
+   FOR i := Len( ::oParent:aDrawn ) TO 1 STEP -1
+      IF ::oParent:aDrawn[i] == Self
+         ::oParent:aDrawn := hb_ADel( ::oParent:aDrawn, i, .T. )
+         EXIT
+      ENDIF
+   NEXT
+
+   RETURN Nil
 
 METHOD GetParentBoard() CLASS HDrawn
 

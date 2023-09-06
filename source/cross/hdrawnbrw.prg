@@ -83,7 +83,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA nColCurr      INIT 1                 // Column currently selected
    DATA nColFirst     INIT 1                 // The leftmost column on the screen
 
-   DATA bEnter
+   DATA bEnter, bKeyDown, bLostFocus
    DATA oEdit
    DATA lSeleCell     INIT .F.
    DATA lRebuild      INIT .T.
@@ -106,6 +106,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD onMouseLeave()
    METHOD onButtonDown( msg, xPos, yPos )
    METHOD onButtonUp( xPos, yPos )
+   METHOD onKillFocus()
    METHOD SetFocus()
 
    METHOD Selected( n )
@@ -193,7 +194,9 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
    IF ::lRebuild
       ::Rebuild( hDC )
    ENDIF
-
+   IF !Empty( ::bPaint )
+      RETURN Eval( ::bPaint, Self, hDC )
+   ENDIF
    hwg_Selectobject( hDC, ::oFont:handle )
 
    IF ::nHeightHead > 0
@@ -381,7 +384,7 @@ METHOD Edit() CLASS HDrawnBrw
 
 METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
 
-   HB_SYMBOL_UNUSED(lParam)
+   LOCAL lRes
 
    wParam := hwg_PtrToUlong( wParam )
 
@@ -401,6 +404,10 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
       RETURN Nil
    ENDIF
 
+   IF ::bKeyDown != Nil .AND. ;
+         ( ValType( lRes := Eval( ::bKeyDown,Self,msg,wParam,lParam ) ) != 'L' .OR. lRes )
+      RETURN Nil
+   ENDIF
    IF msg == WM_KEYDOWN
       IF wParam == VK_DOWN
          ::oData:Skip( 1 )
@@ -520,6 +527,14 @@ METHOD onButtonUp( xPos, yPos ) CLASS HDrawnBrw
    HB_SYMBOL_UNUSED(yPos)
    RETURN Nil
 
+METHOD onKillFocus() CLASS HDrawnBrw
+
+   IF ::bLostFocus != Nil
+      Eval( ::bLostFocus, Self )
+   ENDIF
+
+   RETURN Nil
+
 METHOD SetFocus() CLASS HDrawnBrw
 
    LOCAL oBoard := ::GetParentBoard()
@@ -631,6 +646,9 @@ METHOD Skip( nSkip ) CLASS HDataArray
 METHOD Block( x ) CLASS HDataArray
 
    IF ValType( ::aData[1] ) == "A"
+      IF Empty( x )
+         x := 1
+      ENDIF
       RETURN &( "{|v,o| iif( v == Nil, o:aData[o:nCurrent," + Ltrim(Str(x)) + ;
          "], o:aData[o:nCurrent," + Ltrim(Str(x)) + "] := v ) }" )
    ENDIF

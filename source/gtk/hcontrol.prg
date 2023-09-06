@@ -677,6 +677,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
          ENDIF
          o:SetState( STATE_PRESSED, nPosX, nPosY )
          o:onButtonDown( msg, nPosX, nPosY )
+      ELSEIF !Empty( ::oInFocus )
+         ::oInFocus:onKillFocus()
+         ::oInFocus := Nil
       ENDIF
 
    ELSEIF msg == WM_RBUTTONDOWN
@@ -687,6 +690,9 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
             ::oInFocus := Nil
          ENDIF
          o:onButtonDown( msg, nPosX, nPosY )
+      ELSEIF !Empty( ::oInFocus )
+         ::oInFocus:onKillFocus()
+         ::oInFocus := Nil
       ENDIF
 
    ELSEIF msg == WM_LBUTTONUP

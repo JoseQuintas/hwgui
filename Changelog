@@ -15,9 +15,17 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-2023-09-05 16:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+2023-09-06 13:49 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
-    * :Refresh() updated, few other changes
+    * :Delete() method added
+  * source/cross/hdrawnbrw.prg
+    * Updates
+  * source/gtk/hbrowse.prg
+  * source/winapi/hbrowse.prg
+    ! Small fix
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    ! Fixes in HBoard
 
 2023-09-05 14:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hceditb.prg

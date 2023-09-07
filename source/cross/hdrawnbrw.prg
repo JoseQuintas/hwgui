@@ -18,6 +18,7 @@
 #define DEF_CLR_SELE    0xC0C0C0
 #define DEF_HTT_SELE    0xffffff
 #define DEF_HTB_SELE    0x505050
+#define DEF_HTRACK_WIDTH 18
 
 #define CLR_BLACK    0
 #define CLR_WHITE    0xffffff
@@ -83,13 +84,16 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA nColCurr      INIT 1                 // Column currently selected
    DATA nColFirst     INIT 1                 // The leftmost column on the screen
 
+   DATA oTrackV, oTrackH
+   DATA nTrackWidth, oStyleBar, oStyleSlider
+
    DATA bEnter, bKeyDown, bLostFocus
    DATA oEdit
    DATA lSeleCell     INIT .F.
    DATA lRebuild      INIT .T.
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
-               bPaint, bChgState )
+               bPaint, bChgState, lVScroll, lHScroll )
 
    METHOD Rebuild( hDC )
    METHOD DoRebuild()  INLINE  (::lRebuild := .T., ::Refresh())
@@ -106,15 +110,19 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD onMouseLeave()
    METHOD onButtonDown( msg, xPos, yPos )
    METHOD onButtonUp( xPos, yPos )
+   METHOD onButtonDbl( nPosX, nPosY )
    METHOD onKillFocus()
    METHOD SetFocus()
 
+   METHOD Skip( n )
    METHOD Selected( n )
+   METHOD ShowTrackV( lShow, nTrackWidth )
+   METHOD ShowTrackH( lShow, nTrackWidth )
 
 ENDCLASS
 
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
-            bPaint, bChgState ) CLASS HDrawnBrw
+            bPaint, bChgState, lVScroll, lHScroll ) CLASS HDrawnBrw
 
    ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, ;
       Iif( tcolor == Nil, CLR_BLACK, tcolor ), Iif( bColor == Nil, CLR_WHITE, bColor ),, ' ', ;
@@ -124,6 +132,12 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
    ::bColorSel := DEF_CLRB_SELE
    ::httColor  := DEF_HTT_SELE
    ::htbColor  := DEF_HTB_SELE
+   IF Valtype( lVScroll ) == "L" .AND. lVScroll
+      ::oTrackV := 0
+   ENDIF
+   IF Valtype( lHScroll ) == "L" .AND. lHScroll
+      ::oTrackH := 0
+   ENDIF
 
    RETURN Self
 
@@ -137,7 +151,7 @@ METHOD Rebuild( hDC )
    IF Empty( ::oBrushHtb )
       ::oBrushHtb := HBrush():Add( ::htbColor )
    ENDIF
-   IF Empty( ::oPenSep )
+   IF Empty( ::oPenSep ) .AND. ::sepColor >= 0
       ::oPenSep := HPen():Add( PS_SOLID, 1, ::sepColor )
    ENDIF
    IF Empty( ::oPenBorder) .AND. ::nBorder > 0
@@ -177,7 +191,12 @@ METHOD Rebuild( hDC )
       ENDIF
       ::nHeightHead += ::aHeadPadding[2] + ::aHeadPadding[4]
    ENDIF
-
+   IF Valtype( ::oTrackV ) == "N"
+      ::ShowTrackV( .T. )
+   ENDIF
+   IF Valtype( ::oTrackH ) == "N"
+      ::ShowTrackH( .T. )
+   ENDIF
    ::lRebuild := .F.
 
    RETURN Nil
@@ -228,20 +247,30 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
    y2 += ::nHeightRow - ::aRowPadding[4]
    hwg_FillRect( hDC, x1, y1, x2, y2, ::oBrush:handle )
 
-   hwg_SelectObject( hDC, ::oPenSep:handle )
-   i := 0
-   DO WHILE ++i <= Len( ::aRows ) .AND. ::aRows[i,1] != Nil
-      hwg_DrawLine( hDC, x1, ::aRows[i,2], x2, ::aRows[i,2] )
-   ENDDO
-   i := ::nColFirst - 1; x := x1
-   DO WHILE ++i < Len( ::aColumns ) .AND. x < x2
-      x += ::aColumns[i]:nWidth
-      hwg_DrawLine( hDC, x, ::nTop + ::aMargin[2] + ::nHeightHead, x, y1 )
-   ENDDO
+   IF !Empty( ::oPenSep )
+      hwg_SelectObject( hDC, ::oPenSep:handle )
+      i := 0
+      DO WHILE ++i <= Len( ::aRows ) .AND. ::aRows[i,1] != Nil
+         hwg_DrawLine( hDC, x1, ::aRows[i,2], x2, ::aRows[i,2] )
+      ENDDO
+      i := ::nColFirst - 1; x := x1
+      DO WHILE ++i < Len( ::aColumns ) .AND. x < x2
+         x += ::aColumns[i]:nWidth
+         hwg_DrawLine( hDC, x, ::nTop + ::aMargin[2] + ::nHeightHead, x, y1 )
+      ENDDO
+   ENDIF
    IF !Empty( ::oPenBorder )
       hwg_Rectangle( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::oPenBorder:handle )
    ENDIF
 
+   IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide
+      ::oTrackV:Value := Iif( nRec == 1, 0, nRec / ::oData:Count() )
+      ::oTrackV:Paint( hDC )
+   ENDIF
+   IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide
+      //::oTrackV:Value := Iif( nRec == 1, 0, nRec / ::oData:Count() )
+      ::oTrackH:Paint( hDC )
+   ENDIF
    IF !Empty( ::oEdit )
       ::oEdit:Paint( hDC )
    ENDIF
@@ -250,7 +279,7 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
 
 METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
 
-   LOCAL y2 := y1 + ::nHeightRow - 1, x := x1, iCol := ::nColFirst - 1, i := 0, nw
+   LOCAL y2 := y1 + ::nHeightRow, x := x1, iCol := ::nColFirst - 1, i := 0, nw
    LOCAL oCB, oCol, block
 
    IF Len( ::aRows ) < nRow
@@ -290,7 +319,7 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
 METHOD HeaderOut( hDC ) CLASS HDrawnBrw
 
    LOCAL y1 := ::nTop + ::aMargin[2], x1 := ::nLeft + ::aMargin[1]
-   LOCAL y2 := y1 + ::nHeightHead - 1, x := x1, iCol := ::nColFirst - 1
+   LOCAL y2 := y1 + ::nHeightHead, x := x1, iCol := ::nColFirst - 1
    LOCAL x2 := ::nLeft + ::nWidth - ::aMargin[3]
    LOCAL oCB, aCB, oCol, block, i, nw
 
@@ -410,23 +439,10 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
    ENDIF
    IF msg == WM_KEYDOWN
       IF wParam == VK_DOWN
-         ::oData:Skip( 1 )
-         IF ::oData:Eof()
-            ::oData:Skip( -1 )
-         ELSEIF ::nRowCurr < ::nRowCount
-            ::nRowCurr ++
-         ENDIF
-         ::Refresh()
+         ::Skip( 1 )
 
       ELSEIF wParam == VK_UP
-         ::oData:Skip( -1 )
-         IF ::oData:Bof()
-            ::oData:Top()
-         ENDIF
-         IF ::nRowCurr > 1
-            ::nRowCurr --
-         ENDIF
-         ::Refresh()
+         ::Skip( -1 )
 
       ELSEIF wParam == VK_HOME
          ::oData:Top()
@@ -469,18 +485,10 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
          ENDIF
 
       ELSEIF wParam == VK_PRIOR
-         ::oData:Skip( -::nRowCount )
-         IF ::oData:Bof()
-            ::oData:Top()
-            ::nRowCurr := 1
-         ENDIF
+         ::Skip( -::nRowCount )
 
       ELSEIF wParam == VK_NEXT
-         ::oData:Skip( ::nRowCount )
-         IF ::oData:Eof()
-            ::oData:Skip( -1 )
-            ::nRowCurr := Min( ::nRowCount, ::oData:Count() )
-         ENDIF
+         ::Skip( ::nRowCount )
 
       ELSEIF wParam == VK_RETURN
          ::Edit()
@@ -494,14 +502,27 @@ METHOD onMouseMove( xPos, yPos ) CLASS HDrawnBrw
 
    HB_SYMBOL_UNUSED(xPos)
    HB_SYMBOL_UNUSED(yPos)
+   IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide .AND. xPos >= ::oTrackV:nLeft
+      ::oTrackV:onMouseMove( xPos, yPos )
+   ENDIF
+   IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide .AND. yPos >= ::oTrackH:nTop
+      ::oTrackH:onMouseMove( xPos, yPos )
+   ENDIF
    RETURN Nil
 
 METHOD onMouseLeave() CLASS HDrawnBrw
+
+   IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide
+      ::oTrackV:onMouseLeave()
+   ENDIF
+   IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide
+      ::oTrackH:onMouseLeave()
+   ENDIF
    RETURN Nil
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
 
-   LOCAL i := 0
+   LOCAL i := 0, j, x
 
    HB_SYMBOL_UNUSED(msg)
    HB_SYMBOL_UNUSED(xPos)
@@ -510,11 +531,32 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
    IF !Empty( ::oEdit )
       RETURN Nil
    ENDIF
+
+   IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide .AND. xPos >= ::oTrackV:nLeft
+      RETURN ::oTrackV:onButtonDown( msg, xPos, yPos )
+   ENDIF
+   IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide .AND. yPos >= ::oTrackH:nTop
+      RETURN ::oTrackH:onButtonDown( msg, xPos, yPos )
+   ENDIF
+
    DO WHILE ++i <= Len( ::aRows ) .AND. ::aRows[i,1] != Nil
-      IF yPos > ::aRows[i,1] .AND. yPos < ::aRows[i,2] .AND. i != ::nRowCurr
-         ::oData:Skip( i - ::nRowCurr )
-         ::nRowCurr := i
-         ::Refresh()
+      IF yPos > ::aRows[i,1] .AND. yPos < ::aRows[i,2]
+         IF i != ::nRowCurr
+            ::oData:Skip( i - ::nRowCurr )
+            ::nRowCurr := i
+            IF ::lSeleCell
+               j := ::nColFirst - 1
+               x := ::nLeft + ::aMargin[1]
+               DO WHILE ++j <= Len( ::aColumns ) .AND. x < xPos
+                  x += ::aColumns[j]:nWidth
+                  IF x > xPos
+                     ::nColCurr := j
+                     EXIT
+                  ENDIF
+               ENDDO
+            ENDIF
+            ::Refresh()
+         ENDIF
          EXIT
       ENDIF
    ENDDO
@@ -525,6 +567,23 @@ METHOD onButtonUp( xPos, yPos ) CLASS HDrawnBrw
 
    HB_SYMBOL_UNUSED(xPos)
    HB_SYMBOL_UNUSED(yPos)
+
+   IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide .AND. xPos >= ::oTrackV:nLeft
+      RETURN ::oTrackV:onButtonUp( xPos, yPos )
+   ENDIF
+   IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide .AND. yPos >= ::oTrackH:nTop
+      RETURN ::oTrackH:onButtonUp( xPos, yPos )
+   ENDIF
+
+   RETURN Nil
+
+METHOD onButtonDbl( xPos, yPos ) CLASS HDrawnBrw
+
+   IF xPos > ::nLeft + ::aMargin[1] .AND. xPos < ::nLeft + ::nWidth - ::aMargin[3] .AND. ;
+      yPos > ::nTop + ::aMargin[2] + ::nHeightHead .AND. yPos < ::nTop + ::nHeight - ::nHeightFoot - ::aMargin[4]
+      ::Edit()
+   ENDIF
+
    RETURN Nil
 
 METHOD onKillFocus() CLASS HDrawnBrw
@@ -544,9 +603,107 @@ METHOD SetFocus() CLASS HDrawnBrw
 
    RETURN Nil
 
+METHOD Skip( n ) CLASS HDrawnBrw
+
+   LOCAL nRecOld := ::oData:Recno(), nRec
+
+   ::oData:Skip( n )
+   IF n < 0 .AND. ::oData:Bof()
+      ::oData:Top()
+   ELSEIF n > 0 .AND. ::oData:Eof()
+      ::oData:Bottom()
+   ENDIF
+   nRec := ::oData:Recno()
+   n := nRec - nRecOld
+   IF n < 0
+      n := Abs( n )
+      IF n < ::nRowCurr
+         ::nRowCurr -= n
+      ELSE
+         ::nRowCurr := 1
+      ENDIF
+   ELSEIF n > 0
+      IF n <= ( ::nRowCount - ::nRowCurr )
+         ::nRowCurr += n
+      ELSE
+         ::nRowCurr := ::nRowCount
+      ENDIF
+   ENDIF
+   ::Refresh()
+
+   RETURN Nil
+
 METHOD Selected( n ) CLASS HDrawnBrw
 
    RETURN Iif( Empty(n), ::oData:Recno(), Eval( ::aColumns[n]:block,, ::oData ) )
+
+METHOD ShowTrackV( lShow ) CLASS HDrawnBrw
+
+   LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, nTrackWidth )
+   LOCAL bOnTrack := {|o,n|
+      LOCAL nRecOld := o:oParent:oData:Recno()
+      LOCAL nRecNew := Round( o:oParent:oData:Count() * n + 1, 0 )
+      IF nRecNew != nRecOld
+         o:oParent:Skip( nRecNew - nRecOld )
+      ENDIF
+      RETURN .T.
+   }
+
+   IF lShow
+      IF Empty( ::oTrackV ) .OR. ::oTrackV:lHide
+         IF Empty( ::oTrackV )
+            ::oTrackV := HDrawnTrack():New( Self, ::nLeft+::nWidth-nTrackWidth-::aMargin[3], ;
+               ::nTop+::aMargin[2]+::nHeightHead, nTrackWidth, ;
+               ::nHeight-+::nHeightHead-+::nHeightFoot-::aMargin[2]-::aMargin[4], ;
+               , CLR_BLACK, CLR_WHITE, 48, Iif( Empty(::oStyleBar),Nil,::oStyleBar ), ;
+               Iif( Empty(::oStyleSlider),HStyle():New( { 0x888888, 0xcccccc }, 3 ),::oStyleSlider), .F. )
+            ::oTrackV:bChange := bOnTrack
+         ELSE
+            ::oTrackV:lHide := .F.
+         ENDIF
+         ::aMargin[3] += ::oTrackV:nWidth
+         ::Refresh()
+      ENDIF
+   ELSE
+      IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide
+         ::oTrackV:lHide := .T.
+         ::aMargin[3] -= ::oTrackV:nWidth
+         ::Refresh()
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+METHOD ShowTrackH( lShow ) CLASS HDrawnBrw
+
+   LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, nTrackWidth )
+   LOCAL bOnTrack := {|o,n|
+      RETURN .T.
+   }
+
+   IF lShow
+      IF Empty( ::oTrackH ) .OR. ::oTrackH:lHide
+         IF Empty( ::oTrackH )
+            ::oTrackH := HDrawnTrack():New( Self, ::nLeft+::aMargin[1], ;
+               ::nTop+::nHeight-::aMargin[4]-nTrackWidth, ::nWidth-::aMargin[1]-::aMargin[3], nTrackWidth, ;
+               , CLR_BLACK, CLR_WHITE, 48, Iif( Empty(::oStyleBar),Nil,::oStyleBar ), ;
+               Iif( Empty(::oStyleSlider),HStyle():New( { 0x888888, 0xcccccc }, 3 ),::oStyleSlider), .F. )
+            ::oTrackH:bChange := bOnTrack
+         ELSE
+            ::oTrackH:lHide := .F.
+         ENDIF
+         ::aMargin[4] += ::oTrackH:nHeight
+         ::Refresh()
+      ENDIF
+   ELSE
+      IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide
+         ::oTrackH:lHide := .T.
+         ::aMargin[4] -= ::oTrackH:nHeight
+         ::Refresh()
+      ENDIF
+   ENDIF
+
+   RETURN Nil
 
 CLASS HBrwCol INHERIT HObject
 

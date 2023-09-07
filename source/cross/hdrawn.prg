@@ -46,13 +46,14 @@ CLASS HDrawn INHERIT HObject
    METHOD SetText( cText )
    METHOD Value( xValue ) SETGET
    METHOD Refresh( x1, y1, x2, y2 )
-   METHOD onMouseMove( xPos, yPos ) VIRTUAL
+   METHOD onMouseMove( xPos, yPos )    VIRTUAL
    METHOD onMouseLeave() VIRTUAL
    METHOD onButtonDown( msg, xPos, yPos ) VIRTUAL
-   METHOD onButtonUp( xPos, yPos ) VIRTUAL
+   METHOD onButtonUp( xPos, yPos )     VIRTUAL
+   METHOD onButtonDbl( xPos, yPos )  VIRTUAL
    METHOD onKey( msg, wParam, lParam ) VIRTUAL
-   METHOD onKillFocus() VIRTUAL
-   METHOD End() VIRTUAL
+   METHOD onKillFocus()  VIRTUAL
+   METHOD End()          VIRTUAL
 
 ENDCLASS
 
@@ -238,7 +239,7 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
             nPosY >= ::nTop .AND. nPosY < ::nTop + ::nHeight, STATE_MOVER, STATE_NORMAL )
          IF Self == op
             IF !Empty( ::bClick )
-               Eval( ::bClick, Self )
+               Eval( ::bClick, Self, nPosX, nPosY )
             ENDIF
          ELSEIF !Empty( op )
             op:nState := Iif( nPosX >= op:nLeft .AND. nPosX < op:nLeft + op:nWidth .AND. ;

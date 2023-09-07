@@ -695,9 +695,15 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
          ::oInFocus := Nil
       ENDIF
 
+   ELSEIF msg == WM_LBUTTONDBLCLK
+      IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
+         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         o:onButtonDbl( nPosX, nPosY )
+      ENDIF
+
    ELSEIF msg == WM_LBUTTONUP
       IF !Empty( o := HDrawn():GetByState( STATE_PRESSED, ::aDrawn ) )
-         o:SetState( 3, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+         o:SetState( 3, nPosX := hwg_Loword( lParam ), nPosY := hwg_Hiword( lParam ) )
          o:onButtonUp( nPosX, nPosY )
       ENDIF
 

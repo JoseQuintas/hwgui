@@ -73,6 +73,7 @@ $(LIB_DIR)/libhwgui.a : \
    $(OBJ_DIR)/hcontrol.o \
    $(OBJ_DIR)/hdrawn.o \
    $(OBJ_DIR)/hdrawnbrw.o \
+   $(OBJ_DIR)/hdrawncomb.o \
    $(OBJ_DIR)/hdialog.o \
    $(OBJ_DIR)/hedit.o \
    $(OBJ_DIR)/hfrmtmpl.o \

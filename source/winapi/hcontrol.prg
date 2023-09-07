@@ -720,7 +720,7 @@ METHOD Activate() CLASS HBoard
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
-   LOCAL nRes, o, nPosX, nPosY
+   LOCAL nRes, o, nPosX, nPosY, arr
 
    IF ::bOther != Nil
       IF ( nRes := Eval( ::bOther, Self, msg, wParam, lParam ) ) == 0
@@ -781,8 +781,20 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
    ELSEIF msg == WM_LBUTTONUP
       IF !Empty( o := HDrawn():GetByState( STATE_PRESSED, ::aDrawn ) )
-         o:SetState( 3, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+         o:SetState( 3, nPosX := hwg_Loword( lParam ), nPosY := hwg_Hiword( lParam ) )
          o:onButtonUp( nPosX, nPosY )
+      ENDIF
+
+   ELSEIF msg == WM_LBUTTONDBLCLK
+      IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
+         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         o:onButtonDbl( nPosX, nPosY )
+      ENDIF
+
+   ELSEIF msg == WM_MOUSEWHEEL
+      arr := hwg_ScreenToClient( ::handle, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+      IF ( o := HDrawn():GetByPos( arr[1], arr[2], Self ) ) != Nil
+         o:onKey( WM_KEYDOWN, Iif( hwg_Hiword( wParam ) > 32768, VK_DOWN, VK_UP ), 0 )
       ENDIF
 
    ELSEIF msg == WM_GETDLGCODE

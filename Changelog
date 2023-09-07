@@ -15,6 +15,25 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-07 15:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+  * source/cross/hdrawnbrw.prg
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * Fixes and enhancements. Mouse wheel and double click support added for drawn widgets.
+  + source/cross/hdrawncombo.prg
+    + HDrawnCombo class added
+  * include/hwgextern.ch
+    * Request for new class added
+  * hwgui.hbm
+  * makefile.bc
+  * makefile.gcc
+  * makefile.vc
+  * makefile.wc
+  * source/gtk/Makefile.linux
+  * source/gtk/Makefile.linux-gtk3
+    * Makefiles updated.
+
 2023-09-06 13:49 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
     * :Delete() method added

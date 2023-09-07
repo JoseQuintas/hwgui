@@ -15,6 +15,9 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-07 20:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * Forgot to upload makefiles
+
 2023-09-07 15:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
   * source/cross/hdrawnbrw.prg

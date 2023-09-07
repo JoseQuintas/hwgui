@@ -110,14 +110,14 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD onMouseLeave()
    METHOD onButtonDown( msg, xPos, yPos )
    METHOD onButtonUp( xPos, yPos )
-   METHOD onButtonDbl( nPosX, nPosY )
+   METHOD onButtonDbl( xPos, yPos )
    METHOD onKillFocus()
    METHOD SetFocus()
 
    METHOD Skip( n )
    METHOD Selected( n )
-   METHOD ShowTrackV( lShow, nTrackWidth )
-   METHOD ShowTrackH( lShow, nTrackWidth )
+   METHOD ShowTrackV( lShow )
+   METHOD ShowTrackH( lShow )
 
 ENDCLASS
 
@@ -678,6 +678,8 @@ METHOD ShowTrackH( lShow ) CLASS HDrawnBrw
 
    LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, nTrackWidth )
    LOCAL bOnTrack := {|o,n|
+      HB_SYMBOL_UNUSED(o)
+      HB_SYMBOL_UNUSED(n)
       RETURN .T.
    }
 

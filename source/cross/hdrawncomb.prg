@@ -29,6 +29,7 @@ CLASS HDrawnCombo INHERIT HDrawn
    DATA  arrowColor   INIT 0
    DATA  arrowPen
    DATA  nRowCount    INIT 3
+   DATA  bChange
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
                oFont, aItems, xValue, lText, bPaint, bChange, bChgState, nRowCount )
@@ -51,6 +52,7 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
                oFont, aItems, xValue, lText, bPaint, bChange, bChgState, nRowCount ) CLASS HDrawnCombo
 
    LOCAL bKey := {|o,m,w|
+      HB_SYMBOL_UNUSED(o)
       IF m == WM_KEYDOWN
          IF w == VK_ESCAPE
             ::ListHide()
@@ -68,6 +70,7 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
    }
    LOCAL bClick := {|o,x,y|
       LOCAL i := 0
+      HB_SYMBOL_UNUSED(x)
       DO WHILE ++i <= Len( o:aRows ) .AND. o:aRows[i,1] != Nil
          IF y > o:aRows[i,1] .AND. y < o:aRows[i,2]
             ::Value( ::oList:oData:Recno() )
@@ -86,6 +89,7 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
    ::aItems := aItems
    IF Valtype( lText ) == "L"; ::lText := lText; ENDIF
    IF nRowCount != Nil; ::nRowCount := nRowCount; ENDIF
+   ::bChange := bChange
 
    ::oText := HDrawn():New( Self, ::nLeft, ::nTop, ::nWidth-::nHeight+1, ::nHeight, ::tcolor, ::bColor, ::aStyles, ;
       "", ::oFont )
@@ -177,9 +181,14 @@ METHOD ListHide() CLASS HDrawnCombo
    RETURN Nil
 
 METHOD onKey( msg, wParam, lParam ) CLASS HDrawnCombo
+   HB_SYMBOL_UNUSED(msg)
+   HB_SYMBOL_UNUSED(wParam)
+   HB_SYMBOL_UNUSED(lParam)
    RETURN Nil
 
 METHOD onMouseMove( xPos, yPos ) CLASS HDrawnCombo
+   HB_SYMBOL_UNUSED(xPos)
+   HB_SYMBOL_UNUSED(yPos)
    RETURN Nil
 
 METHOD onMouseLeave() CLASS HDrawnCombo
@@ -201,6 +210,9 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnCombo
    RETURN Nil
 
 METHOD onButtonUp( xPos, yPos ) CLASS HDrawnCombo
+
+   HB_SYMBOL_UNUSED(xPos)
+   HB_SYMBOL_UNUSED(yPos)
 
    IF ::oBtn:nState == STATE_PRESSED
       ::oBtn:nState := STATE_NORMAL

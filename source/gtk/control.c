@@ -1578,12 +1578,13 @@ HB_FUNC( HWG_CREATEBOARD )
    {
       gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
             GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK |
-            GDK_FOCUS_CHANGE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK );
+            GDK_FOCUS_CHANGE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_SCROLL_MASK );
       g_signal_connect( hCtrl, "size-allocate", G_CALLBACK (cb_signal_size), "1" );
       set_event( ( gpointer ) hCtrl, "focus_in_event", 0, 0, 0 );
       set_event( ( gpointer ) hCtrl, "focus_out_event", 0, 0, 0 );
       set_event( ( gpointer ) hCtrl, "key_press_event", 0, 0, 0 );
       set_event( ( gpointer ) hCtrl, "key_release_event", 0, 0, 0 );
+      set_event( ( gpointer ) hCtrl, "scroll_event", 0, 0, 0 );
    }
    else
       gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |

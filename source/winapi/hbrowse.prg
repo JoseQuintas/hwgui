@@ -98,7 +98,6 @@ CLASS HColumn INHERIT HObject
    //      {textColor, backColor, textColorSel, backColorSel} , ;
    //      {textColor, backColor, textColorSel, backColorSel} ) }
    METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
-   //METHOD SetPaintCB( nId, block, cId )
 
 ENDCLASS
 
@@ -123,35 +122,7 @@ METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::bHeadClick  := bHeadClick
 
    RETURN Self
-/*
-METHOD SetPaintCB( nId, block, cId ) CLASS HColumn
 
-   LOCAL i, nLen
-
-   IF Empty( cId ); cId := "_"; ENDIF
-   IF Empty( ::aPaintCB ); ::aPaintCB := {}; ENDIF
-
-   nLen := Len( ::aPaintCB )
-   FOR i := 1 TO nLen
-      IF ::aPaintCB[i,1] == nId .AND. ::aPaintCB[i,2] == cId
-         EXIT
-      ENDIF
-   NEXT
-   IF Empty( block )
-      IF i <= nLen
-         ADel( ::aPaintCB, i )
-         ::aPaintCB := ASize( ::aPaintCB, nLen - 1 )
-      ENDIF
-   ELSE
-      IF i > nLen
-         AAdd( ::aPaintCB, { nId, cId, block } )
-      ELSE
-         ::aPaintCB[i,3] := block
-      ENDIF
-   ENDIF
-
-   RETURN Nil
-*/
 CLASS HBrowse INHERIT HControl
 
    DATA winclass   INIT "HBOARD"
@@ -426,11 +397,14 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
          ELSEIF wParam == 17
             ::lCtrlPress := .T.
             // fim bloco sauli
-         ELSEIF ::lAutoEdit .AND. ( wParam >= 48 .AND. wParam <= 90 .OR. wParam >= 96 .AND. wParam <= 111 )
-            ::Edit( wParam, lParam )
          ENDIF
          RETURN 1
 
+      ELSEIF msg == WM_CHAR
+         wParam := hwg_PtrToUlong( wParam )
+         IF ::lAutoEdit .AND. wParam >= 33 .AND. wParam <= 126
+            ::Edit( wParam, lParam )
+         ENDIF
       ELSEIF msg == WM_LBUTTONDBLCLK
          ::ButtonDbl( lParam )
 
@@ -1931,7 +1905,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
          lReadExit := Set( _SET_EXIT, .T. )
          bInit := iif( wParam == Nil, { |o|hwg_Movewindow( o:handle,x1,y1,nWidth,o:nHeight + 1 ) }, ;
-            { |o|hwg_Movewindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ), hwg_Postmessage( o:aControls[1]:handle, WM_KEYDOWN, wParam, lParam ) } )
+            { |o|hwg_Movewindow( o:handle, x1, y1, nWidth, o:nHeight + 1 ), hwg_Postmessage( o:aControls[1]:handle, WM_CHAR, wParam, lParam ) } )
 
          IF type <> "M"
             INIT DIALOG oModDlg;
@@ -2371,27 +2345,3 @@ STATIC FUNCTION CountToken( cStr, nMaxLen, nCount )
    ENDIF
 
    RETURN cStr
-/*
-FUNCTION hwg_getPaintCB( arr, nId )
-
-   LOCAL i, nLen, aRes
-
-   IF !Empty( arr )
-      nLen := Len( arr )
-      FOR i := 1 TO nLen
-         IF arr[i,1] == nId
-            IF nId < PAINT_LINE_ITEM
-               RETURN arr[i,3]
-            ELSE
-               IF aRes == Nil
-                  aRes := { arr[i,3] }
-               ELSE
-                  AAdd( aRes, arr[i,3] )
-               ENDIF
-            ENDIF
-         ENDIF
-      NEXT
-   ENDIF
-
-   RETURN aRes
-*/

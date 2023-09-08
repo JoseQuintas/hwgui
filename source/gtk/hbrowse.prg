@@ -76,7 +76,6 @@ CLASS HColumn INHERIT HObject
    //      {textColor, backColor, textColorSel, backColorSel} , ;
    //      {textColor, backColor, textColorSel, backColorSel} ) }
    METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
-   //METHOD SetPaintCB( nId, block, cId )
 
 ENDCLASS
 
@@ -101,35 +100,6 @@ METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::bHeadClick  := bHeadClick
 
    RETURN Self
-/*
-METHOD SetPaintCB( nId, block, cId ) CLASS HColumn
-
-   LOCAL i, nLen
-
-   IF Empty( cId ); cId := "_"; ENDIF
-   IF Empty( ::aPaintCB ); ::aPaintCB := {}; ENDIF
-
-   nLen := Len( ::aPaintCB )
-   FOR i := 1 TO nLen
-      IF ::aPaintCB[i,1] == nId .AND. ::aPaintCB[i,2] == cId
-         EXIT
-      ENDIF
-   NEXT
-   IF Empty( block )
-      IF i <= nLen
-         ADel( ::aPaintCB, i )
-         ::aPaintCB := ASize( ::aPaintCB, nLen - 1 )
-      ENDIF
-   ELSE
-      IF i > nLen
-         AAdd( ::aPaintCB, { nId, cId, block } )
-      ELSE
-         ::aPaintCB[i,3] := block
-      ENDIF
-   ENDIF
-
-   RETURN Nil
-*/
 
 CLASS HBrowse INHERIT HControl
 
@@ -407,33 +377,27 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             IF ::nCtrlPress == 0
                ::nCtrlPress := wParam
             ENDIF
-         ELSEIF ( wParam >= 48 .AND. wParam <= 90 .OR. wParam >= 96 .AND. wParam <= 111 ) .AND. ::lAutoEdit
+         ELSEIF ::lAutoEdit .AND. wParam >= 33 .AND. wParam <= 126
             ::Edit( wParam, lParam )
          ENDIF
          retValue := 1
 
       ELSEIF msg == WM_LBUTTONDOWN
-         // hwg_WriteLog( "Brw: WM_LBUTTONDOWN" )
          ::ButtonDown( lParam )
 
       ELSEIF msg == WM_LBUTTONUP
-         // hwg_WriteLog( "Brw: WM_LBUTTONUP" )
          ::ButtonUp( lParam )
 
       ELSEIF msg == WM_LBUTTONDBLCLK
-         // hwg_WriteLog( "Brw: WM_LBUTTONDBLCLK" )
          ::ButtonDbl( lParam )
 
       ELSEIF msg == WM_RBUTTONDOWN
-         // hwg_WriteLog( "Brw: WM_RBUTTONDOWN" )
          ::ButtonRDown( lParam )
 
       ELSEIF msg == WM_MOUSEMOVE
-         // hwg_WriteLog( "Brw: WM_MOUSEMOVE" )
          ::MouseMove( wParam, lParam )
 
       ELSEIF msg == WM_MOUSEWHEEL
-         // hwg_WriteLog( "Brw: WM_MOUSEWHEEL" )
          ::MouseWheel( hwg_Loword( wParam ), ;
             If( hwg_Hiword( wParam ) > 32768, ;
             hwg_Hiword( wParam ) - 65535, hwg_Hiword( wParam ) ), ;
@@ -2244,27 +2208,3 @@ STATIC FUNCTION CountToken( cStr, nMaxLen, nCount )
    ENDIF
 
    RETURN cStr
-/*
-FUNCTION hwg_getPaintCB( arr, nId )
-
-   LOCAL i, nLen, aRes
-
-   IF !Empty( arr )
-      nLen := Len( arr )
-      FOR i := 1 TO nLen
-         IF arr[i,1] == nId
-            IF nId < PAINT_LINE_ITEM
-               RETURN arr[i,3]
-            ELSE
-               IF aRes == Nil
-                  aRes := { arr[i,3] }
-               ELSE
-                  AAdd( aRes, arr[i,3] )
-               ENDIF
-            ENDIF
-         ENDIF
-      NEXT
-   ENDIF
-
-   RETURN aRes
-*/

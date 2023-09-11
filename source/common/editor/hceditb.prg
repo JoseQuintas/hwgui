@@ -197,6 +197,11 @@ METHOD Value( xValue ) CLASS HDrawnEdit
       ELSE
          ::xValue := ::title
       ENDIF
+      IF ::cType == "D"
+         ::xValue := CToD( ::xValue )
+      ELSEIF ::cType == "N"
+         ::xValue := Val( LTrim( ::xValue ) )
+      ENDIF
    ENDIF
 
    RETURN ::xValue

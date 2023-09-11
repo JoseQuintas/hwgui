@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-11 14:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+  * source/cross/common.prg
+    * HPicture class moved to cross/common.prg
+  * source/common/editor/hceditb.prg
+    * Small enhancements
+
 2023-09-08 09:11 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
   * source/winapi/hbrowse.prg

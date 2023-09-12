@@ -531,7 +531,7 @@ Local i, j, j1, arr, o, aRect, aProp := {}, aItems := oCtrlDesc:aItems, oCtrl, c
                      Aadd( aProp, { "Bottom", aRect[6] } )
                   ENDIF
                ELSEIF Lower( cPropertyName ) == "font"
-                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1],oDesigner:lReport ) } )
+                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1],,oDesigner:lReport ) } )
                ELSEIF Left( Lower(cPropertyName),6 ) == "hstyle"
                   Aadd( aProp, { cPropertyName,hwg_HstyleFromXML( o:aItems[1] ) } )
                ELSEIF Left( Lower(cPropertyName),6 ) == "styles"
@@ -623,7 +623,7 @@ Local i, j, aItems, o, aProp := {}, cPropertyName, aRect, aCoors, pos, cProperty
                   Aadd( aProp, { "Width", aRect[3] } )
                   Aadd( aProp, { "Height", aRect[4] } )
                ELSEIF Lower( cPropertyName ) == "font"
-                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1],oDesigner:lReport ) } )
+                  Aadd( aProp, { cPropertyName,hwg_hfrm_FontFromXML( o:aItems[1],,oDesigner:lReport ) } )
                ELSEIF !Empty(o:aItems)
                   cProperty := Left( o:aItems[1],1 )
                   IF cProperty == '['

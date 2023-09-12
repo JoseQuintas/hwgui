@@ -30,6 +30,7 @@ CLASS HPrinter INHERIT HObject
    DATA cdpIn
    DATA lPreview
    DATA lBuffPrn       INIT .F.
+   DATA lUseMeta       INIT .F.
    DATA nWidth, nHeight
    DATA nOrient        INIT 1
    DATA nFormType      INIT 0

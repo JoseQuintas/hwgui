@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-12 10:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hfrmtmpl.prg
+  * source/winapi/hfrmtmpl.prg
+    * Changes to synhronize winapi and gtk versions
+  * source/gtk/hprinter.prg
+  * utils/designer/hformgen.prg
+    * Changes to synhronize with hfrmtmpl.prg
+
 2023-09-11 14:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
   * source/winapi/hedit.prg

@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-12 10:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + source/cross/hfrmtmpl.prg
+  - source/gtk/hfrmtmpl.prg
+  - source/winapi/hfrmtmpl.prg
+  * hwgui.hbm
+  * makefile.vc
+  * makefile.wc
+    * hfrmtmpl.prg has been moved to cross/
+
 2023-09-12 10:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hfrmtmpl.prg
   * source/winapi/hfrmtmpl.prg

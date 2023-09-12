@@ -38,6 +38,7 @@
 {win}source/cross/hdrawn.prg
 {win}source/cross/hdrawnbrw.prg
 {win}source/cross/hdrawncomb.prg
+{win}source/cross/hfrmtmpl.prg
 {win}source/cross/hgraph.prg
 {win}source/cross/hlenta.prg
 {win}source/cross/htrack.prg
@@ -56,7 +57,6 @@
 {win}source/winapi/hdialog.prg
 {win}source/winapi/hedit.prg
 {win}source/winapi/hfreeimg.prg
-{win}source/winapi/hfrmtmpl.prg
 {win}source/winapi/hgrid.prg
 {win}source/winapi/hlistbox.prg
 {win}source/winapi/htool.prg
@@ -107,6 +107,7 @@
 {unix}source/cross/hdrawn.prg
 {unix}source/cross/hdrawnbrw.prg
 {unix}source/cross/hdrawncomb.prg
+{unix}source/cross/hfrmtmpl.prg
 {unix}source/cross/hgraph.prg
 {unix}source/cross/hlenta.prg
 {unix}source/cross/htrack.prg
@@ -121,7 +122,6 @@
 {unix}source/gtk/hcontrol.prg
 {unix}source/gtk/hdialog.prg
 {unix}source/gtk/hedit.prg
-{unix}source/gtk/hfrmtmpl.prg
 {unix}source/gtk/hhyper.prg
 {unix}source/gtk/hownbtn.prg
 {unix}source/gtk/hpanel.prg

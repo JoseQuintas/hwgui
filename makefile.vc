@@ -298,7 +298,7 @@ $(OBJ_DIR)\drawwidg.c   : $(SRC_DIR)\drawwidg.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hfreeimg.c   : $(SRC_DIR)\hfreeimg.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hfrmtmpl.c   : $(SRC_DIR)\hfrmtmpl.prg
+$(OBJ_DIR)\hfrmtmpl.c   : $(CROSS_DIR)\hfrmtmpl.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hgraph.c     : $(CROSS_DIR)\hgraph.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@

@@ -275,7 +275,7 @@ $(OBJ_DIR)\hfreeimg.c : $(SRC_DIR)\hfreeimg.prg
 $(OBJ_DIR)\hfreeimg.obj : $(OBJ_DIR)\hfreeimg.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
-$(OBJ_DIR)\hfrmtmpl.c : $(SRC_DIR)\hfrmtmpl.prg
+$(OBJ_DIR)\hfrmtmpl.c : $(CROSS_DIR)\hfrmtmpl.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hfrmtmpl.obj : $(OBJ_DIR)\hfrmtmpl.c

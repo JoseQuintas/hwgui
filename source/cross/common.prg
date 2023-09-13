@@ -703,3 +703,455 @@ FUNCTION hwg_SetGetUpdated( o )
    ENDIF
 
    RETURN Nil
+
+   //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   //   Functions for raw bitmap support
+   //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FUNCTION hwg_BPMinches_per_meter()
+
+   RETURN 100.0 / 2.54
+
+FUNCTION hwg_BPMconv_inch( mtr )
+
+   RETURN mtr / ( 100.0 / 2.54 )
+
+FUNCTION hwg_ShowBitmap( cbmp, cbmpname, ncolbg, ncolfg )
+
+   // Shows a bitmap
+   // cbmp      : The bitmap file image string
+   // cbmpname  : A unique name of the bitmap
+   // ncolbg    : Background color (system, if NIL)
+   // ncolfg    : foreground colors (ignored, if no background color is set)
+   // You can use
+   // hwg_ColorC2N( cColor ):
+   //  Converts color representation from string to numeric format.
+   //  cColor - a string in #RRGGBB
+
+   LOCAL frm_bitmap , oButton1 , nx , ny , oBitmap
+   LOCAL oLabel1, oLabel2, oLabel3, oLabel4
+   LOCAL obmp, ldefc
+
+   // Display the bitmap in an extra window
+   // Max size : 1277,640
+
+   ldefc := .F.
+   IF ncolbg != NIL
+      ldefc := .T.
+   ENDIF
+
+   IF ncolfg != NIL
+      ldefc := .T.
+   ENDIF
+
+   obmp := HBitmap():AddString( cbmpname , cbmp )
+
+   // Get current size
+   nx := hwg_GetBitmapWidth ( obmp:handle )
+   ny := hwg_GetBitmapHeight( obmp:handle )
+
+   IF nx > 1277
+      nx := 1277
+   ENDIF
+
+   IF ny > 640
+      ny := 640
+   ENDIF
+
+   IF ldefc
+
+      INIT DIALOG frm_bitmap TITLE "Bitmap Image" ;
+         AT 20, 20 SIZE 1324, 772 ;
+         BACKCOLOR ncolbg;
+         STYLE WS_SYSMENU + WS_SIZEBOX + WS_VISIBLE
+
+      @ 747, 667 SAY oLabel1 CAPTION "Size:  x:"  SIZE 87, 22 ;
+         COLOR ncolfg  BACKCOLOR ncolbg ;
+         STYLE SS_RIGHT
+
+      @ 866, 667 SAY oLabel2 CAPTION AllTrim( Str( nx ) )  SIZE 80, 22  ;
+         COLOR ncolfg  BACKCOLOR ncolbg
+      @ 988, 667 SAY oLabel3 CAPTION "y:"  SIZE 80, 22 ;
+         COLOR ncolfg  BACKCOLOR ncolbg ;
+         STYLE SS_RIGHT
+      @ 1130, 667 SAY oLabel4 CAPTION AllTrim( Str( ny ) )  SIZE 80, 22 ;
+         COLOR ncolfg  BACKCOLOR ncolbg ;
+
+         # ifdef __GTK__
+      @ 17, 12 BITMAP oBitmap  ;
+         SHOW obmp OF frm_bitmap  ;
+         SIZE nx, ny
+#else
+      @ 17, 12 BITMAP oBitmap  ;
+         SHOW obmp OF frm_bitmap
+#endif
+
+      @ 590, 663 BUTTON oButton1 CAPTION "OK"   SIZE 80, 32 ;
+         COLOR ncolfg  BACKCOLOR ncolbg ;
+         STYLE WS_TABSTOP + BS_FLAT ;
+         ON CLICK { || frm_bitmap:Close() }
+
+   ELSE
+      // System colors
+
+      INIT DIALOG frm_bitmap TITLE "Bitmap Image" ;
+         AT 20, 20 SIZE 1324, 772 ;
+         STYLE WS_SYSMENU + WS_SIZEBOX + WS_VISIBLE
+
+      @ 747, 667 SAY oLabel1 CAPTION "Size:  x:"  SIZE 87, 22 ;
+         STYLE SS_RIGHT
+      @ 866, 667 SAY oLabel2 CAPTION AllTrim( Str( nx ) )  SIZE 80, 22
+      @ 988, 667 SAY oLabel3 CAPTION "y:"  SIZE 80, 22 ;
+         STYLE SS_RIGHT
+      @ 1130, 667 SAY oLabel4 CAPTION AllTrim( Str( ny ) )  SIZE 80, 22
+
+#ifdef __GTK__
+      @ 17, 12 BITMAP oBitmap  ;
+         SHOW obmp OF frm_bitmap  ;
+         SIZE nx, ny
+#else
+      @ 17, 12 BITMAP oBitmap  ;
+         SHOW obmp OF frm_bitmap
+#endif
+
+      @ 590, 663 BUTTON oButton1 CAPTION "OK"   SIZE 80, 32 ;
+         STYLE WS_TABSTOP + BS_FLAT ;
+         ON CLICK { || frm_bitmap:Close() }
+
+   ENDIF
+
+   ACTIVATE DIALOG frm_bitmap
+
+   RETURN NIL
+
+FUNCTION hwg_BMPDrawCircle( nradius, ndeg )
+
+   LOCAL aret , nx, ny , nrad
+
+   aret := {}
+   // Convert degrees to radiant
+   nrad := ndeg/180.0 * hwg_PI()
+
+   nx := Round( hwg_Cos( nrad ) * nradius  , 0 ) + nradius + 1
+   ny := Round( hwg_Sin( nrad ) * nradius  , 0 ) + nradius + 1
+
+   AAdd( aret, nx )
+   AAdd( aret, ny )
+
+   RETURN aret
+
+FUNCTION hwg_BMPSetMonochromePalette( pcBMP )
+
+   // Set monochrome palette for QR encoding,
+   // The background is white.
+   // (2 colors, black and white)
+   // Set 55, 56, 57 to 0xFF
+   // This setting define color 0 as white (the color 1 now is black by default)
+   // Sample:
+   // CBMP := HWG_BMPNEWIMAGE(nx, ny, 1, 2, 2835, 2835 )
+   // HWG_BMPDESTROY()
+   // CBMP := hwg_BMPSetMonochromePalette(CBMP)
+
+   LOCAL npoffset, CBMP
+   CBMP := pcBMP
+
+   // Get Offset to palette data, expected value by default is 54
+   npoffset := HWG_BMPCALCOFFSPAL()
+   CBMP := hwg_ChangeCharInString( CBMP, npoffset     , Chr( 255 ) )
+   CBMP := hwg_ChangeCharInString( CBMP, npoffset + 1 , Chr( 255 ) )
+   CBMP := hwg_ChangeCharInString( CBMP, npoffset + 2 , Chr( 255 ) )
+   CBMP := hwg_ChangeCharInString( CBMP, npoffset + 3 , Chr( 255 ) )
+
+   RETURN CBMP
+
+   // Converts the bitmap string after (opional)
+   // modifications into a bitmap object.
+   // cbmpname : String with an unique bitmap name
+
+FUNCTION hwg_BMPStr2Obj( pcBMP, cbmpname )
+
+   LOCAL oBmp
+
+   oBmp := HBitmap():AddString( cbmpname , pcBMP )
+
+   RETURN oBmp
+
+   //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   //   End of Functions for raw bitmap support
+   //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   //   ~~~~~~~~~~~~~~~~~~~~~~~~~
+   //   Functions for QR encoding
+   //   ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   /* Convert QR code to bitmap */
+
+FUNCTION hwg_QRCodetxt2BPM( cqrcode )
+
+   LOCAL cBMP , nlines, ncol , x , i , n
+   LOCAL leofq
+
+   IF cqrcode == NIL
+      RETURN ""
+   ENDIF
+
+   // Count the columns in QR code text string
+   // ( Appearance of line end in first line )
+   ncol   := At( Chr( 10 ), cqrcode ) - 1
+
+   // Count the lines in QR code text string
+   // Suppress empty lines
+
+   leofq := .F.
+   nlines := 0
+   FOR i := 1 TO Len( cqrcode )
+      IF .NOT. leofq
+         IF SubStr( cqrcode, i, 1 ) == Chr( 10 )
+            IF .NOT. ( SubStr( cqrcode, i + 1 , 1 ) == " " )
+               // Empty line following, stop here
+               leofq := .T.
+            ELSE
+               // Count line ending
+               nlines := nlines + 1
+            ENDIF
+         ENDIF
+      ENDIF
+
+   NEXT
+
+   // Based on this, calculate the bitmap size
+   nlines := nlines + 1
+
+   // Create the bitmap template and set monochrome palette
+   cBMP := HWG_BMPNEWIMAGE( ncol, nlines, 1, 2, 2835, 2835 )
+   HWG_BMPDESTROY()
+   cBMP := hwg_BMPSetMonochromePalette( cBMP )
+
+   // Convert to bitmap
+
+   leofq := .F.
+   // i:        Position in cqrcode
+   n := 1   // Line
+   x := 0   // Column
+   FOR i := 1 TO Len( cqrcode )
+      x := x + 1
+      IF .NOT. leofq
+         IF SubStr( cqrcode, i, 1 ) == Chr( 10 )
+            IF .NOT. ( SubStr( cqrcode, i + 1 , 1 ) == " " )
+               // Empty line following, stop here
+               leofq := .T.
+            ENDIF
+            // Count line ending and start with new line
+            n := n + 1
+            x := 0
+         ELSE  // SUBSTR " "
+            IF SubStr( cqrcode, i, 1 ) == "#"
+               cBMP := hwg_QR_SetPixel( cBMP, x, n, ncol, nlines )
+            ENDIF  // #
+         ENDIF // is CHR(10)
+      ENDIF // .NOT. leofq
+
+   NEXT
+
+   RETURN cBMP
+
+   // Set a single pixel into QR code bitmap string
+   // Background color is white, pixel color is black
+
+FUNCTION hwg_QR_SetPixel( cmbp, x, y, xw, yh )
+
+   LOCAL cbmret, noffset, nbit , y1
+   LOCAL nolbyte
+   LOCAL nbline, nbyt , nline , nbint
+
+   cbmret := cmbp
+
+   // Range check
+   IF ( x > xw ) .OR. ( y > yh ) .OR. ( x < 1 ) .OR. ( y < 1 )
+      RETURN cbmret
+   ENDIF
+
+   // Add 1 to pixel data offset, this is done with call of HWG_SETBITBYTE()
+   noffset := hwg_BMPCalcOffsPixArr( 2 );  // For 2 colors
+
+   // y Position conversion
+   // (reversed position 1 = 48, 48 = 1)
+   y1 := yh - y + 1
+   // Bytes per line
+   nline := hwg_BMPLineSize( xw, 1 )
+   // hwg_MsgInfo("nline="+ STR(nline) )
+
+   // Calculate the recent y position
+   // (Start postion of a line)
+
+   nbyt := ( y1 - 1 ) *  nline
+
+   // Split line into number of bytes and bit position
+   nbline := Int( x / 8 )
+   nbyt := nbyt + nbline + 1   // Added 1 padding byte at begin of a line
+
+   nbint :=  Int( x % 8 ) // + 1
+
+   // Reverse x value in a byte
+   nbint := 8 - nbint + 1 // 1 ... 8
+
+   IF nbint == 9
+      nbint := 1
+      nbyt := nbyt - 1
+   ENDIF
+
+   // Extract old byte value
+   nolbyte := Asc( SubStr( cbmret,noffset + nbyt,1 ) )
+
+   nbit := Chr( HWG_SETBITBYTE( 0,nbint,1 ) )
+   nbit := Chr( HWG_BITOR_INT( Asc(nbit ), nolbyte ) )
+
+   cbmret := hwg_ChangeCharInString( cbmret, noffset + nbyt , nbit )
+
+   RETURN cbmret
+
+   // Increases the size of a QR code image
+   // cqrcode : The QR code in text format
+   // nzoom   : The zoom factor 1 ... n
+   // Return the new QR code text string
+
+FUNCTION hwg_QRCodeZoom( cqrcode, nzoom )
+
+   LOCAL cBMP, cLine, i , j
+   LOCAL leofq
+
+   IF nzoom == NIL
+      nzoom := 1
+   ENDIF
+
+   IF nzoom < 1
+      RETURN cqrcode
+   ENDIF
+
+   cBMP  := ""
+   cLine := ""
+
+   leofq := .F.
+   // i:        Position in cqrcode
+
+   FOR i := 1 TO Len( cqrcode )
+      IF .NOT. leofq
+         IF SubStr( cqrcode, i, 1 ) == Chr( 10 )
+            IF .NOT. ( SubStr( cqrcode, i + 1 , 1 ) == " " )
+               // Empty line following, stop here
+               leofq := .T.
+            ENDIF
+            // Count line ending and start with new line
+
+            // Replicate line with zoom factor
+            FOR j := 1 TO nzoom
+               cBMP  := cBMP + cLine + Chr( 10 )
+            NEXT
+            //
+            cLine := ""
+         ELSE  // SUBSTR " "
+            cLine := cLine + Replicate( SubStr( cqrcode,i,1 ), nzoom )
+         ENDIF // is CHR(10)
+      ENDIF // .NOT. leofq
+
+   NEXT
+
+   IF .NOT. Empty( cLine )
+      cBMP  := cBMP + cLine + Chr( 10 )
+   ENDIF
+
+   // Empty line as mark for EOF
+   cBMP  := cBMP + Chr( 10 )
+
+   RETURN cBMP
+
+   // ====
+   // Add border to QR code image
+   // cqrcode : The QR code in text format
+   // nborder : The number of border pixels to add 1 ... n
+   // Return the new QR code text string
+
+FUNCTION hwg_QRCodeAddBorder( cqrcode, nborder )
+
+   LOCAL cBMP,  i , nx , cLine , cLineOut
+   LOCAL leofq
+
+   IF nborder == NIL
+      RETURN cqrcode
+   ENDIF
+
+   IF nborder < 1
+      RETURN cqrcode
+   ENDIF
+
+   cBMP  := ""
+   cLineOut := ""
+
+   leofq := .F.
+   // i:        Position in cqrcode
+
+   // Add nborder lines to begin
+   // Preread first line getting the x size of the QR code
+   nx := At( Chr( 10 ), cqrcode )
+   cLine := Space( nx + nborder + nborder - 1 ) + Chr( 10 ) // Empty line new
+   FOR i := 1 TO nborder
+      cBMP  := cBMP + cLine
+   NEXT
+
+   FOR i := 1 TO Len( cqrcode )
+      IF .NOT. leofq
+         IF SubStr( cqrcode, i, 1 ) == Chr( 10 )
+            IF .NOT. ( SubStr( cqrcode, i + 1 , 1 ) == " " )
+               // Empty line following, stop here
+               leofq := .T.
+            ENDIF
+            // Count line ending and start with new line
+            cBMP := cBMP + Space( nborder ) + cLineOut + Space( nborder ) + Chr( 10 )
+            cLineOut := ""
+         ELSE  // SUBSTR " "
+            cLineOut := cLineOut + SubStr( cqrcode, i, 1 )
+         ENDIF // is CHR(10)
+      ENDIF // .NOT. leofq
+
+   NEXT
+
+   FOR i := 1 TO nborder
+      cBMP  := cBMP + cLine
+   NEXT
+
+   RETURN cBMP
+
+   // Get the size of a QR code
+   // Returns an array with 2 elements: xSize,ySize
+
+FUNCTION hwg_QRCodeGetSize( cqrcode )
+
+   LOCAL aret, xSize, ySize, i, leofq
+
+   aret := {}
+   ySize := 0
+   leofq := .F.
+
+   xSize := At( Chr( 10 ), cqrcode )
+
+   FOR i := 1 TO Len( cqrcode )
+      IF .NOT. leofq
+         IF SubStr( cqrcode, i, 1 ) == Chr( 10 )
+            IF .NOT. ( SubStr( cqrcode, i + 1 , 1 ) == " " )
+               // Empty line following, stop here
+               leofq := .T.
+            ENDIF
+            // Count lines
+            ySize := ySize + 1
+         ENDIF // is CHR(10)
+      ENDIF // .NOT. leofq
+   NEXT
+
+   AAdd( aret, xSize )
+   AAdd( aret, ySize )
+
+   RETURN aret
+
+   //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+   //   End of Functions for QR encoding
+   //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

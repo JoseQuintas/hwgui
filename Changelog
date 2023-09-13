@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-13 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/common.prg
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    * hbw_BMP..., hwg_QR... functions moved to cross/common.prg from
+      gtk/drawwidg.prg and winapi/drawwidg.prg
+
 2023-09-12 10:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + source/cross/hfrmtmpl.prg
   - source/gtk/hfrmtmpl.prg

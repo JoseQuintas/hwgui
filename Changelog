@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-14 16:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawncomb.prg
+    * HDrawnUpDown class added, implementation of a drawn updown widget
+
 2023-09-13 16:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/common.prg
   * source/gtk/drawwidg.prg

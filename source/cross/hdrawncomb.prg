@@ -209,7 +209,7 @@ CLASS HDrawnUpDown INHERIT HDrawn
 
    DATA  oEdit, oBtnUp, oBtnDown
    DATA  oTimer
-   DATA  nPeriod      INIT 500
+   DATA  nPeriod      INIT 100
    DATA  arrowColor   INIT 0
    DATA  arrowPen
 
@@ -279,11 +279,11 @@ METHOD Paint( hDC ) CLASS HDrawnUpDown
 
    hwg_MoveTo( hDC, ::oBtnUp:nLeft+n, ::oBtnUp:nTop+::oBtnUp:nHeight-n-1 )
    hwg_LineTo( hDC, ::oBtnUp:nLeft+Int(::oBtnUp:nWidth/2), ::oBtnUp:nTop+n )
-   hwg_LineTo( hDC, ::oBtnUp:nLeft+::oBtnUp:nWidth-n, ::oBtnUp:nTop+::oBtnUp:nHeight-n )
+   hwg_LineTo( hDC, ::oBtnUp:nLeft+::oBtnUp:nWidth-n, ::oBtnUp:nTop+::oBtnUp:nHeight-n, .T. )
 
    hwg_MoveTo( hDC, ::oBtnDown:nLeft+n, ::oBtnDown:nTop+n+1 )
    hwg_LineTo( hDC, ::oBtnDown:nLeft+Int(::oBtnDown:nWidth/2), ::oBtnDown:nTop+::oBtnDown:nHeight-n )
-   hwg_LineTo( hDC, ::oBtnDown:nLeft+::oBtnDown:nWidth-n, ::oBtnDown:nTop+n )
+   hwg_LineTo( hDC, ::oBtnDown:nLeft+::oBtnDown:nWidth-n, ::oBtnDown:nTop+n, .T. )
 
    RETURN Nil
 
@@ -344,12 +344,15 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnUpDown
          ENDIF
          ::Value := nVal
          ::oTimer := HTimer():New( ::GetParentBoard(),, ::nPeriod, {|o|UpDownTimerProc(o,::oBtnUp)} )
+         ::oTimer:cargo := 8
       ELSEIF xPos > ::oBtnDown:nLeft .AND. xPos < ::oBtnDown:nLeft+::oBtnDown:nWidth .AND. yPos > ::oBtnDown:nTop .AND. yPos < ::oBtnDown:nTop+::oBtnDown:nHeight
          ::oBtnDown:nState := STATE_PRESSED
          IF --nVal < ::nLower
             nVal := ::nLower
          ENDIF
          ::Value := nVal
+         ::oTimer := HTimer():New( ::GetParentBoard(),, ::nPeriod, {|o|UpDownTimerProc(o,::oBtnDown)} )
+         ::oTimer:cargo := 8
       ELSE
          ::oEdit:SetFocus()
       ENDIF
@@ -380,6 +383,10 @@ STATIC FUNCTION UpDownTimerProc( op, oBtn )
    LOCAL o := oBtn:oParent, nVal := o:Value
 
    HB_SYMBOL_UNUSED(op)
+   IF o:oTimer:cargo > 0
+      o:oTimer:cargo --
+      RETURN Nil
+   ENDIF
    IF oBtn == o:oBtnUp
       IF ++nVal > o:nUpper
          nVal := o:nUpper

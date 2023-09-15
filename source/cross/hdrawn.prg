@@ -18,6 +18,7 @@
 
 CLASS HDrawn INHERIT HObject
 
+   CLASS VAR oDefParent SHARED
    DATA oParent
    DATA title
    DATA nTop, nLeft, nWidth, nHeight
@@ -60,7 +61,7 @@ ENDCLASS
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
    title, oFont, bPaint, bClick, bChgState ) CLASS HDrawn
 
-   ::oParent := oWndParent
+   ::oParent := Iif( oWndParent==Nil, ::oDefParent, oWndParent )
    ::nLeft   := nLeft
    ::nTop    := nTop
    ::nWidth  := nWidth
@@ -69,7 +70,7 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
    ::bColor  := bColor
    ::aStyles := aStyles
    ::title   := title
-   ::oFont   := Iif( oFont == Nil, oWndParent:oFont, oFont )
+   ::oFont   := Iif( oFont == Nil, ::oParent:oFont, oFont )
    ::bPaint  := bPaint
    ::bClick  := bClick
    ::bChgState := bChgState

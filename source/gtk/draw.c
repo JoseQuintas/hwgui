@@ -177,7 +177,8 @@ HB_FUNC( HWG_LINETO )
 
    hwg_setcolor( hDC->cr, nCurrPenClr );
    cairo_line_to( hDC->cr, (gdouble)hb_parni(2), (gdouble)hb_parni(3) );
-   cairo_stroke( hDC->cr );
+   if( HB_ISLOG(4) && hb_parl(4) )
+      cairo_stroke( hDC->cr );
 
 }
 

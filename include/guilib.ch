@@ -1918,7 +1918,7 @@ Added by Marcos Antonio Gambeta
     [; hwg_SetCtrlName( <oBoard>,<(oBoard)> )]
 
 #xcommand @ <x>,<y> DRAWN [ <oDrawn> ] ;
-            OF <oWnd>                  ;
+            [ OF <oWnd> ]              ;
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
@@ -1934,7 +1934,7 @@ Added by Marcos Antonio Gambeta
     [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
 
 #xcommand @ <x>,<y> DRAWN CHECK [ <oDrawn> ] ;
-            OF <oWnd>                  ;
+            [ OF <oWnd> ]              ;
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
@@ -1950,7 +1950,7 @@ Added by Marcos Antonio Gambeta
     [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
 
 #xcommand @ <x>,<y> DRAWN RADIO [ <oDrawn> ] ;
-            OF <oWnd>                  ;
+            [ OF <oWnd> ]              ;
             GROUP <xGroup>             ;
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
@@ -1983,7 +1983,7 @@ Added by Marcos Antonio Gambeta
     [; hwg_SetCtrlName( <oTrack>,<(oTrack)> )]
 
 #xcommand @ <x>,<y> DRAWN EDIT [ <oEdit> CAPTION ] <caption> ;
-            OF <oWnd>                  ;
+            [ OF <oWnd> ]              ;
             [ SIZE <width>, <height> ] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
@@ -2011,5 +2011,38 @@ Added by Marcos Antonio Gambeta
     [<oLenta> := ] HDrawnLenta():New( <oWnd>,<x>,<y>,<width>, ;
         <height>,<oFont>,<bDraw>,<bClick>,<color>,<bcolor>,<aItems>,<nItemSize>,<aItemStyle> );
     [; hwg_SetCtrlName( <oLenta>,<(oLenta)> )]
+
+#xcommand @ <x>,<y> DRAWN COMBO [ <oDrawn> ITEMS ] <aItems> ;
+            [ OF <oWnd> ]              ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ HSTYLES <aStyles> ]      ;
+            [ INIT  <xValue> ]         ;
+            [ <lText: TEXT> ]          ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGE <bChange> ]    ;
+            [ ON CHANGESTATE <bChg> ]  ;
+            [ FONT <oFont> ]           ;
+            [ DISPLAYCOUNT <nRows>]    ;
+          => ;
+    [<oDrawn> := ] HDrawnCombo():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <aStyles>,<oFont>,<aItems>,<xValue>,<.lText.>,<bDraw>,<bDraw>,<bChange>,<bChg>,<nRows> );
+    [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
+
+#xcommand @ <x>,<y> DRAWN UPDOWN [ <oDrawn> ] ;
+            [ OF <oWnd> ]              ;
+            [ SIZE <width>, <height> ] ;
+            [ RANGE <nLower>,<nUpper>] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ HSTYLES <aStyles> ]      ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGESTATE <bChg> ]  ;
+            [ FONT <oFont> ]           ;
+          => ;
+    [<oDrawn> := ] HDrawnUpDown():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <aStyles>,<oFont>,<nLower>,<nUpper>,<bDraw>,<bChg> );
+    [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
 
 /* ================= EOF of guilib.ch ==================== */

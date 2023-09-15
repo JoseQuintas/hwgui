@@ -703,6 +703,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    IF !Empty( lKeyb )
       ::lKeybEvents := .T.
    ENDIF
+   HDrawn():oDefParent := Self
    hwg_RegBoard()
    ::Activate()
 

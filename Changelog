@@ -15,6 +15,21 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-15 13:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+    * :oDefParent class var added as default parent fow drawn widgets
+  * source/cross/hdrawncomb.prg
+    * Fixes, Enhancements
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * HBoard():New() set the HDrawn():oDefParent
+  * source/gtk/draw.c
+    * Forth parameter added to hwg_LineTo() - logical value lStroke, which defines,
+      is it a last segment to stroke
+  * include/guilib.ch
+    * @ ... DRAWN COMBO ..., @ ... DRAWN UPDOWN ... commands added
+  * utils/tutorial/tutor_eng.xml
+
 2023-09-14 16:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawncomb.prg
     * HDrawnUpDown class added, implementation of a drawn updown widget

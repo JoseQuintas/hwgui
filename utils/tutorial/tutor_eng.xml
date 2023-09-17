@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<init>
+<init lang="harbour">
   <chapter name="Introduction" >
     <comment>
       <![CDATA[    Hello!
@@ -117,7 +117,7 @@ Local aCombo := {"First","Second" }
 
    @ 20,10 EDITBOX "Hello, World!" SIZE 200,26
 
-   @ 270,10 COMBOBOX aCombo SIZE 100, 28 TOOLTIP "Combobox"
+   @ 270,10 COMBOBOX aCombo SIZE 100, 28 TOOLTIP "Combobox" DISPLAYCOUNT 3
 
    @ 120,60 BUTTON "Close" SIZE 150,30 ON CLICK {||oMain:Close()}
 
@@ -289,7 +289,7 @@ Function Test
 
    // Combo box is a well known control, which combines much of the
    // functionality of a list box and an edit control.
-   @ 20,150 COMBOBOX oCombo ITEMS aCombo SIZE 100, 28
+   @ 20,150 COMBOBOX oCombo ITEMS aCombo SIZE 100, 28 DISPLAYCOUNT 3
 
    // An up-down control is an edit control, combined with a pair of
    // arrow buttons that the user can click to increment or decrement

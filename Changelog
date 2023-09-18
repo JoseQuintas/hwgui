@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-18 19:41 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawncomb.prg
+    * Dates may be used now in HDrawnUpDown
+
 2023-09-17 20:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
   * utils/tutorial/tutor_eng.xml

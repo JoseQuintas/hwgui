@@ -230,7 +230,7 @@ ENDCLASS
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
                oFont, nLower, nUpper, bPaint, bChgState ) CLASS HDrawnUpDown
 
-   LOCAL n := 1, nw := Int( nHeight*2/3 )
+   LOCAL n := 1, nw := Int( nHeight*2/3 ), cPict
 
    ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, ;
       Iif(tcolor==Nil,CLR_BLACK,tcolor), Iif(bcolor==Nil,CLR_WHITE,bColor), aStyles,, oFont, bPaint,, bChgState )
@@ -243,13 +243,18 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
    ENDIF
 
    ::xValue := ::nLower
-   nUpper := ::nUpper
-   DO WHILE ( nUpper := (nUpper / 10) ) >= 1
-      n ++
-   ENDDO
+   IF Valtype( ::xValue ) == "N"
+      nUpper := ::nUpper
+      DO WHILE ( nUpper := (nUpper / 10) ) >= 1
+         n ++
+      ENDDO
+      cPict := Replicate( '9', n )
+   ELSEIF Valtype( ::xValue ) == "D"
+      cPict := "@D"
+   ENDIF
 
    ::oEdit := HDrawnEdit():New( Self, ::nLeft, ::nTop, ::nWidth-nw+1, ::nHeight, ::tcolor, ::bColor, ;
-      oFont, ::xValue, Replicate( '9', n ) )
+      oFont, ::xValue, cPict )
    ::oEdit:nTextStyle := DT_RIGHT
    nHeight := Int( nHeight / 2 )
    ::oBtnUp := HDrawn():New( Self, ::nLeft+::nWidth-::nHeight, ::nTop, nw, nHeight, ;

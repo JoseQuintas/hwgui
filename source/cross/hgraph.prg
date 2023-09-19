@@ -51,7 +51,7 @@ METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, , ;
       bSize,, ctooltip, ;
-      iif( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), iif( bcolor == Nil, 0, bcolor ) )
+      iif( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), iif( bcolor == Nil, 0, bcolor ), .T. )
 
    ::aValues := aValues
    ::nType   := 1
@@ -234,8 +234,10 @@ METHOD Paint() CLASS HGraph
          IF py1 > y1 .AND. py1 < y2
             hwg_Drawline( hDC, x0-4, py1, x0+1, py1 )
             IF ::aSignY[ i,2 ] != Nil
+               hwg_Settransparentmode( hDC, .T. )
                hwg_Drawtext( hDC, Iif( Valtype(::aSignY[i,2])=="C",::aSignY[i,2], ;
                      Ltrim(Str(::aSignY[i,2]))), 0, py1-8, x0-4, py1+8, DT_RIGHT )
+               hwg_Settransparentmode( hDC, .F. )
                IF ::lGridY
                   hwg_Drawline( hDC, x0+1, py1, x2, py1 )
                ENDIF
@@ -247,13 +249,22 @@ METHOD Paint() CLASS HGraph
       IF ::oFont != Nil
          hwg_Selectobject( hDC, ::oFont:handle )
       ENDIF
+      IF ::nType == 2 .AND. nWidth == Nil
+         nWidth := Round( ( x2 - x1 ) / Len( ::aValues[1] ), 0 )
+      ENDIF
       hwg_Settextcolor( hDC, ::colorCoor )
       FOR i := 1 TO Len( ::aSignX )
-         px1 := Round( x1 + ( ::aSignX[ i,1 ] - ::xmin ) / scaleX + Iif( ::nType==2.AND.::lGridXMid,nWidth/2,0 ), 0 )
+         IF ::nType == 1
+            px1 := Round( x1 + ( ::aSignX[ i,1 ] - ::xmin ) / scaleX, 0 )
+         ELSE
+            px1 := Round( x1 + nWidth * (::aSignX[ i,1 ] - 1) + 1 + Iif( ::lGridXMid,nWidth/2,0 ), 0 )
+         ENDIF
          hwg_Drawline( hDC, px1, y0+4, px1, y0-1 )
          IF ::aSignX[ i,2 ] != Nil
+            hwg_Settransparentmode( hDC, .T. )
             hwg_Drawtext( hDC, Iif( Valtype(::aSignX[i,2])=="C",::aSignX[i,2], ;
-                  Ltrim(Str(::aSignX[i,2]))), px1-40, y0+4, px1+40, y0+20, DT_CENTER )
+                  Ltrim(Str(::aSignX[i,2]))), px1-40, y0+4, px1+40, y0+::y2def-10, DT_CENTER )
+            hwg_Settransparentmode( hDC, .F. )
             IF ::lGridX
                hwg_Drawline( hDC, px1, y0-1, px1, y1 )
             ENDIF

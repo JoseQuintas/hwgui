@@ -49,7 +49,7 @@ CLASS HDrawn INHERIT HObject
    METHOD Refresh( x1, y1, x2, y2 )
    METHOD onMouseMove( xPos, yPos )    VIRTUAL
    METHOD onMouseLeave() VIRTUAL
-   METHOD onButtonDown( msg, xPos, yPos ) VIRTUAL
+   METHOD onButtonDown( msg, xPos, yPos )
    METHOD onButtonUp( xPos, yPos )     VIRTUAL
    METHOD onButtonDbl( xPos, yPos )  VIRTUAL
    METHOD onKey( msg, wParam, lParam ) VIRTUAL
@@ -276,6 +276,16 @@ METHOD Refresh( x1, y1, x2, y2 ) CLASS HDrawn
    hwg_Invalidaterect( ::GetParentBoard():handle, 0, Iif( x1 == Nil, ::nLeft, x1 ), ;
       Iif( y1 == Nil, ::nTop, y1 ), Iif( x2 == Nil, ::nLeft+::nWidth, x2 ), ;
       Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
+   RETURN Nil
+
+METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawn
+
+   LOCAL o
+
+   IF ( o := ::GetByPos( xPos, yPos ) ) != Nil
+      o:onButtonDown( msg, xPos, yPos )
+   ENDIF
+
    RETURN Nil
 
 CLASS HDrawnCheck INHERIT HDrawn

@@ -207,7 +207,7 @@ user nor the application can make the owner window active until this dialog
 box is destroyed. */
 #include "hwgui.ch"
 Function Test
-   Local oDlg, oFont, oEdit1
+   Local oDlg, oFont
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
 
@@ -300,6 +300,31 @@ Function Test
    @ 20, 190 LINE LENGTH 260
 
    @ 100,220 BUTTON "Close" SIZE 100,30 ON CLICK bExit
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+      ]]>
+    </module>
+    <module name="Context menu" >
+      <![CDATA[/*  */
+#include "hwgui.ch"
+Function Test
+   Local oDlg, oFont, oMenu
+
+   PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
+
+   INIT DIALOG oDlg TITLE "Modal dialog" AT 100, 100 SIZE 300, 150 FONT oFont
+
+   CONTEXT MENU oMenu
+      MENUITEM "Message"  ACTION { || hwg_MsgInfo( 'Menu item "Message"' ) }
+      SEPARATOR
+      MENUITEM "Exit" ACTION { || oDlg:Close() }
+   ENDMENU
+
+   @ 4,4 BUTTON "Menu" SIZE 50,28 ON CLICK {|| oMenu:Show( oDlg ) }
+
+   @ 100,100 BUTTON "Close" SIZE 100,30 ON CLICK {|| oDlg:Close() }
 
    ACTIVATE DIALOG oDlg
 
@@ -1720,6 +1745,7 @@ STATIC FUNCTION Graph1
 
    oDlg := hwg_GetModalDlg()
    oGraph := oDlg:oGraph
+   oGraph:aSignX := Nil
    oGraph:nGraphs := 2
    oGraph:aColors := { 255 }
 
@@ -1744,13 +1770,17 @@ STATIC FUNCTION Graph2
 
    LOCAL oDlg, oGraph, i, aGraph := { {} }
 
-   FOR i := 1 TO 8
-      AAdd( aGraph[1], i * i )
-   NEXT
-
    oDlg := hwg_GetModalDlg()
    oGraph := oDlg:oGraph
+
+   oGraph:aSignX := Array(16)
+   FOR i := 1 TO Len( oGraph:aSignX )
+      AAdd( aGraph[1], i * i )
+      oGraph:aSignX[i] := { i, }
+   NEXT
+
    oGraph:nGraphs := 1
+   oGraph:y2Def := 20
 
    oDlg:oPaneBot:oBtn1:Hide()
    oDlg:oPaneBot:oBtn2:Hide()
@@ -1827,8 +1857,8 @@ STATIC FUNCTION FPaint( o, hDC )
    RETURN Nil
 ]]>
     </module>
-    <module name="Board and drawn items">
-      <![CDATA[// Board and drawn items
+    <module name="Board and drawn widgets">
+      <![CDATA[// Board and drawn widgets
 #include "hwgui.ch"
 
 #define CLR_WHITE    0xffffff
@@ -1855,7 +1885,8 @@ FUNCTION Test
       AT 210, 10  SIZE 440, 220 FONT oFont BACKCOLOR CLR_DGRAY2
 
    @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR CLR_BLACK ;
-      ON PAINT {|o,h|FPaint(o,h)} ON SIZE {|o,x,y|o:Move(,,x-8,y-8)} KEYBOARD
+      ON PAINT {|o,h| hwg_Fillrect(h,0,0,o:nWidth,o:nHeight,o:brush:handle )} ;
+      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } KEYBOARD
 
    @ 12, 12 DRAWN RADIO GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont INIT .T.
@@ -1900,10 +1931,65 @@ FUNCTION Test
    oFont:Release()
 
    RETURN Nil
+]]>
+    </module>
+    <module name="Board and drawn widgets 2">
+      <![CDATA[// Board and drawn widgets 2
+#include "hwgui.ch"
 
-STATIC FUNCTION FPaint( o, hDC )
+#define CLR_WHITE    0xffffff
+#define CLR_BLACK    0x000000
+#define CLR_DGRAY2   0x555555
+#define CLR_DGRAY3   0x888888
+#define CLR_DGRAY4   0xdddddd
 
-   hwg_Fillrect( hDC, 0, 0, o:nWidth, o:nHeight, o:brush:handle )
+FUNCTION Test
+   LOCAL oDlg, oBoard, oCombo, oUpd1, oUpd2, oUpd3, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
+   LOCAL aCorners := { 4,4,4,4 }
+   LOCAL aStyles := { HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1 ), ;
+      HStyle():New( { CLR_DGRAY4 }, 2 ) }
+   LOCAL aStylesBtn := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
+      HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
+      HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
+   LOCAL arr1 := {}, arr2 := {}
+   LOCAL bExit := {||
+      LOCAL cr := Chr(13)+Chr(10)
+      hwg_MsgInfo( arr1[oCombo:Value] + cr + Str(oUpd1:Value) + cr + ;
+         Dtoc(oUpd2:Value) + cr + arr2[oUpd3:Value] )
+      oDlg:Close()
+      RETURN .T.
+   }
+
+   SET EPOCH TO 1960
+
+   FOR i := 1 to 12
+      Aadd( arr1, CMonth( Stod("2023"+PAdl(Ltrim(Str(i)),2,'0')+"01") ) )
+   NEXT
+   FOR i := 1 to 7
+      Aadd( arr2, CDow(Stod("20070107") + i ) )
+   NEXT
+
+   INIT DIALOG oDlg TITLE "Board and drawn items 2"  ;
+      AT 210, 10  SIZE 170, 250 FONT oFont BACKCOLOR CLR_DGRAY2
+
+   @ 4, 4 BOARD oBoard SIZE 162, 242 BACKCOLOR CLR_BLACK ;
+      ON PAINT {|o,h| hwg_Fillrect(h,0,0,o:nWidth,o:nHeight,o:brush:handle )} ;
+      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont KEYBOARD
+
+   @ 12, 10 DRAWN COMBO oCombo ITEMS arr1 SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT 1
+
+   @ 12, 50 DRAWN UPDOWN oUpd1 INIT 10 RANGE 1, 50 SIZE 60, 28
+
+   @ 12, 90 DRAWN UPDOWN oUpd2 INIT Date() RANGE Date()-10, Date()+10 SIZE 100, 28
+
+   @ 12, 130 DRAWN UPDOWN oUpd3 SIZE 120, 28 ARRAY arr2 HSTYLES aStyles
+   oUpd3:arrowColor := CLR_WHITE
+
+   @ 36, 200 DRAWN OF oBoard SIZE 100, 32 COLOR CLR_WHITE ;
+      HSTYLES aStylesBtn TEXT 'Exit' FONT oFont ON CLICK bExit
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
 
    RETURN Nil
 ]]>

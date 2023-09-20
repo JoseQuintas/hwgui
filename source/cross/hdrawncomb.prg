@@ -204,8 +204,9 @@ METHOD onButtonUp( xPos, yPos ) CLASS HDrawnCombo
 
 CLASS HDrawnUpDown INHERIT HDrawn
 
-   DATA  nLower       INIT 0
+   DATA  nLower       INIT 1
    DATA  nUpper       INIT 999
+   DATA  arr
 
    DATA  oEdit, oBtnUp, oBtnDown
    DATA  oTimer
@@ -214,7 +215,7 @@ CLASS HDrawnUpDown INHERIT HDrawn
    DATA  arrowPen
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
-               oFont, nLower, nUpper, bPaint, bChgState )
+               oFont, xInit, nLower, nUpper, bPaint, bChgState, arr )
 
    METHOD Paint( hDC )
    METHOD Value( xValue ) SETGET
@@ -228,7 +229,7 @@ CLASS HDrawnUpDown INHERIT HDrawn
 ENDCLASS
 
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
-               oFont, nLower, nUpper, bPaint, bChgState ) CLASS HDrawnUpDown
+               oFont, xInit, nLower, nUpper, bPaint, bChgState, arr ) CLASS HDrawnUpDown
 
    LOCAL n := 1, nw := Int( nHeight*2/3 ), cPict
 
@@ -242,8 +243,23 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
       ::nUpper := nUpper
    ENDIF
 
-   ::xValue := ::nLower
-   IF Valtype( ::xValue ) == "N"
+   ::xValue := Iif( xInit == Nil, ::nLower, xInit )
+   IF ::xValue < ::nLower .OR. ::xValue > ::nUpper
+      ::xValue := ::nLower
+   ENDIF
+
+   IF Valtype( arr ) == "A"
+      ::arr := arr
+      IF ::nUpper > Len( ::arr )
+         ::nUpper := Len( ::arr )
+      ENDIF
+      IF ::nLower < 1 .OR. ::nLower > ::nUpper
+         ::nLower := 1
+      ENDIF
+      IF ::xValue < ::nLower .OR. ::xValue > ::nUpper
+         ::xValue := ::nLower
+      ENDIF
+   ELSEIF Valtype( ::xValue ) == "N"
       nUpper := ::nUpper
       DO WHILE ( nUpper := (nUpper / 10) ) >= 1
          n ++
@@ -254,8 +270,12 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
    ENDIF
 
    ::oEdit := HDrawnEdit():New( Self, ::nLeft, ::nTop, ::nWidth-nw+1, ::nHeight, ::tcolor, ::bColor, ;
-      oFont, ::xValue, cPict )
+      oFont, Iif( !Empty(::arr), ::arr[::xValue], ::xValue ), cPict )
+   IF !Empty( ::arr )
+      ::oEdit:lReadOnly := .T.
+   ENDIF
    ::oEdit:nTextStyle := DT_RIGHT
+
    nHeight := Int( nHeight / 2 )
    ::oBtnUp := HDrawn():New( Self, ::nLeft+::nWidth-::nHeight, ::nTop, nw, nHeight, ;
       ::tcolor, ::bColor, aStyles, "", ::oFont )
@@ -297,11 +317,11 @@ METHOD Value( xValue ) CLASS HDrawnUpDown
    IF xValue != Nil
       IF xValue >= ::nLower .AND. xValue <= ::nUpper
          ::xValue := xValue
-         ::oEdit:Value := xValue
+         ::oEdit:Value := Iif( !Empty(::arr), ::arr[xValue], xValue )
       ENDIF
    ENDIF
 
-   RETURN ::oEdit:Value
+   RETURN Iif( !Empty(::arr), ::xValue, ::oEdit:Value )
 
 METHOD onKey( msg, wParam, lParam ) CLASS HDrawnUpDown
    RETURN ::oEdit:onKey( msg, wParam, lParam )

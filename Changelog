@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-20 13:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawncomb.prg
+    * Arrays may be used now in HDrawnUpDown
+  * include/guilib.ch
+    * @ ... DRAWN UPDOWN ... command changed
+  * utils/tutorial/tutor.prg
+  * utils/tutorial/tutor_eng.xml
+    * "Context menu" module added
+    * "Board and drawn widgets 2" module added with samples of Drawn combo and updown widgets
+
 2023-09-19 16:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
   * source/cross/hgraph.prg

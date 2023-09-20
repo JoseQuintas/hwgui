@@ -2033,6 +2033,8 @@ Added by Marcos Antonio Gambeta
 #xcommand @ <x>,<y> DRAWN UPDOWN [ <oDrawn> ] ;
             [ OF <oWnd> ]              ;
             [ SIZE <width>, <height> ] ;
+            [ INIT <xInit> ]           ;
+            [ ARRAY <arr> ]            ;
             [ RANGE <nLower>,<nUpper>] ;
             [ COLOR <color> ]          ;
             [ BACKCOLOR <bcolor> ]     ;
@@ -2042,7 +2044,7 @@ Added by Marcos Antonio Gambeta
             [ FONT <oFont> ]           ;
           => ;
     [<oDrawn> := ] HDrawnUpDown():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
-        <aStyles>,<oFont>,<nLower>,<nUpper>,<bDraw>,<bChg> );
+        <aStyles>,<oFont>,<xInit>,<nLower>,<nUpper>,<bDraw>,<bChg>,<arr> );
     [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
 
 /* ================= EOF of guilib.ch ==================== */

@@ -16,9 +16,15 @@
 #define  STATE_MOVER     2
 #define  STATE_UNPRESS   3
 
+#define CLR_BLACK    0
+#define CLR_LYELLOW  0xFFFFD9
+
 CLASS HDrawn INHERIT HObject
 
    CLASS VAR oDefParent SHARED
+   CLASS VAR oFontTool  SHARED
+   CLASS VAR tColorTool SHARED  INIT CLR_BLACK
+   CLASS VAR bColorTool SHARED  INIT CLR_LYELLOW
    DATA oParent
    DATA title
    DATA nTop, nLeft, nWidth, nHeight
@@ -32,6 +38,9 @@ CLASS HDrawn INHERIT HObject
    DATA aStyles
    DATA aDrawn        INIT {}
    DATA xValue        INIT Nil
+   DATA nMouseOn      INIT 0
+   DATA cTooltip
+   DATA oTooltip
 
    DATA bPaint, bClick, bChgState
 
@@ -47,8 +56,8 @@ CLASS HDrawn INHERIT HObject
    METHOD SetText( cText )
    METHOD Value( xValue ) SETGET
    METHOD Refresh( x1, y1, x2, y2 )
-   METHOD onMouseMove( xPos, yPos )    VIRTUAL
-   METHOD onMouseLeave() VIRTUAL
+   METHOD onMouseMove( xPos, yPos )
+   METHOD onMouseLeave()
    METHOD onButtonDown( msg, xPos, yPos )
    METHOD onButtonUp( xPos, yPos )     VIRTUAL
    METHOD onButtonDbl( xPos, yPos )  VIRTUAL
@@ -276,6 +285,46 @@ METHOD Refresh( x1, y1, x2, y2 ) CLASS HDrawn
    hwg_Invalidaterect( ::GetParentBoard():handle, 0, Iif( x1 == Nil, ::nLeft, x1 ), ;
       Iif( y1 == Nil, ::nTop, y1 ), Iif( x2 == Nil, ::nLeft+::nWidth, x2 ), ;
       Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
+   RETURN Nil
+
+METHOD onMouseMove( xPos, yPos ) CLASS HDrawn
+
+   LOCAL oBoa, hDC, arr
+
+   IF ::cToolTip != Nil
+      IF ::nMouseOn == 0
+         ::nMouseOn := Seconds()
+      ELSEIF Seconds() - ::nMouseOn > 0.3 .AND. ( Empty( ::oTooltip ) .OR. ::oTooltip:lHide )
+         IF Empty( ::oTooltip )
+            IF Empty( ::oFontTool )
+               ::oFontTool := ::oFont
+            ENDIF
+            oBoa := ::GetParentBoard()
+            hDC := hwg_Getdc( oBoa:handle )
+            arr := hwg_GetTextSize( hDC, ::cTooltip )
+            hwg_writelog( str(arr[1]) + " " + str(arr[2] ) )
+            hwg_Releasedc( oBoa:handle, hDC )
+            ::oTooltip := HDrawn():New( Self, xPos+2, yPos+2, ::nWidth-::nHeight+1, ::nHeight, ;
+               ::tcolorTool, ::bColorTool,, "", ::oFontTool )
+         ENDIF
+         /*
+         oBoa := ::GetCurrentBoard()
+         IF Empty( oBoa:oTooltipOn ) .OR. !(oBoa:oTooltipOn == Self)
+            oBoa:oTooltipOn := Self
+         ENDIF
+         */
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+METHOD onMouseLeave() CLASS HDrawn
+
+   ::nMouseOn := 0
+   IF ::cToolTip != Nil
+      //oBoa:oTooltipOn := Nil
+      ::oTooltip:lHide := .T.
+   ENDIF
    RETURN Nil
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawn

@@ -335,14 +335,14 @@ Return Nil
       <![CDATA[/* This sample demonstrates few ready to use dialog boxes */
 #include "hwgui.ch"
 Function Test
-   Local oDlg, oFont, oFontSay, oFontC, oSay3, oSay4, oSay5, oSay6, oSay7, y1 := 50, n
-   Local nChoic, cRes, arr := {"White","Blue","Green","Red"}
+   Local oDlg, oFont, oFontSay, oFontC, oSay3, oSay4, oSay5, oSay6, oSay7, oSay8, oSay9, oSay10, y1 := 50, n
+   Local nChoic, cRes, arr := {"White","Blue","Green","Red"}, af
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
    PREPARE FONT oFontSay NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 WEIGHT 700
    PREPARE FONT oFontC NAME "Georgia" WIDTH 0 HEIGHT -15
 
-   INIT DIALOG oDlg TITLE "Standard dialogs" AT 100, 100 SIZE 340, 440 FONT oFont
+   INIT DIALOG oDlg TITLE "Standard dialogs" AT 100, 100 SIZE 340, 530 FONT oFont
 
    @ 20,12 SAY "Press any button to see a dialog" SIZE 260, 24 ;
          FONT oFontSay COLOR 8404992
@@ -381,8 +381,6 @@ Function Test
    @ 230,y1 SAY oSay5 CAPTION "" SIZE 80,24 COLOR 8404992
    y1 += 30
 
-
-
    @ 20,y1 BUTTON "hwg_MsgExclamation()" SIZE 180,28 ;
       ON CLICK {||hwg_MsgExclamation("Happy birthday!","Tutorial")}
    y1 += 30
@@ -395,8 +393,24 @@ Function Test
    @ 20,y1 BUTTON "hwg_WChoice()" SIZE 180,28 ;
       ON CLICK {||oSay7:SetText( Iif( (nChoic := hwg_WChoice(arr,"Tutorial",,,oFontC,,,,,"Ok","Cancel")) == 0, "", arr[nChoic] ) )}
    @ 230,y1 SAY oSay7 CAPTION "" SIZE 80,24 COLOR 8404992
+   y1 += 30
 
-   @ 20, y1+50 LINE LENGTH 300
+   @ 20,y1 BUTTON "hwg_Selectfile()" SIZE 180,28 ;
+      ON CLICK {||oSay8:SetText( Iif( (cRes := hwg_Selectfile("All files( *.* )","*.*",Curdir()))==Nil,"",hb_FNameNameExt(cRes) ) )}
+   @ 230,y1 SAY oSay8 CAPTION "" SIZE 80,24 COLOR 8404992
+   y1 += 30
+
+   @ 20,y1 BUTTON "Hwg_ChooseColor()" SIZE 180,28 ;
+      ON CLICK {||oSay9:SetText( Iif( (n := Hwg_ChooseColor(0xffffff,.F.)) == Nil, "", str(n) ) )}
+   @ 230,y1 SAY oSay9 CAPTION "" SIZE 80,24 COLOR 8404992
+   y1 += 30
+
+   @ 20,y1 BUTTON "hwg_Selectfont()" SIZE 180,28 ;
+      ON CLICK {||oSay10:SetText( Iif( (af := hwg_Selectfont()) == Nil, "", af[2] ) )}
+   @ 230,y1 SAY oSay10 CAPTION "" SIZE 80,24 COLOR 8404992
+   y1 += 30
+
+   @ 20, y1+20 LINE LENGTH 300
    @ 120,oDlg:nHeight-40 BUTTON "Close" SIZE 100,30 ON CLICK {||oDlg:Close()}
 
    ACTIVATE DIALOG oDlg

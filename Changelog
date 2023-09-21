@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-21 17:06 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+    * Small changes
+  * utils/tutorial/tutor_eng.xml
+    * Standard dialogs added
+
 2023-09-20 13:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawncomb.prg
     * Arrays may be used now in HDrawnUpDown

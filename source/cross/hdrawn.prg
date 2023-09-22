@@ -289,7 +289,7 @@ METHOD Refresh( x1, y1, x2, y2 ) CLASS HDrawn
 
 METHOD ShowTooltip( lShow, xPos, yPos ) CLASS HDrawn
 
-   LOCAL oBoa, hDC, arr, nw, nh, x1
+   LOCAL oBoa, hDC, arr, nw, nh
    LOCAL bPaint := {|o,h|
       IF Empty( o:title )
          hwg_Drawbitmap( h, ::hBitmapTmp,, o:nLeft, o:nTop )
@@ -370,7 +370,7 @@ METHOD onMouseMove( xPos, yPos ) CLASS HDrawn
    IF ::cToolTip != Nil
       IF ::nMouseOn == 0
          ::nMouseOn := Seconds()
-         HTimer():New( ::GetParentBoard(),, 500, {|o|::ShowTooltip( .T., xPos, yPos )}, .T. )
+         HTimer():New( ::GetParentBoard(),, 500, {||::ShowTooltip( .T., xPos, yPos )}, .T. )
       //ELSEIF Seconds() - ::nMouseOn > 0.3 .AND. ( Empty( ::oTooltip ) .OR. ::oTooltip:lHide )
       //   ::nMouseOn := 90000
       //   ::ShowTooltip( .T., xPos, yPos )

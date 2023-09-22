@@ -283,6 +283,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
          ELSEIF msg == WM_LBUTTONUP
 
+            ::lFirst := .F.
             IF Empty( hwg_Getedittext( oParent:handle, ::id ) )
                hwg_Sendmessage( ::handle, EM_SETSEL, 0, 0 )
             ENDIF
@@ -297,7 +298,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             RETURN 0
 
          ELSEIF msg = WM_PASTE .AND. ! ::lNoPaste
-            ::lFirst := iif( ::cType = "N" .AND. "E" $ ::cPicFunc, .T. , .F. )
+            ::lFirst := iif( ::cType = "N" .AND. "E" $ ::oPicture:cPicFunc, .T. , .F. )
             cClipboardText := hwg_Getclipboardtext()
             IF ! Empty( cClipboardText )
                DeleteSel( Self )

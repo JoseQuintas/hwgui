@@ -39,8 +39,7 @@ CLASS HDrawn INHERIT HObject
    DATA aDrawn        INIT {}
    DATA xValue        INIT Nil
    DATA nMouseOn      INIT 0
-   DATA cTooltip
-   DATA oTooltip
+   DATA cTooltip, oTooltip, hBitmapTmp
 
    DATA bPaint, bClick, bChgState
 
@@ -56,6 +55,7 @@ CLASS HDrawn INHERIT HObject
    METHOD SetText( cText )
    METHOD Value( xValue ) SETGET
    METHOD Refresh( x1, y1, x2, y2 )
+   METHOD ShowTooltip( lShow, xPos, yPos )
    METHOD onMouseMove( xPos, yPos )
    METHOD onMouseLeave()
    METHOD onButtonDown( msg, xPos, yPos )
@@ -287,32 +287,93 @@ METHOD Refresh( x1, y1, x2, y2 ) CLASS HDrawn
       Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
    RETURN Nil
 
-METHOD onMouseMove( xPos, yPos ) CLASS HDrawn
+METHOD ShowTooltip( lShow, xPos, yPos ) CLASS HDrawn
 
-   LOCAL oBoa, hDC, arr
+   LOCAL oBoa, hDC, arr, nw, nh, x1
+   LOCAL bPaint := {|o,h|
+      IF Empty( o:title )
+         hwg_Drawbitmap( h, ::hBitmapTmp,, o:nLeft, o:nTop )
+         hwg_Deleteobject( ::hBitmapTmp )
+         ::hBitmapTmp := Nil
+         o:lHide := .T.
+         o:Delete()
+      ELSE
+         hwg_RoundRect_Filled( h, o:nLeft, o:nTop, o:nLeft+o:nWidth-1, o:nTop+o:nHeight-1, 4, ;
+            .F., o:oBrush:handle )
+         hwg_Settransparentmode( h, .T. )
+         hwg_Settextcolor( h, o:tColor )
+         IF !Empty( o:oFont )
+            hwg_SelectObject( h, o:oFont:handle )
+         ENDIF
+         hwg_Drawtext( h, o:title, o:nLeft+4, o:nTop+2, o:nLeft+o:nWidth-4, o:nTop+o:nHeight-4 )
+         hwg_Settransparentmode( h, .F. )
+      ENDIF
+      ::Refresh()
+      RETURN 0
+   }
+
+   IF lShow
+      //hwg_writelog( "show tool" )
+      IF Empty( ::oTooltip )
+         IF Empty( ::oFontTool )
+            ::oFontTool := ::oFont
+         ENDIF
+         ::oTooltip := HDrawn():New( ::oParent, xPos, yPos, 1, 1, ;
+            ::tcolorTool, ::bColorTool,, "", ::oFontTool )
+      ELSEIF ::oTooltip:lHide
+         ::oTooltip:lHide := .F.
+      ELSE
+         RETURN Nil
+      ENDIF
+
+      oBoa := ::GetParentBoard()
+      hDC := hwg_Getdc( oBoa:handle )
+      arr := hwg_GetTextSize( hDC, ::cTooltip )
+      nw := arr[1] + 8
+      nh := arr[2] + 4
+      IF xPos + 2 + nw <= oBoa:nWidth
+         ::oTooltip:nLeft := xPos + 2
+      ELSEIF nw < oBoa:nWidth
+         ::oTooltip:nLeft := oBoa:nWidth - nw
+      ELSE
+         ::oTooltip:nLeft := 2
+         nw := oBoa:nWidth - 4
+      ENDIF
+      IF ::nTop + ::nHeight + nh <= oBoa:nHeight
+         ::oTooltip:nTop := ::nTop + ::nHeight
+      ELSEIF ::nTop - nh > 0
+         ::oTooltip:nTop := ::nTop - nh
+      ELSEIF yPos + 4 + nh <= oBoa:nHeight
+         ::oTooltip:nTop := yPos + 4
+      ELSEIF yPos - 4 - nh > 0
+         ::oTooltip:nTop := yPos - 4 - nh
+      ELSE
+         ::oTooltip:nTop := ::nTop + 2
+      ENDIF
+      hwg_Releasedc( oBoa:handle, hDC )
+      ::oTooltip:nWidth  := nw
+      ::oTooltip:nHeight := nh
+      ::hBitmapTmp := hwg_Window2Bitmap( oBoa:handle, ::oTooltip:nLeft, ::oTooltip:nTop, ;
+         ::oTooltip:nWidth, ::oTooltip:nHeight )
+      //hwg_SaveBitmap( "h.bmp", ::hBitmapTmp )
+      AAdd( oBoa:aDrawn, ::oTooltip )
+      ::oTooltip:bPaint := bPaint
+      ::oTooltip:SetText( ::cTooltip )
+   ELSEIF !Empty( ::oTooltip ) .AND. !::oTooltip:lHide
+      ::oTooltip:SetText( "" )
+   ENDIF
+
+   RETURN Nil
+
+METHOD onMouseMove( xPos, yPos ) CLASS HDrawn
 
    IF ::cToolTip != Nil
       IF ::nMouseOn == 0
          ::nMouseOn := Seconds()
-      ELSEIF Seconds() - ::nMouseOn > 0.3 .AND. ( Empty( ::oTooltip ) .OR. ::oTooltip:lHide )
-         IF Empty( ::oTooltip )
-            IF Empty( ::oFontTool )
-               ::oFontTool := ::oFont
-            ENDIF
-            oBoa := ::GetParentBoard()
-            hDC := hwg_Getdc( oBoa:handle )
-            arr := hwg_GetTextSize( hDC, ::cTooltip )
-            hwg_writelog( str(arr[1]) + " " + str(arr[2] ) )
-            hwg_Releasedc( oBoa:handle, hDC )
-            ::oTooltip := HDrawn():New( Self, xPos+2, yPos+2, ::nWidth-::nHeight+1, ::nHeight, ;
-               ::tcolorTool, ::bColorTool,, "", ::oFontTool )
-         ENDIF
-         /*
-         oBoa := ::GetCurrentBoard()
-         IF Empty( oBoa:oTooltipOn ) .OR. !(oBoa:oTooltipOn == Self)
-            oBoa:oTooltipOn := Self
-         ENDIF
-         */
+         HTimer():New( ::GetParentBoard(),, 500, {|o|::ShowTooltip( .T., xPos, yPos )}, .T. )
+      //ELSEIF Seconds() - ::nMouseOn > 0.3 .AND. ( Empty( ::oTooltip ) .OR. ::oTooltip:lHide )
+      //   ::nMouseOn := 90000
+      //   ::ShowTooltip( .T., xPos, yPos )
       ENDIF
    ENDIF
 
@@ -322,8 +383,7 @@ METHOD onMouseLeave() CLASS HDrawn
 
    ::nMouseOn := 0
    IF ::cToolTip != Nil
-      //oBoa:oTooltipOn := Nil
-      ::oTooltip:lHide := .T.
+      ::ShowTooltip( .F. )
    ENDIF
    RETURN Nil
 
@@ -333,6 +393,10 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawn
 
    IF ( o := ::GetByPos( xPos, yPos ) ) != Nil
       o:onButtonDown( msg, xPos, yPos )
+   ENDIF
+   IF ::cToolTip != Nil
+      ::nMouseOn := 90000
+      ::ShowTooltip( .F. )
    ENDIF
 
    RETURN Nil

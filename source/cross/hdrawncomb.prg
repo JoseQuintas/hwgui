@@ -29,6 +29,7 @@ CLASS HDrawnCombo INHERIT HDrawn
    DATA  arrowPen
    DATA  nRowCount    INIT 3
    DATA  bChange
+   DATA  hBitmapList
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
                oFont, aItems, xValue, lText, bPaint, bChange, bChgState, nRowCount )
@@ -148,8 +149,8 @@ METHOD Value( xValue ) CLASS HDrawnCombo
 METHOD ListShow() CLASS HDrawnCombo
 
    ::oList:oParent := ::GetParentBoard()
-   ::oList:cargo := hwg_Window2Bitmap( ::oList:oParent:handle, ::oList:nLeft, ::oList:nTop, ;
-      ::oList:nLeft+::oList:nWidth, ::oList:nTop+::oList:nHeight )
+   ::hBitmapList := hwg_Window2Bitmap( ::oList:oParent:handle, ::oList:nLeft, ::oList:nTop, ;
+      ::oList:nWidth, ::oList:nHeight )
    AAdd( ::oList:oParent:aDrawn, ::oList )
    ::oList:lHide := .F.
    ::oList:Refresh()
@@ -160,9 +161,9 @@ METHOD ListShow() CLASS HDrawnCombo
 METHOD ListHide() CLASS HDrawnCombo
 
    LOCAL bPaint := {|o,h|
-      hwg_Drawbitmap( h, o:cargo,, o:nLeft, o:nTop )
-      hwg_Deleteobject( o:cargo )
-      o:cargo := Nil
+      hwg_Drawbitmap( h, ::hBitmapList,, o:nLeft, o:nTop )
+      hwg_Deleteobject( ::hBitmapList )
+      ::hBitmapList := Nil
       o:bPaint := Nil
       o:lHide := .T.
       o:Delete()
@@ -351,12 +352,12 @@ METHOD onMouseMove( xPos, yPos ) CLASS HDrawnUpDown
       ENDIF
    ENDIF
 
-   RETURN Nil
+   RETURN ::Super:onMouseMove( xPos, yPos )
 
 METHOD onMouseLeave() CLASS HDrawnUpDown
 
    ::onButtonUp()
-   RETURN Nil
+   RETURN ::Super:onMouseLeave()
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnUpDown
 

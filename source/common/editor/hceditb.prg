@@ -496,7 +496,7 @@ METHOD onMouseMove( xPos, yPos ) CLASS HDrawnEdit
    Hwg_SetCursor( hCursor )
 #endif
 
-   RETURN Nil
+   RETURN ::Super:onMouseMove( xPos, yPos )
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
 
@@ -511,7 +511,7 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
       Eval( ::bRClick, Self )
    ENDIF
 
-   RETURN Nil
+   RETURN ::Super:onButtonDown( msg, xPos, yPos )
 
 METHOD onButtonUp( xPos, yPos ) CLASS HDrawnEdit
 

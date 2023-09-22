@@ -1882,7 +1882,7 @@ STATIC FUNCTION FPaint( o, hDC )
 #define CLR_BLUE     16711680
 
 FUNCTION Test
-   LOCAL oDlg, oBoard, oTrack, oSay, oEdit, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
+   LOCAL oDlg, oBoard, or1, or2, oTrack, oSay, oEdit, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aCorners := { 4,4,4,4 }
    LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
@@ -1902,10 +1902,12 @@ FUNCTION Test
       ON PAINT {|o,h| hwg_Fillrect(h,0,0,o:nWidth,o:nHeight,o:brush:handle )} ;
       ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } KEYBOARD
 
-   @ 12, 12 DRAWN RADIO GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 12, 12 DRAWN RADIO or1 GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont INIT .T.
-   @ 12, 56 DRAWN RADIO GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   or1:cTooltip := "Radio 1"
+   @ 12, 56 DRAWN RADIO or2 GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont
+   or2:cTooltip := "Radio 2"
 
    @ 36, 12 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Radio 1' FONT oFont
@@ -1925,6 +1927,8 @@ FUNCTION Test
    @ 280, 12 DRAWN EDIT oEdit CAPTION Date() SIZE 80, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
    oEdit:nBorder := 2
    oEdit:nBorderColor := CLR_BLUE
+   oEdit:cTooltip := "Edit control"
+
    @ 280, 56 DRAWN EDIT "Sample Drawn Edit Control" SIZE 140, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
 
    @ 80, 140 DRAWN oSay SIZE 100, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;

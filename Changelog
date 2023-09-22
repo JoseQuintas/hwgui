@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-22 15:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+  * source/cross/hdrawncomb.prg
+  * source/common/editor/hceditb.prg
+    * Tooltips for drawn controls has been implemented.
+  * utils/tutorial/tutor_eng.xml
+
 2023-09-22 10:36 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hedit.prg
   * source/winapi/hedit.prg

@@ -6,13 +6,13 @@
  * Copyright 2013 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  */
- 
+
  /*
   Ticket #82 (missing symbols):
   Additional instructions by DF7BE:
   For extensions of the tutor it is necessary to
-  add all used symbols as an list for the EXTERNAL or REQUEST commands. 
-  
+  add all used symbols as an list for the EXTERNAL or REQUEST commands.
+
   1.) Standalone functions of HWGUI (for example HWG_SAVEFILE() )
       must be added in the header file hwgextern.ch
       If missing in the HWGUI libs, the symbol was displayed
@@ -23,7 +23,7 @@
 
   The missing symbol was displayed in the error stack, if the
   Run button is pressed, for example HWG_MSGNOYES():
-  
+
   Error BASE/6101  Unknown or unregistered symbol: HWG_MSGNOYES
   Called from HB_HRBRUN(0)
   Called from RUNSAMPLE(292)
@@ -33,7 +33,7 @@
   Called from HWG_ACTIVATEMAINWINDOW(0)
   Called from HMAINWINDOW:ACTIVATE(348)
   Called from MAIN(116)
-  
+
  */
 
 #include "hwgui.ch"
@@ -53,7 +53,7 @@ EXTERNAL FOPEN, FCLOSE, FSEEK, FREAD, FWRITE, FERASE
 EXTERNAL HB_BITAND, HB_BITSHIFT
 EXTERNAL HB_DIRBASE
 EXTERNAL ASORT, ASCAN, STOD
-EXTERNAL HB_HKEYS
+EXTERNAL HB_HKEYS, HB_FNAMENAMEEXT, HB_FNAMENAME, HB_FNAMEDIR
 
 #if defined (__HARBOUR__) && ( __HARBOUR__ - 0 >= 0x030000 )
 REQUEST HB_CODEPAGE_UTF8
@@ -284,12 +284,12 @@ STATIC FUNCTION NodeOut( oItem )
 
 STATIC FUNCTION RunSample( oItem )
    LOCAL cText := "", cLine, i, cHrb, lWnd := .F.
-   LOCAL cHrbCopts 
+   LOCAL cHrbCopts
 
    cHrbCopts := ""
 #ifdef __GTK__
    cHrbCopts := cHrbCopts + "-d__GTK__"
-#endif   
+#endif
 
    IF oItem != Nil .AND. !oItem:cargo[1]
       RETURN Nil
@@ -322,7 +322,7 @@ STATIC FUNCTION RunSample( oItem )
    IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n", "-d__GTK__" , "-I" + cHwg_include_dir + cHrb_inc_dir ) )
 #else
    IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n", "-I" + cHwg_include_dir + cHrb_inc_dir ) )
-#endif   
+#endif
       IF lWnd
          IF !Empty( cHwgrunPath )
             hb_Memowrit( "__tmp.hrb", cHrb )
@@ -372,7 +372,7 @@ STATIC FUNCTION ChangeFont( oCtrl, n )
    oCtrl:SetFont( oFont )
 
    RETURN Nil
-   
+
 * ================================= EOF of tutor.prg ===============================
 
-   
+

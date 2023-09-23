@@ -314,7 +314,9 @@ METHOD ShowTooltip( lShow, xPos, yPos ) CLASS HDrawn
 
    IF lShow
       //hwg_writelog( "show tool" )
-      IF Empty( ::oTooltip )
+      IF ::nMouseOn > 86400
+         RETURN Nil
+      ELSEIF Empty( ::oTooltip )
          IF Empty( ::oFontTool )
             ::oFontTool := ::oFont
          ENDIF

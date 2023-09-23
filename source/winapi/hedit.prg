@@ -282,8 +282,9 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
             ENDIF
 
          ELSEIF msg == WM_LBUTTONUP
-
-            ::lFirst := .F.
+            IF ::cType = "C"
+               ::lFirst := .F.
+            ENDIF
             IF Empty( hwg_Getedittext( oParent:handle, ::id ) )
                hwg_Sendmessage( ::handle, EM_SETSEL, 0, 0 )
             ENDIF

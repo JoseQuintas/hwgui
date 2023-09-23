@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-23 15:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+  * utils/tutorial/tutor.prg
+    ! Small fixes
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    ! Small fix, provided by Itamar M. Lins Jr.
+
 2023-09-22 19:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
     ! Warnings fixed

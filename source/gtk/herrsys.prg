@@ -26,12 +26,6 @@ STATIC FUNCTION DefError( oError )
    LOCAL cMessage
    LOCAL cDOSError
 
-   * Variables not used
-   * LOCAL aOptions
-   * LOCAL nChoice
-
-   LOCAL n
-
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV
       RETURN 0
@@ -61,17 +55,17 @@ STATIC FUNCTION DefError( oError )
       cMessage += " " + cDOSError
    ENDIF
 
-   n := 2
-   WHILE ! Empty( ProcName( n ) )
-#ifdef __XHARBOUR__
-      cMessage += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcFile( n ) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
-#else
-      cMessage += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
-#endif
-   ENDDO
+   cMessage += hwg_Trace()
+
+   cMessage += Chr( 13 ) + Chr( 10 )
+   cMessage += Chr( 13 ) + Chr( 10 ) + hwg_version()
+   cMessage += Chr( 13 ) + Chr( 10 ) + "Date:" + DToC( Date() )
+   cMessage += Chr( 13 ) + Chr( 10 ) + "Time:" + Time()
+
+   hwg_ReleaseTimers()
 
    MemoWrit( LogInitialPath + "Error.log", cMessage )
-   hwg_ReleaseTimers()
+
    ErrorPreview( cMessage )
    hwg_gtk_exit()
    QUIT

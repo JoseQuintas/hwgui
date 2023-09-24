@@ -19,7 +19,7 @@ CLASS HPaintCB INHERIT HObject
    METHOD New()  INLINE Self
    METHOD Set( nId, block, cId )
    METHOD Get( nId )
-   
+
 ENDCLASS
 
 METHOD Set( nId, block, cId ) CLASS HPaintCB
@@ -1155,3 +1155,17 @@ FUNCTION hwg_QRCodeGetSize( cqrcode )
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    //   End of Functions for QR encoding
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+FUNCTION hwg_Trace()
+
+   LOCAL s := "", n := 2
+
+   WHILE ! Empty( ProcName( n ) )
+#ifdef __XHARBOUR__
+      s += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcFile( n ) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
+#else
+      s += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
+#endif
+   ENDDO
+
+   RETURN s

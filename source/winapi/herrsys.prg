@@ -26,7 +26,6 @@ STATIC FUNCTION DefError( oError )
 
    LOCAL cMessage
    LOCAL cDOSError
-   LOCAL n
 
    // By default, division by zero results in zero
    IF oError:genCode == EG_ZERODIV
@@ -57,19 +56,14 @@ STATIC FUNCTION DefError( oError )
       cMessage += " " + cDOSError
    ENDIF
 
-   n := 2
-   WHILE ! Empty( ProcName( n ) )
-      cMessage += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcFile( n ) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
-   ENDDO
+   cMessage += hwg_Trace()
 
    //included aditional informations
 
    cMessage += Chr( 13 ) + Chr( 10 )
-
    cMessage += Chr( 13 ) + Chr( 10 ) + hwg_version()
    cMessage += Chr( 13 ) + Chr( 10 ) + "Date:" + DToC( Date() )
    cMessage += Chr( 13 ) + Chr( 10 ) + "Time:" + Time()
-
 
    hwg_ReleaseTimers()
 

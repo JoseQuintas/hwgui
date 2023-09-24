@@ -500,6 +500,8 @@ METHOD onMouseMove( xPos, yPos ) CLASS HDrawnEdit
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
 
+   ::Super:onButtonDown( msg, xPos, yPos )
+
    ::SetFocus()
    hced_ShowCaret( ::hEdit )
 #ifndef __GTK__
@@ -511,7 +513,7 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
       Eval( ::bRClick, Self )
    ENDIF
 
-   RETURN ::Super:onButtonDown( msg, xPos, yPos )
+   RETURN Nil
 
 METHOD onButtonUp( xPos, yPos ) CLASS HDrawnEdit
 

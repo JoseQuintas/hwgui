@@ -322,6 +322,7 @@ METHOD ShowTooltip( lShow, xPos, yPos ) CLASS HDrawn
          ENDIF
          ::oTooltip := HDrawn():New( ::oParent, xPos, yPos, 1, 1, ;
             ::tcolorTool, ::bColorTool,, "", ::oFontTool )
+         //::oTooltip:Delete()
       ELSEIF ::oTooltip:lHide
          ::oTooltip:lHide := .F.
       ELSE
@@ -372,10 +373,8 @@ METHOD onMouseMove( xPos, yPos ) CLASS HDrawn
    IF ::cToolTip != Nil
       IF ::nMouseOn == 0
          ::nMouseOn := Seconds()
-         HTimer():New( ::GetParentBoard(),, 500, {||::ShowTooltip( .T., xPos, yPos )}, .T. )
-      //ELSEIF Seconds() - ::nMouseOn > 0.3 .AND. ( Empty( ::oTooltip ) .OR. ::oTooltip:lHide )
-      //   ::nMouseOn := 90000
-      //   ::ShowTooltip( .T., xPos, yPos )
+         HTimer():New( ::GetParentBoard(),, 500, ;
+            {||Iif(::nMouseOn>0.AND.::nMouseOn<90000,::ShowTooltip(.T.,xPos,yPos),.T.)}, .T. )
       ENDIF
    ENDIF
 
@@ -400,6 +399,107 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawn
       ::nMouseOn := 90000
       ::ShowTooltip( .F. )
    ENDIF
+
+   RETURN Nil
+
+CLASS HDrawnTT INHERIT HDrawn
+
+   CLASS VAR oFontDef  SHARED
+   CLASS VAR tColorDef SHARED  INIT CLR_BLACK
+   CLASS VAR bColorDef SHARED  INIT CLR_LYELLOW
+
+   DATA  hBitmapTmp
+
+   METHOD New( oWndParent, title, tcolor, bColor, oFont )
+   METHOD Show( cText, xPos, yPos )
+   METHOD Hide()
+   METHOD Paint( hDC )
+
+ENDCLASS
+
+METHOD New( oWndParent, title, tcolor, bColor, oFont ) CLASS HDrawnTT
+
+   ::Super:New( oWndParent:oParent, 0, 0, 0, 0, Iif( Empty(tcolor),::tColorDef,tcolor ), ;
+      Iif( Empty(bcolor),::bColorDef,bcolor ),, title, oFont )
+   ::Delete()
+   ::lHide := .T.
+
+   RETURN Self
+
+METHOD Show( cText, xPos, yPos ) CLASS HDrawnTT
+
+   LOCAL oBoa := ::GetParentBoard()
+   LOCAL hDC := hwg_Getdc( oBoa:handle )
+   LOCAL arr := hwg_GetTextSize( hDC, cText )
+   LOCAL nw := arr[1] + 8, nh := arr[2] + 4
+   LOCAL o, i
+
+   hwg_Releasedc( oBoa:handle, hDC )
+
+   FOR i := 1 TO Len( ::oParent:aDrawn )
+      IF ::oParent:aDrawn[i]:oTooltip == Self
+         o := ::oParent:aDrawn[i]
+         EXIT
+      ENDIF
+   NEXT
+
+   IF xPos + 2 + nw <= oBoa:nWidth
+      ::nLeft := xPos + 2
+   ELSEIF nw < oBoa:nWidth
+      ::nLeft := oBoa:nWidth - nw
+   ELSE
+      ::nLeft := 2
+      nw := oBoa:nWidth - 4
+   ENDIF
+
+   IF o:nTop + o:nHeight + nh <= oBoa:nHeight
+      ::nTop := o:nTop + o:nHeight
+   ELSEIF o:nTop - nh > 0
+      ::nTop := o:nTop - nh
+   ELSEIF yPos + 4 + nh <= oBoa:nHeight
+      ::nTop := yPos + 4
+   ELSEIF yPos - 4 - nh > 0
+      ::nTop := yPos - 4 - nh
+   ELSE
+      ::nTop := o:nTop + 2
+   ENDIF
+
+   ::nWidth  := nw
+   ::nHeight := nh
+   ::hBitmapTmp := hwg_Window2Bitmap( oBoa:handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
+   AAdd( oBoa:aDrawn, Self )
+   ::lHide := .F.
+   ::SetText( cText )
+
+   RETURN Nil
+
+METHOD Hide() CLASS HDrawnTT
+
+   ::lHide := .T.
+   ::Refresh()
+   RETURN Nil
+
+METHOD Paint( hDC ) CLASS HDrawnTT
+
+   IF ::lHide
+      IF !Empty( ::hBitmapTmp )
+         hwg_Drawbitmap( hDC, ::hBitmapTmp,, ::nLeft, ::nTop )
+         hwg_Deleteobject( ::hBitmapTmp )
+         ::hBitmapTmp := Nil
+         ::Delete()
+      ENDIF
+   ELSE
+      hwg_RoundRect_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, 4, ;
+         .F., ::oBrush:handle )
+      hwg_Settransparentmode( hDC, .T. )
+      hwg_Settextcolor( hDC, ::tColor )
+      IF !Empty( ::oFont )
+         hwg_SelectObject( hDC, ::oFont:handle )
+      ENDIF
+      hwg_Drawtext( hDC, ::title, ::nLeft+4, ::nTop+2, ::nLeft+::nWidth-4, ::nTop+::nHeight-4 )
+      hwg_Settransparentmode( hDC, .F. )
+   ENDIF
+   ::Refresh()
 
    RETURN Nil
 

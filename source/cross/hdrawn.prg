@@ -28,6 +28,7 @@ CLASS HDrawn INHERIT HObject
    DATA nTextStyle    INIT DT_CENTER
    DATA tcolor, bcolor, oBrush, oPen
    DATA tBorderColor  INIT Nil
+   DATA nCorner       INIT 0
    DATA lHide         INIT .F.
    DATA lStatePaint   INIT .F.
    DATA nState        INIT 0
@@ -171,7 +172,11 @@ METHOD Paint( hDC ) CLASS HDrawn
          IF Empty( ::oPen )
             ::oPen := HPen():Add( BS_SOLID, 1, Iif( ::tBorderColor == Nil, ::bcolor, ::tBorderColor ) )
          ENDIF
-         hwg_RoundRect_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, 4, ::oPen:handle, ::oBrush:handle )
+         IF ::nCorner > 0
+            hwg_RoundRect_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::nCorner, ::oPen:handle, ::oBrush:handle )
+         ELSE
+            hwg_Rectangle_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::oPen:handle, ::oBrush:handle )
+         ENDIF
       ENDIF
       IF !Empty( ::title )
          hwg_Settransparentmode( hDC, .T. )

@@ -597,7 +597,7 @@ CLASS HBoard INHERIT HControl
    DATA winclass    INIT "HBOARD"
    DATA lKeybEvents INIT .F.
    DATA lMouseOver  INIT .F.
-   DATA oInFocus
+   DATA oInFocus //, oTooltipOn
    DATA aDrawn      INIT {}
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
@@ -755,6 +755,8 @@ METHOD Paint( hDC ) CLASS HBoard
       IF Eval( ::bPaint, Self, hDC ) == 0
          RETURN Nil
       ENDIF
+   ELSEIF l .AND. !Empty( ::brush )
+      hwg_Fillrect( hDC, 0, 0, ::nWidth, ::nHeight, ::brush:handle )
    ENDIF
 
    FOR i := 1 TO Len( ::aDrawn )

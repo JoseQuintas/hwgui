@@ -335,14 +335,14 @@ Return Nil
       <![CDATA[/* This sample demonstrates few ready to use dialog boxes */
 #include "hwgui.ch"
 Function Test
-   Local oDlg, oFont, oFontSay, oFontC, oSay3, oSay4, oSay5, oSay6, oSay7, oSay8, oSay9, oSay10, y1 := 50, n
+   Local oDlg, oFont, oFontSay, oFontC, oSay3, oSay4, oSay5, oSay6, oSay7, oSay8, oSay8a, oSay8b, oSay9, oSay10, y1 := 50, n
    Local nChoic, cRes, arr := {"White","Blue","Green","Red"}, af
 
    PREPARE FONT oFont NAME "MS Sans Serif" WIDTH 0 HEIGHT -13
    PREPARE FONT oFontSay NAME "MS Sans Serif" WIDTH 0 HEIGHT -13 WEIGHT 700
    PREPARE FONT oFontC NAME "Georgia" WIDTH 0 HEIGHT -15
 
-   INIT DIALOG oDlg TITLE "Standard dialogs" AT 100, 100 SIZE 340, 530 FONT oFont
+   INIT DIALOG oDlg TITLE "Standard dialogs" AT 100, 100 SIZE 340, 570 FONT oFont
 
    @ 20,12 SAY "Press any button to see a dialog" SIZE 260, 24 ;
          FONT oFontSay COLOR 8404992
@@ -398,6 +398,18 @@ Function Test
    @ 20,y1 BUTTON "hwg_Selectfile()" SIZE 180,28 ;
       ON CLICK {||oSay8:SetText( Iif( (cRes := hwg_Selectfile("All files( *.* )","*.*",Curdir()))==Nil,"",hb_FNameNameExt(cRes) ) )}
    @ 230,y1 SAY oSay8 CAPTION "" SIZE 80,24 COLOR 8404992
+   y1 += 30
+
+#ifndef __GTK__
+   @ 20,y1 BUTTON "hwg_Savefile()" SIZE 180,28 ;
+      ON CLICK {||oSay8a:SetText( Iif( (cRes := hwg_Savefile("*.*", "All files", "*.*", hb_DirBase()))==Nil,"",hb_FNameNameExt(cRes) ) )}
+   @ 230,y1 SAY oSay8a CAPTION "" SIZE 80,24 COLOR 8404992
+   y1 += 30
+#endif
+
+   @ 20,y1 BUTTON "hwg_SelectFolder()" SIZE 180,28 ;
+      ON CLICK {||oSay8b:SetText( Iif( (cRes := hwg_SelectFolder())==Nil,"",cRes ) )}
+   @ 230,y1 SAY oSay8b CAPTION "" SIZE 80,24 COLOR 8404992
    y1 += 30
 
    @ 20,y1 BUTTON "Hwg_ChooseColor()" SIZE 180,28 ;
@@ -1899,7 +1911,6 @@ FUNCTION Test
       AT 210, 10  SIZE 440, 220 FONT oFont BACKCOLOR CLR_DGRAY2
 
    @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR CLR_BLACK ;
-      ON PAINT {|o,h| hwg_Fillrect(h,0,0,o:nWidth,o:nHeight,o:brush:handle )} ;
       ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } KEYBOARD
 
    @ 12, 12 DRAWN RADIO or1 GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
@@ -1991,7 +2002,6 @@ FUNCTION Test
       AT 210, 10  SIZE 170, 250 FONT oFont BACKCOLOR CLR_DGRAY2
 
    @ 4, 4 BOARD oBoard SIZE 162, 242 BACKCOLOR CLR_BLACK ;
-      ON PAINT {|o,h| hwg_Fillrect(h,0,0,o:nWidth,o:nHeight,o:brush:handle )} ;
       ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont KEYBOARD
 
    @ 12, 10 DRAWN COMBO oCombo ITEMS arr1 SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT 1

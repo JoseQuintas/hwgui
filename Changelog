@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-25 16:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+    * :nCorner data added - the radius of a widget rectangle
+  * utils/tutorial/tutor_eng.xml
+    * Standard dialogs added
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * HBoard():Paint() updated
+
 2023-09-25 14:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hceditb.prg
     ! Fixes

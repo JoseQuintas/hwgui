@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-25 14:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hceditb.prg
+    ! Fixes
+  * source/cross/hdrawn.prg
+    * Drawn tooltips functionality moved to a separate class HDrawnTT
+
 2023-09-24 17:58 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hceditb.prg
   * source/cross/hdrawn.prg

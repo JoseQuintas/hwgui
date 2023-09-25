@@ -247,10 +247,10 @@ METHOD InsText( nPosC, cText, lOver ) CLASS HDrawnEdit
 
 METHOD SetCaretPos( nType, p1 ) CLASS HDrawnEdit
 
-   LOCAL lSet := .T. , x1, xPos, yPos := ::nTop + ::nBoundT, cLine
+   LOCAL lSet := .T. , x1, xPos, yPos := ::nTop + ::nBoundT + ::nBorder, cLine
 
    IF Empty( nType )
-      hced_SetCaretPos( ::hEdit, ::nLeft+::nBoundL, ::nTop+::nBoundT )
+      hced_SetCaretPos( ::hEdit, ::nLeft+::nBoundL, ::nTop+::nBoundT+::nBorder )
       RETURN Nil
    ENDIF
    IF nType > 100

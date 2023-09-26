@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-26 17:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+  * source/cross/hdrawnbrw.prg
+    * :Move() method updated and other enhancements
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * ON SIZE handling added
+
 2023-09-25 16:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
     * :nCorner data added - the radius of a widget rectangle

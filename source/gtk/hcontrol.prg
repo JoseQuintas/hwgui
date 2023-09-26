@@ -724,6 +724,14 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
          ::oInFocus := Nil
       ENDIF
 
+   ELSEIF msg == WM_SIZE
+
+      FOR EACH o IN ::aDrawn
+         IF o:bSize != NIL
+            Eval( o:bSize, o, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+         ENDIF
+      NEXT
+
    ELSE
       RETURN ::Super:onEvent( msg, wParam, lParam )
 

@@ -103,6 +103,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD FooterOut( hDC )
    METHOD Cell( iCol )
 
+   METHOD Move( x1, y1, width, height )
    METHOD AddColumn( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable )
    METHOD Edit()
    METHOD onKey( msg, wParam, lParam )
@@ -284,6 +285,8 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
 
    IF Len( ::aRows ) < nRow
       AAdd( ::aRows, { y1, Nil } )
+   ELSE
+      ::aRows[nRow,1] := y1
    ENDIF
    //hwg_writelog( "rout "+str(nRow) + " " + str(y1) + " " + str(y2) + " " + str(::nRowCurr) + " " + str(::nRowCount) )
 
@@ -375,6 +378,27 @@ METHOD Cell( iCol ) CLASS HDrawnBrw
    ENDIF
 
    RETURN hb_ValToExp( xVal )
+
+METHOD Move( x1, y1, width, height ) CLASS HDrawnBrw
+
+   LOCAL x10 := ::nLeft, y10 := ::nTop, x20 := ::nLeft + ::nWidth, y20 := ::nTop + ::nHeight
+
+   //hwg_writelog( str(::nLeft)+" "+str(::nTop)+" "+str(::nWidth)+" "+str(::nheight)+" "+str(::oTrackV:nLeft)+" "+str(::oTrackH:nTop) )
+   ::Super:Move( x1, y1, width, height, .F. )
+   IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide
+      ::oTrackV:Move( ::nLeft+::nWidth-::aMargin[3], ::nTop+::aMargin[2]+::nHeightHead,, ;
+         ::nHeight-+::nHeightHead-+::nHeightFoot-::aMargin[2]-::aMargin[4] )
+   ENDIF
+   IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide
+      ::oTrackH:Move( ::nLeft+::aMargin[1], ::nTop+::nHeight-::aMargin[4], ;
+         ::nWidth-::aMargin[1]-::aMargin[3] )
+   ENDIF
+   ::Refresh( Min(x10,::nLeft), Min(y10,::nTop), Max(x20,::nLeft+::nWidth), Max(y20,::nTop+::nHeight) )
+   //hwg_writelog( str(::nLeft)+" "+str(::nTop)+" "+str(::nWidth)+" "+str(::nheight)+" "+str(::oTrackV:nLeft)+" "+str(::oTrackH:nTop) )
+   //hwg_writelog( "" )
+   //hwg_writelog( str(Min(x10,::nLeft))+" "+str(Min(y10,::nTop))+" "+str(Max(x20,::nLeft+::nWidth))+" "+str(Max(y20,::nTop+::nHeight)) )
+
+   RETURN Nil
 
 METHOD AddColumn( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable ) CLASS HDrawnBrw
 
@@ -639,7 +663,7 @@ METHOD Selected( n ) CLASS HDrawnBrw
 
 METHOD ShowTrackV( lShow ) CLASS HDrawnBrw
 
-   LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, nTrackWidth )
+   LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, ::nTrackWidth )
    LOCAL bOnTrack := {|o,n|
       LOCAL nRecOld := o:oParent:oData:Recno()
       LOCAL nRecNew := Round( o:oParent:oData:Count() * n + 1, 0 )
@@ -676,10 +700,20 @@ METHOD ShowTrackV( lShow ) CLASS HDrawnBrw
 
 METHOD ShowTrackH( lShow ) CLASS HDrawnBrw
 
-   LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, nTrackWidth )
+   LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, ::nTrackWidth )
    LOCAL bOnTrack := {|o,n|
-      HB_SYMBOL_UNUSED(o)
-      HB_SYMBOL_UNUSED(n)
+      LOCAL nColOld := o:oParent:nColCurr
+      LOCAL nColNew := Round( o:oParent:nColCount * n, 0 )
+      LOCAL i
+      IF nColNew > nColOld
+         FOR i := 1 TO nColNew - nColOld
+            o:oParent:onKey( WM_KEYDOWN, VK_RIGHT, 0 )
+         NEXT
+      ELSEIF nColNew < nColOld
+         FOR i := 1 TO nColOld - nColNew
+            o:oParent:onKey( WM_KEYDOWN, VK_LEFT, 0 )
+         NEXT
+      ENDIF
       RETURN .T.
    }
 
@@ -744,13 +778,14 @@ CLASS HBrwData INHERIT HObject
 
    METHOD New()  INLINE Self
 
-   METHOD Bof()     VIRTUAL
-   METHOD Eof()     VIRTUAL
-   METHOD Top()     VIRTUAL
-   METHOD Bottom()  VIRTUAL
-   METHOD Recno()   VIRTUAL
-   METHOD GoTo( n ) VIRTUAL
-   METHOD Count()   VIRTUAL
+   METHOD Bof()      VIRTUAL
+   METHOD Eof()      VIRTUAL
+   METHOD Top()      VIRTUAL
+   METHOD Bottom()   VIRTUAL
+   METHOD Recno()    VIRTUAL
+   METHOD RecnoLog() VIRTUAL
+   METHOD GoTo( n )  VIRTUAL
+   METHOD Count()    VIRTUAL
    METHOD Skip( nSkip ) VIRTUAL
 
    METHOD Block( x )    VIRTUAL
@@ -762,13 +797,14 @@ CLASS HDataArray INHERIT HBrwData
 
    METHOD New( arr )
 
-   METHOD Bof()     INLINE (::nCurrent == 0)
-   METHOD Eof()     INLINE (::nCurrent > Len(::aData))
-   METHOD Top()     INLINE ::nCurrent := 1
-   METHOD Bottom()  INLINE ::nCurrent := Len(::aData)
-   METHOD Recno()   INLINE ::nCurrent
+   METHOD Bof()      INLINE (::nCurrent == 0)
+   METHOD Eof()      INLINE (::nCurrent > Len(::aData))
+   METHOD Top()      INLINE ::nCurrent := 1
+   METHOD Bottom()   INLINE ::nCurrent := Len(::aData)
+   METHOD Recno()    INLINE ::nCurrent
+   METHOD RecnoLog() INLINE ::nCurrent
    METHOD GoTo( n )
-   METHOD Count()   INLINE Len(::aData)
+   METHOD Count()    INLINE Len(::aData)
    METHOD Skip( nSkip )
    METHOD Block( x )
 
@@ -825,8 +861,9 @@ CLASS HDataDbf INHERIT HBrwData
    METHOD Top()     INLINE (::cAlias)->(dbGoTop())
    METHOD Bottom()  INLINE (::cAlias)->(dbGoBottom())
    METHOD Recno()   INLINE (::cAlias)->(Recno())
+   METHOD RecnoLog()
    METHOD GoTo( n ) INLINE (::cAlias)->(dbGoTo(n))
-   METHOD Count()   INLINE (::cAlias)->(RecCount())
+   METHOD Count()
    METHOD Skip( nSkip )  INLINE (::cAlias)->(dbSkip(nSkip))
    METHOD Block( x )
 
@@ -837,6 +874,12 @@ METHOD New( cAlias ) CLASS HDataDbf
    ::cAlias := cAlias
 
    RETURN ::Super:New()
+
+METHOD RecnoLog() CLASS HDataDbf
+   RETURN (::cAlias)->( Iif( OrdNumber() == 0, Recno(), OrdKeyNo() ) )
+
+METHOD Count() CLASS HDataDbf
+   RETURN (::cAlias)->( Iif( OrdNumber() == 0, RecCount(), OrdKeyCount() ) )
 
 METHOD Block( x ) CLASS HDataDbf
 

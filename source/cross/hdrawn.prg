@@ -39,7 +39,7 @@ CLASS HDrawn INHERIT HObject
    DATA nMouseOn      INIT 0
    DATA cTooltip, oTooltip //, hBitmapTmp
 
-   DATA bPaint, bClick, bChgState
+   DATA bPaint, bClick, bChgState, bSize
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
       title, oFont, bPaint, bClick, bChgState )
@@ -48,7 +48,7 @@ CLASS HDrawn INHERIT HObject
    METHOD GetByPos( xPos, yPos, oBoard )
    METHOD GetByState( nState, aDrawn, block, lAll )
    METHOD Paint( hDC )
-   METHOD Move( x1, y1, width, height )
+   METHOD Move( x1, y1, width, height, lRefresh )
    METHOD SetState( nState, nPosX, nPosY )
    METHOD SetText( cText )
    METHOD Value( xValue ) SETGET
@@ -195,12 +195,18 @@ METHOD Paint( hDC ) CLASS HDrawn
 
    RETURN Nil
 
-METHOD Move( x1, y1, width, height ) CLASS HDrawn
+METHOD Move( x1, y1, width, height, lRefresh ) CLASS HDrawn
+
+   LOCAL x10 := ::nLeft, y10 := ::nTop, x20 := ::nLeft + ::nWidth, y20 := ::nTop + ::nHeight
 
    IF x1 != Nil; ::nLeft := x1; ENDIF
    IF y1 != Nil; ::nTop := y1; ENDIF
    IF width != Nil; ::nWidth := width; ENDIF
    IF height != Nil; ::nHeight := height; ENDIF
+
+   IF lRefresh == Nil .OR. lRefresh
+      ::Refresh( Min(x10,::nLeft), Min(y10,::nTop), Max(x20,::nLeft+::nWidth), Max(y20,::nTop+::nHeight) )
+   ENDIF
 
    RETURN Nil
 

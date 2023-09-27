@@ -714,7 +714,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       ENDIF
 
    ELSEIF msg == WM_KEYDOWN .OR. msg == WM_CHAR
-      IF !Empty( ::oInFocus ) .AND. !oInFocus:lHide
+      IF !Empty( ::oInFocus ) .AND. !::oInFocus:lHide
          ::oInFocus:onKey( msg, wParam, lParam )
       ENDIF
 

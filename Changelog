@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-27 16:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+  * source/cross/hdrawnbrw.prg
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * Fixes, enhancements in HBoard/HDrawn implementation
+  * utils/tutorial/tutor_eng.xml
+    * Module added "Drawn browses" in "Drawing" section
+
 2023-09-26 17:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
   * source/cross/hdrawnbrw.prg

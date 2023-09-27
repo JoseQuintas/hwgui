@@ -318,7 +318,7 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawn
 
    LOCAL o
 
-   IF ( o := ::GetByPos( xPos, yPos ) ) != Nil
+   IF ( o := ::GetByPos( xPos, yPos ) ) != Nil .AND. !o:lHide
       o:onButtonDown( msg, xPos, yPos )
    ENDIF
    IF ::oToolTip != Nil

@@ -207,7 +207,7 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
    LOCAL x1, y1, x2, y2, x, nRow := 0
    LOCAL nRec, i
 
-   IF Empty( ::oData )
+   IF ::lHide .OR. Empty( ::oData )
       RETURN Nil
    ENDIF
 
@@ -524,8 +524,6 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
 
 METHOD onMouseMove( xPos, yPos ) CLASS HDrawnBrw
 
-   HB_SYMBOL_UNUSED(xPos)
-   HB_SYMBOL_UNUSED(yPos)
    IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide .AND. xPos >= ::oTrackV:nLeft
       ::oTrackV:onMouseMove( xPos, yPos )
    ENDIF
@@ -546,10 +544,7 @@ METHOD onMouseLeave() CLASS HDrawnBrw
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
 
-   LOCAL i := 0, j, x
-
-   HB_SYMBOL_UNUSED(msg)
-   HB_SYMBOL_UNUSED(xPos)
+   LOCAL i := 0, j, x, lRefr := .F.
 
    ::SetFocus()
    IF !Empty( ::oEdit )
@@ -568,29 +563,32 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
          IF i != ::nRowCurr
             ::oData:Skip( i - ::nRowCurr )
             ::nRowCurr := i
-            IF ::lSeleCell
-               j := ::nColFirst - 1
-               x := ::nLeft + ::aMargin[1]
-               DO WHILE ++j <= Len( ::aColumns ) .AND. x < xPos
-                  x += ::aColumns[j]:nWidth
-                  IF x > xPos
-                     ::nColCurr := j
-                     EXIT
-                  ENDIF
-               ENDDO
-            ENDIF
-            ::Refresh()
+            lRefr := .T.
          ENDIF
          EXIT
       ENDIF
    ENDDO
+   IF ::nRowCurr > 0
+      IF ::lSeleCell
+         j := ::nColFirst - 1
+         x := ::nLeft + ::aMargin[1]
+         DO WHILE ++j <= Len( ::aColumns ) .AND. x < xPos
+            x += ::aColumns[j]:nWidth
+            IF x > xPos
+               ::nColCurr := j
+               lRefr := .T.
+               EXIT
+            ENDIF
+         ENDDO
+      ENDIF
+   ENDIF
+   IF lRefr
+      ::Refresh()
+   ENDIF
 
    RETURN Nil
 
 METHOD onButtonUp( xPos, yPos ) CLASS HDrawnBrw
-
-   HB_SYMBOL_UNUSED(xPos)
-   HB_SYMBOL_UNUSED(yPos)
 
    IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide .AND. xPos >= ::oTrackV:nLeft
       RETURN ::oTrackV:onButtonUp( xPos, yPos )

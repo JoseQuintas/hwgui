@@ -671,7 +671,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
    ELSEIF msg == WM_LBUTTONDOWN
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
-         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil .AND. !o:lHide
          IF !Empty( ::oInFocus ) .AND. !( o == ::oInFocus )
             ::oInFocus:onKillFocus()
             ::oInFocus := Nil
@@ -685,7 +685,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
    ELSEIF msg == WM_RBUTTONDOWN
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
-         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil .AND. !o:lHide
          IF !Empty( ::oInFocus ) .AND. !( o == ::oInFocus )
             ::oInFocus:onKillFocus()
             ::oInFocus := Nil
@@ -698,12 +698,12 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
    ELSEIF msg == WM_LBUTTONDBLCLK
       IF ( o := HDrawn():GetByPos( nPosX := hwg_Loword( lParam ), ;
-         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil
+         nPosY := hwg_Hiword( lParam ), Self ) ) != Nil .AND. !o:lHide
          o:onButtonDbl( nPosX, nPosY )
       ENDIF
 
    ELSEIF msg == WM_LBUTTONUP
-      IF !Empty( o := HDrawn():GetByState( STATE_PRESSED, ::aDrawn ) )
+      IF !Empty( o := HDrawn():GetByState( STATE_PRESSED, ::aDrawn ) ) .AND. !o:lHide
          o:SetState( 3, nPosX := hwg_Loword( lParam ), nPosY := hwg_Hiword( lParam ) )
          o:onButtonUp( nPosX, nPosY )
       ENDIF
@@ -714,7 +714,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       ENDIF
 
    ELSEIF msg == WM_KEYDOWN .OR. msg == WM_CHAR
-      IF !Empty( ::oInFocus )
+      IF !Empty( ::oInFocus ) .AND. !oInFocus:lHide
          ::oInFocus:onKey( msg, wParam, lParam )
       ENDIF
 

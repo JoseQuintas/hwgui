@@ -888,6 +888,7 @@
 #define VK_DECIMAL   GDK_KP_Decimal
 #define VK_DIVIDE    GDK_KP_Divide
 
+// https://developer-old.gnome.org/gdk3/stable/gdk3-Cursors.html
 #define GDK_X_CURSOR            0
 #define GDK_ARROW               2
 #define GDK_BASED_ARROW_DOWN    4
@@ -970,7 +971,7 @@
 #define IDC_IBEAM           GDK_XTERM
 #define IDC_WAIT            GDK_CIRCLE
 #define IDC_CROSS           GDK_CROSS
-#define IDC_SIZEWE          GDK_CROSS
+#define IDC_SIZEWE          GDK_SB_H_DOUBLE_ARROW
 #define IDC_SIZENS          GDK_SB_V_DOUBLE_ARROW
 #define IDC_UPARROW         GDK_SB_UP_ARROW
 #define IDC_HAND            GDK_HAND1

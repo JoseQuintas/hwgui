@@ -25,7 +25,7 @@
 #define GDK_MOD1_MASK     4
 #endif
 
-static hCursor
+static hCursorEdi, hCursorCommon
 
 CLASS HCEditBasic INHERIT HBoard
 
@@ -106,6 +106,7 @@ CLASS HDrawnEdit INHERIT HDrawn
    METHOD PutChar( wParam )
    METHOD onKey( msg, wParam, lParam )
    METHOD onMouseMove( xPos, yPos )
+   METHOD onMouseLeave()
    METHOD onButtonDown( msg, xPos, yPos )
    METHOD SetFocus()
    METHOD onKillFocus()
@@ -120,8 +121,11 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, ;
    ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor,, ' ', oFont, bPaint,, bChgState )
 
    ::hEdit := hced_InitTextEdit()
-   IF Empty( hCursor )
-      hCursor := hwg_Loadcursor( IDC_IBEAM )
+   IF Empty( hCursorEdi )
+      hCursorEdi := hwg_Loadcursor( IDC_IBEAM )
+#ifdef __GTK__
+      hCursorCommon := hwg_Loadcursor( IDC_ARROW )
+#endif
    ENDIF
    IF hwg__isUnicode()
       ::lUtf8 := .T.
@@ -486,9 +490,16 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnEdit
 
 METHOD onMouseMove( xPos, yPos ) CLASS HDrawnEdit
 
-   Hwg_SetCursor( hCursor, ::GetParentBoard():handle )
+   Hwg_SetCursor( hCursorEdi, ::GetParentBoard():handle )
 
    RETURN ::Super:onMouseMove( xPos, yPos )
+
+METHOD onMouseLeave() CLASS HDrawnEdit
+
+#ifdef __GTK__
+   Hwg_SetCursor( hCursorCommon, ::GetParentBoard():handle )
+#endif
+   RETURN ::Super:onMouseMove()
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
 
@@ -496,7 +507,7 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
 
    ::SetFocus()
    hced_ShowCaret( ::hEdit )
-   Hwg_SetCursor( hCursor, ::GetParentBoard():handle )
+   Hwg_SetCursor( hCursorEdi, ::GetParentBoard():handle )
    ::SetCaretPos( SETC_COORS, xPos, yPos )
 
    IF msg == WM_RBUTTONDOWN .AND. !Empty( ::bRClick )

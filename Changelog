@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-28 16:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/windows.ch
+  * source/common/editor/hceditb.prg
+  * source/cross/hdrawnbrw.prg
+    * Further enhancements
+  * utils/tutorial/tutor.prg
+  * utils/tutorial/tutor_eng.xml
+
 2023-09-28 11:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/windows.ch
     * Added cursor definitions from gtk.ch

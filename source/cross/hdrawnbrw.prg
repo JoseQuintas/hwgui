@@ -24,6 +24,8 @@
 #define CLR_WHITE    0xffffff
 #define CLR_GRAY3    0xbbbbbb
 
+static hCursorSize, hCursorCommon
+
 CLASS HBrw INHERIT HBoard
 
    DATA oDrawn
@@ -83,9 +85,12 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA nColCount     INIT 0                 // Number of visible data columns
    DATA nColCurr      INIT 1                 // Column currently selected
    DATA nColFirst     INIT 1                 // The leftmost column on the screen
+   DATA nColResize    INIT 0                 // The column to be resized
 
    DATA oTrackV, oTrackH
    DATA nTrackWidth, oStyleBar, oStyleSlider
+
+   DATA lCaptured     INIT .F.
 
    DATA bEnter, bKeyDown, bLostFocus
    DATA oEdit
@@ -138,6 +143,12 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
    ENDIF
    IF Valtype( lHScroll ) == "L" .AND. lHScroll
       ::oTrackH := 0
+   ENDIF
+   IF Empty( hCursorSize )
+      hCursorSize := hwg_Loadcursor( IDC_SIZEWE )
+#ifdef __GTK__
+      hCursorCommon := hwg_Loadcursor( IDC_ARROW )
+#endif
    ENDIF
 
    RETURN Self
@@ -308,7 +319,7 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
          ENDIF
          hwg_Drawtext( hDC, ::Cell( iCol ), x+::aRowPadding[1], y1+::aRowPadding[2],  ;
             Min( x2, x+nw-1-::aRowPadding[3] ), ;
-            y2-::aRowPadding[4], oCol:nAlignRow )
+            y2-::aRowPadding[4], oCol:nAlignRow, .T. )
       ENDIF
       x += oCol:nWidth
       i ++
@@ -402,7 +413,8 @@ METHOD Move( x1, y1, width, height ) CLASS HDrawnBrw
 
 METHOD AddColumn( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable ) CLASS HDrawnBrw
 
-   LOCAL oColumn := HBrwCol():New( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable )
+   LOCAL oColumn := HBrwCol():New( cHead, Iif( Valtype(block) == "B", block, ::oData:Block(block) ), ;
+      nWidth, nAlignRow, nAlignHead, lEditable )
 
    AAdd( ::aColumns, oColumn )
 
@@ -524,12 +536,34 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
 
 METHOD onMouseMove( xPos, yPos ) CLASS HDrawnBrw
 
+   LOCAL j, x
+
    IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide .AND. xPos >= ::oTrackV:nLeft
       ::oTrackV:onMouseMove( xPos, yPos )
    ENDIF
    IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide .AND. yPos >= ::oTrackH:nTop
       ::oTrackH:onMouseMove( xPos, yPos )
    ENDIF
+
+   IF !::lCaptured
+      ::nColResize := 0
+      IF ::nHeightHead > 0 .AND. ::nRowCount != 0 .AND. yPos < ::aRows[1,1]
+         j := ::nColFirst - 1
+         x := ::nLeft + ::aMargin[1]
+         DO WHILE ++j <= Len( ::aColumns ) .AND. x < xPos+2
+            x += ::aColumns[j]:nWidth
+            IF xPos >= x-2 .AND. xPos <= x+2
+               ::nColResize := j
+               EXIT
+            ENDIF
+         ENDDO
+      ENDIF
+   ENDIF
+
+   IF ::nColResize > 0 .OR. ::lCaptured
+      Hwg_SetCursor( hCursorSize, ::GetParentBoard():handle )
+   ENDIF
+
    RETURN Nil
 
 METHOD onMouseLeave() CLASS HDrawnBrw
@@ -540,6 +574,12 @@ METHOD onMouseLeave() CLASS HDrawnBrw
    IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide
       ::oTrackH:onMouseLeave()
    ENDIF
+
+   ::lCaptured := .F.
+   ::nColResize := 0
+#ifdef __GTK__
+   Hwg_SetCursor( hCursorCommon, ::GetParentBoard():handle )
+#endif
    RETURN Nil
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
@@ -547,7 +587,7 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
    LOCAL i := 0, j, x, lRefr := .F.
 
    ::SetFocus()
-   IF !Empty( ::oEdit )
+   IF !Empty( ::oEdit ) .OR. ::nRowCount == 0
       RETURN Nil
    ENDIF
 
@@ -558,17 +598,17 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
       RETURN ::oTrackH:onButtonDown( msg, xPos, yPos )
    ENDIF
 
-   DO WHILE ++i <= Len( ::aRows ) .AND. ::aRows[i,1] != Nil
-      IF yPos > ::aRows[i,1] .AND. yPos < ::aRows[i,2]
-         IF i != ::nRowCurr
-            ::oData:Skip( i - ::nRowCurr )
-            ::nRowCurr := i
-            lRefr := .T.
+   IF yPos > ::aRows[1,1]
+      DO WHILE ++i <= Len( ::aRows ) .AND. ::aRows[i,1] != Nil
+         IF yPos > ::aRows[i,1] .AND. yPos < ::aRows[i,2]
+            IF i != ::nRowCurr
+               ::oData:Skip( i - ::nRowCurr )
+               ::nRowCurr := i
+               lRefr := .T.
+            ENDIF
+            EXIT
          ENDIF
-         EXIT
-      ENDIF
-   ENDDO
-   IF ::nRowCurr > 0
+      ENDDO
       IF ::lSeleCell
          j := ::nColFirst - 1
          x := ::nLeft + ::aMargin[1]
@@ -581,20 +621,53 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
             ENDIF
          ENDDO
       ENDIF
-   ENDIF
-   IF lRefr
-      ::Refresh()
+      IF lRefr
+         ::Refresh()
+      ENDIF
+   /*
+   ELSEIF ::nHeightHead > 0
+      j := ::nColFirst - 1
+      x := ::nLeft + ::aMargin[1]
+      DO WHILE ++j <= Len( ::aColumns ) .AND. x < xPos+2
+         x += ::aColumns[j]:nWidth
+         IF xPos >= x-2 .AND. xPos <= x+2
+            ::lCaptured := .T.
+            Hwg_SetCursor( hCursorSize, ::GetParentBoard():handle )
+            EXIT
+         ENDIF
+      ENDDO
+   */
+   ELSEIF ::nColResize > 0
+      ::lCaptured := .T.
+      Hwg_SetCursor( hCursorSize, ::GetParentBoard():handle )
    ENDIF
 
    RETURN Nil
 
 METHOD onButtonUp( xPos, yPos ) CLASS HDrawnBrw
 
+   LOCAL j, x
+
    IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide .AND. xPos >= ::oTrackV:nLeft
       RETURN ::oTrackV:onButtonUp( xPos, yPos )
    ENDIF
    IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide .AND. yPos >= ::oTrackH:nTop
       RETURN ::oTrackH:onButtonUp( xPos, yPos )
+   ENDIF
+
+   IF ::lCaptured
+      j := ::nColFirst - 1
+      x := ::nLeft + ::aMargin[1]
+      DO WHILE ++j < ::nColResize; x += ::aColumns[j]:nWidth; ENDDO
+      ::lCaptured := .F.
+#ifdef __GTK__
+      Hwg_SetCursor( hCursorCommon, ::GetParentBoard():handle )
+#endif
+      ::nColResize := 0
+      IF xPos > x
+         ::aColumns[j]:nWidth := xPos - x
+         ::Refresh()
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -881,4 +954,7 @@ METHOD Count() CLASS HDataDbf
 
 METHOD Block( x ) CLASS HDataDbf
 
+   IF Valtype( x ) == "C" .AND. Fieldpos( x ) == 0
+      RETURN &( "{||" + x + "}" )
+   ENDIF
    RETURN FieldWBlock( Iif( Valtype(x) == "N", FieldName( x ), x ), Select( ::cAlias ) )

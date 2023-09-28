@@ -2033,6 +2033,7 @@ FUNCTION Test
 #define CLR_DGRAY3   0x888888
 #define CLR_BLUE     16711680
 
+MEMVAR oBrw1, oBrw2, arrBrw1
 FUNCTION Test
    LOCAL oDlg, oBoard, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aCorners := { 4,4,4,4 }
@@ -2042,11 +2043,12 @@ FUNCTION Test
    LOCAL aStyleLenta := { HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1 ), ;
       HStyle():New( { CLR_DGRAY3 }, 1,, 1, CLR_WHITE ) }
    LOCAL oSay2, a2 := { "One","Two","Three","Four","Five" }
+   PRIVATE oBrw1, oBrw2, arrBrw1
 
    INIT DIALOG oDlg TITLE "Drawn browses"  ;
-      AT 210, 10  SIZE 440, 220 FONT oFont BACKCOLOR CLR_DGRAY1
+      AT 210, 10  SIZE 440, 230 FONT oFont BACKCOLOR CLR_DGRAY1
 
-   @ 4, 4 BOARD oBoard SIZE 432, 212 ;
+   @ 4, 4 BOARD oBoard SIZE 432, 220 ;
       ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont KEYBOARD
 
    @ 20, 12 DRAWN LENTA oLenta SIZE 160, 28 FONT oFont ;
@@ -2065,8 +2067,7 @@ FUNCTION Test
 
 STATIC FUNCTION FBrw( oBoa, nBrw )
 
-   LOCAL i, j, oTree
-   STATIC oBrw1, oBrw2, arrBrw1
+   LOCAL i, j, d, oTree
 
    IF nBrw == 1
       IF !Empty( oBrw2 )
@@ -2082,9 +2083,9 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw1:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
          oBrw1:nBorder := 1
          oBrw1:oData := HDataArray():New( arrBrw1 )
-         oBrw1:AddColumn( "Name", oBrw1:oData:Block(1), 100,, DT_CENTER, .T. )
-         oBrw1:AddColumn( "Num", oBrw1:oData:Block(2),40, DT_RIGHT, DT_CENTER, .T. )
-         oBrw1:AddColumn( "Quad", oBrw1:oData:Block(3),, DT_RIGHT, DT_CENTER, .T. )
+         oBrw1:AddColumn( "Name", 1, 100,, DT_CENTER, .T. )
+         oBrw1:AddColumn( "Num", 2, 40, DT_RIGHT, DT_CENTER, .T. )
+         oBrw1:AddColumn( "Quad", 3,, DT_RIGHT, DT_CENTER, .T. )
          oBoa:Refresh()
       ELSE
          oBrw1:lHide := .F.
@@ -2095,7 +2096,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
       oBrw1:lHide := .T.
       oBrw1:nHeight := 0
       IF Empty( oBrw2 )
-         DbCreate( "mem:base1", { {"NAME","C",40,0}, {"NUM","N",4,0} },, .T.,"BASE1" )
+         DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, {"DAYW","C",12,0} },, .T.,"BASE1" )
          oTree := HWindow():GetMain():oTree
          FOR i := 1 TO Len( oTree:aItems )
             base1->(dbappend())
@@ -2105,15 +2106,20 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
                base1->(dbappend())
                base1->name := "-- " + oTree:aItems[i]:aItems[j]:Gettext()
                base1->num := i * 100 + j
+               d := Date() + hb_RandomInt( -100, 100 )
+               base1->dat := d
+               base1->dayw := CDoW( d )
             NEXT
          NEXT
          base1->( dbGoTop() )
-         oBrw2 := HDrawnBrw():New( oBoa, 20, 48, 300, 160, CLR_BLACK, 0xdddddd, oBoa:oFont,,, .T.,.T. )
+         oBrw2 := HDrawnBrw():New( oBoa, 20, 48, 380, 160, CLR_BLACK, 0xdddddd, oBoa:oFont,,, .T.,.T. )
          oBrw2:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
          oBrw2:nBorder := 1
          oBrw2:oData := HDataDbf():New( "BASE1" )
-         oBrw2:AddColumn( "Name", oBrw2:oData:Block(1), 180,, DT_CENTER, .T. )
-         oBrw2:AddColumn( "Num", oBrw2:oData:Block(2),40, DT_RIGHT, DT_CENTER, .T. )
+         oBrw2:AddColumn( "Name", 1, 180,, DT_CENTER, .T. )
+         oBrw2:AddColumn( "Num", 2, 50, DT_RIGHT, DT_CENTER, .T. )
+         oBrw2:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
+         oBrw2:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
       ELSE
          oBrw2:lHide := .F.
          oBrw2:nHeight := 160

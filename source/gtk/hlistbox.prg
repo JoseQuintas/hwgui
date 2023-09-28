@@ -49,9 +49,6 @@
 */
 
 
-#ifdef __GTK__
-#include "gtk.ch"
-#endif
 #include "hwgui.ch"
 #include "hbclass.ch"
 #include "common.ch"

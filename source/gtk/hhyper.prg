@@ -6,7 +6,6 @@
  *
 */
 
-#include "gtk.ch"
 #include "hbclass.ch"
 #include "common.ch"
 #include "hwgui.ch"

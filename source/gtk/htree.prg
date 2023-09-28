@@ -8,7 +8,6 @@
  * www - http://www.kresin.ru
 */
 
-#include "gtk.ch"
 #include "hwgui.ch"
 #include "inkey.ch"
 #include "dbstruct.ch"

@@ -15,6 +15,19 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-28 11:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/windows.ch
+    * Added cursor definitions from gtk.ch
+  * source/gtk/hbrowse.prg
+  * source/gtk/hhyper.prg
+  * source/gtk/hlistbox.prg
+  * source/gtk/hpanel.prg
+  * source/gtk/hsplit.prg
+  * source/gtk/htree.prg
+    * #include "gtk.ch" lines removed
+  * source/common/editor/hceditb.prg
+    * Added cursor support for gtk version
+
 2023-09-27 18:46 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcontrol.prg
     ! Typo fixed

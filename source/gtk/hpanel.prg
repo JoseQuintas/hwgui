@@ -9,7 +9,6 @@
 */
 
 #include "hbclass.ch"
-#include "gtk.ch"
 #include "hwgui.ch"
 
 CLASS HPanel INHERIT HControl

@@ -9,7 +9,6 @@
 */
 
 #include "hbclass.ch"
-#include "gtk.ch"
 #include "hwgui.ch"
 
 CLASS HSplitter INHERIT HControl

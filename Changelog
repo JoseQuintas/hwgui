@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-29 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+    * hwg_SelectFolder() added for gtk
+    * source/gtk/hbrowse.prg
+    * source/winapi/hbrowse.prg
+      ! Fixes
+
 2023-09-29 15:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * @ ... DRAWN BROWSE ... command added

@@ -1315,7 +1315,7 @@ METHOD LINEDOWN( lMouse ) CLASS HBrowse
    IF Eval( ::bEof, Self )
       Eval( ::bSkip, Self, - 1 )
       IF ::lAppable .AND. ::lEditable .AND. !lMouse .AND. ;
-            ( ::type != BRW_DATABASE .OR. !Dbinfo(DBI_ISREADONLY) )
+            ( ::type != BRW_DATABASE .OR. !( ::alias ) -> (Dbinfo(DBI_ISREADONLY)) )
          colpos := 1
          DO WHILE colpos <= Len( ::aColumns ) .AND. !::aColumns[colpos]:lEditable
             colpos ++
@@ -1781,7 +1781,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
          RETURN Nil
       ENDIF
       IF ::type == BRW_DATABASE
-         IF Dbinfo(DBI_ISREADONLY)
+         IF ( ::alias ) -> (Dbinfo(DBI_ISREADONLY))
             RETURN Nil
          ENDIF
          ::varbuf := ( ::alias ) -> ( Eval( oColumn:block,,Self,fipos ) )

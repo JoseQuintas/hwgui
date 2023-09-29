@@ -63,7 +63,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA nHeightHead   INIT 0
    DATA nHeightFoot   INIT 0
    DATA aRowPadding   INIT { 4, 2, 4, 2 }
-   DATA aHeadPadding  INIT { 4, 0, 4, 0 }
+   DATA aHeadPadding  INIT { 4, 2, 4, 2 }
    DATA aMargin       INIT { 0,0,0,0 }
 
    DATA tColorSel, bColorSel, oBrushSel, htbColor, httColor, oBrushHtb
@@ -92,7 +92,7 @@ CLASS HDrawnBrw INHERIT HDrawn
 
    DATA lCaptured     INIT .F.
 
-   DATA bEnter, bKeyDown, bLostFocus
+   DATA bEnter, bKeyDown, bLostFocus, bRClick
    DATA oEdit
    DATA lSeleCell     INIT .F.
    DATA lRebuild      INIT .T.
@@ -240,8 +240,6 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
    y1 := ::nTop + ::aMargin[2] + ::nHeightHead
    x2 := ::nLeft + ::nWidth - ::aMargin[3]
    y2 := ::nTop + ::nHeight - ::nHeightFoot - ::aMargin[4] - ::nHeightRow + ::aRowPadding[4]
-   //::nRowCount := Int( ( y2 - y1 ) / ( ::nHeightRow ) )
-   //hwg_FillRect( hDC, x1, y1, x2, y2, ::oBrush:handle )
 
    nRec := ::oData:Recno()
    ::oData:Skip( -(::nRowCurr - 1) )
@@ -276,11 +274,12 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
    ENDIF
 
    IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide
+      nRec := ::oData:RecnoLog()
       ::oTrackV:Value := Iif( nRec == 1, 0, nRec / ::oData:Count() )
       ::oTrackV:Paint( hDC )
    ENDIF
    IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide
-      //::oTrackV:Value := Iif( nRec == 1, 0, nRec / ::oData:Count() )
+      ::oTrackH:Value := Iif( ::nColCurr == 1, 0, ::nColCurr / Len( ::aColumns ) )
       ::oTrackH:Paint( hDC )
    ENDIF
    IF !Empty( ::oEdit )
@@ -309,10 +308,10 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
       oCol := ::aColumns[iCol]
       nw := Iif( iCol < Len( ::aColumns ), oCol:nWidth, x2 - x )
       IF !Empty( oCB := oCol:oPaintCB ) .AND. !Empty( block := oCB:Get( PAINT_LINE_ALL ) )
-         Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol )
+         Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol, nRow )
       ELSE
          IF !Empty( oCB ) .AND. !Empty( block := oCB:Get( PAINT_LINE_BACK ) )
-            Eval( block, oCol, hDC, x, y1, x + oCol:nWidth, y2, iCol )
+            Eval( block, oCol, hDC, x, y1, x + oCol:nWidth, y2, iCol, nRow )
          ELSE
             hwg_FillRect( hDC, x, y1, x + nw, y2, IIf( nRow == ::nRowCurr, ;
                Iif( iCol == :: nColCurr .AND. ::lSeleCell, ::oBrushHtb:handle, ::oBrushSel:handle ), ::oBrush:handle ) )
@@ -326,7 +325,7 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
    ENDDO
    hwg_Settransparentmode( hDC, .F. )
 
-   ::nColCount := i
+   ::nColCount := Iif( i > 1 .AND. x > x2+2, i - 1, i )
    ::aRows[nRow,2] := y1 + ::nHeightRow
    RETURN ::aRows[nRow,2]
 
@@ -455,11 +454,13 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
 
    IF !Empty( ::oEdit )
       IF msg == WM_KEYDOWN .AND. wParam == VK_ESCAPE
+         ::oEdit:onMouseLeave()
          ::oEdit:End()
          ::oEdit := Nil
          ::Refresh()
       ELSEIF msg == WM_KEYDOWN .AND. wParam == VK_RETURN
          Eval( ::aColumns[::nColCurr]:block, ::oEdit:Value, ::oData )
+         ::oEdit:onMouseLeave()
          ::oEdit:End()
          ::oEdit := Nil
          ::Refresh()
@@ -538,6 +539,16 @@ METHOD onMouseMove( xPos, yPos ) CLASS HDrawnBrw
 
    LOCAL j, x
 
+   IF !Empty( ::oEdit )
+      IF xPos >= ::oEdit:nLeft .AND. xPos < ::oEdit:nLeft+::oEdit:nWidth .AND. ;
+         yPos >= ::oEdit:nTop .AND. yPos <= ::oEdit:nTop+::oEdit:nHeight
+         RETURN ::oEdit:onMouseMove( xPos, yPos )
+      ELSEIF ::oEdit:nMouseOn > 0
+         ::oEdit:onMouseLeave()
+      ENDIF
+      RETURN Nil
+   ENDIF
+
    IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide .AND. xPos >= ::oTrackV:nLeft
       ::oTrackV:onMouseMove( xPos, yPos )
    ENDIF
@@ -574,6 +585,9 @@ METHOD onMouseLeave() CLASS HDrawnBrw
    IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide
       ::oTrackH:onMouseLeave()
    ENDIF
+   IF !Empty( ::oEdit ) .AND. ::oEdit:nMouseOn > 0
+      ::oEdit:onMouseLeave()
+   ENDIF
 
    ::lCaptured := .F.
    ::nColResize := 0
@@ -584,10 +598,17 @@ METHOD onMouseLeave() CLASS HDrawnBrw
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
 
-   LOCAL i := 0, j, x, lRefr := .F.
+   LOCAL i := 0, j, x, lRefr := .F., nRow := -1, nCol := -1
 
    ::SetFocus()
-   IF !Empty( ::oEdit ) .OR. ::nRowCount == 0
+   IF !Empty( ::oEdit )
+      IF xPos >= ::oEdit:nLeft .AND. xPos < ::oEdit:nLeft+::oEdit:nWidth .AND. ;
+         yPos >= ::oEdit:nTop .AND. yPos <= ::oEdit:nTop+::oEdit:nHeight
+         ::oEdit:onButtonDown( msg, xPos, yPos )
+         ::SetFocus()
+      ENDIF
+      RETURN Nil
+   ELSEIF ::nRowCount == 0
       RETURN Nil
    ENDIF
 
@@ -601,45 +622,49 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
    IF yPos > ::aRows[1,1]
       DO WHILE ++i <= Len( ::aRows ) .AND. ::aRows[i,1] != Nil
          IF yPos > ::aRows[i,1] .AND. yPos < ::aRows[i,2]
-            IF i != ::nRowCurr
-               ::oData:Skip( i - ::nRowCurr )
-               ::nRowCurr := i
-               lRefr := .T.
-            ENDIF
+            nRow := i
             EXIT
          ENDIF
       ENDDO
-      IF ::lSeleCell
-         j := ::nColFirst - 1
-         x := ::nLeft + ::aMargin[1]
-         DO WHILE ++j <= Len( ::aColumns ) .AND. x < xPos
-            x += ::aColumns[j]:nWidth
-            IF x > xPos
-               ::nColCurr := j
-               lRefr := .T.
-               EXIT
-            ENDIF
-         ENDDO
+   ELSE
+      nRow := 0
+   ENDIF
+
+   j := ::nColFirst - 1
+   x := ::nLeft + ::aMargin[1]
+   DO WHILE ++j <= Len( ::aColumns ) .AND. x < xPos
+      x += ::aColumns[j]:nWidth
+      IF x > xPos
+         nCol := j
+          EXIT
       ENDIF
-      IF lRefr
-         ::Refresh()
-      ENDIF
-   /*
-   ELSEIF ::nHeightHead > 0
-      j := ::nColFirst - 1
-      x := ::nLeft + ::aMargin[1]
-      DO WHILE ++j <= Len( ::aColumns ) .AND. x < xPos+2
-         x += ::aColumns[j]:nWidth
-         IF xPos >= x-2 .AND. xPos <= x+2
+   ENDDO
+
+   IF msg == WM_LBUTTONDOWN
+      IF nRow > 0
+         IF nRow != ::nRowCurr
+            ::oData:Skip( nRow - ::nRowCurr )
+            ::nRowCurr := nRow
+            lRefr := .T.
+         ENDIF
+         IF nCol > 0 .AND. nCol != ::nColCurr .AND. ::lSeleCell
+            ::nColCurr := nCol
+            lRefr := .T.
+         ENDIF
+      ELSEIF nRow == 0
+         IF ::nColResize > 0
             ::lCaptured := .T.
             Hwg_SetCursor( hCursorSize, ::GetParentBoard():handle )
-            EXIT
+         ELSEIF nCol > 0 .AND. !Empty( ::aColumns[nCol]:bHeadClick )
+            Eval( ::aColumns[nCol]:bHeadClick, Self, nCol, xPos, yPos )
          ENDIF
-      ENDDO
-   */
-   ELSEIF ::nColResize > 0
-      ::lCaptured := .T.
-      Hwg_SetCursor( hCursorSize, ::GetParentBoard():handle )
+      ENDIF
+   ELSEIF !Empty( ::bRClick )
+      Eval( ::bRClick, Self, nCol, nRow )
+   ENDIF
+
+   IF lRefr
+      ::Refresh()
    ENDIF
 
    RETURN Nil
@@ -700,16 +725,19 @@ METHOD SetFocus() CLASS HDrawnBrw
 
 METHOD Skip( n ) CLASS HDrawnBrw
 
-   LOCAL nRecOld := ::oData:Recno(), nRec
+   LOCAL nRecOld := ::oData:RecnoLog(), l := .F.
 
    ::oData:Skip( n )
    IF n < 0 .AND. ::oData:Bof()
       ::oData:Top()
+      l := .T.
    ELSEIF n > 0 .AND. ::oData:Eof()
       ::oData:Bottom()
+      l := .T.
    ENDIF
-   nRec := ::oData:Recno()
-   n := nRec - nRecOld
+   IF l
+      n := ::oData:RecnoLog() - nRecOld
+   ENDIF
    IF n < 0
       n := Abs( n )
       IF n < ::nRowCurr
@@ -736,7 +764,7 @@ METHOD ShowTrackV( lShow ) CLASS HDrawnBrw
 
    LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, ::nTrackWidth )
    LOCAL bOnTrack := {|o,n|
-      LOCAL nRecOld := o:oParent:oData:Recno()
+      LOCAL nRecOld := o:oParent:oData:RecnoLog()
       LOCAL nRecNew := Round( o:oParent:oData:Count() * n + 1, 0 )
       IF nRecNew != nRecOld
          o:oParent:Skip( nRecNew - nRecOld )
@@ -774,7 +802,7 @@ METHOD ShowTrackH( lShow ) CLASS HDrawnBrw
    LOCAL nTrackWidth := Iif( Empty(::nTrackWidth), DEF_HTRACK_WIDTH, ::nTrackWidth )
    LOCAL bOnTrack := {|o,n|
       LOCAL nColOld := o:oParent:nColCurr
-      LOCAL nColNew := Round( o:oParent:nColCount * n, 0 )
+      LOCAL nColNew := Round( Len( o:oParent:aColumns ) * n, 0 )
       LOCAL i
       IF nColNew > nColOld
          FOR i := 1 TO nColNew - nColOld

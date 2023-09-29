@@ -2033,7 +2033,7 @@ FUNCTION Test
 #define CLR_DGRAY3   0x888888
 #define CLR_BLUE     16711680
 
-MEMVAR oBrw1, oBrw2, arrBrw1
+MEMVAR oBrw1, oBrw2, oBrw3, arrBrw1
 FUNCTION Test
    LOCAL oDlg, oBoard, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aCorners := { 4,4,4,4 }
@@ -2043,16 +2043,16 @@ FUNCTION Test
    LOCAL aStyleLenta := { HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1 ), ;
       HStyle():New( { CLR_DGRAY3 }, 1,, 1, CLR_WHITE ) }
    LOCAL oSay2, a2 := { "One","Two","Three","Four","Five" }
-   PRIVATE oBrw1, oBrw2, arrBrw1
+   PRIVATE oBrw1, oBrw2, oBrw3, arrBrw1
 
    INIT DIALOG oDlg TITLE "Drawn browses"  ;
-      AT 210, 10  SIZE 440, 230 FONT oFont BACKCOLOR CLR_DGRAY1
+      AT 210, 10  SIZE 440, 300 FONT oFont BACKCOLOR CLR_DGRAY1
 
-   @ 4, 4 BOARD oBoard SIZE 432, 220 ;
+   @ 4, 4 BOARD oBoard SIZE 432, 290 ;
       ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont KEYBOARD
 
-   @ 20, 12 DRAWN LENTA oLenta SIZE 160, 28 FONT oFont ;
-      ITEMS { "Array","Dbf" } ITEMSIZE 60 HSTYLES aStyleLenta ON CLICK {|o|FBrw(oBoard,o:Value)}
+   @ 20, 12 DRAWN LENTA oLenta SIZE 180, 28 FONT oFont ;
+      ITEMS { "Array","Dbf - 1","Dbf - 2" } ITEMSIZE 60 HSTYLES aStyleLenta ON CLICK {|o|FBrw(oBoard,o:Value)}
    oLenta:Value := 1
    FBrw( oBoard, 1 )
 
@@ -2067,65 +2067,118 @@ FUNCTION Test
 
 STATIC FUNCTION FBrw( oBoa, nBrw )
 
-   LOCAL i, j, d, oTree
+   LOCAL i
 
    IF nBrw == 1
+      // Browse an array
       IF !Empty( oBrw2 )
          oBrw2:lHide := .T.
          oBrw2:nHeight := 0
+      ENDIF
+      IF !Empty( oBrw3 )
+         oBrw3:lHide := .T.
+         oBrw3:nHeight := 0
       ENDIF
       IF Empty( oBrw1 )
          arrBrw1 := Array( 12 )
          FOR i := 1 to 12
             arrBrw1[i] := { CMonth( Stod("2023"+PAdl(Ltrim(Str(i)),2,'0')+"01") ), i, i*i }
          NEXT
-         oBrw1 := HDrawnBrw():New( oBoa, 20, 48, 300, 160, CLR_BLACK, 0xdddddd, oBoa:oFont,,, .T.,.T. )
+         @ 20, 48 DRAWN BROWSE oBrw1 SIZE 300, 230 COLOR CLR_BLACK BACKCOLOR 0xdddddd FONT oBoa:oFont VSCROLL
          oBrw1:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
          oBrw1:nBorder := 1
+         oBrw1:aHeadPadding[2] := 4
+         oBrw1:aHeadPadding[4] := 8
          oBrw1:oData := HDataArray():New( arrBrw1 )
+         // You may pass an array column number instead of a codeblock
          oBrw1:AddColumn( "Name", 1, 100,, DT_CENTER, .T. )
          oBrw1:AddColumn( "Num", 2, 40, DT_RIGHT, DT_CENTER, .T. )
          oBrw1:AddColumn( "Quad", 3,, DT_RIGHT, DT_CENTER, .T. )
          oBoa:Refresh()
       ELSE
          oBrw1:lHide := .F.
-         oBrw1:nHeight := 160
+         oBrw1:nHeight := 230
       ENDIF
-      oBoa:oParent:Refresh()
    ELSEIF nBrw == 2
+      // Browse a database
       oBrw1:lHide := .T.
       oBrw1:nHeight := 0
+      IF !Empty( oBrw3 )
+         oBrw3:lHide := .T.
+         oBrw3:nHeight := 0
+      ENDIF
       IF Empty( oBrw2 )
-         DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, {"DAYW","C",12,0} },, .T.,"BASE1" )
-         oTree := HWindow():GetMain():oTree
-         FOR i := 1 TO Len( oTree:aItems )
-            base1->(dbappend())
-            base1->name := oTree:aItems[i]:Gettext()
-            base1->num := i * 100
-            FOR j := 1 TO Len( oTree:aItems[i]:aItems )
-               base1->(dbappend())
-               base1->name := "-- " + oTree:aItems[i]:aItems[j]:Gettext()
-               base1->num := i * 100 + j
-               d := Date() + hb_RandomInt( -100, 100 )
-               base1->dat := d
-               base1->dayw := CDoW( d )
-            NEXT
-         NEXT
-         base1->( dbGoTop() )
-         oBrw2 := HDrawnBrw():New( oBoa, 20, 48, 380, 160, CLR_BLACK, 0xdddddd, oBoa:oFont,,, .T.,.T. )
+         IF Select( "BASE1" ) == 0
+            FCreateDB()
+         ENDIF
+         @ 20, 48 DRAWN BROWSE oBrw2 SIZE 380, 230 COLOR CLR_BLACK BACKCOLOR 0xdddddd FONT oBoa:oFont VSCROLL HSCROLL
          oBrw2:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
          oBrw2:nBorder := 1
          oBrw2:oData := HDataDbf():New( "BASE1" )
+         // You may pass a database column number or a field name instead of a codeblock
          oBrw2:AddColumn( "Name", 1, 180,, DT_CENTER, .T. )
-         oBrw2:AddColumn( "Num", 2, 50, DT_RIGHT, DT_CENTER, .T. )
+         oBrw2:AddColumn( "Num", "NUM", 50, DT_RIGHT, DT_CENTER, .T. )
          oBrw2:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
          oBrw2:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
       ELSE
          oBrw2:lHide := .F.
-         oBrw2:nHeight := 160
+         oBrw2:nHeight := 230
       ENDIF
-      oBoa:oParent:Refresh()
+      base1->( ordSetFocus( 0 ) )
+      base1->( dbGoTop() )
+
+   ELSEIF nBrw == 3
+      // Browse an indexed database
+      oBrw1:lHide := .T.
+      oBrw1:nHeight := 0
+      IF !Empty( oBrw2 )
+         oBrw2:lHide := .T.
+         oBrw2:nHeight := 0
+      ENDIF
+      IF Empty( oBrw3 )
+         IF Select( "BASE1" ) == 0
+            FCreateDB()
+         ENDIF
+         @ 20, 48 DRAWN BROWSE oBrw3 SIZE 380, 230 COLOR CLR_BLACK BACKCOLOR 0xdddddd FONT oBoa:oFont VSCROLL HSCROLL
+         oBrw3:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
+         oBrw3:nBorder := 1
+         oBrw3:oData := HDataDbf():New( "BASE1" )
+         oBrw3:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
+         // You may pass a text expression instead of a codeblock
+         oBrw3:AddColumn( "Name", "base1->(Str(NUM,3)+' '+NAME)", 180,, DT_CENTER, .T. )
+         oBrw3:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
+      ELSE
+         oBrw3:lHide := .F.
+         oBrw3:nHeight := 230
+      ENDIF
+      base1->( ordSetFocus( "DAT" ) )
+      base1->( dbGoTop() )
    ENDIF
+
+   oBoa:oParent:Refresh()
+
+   RETURN Nil
+
+STATIC FUNCTION FCreateDB()
+
+   LOCAL i, j, d, oTree
+
+   DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, {"DAYW","C",12,0} },"DBFCDX", .T.,"BASE1" )
+   oTree := HWindow():GetMain():oTree
+   FOR i := 1 TO Len( oTree:aItems )
+      base1->(dbappend())
+      base1->name := oTree:aItems[i]:Gettext()
+      base1->num := i * 100
+      FOR j := 1 TO Len( oTree:aItems[i]:aItems )
+         base1->(dbappend())
+         base1->name := "-- " + oTree:aItems[i]:aItems[j]:Gettext()
+         base1->num := i * 100 + j
+         d := Date() + hb_RandomInt( -100, 100 )
+         base1->dat := d
+         base1->dayw := CDoW( d )
+      NEXT
+   NEXT
+   INDEX ON Dtos(DAT) TAG DAT
 
    RETURN Nil
 ]]>

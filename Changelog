@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-09-29 15:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * @ ... DRAWN BROWSE ... command added
+  * source/cross/hdrawnbrw.prg
+    * Fixes and enhancements
+  * utils/tutorial/tutor.prg
+  * utils/tutorial/tutor_eng.xml
+    * "Drawn browses" module updated
+
 2023-09-28 16:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/windows.ch
   * source/common/editor/hceditb.prg

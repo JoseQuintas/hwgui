@@ -2027,7 +2027,7 @@ Added by Marcos Antonio Gambeta
             [ DISPLAYCOUNT <nRows>]    ;
           => ;
     [<oDrawn> := ] HDrawnCombo():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
-        <aStyles>,<oFont>,<aItems>,<xValue>,<.lText.>,<bDraw>,<bDraw>,<bChange>,<bChg>,<nRows> );
+        <aStyles>,<oFont>,<aItems>,<xValue>,<.lText.>,<bDraw>,<bChange>,<bChg>,<nRows> );
     [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
 
 #xcommand @ <x>,<y> DRAWN UPDOWN [ <oDrawn> ] ;
@@ -2045,6 +2045,21 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oDrawn> := ] HDrawnUpDown():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
         <aStyles>,<oFont>,<xInit>,<nLower>,<nUpper>,<bDraw>,<bChg>,<arr> );
+    [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
+
+#xcommand @ <x>,<y> DRAWN BROWSE [ <oDrawn> ] ;
+            [ OF <oWnd> ]              ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGESTATE <bChg> ]  ;
+            [ FONT <oFont> ]           ;
+            [ <lVscroll: VSCROLL> ]    ;
+            [ <lHscroll: HSCROLL> ]    ;
+          => ;
+    [<oDrawn> := ] HDrawnBrw():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <oFont>,<bDraw>,<bChg>,<.lVscroll.>,<.lHscroll.> );
     [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
 
 /* ================= EOF of guilib.ch ==================== */

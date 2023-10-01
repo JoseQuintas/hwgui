@@ -123,6 +123,7 @@ typedef struct
    int     iCaretHeight;
    int          nBorder;
    long      lBorderClr;
+   int           bCaret;
 
 } TEDIT;
 
@@ -452,7 +453,7 @@ int ted_LineOut( TEDIT * pted, int x1, int ypos, char *szText, int iPrinted, int
             (gdouble)(iRight-x1), (gdouble)iHeight );
       cairo_fill( pted->hDCScr->cr );
    }
-   if( pted->iyCaretPos - pted->nBorder == ypos )
+   if( pted->bCaret && pted->iyCaretPos - pted->nBorder == ypos )
    {
       /* Draw the caret */
       if( !iPrinted )
@@ -694,10 +695,21 @@ HB_FUNC( HCED_FILLRECT )
 
 HB_FUNC( HCED_SHOWCARET )
 {
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+
+   pted->bCaret = 1;
+   gtk_widget_queue_draw_area( pted->area, pted->ixCaretPos-1, pted->iyCaretPos,
+        pted->ixCaretPos+1, pted->iyCaretPos+pted->iCaretHeight );
+
 }
 
 HB_FUNC( HCED_HIDECARET )
 {
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+
+   pted->bCaret = 0;
+   gtk_widget_queue_draw_area( pted->area, pted->ixCaretPos-1, pted->iyCaretPos,
+        pted->ixCaretPos+1, pted->iyCaretPos+pted->iCaretHeight );
 }
 
 HB_FUNC( HCED_INITCARET )
@@ -706,6 +718,11 @@ HB_FUNC( HCED_INITCARET )
 
 HB_FUNC( HCED_KILLCARET )
 {
+   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
+
+   pted->bCaret = 0;
+   gtk_widget_queue_draw_area( pted->area, pted->ixCaretPos-1, pted->iyCaretPos,
+        pted->ixCaretPos+1, pted->iyCaretPos+pted->iCaretHeight );
 }
 
 HB_FUNC( HCED_GETXCARETPOS )

@@ -120,6 +120,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD onKillFocus()
    METHOD SetFocus()
 
+   METHOD Top()
    METHOD Skip( n )
    METHOD Selected( n )
    METHOD ShowTrackV( lShow )
@@ -482,9 +483,7 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
          ::Skip( -1 )
 
       ELSEIF wParam == VK_HOME
-         ::oData:Top()
-         ::nRowCurr := 1
-         ::Refresh()
+         ::Top()
 
       ELSEIF wParam == VK_END
          ::oData:Bottom()
@@ -720,6 +719,14 @@ METHOD SetFocus() CLASS HDrawnBrw
 
    hwg_SetFocus( oBoard:handle )
    oBoard:oInFocus := Self
+
+   RETURN Nil
+
+METHOD Top() CLASS HDrawnBrw
+
+   ::oData:Top()
+   ::nRowCurr := 1
+   ::Refresh()
 
    RETURN Nil
 

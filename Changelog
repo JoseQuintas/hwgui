@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-01 19:51 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawnbrw.prg
+    * :Top() method added
+  * source\common\editor\hcedit_l.c
+    * Caret show/hide implemented
+  * utils/tutorial/tutor_eng.xml
+    * "Drawn browses" module updated
+
 2023-09-29 15:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
     * hwg_SelectFolder() added for gtk

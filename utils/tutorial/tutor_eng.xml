@@ -2099,6 +2099,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw1:lHide := .F.
          oBrw1:nHeight := 230
       ENDIF
+      oBrw1:Setfocus()
    ELSEIF nBrw == 2
       // Browse a database
       oBrw1:lHide := .T.
@@ -2124,8 +2125,9 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw2:lHide := .F.
          oBrw2:nHeight := 230
       ENDIF
+      oBrw2:Setfocus()
       base1->( ordSetFocus( 0 ) )
-      base1->( dbGoTop() )
+      oBrw2:Top()
 
    ELSEIF nBrw == 3
       // Browse an indexed database
@@ -2151,8 +2153,9 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw3:lHide := .F.
          oBrw3:nHeight := 230
       ENDIF
+      oBrw3:Setfocus()
       base1->( ordSetFocus( "DAT" ) )
-      base1->( dbGoTop() )
+      oBrw3:Top()
    ENDIF
 
    oBoa:oParent:Refresh()

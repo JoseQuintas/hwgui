@@ -278,9 +278,9 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
    ::oEdit:nTextStyle := DT_RIGHT
 
    nHeight := Int( nHeight / 2 )
-   ::oBtnUp := HDrawn():New( Self, ::nLeft+::nWidth-::nHeight, ::nTop, nw, nHeight, ;
+   ::oBtnUp := HDrawn():New( Self, ::nLeft+::nWidth-nw, ::nTop, nw, nHeight, ;
       ::tcolor, ::bColor, aStyles, "", ::oFont )
-   ::oBtnDown := HDrawn():New( Self, ::nLeft+::nWidth-::nHeight, ::nTop+nHeight-1, nw, nHeight, ;
+   ::oBtnDown := HDrawn():New( Self, ::nLeft+::nWidth-nw, ::nTop+nHeight-1, nw, nHeight, ;
       ::tcolor, ::bColor, aStyles, "", ::oFont )
 
    ::aDrawn := {}

@@ -159,7 +159,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       ENDIF
    ELSEIF msg == WM_LBUTTONDOWN .OR. msg == WM_RBUTTONDOWN
       ::lMouse := .T.
-      IF ::cType = "C"
+      IF ::cType != "N"
          ::lFirst := .F.
       ENDIF
    ELSEIF msg == WM_DESTROY

@@ -423,7 +423,7 @@ METHOD AddColumn( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable ) CLASS
 METHOD Edit() CLASS HDrawnBrw
 
    LOCAL lRes, oCol, i
-   LOCAL x1, y1, nh, xVal
+   LOCAL x1, y1, nw, nh, xVal
 
    oCol := ::aColumns[::nColCurr]
    IF ::bEnter != Nil .AND. ;
@@ -441,15 +441,22 @@ METHOD Edit() CLASS HDrawnBrw
    DO WHILE ++i < ::nColCurr
       x1 += ::aColumns[i]:nWidth
    ENDDO
-   ::oEdit := HDrawnEdit():New( Self, x1, y1, oCol:nWidth, nh, CLR_BLACK, CLR_WHITE, ::oFont, xVal )
-   ::oEdit:nBorder := 1
+   nw := Iif( ::nColCurr == Len( ::aColumns ), ::nLeft + ::nWidth - ::aMargin[3] - x1, oCol:nWidth )
+   IF Empty( oCol:aList )
+      ::oEdit := HDrawnEdit():New( Self, x1-1, y1-2, nw+2, nh+4, CLR_BLACK, CLR_WHITE, ::oFont, xVal, oCol:cPicture )
+      ::oEdit:nBorder := 2
+   ELSE
+      ::oEdit := HDrawnUpdown():New( Self, x1-1, y1-2, nw+2, nh+4, CLR_BLACK, CLR_WHITE,, ;
+               ::oFont, hb_Ascan( oCol:aList,Trim(xVal),,,.T. ),,,,, oCol:aList )
+      //::oEdit:oEdit:nBorder := 2
+   ENDIF
    ::Refresh()
 
    RETURN Nil
 
 METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
 
-   LOCAL lRes
+   LOCAL lRes, o, x
 
    wParam := hwg_PtrToUlong( wParam )
 
@@ -460,11 +467,15 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
          ::oEdit := Nil
          ::Refresh()
       ELSEIF msg == WM_KEYDOWN .AND. wParam == VK_RETURN
-         Eval( ::aColumns[::nColCurr]:block, ::oEdit:Value, ::oData )
-         ::oEdit:onMouseLeave()
-         ::oEdit:End()
-         ::oEdit := Nil
-         ::Refresh()
+         o := ::aColumns[::nColCurr]
+         x := Iif( !Empty( o:aList ), o:aList[::oEdit:Value], ::oEdit:Value )
+         IF Empty( o:bValid ) .OR. Eval( o:bValid, x )
+            Eval( o:block, x, ::oData )
+            ::oEdit:onMouseLeave()
+            ::oEdit:End()
+            ::oEdit := Nil
+            ::Refresh()
+         ENDIF
       ELSEIF wParam != VK_TAB
          ::oEdit:onKey( msg, wParam, lParam )
       ENDIF
@@ -856,7 +867,11 @@ CLASS HBrwCol INHERIT HObject
    DATA nAlignHead, nAlignRow
    DATA tcolor, bcolor, brush
    DATA oFont
+
    DATA lEditable  INIT .F.      // Is the column editable
+   DATA cPicture, bValid
+   DATA aList                    // Array of possible values for a column
+   DATA nEditType                //
 
    DATA oPaintCB                 // HPaintCB object
 
@@ -956,6 +971,8 @@ METHOD Block( x ) CLASS HDataArray
 
    RETURN {|value,o| iif( value == Nil, o:aData[o:nCurrent], o:aData[o:nCurrent] := value ) }
 
+#include "dbinfo.ch"
+
 CLASS HDataDbf INHERIT HBrwData
 
    DATA cAlias
@@ -989,7 +1006,17 @@ METHOD Count() CLASS HDataDbf
 
 METHOD Block( x ) CLASS HDataDbf
 
-   IF Valtype( x ) == "C" .AND. Fieldpos( x ) == 0
+   IF Valtype( x ) == "C" .AND. (::cAlias)->( Fieldpos( x ) ) == 0
       RETURN &( "{||" + x + "}" )
    ENDIF
-   RETURN FieldWBlock( Iif( Valtype(x) == "N", FieldName( x ), x ), Select( ::cAlias ) )
+
+   x := Iif( Valtype(x) == "N", (::cAlias)->( FieldName( x ) ), x )
+
+   IF (::cAlias)->( Dbinfo(DBI_ISREADONLY) )
+      RETURN &( "{||(" + ::cAlias + ")->" + x + "}" )
+   ENDIF
+
+   RETURN &( "{|xVal|Iif(xVal==Nil,"+ ::cAlias + "->" + x + ;
+      "," + Iif( (::cAlias)->( Dbinfo(DBI_SHARED) ), ;
+      ""+::cAlias+"->(Rlock(),field->" + x + ":=xVal,dbUnlock())", ;
+      ::cAlias+"->" + x + ":=xVal" ) + ")}" )

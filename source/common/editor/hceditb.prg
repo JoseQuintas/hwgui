@@ -503,12 +503,20 @@ METHOD onMouseLeave() CLASS HDrawnEdit
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
 
+   LOCAL nPos
+
    ::Super:onButtonDown( msg, xPos, yPos )
 
    ::SetFocus()
    hced_ShowCaret( ::hEdit )
    Hwg_SetCursor( hCursorEdi, ::GetParentBoard():handle )
    ::SetCaretPos( SETC_COORS, xPos, yPos )
+   IF !Empty( ::oPicture ) .AND. !::oPicture:IsEditable( ::nPosC )
+      IF ( nPos := ::oPicture:KeyRight( ::nPosC ) ) >= 0
+         ::nPosC := nPos - ::nPosF + 1
+         ::SetCaretPos( SETC_XY )
+      ENDIF
+   ENDIF
 
    IF msg == WM_RBUTTONDOWN .AND. !Empty( ::bRClick )
       Eval( ::bRClick, Self )

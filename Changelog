@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-02 16:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawnbrw.prg
+  * source/cross/hdrawncomb.prg
+    * Fixes and enhancements
+  * source/gtk/hedit.prg
+  * source/winapi/hedit.prg
+    ! Small fix
+  * utils/tutorial/tutor_eng.xml
+    * "Drawn browses" module updated
+
 2023-10-01 19:51 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawnbrw.prg
     * :Top() method added

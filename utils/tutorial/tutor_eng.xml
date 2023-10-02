@@ -2121,6 +2121,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw2:AddColumn( "Num", "NUM", 50, DT_RIGHT, DT_CENTER, .T. )
          oBrw2:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
          oBrw2:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
+         oBrw2:aColumns[4]:aList := { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" }
       ELSE
          oBrw2:lHide := .F.
          oBrw2:nHeight := 230
@@ -2166,7 +2167,9 @@ STATIC FUNCTION FCreateDB()
 
    LOCAL i, j, d, oTree
 
-   DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, {"DAYW","C",12,0} },"DBFCDX", .T.,"BASE1" )
+   DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, {"DAYW","C",12,0} },"DBFCDX", .F.,"BASE1" )
+   set exclusive off
+   use base1 via "DBFCDX"
    oTree := HWindow():GetMain():oTree
    FOR i := 1 TO Len( oTree:aItems )
       base1->(dbappend())

@@ -693,23 +693,21 @@ HB_FUNC( HCED_FILLRECT )
    }
 }
 
-HB_FUNC( HCED_SHOWCARET )
+void ted_ShowCaret( TEDIT *pted, int bShow )
 {
-   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-
-   pted->bCaret = 1;
+   pted->bCaret = bShow;
    gtk_widget_queue_draw_area( pted->area, pted->ixCaretPos-1, pted->iyCaretPos,
         pted->ixCaretPos+1, pted->iyCaretPos+pted->iCaretHeight );
+}
 
+HB_FUNC( HCED_SHOWCARET )
+{
+   ted_ShowCaret( ( TEDIT * ) HB_PARHANDLE( 1 ), 1 );
 }
 
 HB_FUNC( HCED_HIDECARET )
 {
-   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-
-   pted->bCaret = 0;
-   gtk_widget_queue_draw_area( pted->area, pted->ixCaretPos-1, pted->iyCaretPos,
-        pted->ixCaretPos+1, pted->iyCaretPos+pted->iCaretHeight );
+   ted_ShowCaret( ( TEDIT * ) HB_PARHANDLE( 1 ), 0 );
 }
 
 HB_FUNC( HCED_INITCARET )
@@ -718,11 +716,7 @@ HB_FUNC( HCED_INITCARET )
 
 HB_FUNC( HCED_KILLCARET )
 {
-   TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
-
-   pted->bCaret = 0;
-   gtk_widget_queue_draw_area( pted->area, pted->ixCaretPos-1, pted->iyCaretPos,
-        pted->ixCaretPos+1, pted->iyCaretPos+pted->iCaretHeight );
+   ted_ShowCaret( ( TEDIT * ) HB_PARHANDLE( 1 ), 0 );
 }
 
 HB_FUNC( HCED_GETXCARETPOS )

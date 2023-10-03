@@ -98,7 +98,6 @@ METHOD New( oWndParent, nId, aStyles, nLeft, nTop, nWidth, nHeight,   ;
       ENDIF
       IF ::oBitmap != Nil .AND. lTr != Nil .AND. lTr
          ::lTransp := .T.
-         //hwg_alpha2pixbuf( ::oBitmap:handle, ::trColor )
       ENDIF
    ENDIF
    ::xb      := xb
@@ -231,12 +230,6 @@ METHOD Paint() CLASS HOwnButton
       ELSE
          nwidthb := ::widthb
       ENDIF
-      // hwg_MsgIsNIL(aCoors[1],"aCoors[1]")
-      // hwg_MsgIsNIL(aCoors[3],"aCoors[3]")
-      // hwg_MsgIsNIL(::widthb,"::widthb")    && passed NIL
-
-      // hwg_WriteLog("aCoors[3]=" + STR(aCoors[3]) + CHR(10) + "aCoors[1]=" + STR(aCoors[1]) )
-      // hwg_WriteLog("::widthb=" + STR(::widthb) )
 
       x1 := Iif( ::xb != Nil .AND. ::xb != 0, ::xb, ;
          Round( ( aCoors[3] - aCoors[1] - nwidthb ) / 2, 0 ) )

@@ -1588,13 +1588,12 @@ HB_FUNC( HWG_CREATEBOARD )
    }
    else
       gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
-         GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_SCROLL_MASK );
+         GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK );
 
    set_event( ( gpointer ) hCtrl, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) hCtrl, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) hCtrl, "motion_notify_event", 0, 0, 0 );
    set_event( ( gpointer ) hCtrl, "leave_notify_event", 0, 0, 0 );
-   set_event( ( gpointer ) hCtrl, "scroll_event", 0, 0, 0 );
 
    all_signal_connect( ( gpointer ) hCtrl );
    HB_RETHANDLE( hCtrl );

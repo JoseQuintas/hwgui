@@ -431,6 +431,12 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnEdit
       ELSEIF wParam == VK_TAB
          ::Skip( Iif( hwg_checkBit( nctrl,FBITSHIFT ), -1, 1 ) )
 
+      ELSEIF wParam == VK_DOWN
+         ::Skip( 1 )
+
+      ELSEIF wParam == VK_UP
+         ::Skip( -1 )
+
       ELSEIF wParam == VK_DELETE   // Delete
          ::putChar( 7 )   // for to not interfere with '.'
 
@@ -508,7 +514,6 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
    ::Super:onButtonDown( msg, xPos, yPos )
 
    ::SetFocus()
-   hced_ShowCaret( ::hEdit )
    Hwg_SetCursor( hCursorEdi, ::GetParentBoard():handle )
    ::SetCaretPos( SETC_COORS, xPos, yPos )
    IF !Empty( ::oPicture ) .AND. !::oPicture:IsEditable( ::nPosC )
@@ -537,6 +542,7 @@ METHOD SetFocus() CLASS HDrawnEdit
 
    hced_InitCaret( ::hEdit )
    ::SetCaretPos( SETC_XY )
+   hced_ShowCaret( ::hEdit )
 
    RETURN Nil
 
@@ -561,6 +567,7 @@ METHOD Skip( n ) CLASS HDrawnEdit
       IF !l .AND. oBoard:aDrawn[i] == Self
          l := .T.
       ELSEIF l .AND. __objHasMsg( oBoard:aDrawn[i], "OPICTURE" )
+         ::onKillFocus()
          oBoard:aDrawn[i]:SetFocus()
          EXIT
       ENDIF

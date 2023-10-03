@@ -309,7 +309,6 @@ METHOD DrawItems( hDC ) CLASS HOwnButton
          Round( ( ::nHeight - ::heightb ) / 2, 0 ) )
       IF ::lEnabled
          IF ::oBitmap:ClassName() == "HICON"
-            // hwg_Drawicon( hDC, ::oBitmap:handle, x1, y1 )
             hwg_DrawiconEx( hDC, ::oBitmap:handle, x1, y1, ::widthb, ::heightb )
          ELSE
             IF ::lTransp
@@ -354,7 +353,6 @@ METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
    IF ::state != OBTN_INIT
       xPos := hwg_Loword( lParam )
       yPos := hwg_Hiword( lParam )
-      //hwg_writelog( "mm-2 "+str(xpos)+"/"+str(ypos) )
       IF xPos > ::nWidth .OR. yPos > ::nHeight
          hwg_Releasecapture()
          IF !Empty( ::oTimer )
@@ -368,12 +366,10 @@ METHOD MouseMove( wParam, lParam )  CLASS HOwnButton
       IF res .AND. ! ::lPress
          ::state := OBTN_NORMAL
          hwg_Invalidaterect( ::handle, 0 )
-         // hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
       ENDIF
       IF ::state == OBTN_NORMAL .AND. ! res
          ::state := OBTN_MOUSOVER
          hwg_Invalidaterect( ::handle, 0 )
-         // hwg_Postmessage( ::handle, WM_PAINT, 0, 0 )
          hwg_Setcapture( ::handle )
       ENDIF
    ENDIF
@@ -466,8 +462,6 @@ METHOD Enable() CLASS HOwnButton
    hwg_Enablewindow( ::handle, .T. )
    ::lEnabled := .T.
    hwg_Invalidaterect( ::handle, 0 )
-   // hwg_Sendmessage( ::handle, WM_PAINT, 0, 0 )
-   //::Init() BECAUSE ERROR GPF
 
    RETURN Nil
 
@@ -476,7 +470,6 @@ METHOD Disable() CLASS HOwnButton
    ::state   := OBTN_INIT
    ::lEnabled := .F.
    hwg_Invalidaterect( ::handle, 0 )
-   // hwg_Sendmessage( ::handle, WM_PAINT, 0, 0 )
    hwg_Enablewindow( ::handle, .F. )
 
    RETURN Nil

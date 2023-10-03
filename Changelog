@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-03 16:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hceditb.prg
+    ! Fixes
+  * source/gtk/hownbtn.prg
+  * source/gtk/htimer.prg
+  * source/winapi/hownbtn.prg
+  * source/winapi/htimer.prg
+    * Commented lines removed
+
 2023-10-02 16:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\common\editor\hcedit_l.c
     * Small code optimization

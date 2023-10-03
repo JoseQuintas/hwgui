@@ -94,7 +94,7 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   bKeyDown, bRClick
    DATA   bGetFocus, bLostFocus
 
-   DATA   lInit        INIT .F.  PROTECTED
+   DATA   nInit        INIT 0  PROTECTED
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, ;
                tcolor, bcolor, oFont, xInitVal, cPicture, bPaint, bChgState )
@@ -148,7 +148,7 @@ METHOD Paint( hDC ) CLASS HDrawnEdit
 
    LOCAL x1 := ::nLeft+::nBoundL+::nBorder, x2 := ::nLeft+::nWidth-1-::nBorder, cLine
 
-   IF !::lInit
+   IF ::nInit < 2
       hced_SetHandle( ::hEdit, ::GetParentBoard():handle )
       IF ::oFont == Nil
          IF ::oParent:oFont == Nil
@@ -161,7 +161,10 @@ METHOD Paint( hDC ) CLASS HDrawnEdit
       IF Empty( ::oPenBorder) .AND. ::nBorder > 0
          ::oPenBorder := HPen():Add( PS_SOLID, ::nBorder, ::nBorderColor )
       ENDIF
-      ::lInit := .T.
+      IF ::nInit == 1
+         ::SetFocus()
+      ENDIF
+      ::nInit := 2
    ENDIF
 
    hced_Setcolor( ::hEdit, ::tcolor, ::bColor )
@@ -505,7 +508,7 @@ METHOD onMouseLeave() CLASS HDrawnEdit
 #ifdef __GTK__
    Hwg_SetCursor( hCursorCommon, ::GetParentBoard():handle )
 #endif
-   RETURN ::Super:onMouseMove()
+   RETURN ::Super:onMouseLeave()
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
 
@@ -531,8 +534,14 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnEdit
 
 METHOD SetFocus() CLASS HDrawnEdit
 
-   LOCAL oBoard := ::GetParentBoard()
+   LOCAL oBoard
 
+   IF ::nInit == 0
+      ::nInit := 1
+      RETURN Nil
+   ENDIF
+
+   oBoard := ::GetParentBoard()
    hwg_SetFocus( oBoard:handle )
    oBoard:oInFocus := Self
 
@@ -542,7 +551,7 @@ METHOD SetFocus() CLASS HDrawnEdit
 
    hced_InitCaret( ::hEdit )
    ::SetCaretPos( SETC_XY )
-   hced_ShowCaret( ::hEdit )
+   //hced_ShowCaret( ::hEdit )
 
    RETURN Nil
 

@@ -6,6 +6,19 @@
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+HWGUI 2.23 build 5 ( 05.10.2023 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] Few drawing functions added, few modified
+[+] New commands added for new classes: 
+ @ ... DRAWN EDIT ..., @ ... DRAWN LENTA ..., @ ... DRAWN TRACK ...,
+ @ ... DRAWN BROWSE ..., @ ... DRAWN COMBO ..., @ ... DRAWN UPDOWN ...
+[+] New classes added: HDrawnEdit, HDrawnLenta, HDrawnCheck, HDrawnBrw, HDrawnCombo, HDrawnUpdown
+    tutorial updated to demonstrate it
+[*] Documentation updated
+[*] Part of a code, which is fully crossplatform, is moved from gtk/ and winapi/ directories
+    to a new cross/ directory
+[!] Fixes
+
 HWGUI 2.23 build 4 ( 27.07.2023 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [+] Gdi+ basic support added for Mingw C compiler to allow to open png and tiff files

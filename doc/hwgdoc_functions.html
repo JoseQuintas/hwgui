@@ -300,22 +300,94 @@
      <li> x1, y1 - point coordinates.
    </ul>
 
-   <br><strong class="subhead"> hwg_Rectangle( hDC, x1, y1, x2, y2 )</strong> 
+   <br><strong class="subhead"> hwg_Rectangle( hDC, x1, y1, x2, y2 [, hPen] )</strong> 
    <br> Draws a rectangle with given coordinates. Uses a pen,
-   selected with the help of <code>hwg_SelectObject()</code>.
+   selected with the help of <code>hwg_SelectObject()</code>, if <code>hPen</code> parameter is not passed.
    <ul>
      <li> hDC - handle of the device context;
      <li> x1, y1 - left top corner coordinates;
      <li> x2, y2 - right bottom corner coordinates.
+     <li> hPen - pen handle
    </ul>
 
-   <br><strong class="subhead"> hwg_Box( hDC, x1, y1, x2, y2 )</strong> (Windows only)
-   <br> Draws a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
-   selected with the help of <code>hwg_SelectObject()</code>.
+   <br><strong class="subhead"> hwg_Rectangle_Filled( hDC, x1, y1, x2, y2 [, hPen | lPen] [, hBrush] )</strong> 
+   <br> Draws a rectangle with given coordinates and fills it. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>, if <code>hPen</code> parameter is not passed. If
+   logical .F. passed instead, the rectangle border will be absent.
    <ul>
      <li> hDC - handle of the device context;
      <li> x1, y1 - left top corner coordinates;
      <li> x2, y2 - right bottom corner coordinates.
+     <li> hPen - pen handle
+     <li> hBrush - brush handle
+   </ul>
+
+   <br><strong class="subhead"> hwg_Triangle( hDC, x1, y1, x2, y2, x3, y3 [, hPen] )</strong> 
+   <br> Draws a triangle with given coordinates. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>, if <code>hPen</code> parameter is not passed.
+   If logical .F. passed instead, the triangle border will be absent.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1, x2, y2, x3, y3 - coordinates; 
+     <li> hPen - pen handle
+   </ul>
+
+   <br><strong class="subhead"> hwg_Triangle_Filled( hDC, x1, y1, x2, y2, x3, y3 [, hPen | lPen] [, hBrush] )</strong> 
+   <br> Draws a triangle with given coordinates. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>, if <code>hPen</code> parameter is not passed.
+   If logical .F. passed instead, the triangle border will be absent.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1, x2, y2, x3, y3 - coordinates; 
+     <li> hPen - pen handle
+     <li> hBrush - brush handle
+   </ul>
+
+   <br><strong class="subhead"> hwg_RoundRect( hDC, x1, y1, x2, y2, iRadius [, hPen] )</strong>
+   <br> Draws a rectangle with rounded corners. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>, if <code>hPen</code> parameter is not passed.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates;
+     <li> iRadius - a radius of an ellipse used to draw rounded corners.
+     <li> hPen - pen handle
+   </ul>
+
+   <br><strong class="subhead"> hwg_RoundRect_Filled( hDC, x1, y1, x2, y2, iRadius [, hPen | lPen] [, hBrush] )</strong>
+   <br> Draws a rectangle with rounded corners. Uses a pen,
+   selected with the help of <code>hwg_SelectObject()</code>, if <code>hPen</code> parameter is not passed.
+   If logical .F. passed instead, the rectangle border will be absent.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates;
+     <li> x2, y2 - right bottom corner coordinates;
+     <li> iRadius - a radius of an ellipse used to draw rounded corners.
+     <li> hPen - pen handle
+     <li> hBrush - brush handle
+   </ul>
+
+   <br><strong class="subhead"> hwg_Ellipse( hDC, x1, y1, x2, y2 [, hPen] )</strong> 
+   <br> Draws an ellipse in a rectangle with given coordinates. Uses a pen and a brush,
+   selected with the help of <code>hwg_SelectObject()</code>, if <code>hPen</code> is not passed.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates of a bounding rectangle;
+     <li> x2, y2 - right bottom corner coordinates of a bounding rectangle;
+     <li> hPen - pen handle
+   </ul>
+
+   <br><strong class="subhead"> hwg_Ellipse_Filled( hDC, x1, y1, x2, y2 [, hPen | lPen] [, hBrush] )</strong> 
+   <br> Draws an ellipse in a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
+   selected with the help of <code>hwg_SelectObject()</code>, if <code>hPen</code> or
+   <code>hBrush</code> parameter are not passed.
+   If logical .F. passed instead of <code>hPen</code>, the border will be absent.
+   <ul>
+     <li> hDC - handle of the device context;
+     <li> x1, y1 - left top corner coordinates of a bounding rectangle;
+     <li> x2, y2 - right bottom corner coordinates of a bounding rectangle;
+     <li> hPen - pen handle
+     <li> hBrush - brush handle
    </ul>
 
    <br><strong class="subhead"> hwg_DrawLine( hDC, x1, y1, x2, y2 )</strong> 
@@ -338,15 +410,6 @@
      <li> xr2, yr2 - coordinates of the endpoint of the second radial.
    </ul>
 
-   <br><strong class="subhead"> hwg_Ellipse( hDC, x1, y1, x2, y2 )</strong> 
-   <br> Draws an ellipse in a rectangle with given coordinates and fills area inside. Uses a pen and a brush,
-   selected with the help of <code>hwg_SelectObject()</code>.
-   <ul>
-     <li> hDC - handle of the device context;
-     <li> x1, y1 - left top corner coordinates of a bounding rectangle;
-     <li> x2, y2 - right bottom corner coordinates of a bounding rectangle;
-   </ul>
-
    <br><strong class="subhead"> hwg_FillRect( hDC, x1, y1, x2, y2, hBrush )</strong> 
    <br> Fills a rectangle with given coordinates, using a passed brush.
    <ul>
@@ -354,16 +417,6 @@
      <li> x1, y1 - left top corner coordinates;
      <li> x2, y2 - right bottom corner coordinates;
      <li> hBrush - a handle of a brush ( may be <code>oBrush:handle</code> ).
-   </ul>
-
-   <br><strong class="subhead"> hwg_RoundRect( hDC, x1, y1, x2, y2, xRad, yRad )</strong>
-   <br> Draws a rectangle with rounded corners. Uses a pen,
-   selected with the help of <code>hwg_SelectObject()</code>.
-   <ul>
-     <li> hDC - handle of the device context;
-     <li> x1, y1 - left top corner coordinates;
-     <li> x2, y2 - right bottom corner coordinates;
-     <li> xRad, yRad - width and height of an ellipse used to draw rounded corners.
    </ul>
 
    <br><strong class="subhead"> hwg_Drawbutton( hDC, x1, y1, x2, y2, nFlag )</strong> 
@@ -1397,6 +1450,20 @@ See sample program "testspli.prg" for details.<br>
      <li> Return value - text string, displayed in an edit control.
    </ul>
 
+   <br><strong class="subhead"> hwg_edit_Getpos( handle )</strong>
+   <br>Returns the cursor position in an edit control.
+   <ul>
+     <li> handle - handle of an edit control (<code>oEdit:handle</code>);
+     <li> Return value - a number 1 ... - a cursor position.
+   </ul>
+
+   <br><strong class="subhead"> hwg_edit_Setpos( handle, nPos )</strong>
+   <br>Sets the cursor position in an edit control.
+   <ul>
+     <li> handle - handle of an edit control (<code>oEdit:handle</code>);
+     <li> nPos - number 1 ... - a cursor position.
+   </ul>
+
    <br><strong class="subhead"> hwg_CheckDlgButton( parentHandle, nId, lValue )</strong> (Windows only)
    <p></p>
 
@@ -1648,6 +1715,10 @@ See sample program "testspli.prg" for details.<br>
     Reset the values of HWG_VERSION to "Code Snapshot" and<br>
     HWG_BUILD to 0 after publification of a new HWGUI release.<br>
    </p>
+
+   <br><strong class="subhead"> hwg_Trace()</strong> 
+   <br>The function is intended for debugging purposes. It returns a current procedures stack.
+   <br>
 
    <br><strong class="subhead"> hwg_WriteLog( cText [, fname] )</strong> 
    <br>Adds a text to a file, the function is intended for debugging purposes.
@@ -2327,6 +2398,10 @@ See sample program "testspli.prg" for details.<br>
    If the main window appears nearly in full size, than this is the<br>
    intermediate solution.<br>
    </p>
+
+   <br><strong class="subhead"> hwg_GetWorkArea()</strong> (Windows only)
+   <br>Returns an array with coordinates of a desktop without taskbar
+   <p></p>
    
    <br><strong class="subhead"> hwg_GetNextDlgTabItem ( parentHandle, ::handle, lNext )</strong> (Windows only)
    <br>Returns a handle of a next or previous control in a window.

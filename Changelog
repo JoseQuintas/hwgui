@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-05 12:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 build 5
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_functions.html
+    * Documentation updated - new classes and functions added
+  * whatsnew.txt
+    * Updated for v2.23 build 5
+
 2023-10-03 18:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source\common\editor\hcedit_l.c
     ! Fix

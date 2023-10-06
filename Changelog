@@ -17,6 +17,12 @@
 
 2023-10-05 12:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
+    * HwGUI version is changed to 2.23 dev build 6
+  * doc/hwgdoc_commands.html
+    * Documentation updated - new commands added
+
+2023-10-05 12:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
     * HwGUI version is changed to 2.23 build 5
   * doc/hwgdoc_classes.html
   * doc/hwgdoc_functions.html

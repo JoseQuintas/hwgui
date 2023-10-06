@@ -367,6 +367,18 @@
        <li><a name="_Commands3-49" href="#Commands3-50">4.3.50.  ADDBAND &lt;hWnd&gt; TO &lt;oPage&gt;</a>
        <li><a name="_Commands3-50" href="#Commands3-51">4.3.51.  @ &lt;x&gt;,&lt;y&gt; SHAPE</a>
        <li><a name="_Commands3-51" href="#Commands3-52">4.3.52.  @ &lt;x&gt;,&lt;y&gt; HCEDIT</a>
+       <li><a name="_Commands3-51" href="#Commands3-53">4.3.53.  @ &lt;x&gt;,&lt;y&gt; TRACK</a>
+       <li><a name="_Commands3-52" href="#Commands3-54">4.3.54.  @ &lt;x&gt;,&lt;y&gt; LENTA</a>
+       <li><a name="_Commands3-53" href="#Commands3-55">4.3.55.  @ &lt;x&gt;,&lt;y&gt; BOARD</a>
+       <li><a name="_Commands3-60" href="#Commands3-60">4.3.60.  @ &lt;x&gt;,&lt;y&gt; DRAWN</a>
+       <li><a name="_Commands3-61" href="#Commands3-61">4.3.61.  @ &lt;x&gt;,&lt;y&gt; DRAWN CHECK</a>
+       <li><a name="_Commands3-62" href="#Commands3-62">4.3.62.  @ &lt;x&gt;,&lt;y&gt; DRAWN RADIO </a>
+       <li><a name="_Commands3-63" href="#Commands3-63">4.3.63.  @ &lt;x&gt;,&lt;y&gt; DRAWN TRACK</a>
+       <li><a name="_Commands3-64" href="#Commands3-64">4.3.64.  @ &lt;x&gt;,&lt;y&gt; DRAWN EDIT</a>
+       <li><a name="_Commands3-65" href="#Commands3-65">4.3.65.  @ &lt;x&gt;,&lt;y&gt; DRAWN LENTA</a>
+       <li><a name="_Commands3-66" href="#Commands3-66">4.3.66.  @ &lt;x&gt;,&lt;y&gt; DRAWN COMBO</a>
+       <li><a name="_Commands3-67" href="#Commands3-67">4.3.67.  @ &lt;x&gt;,&lt;y&gt; DRAWN UPDOWN</a>
+       <li><a name="_Commands3-68" href="#Commands3-68">4.3.68.  @ &lt;x&gt;,&lt;y&gt; DRAWN BROWSE</a>
      </ul>	
     <p>All the following commands creates the instances of classes, they
     are preprocessed into the New() method of appropriate class.</p>
@@ -1416,7 +1428,205 @@
     	 [ FONT &lt;oFont&gt; ] 
     </pre>
 
-     <strong class="subhead"><a name="Commands4" href="hwgdoc.html#_Commands4">
+    <br><a name="Commands3-53" href="#_Commands3-53">4.3.53.  @ &lt;x&gt;,&lt;y&gt; TRACK</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; TRACK [ &lt;oTrack&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ ID &lt;nId&gt; ] 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ SLIDER SIZE &lt;nsize&gt; ]
+         [ SLIDER HSTYLE &lt;ostyles&gt; ]
+         [ BAR HSTYLE &lt;ostyleb&gt; ]
+         [&lt;laxis: AXIS&gt;]
+    	 [ ON SIZE &lt;bSize&gt; ] 
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+    </pre>
+
+    <br><a name="Commands3-54" href="#_Commands3-54">4.3.54.  @ &lt;x&gt;,&lt;y&gt; LENTA</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; LENTA [ &lt;oLenta&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ ID &lt;nId&gt; ] 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+    	 [ ON SIZE &lt;bSize&gt; ] 
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CLICK &lt;bClick&gt; ]
+         [ FONT &lt;oFont&gt; ]
+         [ ITEMS &lt;aItems&gt; ]
+         [ ITEMSIZE &lt;nItemSize&gt; ]
+         [ HSTYLES &lt;aItemStyle&gt; ]
+    </pre>
+
+    <br><a name="Commands3-55" href="#_Commands3-55">4.3.55.  @ &lt;x&gt;,&lt;y&gt; BOARD</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; BOARD [ &lt;oBoard&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ ID &lt;nId&gt; ] 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ ON INIT &lt;bInit&gt; ]
+    	 [ ON SIZE &lt;bSize&gt; ] 
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CLICK &lt;bClick&gt; ]
+         [ FONT &lt;oFont&gt; ]
+         [ TOOLTIP &lt;ctoolt&gt; ]
+         [ &lt;lKeyb: KEYBOARD&gt;]
+         [ &lt;lTransp: TRANSPARENT&gt;]
+    </pre>
+
+    <br><a name="Commands3-60" href="#_Commands3-60">4.3.60.  @ &lt;x&gt;,&lt;y&gt; DRAWN</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN [ &lt;oDrawn&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ HSTYLES &lt;aStyles&gt; ]
+         [ TEXT &lt;cText&gt; ]
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CLICK &lt;bClick&gt; ]
+         [ ON CHANGESTATE &lt;bChg&gt; ]
+         [ FONT &lt;oFont&gt; ]
+    </pre>
+
+    <br><a name="Commands3-61" href="#_Commands3-61">4.3.61.  @ &lt;x&gt;,&lt;y&gt; DRAWN CHECK</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN CHECK [ &lt;oDrawn&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ HSTYLES &lt;aStyles&gt; ]
+         [ TEXT &lt;cText&gt; ]
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CLICK &lt;bClick&gt; ]
+         [ ON CHANGESTATE &lt;bChg&gt; ]
+         [ FONT &lt;oFont&gt; ]
+    </pre>
+
+    <br><a name="Commands3-62" href="#_Commands3-62">4.3.62.  @ &lt;x&gt;,&lt;y&gt; DRAWN RADIO</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN RADIO [ &lt;oDrawn&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ HSTYLES &lt;aStyles&gt; ]
+         [ TEXT &lt;cText&gt; ]
+         [ INIT &lt;lInit&gt; ]
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CLICK &lt;bClick&gt; ]
+         [ ON CHANGESTATE &lt;bChg&gt; ]
+         [ FONT &lt;oFont&gt; ]
+    </pre>
+
+    <br><a name="Commands3-63" href="#_Commands3-63">4.3.63.  @ &lt;x&gt;,&lt;y&gt; DRAWN TRACK</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN TRACK [ &lt;oDrawn&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ SLIDER SIZE &lt;nsize&gt; ]
+         [ SLIDER HSTYLE &lt;ostyles&gt; ]
+         [ BAR HSTYLE &lt;ostyleb&gt; ]
+         [ &lt;laxis: AXIS&gt;]
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+    </pre>
+
+    <br><a name="Commands3-64" href="#_Commands3-64">4.3.64.  @ &lt;x&gt;,&lt;y&gt; DRAWN EDIT</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN EDIT [ &lt;oEdit&gt; CAPTION ] &lt;caption&gt;
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CHANGESTATE &lt;bChg&gt; ]
+         [ FONT &lt;oFont&gt; ]
+         [ PICTURE &lt;cPicture&gt; ]
+    </pre>
+
+    <br><a name="Commands3-65" href="#_Commands3-65">4.3.65.  @ &lt;x&gt;,&lt;y&gt; DRAWN LENTA</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN LENTA [ &lt;oDrawn&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+    	 [ ON CLICK &lt;bClick&gt; ]
+         [ FONT &lt;oFont&gt; ]
+         [ ITEMS &lt;aItems> ]
+         [ ITEMSIZE &lt;nItemSize&gt; ]
+         [ HSTYLES &lt;aItemStyle&gt; ]
+    </pre>
+
+    <br><a name="Commands3-66" href="#_Commands3-66">4.3.66.  @ &lt;x&gt;,&lt;y&gt; DRAWN COMBO</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN COMBO [ &lt;oDrawn&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ HSTYLES &lt;aStyles&gt; ]
+         [ INIT  &lt;xValue&gt; ]
+         [ &lt;lText: TEXT&gt; ]
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CHANGE &lt;bChange&gt; ]
+         [ ON CHANGESTATE &lt;bChg&gt; ]
+         [ FONT &lt;oFont&gt; ]
+         [ DISPLAYCOUNT &lt;nRows&gt;]
+    </pre>
+
+    <br><a name="Commands3-67" href="#_Commands3-67">4.3.67.  @ &lt;x&gt;,&lt;y&gt; DRAWN UPDOWN</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN UPDOWN [ &lt;oDrawn&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+         [ INIT &lt;xInit&gt; ]           ;
+         [ ARRAY &lt;arr&gt; ]            ;
+         [ RANGE &lt;nLower&gt;,&lt;nUpper&gt;] ;
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ HSTYLES &lt;aStyles&gt; ]
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CHANGESTATE &lt;bChg&gt; ]
+         [ FONT &lt;oFont&gt; ]
+    </pre>
+
+    <br><a name="Commands3-68" href="#_Commands3-68">4.3.68.  @ &lt;x&gt;,&lt;y&gt; DRAWN BROWSE</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN BROWSE [ &lt;oDrawn&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CHANGESTATE &lt;bChg&gt; ]
+         [ FONT &lt;oFont&gt; ]
+         [ &lt;lVscroll: VSCROLL&gt; ]    ;
+         [ &lt;lHscroll: HSCROLL&gt; ]    ;
+    </pre>
+
+    <strong class="subhead"><a name="Commands4" href="hwgdoc.html#_Commands4">
     4.4.  Get system commands</a></strong>  
    <ul>
      <li><a name="_Commands4-1" href="#Commands4-1">4.4.1.  @ &lt;x&gt;,&lt;y&gt; GET</a>

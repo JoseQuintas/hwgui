@@ -24,12 +24,12 @@
 <table width="100%" border="0" cellpadding="0" cellspacing="0">
   <tr>
     <td width="15%" align="left"><a href="http://kresin.belgorod.su">Home page</a></td>
-    <td width="70%" align="center"><strong class="title"> HwGUI 2.22 reference manual </strong></td>
+    <td width="70%" align="center"><strong class="title"> HwGUI 2.23 reference manual </strong></td>
     <td width="15%" align="right">&nbsp;</td>
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_functions.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, December 2022</td>
+    <td width="70%" align="center">Alexander S.Kresin, October 2023</td>
     <td width="15%" align="right"><a href="hwgdoc_misc.html">next</a></td>
   </tr>
 </table>
@@ -98,7 +98,6 @@
            <li><a name="_Classes3_3_17" href="#Classes3_3_17">HTab</a>
            <li><a name="_Classes3_3_18" href="#Classes3_3_18">HTree</a>
            <li><a name="_Classes3_3_19" href="#Classes3_3_19">HMonthCalendar</a>
-           <li><a name="_Classes3_3_20" href="#Classes3_3_20">HTrack</a> 
            <li><a name="_Classes3_3_21" href="#Classes3_3_21">HProgressBar</a>
            <li><a name="_Classes3_3_22" href="#Classes3_3_22">HToolBar</a>
            <li><a name="_Classes3_3_25" href="#Classes3_3_25">HListbox</a> (WinAPI version only)
@@ -108,10 +107,11 @@
            <li><a name="_Classes3_3_29" href="#Classes3_3_28">HPager</a> (WinAPI version only)
            <li><a name="_Classes3_3_30" href="#Classes3_3_30">HRebar</a> (WinAPI version only)
            <li><a name="_Classes3_3_32" href="#Classes3_3_32">HCEdit</a>
-           <li><a name="_Classes3_3_33" href="#Classes3_3_33">HLenta</a>
-           <li><a name="_Classes3_3_34" href="#Classes3_3_34">HBoard</a>
+           <li><a name="_Classes3_3_34" href="#Classes3_3_33">HBoard</a>
            <ul>
-             <li><a name="_Classes3_3_34_1" href="#Classes3_3_34_1">HGraph</a>
+             <li><a name="_Classes3_3_33_1" href="#Classes3_3_33_1">HLenta</a>
+             <li><a name="_Classes3_3_33_2" href="#Classes3_3_33_2">HTrack</a> 
+             <li><a name="_Classes3_3_33_3" href="#Classes3_3_33_3">HGraph</a>
            </ul>
          </ul>
        </ul>
@@ -1094,37 +1094,6 @@
       Init()
    </pre>
 
-  <br><strong class="subhead"><a name="Classes3_3_20" href="#_Classes3_3_20">
-   HTrack</a></strong> 
-   <pre class="code">DATA
-   CLASS VAR winclass INIT "STATIC"
-
-   DATA lVertical
-   DATA oStyle
-   DATA nFrom, nTo, nCurr, nSize
-   DATA oPen1, oPen2, tColor2
-   DATA lCaptured   INIT .F.
-   DATA bEndDrag
-   DATA bChange
-   </pre>
-   <pre class="code">METHODS
-   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-               bSize, bDraw, color, bcolor, nSize, oStyle )
-   METHOD Activate()
-   METHOD onEvent( msg, wParam, lParam )
-   METHOD Init()
-   METHOD Paint()
-   METHOD Drag( xPos, yPos )
-   METHOD Value ( xValue ) SETGET
-   </pre>
-   <p><br>
-   We create here a new control, which can be<br>
-   used as a replacement for a track bar,<br>
-   which has not GTK version.<br>
-   Usage of HTRACK class see sample program "htrack.prg"
-   and chapter "Advanced using of controls / Let create new control" of tutorial.<br>
-   </p>
-
    <br><strong class="subhead"><a name="Classes3_3_21" href="#_Classes3_3_21">
    HProgressBar</a></strong> 
    <pre class="code">DATA
@@ -1240,6 +1209,7 @@
       onEvent( msg, wParam, lParam ) 
       Init() 
    </pre>
+   <p>This is outdated control. <a href="#Classes3_3_33_2">HTrack</a> is recommended to use instead it.</p>
 
    <br><strong class="subhead"><a name="Classes3_3_27" href="#_Classes3_3_27">
    HAnimation</a></strong> 
@@ -1481,20 +1451,6 @@
    </pre>
 
    <br><strong class="subhead"><a name="Classes3_3_33" href="#_Classes3_3_33">
-   HLenta</a></strong> 
-   <pre class="code">DATA
-      oDrawn                  (R)
-   </pre>
-   <pre class="code">METHODS
-      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont,
-           bSize, bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle )
-      Move( x1, y1, width, height )
-      aItems ( arr ) SETGET
-      bClick ( b ) SETGET
-      Value ( xValue ) SETGET
-   </pre>
-
-   <br><strong class="subhead"><a name="Classes3_3_34" href="#_Classes3_3_34">
    HBoard</a></strong> 
    <pre class="code">DATA
       winclass                (R)
@@ -1515,7 +1471,42 @@
       End()
    </pre>
 
-   <br><strong class="subhead"><a name="Classes3_3_34_1" href="#_Classes3_3_34_1">
+   <br><strong class="subhead"><a name="Classes3_3_33_1" href="#_Classes3_3_33_1">
+   HLenta</a></strong> 
+   <pre class="code">DATA
+      oDrawn                  (R)
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont,
+           bSize, bPaint, bClick, color, bcolor, aItems, nItemSize, aItemStyle )
+      Move( x1, y1, width, height )
+      aItems ( arr ) SETGET
+      bClick ( b ) SETGET
+      Value ( xValue ) SETGET
+   </pre>
+
+  <br><strong class="subhead"><a name="Classes3_3_33_2" href="#_Classes3_3_33_2">
+   HTrack</a></strong> 
+   <pre class="code">DATA
+      oDrawn                  (R)
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight,
+           bSize, bPaint, color, bcolor, nSize, oStyleBar, oStyleSlider, lAxis )
+      Set( nSize, oStyleBar, oStyleSlider, lAxis, bPaint )
+      Move( x1, y1, width, height )
+      bChange ( b ) SETGET
+      Value ( xValue ) SETGET
+   </pre>
+   <p><br>
+   We create here a new control, which can be<br>
+   used as a replacement for a track bar,<br>
+   which has not GTK version.<br>
+   Usage of HTRACK class see sample program "htrack.prg"
+   and chapter "Advanced using of controls / Let create new control" of tutorial.<br>
+   </p>
+
+   <br><strong class="subhead"><a name="Classes3_3_33_3" href="#_Classes3_3_33_3">
    HGraph</a></strong> 
    <pre class="code">DATA
       aValues                  (RW) Data array                                          

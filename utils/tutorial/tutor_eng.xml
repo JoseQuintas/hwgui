@@ -1558,8 +1558,8 @@ Function Colors
    INIT DIALOG oDlg TITLE "Colors"     ;
         AT 0,0  SIZE 480,310 CLIPPER ON INIT {|| hwg_Settimer(oDlg,oPanel,oEditC,oUpR,oUpG,oUpB,oEditN)}
 
-   @ 60, 20 PANEL oPanel SIZE 360, 120 STYLE SS_OWNERDRAW ON SIZE {||.t.}
-   oPanel:bPaint := {|o|ppaint(o,oEditN)}
+   @ 60, 20 BOARD oPanel SIZE 360, 120
+   oPanel:bPaint := {|o,h|ppaint(o,h,oEditN)}
 
    @ 20, 180 SAY "html" SIZE 80,26
    @ 20, 210 GET oEditC VAR cColor SIZE 80,26 PICTURE "XXXXXX"
@@ -1629,14 +1629,11 @@ STATIC Function hwg_Settimer( oDlg, oPanel, oEditC, oUpR, oUpG, oUpB, oEditN )
    SET TIMER oTimer OF oDlg VALUE 500 ACTION bTimer
 Return Nil
 
-Function PPaint( oPanel, oEditN )
+Function PPaint( oPanel, hDC, oEditN )
 
-   LOCAL pps, hDC, aCoors, obrush
+   LOCAL aCoors, obrush
 
-   pps    := hwg_Definepaintstru()
-   hDC    := hwg_Beginpaint( oPanel:handle, pps )
    aCoors := hwg_Getclientrect( oPanel:handle )
-
    obrush := HBrush():Add( oEditN:value )
    hwg_Fillrect( hDC, 0, 0, aCoors[3], aCoors[4], obrush:handle )
 
@@ -1648,7 +1645,6 @@ Function PPaint( oPanel, oEditN )
    hwg_Drawtext( hDC, "White", 270, 10, 340, 36 )
    hwg_Settransparentmode( hDC, .F. )
 
-   hwg_Endpaint( oPanel:handle, pps )
    obrush:Release()
 
    Return Nil
@@ -1817,7 +1813,7 @@ STATIC FUNCTION Graph2
    RETURN Nil
 ]]>
     </module>
-    <module name="Drawing on the board">
+    <module name="Drawing primitives">
       <![CDATA[// Board and drawn items
 #include "hwgui.ch"
 #define CLR_BLUE     16711680
@@ -1835,7 +1831,7 @@ FUNCTION Test
       HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
 
    PREPARE FONT oFont NAME "Georgia" WIDTH 0 HEIGHT -17 ITALIC
-   INIT DIALOG oDlg TITLE "Drawing on the board" AT 210, 10  SIZE 400, 220
+   INIT DIALOG oDlg TITLE "Drawing primitives" AT 210, 10  SIZE 400, 220
 
    @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR 0x999999 ;
       ON PAINT {|o,h|FPaint(o,h)} ON SIZE {|o,x,y|o:Move(,,x-8,y-8)}
@@ -1883,7 +1879,7 @@ STATIC FUNCTION FPaint( o, hDC )
    RETURN Nil
 ]]>
     </module>
-    <module name="Board and drawn widgets">
+    <module name="Drawn widgets">
       <![CDATA[// Board and drawn widgets
 #include "hwgui.ch"
 
@@ -1962,8 +1958,8 @@ FUNCTION Test
    RETURN Nil
 ]]>
     </module>
-    <module name="Board and drawn widgets 2">
-      <![CDATA[// Board and drawn widgets 2
+    <module name="Drawn widgets - 2">
+      <![CDATA[// Board and drawn widgets - 2
 #include "hwgui.ch"
 
 #define CLR_WHITE    0xffffff
@@ -2033,17 +2029,12 @@ FUNCTION Test
 #define CLR_DGRAY3   0x888888
 #define CLR_BLUE     16711680
 
-MEMVAR oBrw1, oBrw2, oBrw3, arrBrw1
+MEMVAR oBrw, oBrw1, oBrw2, oBrw3, arrBrw1
 FUNCTION Test
    LOCAL oDlg, oBoard, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
-   LOCAL aCorners := { 4,4,4,4 }
-   LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
-      HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
-      HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
    LOCAL aStyleLenta := { HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1 ), ;
       HStyle():New( { CLR_DGRAY3 }, 1,, 1, CLR_WHITE ) }
-   LOCAL oSay2, a2 := { "One","Two","Three","Four","Five" }
-   PRIVATE oBrw1, oBrw2, oBrw3, arrBrw1
+   PRIVATE oBrw, oBrw1, oBrw2, oBrw3, arrBrw1
 
    INIT DIALOG oDlg TITLE "Drawn browses"  ;
       AT 210, 10  SIZE 440, 300 FONT oFont BACKCOLOR CLR_DGRAY1
@@ -2052,8 +2043,10 @@ FUNCTION Test
       ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont KEYBOARD
 
    @ 20, 12 DRAWN LENTA oLenta SIZE 180, 28 FONT oFont ;
-      ITEMS { "Array","Dbf - 1","Dbf - 2" } ITEMSIZE 60 HSTYLES aStyleLenta ON CLICK {|o|FBrw(oBoard,o:Value)}
+      ITEMS { "Array","Dbf - 1","Dbf - 2" } ITEMSIZE 60 HSTYLES aStyleLenta ;
+      ON CLICK {|o|FBrw(oBoard,o:Value)}
    oLenta:Value := 1
+
    FBrw( oBoard, 1 )
 
    ACTIVATE DIALOG oDlg
@@ -2095,11 +2088,8 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw1:AddColumn( "Num", 2, 40, DT_RIGHT, DT_CENTER, .T. )
          oBrw1:AddColumn( "Quad", 3,, DT_RIGHT, DT_CENTER, .T. )
          oBoa:Refresh()
-      ELSE
-         oBrw1:lHide := .F.
-         oBrw1:nHeight := 230
       ENDIF
-      oBrw1:Setfocus()
+      oBrw := oBrw1
    ELSEIF nBrw == 2
       // Browse a database
       oBrw1:lHide := .T.
@@ -2122,11 +2112,8 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw2:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
          oBrw2:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
          oBrw2:aColumns[4]:aList := { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" }
-      ELSE
-         oBrw2:lHide := .F.
-         oBrw2:nHeight := 230
       ENDIF
-      oBrw2:Setfocus()
+      oBrw := oBrw2
       base1->( ordSetFocus( 0 ) )
       oBrw2:Top()
 
@@ -2150,15 +2137,15 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          // You may pass a text expression instead of a codeblock
          oBrw3:AddColumn( "Name", "base1->(Str(NUM,3)+' '+NAME)", 180,, DT_CENTER, .T. )
          oBrw3:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
-      ELSE
-         oBrw3:lHide := .F.
-         oBrw3:nHeight := 230
       ENDIF
-      oBrw3:Setfocus()
+      oBrw := oBrw3
       base1->( ordSetFocus( "DAT" ) )
       oBrw3:Top()
    ENDIF
 
+   oBrw:lHide := .F.
+   oBrw:nHeight := 230
+   oBrw:Setfocus()
    oBoa:oParent:Refresh()
 
    RETURN Nil
@@ -2187,6 +2174,7 @@ STATIC FUNCTION FCreateDB()
    INDEX ON Dtos(DAT) TAG DAT
 
    RETURN Nil
+
 ]]>
     </module>
   </chapter>

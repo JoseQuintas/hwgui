@@ -10,7 +10,7 @@ if exist %HRB_LIB_DIR%\libhbvm.a goto hrb
 goto common
 set HRB_LIBS=-lvm -lrdd -lmacro -lpp -lrtl -lcodepage -llang -lcommon -ldbfntx  -ldbfcdx -ldbffpt -lhsx -lhbsix -lgtgui -lgtwin
 :hrb
-set HRB_LIBS=-lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhbcpage -lhblang -lhbcommon -lrddntx  -lrddcdx -lrddfpt -lhbsix -lgtgui -lgtwin -lhbcplr
+set HRB_LIBS=-lhbvm -lhbrdd -lhbmacro -lhbpp -lhbrtl -lhbcpage -lhblang -lhbcommon -lrddntx  -lrddcdx -lrddfpt -lhbsix -lgtgui -lgtwin -lhbcplr -lhbmemio -lhbpcre -lhbzlib
 :common
 
 %HRB_EXE% tutor.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include %2

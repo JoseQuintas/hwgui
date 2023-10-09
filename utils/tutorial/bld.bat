@@ -8,7 +8,7 @@ if exist %HRB_DIR%\lib\win\bcc\hbvm.lib goto hrb
 set HRB_LIBS=vm.lib rtl.lib gtgui.lib gtwin.lib codepage.lib lang.lib rdd.lib macro.lib pp.lib dbfntx.lib dbfcdx.lib dbffpt.lib hsx.lib hbsix.lib common.lib ct.lib
 goto common
 :hrb
-set HRB_LIBS=hbvm.lib hbrtl.lib gtgui.lib gtwin.lib hbcpage.lib hblang.lib hbrdd.lib hbmacro.lib hbpp.lib rddntx.lib rddcdx.lib rddfpt.lib hbsix.lib hbcommon.lib hbct.lib hbcplr.lib
+set HRB_LIBS=hbvm.lib hbrtl.lib gtgui.lib gtwin.lib hbcpage.lib hblang.lib hbrdd.lib hbmacro.lib hbpp.lib rddntx.lib rddcdx.lib rddfpt.lib hbsix.lib hbcommon.lib hbct.lib hbcplr.lib hbmemio.lib hbpcre.lib hbzlib.lib
 :common
 
 %HRB_DIR%\bin\harbour tutor.prg -n -i%HRB_DIR%\include;%HWGUI_INSTALL%\include %2 %3

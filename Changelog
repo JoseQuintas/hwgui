@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-09 14:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/build.sh
+  * utils/tutorial/hwgrun.hbp
+  * utils/tutorial/tutor.hbp
+    * Build files for gtk updated
+
 2023-10-09 13:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + include/hrbextern.ch
     + Include file with harbour functions requests added

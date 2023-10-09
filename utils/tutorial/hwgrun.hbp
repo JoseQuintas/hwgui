@@ -6,7 +6,7 @@
 -n -w
 
 # The macro for unix has also effect on LINUX
-{unix}-lm
+{unix}-lm -lz -lpcre -ldl
 {unix}-static
 {unix}-d__LINUX__
 {unix}-d__GTK__

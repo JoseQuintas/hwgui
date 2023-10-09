@@ -24,7 +24,7 @@ export HRB_INC=$HB_ROOT/include
 export HRB_LIB=$HB_ROOT/lib/linux/gcc
 fi
 
-export SYSTEM_LIBS="-lm"
+export SYSTEM_LIBS="-lm -lz -lpcre -ldl"
 export HARBOUR_LIBS="-lhbdebug -lhbvm -lhbrtl -lgtcgi -lhbdebug -lhblang -lhbrdd -lhbmacro -lhbpp -lrddntx -lrddcdx -lrddfpt -lhbsix -lhbcommon -lhbcpage -lhbcplr"
 export HWGUI_LIBS="-lhwgui -lprocmisc -lhbxml -lhwgdebug"
 export HWGUI_INC=../../include

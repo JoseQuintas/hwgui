@@ -66,13 +66,13 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA aHeadPadding  INIT { 4, 2, 4, 2 }
    DATA aMargin       INIT { 0,0,0,0 }
 
-   DATA tColorSel, bColorSel, oBrushSel, htbColor, httColor, oBrushHtb
+   DATA tColorSel, bColorSel, htbColor, httColor
+   DATA bCellBlock                           // {|oBrw,nRow,nCol| Return { tColor, bColor, oFont } }
    DATA sepColor      INIT DEF_CLR_SELE
    DATA oPenSep, oPenBorder
    DATA nBorder       INIT 0
    DATA nBorderColor  INIT 0
    DATA oFontHead
-   DATA oPaintCB
 
    DATA oStyleHead                           // An HStyle object to draw the header
    DATA oStyleFoot                           // An HStyle object to draw the footer
@@ -96,6 +96,8 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA oEdit
    DATA lSeleCell     INIT .F.
    DATA lRebuild      INIT .T.
+
+   DATA pBrushes      PROTECTED
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
                bPaint, bChgState, lVScroll, lHScroll )
@@ -126,6 +128,8 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD ShowTrackV( lShow )
    METHOD ShowTrackH( lShow )
 
+   METHOD End()
+
 ENDCLASS
 
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
@@ -152,18 +156,14 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
 #endif
    ENDIF
 
+   ::pBrushes := hb_hash()
+
    RETURN Self
 
 METHOD Rebuild( hDC )
 
    LOCAL i, l
 
-   IF Empty( ::oBrushSel )
-      ::oBrushSel := HBrush():Add( ::bColorSel )
-   ENDIF
-   IF Empty( ::oBrushHtb )
-      ::oBrushHtb := HBrush():Add( ::htbColor )
-   ENDIF
    IF Empty( ::oPenSep ) .AND. ::sepColor >= 0
       ::oPenSep := HPen():Add( PS_SOLID, 1, ::sepColor )
    ENDIF
@@ -229,7 +229,9 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
    IF !Empty( ::bPaint )
       RETURN Eval( ::bPaint, Self, hDC )
    ENDIF
-   hwg_Selectobject( hDC, ::oFont:handle )
+   IF ::oFont != Nil
+      hwg_Selectobject( hDC, ::oFont:handle )
+   ENDIF
 
    IF ::nHeightHead > 0
       ::HeaderOut( hDC )
@@ -292,18 +294,15 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
 METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
 
    LOCAL y2 := y1 + ::nHeightRow, x := x1, iCol := ::nColFirst - 1, i := 0, nw
-   LOCAL oCB, oCol, block
+   LOCAL oCB, oCol, block, aClr, bColor, hBrush
 
    IF Len( ::aRows ) < nRow
       AAdd( ::aRows, { y1, Nil } )
    ELSE
       ::aRows[nRow,1] := y1
    ENDIF
-   //hwg_writelog( "rout "+str(nRow) + " " + str(y1) + " " + str(y2) + " " + str(::nRowCurr) + " " + str(::nRowCount) )
 
-   //hwg_FillRect( hDC, x1, y1, x2, y2, IIf( nRow == ::nRowCurr, ::oBrushSel:handle, ::oBrush:handle ) )
    hwg_Settransparentmode( hDC, .T. )
-   hwg_Settextcolor( hDC, IIf( nRow == ::nRowCurr, ::tColorSel, ::tcolor ) )
 
    DO WHILE ++iCol <= Len( ::aColumns ) .AND. x < x2
       oCol := ::aColumns[iCol]
@@ -311,15 +310,30 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
       IF !Empty( oCB := oCol:oPaintCB ) .AND. !Empty( block := oCB:Get( PAINT_LINE_ALL ) )
          Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol, nRow )
       ELSE
+         IF !Empty( ::bCellBlock )
+            aClr := Eval( ::bCellBlock, Self, nRow, iCol )
+         ENDIF
          IF !Empty( oCB ) .AND. !Empty( block := oCB:Get( PAINT_LINE_BACK ) )
             Eval( block, oCol, hDC, x, y1, x + oCol:nWidth, y2, iCol, nRow )
          ELSE
-            hwg_FillRect( hDC, x, y1, x + nw, y2, IIf( nRow == ::nRowCurr, ;
-               Iif( iCol == :: nColCurr .AND. ::lSeleCell, ::oBrushHtb:handle, ::oBrushSel:handle ), ::oBrush:handle ) )
+            bColor := Iif( aClr == Nil .OR. Len(aClr)<2 .OR. aClr[2] == Nil, ;
+               IIf( nRow == ::nRowCurr, ;
+               Iif( iCol == :: nColCurr .AND. ::lSeleCell, ::htbColor, ::bColorSel ), ;
+               Iif( oCol:bColor == Nil, ::bColor, oCol:bColor ) ), aClr[2] )
+            IF !hb_hHaskey( ::pBrushes, bColor )
+               ::pBrushes[bColor] := HBrush():Add( bColor )
+            ENDIF
+            hBrush := ::pBrushes[bColor]:handle
+            hwg_FillRect( hDC, x, y1, x + nw, y2, hBrush )
          ENDIF
+         hwg_Settextcolor( hDC, ;
+            Iif( aClr == Nil .OR. aClr[1] == Nil, IIf( nRow == ::nRowCurr, ;
+               Iif( iCol == :: nColCurr .AND. ::lSeleCell, ::httColor, ::tColorSel ), ;
+               Iif( oCol:tColor == Nil, ::tColor, oCol:tColor ) ), aClr[1] ) )
+         hwg_Selectobject( hDC, Iif( !Empty(aClr) .AND. Len(aClr)>2 .AND. !Empty(aClr[3]), ;
+            aClr[3]:handle, Iif( !Empty(oCol:oFont), oCol:oFont:handle, ::oFont:handle ) ) )
          hwg_Drawtext( hDC, ::Cell( iCol ), x+::aRowPadding[1], y1+::aRowPadding[2],  ;
-            Min( x2, x+nw-1-::aRowPadding[3] ), ;
-            y2-::aRowPadding[4], oCol:nAlignRow, .T. )
+            Min( x2, x+nw-1-::aRowPadding[3] ), y2-::aRowPadding[4], oCol:nAlignRow, .T. )
       ENDIF
       x += oCol:nWidth
       i ++
@@ -337,7 +351,6 @@ METHOD HeaderOut( hDC ) CLASS HDrawnBrw
    LOCAL x2 := ::nLeft + ::nWidth - ::aMargin[3]
    LOCAL oCB, aCB, oCol, block, i, nw
 
-   //hwg_FillRect( hDC, x1, y1, x2, y2, ::oBrush:handle )
    hwg_Settransparentmode( hDC, .T. )
    hwg_Settextcolor( hDC, ::tcolor )
 
@@ -858,6 +871,15 @@ METHOD ShowTrackH( lShow ) CLASS HDrawnBrw
 
    RETURN Nil
 
+METHOD End() CLASS HDrawnBrw
+
+   LOCAL arr := hb_hKeys( ::pBrushes ), i
+
+   FOR i := 1 TO Len( arr )
+      ::pBrushes[arr[i]]:Release()
+   NEXT
+   RETURN Nil
+
 CLASS HBrwCol INHERIT HObject
 
    DATA block
@@ -865,7 +887,7 @@ CLASS HBrwCol INHERIT HObject
    DATA nWidth
    DATA dec        INIT 0
    DATA nAlignHead, nAlignRow
-   DATA tcolor, bcolor, brush
+   DATA tcolor, bcolor
    DATA oFont
 
    DATA lEditable  INIT .F.      // Is the column editable

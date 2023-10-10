@@ -956,10 +956,17 @@ Return Nil
     </module>
     <module name="Browse" >
       <![CDATA[#include "hwgui.ch"
+#define CLR_WHITE    0xffffff
+#define CLR_BLACK    0x000000
+#define CLR_GRAY1    0xeeeeee
+#define CLR_GRAY2    0xd0d0d0
+#define CLR_BLUE     0xff0000
+#define CLR_GREEN1   0xcaebba
+
 Function Test()
 Local oDlg, oBrw, oBtnOk, oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 ), oPen
-Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"Pyotr",56,45500}, ;
-      {"Sergei",28,14800}, {"Ivan",26,21300} }
+Local aSample := { {"Alex",17,12600}, {"Anna",34,25000}, {"Pyotr",56,45500}, ;
+      {"Sergei",28,14800}, {"Ivan",26,21300}, {"Irina",29,29100}, {"Fyodor",33,28400}, {"Victor",42,1600} }
 Local bCol1 := {|o,h,x1,y1,x2,y2|
    oStyle:Draw( h,x1,y1,x2,y2 )
    RETURN Nil
@@ -995,16 +1002,16 @@ Local bDrawOrd := {|o,h,x1,y1,x2,y2|
    oPen := HPen():Add( BS_SOLID, 2, 0 )
 
    INIT DIALOG oDlg TITLE "Browse" ;
-         AT 0, 0 SIZE 380, 300 BACKCOLOR 0xeeeeee;
+         AT 0, 0 SIZE 380, 400 BACKCOLOR 0xeeeeee;
          FONT HFont():Add( "MS Sans Serif",0,-15 )
 
    @ 20,16 SAY "Press on a column head to change order" SIZE 340,24 ;
          TRANSPARENT STYLE DT_CENTER COLOR 8404992
-   @ 20,40 BROWSE oBrw ARRAY SIZE 340,200 STYLE WS_BORDER + WS_VSCROLL ;
+   @ 20,40 BROWSE oBrw ARRAY SIZE 340,300 STYLE WS_BORDER + WS_VSCROLL ;
          ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
    oBrw:oStyleHead := oStyle
-   oBrw:bcolorSel := 0xeeeeee
-   oBrw:tcolorSel := 0
+   oBrw:bcolorSel := CLR_GRAY1
+   oBrw:tcolorSel := CLR_BLACK
    oBrw:aArray := aSample
 
    // Increase Left, top and bottom padding
@@ -1046,7 +1053,13 @@ Local bDrawOrd := {|o,h,x1,y1,x2,y2|
    // 0 - not sorted by this column, 1 - sorted ascending, 2 - sorted descending
    oBrw:aColumns[2]:cargo := oBrw:aColumns[3]:cargo := oBrw:aColumns[4]:cargo := 0
 
-   @ 128,260 OWNERBUTTON oBtnOk SIZE 100,32 ;
+   // The special codeblock :bColorBlock of a column returns an array of colors for
+   // a currently painted cell: { tColor, bColor, tColorSel, bColorSel }
+   oBrw:aColumns[2]:bColorBlock := oBrw:aColumns[4]:bColorBlock := ;
+      {|o,nRow| Iif(nRow%2==0, {CLR_BLACK,CLR_WHITE,CLR_BLUE,CLR_GRAY2}, {CLR_BLACK,CLR_GRAY1,CLR_BLUE,CLR_GRAY2}) }
+   oBrw:aColumns[3]:bColorBlock := {|o,nRow| {CLR_BLACK,CLR_GREEN1,CLR_BLUE,CLR_GRAY2} }
+
+   @ 128,360 OWNERBUTTON oBtnOk SIZE 100,32 ;
          TEXT "Ok" ;
          ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS ;
          ON CLICK {||hwg_EndDialog()}

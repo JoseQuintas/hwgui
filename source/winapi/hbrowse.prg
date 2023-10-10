@@ -94,9 +94,10 @@ CLASS HColumn INHERIT HObject
 
    DATA bHeadClick
    DATA bColorBlock              //   bColorBlock must return an array containing four colors values
-   //   oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
-   //      {textColor, backColor, textColorSel, backColorSel} , ;
-   //      {textColor, backColor, textColorSel, backColorSel} ) }
+   //  The 5-th and 6-th members are to select current column, if ::lEditable is On.
+   //  oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
+   //     {textColor, backColor, textColorRowSel, backColorRowSel, textColorColSel, backColorColSel} , ;
+   //     {textColor, backColor, textColorRowSel, backColorRowSel, textColorColSel, backColorColSel} ) }
    METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
 
 ENDCLASS

@@ -15,6 +15,17 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-10 16:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc_classes.html
+    * Documentation updated
+  * source/cross/hdrawnbrw.prg
+    * Further enhancements: handling of column colors and font added, :bCellBlock implemented
+  * source/winapi/hbrowse.prg
+    * Comments added
+  * utils/tutorial/bld.bat
+  * utils/tutorial/bldgw.bat
+  * utils/tutorial/tutor_eng.xml
+
 2023-10-09 14:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/build.sh
   * utils/tutorial/hwgrun.hbp

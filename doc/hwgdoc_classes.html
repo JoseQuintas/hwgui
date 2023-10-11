@@ -112,10 +112,17 @@
              <li><a name="_hlenta" href="#hlenta">HLenta</a>
              <li><a name="_htrack" href="#htrack">HTrack</a> 
              <li><a name="_hgraph" href="#hgraph">HGraph</a>
+             <li><a name="_hceditbasic" href="#hceditbasic">HCEditBasic</a>
            </ul>
          </ul>
        </ul>
        <li><a name="_hcolumn" href="#hcolumn">HColumn</a>
+       <li><a name="_hbrwcol" href="#hbrwcol">HBrwCol</a>
+       <li><a name="_hbrwdata" href="#hbrwdata">HBrwData</a>
+       <ul>
+         <li><a name="_hdataarray" href="#hdataarray">HDataArray</a>
+         <li><a name="_hdatadbf" href="#hdatadbf">HDataDbf</a>
+       </ul>
        <li><a name="_hradiogroup" href="#hradiogroup">HRadioGroup</a>
        <li><a name="_hfont" href="#hfont">HFont</a>
        <li><a name="_hpen" href="#hpen">HPen</a>
@@ -486,7 +493,7 @@
    </pre>
    <p>
    <br>
-   Descrition of special behavior:<br>
+   Description of special behavior:<br>
    If using the clause "ON CLICK" (calls an external dialog for editing in an<br>
    UDF "user defined function" by double click, ENTER key or a special control<br>
    e.g. a button in the toolbar)<br>
@@ -517,7 +524,7 @@
       lDragWin                (RW)
       winclass                 (R)
       oEmbedded                (R)
-      aPaintCB                     Array of items to draw
+      oPaintCB                (RW) HPaintCB object
       lCaptured
       hCursor
    </pre>
@@ -527,7 +534,6 @@
      Hide()
      Show()
      BackColor( bcolor )
-     SetPaintCB( nId, block, cId )
   Internal:
      Activate() 
      onEvent( msg, wParam, lParam ) 
@@ -603,6 +609,8 @@
          cTooltip, lEnabled, lCheck, bColor )
      Press() 
      Release() 
+     Enable()
+     Disable()
   Internal:
      Activate() 
      onEvent( msg, wParam, lParam ) 
@@ -613,8 +621,6 @@
      MDown() 
      MUp() 
      End()
-     Enable()
-     Disable()
    </pre>
 
     <br><strong class="subhead"><a name="hshadebutton" href="#_hshadebutton">
@@ -630,6 +636,7 @@
                    bmp, lResour, xb, yb, widthb, heightb, lTr, trColor, ;
                    cTooltip, lEnabled, shadeID, palette,         ;
                    granularity, highlight, coloring, shcolor )
+  Internal:
        Paint()
        END()   
    </pre> 
@@ -1022,8 +1029,8 @@
       aPages                   (R)
       hIml, aImages, Image1, Image2 
       oTemp
-      aTooltips   INIT {}  // Array with tooltips messages
-                           // One element for every tab
+      aTooltips               // Array with tooltips messages
+                              // One element for every tab
                       
    </pre>
    <pre class="code">METHODS
@@ -1541,6 +1548,18 @@
       Paint()
    </pre>
 
+   <br><strong class="subhead"><a name="hceditbasic" href="#_hceditbasic">
+   HCEditBasic</a></strong> 
+   <pre class="code">DATA
+      oDrawn                  (R)
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont,
+         bInit, bSize, bPaint, tcolor, bcolor, bGfocus, bLfocus, xInitVal, cPicture )
+      SetText( cText )
+      Value( xValue ) SETGET
+   </pre>
+
    <br><strong class="subhead"><a name="hcolumn" href="#_hcolumn">
    HColumn</a></strong> 
    <pre class="code">DATA
@@ -1562,6 +1581,7 @@
       oStyleFoot              (RW) An HStyle object to draw the footer
       oStyleCell              (RW) An HStyle object to draw the cell
       aBitmaps                (RW)
+      oPaintCB                (RW) HPaintCB object
       bValid,bWhen            (RW)
       bEdit                   (RW) Codeblock, which performs cell editing, if defined
       Picture                 (RW)
@@ -1569,14 +1589,92 @@
       lSpandHead              (RW)
       lSpandFoot              (RW)
       bHeadClick              (RW) Codeblock, which executes after a mouse click on a header
-      bColorBlock             (RW)
-      brush                    (R)
-      aPaintCB                 (R) An array with codeblocks to paint column items
+      bColorBlock             (RW) Codeblock, which must return an array containing, at least,
+                                   four colors values:
+                                   { textColor, backColor, textColorRowSel, backColorRowSel
+                                   [, textColorColSel, backColorColSel ] }
+      brush
    </pre>
    <pre class="code">METHODS
      New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin,
         cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
-     SetPaintCB( nId, block, cId )
+   </pre>
+
+   <br><strong class="subhead"><a name="hbrwcol" href="#_hbrwcol">
+   HBrwCol</a></strong> 
+   <pre class="code">DATA
+      block                   (RW)
+      cHead, cFoot            (RW)
+      nWidth                  (RW)
+      dec                     (RW)
+      nAlignHead, nAlignRow   (RW)
+      tcolor, bcolor          (RW)
+      oFont                   (RW)
+
+      lEditable               (RW) Is the column editable
+      cPicture, bValid        (RW)
+      aList                   (RW) Array of possible values for a column
+      nEditType               (RW)
+
+      oPaintCB                (RW) HPaintCB object
+      bHeadClick              (RW)
+   </pre>
+   <pre class="code">METHODS
+      New( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable )
+   </pre>
+
+   <br><strong class="subhead"><a name="hbrwdata" href="#_hbrwdata">
+   HBrwData</a></strong> 
+   <pre class="code">DATA
+      nCurrent                (R)
+   </pre>
+   <pre class="code">METHODS
+      Bof()      VIRTUAL
+      Eof()      VIRTUAL
+      Top()      VIRTUAL
+      Bottom()   VIRTUAL
+      Recno()    VIRTUAL
+      RecnoLog() VIRTUAL
+      GoTo( n )  VIRTUAL
+      Count()    VIRTUAL
+      Skip( nSkip ) VIRTUAL
+      Block( x )    VIRTUAL
+   </pre>
+
+   <br><strong class="subhead"><a name="hdataarray" href="#_hdataarray">
+   HDataArray</a></strong> 
+   <pre class="code">DATA
+      aData                   (R)
+   </pre>
+   <pre class="code">METHODS
+      Bof()
+      Eof()
+      Top()
+      Bottom()
+      Recno()
+      RecnoLog()
+      GoTo( n )
+      Count()
+      Skip( nSkip )
+      Block( x )
+   </pre>
+
+   <br><strong class="subhead"><a name="hdatadbf" href="#_hdatadbf">
+   HDataDbf</a></strong> 
+   <pre class="code">DATA
+      cAlias                  (R)
+   </pre>
+   <pre class="code">METHODS
+      Bof()
+      Eof()
+      Top()
+      Bottom()
+      Recno()
+      RecnoLog()
+      GoTo( n )
+      Count()
+      Skip( nSkip )
+      Block( x )
    </pre>
 
    <br><strong class="subhead"><a name="hradiogroup" href="#_hradiogroup">
@@ -2470,7 +2568,7 @@
    HPaintCB</a></strong> 
 
    <pre class="code">DATA
-      aCB                     (R)
+      aCB                    (R)
    </pre>
    <pre class="code">METHODS
       New()  INLINE Self
@@ -2506,44 +2604,45 @@
    HDrawn</a></strong> 
 
    <pre class="code">DATA
-      CLASS VAR oDefParent
-      oParent
-      title
-      nTop, nLeft
-      nWidth, nHeight
-      nTextStyle
-      tcolor, bcolor
-      oBrush, oPen
-      tBorderColor 
-      nCorner      
-      lHide        
-      nState       
-      oFont
-      aStyles
-      aDrawn       
-      xValue       
-      cTooltip
-      bPaint
-      bClick
-      bChgState
-      bSize
+      CLASS VAR oDefParent    (R)
+      oParent                 (RW)  Parent object
+      title                   (RW)  A text - title, caption of this widget
+      nTop, nLeft             (RW)  Coordinates of this widget relatively to parent HBoard widget
+      nWidth, nHeight         (RW)  Width, height of this object
+      nTextStyle              (RW)  DT_LEFT, DT_CENTER (default), DT_RIGHT
+      tcolor, bcolor          (RW)  Text and background colors
+      tBorderColor            (RW)  Border color
+      nCorner                 (RW)  The radius of a corner, if rounded
+      oBrush                  (R)   A Brush object to fill background
+      oPen                    (R)   A Pen object to draw border
+      lHide                   (RW)  Flag of a "Hide" state
+      nState                  (R)   STATE_NORMAL, STATE_PRESSED, STATE_MOVER
+      oFont                   (RW)  Font object
+      aStyles                 (RW)  Array of HSTYLE objects for 3 possible states
+      aDrawn                  (R)   Array of child drawn widgets
+      cTooltip                (RW)  The text of a tooltip
+      bPaint                  (RW)  Paint codeblock {|oDrawn,hDC| ... }
+      bClick                  (RW)  On click codeblock {|oDrawn,nPosX,nPosY| ... }
+      bChgState               (RW)  On change state codeblock {|oDrawn,nState| ... }
+      bSize                   (RW)  On size codeblock {|oDrawn,nWidth,nHeight| ... }
   Internal:
-      lStatePaint  
-      oTooltip
-      nMouseOn     
+      lStatePaint
+      oTooltip                HDrawnTT object
+      nMouseOn
+      xValue                  The value, related to this widget
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles,
         title, oFont, bPaint, bClick, bChgState )
-      Delete()
-      GetParentBoard()
-      GetByPos( xPos, yPos, oBoard )
-      GetByState( nState, aDrawn, block, lAll )
-      Move( x1, y1, width, height, lRefresh )
-      SetState( nState, nPosX, nPosY )
-      SetText( cText )
-      Value( xValue ) SETGET
-      Refresh( x1, y1, x2, y2 )
+      Delete()                                   Delete object from a parent's :aDrawn array
+      GetParentBoard()                           Returns a parent HBoard widget
+      GetByPos( xPos, yPos [, oBoard] )          Returns a child drawn widget by position
+      GetByState( nState, aDrawn, block, lAll )  Returns one or all child drawn widgets with nState
+      Move( x1, y1, width, height, lRefresh )    Move/resize the widget
+      SetState( nState, nPosX, nPosY )           Set widget state
+      SetText( cText )                           Change the title and refresh
+      Value( xValue ) SETGET                     Set/get a value, related to widget
+      Refresh( [x1, y1, x2, y2] )                Repaint widget or a part of it on the screen
   Internal:
       Paint( hDC )
       onMouseMove( xPos, yPos )
@@ -2560,9 +2659,9 @@
    HDrawnTT</a></strong> 
 
    <pre class="code">DATA
-       CLASS VAR oFontDef
-       CLASS VAR tColorDef
-       CLASS VAR bColorDef
+       CLASS VAR oFontDef     (RW) A default font for all drawn tooltips
+       CLASS VAR tColorDef    (RW) A default text color for all drawn tooltips
+       CLASS VAR bColorDef    (RW) A default background color for all drawn tooltips
   Internal:
        hBitmapTmp
    </pre>
@@ -2579,7 +2678,7 @@
    HDrawnCheck</a></strong> 
 
    <pre class="code">DATA
-      cForTitle
+      cForTitle               (RW) A char to be displayed as a check mark
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles,
@@ -2591,43 +2690,44 @@
    HDrawnRadio</a></strong> 
 
    <pre class="code">DATA
-      cForTitle
-      xGroup
+      cForTitle               (RW) A char to be displayed as a check mark
+      xGroup                  (RW) A group for this radio widget (any char or number)
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles,
         title, oFont, bPaint, bClick, bChgState, xGroup, lInitVal )
       SetState( nState, nPosX, nPosY )
-      GetGroupValue()
-      SetGroupValue( nVal )
+      GetGroupValue()         Get a value of appropriate group (number of selected radio widget)
+      SetGroupValue( nVal )   Set a value of appropriate group (number of selected radio widget)
    </pre>
 
   <br><strong class="subhead"><a name="hdrawnedit" href="#_hdrawnedit">
    HDrawnEdit</a></strong> 
 
    <pre class="code">DATA
-      lUtf8       
-      lReadOnly   
-      lUpdated    
-      lInsert     
-      lNoPaste    
+      lUtf8                   (RW) Flag - UTF8 codepage is used
+      lReadOnly               (RW) Flag - readonly mode
+      lUpdated                (R)  Flag - was the text updated
+      lInsert                 (RW) Flag - insert or overwrite
+      lNoPaste                (RW) Flag - paste is forbidden
 
-      nBoundL     
-      nBoundR     
-      nBoundT     
+      nBoundL                 (RW) Left indent
+      nBoundR                 (RW) Right indent
+      nBoundT                 (RW) Top indent
 
-      oPenBorder
-      nBorder     
-      nBorderColor
+      oPenBorder              (R)  A Pen to draw border
+      nBorder                 (RW) Border thickness
+      nBorderColor            (RW) Border color
 
-      tcolorSel
-      bcolorSel
+      tcolorSel               (RW) text color of a selected fragment
+      bcolorSel               (RW) background color of a selected fragment
 
-      cType, oPicture
+      cType                   (R)  A type of an edited value (char, date, numeric)
+      oPicture                (R)  HPicture object
 
-      nAlign
-      bKeyDown, bRClick
-      bGetFocus, bLostFocus
+      nAlign                  (RW)
+      bKeyDown, bRClick       (RW)
+      bGetFocus, bLostFocus   (RW)
   Internal:
       hEdit
       nPosF 
@@ -2637,12 +2737,12 @@
    <pre class="code">METHODS
       New( oWndParent, nLeft, nTop, nWidth, nHeight,
            tcolor, bcolor, oFont, xInitVal, cPicture, bPaint, bChgState )
-      Paint( hDC )
       Value( xValue ) SETGET
       DelText( nPos1, nPos2 )
       InsText( nPosC, cText, lOver )
       SetFocus()
   Internal:
+      Paint( hDC )
       SetCaretPos( nType, p1 )
       PutChar( wParam )
       onKey( msg, wParam, lParam )
@@ -2658,13 +2758,14 @@
    HDrawnLenta</a></strong> 
 
    <pre class="code">DATA
-      lVertical
-      aItems
-      nItemSize
-      aItemStyle
-      oFont, oPen
-      nFirst    
-      nSelected 
+      lVertical               (R)
+      aItems                  (RW)
+      nItemSize               (RW)
+      aItemStyle              (RW)
+      oFont                   (RW)
+      oPen                    (R)
+      nFirst                  (RW)
+      nSelected               (RW)
   Internal:
       lDrawNext 
       lPressed  
@@ -2692,15 +2793,17 @@
    HDrawnTrack</a></strong> 
 
    <pre class="code">DATA
-      lVertical
-      oStyleBar, oStyleSlider
-      lAxis    INIT .T.
-      nFrom, nTo, nCurr, nSize
-      oPen1, oPen2, tColor2
-      bChange
-      bEndDrag
+      lVertical               (RW)
+      oStyleBar, oStyleSlider (RW)
+      lAxis                   (RW)
+      nFrom, nTo              (RW)
+      nCurr, nSize            (RW)
+      tColor2                 (RW)
+      oPen1, oPen2            (R)
+      bChange                 (RW)
+      bEndDrag                (RW)
   Internal:
-      lCaptured   INIT .F.
+      lCaptured
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nLeft, nTop, nWidth, nHeight,
@@ -2721,47 +2824,49 @@
    HDrawnBrw</a></strong> 
 
    <pre class="code">DATA
-      oData
-      aColumns   
+      oData                   (RW)
+      aColumns                (RW)
 
-      nHeightRow 
-      nHeightHead
-      nHeightFoot
-      aRowPadding
-      aHeadPadding
-      aMargin    
+      nHeightRow              (RW)
+      nHeightHead             (RW)
+      nHeightFoot             (RW)
+      aRowPadding             (RW)
+      aHeadPadding            (RW)
+      aMargin                 (RW)
 
-      tColorSel, bColorSel, htbColor, httColor
-      bCellBlock                  // {|oBrw,nRow,nCol| Return { tColor, bColor, oFont } }
-      sepColor      
-      oPenSep, oPenBorder
-      nBorder       
-      nBorderColor  
-      oFontHead
-      oPaintCB
+      tColorSel, bColorSel    (RW) Text and background colors of a selected row
+      httColor, htbColor      (RW) Text and background colors of a selected cell
+      bCellBlock              (RW) {|oBrw,nRow,nCol| Return { tColor, bColor, oFont } }
+      sepColor                (RW) Separators color
+      oPenSep, oPenBorder     (R)
+      nBorder                 (RW)
+      nBorderColor            (RW)
+      oFontHead               (RW)
 
-      oStyleHead                   // An HStyle object to draw the header
-      oStyleFoot                   // An HStyle object to draw the footer
-      oStyleCell                   // An HStyle object to draw the cell
+      oStyleHead              (RW) A HStyle object to draw the header
+      oStyleFoot              (RW) A HStyle object to draw the footer
+      oStyleCell              (RW) A HStyle object to draw the cell
 
-      aRows                        // { { y1,y2 },... }
-      nRowCount                    // Number of visible data rows
-      nRowCurr                     // Row currently selected
+      nRowCount               (R) Number of visible data rows
+      nRowCurr                (R) Row currently selected
 
-      nColCount                    // Number of visible data columns
-      nColCurr                     // Column currently selected
-      nColFirst                    // The leftmost column on the screen
-      nColResize                   // The column to be resized
+      nColCount               (R) Number of visible data columns
+      nColCurr                (R) Column currently selected
+      nColFirst               (R) The leftmost column on the screen
 
-      oTrackV, oTrackH
-      nTrackWidth, oStyleBar, oStyleSlider
+      oTrackV, oTrackH        (R)
+      nTrackWidth             (RW)
+      oStyleBar, oStyleSlider (RW)
 
-      bEnter, bKeyDown, bLostFocus, bRClick
-      oEdit
-      lSeleCell     
-      lRebuild      
+      bEnter, bKeyDown        (RW)
+      bLostFocus, bRClick     (RW)
+      oEdit                   (R)
+      lSeleCell               (RW)
   Internal:
       lCaptured
+      nColResize              The column to be resized
+      aRows                   { { y1,y2 },... }
+      lRebuild
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont
@@ -2799,13 +2904,13 @@
    HDrawnCombo</a></strong> 
 
    <pre class="code">DATA
-       aItems
-       lText 
-       oText, oBtn, oList
-       arrowColor   
-       arrowPen
-       nRowCount    
-       bChange
+       aItems                       (RW)
+       lText                        (RW)
+       oText, oBtn, oList           (R)
+       arrowColor                   (RW)
+       arrowPen                     (R)
+       nRowCount                    (RW)
+       bChange                      (RW)
   Internal:
        hBitmapList
    </pre>
@@ -2825,15 +2930,15 @@
    HDrawnUpdown</a></strong> 
 
    <pre class="code">DATA
-       nLower       
-       nUpper       
-       arr
+       nLower                 (RW)
+       nUpper                 (RW)
+       arr                    (RW)
 
-       oEdit, oBtnUp, oBtnDown
+       oEdit, oBtnUp, oBtnDown (R)
+       nPeriod                (RW)
+       arrowColor             (RW)
+       arrowPen               (R)
        oTimer
-       nPeriod      
-       arrowColor   
-       arrowPen
    </pre>
    <pre class="code">METHODS
     New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles,

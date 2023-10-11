@@ -2037,10 +2037,13 @@ FUNCTION Test
 
 #define CLR_WHITE    0xffffff
 #define CLR_BLACK    0x000000
+#define CLR_GRAY1    0xeeeeee
+#define CLR_GRAY2    0x707070
 #define CLR_DGRAY1   0x222222
 #define CLR_DGRAY2   0x555555
 #define CLR_DGRAY3   0x888888
-#define CLR_BLUE     16711680
+#define CLR_BLUE     0xff0000
+#define CLR_GREEN1   0xcaebba
 
 MEMVAR oBrw, oBrw1, oBrw2, oBrw3, arrBrw1
 FUNCTION Test
@@ -2074,6 +2077,16 @@ FUNCTION Test
 STATIC FUNCTION FBrw( oBoa, nBrw )
 
    LOCAL i
+   LOCAL bCell2 := {|o,nRow,nCol|
+     if nRow != o:nRowCurr
+       if nCol == 2
+         return {o:tColor,CLR_GREEN1}
+       elseif nRow % 2 == 1
+         return {o:tColor,CLR_GRAY1}
+       endif
+     endif
+     return Nil
+   }
 
    IF nBrw == 1
       // Browse an array
@@ -2091,10 +2104,14 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
             arrBrw1[i] := { CMonth( Stod("2023"+PAdl(Ltrim(Str(i)),2,'0')+"01") ), i, i*i }
          NEXT
          @ 20, 48 DRAWN BROWSE oBrw1 SIZE 300, 230 COLOR CLR_BLACK BACKCOLOR 0xdddddd FONT oBoa:oFont VSCROLL
+         // Set a style for a scroll bar
          oBrw1:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
+         // Set a borfer thickness
          oBrw1:nBorder := 1
+         // Increase a padding for a header
          oBrw1:aHeadPadding[2] := 4
          oBrw1:aHeadPadding[4] := 8
+         // Set an array as a data source
          oBrw1:oData := HDataArray():New( arrBrw1 )
          // You may pass an array column number instead of a codeblock
          oBrw1:AddColumn( "Name", 1, 100,, DT_CENTER, .T. )
@@ -2116,15 +2133,22 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
             FCreateDB()
          ENDIF
          @ 20, 48 DRAWN BROWSE oBrw2 SIZE 380, 230 COLOR CLR_BLACK BACKCOLOR 0xdddddd FONT oBoa:oFont VSCROLL HSCROLL
+         oBrw2:tColor := CLR_BLACK
+         oBrw2:bColor := CLR_WHITE
+         oBrw2:htbColor := CLR_GRAY2
          oBrw2:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
          oBrw2:nBorder := 1
+         // Set a dbf file as a data source
          oBrw2:oData := HDataDbf():New( "BASE1" )
          // You may pass a database column number or a field name instead of a codeblock
          oBrw2:AddColumn( "Name", 1, 180,, DT_CENTER, .T. )
          oBrw2:AddColumn( "Num", "NUM", 50, DT_RIGHT, DT_CENTER, .T. )
          oBrw2:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
          oBrw2:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
+         // Set an array for a column values to be used while cell editing
          oBrw2:aColumns[4]:aList := { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" }
+         // Set a codeblock for cell colors
+         oBrw2:bCellBlock := bCell2
       ENDIF
       oBrw := oBrw2
       base1->( ordSetFocus( 0 ) )
@@ -2143,6 +2167,8 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
             FCreateDB()
          ENDIF
          @ 20, 48 DRAWN BROWSE oBrw3 SIZE 380, 230 COLOR CLR_BLACK BACKCOLOR 0xdddddd FONT oBoa:oFont VSCROLL HSCROLL
+         oBrw3:tColor := CLR_BLACK
+         oBrw3:bColor := CLR_WHITE
          oBrw3:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
          oBrw3:nBorder := 1
          oBrw3:oData := HDataDbf():New( "BASE1" )

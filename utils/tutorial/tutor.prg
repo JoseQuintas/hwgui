@@ -40,6 +40,19 @@
 #include "hrbextern.ch"
 #include "hwgextern.ch"
 
+#define CLR_BLACK     0
+#define CLR_WHITE     0xFFFFFF
+#define CLR_LGREEN    0xAAC8AA
+#define CLR_GREEN     32768
+#define CLR_DBLUE     8388608
+#define CLR_BLUE      16711680
+#define	CLR_GRAY      4473924
+#define	CLR_LGRAY1    0xBBBBBB
+#define CLR_LGRAY2    0x999999
+
+#define MENU_LOAD     1009
+#define MENU_THEMES   1010
+
 #define HILIGHT_KEYW    1
 #define HILIGHT_FUNC    2
 #define HILIGHT_QUOTE   3
@@ -53,16 +66,30 @@
 
 STATIC oIni
 STATIC cIniPath, cTutor
+STATIC oMainMenu, oEditMenu
+STATIC oCurrNode
 STATIC oText, oHighLighter
 STATIC oBtnRun
 STATIC cHwgrunPath
 STATIC cHwg_include_dir := ".."+ DIR_SEP + ".." + DIR_SEP + "include"
 STATIC cHwg_image_dir := ".." + DIR_SEP + ".." + DIR_SEP + "image"
 STATIC cHrb_inc_dir := "", cHrb_bin_dir := ""
+STATIC aThemes := {}, nCurrTheme := 1
+STATIC nInitWidth := 900, nInitHeight := 600, nInitSplitX := 270
 
 FUNCTION Main
-   LOCAL oMain, oPanel, oFont := HFont():Add( "Georgia", 0, - 15 )
-   LOCAL oTree, oSplit, oBmp
+   LOCAL oMain, oPanel, oBtnMenu, oFont := HFont():Add( "Georgia", 0, - 15 )
+   LOCAL oTree, oSplit
+   LOCAL oStyle1 := HStyle():New( {CLR_WHITE, CLR_LGRAY1}, 1 ), ;
+         oStyle2 := HStyle():New( {CLR_LGRAY1}, 1,, 3 ), ;
+         oStyle3 := HStyle():New( {CLR_LGRAY1}, 1,, 2, CLR_LGRAY2 )
+   LOCAL bSize := {|o,x,y|
+      LOCAL arr := hwg_GetWindowRect( o:handle )
+
+      nInitWidth := arr[3] - arr[1]
+      nInitHeight := arr[4] - arr[2]
+      RETURN .T.
+      }
 
    IF hwg__isUnicode()
       hb_cdpSelect( "UTF8" )
@@ -70,54 +97,83 @@ FUNCTION Main
    cIniPath := FilePath( hb_ArgV( 0 ) )
    cHwgrunPath := FindHwgrun()
    ReadIni()
-
-
-* #ifndef __PLATFORM__WINDOWS
-#ifdef __GTK__
-   oBmp := HBitmap():AddStandard( "gtk-go-forward" )
-#else
-   oBmp := HBitmap():AddStandard( OBM_MNARROW )
-#endif
+   ReadHis()
 
    HBitmap():cPath := cHwg_image_dir
 
    INIT WINDOW oMain MAIN TITLE "HwGUI Tutorial" ;
-      AT 200, 0 SIZE 800, 600 FONT oFont
+      AT 200, 0 SIZE nInitWidth, nInitHeight FONT oFont ON SIZE bSize
 
-   ADD TOP PANEL oPanel TO oMain HEIGHT 32 STYLE HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
+   CONTEXT MENU oMainMenu
+      MENUITEM "&Load file" ID MENU_LOAD ACTION Load2Draft()
+      MENUITEM "&Save" ACTION SaveDraft()
+      SEPARATOR
+      MENU TITLE "Themes"
+      FOR i := 1 TO Len( aThemes )
+         Hwg_DefineMenuItem( aThemes[i,6], MENU_THEMES + i, &( "{||ChangeTheme(" + LTrim(Str(i,2 ) ) + ")}" ),,,,,, .T. )
+      NEXT
+      ENDMENU
+      SEPARATOR
+      MENUITEM "&About" ACTION About()
+      SEPARATOR
+      MENUITEM "&Exit" ACTION oMain:Close()
+   ENDMENU
 
-   @ 710, 3 OWNERBUTTON oBtnRun OF oPanel ON CLICK { ||RunSample() } ;
-      SIZE 80, 26 FLAT ;
-      TEXT "Run" COORDINATES 12,0,0,0 ;
-      BITMAP oBmp COORDINATES 52,0,0,0 TRANSPARENT COLOR 0xffffff ;
-      TOOLTIP "Run sample" ON SIZE ANCHOR_RIGHTABS
-   oBtnRun:aStyle := { HStyle():New( {0xffffff,0xdddddd}, 1,, 1 ), ;
-            HStyle():New( {0xffffff,0xdddddd}, 2,, 1 ), ;
-            HStyle():New( {0xffffff,0xdddddd}, 1,, 2, 8421440 ) }
+   CONTEXT MENU oEditMenu
+      MENUITEM "Run" ACTION RunSample()
+      SEPARATOR
+      MENUITEM "&Load file" ID MENU_LOAD ACTION Load2Draft()
+      MENUITEM "Save" ACTION SaveDraft()
+      SEPARATOR
+      FOR i := 1 TO Len( aThemes )
+         Hwg_DefineMenuItem( aThemes[i,6], MENU_THEMES + i, &( "{||ChangeTheme(" + LTrim(Str(i,2 ) ) + ")}" ),,,,,, .T. )
+      NEXT
+   ENDMENU
+
+   ADD TOP PANEL oPanel TO oMain HEIGHT 32 HSTYLE oStyle1
+
+   @ 0, 0 OWNERBUTTON oBtnMenu OF oPanel ON CLICK {||ShowMainMenu()} ;
+      SIZE 40, oPanel:nHeight FLAT ;
+      BITMAP "menu.bmp" TRANSPARENT COLOR CLR_WHITE TOOLTIP "Menu"
+   oBtnMenu:aStyle := { oStyle1, oStyle2, oStyle3 }
+
+   @ oMain:nWidth-150, 0 OWNERBUTTON OF oPanel ON CLICK {||ChangeFont(oText,2) } ;
+      SIZE 40, oPanel:nHeight FLAT ;
+      TEXT "+" TOOLTIP "Zoom in" ON SIZE ANCHOR_RIGHTABS
+   ATail(oPanel:aControls):aStyle := { oStyle1, oStyle2, oStyle3 }
+   @ oMain:nWidth-110, 0 OWNERBUTTON OF oPanel ON CLICK {||ChangeFont(oText,-2) } ;
+      SIZE 40, oPanel:nHeight FLAT ;
+      TEXT "-" TOOLTIP "Zoom out" ON SIZE ANCHOR_RIGHTABS
+   ATail(oPanel:aControls):aStyle := { oStyle1, oStyle2, oStyle3 }
+
+   @ oMain:nWidth-60, 0 OWNERBUTTON oBtnRun OF oPanel ON CLICK { ||RunSample() } ;
+      SIZE 44, oPanel:nHeight FLAT ;
+      TEXT "Run" TOOLTIP "Run sample" ON SIZE ANCHOR_RIGHTABS
+   oBtnRun:aStyle := { oStyle1, oStyle2, oStyle3 }
    oBtnRun:Disable()
 
-   @ 0, 32 TREE oTree SIZE 270, 568 ;
+   @ 0, 32 TREE oTree SIZE nInitSplitX, oMain:nHeight-oPanel:nHeight ;
       EDITABLE ;
       BITMAP { "cl_fl.bmp", "op_fl.bmp" } ;
       ON SIZE { |o, x, y|o:Move( , , , y - 32 ) }
 
    oTree:bDblClick := { |oTree, oItem|RunSample( oItem ) }
 
-   oText := HCEdit():New( oMain, ,, 274, 32, 526, 568, oFont, , { |o, x, y|o:Move( ,,x - oSplit:nLeft - oSplit:nWidth,y - 32 ) } )
+   oText := HCEdit():New( oMain, ,, nInitSplitX+4, oPanel:nHeight, ;
+      nInitWidth-nInitSplitX-4, oMain:nHeight-oPanel:nHeight, oFont,, ;
+      { |o,x,y|o:Move( ,,x - oSplit:nLeft - oSplit:nWidth,y - 32 ) } )
    IF hwg__isUnicode()
       oText:lUtf8 := .T.
    ENDIF
+   oText:bRClick := {||ShowEditMenu()}
 
-   oText:SetHili( HILIGHT_KEYW, oText:oFont:SetFontStyle( .T. ), 8388608, oText:bColor )
-   oText:SetHili( HILIGHT_FUNC, - 1, 8388608, oText:bColor )
-   oText:SetHili( HILIGHT_QUOTE, - 1, 16711680, oText:bColor )
-   oText:SetHili( HILIGHT_COMM, oText:oFont:SetFontStyle( ,, .T. ), 32768, oText:bColor )
+   ChangeTheme( nCurrTheme )
 
-   @ 270, 32 SPLITTER oSplit SIZE 4, 568 ;
+   @ nInitSplitX, oPanel:nHeight SPLITTER oSplit SIZE 4, oMain:nHeight-oPanel:nHeight ;
       DIVIDE { oTree } FROM { oText } ;
-      ON SIZE { |o, x, y|o:Move( , , , y - 32 ) }
-
-   oSplit:bEndDrag := { ||hwg_Redrawwindow( oText:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW ) }
+      ON SIZE { |o,x,y|o:Move( ,,, y - oPanel:nHeight ) }
+   //oSplit:bEndDrag := { ||hwg_Redrawwindow( oText:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW ) }
+   oSplit:bEndDrag := {|o|nInitSplitX := o:nLeft}
 
    SET KEY FCONTROL, VK_ADD TO ChangeFont( oText, 2 )
    SET KEY FCONTROL, VK_SUBTRACT TO ChangeFont( oText, - 2 )
@@ -126,10 +182,21 @@ FUNCTION Main
 
    ACTIVATE WINDOW oMain
 
+   WriteHis()
+
    RETURN Nil
 
 STATIC FUNCTION ReadIni()
-   LOCAL oInit, i, oNode1, cHwgui_dir
+   LOCAL oInit, i, oNode1, oNode2, cHwgui_dir, arr, j, j1
+   LOCAL aTypes := { "normal", "command", "function", "comment", "quote" }
+
+   Aadd( aThemes, arr := Array(6) )
+   arr[1] := { CLR_GRAY, CLR_WHITE, .F., .F. }
+   arr[2] := { CLR_DBLUE, CLR_WHITE, .T., .F. }
+   arr[3] := { CLR_DBLUE, CLR_WHITE, .T., .F. }
+   arr[4] := { CLR_GREEN, CLR_WHITE, .F., .T. }
+   arr[5] := { CLR_BLUE, CLR_WHITE, .F., .F. }
+   arr[6] := "default"
 
    oIni := HXMLDoc():Read( cIniPath + "tutor.xml" )
    IF !Empty( oIni:aItems ) .AND. oIni:aItems[1]:title == "init"
@@ -149,6 +216,16 @@ STATIC FUNCTION ReadIni()
             cHrb_inc_dir := oNode1:GetAttribute( "path",,"" )
          ELSEIF oNode1:title == "hilight"
             oHighLighter := Hilight():New( oNode1 )
+         ELSEIF oNode1:title == "theme"
+            Aadd( aThemes, arr := Array(6) )
+            arr[6] := oNode1:GetAttribute("name","C","xxx")
+            FOR j := 1 TO Len( oNode1:aItems )
+               oNode2 := oNode1:aItems[j]
+               IF ( j1 := Ascan( aTypes, oNode2:title ) ) > 0
+                  arr[j1] := { oNode2:GetAttribute("tcolor","N",CLR_BLACK), oNode2:GetAttribute("bcolor","N",CLR_WHITE), ;
+                     oNode2:GetAttribute("bold"), oNode2:GetAttribute("italic") }
+               ENDIF
+            NEXT
          ENDIF
       NEXT
    ENDIF
@@ -166,6 +243,46 @@ STATIC FUNCTION ReadIni()
    IF !Empty( cHrb_inc_dir )
       cHrb_inc_dir := hb_OsPathListSeparator() + cHrb_inc_dir
    ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION ReadHis()
+
+   LOCAL s := MemoRead( cIniPath + "tutor.his" ), arr, arr1, cSep, i, cName, x, y
+
+   IF !Empty( s )
+      cSep := Iif( Chr(13) $ s, Chr(13)+Chr(10), Chr(10) )
+      arr := hb_aTokens( s, cSep )
+      FOR i := 1 TO Len( arr )
+         arr1 := hb_aTokens( arr[i], '=' )
+         cName := Lower( AllTrim( arr1[1] ) )
+         IF Len(arr1) > 1
+            IF cName == "theme"
+               nCurrTheme := Val( arr1[2] )
+               IF nCurrTheme == 0 .OR. nCurrTheme > Len( aThemes )
+                  nCurrTheme := 1
+               ENDIF
+            ELSEIF cName == "size"
+               arr1 := hb_aTokens( arr1[2], ',' )
+               IF Len( arr1 ) == 2 .AND. ( x := Val( arr1[1] ) ) > 0 .AND. ( y := Val( arr1[2] ) ) > 0
+                  nInitWidth := x
+                  nInitHeight := y
+               ENDIF
+            ELSEIF cName == "split"
+               nInitSplitX := Val( arr1[2] )
+            ENDIF
+         ENDIF
+      NEXT
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION WriteHis()
+
+   LOCAL s := "theme=" + Ltrim(Str( nCurrTheme,2 )) + Chr(13)+Chr(10) + ;
+      "size=" + Ltrim(Str(nInitWidth)) + "," + Ltrim(Str(nInitHeight)) + Chr(13)+Chr(10) + ;
+      "split=" + Ltrim(Str(Iif(nInitSplitX<10,200,nInitSplitX)))
+   hb_MemoWrit( cIniPath + "tutor.his", s )
 
    RETURN Nil
 
@@ -237,6 +354,14 @@ STATIC FUNCTION BuildTree( oTree )
             ENDIF
          ENDIF
       NEXT
+      INSERT NODE oTreeNode1 CAPTION "Drafts" TO oTree ON CLICK { |o|NodeOut( o ) }
+      oTreeNode1:cargo := { .F. , "" }
+      INSERT NODE oTNode CAPTION "Draft1" TO oTreeNode1 BITMAP { "book.bmp" } ON CLICK { |o|NodeOut( o ) }
+      oTNode:cargo := { .T. , "", "" }
+      INSERT NODE oTNode CAPTION "Draft2" TO oTreeNode1 BITMAP { "book.bmp" } ON CLICK { |o|NodeOut( o ) }
+      oTNode:cargo := { .T. , "", "" }
+      INSERT NODE oTNode CAPTION "Draft3" TO oTreeNode1 BITMAP { "book.bmp" } ON CLICK { |o|NodeOut( o ) }
+      oTNode:cargo := { .T. , "", "" }
    ENDIF
    IF !Empty( oTree:aItems )
       oTree:Select( oTree:aItems[1] )
@@ -255,11 +380,15 @@ STATIC FUNCTION NodeOut( oItem )
       oText:HighLighter()
       oBtnRun:Disable()
    ENDIF
+   IF !Empty( oCurrNode ) .AND. Len( oCurrNode:cargo ) > 2
+      oCurrNode:cargo[2] := oText:GetText()
+   ENDIF
    IF hwg__isUnicode()
       oText:SetText( oItem:cargo[2], "UTF8", "UTF8" )
    ELSE
       oText:SetText( oItem:cargo[2] )
    ENDIF
+   oCurrNode := oItem
 
    RETURN Nil
 
@@ -284,6 +413,9 @@ STATIC FUNCTION RunSample( oItem )
       ENDIF
       cText += cLine + Chr( 13 ) + Chr( 10 )
    NEXT
+   IF Empty( cText )
+      RETURN Nil
+   ENDIF
 
 #ifdef __XHARBOUR__
    FErase( "__tmp.hrb" )
@@ -351,6 +483,109 @@ STATIC FUNCTION ChangeFont( oCtrl, n )
    //hwg_Setctrlfont( oCtrl:oParent:handle, oCtrl:id, oFont:handle )
 
    oCtrl:SetFont( oFont )
+
+   RETURN Nil
+
+STATIC FUNCTION Load2Draft()
+
+   LOCAL fname
+   LOCAL oTNode := HWindow():GetMain():oTree:GetSelected()
+
+   IF Len( oTNode:cargo ) > 2
+      fname := hwg_Selectfile( { "( *.prg )" }, { "*.prg" }, Curdir() )
+
+      oTNode:cargo[2] := MemoRead( fname )
+      oTNode:cargo[3] := fname
+      oTNode:SetText( hb_fnameNameExt(fname) )
+      IF hwg__isUnicode()
+         oText:SetText( oTNode:cargo[2], "UTF8", "UTF8" )
+      ELSE
+         oText:SetText( oTNode:cargo[2] )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION SaveDraft()
+
+   LOCAL fname, cExt := ".prg", cMask := "*.prg", cTitle := "( *.prg )"
+   LOCAL oTNode := HWindow():GetMain():oTree:GetSelected()
+
+   DirChange( hb_DirBase() )
+#ifdef __PLATFORM__WINDOWS
+   fname := hwg_Savefile( cMask, cTitle, cMask, Curdir() )
+#else
+   fname := hwg_Selectfile( cTitle, cMask, Curdir() )
+#endif
+
+   IF !Empty( fname )
+      IF !Empty( cExt )
+         fname := hb_fnameExtSetDef( fname, cExt )
+      ENDIF
+      oText:Save( fname )
+   ENDIF
+
+   IF Len( oTNode:cargo ) > 2
+      oTNode:SetText( hb_fnameNameExt(fname) )
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION ShowMainMenu()
+
+   hwg_Enablemenuitem( oMainMenu, MENU_LOAD, Len(oCurrNode:cargo)>2, .T. )
+   oMainMenu:Show( HWindow():GetMain(), 32, 32, .T. )
+
+   RETURN Nil
+
+STATIC FUNCTION ShowEditMenu()
+
+   hwg_Enablemenuitem( oEditMenu, MENU_LOAD, Len(oCurrNode:cargo)>2, .T. )
+   oEditMenu:Show( HWindow():GetMain() )
+
+   RETURN Nil
+
+FUNCTION ChangeTheme( n )
+
+   LOCAL arr := aThemes[n]
+
+   hwg_CheckMenuItem( oMainMenu, MENU_THEMES+nCurrTheme, .F. )
+   hwg_CheckMenuItem( oEditMenu, MENU_THEMES+nCurrTheme, .F. )
+   hwg_CheckMenuItem( oMainMenu, MENU_THEMES+n, .T. )
+   hwg_CheckMenuItem( oEditMenu, MENU_THEMES+n, .T. )
+
+   IF !Empty( arr[1] )
+      oText:tColor := arr[1,1]
+      oText:bColor := arr[1,2]
+   ENDIF
+   oText:bColorCur := oText:bColor
+
+   IF !Empty( arr[2] )
+      oText:SetHili( HILIGHT_KEYW, Iif( !Empty(arr[2,3]).OR.!Empty(arr[2,4]), ;
+         oText:oFont:SetFontStyle( !Empty(arr[2,3]),,!Empty(arr[2,4]) ), -1 ), arr[2,1], arr[2,2] )
+   ENDIF
+   IF !Empty( arr[3] )
+      oText:SetHili( HILIGHT_FUNC, Iif( !Empty(arr[3,3]).OR.!Empty(arr[3,4]), ;
+         oText:oFont:SetFontStyle( !Empty(arr[3,3]),,!Empty(arr[3,4]) ), -1 ), arr[3,1], arr[3,2] )
+   ENDIF
+   IF !Empty( arr[4] )
+      oText:SetHili( HILIGHT_COMM, Iif( !Empty(arr[4,3]).OR.!Empty(arr[4,4]), ;
+         oText:oFont:SetFontStyle( !Empty(arr[4,3]),,!Empty(arr[4,4]) ), -1 ), arr[4,1], arr[4,2] )
+   ENDIF
+   IF !Empty( arr[5] )
+      oText:SetHili( HILIGHT_QUOTE, Iif( !Empty(arr[5,3]).OR.!Empty(arr[5,4]), ;
+         oText:oFont:SetFontStyle( !Empty(arr[5,3]),,!Empty(arr[5,4]) ), -1 ), arr[5,1], arr[5,2] )
+   ENDIF
+   oText:Refresh()
+
+   nCurrTheme := n
+
+   RETURN Nil
+
+STATIC FUNCTION About
+
+   hwg_MsgInfo( "HwGUI Tutor" + Chr(13)+Chr(10) + "Interactive Tutorial" + Chr(13)+Chr(10) + "Version 1.2" + Chr(13)+Chr(10) + "(C) Alexander S.Kresin" ;
+      + Chr(13)+Chr(10) + Chr(13)+Chr(10) + hwg_Version() )
 
    RETURN Nil
 

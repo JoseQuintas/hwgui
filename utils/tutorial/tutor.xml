@@ -6,6 +6,37 @@
     <single_line_comment> // </single_line_comment>
     <multi_line_comment> /* */ </multi_line_comment>
   </hilight>
+
+  <theme name="Far theme">
+    <normal tcolor="16777088" bcolor="12124160"/>
+    <command tcolor="16777215" bcolor="12124160"/>
+    <function tcolor="16777215" bcolor="12124160"/>
+    <comment tcolor="12882032" bcolor="12124160" italic="true"/>
+    <quote tcolor="65535" bcolor="12124160"/>
+  </theme>
+  <theme name="Solarized dark">
+    <normal tcolor="10592659" bcolor="3549952"/>
+    <command tcolor="39301" bcolor="3549952"/>
+    <function tcolor="13798182" bcolor="3549952"/>
+    <_comment tcolor="7695960" bcolor="3549952" italic="true"/>
+    <comment tcolor="14018798" bcolor="3549952" italic="true"/>
+    <quote tcolor="35253" bcolor="3549952"/>
+  </theme>
+  <theme name="Solarized mid">
+    <normal tcolor="10592659" bcolor="4339207"/>
+    <command tcolor="39301" bcolor="4339207"/>
+    <function tcolor="13798182" bcolor="4339207"/>
+    <comment tcolor="7695960" bcolor="4339207" italic="true"/>
+    <quote tcolor="35253" bcolor="4339207"/>
+  </theme>
+  <theme name="Solarized light">
+    <normal tcolor="4339207" bcolor="14018798"/>
+    <command tcolor="39301" bcolor="14018798"/>
+    <function tcolor="13798182" bcolor="14018798"/>
+    <comment tcolor="10592659" bcolor="14018798" italic="true"/>
+    <quote tcolor="35253" bcolor="14018798"/>
+  </theme>
+
   <tutorial file="tutor_eng.xml" />
   <hwgui_dir path="..\.." />
   <harbour_inc path="c:\harbour\include" />

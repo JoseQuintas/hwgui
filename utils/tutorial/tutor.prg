@@ -114,6 +114,7 @@ FUNCTION Main
          Hwg_DefineMenuItem( aThemes[i,6], MENU_THEMES + i, &( "{||ChangeTheme(" + LTrim(Str(i,2 ) ) + ")}" ),,,,,, .T. )
       NEXT
       ENDMENU
+      MENUITEM "&Font" ACTION SetFont()
       SEPARATOR
       MENUITEM "&About" ACTION About()
       SEPARATOR
@@ -129,6 +130,8 @@ FUNCTION Main
       FOR i := 1 TO Len( aThemes )
          Hwg_DefineMenuItem( aThemes[i,6], MENU_THEMES + i, &( "{||ChangeTheme(" + LTrim(Str(i,2 ) ) + ")}" ),,,,,, .T. )
       NEXT
+      SEPARATOR
+      MENUITEM "&Font" ACTION SetFont()
    ENDMENU
 
    ADD TOP PANEL oPanel TO oMain HEIGHT 32 HSTYLE oStyle1
@@ -607,15 +610,28 @@ STATIC FUNCTION ShowErr( cMess )
    oEdit:SetText( cMess )
 
    IF lErr
-      @ 200, 460 BUTTON "Close" ON CLICK { || hwg_EndDialog() } SIZE 100, 32
+      @ 200, 460 BUTTON "Close" ON CLICK { || hwg_EndDialog() } SIZE 100, 32 ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
    ELSE
-      @ 50, 460 BUTTON "Run anyway" ON CLICK { || lRes := .T., hwg_EndDialog() } SIZE 100, 32
-      @ 350, 460 BUTTON "Exit" ON CLICK { || hwg_EndDialog() } SIZE 100, 32
+      @ 50, 460 BUTTON "Run anyway" ON CLICK { || lRes := .T., hwg_EndDialog() } SIZE 100, 32 ;
+         ON SIZE ANCHOR_BOTTOMABS
+      @ 350, 460 BUTTON "Cancel" ON CLICK { || hwg_EndDialog() } SIZE 100, 32 ;
+         ON SIZE ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
    ENDIF
 
    ACTIVATE DIALOG oDlg CENTER
 
    RETURN lRes
+
+STATIC FUNCTION SetFont()
+
+   LOCAL oFont := HFont():Select( oText:oFont )
+
+   IF !Empty( oFont )
+      oText:SetFont( oFont )
+   ENDIF
+
+   RETURN Nil
 
 STATIC FUNCTION About
 

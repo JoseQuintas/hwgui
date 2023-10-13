@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-13 15:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/hwgrun.prg
+  * utils/tutorial/tutor.prg
+    * Tutorial updated    
+
 2023-10-13 14:51 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/procmisc/cfuncs.c
     * hwg_redirOn(), hwg_redirOff() functions added

@@ -79,7 +79,7 @@ STATIC nInitWidth := 900, nInitHeight := 600, nInitSplitX := 270
 
 FUNCTION Main
    LOCAL oMain, oPanel, oBtnMenu, oFont := HFont():Add( "Georgia", 0, - 15 )
-   LOCAL oTree, oSplit
+   LOCAL oTree, oSplit, i
    LOCAL oStyle1 := HStyle():New( {CLR_WHITE, CLR_LGRAY1}, 1 ), ;
          oStyle2 := HStyle():New( {CLR_LGRAY1}, 1,, 3 ), ;
          oStyle3 := HStyle():New( {CLR_LGRAY1}, 1,, 2, CLR_LGRAY2 )
@@ -102,7 +102,8 @@ FUNCTION Main
    HBitmap():cPath := cHwg_image_dir
 
    INIT WINDOW oMain MAIN TITLE "HwGUI Tutorial" ;
-      AT 200, 0 SIZE nInitWidth, nInitHeight FONT oFont ON SIZE bSize
+      AT 200, 0 SIZE nInitWidth, nInitHeight FONT oFont ON SIZE bSize ;
+      ON EXIT {|| WriteHis(),.T. }
 
    CONTEXT MENU oMainMenu
       MENUITEM "&Load file" ID MENU_LOAD ACTION Load2Draft()
@@ -181,8 +182,6 @@ FUNCTION Main
    BuildTree( oTree  )
 
    ACTIVATE WINDOW oMain
-
-   WriteHis()
 
    RETURN Nil
 
@@ -393,7 +392,8 @@ STATIC FUNCTION NodeOut( oItem )
    RETURN Nil
 
 STATIC FUNCTION RunSample( oItem )
-   LOCAL cText := "", cLine, i, cHrb, lWnd := .F.
+   LOCAL cText := "", cLine, i, ie, cHrb, lWnd := .F.
+   LOCAL cFileErr := hb_DirTemp() + "hwg_compile_err.out", cTemp
    LOCAL cHrbCopts
 
    cHrbCopts := ""
@@ -431,11 +431,22 @@ STATIC FUNCTION RunSample( oItem )
    ENDIF
 #else
 
+   i := hwg_rediron( 1, hb_DirTemp() + "hwg_compile.out" )
+   ie := hwg_rediron( 2, cFileErr )
 #ifdef __GTK__
-   IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n", "-d__GTK__" , "-I" + cHwg_include_dir + cHrb_inc_dir ) )
+   cHrb := hb_compileFromBuf( cText, "harbour","-n", "-w", "-d__GTK__" , "-I" + cHwg_include_dir + cHrb_inc_dir )
 #else
-   IF !Empty( cHrb := hb_compileFromBuf( cText, "harbour","-n", "-I" + cHwg_include_dir + cHrb_inc_dir ) )
+   cHrb := hb_compileFromBuf( cText, "harbour","-n", "-w", "-I" + cHwg_include_dir + cHrb_inc_dir )
 #endif
+   hwg_rediroff( 2, ie )
+   hwg_rediroff( 1, i )
+
+   cTemp := MemoRead( cFileErr )
+   ie := .T.
+   IF !Empty( cTemp ) .AND. ( ( " Warning " $ cTemp ) .OR. ( " Error " $ cTemp ) )
+      ie := ShowErr( cTemp )
+   ENDIF
+   IF !Empty( cHrb ) .AND. ie
       IF lWnd
          IF !Empty( cHwgrunPath )
             hb_Memowrit( "__tmp.hrb", cHrb )
@@ -581,6 +592,30 @@ FUNCTION ChangeTheme( n )
    nCurrTheme := n
 
    RETURN Nil
+
+
+STATIC FUNCTION ShowErr( cMess )
+
+   LOCAL oDlg, oEdit, lErr := ( " Error " $ cMess ), lRes := .F.
+
+   INIT DIALOG oDlg TITLE "Error.log" At 92, 61 SIZE 500, 500 FONT HWindow():Getmain():oFont
+
+   @ 4, 4 HCEDIT oEdit SIZE 492, 440 ON SIZE {|o,x,y|o:Move( ,, x-8, y-60 ) }
+   IF hwg__isUnicode()
+      oEdit:lUtf8 := .T.
+   ENDIF
+   oEdit:SetText( cMess )
+
+   IF lErr
+      @ 200, 460 BUTTON "Close" ON CLICK { || hwg_EndDialog() } SIZE 100, 32
+   ELSE
+      @ 50, 460 BUTTON "Run anyway" ON CLICK { || lRes := .T., hwg_EndDialog() } SIZE 100, 32
+      @ 350, 460 BUTTON "Exit" ON CLICK { || hwg_EndDialog() } SIZE 100, 32
+   ENDIF
+
+   ACTIVATE DIALOG oDlg CENTER
+
+   RETURN lRes
 
 STATIC FUNCTION About
 

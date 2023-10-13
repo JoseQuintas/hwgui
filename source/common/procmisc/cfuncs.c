@@ -806,3 +806,34 @@ HB_FUNC( EDI_UTF8_UPPER )
    hb_retclen( szDst, iDstLen );
    free( szDst );
 }
+
+HB_FUNC( HWG_REDIRON )
+{
+   int istd = ( HB_ISNIL( 1 ) ) ? 1 : hb_parni( 1 );
+   int fd;
+
+   fflush( ( istd == 1 ) ? stdout : stderr );
+   fd = dup( fileno( ( istd == 1 ) ? stdout : stderr ) );
+   freopen( hb_parc( 2 ), "w", ( istd == 1 ) ? stdout : stderr );
+   hb_retni( fd );
+}
+
+HB_FUNC( HWG_REDIROFF )
+{
+   int istd = ( HB_ISNIL( 1 ) ) ? 1 : hb_parni( 1 );
+   int fd;
+
+   fflush( ( istd == 1 ) ? stdout : stderr );
+
+   if( HB_ISNIL( 2 ) )
+   {
+      fclose( ( istd == 1 ) ? stdout : stderr );
+   }
+   else
+   {
+      fd = hb_parni( 2 );
+      dup2( fd, fileno( ( istd == 1 ) ? stdout : stderr ) );
+      close( fd );
+      clearerr( ( istd == 1 ) ? stdout : stderr );
+   }
+}

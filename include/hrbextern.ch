@@ -1492,4 +1492,5 @@ REQUEST sqlite3_open, sqlite3_open_v2, sqlite3_exec, sqlite3_prepare, sqlite3_st
 REQUEST sqlite3_column_int, sqlite3_column_text, sqlite3_column_int64, sqlite3_column_blob
 REQUEST sqlite3_bind_text, sqlite3_bind_int, sqlite3_bind_int64, sqlite3_bind_blob
 REQUEST sqlite3_column_type, sqlite3_clear_bindings, sqlite3_finalize, sqlite3_errcode
+REQUEST sqlite3_last_insert_rowid
 #endif

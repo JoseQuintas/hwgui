@@ -19,7 +19,8 @@ STATIC aMessModalDlg := { ;
       { WM_MOVE, { |o,w,l|hwg_onMove( o,w,l ) } },            ;
       { WM_INITDIALOG, { |o,w,l|InitModalDlg( o,w,l ) } },    ;
       { WM_DESTROY, { |o|onDestroy( o ) } },                  ;
-      { WM_SETFOCUS, { |o,w,l|onGetFocus( o,w,l ) } }         ;
+      { WM_SETFOCUS, { |o,w,l|onGetFocus( o,w,l ) } },        ;
+      { WM_KILLFOCUS, { |o,w,l|onKillFocus( o,w,l ) } }       ;
       }
 
 STATIC FUNCTION onDestroy( oDlg )
@@ -333,6 +334,18 @@ STATIC FUNCTION onGetFocus( oDlg, w, l )
    ENDIF
 
    RETURN 0
+
+STATIC FUNCTION onKillFocus( oDlg, w, l )
+
+   HB_SYMBOL_UNUSED(w)
+   HB_SYMBOL_UNUSED(l)
+
+   IF oDlg:bLostFocus != Nil
+      Eval( oDlg:bLostFocus, oDlg )
+   ENDIF
+
+   RETURN 0
+
 
 FUNCTION hwg_GetModalDlg
 

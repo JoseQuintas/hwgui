@@ -55,11 +55,19 @@ METHOD New( oWndParent, nId, vari, nStyle, nLeft, nTop, nWidth, nHeight, ;
 
 METHOD Activate() CLASS HMonthCalendar
 
+LOCAL bChg := {||
+   ::dValue := hwg_Getmonthcalendardate( ::handle )
+   IF !Empty( ::bChange )
+      Eval( ::bChange )
+   ENDIF
+   RETURN .T.
+   }
+
    IF !Empty( ::oParent:handle )
       ::handle := hwg_Initmonthcalendar ( ::oParent:handle, , ;
          ::nLeft, ::nTop, ::nWidth, ::nHeight )
       hwg_Setwindowobject( ::handle, Self )
-      hwg_Monthcalendar_setaction( ::handle, { ||::dValue := hwg_Getmonthcalendardate( ::handle ) } )
+      hwg_Monthcalendar_setaction( ::handle, bChg )
       ::Init()
    ENDIF
 

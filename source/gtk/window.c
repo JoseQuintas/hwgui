@@ -336,7 +336,7 @@ HB_FUNC( HWG_CREATEDLG )
 
    gtk_widget_add_events( hWnd, GDK_BUTTON_PRESS_MASK |
          GDK_BUTTON_RELEASE_MASK |
-         GDK_POINTER_MOTION_MASK | GDK_FOCUS_CHANGE );
+         GDK_POINTER_MOTION_MASK | GDK_FOCUS_CHANGE_MASK );
    set_event( ( gpointer ) hWnd, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) hWnd, "button_release_event", 0, 0, 0 );
    set_event( ( gpointer ) hWnd, "motion_notify_event", 0, 0, 0 );
@@ -346,6 +346,7 @@ HB_FUNC( HWG_CREATEDLG )
 
    set_event( (gpointer)hWnd, "configure_event", 0, 0, 0 );
    set_event( (gpointer)hWnd, "focus_in_event", 0, 0, 0 );
+   set_event( ( gpointer )hWnd, "focus_out_event", 0, 0, 0 );
 
    g_signal_connect( box, "size-allocate", G_CALLBACK (cb_signal_size), NULL );
    //g_signal_connect( hWnd, "size-allocate", G_CALLBACK (cb_signal_size), NULL );

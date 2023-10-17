@@ -15,6 +15,18 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-17 13:11 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawncomb.prg
+    * HDateSelect, HDrawnDate classes added - a crossplatform HDatePicker alternative.
+  * source/gtk/hmonthc.prg
+  * source/gtk/hmonthc.prg
+  * source/cross/common.prg
+    * hwg_oDatepicker_bmp() moved to common.prg
+    * hwg_pCalendar() removed since a real crossplatform HDatePicker substitute was implemented.
+  * include/hwgextern.ch
+  * utils/tutorial/tutor_eng.xml
+    * "DateSelect" module added to "Controls" chapter
+
 2023-10-16 16:21 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hdialog.prg
   * source/gtk/window.c

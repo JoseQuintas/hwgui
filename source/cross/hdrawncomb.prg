@@ -380,7 +380,7 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnUpDown
          ::oTimer := HTimer():New( ::GetParentBoard(),, ::nPeriod, {|o|UpDownTimerProc(o,::oBtnDown)} )
          ::oTimer:cargo := 8
       ELSE
-         ::oEdit:SetFocus()
+         ::oEdit:onButtonDown( msg, xPos, yPos )
       ENDIF
    ENDIF
    RETURN Nil
@@ -426,4 +426,212 @@ STATIC FUNCTION UpDownTimerProc( op, oBtn )
       o:Value := nVal
    ENDIF
 
+   RETURN Nil
+
+CLASS HDateSelect INHERIT HBoard
+
+   DATA bChange
+
+   METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, color, bcolor, oFont, ;
+               dValue, bSize, bPaint, bChange  )
+   METHOD bChange ( b ) SETGET
+   METHOD Value ( xValue ) SETGET
+
+ENDCLASS
+
+METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, color, bcolor, oFont, ;
+               dValue, bSize, bPaint, bChange ) CLASS HDateSelect
+
+   color := Iif( color == Nil, CLR_BLACK, color )
+   bColor := Iif( bColor == Nil, CLR_WHITE, bColor )
+   ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont,, ;
+              bSize, bPaint,, color, bcolor, .T. )
+
+   HDrawnDate():New( Self, 0, 0, nWidth, nHeight, color, bcolor,, oFont, ;
+               dValue, bPaint, bChange )
+
+   RETURN Self
+
+METHOD bChange ( b ) CLASS HDateSelect
+
+   IF !Empty( b )
+      ::aDrawn[1]:bChange := b
+   ENDIF
+
+   RETURN ::aDrawn[1]:bCli
+
+METHOD Value( xValue ) CLASS HDateSelect
+
+   RETURN ::aDrawn[1]:Value( xValue )
+
+CLASS HDrawnDate INHERIT HDrawn
+
+   DATA  oEdit, oBtn, oList
+   DATA  oFontCalen
+   DATA  arrowColor   INIT 0
+   DATA  arrowPen
+   DATA  bChange
+
+   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
+               oFont, dValue, bPaint, bChange, bChgState )
+
+   METHOD Paint( hDC )
+   METHOD Value( xValue ) SETGET
+
+   METHOD ListShow()
+   METHOD ListHide()
+
+   METHOD onKey( msg, wParam, lParam )
+   METHOD onButtonDown( msg, xPos, yPos )
+   METHOD onButtonUp( xPos, yPos )
+
+ENDCLASS
+
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
+               oFont, dValue, bPaint, bChange, bChgState ) CLASS HDrawnDate
+
+   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      , oFont, bPaint,, bChgState )
+
+   ::xValue := Iif( Empty( dValue ), Date(), dValue )
+   ::bChange := bChange
+
+   ::oEdit := HDrawnEdit():New( Self, ::nLeft, ::nTop, ::nWidth-::nHeight+1, ::nHeight, ::tcolor, ::bColor, ;
+      ::oFont, ::xValue )
+   IF !Empty( ::oFont )
+      ::oFontCalen := HFont():Add( ::oFont:name,, ::oFont:height-3,, ::oFont:Charset,,,,, .T. )
+   ENDIF
+
+   ::oEdit:nTextStyle := DT_LEFT
+   ::oBtn := HDrawn():New( Self, ::nLeft+::nWidth-::nHeight, ::nTop, ::nHeight, ::nHeight, ::tcolor, ::bColor,, ;
+      "", ::oFont )
+   ::aDrawn := {}
+
+   RETURN Self
+
+METHOD Paint( hDC ) CLASS HDrawnDate
+
+   LOCAL n := Int( ::oBtn:nHeight/3 ) + 1
+
+   ::oEdit:Paint( hDC )
+   ::oBtn:Paint( hDC )
+   IF Empty( ::arrowPen )
+      ::arrowPen := HPen():Add( PS_SOLID, 1, ::arrowColor )
+   ENDIF
+   hwg_SelectObject( hDC, ::arrowPen:handle )
+   hwg_MoveTo( hDC, ::oBtn:nLeft+n, ::oBtn:nTop+n+3 )
+   hwg_LineTo( hDC, ::oBtn:nLeft+Int(::oBtn:nWidth/2), ::oBtn:nTop+::oBtn:nHeight-n )
+   hwg_LineTo( hDC, ::oBtn:nLeft+::oBtn:nWidth-n, ::oBtn:nTop+n+2, .T. )
+
+   RETURN Nil
+
+METHOD Value( xValue ) CLASS HDrawnDate
+
+   IF xValue != Nil
+      ::xValue := xValue
+      ::oEdit:Value := xValue
+      ::oEdit:Refresh()
+   ENDIF
+
+   RETURN ::oEdit:Value
+
+METHOD ListShow() CLASS HDrawnDate
+
+   LOCAL oBoa, oMC, hDC, arr, nw, nh, oFont
+   LOCAL bChange := {||
+      LOCAL dValue
+      IF !Empty( oMC ) .AND. !Empty( oMC:handle )
+         dValue := hwg_getmonthcalendardate( oMC:handle )
+         IF Day( dValue ) != Day( ::xValue )
+            ::Value := dValue
+            IF !Empty( ::bChange )
+               Eval( ::bChange )
+            ENDIF
+            ::ListHide()
+         ENDIF
+      ENDIF
+      RETURN .T.
+   }
+
+   IF !Empty( ::oList )
+      RETURN Nil
+   ENDIF
+
+   oBoa := ::GetParentBoard()
+
+   oFont := Iif( Empty(::oFontCalen), ::oFont, ::oFontCalen )
+#ifdef __GTK__
+   IF !Empty( oFont )
+      hDC := hwg_Getdc( oBoa:handle )
+      hwg_Selectobject( hDC,oFont:handle )
+      arr := hwg_GetTextSize( hDC, "24x25x26x27x28x29x30" )
+      hwg_Releasedc( oBoa:handle, hDC )
+      nw := arr[1] + 24
+      nh := arr[2] * 18
+      //hwg_writelog( "1: "+str(arr[1])+" "+str(arr[2]) )
+      //hwg_writelog( "2: "+str(nw)+" "+str(nh) )
+   ELSE
+      nw := nh := ::nWidth
+   ENDIF
+#else
+   nw := nh := ::nWidth
+#endif
+   INIT DIALOG ::oList TITLE "" AT oBoa:nLeft+::nLeft, oBoa:nTop+::nTop+::nHeight ;
+      SIZE nw, nh STYLE WND_NOTITLE + WND_NOSIZEBOX
+
+   ::oList:bLostFocus := {||::ListHide()}
+   @ 0, 0 MONTHCALENDAR oMC SIZE ::oList:nWidth, ::oList:nHeight INIT ::xValue ;
+      ON CHANGE bChange FONT oFont
+
+#ifdef __GTK__
+   ACTIVATE DIALOG ::oList
+#else
+   ACTIVATE DIALOG ::oList NOMODAL
+   arr := hwg_getMonthCalendarSize( oMC:handle )
+   ::oList:nWidth := arr[1]
+   ::oList:nHeight := arr[2]
+   hwg_MoveWindow( ::oList:handle,,, arr[1], arr[2] )
+   oMC:Move( ,, arr[1], arr[2] )
+#endif
+   RETURN Nil
+
+METHOD ListHide() CLASS HDrawnDate
+
+   IF !Empty( ::oList )
+      ::oList:Close()
+      ::oList := Nil
+      RETURN Nil
+   ENDIF
+
+   RETURN Nil
+
+METHOD onKey( msg, wParam, lParam ) CLASS HDrawnDate
+   RETURN ::oEdit:onKey( msg, wParam, lParam )
+
+METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnDate
+
+   IF msg == WM_LBUTTONDOWN
+      IF xPos > ::oBtn:nLeft .AND. xPos < ::oBtn:nLeft+::oBtn:nWidth .AND. yPos > ::oBtn:nTop .AND. yPos < ::oBtn:nTop+::oBtn:nHeight
+         ::oBtn:nState := STATE_PRESSED
+         IF Empty( ::oList )
+            ::ListShow()
+         ELSE
+            ::ListHide()
+         ENDIF
+         ::Refresh()
+      ELSE
+         ::oEdit:onButtonDown( msg, xPos, yPos )
+      ENDIF
+   ENDIF
+   RETURN Nil
+
+METHOD onButtonUp( xPos, yPos ) CLASS HDrawnDate
+
+   HB_SYMBOL_UNUSED(xPos)
+   HB_SYMBOL_UNUSED(yPos)
+
+   IF ::oBtn:nState == STATE_PRESSED
+      ::oBtn:nState := STATE_NORMAL
+      ::Refresh()
+   ENDIF
    RETURN Nil

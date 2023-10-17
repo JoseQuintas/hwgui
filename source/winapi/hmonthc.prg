@@ -116,7 +116,6 @@ METHOD Value( dValue ) CLASS HMonthCalendar
 HB_FUNC( HWG_INITMONTHCALENDAR )
 {
    HWND hMC;
-   RECT rc;
 
    hMC = CreateWindowEx( 0,
                          MONTHCAL_CLASS,
@@ -129,12 +128,9 @@ HB_FUNC( HWG_INITMONTHCALENDAR )
                          GetModuleHandle(NULL),
                          NULL );
 
-   MonthCal_GetMinReqRect( hMC, &rc );
-
-   //Setwindowpos( hMC, NULL, hb_parni(4), hb_parni(5), rc.right, rc.bottom, SWP_NOZORDER );
    SetWindowPos( hMC, NULL, hb_parni(4), hb_parni(5), hb_parni(6),hb_parni(7), SWP_NOZORDER );
 
-    HB_RETHANDLE(  hMC );
+   HB_RETHANDLE(  hMC );
 }
 
 HB_FUNC( HWG_SETMONTHCALENDARDATE ) // adaptation of hwg_Setdatepicker of file Control.c
@@ -178,89 +174,26 @@ HB_FUNC( HWG_GETMONTHCALENDARDATE ) // adaptation of hwg_Getdatepicker of file C
    hb_retds( szDate );
 }
 
+HB_FUNC( HWG_GETMONTHCALENDARSIZE )
+{
+   RECT rc;
+   PHB_ITEM aMetr = hb_itemArrayNew( 2 );
+   PHB_ITEM temp;
+
+   MonthCal_GetMinReqRect( (HWND) HB_PARHANDLE (1), &rc );
+
+   temp = hb_itemPutNL( NULL, rc.right - rc.left );
+   hb_itemArrayPut( aMetr, 1, temp );
+   hb_itemRelease( temp );
+
+   temp = hb_itemPutNL( NULL, rc.bottom - rc.top );
+   hb_itemArrayPut( aMetr, 2, temp );
+   hb_itemRelease( temp );
+
+   hb_itemReturn( aMetr );
+   hb_itemRelease( aMetr );
+
+}
+
 #pragma ENDDUMP
 
-
-* --------------------------------------------------------------------------
-
-FUNCTION hwg_pCalendar(dstartdate, cTitle , cOK, cCancel , nx , ny , wid, hei )
-
-   * Date picker command for all platforms in the design of original
-   * Windows only DATEPICKER command
-
-   LOCAL oDlg, oMC , oFont , dolddate , dnewdate,  lcancel
-
-  IF cTitle == NIL
-     cTitle := "Calendar"
-  ENDIF
-
-  IF cOK == NIL
-     cOK := "OK"
-  ENDIF
-
-  IF cCancel == NIL
-     cCancel := "Cancel"
-  ENDIF
-
-  IF dstartdate == NIL
-     dstartdate := DATE()
-  ENDIF
-
-  IF nx == NIL
-     nx := 0  && old: 20
-  ENDIF
-
-  IF ny == NIL
-     ny := 0  && old: 20
-  ENDIF
-
-  IF wid == NIL
-     wid := 200 && old: 80
-  ENDIF
-
-  IF hei == NIL
-     hei := 160 && old: 20
-  ENDIF
-
-  oFont := hwg_DefaultFont()
-
-  lcancel := .T.
-
-  * Remember old date
-  dolddate := dstartdate
-
-   INIT DIALOG oDlg TITLE cTitle ;
-      AT nx,ny SIZE  wid , hei + 23 && wid , hei , 22 = height of buttons
-
-   @ 0,0 MONTHCALENDAR oMC ;
-      SIZE wid - 1 , hei - 1 ;
-      INIT dstartdate ;   && Date(), if NIL
-      FONT oFont
-
-   @ 0 ,hei BUTTON cOK FONT oFont ;
-      ON CLICK {|| lcancel := .F., dnewdate := oMC:Value , oDlg:Close() } SIZE 80 , 22
-   @ 81,hei BUTTON cCancel FONT oFont ;
-      ON CLICK {|| oDlg:Close() } SIZE 80, 22
-
-   ACTIVATE DIALOG oDlg
-
-   IF lcancel
-      dnewdate := dolddate
-   ENDIF
-
-   RETURN dnewdate
-
-FUNCTION hwg_oDatepicker_bmp()
-
-   * Returns the bimap object of image Datepick_Button2.bmp
-   * (size 11 x 11 )
-   * for the multi platform datepicker based on HMONTHCALENDAR class
-
-RETURN HBitmap():AddString("Datepick_Button", hwg_cHex2Bin(;
-   "42 4D 6A 00 00 00 00 00 00 00 3E 00 00 00 28 00 " + ;
-   "00 00 0B 00 00 00 0B 00 00 00 01 00 01 00 00 00 " + ;
-   "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
-   "00 00 00 00 00 00 F0 FB FF 00 00 00 00 00 00 00 " + ;
-   "00 00 00 00 00 00 00 00 00 00 04 00 00 00 0E 00 " + ;
-   "00 00 1F 00 00 00 3F 80 00 00 00 00 00 00 00 00 " + ;
-   "00 00 00 00 00 00 00 00 00 00 " ) )

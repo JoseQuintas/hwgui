@@ -880,6 +880,21 @@ FUNCTION hwg_BMPStr2Obj( pcBMP, cbmpname )
    //   End of Functions for raw bitmap support
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+FUNCTION hwg_oDatepicker_bmp()
+
+   * Returns the bimap object of image Datepick_Button2.bmp
+   * (size 11 x 11 )
+   * for the multi platform datepicker based on HMONTHCALENDAR class
+
+RETURN HBitmap():AddString("Datepick_Button", hwg_cHex2Bin(;
+   "42 4D 6A 00 00 00 00 00 00 00 3E 00 00 00 28 00 " + ;
+   "00 00 0B 00 00 00 0B 00 00 00 01 00 01 00 00 00 " + ;
+   "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " + ;
+   "00 00 00 00 00 00 F0 FB FF 00 00 00 00 00 00 00 " + ;
+   "00 00 00 00 00 00 00 00 00 00 04 00 00 00 0E 00 " + ;
+   "00 00 1F 00 00 00 3F 80 00 00 00 00 00 00 00 00 " + ;
+   "00 00 00 00 00 00 00 00 00 00 " ) )
+
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~
    //   Functions for QR encoding
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~

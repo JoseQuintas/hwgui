@@ -896,6 +896,30 @@ STATIC FUNCTION fPaint()
    RETURN Nil
 ]]>
     </module>
+    <module name="DateSelect">
+      <![CDATA[
+#include "hwgui.ch"
+Function Test()
+   LOCAL oDlg, oFont := HFont():Add( "MS Sans Serif", 0, 18 ), oDate
+   LOCAL bChange := {||
+      //hwg_writelog( "onchange" )
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "HDateSelect"  ;
+      AT 210, 10  SIZE 300, 240 FONT oFont COLOR 0x555555
+
+   oDate := HDateSelect():New( ,, 30, 24, 120, 28,,, oFont,,,, bChange  )
+
+   @ 20, 180 BUTTON "Value" ON CLICK { ||hwg_MsgInfo(Dtoc(oDate:Value))} SIZE 100, 28
+   @ 180, 180 BUTTON "Close" ON CLICK { ||oDlg:Close()} SIZE 100, 28
+
+   ACTIVATE DIALOG oDlg
+   oFont:Release()
+
+Return Nil
+]]>
+    </module>
   </chapter>
   <chapter name="Advanced using of controls" >
     <module name="Styled controls" >
@@ -1903,7 +1927,7 @@ STATIC FUNCTION FPaint( o, hDC )
 #define CLR_BLUE     16711680
 
 FUNCTION Test
-   LOCAL oDlg, oBoard, or1, or2, oTrack, oSay, oEdit, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
+   LOCAL oDlg, oBoard, oLenta, or1, or2, oTrack, oSay, oEdit, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aCorners := { 4,4,4,4 }
    LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
@@ -1989,7 +2013,7 @@ FUNCTION Test
    LOCAL aStylesBtn := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
       HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
-   LOCAL arr1 := {}, arr2 := {}
+   LOCAL arr1 := {}, arr2 := {}, i
    LOCAL bExit := {||
       LOCAL cr := Chr(13)+Chr(10)
       hwg_MsgInfo( arr1[oCombo:Value] + cr + Str(oUpd1:Value) + cr + ;
@@ -2047,7 +2071,7 @@ FUNCTION Test
 
 MEMVAR oBrw, oBrw1, oBrw2, oBrw3, arrBrw1
 FUNCTION Test
-   LOCAL oDlg, oBoard, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
+   LOCAL oDlg, oBoard, oLenta, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aStyleLenta := { HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1 ), ;
       HStyle():New( { CLR_DGRAY3 }, 1,, 1, CLR_WHITE ) }
    PRIVATE oBrw, oBrw1, oBrw2, oBrw3, arrBrw1
@@ -2192,6 +2216,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
 STATIC FUNCTION FCreateDB()
 
    LOCAL i, j, d, oTree
+   FIELD DAT
 
    DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, {"DAYW","C",12,0} },"DBFCDX", .F.,"BASE1" )
    set exclusive off

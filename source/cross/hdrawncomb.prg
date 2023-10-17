@@ -430,8 +430,6 @@ STATIC FUNCTION UpDownTimerProc( op, oBtn )
 
 CLASS HDateSelect INHERIT HBoard
 
-   DATA bChange
-
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, color, bcolor, oFont, ;
                dValue, bSize, bPaint, bChange  )
    METHOD bChange ( b ) SETGET

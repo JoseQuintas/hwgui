@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-17 17:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawncomb.prg
+    * Fixes for gtk version
+  * source/gtk/window.c
+    * hwg_widget_get_top() added
+
 2023-10-17 13:17 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawncomb.prg
     ! Small fix

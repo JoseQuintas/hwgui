@@ -1146,6 +1146,15 @@ HB_FUNC( HWG__ISUNICODE )
 #endif
 }
 
+HB_FUNC( HWG_WIDGET_GET_TOP )
+{
+   GtkWidget *widget = (GtkWidget*) HB_PARHANDLE(1);
+   gint y;
+
+   gdk_window_get_origin( gtk_widget_get_window (widget), NULL, &y );
+   hb_retni( y );
+}
+
 HB_FUNC( HWG_INITPROC )
 {
    s_KeybHook = gtk_key_snooper_install( &snooper, NULL );

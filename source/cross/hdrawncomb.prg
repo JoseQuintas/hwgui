@@ -535,7 +535,10 @@ METHOD Value( xValue ) CLASS HDrawnDate
 
 METHOD ListShow() CLASS HDrawnDate
 
-   LOCAL oBoa, oMC, hDC, arr, nw, nh, oFont
+   LOCAL oBoa, oMC, arr, nw, nh, nt, oFont
+#ifdef __GTK__
+   LOCAL hDC, od
+#endif
    LOCAL bChange := {||
       LOCAL dValue
       IF !Empty( oMC ) .AND. !Empty( oMC:handle )
@@ -559,6 +562,7 @@ METHOD ListShow() CLASS HDrawnDate
 
    oFont := Iif( Empty(::oFontCalen), ::oFont, ::oFontCalen )
 #ifdef __GTK__
+   od := hwg_GetParentForm(oBoa)
    IF !Empty( oFont )
       hDC := hwg_Getdc( oBoa:handle )
       hwg_Selectobject( hDC,oFont:handle )
@@ -571,10 +575,12 @@ METHOD ListShow() CLASS HDrawnDate
    ELSE
       nw := nh := ::nWidth
    ENDIF
+   nt := oBoa:nTop+::nTop+::nHeight + hwg_widget_get_top(od:handle) - hwg_getwindowPOS(od:handle)[2]
 #else
    nw := nh := ::nWidth
+   nt := oBoa:nTop+::nTop+::nHeight
 #endif
-   INIT DIALOG ::oList TITLE "" AT oBoa:nLeft+::nLeft, oBoa:nTop+::nTop+::nHeight ;
+   INIT DIALOG ::oList TITLE "" AT oBoa:nLeft+::nLeft, nt ;
       SIZE nw, nh STYLE WND_NOTITLE + WND_NOSIZEBOX
 
    ::oList:bLostFocus := {||::ListHide()}

@@ -369,7 +369,8 @@
        <li><a name="_Commands3-51" href="#Commands3-52">4.3.52.  @ &lt;x&gt;,&lt;y&gt; HCEDIT</a>
        <li><a name="_Commands3-51" href="#Commands3-53">4.3.53.  @ &lt;x&gt;,&lt;y&gt; TRACK</a>
        <li><a name="_Commands3-52" href="#Commands3-54">4.3.54.  @ &lt;x&gt;,&lt;y&gt; LENTA</a>
-       <li><a name="_Commands3-53" href="#Commands3-55">4.3.55.  @ &lt;x&gt;,&lt;y&gt; BOARD</a>
+       <li><a name="_Commands3-53" href="#Commands3-55">4.3.55.  @ &lt;x&gt;,&lt;y&gt; DATESELECT</a>
+       <li><a name="_Commands3-56" href="#Commands3-56">4.3.56.  @ &lt;x&gt;,&lt;y&gt; BOARD</a>
        <li><a name="_Commands3-60" href="#Commands3-60">4.3.60.  @ &lt;x&gt;,&lt;y&gt; DRAWN</a>
        <li><a name="_Commands3-61" href="#Commands3-61">4.3.61.  @ &lt;x&gt;,&lt;y&gt; DRAWN CHECK</a>
        <li><a name="_Commands3-62" href="#Commands3-62">4.3.62.  @ &lt;x&gt;,&lt;y&gt; DRAWN RADIO </a>
@@ -379,6 +380,7 @@
        <li><a name="_Commands3-66" href="#Commands3-66">4.3.66.  @ &lt;x&gt;,&lt;y&gt; DRAWN COMBO</a>
        <li><a name="_Commands3-67" href="#Commands3-67">4.3.67.  @ &lt;x&gt;,&lt;y&gt; DRAWN UPDOWN</a>
        <li><a name="_Commands3-68" href="#Commands3-68">4.3.68.  @ &lt;x&gt;,&lt;y&gt; DRAWN BROWSE</a>
+       <li><a name="_Commands3-69" href="#Commands3-69">4.3.69.  @ &lt;x&gt;,&lt;y&gt; DRAWN DATE</a>
      </ul>	
     <p>All the following commands creates the instances of classes, they
     are preprocessed into the New() method of appropriate class.</p>
@@ -1463,7 +1465,23 @@
          [ HSTYLES &lt;aItemStyle&gt; ]
     </pre>
 
-    <br><a name="Commands3-55" href="#_Commands3-55">4.3.55.  @ &lt;x&gt;,&lt;y&gt; BOARD</a>
+    <br><a name="Commands3-55" href="#_Commands3-55">4.3.55.  @ &lt;x&gt;,&lt;y&gt; DATESELECT</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DATESELECT [ &lt;oDate&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ ID &lt;nId&gt; ] 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ FONT &lt;oFont&gt; ]
+         [ INIT &lt;dValue&gt; ]
+    	 [ ON SIZE &lt;bSize&gt; ] 
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CHANGE &lt;bChange&gt; ]
+    </pre>
+
+    <br><a name="Commands3-56" href="#_Commands3-56">4.3.56.  @ &lt;x&gt;,&lt;y&gt; BOARD</a>
     <p></p>
     <pre class="code">
     @ &lt;x&gt;,&lt;y&gt; BOARD [ &lt;oBoard&gt; ]
@@ -1624,6 +1642,23 @@
          [ FONT &lt;oFont&gt; ]
          [ &lt;lVscroll: VSCROLL&gt; ]    ;
          [ &lt;lHscroll: HSCROLL&gt; ]    ;
+    </pre>
+
+    <br><a name="Commands3-69" href="#_Commands3-69">4.3.69.  @ &lt;x&gt;,&lt;y&gt; DRAWN DATE</a>
+    <p></p>
+    <pre class="code">
+    @ &lt;x&gt;,&lt;y&gt; DRAWN DATE [ &lt;oDate&gt; ]
+    	 [ OF &lt;oWnd&gt ]; 
+    	 [ ID &lt;nId&gt; ] 
+    	 [ SIZE &lt;width&gt;, &lt;height&gt; ] 
+    	 [ COLOR &lt;tcolor&gt; ] 
+    	 [ BACKCOLOR &lt;bcolor&gt; ] 
+         [ HSTYLES &lt;aStyles&gt; ]
+         [ FONT &lt;oFont&gt; ]
+         [ INIT &lt;dValue&gt; ]
+    	 [ ON PAINT &lt;bPaint&gt; ] 
+         [ ON CHANGE &lt;bChange&gt; ]
+         [ ON CHANGESTATE &lt;bChg&gt; ]
     </pre>
 
     <strong class="subhead"><a name="Commands4" href="hwgdoc.html#_Commands4">

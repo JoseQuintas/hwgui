@@ -113,6 +113,7 @@
              <li><a name="_htrack" href="#htrack">HTrack</a> 
              <li><a name="_hgraph" href="#hgraph">HGraph</a>
              <li><a name="_hceditbasic" href="#hceditbasic">HCEditBasic</a>
+             <li><a name="_hdateselect" href="#hdateselect">HDateSelect</a>
            </ul>
          </ul>
        </ul>
@@ -153,7 +154,7 @@
        <li><a name="_hpicture" href="#hpicture">HPicture</a>
        <li><a name="_hdrawn" href="#hdrawn">HDrawn</a>
          <ul>
-           <li><a name="_hdrawnTT" href="#hdrawnTT">HDrawnTT</a>
+           <li><a name="_hdrawntt" href="#hdrawntt">HDrawnTT</a>
            <li><a name="_hdrawncheck" href="#hdrawncheck">HDrawnCheck</a>
            <li><a name="_hdrawnradio" href="#hdrawnradio">HDrawnRadio</a>
            <li><a name="_hdrawnedit" href="#hdrawnedit">HDrawnEdit</a>
@@ -162,6 +163,7 @@
            <li><a name="_hdrawnbrw" href="#hdrawnbrw">HDrawnBrw</a>
            <li><a name="_hdrawncombo" href="#hdrawncombo">HDrawnCombo</a>
            <li><a name="_hdrawnupdown" href="#hdrawnupdown">HDrawnUpdown</a>
+           <li><a name="_hdrawndate" href="#hdrawndate">HDrawnDate</a>
          </ul>
      </ul>
    </ul>
@@ -1560,6 +1562,17 @@
       Value( xValue ) SETGET
    </pre>
 
+   <br><strong class="subhead"><a name="hdateselect" href="#_hdateselect">
+   HDateSelect</a></strong> 
+   <pre class="code">DATA
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, color, bcolor, oFont,
+           dValue, bSize, bPaint, bChange  )
+      bChange( b ) SETGET
+      Value( xValue ) SETGET
+   </pre>
+
    <br><strong class="subhead"><a name="hcolumn" href="#_hcolumn">
    HColumn</a></strong> 
    <pre class="code">DATA
@@ -2655,7 +2668,7 @@
       End()          VIRTUAL
    </pre>
 
-  <br><strong class="subhead"><a name="hdrawnTT" href="#_hdrawnTT">
+  <br><strong class="subhead"><a name="hdrawntt" href="#_hdrawntt">
    HDrawnTT</a></strong> 
 
    <pre class="code">DATA
@@ -2953,6 +2966,28 @@
     onButtonUp( xPos, yPos )
    </pre>
 
+  <br><strong class="subhead"><a name="hdrawndate" href="#_hdrawndate">
+   HDrawnDate</a></strong> 
+
+   <pre class="code">DATA
+      oEdit, oBtn, oList
+      oFontCalen
+      arrowColor
+      arrowPen
+      bChange
+   </pre>
+   <pre class="code">METHODS
+      New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles,
+           oFont, dValue, bPaint, bChange, bChgState )
+      Value( xValue ) SETGET
+  Internal:
+      Paint( hDC )
+      ListShow()
+      ListHide()
+      onKey( msg, wParam, lParam )
+      onButtonDown( msg, xPos, yPos )
+      onButtonUp( xPos, yPos )
+   </pre>
 
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

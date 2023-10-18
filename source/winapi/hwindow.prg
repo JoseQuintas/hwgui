@@ -68,21 +68,6 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
    RETURN Iif( !Empty(oWnd:type) .AND. oWnd:type >= WND_DLG_RESOURCE, 0, - 1 )
 
-FUNCTION hwg_onAnchor( oWnd, wold, hold, wnew, hnew )
-
-   LOCAL aControls := oWnd:aControls, oItem, w, h
-
-   FOR EACH oItem IN aControls
-      IF oItem:Anchor > 0
-         w := oItem:nWidth
-         h := oItem:nHeight
-         oItem:onAnchor( wold, hold, wnew, hnew )
-         hwg_onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
-      ENDIF
-   NEXT
-
-   RETURN Nil
-
 STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
    LOCAL iParLow := hwg_Loword( wParam )

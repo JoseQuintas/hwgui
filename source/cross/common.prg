@@ -704,6 +704,188 @@ FUNCTION hwg_SetGetUpdated( o )
 
    RETURN Nil
 
+FUNCTION hwg_resize_onAnchor( oCtrl, x, y, w, h )
+
+   LOCAL nAnchor, nXincRelative, nYincRelative, nXincAbsolute, nYincAbsolute
+   LOCAL x1, y1, w1, h1, x9, y9, w9, h9
+
+   nAnchor := oCtrl:anchor
+   x9 := x1 := oCtrl:nLeft
+   y9 := y1 := oCtrl:nTop
+   w9 := w1 := oCtrl:nWidth
+   h9 := h1 := oCtrl:nHeight
+   // *- calculo relativo
+   nXincRelative := iif( x > 0, w / x, 1 )
+   nYincRelative := iif( y > 0, h / y, 1 )
+   // *- calculo ABSOLUTE
+   nXincAbsolute := ( w - x )
+   nYincAbsolute := ( h - y )
+
+   IF nAnchor >= ANCHOR_VERTFIX
+      // *- vertical fixed center
+      nAnchor -= ANCHOR_VERTFIX
+      y1 := y9 + Int( ( h - y ) * ( ( y9 + h9 / 2 ) / y ) )
+   ENDIF
+   IF nAnchor >= ANCHOR_HORFIX
+      // *- horizontal fixed center
+      nAnchor -= ANCHOR_HORFIX
+      x1 := x9 + Int( ( w - x ) * ( ( x9 + w9 / 2 ) / x ) )
+   ENDIF
+   IF nAnchor >= ANCHOR_RIGHTREL
+      // relative - RIGHT RELATIVE
+      nAnchor -= ANCHOR_RIGHTREL
+      x1 := w - Int( ( x - x9 - w9 ) * nXincRelative ) - w9
+   ENDIF
+   IF nAnchor >= ANCHOR_BOTTOMREL
+      // relative - BOTTOM RELATIVE
+      nAnchor -= ANCHOR_BOTTOMREL
+      y1 := h - Int( ( y - y9 - h9 ) * nYincRelative ) - h9
+   ENDIF
+   IF nAnchor >= ANCHOR_LEFTREL
+      // relative - LEFT RELATIVE
+      nAnchor -= ANCHOR_LEFTREL
+      IF x1 != x9
+         w1 := x1 - ( Int( x9 * nXincRelative ) ) + w9
+      ENDIF
+      x1 := Int( x9 * nXincRelative )
+   ENDIF
+   IF nAnchor >= ANCHOR_TOPREL
+      // relative  - TOP RELATIVE
+      nAnchor -= ANCHOR_TOPREL
+      IF y1 != y9
+         h1 := y1 - ( Int( y9 * nYincRelative ) ) + h9
+      ENDIF
+      y1 := Int( y9 * nYincRelative )
+   ENDIF
+   IF nAnchor >= ANCHOR_RIGHTABS
+      // Absolute - RIGHT ABSOLUTE
+      nAnchor -= ANCHOR_RIGHTABS
+      IF HWG_BITAND( nAnchor, ANCHOR_LEFTREL ) != 0
+         w1 := Int( nxIncAbsolute ) - ( x1 - x9 ) + w9
+      ELSE
+         IF x1 != x9
+            w1 := x1 - ( x9 +  Int( nXincAbsolute ) ) + w9
+         ENDIF
+         x1 := x9 +  Int( nXincAbsolute )
+      ENDIF
+      IF x1 + w1 > w
+         w1 := w - x1
+      ENDIF
+   ENDIF
+   IF nAnchor >= ANCHOR_BOTTOMABS
+      // Absolute - BOTTOM ABSOLUTE
+      nAnchor -= ANCHOR_BOTTOMABS
+      IF HWG_BITAND( nAnchor, ANCHOR_TOPREL ) != 0
+         h1 := Int( nyIncAbsolute ) - ( y1 - y9 ) + h9
+      ELSE
+         IF y1 != y9
+            h1 := y1 - ( y9 +  Int( nYincAbsolute ) ) + h9
+         ENDIF
+         y1 := y9 +  Int( nYincAbsolute )
+      ENDIF
+      IF y1 + h1 > h
+         h1 := h - y1
+      ENDIF
+   ENDIF
+   IF nAnchor >= ANCHOR_LEFTABS
+      // Absolute - LEFT ABSOLUTE
+      nAnchor -= ANCHOR_LEFTABS
+      IF x1 != x9
+         w1 := x1 - x9 + w9
+      ENDIF
+      x1 := x9
+   ENDIF
+   IF nAnchor >= ANCHOR_TOPABS
+      // Absolute - TOP ABSOLUTE
+      IF y1 != y9
+         h1 := y1 - y9 + h9
+      ENDIF
+      y1 := y9
+   ENDIF
+   // REDRAW AND INVALIDATE SCREEN
+   IF ( x1 != x9 .OR. y1 != y9 .OR. w1 != w9 .OR. h1 != h9 )
+      oCtrl:Move( x1, y1, w1, h1 )
+      hwg_Redrawwindow( oCtrl:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      RETURN .T.
+   ENDIF
+
+   RETURN .F.
+
+FUNCTION hwg_onAnchor( oWnd, wold, hold, wnew, hnew )
+
+   LOCAL aControls := oWnd:aControls, oItem, w, h
+
+   FOR EACH oItem IN aControls
+      IF oItem:Anchor > 0
+         w := oItem:nWidth
+         h := oItem:nHeight
+         oItem:onAnchor( wold, hold, wnew, hnew )
+         hwg_onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
+      ENDIF
+   NEXT
+
+   RETURN Nil
+
+FUNCTION hwg_GetModalDlg()
+
+   LOCAL i := Len( HDialog():aModalDialogs )
+
+   RETURN Iif( i > 0, HDialog():aModalDialogs[i], Nil )
+
+FUNCTION hwg_GetModalHandle()
+
+   LOCAL i := Len( HDialog():aModalDialogs )
+
+   RETURN Iif( i > 0, HDialog():aModalDialogs[i]:handle, 0 )
+
+FUNCTION hwg_SetDlgKey( oDlg, nctrl, nkey, block, lGlobal )
+
+   LOCAL i, aKeys
+
+   IF oDlg == Nil ; oDlg := HCustomWindow():oDefaultParent ; ENDIF
+   IF nctrl == Nil ; nctrl := 0 ; ENDIF
+
+   IF Empty( lGlobal )
+      IF !__ObjHasMsg( oDlg, "KEYLIST" )
+         RETURN .F.
+      ENDIF
+      aKeys := oDlg:KeyList
+   ELSE
+      aKeys := HWindow():aKeysGlobal
+   ENDIF
+
+   IF block == Nil
+
+      IF ( i := Ascan( aKeys,{ |a|a[1] == nctrl .AND. a[2] == nkey } ) ) == 0
+         RETURN .F.
+      ELSE
+         ADel( aKeys, i )
+         ASize( aKeys, Len( aKeys ) - 1 )
+      ENDIF
+   ELSE
+      IF ( i := Ascan( aKeys,{ |a|a[1] == nctrl .AND. a[2] == nkey } ) ) == 0
+         AAdd( aKeys, { nctrl, nkey, block } )
+      ELSE
+         aKeys[i,3] := block
+      ENDIF
+   ENDIF
+
+   RETURN .T.
+
+FUNCTION hwg_Trace()
+
+   LOCAL s := "", n := 2
+
+   WHILE ! Empty( ProcName( n ) )
+#ifdef __XHARBOUR__
+      s += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcFile( n ) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
+#else
+      s += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
+#endif
+   ENDDO
+
+   RETURN s
+
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    //   Functions for raw bitmap support
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1170,17 +1352,3 @@ FUNCTION hwg_QRCodeGetSize( cqrcode )
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    //   End of Functions for QR encoding
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-FUNCTION hwg_Trace()
-
-   LOCAL s := "", n := 2
-
-   WHILE ! Empty( ProcName( n ) )
-#ifdef __XHARBOUR__
-      s += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcFile( n ) + "->" + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
-#else
-      s += Chr( 13 ) + Chr( 10 ) + "Called from " + ProcName( n ) + "(" + AllTrim( Str( ProcLine( n ++ ) ) ) + ")"
-#endif
-   ENDDO
-
-   RETURN s

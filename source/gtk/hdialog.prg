@@ -346,19 +346,6 @@ STATIC FUNCTION onKillFocus( oDlg, w, l )
 
    RETURN 0
 
-
-FUNCTION hwg_GetModalDlg
-
-   LOCAL i := Len( HDialog():aModalDialogs )
-
-   RETURN iif( i > 0, HDialog():aModalDialogs[i], Nil )
-
-FUNCTION hwg_GetModalHandle
-
-   LOCAL i := Len( HDialog():aModalDialogs )
-
-   RETURN iif( i > 0, HDialog():aModalDialogs[i]:handle, 0 )
-
 FUNCTION hwg_EndDialog( handle )
 
    LOCAL oDlg
@@ -376,37 +363,3 @@ FUNCTION hwg_EndDialog( handle )
    ENDIF
 
    RETURN  hwg_DestroyWindow( oDlg:handle )
-
-FUNCTION hwg_SetDlgKey( oDlg, nctrl, nkey, block, lGlobal )
-
-   LOCAL i, aKeys
-
-   IF oDlg == Nil ; oDlg := HCustomWindow():oDefaultParent ; ENDIF
-   IF nctrl == Nil ; nctrl := 0 ; ENDIF
-
-   IF Empty( lGlobal )
-      IF !__ObjHasMsg( oDlg, "KEYLIST" )
-         RETURN .F.
-      ENDIF
-      aKeys := oDlg:KeyList
-   ELSE
-      aKeys := HWindow():aKeysGlobal
-   ENDIF
-
-   IF block == Nil
-
-      IF ( i := Ascan( aKeys,{ |a|a[1] == nctrl .AND. a[2] == nkey } ) ) == 0
-         RETURN .F.
-      ELSE
-         ADel( aKeys, i )
-         ASize( aKeys, Len( aKeys ) - 1 )
-      ENDIF
-   ELSE
-      IF ( i := Ascan( aKeys,{ |a|a[1] == nctrl .AND. a[2] == nkey } ) ) == 0
-         AAdd( aKeys, { nctrl, nkey, block } )
-      ELSE
-         aKeys[i,3] := block
-      ENDIF
-   ENDIF
-
-   RETURN .T.

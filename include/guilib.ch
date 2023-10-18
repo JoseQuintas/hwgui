@@ -1126,6 +1126,21 @@
         <color>,<bcolor> );
     [; hwg_SetCtrlName( <oPick>,<(oPick)> )]
 
+#xcommand @ <x>,<y> DATESELECT [ <oDate> ] ;
+            [ OF <oWnd> ]              ;
+            [ ID <nId> ]               ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ FONT <oFont> ]           ;
+            [ INIT  <dValue> ]         ;
+            [ ON SIZE <bSize> ]        ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGE <bChange> ]    ;
+          => ;
+    [<oDate> := ] HDateSelect():New( <oWnd>,<nId>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <oFont>,<dValue>,<bSize>,<bDraw>,<bChange> );
+    [; hwg_SetCtrlName( <oDate>,<(oDate)> )]
 
 #xcommand @ <x>,<y> SPLITTER [ <oSplit> ] ;
             [ OF <oWnd> ]              ;
@@ -2060,6 +2075,22 @@ Added by Marcos Antonio Gambeta
           => ;
     [<oDrawn> := ] HDrawnBrw():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
         <oFont>,<bDraw>,<bChg>,<.lVscroll.>,<.lHscroll.> );
+    [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
+
+#xcommand @ <x>,<y> DRAWN DATE [ <oDrawn> ] ;
+            [ OF <oWnd> ]              ;
+            [ SIZE <width>, <height> ] ;
+            [ COLOR <color> ]          ;
+            [ BACKCOLOR <bcolor> ]     ;
+            [ HSTYLES <aStyles> ]      ;
+            [ FONT <oFont> ]           ;
+            [ INIT  <dValue> ]         ;
+            [ ON PAINT <bDraw> ]       ;
+            [ ON CHANGE <bChange> ]    ;
+            [ ON CHANGESTATE <bChg> ]  ;
+          => ;
+    [<oDrawn> := ] HDrawnDate():New( <oWnd>,<x>,<y>,<width>,<height>,<color>,<bcolor>, ;
+        <aStyles>,<oFont>,<dValue>,<bDraw>,<bChange>,<bChg> );
     [; hwg_SetCtrlName( <oDrawn>,<(oDrawn)> )]
 
 /* ================= EOF of guilib.ch ==================== */

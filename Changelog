@@ -15,6 +15,24 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-18 16:13 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/common.prg
+  * source/gtk/hcontrol.prg
+  * source/gtk/hdialog.prg
+  * source/gtk/hwindow.prg
+  * source/winapi/hcontrol.prg
+  * source/winapi/hdialog.prg
+  * source/winapi/hwindow.prg
+    * hwg_onAnchor(), hwg_GetModalDlg(), hwg_GetModalHandle(), hwg_SetDlgKey moved to cross/common.prg
+    * :onAnchor() code moved to hwg_resize_onAnchor in cross/common.prg
+  * include/guilib.ch
+    * @ ... DATESELECT ..., @ ... DRAWN DATE ... commands added
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_classes.html
+    * Documentation updated
+  * utils/tutorial/tutor_eng.xml
+    Module added "Anchors" to "Advanced using of controls" section
+
 2023-10-17 17:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawncomb.prg
     * Fixes for gtk version

@@ -42,17 +42,12 @@ FUNCTION hwg_onWndSize( oWnd, wParam, lParam )
 
    RETURN 0
 
-FUNCTION hwg_onMove( oWnd, wParam, lParam )
+FUNCTION hwg_onMove( oWnd )
 
    LOCAL apos := hwg_getwindowpos( oWnd:handle )
 
-   * Parameters not used
-   HB_SYMBOL_UNUSED(wParam)
-   HB_SYMBOL_UNUSED(lParam)
-
-   //hwg_WriteLog( "onMove: "+str(oWnd:nLeft)+" "+str(oWnd:nTop)+" -> "+str(hwg_Loword(lParam))+str(hwg_Hiword(lParam))+" "+str(apos[1])+" "+str(apos[2]) )
-   oWnd:nLeft := apos[1] //hwg_Loword( lParam )
-   oWnd:nTop  := apos[2] //hwg_Hiword( lParam )
+   oWnd:nLeft := apos[1]
+   oWnd:nTop  := apos[2]
 
    RETURN 0
 
@@ -66,21 +61,6 @@ FUNCTION hwg_HideHidden( oWnd )
       ENDIF
       IF aControls[i]:lHide
          hwg_Hidewindow( aControls[i]:handle )
-      ENDIF
-   NEXT
-
-   RETURN Nil
-
-FUNCTION hwg_onAnchor( oWnd, wold, hold, wnew, hnew )
-
-   LOCAL aControls := oWnd:aControls, oItem, w, h
-
-   FOR EACH oItem IN aControls
-      IF oItem:Anchor > 0
-         w := oItem:nWidth
-         h := oItem:nHeight
-         oItem:onAnchor( wold, hold, wnew, hnew )
-         hwg_onAnchor( oItem, w, h, oItem:nWidth, oItem:nHeight )
       ENDIF
    NEXT
 

@@ -25,6 +25,7 @@ CLASS HDrawn INHERIT HObject
    DATA oParent
    DATA title
    DATA nTop, nLeft, nWidth, nHeight
+   DATA aMargin       INIT { 4,6,2,2 }
    DATA nTextStyle    INIT DT_CENTER
    DATA tcolor, bcolor, oBrush, oPen
    DATA tBorderColor  INIT Nil
@@ -40,6 +41,7 @@ CLASS HDrawn INHERIT HObject
    DATA cTooltip, oTooltip //, hBitmapTmp
 
    DATA bPaint, bClick, bChgState, bSize
+   DATA Anchor        INIT 0
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
       title, oFont, bPaint, bClick, bChgState )
@@ -153,7 +155,7 @@ METHOD GetByState( nState, aDrawn, block, lAll ) CLASS HDrawn
 
 METHOD Paint( hDC ) CLASS HDrawn
 
-   LOCAL i, oStyle
+   LOCAL i, oStyle, arr, y
 
    IF ::lHide
       RETURN Nil
@@ -184,7 +186,19 @@ METHOD Paint( hDC ) CLASS HDrawn
          IF !Empty( ::oFont )
             hwg_SelectObject( hDC, ::oFont:handle )
          ENDIF
-         hwg_Drawtext( hDC, ::title, ::nLeft+4, ::nTop+6, ::nLeft+::nWidth-4, ::nTop+::nHeight-6, ::nTextStyle )
+         IF Chr(10) $ ::title
+            arr := hb_ATokens( ::title, Chr(10) )
+            y := ::nTop+::aMargin[2]
+            i := 0
+            DO WHILE ++i < Len( arr ) .AND. y < ::nTop+::nHeight-::aMargin[4]
+               hwg_Drawtext( hDC, arr[i], ::nLeft+::aMargin[1], y, ;
+                  ::nLeft+::nWidth-::aMargin[3], ::nTop+::nHeight-::aMargin[4], ::nTextStyle )
+               y += hwg_GetTextSize( hDC, arr[i] )[2] + 2
+            ENDDO
+         ELSE
+            hwg_Drawtext( hDC, ::title, ::nLeft+::aMargin[1], ::nTop+::aMargin[2], ;
+               ::nLeft+::nWidth-::aMargin[3], ::nTop+::nHeight-::aMargin[4], ::nTextStyle )
+         ENDIF
          hwg_Settransparentmode( hDC, .F. )
       ENDIF
    ENDIF
@@ -357,6 +371,7 @@ ENDCLASS
 
 METHOD New( oWndParent, title, tcolor, bColor, oFont ) CLASS HDrawnTT
 
+   ::aMargin[2] := 2
    ::Super:New( oWndParent:oParent, 0, 0, 0, 0, Iif( Empty(tcolor),::tColorDef,tcolor ), ;
       Iif( Empty(bcolor),::bColorDef,bcolor ),, title, Iif( Empty(oFont), ::oFontDef, oFont ) )
    ::Delete()
@@ -371,15 +386,26 @@ METHOD Show( cText, xPos, yPos ) CLASS HDrawnTT
 
    LOCAL oBoa := ::GetParentBoard()
    LOCAL hDC, arr, nw, nh
-   LOCAL o, i
+   LOCAL o, i, arrt
 
    IF !::lHide
       RETURN Nil
    ENDIF
    hDC := hwg_Getdc( oBoa:handle )
-   arr := hwg_GetTextSize( hDC, cText )
+   IF Chr(10) $ cText
+      arrt := hb_ATokens( cText, Chr(10) )
+      nw := nh := 0
+      FOR i := 1 TO Len( arrt )
+         arr := hwg_GetTextSize( hDC, arrt[i] )
+         nw := Max( nw, arr[1] + 8 ); nh := Max( nh, arr[2] + 4 )
+      NEXT
+      ::nHeight := (nh-2) * Len( arrt ) + 2
+   ELSE
+      arr := hwg_GetTextSize( hDC, cText )
+      nw := arr[1] + 8; nh := arr[2] + 4
+      ::nHeight := nh
+   ENDIF
    hwg_Releasedc( oBoa:handle, hDC )
-   nw := arr[1] + 8; nh := arr[2] + 4
 
    FOR i := 1 TO Len( ::oParent:aDrawn )
       IF ::oParent:aDrawn[i]:oTooltip == Self
@@ -410,7 +436,7 @@ METHOD Show( cText, xPos, yPos ) CLASS HDrawnTT
    ENDIF
 
    ::nWidth  := nw
-   ::nHeight := nh
+
    ::hBitmapTmp := hwg_Window2Bitmap( oBoa:handle, ::nLeft, ::nTop, ::nWidth, ::nHeight )
    AAdd( oBoa:aDrawn, Self )
    ::lHide := .F.
@@ -425,6 +451,8 @@ METHOD Hide() CLASS HDrawnTT
    RETURN Nil
 
 METHOD Paint( hDC ) CLASS HDrawnTT
+
+   LOCAL i, arr, y
 
    IF ::lHide
       IF !Empty( ::hBitmapTmp )
@@ -441,7 +469,19 @@ METHOD Paint( hDC ) CLASS HDrawnTT
       IF !Empty( ::oFont )
          hwg_SelectObject( hDC, ::oFont:handle )
       ENDIF
-      hwg_Drawtext( hDC, ::title, ::nLeft+4, ::nTop+2, ::nLeft+::nWidth-4, ::nTop+::nHeight-4 )
+      IF Chr(10) $ ::title
+         arr := hb_ATokens( ::title, Chr(10) )
+         y := ::nTop+::aMargin[2]
+         i := 0
+         DO WHILE ++i < Len( arr ) .AND. y < ::nTop+::nHeight-::aMargin[4]
+            hwg_Drawtext( hDC, ::title, ::nLeft+::aMargin[1], y, ;
+               ::nLeft+::nWidth-::aMargin[3], ::nTop+::nHeight-::aMargin[4] )
+            y += hwg_GetTextSize( hDC, arr[i] )[2] + 2
+         ENDDO
+      ELSE
+         hwg_Drawtext( hDC, ::title, ::nLeft+::aMargin[1], ::nTop+::aMargin[2], ;
+            ::nLeft+::nWidth-::aMargin[3], ::nTop+::nHeight-::aMargin[4] )
+      ENDIF
       hwg_Settransparentmode( hDC, .F. )
    ENDIF
    ::Refresh()

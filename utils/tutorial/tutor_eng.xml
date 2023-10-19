@@ -2019,7 +2019,7 @@ FUNCTION Test
    @ 280, 12 DRAWN EDIT oEdit CAPTION Date() SIZE 80, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
    oEdit:nBorder := 2
    oEdit:nBorderColor := CLR_BLUE
-   oEdit:cTooltip := "Edit control"
+   oEdit:cTooltip := "Edit control" + Chr(10) + "(HDrawnEdit)"
 
    @ 280, 56 DRAWN EDIT "Sample Drawn Edit Control" SIZE 140, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
 

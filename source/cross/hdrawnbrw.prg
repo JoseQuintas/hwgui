@@ -64,7 +64,6 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA nHeightFoot   INIT 0
    DATA aRowPadding   INIT { 4, 2, 4, 2 }
    DATA aHeadPadding  INIT { 4, 2, 4, 2 }
-   DATA aMargin       INIT { 0,0,0,0 }
 
    DATA tColorSel, bColorSel, htbColor, httColor
    DATA bCellBlock                           // {|oBrw,nRow,nCol| Return { tColor, bColor, oFont } }
@@ -135,6 +134,7 @@ ENDCLASS
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
             bPaint, bChgState, lVScroll, lHScroll ) CLASS HDrawnBrw
 
+   AFill( ::aMargin, 0 )
    ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, ;
       Iif( tcolor == Nil, CLR_BLACK, tcolor ), Iif( bColor == Nil, CLR_WHITE, bColor ),, ' ', ;
       oFont, bPaint, bChgState )

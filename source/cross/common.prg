@@ -805,7 +805,8 @@ FUNCTION hwg_resize_onAnchor( oCtrl, x, y, w, h )
    // REDRAW AND INVALIDATE SCREEN
    IF ( x1 != x9 .OR. y1 != y9 .OR. w1 != w9 .OR. h1 != h9 )
       oCtrl:Move( x1, y1, w1, h1 )
-      hwg_Redrawwindow( oCtrl:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
+      oCtrl:Refresh()
+      //hwg_Redrawwindow( oCtrl:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW )
       RETURN .T.
    ENDIF
 

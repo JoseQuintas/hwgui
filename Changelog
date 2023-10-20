@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-20 15:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawnbrw.prg
+  * source/cross/htrack.prg
+    ! Fixes
+
 2023-10-20 12:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/common.prg
   * source/cross/hdrawn.prg

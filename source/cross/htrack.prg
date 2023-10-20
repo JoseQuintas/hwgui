@@ -242,12 +242,16 @@ METHOD Move( x1, y1, width, height ) CLASS HDrawnTrack
 
 METHOD Value ( xValue ) CLASS HDrawnTrack
 
+   LOCAL oldValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)
+
    IF xValue != Nil
       xValue := Iif( xValue < 0, 0, Iif( xValue > 1, 1, xValue ) )
-      ::nCurr := xValue * (::nTo - ::nFrom) + ::nFrom
-      ::Refresh()
+      IF Abs( xValue - oldValue ) > 0.005
+         ::nCurr := xValue * (::nTo - ::nFrom) + ::nFrom
+         ::Refresh()
+      ENDIF
    ELSE
-      xValue := (::nCurr - ::nFrom) / (::nTo - ::nFrom)
+      RETURN oldValue
    ENDIF
 
    RETURN xValue

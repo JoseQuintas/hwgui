@@ -812,6 +812,7 @@ METHOD ShowTrackV( lShow ) CLASS HDrawnBrw
                , CLR_BLACK, CLR_WHITE, 48, Iif( Empty(::oStyleBar),Nil,::oStyleBar ), ;
                Iif( Empty(::oStyleSlider),HStyle():New( { 0x888888, 0xcccccc }, 3 ),::oStyleSlider), .F. )
             ::oTrackV:bChange := bOnTrack
+            ::aDrawn := {}
          ELSE
             ::oTrackV:lHide := .F.
          ENDIF
@@ -855,6 +856,7 @@ METHOD ShowTrackH( lShow ) CLASS HDrawnBrw
                , CLR_BLACK, CLR_WHITE, 48, Iif( Empty(::oStyleBar),Nil,::oStyleBar ), ;
                Iif( Empty(::oStyleSlider),HStyle():New( { 0x888888, 0xcccccc }, 3 ),::oStyleSlider), .F. )
             ::oTrackH:bChange := bOnTrack
+            ::aDrawn := {}
          ELSE
             ::oTrackH:lHide := .F.
          ENDIF

@@ -251,6 +251,7 @@ CLASS HStatic INHERIT HControl
    METHOD Init()
    METHOD Paint( lpDis )
    METHOD SetText( c )
+   METHOD Move( x1, y1, width, height )
    METHOD Refresh()
 
 ENDCLASS
@@ -352,6 +353,12 @@ METHOD SetText( c ) CLASS HStatic
       hwg_Sendmessage( ::oParent:handle, WM_PAINT, 0, 0 )
    ENDIF
 
+   RETURN NIL
+
+METHOD Move( x1, y1, width, height ) CLASS HStatic
+
+   ::Super:Move( x1, y1, width, height )
+   ::Refresh()
    RETURN NIL
 
 METHOD Refresh() CLASS HStatic
@@ -577,8 +584,9 @@ CLASS HBoard INHERIT HControl
    DATA winclass    INIT "HBOARD"
    DATA lKeybEvents INIT .F.
    DATA lMouseOver  INIT .F.
-   DATA oInFocus //, oTooltipOn
+   DATA oInFocus
    DATA aDrawn      INIT {}
+   DATA aSize
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb, lTransp )
@@ -598,8 +606,10 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
    IF lTransp != NIL .AND. lTransp
       ::extStyle += WS_EX_TRANSPARENT
    ENDIF
+
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
+   ::aSize := { ::nWidth, ::nHeight }
 
    IF !Empty( lKeyb )
       ::lKeybEvents := .T.
@@ -622,7 +632,7 @@ METHOD Activate() CLASS HBoard
 
 METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
 
-   LOCAL nRes, o, nPosX, nPosY, arr
+   LOCAL nRes, o, o1, nPosX, nPosY, arr
 
    IF ::bOther != Nil
       IF ( nRes := Eval( ::bOther, Self, msg, wParam, lParam ) ) == 0
@@ -720,8 +730,20 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       FOR EACH o IN ::aDrawn
          IF o:bSize != NIL
             Eval( o:bSize, o, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+         ELSEIF o:Anchor != 0
+            hwg_resize_onAnchor( o, ::aSize[1], ::aSize[2], hwg_Loword( lParam ), hwg_Hiword( lParam ) )
          ENDIF
+         FOR EACH o1 IN o:aDrawn
+            IF o1:bSize != NIL
+               Eval( o1:bSize, o1, hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+            ELSEIF o1:Anchor != 0
+               hwg_resize_onAnchor( o1, ::aSize[1], ::aSize[2], hwg_Loword( lParam ), hwg_Hiword( lParam ) )
+            ENDIF
+         NEXT
       NEXT
+      ::aSize[1] := ::nWidth
+      ::aSize[2] := ::nHeight
+      ::Refresh()
 
    ELSE
       RETURN ::Super:onEvent( msg, wParam, lParam )
@@ -771,7 +793,7 @@ METHOD Paint( hDC ) CLASS HBoard
 
 METHOD Refresh() CLASS HBoard
 
-   IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0
+   IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0 .OR. ( Empty( ::brush ) .AND. Empty( ::bPaint ) )
       hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight )
       hwg_Sendmessage( ::oParent:handle, WM_PAINT, 0, 0 )
    ELSE

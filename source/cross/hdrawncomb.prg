@@ -114,6 +114,10 @@ METHOD Paint( hDC ) CLASS HDrawnCombo
 
    LOCAL n := Int( ::oBtn:nHeight/3 ) + 1
 
+   IF ::lHide .OR. ::lDisable
+      RETURN Nil
+   ENDIF
+
    ::oText:Paint( hDC )
    ::oBtn:Paint( hDC )
    IF Empty( ::arrowPen )
@@ -290,6 +294,10 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
 METHOD Paint( hDC ) CLASS HDrawnUpDown
 
    LOCAL n := Int( ::oBtnUp:nHeight/3 ) + 1
+
+   IF ::lHide .OR. ::lDisable
+      RETURN Nil
+   ENDIF
 
    IF Empty( ::aStyles )
       ::aStyles := ::oBtnUp:aStyles := ::oBtnDown:aStyles := ;
@@ -510,6 +518,10 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
 METHOD Paint( hDC ) CLASS HDrawnDate
 
    LOCAL n := Int( ::oBtn:nHeight/3 ) + 1
+
+   IF ::lHide .OR. ::lDisable
+      RETURN Nil
+   ENDIF
 
    ::oEdit:Paint( hDC )
    ::oBtn:Paint( hDC )

@@ -219,7 +219,7 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
    LOCAL x1, y1, x2, y2, x, nRow := 0
    LOCAL nRec, i
 
-   IF ::lHide .OR. Empty( ::oData )
+   IF ::lHide  .OR. ::lDisable .OR. Empty( ::oData )
       RETURN Nil
    ENDIF
 

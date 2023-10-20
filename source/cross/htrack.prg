@@ -135,6 +135,10 @@ METHOD Paint( hDC ) CLASS HDrawnTrack
 
    LOCAL nHalf, nw, x1, y1
 
+   IF ::lHide .OR. ::lDisable
+      RETURN Nil
+   ENDIF
+
    IF ::tColor2 != Nil .AND. ::oPen2 == Nil
       ::oPen2 := HPen():Add( PS_SOLID, 1, ::tColor2 )
    ENDIF

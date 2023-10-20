@@ -31,6 +31,7 @@ CLASS HDrawn INHERIT HObject
    DATA tBorderColor  INIT Nil
    DATA nCorner       INIT 0
    DATA lHide         INIT .F.
+   DATA lDisable      INIT .F.
    DATA lStatePaint   INIT .F.
    DATA nState        INIT 0
    DATA oFont
@@ -118,7 +119,7 @@ METHOD GetByPos( xPos, yPos, oBoard ) CLASS HDrawn
 
    FOR i := Len( aDrawn ) TO 1 STEP -1
       o := aDrawn[i]
-      IF xPos >= o:nLeft .AND. xPos < o:nLeft + o:nWidth .AND. ;
+      IF !o:lDisable .AND. xPos >= o:nLeft .AND. xPos < o:nLeft + o:nWidth .AND. ;
          yPos >= o:nTop .AND. yPos < o:nTop + o:nHeight
          RETURN o
       ENDIF
@@ -136,17 +137,19 @@ METHOD GetByState( nState, aDrawn, block, lAll ) CLASS HDrawn
    IF lAll == Nil .OR. block == Nil; lAll := .F.; ENDIF
 
    FOR i := Len( aDrawn ) TO 1 STEP -1
-      IF !Empty( aDrawn[i]:aDrawn )
-         IF !Empty( o := aDrawn[i]:GetByState( nState,, block, lAll ) ) .AND. !lAll
-            RETURN o
+      IF !aDrawn[i]:lDisable
+         IF !Empty( aDrawn[i]:aDrawn )
+            IF !Empty( o := aDrawn[i]:GetByState( nState,, block, lAll ) ) .AND. !lAll
+               RETURN o
+            ENDIF
          ENDIF
-      ENDIF
-      IF aDrawn[i]:nState == nState
-         IF block != Nil
-            Eval( block, aDrawn[i] )
-         ENDIF
-         IF !lAll
-            RETURN aDrawn[i]
+         IF aDrawn[i]:nState == nState
+            IF block != Nil
+               Eval( block, aDrawn[i] )
+            ENDIF
+            IF !lAll
+               RETURN aDrawn[i]
+            ENDIF
          ENDIF
       ENDIF
    NEXT
@@ -157,7 +160,7 @@ METHOD Paint( hDC ) CLASS HDrawn
 
    LOCAL i, oStyle, arr, y
 
-   IF ::lHide
+   IF ::lHide .OR. ::lDisable
       RETURN Nil
    ENDIF
    IF !Empty( ::bPaint )

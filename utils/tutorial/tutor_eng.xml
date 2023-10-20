@@ -2163,12 +2163,10 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
    IF nBrw == 1
       // Browse an array
       IF !Empty( oBrw2 )
-         oBrw2:lHide := .T.
-         oBrw2:nHeight := 0
+         oBrw2:lDisable := .T.
       ENDIF
       IF !Empty( oBrw3 )
-         oBrw3:lHide := .T.
-         oBrw3:nHeight := 0
+         oBrw3:lDisable := .T.
       ENDIF
       IF Empty( oBrw1 )
          arrBrw1 := Array( 12 )
@@ -2183,6 +2181,8 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          // Increase a padding for a header
          oBrw1:aHeadPadding[2] := 4
          oBrw1:aHeadPadding[4] := 8
+         // Set an anchor
+         oBrw1:Anchor := ANCHOR_TOPABS+ANCHOR_BOTTOMABS+ANCHOR_RIGHTABS
          // Set an array as a data source
          oBrw1:oData := HDataArray():New( arrBrw1 )
          // You may pass an array column number instead of a codeblock
@@ -2194,11 +2194,9 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
       oBrw := oBrw1
    ELSEIF nBrw == 2
       // Browse a database
-      oBrw1:lHide := .T.
-      oBrw1:nHeight := 0
+      oBrw1:lDisable := .T.
       IF !Empty( oBrw3 )
-         oBrw3:lHide := .T.
-         oBrw3:nHeight := 0
+         oBrw3:lDisable := .T.
       ENDIF
       IF Empty( oBrw2 )
          IF Select( "BASE1" ) == 0
@@ -2210,6 +2208,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw2:htbColor := CLR_GRAY2
          oBrw2:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
          oBrw2:nBorder := 1
+         oBrw2:Anchor := ANCHOR_TOPABS+ANCHOR_BOTTOMABS
          // Set a dbf file as a data source
          oBrw2:oData := HDataDbf():New( "BASE1" )
          // You may pass a database column number or a field name instead of a codeblock
@@ -2228,11 +2227,9 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
 
    ELSEIF nBrw == 3
       // Browse an indexed database
-      oBrw1:lHide := .T.
-      oBrw1:nHeight := 0
+      oBrw1:lDisable := .T.
       IF !Empty( oBrw2 )
-         oBrw2:lHide := .T.
-         oBrw2:nHeight := 0
+         oBrw2:lDisable := .T.
       ENDIF
       IF Empty( oBrw3 )
          IF Select( "BASE1" ) == 0
@@ -2243,6 +2240,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw3:bColor := CLR_WHITE
          oBrw3:oStyleBar := HStyle():New( {CLR_BLACK},,,1,0x888888 )
          oBrw3:nBorder := 1
+         oBrw3:Anchor := ANCHOR_TOPABS+ANCHOR_BOTTOMABS
          oBrw3:oData := HDataDbf():New( "BASE1" )
          oBrw3:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
          // You may pass a text expression instead of a codeblock
@@ -2254,8 +2252,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
       oBrw3:Top()
    ENDIF
 
-   oBrw:lHide := .F.
-   oBrw:nHeight := 230
+   oBrw:lDisable := .F.
    oBrw:Setfocus()
    oBoa:oParent:Refresh()
 

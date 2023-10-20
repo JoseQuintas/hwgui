@@ -124,6 +124,10 @@ METHOD Paint( hDC ) CLASS HDrawnLenta
    LOCAL aItemStyle := ::aItemStyle
    LOCAL lStyleOver := ( Len(aItemStyle)>2.AND.aItemStyle[3]!=Nil ), lStyleSele := ( Len(aItemStyle)>1.AND.aItemStyle[2]!=Nil )
 
+   IF ::lHide .OR. ::lDisable
+      RETURN Nil
+   ENDIF
+
    IF ::bPaint != Nil
       Eval( ::bPaint, Self, hDC )
    ELSE

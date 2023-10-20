@@ -2622,6 +2622,7 @@
       title                   (RW)  A text - title, caption of this widget
       nTop, nLeft             (RW)  Coordinates of this widget relatively to parent HBoard widget
       nWidth, nHeight         (RW)  Width, height of this object
+      aMargin                 (RW)  Margins for a text inside
       nTextStyle              (RW)  DT_LEFT, DT_CENTER (default), DT_RIGHT
       tcolor, bcolor          (RW)  Text and background colors
       tBorderColor            (RW)  Border color
@@ -2629,6 +2630,7 @@
       oBrush                  (R)   A Brush object to fill background
       oPen                    (R)   A Pen object to draw border
       lHide                   (RW)  Flag of a "Hide" state
+      lDisable                (RW)  Flag of a "Disable" state
       nState                  (R)   STATE_NORMAL, STATE_PRESSED, STATE_MOVER
       oFont                   (RW)  Font object
       aStyles                 (RW)  Array of HSTYLE objects for 3 possible states
@@ -2845,7 +2847,6 @@
       nHeightFoot             (RW)
       aRowPadding             (RW)
       aHeadPadding            (RW)
-      aMargin                 (RW)
 
       tColorSel, bColorSel    (RW) Text and background colors of a selected row
       httColor, htbColor      (RW) Text and background colors of a selected cell

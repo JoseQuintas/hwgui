@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-24 16:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * doc/hwgdoc.html
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+  * doc/hwgdoc_func2.html
+  * doc/hwgdoc_functions.html
+  * doc/hwgdoc_misc.html
+    * Documentation updated
+
 2023-10-20 15:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawnbrw.prg
   * source/cross/htrack.prg

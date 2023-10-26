@@ -97,6 +97,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA lRebuild      INIT .T.
 
    DATA pBrushes      PROTECTED
+   DATA nHeightOld    INIT 0
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
                bPaint, bChgState, lVScroll, lHScroll )
@@ -107,7 +108,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD RowOut( hDC, nRow, x1, y1, x2 )
    METHOD HeaderOut( hDC )
    METHOD FooterOut( hDC )
-   METHOD Cell( iCol )
+   METHOD Cell( iCol, nRow )
 
    METHOD Move( x1, y1, width, height )
    METHOD AddColumn( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable )
@@ -217,7 +218,7 @@ METHOD Rebuild( hDC )
 METHOD Paint( hDC ) CLASS HDrawnBrw
 
    LOCAL x1, y1, x2, y2, x, nRow := 0
-   LOCAL nRec, i
+   LOCAL nRec, i, lNeedBuf := ::oData:lNeedBuf
 
    IF ::lHide  .OR. ::lDisable .OR. Empty( ::oData )
       RETURN Nil
@@ -226,6 +227,13 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
    IF ::lRebuild
       ::Rebuild( hDC )
    ENDIF
+   IF ::nHeightOld != ::nHeight
+      IF ::nHeightOld < ::nHeight
+         //hwg_writelog( "height: "+ str(::nHeightOld) + " " + str(::nHeight) )
+         ::oData:lNeedRefresh := .T.
+      ENDIF
+      ::nHeightOld := ::nHeight
+   ENDIF
    IF !Empty( ::bPaint )
       RETURN Eval( ::bPaint, Self, hDC )
    ENDIF
@@ -233,33 +241,66 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
       hwg_Selectobject( hDC, ::oFont:handle )
    ENDIF
 
+   // Draw header and footer
    IF ::nHeightHead > 0
       ::HeaderOut( hDC )
    ENDIF
    IF ::nHeightFoot > 0
       ::FooterOut( hDC )
    ENDIF
+
    x1 := ::nLeft + ::aMargin[1]
    y1 := ::nTop + ::aMargin[2] + ::nHeightHead
    x2 := ::nLeft + ::nWidth - ::aMargin[3]
    y2 := ::nTop + ::nHeight - ::nHeightFoot - ::aMargin[4] - ::nHeightRow + ::aRowPadding[4]
 
+   // Draw table content
    nRec := ::oData:Recno()
-   ::oData:Skip( -(::nRowCurr - 1) )
-   DO WHILE y1 <= y2 .AND. !::oData:Eof()
-      y1 := ::RowOut( hDC, ++nRow, x1, y1, x2, y2 )
-      ::oData:Skip( 1 )
-   ENDDO
+   IF !lNeedBuf .OR. ::oData:lNeedRefresh .OR. ;
+      Len( ::aRows ) < ::nRowCurr .OR. ::aRows[::nRowCurr,3,1] != nRec
+      //hwg_Writelog( "p1" )
+      ::oData:Skip( -(::nRowCurr - 1) )
+      DO WHILE !::oData:Eof()
+         nRow ++
+         IF lNeedBuf
+            ::oData:nCurrent := ::oData():Recno()
+            IF Len( ::aRows ) >= nRow
+               ::aRows[nRow,3,1] := -1
+            ENDIF
+         ENDIF
+         y1 := ::RowOut( hDC, nRow, x1, y1, x2, y2 )
+         IF y1 > y2
+            EXIT
+         ENDIF
+         ::oData:Skip( 1 )
+      ENDDO
+   ELSE
+      //hwg_Writelog( "p2" )
+      DO WHILE y1 <= y2 .AND. nRow < Len( ::aRows ) .AND. ::aRows[++nRow,1] != Nil
+         ::oData:nCurrent := ::aRows[nRow,3,1]
+         y1 := ::RowOut( hDC, nRow, x1, y1, x2, y2 )
+      ENDDO
+   ENDIF
+   IF ::oData:Recno() != nRec
+      ::oData:Goto( nRec )
+   ENDIF
+
    IF Len( ::aRows ) == nRow
-      AAdd( ::aRows, { Nil, Nil } )
+      AAdd( ::aRows, { Nil, Nil, Nil } )
+      IF lNeedBuf
+         ::aRows[nRow+1,3] := Array( Len(::aColumns) + 1 )
+      ENDIF
    ELSE
       ::aRows[nRow+1,1] := Nil
+      IF lNeedBuf
+         ::aRows[nRow+1,3,1] := Nil
+      ENDIF
    ENDIF
-   ::oData:Goto( nRec )
    ::nRowCount := nRow
    y2 += ::nHeightRow - ::aRowPadding[4]
    hwg_FillRect( hDC, x1, y1, x2, y2, ::oBrush:handle )
 
+   // Draw grid and border
    IF !Empty( ::oPenSep )
       hwg_SelectObject( hDC, ::oPenSep:handle )
       i := 0
@@ -276,6 +317,7 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
       hwg_Rectangle( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::oPenBorder:handle )
    ENDIF
 
+   // Draw scrollbars if active
    IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide
       nRec := ::oData:RecnoLog()
       ::oTrackV:Value := Iif( nRec == 1, 0, nRec / ::oData:Count() )
@@ -285,8 +327,13 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
       ::oTrackH:Value := Iif( ::nColCurr == 1, 0, ::nColCurr / Len( ::aColumns ) )
       ::oTrackH:Paint( hDC )
    ENDIF
+   // Draw edit control if active
    IF !Empty( ::oEdit )
       ::oEdit:Paint( hDC )
+   ENDIF
+
+   IF lNeedBuf
+      ::oData:lNeedRefresh := .F.
    ENDIF
 
    RETURN Nil
@@ -297,9 +344,19 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
    LOCAL oCB, oCol, block, aClr, bColor, hBrush
 
    IF Len( ::aRows ) < nRow
-      AAdd( ::aRows, { y1, Nil } )
+      AAdd( ::aRows, { y1, Nil, Nil } )
+      IF ::oData:lNeedBuf
+         ::aRows[nRow,3] := Array( Len(::aColumns) + 1 )
+         ::aRows[nRow,3,1] := ::oData:nCurrent
+      ENDIF
    ELSE
       ::aRows[nRow,1] := y1
+      IF ::oData:lNeedBuf
+         IF ::oData:nCurrent != ::aRows[nRow,3,1]
+            AFill( ::aRows[nRow,3], Nil )
+            ::aRows[nRow,3,1] := ::oData:nCurrent
+         ENDIF
+      ENDIF
    ENDIF
 
    hwg_Settransparentmode( hDC, .T. )
@@ -332,7 +389,7 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
                Iif( oCol:tColor == Nil, ::tColor, oCol:tColor ) ), aClr[1] ) )
          hwg_Selectobject( hDC, Iif( !Empty(aClr) .AND. Len(aClr)>2 .AND. !Empty(aClr[3]), ;
             aClr[3]:handle, Iif( !Empty(oCol:oFont), oCol:oFont:handle, ::oFont:handle ) ) )
-         hwg_Drawtext( hDC, ::Cell( iCol ), x+::aRowPadding[1], y1+::aRowPadding[2],  ;
+         hwg_Drawtext( hDC, ::Cell( iCol, nRow ), x+::aRowPadding[1], y1+::aRowPadding[2],  ;
             Min( x2, x+nw-1-::aRowPadding[3] ), y2-::aRowPadding[4], oCol:nAlignRow, .T. )
       ENDIF
       x += oCol:nWidth
@@ -387,10 +444,26 @@ METHOD FooterOut( hDC ) CLASS HDrawnBrw
    HB_SYMBOL_UNUSED(hDC)
    RETURN Nil
 
-METHOD Cell( iCol ) CLASS HDrawnBrw
+METHOD Cell( iCol, nRow ) CLASS HDrawnBrw
 
-   LOCAL xVal := Eval( ::aColumns[iCol]:block,, ::oData ), cType := Valtype( xVal )
+   LOCAL xVal, cType
 
+   IF ::oData:lNeedBuf
+      IF ::aRows[nRow,3,iCol+1] == Nil
+         //hwg_Writelog( "c1 "+ltrim(str(nRow))+" "+ltrim(str(iCol)) )
+         IF ::oData:Recno() != ::aRows[nRow,3,1]
+            //hwg_Writelog( "c1a "+valtype(::aRows[nRow,3,1]) )
+            ::oData:Goto( ::aRows[nRow,3,1] )
+         ENDIF
+         ::aRows[nRow,3,iCol+1] := Eval( ::aColumns[iCol]:block,, ::oData )
+      ELSE
+         //hwg_Writelog( "c2 "+ltrim(str(nRow))+" "+ltrim(str(iCol)) )
+      ENDIF
+      xVal := ::aRows[nRow,3,iCol+1]
+   ELSE
+      xVal := Eval( ::aColumns[iCol]:block,, ::oData )
+   ENDIF
+   cType := Valtype( xVal )
    IF cType == "C"
       RETURN xVal
    ELSEIF cType == "N"
@@ -484,6 +557,9 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
          x := Iif( !Empty( o:aList ), o:aList[::oEdit:Value], ::oEdit:Value )
          IF Empty( o:bValid ) .OR. Eval( o:bValid, x )
             Eval( o:block, x, ::oData )
+            IF ::oData:lNeedBuf
+               ::aRows[::nRowCurr,3,::nColCurr+1] := Nil
+            ENDIF
             ::oEdit:onMouseLeave()
             ::oEdit:End()
             ::oEdit := Nil
@@ -919,7 +995,9 @@ METHOD New( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable ) CLASS HBrwC
 
 CLASS HBrwData INHERIT HObject
 
-   DATA nCurrent INIT 1
+   DATA nCurrent     INIT 1
+   DATA lNeedBuf     INIT .F.
+   DATA lNeedRefresh INIT .F.
 
    METHOD New()  INLINE Self
 

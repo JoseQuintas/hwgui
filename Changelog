@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-26 17:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawnbrw.prg
+  * source/winapi/hcontrol.prg
+  * utils/tutorial/tutor_eng.xml
+    * Buffering implemented for drawn browse
+
 2023-10-24 16:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * doc/hwgdoc.html
   * doc/hwgdoc_classes.html

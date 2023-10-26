@@ -595,7 +595,7 @@ CLASS HBoard INHERIT HControl
    METHOD onEvent( msg, wParam, lParam )
    METHOD Init()
    METHOD Paint( hDC )
-   METHOD Refresh()
+   METHOD Refresh( x1, y1, x2, y2 )
    METHOD End()
 
 ENDCLASS
@@ -791,14 +791,21 @@ METHOD Paint( hDC ) CLASS HBoard
 
    RETURN Nil
 
-METHOD Refresh() CLASS HBoard
+METHOD Refresh( x1, y1, x2, y2 ) CLASS HBoard
 
+   LOCAL handle
    IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0 .OR. ( Empty( ::brush ) .AND. Empty( ::bPaint ) )
-      hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight )
-      hwg_Sendmessage( ::oParent:handle, WM_PAINT, 0, 0 )
+      handle := ::oParent:handle
    ELSE
-      ::Super:Refresh()
+      handle := ::handle
    ENDIF
+   hwg_Invalidaterect( handle, 1, Iif( x1 == Nil, ::nLeft, x1 ), ;
+      Iif( y1 == Nil, ::nTop, y1 ), Iif( x2 == Nil, ::nLeft+::nWidth, x2 ), ;
+      Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
+   hwg_Sendmessage( handle, WM_PAINT, 0, 0 )
+   //ELSE
+   //   ::Super:Refresh()
+   //ENDIF
 
    RETURN NIL
 

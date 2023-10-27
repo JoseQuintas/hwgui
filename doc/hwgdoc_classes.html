@@ -1,4 +1,4 @@
-<html>
+<html>                                                                 a
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
   <title>HwGUI documentation - classes</title>
@@ -120,7 +120,7 @@
        <li><a name="_hcolumn" href="#hcolumn">HColumn</a>
        <li><a name="_hbrwcol" href="#hbrwcol">HBrwCol</a>
        <li><a name="_hbrwdata" href="#hbrwdata">HBrwData</a>
-       <ul>
+       <ul>           a
          <li><a name="_hdataarray" href="#hdataarray">HDataArray</a>
          <li><a name="_hdatadbf" href="#hdatadbf">HDataDbf</a>
        </ul>
@@ -1640,6 +1640,9 @@
    HBrwData</a></strong> 
    <pre class="code">DATA
       nCurrent                (R)
+  Internal:
+      lNeedBuf
+      lNeedRefresh
    </pre>
    <pre class="code">METHODS
       Bof()      VIRTUAL
@@ -2847,6 +2850,7 @@
       nHeightFoot             (RW)
       aRowPadding             (RW)
       aHeadPadding            (RW)
+      aFootPadding            (RW)
 
       tColorSel, bColorSel    (RW) Text and background colors of a selected row
       httColor, htbColor      (RW) Text and background colors of a selected cell
@@ -2856,6 +2860,7 @@
       nBorder                 (RW)
       nBorderColor            (RW)
       oFontHead               (RW)
+      oFontFoot               (RW)
 
       oStyleHead              (RW) A HStyle object to draw the header
       oStyleFoot              (RW) A HStyle object to draw the footer
@@ -2890,7 +2895,8 @@
       DoRebuild()  INLINE  (::lRebuild := .T., ::Refresh())
       Cell( iCol )
 
-      Move( x1, y1, width, height )
+      Move( [x1, y1, width, height] )
+      Refresh( [x1, y1, x2, y2, lNeedRefresh] )
       AddColumn( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable )
       Edit()
       SetFocus()
@@ -2903,8 +2909,7 @@
   Internal:
       Paint( hDC )
       RowOut( hDC, nRow, x1, y1, x2 )
-      HeaderOut( hDC )
-      FooterOut( hDC )
+      HeaderOut( hDC, y1, y2, oStyle, aPadding, npAll, npBack, npItem )
       onKey( msg, wParam, lParam )
       onMouseMove( xPos, yPos )
       onMouseLeave()

@@ -64,6 +64,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA nHeightFoot   INIT 0
    DATA aRowPadding   INIT { 4, 2, 4, 2 }
    DATA aHeadPadding  INIT { 4, 2, 4, 2 }
+   DATA aFootPadding  INIT { 4, 2, 4, 2 }
 
    DATA tColorSel, bColorSel, htbColor, httColor
    DATA bCellBlock                           // {|oBrw,nRow,nCol| Return { tColor, bColor, oFont } }
@@ -71,7 +72,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    DATA oPenSep, oPenBorder
    DATA nBorder       INIT 0
    DATA nBorderColor  INIT 0
-   DATA oFontHead
+   DATA oFontHead, oFontFoot
 
    DATA oStyleHead                           // An HStyle object to draw the header
    DATA oStyleFoot                           // An HStyle object to draw the footer
@@ -106,8 +107,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD DoRebuild()  INLINE  (::lRebuild := .T., ::Refresh())
    METHOD Paint( hDC )
    METHOD RowOut( hDC, nRow, x1, y1, x2 )
-   METHOD HeaderOut( hDC )
-   METHOD FooterOut( hDC )
+   METHOD HeaderOut( hDC, y1, y2, oStyle, aPadding, npAll, npBack, npItem )
    METHOD Cell( iCol, nRow )
 
    METHOD Move( x1, y1, width, height )
@@ -164,7 +164,8 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, oFont, ;
 
 METHOD Rebuild( hDC )
 
-   LOCAL i, l
+   LOCAL i, lh := .F., lf := .F.
+   LOCAL nFont := 0, nFontHead := 0, nFontFoot := 0
 
    IF Empty( ::oPenSep ) .AND. ::sepColor >= 0
       ::oPenSep := HPen():Add( PS_SOLID, 1, ::sepColor )
@@ -173,38 +174,47 @@ METHOD Rebuild( hDC )
       ::oPenBorder := HPen():Add( PS_SOLID, ::nBorder, ::nBorderColor )
       ::aMargin[1] := ::aMargin[2] := ::aMargin[3] := ::aMargin[4] := ::nBorder
    ENDIF
-   IF Empty( ::oStyleHead )
-      ::oStyleHead := HStyle():New( { CLR_WHITE, CLR_GRAY3 }, 1 )
-   ENDIF
 
+   IF ::oFontHead != Nil
+      hwg_Selectobject( hDC, ::oFontHead:handle )
+      nFontHead := hwg_GetTextMetric( hDC )[1]
+   ENDIF
+   IF ::oFontFoot != Nil
+      hwg_Selectobject( hDC, ::oFontFoot:handle )
+      nFontFoot := hwg_GetTextMetric( hDC )[1]
+   ENDIF
    IF ::oFont != Nil
       hwg_Selectobject( hDC, ::oFont:handle )
-      ::nHeightRow := hwg_GetTextMetric( hDC )[1]
+      nFont := ::nHeightRow := hwg_GetTextMetric( hDC )[1]
    ELSE
       ::nHeightRow := DEF_ROW_HEIGHT
    ENDIF
    ::nHeightRow += ::aRowPadding[2] + ::aRowPadding[4]
 
-   l := .F.
    FOR i := 1 TO Len( ::aColumns )
       IF !Empty( ::aColumns[i]:cHead )
-         l := .T.
+         lh := .T.
+      ENDIF
+      IF !Empty( ::aColumns[i]:cFoot )
+         lf := .T.
       ENDIF
       IF ::aColumns[i]:lEditable
          ::lSeleCell := .T.
       ENDIF
    NEXT
-   IF l
-      IF ::oFontHead != Nil
-         hwg_Selectobject( hDC, ::oFontHead:handle )
-         ::nHeightHead := hwg_GetTextMetric( hDC )[1]
-      ELSEIF ::oFont != Nil
-         hwg_Selectobject( hDC, ::oFont:handle )
-         ::nHeightHead := hwg_GetTextMetric( hDC )[1]
-      ELSE
-         ::nHeightHead := DEF_ROW_HEIGHT
+   IF lh
+      ::nHeightHead := Iif( nFontHead==0, Iif( nFont==0, DEF_ROW_HEIGHT, nFont ), nFontHead ) + ;
+         ::aHeadPadding[2] + ::aHeadPadding[4]
+      IF Empty( ::oStyleHead )
+         ::oStyleHead := HStyle():New( { CLR_WHITE, CLR_GRAY3 }, 1 )
       ENDIF
-      ::nHeightHead += ::aHeadPadding[2] + ::aHeadPadding[4]
+   ENDIF
+   IF lf
+      ::nHeightFoot := Iif( nFontFoot==0, Iif( nFont==0, DEF_ROW_HEIGHT, nFont ), nFontHead ) + ;
+         ::aFootPadding[2] + ::aFootPadding[4]
+      IF Empty( ::oStyleFoot )
+         ::oStyleFoot := HStyle():New( { CLR_WHITE, CLR_GRAY3 }, 1 )
+      ENDIF
    ENDIF
    IF Valtype( ::oTrackV ) == "N"
       ::ShowTrackV( .T. )
@@ -242,18 +252,20 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
       hwg_Selectobject( hDC, ::oFont:handle )
    ENDIF
 
-   // Draw header and footer
-   IF ::nHeightHead > 0
-      ::HeaderOut( hDC )
-   ENDIF
-   IF ::nHeightFoot > 0
-      ::FooterOut( hDC )
-   ENDIF
-
    x1 := ::nLeft + ::aMargin[1]
    y1 := ::nTop + ::aMargin[2] + ::nHeightHead
    x2 := ::nLeft + ::nWidth - ::aMargin[3]
    y2 := ::nTop + ::nHeight - ::nHeightFoot - ::aMargin[4] - ::nHeightRow + ::aRowPadding[4]
+
+   // Draw header and footer
+   IF ::nHeightHead > 0
+      ::HeaderOut( hDC, ::nTop + ::aMargin[2], ::nHeightHead, ::oStyleHead, ;
+         ::aHeadPadding, PAINT_HEAD_ALL, PAINT_HEAD_BACK, PAINT_HEAD_ITEM )
+   ENDIF
+   IF ::nHeightFoot > 0
+      ::HeaderOut( hDC, y2, ::nHeightFoot, ::oStyleFoot, ;
+         ::aFootPadding, PAINT_FOOT_ALL, PAINT_FOOT_BACK, PAINT_FOOT_ITEM )
+   ENDIF
 
    // Draw table content
    nRec := ::oData:Recno()
@@ -402,34 +414,35 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
    ::aRows[nRow,2] := y1 + ::nHeightRow
    RETURN ::aRows[nRow,2]
 
-METHOD HeaderOut( hDC ) CLASS HDrawnBrw
+METHOD HeaderOut( hDC, y1, y2, oStyle, aPadding, npAll, npBack, npItem ) CLASS HDrawnBrw
 
-   LOCAL y1 := ::nTop + ::aMargin[2], x1 := ::nLeft + ::aMargin[1]
-   LOCAL y2 := y1 + ::nHeightHead, x := x1, iCol := ::nColFirst - 1
+   LOCAL x1 := ::nLeft + ::aMargin[1]
+   LOCAL x := x1, iCol := ::nColFirst - 1
    LOCAL x2 := ::nLeft + ::nWidth - ::aMargin[3]
    LOCAL oCB, aCB, oCol, block, i, nw
 
+   y2 := y1 + y2
    hwg_Settransparentmode( hDC, .T. )
    hwg_Settextcolor( hDC, ::tcolor )
 
    DO WHILE ++iCol <= Len( ::aColumns ) .AND. x < x2
       oCol := ::aColumns[iCol]
       nw := Iif( iCol < Len( ::aColumns ), Min( oCol:nWidth,x2-x ), x2 - x )
-      IF !Empty( oCB := oCol:oPaintCB ) .AND. !Empty( block := oCB:Get( PAINT_HEAD_ALL ) )
+      IF !Empty( oCB := oCol:oPaintCB ) .AND. !Empty( block := oCB:Get( npAll ) )
          Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol )
       ELSE
-         IF !Empty( oCB ) .AND. !Empty( block := oCB:Get( PAINT_HEAD_BACK ) )
+         IF !Empty( oCB ) .AND. !Empty( block := oCB:Get( npBack ) )
             Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol )
          ELSE
-            ::oStyleHead:Draw( hDC, x, y1, x + nw, y2 )
+            oStyle:Draw( hDC, x, y1, x + nw, y2 )
          ENDIF
          IF !Empty( oCol:cHead )
-            hwg_Drawtext( hDC, oCol:cHead, x+::aHeadPadding[1], y1+::aHeadPadding[2],  ;
-               Min( x2, x+nw-1-::aHeadPadding[3] ), ;
-               y2-::aHeadPadding[4], oCol:nAlignHead )
+            hwg_Drawtext( hDC, oCol:cHead, x+aPadding[1], y1+aPadding[2],  ;
+               Min( x2, x+nw-1-aPadding[3] ), ;
+               y2-aPadding[4], oCol:nAlignHead )
          ENDIF
       ENDIF
-      IF !Empty( oCB ) .AND. !Empty( aCB := oCB:Get( PAINT_HEAD_ITEM ) )
+      IF !Empty( oCB ) .AND. !Empty( aCB := oCB:Get( npItem ) )
          FOR i := 1 TO Len( aCB )
             Eval( aCB[i], oCol, hDC, x, y1, x + nw, y2, iCol )
          NEXT
@@ -438,11 +451,6 @@ METHOD HeaderOut( hDC ) CLASS HDrawnBrw
    ENDDO
    hwg_Settransparentmode( hDC, .F. )
 
-   RETURN Nil
-
-METHOD FooterOut( hDC ) CLASS HDrawnBrw
-
-   HB_SYMBOL_UNUSED(hDC)
    RETURN Nil
 
 METHOD Cell( iCol, nRow ) CLASS HDrawnBrw

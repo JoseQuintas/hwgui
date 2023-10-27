@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-27 15:17 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawnbrw.prg
+    * Footer drawing implemented
+  * doc/hwgdoc_classes.html
+
 2023-10-27 13:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawnbrw.prg
   * source/gtk/hcontrol.prg

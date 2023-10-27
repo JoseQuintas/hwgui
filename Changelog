@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-10-27 13:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawnbrw.prg
+  * source/gtk/hcontrol.prg
+    ! Fixes
+  * utils/tutorial/tutor_eng.xml
+
 2023-10-26 17:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawnbrw.prg
   * source/winapi/hcontrol.prg

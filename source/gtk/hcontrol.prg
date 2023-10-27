@@ -522,6 +522,10 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
    ::aSize := { ::nWidth, ::nHeight }
 
+   IF ::bColor == Nil
+      ::bColor := ::oParent:bColor
+   ENDIF
+
    IF !Empty( lKeyb )
       ::lKeybEvents := .T.
    ENDIF

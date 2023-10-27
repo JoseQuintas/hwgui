@@ -2211,7 +2211,6 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw2:Anchor := ANCHOR_TOPABS+ANCHOR_BOTTOMABS+ANCHOR_LEFTABS+ANCHOR_RIGHTABS
          // Set a dbf file as a data source
          oBrw2:oData := HDataDbf():New( "BASE1" )
-         oBrw2:oData:lNeedBuf := .T.
          // You may pass a database column number or a field name instead of a codeblock
          oBrw2:AddColumn( "Name", 1, 180,, DT_CENTER, .T. )
          oBrw2:AddColumn( "Num", "NUM", 50, DT_RIGHT, DT_CENTER, .T. )
@@ -2255,7 +2254,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
 
    oBrw:lDisable := .F.
    oBrw:Setfocus()
-   oBoa:oParent:Refresh()
+   oBoa:Refresh()
 
    RETURN Nil
 

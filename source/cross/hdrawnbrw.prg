@@ -111,6 +111,7 @@ CLASS HDrawnBrw INHERIT HDrawn
    METHOD Cell( iCol, nRow )
 
    METHOD Move( x1, y1, width, height )
+   METHOD Refresh( x1, y1, x2, y2, lNeedRefresh )
    METHOD AddColumn( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable )
    METHOD Edit()
    METHOD onKey( msg, wParam, lParam )
@@ -309,7 +310,7 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
       ENDDO
       i := ::nColFirst - 1; x := x1
       DO WHILE ++i < Len( ::aColumns ) .AND. x < x2
-         x += ::aColumns[i]:nWidth
+         x += Min( ::aColumns[i]:nWidth, x2-x )
          hwg_DrawLine( hDC, x, ::nTop + ::aMargin[2] + ::nHeightHead, x, y1 )
       ENDDO
    ENDIF
@@ -363,7 +364,7 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
 
    DO WHILE ++iCol <= Len( ::aColumns ) .AND. x < x2
       oCol := ::aColumns[iCol]
-      nw := Iif( iCol < Len( ::aColumns ), oCol:nWidth, x2 - x )
+      nw := Iif( iCol < Len( ::aColumns ), Min( oCol:nWidth,x2-x ), x2 - x )
       IF !Empty( oCB := oCol:oPaintCB ) .AND. !Empty( block := oCB:Get( PAINT_LINE_ALL ) )
          Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol, nRow )
       ELSE
@@ -413,7 +414,7 @@ METHOD HeaderOut( hDC ) CLASS HDrawnBrw
 
    DO WHILE ++iCol <= Len( ::aColumns ) .AND. x < x2
       oCol := ::aColumns[iCol]
-      nw := Iif( iCol < Len( ::aColumns ), oCol:nWidth, x2 - x )
+      nw := Iif( iCol < Len( ::aColumns ), Min( oCol:nWidth,x2-x ), x2 - x )
       IF !Empty( oCB := oCol:oPaintCB ) .AND. !Empty( block := oCB:Get( PAINT_HEAD_ALL ) )
          Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol )
       ELSE
@@ -497,6 +498,14 @@ METHOD Move( x1, y1, width, height ) CLASS HDrawnBrw
 
    RETURN Nil
 
+METHOD Refresh( x1, y1, x2, y2, lNeedRefresh ) CLASS HDrawnBrw
+
+   IF (lNeedRefresh == Nil .OR. lNeedRefresh) .AND. !Empty( ::oData ) .AND. ::oData:lNeedBuf
+      ::oData:lNeedRefresh := .T.
+   ENDIF
+
+   RETURN ::Super:Refresh( x1, y1, x2, y2 )
+
 METHOD AddColumn( cHead, block, nWidth, nAlignRow, nAlignHead, lEditable ) CLASS HDrawnBrw
 
    LOCAL oColumn := HBrwCol():New( cHead, Iif( Valtype(block) == "B", block, ::oData:Block(block) ), ;
@@ -536,7 +545,7 @@ METHOD Edit() CLASS HDrawnBrw
                ::oFont, hb_Ascan( oCol:aList,Trim(xVal),,,.T. ),,,,, oCol:aList )
       //::oEdit:oEdit:nBorder := 2
    ENDIF
-   ::Refresh()
+   ::Refresh( ,,,, .F. )
 
    RETURN Nil
 
@@ -551,7 +560,7 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
          ::oEdit:onMouseLeave()
          ::oEdit:End()
          ::oEdit := Nil
-         ::Refresh()
+         ::Refresh( ,,,, .F. )
       ELSEIF msg == WM_KEYDOWN .AND. wParam == VK_RETURN
          o := ::aColumns[::nColCurr]
          x := Iif( !Empty( o:aList ), o:aList[::oEdit:Value], ::oEdit:Value )
@@ -563,7 +572,7 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
             ::oEdit:onMouseLeave()
             ::oEdit:End()
             ::oEdit := Nil
-            ::Refresh()
+            ::Refresh( ,,,, .F. )
          ENDIF
       ELSEIF wParam != VK_TAB
          ::oEdit:onKey( msg, wParam, lParam )
@@ -588,7 +597,7 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
       ELSEIF wParam == VK_END
          ::oData:Bottom()
          ::nRowCurr := Min( ::nRowCount, ::oData:Count() )
-         ::Refresh()
+         ::Refresh( ,,,, .F. )
 
       ELSEIF wParam == VK_RIGHT
          IF ::lSeleCell
@@ -596,12 +605,12 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
                IF ++ ::nColCurr >= ::nColFirst + ::nColCount
                   ::nColFirst ++
                ENDIF
-               ::Refresh()
+               ::Refresh( ,,,, .F. )
             ENDIF
          ELSE
             IF ::nColFirst + ::nColCount < Len( ::aColumns )
                ::nColFirst ++
-               ::Refresh()
+               ::Refresh( ,,,, .F. )
             ENDIF
          ENDIF
 
@@ -611,12 +620,12 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnBrw
                IF -- ::nColCurr < ::nColFirst
                   ::nColFirst --
                ENDIF
-               ::Refresh()
+               ::Refresh( ,,,, .F. )
             ENDIF
          ELSE
             IF ::nColFirst > 1
                ::nColFirst --
-               ::Refresh()
+               ::Refresh( ,,,, .F. )
             ENDIF
          ENDIF
 
@@ -763,7 +772,7 @@ METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnBrw
    ENDIF
 
    IF lRefr
-      ::Refresh()
+      ::Refresh( ,,,, .F. )
    ENDIF
 
    RETURN Nil
@@ -790,7 +799,7 @@ METHOD onButtonUp( xPos, yPos ) CLASS HDrawnBrw
       ::nColResize := 0
       IF xPos > x
          ::aColumns[j]:nWidth := xPos - x
-         ::Refresh()
+         ::Refresh( ,,,, .F. )
       ENDIF
    ENDIF
 
@@ -826,7 +835,7 @@ METHOD Top() CLASS HDrawnBrw
 
    ::oData:Top()
    ::nRowCurr := 1
-   ::Refresh()
+   ::Refresh( ,,,, .F. )
 
    RETURN Nil
 
@@ -859,7 +868,7 @@ METHOD Skip( n ) CLASS HDrawnBrw
          ::nRowCurr := ::nRowCount
       ENDIF
    ENDIF
-   ::Refresh()
+   ::Refresh( ,,,, .F. )
 
    RETURN Nil
 
@@ -893,13 +902,13 @@ METHOD ShowTrackV( lShow ) CLASS HDrawnBrw
             ::oTrackV:lHide := .F.
          ENDIF
          ::aMargin[3] += ::oTrackV:nWidth
-         ::Refresh()
+         ::Refresh( ,,,, .F. )
       ENDIF
    ELSE
       IF !Empty( ::oTrackV ) .AND. !::oTrackV:lHide
          ::oTrackV:lHide := .T.
          ::aMargin[3] -= ::oTrackV:nWidth
-         ::Refresh()
+         ::Refresh( ,,,, .F. )
       ENDIF
    ENDIF
 
@@ -937,13 +946,13 @@ METHOD ShowTrackH( lShow ) CLASS HDrawnBrw
             ::oTrackH:lHide := .F.
          ENDIF
          ::aMargin[4] += ::oTrackH:nHeight
-         ::Refresh()
+         ::Refresh( ,,,, .F. )
       ENDIF
    ELSE
       IF !Empty( ::oTrackH ) .AND. !::oTrackH:lHide
          ::oTrackH:lHide := .T.
          ::aMargin[4] -= ::oTrackH:nHeight
-         ::Refresh()
+         ::Refresh( ,,,, .F. )
       ENDIF
    ENDIF
 
@@ -1097,6 +1106,7 @@ ENDCLASS
 METHOD New( cAlias ) CLASS HDataDbf
 
    ::cAlias := cAlias
+   ::lNeedBuf := .T.
 
    RETURN ::Super:New()
 

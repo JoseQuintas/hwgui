@@ -35,6 +35,7 @@
 </table>
 <hr align="left" width="100%">
 
+<div id="maincontent">
    <br><strong class="title"><A NAME="Classes" HREF="hwgdoc.html#_Classes">
     6.  Classes</A></strong><br>
 
@@ -120,7 +121,7 @@
        <li><a name="_hcolumn" href="#hcolumn">HColumn</a>
        <li><a name="_hbrwcol" href="#hbrwcol">HBrwCol</a>
        <li><a name="_hbrwdata" href="#hbrwdata">HBrwData</a>
-       <ul>           a
+       <ul>
          <li><a name="_hdataarray" href="#hdataarray">HDataArray</a>
          <li><a name="_hdatadbf" href="#hdatadbf">HDataDbf</a>
        </ul>
@@ -213,6 +214,7 @@
      lHide                     (R) .T., if the element is hidden
      aControls                 (R) an array with controls objects, belonged to this
                                     window or container
+  Internal:
      aEvents, aNotify 
      HelpId 
      nHolder
@@ -226,8 +228,10 @@
      Show()
      Move( x1,y1,width,height )
      SetColor( tcolor, bColor, lRepaint )
+     Refresh()
   Internal:
      onEvent( msg, wParam, lParam )
+     OnError()
      End()
    </pre>
 
@@ -268,6 +272,7 @@
       Maximize()                  - expands window to full screen
       Minimize()                  - minimizes window
       SetTitle( cTitle )          - set a new window title
+      EvalKeyList( nKey, bPressed )
       Close()                     - closes windows, deletes it with all controls
   Internal:
       AddItem( oWnd ) 
@@ -569,19 +574,14 @@
    </pre>
    <pre class="code">METHODS
      New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
-      cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
-     SetText( c , lrefresh )  && INLINE (::title := c)
+        cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
+     SetText( c )
      SetSysbtnColor( tColor, bColor )
   Internal:
      PaintText( hDC )
      Paint()
    </pre>
-   <p>
-   Set lrefresh to .T. for refreshing the header text at runtime<br>
-   (compatibility to INLINE definition)<br>
-   Default value of lrefresh is .F., this is set at initialization time.<br>
-   </p>
-   
+   <p></p>  
 
    <br><strong class="subhead"><a name="hownbutton" href="#_hownbutton">
    HOwnButton</a></strong> 
@@ -2360,9 +2360,11 @@
    <p>This class defines a style, painting parameters of a rectangular area, in particular - of some widget.
    It is possible to define a bacground color, an array of colors - in this case a gradient will be drawn.
    A direction of a gradient, a thickness and color of a border (if needed) may be specified in HStyle object.
-   You can set a bitmap instead of background colors - it will fill the backgroung (look at
-   <a href="hwgdoc_functions.html#Functions3k">hwg_SpreadBitmap() function</a>). The corners may be
-   drawn rounded, each corner - with a specified radius.</p>
+   You can set a bitmap instead of background colors. The <i>nBmpStyle</i> value determines, how the bitmap will be used:
+   <br>BMP_DRAW_SPREAD - it will fill the backgroung (look at <a href="hwgdoc_functions.html#Functions3k">hwg_SpreadBitmap() function</a>)
+   <br>BMP_DRAW_CENTER - it will be drawn in the center
+   <br>BMP_DRAW_FULL - it will be resized to the size of appropriate surface.
+   <br>The corners may be drawn rounded, each corner - with a specified radius.</p>
 
    <p>You may create at first an HStyle object with the help of <code>HStyle():New()</code>,
    and the to use it for different controls. Look for the samples of using HStyle in
@@ -2372,19 +2374,20 @@
       CLASS VAR aStyles        (R) an array with all defined styles, it is filled
                                     automatically;
       id                       (R) a style id, it is created automatically;
-      nOrient                  (R) a gradient direction (look at <a href="hwgdoc_functions.html#Functions3h">hwg_DrawGradient()</a>);
-      aColors                  (R) an array of background colors, if few are defined, a
+      nOrient                 (RW) a gradient direction (look at <a href="hwgdoc_functions.html#Functions3h">hwg_DrawGradient()</a>);
+      aColors                 (RW) an array of background colors, if few are defined, a
                                    gradient is drawn;
-      oBitmap                  (R) an object of HBitmap class - a bitmap to fill background;
-      nBorder                  (R) a thickness of a border in pixels. If it is absent,
+      oBitmap                 (RW) an object of HBitmap class - a bitmap to fill background;
+      nBmpStyle               (RW) BMP_DRAW_SPREAD, BMP_DRAW_CENTER, BMP_DRAW_FULL
+      nBorder                 (RW) a thickness of a border in pixels. If it is absent,
                                    the border will not be drawn;
-      tColor                   (R) a color of a border;
+      tColor                  (RW) a color of a border;
       oPen                     (R) an object of HPen class, it is created automatically;
-      aCorners                 (R) an array with corners radiuses (look at
+      aCorners                (RW) an array with corners radiuses (look at
                                    <a href="hwgdoc_functions.html#Functions3h">hwg_DrawGradient()</a>).
    </pre>
    <pre class="code">METHODS
-      New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap )
+      New( aColors, nOrient, aCorners, nBorder, tColor, oBitmap, nBmpStyle )
       Draw( hDC, nTop, nLeft, nWidth, nHeight )
    </pre>
 
@@ -2994,6 +2997,7 @@
       onButtonDown( msg, xPos, yPos )
       onButtonUp( xPos, yPos )
    </pre>
+</div>
 
 <hr align="left" width="100%">
 <table width="100%" border="0" cellpadding="0" cellspacing="0">

@@ -36,7 +36,6 @@ CLASS HPanel INHERIT HControl
    METHOD Move( x1, y1, width, height )
    METHOD Hide()
    METHOD Show()
-   //METHOD SetPaintCB( nId, block, cId )
    METHOD Drag( xPos, yPos )
 
 ENDCLASS
@@ -124,7 +123,7 @@ METHOD DrawItems( hDC, aCoors ) CLASS HPanel
    IF Empty( aCoors )
       aCoors := hwg_Getclientrect( ::handle )
    ENDIF
-   //IF !Empty( aCB := hwg_getPaintCB( ::aPaintCB, PAINT_ITEM ) )
+
    IF !Empty( ::oPaintCB ) .AND. !Empty( aCB := ::oPaintCB:Get( PAINT_ITEM ) )
       FOR i := 1 TO Len( aCB )
          Eval( aCB[i], Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
@@ -140,9 +139,10 @@ METHOD Paint() CLASS HPanel
    IF ::bPaint != Nil
       RETURN Eval( ::bPaint, Self )
    ENDIF
+
    hDC := hwg_Getdc( ::handle )
    aCoors := hwg_Getclientrect( ::handle )
-   //IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
+
    IF !Empty( ::oPaintCB ) .AND. !Empty( block := ::oPaintCB:Get( PAINT_ITEM ) )
       Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
    ELSEIF ::oStyle == Nil
@@ -215,34 +215,7 @@ METHOD Show() CLASS HPanel
    NEXT
 
    RETURN Nil
-/*
-METHOD SetPaintCB( nId, block, cId ) CLASS HPanel
 
-   LOCAL i, nLen
-
-   IF Empty( cId ); cId := "_"; ENDIF
-   IF Empty( ::aPaintCB ); ::aPaintCB := {}; ENDIF
-   nLen := Len( ::aPaintCB )
-   FOR i := 1 TO nLen
-      IF ::aPaintCB[i,1] == nId .AND. ::aPaintCB[i,2] == cId
-         EXIT
-      ENDIF
-   NEXT
-   IF Empty( block )
-      IF i <= nLen
-         ADel( ::aPaintCB, i )
-         ::aPaintCB := ASize( ::aPaintCB, nLen - 1 )
-      ENDIF
-   ELSE
-      IF i > nLen
-         AAdd( ::aPaintCB, { nId, cId, block } )
-      ELSE
-         ::aPaintCB[i,3] := block
-      ENDIF
-   ENDIF
-
-   RETURN Nil
-*/
 METHOD Drag( xPos, yPos ) CLASS HPanel
 
    LOCAL oWnd := hwg_getParentForm( Self )
@@ -279,9 +252,7 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, bcolor, oStyle, aPar
    ENDIF
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, 0, oWndParent:nHeight - nHeight, ;
       oWndParent:nWidth, nHeight, bInit, {|o,w,h|o:Move(0,h-o:nHeight,w-2)}, bPaint, bcolor )
-      //oWndParent:nWidth, nHeight, bInit, {|o,w,h|HB_SYMBOL_UNUSED(w),o:Move(0,h-o:nHeight)}, bPaint, bcolor )
 
-   //::Anchor := ANCHOR_LEFTABS + ANCHOR_RIGHTABS
    ::oFont := iif( oFont == Nil, ::oParent:oFont, oFont )
    ::oStyle := oStyle
    IF !Empty( aParts )
@@ -336,18 +307,21 @@ METHOD Paint() CLASS HPanelStS
    IF ::bPaint != Nil
       RETURN Eval( ::bPaint, Self )
    ENDIF
+
    pps    := hwg_Definepaintstru()
    hDC    := hwg_Beginpaint( ::handle, pps )
-   //IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
+
    IF !Empty( ::oPaintCB ) .AND. !Empty( block := ::oPaintCB:Get( PAINT_BACK ) )
       aCoors := hwg_Getclientrect( ::handle )
       Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
    ELSEIF Empty( ::oStyle )
       ::oStyle := HStyle():New( { ::bColor }, 1, , 0.4, 0 )
    ENDIF
+
    ::oStyle:Draw( hDC, 0, 0, ::nWidth, ::nHeight )
    ::PaintText( hDC )
    ::DrawItems( hDC )
+
    hwg_Endpaint( ::handle, pps )
 
    RETURN Nil
@@ -360,7 +334,7 @@ CLASS HPanelHea INHERIT HPANEL
 
    METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oStyle, ;
       cText, xt, yt, lBtnClose, lBtnMax, lBtnMin )
-   METHOD SetText( c , lrefresh )  && INLINE (::title := c)
+   METHOD SetText( c )
    METHOD SetSysbtnColor( tColor, bColor )
    METHOD PaintText( hDC )
    METHOD Paint()
@@ -413,26 +387,10 @@ METHOD New( oWndParent, nId, nHeight, oFont, bInit, bPaint, tcolor, bcolor, oSty
 
    RETURN Self
 
-METHOD SetText( c , lrefresh) CLASS HPanelHea
-   * DF7BE: Set lrefresh to .T. for refreshing the header text
-   * (compatibility to INLINE definition)
+METHOD SetText( c ) CLASS HPanelHea
 
-   LOCAL hDC
-
-   IF lrefresh == NIL
-      lrefresh := .F.
-    ENDIF
    ::title := c
-   IF lrefresh
-      hDC := hwg_Getdc( ::handle )
-      ::PaintText( hDC )
-      hwg_Redrawwindow( ::handle)
-      /*
-      This only for WinAPI
-      RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW
-      (2nd parameter)
-      */
-   ENDIF
+   hwg_RedrawWindow( ::handle )
 
    RETURN NIL
 

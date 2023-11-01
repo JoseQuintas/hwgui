@@ -182,6 +182,15 @@ METHOD Paint( hDC ) CLASS HDrawn
          ELSE
             hwg_Rectangle_Filled( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::oPen:handle, ::oBrush:handle )
          ENDIF
+      ELSEIF !( ::tBorderColor == Nil )
+         IF Empty( ::oPen )
+            ::oPen := HPen():Add( BS_SOLID, 1, ::tBorderColor )
+         ENDIF
+         IF ::nCorner > 0
+            hwg_RoundRect( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::nCorner, ::oPen:handle )
+         ELSE
+            hwg_Rectangle( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::oPen:handle )
+         ENDIF
       ENDIF
       IF !Empty( ::title )
          hwg_Settransparentmode( hDC, .T. )
@@ -306,9 +315,15 @@ METHOD Value( xValue ) CLASS HDrawn
 
 METHOD Refresh( x1, y1, x2, y2 ) CLASS HDrawn
 
-   hwg_Invalidaterect( ::GetParentBoard():handle, 0, Iif( x1 == Nil, ::nLeft, x1 ), ;
-      Iif( y1 == Nil, ::nTop, y1 ), Iif( x2 == Nil, ::nLeft+::nWidth, x2 ), ;
-      Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
+   IF Empty( ::oBrush )
+      ::GetParentBoard():Refresh( Iif( x1 == Nil, ::nLeft, x1 ), ;
+         Iif( y1 == Nil, ::nTop, y1 ), Iif( x2 == Nil, ::nLeft+::nWidth, x2 ), ;
+         Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
+   ELSE
+      hwg_Invalidaterect( ::GetParentBoard():handle, 0, Iif( x1 == Nil, ::nLeft, x1 ), ;
+         Iif( y1 == Nil, ::nTop, y1 ), Iif( x2 == Nil, ::nLeft+::nWidth, x2 ), ;
+         Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
+   ENDIF
    RETURN Nil
 
 METHOD onMouseMove( xPos, yPos ) CLASS HDrawn

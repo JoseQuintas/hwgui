@@ -792,20 +792,28 @@ METHOD Paint( hDC ) CLASS HBoard
    RETURN Nil
 
 METHOD Refresh( x1, y1, x2, y2 ) CLASS HBoard
-
-   LOCAL handle
-   IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0 .OR. ( Empty( ::brush ) .AND. Empty( ::bPaint ) )
-      handle := ::oParent:handle
+/*
+   IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0
+      hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight )
+      hwg_Sendmessage( ::oParent:handle, WM_PAINT, 0, 0 )
+      hwg_writelog( "r1" )
+      hwg_writelog( str(::nLeft) + " " + str(::nTop) + " " + str(::nLeft + ::nWidth) + " " + str(::nTop + ::nHeight) )
    ELSE
-      handle := ::handle
+      ::Super:Refresh()
+      hwg_writelog( "r2" )
    ENDIF
-   hwg_Invalidaterect( handle, 1, Iif( x1 == Nil, ::nLeft, x1 ), ;
-      Iif( y1 == Nil, ::nTop, y1 ), Iif( x2 == Nil, ::nLeft+::nWidth, x2 ), ;
-      Iif( y2 == Nil, ::nTop+::nHeight, y2 ) )
-   hwg_Sendmessage( handle, WM_PAINT, 0, 0 )
-   //ELSE
-   //   ::Super:Refresh()
-   //ENDIF
+*/
+   IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0 .OR. ( Empty( ::brush ) .AND. Empty( ::bPaint ) )
+      hwg_Invalidaterect( ::oParent:handle, 1, Iif( x1 == Nil, ::nLeft, x1+::nLeft ), ;
+         Iif( y1 == Nil, ::nTop, y1+::nTop ), Iif( x2 == Nil, ::nLeft+::nWidth, x2+::nLeft ), ;
+         Iif( y2 == Nil, ::nTop+::nHeight, y2+::nTop ) )
+      hwg_Sendmessage( ::oParent:handle, WM_PAINT, 0, 0 )
+   ELSE
+      hwg_Invalidaterect( ::handle, 1, Iif( x1 == Nil, 0, x1 ), ;
+         Iif( y1 == Nil, 0, y1 ), Iif( x2 == Nil, ::nWidth, x2 ), ;
+         Iif( y2 == Nil, ::nHeight, y2 ) )
+      hwg_Sendmessage( ::handle, WM_PAINT, 0, 0 )
+   ENDIF
 
    RETURN NIL
 

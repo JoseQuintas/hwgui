@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-01 16:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawn.prg
+  * source/winapi/hcontrol.prg
+    ! Fixes
+  * doc/hwgdoc_classes.html
+    * Documentation updated
+  * utils/tutorial/tutor_eng.xml
+    * @ x,y DRAWN DATE added to "Drawn widgets - 2" module
+
 2023-10-31 15:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
   * source/winapi/hpanel.prg

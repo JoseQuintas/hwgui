@@ -2054,7 +2054,8 @@ FUNCTION Test
 #define CLR_DGRAY4   0xdddddd
 
 FUNCTION Test
-   LOCAL oDlg, oBoard, oCombo, oUpd1, oUpd2, oUpd3, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
+   LOCAL oDlg, oBoard, oCombo, oUpd1, oUpd2, oUpd3, oDate
+   LOCAL oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aCorners := { 4,4,4,4 }
    LOCAL aStyles := { HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1 ), ;
       HStyle():New( { CLR_DGRAY4 }, 2 ) }
@@ -2065,7 +2066,7 @@ FUNCTION Test
    LOCAL bExit := {||
       LOCAL cr := Chr(13)+Chr(10)
       hwg_MsgInfo( arr1[oCombo:Value] + cr + Str(oUpd1:Value) + cr + ;
-         Dtoc(oUpd2:Value) + cr + arr2[oUpd3:Value] )
+         Dtoc(oUpd2:Value) + cr + arr2[oUpd3:Value] + cr + Dtoc(oDate:Value) )
       oDlg:Close()
       RETURN .T.
    }
@@ -2080,21 +2081,23 @@ FUNCTION Test
    NEXT
 
    INIT DIALOG oDlg TITLE "Board and drawn items 2"  ;
-      AT 210, 10  SIZE 170, 250 FONT oFont BACKCOLOR CLR_DGRAY2
+      AT 210, 10  SIZE 220, 290 FONT oFont BACKCOLOR CLR_DGRAY2
 
-   @ 4, 4 BOARD oBoard SIZE 162, 242 BACKCOLOR CLR_BLACK ;
+   @ 4, 4 BOARD oBoard SIZE 212, 282 BACKCOLOR CLR_BLACK ;
       ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont KEYBOARD
 
-   @ 12, 10 DRAWN COMBO oCombo ITEMS arr1 SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT 1
+   @ 20, 10 DRAWN COMBO oCombo ITEMS arr1 SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT 1
 
-   @ 12, 50 DRAWN UPDOWN oUpd1 INIT 10 RANGE 1, 50 SIZE 60, 28
+   @ 20, 50 DRAWN UPDOWN oUpd1 INIT 10 RANGE 1, 50 SIZE 60, 28
 
-   @ 12, 90 DRAWN UPDOWN oUpd2 INIT Date() RANGE Date()-10, Date()+10 SIZE 100, 28
+   @ 20, 90 DRAWN UPDOWN oUpd2 INIT Date() RANGE Date()-10, Date()+10 SIZE 100, 28
 
-   @ 12, 130 DRAWN UPDOWN oUpd3 SIZE 120, 28 ARRAY arr2 HSTYLES aStyles
+   @ 20, 130 DRAWN UPDOWN oUpd3 SIZE 120, 28 ARRAY arr2 HSTYLES aStyles
    oUpd3:arrowColor := CLR_WHITE
 
-   @ 36, 200 DRAWN OF oBoard SIZE 100, 32 COLOR CLR_WHITE ;
+   @ 20, 170 DRAWN DATE oDate SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT Date()
+
+   @ 60, 240 DRAWN OF oBoard SIZE 100, 32 COLOR CLR_WHITE ;
       HSTYLES aStylesBtn TEXT 'Exit' FONT oFont ON CLICK bExit
 
    ACTIVATE DIALOG oDlg

@@ -282,7 +282,7 @@
    <br><strong class="subhead"><a name="hmainwindow" href="#_hmainwindow">
    HMainWindow</a></strong> 
 
-   <p>A class of a main window. the corresponding command: <a href="hwgdoc_commands.html#Commands1-1"><i>INIT WINDOW MAIN</i></a></p>
+   <p>A class of a main window. The corresponding command is <a href="hwgdoc_commands.html#initwindow"><i>INIT WINDOW MAIN</i></a></p>
 
    <pre class="code">DATA
       CLASS VAR aMessages 
@@ -295,7 +295,7 @@
          oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, 
          cAppName, oBmp, cHelp, nHelpId, bColor, nExclude ) 
       Activate( lShow, lMaximized,           - Activates a window, the corresponding
-         lMinimized, lCentered, bActivate )    command: <a href="hwgdoc_commands.html#Commands1-3"><i>ACTIVATE WINDOW</i></a>
+         lMinimized, lCentered, bActivate )    command is <a href="hwgdoc_commands.html#actwindow"><i>ACTIVATE WINDOW</i></a>
       InitTray( oNotifyIcon, bNotify, oNotifyMenu ) (Windows only, on GTK available, but empty with no function) 
       GetMdiActive()                         - returns an active MDI child window object
       DEICONIFY()   (LINUX/GTK only)         - maximize
@@ -314,7 +314,7 @@
    <br><strong class="subhead"><a name="hmdichildwindow" href="#_hmdichildwindow">
    HMDIChildWindow</a></strong>
    
-   <p>A class of a MDI child window. the corresponding command: <a href="hwgdoc_commands.html#Commands1-1"><i>INIT WINDOW MDICHILD</i></a></p>
+   <p>A class of a MDI child window. the corresponding command: <a href="hwgdoc_commands.html#initwindow"><i>INIT WINDOW MDICHILD</i></a></p>
 
    <pre class="code">DATA
       CLASS VAR aMessages 
@@ -330,6 +330,8 @@
 
    <br><strong class="subhead"><a name="hdialog" href="#_hdialog">
    HDialog</a></strong> 
+
+   <p>A class of a dialog window. The corresponding command is <a href="hwgdoc_commands.html#initdialog"><i>INIT DIALOG</i></a></p>
 
    <pre class="code">DATA
       CLASS VAR aDialogs       (R)
@@ -355,13 +357,20 @@
      DelItem() 
      onEvent( msg, wParam, lParam ) 
    </pre>
+
    <br><strong class="subhead"><a name="hcontrol" href="#_hcontrol">
    HControl</a></strong> 
+
+   <p>Do not create instances of HControl. It serves as a base class
+    for all controls, except &quot;drawn&quot;. In other words, HControl provide basic variables and methods,
+    which are inherited by all controls. Every subclass adds its own variables and methods,
+    modifies inherited, if needed, and use others as is.</p>
    <pre class="code">DATA
       Anchor                  (RW) a numeric value, which determines autoresizing
                                     of a control due to a parent window resizing
       tooltip                  (R)
       id                       (R)
+  Internal:
       lInit
    </pre>
    <pre class="code">METHODS
@@ -383,6 +392,9 @@
 
    <br><strong class="subhead"><a name="hbrowse" href="#_hbrowse">
    HBrowse</a></strong> 
+
+   <p>The corresponding command is <a href="hwgdoc_commands.html#browse"><i>@ &lt;x&gt;,&lt;y&gt; BROWSE</i></a></p>
+
    <pre class="code">DATA
       active                  (RW)
       lChanged                (RW)

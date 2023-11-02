@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-02 15:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+  * source/cross/hdrawncomb.prg
+    * DRAWN COMBO updated
+  * doc/hwgdoc_classes.html
+  * utils/tutorial/tutor_eng.xml
+
 2023-11-02 10:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
   * source/gtk/control.c

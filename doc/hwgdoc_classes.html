@@ -1473,6 +1473,10 @@
 
    <br><strong class="subhead"><a name="hboard" href="#_hboard">
    HBoard</a></strong> 
+
+   <p>This widget is mainly used to place DRAWN widgets on it. It can be used also to draw on it with HwGUI's drawing functions.</p>
+   <p>The corresponding command is <a href="hwgdoc_commands.html#board"><i>@ &lt;x&gt;,&lt;y&gt; BOARD</i></a></p>
+
    <pre class="code">DATA
       winclass                (R)
       lMouseOver              (R)
@@ -1482,7 +1486,7 @@
    <pre class="code">METHODS
       New( oWndParent, nId, nLeft, nTop, nWidth, nHeight,
         oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
-      Refresh()
+      Refresh( x1, y1, x2, y2 )
   Internal:
       Activate()
       onEvent( msg, wParam, lParam )
@@ -2944,8 +2948,10 @@
        arrowPen                     (R)
        nRowCount                    (RW)
        bChange                      (RW)
+       lDlg                         (RW)
   Internal:
        hBitmapList
+       oDlg
    </pre>
    <pre class="code">METHODS
       New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles,

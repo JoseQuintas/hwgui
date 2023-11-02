@@ -1972,10 +1972,12 @@ STATIC FUNCTION FPaint( o, hDC )
 #define CLR_BLACK    0x000000
 #define CLR_DGRAY2   0x555555
 #define CLR_DGRAY3   0x888888
+#define CLR_LGRAY    0xbbbbbb
 #define CLR_BLUE     16711680
 
 FUNCTION Test
-   LOCAL oDlg, oBoard, oLenta, or1, or2, oTrack, oSay, oEdit, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
+   LOCAL oDlg, oBoard, oGroup, oLenta, or1, or2, oTrack, oSay, oEdit
+   LOCAL oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aCorners := { 4,4,4,4 }
    LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
@@ -1989,39 +1991,43 @@ FUNCTION Test
    }
 
    INIT DIALOG oDlg TITLE "Board and drawn items"  ;
-      AT 210, 10  SIZE 440, 220 FONT oFont BACKCOLOR CLR_DGRAY2
+      AT 210, 10  SIZE 480, 240 FONT oFont BACKCOLOR CLR_DGRAY2
 
-   @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR CLR_BLACK ;
-      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) }
+   @ 4, 4 BOARD oBoard SIZE 472, 232 BACKCOLOR CLR_BLACK ;
+      ON SIZE ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
-   @ 12, 12 DRAWN RADIO or1 GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 12, 12 DRAWN oGroup SIZE 150, 100
+   oGroup:tBorderColor := CLR_LGRAY
+   oGroup:nCorner := 8
+
+   @ 24, 24 DRAWN RADIO or1 OF oGroup GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont INIT .T.
    or1:cTooltip := "Radio 1"
-   @ 12, 56 DRAWN RADIO or2 GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 24, 68 DRAWN RADIO or2 OF oGroup GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont
    or2:cTooltip := "Radio 2"
 
-   @ 36, 12 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 48, 24 DRAWN OF oGroup SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Radio 1' FONT oFont
-   @ 36, 56 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 48, 68 DRAWN OF oGroup SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Radio 2' FONT oFont
 
-   @ 140, 12 DRAWN CHECK SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 180, 24 DRAWN CHECK SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont
-   @ 140, 56 DRAWN CHECK SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 180, 68 DRAWN CHECK SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont
 
-   @ 164, 12 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 204, 24 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Check 1' FONT oFont
-   @ 164, 56 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 204, 68 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Check 2' FONT oFont
 
-   @ 280, 12 DRAWN EDIT oEdit CAPTION Date() SIZE 80, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
+   @ 310, 24 DRAWN EDIT oEdit CAPTION Date() SIZE 80, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
    oEdit:nBorder := 2
    oEdit:nBorderColor := CLR_BLUE
    oEdit:cTooltip := "Edit control" + Chr(10) + "(HDrawnEdit)"
 
-   @ 280, 56 DRAWN EDIT "Sample Drawn Edit Control" SIZE 140, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
+   @ 310, 68 DRAWN EDIT "Sample Drawn Edit Control" SIZE 140, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
 
    @ 80, 140 DRAWN oSay SIZE 100, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT '0.00' FONT oFont
@@ -2054,7 +2060,7 @@ FUNCTION Test
 #define CLR_DGRAY4   0xdddddd
 
 FUNCTION Test
-   LOCAL oDlg, oBoard, oCombo, oUpd1, oUpd2, oUpd3, oDate
+   LOCAL oDlg, oBoard, oCombo1, oCombo2, oUpd1, oUpd2, oUpd3, oDate
    LOCAL oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
    LOCAL aCorners := { 4,4,4,4 }
    LOCAL aStyles := { HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1 ), ;
@@ -2062,11 +2068,12 @@ FUNCTION Test
    LOCAL aStylesBtn := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
       HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
-   LOCAL arr1 := {}, arr2 := {}, i
+   LOCAL arr1 := {}, arr2 := {}, arr3, i
    LOCAL bExit := {||
       LOCAL cr := Chr(13)+Chr(10)
-      hwg_MsgInfo( arr1[oCombo:Value] + cr + Str(oUpd1:Value) + cr + ;
-         Dtoc(oUpd2:Value) + cr + arr2[oUpd3:Value] + cr + Dtoc(oDate:Value) )
+      hwg_MsgInfo( arr1[oCombo1:Value] + cr + Str(oUpd1:Value) + cr + ;
+         Dtoc(oUpd2:Value) + cr + arr2[oUpd3:Value] + cr + Dtoc(oDate:Value) + ;
+         cr + arr3[oCombo2:Value])
       oDlg:Close()
       RETURN .T.
    }
@@ -2081,12 +2088,12 @@ FUNCTION Test
    NEXT
 
    INIT DIALOG oDlg TITLE "Board and drawn items 2"  ;
-      AT 210, 10  SIZE 220, 290 FONT oFont BACKCOLOR CLR_DGRAY2
+      AT 210, 10  SIZE 220, 330 FONT oFont BACKCOLOR CLR_DGRAY2
 
-   @ 4, 4 BOARD oBoard SIZE 212, 282 BACKCOLOR CLR_BLACK ;
+   @ 4, 4 BOARD oBoard SIZE 212, 322 BACKCOLOR CLR_BLACK ;
       ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont
 
-   @ 20, 10 DRAWN COMBO oCombo ITEMS arr1 SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT 1
+   @ 20, 10 DRAWN COMBO oCombo1 ITEMS arr1 SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT 1
 
    @ 20, 50 DRAWN UPDOWN oUpd1 INIT 10 RANGE 1, 50 SIZE 60, 28
 
@@ -2097,7 +2104,10 @@ FUNCTION Test
 
    @ 20, 170 DRAWN DATE oDate SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT Date()
 
-   @ 60, 240 DRAWN OF oBoard SIZE 100, 32 COLOR CLR_WHITE ;
+   arr3 := hwg_GetFontsList()
+   @ 20, 210 DRAWN COMBO oCombo2 ITEMS arr3 SIZE 140, 28 BACKCOLOR CLR_WHITE INIT 1 DISPLAYCOUNT 5
+
+   @ 60, 280 DRAWN OF oBoard SIZE 100, 32 COLOR CLR_WHITE ;
       HSTYLES aStylesBtn TEXT 'Exit' FONT oFont ON CLICK bExit
 
    ACTIVATE DIALOG oDlg

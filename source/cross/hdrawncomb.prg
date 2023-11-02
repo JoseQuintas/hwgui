@@ -30,6 +30,8 @@ CLASS HDrawnCombo INHERIT HDrawn
    DATA  nRowCount    INIT 3
    DATA  bChange
    DATA  hBitmapList
+   DATA  lDlg         INIT .F.
+   DATA  oDlg
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
                oFont, aItems, xValue, lText, bPaint, bChange, bChgState, nRowCount )
@@ -47,38 +49,6 @@ ENDCLASS
 
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
                oFont, aItems, xValue, lText, bPaint, bChange, bChgState, nRowCount ) CLASS HDrawnCombo
-
-   LOCAL bKey := {|o,m,w|
-      HB_SYMBOL_UNUSED(o)
-      IF m == WM_KEYDOWN
-         IF w == VK_ESCAPE
-            ::ListHide()
-            ::GetParentBoard():oInFocus := Nil
-            RETURN .T.
-         ELSEIF w == VK_RETURN
-            ::Value( ::oList:oData:Recno() )
-            ::oText:Refresh()
-            ::ListHide()
-            ::GetParentBoard():oInFocus := Nil
-            RETURN .T.
-         ENDIF
-      ENDIF
-      RETURN .F.
-   }
-   LOCAL bClick := {|o,x,y|
-      LOCAL i := 0
-      HB_SYMBOL_UNUSED(x)
-      DO WHILE ++i <= Len( o:aRows ) .AND. o:aRows[i,1] != Nil
-         IF y > o:aRows[i,1] .AND. y < o:aRows[i,2]
-            ::Value( ::oList:oData:Recno() )
-            ::oText:Refresh()
-            ::ListHide()
-            ::GetParentBoard():oInFocus := Nil
-            EXIT
-         ENDIF
-      ENDDO
-      RETURN .F.
-   }
 
    ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
       , oFont, bPaint,, bChgState )
@@ -102,8 +72,6 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
    ::oList:AddColumn( "", ::oList:oData:Block(),,, DT_CENTER )
    ::oList:lHide := .T.
    ::oList:bLostFocus := {||::ListHide()}
-   ::oList:bKeyDown := bKey
-   ::oList:bClick := bClick
    ::aDrawn := {}
 
    ::Value( xValue )
@@ -152,13 +120,85 @@ METHOD Value( xValue ) CLASS HDrawnCombo
 
 METHOD ListShow() CLASS HDrawnCombo
 
-   ::oList:oParent := ::GetParentBoard()
-   ::hBitmapList := hwg_Window2Bitmap( ::oList:oParent:handle, ::oList:nLeft, ::oList:nTop, ;
-      ::oList:nWidth, ::oList:nHeight )
-   AAdd( ::oList:oParent:aDrawn, ::oList )
-   ::oList:lHide := .F.
-   ::oList:Refresh()
-   ::oList:SetFocus()
+   LOCAL oBoa := ::GetParentBoard(), nt, od, oBrw
+   LOCAL bKey := {|o,m,w|
+      IF m == WM_KEYDOWN
+         IF w == VK_ESCAPE
+            ::ListHide()
+            ::GetParentBoard():oInFocus := Nil
+            RETURN .T.
+         ELSEIF w == VK_RETURN
+            ::Value( o:oData:Recno() )
+            ::oText:Refresh()
+            ::ListHide()
+            ::GetParentBoard():oInFocus := Nil
+            RETURN .T.
+         ENDIF
+      ENDIF
+      RETURN .F.
+   }
+   LOCAL bClick := {|o,x,y|
+      LOCAL i := 0
+      HB_SYMBOL_UNUSED(x)
+      DO WHILE ++i <= Len( o:aRows ) .AND. o:aRows[i,1] != Nil
+         IF y > o:aRows[i,1] .AND. y < o:aRows[i,2]
+            ::Value( o:oData:Recno() )
+            ::oText:Refresh()
+            ::ListHide()
+            ::GetParentBoard():oInFocus := Nil
+            EXIT
+         ENDIF
+      ENDDO
+      RETURN .F.
+   }
+
+   IF ::nTop+::nHeight+::oList:nHeight > oBoa:nHeight
+      ::lDlg := .T.
+   ENDIF
+   IF ::lDlg
+#ifdef __GTK__
+      od := hwg_GetParentForm(oBoa)
+      nt := oBoa:nTop+::nTop+::nHeight + hwg_widget_get_top(od:handle) - hwg_getwindowPOS(od:handle)[2]
+#else
+      nt := oBoa:nTop+::nTop+::nHeight
+#endif
+      INIT DIALOG ::oDlg TITLE "" AT oBoa:nLeft+::oList:nLeft, nt ;
+         SIZE ::oList:nWidth, ::oList:nHeight STYLE WND_NOTITLE + WND_NOSIZEBOX
+
+      @ 0, 0 BOARD SIZE ::oDlg:nWidth, ::oDlg:nHeight
+      @ 0, 0 DRAWN BROWSE oBrw SIZE ::oDlg:nWidth, ::oDlg:nHeight COLOR ::oList:tColor ;
+         BACKCOLOR ::oList:bColor FONT ::oList:oFont
+      oBrw:sepColor := ::oList:sepColor
+      oBrw:tColorSel := ::oList:tColorSel
+      oBrw:bColorSel := ::oList:bColorSel
+      oBrw:oStyleCell := ::oList:oStyleCell
+      oBrw:nBorder := ::oList:nBorder
+      oBrw:aRowPadding[2] := ::oList:aRowPadding[2]
+      oBrw:aRowPadding[4] := ::oList:aRowPadding[4]
+      oBrw:oData := HDataArray():New( ::aItems )
+      oBrw:AddColumn( "", oBrw:oData:Block(),,, DT_CENTER )
+
+      oBrw:bKeyDown := bKey
+      oBrw:bClick := bClick
+      ::oDlg:bLostFocus := {||::ListHide()}
+      oBrw:SetFocus()
+
+#ifdef __GTK__
+      ACTIVATE DIALOG ::oDlg
+#else
+      ACTIVATE DIALOG ::oDlg NOMODAL
+#endif
+   ELSE
+      ::oList:oParent := oBoa
+      ::hBitmapList := hwg_Window2Bitmap( ::oList:oParent:handle, ::oList:nLeft, ::oList:nTop, ;
+         ::oList:nWidth, ::oList:nHeight )
+      AAdd( ::oList:oParent:aDrawn, ::oList )
+      ::oList:lHide := .F.
+      ::oList:bKeyDown := bKey
+      ::oList:bClick := bClick
+      ::oList:Refresh()
+      ::oList:SetFocus()
+   ENDIF
 
    RETURN Nil
 
@@ -171,13 +211,18 @@ METHOD ListHide() CLASS HDrawnCombo
       o:bPaint := Nil
       o:lHide := .T.
       o:Delete()
-      //hwg_writelog("draw")
       RETURN .T.
    }
 
-   ::oList:bPaint := bPaint
-   ::oList:Refresh()
-   //hwg_writelog("hidden")
+   IF ::lDlg
+      IF !Empty( ::oDlg )
+         ::oDlg:Close()
+         ::oDlg := Nil
+      ENDIF
+   ELSE
+      ::oList:bPaint := bPaint
+      ::oList:Refresh()
+   ENDIF
 
    RETURN Nil
 

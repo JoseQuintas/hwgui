@@ -15,6 +15,25 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-02 10:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+  * source/gtk/control.c
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+    * KEYBOARD and TRANSPARENT clauses removed from BOARD command, appropriate members
+      removed from HBoard class and :New() method.
+    * Appropriate functionality remains the same
+  * source/common/editor/hceditb.prg
+  * source/cross/hgraph.prg
+    * Calls to HBoard():New() changed
+  * doc/hwgdoc_classes.html
+  * doc/hwgdoc_commands.html
+    * Documentation updated
+  * utils/tutorial/tutor.prg
+    * SaveDraft() changed
+  * utils/tutorial/tutor_eng.xml
+    * KEYBOARD clauses removed from BOARD commands
+
 2023-11-01 16:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
   * source/winapi/hcontrol.prg

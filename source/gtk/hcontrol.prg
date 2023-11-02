@@ -498,14 +498,13 @@ METHOD Activate() CLASS HLine
 CLASS HBoard INHERIT HControl
 
    DATA winclass    INIT "HBOARD"
-   DATA lKeybEvents INIT .F.
    DATA lMouseOver  INIT .F.
    DATA oInFocus
    DATA aDrawn      INIT {}
    DATA aSize
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb )
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
@@ -516,7 +515,7 @@ CLASS HBoard INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb ) CLASS HBoard
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor ) CLASS HBoard
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
@@ -526,9 +525,6 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
       ::bColor := ::oParent:bColor
    ENDIF
 
-   IF !Empty( lKeyb )
-      ::lKeybEvents := .T.
-   ENDIF
    HDrawn():oDefParent := Self
 
    ::Activate()
@@ -538,7 +534,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
 METHOD Activate() CLASS HBoard
 
    IF !Empty( ::oParent:handle )
-      ::handle := hwg_CreateBoard( ::oParent:handle,,, ::nLeft, ::nTop, ::nWidth, ::nHeight, ::lKeybEvents )
+      ::handle := hwg_CreateBoard( ::oParent:handle,,, ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
 
@@ -618,9 +614,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       ENDIF
 
    ELSEIF msg == WM_GETDLGCODE
-      IF ::lKeybEvents
-         RETURN DLGC_WANTALLKEYS
-      ENDIF
+      RETURN DLGC_WANTALLKEYS
 
    ELSEIF msg == WM_KEYDOWN .OR. msg == WM_CHAR
       IF !Empty( ::oInFocus ) .AND. !::oInFocus:lHide

@@ -1392,7 +1392,6 @@ HB_FUNC( HWG_GETMONTHCALENDARDATE )
    hb_retds( szDate );
 }
 
-
 HB_FUNC( HWG_CREATEIMAGE )
 {
    GtkWidget *hCtrl;
@@ -1552,13 +1551,12 @@ HB_FUNC( HWG_CREATESPLITTER )
 }
 
 /*
-   CreateBoard( hParentWindow, nId, nStyle, x, y, nWidth, nHeight, lKeys )
+   CreateBoard( hParentWindow, nId, nStyle, x, y, nWidth, nHeight )
 */
 HB_FUNC( HWG_CREATEBOARD )
 {
    GtkWidget *hCtrl;
    GtkFixed *box;
-   int bKeys = ( HB_ISNIL(8) ) ? 0 : hb_parl( 8 );
 
    hCtrl = gtk_drawing_area_new();
    g_object_set_data( ( GObject * ) hCtrl, "draw", ( gpointer ) hCtrl );
@@ -1574,21 +1572,16 @@ HB_FUNC( HWG_CREATEBOARD )
    set_event( ( gpointer ) hCtrl, "draw", WM_PAINT, 0, 0 );
 #endif
    gtk_widget_set_can_focus(hCtrl,1);
-   if( bKeys )
-   {
-      gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
-            GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK |
-            GDK_FOCUS_CHANGE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_SCROLL_MASK );
-      g_signal_connect( hCtrl, "size-allocate", G_CALLBACK (cb_signal_size), "1" );
-      set_event( ( gpointer ) hCtrl, "focus_in_event", 0, 0, 0 );
-      set_event( ( gpointer ) hCtrl, "focus_out_event", 0, 0, 0 );
-      set_event( ( gpointer ) hCtrl, "key_press_event", 0, 0, 0 );
-      set_event( ( gpointer ) hCtrl, "key_release_event", 0, 0, 0 );
-      set_event( ( gpointer ) hCtrl, "scroll_event", 0, 0, 0 );
-   }
-   else
-      gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
-         GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK );
+
+   gtk_widget_add_events( hCtrl, GDK_BUTTON_PRESS_MASK |
+         GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK | GDK_LEAVE_NOTIFY_MASK |
+         GDK_FOCUS_CHANGE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_SCROLL_MASK );
+   g_signal_connect( hCtrl, "size-allocate", G_CALLBACK (cb_signal_size), "1" );
+   set_event( ( gpointer ) hCtrl, "focus_in_event", 0, 0, 0 );
+   set_event( ( gpointer ) hCtrl, "focus_out_event", 0, 0, 0 );
+   set_event( ( gpointer ) hCtrl, "key_press_event", 0, 0, 0 );
+   set_event( ( gpointer ) hCtrl, "key_release_event", 0, 0, 0 );
+   set_event( ( gpointer ) hCtrl, "scroll_event", 0, 0, 0 );
 
    set_event( ( gpointer ) hCtrl, "button_press_event", 0, 0, 0 );
    set_event( ( gpointer ) hCtrl, "button_release_event", 0, 0, 0 );

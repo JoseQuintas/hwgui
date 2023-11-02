@@ -536,7 +536,9 @@ STATIC FUNCTION SaveDraft()
       IF !Empty( cExt )
          fname := hb_fnameExtSetDef( fname, cExt )
       ENDIF
-      oText:Save( fname )
+      IF !File( fname ) .OR. hwg_MsgYesNo( "File exists. Overwrite it?" )
+         oText:Save( fname )
+      ENDIF
    ENDIF
 
    IF Len( oTNode:cargo ) > 2

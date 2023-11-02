@@ -1992,7 +1992,7 @@ FUNCTION Test
       AT 210, 10  SIZE 440, 220 FONT oFont BACKCOLOR CLR_DGRAY2
 
    @ 4, 4 BOARD oBoard SIZE 432, 212 BACKCOLOR CLR_BLACK ;
-      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } KEYBOARD
+      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) }
 
    @ 12, 12 DRAWN RADIO or1 GROUP "m" SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont INIT .T.
@@ -2084,7 +2084,7 @@ FUNCTION Test
       AT 210, 10  SIZE 220, 290 FONT oFont BACKCOLOR CLR_DGRAY2
 
    @ 4, 4 BOARD oBoard SIZE 212, 282 BACKCOLOR CLR_BLACK ;
-      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont KEYBOARD
+      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont
 
    @ 20, 10 DRAWN COMBO oCombo ITEMS arr1 SIZE 140, 28 BACKCOLOR CLR_DGRAY4 INIT 1
 
@@ -2131,7 +2131,7 @@ FUNCTION Test
       AT 210, 10  SIZE 440, 300 FONT oFont BACKCOLOR CLR_DGRAY1
 
    @ 4, 4 BOARD oBoard SIZE 432, 290 ;
-      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont KEYBOARD
+      ON SIZE {|o,x,y| o:Move(,,x-8,y-8) } FONT oFont
 
    @ 20, 12 DRAWN LENTA oLenta SIZE 180, 28 FONT oFont ;
       ITEMS { "Array","Dbf - 1","Dbf - 2" } ITEMSIZE 60 HSTYLES aStyleLenta ;
@@ -2247,7 +2247,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw3:oData := HDataDbf():New( "BASE1" )
          oBrw3:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
          // You may pass a text expression instead of a codeblock
-         oBrw3:AddColumn( "Name", "base1->(Str(NUM,3)+' '+NAME)", 180,, DT_CENTER, .T. )
+         oBrw3:AddColumn( "Name", "base1->(Str(NUM,3)+' '+NAME)", 180,, DT_CENTER )
          oBrw3:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
       ENDIF
       oBrw := oBrw3

@@ -53,7 +53,7 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, ;
       nHeight, oFont, bInit, bSize, bPaint, , ;
-      Iif( tcolor == Nil, 0, tcolor ), Iif( bcolor == Nil, 16777215, bcolor ), .T. )
+      Iif( tcolor == Nil, 0, tcolor ), Iif( bcolor == Nil, 16777215, bcolor ) )
 
    RETURN Self
 

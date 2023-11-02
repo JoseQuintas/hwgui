@@ -582,14 +582,13 @@ STATIC FUNCTION onClick( oParent, id )
 CLASS HBoard INHERIT HControl
 
    DATA winclass    INIT "HBOARD"
-   DATA lKeybEvents INIT .F.
    DATA lMouseOver  INIT .F.
    DATA oInFocus
    DATA aDrawn      INIT {}
    DATA aSize
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb, lTransp )
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
 
    METHOD Activate()
    METHOD onEvent( msg, wParam, lParam )
@@ -601,19 +600,12 @@ CLASS HBoard INHERIT HControl
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, ;
-      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor, lKeyb, lTransp ) CLASS HBoard
-
-   IF lTransp != NIL .AND. lTransp
-      ::extStyle += WS_EX_TRANSPARENT
-   ENDIF
+      oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor ) CLASS HBoard
 
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, oFont, bInit, ;
       bSize, bPaint, cTooltip, tcolor, bColor )
    ::aSize := { ::nWidth, ::nHeight }
 
-   IF !Empty( lKeyb )
-      ::lKeybEvents := .T.
-   ENDIF
    HDrawn():oDefParent := Self
    hwg_RegBoard()
    ::Activate()
@@ -624,7 +616,7 @@ METHOD Activate() CLASS HBoard
 
    IF !Empty( ::oParent:handle )
       ::handle := hwg_CreateBoard( ::oParent:handle, ::id, ::style, ;
-         ::nLeft, ::nTop, ::nWidth, ::nHeight, ::lKeybEvents )
+         ::nLeft, ::nTop, ::nWidth, ::nHeight )
       ::Init()
    ENDIF
 
@@ -710,9 +702,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
       ENDIF
 
    ELSEIF msg == WM_GETDLGCODE
-      IF ::lKeybEvents
-         RETURN DLGC_WANTALLKEYS
-      ENDIF
+      RETURN DLGC_WANTALLKEYS
 
    ELSEIF msg == WM_KEYDOWN .OR. msg == WM_CHAR
       IF !Empty( ::oInFocus ) .AND. !::oInFocus:lHide
@@ -792,17 +782,7 @@ METHOD Paint( hDC ) CLASS HBoard
    RETURN Nil
 
 METHOD Refresh( x1, y1, x2, y2 ) CLASS HBoard
-/*
-   IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0
-      hwg_Invalidaterect( ::oParent:handle, 1, ::nLeft, ::nTop, ::nLeft + ::nWidth, ::nTop + ::nHeight )
-      hwg_Sendmessage( ::oParent:handle, WM_PAINT, 0, 0 )
-      hwg_writelog( "r1" )
-      hwg_writelog( str(::nLeft) + " " + str(::nTop) + " " + str(::nLeft + ::nWidth) + " " + str(::nTop + ::nHeight) )
-   ELSE
-      ::Super:Refresh()
-      hwg_writelog( "r2" )
-   ENDIF
-*/
+
    IF hwg_bitand( ::extStyle, WS_EX_TRANSPARENT ) != 0 .OR. ( Empty( ::brush ) .AND. Empty( ::bPaint ) )
       hwg_Invalidaterect( ::oParent:handle, 1, Iif( x1 == Nil, ::nLeft, x1+::nLeft ), ;
          Iif( y1 == Nil, ::nTop, y1+::nTop ), Iif( x2 == Nil, ::nLeft+::nWidth, x2+::nLeft ), ;

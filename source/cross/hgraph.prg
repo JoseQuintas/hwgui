@@ -51,7 +51,7 @@ METHOD New( oWndParent, nId, aValues, nLeft, nTop, nWidth, nHeight, oFont, ;
 
    ::Super:New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, oFont, , ;
       bSize,, ctooltip, ;
-      iif( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), iif( bcolor == Nil, 0, bcolor ), .T. )
+      iif( tcolor == Nil, hwg_ColorC2N( "FFFFFF" ), tcolor ), iif( bcolor == Nil, 0, bcolor ) )
 
    ::aValues := aValues
    ::nType   := 1

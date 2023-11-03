@@ -107,6 +107,7 @@ typedef struct
    int      CaretRow, CaretCol;
 
    POINT    MousePos;       /* the last mouse position */
+   POINT    ExactMousePos;  /* the last mouse position in pixels*/
 
    int      CodePage;       /* Code page to use for display characters */
 
@@ -860,8 +861,8 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       else
          p1 = (event->type==GDK_BUTTON_PRESS)? WM_LBUTTONDOWN :
               ( (event->type==GDK_BUTTON_RELEASE)? WM_LBUTTONUP : WM_LBUTTONDBLCLK );
-      //p2 = 0;
-      //p3 = ( ((HB_ULONG)(((GdkEventButton*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventButton*)event)->y)) << 16 ) & 0xFFFF0000 );
+      pHWGMain->ExactMousePos.y = (int)(((GdkEventButton*)event)->y);
+      pHWGMain->ExactMousePos.x = (int)(((GdkEventButton*)event)->x);
       gthwg_MouseEvent( (int)p1, (int)(((GdkEventButton*)event)->x), (int)(((GdkEventButton*)event)->y) );
    }
    else if( event->type == GDK_MOTION_NOTIFY )
@@ -869,6 +870,8 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
       p1 = WM_MOUSEMOVE;
       p2 = ( ((GdkEventMotion*)event)->state & GDK_BUTTON1_MASK )? 1:0;
       p3 = ( ((HB_ULONG)(((GdkEventMotion*)event)->x)) & 0xFFFF ) | ( ( ((HB_ULONG)(((GdkEventMotion*)event)->y)) << 16 ) & 0xFFFF0000 );
+      pHWGMain->ExactMousePos.y = (int)(((GdkEventButton*)event)->y);
+      pHWGMain->ExactMousePos.x = (int)(((GdkEventButton*)event)->x);
    }
    else if( event->type == GDK_CONFIGURE )
    {
@@ -1553,6 +1556,14 @@ static HB_BOOL hb_gt_hwg_Info( PHB_GT pGT, int iType, PHB_GT_INFO pInfo )
          }
          break;
       }
+
+      case HB_GTI_MOUSEPOS_XY:
+         if( ! pInfo->pResult )
+            pInfo->pResult = hb_itemNew( NULL );
+         hb_arrayNew( pInfo->pResult, 2 );
+         hb_arraySetNI( pInfo->pResult, 1, pHWG->ExactMousePos.x );
+         hb_arraySetNI( pInfo->pResult, 2, pHWG->ExactMousePos.y );
+         break;
 
       case HB_GTI_WINHANDLE:
          pInfo->pResult = hb_itemPutPtr( pInfo->pResult, hWndMain );

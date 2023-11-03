@@ -154,6 +154,7 @@ typedef struct
    int      CaretWidth;     /* Width of solid caret */
 
    POINT    MousePos;       /* the last mouse position */
+   POINT    ExactMousePos;  /* the last mouse position in pixels*/
 
    int      CodePage;       /* Code page to use for display characters */
 
@@ -447,6 +448,9 @@ static void gthwg_MouseEvent( PHB_GTHWG pHWG, UINT message, WPARAM wParam, LPARA
 
    if( message == WM_MOUSEWHEEL )
       ScreenToClient( pHWG->hWnd, &xy );
+
+   pHWG->ExactMousePos.y = xy.y;
+   pHWG->ExactMousePos.x = xy.x;
 
    colrow = gthwg_GetColRowFromXY( pHWG, xy.x, xy.y );
    if( gthwg_SetMousePos( pHWG, colrow.y, colrow.x ) )
@@ -1830,6 +1834,14 @@ static HB_BOOL hb_gt_hwg_Info( PHB_GT pGT, int iType, PHB_GT_INFO pInfo )
          }
          break;
       }
+
+      case HB_GTI_MOUSEPOS_XY:
+         if( ! pInfo->pResult )
+            pInfo->pResult = hb_itemNew( NULL );
+         hb_arrayNew( pInfo->pResult, 2 );
+         hb_arraySetNI( pInfo->pResult, 1, pHWG->ExactMousePos.x );
+         hb_arraySetNI( pInfo->pResult, 2, pHWG->ExactMousePos.y );
+         break;
 
       case HB_GTI_WINHANDLE:
          pInfo->pResult = hb_itemPutPtr( pInfo->pResult, pHWG->hWnd );

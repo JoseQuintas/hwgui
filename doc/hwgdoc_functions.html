@@ -292,12 +292,13 @@
      <li> x1, y1 - point coordinates.
    </ul>
 
-   <br><strong class="subhead"> hwg_LineTo( hDC, x1, y1 )</strong>
+   <br><strong class="subhead"> hwg_LineTo( hDC, x1, y1 [, lClose] )</strong>
    <br> Draws a line from a current position to a point with given coordinates. Uses a pen,
    selected with the help of <code>hwg_SelectObject()</code>.
    <ul>
      <li> hDC - handle of the device context;
      <li> x1, y1 - point coordinates.
+     <li> lClose - an optional pframeter, GTK only, causes cairo_stroke() call.
    </ul>
 
    <br><strong class="subhead"> hwg_Rectangle( hDC, x1, y1, x2, y2 [, hPen] )</strong> 
@@ -3036,6 +3037,21 @@ See sample program "testspli.prg" for details.<br>
 
    <br><strong class="subhead"> hwg_Alert_GetWindow()</strong> (Windows only)
    <p>Internal: Needed by HAlert class</p>
+
+   <br><strong class="subhead"> hwg_redirOn</strong>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_redirOff</strong>
+   <p></p>
+
+   <br><strong class="subhead"> hwg_Trace</strong>
+   <p></p>
+
+   <br><strong class="subhead"> edi_utf8_Upper( cText )</strong>
+   <p></p>
+
+   <br><strong class="subhead"> edi_utf8_Lower( cText )</strong>
+   <p></p>
    
    <br><strong class="subhead"><a name="Functions81" href="hwgdoc.html#_Functions81">
    5.8.1 Unit conversions.</a></strong><br>

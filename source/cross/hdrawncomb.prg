@@ -94,7 +94,7 @@ METHOD Paint( hDC ) CLASS HDrawnCombo
    hwg_SelectObject( hDC, ::arrowPen:handle )
    hwg_MoveTo( hDC, ::oBtn:nLeft+n, ::oBtn:nTop+n+3 )
    hwg_LineTo( hDC, ::oBtn:nLeft+Int(::oBtn:nWidth/2), ::oBtn:nTop+::oBtn:nHeight-n )
-   hwg_LineTo( hDC, ::oBtn:nLeft+::oBtn:nWidth-n, ::oBtn:nTop+n+2 )
+   hwg_LineTo( hDC, ::oBtn:nLeft+::oBtn:nWidth-n, ::oBtn:nTop+n+2, .T. )
 
    RETURN Nil
 

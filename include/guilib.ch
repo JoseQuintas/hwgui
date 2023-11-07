@@ -5,7 +5,7 @@
   ========== Define HWGUI release version ============
 */
 /* For note of latest official release version number */
-#define HWG_VERSION         "2.23 dev"
+#define HWG_VERSION         "2.23"
 /* For note of latest official release build */
 #define HWG_BUILD               6
 /* ----- End of HWGUI version definition ----- */

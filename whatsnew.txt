@@ -6,6 +6,15 @@
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+HWGUI 2.23 build 6 ( 07.11.2023 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] HDateSelect, HDrawnDate classes added - a crossplatform HDatePicker alternative
+[*] Many enhancements in drawn widgets
+[*] Anchors support added for drawn widgets
+[*] Tutor has been enhanced
+[*] Documentation updated
+[!] Fixes
+
 HWGUI 2.23 build 5 ( 05.10.2023 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [+] Few drawing functions added, few modified

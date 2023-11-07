@@ -120,7 +120,10 @@ METHOD Value( xValue ) CLASS HDrawnCombo
 
 METHOD ListShow() CLASS HDrawnCombo
 
-   LOCAL oBoa := ::GetParentBoard(), nt, od, oBrw
+   LOCAL oBoa := ::GetParentBoard(), nt, oBrw
+#ifdef __GTK__
+   LOCAL od
+#endif
    LOCAL bKey := {|o,m,w|
       IF m == WM_KEYDOWN
          IF w == VK_ESCAPE

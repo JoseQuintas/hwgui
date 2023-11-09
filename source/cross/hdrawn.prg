@@ -39,7 +39,7 @@ CLASS HDrawn INHERIT HObject
    DATA aDrawn        INIT {}
    DATA xValue        INIT Nil
    DATA nMouseOn      INIT 0
-   DATA cTooltip, oTooltip //, hBitmapTmp
+   DATA cTooltip, oTooltip
 
    DATA bPaint, bClick, bChgState, bSize
    DATA Anchor        INIT 0
@@ -241,7 +241,6 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
    LOCAL o, nOldstate := ::nState, op
 
    IF !Empty( ::aDrawn )
-      //IF nOldstate != nState; hwg_writelog( "1> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
       IF  !Empty( o := ::GetByPos( nPosX, nPosY ) )
          IF nOldstate != nState .AND. !Empty( ::bChgState ) .AND. Eval( ::bChgState, Self, nState ) == 0
             RETURN Nil
@@ -249,14 +248,12 @@ METHOD SetState( nState, nPosX, nPosY ) CLASS HDrawn
          IF nState != STATE_PRESSED
             ::nState := nState
          ENDIF
-         //IF nOldstate != nState; hwg_writelog( "2> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
          RETURN o:SetState( nState, nPosX, nPosY )
       ELSEIF !Empty( o := ::GetByState( STATE_MOVER ) ) .OR. !Empty( o := ::GetByState( STATE_PRESSED ) )
          o:SetState( STATE_NORMAL, nPosX, nPosY )
       ENDIF
    ENDIF
    IF nState != nOldstate
-      //IF nOldstate != nState; hwg_writelog( "3> " + Iif(Empty(::title),'!',::title) + " " + str(nOldState) + " " + str( nState ) ); ENDIF
       IF !Empty( ::bChgState )
          IF Eval( ::bChgState, Self, nState ) == 0
             RETURN Nil
@@ -328,7 +325,11 @@ METHOD Refresh( x1, y1, x2, y2 ) CLASS HDrawn
 
 METHOD onMouseMove( xPos, yPos ) CLASS HDrawn
 
-   IF ::cToolTip != Nil
+   LOCAL o
+
+   IF ( o := ::GetByPos( xPos, yPos ) ) != Nil
+      RETURN o:onMouseMove( xPos, yPos )
+   ELSEIF ::cToolTip != Nil
       IF ::nMouseOn == 0
          ::nMouseOn := Seconds()
          HTimer():New( ::GetParentBoard(),, 500, ;

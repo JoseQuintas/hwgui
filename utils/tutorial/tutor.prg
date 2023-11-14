@@ -272,6 +272,11 @@ STATIC FUNCTION ReadHis()
                ENDIF
             ELSEIF cName == "split"
                nInitSplitX := Val( arr1[2] )
+            ELSEIF cName == "font"
+               arr1 := hb_aTokens( arr1[2], ',' )
+               IF Len( arr1 ) == 2
+
+               ENDIF
             ENDIF
          ENDIF
       NEXT
@@ -282,6 +287,7 @@ STATIC FUNCTION ReadHis()
 STATIC FUNCTION WriteHis()
 
    LOCAL s := "theme=" + Ltrim(Str( nCurrTheme,2 )) + Chr(13)+Chr(10) + ;
+      "font=" + oText:oFont:name + "," + Ltrim(Str(oText:oFont:height)) + Chr(13)+Chr(10) + ;
       "size=" + Ltrim(Str(nInitWidth)) + "," + Ltrim(Str(nInitHeight)) + Chr(13)+Chr(10) + ;
       "split=" + Ltrim(Str(Iif(nInitSplitX<10,200,nInitSplitX)))
    hb_MemoWrit( cIniPath + "tutor.his", s )

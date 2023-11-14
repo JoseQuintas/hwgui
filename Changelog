@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-14 18:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/misc.c
+    ! Small fix
+
 2023-11-14 14:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * HwGUI version is changed to 2.23 dev build 6

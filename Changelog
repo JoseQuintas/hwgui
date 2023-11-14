@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-14 14:30 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 dev build 6
+  * source/gtk/misc.c
+  * source/winapi/misc.c
+    * hwg_RunConsoleApp() - third parameter added - a variable to place the output
+
 2023-11-09 15:59 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
     ! Small fix

@@ -969,87 +969,127 @@ HB_FUNC( HWG_PROCESSRUN )
 
 HB_FUNC( HWG_RUNCONSOLEAPP )
 {
-   SECURITY_ATTRIBUTES sa; 
+   SECURITY_ATTRIBUTES sa;
    HANDLE g_hChildStd_OUT_Rd = NULL;
    HANDLE g_hChildStd_OUT_Wr = NULL;
    PROCESS_INFORMATION pi;
    STARTUPINFO si;
    BOOL bSuccess;
-
+   int iOutExist = 0, read_all = 0, iOutFirst = 1;
    DWORD dwRead, dwWritten, dwExitCode;
-   CHAR chBuf[BUFSIZE]; 
+   CHAR chBuf[BUFSIZE], *pOut;
+
    HANDLE hOut = NULL;
-   void * hStr;
+#ifdef UNICODE
+   TCHAR wc1[256], wc2[256];
+#endif
 
-   sa.nLength = sizeof(SECURITY_ATTRIBUTES); 
-   sa.bInheritHandle = TRUE; 
-   sa.lpSecurityDescriptor = NULL; 
+   sa.nLength = sizeof( SECURITY_ATTRIBUTES );
+   sa.bInheritHandle = TRUE;
+   sa.lpSecurityDescriptor = NULL;
 
-   // Create a pipe for the child process's STDOUT. 
-   if( ! CreatePipe( &g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &sa, 0 ) )
+   // Create a pipe for the child process's STDOUT.
+   if( !CreatePipe( &g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &sa, 32768 ) )
    {
-      hb_retni(1);
+      hb_retni( 1 );
       return;
    }
 
    // Ensure the read handle to the pipe for STDOUT is not inherited.
-   if( ! SetHandleInformation( g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0 ) )
+   if( !SetHandleInformation( g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0 ) )
    {
-      hb_retni(2);
+      hb_retni( 2 );
       return;
    }
 
-   // Set up members of the PROCESS_INFORMATION structure. 
-   ZeroMemory( &pi, sizeof(PROCESS_INFORMATION) );
- 
-   // Set up members of the STARTUPINFO structure. 
+   // Set up members of the PROCESS_INFORMATION structure.
+   ZeroMemory( &pi, sizeof( PROCESS_INFORMATION ) );
+
+   // Set up members of the STARTUPINFO structure.
    // This structure specifies the STDIN and STDOUT handles for redirection.
-   ZeroMemory( &si, sizeof(si) );
-   si.cb = sizeof(si);
+   ZeroMemory( &si, sizeof( si ) );
+   si.cb = sizeof( si );
    si.wShowWindow = SW_HIDE;
    si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
    si.hStdOutput = g_hChildStd_OUT_Wr;
    si.hStdError = g_hChildStd_OUT_Wr;
 
-   bSuccess = CreateProcess( NULL, (LPTSTR)HB_PARSTR( 1, &hStr, NULL ), NULL, NULL,
-      TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi);
-   hb_strfree( hStr );
-   
-   if ( ! bSuccess ) 
+#ifdef UNICODE
+   MultiByteToWideChar( GetACP(), 0, hb_parc(1), -1, wc1, 256 );
+   bSuccess = CreateProcess( NULL, wc1, NULL, NULL,
+         TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi );
+#else
+   bSuccess = CreateProcess( NULL, ( LPTSTR ) hb_parc( 1 ), NULL, NULL,
+         TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi );
+#endif
+   if( !bSuccess )
    {
-      hb_retni(3);
+      hb_retni( 3 );
       return;
    }
 
-   WaitForSingleObject( pi.hProcess, INFINITE );
+   //WaitForSingleObject( pi.hProcess, 8000 ); //INFINITE );
    GetExitCodeProcess( pi.hProcess, &dwExitCode );
    CloseHandle( pi.hProcess );
    CloseHandle( pi.hThread );
    CloseHandle( g_hChildStd_OUT_Wr );
 
-   if( !HB_ISNIL(2) )
+   if( !HB_ISNIL( 2 ) )
    {
-      hOut = CreateFile( HB_PARSTR( 2, &hStr, NULL ), GENERIC_WRITE, 0, 0,
-             CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
-      hb_strfree( hStr );
+#ifdef UNICODE
+      MultiByteToWideChar( GetACP(), 0, hb_parc(2), -1, wc2, 256 );
+      hOut = CreateFile( wc2, GENERIC_WRITE, 0, 0,
+            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
+#else
+      hOut = CreateFile( ( LPTSTR )hb_parc( 2 ), GENERIC_WRITE, 0, 0,
+            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
+#endif
+      iOutExist = 1;
    }
-   while( 1 ) 
-   { 
-      bSuccess = ReadFile( g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL );
-      if( ! bSuccess || dwRead == 0 ) break; 
+   else if( HB_ISBYREF( 3 ) )
+      iOutExist = 2;
 
-      if( !HB_ISNIL(2) )
+   while( 1 )
+   {
+      bSuccess =
+            ReadFile( g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL );
+      if( !bSuccess || dwRead == 0 )
+         break;
+
+      if( iOutExist == 1 )
       {
          bSuccess = WriteFile( hOut, chBuf, dwRead, &dwWritten, NULL );
-         if( ! bSuccess ) break; 
+         if( !bSuccess )
+            break;
       }
-   } 
+      else if( iOutExist == 2 && dwRead > 0 )
+      {
+         read_all += (int) dwRead;
+         if( iOutFirst )
+         {
+            pOut = (char*) hb_xgrab( (int)dwRead + 1 );
+            memcpy( pOut, chBuf, (int)dwRead );
+            iOutFirst = 0;
+         }
+         else
+         {
+            pOut = ( char * ) hb_xrealloc( pOut, read_all + 1 );
+            memcpy( pOut+read_all-(int)dwRead, chBuf, (int)dwRead );
+         }
+      }
+   }
 
-   if( !HB_ISNIL(2) )
+   if( iOutExist == 1 )
       CloseHandle( hOut );
+   else if( iOutExist == 2 )
+      if( read_all > 0 )
+         hb_storclen_buffer( pOut, read_all, 3 );
+      else
+         hb_storc( "", 3 );
+
    CloseHandle( g_hChildStd_OUT_Rd );
 
-   hb_retni( (int) dwExitCode);
+   hb_retni( ( int ) dwExitCode );
 }
 
 HB_FUNC( HWG_RUNAPP )

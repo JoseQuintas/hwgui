@@ -300,37 +300,57 @@ HB_FUNC( HWG_SLEEP )
 
 HB_FUNC( HWG_RUNCONSOLEAPP )
 {
-    /* Ensure that output of command does interfere with stdout */
-    fflush(stdin);
-    FILE *cmd_file = (FILE *) popen( hb_parc(1), "r" );
-    FILE *hOut;
-    char buf[CHUNK_LEN];
-    int bytes_read, iOutExist = 0, iExitCode;
+   /* Ensure that output of command does interfere with stdout */
+   fflush( stdin );
+   FILE *cmd_file = ( FILE * ) popen( hb_parc( 1 ), "r" );
+   FILE *hOut;
+   char buf[BUFSIZE], *pOut;
+   int bytes_read, read_all = 0, iOutExist = 0, iOutFirst = 1, iExitCode;
 
-    if( !cmd_file )
-    {
-        hb_retni( -1 );
-        return;
-    }
+   if( !cmd_file )
+   {
+      hb_retni( -1 );
+      return;
+   }
 
-    if( !HB_ISNIL(2) )
-    {
-       hOut = fopen( hb_parc(2), "w" );
-       iOutExist = 1;
-    }
+   if( !HB_ISNIL( 2 ) )
+   {
+      hOut = fopen( hb_parc( 2 ), "w" );
+      iOutExist = 1;
+   }
+   else if( HB_ISBYREF( 3 ) )
+      iOutExist = 2;
 
-    do
-    {
-        bytes_read = fread( buf, sizeof(char), CHUNK_LEN, cmd_file );
-        if( iOutExist )
-           fwrite( buf, 1, bytes_read, hOut );
-    } while (bytes_read == CHUNK_LEN);
+   do
+   {
+      bytes_read = fread( buf, sizeof( char ), BUFSIZE, cmd_file );
+      if( iOutExist == 1 )
+         fwrite( buf, 1, bytes_read, hOut );
+      else if( iOutExist == 2 )
+      {
+         read_all += bytes_read;
+         if( iOutFirst )
+         {
+            pOut = (char*) hb_xgrab( bytes_read + 1 );
+            memcpy( pOut, buf, bytes_read );
+            iOutFirst = 0;
+         }
+         else
+         {
+            pOut = ( char * ) hb_xrealloc( pOut, read_all + 1 );
+            memcpy( pOut+read_all-bytes_read, buf, bytes_read );
+         }
+      }
+   }
+   while( bytes_read == BUFSIZE );
 
-    iExitCode = pclose(cmd_file);
-    if( iOutExist )
-       fclose( hOut );
+   iExitCode = pclose( cmd_file );
+   if( iOutExist == 1 )
+      fclose( hOut );
+   else if( iOutExist == 2 )
+      hb_storclen_buffer( pOut, read_all, 3 );
 
-    hb_retni( iExitCode );
+   hb_retni( iExitCode );
 }
 
 HB_FUNC( HWG_RUNAPP )

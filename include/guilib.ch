@@ -5,9 +5,9 @@
   ========== Define HWGUI release version ============
 */
 /* For note of latest official release version number */
-#define HWG_VERSION         "2.23"
+#define HWG_VERSION         "2.23 dev"
 /* For note of latest official release build */
-#define HWG_BUILD               6
+#define HWG_BUILD               7
 /* ----- End of HWGUI version definition ----- */
 
 #define	WND_MAIN                1

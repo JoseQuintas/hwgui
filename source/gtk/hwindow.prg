@@ -215,12 +215,12 @@ METHOD EvalKeyList( nKey, nctrl ) CLASS HWindow
    IF !Empty( ::KeyList )
       IF ( nPos := Ascan( ::KeyList,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
          //hwg_writelog( "ev-2 " + str(nKey)+"/"+str(nctrl) )
-         Eval( ::KeyList[ nPos,3 ], ::FindControl( ,hwg_Getfocus() ) )
+         Eval( ::KeyList[ nPos,3 ], ::FindControl( ,hwg_Getfocus() ), nKey, nctrl )
       ENDIF
    ENDIF
    IF !Empty( ::aKeysGlobal )
       IF ( nPos := Ascan( ::aKeysGlobal,{ |a|a[1] == nctrl .AND. a[2] == nKey } ) ) > 0
-         Eval( ::aKeysGlobal[ nPos,3 ], ::FindControl( ,hwg_Getfocus() ) )
+         Eval( ::aKeysGlobal[ nPos,3 ], ::FindControl( ,hwg_Getfocus() ), nKey, nctrl )
       ENDIF
    ENDIF
 

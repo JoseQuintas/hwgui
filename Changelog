@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-15 16:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hwindow.prg
+  * source/winapi/hwindow.prg
+    * EvalKeyList() method changed: added parameters to a codeblock call (nKey, nctrl)
+
 2023-11-14 18:26 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/misc.c
     ! Small fix

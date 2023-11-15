@@ -153,7 +153,7 @@ HB_FUNC( HWG_GETSTOCKOBJECT )
 
 HB_FUNC( HWG_LOWORD )
 {
-   hb_retni( ( int ) ( ( HB_ISPOINTER( 1 ) ? 
+   hb_retni( ( int ) ( ( HB_ISPOINTER( 1 ) ?
    PtrToUlong( hb_parptr( 1 ) ) :
                               ( ULONG ) hb_parnl( 1 ) ) & 0xFFFF ) );
 }
@@ -196,7 +196,7 @@ HB_FUNC( HWG_SETBITBYTE )
 {
   int para3;
 
-   if ( hb_pcount() < 3 ) 
+   if ( hb_pcount() < 3 )
     {
       /* Return previous value */
       hb_retni( hb_parni(1) );
@@ -885,7 +885,7 @@ HB_FUNC( HWG_PROCESSRUN )
 
     ZeroMemory( &pi, sizeof(pi) );
 
-    // Start the child process. 
+    // Start the child process.
     if( !CreateProcess( NULL,   // No module name (use command line)
         hb_parc(1),        // Command line
         NULL,           // Process handle not inheritable
@@ -893,10 +893,10 @@ HB_FUNC( HWG_PROCESSRUN )
         FALSE,          // Set handle inheritance to FALSE
         CREATE_NEW_CONSOLE,   // No creation flags
         NULL,           // Use parent's environment block
-        NULL,           // Use parent's starting directory 
+        NULL,           // Use parent's starting directory
         &si,            // Pointer to STARTUPINFO structure
         &pi )           // Pointer to PROCESS_INFORMATION structure
-    ) 
+    )
     {
         hb_ret();
         return;
@@ -905,7 +905,7 @@ HB_FUNC( HWG_PROCESSRUN )
     // Wait until child process exits.
     WaitForSingleObject( pi.hProcess, INFINITE );
 
-    // Close process and thread handles. 
+    // Close process and thread handles.
     CloseHandle( pi.hProcess );
     CloseHandle( pi.hThread );
     hb_retc( "Ok" );
@@ -936,7 +936,7 @@ HB_FUNC( HWG_PROCESSRUN )
 
    ZeroMemory( &pi, sizeof(pi) );
 
-   // Start the child process. 
+   // Start the child process.
    if( !CreateProcess( NULL,   // No module name (use command line)
        (LPTSTR)HB_PARSTR( 1, &hStr, NULL ),  // Command line
        NULL,           // Process handle not inheritable
@@ -944,7 +944,7 @@ HB_FUNC( HWG_PROCESSRUN )
        TRUE,          // Set handle inheritance to FALSE
        CREATE_NEW_CONSOLE,   // No creation flags
        NULL,           // Use parent's environment block
-       NULL,           // Use parent's starting directory 
+       NULL,           // Use parent's starting directory
        &si,            // Pointer to STARTUPINFO structure
        &pi )           // Pointer to PROCESS_INFORMATION structure
    )
@@ -958,138 +958,11 @@ HB_FUNC( HWG_PROCESSRUN )
    // Wait until child process exits.
    WaitForSingleObject( pi.hProcess, INFINITE );
 
-   // Close process and thread handles. 
+   // Close process and thread handles.
    CloseHandle( pi.hProcess );
    CloseHandle( pi.hThread );
    CloseHandle( hOut );
    hb_retc( "Ok" );
-}
-
-#define BUFSIZE  1024
-
-HB_FUNC( HWG_RUNCONSOLEAPP )
-{
-   SECURITY_ATTRIBUTES sa;
-   HANDLE g_hChildStd_OUT_Rd = NULL;
-   HANDLE g_hChildStd_OUT_Wr = NULL;
-   PROCESS_INFORMATION pi;
-   STARTUPINFO si;
-   BOOL bSuccess;
-   int iOutExist = 0, read_all = 0, iOutFirst = 1;
-   DWORD dwRead, dwWritten, dwExitCode;
-   CHAR chBuf[BUFSIZE], *pOut;
-
-   HANDLE hOut = NULL;
-#ifdef UNICODE
-   TCHAR wc1[256], wc2[256];
-#endif
-
-   sa.nLength = sizeof( SECURITY_ATTRIBUTES );
-   sa.bInheritHandle = TRUE;
-   sa.lpSecurityDescriptor = NULL;
-
-   // Create a pipe for the child process's STDOUT.
-   if( !CreatePipe( &g_hChildStd_OUT_Rd, &g_hChildStd_OUT_Wr, &sa, 32768 ) )
-   {
-      hb_retni( 1 );
-      return;
-   }
-
-   // Ensure the read handle to the pipe for STDOUT is not inherited.
-   if( !SetHandleInformation( g_hChildStd_OUT_Rd, HANDLE_FLAG_INHERIT, 0 ) )
-   {
-      hb_retni( 2 );
-      return;
-   }
-
-   // Set up members of the PROCESS_INFORMATION structure.
-   ZeroMemory( &pi, sizeof( PROCESS_INFORMATION ) );
-
-   // Set up members of the STARTUPINFO structure.
-   // This structure specifies the STDIN and STDOUT handles for redirection.
-   ZeroMemory( &si, sizeof( si ) );
-   si.cb = sizeof( si );
-   si.wShowWindow = SW_HIDE;
-   si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
-   si.hStdOutput = g_hChildStd_OUT_Wr;
-   si.hStdError = g_hChildStd_OUT_Wr;
-
-#ifdef UNICODE
-   MultiByteToWideChar( GetACP(), 0, hb_parc(1), -1, wc1, 256 );
-   bSuccess = CreateProcess( NULL, wc1, NULL, NULL,
-         TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi );
-#else
-   bSuccess = CreateProcess( NULL, ( LPTSTR ) hb_parc( 1 ), NULL, NULL,
-         TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi );
-#endif
-   if( !bSuccess )
-   {
-      hb_retni( 3 );
-      return;
-   }
-
-   //WaitForSingleObject( pi.hProcess, 8000 ); //INFINITE );
-   GetExitCodeProcess( pi.hProcess, &dwExitCode );
-   CloseHandle( pi.hProcess );
-   CloseHandle( pi.hThread );
-   CloseHandle( g_hChildStd_OUT_Wr );
-
-   if( !HB_ISNIL( 2 ) )
-   {
-#ifdef UNICODE
-      MultiByteToWideChar( GetACP(), 0, hb_parc(2), -1, wc2, 256 );
-      hOut = CreateFile( wc2, GENERIC_WRITE, 0, 0,
-            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
-#else
-      hOut = CreateFile( ( LPTSTR )hb_parc( 2 ), GENERIC_WRITE, 0, 0,
-            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
-#endif
-      iOutExist = 1;
-   }
-   else if( HB_ISBYREF( 3 ) )
-      iOutExist = 2;
-
-   while( 1 )
-   {
-      bSuccess =
-            ReadFile( g_hChildStd_OUT_Rd, chBuf, BUFSIZE, &dwRead, NULL );
-      if( !bSuccess || dwRead == 0 )
-         break;
-
-      if( iOutExist == 1 )
-      {
-         bSuccess = WriteFile( hOut, chBuf, dwRead, &dwWritten, NULL );
-         if( !bSuccess )
-            break;
-      }
-      else if( iOutExist == 2 && dwRead > 0 )
-      {
-         read_all += (int) dwRead;
-         if( iOutFirst )
-         {
-            pOut = (char*) hb_xgrab( (int)dwRead + 1 );
-            memcpy( pOut, chBuf, (int)dwRead );
-            iOutFirst = 0;
-         }
-         else
-         {
-            pOut = ( char * ) hb_xrealloc( pOut, read_all + 1 );
-            memcpy( pOut+read_all-(int)dwRead, chBuf, (int)dwRead );
-         }
-      }
-   }
-
-   if( iOutExist == 1 )
-      CloseHandle( hOut );
-   else if( iOutExist == 2 )
-      if( read_all > 0 )
-         hb_storclen_buffer( pOut, read_all, 3 );
-      else
-         hb_storc( "", 3 );
-
-   CloseHandle( g_hChildStd_OUT_Rd );
-
-   hb_retni( ( int ) dwExitCode );
 }
 
 HB_FUNC( HWG_RUNAPP )
@@ -1115,7 +988,7 @@ HB_FUNC( HWG_RUNAPP )
           FALSE,          // Set handle inheritance to FALSE
           CREATE_NEW_CONSOLE,   // No creation flags
           NULL,           // Use parent's environment block
-          NULL,           // Use parent's starting directory 
+          NULL,           // Use parent's starting directory
           &si,            // Pointer to STARTUPINFO structure
           &pi );          // Pointer to PROCESS_INFORMATION structure
       hb_strfree( hStr );
@@ -1154,7 +1027,7 @@ BOOL hb_itemEqual( PHB_ITEM pItem1, PHB_ITEM pItem2 )
       else
       fResult = HB_IS_DATE( pItem2 ) &&
                 pItem1->item.asDate.value == pItem2->item.asDate.value ;
-                
+
 
    else if( HB_IS_LOGICAL( pItem1 ) )
       fResult = HB_IS_LOGICAL( pItem2 ) && ( pItem1->item.asLogical.value ?
@@ -1256,7 +1129,7 @@ HB_FUNC( HWG_STOD )
 
 int hwg_hexbin(int cha)
 /* converts single hex char to int, returns -1 , if not in range
-   returns 0 - 15 (dec) , only a half byte */ 
+   returns 0 - 15 (dec) , only a half byte */
 {
     char gross;
     int o;
@@ -1272,7 +1145,7 @@ int hwg_hexbin(int cha)
      break;
      case 50:  /* 2 */
      o = 2;
-     break;	 
+     break;	
      case 51:  /* 3 */
      o = 3;
      break;
@@ -1284,13 +1157,13 @@ int hwg_hexbin(int cha)
      break;
      case 54:  /* 6 */
      o = 6;
-     break;	 
+     break;	
      case 55:  /* 7 */
      o = 7	 ;
      break;
      case 56:  /* 8 */
      o = 8;
-     break;	 
+     break;	
      case 57:  /* 9 */
      o = 9;
      break;
@@ -1302,19 +1175,19 @@ int hwg_hexbin(int cha)
      break;
      case 67:  /* C */
      o = 12;
-     break;	 
+     break;	
      case 68:  /* D */
      o = 13;
      break;
      case 69:  /* E */
      o = 14;
-     break;	 
+     break;	
      case 70:  /* F */
      o = 15;
      break;
      default:
-     o = -1; 
-    } 
+     o = -1;
+    }
     return o;
 }
 
@@ -1328,7 +1201,7 @@ HB_FUNC( HWG_BIN2DC )
     double pbyNumber;
     int i;
     unsigned char o;
-    unsigned char bu[8];     /* Buffer with binary contents of double value */ 
+    unsigned char bu[8];     /* Buffer with binary contents of double value */
     unsigned char szHex[17]; /* The hex string from parameter 1 + null byte*/
 
 
@@ -1342,9 +1215,9 @@ HB_FUNC( HWG_BIN2DC )
     const char *name;
 
   /* init vars */
-  
+
   pbyNumber = 0;
-  
+
     szHex[0] = '\0';
     szHex[1] = '\0';
     szHex[2] = '\0';
@@ -1357,7 +1230,7 @@ HB_FUNC( HWG_BIN2DC )
     szHex[9] = '\0';
     szHex[10] = '\0';
     szHex[11] = '\0';
-    szHex[12] = '\0'; 
+    szHex[12] = '\0';
     szHex[13] = '\0';
     szHex[14] = '\0';
     szHex[15] = '\0';
@@ -1366,7 +1239,7 @@ HB_FUNC( HWG_BIN2DC )
 
     p = 0;
     c = 0;
-    od = 0;  
+    od = 0;
 
     // Internal I2BIN for Len
 
@@ -1380,18 +1253,18 @@ HB_FUNC( HWG_BIN2DC )
     name = hb_parc( 1 );
 
     // hwg_writelog(NULL,name);
- 
+
     memcpy(&szHex,name,16);
 
     szHex[16] = '\0';
- 
+
     // hwg_writelog(NULL,szHex);
 
     /* Convert hex to bin */
 
     for ( i = 0 ; i < 16; i++ )
      {
- 
+
           c = hwg_hexbin(szHex[i]);
           /* ignore, if not in 0 ... 1, A ... F */
           if ( c  != -1 )
@@ -1412,12 +1285,12 @@ HB_FUNC( HWG_BIN2DC )
               p = c;
             }
             else
-            /* 2. Halbbyte verarbeiten, ganzes Byte ausspeichern 
+            /* 2. Halbbyte verarbeiten, ganzes Byte ausspeichern
                 / Process second half byte and store full byte */
             {
               p = ( p * 16 ) + c;
               o = (unsigned char) p;
-              bu[ i / 2 ] = o;  
+              bu[ i / 2 ] = o;
 
 /* Display some debug info */
 //             printf("i=%d ", i);
@@ -1430,18 +1303,18 @@ HB_FUNC( HWG_BIN2DC )
 
             }
           }
-        }  
+        }
 
     // hwg_writelog(NULL,szHex);
-   
+
     /* Convert buffer to double */
 
     memcpy(&pbyNumber,bu,sizeof(pbyNumber));
 
     /* Return double value as type N */
-  
+
     hb_retndlen( pbyNumber , uiWidth , uiDec );
-  
+
 }
 
 static void GetFileMtimeU(const char * filePath)
@@ -1471,7 +1344,7 @@ HB_FUNC( HWG_FILEMODTIMEU )
  GetFileMtimeU( ( const char * ) hb_parc(1) );
 }
 
- 
+
 HB_FUNC( HWG_FILEMODTIME )
 {
  GetFileMtime( ( const char * ) hb_parc(1) );
@@ -1482,14 +1355,14 @@ HB_FUNC( HWG_FILEMODTIME )
 HB_FUNC( HWG_TOGGLE_HALFBYTE_C )
 {
  int i,k,l;
- 
+
  i = hb_parni( 1 );
  k = i & 15;
  l = i & 240;
- 
+
  k = k << 4;
  l = l >> 4;
- 
+
  hb_retni( l | k );
 
 }

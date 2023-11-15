@@ -12,9 +12,9 @@
  Some troubleshootings:
   The function HB_RETSTR() is windows only !
   Use hb_retc().
-*/ 
+*/
 
-#define HB_MEM_NUM_LEN  8 
+#define HB_MEM_NUM_LEN  8
 
 /* Standard C libraries */
 #include <math.h>
@@ -169,7 +169,7 @@ HB_FUNC( HWG_SETBITBYTE )
 {
   int para3;
 
-   if ( hb_pcount() < 3 ) 
+   if ( hb_pcount() < 3 )
     {
       /* Return previous value */
       hb_retni( hb_parni(1) );
@@ -296,64 +296,6 @@ HB_FUNC( HWG_SLEEP )
       usleep( hb_parnl( 1 ) * 1000 );
 }
 
-#define CHUNK_LEN 1024
-#define BUFSIZE  16384
-
-HB_FUNC( HWG_RUNCONSOLEAPP )
-{
-   /* Ensure that output of command does interfere with stdout */
-   fflush( stdin );
-   FILE *cmd_file = ( FILE * ) popen( hb_parc( 1 ), "r" );
-   FILE *hOut;
-   char buf[BUFSIZE], *pOut;
-   int bytes_read, read_all = 0, iOutExist = 0, iOutFirst = 1, iExitCode;
-
-   if( !cmd_file )
-   {
-      hb_retni( -1 );
-      return;
-   }
-
-   if( !HB_ISNIL( 2 ) )
-   {
-      hOut = fopen( hb_parc( 2 ), "w" );
-      iOutExist = 1;
-   }
-   else if( HB_ISBYREF( 3 ) )
-      iOutExist = 2;
-
-   do
-   {
-      bytes_read = fread( buf, sizeof( char ), BUFSIZE, cmd_file );
-      if( iOutExist == 1 )
-         fwrite( buf, 1, bytes_read, hOut );
-      else if( iOutExist == 2 )
-      {
-         read_all += bytes_read;
-         if( iOutFirst )
-         {
-            pOut = (char*) hb_xgrab( bytes_read + 1 );
-            memcpy( pOut, buf, bytes_read );
-            iOutFirst = 0;
-         }
-         else
-         {
-            pOut = ( char * ) hb_xrealloc( pOut, read_all + 1 );
-            memcpy( pOut+read_all-bytes_read, buf, bytes_read );
-         }
-      }
-   }
-   while( bytes_read == BUFSIZE );
-
-   iExitCode = pclose( cmd_file );
-   if( iOutExist == 1 )
-      fclose( hOut );
-   else if( iOutExist == 2 )
-      hb_storclen_buffer( pOut, read_all, 3 );
-
-   hb_retni( iExitCode );
-}
-
 HB_FUNC( HWG_RUNAPP )
 {
    GError * error = NULL;
@@ -364,7 +306,7 @@ HB_FUNC( HWG_RUNAPP )
         rc = error->code ;
         g_error_free(error);
     }
-  hb_retni ( rc );  
+  hb_retni ( rc );
 }
 
 HB_FUNC( HWG_SHELLEXECUTE )
@@ -377,7 +319,7 @@ HB_FUNC( HWG_GETCENTURY )
 {
   HB_BOOL centset = hb_setGetCentury();
   hb_retl(centset);
-} 
+}
 
 /* DF7BE: This functions works on GTK cross development environment */
 HB_FUNC( HWG_ISWIN7 )
@@ -445,7 +387,7 @@ HB_FUNC( HWG_GETTEMPDIR )
    HB_RETSTR( szBuffer );
 #else
  char const * tempdirname = getenv("TMPDIR");
- 
+
  if (tempdirname == NULL)
    { tempdirname = "/tmp"; }
    hb_retc(tempdirname);
@@ -503,7 +445,7 @@ HB_FUNC( HWG_STOD )
 
 int hwg_hexbin(int cha)
 /* converts single hex char to int, returns -1 , if not in range
-   returns 0 - 15 (dec) , only a half byte */ 
+   returns 0 - 15 (dec) , only a half byte */
 {
     char gross;
     int o;
@@ -519,7 +461,7 @@ int hwg_hexbin(int cha)
      break;
      case 50:  /* 2 */
      o = 2;
-     break;	 
+     break;	
      case 51:  /* 3 */
      o = 3;
      break;
@@ -531,13 +473,13 @@ int hwg_hexbin(int cha)
      break;
      case 54:  /* 6 */
      o = 6;
-     break;	 
+     break;	
      case 55:  /* 7 */
      o = 7	 ;
      break;
      case 56:  /* 8 */
      o = 8;
-     break;	 
+     break;	
      case 57:  /* 9 */
      o = 9;
      break;
@@ -549,19 +491,19 @@ int hwg_hexbin(int cha)
      break;
      case 67:  /* C */
      o = 12;
-     break;	 
+     break;	
      case 68:  /* D */
      o = 13;
      break;
      case 69:  /* E */
      o = 14;
-     break;	 
+     break;	
      case 70:  /* F */
      o = 15;
      break;
      default:
-     o = -1; 
-    } 
+     o = -1;
+    }
     return o;
 }
 
@@ -575,7 +517,7 @@ HB_FUNC( HWG_BIN2DC )
     double pbyNumber;
     int i;
     unsigned char o;
-    unsigned char bu[8];     /* Buffer with binary contents of double value */ 
+    unsigned char bu[8];     /* Buffer with binary contents of double value */
     unsigned char szHex[17]; /* The hex string from parameter 1 + null byte*/
 
 
@@ -584,9 +526,9 @@ HB_FUNC( HWG_BIN2DC )
     int od;     /* odd even sign / gerade - ungerade */
 
   /* init vars */
-  
+
   pbyNumber = 0;
-  
+
     szHex[0] = '\0';
     szHex[1] = '\0';
     szHex[2] = '\0';
@@ -599,7 +541,7 @@ HB_FUNC( HWG_BIN2DC )
     szHex[9] = '\0';
     szHex[10] = '\0';
     szHex[11] = '\0';
-    szHex[12] = '\0'; 
+    szHex[12] = '\0';
     szHex[13] = '\0';
     szHex[14] = '\0';
     szHex[15] = '\0';
@@ -608,7 +550,7 @@ HB_FUNC( HWG_BIN2DC )
 
     p = 0;
     c = 0;
-    od = 0;  
+    od = 0;
 
     // Internal I2BIN for Len
 
@@ -620,18 +562,18 @@ HB_FUNC( HWG_BIN2DC )
 
 
     const char *name = hb_parc( 1 );
- 
+
     memcpy(&szHex,name,16);
- 
+
     szHex[16] = '\0';
- 
+
     // hwg_writelog(NULL,szHex);
 
     /* Convert hex to bin */
 
     for ( i = 0 ; i < 16; i++ )
      {
- 
+
           c = hwg_hexbin(szHex[i]);
           /* ignore, if not in 0 ... 1, A ... F */
           if ( c  != -1 )
@@ -652,12 +594,12 @@ HB_FUNC( HWG_BIN2DC )
               p = c;
             }
             else
-            /* 2. Halbbyte verarbeiten, ganzes Byte ausspeichern 
+            /* 2. Halbbyte verarbeiten, ganzes Byte ausspeichern
                 / Process second half byte and store full byte */
             {
               p = ( p * 16 ) + c;
               o = (unsigned char) p;
-              bu[ i / 2 ] = o;  
+              bu[ i / 2 ] = o;
 
 /* Display some debug info */
 //             printf("i=%d ", i);
@@ -670,18 +612,18 @@ HB_FUNC( HWG_BIN2DC )
 
             }
           }
-        }  
+        }
 
     // hwg_writelog(NULL,szHex);
-   
+
     /* Convert buffer to double */
 
     memcpy(&pbyNumber,bu,sizeof(pbyNumber));
 
     /* Return double value as type N */
-  
+
     hb_retndlen( pbyNumber , uiWidth , uiDec );
-  
+
 }
 
 static void GetFileMtimeU(const char * filePath)
@@ -711,7 +653,7 @@ HB_FUNC( HWG_FILEMODTIMEU )
  GetFileMtimeU( ( const char * ) hb_parc(1) );
 }
 
- 
+
 HB_FUNC( HWG_FILEMODTIME )
 {
  GetFileMtime( ( const char * ) hb_parc(1) );
@@ -722,14 +664,14 @@ HB_FUNC( HWG_FILEMODTIME )
 HB_FUNC( HWG_TOGGLE_HALFBYTE_C )
 {
  int i,k,l;
- 
+
  i = hb_parni( 1 );
  k = i & 15;
  l = i & 240;
- 
+
  k = k << 4;
  l = l >> 4;
- 
+
  hb_retni( l | k );
 
 }
@@ -740,7 +682,7 @@ HB_FUNC( HWG_GUITYPE )
   hb_retc( "GTK2" );
 #else
   hb_retc( "GTK3" );
-#endif  
+#endif
 }
 
 /* ========= EOF of misc.c ============ */

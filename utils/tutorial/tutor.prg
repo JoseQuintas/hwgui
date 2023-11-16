@@ -83,7 +83,7 @@ FUNCTION Main
    LOCAL oStyle1 := HStyle():New( {CLR_WHITE, CLR_LGRAY1}, 1 ), ;
          oStyle2 := HStyle():New( {CLR_LGRAY1}, 1,, 3 ), ;
          oStyle3 := HStyle():New( {CLR_LGRAY1}, 1,, 2, CLR_LGRAY2 )
-   LOCAL bSize := {|o,x,y|
+   LOCAL bSize := {|o|
       LOCAL arr := hwg_GetWindowRect( o:handle )
 
       nInitWidth := arr[3] - arr[1]
@@ -159,9 +159,9 @@ FUNCTION Main
    @ 0, 32 TREE oTree SIZE nInitSplitX, oMain:nHeight-oPanel:nHeight ;
       EDITABLE ;
       BITMAP { "cl_fl.bmp", "op_fl.bmp" } ;
-      ON SIZE { |o, x, y|o:Move( , , , y - 32 ) }
+      ON SIZE {|o,x,y| HB_SYMBOL_UNUSED(x), o:Move( ,,, y-32 ) }
 
-   oTree:bDblClick := { |oTree, oItem|RunSample( oItem ) }
+   oTree:bDblClick := {|o,oItem| HB_SYMBOL_UNUSED(o),RunSample( oItem ) }
 
    oText := HCEdit():New( oMain, ,, nInitSplitX+4, oPanel:nHeight, ;
       nInitWidth-nInitSplitX-4, oMain:nHeight-oPanel:nHeight, oFont,, ;
@@ -175,8 +175,7 @@ FUNCTION Main
 
    @ nInitSplitX, oPanel:nHeight SPLITTER oSplit SIZE 4, oMain:nHeight-oPanel:nHeight ;
       DIVIDE { oTree } FROM { oText } ;
-      ON SIZE { |o,x,y|o:Move( ,,, y - oPanel:nHeight ) }
-   //oSplit:bEndDrag := { ||hwg_Redrawwindow( oText:handle, RDW_ERASE + RDW_INVALIDATE + RDW_INTERNALPAINT + RDW_UPDATENOW ) }
+      ON SIZE {|o,x,y| HB_SYMBOL_UNUSED(x),o:Move( ,,, y - oPanel:nHeight ) }
    oSplit:bEndDrag := {|o|nInitSplitX := o:nLeft}
 
    SET KEY FCONTROL, VK_ADD TO ChangeFont( oText, 2 )

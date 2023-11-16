@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-16 19:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/tutor.prg
+    ! Warnings fixed
+
 2023-11-16 16:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hceditb.prg
     * Default colors set for drawn edit

@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-16 16:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hceditb.prg
+    * Default colors set for drawn edit
+
 2023-11-16 08:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/procmisc/cfuncs.c
     * Header file for Windows added

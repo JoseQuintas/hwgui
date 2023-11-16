@@ -118,7 +118,8 @@ ENDCLASS
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, ;
    oFont, xInitVal, cPicture, bPaint, bChgState ) CLASS HDrawnEdit
 
-   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor,, ' ', oFont, bPaint,, bChgState )
+   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, Iif( tcolor == Nil, 0, tcolor ), ;
+      Iif( bcolor == Nil, 16777215, bcolor ),, ' ', oFont, bPaint,, bChgState )
 
    ::hEdit := hced_InitTextEdit()
    IF Empty( hCursorEdi )

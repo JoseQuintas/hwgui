@@ -10,6 +10,7 @@
 #if defined(__linux__) || defined(__unix__)
 #include <unistd.h>
 #else
+#include "hwingui.h"
 #include <io.h>
 #endif
 #include <stdio.h>

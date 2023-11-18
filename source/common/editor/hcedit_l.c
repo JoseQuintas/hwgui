@@ -493,6 +493,7 @@ HB_FUNC( HCED_INITTEXTEDIT )
 
 }
 
+/*
 HB_FUNC( HCED_CREATETEXTEDIT )
 {
    GtkWidget *area;
@@ -539,6 +540,7 @@ HB_FUNC( HCED_CREATETEXTEDIT )
    all_signal_connect( ( gpointer ) area );
    HB_RETHANDLE( area );
 }
+*/
 
 HB_FUNC( HCED_SETHANDLE )
 {
@@ -549,6 +551,7 @@ HB_FUNC( HCED_RELEASE )
 {
    TEDIT *pted = ( TEDIT * ) HB_PARHANDLE( 1 );
 
+   SetWindowObject( pted->area, NULL );
    hb_xfree( pted->pFontsScr );
    hb_xfree( pted->pFontsPrn );
    hb_xfree( pted->pattr );

@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-18 18:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hcedit.prg
+  * source/common/editor/hcedit_l.c
+    ! Fixes
+
 2023-11-18 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hpanel.prg
   * source/winapi/hpanel.prg

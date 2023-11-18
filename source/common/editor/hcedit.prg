@@ -255,7 +255,7 @@ CLASS HCEdit INHERIT HControl
    METHOD Paint( lReal )
    METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight )
    METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC )
-   METHOD End()
+   METHOD End( l )
    METHOD Convert( cPageIn, cPageOut )
    METHOD SetText( xText, cPageIn, cPageOut )
    METHOD SAVE( cFileName , cpSou )
@@ -634,7 +634,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HCEdit
       ENDIF
 
    ELSEIF msg == WM_DESTROY
-      ::End()
+      ::End( .T. )
 
    ENDIF
 
@@ -971,12 +971,15 @@ METHOD MarkLine( nLine, lReal, nSubLine, nWCharF, nLineC ) CLASS HCEdit
 
    RETURN Nil
 
-METHOD End() CLASS HCEdit
+METHOD End( l ) CLASS HCEdit
 
+   //hwg_writelog( "-------" )
+   //hwg_writelog( hwg_trace() )
    IF !Empty( ::oHili )
       ::oHili:End()
+      ::oHili := Nil
    ENDIF
-   IF !Empty( ::hEdit )
+   IF !Empty( l ) .AND. !Empty( ::hEdit )
       hced_Release( ::hEdit )
       ::hEdit := Nil
    ENDIF

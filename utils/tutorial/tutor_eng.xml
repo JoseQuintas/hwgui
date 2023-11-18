@@ -2022,12 +2022,12 @@ FUNCTION Test
    @ 204, 68 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Check 2' FONT oFont
 
-   @ 310, 24 DRAWN EDIT oEdit CAPTION Date() SIZE 80, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
+   @ 310, 24 DRAWN EDIT oEdit CAPTION Date() SIZE 80, 28
    oEdit:nBorder := 2
    oEdit:nBorderColor := CLR_BLUE
    oEdit:cTooltip := "Edit control" + Chr(10) + "(HDrawnEdit)"
 
-   @ 310, 68 DRAWN EDIT "Sample Drawn Edit Control" SIZE 140, 28 COLOR CLR_BLACK BACKCOLOR CLR_WHITE
+   @ 310, 68 DRAWN EDIT "Sample Drawn Edit Control" SIZE 140, 28
 
    @ 80, 140 DRAWN oSay SIZE 100, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT '0.00' FONT oFont

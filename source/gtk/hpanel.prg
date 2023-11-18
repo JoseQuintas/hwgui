@@ -16,7 +16,7 @@ CLASS HPanel INHERIT HControl
    DATA winclass   INIT "PANEL"
    DATA hBox
    DATA oStyle
-   DATA oPaintCB  INIT {}       // HPaintCB object
+   DATA oPaintCB              // HPaintCB object
    DATA lDragWin    INIT .F.
    DATA lCaptured   INIT .F.
    DATA hCursor
@@ -143,7 +143,7 @@ METHOD Paint() CLASS HPanel
    hDC := hwg_Getdc( ::handle )
    aCoors := hwg_Getclientrect( ::handle )
 
-   IF !Empty( ::oPaintCB ) .AND. !Empty( block := ::oPaintCB:Get( PAINT_ITEM ) )
+   IF !Empty( ::oPaintCB ) .AND. !Empty( block := ::oPaintCB:Get( PAINT_BACK ) )
       Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
    ELSEIF ::oStyle == Nil
       hwg_Drawbutton( hDC, 0, 0, ::nWidth - 1, ::nHeight - 1, 5 )

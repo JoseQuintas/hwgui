@@ -178,7 +178,6 @@ METHOD DrawItems( hDC, aCoors ) CLASS HPanel
    IF Empty( aCoors )
       aCoors := hwg_Getclientrect( ::handle )
    ENDIF
-   //IF !Empty( aCB := hwg_getPaintCB( ::aPaintCB, PAINT_ITEM ) )
    IF !Empty( ::oPaintCB ) .AND. !Empty( aCB := ::oPaintCB:Get( PAINT_ITEM ) )
       FOR i := 1 TO Len( aCB )
          Eval( aCB[i], Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
@@ -199,8 +198,7 @@ METHOD Paint() CLASS HPanel
    hDC    := hwg_Beginpaint( ::handle, pps )
    aCoors := hwg_Getclientrect( ::handle )
 
-   //IF !Empty( block := hwg_getPaintCB( ::aPaintCB, PAINT_BACK ) )
-   IF !Empty( ::oPaintCB ) .AND. !Empty( block := ::oPaintCB:Get( PAINT_ITEM ) )
+   IF !Empty( ::oPaintCB ) .AND. !Empty( block := ::oPaintCB:Get( PAINT_BACK ) )
       Eval( block, Self, hDC, aCoors[1], aCoors[2], aCoors[3], aCoors[4] )
    ELSEIF ::oStyle == Nil
       oPenLight := HPen():Add( BS_SOLID, 1, hwg_Getsyscolor( COLOR_3DHILIGHT ) )

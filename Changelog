@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-18 13:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hpanel.prg
+  * source/winapi/hpanel.prg
+  * source/common/editor/hcedit.prg
+    ! Fixes
+  * utils/tutorial/tutor_eng.xml
+
 2023-11-16 19:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor.prg
     ! Warnings fixed

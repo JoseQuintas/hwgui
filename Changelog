@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-21 14:29 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + utils/hwbuild/hwbuild.hbp
+  + utils/hwbuild/hwbuildc.hbp
+    + hbp files added to build
+      hwbuild - GUI version of hwbuild
+      hwbuildc - console version of hwbuild
+  * makefile.vc
+    ! Missing listbox.c rules added
+
 2023-11-21 14:37 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/procmisc/cfuncs.c
   * source/winapi/draw.c

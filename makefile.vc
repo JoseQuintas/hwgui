@@ -33,6 +33,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\drawtext.obj \
    $(OBJ_DIR)\freeimg.obj \
    $(OBJ_DIR)\grid.obj \
+   $(OBJ_DIR)\listbox.obj  \
    $(OBJ_DIR)\media_c.obj \
    $(OBJ_DIR)\menu_c.obj \
    $(OBJ_DIR)\message.obj \
@@ -119,6 +120,8 @@ $(OBJ_DIR)\drawtext.obj : $(SRC_DIR)\drawtext.c
 $(OBJ_DIR)\freeimg.obj : $(SRC_DIR)\freeimg.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\grid.obj : $(SRC_DIR)\grid.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
+$(OBJ_DIR)\listbox.obj   : $(SRC_DIR)\listbox.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\media_c.obj   : $(SRC_DIR)\media_c.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**

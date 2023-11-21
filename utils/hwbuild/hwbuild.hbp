@@ -1,0 +1,10 @@
+#
+# $Id$
+#
+
+../../hwgui.hbc
+
+-n
+-w
+
+hwbuild.prg

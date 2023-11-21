@@ -1,0 +1,13 @@
+#
+# $Id$
+#
+
+-L../../lib
+-lprocmisc
+
+-n
+-w
+-D__CONSOLE
+-ohwbuildc
+
+hwbuild.prg

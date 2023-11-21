@@ -1969,7 +1969,8 @@ HB_FUNC( HWG_DRAWGRADIENT )
    int user_colors_num, colors_num, user_stops_num, user_radiuses_num, i, j, k;
    HDC hDC_mem = NULL;
    HBITMAP bmp = NULL;
-   HPEN hPen, hPenOld;
+   HPEN hPen;
+   HGDIOBJ hPenOld;
    HBRUSH hBrush;
    TRIVERTEX vertex[(GRADIENT_MAX_COLORS-1)*2];
    GRADIENT_RECT gRect[GRADIENT_MAX_COLORS-1];
@@ -2311,8 +2312,11 @@ HB_FUNC( HWG_DRAWGRADIENT )
                min_delta = 1000000;
                for( k = 0; k < 4; k++ )
                {
-                  delta = abs( pow( (long double)(candidates[k].x), 2 ) + pow( (long double)(candidates[k].y), 2 ) -
-                     pow( (long double)(radius[i]), 2 ) );
+//                  delta = abs( pow( (long double)(candidates[k].x), 2 ) + pow( (long double)(candidates[k].y), 2 ) -
+//                     pow( (long double)(radius[i]), 2 ) );
+                  delta = pow( (long double)(candidates[k].x), 2 ) + pow( (long double)(candidates[k].y), 2 ) -
+                     pow( (long double)(radius[i]), 2 );
+                  if( delta < 0 ) delta = -delta;
                   if ( delta < min_delta )
                   {
                      nearest_coord = k;
@@ -2355,7 +2359,7 @@ HB_FUNC( HWG_DRAWGRADIENT )
       hBrush = CreateSolidBrush( color );
    }
 
-   hPenOld = SelectObject( hDC, hPen );
+   hPenOld = SelectObject( hDC, (HGDIOBJ) hPen );
    SelectObject( hDC, hBrush );
    Polygon( hDC, polygon, polygon_len );
 

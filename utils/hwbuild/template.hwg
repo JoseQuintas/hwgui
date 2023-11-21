@@ -1,0 +1,36 @@
+# HwBuild project template
+
+# Set it, if you want to use certain C compiler for this project
+#c_compiler=bcc
+
+# If on, object files will not be deleted and will be reused, if appropriate source file wasn't changed
+#makemode=On
+
+# Set it to lib, if you build the library
+#target=lib
+
+# The path to object files
+#cobjpath=obj
+
+# The additional path to a special libraries
+#libspath=
+
+# Additional libraries list without extentions: rddleto sqlite3 hbsqlit3
+#libs=
+
+# Additional flags for Harbour compiler
+#prgflags=
+
+# Additional flags for C compiler
+#cflags=
+
+# Path, where the binary file should be placed
+#outpath=
+
+# The name of a binary file
+#outname=
+
+# The path to source files
+#srcpath=
+
+#Source files list, * may be used: *.prg, for example

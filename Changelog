@@ -15,6 +15,17 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-21 14:37 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/procmisc/cfuncs.c
+  * source/winapi/draw.c
+    ! Warnings fixed for msvc
+  * samples/bldvc.bat updated
+  + utils/hwbuild
+  + utils/hwbuild/hwbuild.ini
+  + utils/hwbuild/hwbuild.prg
+  + utils/hwbuild/template.hwg
+    + hwbuild utility added
+
 2023-11-18 18:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hcedit.prg
   * source/common/editor/hcedit_l.c

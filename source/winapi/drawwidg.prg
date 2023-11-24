@@ -39,6 +39,8 @@ CLASS HFont INHERIT HObject
    DATA nCounter   INIT 1
 
    METHOD Add( fontName, nWidth, nHeight , fnWeight, fdwCharSet, fdwItalic, fdwUnderline, fdwStrikeOut, nHandle )
+   METHOD SaveToStr()
+   METHOD LoadFromStr( s )
    METHOD SELECT( oFont, nCharSet )
    METHOD Props2Arr()
    METHOD PrintFont()
@@ -97,6 +99,20 @@ METHOD Add( fontName, nWidth, nHeight , fnWeight, ;
 
    RETURN Self
 
+METHOD SaveToStr() CLASS HFont
+
+   RETURN ::name + ',' + Ltrim(Str(::height)) + ',' + Iif( ::weight > FW_REGULAR, 'b', '' ) + ;
+      Iif( ::Italic == 1, 'i', "" ) + Iif( ::Underline == 1, 'u', "" ) + ;
+      Iif( ::StrikeOut == 1, 's', "" ) + ',' + Ltrim(Str(::CharSet))
+
+METHOD LoadFromStr( s ) CLASS HFont
+
+   LOCAL af := hb_ATokens( s, ',' ), nLen := Len( af )
+
+   RETURN ::Add( af[1], 0, Val(af[2]), Iif( nLen>2 .AND. 'b' $ af[3], FW_BOLD, FW_REGULAR ), ;
+      Iif( nLen>3, Val(af[4]), Nil ), Iif( nLen>2 .AND. 'i' $ af[3], 1, 0 ), ;
+      Iif( nLen>2 .AND. 'u' $ af[3], 1, 0 ), Iif( nLen>2 .AND. 's' $ af[3], 1, 0 ) )
+
 METHOD SELECT( oFont, nCharSet  ) CLASS HFont
 
    LOCAL af := hwg_Selectfont( oFont )
@@ -105,7 +121,8 @@ METHOD SELECT( oFont, nCharSet  ) CLASS HFont
       RETURN Nil
    ENDIF
 
-   RETURN ::Add( af[ 2 ], af[ 3 ], af[ 4 ], af[ 5 ], iif( Empty( nCharSet ), af[ 6 ], nCharSet ), af[ 7 ], af[ 8 ], af[ 9 ], af[ 1 ] )
+   RETURN ::Add( af[ 2 ], af[ 3 ], af[ 4 ], af[ 5 ], iif( Empty( nCharSet ), ;
+      af[ 6 ], nCharSet ), af[ 7 ], af[ 8 ], af[ 9 ], af[ 1 ] )
 
 METHOD SetFontStyle( lBold, nCharSet, lItalic, lUnder, lStrike, nHeight ) CLASS HFont
 

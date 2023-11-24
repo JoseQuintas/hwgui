@@ -15,6 +15,21 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-24 10:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+  * source/winapi/drawwidg.prg
+    * Two methods added to HFont class: :SaveToStr(), :LoadFromStr(s) - to make it easy
+      to keep fonts in ini files
+  - source/gtk/hlistbox.prg
+  + test/hlistbox.prg
+  - source/gtk/listbox.c
+  + test/listbox.c
+    * hlistbox.prg and listbox.c moved from gtk to test, because they are not compileable.
+      Source directories must contain working code only!
+  * utils/hwbuild/hwbuild.ini
+  * utils/hwbuild/hwbuild.prg
+    * Added support for msvc and many other enhancements
+
 2023-11-21 14:29 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + utils/hwbuild/hwbuild.hbp
   + utils/hwbuild/hwbuildc.hbp

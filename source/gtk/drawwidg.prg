@@ -95,7 +95,7 @@ METHOD SaveToStr() CLASS HFont
 
 METHOD LoadFromStr( s ) CLASS HFont
 
-   LOCAL af := hb_ATokens( s, ',' )
+   LOCAL af := hb_ATokens( s, ',' ), nLen := Len( af )
 
    RETURN ::Add( af[1], 0, Val(af[2]), Iif( nLen>2 .AND. 'b' $ af[3], FW_BOLD, FW_REGULAR ), ;
       Iif( nLen>3, Val(af[4]), Nil ), Iif( nLen>2 .AND. 'i' $ af[3], 1, 0 ), ;

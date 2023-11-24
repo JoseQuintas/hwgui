@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-24 15:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/drawwidg.prg
+    ! Small fix
+  * utils/hwbuild/hwbuild.ini
+  * utils/hwbuild/hwbuild.prg
+    * New enhancements
+
 2023-11-24 10:44 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawwidg.prg
   * source/winapi/drawwidg.prg

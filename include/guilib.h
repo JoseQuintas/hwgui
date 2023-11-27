@@ -15,7 +15,7 @@
 #define ST_ALIGN_HORIZ_RIGHT  2     // Icon/bitmap on the right, text on the left
 #define ST_ALIGN_OVERLAP      3     // Icon/bitmap on the same space as text
 
-#ifdef HWG_USE_POINTER_ITEM
+#ifndef HWG_NO_USE_POINTER_ITEM
    #define HB_RETHANDLE( h )        hb_retptr( ( void * ) ( h ) )
    #define HB_PARHANDLE( n )        hb_parptr( n )
    #define HB_STOREHANDLE( h, n )   hb_storptr( ( void * ) ( h ), n )

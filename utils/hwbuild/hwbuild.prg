@@ -132,13 +132,13 @@ FUNCTION Main( ... )
          IF '*' $ c
             af := hb_Directory( cSrcPath + hb_ps() + c )
             FOR j := 1 TO Len( af )
-               AAdd( aFiles, Iif( Empty( cSrcPath ), af[i,1], cSrcPath+hb_ps()+af[i,1] ) )
+               AAdd( aFiles, { Iif( Empty( cSrcPath ), af[i,1], cSrcPath+hb_ps()+af[i,1] ), } )
             NEXT
          ELSE
             c := Iif( !Empty( cSrcPath ) .AND. Empty( hb_fnameDir(c) ), cSrcPath + hb_ps() + c, c )
             IF Empty( hb_fnameExt(c) )
-               IF File( c + ".hwg" )
-                  c += ".hwg"
+               IF File( c + ".hwprj" )
+                  c += ".hwprj"
                ELSEIF File( c + ".prg" )
                   c += ".prg"
                ELSE
@@ -146,7 +146,7 @@ FUNCTION Main( ... )
                   RETURN Nil
                ENDIF
             ENDIF
-            Aadd( aFiles, c )
+            Aadd( aFiles, { c, } )
          ENDIF
       ENDIF
    NEXT
@@ -167,37 +167,23 @@ FUNCTION Main( ... )
       oComp := HCompiler():aList[1]
    ENDIF
 
-   IF Empty( aFiles ) .OR. lGUI
+   IF Empty( aParams )
 #ifndef __CONSOLE
-      IF Empty( aFiles ) .OR. Lower( hb_fnameExt( aFiles[1] ) ) == ".hwg"
-         StartGUI( Iif( Empty( aFiles ), Nil, aFiles[1] ) )
-      ENDIF
+      StartGUI( Iif( Empty( aFiles ), Nil, aFiles[1,1] ) )
 #endif
-   ELSE
-      IF !Empty( c := CheckOptions( oComp ) )
-#ifdef __CONSOLE
-         OutStd( hb_eol() + c )
-         OutStd( hb_eol() + "Check your hwbuild.ini" )
-         RETURN Nil
-#else
-         _MsgStop( c, "Warning" )
-         FPaths()
-#endif
-      ENDIF
-#ifndef __CONSOLE
-      IF !Empty( c := CheckOptions( oComp ) )
-         _MsgStop( c, "Wrong options" )
-         RETURN Nil
-      ENDIF
-#endif
-      IF Len( aFiles ) == 1 .AND. Lower( hb_fnameExt( aFiles[1] ) ) == ".hwg"
-         IF !Empty( oPrg := HwProject():Open( aFiles[1], oComp ) )
+   ELSEIF !Empty( aFiles )
+      IF Len( aFiles ) == 1 .AND. Lower( hb_fnameExt( aFiles[1,1] ) ) == ".hwprj"
+         IF !Empty( oPrg := HwProject():Open( aFiles[1,1], oComp ) )
             oPrg:Build( lClean )
          ENDIF
       ELSE
          oPrg := HwProject():New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, cOutPath, cOutName, cObjPath, lLib, .F. )
          oPrg:Build( lClean )
       ENDIF
+   ELSE
+#ifndef __CONSOLE
+   _MsgStop( "No files" )
+#endif
    ENDIF
 
    RETURN Nil
@@ -490,7 +476,7 @@ STATIC FUNCTION OpenProject( cFile )
       SaveProject()
    ENDIF
    IF Empty( cFile )
-      cFile := hwg_Selectfile( { "Hwbuild project (*.hwg)" }, { "*.hwg" }, Curdir() )
+      cFile := hwg_Selectfile( { "Hwbuild project (*.hwprj)" }, { "*.hwprj" }, Curdir() )
    ENDIF
    IF Empty( cFile )
       RETURN Nil
@@ -510,14 +496,14 @@ STATIC FUNCTION SaveProject()
    IF oMain:oEdit:lUpdated
       IF Empty( oMain:oEdit:cFileName )
 #ifdef __PLATFORM__UNIX
-         oMain:oEdit:cFileName := hwg_Selectfile( "( *.hwg )", "*.hwg" )
+         oMain:oEdit:cFileName := hwg_Selectfile( "( *.hwprj )", "*.hwprj" )
 #else
-         oMain:oEdit:cFileName := hwg_SaveFile( "*.hwg", "( *.hwg )", "*.hwg" )
+         oMain:oEdit:cFileName := hwg_SaveFile( "*.hwprj", "( *.hwprj )", "*.hwprj" )
 #endif
          IF Empty( oMain:oEdit:cFileName )
             RETURN Nil
          ENDIF
-         oMain:oEdit:cFileName := hb_fnameExtSet( oMain:oEdit:cFileName, "hwg" )
+         oMain:oEdit:cFileName := hb_fnameExtSet( oMain:oEdit:cFileName, "hwprj" )
       ENDIF
       oMain:oEdit:Save( oMain:oEdit:cFileName )
       oMain:oEdit:lUpdated := .F.
@@ -539,11 +525,14 @@ STATIC FUNCTION RunProject( lClean )
 STATIC FUNCTION ShowResult()
    RETURN Nil
 
+STATIC FUNCTION FPaths()
+   RETURN Nil
+
 #endif
 
-STATIC FUNCTION CheckOptions( oComp )
+STATIC FUNCTION CheckOptions( oProject )
 
-   LOCAL nDef
+   LOCAL nDef, oComp := oProject:oComp
 
    IF Empty( cPathHrbBin ) .OR. !File( cPathHrbBin + hb_ps() + "harbour" + cExeExt )
       RETURN "Empty or wrong harbour executables path"
@@ -551,12 +540,13 @@ STATIC FUNCTION CheckOptions( oComp )
    IF Empty( cPathHrbInc ) .OR. !File( cPathHrbInc + hb_ps() + "hbsetup.ch" )
       RETURN "Empty or wrong harbour include path"
    ENDIF
-   IF cGuiId == "hwgui" .AND. ( Empty( cPathHwguiInc ) .OR. !File( cPathHwguiInc + hb_ps() + "hwgui.ch" ) )
+   IF cGuiId == "hwgui" .AND. ( Empty( cPathHwguiInc ) .OR. ;
+      !File( cPathHwguiInc + hb_ps() + "hwgui.ch" ) )
       RETURN "Empty or wrong hwgui include path"
    ENDIF
 
    IF ( nDef := Ascan( HCompiler():aDef, {|a|a[COMP_ID] == oComp:id} ) ) > 0
-      IF cGuiId == "hwgui" .AND. ( Empty( cPathHwguiLib ) .OR. ;
+      IF !oProject:lLib .AND. cGuiId == "hwgui" .AND. ( Empty( cPathHwguiLib ) .OR. ;
          !File( cPathHwguiLib + hb_ps() + HCompiler():aDef[nDef,COMP_HWG] ) )
          RETURN "Empty or wrong hwgui libraries path"
       ENDIF
@@ -565,7 +555,8 @@ STATIC FUNCTION CheckOptions( oComp )
          RETURN "Empty or wrong " + oComp:id + " path"
       ENDIF
 #endif
-      IF Empty( oComp:cPathHrbLib ) .OR. !File( oComp:cPathHrbLib + hb_ps() + HCompiler():aDef[nDef,COMP_HVM] )
+      IF !oProject:lLib .AND. ( Empty( oComp:cPathHrbLib ) .OR. ;
+         !File( oComp:cPathHrbLib + hb_ps() + HCompiler():aDef[nDef,COMP_HVM] ) )
          RETURN "Empty or wrong " + oComp:id + " harbour libraries path"
       ENDIF
    ENDIF
@@ -585,12 +576,12 @@ STATIC FUNCTION ReadIni( cFile )
    IF File( cPath := ( _CurrPath() + cFile ) ) .OR. ;
       File( cPath := ( hb_DirBase() + cFile ) )
 #endif
-      cIniPath := cPath
       hIni := _IniRead( cPath )
 #ifdef __CONSOLE
       OutStd( hb_eol() + "Read options from " + cPath + hb_eol() )
 #endif
    ENDIF
+   cIniPath := cPath
 
    IF !Empty( hIni )
       hb_hCaseMatch( hIni, .F. )
@@ -666,8 +657,12 @@ STATIC FUNCTION ReadIni( cFile )
                   ELSEIF key == "harbour_lib_path" .AND. !Empty( cTmp := aSect[ key ] )
                      oComp:cPathHrbLib := cTmp
                      oComp:lPathHrbLib := .T.
-                  ELSEIF key == "def_flags" .AND. !Empty( cTmp := aSect[ key ] )
+                  ELSEIF key == "def_cflags" .AND. !Empty( cTmp := aSect[ key ] )
                      oComp:cFlags := cTmp
+                     oComp:lFlags := .T.
+                  ELSEIF key == "def_linkflags" .AND. !Empty( cTmp := aSect[ key ] )
+                     oComp:cLinkFlagsGui := cTmp
+                     oComp:lLinkFlagsGui := .T.
                   ELSEIF Left(key,4) == "env_" .AND. !Empty( cTmp := aSect[ key ] )
                      IF ( nPos := At( '=', cTmp ) ) > 0
                         AAdd( oComp:aEnv, {Left( cTmp,nPos-1 ), Substr( cTmp,nPos+1 )} )
@@ -772,9 +767,6 @@ STATIC FUNCTION ReadIni( cFile )
 #endif
 
    IF IsIniDataChanged()
-#ifdef __CONSOLE
-      OutStd( hb_eol() + "Update options in " + cPath + hb_eol() )
-#endif
       WriteIni()
    ENDIF
 
@@ -792,7 +784,8 @@ STATIC FUNCTION WriteIni()
    FOR EACH oComp IN HCompiler():aList
       n ++
       s += "[C_COMPILER_" + Ltrim(Str(n)) + "]" + cr + "id=" + oComp:id + cr + "bin_path=" + ;
-         oComp:cPath + cr + "harbour_lib_path=" + oComp:cPathHrbLib + cr + "def_flags=" + oComp:cFlags + cr
+         oComp:cPath + cr + "harbour_lib_path=" + oComp:cPathHrbLib + cr + ;
+         "def_cflags=" + oComp:cFlags + cr + "def_linkflags=" + oComp:cLinkFlagsGui + cr
       n1 := 0
       FOR EACH aEnv in oComp:aEnv
          s += "env_" + Ltrim(Str(++n1)) + "=" + aEnv[1] + "=" + aEnv[2] + cr
@@ -802,6 +795,9 @@ STATIC FUNCTION WriteIni()
 
    s += "[VIEW]" + cr + "font=" + cFontMain + cr + cr
 
+#ifdef __CONSOLE
+      OutStd( hb_eol() + "Update options in " + cIniPath + hb_eol() )
+#endif
    hb_MemoWrit( cIniPath, s )
 
    RETURN Nil
@@ -829,6 +825,12 @@ STATIC FUNCTION IsIniDataChanged()
       ENDIF
       IF !oComp:lPathHrbLib .AND. !Empty( oComp:cPathHrbLib )
          RETURN ( oComp:lPathHrbLib := .T. )
+      ENDIF
+      IF !oComp:lFlags .AND. !Empty( oComp:cFlags )
+         RETURN ( oComp:lFlags := .T. )
+      ENDIF
+      IF !oComp:lLinkFlagsGui .AND. !Empty( oComp:cLinkFlagsGui )
+         RETURN ( oComp:lLinkFlagsGui := .T. )
       ENDIF
    NEXT
 
@@ -915,6 +917,11 @@ STATIC FUNCTION _MsgInfo( cText, cTitle )
 #endif
    RETURN Nil
 
+STATIC FUNCTION _PS( cPath )
+
+   RETURN Iif( !Empty( cPath ), Iif( lUnix .AND. '\' $ cPath, StrTran( cPath, '\', '/' ), ;
+      Iif( !lUnix .AND. '/' $ cPath, StrTran( cPath, '/', '\' ), cPath ) ), cPath )
+
 STATIC FUNCTION _CurrPath()
 
    LOCAL cPrefix
@@ -979,9 +986,9 @@ CLASS HCompiler
          "{path}\cl.exe {f} /I{hi} /I{gi} /Fo{obj} {src}", "", "{path}\lib /out:{out} {objs}", ;
          "{path}\link {f} /LIBPATH:{hL} /LIBPATH:{gL} {dL} {objs} {libs}", "", "", "", "", ;
          "user32.lib gdi32.lib comdlg32.lib shell32.lib comctl32.lib winspool.lib advapi32.lib winmm.lib ws2_32.lib iphlpapi.lib OleAut32.Lib Ole32.Lib" }, ;
-      {"gcc", "gcc", "/lib/linux/gcc", "-c", "", "", "libhbvm.a", "libhwgui.a", ;
+      {"gcc", "gcc", "/lib/linux/gcc", "-c -Wall -Wunused `pkg-config --cflags gtk+-2.0`", "`pkg-config --libs gtk+-2.0`", "", "libhbvm.a", "libhwgui.a", ;
          "gcc {f} -I{hi} -I{gi} -o{obj} {src}", "", "ar rc {out} {objs}", ;
-         "gcc {objs} -o{out} -L{hL} -L{gL} {dL} -Wl,--start-group {libs} -Wl,--end-group `pkg-config --libs gtk+-2.0`", ;
+         "gcc {objs} -o{out} -L{hL} -L{gL} {dL} -Wl,--start-group {libs} -Wl,--end-group {f}", ;
          ".o", ".a", "-l{l}", "lib{l}.a", "-lm -lz -lpcre -ldl" } }
    //,, hwgui_xp.res
    CLASS VAR aList       SHARED INIT {}
@@ -1010,6 +1017,8 @@ CLASS HCompiler
 
    DATA lPath            INIT .F.
    DATA lPathHrbLib      INIT .F.
+   DATA lFlags           INIT .F.
+   DATA lLinkFlagsGui    INIT .F.
 
    METHOD New( id, cFam )
 
@@ -1066,6 +1075,9 @@ CLASS HwProject
    DATA lLib       INIT .F.
    DATA lMake      INIT .F.
 
+   DATA cDefFlagsC INIT Nil
+   DATA cDefFlagsL INIT Nil
+
    DATA aProjects  INIT {}
 
    METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
@@ -1100,7 +1112,7 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
 METHOD Open( xSource, oComp ) CLASS HwProject
 
    LOCAL arr, i, j, nPos, af, ap, o
-   LOCAL cLine, cTmp, cSrcPath
+   LOCAL cLine, cTmp, cTmp2, cSrcPath
 
    IF Empty( oComp )
       oComp := HCompiler():aList[1]
@@ -1132,6 +1144,12 @@ METHOD Open( xSource, oComp ) CLASS HwProject
          IF ( nPos := At( "=", cLine ) ) > 0
             IF ( cTmp := Left( cLine, nPos-1 ) ) == "srcpath"
                cSrcPath := Substr( cLine, nPos + 1 )
+
+            ELSEIF cTmp == "def_cflags"
+               ::cDefFlagsC := Substr( cLine, nPos + 1 )
+
+            ELSEIF cTmp == "def_lflags"
+               ::cDefFlagsL := Substr( cLine, nPos + 1 )
 
             ELSEIF cTmp == "prgflags"
                ::cFlagsPrg := Substr( cLine, nPos + 1 )
@@ -1193,25 +1211,50 @@ METHOD Open( xSource, oComp ) CLASS HwProject
                IF Empty( o:lMake ) .AND. !Empty( ::lMake )
                   o:lMake := ::lMake
                ENDIF
+               IF Empty( o:cFlagsC ) .AND. !Empty( ::cFlagsC )
+                  o:cFlagsC := ::cFlagsC
+               ENDIF
+               IF Empty( o:cDefFlagsC ) .AND. !Empty( ::cDefFlagsC )
+                  o:cDefFlagsC := ::cDefFlagsC
+               ENDIF
+               IF Empty( o:cDefFlagsL ) .AND. !Empty( ::cDefFlagsL )
+                  o:cDefFlagsL := ::cDefFlagsL
+               ENDIF
             ELSE
                _MsgStop( cLine, "Wrong option" )
                RETURN Nil
             ENDIF
 
-         ELSEIF ( cTmp := Lower(hb_fnameExt( cLine )) ) == ".prg" .OR. cTmp == ".c"
-            IF '*' $ cLine
-               af := hb_Directory( cSrcPath + hb_ps() + cLine )
+         ELSE
+            IF ( nPos := At( " ", cLine ) ) > 0
+               cTmp := Left( cLine, nPos - 1 )
+               cTmp2 := AllTrim( Substr( cLine, nPos + 1 ) )
+            ELSE
+               cTmp := cLine
+               cTmp2 := Nil
+            ENDIF
+            IF '*' $ cTmp
+               ap := Nil
+               IF !Empty( cTmp2 ) .AND. ( nPos := At( "-(", cTmp2 ) ) > 0 .AND. ;
+                  ( j := hb_At( ")", cTmp2, nPos ) ) > 0
+                  ap := hb_aTokens( Substr( cTmp2, nPos+2, j-nPos-2 ), ' ' )
+                  cTmp2 := AllTrim( Left( cTmp2, nPos-1 ) + Substr( cTmp2, j+1 ) )
+               ENDIF
+               af := hb_Directory( cSrcPath + hb_ps() + cTmp )
                FOR j := 1 TO Len( af )
-                  AAdd( ::aFiles, Iif( Empty( cSrcPath ), af[j,1], cSrcPath+hb_ps()+af[j,1] ) )
+                  IF Empty( ap ) .OR. hb_AScan( ap, af[j,1],,, .T. ) == 0
+                     AAdd( ::aFiles, { Iif( Empty( cSrcPath ), af[j,1], ;
+                        cSrcPath+hb_ps()+af[j,1] ), cTmp2 } )
+                  ENDIF
                NEXT
             ELSE
-               AAdd( ::aFiles, Iif( Empty( cSrcPath ) .AND. Empty( hb_fnameDir(cLine) ), ;
-                  cLine, cSrcPath+hb_ps()+cLine ) )
+               AAdd( ::aFiles, { Iif( Empty( cSrcPath ) .AND. Empty( hb_fnameDir(cTmp) ), ;
+                  cTmp, cSrcPath+hb_ps()+cTmp ), cTmp2 } )
             ENDIF
 
-         ELSE
-            _MsgStop( cLine, "Wrong option" )
-            RETURN Nil
+         //ELSE
+         //   _MsgStop( cLine, "Wrong option" )
+         //   RETURN Nil
          ENDIF
       ENDIF
    NEXT
@@ -1232,9 +1275,15 @@ METHOD Open( xSource, oComp ) CLASS HwProject
 METHOD Build( lClean, lSub ) CLASS HwProject
 
    LOCAL i, cCmd, cComp, cLine, cOut, cFullOut := "", lErr := .F., to, tc
-   LOCAL cObjs := "", cBinary, cObjFile, cObjPath, lGuiApp := .T.
+   LOCAL cObjs := "", cFile, cBinary, cObjFile, cObjPath, lGuiApp := .T.
    LOCAL aLibs, cLibs := "", a4Delete := {}, tStart := hb_DtoT( Date(), Seconds()-1 )
    LOCAL aEnv
+
+   IF Empty( lClean ) .AND. !Empty( cLine := CheckOptions( Self ) )
+      _MsgStop( cLine + hb_eol() + "Check your hwbuild.ini", "Wrong options" )
+      FPaths()
+      RETURN Nil
+   ENDIF
 
    FOR i := 1 TO Len( ::aProjects )
       cFullOut += ::aProjects[i]:Build( lClean, .T. )
@@ -1251,19 +1300,19 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       IF !hb_DirExists( cObjPath )
          hb_DirBuild( cObjPath )
       ENDIF
-      cObjPath := cObjPath + hb_ps()
+      cObjPath := _PS( cObjPath ) + hb_ps()
    ELSE
       cObjPath := ""
    ENDIF
 
    IF !Empty( lClean )
       FOR i := 1 TO Len( ::aFiles )
-         IF Lower( hb_fnameExt( ::aFiles[i] )) == ".prg"
-            FErase( cObjPath + hb_fnameName( ::aFiles[i] ) + ".c" )
+         IF Lower( hb_fnameExt( ::aFiles[i,1] )) == ".prg"
+            FErase( cObjPath + hb_fnameName( ::aFiles[i,1] ) + ".c" )
          ENDIF
-         FErase( cObjPath + hb_fnameName( ::aFiles[i] ) + ::oComp:cObjExt )
+         FErase( cObjPath + hb_fnameName( ::aFiles[i,1] ) + ::oComp:cObjExt )
       NEXT
-      cBinary := Iif( Empty( ::cOutName ), hb_fnameNameExt( ::aFiles[1] ), ::cOutName )
+      cBinary := Iif( Empty( ::cOutName ), hb_fnameNameExt( ::aFiles[1,1] ), ::cOutName )
       IF ::lLib
          cBinary := Iif( Empty(::cOutPath), "", ::cOutPath+hb_ps() ) + StrTran( ::oComp:cBinLib, "{l}", cBinary )
       ELSE
@@ -1272,6 +1321,10 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       FErase( cBinary )
       _MsgInfo( "Cleaned" )
       RETURN Nil
+   ENDIF
+
+   IF !Empty( ::cOutPath := _PS(::cOutPath) ) .AND. !hb_DirExists( ::cOutPath )
+      hb_DirBuild( ::cOutPath )
    ENDIF
 
    IF !Empty( ::cGtLib )
@@ -1291,18 +1344,21 @@ METHOD Build( lClean, lSub ) CLASS HwProject
          hb_setenv( ::oComp:aEnv[i,1], ::oComp:aEnv[i,2] )
       NEXT
    ENDIF
-   cCmd := cPathHrbBin + hb_ps() + "harbour " + cHrbDefFlags + " -i" + cPathHrbInc + " -i" + cPathHwguiInc + ;
-      Iif( Empty( ::cFlagsPrg ), "", " " + ::cFlagsPrg ) + Iif( Empty( cObjPath ), "", " -o" + cObjPath )
+   cCmd := cPathHrbBin + hb_ps() + "harbour " + cHrbDefFlags + ;
+      Iif( Empty( ::aFiles[i,2] ), "", " " + ::aFiles[i,2] ) + " -i" + cPathHrbInc + ;
+      " -i" + cPathHwguiInc + Iif( Empty( ::cFlagsPrg ), "", " " + ::cFlagsPrg ) + ;
+      Iif( Empty( cObjPath ), "", " -o" + cObjPath )
    FOR i := 1 TO Len( ::aFiles )
-      IF Lower( hb_fnameExt( ::aFiles[i] )) == ".prg"
-         cObjFile := cObjPath + hb_fnameName( ::aFiles[i] ) + ".c"
+      cFile := _PS( ::aFiles[i,1] )
+      IF Lower( hb_fnameExt( cFile )) == ".prg"
+         cObjFile := cObjPath + hb_fnameName( cFile ) + ".c"
          IF ::lMake .AND. File( cObjFile ) .AND. hb_vfTimeGet( cObjFile, @to ) .AND. ;
-            hb_vfTimeGet( ::aFiles[i], @tc ) .AND. to >= tc
+            hb_vfTimeGet( cFile, @tc ) .AND. to >= tc
          ELSE
-            cLine := cCmd + " " + ::aFiles[i]
+            cLine := cCmd + " " + cFile
 
             cFullOut += "> " + cLine + hb_eol()
-            _ShowProgress( "> " + cLine, 1, hb_fnameNameExt(::aFiles[i]) )
+            _ShowProgress( "> " + cLine, 1, hb_fnameNameExt( cFile ) )
             _RunApp( cLine, @cOut )
             IF Valtype( cOut ) != "C"
                EXIT
@@ -1315,9 +1371,10 @@ METHOD Build( lClean, lSub ) CLASS HwProject
             ENDIF
 
          ENDIF
-         ::aFiles[i] := cObjFile
+         ::aFiles[i,1] := cObjFile
+         ::aFiles[i,2] := Nil
          IF !::lMake
-            AAdd( a4Delete, ::aFiles[i] )
+            AAdd( a4Delete, ::aFiles[i,1] )
          ENDIF
       ENDIF
    NEXT
@@ -1325,19 +1382,23 @@ METHOD Build( lClean, lSub ) CLASS HwProject
    IF !lErr
       // Compile C sources with C compiler
       cOut := Nil
-      cCmd := StrTran( StrTran( StrTran( StrTran( ::oComp:cCmdComp, "{f}", ::oComp:cFlags + ;
-         Iif( Empty( ::cFlagsC ), "", " " + ::cFlagsC ) ), "{hi}", cPathHrbInc ), ;
+      cCmd := StrTran( StrTran( StrTran( ::oComp:cCmdComp, "{hi}", cPathHrbInc ), ;
          "{gi}", cPathHwguiInc ), "{path}", ::oComp:cPath )
 
       FOR i := 1 TO Len( ::aFiles )
-         IF Lower( hb_fnameExt( ::aFiles[i] )) == ".c"
-            cObjFile := cObjPath + hb_fnameName( ::aFiles[i] ) + ::oComp:cObjExt
+         cFile := _PS( ::aFiles[i,1] )
+         IF Lower( hb_fnameExt( cFile )) == ".c"
+            cObjFile := cObjPath + hb_fnameName( cFile ) + ::oComp:cObjExt
             IF ::lMake .AND. File( cObjFile ) .AND. hb_vfTimeGet( cObjFile, @to ) .AND. ;
-               hb_vfTimeGet( ::aFiles[i], @tc ) .AND. to >= tc
+               hb_vfTimeGet( cFile, @tc ) .AND. to >= tc
             ELSE
-               cLine := StrTran( StrTran( cCmd, "{obj}", cObjFile ), "{src}", ::aFiles[i] )
+               cLine := StrTran( StrTran( StrTran( cCmd, "{obj}", cObjFile ), ;
+                  "{src}", cFile ), ;
+                  "{f}", Iif( ::cDefFlagsC==Nil, ::oComp:cFlags, ::cDefFlagsC ) + ;
+                  Iif( Empty( ::cFlagsC ), "", " " + ::cFlagsC ) + ;
+                  Iif( Empty( ::aFiles[i,2] ), "", " " + ::aFiles[i,2] ) )
 
-               _ShowProgress( "> " + cLine, 1, hb_fnameNameExt(::aFiles[i]) )
+               _ShowProgress( "> " + cLine, 1, hb_fnameNameExt(cFile) )
                cFullOut += "> " + cLine + hb_eol()
                _RunApp( cLine, @cOut )
                IF Valtype( cOut ) != "C"
@@ -1361,7 +1422,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
 
    IF !lErr
       // Link the app
-      cBinary := Iif( Empty( ::cOutName ), hb_fnameNameExt( ::aFiles[1] ), ::cOutName )
+      cBinary := Iif( Empty( ::cOutName ), hb_fnameNameExt( ::aFiles[1,1] ), ::cOutName )
       cOut := Nil
       aLibs := hb_ATokens( cLibsHwGUI, " " )
       FOR i := 1 TO Len( aLibs )
@@ -1401,7 +1462,8 @@ METHOD Build( lClean, lSub ) CLASS HwProject
          ENDIF
          cLine := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( ;
              ::oComp:cCmdLinkExe, "{out}", cBinary ), "{objs}", cObjs ), "{path}", ::oComp:cPath ), ;
-             "{f}", Iif( lGuiApp, ::oComp:cLinkFlagsGui, ::oComp:cLinkFlagsCons ) ), ;
+             "{f}", Iif( ::cDefFlagsL == Nil, Iif( lGuiApp, ::oComp:cLinkFlagsGui, ;
+             ::oComp:cLinkFlagsCons ), ::cDefFlagsL ) ), ;
              "{hL}", ::oComp:cPathHrbLib ), "{gL}", cPathHwguiLib ), ;
              "{dL}", Iif( Empty(::cLibsPath), "", Iif(::oComp:family=="msvc","/LIBPATH:","-L") + ::cLibsPath ) ), ;
              "{libs}", cLibs + " " + ::oComp:cSysLibs )

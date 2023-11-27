@@ -23,7 +23,7 @@ EDITOR_DIR=../common/editor
 CROSS_DIR=../cross
 SRC_DIR=./
 
-CFLAGS = -Wall -Wunused -Wno-deprecated-declarations -O3 -DHWG_USE_POINTER_ITEM 
+CFLAGS = -Wall -Wunused -Wno-deprecated-declarations -O3
 HB_FLAGS = -d__LINUX__ -w3 -es2
 
 vpath %.a $(LIB_DIR)

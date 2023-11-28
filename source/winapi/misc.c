@@ -362,27 +362,45 @@ HB_FUNC( HWG_GETKEYNAMETEXT )
 
 HB_FUNC( HWG_ACTIVATEKEYBOARDLAYOUT )
 {
-   void *hLayout;
-   LPCTSTR lpLayout = HB_PARSTR( 1, &hLayout, NULL );
-   HKL curr = GetKeyboardLayout( 0 );
-   TCHAR sBuff[KL_NAMELENGTH];
-   UINT num = GetKeyboardLayoutList( 0, NULL ), i = 0;
+   TCHAR m_PreviousLayout[KL_NAMELENGTH];
 
-   do
+   GetKeyboardLayoutName( m_PreviousLayout ); 
+
+   if( HB_ISCHAR( 1 ) )
    {
-      GetKeyboardLayoutName( sBuff );
-      if( !lstrcmp( sBuff, lpLayout ) )
-         break;
-      ActivateKeyboardLayout( 0, 0 );
-      i++;
+      void *hLayout;
+      LPCTSTR lpLayout = HB_PARSTR( 1, &hLayout, NULL );
+      HKL curr = GetKeyboardLayout( 0 );
+      TCHAR sBuff[KL_NAMELENGTH];
+      UINT num = GetKeyboardLayoutList( 0, NULL ), i = 0;
+
+      do
+      {
+         GetKeyboardLayoutName( sBuff );
+         if( !lstrcmp( sBuff, lpLayout ) )
+            break;
+         ActivateKeyboardLayout( 0, 0 );
+         i++;
+      }
+
+      while( i < num );
+      if( i >= num )
+         ActivateKeyboardLayout( curr, 0 );
+
+      hb_strfree( hLayout );
    }
 
-   while( i < num );
-   if( i >= num )
-      ActivateKeyboardLayout( curr, 0 );
-
-   hb_strfree( hLayout );
+   hb_retc( m_PreviousLayout );
 }
+/*
+HB_FUNC( HWG_GETKEYBOARDLAYOUT ) 
+{ 
+   TCHAR m_PreviousLayout[KL_NAMELENGTH];
+
+   GetKeyboardLayoutName( m_PreviousLayout ); 
+   hb_retc( m_PreviousLayout );
+} 
+*/
 
 /*
  * Pts2Pix( nPoints [,hDC] ) --> nPixels

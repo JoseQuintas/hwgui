@@ -8,6 +8,6 @@
 -n
 -w
 -D__CONSOLE
--ohwbuildc
+-ohwbc
 
-hwbuild.prg
+hwb.prg

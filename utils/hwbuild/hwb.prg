@@ -11,7 +11,7 @@
 #endif
 #include "hbclass.ch"
 
-#define HWB_VERSION  "1.0"
+#define HWB_VERSION  "1.1"
 
 #define COMP_ID      1
 #define COMP_EXE     2
@@ -42,6 +42,8 @@
 
 STATIC cIniPath
 STATIC oPrg
+STATIC lQ := .F.
+
 STATIC cPathHrb := "", cPathHrbBin := "", cPathHrbInc := ""
 STATIC cHrbDefFlags := "-n -q"
 STATIC cGuiId := "hwgui", cPathHwgui := "", cPathHwguiInc := "", cPathHwguiLib := ""
@@ -67,8 +69,8 @@ STATIC cFontMain := ""
 FUNCTION Main( ... )
 
    LOCAL aParams := hb_aParams(), i, j, c, aFiles := {}, af
-   LOCAL lGUI := .F., lLib := .F., lClean := .F., oComp, cLibsDop, cLibsPath, cGtLib
-   LOCAL cSrcPath, cObjPath, cOutPath, cOutName, cFlagsPrg, cFlagsC, aUserPar := {}
+   LOCAL lPrj, lGUI := .F., lLib := .F., lClean := .F., oComp, cLibsDop, cLibsPath, cGtLib
+   LOCAL cSrcPath, cObjPath, cOutName, cFlagsPrg, cFlagsC, aUserPar := {}
 
    ReadIni( "hwbuild.ini" )
 
@@ -82,11 +84,14 @@ FUNCTION Main( ... )
                RETURN Nil
             ENDIF
 
-         ELSEIF c == "gui"
+         ELSEIF c == "Open"
             lGUI := .T.
 
          ELSEIF c == "lib"
             lLib := .T.
+
+         ELSEIF c == "q"
+            lQ := .T.
 
          ELSEIF c == "clean"
             lClean := .T.
@@ -112,11 +117,8 @@ FUNCTION Main( ... )
          ELSEIF ( Left( c,2 ) == "ob" .AND. !('=' $ c) ) .OR. Left( c,8 ) == "objpath="
             cObjPath := _DropQuotes( Substr( c, Iif( '=' $ c, 9, 3 ) ) )
 
-         ELSEIF ( Left( c,2 ) == "op" .AND. !('=' $ c) ) .OR. Left( c,8 ) == "outpath="
-            cOutPath := _DropQuotes( Substr( c, Iif( '=' $ c, 9, 3 ) ) )
-
-         ELSEIF ( Left( c,2 ) == "on" .AND. !('=' $ c) ) .OR. Left( c,8 ) == "outname="
-            cOutName := _DropQuotes( Substr( c, Iif( '=' $ c, 9, 3 ) ) )
+         ELSEIF ( Left( c,1 ) == "o" .AND. !('=' $ c) ) .OR. Left( c,4 ) == "out="
+            cOutName := _DropQuotes( Substr( c, Iif( '=' $ c, 5, 2 ) ) )
 
          ELSEIF Left( c,5 ) == "comp="
             c := Substr( c, 6 )
@@ -155,12 +157,12 @@ FUNCTION Main( ... )
 
 #ifdef __CONSOLE
    IF Empty( aFiles )
-      OutStd( "HwBuild - HwGUI Builder" )
+      OutStd( "HwBuild - HwGUI Builder " + HWB_VERSION )
       OutStd( hb_eol() + "Usage:" )
-      OutStd( hb_eol() + "hwbuildc <files> [-bcc|-mingw|-comp=<compiler>] [-lib] [-clean]" )
-      OutStd( hb_eol() + "  [-pf<options>]|-prgflags=<options][-cf<options>|-cflags=<options>]" )
+      OutStd( hb_eol() + "hwbc <files> [-bcc|-mingw|-comp=<compiler>] [-lib] [-clean] [-q]" )
+      OutStd( hb_eol() + "  [-pf<options>]|-prgflags=<options] [-cf<options>|-cflags=<options>]" )
       OutStd( hb_eol() + "  [-gt<lib>] [-l<libraries>|-libs=<libraries>] [-sp<path>|-srcpath=<path>]" )
-      OutStd( hb_eol() + "  [-op<path>|-outpath=<path>] [-on<name>|-outname=<name>]" )
+      OutStd( hb_eol() + "  [-o<name>|-out=<name>]" )
       RETURN Nil
    ENDIF
 #endif
@@ -169,17 +171,18 @@ FUNCTION Main( ... )
       oComp := HCompiler():aList[1]
    ENDIF
 
-   IF Empty( aParams )
+   lPrj := ( Len( aFiles ) == 1 .AND. Lower( hb_fnameExt( aFiles[1,1] ) ) == ".hwprj" )
+   IF Empty( aParams ) .OR. ( lGui .AND. lPrj )
 #ifndef __CONSOLE
       StartGUI( Iif( Empty( aFiles ), Nil, aFiles[1,1] ) )
 #endif
    ELSEIF !Empty( aFiles )
-      IF Len( aFiles ) == 1 .AND. Lower( hb_fnameExt( aFiles[1,1] ) ) == ".hwprj"
+      IF lPrj
          IF !Empty( oPrg := HwProject():Open( aFiles[1,1], oComp, aUserPar ) )
             oPrg:Build( lClean )
          ENDIF
       ELSE
-         oPrg := HwProject():New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, cOutPath, cOutName, cObjPath, lLib, .F. )
+         oPrg := HwProject():New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, cOutName, cObjPath, lLib, .F. )
          oPrg:Build( lClean )
       ENDIF
    ELSE
@@ -480,7 +483,7 @@ STATIC FUNCTION FPaths()
 
 STATIC FUNCTION NewProject()
 
-   LOCAL oMain := HWindow():GetMain(), cFullPath, cFile := "template.hwg"
+   LOCAL oMain := HWindow():GetMain(), cFullPath, cFile := "template.hwprj"
 
    IF oMain:oEdit:lUpdated .AND. hwg_MsgYesNo( "Project was changed. Save it?", "HwBuild" )
       SaveProject()
@@ -910,13 +913,15 @@ STATIC FUNCTION _ShowProgress( cText, nAct, cTitle, cFull )
 
 #ifdef __CONSOLE
    HB_SYMBOL_UNUSED( cFull )
-   IF !Empty( cTitle )
-      OutStd( "*** " + cTitle + " *** " + hb_eol() )
-   ENDIF
-   IF nAct == 2
-      OutStd( "*** " + cText + " *** " + hb_eol() )
-   ELSE
-      OutStd( cText + hb_eol() )
+   IF !lQ .OR. nAct == 2 .OR. "warning" $ Lower(cText) .OR. "error" $ Lower(cText)
+      IF !Empty( cTitle )
+         OutStd( "*** " + cTitle + " *** " + hb_eol() )
+      ENDIF
+      IF nAct == 2
+         OutStd( "=== " + cText + " ===" + hb_eol() )
+      ELSE
+         OutStd( cText + hb_eol() )
+      ENDIF
    ENDIF
 #else
    STATIC oBar
@@ -925,7 +930,11 @@ STATIC FUNCTION _ShowProgress( cText, nAct, cTitle, cFull )
       IF !Empty( cTitle )
          cFull += "*** " + cTitle + " *** " + hb_eol()
       ENDIF
-      cFull += cText + hb_eol()
+      IF nAct == 2
+         cFull += "=== " + cText + " ===" + hb_eol()
+      ELSE
+         cFull += cText + hb_eol()
+      ENDIF
    ENDIF
 
    IF nAct == 0
@@ -1143,13 +1152,13 @@ CLASS HwProject
    DATA aProjects  INIT {}
 
    METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
-      cOutPath, cOutName, cObjPath, lLib, lMake )
+      cOutName, cObjPath, lLib, lMake )
    METHOD Open( xSource, oComp, aUserPar )
    METHOD Build( lClean )
 ENDCLASS
 
 METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
-      cOutPath, cOutName, cObjPath, lLib, lMake ) CLASS HwProject
+      cOutName, cObjPath, lLib, lMake ) CLASS HwProject
 
    IF PCount() > 1
       ::aFiles := aFiles
@@ -1158,12 +1167,17 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
       ::cLibsDop  := cLibsDop
       IF !Empty( cGtLib )
          ::cLibsDop := Iif( Empty( cLibsDop ), cGtLib, cLibsDop + " " + cGtLib )
+         ::cFlagsPrg += " -d__" + Upper( cGtLib ) + "__"
       ENDIF
       ::cLibsPath := Iif( Empty(cLibsPath), "", cLibsPath )
       ::cFlagsPrg := cFlagsPrg
       ::cFlagsC   := cFlagsC
-      ::cOutPath  := cOutPath
-      ::cOutName  := cOutName
+      IF !Empty( cOutName )
+         ::cOutName := hb_fnameNameExt( cOutName )
+         IF Len( ::cOutName ) < Len( cOutName )
+            ::cOutPath := Left( cOutName, Len( cOutName ) - Len( ::cOutName ) - 1 )
+         ENDIF
+      ENDIF
       ::cObjPath  := cObjPath
       ::lLib  := lLib
       ::lMake := lMake
@@ -1330,6 +1344,7 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
 
    IF !Empty( ::cGtLib )
       ::cLibsDop := Iif( Empty( ::cLibsDop ), ::cGtLib, ::cLibsDop + " " + ::cGtLib )
+      ::cFlagsPrg += " -d__" + Upper( ::cGtLib ) + "__"
    ENDIF
 
    IF Empty( ::aFiles ) .AND. Empty( ::aProjects )

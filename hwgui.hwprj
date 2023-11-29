@@ -1,0 +1,54 @@
+#
+# $Id$
+# HwBuilder project file to build HwGUI libraries
+# Launch it with:
+#      hwb hwgui.hwprj   ( gui version )
+#   or hwbc hwgui.hwprj  ( console version )
+
+makemode=on
+objpath=obj
+outpath=lib
+{unix}cflags=-O3
+target=lib
+
+:project hbxml
+target=lib
+outname=hbxml
+
+srcpath=source/common/xml
+*.prg
+*.c
+
+:project procmisc
+target=lib
+outname=procmisc
+
+srcpath=source/common/procmisc
+*.prg
+*.c
+
+srcpath=source/common/editor
+*.prg
+{win}hcedit_w.c
+{unix}hcedit_l.c
+
+:project hwgdebug
+target=lib
+outname=hwgdebug
+
+srcpath=source/common/debug
+*.prg
+*.c
+
+:project hwgui
+target=lib
+outname=hwgui
+
+{unix}srcpath=source/gtk
+{win}srcpath=source\winapi
+*.prg
+*.c -(window3.c)
+
+srcpath=source/cross
+*.prg
+*.c

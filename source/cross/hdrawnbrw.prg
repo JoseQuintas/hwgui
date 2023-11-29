@@ -354,7 +354,7 @@ METHOD Paint( hDC ) CLASS HDrawnBrw
 METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
 
    LOCAL y2 := y1 + ::nHeightRow, x := x1, iCol := ::nColFirst - 1, i := 0, nw
-   LOCAL oCB, oCol, block, aClr, bColor, hBrush
+   LOCAL oCB, oCol, block, aClr, bColor
 
    IF Len( ::aRows ) < nRow
       AAdd( ::aRows, { y1, Nil, Nil } )
@@ -377,24 +377,23 @@ METHOD RowOut( hDC, nRow, x1, y1, x2 ) CLASS HDrawnBrw
    DO WHILE ++iCol <= Len( ::aColumns ) .AND. x < x2
       oCol := ::aColumns[iCol]
       nw := Iif( iCol < Len( ::aColumns ), Min( oCol:nWidth,x2-x ), x2 - x )
+      IF !Empty( ::bCellBlock )
+         aClr := Eval( ::bCellBlock, Self, nRow, iCol )
+      ENDIF
+      bColor := Iif( aClr == Nil .OR. Len(aClr)<2 .OR. aClr[2] == Nil, ;
+         IIf( nRow == ::nRowCurr, ;
+         Iif( iCol == :: nColCurr .AND. ::lSeleCell, ::htbColor, ::bColorSel ), ;
+         Iif( oCol:bColor == Nil, ::bColor, oCol:bColor ) ), aClr[2] )
+      IF !hb_hHaskey( ::pBrushes, bColor )
+         ::pBrushes[bColor] := HBrush():Add( bColor )
+      ENDIF
       IF !Empty( oCB := oCol:oPaintCB ) .AND. !Empty( block := oCB:Get( PAINT_LINE_ALL ) )
-         Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol, nRow )
+         Eval( block, oCol, hDC, x, y1, x + nw, y2, iCol, nRow, ::pBrushes[bColor], aClr )
       ELSE
-         IF !Empty( ::bCellBlock )
-            aClr := Eval( ::bCellBlock, Self, nRow, iCol )
-         ENDIF
          IF !Empty( oCB ) .AND. !Empty( block := oCB:Get( PAINT_LINE_BACK ) )
-            Eval( block, oCol, hDC, x, y1, x + oCol:nWidth, y2, iCol, nRow )
+            Eval( block, oCol, hDC, x, y1, x + oCol:nWidth, y2, iCol, nRow, ::pBrushes[bColor] )
          ELSE
-            bColor := Iif( aClr == Nil .OR. Len(aClr)<2 .OR. aClr[2] == Nil, ;
-               IIf( nRow == ::nRowCurr, ;
-               Iif( iCol == :: nColCurr .AND. ::lSeleCell, ::htbColor, ::bColorSel ), ;
-               Iif( oCol:bColor == Nil, ::bColor, oCol:bColor ) ), aClr[2] )
-            IF !hb_hHaskey( ::pBrushes, bColor )
-               ::pBrushes[bColor] := HBrush():Add( bColor )
-            ENDIF
-            hBrush := ::pBrushes[bColor]:handle
-            hwg_FillRect( hDC, x, y1, x + nw, y2, hBrush )
+            hwg_FillRect( hDC, x, y1, x + nw, y2, ::pBrushes[bColor]:handle )
          ENDIF
          hwg_Settextcolor( hDC, ;
             Iif( aClr == Nil .OR. aClr[1] == Nil, IIf( nRow == ::nRowCurr, ;

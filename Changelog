@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-29 14:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + hwgui.hwprj
+    + Project file to build hwgui libraries, using HwBuilder
+  * source/cross/hdrawnbrw.prg  
+  * utils/hwbuild/hwb.prg
+  * utils/tutorial/tutor.prg
+    * Further enhancements
+  * utils/tutorial/tutor_eng.xml
+
 2023-11-28 11:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/misc.c
     * hwg_activatekeyboardlayout() returns now a current keyboard layout

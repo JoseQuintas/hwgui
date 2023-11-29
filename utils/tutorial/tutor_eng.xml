@@ -2130,6 +2130,7 @@ FUNCTION Test
 #define CLR_BLUE     0xff0000
 #define CLR_GREEN1   0xcaebba
 
+STATIC oBmpCheck
 MEMVAR oBrw, oBrw1, oBrw2, oBrw3, arrBrw1
 FUNCTION Test
    LOCAL oDlg, oBoard, oLenta, oFont := HFont():Add( "MS Sans Serif", 0, - 13 )
@@ -2172,6 +2173,21 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
      endif
      return Nil
    }
+   LOCAL bCol4 := {|o,h,x1,y1,x2,y2,nc,nr,ob|
+      hwg_Fillrect( h, x1, y1, x2, y2, ob:handle )
+      IF oBrw2:Cell( nc,nr ) == "T"
+         hwg_DrawTransparentBitmap( h, oBmpCheck:handle, x1+2, y1+4 )
+      ENDIF
+      RETURN Nil
+   }
+   LOCAL bEnter := {|o,nc|
+      IF nc == 4
+         Eval( o:aColumns[nc]:block, !Eval( o:aColumns[nc]:block ), o:oData )
+         o:Refresh()
+         RETURN .T.
+      ENDIF
+      RETURN .F.
+   }
 
    IF nBrw == 1
       // Browse an array
@@ -2206,6 +2222,13 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
       ENDIF
       oBrw := oBrw1
    ELSEIF nBrw == 2
+      IF Empty( oBmpCheck )
+#ifdef __PLATFORM__WINDOWS
+         oBmpCheck := HBitmap():AddStandard( OBM_CHECK )
+#else
+         oBmpCheck := HBitmap():AddStandard( "gtk-apply" )
+#endif
+      ENDIF
       // Browse a database
       oBrw1:lDisable := .T.
       IF !Empty( oBrw3 )
@@ -2228,11 +2251,15 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw2:AddColumn( "Name", 1, 180,, DT_CENTER, .T. )
          oBrw2:AddColumn( "Num", "NUM", 50, DT_RIGHT, DT_CENTER, .T. )
          oBrw2:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
-         oBrw2:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
+         oBrw2:AddColumn( "Logic", 4, 20,, DT_CENTER, .T. )
+         oBrw2:AddColumn( "dayw", 5, 90,, DT_CENTER, .T. )
          // Set an array for a column values to be used while cell editing
-         oBrw2:aColumns[4]:aList := { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" }
+         oBrw2:aColumns[5]:aList := { "Monday", "Tuesday", "Wednesday", "Thursday", "Friday" }
          // Set a codeblock for cell colors
          oBrw2:bCellBlock := bCell2
+         oBrw2:aColumns[4]:oPaintCB := HPaintCB():New()
+         oBrw2:aColumns[4]:oPaintCB:Set( PAINT_LINE_ALL, bCol4 )
+         oBrw2:bEnter := bEnter
       ENDIF
       oBrw := oBrw2
       base1->( ordSetFocus( 0 ) )
@@ -2258,7 +2285,7 @@ STATIC FUNCTION FBrw( oBoa, nBrw )
          oBrw3:AddColumn( "Dat", 3, 60,, DT_CENTER, .T. )
          // You may pass a text expression instead of a codeblock
          oBrw3:AddColumn( "Name", "base1->(Str(NUM,3)+' '+NAME)", 180,, DT_CENTER )
-         oBrw3:AddColumn( "dayw", 4, 90,, DT_CENTER, .T. )
+         oBrw3:AddColumn( "dayw", 5, 90,, DT_CENTER, .T. )
       ENDIF
       oBrw := oBrw3
       base1->( ordSetFocus( "DAT" ) )
@@ -2276,7 +2303,8 @@ STATIC FUNCTION FCreateDB()
    LOCAL i, j, d, oTree
    FIELD DAT
 
-   DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, {"DAYW","C",12,0} },"DBFCDX", .F.,"BASE1" )
+   DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, ;
+      { "LOGIC","L",1,0 }, {"DAYW","C",12,0} },"DBFCDX", .F.,"BASE1" )
    set exclusive off
    use base1 via "DBFCDX"
    oTree := HWindow():GetMain():oTree
@@ -2290,6 +2318,7 @@ STATIC FUNCTION FCreateDB()
          base1->num := i * 100 + j
          d := Date() + hb_RandomInt( -100, 100 )
          base1->dat := d
+         base1->logic := ( hb_RandomInt( 0, 100 ) % 3 == 0 )
          base1->dayw := CDoW( d )
       NEXT
    NEXT

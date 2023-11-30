@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-30 16:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/common/editor/hceditb.prg
+    * :Skip() method changed to allow moving betwwen combine drawn controls with edit
+  * utils/hwbuild/hwb.prg
+    * Further enhancements
+  * utils/tutorial/tutor_eng.xml
+    * Module added "Select style"
+
 2023-11-30 11:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor_eng.xml
     * Colors changed in last added module

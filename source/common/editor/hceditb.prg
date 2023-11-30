@@ -568,17 +568,24 @@ METHOD onKillFocus() CLASS HDrawnEdit
 
 METHOD Skip( n ) CLASS HDrawnEdit
 
-   LOCAL oBoard := ::GetParentBoard(), i, l
+   LOCAL oBoard := ::GetParentBoard(), i, l, l1
 
    n := Iif( n == Nil, 1, n )
    i := Iif( n > 0, 1, Len( oBoard:aDrawn ) )
    l := .F.
    DO WHILE ( n > 0 .AND. i <= Len( oBoard:aDrawn ) ) .OR. ( n < 0 .AND. i > 0 )
-      IF !l .AND. oBoard:aDrawn[i] == Self
+      l1 := .F.
+      IF !l .AND. ( oBoard:aDrawn[i] == Self .OR. ;
+         ( __objHasMsg( oBoard:aDrawn[i], "OEDIT" ) .AND. oBoard:aDrawn[i]:oEdit == Self ) )
          l := .T.
-      ELSEIF l .AND. __objHasMsg( oBoard:aDrawn[i], "OPICTURE" )
+      ELSEIF l .AND. ( __objHasMsg( oBoard:aDrawn[i], "OPICTURE" ) .OR. ;
+         ( l1 := __objHasMsg( oBoard:aDrawn[i], "OEDIT" ) ) )
          ::onKillFocus()
-         oBoard:aDrawn[i]:SetFocus()
+         IF l1
+            oBoard:aDrawn[i]:oEdit:SetFocus()
+         ELSE
+            oBoard:aDrawn[i]:SetFocus()
+         ENDIF
          EXIT
       ENDIF
       i += n

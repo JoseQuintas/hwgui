@@ -1197,7 +1197,7 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
 METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
 
    LOCAL arr, i, j, nPos, af, ap, o
-   LOCAL cLine, cTmp, cTmp2, cSrcPath := ""
+   LOCAL cLine, cTmp, cTmp2, cSrcPath := "", lLib
 
    IF Empty( oComp )
       oComp := HCompiler():aList[1]
@@ -1215,19 +1215,23 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
    ENDIF
    FOR i := 1 TO Len( arr )
       IF !Empty( cLine := AllTrim( StrTran( arr[i], Chr(13), "" ) ) ) .AND. !( Left( cLine, 1 ) == "#" )
-         IF Left( cLine,1 ) == '{'
+         DO WHILE Left( cLine,1 ) == '{'
             IF ( nPos := At( "}", cLine ) ) > 0
                IF ( ( cTmp := Substr( cLine, 2, nPos-2 ) ) == "unix" .AND. lUnix ) .OR. ;
                   ( cTmp == "win" .AND. !lUnix ) .OR. oComp:family == cTmp .OR. ;
                   ( !Empty( aUserPar ) .AND. hb_Ascan( aUserPar,cTmp,,,.T. ) > 0 )
                   cLine := Substr( cLine, nPos + 1 )
                ELSE
-                  LOOP
+                  cLine := ""
+                  EXIT
                ENDIF
             ELSE
                _MsgStop( cLine, "Wrong option" )
                RETURN Nil
             ENDIF
+         ENDDO
+         IF Empty( cLine )
+            LOOP
          ENDIF
          IF ( nPos := At( "=", cLine ) ) > 0
             IF ( cTmp := Lower( Left( cLine, nPos-1 ) ) ) == "srcpath"
@@ -1356,6 +1360,16 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
       ::cFlagsPrg += " -d__" + Upper( ::cGtLib ) + "__"
    ENDIF
 
+   IF !Empty( ::aProjects ) .AND. Empty( ::aFiles ) .AND. !::lLib
+      lLib := .T.
+      FOR i := 1 TO Len( ::aProjects )
+         IF !::aProjects[i]:lLib
+            lLib := .F.
+            EXIT
+         ENDIF
+      NEXT
+      ::lLib := lLib
+   ENDIF
    IF Empty( ::aFiles ) .AND. Empty( ::aProjects )
       _MsgStop( "Source files missing", "Project error" )
       RETURN Nil
@@ -1385,7 +1399,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       IF !Empty( cFullOut )
          ShowResult( cFullOut )
       ENDIF
-      RETURN Nil
+      RETURN ""
    ENDIF
 
    IF !Empty( ::cObjPath )
@@ -1413,7 +1427,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       ENDIF
       FErase( cBinary )
       _MsgInfo( "Cleaned" )
-      RETURN Nil
+      RETURN ""
    ENDIF
 
    IF !Empty( ::cOutPath := _PS(::cOutPath) ) .AND. !hb_DirExists( ::cOutPath )
@@ -1430,7 +1444,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       IF !( cFile := Lower( hb_fnameExt(::aFiles[i,1]) ) ) == ".prg" .AND. !( cFile == ".c" ) ;
          .AND. !( cFile == ::oComp:cObjExt )
          _MsgStop( "Wrong source file extention", hb_fnameNameExt(::aFiles[i,1]) )
-         RETURN Nil
+         RETURN ""
       ENDIF
    NEXT
 

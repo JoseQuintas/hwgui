@@ -15,6 +15,9 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-30 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * hwgui.hwprj
+
 2023-11-30 16:43 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/editor/hceditb.prg
     * :Skip() method changed to allow moving betwwen combine drawn controls with edit

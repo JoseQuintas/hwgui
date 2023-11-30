@@ -9,7 +9,9 @@ makemode=on
 objpath=obj
 outpath=lib
 {unix}cflags=-O3
-target=lib
+{uni}{unix}cflags=-O3 -DUNICODE
+{uni}{win}cflags=-DUNICODE
+{uni}prgflags=-dUNICODE
 
 :project hbxml
 target=lib

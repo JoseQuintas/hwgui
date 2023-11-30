@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-11-30 11:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/tutorial/tutor_eng.xml
+    * Colors changed in last added module
+
 2023-11-30 10:59 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/misc.c
     ! Small fix for UNICODE mode

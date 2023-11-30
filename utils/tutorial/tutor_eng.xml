@@ -1130,6 +1130,7 @@ Return Nil
       <![CDATA[#include "hwgui.ch"
 #define CLR_WHITE    0xffffff
 #define CLR_BLACK    0x000000
+#define CLR_DGRAY    0x777777
 #define CLR_GRAY1    0xeeeeee
 #define CLR_GRAY2    0xd0d0d0
 #define CLR_BLUE     0xff0000
@@ -1140,7 +1141,7 @@ STATIC oBmpCheck
 FUNCTION Test()
    LOCAL oDlg, oBrw, oBtnOk, oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
    LOCAL bCol4 := {|o,h,x1,y1,x2,y2,nc,nr|
-      hwg_Fillrect( h, x1, y1, x2, y2, oBrw:brush:handle )
+      hwg_Fillrect( h, x1, y1, x2, y2, Iif( !Empty(o:brush), o:brush:handle, oBrw:handle ) )
       IF Eval( o:block )
          hwg_DrawTransparentBitmap( h, oBmpCheck:handle, x1+8, y1+8 )
       ENDIF
@@ -1173,6 +1174,7 @@ FUNCTION Test()
    oBrw:oStyleHead := oStyle
    oBrw:bcolorSel := CLR_GRAY1
    oBrw:tcolorSel := CLR_BLACK
+   oBrw:htbColor  := CLR_DGRAY
 
    // Increase Left, top and bottom padding
    oBrw:aPadding[1] := oBrw:aPadding[2] := oBrw:aPadding[4] := 8
@@ -1183,10 +1185,9 @@ FUNCTION Test()
    oBrw:bEnter := bEnter
 
    // The special codeblock :bColorBlock of a column returns an array of colors for
-   // a currently painted cell: { tColor, bColor, tColorSel, bColorSel }
-   oBrw:aColumns[2]:bColorBlock := oBrw:aColumns[4]:bColorBlock := ;
-      {|o,nRow| Iif(nRow%2==0, {CLR_BLACK,CLR_WHITE,CLR_BLUE,CLR_GRAY2}, {CLR_BLACK,CLR_GRAY1,CLR_BLUE,CLR_GRAY2}) }
-   oBrw:aColumns[3]:bColorBlock := {|o,nRow| {CLR_BLACK,CLR_GREEN1,CLR_BLUE,CLR_GRAY2} }
+   // a currently painted cell: { tColor, bColor, tColorSel, bColorSel, tColorColSel, bColorColSel }
+   oBrw:aColumns[4]:bColorBlock := {|o,nRow| {CLR_BLACK,CLR_WHITE,CLR_BLUE,CLR_GRAY1,CLR_WHITE,CLR_DGRAY} }
+   oBrw:aColumns[3]:bColorBlock := {|o,nRow| {CLR_BLACK,CLR_GREEN1,CLR_BLUE,CLR_GRAY1,CLR_WHITE,CLR_DGRAY} }
 
    @ 230,360 OWNERBUTTON oBtnOk SIZE 160,32 ;
          TEXT "Ok" ;

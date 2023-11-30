@@ -978,7 +978,7 @@ Local aSample := { {"Alex",17,12600}, {"Victor",42,1600}, {"John",31,15000} }
 Return Nil
       ]]>
     </module>
-    <module name="Browse" >
+    <module name="Browse of array" >
       <![CDATA[#include "hwgui.ch"
 #define CLR_WHITE    0xffffff
 #define CLR_BLACK    0x000000
@@ -1025,7 +1025,7 @@ Local bDrawOrd := {|o,h,x1,y1,x2,y2|
 
    oPen := HPen():Add( BS_SOLID, 2, 0 )
 
-   INIT DIALOG oDlg TITLE "Browse" ;
+   INIT DIALOG oDlg TITLE "Browse of array" ;
          AT 0, 0 SIZE 380, 400 BACKCOLOR 0xeeeeee;
          FONT HFont():Add( "MS Sans Serif",0,-15 )
 
@@ -1125,6 +1125,112 @@ Local no := Ascan( oBrw:aColumns, {|o|o:cargo>0}, 2 )
 Return Nil
       ]]>
     </module>
+
+    <module name="Browse of dbf" >
+      <![CDATA[#include "hwgui.ch"
+#define CLR_WHITE    0xffffff
+#define CLR_BLACK    0x000000
+#define CLR_GRAY1    0xeeeeee
+#define CLR_GRAY2    0xd0d0d0
+#define CLR_BLUE     0xff0000
+#define CLR_GREEN1   0xcaebba
+
+STATIC oBmpCheck
+
+FUNCTION Test()
+   LOCAL oDlg, oBrw, oBtnOk, oStyle := HStyle():New( { 0xffffff, 0xbbbbbb }, 1 )
+   LOCAL bCol4 := {|o,h,x1,y1,x2,y2,nc,nr|
+      hwg_Fillrect( h, x1, y1, x2, y2, oBrw:brush:handle )
+      IF Eval( o:block )
+         hwg_DrawTransparentBitmap( h, oBmpCheck:handle, x1+8, y1+8 )
+      ENDIF
+      RETURN Nil
+   }
+   LOCAL bEnter := {|o,nc|
+      IF nc == 4
+         (o:alias)->(rlock())
+         Eval( o:aColumns[nc]:block, !Eval( o:aColumns[nc]:block ) )
+         (o:alias)->(dbunlock())
+         o:Refresh()
+         RETURN .T.
+      ENDIF
+      RETURN .F.
+   }
+
+#ifdef __PLATFORM__WINDOWS
+   oBmpCheck := HBitmap():AddStandard( OBM_CHECK )
+#else
+   oBmpCheck := HBitmap():AddStandard( "gtk-apply" )
+#endif
+   INIT DIALOG oDlg TITLE "Browse of dbf" ;
+         AT 0, 0 SIZE 620, 400 BACKCOLOR 0xeeeeee;
+         FONT HFont():Add( "MS Sans Serif",0,-15 )
+
+   FCreateDB()
+   @ 10,40 BROWSE oBrw DATABASE SIZE 600,300 STYLE WS_BORDER + WS_VSCROLL ;
+         ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
+   hwg_CreateList( oBrw,.T. )
+   oBrw:oStyleHead := oStyle
+   oBrw:bcolorSel := CLR_GRAY1
+   oBrw:tcolorSel := CLR_BLACK
+
+   // Increase Left, top and bottom padding
+   oBrw:aPadding[1] := oBrw:aPadding[2] := oBrw:aPadding[4] := 8
+   oBrw:aHeadPadding[2] := oBrw:aHeadPadding[4] := 4
+
+   oBrw:aColumns[4]:oPaintCB := HPaintCB():New()
+   oBrw:aColumns[4]:oPaintCB:Set( PAINT_LINE_ALL, bCol4 )
+   oBrw:bEnter := bEnter
+
+   // The special codeblock :bColorBlock of a column returns an array of colors for
+   // a currently painted cell: { tColor, bColor, tColorSel, bColorSel }
+   oBrw:aColumns[2]:bColorBlock := oBrw:aColumns[4]:bColorBlock := ;
+      {|o,nRow| Iif(nRow%2==0, {CLR_BLACK,CLR_WHITE,CLR_BLUE,CLR_GRAY2}, {CLR_BLACK,CLR_GRAY1,CLR_BLUE,CLR_GRAY2}) }
+   oBrw:aColumns[3]:bColorBlock := {|o,nRow| {CLR_BLACK,CLR_GREEN1,CLR_BLUE,CLR_GRAY2} }
+
+   @ 230,360 OWNERBUTTON oBtnOk SIZE 160,32 ;
+         TEXT "Ok" ;
+         ON SIZE ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS ;
+         ON CLICK {||hwg_EndDialog()}
+   oBtnOk:aStyle := { HStyle():New( {0xffffff,0xdddddd}, 1,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 2,, 1 ), ;
+            HStyle():New( {0xffffff,0xdddddd}, 1,, 2, 8421440 ) }
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+
+STATIC FUNCTION FCreateDB()
+
+   LOCAL i, j, d, oTree
+   FIELD DAT
+
+   DbCreate( "base1", { {"NAME","C",40,0}, {"NUM","N",4,0}, {"DAT","D",8,0}, ;
+      { "LOGIC","L",1,0 }, {"DAYW","C",12,0} },"DBFCDX", .F.,"BASE1" )
+   set exclusive off
+   use base1 via "DBFCDX"
+   oTree := HWindow():GetMain():oTree
+   FOR i := 1 TO Len( oTree:aItems )
+      base1->(dbappend())
+      base1->name := oTree:aItems[i]:Gettext()
+      base1->num := i * 100
+      base1->logic := ( hb_RandomInt( 0, 100 ) % 3 == 0 )
+      FOR j := 1 TO Len( oTree:aItems[i]:aItems )
+         base1->(dbappend())
+         base1->name := "-- " + oTree:aItems[i]:aItems[j]:Gettext()
+         base1->num := i * 100 + j
+         d := Date() + hb_RandomInt( -100, 100 )
+         base1->dat := d
+         base1->logic := ( hb_RandomInt( 0, 100 ) % 3 == 0 )
+         base1->dayw := CDoW( d )
+      NEXT
+   NEXT
+   INDEX ON Dtos(DAT) TAG DAT
+
+   RETURN Nil
+      ]]>
+    </module>
+
     <module name="Browse of bitmaps" >
       <![CDATA[#include "hwgui.ch"
 Function Test()
@@ -2325,7 +2431,6 @@ STATIC FUNCTION FCreateDB()
    INDEX ON Dtos(DAT) TAG DAT
 
    RETURN Nil
-
 ]]>
     </module>
   </chapter>

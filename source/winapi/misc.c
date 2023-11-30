@@ -362,6 +362,7 @@ HB_FUNC( HWG_GETKEYNAMETEXT )
 
 HB_FUNC( HWG_ACTIVATEKEYBOARDLAYOUT )
 {
+   //LPTSTR m_PreviousLayout[KL_NAMELENGTH];
    TCHAR m_PreviousLayout[KL_NAMELENGTH];
 
    GetKeyboardLayoutName( m_PreviousLayout ); 
@@ -390,7 +391,7 @@ HB_FUNC( HWG_ACTIVATEKEYBOARDLAYOUT )
       hb_strfree( hLayout );
    }
 
-   hb_retc( m_PreviousLayout );
+   HB_RETSTR( m_PreviousLayout );
 }
 /*
 HB_FUNC( HWG_GETKEYBOARDLAYOUT ) 

@@ -158,11 +158,20 @@ FUNCTION Main( ... )
 #ifdef __CONSOLE
    IF Empty( aFiles )
       OutStd( "HwBuild - HwGUI Builder " + HWB_VERSION )
-      OutStd( hb_eol() + "Usage:" )
-      OutStd( hb_eol() + "hwbc <files> [-bcc|-mingw|-comp=<compiler>] [-lib] [-clean] [-q]" )
-      OutStd( hb_eol() + "  [-pf<options>]|-prgflags=<options] [-cf<options>|-cflags=<options>]" )
-      OutStd( hb_eol() + "  [-gt<lib>] [-l<libraries>|-libs=<libraries>] [-sp<path>|-srcpath=<path>]" )
-      OutStd( hb_eol() + "  [-o<name>|-out=<name>]" )
+      OutStd( hb_eol() + "Usage:  hwbc <files>  [options...]" )
+      OutStd( hb_eol() + " -bcc              use the Borland C compiler" )
+      OutStd( hb_eol() + " -mingw            use the Mingw C compiler" )
+      OutStd( hb_eol() + " -msvc             use the MS Visual Studio" )
+      OutStd( hb_eol() + " -comp=<compiler>  use C compiler with specified id" )
+      OutStd( hb_eol() + " -lib              build a library" )
+      OutStd( hb_eol() + " -clean            erase project obj files" )
+      OutStd( hb_eol() + " -q                shortened output" )
+      OutStd( hb_eol() + " -gt<lib>          use specified GT library" )
+      OutStd( hb_eol() + " -pf<options>, -prgflags=<options>  options for Harbour compiler" )
+      OutStd( hb_eol() + " -cf<options>, -cflags=<options>    options for C compiler" )
+      OutStd( hb_eol() + " -l<libraries>, -libs=<libraries>   a list of additionas libraries" )
+      OutStd( hb_eol() + " -sp<path>, -srcpath=<path>         a path to source files" )
+      OutStd( hb_eol() + " -o<name>, -out=<name>              a path and name of output file" )
       RETURN Nil
    ENDIF
 #endif
@@ -1417,6 +1426,14 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       ENDIF
    ENDIF
 
+   FOR i := 1 TO Len( ::aFiles )
+      IF !( cFile := Lower( hb_fnameExt(::aFiles[i,1]) ) ) == ".prg" .AND. !( cFile == ".c" ) ;
+         .AND. !( cFile == ::oComp:cObjExt )
+         _MsgStop( "Wrong source file extention", hb_fnameNameExt(::aFiles[i,1]) )
+         RETURN Nil
+      ENDIF
+   NEXT
+
    _ShowProgress( "", 0 )
 
    // Compile prg sources with Harbour
@@ -1429,7 +1446,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       NEXT
    ENDIF
    cCmd := cPathHrbBin + hb_ps() + "harbour " + cHrbDefFlags + ;
-      Iif( Empty( ::aFiles[i,2] ), "", " " + ::aFiles[i,2] ) + " -i" + cPathHrbInc + ;
+      " -i" + cPathHrbInc + ;
       " -i" + cPathHwguiInc + Iif( Empty( ::cFlagsPrg ), "", " " + ::cFlagsPrg ) + ;
       Iif( Empty( cObjPath ), "", " -o" + cObjPath )
    FOR i := 1 TO Len( ::aFiles )
@@ -1439,7 +1456,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
          IF ::lMake .AND. File( cObjFile ) .AND. hb_vfTimeGet( cObjFile, @to ) .AND. ;
             hb_vfTimeGet( cFile, @tc ) .AND. to >= tc
          ELSE
-            cLine := cCmd + " " + cFile
+            cLine := cCmd + Iif( Empty( ::aFiles[i,2] ), "", " " + ::aFiles[i,2] ) + " " + cFile
 
             _ShowProgress( "> " + cLine, 1, hb_fnameNameExt( cFile ), @cFullOut )
             _RunApp( cLine, @cOut )

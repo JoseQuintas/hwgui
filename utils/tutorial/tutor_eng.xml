@@ -1168,7 +1168,7 @@ FUNCTION Test()
          FONT HFont():Add( "MS Sans Serif",0,-15 )
 
    FCreateDB()
-   @ 10,40 BROWSE oBrw DATABASE SIZE 600,300 STYLE WS_BORDER + WS_VSCROLL ;
+   @ 10,10 BROWSE oBrw DATABASE SIZE 600,330 STYLE WS_BORDER + WS_VSCROLL ;
          ON SIZE ANCHOR_TOPABS + ANCHOR_LEFTABS + ANCHOR_RIGHTABS + ANCHOR_BOTTOMABS
    hwg_CreateList( oBrw,.T. )
    oBrw:oStyleHead := oStyle
@@ -1895,16 +1895,26 @@ Return Nil]]>
 #define CLR_DGRAY4   0xdddddd
 
 FUNCTION Test
-   LOCAL oDlg, oBoard, oDrawn, aUpd1 := Array( 5 ), aUpd2 := Array( 5 )
+   LOCAL oDlg, oBoard, oDrawn, oEdiStyle, aUpd1 := Array( 5 ), aUpd2 := Array( 5 )
    LOCAL oFont := HFont():Add( "MS Sans Serif", 0, 20 )
    LOCAL aCorners := { 4, 4, 4, 4 }
-   LOCAL aStylesN := { HStyle():New( { 0, 0 }, 1 ), ;
+   LOCAL aStylesN := { HStyle():New( { 0, 0xffffff }, 1 ), ;
       HStyle():New( { CLR_DGRAY2, CLR_DGRAY2 }, 1 ), HStyle():New( { CLR_DGRAY3, CLR_DGRAY3 }, 1 ) }
    LOCAL aStylesBtn := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
       HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
+   LOCAL bColor := {|o|
+      LOCAL a := o:cargo
+      LOCAL nColor := Hwg_ChooseColor( a[3]:Value*256*256+a[2]:Value*256+a[1]:Value,.F. )
+      IF nColor != Nil
+         a[1]:Value := hwg_ColorN2RGB( nColor )[1]
+         a[2]:Value := hwg_ColorN2RGB( nColor )[2]
+         a[3]:Value := hwg_ColorN2RGB( nColor )[3]
+      ENDIF
+      RETURN Nil
+   }
 
-   INIT DIALOG oDlg TITLE "Styles"  ;
+   INIT DIALOG oDlg TITLE "Set style"  ;
       AT 210, 10  SIZE 500, 400 FONT oFont BACKCOLOR CLR_DGRAY2 ;
       ON INIT { ||hwg_Settimer( oDlg, aUpd1, aUpd2 ) }
 
@@ -1913,21 +1923,45 @@ FUNCTION Test
 
    @ Int( oDlg:nWidth/2 ) - 100, 10 DRAWN oDrawn SIZE 200, 32 HSTYLES aStylesN
 
-   @ 50, 60 DRAWN SIZE 30, 28 COLOR CLR_WHITE BACKCOLOR 0 TEXT "R"
-   @ 120, 60 DRAWN SIZE 30, 28 COLOR CLR_WHITE BACKCOLOR 0 TEXT "G"
-   @ 190, 60 DRAWN SIZE 30, 28 COLOR CLR_WHITE BACKCOLOR 0 TEXT "B"
+   @ 10, 60 DRAWN EDIT oEdiStyle CAPTION "" SIZE oDlg:nWidth-60, 28 COLOR CLR_WHITE BACKCOLOR CLR_DGRAY2
+   oEdiStyle:lReadOnly := .T.
+   @ oDlg:nWidth - 50, 60 DRAWN SIZE 30, 28 COLOR CLR_WHITE ;
+      HSTYLES aStylesBtn TEXT 'C' FONT oFont ON CLICK { ||hwg_Copystringtoclipboard(oEdiStyle:Value)}
+   ATail(oBoard:aDrawn):cTooltip := "Copy to clipboard "
 
-   @ 40, 100 DRAWN UPDOWN aUpd1[1] INIT 0 RANGE 0, 255 SIZE 60, 28
-   @ 110, 100 DRAWN UPDOWN aUpd1[2] INIT 0 RANGE 0, 255 SIZE 60, 28
-   @ 180, 100 DRAWN UPDOWN aUpd1[3] INIT 0 RANGE 0, 255 SIZE 60, 28
-   @ 260, 100 DRAWN aUpd1[4] SIZE 80, 28 COLOR CLR_WHITE BACKCOLOR CLR_BLACK TEXT hwg_ColorN2C( 0 )
-   @ 360, 100 DRAWN aUpd1[5] SIZE 40, 28 BACKCOLOR 0
+   @ 80, 94 DRAWN SIZE 30, 24 COLOR CLR_WHITE BACKCOLOR 0 TEXT "r"
+   @ 150, 94 DRAWN SIZE 30, 24 COLOR CLR_WHITE BACKCOLOR 0 TEXT "g"
+   @ 220, 94 DRAWN SIZE 30, 24 COLOR CLR_WHITE BACKCOLOR 0 TEXT "b"
 
-   @ 40, 140 DRAWN UPDOWN aUpd2[1] INIT 0 RANGE 0, 255 SIZE 60, 28
-   @ 110, 140 DRAWN UPDOWN aUpd2[2] INIT 0 RANGE 0, 255 SIZE 60, 28
-   @ 180, 140 DRAWN UPDOWN aUpd2[3] INIT 0 RANGE 0, 255 SIZE 60, 28
-   @ 260, 140 DRAWN aUpd2[4] SIZE 80, 28 COLOR CLR_WHITE BACKCOLOR CLR_BLACK TEXT hwg_ColorN2C( 0 )
-   @ 360, 140 DRAWN aUpd2[5] SIZE 40, 28 BACKCOLOR 0
+   @ 20, 120 DRAWN SIZE 30, 28 COLOR CLR_WHITE ;
+      HSTYLES aStylesBtn TEXT 'S' FONT oFont ON CLICK bColor
+   ATail(oBoard:aDrawn):cTooltip := "Color dialog "
+   ATail(oBoard:aDrawn):cargo := aUpd1
+
+   @ 20, 160 DRAWN SIZE 30, 28 COLOR CLR_WHITE ;
+      HSTYLES aStylesBtn TEXT 'S' FONT oFont ON CLICK bColor
+   ATail(oBoard:aDrawn):cTooltip := "Color dialog "
+   ATail(oBoard:aDrawn):cargo := aUpd2
+
+   @ 70, 120 DRAWN UPDOWN aUpd1[1] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[1] )[1] ;
+      RANGE 0, 255 SIZE 60, 28
+   @ 140, 120 DRAWN UPDOWN aUpd1[2] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[1] )[2] ;
+      RANGE 0, 255 SIZE 60, 28
+   @ 210, 120 DRAWN UPDOWN aUpd1[3] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[1] )[3] ;
+      RANGE 0, 255 SIZE 60, 28
+   @ 280, 120 DRAWN aUpd1[4] SIZE 40, 28 BACKCOLOR 0
+
+   @ 70, 160 DRAWN UPDOWN aUpd2[1] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[2] )[1] ;
+      RANGE 0, 255 SIZE 60, 28
+   @ 140, 160 DRAWN UPDOWN aUpd2[2] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[2] )[2] ;
+      RANGE 0, 255 SIZE 60, 28
+   @ 210, 160 DRAWN UPDOWN aUpd2[3] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[2] )[3] ;
+      RANGE 0, 255 SIZE 60, 28
+   @ 280, 160 DRAWN aUpd2[4] SIZE 40, 28 BACKCOLOR 0
+
+   @ 340, 120 DRAWN UPDOWN aUpd1[5] INIT 0 RANGE 1, 8 SIZE 60, 28
+
+   ShowStyle( oDlg )
 
    @ Int( oDlg:nWidth/2 ) - 50, oDlg:nHeight - 50 DRAWN SIZE 100, 32 COLOR CLR_WHITE ;
       HSTYLES aStylesBtn TEXT 'Close' FONT oFont ON CLICK { ||oDlg:Close() }
@@ -1939,43 +1973,56 @@ FUNCTION Test
 
 STATIC FUNCTION hwg_Settimer( oDlg, aUpd1, aUpd2 )
 
-   LOCAL oTimer, nColor, lUpd := .F. , oDrawn
+   LOCAL oTimer, nColor, nOrient, lUpd := .F. , oDrawn
    LOCAL bTimer := { ||
 
    oDrawn := oDlg:oBoard:oDrawn
 
    nColor := aUpd1[3]:Value * 256 * 256 + aUpd1[2]:Value * 256 + aUpd1[1]:Value
-   IF nColor != aUpd1[5]:bColor
-      aUpd1[4]:SetText( hwg_ColorN2C( nColor ) )
-      aUpd1[5]:bColor := nColor
-      aUpd1[5]:oBrush:Release()
-      aUpd1[5]:oBrush := HBrush():Add( nColor )
-      aUpd1[5]:Refresh()
+   IF nColor != aupd1[4]:bColor
+      aupd1[4]:bColor := nColor
+      aupd1[4]:oBrush:Release()
+      aupd1[4]:oBrush := HBrush():Add( nColor )
+      aupd1[4]:Refresh()
       oDrawn:aStyles[1]:aColors[1] := nColor
       lUpd := .T.
    ENDIF
 
    nColor := aUpd2[3]:Value * 256 * 256 + aUpd2[2]:Value * 256 + aUpd2[1]:Value
-   IF nColor != aUpd2[5]:bColor
-      aUpd2[4]:SetText( hwg_ColorN2C( nColor ) )
-      aUpd2[5]:bColor := nColor
-      aUpd2[5]:oBrush:Release()
-      aUpd2[5]:oBrush := HBrush():Add( nColor )
-      aUpd2[5]:Refresh()
+   IF nColor != aupd2[4]:bColor
+      aupd2[4]:bColor := nColor
+      aupd2[4]:oBrush:Release()
+      aupd2[4]:oBrush := HBrush():Add( nColor )
+      aupd2[4]:Refresh()
       oDrawn:aStyles[1]:aColors[2] := nColor
       lUpd := .T.
    ENDIF
 
+   nOrient := aUpd1[5]:Value
+   IF nOrient != oDrawn:aStyles[1]:nOrient
+      oDrawn:aStyles[1]:nOrient := nOrient
+      lUpd := .T.
+   ENDIF
    IF lUpd
+      ShowStyle( oDlg )
       oDrawn:Refresh()
    ENDIF
-
    RETURN Nil
-
    }
 
    aUpd1[1]:oEdit:Setfocus()
    SET TIMER oTimer OF oDlg VALUE 500 ACTION bTimer
+
+   RETURN Nil
+
+STATIC FUNCTION ShowStyle( oDlg )
+
+   LOCAL oDrawn := oDlg:oBoard:oDrawn, oEdi := oDlg:oBoard:oEdiStyle
+   LOCAL nColor1 := oDrawn:aStyles[1]:aColors[1], nColor2 := oDrawn:aStyles[1]:aColors[2]
+
+   oEdi:SetText( "HStyle():New( { 0x" + hwg_ColorN2C(nColor1) + ;
+      Iif( nColor1 == nColor2, "", ", 0x" + hwg_ColorN2C(nColor2) ) + ;
+      " }, " + Ltrim(Str(oDrawn:aStyles[1]:nOrient)) + " )" )
 
    RETURN Nil]]>
     </module>

@@ -1036,7 +1036,7 @@ METHOD PaintLine( hDC, yPos, nLine, lUse_aWrap, nRight ) CLASS HCEdiExt
                   hwg_Drawline( hDC, x1, yPosB, x2, yPosB )
                ENDIF
                hwg_Drawline( hDC, x1, yPos, x2, yPos )
-               hwg_Selectobject( hDC, i )
+               //hwg_Selectobject( hDC, i )
             ENDIF
          ENDIF
       ENDIF

@@ -222,7 +222,7 @@ STATIC FUNCTION ShowResult( cOut )
    LOCAL bSwi := {||
       LOCAL i, j, cLastHea := "", lLastHea := .F., cc
       lFull := !lFull
-      oBtnSwi:SetText( Iif( lFull, 'Warnings & Errors', 'Full log' ) )
+      oBtnSwi:SetText( Iif( lFull, 'Short log', 'Full log' ) )
       IF lFull
          oEdit:SetText( cOut )
       ELSE
@@ -231,6 +231,10 @@ STATIC FUNCTION ShowResult( cOut )
             IF Left( oEdit:aText[i],3 ) == "***"
                lLastHea := .T.
                cLastHea := oEdit:aText[i]
+
+            ELSEIF Left( oEdit:aText[i],3 ) == "==="
+               cWarn += Chr(10) + oEdit:aText[i] + Chr(10)
+
             ELSEIF "warning" $ ( cc := Lower(oEdit:aText[i]) ) .OR. "error" $ cc .OR. "note:" $ cc
                IF lLastHea
                   lLastHea := .F.
@@ -239,9 +243,6 @@ STATIC FUNCTION ShowResult( cOut )
                cWarn += Chr(10) + oEdit:aText[i] + Chr(10)
             ENDIF
          NEXT
-         IF Empty( cWarn )
-            cWarn := "No warnings or errors!"
-         ENDIF
          oEdit:SetText( cWarn )
       ENDIF
       RETURN .T.
@@ -260,14 +261,21 @@ STATIC FUNCTION ShowResult( cOut )
       ON SIZE {|o,x,y|o:Move( ,y-50, x, )}
 
    @ 100, 10 DRAWN SIZE 80, 30 COLOR CLR_WHITE HSTYLES aStyles TEXT 'Close' ON CLICK {||oDlg:Close()}
-   @ 280, 10 DRAWN oBtnSwi SIZE 240, 30 COLOR CLR_WHITE HSTYLES aStyles TEXT 'Warnings & Errors' ON CLICK bSwi
-   oBtnSwi:Anchor := ANCHOR_LEFTABS + ANCHOR_RIGHTABS
+   @ 260, 10 DRAWN oBtnSwi SIZE 120, 30 COLOR CLR_WHITE HSTYLES aStyles TEXT '' ON CLICK bSwi
+   oBtnSwi:Anchor := ANCHOR_RIGHTABS
+   IF !Empty( oPrg ) .AND. !Empty( oPrg:cFile ) .AND. Empty( HWindow():GetMain() )
+      @ 460, 10 DRAWN SIZE 120, 30 COLOR CLR_WHITE HSTYLES aStyles TEXT 'Project' ;
+         ON CLICK {||oDlg:Close(),StartGUI(oPrg:cFile)}
+      ATail(oBoard:aDrawn):Anchor := ANCHOR_RIGHTABS
+   ENDIF
    @ 680, 10 DRAWN SIZE 80, 30 COLOR CLR_WHITE HSTYLES aStyles TEXT 'Save' ;
       ON CLICK {||hb_MemoWrit("hwbuild.log",Iif(lFull,cOut,cWarn))}
    ATail(oBoard:aDrawn):Anchor := ANCHOR_RIGHTABS
 
    hwg_SetDlgKey( oDlg, FCONTROL, VK_ADD, bFont )
    hwg_SetDlgKey( oDlg, FCONTROL, VK_SUBTRACT, bFont )
+
+   Eval( bSwi )
 
    ACTIVATE DIALOG oDlg CENTER
    oFont:Release()
@@ -293,6 +301,7 @@ STATIC FUNCTION StartGUI( cFile )
       MENU TITLE "&File"
          MENUITEM "&New" ACTION NewProject()
          MENUITEM "&Open" ACTION OpenProject()
+         MENUITEM "&Load template" ACTION LoadTemplate()
          MENUITEM "&Save" ACTION SaveProject()
          SEPARATOR
          MENUITEM "&Paths" ACTION FPaths()
@@ -490,11 +499,31 @@ STATIC FUNCTION FPaths()
 
    RETURN Nil
 
+STATIC FUNCTION AskForSave()
+
+   IF HWindow():GetMain():oEdit:lUpdated .AND. hwg_MsgYesNo( "Project was changed. Save it?", "HwBuild" )
+      RETURN .T.
+   ENDIF
+
+   RETURN .F.
+
 STATIC FUNCTION NewProject()
 
-   LOCAL oMain := HWindow():GetMain(), cFullPath, cFile := "template.hwprj"
+   IF AskForSave()
+      SaveProject()
+   ENDIF
 
-   IF oMain:oEdit:lUpdated .AND. hwg_MsgYesNo( "Project was changed. Save it?", "HwBuild" )
+   HWindow():GetMain():oEdit:SetText( "" )
+
+   oPrg := Nil
+
+   RETURN Nil
+
+STATIC FUNCTION LoadTemplate()
+
+   LOCAL cFullPath, cFile := "template.hwprj"
+
+   IF AskForSave()
       SaveProject()
    ENDIF
 
@@ -504,12 +533,8 @@ STATIC FUNCTION NewProject()
 #else
    IF File( cFullPath := ( hb_DirBase() + cFile ) )
 #endif
-      oMain:oEdit:SetText( Memoread( cFullPath ) )
-   ELSE
-      oMain:oEdit:SetText( "" )
+      HWindow():GetMain():oEdit:SetText( Memoread( cFullPath ) )
    ENDIF
-
-   oPrg := Nil
 
    RETURN Nil
 
@@ -517,7 +542,7 @@ STATIC FUNCTION OpenProject( cFile )
 
    LOCAL oMain := HWindow():GetMain()
 
-   IF oMain:oEdit:lUpdated .AND. hwg_MsgYesNo( "Project was changed. Save it?", "HwBuild" )
+   IF AskForSave()
       SaveProject()
    ENDIF
    IF Empty( cFile )
@@ -608,6 +633,28 @@ STATIC FUNCTION CheckOptions( oProject )
 
    RETURN Nil
 
+STATIC FUNCTION FindHarbour()
+
+   LOCAL aEnv, cTmp, cPath, nPos
+
+   IF Empty( cPathHrb ) .AND. Empty( cPathHrb := getenv("HB_PATH") ) .AND. Empty( cPathHrb := getenv("HB_ROOT") )
+      cTmp := "harbour" + cExeExt
+      aEnv := hb_ATokens( getenv("PATH"), hb_osPathListSeparator() )
+      FOR EACH cPath IN aEnv
+         IF File( _DropSlash(cPath) + hb_ps() + cTmp )
+            cPathHrbBin := _DropSlash( cPath )
+            EXIT
+         ENDIF
+      NEXT
+      IF !Empty( cPathHrbBin )
+         IF ( nPos := hb_At( hb_ps()+"bin", cPathHrbBin ) ) > 0
+            cPathHrb := Left( cPathHrbBin, nPos-1 )
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
 STATIC FUNCTION ReadIni( cFile )
 
    LOCAL cPath, hIni, aIni, arr, nSect, aSect, cTmp, i, j, key, nPos, cFam, oComp
@@ -651,21 +698,7 @@ STATIC FUNCTION ReadIni( cFile )
             cLibsHrb := cTmp
          ENDIF
       ENDIF
-      IF Empty( cPathHrb ) .AND. Empty( cPathHrb := getenv("HB_PATH") ) .AND. Empty( cPathHrb := getenv("HB_ROOT") )
-         cTmp := "harbour" + cExeExt
-         aEnv := hb_ATokens( getenv("PATH"), hb_osPathListSeparator() )
-         FOR EACH cPath IN aEnv
-            IF File( _DropSlash(cPath) + hb_ps() + cTmp )
-               cPathHrbBin := _DropSlash( cPath )
-               EXIT
-            ENDIF
-         NEXT
-         IF !Empty( cPathHrbBin )
-            IF ( nPos := hb_At( hb_ps()+"bin", cPathHrbBin ) ) > 0
-               cPathHrb := Left( cPathHrbBin, nPos-1 )
-            ENDIF
-         ENDIF
-      ENDIF
+      FindHarbour()
 
       aIni := hb_hKeys( hIni )
       FOR nSect := 1 TO Len( aIni )
@@ -722,6 +755,8 @@ STATIC FUNCTION ReadIni( cFile )
             ENDIF
          ENDIF
       NEXT
+   ELSE
+      FindHarbour()
    ENDIF
 
    IF !Empty( cPathHrb )
@@ -933,7 +968,7 @@ STATIC FUNCTION _ShowProgress( cText, nAct, cTitle, cFull )
       ENDIF
    ENDIF
 #else
-   STATIC oBar
+   STATIC oBar, nSec := 0
 
    IF cFull != Nil
       IF !Empty( cTitle )
@@ -947,6 +982,7 @@ STATIC FUNCTION _ShowProgress( cText, nAct, cTitle, cFull )
    ENDIF
 
    IF nAct == 0
+      nSec := Seconds()
       IF !Empty( oBar )
          oBar:Close()
          oBar := Nil
@@ -958,7 +994,10 @@ STATIC FUNCTION _ShowProgress( cText, nAct, cTitle, cFull )
    ELSEIF nAct == 1
       IF !Empty( oBar ) .AND. !Empty( cTitle )
          oBar:Set( cTitle )
-         oBar:Step()
+         IF Seconds() - nSec > 0.5
+            oBar:Step()
+            nSec := Seconds()
+         ENDIF
          hwg_Sleep( 1 )
          hwg_ProcessMessage()
          hb_gcStep()
@@ -1144,6 +1183,7 @@ METHOD New( id, cFam ) CLASS HCompiler
 
 CLASS HwProject
 
+   DATA cFile
    DATA aFiles     INIT {}
    DATA oComp
    DATA cGtLib
@@ -1211,6 +1251,7 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
       _MsgStop( xSource + " not found", "Wrong file" )
       RETURN Nil
    ELSE
+      ::cFile := xSource
       arr := hb_Atokens( Memoread( xSource ), Chr(10) )
    ENDIF
    FOR i := 1 TO Len( arr )

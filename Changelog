@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-01 17:39 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/editor/hcediext.prg
+    ! Small fix
+  * utils/hwbuild/hwb.prg
+    * Further enhancements
+  * utils/tutorial/tutor_eng.xml
+    * Module enhanced "Select style"
+
 2023-11-30 16:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * hwgui.hwprj
 

@@ -50,6 +50,23 @@ STATIC cGuiId := "hwgui", cPathHwgui := "", cPathHwguiInc := "", cPathHwguiLib :
 STATIC lPathHrb := .F., lPathHrbBin := .F., lPathHrbInc := .F.
 STATIC lPathHwgui := .F.
 
+STATIC aHelp := { "hwbc <files>  [options...]", ;
+  " -bcc              use the Borland C compiler", ;
+  " -mingw            use the Mingw C compiler", ;
+  " -msvc             use the MS Visual Studio", ;
+  " -comp=<compiler>  use C compiler with specified id", ;
+  " -gui=<guilib>     use GUI library with specified id", ;
+  " -lib              build a library", ;
+  " -clean            erase project obj files", ;
+  " -q                shortened output", ;
+  " -gt<lib>          use specified GT library", ;
+  " -pf<options>, -prgflags=<options>  options for Harbour compiler", ;
+  " -cf<options>, -cflags=<options>    options for C compiler", ;
+  " -l<libraries>, -libs=<libraries>   a list of additionas libraries", ;
+  " -sp<path>, -srcpath=<path>         a path to source files", ;
+  " -o<name>, -out=<name>              a path and name of output file", ;
+  " -i<name>, -ini=<name>              a name of ini file" }
+
 #ifdef __PLATFORM__UNIX
 STATIC lUnix := .T.
 STATIC cExeExt := ""
@@ -59,7 +76,7 @@ STATIC lUnix := .F.
 STATIC cExeExt := ".exe"
 STATIC cLibsHrb := "hbvm hbrtl gtgui gtwin hbcpage hblang hbrdd hbmacro hbpp rddntx rddcdx rddfpt hbsix hbcommon hbct hbcplr hbpcre hbzlib"
 #endif
-STATIC cLibsHwGUI := "hwgui hbxml procmisc"
+STATIC cLibsHwGUI := ""
 
 #ifndef __CONSOLE
 STATIC oFontMain
@@ -69,10 +86,25 @@ STATIC cFontMain := ""
 FUNCTION Main( ... )
 
    LOCAL aParams := hb_aParams(), i, j, c, aFiles := {}, af
-   LOCAL lPrj, lGUI := .F., lLib := .F., lClean := .F., oComp, cLibsDop, cLibsPath, cGtLib
+   LOCAL lPrj, lGUI := .F., lLib := .F., lClean := .F., oComp, oGui, cLibsDop, cLibsPath, cGtLib
    LOCAL cSrcPath, cObjPath, cOutName, cFlagsPrg, cFlagsC, aUserPar := {}
+   LOCAL cIniName := "hwbuild.ini"
 
-   ReadIni( "hwbuild.ini" )
+   FOR i := 1 TO Len( aParams )
+      IF Left( aParams[i],1 ) == "-" .AND. Left( c := Substr( aParams[i],2 ), 1 ) == "i"
+         IF '=' $ c
+            IF Left( c,4 ) == "ini="
+               cIniName := Substr( c, 5 )
+            ELSE
+               _MsgStop( c, "Wrong option" )
+               RETURN Nil
+            ENDIF
+         ELSE
+            cIniName := Substr( c, 2 )
+         ENDIF
+      ENDIF
+   NEXT
+   ReadIni( cIniName )
 
    FOR i := 1 TO Len( aParams )
       IF Left( aParams[i],1 ) == "-"
@@ -120,10 +152,17 @@ FUNCTION Main( ... )
          ELSEIF ( Left( c,1 ) == "o" .AND. !('=' $ c) ) .OR. Left( c,4 ) == "out="
             cOutName := _DropQuotes( Substr( c, Iif( '=' $ c, 5, 2 ) ) )
 
+         ELSEIF ( Left( c,1 ) == "i" .AND. !('=' $ c) ) .OR. Left( c,4 ) == "ini="
+
          ELSEIF Left( c,5 ) == "comp="
             c := Substr( c, 6 )
             IF ( j := Ascan( HCompiler():aList, {|o|o:id == c} ) ) > 0
                oComp := HCompiler():aList[j]
+            ENDIF
+         ELSEIF Left( c,4 ) == "gui="
+            c := Substr( c, 5 )
+            IF ( j := Ascan( HGuilib():aList, {|o|o:id == c} ) ) > 0
+               oGui := HGuilib():aList[j]
             ENDIF
          ELSEIF Left( c,1 ) == "{"
             Aadd( aUserPar, Iif( (j := At("}",c))==0, Substr( c,2 ), Substr( c, 2, j-2 ) ) )
@@ -158,26 +197,22 @@ FUNCTION Main( ... )
 #ifdef __CONSOLE
    IF Empty( aFiles )
       OutStd( "HwBuild - HwGUI Builder " + HWB_VERSION )
-      OutStd( hb_eol() + "Usage:  hwbc <files>  [options...]" )
-      OutStd( hb_eol() + " -bcc              use the Borland C compiler" )
-      OutStd( hb_eol() + " -mingw            use the Mingw C compiler" )
-      OutStd( hb_eol() + " -msvc             use the MS Visual Studio" )
-      OutStd( hb_eol() + " -comp=<compiler>  use C compiler with specified id" )
-      OutStd( hb_eol() + " -lib              build a library" )
-      OutStd( hb_eol() + " -clean            erase project obj files" )
-      OutStd( hb_eol() + " -q                shortened output" )
-      OutStd( hb_eol() + " -gt<lib>          use specified GT library" )
-      OutStd( hb_eol() + " -pf<options>, -prgflags=<options>  options for Harbour compiler" )
-      OutStd( hb_eol() + " -cf<options>, -cflags=<options>    options for C compiler" )
-      OutStd( hb_eol() + " -l<libraries>, -libs=<libraries>   a list of additionas libraries" )
-      OutStd( hb_eol() + " -sp<path>, -srcpath=<path>         a path to source files" )
-      OutStd( hb_eol() + " -o<name>, -out=<name>              a path and name of output file" )
+      FOR i := 1 TO Len( aHelp )
+         OutStd( hb_eol() + aHelp[i] )
+      NEXT
       RETURN Nil
    ENDIF
 #endif
 
    IF Empty( oComp )
       oComp := HCompiler():aList[1]
+   ENDIF
+   IF !Empty( oGui )
+      cGuiId := oGui:id
+      cPathHwgui := oGui:cPath
+      cPathHwguiInc := oGui:cPathInc
+      cPathHwguiLib := oGui:cPathLib
+      cLibsHwGUI := oGui:cLibs
    ENDIF
 
    lPrj := ( Len( aFiles ) == 1 .AND. Lower( hb_fnameExt( aFiles[1,1] ) ) == ".hwprj" )
@@ -282,9 +317,13 @@ STATIC FUNCTION ShowResult( cOut )
 
    RETURN Nil
 
+#define HILIGHT_KEYW    1
+#define HILIGHT_COMM    4
+
 STATIC FUNCTION StartGUI( cFile )
 
    LOCAL oMain, oEdit
+   LOCAL cKeyw := ":project objpath srcpath libspath outpath outname def_cflags def_lflags prgflags cflags gtlib libs target makemode c_compiler guilib"
    LOCAL bFont := {|o,nKey|
       LOCAL oFontNew, nHeight
       HB_SYMBOL_UNUSED( o )
@@ -312,6 +351,7 @@ STATIC FUNCTION StartGUI( cFile )
          MENUITEM "&Clean" ACTION RunProject( .T. )
       ENDMENU
       MENU TITLE "&Help"
+         MENUITEM "&Command line" ACTION Help_CmdLine()
          MENUITEM "&About" ACTION hwg_MsgInfo( "HwGUI Builder " + HWB_VERSION + hb_eol() + ;
          "(C) Alexander S.Kresin, 2023" + hb_eol() + hb_eol() + hwg_Version(), "About" )
       ENDMENU
@@ -321,6 +361,9 @@ STATIC FUNCTION StartGUI( cFile )
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
    ENDIF
+   oEdit:HighLighter( Hilight():New( ,, cKeyw,, "#", "{ }", .F. ) )
+   oEdit:SetHili( HILIGHT_KEYW, oEdit:oFont:SetFontStyle( .T. ) )
+   oEdit:SetHili( HILIGHT_COMM, oEdit:oFont:SetFontStyle( ,, .T. ), CLR_BLACK, CLR_LGRAY1 )
 
    IF !Empty( cFile )
       OpenProject( cFile )
@@ -332,6 +375,19 @@ STATIC FUNCTION StartGUI( cFile )
    hwg_SetDlgKey( oMain, FCONTROL, VK_SUBTRACT, bFont )
 
    ACTIVATE WINDOW oMain
+
+   RETURN Nil
+
+STATIC FUNCTION Help_CmdLine()
+
+   LOCAL s := "", i
+
+   FOR i := 1 TO Len( aHelp )
+      s += hb_eol() + aHelp[i]
+   NEXT
+   s += hb_eol() + " -Open             Open project in a window"
+
+   hwg_MsgInfo( s, "Command line parameters" )
 
    RETURN Nil
 
@@ -657,7 +713,7 @@ STATIC FUNCTION FindHarbour()
 
 STATIC FUNCTION ReadIni( cFile )
 
-   LOCAL cPath, hIni, aIni, arr, nSect, aSect, cTmp, i, j, key, nPos, cFam, oComp
+   LOCAL cPath, hIni, aIni, arr, nSect, aSect, cTmp, i, j, key, nPos, cFam, oComp, oGui
    LOCAL aEnv, aMsvc := Array(4), aEnvM
 
 #ifdef __PLATFORM__UNIX
@@ -702,26 +758,28 @@ STATIC FUNCTION ReadIni( cFile )
 
       aIni := hb_hKeys( hIni )
       FOR nSect := 1 TO Len( aIni )
-         IF aIni[nSect] == "GUILIB" .AND. !Empty( aSect := hIni[ aIni[nSect] ] )
+         IF Left( aIni[nSect], 6 ) == "GUILIB" .AND. !Empty( aSect := hIni[ aIni[nSect] ] )
             hb_hCaseMatch( aSect, .F. )
             IF hb_hHaskey( aSect, cTmp := "id" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
                cGuiId := cTmp
-            ENDIF
-            IF hb_hHaskey( aSect, cTmp := "path" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
-               cPathHwgui := _DropSlash( cTmp )
-               lPathHwgui := .T.
-            ENDIF
-            IF hb_hHaskey( aSect, cTmp := "inc_path" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
-               cPathHwguiInc := _DropSlash( cTmp )
-            ENDIF
-            IF hb_hHaskey( aSect, cTmp := "lib_path" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
-               cPathHwguiLib := _DropSlash( cTmp )
-            ENDIF
-            IF hb_hHaskey( aSect, cTmp := "libs" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
-               cLibsHwGUI := cTmp
+               oGui := HGuilib():New( cTmp )
+
+               IF hb_hHaskey( aSect, cTmp := "path" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
+                  oGui:cPath := _DropSlash( cTmp )
+                  lPathHwgui := .T.
+               ENDIF
+               IF hb_hHaskey( aSect, cTmp := "inc_path" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
+                  oGui:cPathInc := _DropSlash( cTmp )
+               ENDIF
+               IF hb_hHaskey( aSect, cTmp := "lib_path" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
+                  oGui:cPathLib := _DropSlash( cTmp )
+               ENDIF
+               IF hb_hHaskey( aSect, cTmp := "libs" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
+                  oGui:cLibs := cTmp
+               ENDIF
             ENDIF
 
-         ELSEIF Left( aIni[nSect], 11 ) == "C_COMPILER_" .AND. !Empty( aSect := hIni[ aIni[nSect] ] )
+         ELSEIF Left( aIni[nSect], 10 ) == "C_COMPILER" .AND. !Empty( aSect := hIni[ aIni[nSect] ] )
             hb_hCaseMatch( aSect, .F. )
             IF hb_hHaskey( aSect, cTmp := "id" ) .AND. !Empty( cTmp := aSect[ cTmp ] )
                cFam := Iif( hb_hHaskey( aSect, cFam := "family" ) .AND. ;
@@ -772,6 +830,16 @@ STATIC FUNCTION ReadIni( cFile )
 #endif
       ENDIF
    ENDIF
+
+   IF Empty( HGuilib():aList )
+      HGuilib():New( "hwgui" )
+   ENDIF
+   oGui := HGuilib():aList[1]
+   cGuiId := oGui:id
+   cPathHwgui := oGui:cPath
+   cPathHwguiInc := oGui:cPathInc
+   cPathHwguiLib := oGui:cPathLib
+   cLibsHwGUI := oGui:cLibs
 
    IF !Empty( cPathHwgui )
       IF Empty( cPathHwguiInc )
@@ -854,16 +922,24 @@ STATIC FUNCTION ReadIni( cFile )
 
 STATIC FUNCTION WriteIni()
 
-   LOCAL cr := hb_eol(), oComp, n := 0, n1, aEnv
+   LOCAL cr := hb_eol(), oComp, oGui, n := 0, n1, aEnv
    LOCAL s := "[HARBOUR]" + cr + "harbour_path=" + cPathHrb + cr + "harbour_bin_path=" + ;
       cPathHrbBin + cr + "harbour_include_path=" + cPathHrbInc + cr + "def_flags=" + cHrbDefFlags + ;
-      cr + "libs=" + cLibsHrb + cr + cr + ;
-      "[GUILIB]" + cr + "id=" + cGuiId + cr + "path=" + cPathHwgui + cr + "inc_path=" + cPathHwguiInc + cr + ;
-      "lib_path=" + cPathHwguiLib + cr + "libs=" + cLibsHwGUI + cr + cr
+      cr + "libs=" + cLibsHrb + cr + cr
 
+   FOR EACH oGui IN HGuilib():aList
+      n ++
+      s += "[GUILIB" + Iif( n == 1, "", "_" + Ltrim(Str(n)) ) + "]" + cr + ;
+         "id=" + oGui:id + cr + "path=" + oGui:cPath + cr + ;
+         "inc_path=" + oGui:cPathInc + cr + "lib_path=" + oGui:cPathLib + cr + ;
+         "libs=" + oGui:cLibs + cr + cr
+   NEXT
+
+   n := 0
    FOR EACH oComp IN HCompiler():aList
       n ++
-      s += "[C_COMPILER_" + Ltrim(Str(n)) + "]" + cr + "id=" + oComp:id + cr + "bin_path=" + ;
+      s += "[C_COMPILER" + Iif( n == 1, "", "_" + Ltrim(Str(n)) ) + "]" + cr + ;
+         "id=" + oComp:id + cr + "bin_path=" + ;
          oComp:cPath + cr + "harbour_lib_path=" + oComp:cPathHrbLib + cr + ;
          "def_cflags=" + oComp:cFlags + cr + "def_linkflags=" + oComp:cLinkFlagsGui + cr
       n1 := 0
@@ -1181,6 +1257,31 @@ METHOD New( id, cFam ) CLASS HCompiler
 
    RETURN Self
 
+CLASS HGuilib
+
+   CLASS VAR aList       SHARED INIT {}
+   DATA id
+   DATA cPath      INIT ""
+   DATA cPathInc   INIT ""
+   DATA cPathLib   INIT ""
+   DATA cLibs      INIT ""
+
+   METHOD New( id )
+
+ENDCLASS
+
+METHOD New( id )
+
+   ::id := id
+
+   IF id == "hwgui"
+      ::cLibs := "hwgui hbxml procmisc"
+   ENDIF
+
+   AAdd( ::aList, Self )
+
+   RETURN Self
+
 CLASS HwProject
 
    DATA cFile
@@ -1204,6 +1305,7 @@ CLASS HwProject
       cOutName, cObjPath, lLib, lMake )
    METHOD Open( xSource, oComp, aUserPar )
    METHOD Build( lClean )
+
 ENDCLASS
 
 METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
@@ -1236,7 +1338,7 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
 
 METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
 
-   LOCAL arr, i, j, nPos, af, ap, o
+   LOCAL arr, i, j, nPos, af, ap, o, oGui
    LOCAL cLine, cTmp, cTmp2, cSrcPath := "", lLib
 
    IF Empty( oComp )
@@ -1322,6 +1424,17 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
                   _MsgStop( cLine, "Wrong compiler id" )
                   RETURN Nil
                ENDIF
+            ELSEIF cTmp == "guilib"
+               cTmp := Substr( cLine, nPos + 1 )
+               IF ( j := Ascan( HGuilib():aList, {|o|o:id == cTmp} ) ) > 0
+                  oGui := HGuilib():aList[j]
+                  cGuiId := oGui:id
+                  cPathHwgui := oGui:cPath
+                  cPathHwguiInc := oGui:cPathInc
+                  cPathHwguiLib := oGui:cPathLib
+                  cLibsHwGUI := oGui:cLibs
+               ENDIF
+
             ELSE
                _MsgStop( cLine, "Wrong option" )
                RETURN Nil

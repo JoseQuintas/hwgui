@@ -1,0 +1,18 @@
+#
+# $Id$
+#
+# HwBuilder project file for dbc utility
+# Launch it with:
+#      hwb dbc.hwprj   ( gui version )
+#   or hwbc dbc.hwprj  ( console version )
+
+{unix}cflags=-O3
+
+outname=dbchw
+
+{leto}prgflags=-dRDD_LETO
+{leto}libs=rddleto
+{leto}outname=dbchwl
+
+*.prg
+*.c

@@ -1,0 +1,14 @@
+#
+# $Id$
+# HwBuilder project file for designer
+# Launch it with:
+#      hwb designer.hwprj   ( gui version )
+#   or hwbc designer.hwprj  ( console version )
+
+objpath=obj
+{unix}cflags=-O3
+
+outname=designer
+
+*.prg
+*.c

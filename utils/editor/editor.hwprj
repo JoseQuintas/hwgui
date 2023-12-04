@@ -1,0 +1,13 @@
+#
+# $Id$
+# HwBuilder project file for editor
+# Launch it with:
+#      hwb editor.hwprj   ( gui version )
+#   or hwbc editor.hwprj  ( console version )
+
+{unix}cflags=-O3
+
+outname=editor
+
+*.prg
+*.c

@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-04 11:03 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + contrib/contrib.hwprj
+  + utils/dbc/dbc.hwprj
+  + utils/designer/designer.hwprj
+  + utils/editor/editor.hwprj
+    + Hwbuilder project files added
+  * utils/hwbuild/hwb.prg
+    * Further enhancements
+
 2023-12-01 17:39 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/editor/hcediext.prg
     ! Small fix

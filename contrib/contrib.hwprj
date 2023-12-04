@@ -1,0 +1,56 @@
+#
+# $Id$
+#
+# HwBuilder project file to build HwGUI contrib libraries
+# Launch it with:
+#      hwb contrib.hwprj   ( gui version )
+#   or hwbc contrib.hwprj  ( console version )
+
+makemode=on
+objpath=../obj
+outpath=../lib
+prgflags=-dUNICODE
+{win}cflags=-DUNICODE
+{unix}cflags=-O3 -DUNICODE
+target=lib
+
+:project gthwg
+target=lib
+outname=gthwg
+
+srcpath=gthwg
+gt_hwg.prg
+{unix}gt_hwgui_l.c
+{win}gt_hwgui_w.c
+
+:project misc
+target=lib
+outname=hwg_misc
+
+srcpath=misc
+*.prg
+*.c
+
+{win}:project activex
+{win}target=lib
+{win}outname=hbactivex
+
+{win}srcpath=activex
+{win}*.prg
+{win}*.c
+
+{win}:project ext_controls
+{win}target=lib
+{win}outname=hwg_extctrl
+
+{win}srcpath=ext_controls
+{win}*.prg
+{win}*.c
+
+{win}:project qhtm
+{win}target=lib
+{win}outname=hwg_qhtm
+
+{win}srcpath=qhtm
+{win}*.prg
+{win}*.c

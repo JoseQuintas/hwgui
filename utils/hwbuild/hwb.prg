@@ -349,6 +349,9 @@ STATIC FUNCTION StartGUI( cFile )
       MENU TITLE "&Project"
          MENUITEM "&Run" ACTION RunProject( .F. )
          MENUITEM "&Clean" ACTION RunProject( .T. )
+         SEPARATOR
+         MENUITEM "&Add option"+Chr(9)+"Ctrl+I" ACTION AddOpt2Prj() ACCELERATOR FCONTROL,Asc("I")
+         MENUITEM "&Add directory" ACTION AddDir2Prj()
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&Command line" ACTION Help_CmdLine()
@@ -552,6 +555,55 @@ STATIC FUNCTION FPaths()
    @ 400, 300 DRAWN SIZE 100, 32 COLOR CLR_WHITE HSTYLES aStyles TEXT 'Close' ON CLICK {||oDlg:Close()}
 
    ACTIVATE DIALOG oDlg CENTER
+
+   RETURN Nil
+
+STATIC FUNCTION AddOpt2Prj()
+
+   LOCAL arr := { "objpath", "srcpath", "libspath", "outpath", "outname", ;
+       "def_cflags", "def_lflags", "prgflags", "cflags", "gtlib", "libs", "target", ;
+        "makemode", "c_compiler", "guilib", ":project" }
+   LOCAL nChoic
+   LOCAL oEdit := HWindow():GetMain():oEdit, nLine
+
+   nChoic := hwg_WChoice( arr, "Add option",,, oFontMain,,,,, "Add", "Cancel" )
+   IF nChoic == 0
+      RETURN Nil
+   ENDIF
+
+   nLine := oEdit:nLineC
+   IF !Empty( oEdit:aText[nLine] )
+      oEdit:onKeyDown( VK_END, 0, 0 )
+      oEdit:InsText( { oEdit:nPosC, nLine }, Chr(10) + arr[nChoic] + '=' )
+   ELSE
+      oEdit:InsText( { 1, nLine }, arr[nChoic] + '=' )
+   ENDIF
+
+   AddDir2Prj( .T. )
+   hwg_SetFocus( oEdit:handle )
+
+   RETURN Nil
+
+STATIC FUNCTION AddDir2Prj( lSilent )
+
+   LOCAL oEdit := HWindow():GetMain():oEdit, cDir
+   LOCAL nLine := oEdit:nLineC, cLine := oEdit:aText[nLine]
+   LOCAL arr := { "objpath", "srcpath", "libspath", "outpath" }
+
+   IF !( Right( cLine,1 ) == "=" ) .OR. hb_Ascan( arr, hb_strShrink(cLine,1),,, .T. ) == 0
+      IF Empty( lSilent )
+         _MsgStop( "Wrong place" )
+      ENDIF
+      RETURN Nil
+   ENDIF
+
+   IF Empty( cDir := hwg_SelectFolder() )
+      RETURN Nil
+   ENDIF
+
+   oEdit:onKeyDown( VK_END, 0, 0 )
+   oEdit:InsText( { oEdit:nPosC, nLine }, cDir )
+   hwg_SetFocus( oEdit:handle )
 
    RETURN Nil
 
@@ -1096,7 +1148,7 @@ STATIC FUNCTION _MsgStop( cText, cTitle )
    ENDIF
    OutStd( hb_eol() + cText )
 #else
-   hwg_MsgStop( cText, Iif( Empty(cTitle), "HwBuild", cTitle ) )
+   hwg_MsgStop( cText, Iif( Empty(cTitle), "HwBuilder", cTitle ) )
 #endif
    RETURN Nil
 
@@ -1108,7 +1160,7 @@ STATIC FUNCTION _MsgInfo( cText, cTitle )
    ENDIF
    OutStd( hb_eol() + cText )
 #else
-   hwg_MsgInfo( cText, Iif( Empty(cTitle), "HwBuild", cTitle ) )
+   hwg_MsgInfo( cText, Iif( Empty(cTitle), "HwBuilder", cTitle ) )
 #endif
    RETURN Nil
 

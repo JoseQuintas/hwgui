@@ -41,7 +41,7 @@ CLASS HDrawn INHERIT HObject
    DATA nMouseOn      INIT 0
    DATA cTooltip, oTooltip
 
-   DATA bPaint, bClick, bChgState, bSize
+   DATA bPaint, bPaintItem, bClick, bChgState, bSize
    DATA Anchor        INIT 0
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
@@ -192,6 +192,7 @@ METHOD Paint( hDC ) CLASS HDrawn
             hwg_Rectangle( hDC, ::nLeft, ::nTop, ::nLeft+::nWidth-1, ::nTop+::nHeight-1, ::oPen:handle )
          ENDIF
       ENDIF
+
       IF !Empty( ::title )
          hwg_Settransparentmode( hDC, .T. )
          hwg_Settextcolor( hDC, ::tColor )
@@ -212,6 +213,9 @@ METHOD Paint( hDC ) CLASS HDrawn
                ::nLeft+::nWidth-::aMargin[3], ::nTop+::nHeight-::aMargin[4], ::nTextStyle )
          ENDIF
          hwg_Settransparentmode( hDC, .F. )
+      ENDIF
+      IF !Empty( ::bPaintItem )
+         Eval( ::bPaintItem, Self, hDC )
       ENDIF
    ENDIF
 

@@ -63,6 +63,7 @@ __inline long PtrToLong( const void *p )
 }
 #endif
 
+/*
 HB_FUNC( HWG_REGCLOSEKEY )
 {
    HKEY hwHandle = ( HKEY ) hb_parnl( 1 );
@@ -76,6 +77,7 @@ HB_FUNC( HWG_REGCLOSEKEY )
       hb_retnl( -1 );
    }
 }
+*/
 
 HB_FUNC( HWG_REGOPENKEYEX )
 {
@@ -165,6 +167,7 @@ HB_FUNC( HWG_REGSETVALUEEX )
    hb_strfree( hValue );
 }
 
+/*
 HB_FUNC( HWG_REGCREATEKEY )
 {
    HKEY hKey;
@@ -180,6 +183,7 @@ HB_FUNC( HWG_REGCREATEKEY )
    hb_retnl( nErr );
    hb_strfree( hValue );
 }
+*/
 
 //-------------------------------------------------------
 /*

@@ -29,7 +29,7 @@ HB_FUNC( HWG_REGCREATEKEY )
    HKEY hkResult = NULL;
    DWORD dwDisposition;
 
-   if( RegCreateKeyEx( (HKEY)hb_parnl(1), hb_parc(2), 0, NULL, 0, KEY_ALL_ACCESS, 
+   if( RegCreateKeyEx( (HKEY) hb_parnl(1), hb_parc(2), 0, NULL, 0, KEY_ALL_ACCESS, 
           NULL, &hkResult, &dwDisposition ) == ERROR_SUCCESS )
    {
       hb_retnl( (ULONG) hkResult );
@@ -61,7 +61,14 @@ HB_FUNC( HWG_REGOPENKEY )
 
 HB_FUNC( HWG_REGCLOSEKEY )
 {
-   RegCloseKey( (HKEY)hb_parnl(1) );
+   if( RegCloseKey( (HKEY) hb_parnl(1) ) == ERROR_SUCCESS )
+   {
+      hb_retnl( ERROR_SUCCESS );
+   }
+   else
+   {
+      hb_retnl( -1 );
+   }
 }
 
 /*

@@ -643,6 +643,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBoard
          o:SetState( STATE_MOVER, nPosX, nPosY )
          o:onMouseMove( nPosX, nPosY )
       ELSE
+         HDrawn():GetByState( STATE_PRESSED, ::aDrawn, {|o|o:SetState(STATE_NORMAL,nPosX,nPosY)}, .T. )
          HDrawn():GetByState( STATE_MOVER, ::aDrawn, {|o|o:SetState(STATE_NORMAL,nPosX,nPosY)}, .T. )
       ENDIF
 

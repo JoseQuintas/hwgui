@@ -11,7 +11,7 @@
 #endif
 #include "hbclass.ch"
 
-#define HWB_VERSION  "1.1"
+#define HWB_VERSION  "1.2"
 
 #define COMP_ID      1
 #define COMP_EXE     2
@@ -39,6 +39,13 @@
 #define CLR_DGRAY2   0x555555
 #define CLR_DGRAY3   0x888888
 #define CLR_LGRAY1   0xdddddd
+
+#define CLR_BLUE1   0x552916
+#define CLR_BLUE2   0x794431
+#define CLR_BLUE3   0x8e624f
+#define CLR_BLUE4   0xab8778
+#define CLR_BLUE5   0xc9a596
+#define CLR_BLUE6   0xe7c3b4
 
 STATIC cIniPath
 STATIC oPrg
@@ -170,12 +177,15 @@ FUNCTION Main( ... )
             _MsgStop( c, "Wrong option" )
             RETURN Nil
          ENDIF
-      ELSE
+      ENDIF
+   NEXT
+   FOR i := 1 TO Len( aParams )
+      IF Left( aParams[i],1 ) != "-"
          c := aParams[i]
          IF '*' $ c
-            af := hb_Directory( cSrcPath + hb_ps() + c )
+            af := hb_Directory( Iif( Empty(cSrcPath), "", cSrcPath + hb_ps() ) + c )
             FOR j := 1 TO Len( af )
-               AAdd( aFiles, { Iif( Empty( cSrcPath ), af[i,1], cSrcPath+hb_ps()+af[i,1] ), } )
+               AAdd( aFiles, { Iif( Empty(cSrcPath), af[i,1], cSrcPath + hb_ps() + af[i,1] ), } )
             NEXT
          ELSE
             c := Iif( !Empty( cSrcPath ) .AND. Empty( hb_fnameDir(c) ), cSrcPath + hb_ps() + c, c )
@@ -292,7 +302,7 @@ STATIC FUNCTION ShowResult( cOut )
    oEdit:SetWrap( .T. )
    oEdit:SetText( cOut )
 
-   @ 0, 600 BOARD oBoard SIZE oDlg:nWidth, 50 FONT oFontMain BACKCOLOR CLR_DGRAY1 ;
+   @ 0, 600 BOARD oBoard SIZE oDlg:nWidth, 50 FONT oFontMain BACKCOLOR CLR_DGRAY2 ;
       ON SIZE {|o,x,y|o:Move( ,y-50, x, )}
 
    @ 100, 10 DRAWN SIZE 80, 30 COLOR CLR_WHITE HSTYLES aStyles TEXT 'Close' ON CLICK {||oDlg:Close()}
@@ -364,6 +374,7 @@ STATIC FUNCTION StartGUI( cFile )
    IF hwg__isUnicode()
       oEdit:lUtf8 := .T.
    ENDIF
+   oEdit:bColorCur := oEdit:bColor
    oEdit:HighLighter( Hilight():New( ,, cKeyw,, "#", "{ }", .F. ) )
    oEdit:SetHili( HILIGHT_KEYW, oEdit:oFont:SetFontStyle( .T. ) )
    oEdit:SetHili( HILIGHT_COMM, oEdit:oFont:SetFontStyle( ,, .T. ), CLR_BLACK, CLR_LGRAY1 )
@@ -399,11 +410,19 @@ STATIC FUNCTION FPaths()
    LOCAL oDlg, oBoard, oEdi1, oEdi2, oEdi3, oEdi4, oEdi5, oEdi6, aEdi := Array( Len(HCompiler():aList), 2 )
    LOCAL oLenta, nTab := 1, aItems := { "Harbour", "HwGUI" }, aTabs := Array( Len(HCompiler():aList)+2 )
    LOCAL aCorners := { 4,4,4,4 }, y, i
+/*
+   LOCAL aStyles := { HStyle():New( { CLR_BLUE2 }, 1, aCorners ), ;
+      HStyle():New( { CLR_BLUE4 }, 2, aCorners ), ;
+      HStyle():New( { CLR_BLUE3 }, 1, aCorners ) }
+   LOCAL aStyleLenta := { HStyle():New( { CLR_BLUE2, CLR_BLUE4 }, 1 ), ;
+      HStyle():New( { CLR_BLUE3 }, 1,, 1, CLR_BLUE5 ) }
+*/
    LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_LGRAY1 }, 2, aCorners ), ;
       HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
    LOCAL aStyleLenta := { HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1 ), ;
-      HStyle():New( { CLR_DGRAY3 }, 1,, 1, CLR_WHITE ) }
+      HStyle():New( { CLR_DGRAY2, CLR_DGRAY3 }, 1,, 1, CLR_WHITE ) }
+
    LOCAL bSave := {||
       LOCAL lUpd := .F.
       IF !( Trim(oEdi1:Value) == cPathHrb )
@@ -470,7 +489,7 @@ STATIC FUNCTION FPaths()
 
    INIT DIALOG oDlg TITLE "Paths" AT 0, 0 SIZE 640, 360
 
-   @ 0, 0 BOARD oBoard SIZE oDlg:nWidth, oDlg:nHeight FONT oFontMain BACKCOLOR CLR_DGRAY1 ;
+   @ 0, 0 BOARD oBoard SIZE oDlg:nWidth, oDlg:nHeight FONT oFontMain BACKCOLOR CLR_DGRAY2 ;
       ON SIZE {|o,x,y|o:Move( ,, x, y )}
 
    FOR i := 1 TO Len( HCompiler():aList )
@@ -481,13 +500,13 @@ STATIC FUNCTION FPaths()
     oLenta:Value := nTab
 
    y := 60
-   @ 20, y DRAWN aTabs[1] SIZE 600, 200  COLOR CLR_WHITE BACKCOLOR CLR_DGRAYA
+   @ 20, y DRAWN aTabs[1] SIZE 600, 200  COLOR CLR_WHITE BACKCOLOR CLR_DGRAY2
 
-   @ 20, y DRAWN aTabs[2] SIZE 600, 200  COLOR CLR_WHITE BACKCOLOR CLR_DGRAYA
+   @ 20, y DRAWN aTabs[2] SIZE 600, 200  COLOR CLR_WHITE BACKCOLOR CLR_DGRAY2
    aTabs[2]:lDisable := .T.
 
    FOR i := 1 TO Len( HCompiler():aList )
-      @ 20, y DRAWN aTabs[i+2] SIZE 560, 190  COLOR CLR_WHITE BACKCOLOR CLR_DGRAYA
+      @ 20, y DRAWN aTabs[i+2] SIZE 560, 190  COLOR CLR_WHITE BACKCOLOR CLR_DGRAY2
       aTabs[i+2]:lDisable := .T.
    NEXT
 
@@ -1219,19 +1238,19 @@ CLASS HCompiler
    CLASS VAR aDef        SHARED INIT { ;
       {"bcc", "bcc32.exe", "\lib\win\bcc", "-c -d -w -O2", "-Gn -aa -Tpe", "-Gn -ap", "hbvm.lib", "hwgui.lib", ;
          "{path}\bcc32.exe {f} -I{hi} -I{gi} -o{obj} {src}", ;
-         "{path}\brc32 -r hwgui_xp -fohwgui_xp", ;
+         "{path}\brc32 -r {src} -fo{out}", ;
          "{path}\tlib {out} {objs}", ;
-         "{path}\ilink32 {f} -L{hL} -L{gL} {dL} c0w32.obj {objs}, {out},, {libs}", ;
+         "{path}\ilink32 {f} -L{hL} -L{gL} {dL} c0w32.obj {objs}, {out},, {libs},, {res}", ;
          "", "", "", "", "ws2_32.lib cw32.lib import32.lib iphlpapi.lib" }, ;
       {"mingw", "gcc.exe", "\lib\win\mingw", "-c -Wall", "-Wall -mwindows", "-Wall", "libhbvm.a", "libhwgui.a", ;
          "{path}\gcc {f} -I{hi} -I{gi} -o{obj} {src}", ;
-         "{path}\windres hwgui_xp.rc hwgui_xp.o", "{path}\ar rc {out} {objs}", ;
-         "{path}\gcc {f} -o{out} {objs} -L{hL} -L{gL} {dL} -Wl,--allow-multiple-definition -Wl,--start-group {libs} -Wl,--end-group", ;
+         "{path}\windres {src} {out}.o", "{path}\ar rc {out} {objs}", ;
+         "{path}\gcc {f} -o{out} {objs} {res} -L{hL} -L{gL} {dL} -Wl,--allow-multiple-definition -Wl,--start-group {libs} -Wl,--end-group", ;
          ".o", ".a", "-l{l}", "lib{l}.a", ;
          "-luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdiplus -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lws2_32 -lwsock32 -liphlpapi" }, ;
       {"msvc", "cl.exe", "\lib\win\msvc", "/TP /W3 /nologo /c", "-SUBSYSTEM:WINDOWS", "", "hbvm.lib", "hwgui.lib", ;
-         "{path}\cl.exe {f} /I{hi} /I{gi} /Fo{obj} {src}", "", "{path}\lib /out:{out} {objs}", ;
-         "{path}\link {f} /LIBPATH:{hL} /LIBPATH:{gL} {dL} {objs} {libs}", "", "", "", "", ;
+         "cl.exe {f} /I{hi} /I{gi} /Fo{obj} {src}", "rc -fo {out}.res {src}", "lib /out:{out} {objs}", ;
+         "link {f} /LIBPATH:{hL} /LIBPATH:{gL} {dL} {objs} {res} {libs}", "", "", "", "", ;
          "user32.lib gdi32.lib comdlg32.lib shell32.lib comctl32.lib winspool.lib advapi32.lib winmm.lib ws2_32.lib iphlpapi.lib OleAut32.Lib Ole32.Lib" }, ;
       {"gcc", "gcc", "/lib/linux/gcc", "-c -Wall -Wunused `pkg-config --cflags gtk+-2.0`", "`pkg-config --libs gtk+-2.0`", "", "libhbvm.a", "libhwgui.a", ;
          "gcc {f} -I{hi} -I{gi} -o{obj} {src}", "", "ar rc {out} {objs}", ;
@@ -1590,7 +1609,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
    LOCAL i, cCmd, cComp, cLine, cOut, cFullOut := "", lErr := .F., to, tc
    LOCAL cObjs := "", cFile, cBinary, cObjFile, cObjPath, lGuiApp := .T.
    LOCAL aLibs, cLibs := "", a4Delete := {}, tStart := hb_DtoT( Date(), Seconds()-1 )
-   LOCAL aEnv
+   LOCAL aEnv, cResFile := "", cResList := ""
 
    IF Empty( lClean ) .AND. !Empty( cLine := CheckOptions( Self ) )
       _MsgStop( cLine + hb_eol() + "Check your hwbuild.ini", "Wrong options" )
@@ -1648,7 +1667,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
 
    FOR i := 1 TO Len( ::aFiles )
       IF !( cFile := Lower( hb_fnameExt(::aFiles[i,1]) ) ) == ".prg" .AND. !( cFile == ".c" ) ;
-         .AND. !( cFile == ::oComp:cObjExt )
+         .AND. !( cFile == ::oComp:cObjExt ) .AND. !( cFile == ".rc" )
          _MsgStop( "Wrong source file extention", hb_fnameNameExt(::aFiles[i,1]) )
          RETURN ""
       ENDIF
@@ -1737,6 +1756,51 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       NEXT
    ENDIF
 
+#ifndef __PLATFORM__UNIX
+   IF !lErr
+      // Compile resource files
+      cOut := Nil
+      IF !Empty( ::oComp:cCmdRes ) .AND. Empty( ::cGtLib )
+         IF File( cPathHwgui + "\image\WindowsXP.Manifest" )
+            cLine := '1 24 "' + cPathHwgui + '\image\WindowsXP.Manifest"'
+            cResFile := "hwgui_xp.res"
+            IF ::oComp:family == "mingw"
+               cLine := Strtran( cLine, '\', '/' )
+               cResFile := "hwgui_xp.o"
+            ENDIF
+            hb_MemoWrit( "hwgui_xp.rc", cLine )
+            cLine := StrTran( StrTran( StrTran( ::oComp:cCmdRes, "{path}", ::oComp:cPath ), ;
+            "{src}", "hwgui_xp.rc" ), "{out}", "hwgui_xp" )
+            _ShowProgress( "> " + cLine, 1,, @cFullOut)
+            _RunApp( cLine, @cOut )
+            IF Valtype( cOut ) == "C"
+               _ShowProgress( cOut, 1,, @cFullOut )
+               AAdd( a4Delete, "hwgui_xp.rc" )
+               AAdd( a4Delete, cResFile )
+               cResList += cResFile
+            ENDIF
+         ENDIF
+
+         FOR i := 1 TO Len( ::aFiles )
+            cFile := _PS( ::aFiles[i,1] )
+            IF Lower( hb_fnameExt( cFile )) == ".rc"
+               cLine := StrTran( StrTran( StrTran( ::oComp:cCmdRes, "{path}", ::oComp:cPath ), ;
+                  "{src}", cFile ), "{out}", hb_fnameName( cFile ) + ;
+                  Iif( ::oComp:family == "mingw", "_rc", "" ) )
+               _ShowProgress( "> " + cLine, 1,, @cFullOut)
+               _RunApp( cLine, @cOut )
+               IF Valtype( cOut ) == "C"
+                  _ShowProgress( cOut, 1,, @cFullOut )
+                  cResFile := hb_fnameName( cFile ) + Iif( ::oComp:family == "mingw", "_rc.o", ".res" )
+                  AAdd( a4Delete, cResFile )
+                  cResList += " " + cResFile
+               ENDIF
+            ENDIF
+         NEXT
+      ENDIF
+   ENDIF
+#endif
+
    IF !lErr
       // Link the app
       cBinary := Iif( Empty( ::cOutName ), hb_fnameNameExt( ::aFiles[1,1] ), ::cOutName )
@@ -1763,26 +1827,13 @@ METHOD Build( lClean, lSub ) CLASS HwProject
             "{path}", ::oComp:cPath )
       ELSE
          cBinary := Iif( Empty(::cOutPath), "", ::cOutPath+hb_ps() ) + hb_fnameExtSet( cBinary, cExeExt )
-         IF !Empty( ::oComp:cCmdRes ) .AND. Empty( ::cGtLib )
-            cLine := '1 24 "' + cPathHwgui + '\image\WindowsXP.Manifest"'
-            IF ::oComp:family == "mingw"
-               cLine := Strtran( cLine, '\', '/' )
-            ENDIF
-            hb_MemoWrit( "hwgui_xp.rc", cLine )
-            cLine := StrTran( ::oComp:cCmdRes, "{path}", ::oComp:cPath )
-            _ShowProgress( "> " + cLine, 1,, @cFullOut)
-            _RunApp( cLine, @cOut )
-            _ShowProgress( cOut, 1,, @cFullOut )
-            AAdd( a4Delete, "hwgui_xp.rc" )
-            AAdd( a4Delete, "hwgui_xp.res" )
-         ENDIF
-         cLine := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( ;
+         cLine := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( ;
              ::oComp:cCmdLinkExe, "{out}", cBinary ), "{objs}", cObjs ), "{path}", ::oComp:cPath ), ;
              "{f}", Iif( ::cDefFlagsL == Nil, Iif( lGuiApp, ::oComp:cLinkFlagsGui, ;
              ::oComp:cLinkFlagsCons ), ::cDefFlagsL ) ), ;
              "{hL}", ::oComp:cPathHrbLib ), "{gL}", cPathHwguiLib ), ;
              "{dL}", Iif( Empty(::cLibsPath), "", Iif(::oComp:family=="msvc","/LIBPATH:","-L") + ::cLibsPath ) ), ;
-             "{libs}", cLibs + " " + ::oComp:cSysLibs )
+             "{libs}", cLibs + " " + ::oComp:cSysLibs ), "{res}", cResList )
          IF ::oComp:family == "bcc"
             AAdd( a4Delete, hb_fnameExtSet( cBinary, "tds" ) )
             AAdd( a4Delete, hb_fnameExtSet( cBinary, "map" ) )

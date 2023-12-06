@@ -422,12 +422,14 @@ METHOD Show( cText, xPos, yPos ) CLASS HDrawnTT
          arr := hwg_GetTextSize( hDC, arrt[i] )
          nw := Max( nw, arr[1] + 8 ); nh := Max( nh, arr[2] + 4 )
       NEXT
-      ::nHeight := (nh-2) * Len( arrt ) + 2
+      ::nHeight := (nh-2) * Len( arrt )
    ELSE
       arr := hwg_GetTextSize( hDC, cText )
       nw := arr[1] + 8; nh := arr[2] + 4
       ::nHeight := nh
    ENDIF
+   ::nHeight := nh := ::nHeight + ::aMargin[2] + ::aMargin[4]
+   nw += ::aMargin[1] + ::aMargin[3]
    hwg_Releasedc( oBoa:handle, hDC )
 
    FOR i := 1 TO Len( ::oParent:aDrawn )
@@ -647,3 +649,43 @@ METHOD SetGroupValue( nVal ) CLASS HDrawnRadio
    ENDIF
 
    RETURN 0
+
+CLASS HDrawnArrow INHERIT HDrawn
+
+   DATA nDirection
+   DATA oBrushArrow
+
+   METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      nDirection, oFont, bPaint, bClick, bChgState )
+   METHOD Paint( hDC )
+
+ENDCLASS
+
+METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      nDirection, oFont, bPaint, bClick, bChgState ) CLASS HDrawnArrow
+
+   ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
+      '', oFont, bPaint, bClick, bChgState )
+
+   ::nDirection := Iif( Empty(nDirection) .OR. nDirection > 4, 1, nDirection )
+   ::oBrushArrow := HBrush():Add( ::tColor )
+
+   RETURN Self
+
+METHOD Paint( hDC ) CLASS HDrawnArrow
+
+   STATIC bPaintItem := {|o,h|
+      LOCAL nw := Int( o:nWidth/2.2 ), nt := Int( o:nHeight/2 ), nl := Int( (o:nWidth-nw)/2 )
+      IF o:nDirection == 1
+         hwg_Triangle_Filled( h, o:nLeft+nl, o:nTop+nt, o:nLeft+nl+nw, o:nTop+nt-Int(nw/1.5), ;
+            o:nLeft+nl+nw, o:nTop+nt+Int(nw/1.5), .F., o:oBrushArrow )
+      ENDIF
+      RETURN Nil
+   }
+
+   IF Empty( ::bPaintItem )
+      ::bPaintItem := bPaintItem
+   ENDIF
+   ::Super:Paint( hDC )
+
+   RETURN Nil

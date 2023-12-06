@@ -1420,7 +1420,7 @@ Return Nil]]>
 #define CLR_GRAY_2   0xbbbbbb
 
 Function Test
-Local oDlg, oSay, oFont := HFont():Add( "MS Sans Serif",0,-24 )
+Local oDlg, oSay, oBtn1, oBtn2, oFont := HFont():Add( "MS Sans Serif",0,-24 )
 Local nSch := 10
 
    INIT DIALOG oDlg TITLE "Ownerbuttons with a timer"  ;
@@ -1959,7 +1959,8 @@ FUNCTION Test
       RANGE 0, 255 SIZE 60, 28
    @ 280, 160 DRAWN aUpd2[4] SIZE 40, 28 BACKCOLOR 0
 
-   @ 340, 120 DRAWN UPDOWN aUpd1[5] INIT 0 RANGE 1, 8 SIZE 60, 28
+   @ 20, 200 DRAWN SIZE 100, 24 COLOR CLR_WHITE BACKCOLOR 0 TEXT "direction:"
+   @ 120,200 DRAWN UPDOWN aUpd1[5] INIT 0 RANGE 1, 8 SIZE 60, 28
 
    ShowStyle( oDlg )
 
@@ -2020,8 +2021,8 @@ STATIC FUNCTION ShowStyle( oDlg )
    LOCAL oDrawn := oDlg:oBoard:oDrawn, oEdi := oDlg:oBoard:oEdiStyle
    LOCAL nColor1 := oDrawn:aStyles[1]:aColors[1], nColor2 := oDrawn:aStyles[1]:aColors[2]
 
-   oEdi:SetText( "HStyle():New( { 0x" + hwg_ColorN2C(nColor1) + ;
-      Iif( nColor1 == nColor2, "", ", 0x" + hwg_ColorN2C(nColor2) ) + ;
+   oEdi:SetText( "HStyle():New( { 0x" + hb_numtohex(nColor1,6) + ;
+      Iif( nColor1 == nColor2, "", ", 0x" + hb_numtohex(nColor2,6) ) + ;
       " }, " + Ltrim(Str(oDrawn:aStyles[1]:nOrient)) + " )" )
 
    RETURN Nil]]>

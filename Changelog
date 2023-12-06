@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-06 17:02 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+  * source/gtk/hcontrol.prg
+  * source/winapi/hcontrol.prg
+  * source/cross/hdrawn.prg
+    * Fixes, HDrawnArray class added
+  * utils/hwbuild/hwb.prg
+    * Fixes and enhancements, .rc support added
+  * utils/tutorial/tutor_eng.xml
+
 2023-12-05 11:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg  
     * :bPaintItem added

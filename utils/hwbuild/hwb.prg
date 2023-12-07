@@ -11,7 +11,7 @@
 #endif
 #include "hbclass.ch"
 
-#define HWB_VERSION  "1.2"
+#define HWB_VERSION  "1.3"
 
 #define COMP_ID      1
 #define COMP_EXE     2
@@ -19,17 +19,18 @@
 #define COMP_FLAGS   4        // C compiler flags
 #define COMP_LFLAGSG 5        // Linker flags for gui app
 #define COMP_LFLAGSC 6        // Linker flags for console app
-#define COMP_HVM     7
-#define COMP_HWG     8
-#define COMP_CMD1    9        // Template for compiling
-#define COMP_CMD2    10       // Template for resource compiling
-#define COMP_CMDL    11       // Template for lib linking
-#define COMP_CMDE    12       // Template for exe linking
-#define COMP_OBJEXT  13
-#define COMP_LIBEXT  14
-#define COMP_TMPLLIB 15
-#define COMP_BINLIB  16
-#define COMP_SYSLIBS 17
+#define COMP_LFLAGSL 7        // Linker flags for library
+#define COMP_HVM     8
+#define COMP_HWG     9
+#define COMP_CMD1    10       // Template for compiling
+#define COMP_CMD2    11       // Template for resource compiling
+#define COMP_CMDL    12       // Template for lib linking
+#define COMP_CMDE    13       // Template for exe linking
+#define COMP_OBJEXT  14
+#define COMP_LIBEXT  15
+#define COMP_TMPLLIB 16
+#define COMP_BINLIB  17
+#define COMP_SYSLIBS 18
 
 #define CLR_WHITE    0xffffff
 #define CLR_BLACK    0
@@ -333,7 +334,7 @@ STATIC FUNCTION ShowResult( cOut )
 STATIC FUNCTION StartGUI( cFile )
 
    LOCAL oMain, oEdit
-   LOCAL cKeyw := ":project objpath srcpath libspath outpath outname def_cflags def_lflags prgflags cflags gtlib libs target makemode c_compiler guilib"
+   LOCAL cKeyw := ":project objpath srcpath libspath outpath outname def_cflags def_lflags def_libflags prgflags cflags gtlib libs target makemode c_compiler guilib"
    LOCAL bFont := {|o,nKey|
       LOCAL oFontNew, nHeight
       HB_SYMBOL_UNUSED( o )
@@ -580,7 +581,7 @@ STATIC FUNCTION FPaths()
 STATIC FUNCTION AddOpt2Prj()
 
    LOCAL arr := { "objpath", "srcpath", "libspath", "outpath", "outname", ;
-       "def_cflags", "def_lflags", "prgflags", "cflags", "gtlib", "libs", "target", ;
+       "def_cflags", "def_lflags", "def_libflags", "prgflags", "cflags", "gtlib", "libs", "target", ;
         "makemode", "c_compiler", "guilib", ":project" }
    LOCAL nChoic
    LOCAL oEdit := HWindow():GetMain():oEdit, nLine
@@ -870,6 +871,9 @@ STATIC FUNCTION ReadIni( cFile )
                   ELSEIF key == "def_linkflags" .AND. !Empty( cTmp := aSect[ key ] )
                      oComp:cLinkFlagsGui := cTmp
                      oComp:lLinkFlagsGui := .T.
+                  ELSEIF key == "def_libflags" .AND. !Empty( cTmp := aSect[ key ] )
+                     oComp:cLinkFlagsLib := cTmp
+                     oComp:lLinkFlagsLib := .T.
                   ELSEIF Left(key,4) == "env_" .AND. !Empty( cTmp := aSect[ key ] )
                      IF ( nPos := At( '=', cTmp ) ) > 0
                         AAdd( oComp:aEnv, {Left( cTmp,nPos-1 ), Substr( cTmp,nPos+1 )} )
@@ -1012,7 +1016,8 @@ STATIC FUNCTION WriteIni()
       s += "[C_COMPILER" + Iif( n == 1, "", "_" + Ltrim(Str(n)) ) + "]" + cr + ;
          "id=" + oComp:id + cr + "bin_path=" + ;
          oComp:cPath + cr + "harbour_lib_path=" + oComp:cPathHrbLib + cr + ;
-         "def_cflags=" + oComp:cFlags + cr + "def_linkflags=" + oComp:cLinkFlagsGui + cr
+         "def_cflags=" + oComp:cFlags + cr + "def_linkflags=" + oComp:cLinkFlagsGui + cr + ;
+         + "def_libflags=" + oComp:cLinkFlagsLib + cr
       n1 := 0
       FOR EACH aEnv in oComp:aEnv
          s += "env_" + Ltrim(Str(++n1)) + "=" + aEnv[1] + "=" + aEnv[2] + cr
@@ -1058,6 +1063,9 @@ STATIC FUNCTION IsIniDataChanged()
       ENDIF
       IF !oComp:lLinkFlagsGui .AND. !Empty( oComp:cLinkFlagsGui )
          RETURN ( oComp:lLinkFlagsGui := .T. )
+      ENDIF
+      IF !oComp:lLinkFlagsLib .AND. !Empty( oComp:cLinkFlagsLib )
+         RETURN ( oComp:lLinkFlagsLib := .T. )
       ENDIF
    NEXT
 
@@ -1236,24 +1244,33 @@ STATIC FUNCTION _IniRead( cFileName )
 CLASS HCompiler
 
    CLASS VAR aDef        SHARED INIT { ;
-      {"bcc", "bcc32.exe", "\lib\win\bcc", "-c -d -w -O2", "-Gn -aa -Tpe", "-Gn -ap", "hbvm.lib", "hwgui.lib", ;
+      {"bcc", "bcc32.exe", "\lib\win\bcc", "-c -d -w -O2", "-Gn -aa -Tpe", "-Gn -ap", "", ;
+         "hbvm.lib", "hwgui.lib", ;
          "{path}\bcc32.exe {f} -I{hi} -I{gi} -o{obj} {src}", ;
          "{path}\brc32 -r {src} -fo{out}", ;
-         "{path}\tlib {out} {objs}", ;
+         "{path}\tlib {f} {out} {objs}", ;
          "{path}\ilink32 {f} -L{hL} -L{gL} {dL} c0w32.obj {objs}, {out},, {libs},, {res}", ;
          "", "", "", "", "ws2_32.lib cw32.lib import32.lib iphlpapi.lib" }, ;
-      {"mingw", "gcc.exe", "\lib\win\mingw", "-c -Wall", "-Wall -mwindows", "-Wall", "libhbvm.a", "libhwgui.a", ;
+      {"mingw", "gcc.exe", "\lib\win\mingw", "-c -Wall", "-Wall -mwindows", "-Wall", "", ;
+         "libhbvm.a", "libhwgui.a", ;
          "{path}\gcc {f} -I{hi} -I{gi} -o{obj} {src}", ;
-         "{path}\windres {src} {out}.o", "{path}\ar rc {out} {objs}", ;
+         "{path}\windres {src} {out}.o", ;
+         "{path}\ar rc {f} {out} {objs}", ;
          "{path}\gcc {f} -o{out} {objs} {res} -L{hL} -L{gL} {dL} -Wl,--allow-multiple-definition -Wl,--start-group {libs} -Wl,--end-group", ;
          ".o", ".a", "-l{l}", "lib{l}.a", ;
          "-luser32 -lwinspool -lcomctl32 -lcomdlg32 -lgdiplus -lgdi32 -lole32 -loleaut32 -luuid -lwinmm -lws2_32 -lwsock32 -liphlpapi" }, ;
-      {"msvc", "cl.exe", "\lib\win\msvc", "/TP /W3 /nologo /c", "-SUBSYSTEM:WINDOWS", "", "hbvm.lib", "hwgui.lib", ;
-         "cl.exe {f} /I{hi} /I{gi} /Fo{obj} {src}", "rc -fo {out}.res {src}", "lib /out:{out} {objs}", ;
+      {"msvc", "cl.exe", "\lib\win\msvc", "/TP /W3 /nologo /c", "-SUBSYSTEM:WINDOWS", "", "", ;
+         "hbvm.lib", "hwgui.lib", ;
+         "cl.exe {f} /I{hi} /I{gi} /Fo{obj} {src}", ;
+         "rc -fo {out}.res {src}", ;
+         "lib {f} /out:{out} {objs}", ;
          "link {f} /LIBPATH:{hL} /LIBPATH:{gL} {dL} {objs} {res} {libs}", "", "", "", "", ;
          "user32.lib gdi32.lib comdlg32.lib shell32.lib comctl32.lib winspool.lib advapi32.lib winmm.lib ws2_32.lib iphlpapi.lib OleAut32.Lib Ole32.Lib" }, ;
-      {"gcc", "gcc", "/lib/linux/gcc", "-c -Wall -Wunused `pkg-config --cflags gtk+-2.0`", "`pkg-config --libs gtk+-2.0`", "", "libhbvm.a", "libhwgui.a", ;
-         "gcc {f} -I{hi} -I{gi} -o{obj} {src}", "", "ar rc {out} {objs}", ;
+      {"gcc", "gcc", "/lib/linux/gcc", "-c -Wall -Wunused `pkg-config --cflags gtk+-2.0`", ;
+         "`pkg-config --libs gtk+-2.0`", "", "", "libhbvm.a", "libhwgui.a", ;
+         "gcc {f} -I{hi} -I{gi} -o{obj} {src}", ;
+         "", ;
+         "ar rc {f} {out} {objs}", ;
          "gcc {objs} -o{out} -L{hL} -L{gL} {dL} -Wl,--start-group {libs} -Wl,--end-group {f}", ;
          ".o", ".a", "-l{l}", "lib{l}.a", "-lm -lz -lpcre -ldl" } }
    //,, hwgui_xp.res
@@ -1268,6 +1285,7 @@ CLASS HCompiler
    DATA cFlags           INIT ""
    DATA cLinkFlagsGui    INIT ""
    DATA cLinkFlagsCons   INIT ""
+   DATA cLinkFlagsLib    INIT ""
    DATA cObjExt          INIT ".obj"
    DATA cLibExt          INIT ".obj"
    DATA cSysLibs         INIT ""
@@ -1285,6 +1303,7 @@ CLASS HCompiler
    DATA lPathHrbLib      INIT .F.
    DATA lFlags           INIT .F.
    DATA lLinkFlagsGui    INIT .F.
+   DATA lLinkFlagsLib    INIT .F.
 
    METHOD New( id, cFam )
 
@@ -1305,6 +1324,7 @@ METHOD New( id, cFam ) CLASS HCompiler
       ::cFlags := HCompiler():aDef[nDef,COMP_FLAGS]
       ::cLinkFlagsGui := HCompiler():aDef[nDef,COMP_LFLAGSG]
       ::cLinkFlagsCons := HCompiler():aDef[nDef,COMP_LFLAGSC]
+      ::cLinkFlagsLib := HCompiler():aDef[nDef,COMP_LFLAGSL]
       ::cCmdComp := HCompiler():aDef[nDef,COMP_CMD1]
       ::cCmdRes  := HCompiler():aDef[nDef,COMP_CMD2]
       ::cCmdLinkLib := HCompiler():aDef[nDef,COMP_CMDL]
@@ -1369,6 +1389,7 @@ CLASS HwProject
 
    DATA cDefFlagsC INIT Nil
    DATA cDefFlagsL INIT Nil
+   DATA cDefFlagsLib INIT Nil
 
    DATA aProjects  INIT {}
 
@@ -1432,7 +1453,7 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
          DO WHILE Left( cLine,1 ) == '{'
             IF ( nPos := At( "}", cLine ) ) > 0
                IF ( ( cTmp := Substr( cLine, 2, nPos-2 ) ) == "unix" .AND. lUnix ) .OR. ;
-                  ( cTmp == "win" .AND. !lUnix ) .OR. oComp:family == cTmp .OR. ;
+                  ( cTmp == "win" .AND. !lUnix ) .OR. oComp:family == cTmp .OR. oComp:id == cTmp .OR. ;
                   ( !Empty( aUserPar ) .AND. hb_Ascan( aUserPar,cTmp,,,.T. ) > 0 )
                   cLine := Substr( cLine, nPos + 1 )
                ELSE
@@ -1456,6 +1477,9 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
 
             ELSEIF cTmp == "def_lflags"
                ::cDefFlagsL := Substr( cLine, nPos + 1 )
+
+            ELSEIF cTmp == "def_libflags"
+               ::cDefFlagsLib := Substr( cLine, nPos + 1 )
 
             ELSEIF cTmp == "prgflags"
                ::cFlagsPrg := Substr( cLine, nPos + 1 )
@@ -1544,6 +1568,9 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
                ENDIF
                IF Empty( o:cDefFlagsL ) .AND. !Empty( ::cDefFlagsL )
                   o:cDefFlagsL := ::cDefFlagsL
+               ENDIF
+               IF Empty( o:cDefFlagsLib ) .AND. !Empty( ::cDefFlagsLib )
+                  o:cDefFlagsLib := ::cDefFlagsLib
                ENDIF
             ELSE
                _MsgStop( cLine, "Wrong option" )
@@ -1822,9 +1849,9 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       IF ::lLib
          cBinary := Iif( Empty(::cOutPath), Iif(lUnix,"./",""), ::cOutPath+hb_ps() ) + StrTran( ::oComp:cBinLib, "{l}", cBinary )
          FErase( cBinary )
-         cLine := StrTran( StrTran( StrTran( ::oComp:cCmdLinkLib, "{out}", cBinary ), ;
+         cLine := StrTran( StrTran( StrTran( StrTran( ::oComp:cCmdLinkLib, "{out}", cBinary ), ;
             "{objs}", Iif( ::oComp:family == "bcc", StrTran( cObjs, " ", " +" ), cObjs ) ), ;
-            "{path}", ::oComp:cPath )
+            "{path}", ::oComp:cPath ), "{f}", Iif( ::cDefFlagsLib == Nil, ::oComp:cLinkFlagsLib, ::cDefFlagsLib ) )
       ELSE
          cBinary := Iif( Empty(::cOutPath), "", ::cOutPath+hb_ps() ) + hb_fnameExtSet( cBinary, cExeExt )
          cLine := StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( StrTran( ;

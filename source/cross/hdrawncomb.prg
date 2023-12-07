@@ -285,6 +285,26 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
                oFont, xInit, nLower, nUpper, bPaint, bChgState, arr ) CLASS HDrawnUpDown
 
    LOCAL n := 1, nw := Int( nHeight*2/3 ), cPict
+   STATIC bUp := {|o|
+      LOCAL nVal
+      o := o:oParent
+      nVal := o:Value
+      IF ++nVal > o:nUpper
+         nVal := o:nUpper
+      ENDIF
+      o:Value := nVal
+      RETURN Nil
+   }
+   STATIC bDown := {|o|
+      LOCAL nVal
+      o := o:oParent
+      nVal := o:Value
+      IF --nVal < o:nLower
+         nVal := o:nLower
+      ENDIF
+      o:Value := nVal
+      RETURN Nil
+   }
 
    ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, ;
       Iif(tcolor==Nil,CLR_BLACK,tcolor), Iif(bcolor==Nil,CLR_WHITE,bColor), aStyles,, oFont, bPaint,, bChgState )
@@ -330,18 +350,16 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bcolor, aStyles, ;
    ::oEdit:nTextStyle := DT_RIGHT
 
    nHeight := Int( nHeight / 2 )
-   ::oBtnUp := HDrawn():New( Self, ::nLeft+::nWidth-nw, ::nTop, nw, nHeight, ;
-      ::tcolor, ::bColor, aStyles, "", ::oFont )
-   ::oBtnDown := HDrawn():New( Self, ::nLeft+::nWidth-nw, ::nTop+nHeight-1, nw, nHeight, ;
-      ::tcolor, ::bColor, aStyles, "", ::oFont )
+   ::oBtnUp := HDrawnArrow():New( Self, ::nLeft+::nWidth-nw, ::nTop, nw, nHeight, ;
+      ::tcolor, ::bColor, aStyles, 2, 200,, bUp )
+   ::oBtnDown := HDrawnArrow():New( Self, ::nLeft+::nWidth-nw, ::nTop+nHeight-1, nw, nHeight, ;
+      ::tcolor, ::bColor, aStyles, 4, 200,, bDown )
 
    ::aDrawn := {}
 
    RETURN Self
 
 METHOD Paint( hDC ) CLASS HDrawnUpDown
-
-   LOCAL n := Int( ::oBtnUp:nHeight/3 ) + 1
 
    IF ::lHide .OR. ::lDisable
       RETURN Nil
@@ -354,18 +372,6 @@ METHOD Paint( hDC ) CLASS HDrawnUpDown
    ::oEdit:Paint( hDC )
    ::oBtnUp:Paint( hDC )
    ::oBtnDown:Paint( hDC )
-   IF Empty( ::arrowPen )
-      ::arrowPen := HPen():Add( PS_SOLID, 1, ::arrowColor )
-   ENDIF
-   hwg_SelectObject( hDC, ::arrowPen:handle )
-
-   hwg_MoveTo( hDC, ::oBtnUp:nLeft+n, ::oBtnUp:nTop+::oBtnUp:nHeight-n-1 )
-   hwg_LineTo( hDC, ::oBtnUp:nLeft+Int(::oBtnUp:nWidth/2), ::oBtnUp:nTop+n )
-   hwg_LineTo( hDC, ::oBtnUp:nLeft+::oBtnUp:nWidth-n, ::oBtnUp:nTop+::oBtnUp:nHeight-n, .T. )
-
-   hwg_MoveTo( hDC, ::oBtnDown:nLeft+n, ::oBtnDown:nTop+n+1 )
-   hwg_LineTo( hDC, ::oBtnDown:nLeft+Int(::oBtnDown:nWidth/2), ::oBtnDown:nTop+::oBtnDown:nHeight-n )
-   hwg_LineTo( hDC, ::oBtnDown:nLeft+::oBtnDown:nWidth-n, ::oBtnDown:nTop+n, .T. )
 
    RETURN Nil
 
@@ -385,27 +391,14 @@ METHOD onKey( msg, wParam, lParam ) CLASS HDrawnUpDown
 
 METHOD onMouseMove( xPos, yPos ) CLASS HDrawnUpDown
 
-   LOCAL l := .F.
-   IF ::oBtnUp:nState == STATE_PRESSED
-      IF !( xPos > ::oBtnUp:nLeft .AND. xPos < ::oBtnUp:nLeft+::oBtnUp:nWidth .AND. ;
-         yPos > ::oBtnUp:nTop .AND. yPos < ::oBtnUp:nTop+::oBtnUp:nHeight )
-         ::oBtnUp:nState := STATE_NORMAL
-         l := .T.
-         ::oBtnUp:Refresh()
-      ENDIF
-   ELSEIF ::oBtnDown:nState == STATE_PRESSED
-      IF !( xPos > ::oBtnDown:nLeft .AND. xPos < ::oBtnDown:nLeft+::oBtnDown:nWidth .AND. ;
+   IF !( xPos > ::oBtnUp:nLeft .AND. xPos < ::oBtnUp:nLeft+::oBtnUp:nWidth .AND. ;
+      yPos > ::oBtnUp:nTop .AND. yPos < ::oBtnUp:nTop+::oBtnUp:nHeight )
+      ::oBtnUp:onMouseMove( xPos, yPos )
+
+   ELSEIF !( xPos > ::oBtnDown:nLeft .AND. xPos < ::oBtnDown:nLeft+::oBtnDown:nWidth .AND. ;
          yPos > ::oBtnDown:nTop .AND. yPos < ::oBtnDown:nTop+::oBtnDown:nHeight )
-         ::oBtnDown:nState := STATE_NORMAL
-         l := .T.
-         ::oBtnDown:Refresh()
-      ENDIF
-   ENDIF
-   IF l
-      IF !Empty( ::oTimer )
-         ::oTimer:End()
-         ::oTimer := Nil
-      ENDIF
+      ::oBtnDown:onMouseMove( xPos, yPos )
+
    ENDIF
 
    RETURN ::Super:onMouseMove( xPos, yPos )
@@ -417,69 +410,24 @@ METHOD onMouseLeave() CLASS HDrawnUpDown
 
 METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnUpDown
 
-   LOCAL nVal := ::Value
    IF msg == WM_LBUTTONDOWN
       IF xPos > ::oBtnUp:nLeft .AND. xPos < ::oBtnUp:nLeft+::oBtnUp:nWidth .AND. yPos > ::oBtnUp:nTop .AND. yPos < ::oBtnUp:nTop+::oBtnUp:nHeight
-         ::oBtnUp:nState := STATE_PRESSED
-         IF ++nVal > ::nUpper
-            nVal := ::nUpper
-         ENDIF
-         ::Value := nVal
-         ::oTimer := HTimer():New( ::GetParentBoard(),, ::nPeriod, {|o|UpDownTimerProc(o,::oBtnUp)} )
-         ::oTimer:cargo := 8
+         ::oBtnUp:onButtonDown( msg, xPos, yPos )
       ELSEIF xPos > ::oBtnDown:nLeft .AND. xPos < ::oBtnDown:nLeft+::oBtnDown:nWidth .AND. yPos > ::oBtnDown:nTop .AND. yPos < ::oBtnDown:nTop+::oBtnDown:nHeight
-         ::oBtnDown:nState := STATE_PRESSED
-         IF --nVal < ::nLower
-            nVal := ::nLower
-         ENDIF
-         ::Value := nVal
-         ::oTimer := HTimer():New( ::GetParentBoard(),, ::nPeriod, {|o|UpDownTimerProc(o,::oBtnDown)} )
-         ::oTimer:cargo := 8
+         ::oBtnDown:onButtonDown( msg, xPos, yPos )
       ELSE
          ::oEdit:onButtonDown( msg, xPos, yPos )
       ENDIF
    ENDIF
+
    RETURN Nil
 
 METHOD onButtonUp( xPos, yPos ) CLASS HDrawnUpDown
 
-   HB_SYMBOL_UNUSED(xPos)
-   HB_SYMBOL_UNUSED(yPos)
-
    IF ::oBtnUp:nState == STATE_PRESSED
-      ::oBtnUp:nState := STATE_NORMAL
-      ::Refresh()
+      ::oBtnUp:onButtonUp( xPos, yPos )
    ELSEIF ::oBtnDown:nState == STATE_PRESSED
-      ::oBtnDown:nState := STATE_NORMAL
-      ::Refresh()
-   ENDIF
-   IF !Empty( ::oTimer )
-      ::oTimer:End()
-      ::oTimer := Nil
-   ENDIF
-
-   RETURN Nil
-
-STATIC FUNCTION UpDownTimerProc( op, oBtn )
-
-   LOCAL o := oBtn:oParent, nVal := o:Value
-
-   HB_SYMBOL_UNUSED(op)
-   IF o:oTimer:cargo > 0
-      o:oTimer:cargo --
-      RETURN Nil
-   ENDIF
-   IF oBtn == o:oBtnUp
-      IF ++nVal > o:nUpper
-         nVal := o:nUpper
-      ENDIF
-      o:Value := nVal
-
-   ELSEIF oBtn == o:oBtnDown
-      IF --nVal < o:nLower
-         nVal := o:nLower
-      ENDIF
-      o:Value := nVal
+      ::oBtnDown:onButtonUp( xPos, yPos )
    ENDIF
 
    RETURN Nil

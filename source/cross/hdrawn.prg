@@ -654,32 +654,64 @@ CLASS HDrawnArrow INHERIT HDrawn
 
    DATA nDirection
    DATA oBrushArrow
+   DATA nw, nh
+   DATA bAct
+
+   DATA  oTimer
+   DATA  nPeriod      INIT 0
 
    METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
-      nDirection, oFont, bPaint, bClick, bChgState )
+      nDirection, nPeriod, bPaint, bClick, bChgState )
    METHOD Paint( hDC )
+   METHOD onMouseMove( xPos, yPos )
+   METHOD onMouseLeave()
+   METHOD onButtonDown( msg, xPos, yPos )
+   METHOD onButtonUp( xPos, yPos )
 
 ENDCLASS
 
 METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
-      nDirection, oFont, bPaint, bClick, bChgState ) CLASS HDrawnArrow
+      nDirection, nPeriod, bPaint, bClick, bChgState ) CLASS HDrawnArrow
 
    ::Super:New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
-      '', oFont, bPaint, bClick, bChgState )
+      '',, bPaint,, bChgState )
 
    ::nDirection := Iif( Empty(nDirection) .OR. nDirection > 4, 1, nDirection )
+   ::nPeriod := Iif( Empty(nPeriod), 0, nPeriod )
    ::oBrushArrow := HBrush():Add( ::tColor )
+   ::bAct := bClick
 
    RETURN Self
 
 METHOD Paint( hDC ) CLASS HDrawnArrow
 
    STATIC bPaintItem := {|o,h|
-      LOCAL nw := Int( o:nWidth/2.2 ), nt := Int( o:nHeight/2 ), nl := Int( (o:nWidth-nw)/2 )
-      IF o:nDirection == 1
-         hwg_Triangle_Filled( h, o:nLeft+nl, o:nTop+nt, o:nLeft+nl+nw, o:nTop+nt-Int(nw/1.5), ;
-            o:nLeft+nl+nw, o:nTop+nt+Int(nw/1.5), .F., o:oBrushArrow )
+      LOCAL nh := Iif( Empty(o:nh), Max( 4, Int( Iif(o:nDirection==1.OR.o:nDirection==3,o:nWidth,o:nHeight)/2.4 ) ), o:nh )
+      LOCAL nw := Iif( Empty(o:nw), Int(nh/1.2), Int(o:nw/2) )
+      LOCAL nt, nl
+
+      IF o:nDirection == 1 .OR. o:nDirection == 3
+         nt := Int( o:nHeight/2 )
+         nl := Int( (o:nWidth-nh)/2 )
+         IF o:nDirection == 1
+            hwg_Triangle_Filled( h, o:nLeft+nl, o:nTop+nt, o:nLeft+nl+nh, o:nTop+nt-nw, ;
+               o:nLeft+nl+nh, o:nTop+nt+nw, .F., o:oBrushArrow:handle )
+         ELSE
+            hwg_Triangle_Filled( h, o:nLeft+o:nWidth-nl, o:nTop+nt, o:nLeft+o:nWidth-nl-nh, o:nTop+nt-nw, ;
+               o:nLeft+o:nWidth-nl-nh, o:nTop+nt+nw, .F., o:oBrushArrow:handle )
+         ENDIF
+      ELSE
+         nt := Int( o:nWidth/2 )
+         nl := Int( (o:nHeight-nh)/2 )
+         IF o:nDirection == 2
+            hwg_Triangle_Filled( h, o:nLeft+nt, o:nTop+nl, o:nLeft+nt-nw, o:nTop+nl+nh, ;
+               o:nLeft+nt+nw, o:nTop+nl+nh, .F., o:oBrushArrow:handle )
+         ELSE
+            hwg_Triangle_Filled( h, o:nLeft+nt, o:nTop+o:nHeight-nl, o:nLeft+nt-nw, o:nTop+o:nHeight-nl-nh, ;
+               o:nLeft+nt+nw, o:nTop+o:nHeight-nl-nh, .F., o:oBrushArrow:handle )
+         ENDIF
       ENDIF
+
       RETURN Nil
    }
 
@@ -687,5 +719,71 @@ METHOD Paint( hDC ) CLASS HDrawnArrow
       ::bPaintItem := bPaintItem
    ENDIF
    ::Super:Paint( hDC )
+
+   RETURN Nil
+
+METHOD onMouseMove( xPos, yPos ) CLASS HDrawnArrow
+
+   IF ::nState == STATE_PRESSED
+      IF !( xPos > ::nLeft .AND. xPos < ::nLeft + ::nWidth .AND. ;
+         yPos > ::nTop .AND. yPos < ::nTop + ::nHeight )
+         ::nState := STATE_NORMAL
+         ::Refresh()
+         IF !Empty( ::oTimer )
+            ::oTimer:End()
+            ::oTimer := Nil
+         ENDIF
+      ENDIF
+   ENDIF
+
+   RETURN ::Super:onMouseMove( xPos, yPos )
+
+METHOD onMouseLeave() CLASS HDrawnArrow
+
+   ::onButtonUp()
+   RETURN ::Super:onMouseLeave()
+
+METHOD onButtonDown( msg, xPos, yPos ) CLASS HDrawnArrow
+
+   IF msg == WM_LBUTTONDOWN
+      IF xPos > ::nLeft .AND. xPos < ::nLeft + ::nWidth .AND. yPos > ::nTop .AND. ;
+         yPos < ::nTop + ::nHeight
+         ::nState := STATE_PRESSED
+
+         IF !Empty( ::bAct )
+            Eval( ::bAct, Self )
+            IF ::nPeriod > 0
+               ::oTimer := HTimer():New( ::GetParentBoard(),, ::nPeriod, ;
+                  {|ot| HB_SYMBOL_UNUSED(ot),ArrowTimerProc(Self) } )
+               ::oTimer:cargo := 4
+            ENDIF
+         ENDIF
+      ENDIF
+   ENDIF
+   RETURN Nil
+
+METHOD onButtonUp( xPos, yPos ) CLASS HDrawnArrow
+
+   HB_SYMBOL_UNUSED(xPos)
+   HB_SYMBOL_UNUSED(yPos)
+
+   IF ::nState == STATE_PRESSED
+      ::nState := STATE_NORMAL
+      ::Refresh()
+   ENDIF
+   IF !Empty( ::oTimer )
+      ::oTimer:End()
+      ::oTimer := Nil
+   ENDIF
+
+   RETURN Nil
+
+STATIC FUNCTION ArrowTimerProc( o )
+
+   IF o:oTimer:cargo > 0
+      o:oTimer:cargo --
+      RETURN Nil
+   ENDIF
+   Eval( o:bAct, o )
 
    RETURN Nil

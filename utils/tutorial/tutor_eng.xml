@@ -1892,7 +1892,8 @@ Return Nil]]>
 #define CLR_BLACK    0x000000
 #define CLR_DGRAY2   0x555555
 #define CLR_DGRAY3   0x888888
-#define CLR_DGRAY4   0xdddddd
+#define CLR_DGRAY4   0xa0a0a0
+#define CLR_DGRAY5   0xc0c0c0
 
 FUNCTION Test
    LOCAL oDlg, oBoard, oDrawn, oEdiStyle, aUpd1 := Array( 5 ), aUpd2 := Array( 5 )
@@ -1903,6 +1904,9 @@ FUNCTION Test
    LOCAL aStylesBtn := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
       HStyle():New( { CLR_WHITE }, 2, aCorners ), ;
       HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
+   LOCAL aStylesArrow := { HStyle():New( { CLR_DGRAY3, CLR_DGRAY4 }, 1 ), ;
+      HStyle():New( { CLR_WHITE }, 2 ), ;
+      HStyle():New( { CLR_DGRAY5 }, 1 ) }
    LOCAL bColor := {|o|
       LOCAL a := o:cargo
       LOCAL nColor := Hwg_ChooseColor( a[3]:Value*256*256+a[2]:Value*256+a[1]:Value,.F. )
@@ -1914,7 +1918,7 @@ FUNCTION Test
       RETURN Nil
    }
 
-   INIT DIALOG oDlg TITLE "Set style"  ;
+   INIT DIALOG oDlg TITLE "Select style"  ;
       AT 210, 10  SIZE 500, 400 FONT oFont BACKCOLOR CLR_DGRAY2 ;
       ON INIT { ||hwg_Settimer( oDlg, aUpd1, aUpd2 ) }
 
@@ -1951,6 +1955,9 @@ FUNCTION Test
       RANGE 0, 255 SIZE 60, 28
    @ 280, 120 DRAWN aUpd1[4] SIZE 40, 28 BACKCOLOR 0
 
+   HDrawnArrow():New( , 340, 120, 24, 14, 0, , aStylesArrow, 2, 200,, {||fUp(aUpd1)} )
+   HDrawnArrow():New( , 340, 134, 24, 14, 0, , aStylesArrow, 4, 200,, {||fDown(aUpd1)} )
+
    @ 70, 160 DRAWN UPDOWN aUpd2[1] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[2] )[1] ;
       RANGE 0, 255 SIZE 60, 28
    @ 140, 160 DRAWN UPDOWN aUpd2[2] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[2] )[2] ;
@@ -1958,6 +1965,9 @@ FUNCTION Test
    @ 210, 160 DRAWN UPDOWN aUpd2[3] INIT hwg_ColorN2RGB( oDrawn:aStyles[1]:aColors[2] )[3] ;
       RANGE 0, 255 SIZE 60, 28
    @ 280, 160 DRAWN aUpd2[4] SIZE 40, 28 BACKCOLOR 0
+
+   HDrawnArrow():New( , 340, 160, 24, 14, 0, , aStylesArrow, 2, 200,, {||fUp(aUpd2)} )
+   HDrawnArrow():New( , 340, 174, 24, 14, 0, , aStylesArrow, 4, 200,, {||fDown(aUpd2)} )
 
    @ 20, 200 DRAWN SIZE 100, 24 COLOR CLR_WHITE BACKCOLOR 0 TEXT "direction:"
    @ 120,200 DRAWN UPDOWN aUpd1[5] INIT 0 RANGE 1, 8 SIZE 60, 28
@@ -1970,6 +1980,20 @@ FUNCTION Test
    ACTIVATE DIALOG oDlg
    oFont:Release()
 
+   RETURN Nil
+
+STATIC FUNCTION fUp( aUpd )
+
+   Eval( aUpd[1]:oBtnUp:bAct, aUpd[1]:oBtnUp )
+   Eval( aUpd[2]:oBtnUp:bAct, aUpd[2]:oBtnUp )
+   Eval( aUpd[3]:oBtnUp:bAct, aUpd[3]:oBtnUp )
+   RETURN Nil
+
+STATIC FUNCTION fDown( aUpd )
+
+   Eval( aUpd[1]:oBtnDown:bAct, aUpd[1]:oBtnDown )
+   Eval( aUpd[2]:oBtnDown:bAct, aUpd[2]:oBtnDown )
+   Eval( aUpd[3]:oBtnDown:bAct, aUpd[3]:oBtnDown )
    RETURN Nil
 
 STATIC FUNCTION hwg_Settimer( oDlg, aUpd1, aUpd2 )

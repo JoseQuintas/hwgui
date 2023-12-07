@@ -1,0 +1,29 @@
+             HwBuilder
+             Version 1.3
+   Copyright 2023 Alexander S. Kresin
+
+An utility for building programs written in Harbour - GUI and console.
+Binaries are available at http://www.kresin.ru/en/hwbuilder.html
+
+Usage:
+  hwbc <files>  [options...]
+   -bcc              use the Borland C compiler
+   -mingw            use the Mingw C compiler
+   -msvc             use the MS Visual Studio
+   -comp=<compiler>  use C compiler with specified id
+   -gui=<guilib>     use GUI library with specified id
+   -lib              build a library
+   -clean            erase project obj files
+   -q                shortened output
+   -gt<lib>          use specified GT library
+   -pf<options>, -prgflags=<options>  options for Harbour compiler
+   -cf<options>, -cflags=<options>    options for C compiler
+   -l<libraries>, -libs=<libraries>   a list of additionas libraries
+   -sp<path>, -srcpath=<path>         a path to source files
+   -o<name>, -out=<name>              a path and name of output file
+   -i<name>, -ini=<name>              a name of ini file
+
+For more information, see:
+      http://www.kresin.ru/notes/index_en.php?b=blog_en&n=8
+      http://www.kresin.ru/notes/index_en.php?b=blog_en&n=9
+      http://www.kresin.ru/notes/index_en.php?b=blog_en&n=10

@@ -15,6 +15,9 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-07 16:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  + utils/hwbuild/readme.en
+
 2023-12-07 13:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawn.prg
     * HDrawnArrow class finished

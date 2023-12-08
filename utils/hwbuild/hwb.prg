@@ -68,6 +68,7 @@ STATIC aHelp := { "hwbc <files>  [options...]", ;
   " -clean            erase project obj files", ;
   " -q                shortened output", ;
   " -gt<lib>          use specified GT library", ;
+  " -{<keyword>}      a keyword-condition for a project file", ;
   " -pf<options>, -prgflags=<options>  options for Harbour compiler", ;
   " -cf<options>, -cflags=<options>    options for C compiler", ;
   " -l<libraries>, -libs=<libraries>   a list of additionas libraries", ;

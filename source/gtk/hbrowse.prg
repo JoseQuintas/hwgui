@@ -1526,8 +1526,6 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
    LOCAL step, res := .F. , nrec
    LOCAL maxPos, nPos
    LOCAL ym := hwg_Hiword( lParam ), xm := hwg_Loword( lParam ), x1, fif
-   * Variables not used
-   * LOCAL hBrw := ::handle
 
    nLine := iif( ym < ::y1, 0, Int( (ym - ::y1 ) / (::height + 1 ) ) + 1 )
    step := nLine - ::rowPos
@@ -1762,13 +1760,9 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
 
    lSaveMem := .T.
 
-   * Variables not used
-   * lReadExit
-
    * Parameters not used
    HB_SYMBOL_UNUSED(wParam)
    HB_SYMBOL_UNUSED(lParam)
-
 
    bclsbutt := .T.
 
@@ -2097,7 +2091,6 @@ FUNCTION hwg_CREATEARLIST( oBrw, arr )
    oBrw:type  := BRW_ARRAY
    oBrw:aArray := arr
    IF Len( oBrw:aColumns ) == 0
-      // oBrw:aColumns := {}
       IF ValType( arr[1] ) == "A"
          FOR i := 1 TO Len( arr[1] )
             oBrw:AddColumn( HColumn():New( ,hwg_ColumnArBlock() ) )
@@ -2183,6 +2176,17 @@ FUNCTION hwg_VScrollPos( oBrw, nType, lEof, nPos )
          oBrw:Refresh()
       ENDIF
    ENDIF
+
+   RETURN Nil
+
+FUNCTION hwg_HScrollPos( oBrw, nType, lEof, nPos )
+
+   HB_SYMBOL_UNUSED( nType )
+   HB_SYMBOL_UNUSED( lEof )
+
+   hwg_SetAdjOptions( oBrw:hScrollH, nPos )
+   oBrw:nScrollH := nPos
+   oBrw:Refresh()
 
    RETURN Nil
 

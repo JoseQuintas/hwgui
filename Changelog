@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-08 11:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+    * hwg_HScrollPos() added for compatibility with winapi version
+  * utils/hwbuild/hwb.prg
+  * utils/hwbuild/readme.en
+    * Help info updated
+
 2023-12-07 16:08 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + utils/hwbuild/readme.en
 

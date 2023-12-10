@@ -5,7 +5,10 @@
 -n -w
 
 # The macro for unix has also effect on LINUX
-{unix}-lm -lz -lpcre -ldl
+{unix}-lm
+{unix}-lz
+{unix}-lpcre
+{unix}-ldl
 {unix}-static
 {unix}-d__LINUX__
 {unix}-d__GTK__

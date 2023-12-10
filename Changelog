@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-10 16:36 UTC-0200 José Quintas
+  * utils/tutorial/tutor.hbp
+    * space is not valid on hbp for conditional use
+
 2023-12-08 11:14 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hbrowse.prg
     * hwg_HScrollPos() added for compatibility with winapi version
@@ -46,7 +50,7 @@
   * utils/tutorial/tutor_eng.xml
 
 2023-12-05 11:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
-  * source/cross/hdrawn.prg  
+  * source/cross/hdrawn.prg
     * :bPaintItem added
   * source/winapi/registry.c
   * source/winapi/winreg.c
@@ -97,7 +101,7 @@
 2023-11-29 14:22 UTC+0300 Alexander Kresin <alex@belacy.ru>
   + hwgui.hwprj
     + Project file to build hwgui libraries, using HwBuilder
-  * source/cross/hdrawnbrw.prg  
+  * source/cross/hdrawnbrw.prg
   * utils/hwbuild/hwb.prg
   * utils/tutorial/tutor.prg
     * Further enhancements
@@ -379,7 +383,7 @@
 2023-10-13 15:55 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/hwgrun.prg
   * utils/tutorial/tutor.prg
-    * Tutorial updated    
+    * Tutorial updated
 
 2023-10-13 14:51 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/procmisc/cfuncs.c

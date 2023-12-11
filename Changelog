@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-11 17:53 UTC-0200 Jose Quintas
+   * test/dlgauto/*
+     * fully functional, can compile using hwgui or others
+     * can be used as a basic reference to/from hwgui (lib_xxx.prg)
+     * more icons but smaller than previous one
+     TODO: new controls for windows/linux
+
 2023-12-11 16:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawncomb.prg
   * contrib/contrib.hwprj
@@ -35,7 +42,7 @@
   * hwgui.hwprj
     ! Fixes
 
-2023-12-10 16:36 UTC-0200 José Quintas
+2023-12-10 16:36 UTC-0200 Jose Quintas
   * utils/tutorial/tutor.hbp
     * space is not valid on hbp for conditional use
 
@@ -1147,7 +1154,7 @@
   * utils/dbc/modistru.prg
     ! Fixed
 
-2023-07-31 21:05 UTC-0200 José Quintas
+2023-07-31 21:05 UTC-0200 Jose Quintas
   * source/winapi/tmci.prg
     * removed wrong descripton.
 
@@ -1226,7 +1233,7 @@
      hwg_GdiplusOpenImage() function added, HBitmap():Addfile() changed to
      use hwg_Gdiplus_OpenImage(), if hwg_OpenImage() is failed.
 
-2023-07-25 20:14 UTC-0200 José Quintas
+2023-07-25 20:14 UTC-0200 Jose Quintas
    - test/mixed/*
    + test/dlgauto/*
      ! no more mixed, now single autoapp for tests purpose
@@ -1368,17 +1375,17 @@
   * whatsnew.txt
     * Updated for v2.23 build 3
 
-2023-07-09 15:30 UTC-0200 José Quintas
+2023-07-09 15:30 UTC-0200 Jose Quintas
    * test/mixed/dlgautomain.prg
      ! my mistake on delete method declaration
 
-2023-07-09 13:39 UTC-0200 José Quintas
+2023-07-09 13:39 UTC-0200 Jose Quintas
    * samples/grid_5.prg
      ! close dbf. Now can run dialog again without error.
    * test/mixed/dlgautomain.prg
      ! delete method
 
-2023-07-08 19:02 UTC-0200 José Quintas
+2023-07-08 19:02 UTC-0200 Jose Quintas
    * test/mixed/dlgauto.prg
    * text/mixed/dlgautoedit.prg
      ! 3 edit style options, color in get focus, page change
@@ -1401,7 +1408,7 @@
    * contrib/tests/test1.prg
      * Sample rewritten
 
-2023-06-26 14:00 UTC-0200 José Quintas
+2023-06-26 14:00 UTC-0200 Jose Quintas
    * test/mixed/dlgauto.ch
    * test/mixed/dlgauto.prg
    * test/mixed/dlgautobtn.prg
@@ -1409,23 +1416,23 @@
    * test/mixed/dlgautomain.prg
      ! label as title of hedit, option to change label text
 
-2023-06-21 11:10 UTC-0200 José Quintas
+2023-06-21 11:10 UTC-0200 Jose Quintas
    * test/mixed/dlgauto.ch
    * test/mixed/dlgautoedit.prg
      ! tab and panel when EditList > 30
 
-2023-06-19 02:01 UTC-0200 José Quintas
+2023-06-19 02:01 UTC-0200 Jose Quintas
    * test/mixed/dlgautoedit.prg
      ! FieldNum() on EditCreate(): Now initial values are not Nil, and HEdit uses correct valtype
 
-2023-06-19 18:55 UTC-0200 José Quintas
+2023-06-19 18:55 UTC-0200 Jose Quintas
    + test/mixed/dlgauto.ch
    * test/mixed/dlgautobtn.prg
    * test/mixed/dlgautoedit.prg
    * test/mixed/dlgautomain.prg
      ! changed/moved #defines to solve an error
 
-2023-06-18 13:33 UTC-0200 José Quintas
+2023-06-18 13:33 UTC-0200 Jose Quintas
    * test/mixed/dlgauto.prg
    * test/mixed/dlgautobtn.prg
    - test/mixed/dlgautodat.prg
@@ -1438,7 +1445,7 @@
      ! removed wvg call on dlgmenu, if want compile using hwgui only
      TODO: numeric get need to be edited from right ?
 
-2023-06-15 08:10 UTC-0200 José Quintas
+2023-06-15 08:10 UTC-0200 Jose Quintas
    * .github/workflows/checkubuntu.yml
    * .github/workflows/checkwindows.yml
       ! Changed to harbour 3.2
@@ -1534,7 +1541,7 @@
    * contrib/gthwg/gt_hwgui_w.c
      * HB_GTI_WINTITLE support added
 
-2023-02-19 10:21 UTC+0200 José Quintas
+2023-02-19 10:21 UTC+0200 Jose Quintas
    * .github/workflow/checkubuntu.yml
      ! changed to harbour 3.2
    * hwgui.hbp
@@ -1560,7 +1567,7 @@
           missing Harbour function(s): hwg_getupdown()
 
 
-2023-02-09 15:54 UTC+0200 José Quintas
+2023-02-09 15:54 UTC+0200 Jose Quintas
   * source/winapi/draw.c
   * source/winapi/hownbtn.prg
    ! resize icon was not working, ok after to change from DrawIcon() to DrawIconEx()
@@ -1575,7 +1582,7 @@
   * contrib/Readme.txt
     ! Format too long lines
 
-2023-01-29 17:37 UTC+0200 José Quintas
+2023-01-29 17:37 UTC+0200 Jose Quintas
    * .github/workflows/checkubuntu.yml
    * .github/workflows/checkwindows.yml
     ! correction HB_VER_REVID
@@ -1583,7 +1590,7 @@
     ! I use git, sourceforge/github syncronized, but github is not an official address
 
 
-2023-01-29 17:07 UTC+0200 José Quintas
+2023-01-29 17:07 UTC+0200 Jose Quintas
    + .github/workflows/checkubuntu.yml
    + .github/workflows/checkwindows.yml
     ! first try to test compilation under ubuntu and windows on github
@@ -1605,19 +1612,19 @@
     ! (Syntax error)
 
 
-2023-01-26 09:30 UTC+0200 José Quintas
+2023-01-26 09:30 UTC+0200 Jose Quintas
    * source/gtk/*.prg
     | single format source code
     ! change some if;endif and iif() to if/endif block to avoid confusion
 
 
-2023-01-25 21:32 UTC+0200 José Quintas
+2023-01-25 21:32 UTC+0200 Jose Quintas
    * source/winapi/*.prg
     ! single format source code
     ! change some if;endif and iif() to if/endif block to avoid confusion
 
 
-2023-01-24 20:12 UTC+0200 José Quintas
+2023-01-24 20:12 UTC+0200 Jose Quintas
    - test/mixed/dlgempty.prg
    + test/mixed/dlgtextview.prg
    * test/mixed/dlget.prg
@@ -1642,7 +1649,7 @@
     ! Sample program checked for GTK3.
 
 
-2023-01-20 19:06 UTC+0200 José Quintas
+2023-01-20 19:06 UTC+0200 Jose Quintas
    * test/menu.prg
    * test/test.hbp
    + test/dlgget.prg
@@ -1651,7 +1658,7 @@
     ! removed gtwvg.hbc to use harbour gui default
 
 
-2023-01-19 12:36 UTC+0200 José Quintas
+2023-01-19 12:36 UTC+0200 Jose Quintas
    * samples/testget2.prg
     ! removed not used variable, renamed variable
     ! renamed hwg_settimer to avoid confusion about to be hwgui function
@@ -1715,7 +1722,7 @@
 
 2023-01-06 18:55 UTC+0100 Wilfried Brunken DF7BE
   * hwguiGTK3.hbc
-   ! José M. C. Quintas committed [r3189]:
+   ! Jose M. C. Quintas committed [r3189]:
    ! option to do not force gtgui as default
    ! Modification copied for GTK3
 

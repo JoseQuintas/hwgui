@@ -1,0 +1,18 @@
+#define RT_MANIFEST 24
+#define APP_MANIFEST 1
+
+APP_MANIFEST RT_MANIFEST "../resource/exe.manifest"
+
+AppIcon       ICON "../resource/icoBook.ico"
+icoDoor       ICON "../resource/icoDoor.ico"
+icoEdit       ICON "../resource/icoEdit.ico"
+icoGoFirst    ICON "../resource/icoGoFirst.ico"
+icoGoLast     ICON "../resource/icoGoLast.ico"
+icoGoLeft     ICON "../resource/icoGoLeft.ico"
+icoGoRight    ICON "../resource/icoGoRight.ico"
+icoMail       ICON "../resource/icoMail.ico"
+icoNoOk       ICON "../resource/icoNoOk.ico"
+icoOk         ICON "../resource/icoOk.ico"
+icoPlus       ICON "../resource/icoPlus.ico"
+icoPrint      ICON "../resource/icoPrint.ico"
+icoTrash      ICON "../resource/icoTrash.ico"

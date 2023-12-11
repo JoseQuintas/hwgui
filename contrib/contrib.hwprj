@@ -9,9 +9,11 @@
 makemode=on
 objpath=../obj
 outpath=../lib
+{win}{uni}objpath=../obj_uni
+{win}{uni}outpath=../lib_uni
 {win}{uni}prgflags=-dUNICODE
 {win}{uni}cflags=-DUNICODE
-{unix}cflags=-O3 -DUNICODE
+{unix}cflags=-O3
 target=lib
 
 :project gthwg

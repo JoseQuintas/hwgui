@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-11 16:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hdrawncomb.prg
+  * contrib/contrib.hwprj
+    ! Fixes
+
 2023-12-11 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * GET DATESELECT command added

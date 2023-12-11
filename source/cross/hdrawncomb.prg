@@ -548,7 +548,7 @@ METHOD Value( xValue ) CLASS HDrawnDate
 
 METHOD ListShow() CLASS HDrawnDate
 
-   LOCAL oBoa, oMC, arr, nw, nh, nt, oFont
+   LOCAL oBoa, oMC, arr, nw, nh, nl := 0, nt, oFont
 #ifdef __GTK__
    LOCAL hDC, od
 #endif
@@ -593,7 +593,11 @@ METHOD ListShow() CLASS HDrawnDate
    nw := nh := ::nWidth
    nt := oBoa:nTop+::nTop+::nHeight
 #endif
-   INIT DIALOG ::oList TITLE "" AT oBoa:nLeft+::nLeft, nt ;
+   IF !__ObjHasMsg( oBoa:oParent, "KEYLIST" )
+      nl := oBoa:oParent:nLeft
+      nt += oBoa:oParent:nTop
+   ENDIF
+   INIT DIALOG ::oList TITLE "" AT oBoa:nLeft+::nLeft+nl, nt ;
       SIZE nw, nh STYLE WND_NOTITLE + WND_NOSIZEBOX
 
    ::oList:bLostFocus := {||::ListHide()}

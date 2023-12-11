@@ -9,8 +9,8 @@
 makemode=on
 objpath=../obj
 outpath=../lib
-prgflags=-dUNICODE
-{win}cflags=-DUNICODE
+{win}{uni}prgflags=-dUNICODE
+{win}{uni}cflags=-DUNICODE
 {unix}cflags=-O3 -DUNICODE
 target=lib
 

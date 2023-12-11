@@ -93,6 +93,7 @@ CLASS HDrawnEdit INHERIT HDrawn
    DATA   nPosC        INIT 1
    DATA   bKeyDown, bRClick
    DATA   bGetFocus, bLostFocus
+   DATA   bSetGet
 
    DATA   nInit        INIT 0  PROTECTED
 
@@ -195,6 +196,9 @@ METHOD Value( xValue ) CLASS HDrawnEdit
          ::title := xValue
       ENDIF
       ::Refresh()
+      IF !Empty( ::bSetGet )
+         Eval( ::bSetGet, xValue, Self )
+      ENDIF
       RETURN xValue
    ELSE
       IF !Empty( ::oPicture )
@@ -206,6 +210,9 @@ METHOD Value( xValue ) CLASS HDrawnEdit
          ::xValue := CToD( ::xValue )
       ELSEIF ::cType == "N"
          ::xValue := Val( LTrim( ::xValue ) )
+      ENDIF
+      IF !Empty( ::bSetGet )
+         Eval( ::bSetGet, ::xValue, Self )
       ENDIF
    ENDIF
 
@@ -558,6 +565,7 @@ METHOD SetFocus() CLASS HDrawnEdit
 
 METHOD onKillFocus() CLASS HDrawnEdit
 
+   ::Value()
    IF ::bLostFocus != Nil
       Eval( ::bLostFocus, Self )
    ENDIF

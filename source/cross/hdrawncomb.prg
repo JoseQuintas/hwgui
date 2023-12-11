@@ -435,14 +435,14 @@ METHOD onButtonUp( xPos, yPos ) CLASS HDrawnUpDown
 CLASS HDateSelect INHERIT HBoard
 
    METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, color, bcolor, oFont, ;
-               dValue, bSize, bPaint, bChange  )
+               dValue, bSetGet, bLostFocus, bSize, bPaint, bChange  )
    METHOD bChange ( b ) SETGET
    METHOD Value ( xValue ) SETGET
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, color, bcolor, oFont, ;
-               dValue, bSize, bPaint, bChange ) CLASS HDateSelect
+               dValue, bSetGet, bLostFocus, bSize, bPaint, bChange ) CLASS HDateSelect
 
    color := Iif( color == Nil, CLR_BLACK, color )
    bColor := Iif( bColor == Nil, CLR_WHITE, bColor )
@@ -451,6 +451,11 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, color, bcolor, oFont,
 
    HDrawnDate():New( Self, 0, 0, nWidth, nHeight, color, bcolor,, oFont, ;
                dValue, bPaint, bChange )
+   ::aDrawn[1]:oEdit:bSetGet := bSetGet
+   ::aDrawn[1]:oEdit:bLostFocus := bLostFocus
+   IF Empty( dValue )
+      ::aDrawn[1]:oEdit:Value()
+   ENDIF
 
    RETURN Self
 
@@ -612,6 +617,7 @@ METHOD ListHide() CLASS HDrawnDate
    IF !Empty( ::oList )
       ::oList:Close()
       ::oList := Nil
+      ::oEdit:SetFocus()
       RETURN Nil
    ENDIF
 

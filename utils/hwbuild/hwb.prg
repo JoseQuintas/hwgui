@@ -11,7 +11,7 @@
 #endif
 #include "hbclass.ch"
 
-#define HWB_VERSION  "1.3"
+#define HWB_VERSION  "1.4"
 
 #define COMP_ID      1
 #define COMP_EXE     2
@@ -711,13 +711,127 @@ STATIC FUNCTION SaveProject()
 
 STATIC FUNCTION RunProject( lClean )
 
-   LOCAL oMain := HWindow():GetMain()
+   LOCAL oEdit := HWindow():GetMain():oEdit
+   LOCAL i, nPos, cLine, cTmp, l, aUserPar := {}, arr
+   LOCAL lCompilers := ( Len(HCompiler():aList) > 1 )
 
-   IF !Empty( oPrg := HwProject():Open( oMain:oEdit:GetText() ) )
+   FOR i := 1 TO Len( oEdit:aText )
+      IF !Empty( cLine := AllTrim( oEdit:aText[i] ) ) .AND. !( Left( cLine, 1 ) == "#" )
+         l := .T.
+         DO WHILE Left( cLine,1 ) == '{'
+            IF ( nPos := At( "}", cLine ) ) > 0
+               cTmp := AllTrim( Substr( cLine, 2, nPos-2 ) )
+               l := .T.
+               IF Left( cTmp,1 ) == "!"
+                  cTmp := LTrim( Substr( cTmp,2 ) )
+                  l := .F.
+               ENDIF
+               IF ( cTmp == "win" .AND. ( (lUnix .AND. l) .OR. (!lUnix .AND. !l) )  ) .OR. ;
+                  ( cTmp == "unix" .AND. ( (!lUnix .AND. l) .OR. (lUnix .AND. !l) ) )
+                  l := .F.
+                  EXIT
+               ENDIF
+               l := .T.
+               IF !( cTmp == "win" .OR. cTmp == "unix" .OR. ;
+                  Ascan( HCompiler():aList, {|o|o:id==cTmp .OR. o:family==cTmp} ) > 0 ) ;
+                  .AND. Ascan( aUserPar, {|a|a[2]==cTmp} ) == 0
+                  AAdd( aUserPar, { .F., cTmp } )
+               ENDIF
+               cLine := LTrim( Substr( cLine, nPos + 1 ) )
+            ELSE
+               _MsgStop( cLine, "Wrong option" )
+               RETURN .F.
+            ENDIF
+         ENDDO
+         IF l .AND. Left( cLine, 10 ) == "c_compiler"
+            lCompilers := .F.
+         ENDIF
+      ENDIF
+   NEXT
+
+   IF !Empty( aUserPar ) .OR. lCompilers
+      IF !SelectFromList( lCompilers, aUserPar )
+         RETURN .F.
+      ENDIF
+      IF !Empty( aUserPar ) .AND. Ascan( aUserPar, {|a|a[1]} ) > 0
+         arr := {}
+         FOR i := 1 TO Len( aUserPar )
+            IF aUserPar[i,1]
+               AAdd( arr, aUserPar[i,2] )
+            ENDIF
+         NEXT
+      ENDIF
+   ENDIF
+
+   IF !Empty( oPrg := HwProject():Open( oEdit:aText, oPrg:oComp, arr ) )
       oPrg:Build( lClean )
    ENDIF
 
-   RETURN Nil
+   RETURN .T.
+
+STATIC FUNCTION SelectFromList( lComp, arr )
+
+   LOCAL i, n := Len( arr ), x := Iif( lComp .AND. !Empty(arr), 20, 100 )
+   LOCAL oDlg, oBoard, lRes := .F.
+   LOCAL aCorners := { 4,4,4,4 }
+   LOCAL aStyles := { HStyle():New( { CLR_DGRAY2 }, 1, aCorners ), ;
+      HStyle():New( { CLR_LGRAY1 }, 2, aCorners ), ;
+      HStyle():New( { CLR_DGRAY3 }, 1, aCorners ) }
+   LOCAL bOk := {||
+      LOCAL j := 1
+      IF lComp
+         FOR i := 1 TO Len( HCompiler():aList )
+            IF oBoard:aDrawn[j]:Value
+               oPrg:oComp := HCompiler():aList[i]
+               EXIT
+            ENDIF
+            j += 2
+         NEXT
+         j := Len( HCompiler():aList ) * 2 + 1
+      ENDIF
+      FOR i := 1 TO Len( arr )
+         IF oBoard:aDrawn[j]:Value
+            arr[i,1] := .T.
+         ENDIF
+         j += 2
+      NEXT
+      lRes := .T.
+      oDlg:Close()
+      RETURN Nil
+   }
+
+   IF lComp
+      n := Max( n, Len(HCompiler():aList) )
+   ENDIF
+
+   INIT DIALOG oDlg TITLE "Select" AT 0,0 SIZE 300, n*40 + 80
+
+   @ 0, 0 BOARD oBoard SIZE oDlg:nWidth, oDlg:nHeight FONT oFontMain BACKCOLOR CLR_DGRAYA ;
+      ON SIZE {|o,x,y|o:Move( ,, x, y )}
+
+   IF lComp
+      FOR i := 1 TO Len( HCompiler():aList )
+         @ x, 12 + (i-1) * 40 DRAWN RADIO GROUP "m" SIZE 20, 30 COLOR CLR_WHITE ;
+            BACKCOLOR CLR_BLACK HSTYLES aStyles TEXT 'X' INIT (i==1)
+         @ x+30, 12 + (i-1) * 40 DRAWN SIZE 90, 30 COLOR CLR_WHITE TEXT HCompiler():aList[i]:id
+      NEXT
+      x += 150
+   ENDIF
+
+   FOR i := 1 TO Len( arr )
+      @ x, 12 + (i-1) * 40 DRAWN CHECK SIZE 20, 30 COLOR CLR_WHITE ;
+         BACKCOLOR CLR_BLACK HSTYLES aStyles TEXT 'X'
+      @ x+30, 12 + (i-1) * 40 DRAWN SIZE 90, 30 COLOR CLR_WHITE TEXT arr[i,2]
+   NEXT
+
+   @ 40, oDlg:nHeight - 50 DRAWN SIZE 80, 30 COLOR CLR_WHITE HSTYLES aStyles TEXT 'Ok' ;
+      ON CLICK bOk
+   @ 180, oDlg:nHeight - 50 DRAWN SIZE 80, 30 COLOR CLR_WHITE HSTYLES aStyles TEXT 'Cancel' ;
+      ON CLICK {||lRes:=.F.,oDlg:Close()}
+
+   ACTIVATE DIALOG oDlg CENTER
+
+   RETURN lRes
 
 #else
 
@@ -1431,7 +1545,7 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
 
 METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
 
-   LOCAL arr, i, j, nPos, af, ap, o, oGui
+   LOCAL arr, i, j, l, lYes, nPos, af, ap, o, oGui
    LOCAL cLine, cTmp, cTmp2, cSrcPath := "", lLib
 
    IF Empty( oComp )
@@ -1453,10 +1567,20 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
       IF !Empty( cLine := AllTrim( StrTran( arr[i], Chr(13), "" ) ) ) .AND. !( Left( cLine, 1 ) == "#" )
          DO WHILE Left( cLine,1 ) == '{'
             IF ( nPos := At( "}", cLine ) ) > 0
-               IF ( ( cTmp := Substr( cLine, 2, nPos-2 ) ) == "unix" .AND. lUnix ) .OR. ;
+               cTmp := AllTrim( Substr( cLine, 2, nPos-2 ) )
+               l := .T.
+               IF Left( cTmp,1 ) == "!"
+                  cTmp := LTrim( Substr( cTmp,2 ) )
+                  l := .F.
+               ENDIF
+               lYes := ( ( cTmp == "unix" .AND. lUnix ) .OR. ;
                   ( cTmp == "win" .AND. !lUnix ) .OR. oComp:family == cTmp .OR. oComp:id == cTmp .OR. ;
-                  ( !Empty( aUserPar ) .AND. hb_Ascan( aUserPar,cTmp,,,.T. ) > 0 )
-                  cLine := Substr( cLine, nPos + 1 )
+                  ( !Empty( aUserPar ) .AND. hb_Ascan( aUserPar,cTmp,,,.T. ) > 0 ) )
+               IF !l
+                  lYes := !lYes
+               ENDIF
+               IF lYes
+                  cLine := LTrim( Substr( cLine, nPos + 1 ) )
                ELSE
                   cLine := ""
                   EXIT

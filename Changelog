@@ -15,6 +15,21 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-11 15:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * GET DATESELECT command added
+  * source/common/editor/hceditb.prg
+    * :bSetGet data item added
+  * source/cross/hdrawncomb.prg
+    * GET DATESELECT support added
+  * utils/hwbuild/hwb.prg
+    * Some enhancements
+  * utils/tutorial/tutor_eng.xml
+    * GET DATESELECT instead of GET DATEPICKER
+  * contrib/contrib.hwprj
+  * hwgui.hwprj
+    ! Fixes
+
 2023-12-10 16:36 UTC-0200 José Quintas
   * utils/tutorial/tutor.hbp
     * space is not valid on hbp for conditional use

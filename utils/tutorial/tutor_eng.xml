@@ -1574,7 +1574,7 @@ FUNCTION Test
     </module>
   </chapter>
   <chapter name="Get system" >
-    <module name="Dialog with various Gets" ver="win">
+    <module name="Dialog with various Gets">
       <![CDATA[#include "hwgui.ch"
 Function DlgGet
 Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 )
@@ -1624,7 +1624,7 @@ Local upd := 12, d1 := Date()+1
                "Radio: " + Str(r1,1) + chr(10) + chr(13) +            ;
                "Combo: " + aCombo[cm] + chr(10) + chr(13) +           ;
                "UpDown: "+Str(upd) + chr(10) + chr(13) +              ;
-               "DatePicker: "+Dtoc(d1)                                ;
+               "DateSelect: "+Dtoc(d1)                                ;
                ,"Results:" )
    ENDIF
 Return Nil

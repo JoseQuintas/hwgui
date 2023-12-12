@@ -581,7 +581,7 @@ METHOD ListShow() CLASS HDrawnDate
       hwg_Selectobject( hDC,oFont:handle )
       arr := hwg_GetTextSize( hDC, "24x25x26x27x28x29x30" )
       hwg_Releasedc( oBoa:handle, hDC )
-      nw := arr[1] + 24
+      nw := Max( arr[1] + 24, ::nWidth )
       nh := arr[2] * 18
       //hwg_writelog( "1: "+str(arr[1])+" "+str(arr[2]) )
       //hwg_writelog( "2: "+str(nw)+" "+str(nh) )
@@ -596,6 +596,11 @@ METHOD ListShow() CLASS HDrawnDate
    IF !__ObjHasMsg( oBoa:oParent, "KEYLIST" )
       nl := oBoa:oParent:nLeft
       nt += oBoa:oParent:nTop
+#ifdef __GTK__
+      IF oBoa:oParent:Classname() == "HTAB"
+         nt += 26
+      ENDIF
+#endif
    ENDIF
    INIT DIALOG ::oList TITLE "" AT oBoa:nLeft+::nLeft+nl, nt ;
       SIZE nw, nh STYLE WND_NOTITLE + WND_NOSIZEBOX

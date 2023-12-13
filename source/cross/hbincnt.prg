@@ -25,13 +25,13 @@
 #define VER_HIGH   1
 #define VER_LOW       0
 #define HEAD_LEN     15
-#define CNT_FIX_LEN  15
+#define CNT_FIX_LEN  15  // A length of a contents item without item name
 
 #define OBJ_NAME      1
 #define OBJ_TYPE      2
-#define OBJ_VAL       3
+#define OBJ_VAL       3  // A position of item's body in a file
 #define OBJ_SIZE      4
-#define OBJ_ADDR      5
+#define OBJ_ADDR      5  // A position of a contents item in a file
 
 STATIC oResCnt
 STATIC cHead := "hwgbc"
@@ -142,6 +142,7 @@ METHOD Close() CLASS HBinC
 METHOD Add( cObjName, cType, cVal ) CLASS HBinC
 
    LOCAL nAddress, nSize, cAddress, cSize, nAddr
+   LOCAL cBuf, i
 
    IF !::lWriteAble
       RETURN .F.
@@ -152,16 +153,38 @@ METHOD Add( cObjName, cType, cVal ) CLASS HBinC
       RETURN .F.
    ENDIF
 
-   nAddress := ::nFileLen
-   nSize := Len( cVal )
-   nAddr := Iif( Empty(::aObjects), 0, ::aObjects[Len(::aObjects),OBJ_ADDR] + Len(::aObjects[Len(::aObjects),OBJ_NAME]) + CNT_FIX_LEN )
-   Aadd( ::aObjects, { cObjName, cType, nAddress, nSize, nAddr } )
-
    IF HEAD_LEN + ::nPassLen + ::nCntLen + Len(cObjName) + CNT_FIX_LEN > ::nCntBlocks*2048
       :: Pack()
       IF HEAD_LEN + ::nPassLen + ::nCntLen + Len(cObjName) + CNT_FIX_LEN > ::nCntBlocks*2048
+         // Resize the content
+         cBuf := Space( ::nFileLen - ::nCntBlocks*2048 )
+         FSeek( ::handle, ::nCntBlocks*2048, FS_SET )
+         FRead( ::handle, @cBuf, Len( cBuf ) )
+         cBuf := Replicate( Chr(0), 2048 ) + cBuf
+         FSeek( ::handle, ::nCntBlocks*2048, FS_SET )
+         FWrite( ::handle, cBuf )
+         FOR i := 1 TO Len( ::aObjects )
+            ::aObjects[i,OBJ_VAL] += 2048
+            nAddr := ::aObjects[i,OBJ_ADDR]
+            FSeek( ::handle, HEAD_LEN + ::nPassLen + nAddr + 1 + ;
+               Len( ::aObjects[i,OBJ_NAME] ) + 4, FS_SET )
+            nAddress := ::aObjects[i,OBJ_VAL]
+            cAddress := Chr( nAddress/16777216 ) + Chr( (nAddress/65536)%256 ) + ;
+               Chr( (nAddress/256)%65536 ) + Chr( nAddress%16777216 )
+            FWrite( ::handle, cAddress )
+         NEXT
+         ::nFileLen += 2048
+         ::nCntBlocks ++
+         FSeek( ::handle, 13, FS_SET )
+         FWrite( ::handle, Chr(::nCntBlocks) )
       ENDIF
    ENDIF
+
+   nAddress := ::nFileLen
+   nSize := Len( cVal )
+   nAddr := Iif( Empty(::aObjects), 0, ::aObjects[Len(::aObjects),OBJ_ADDR] + ;
+      Len(::aObjects[Len(::aObjects),OBJ_NAME]) + CNT_FIX_LEN )
+   Aadd( ::aObjects, { cObjName, cType, nAddress, nSize, nAddr } )
 
    FSeek( ::handle, 0, FS_END )
    FWrite( ::handle, cVal )

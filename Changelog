@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-13 13:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hbincnt.prg
+    * Added code to resize the container content
+  * utils/bincnt/bincnt.prg
+    * Added preview and info dialogs
+
 2023-12-12 11:34 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hdrawncomb.prg
     * DATESELECT size and position corrected

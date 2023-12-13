@@ -11,7 +11,10 @@
 #include "hbclass.ch"
 #include "fileio.ch"
 
-#define APP_VERSION  "1.0"
+#define APP_VERSION  "1.1"
+
+#define OBJ_NAME      1
+#define OBJ_TYPE      2
 
 STATIC oBrw, oContainer
 STATIC cHead := "hwgbc"
@@ -55,8 +58,10 @@ FUNCTION Main( cContainer )
          MENUITEM "&Delete item" ACTION CntDel()
          SEPARATOR
          MENUITEM "&Save item as" ACTION CntSave()
+         MENUITEM "&View item" ACTION CntView()
          SEPARATOR
          MENUITEM "&Pack" ACTION CntPack()
+         MENUITEM "&Info" ACTION CntInfo()
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION About()
@@ -67,6 +72,8 @@ FUNCTION Main( cContainer )
       MENUITEM "&Delete item" ACTION CntDel()
       SEPARATOR
       MENUITEM "&Save item as" ACTION CntSave()
+      SEPARATOR
+      MENUITEM "&View item" ACTION CntView()
    ENDMENU
 
    @ 0, 0 BROWSE oBrw ARRAY            ;
@@ -87,6 +94,7 @@ FUNCTION Main( cContainer )
    oBrw:lInFocus := .T.
 
    oBrw:bRClick := bRClick
+   oBrw:bEnter := {||CntView()}
 
    ADD STATUS PANEL TO oMainW HEIGHT 30 FONT oMainW:oFont ;
       HSTYLE oStyle PARTS 200, 120, 0
@@ -215,7 +223,6 @@ STATIC FUNCTION CntSave()
    LOCAL fname
 
 #ifdef __GTK__
-
    fname := hwg_Selectfile( "( *.* )", "*.*", CurDir() )
 #else
    fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() )
@@ -234,6 +241,62 @@ STATIC FUNCTION CntPack()
    oBrw:aArray := oContainer:aObjects
    oBrw:Top()
    oBrw:Refresh()
+
+   RETURN Nil
+
+STATIC FUNCTION CntView()
+
+   LOCAL oDlg
+   LOCAL name := oContainer:aObjects[oBrw:nCurrent,1], type := Trim( oContainer:aObjects[oBrw:nCurrent,2] )
+   LOCAL cBuf, handle, aBmpSize
+
+   IF !( Trim( type ) $ "bmp;jpg;png;gif;ico" )
+      RETURN Nil
+   ENDIF
+   IF !Empty( cBuf := oContainer:Get( name ) ) .AND. !Empty( handle := hwg_OpenImage( cBuf, .T. ) )
+      aBmpSize := hwg_Getbitmapsize( handle )
+   ELSE
+      RETURN Nil
+   ENDIF
+
+   INIT DIALOG oDlg TITLE  name + " " + ;
+      Ltrim(Str(aBmpSize[1])) + "x" + Ltrim(Str(aBmpSize[2])) ;
+      AT 0, 0 SIZE Max( aBmpSize[1] + 20, 220 ), aBmpSize[2] + 70 FONT HWindow():GetMain():oFont
+
+   @ 0, 0 BOARD oBoa SIZE oDlg:nWidth, oDlg:nHeight-50 ;
+      ON SIZE {|o,x,y|o:Move(,,x,y-50)} ON PAINT {|o,h|FPaint(o,h,handle)}
+
+   @ Int((oDlg:nWidth-100)/2), oDlg:nHeight - 50 BUTTON "Close" ON CLICK {|| oDlg:Close() } SIZE 100,32
+
+   ACTIVATE DIALOG oDlg CENTER
+
+   RETURN Nil
+
+STATIC FUNCTION FPaint( o, hDC, handle )
+
+   hwg_Drawbitmap( hDC, handle,, 10, 10 )
+
+   RETURN -1
+
+STATIC FUNCTION CntInfo()
+
+   LOCAL oDlg
+
+   INIT DIALOG oDlg TITLE "Info" ;
+      AT 0, 0 SIZE 280, 320 FONT HWindow():GetMain():oFont
+
+   @ 20, 40 SAY "Items:" SIZE 140,26 STYLE SS_LEFT
+   @ 160, 40 SAY Ltrim(Str( oContainer:nItems )) SIZE 100,26 STYLE SS_RIGHT
+
+   @ 20, 80 SAY "Content length:" SIZE 140,26 STYLE SS_LEFT
+   @ 160, 80 SAY Ltrim(Str( oContainer:nCntLen )) SIZE 100,26 STYLE SS_RIGHT
+
+   @ 20, 120 SAY "Content blocks:" SIZE 140,26 STYLE SS_LEFT
+   @ 160, 120 SAY Ltrim(Str( oContainer:nCntBlocks )) SIZE 100,26 STYLE SS_RIGHT
+
+   @ 60, 250 BUTTON "Close" ON CLICK {|| oDlg:Close() } SIZE 160,36
+
+   ACTIVATE DIALOG oDlg CENTER
 
    RETURN Nil
 

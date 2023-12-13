@@ -246,7 +246,7 @@ STATIC FUNCTION CntPack()
 
 STATIC FUNCTION CntView()
 
-   LOCAL oDlg
+   LOCAL oDlg, oBoa
    LOCAL name := oContainer:aObjects[oBrw:nCurrent,1], type := Trim( oContainer:aObjects[oBrw:nCurrent,2] )
    LOCAL cBuf, handle, aBmpSize
 
@@ -261,7 +261,8 @@ STATIC FUNCTION CntView()
 
    INIT DIALOG oDlg TITLE  name + " " + ;
       Ltrim(Str(aBmpSize[1])) + "x" + Ltrim(Str(aBmpSize[2])) ;
-      AT 0, 0 SIZE Max( aBmpSize[1] + 20, 220 ), aBmpSize[2] + 70 FONT HWindow():GetMain():oFont
+      AT 0, 0 SIZE Max( aBmpSize[1] + 20, 220 ), aBmpSize[2] + 70 FONT HWindow():GetMain():oFont ;
+      ON EXIT {||hwg_Deleteobject(handle),.T.}
 
    @ 0, 0 BOARD oBoa SIZE oDlg:nWidth, oDlg:nHeight-50 ;
       ON SIZE {|o,x,y|o:Move(,,x,y-50)} ON PAINT {|o,h|FPaint(o,h,handle)}

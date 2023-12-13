@@ -990,16 +990,19 @@ HB_FUNC( HWG_OPENIMAGE )
 {
    PHWGUI_PIXBUF hpix;
    short int iString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
-   GdkPixbuf * handle;
+   GdkPixbuf * handle = NULL;
 
    if( iString )
    {
    /* Load image from GDK pixbuffer */
       guint8 *buf = (guint8 *) hb_parc(1);
       GdkPixbufLoader *loader = gdk_pixbuf_loader_new();
+      short int iOk;
 
-      gdk_pixbuf_loader_write( loader, buf, hb_parclen(1), NULL );
-      handle = gdk_pixbuf_loader_get_pixbuf( loader );
+      iOk = gdk_pixbuf_loader_write( loader, buf, hb_parclen(1), NULL );
+      gdk_pixbuf_loader_close( loader, NULL );
+      if( iOk )
+         handle = gdk_pixbuf_loader_get_pixbuf( loader );
    }
    else
    /* Load image from file */

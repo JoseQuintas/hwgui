@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-13 14:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/cross/hbincnt.prg
+    ! Small fix
+  * source/gtk/draw.c
+    ! hwg_openimage() fixed
+
 2023-12-13 13:32 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hbincnt.prg
     * Added code to resize the container content

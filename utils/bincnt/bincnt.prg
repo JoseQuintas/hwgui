@@ -55,13 +55,14 @@ FUNCTION Main( cContainer )
       ENDMENU
       MENU TITLE "&Container" ID 1001
          MENUITEM "&Add item" ACTION CntAdd()
+         MENUITEM "&Import from folder" ACTION CntImport()
          MENUITEM "&Delete item" ACTION CntDel()
          SEPARATOR
          MENUITEM "&Save item as" ACTION CntSave()
          MENUITEM "&View item" ACTION CntView()
          SEPARATOR
          MENUITEM "&Pack" ACTION CntPack()
-         MENUITEM "&Info" ACTION CntInfo()
+         MENUITEM "In&fo" ACTION CntInfo()
       ENDMENU
       MENU TITLE "&Help"
          MENUITEM "&About" ACTION About()
@@ -205,6 +206,29 @@ STATIC FUNCTION CntAdd()
    @ 180, 200 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
 
    oDlg:Activate()
+
+   RETURN Nil
+
+STATIC FUNCTION CntImport()
+
+   LOCAL cDir := hwg_SelectFolder(), arr, i, n := 0
+
+   IF Empty( cDir )
+      RETURN Nil
+   ENDIF
+
+   cDir += hb_ps()
+   arr := Directory( cDir + "*.*" )
+   FOR i := 1 TO Len( arr )
+      IF oContainer:Add( hb_fnameName( arr[i,1] ), Substr( hb_fnameExt( arr[i,1] ), 2 ), ;
+         MemoRead( cDir + arr[i,1] ) )
+         n ++
+      ENDIF
+   NEXT
+
+   hwg_MsgInfo( Ltrim(Str(n)) + " files added" )
+
+   oBrw:Refresh()
 
    RETURN Nil
 

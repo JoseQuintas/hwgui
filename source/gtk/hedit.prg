@@ -162,6 +162,10 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
       IF ::cType != "N"
          ::lFirst := .F.
       ENDIF
+   ELSEIF msg == WM_LBUTTONUP
+      IF Empty( hwg_Edit_GetText( ::handle ) )
+         hwg_edit_Setpos( ::handle, 1 )
+      ENDIF
    ELSEIF msg == WM_DESTROY
       ::End()
    ELSEIF msg == WM_PASTE

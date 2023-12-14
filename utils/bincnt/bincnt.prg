@@ -16,7 +16,7 @@
 #define OBJ_NAME      1
 #define OBJ_TYPE      2
 
-STATIC oBrw, oContainer
+STATIC oBrw, oContainer, lCntUpdated := .F.
 STATIC cHead := "hwgbc"
 
 FUNCTION Main( cContainer )
@@ -44,7 +44,7 @@ FUNCTION Main( cContainer )
    PREPARE FONT oMainFont NAME "Georgia" WIDTH 0 HEIGHT - 17 CHARSET 4
 
    INIT WINDOW oMainW MAIN TITLE "Binary container manager" ;
-      AT 200, 0 SIZE 600, 540 FONT oMainFont
+      AT 200, 0 SIZE 600, 540 FONT oMainFont ON EXIT {||CntClose()}
 
    MENU OF oMainW
       MENU TITLE "&File"
@@ -55,11 +55,13 @@ FUNCTION Main( cContainer )
       ENDMENU
       MENU TITLE "&Container" ID 1001
          MENUITEM "&Add item" ACTION CntAdd()
-         MENUITEM "&Import from folder" ACTION CntImport()
          MENUITEM "&Delete item" ACTION CntDel()
          SEPARATOR
-         MENUITEM "&Save item as" ACTION CntSave()
+         MENUITEM "&Save item as" ACTION CntSaveItem()
          MENUITEM "&View item" ACTION CntView()
+         SEPARATOR
+         MENUITEM "&Import from folder" ACTION CntImport()
+         MENUITEM "&Export to prg" ACTION CntExport()
          SEPARATOR
          MENUITEM "&Pack" ACTION CntPack()
          MENUITEM "In&fo" ACTION CntInfo()
@@ -72,7 +74,7 @@ FUNCTION Main( cContainer )
    CONTEXT MENU oMenuBrw
       MENUITEM "&Delete item" ACTION CntDel()
       SEPARATOR
-      MENUITEM "&Save item as" ACTION CntSave()
+      MENUITEM "&Save item as" ACTION CntSaveItem()
       SEPARATOR
       MENUITEM "&View item" ACTION CntView()
    ENDMENU
@@ -116,16 +118,58 @@ FUNCTION Main( cContainer )
 
 STATIC FUNCTION CntCreate()
 
-   LOCAL fname
-
+   LOCAL fname, oEdit, lRes := .F., nChoic := 1
+   LOCAL bFile := { ||
 #ifdef __GTK__
-
-   fname := hwg_Selectfile( "( *.* )", "*.*", CurDir() )
+      fname := hwg_Selectfile( "( *.* )", "*.*", CurDir() )
 #else
-   fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() )
+      fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() )
 #endif
-   IF !Empty( fname )
-      IF !Empty( oContainer := HBinC():Create( fname ) )
+      IF !Empty( fname )
+         oEdit:value := fname
+      ENDIF
+      RETURN .T.
+   }
+   LOCAL bOk := { ||
+      CntClose()
+      IF Empty( fname := oEdit:value )
+         hwg_MsgStop( "Set file name" )
+         RETURN .F.
+      ENDIF
+      hwg_EndDialog()
+      lRes := .T.
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Create container" ;
+      AT 50, 100 SIZE 310, 250 FONT HWindow():GetMain():oFont
+
+   RADIOGROUP
+   @ 10,20 RADIOBUTTON "Binary container" SIZE 180, 24 ON CLICK {||nChoic := 1}
+   @ 10,60 RADIOBUTTON "Prg file" SIZE 180, 24 ON CLICK {||nChoic := 2}
+   END RADIOGROUP SELECTED 1
+
+   @ 10, 100 EDITBOX oEdit CAPTION "" STYLE ES_AUTOHSCROLL SIZE 200, 26
+   @ 210, 100 BUTTON "Browse" SIZE 80, 26 ON CLICK bFile
+
+   @ 20, 200 BUTTON "Ok" SIZE 100, 32 ON CLICK bOk
+   @ 180, 200 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+
+   oDlg:Activate()
+
+   IF lRes
+      IF nChoic == 1
+         oContainer := HBinC():Create( fname )
+      ELSE
+         IF !__mvExist( "HWG_RESO_ARR" )
+            __mvPublic( "HWG_RESO_ARR" )
+         ENDIF
+         __mvPut( "HWG_RESO_ARR", hb_hash() )
+         oContainer := HBinC():Create()
+         oContainer:aObjects := {}
+      ENDIF
+
+      IF !Empty( oContainer )
          hwg_WriteStatus( HWindow():GetMain(), 1, hb_fnameNameExt( fname ) )
          hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
          hwg_Enablemenuitem( , 1001, .T. , .T. )
@@ -142,52 +186,105 @@ STATIC FUNCTION CntCreate()
 
 STATIC FUNCTION CntOpen( fname )
 
+   LOCAL cBuf, n1, n2, h
+
+   CntClose()
+
    IF Empty( fname )
       fname := hwg_Selectfile( { "All files" }, { "*.*" }, "" )
    ENDIF
+
    IF !Empty( fname )
-      IF !Empty( oContainer := HBinC():Open( fname, .T. ) )
-         hwg_WriteStatus( HWindow():GetMain(), 1, hb_fnameNameExt( fname ) )
-         hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
-         hwg_Enablemenuitem( , 1001, .T. , .T. )
-         hwg_Drawmenubar( HWindow():GetMain():handle )
-         oBrw:aArray := oContainer:aObjects
-         oBrw:Refresh()
+      IF Lower( hb_fnameExt( fname ) ) == ".prg"
+         cBuf := MemoRead( fname )
+         IF ( n1 := hb_AtI( "INIT", cBuf, 1 ) ) > 0 .AND. ( n1 := hb_AtI( "RESOURCE", cBuf, n1 ) ) > 0 ;
+            .AND. ( n1 := hb_AtI( "hb_hash", cBuf, n1 ) ) > 0
+
+            h := hb_hash()
+            n1 := hb_At( '"', cBuf, n1 )
+
+            DO WHILE n1 > 0
+               n2 := hb_At( '"', cBuf, n1+1 )
+               cKey := Substr( cBuf, n1+1, n2-n1-1 )
+               n1 := hb_At( '{', cBuf, n2 )
+               n2 := hb_At( '}', cBuf, n1+1 )
+               cVal := &( Substr( cBuf, n1, n2-n1+1 ) )
+               hb_hset( h, cKey, cVal )
+               n1 := hb_At( '"', cBuf, n2+1 )
+            ENDDO
+
+            IF !__mvExist( "HWG_RESO_ARR" )
+               __mvPublic( "HWG_RESO_ARR" )
+            ENDIF
+            __mvPut( "HWG_RESO_ARR", h )
+            oContainer := HBinC():Create()
+            oContainer:aObjects := hb_hkeys( h )
+            FOR n1 := 1 TO Len( oContainer:aObjects )
+               oContainer:aObjects[n1] := { oContainer:aObjects[n1], ;
+                  hb_hGet(h,oContainer:aObjects[n1])[1], 0, ;
+                  Len( hb_hGet(h,oContainer:aObjects[n1])[2] ), 0 }
+            NEXT
+         ENDIF
       ELSE
-         hwg_WriteStatus( HWindow():GetMain(), 1, "" )
-         hwg_WriteStatus( HWindow():GetMain(), 2, "" )
-         hwg_MsgStop( "Error opening container" )
+         oContainer := HBinC():Open( fname, .T. )
       ENDIF
+   ENDIF
+
+   IF !Empty( oContainer )
+      hwg_WriteStatus( HWindow():GetMain(), 1, hb_fnameNameExt( fname ) )
+      hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
+      hwg_Enablemenuitem( , 1001, .T. , .T. )
+      hwg_Drawmenubar( HWindow():GetMain():handle )
+      oBrw:aArray := oContainer:aObjects
+      oBrw:Refresh()
+   ELSE
+      hwg_WriteStatus( HWindow():GetMain(), 1, "" )
+      hwg_WriteStatus( HWindow():GetMain(), 2, "" )
+      hwg_MsgStop( "Error opening container" )
    ENDIF
 
    RETURN Nil
 
+STATIC FUNCTION CntClose()
+
+   IF !Empty( oContainer )
+      IF oContainer:type == 1 .AND. lCntUpdated
+         IF hwg_MsgYesNo( "Save changes?" )
+            CntSave()
+         ENDIF
+      ENDIF
+      lCntUpdated := .F.
+      oContainer:Close()
+      oContainer := Nil
+      IF __mvExist( "HWG_RESO_ARR" )
+         __mvPut( "HWG_RESO_ARR", Nil )
+      ENDIF
+   ENDIF
+
+   RETURN .T.
+
 STATIC FUNCTION CntAdd()
    LOCAL oDlg, oEdit1, oEdit2, oEdit3, cFileName := "", cObjName := "", cType := ""
    LOCAL bFile := { ||
-   LOCAL cFile := hwg_Selectfile( "All files( *.* )", "*.*" )
-
-   IF !Empty( cFile )
-      oEdit1:value := cFile
-      oEdit2:value := Left( CutExten( CutPath(cFile ) ), 32 )
-      oEdit3:value := Left( FilExten( cFile ), 4 )
-      hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
-   ENDIF
-
-   RETURN .T.
-
+      LOCAL cFile := hwg_Selectfile( "All files( *.* )", "*.*" )
+      IF !Empty( cFile )
+         oEdit1:value := cFile
+         oEdit2:value := Left( CutExten( CutPath(cFile ) ), 32 )
+         oEdit3:value := Left( FilExten( cFile ), 4 )
+      ENDIF
+      RETURN .T.
    }
    LOCAL bOk := { ||
-   IF Empty( cFileName ) .OR. Empty( cObjName ) .OR. Empty( cType )
-      hwg_MsgStop( "Fill all fields!" )
-      RETURN .F.
-   ENDIF
-   oContainer:Add( cObjName, cType, MemoRead( cFileName ) )
-   hwg_EndDialog()
-   oBrw:Refresh()
-
-   RETURN .T.
-
+      IF Empty( cFileName ) .OR. Empty( cObjName ) .OR. Empty( cType )
+         hwg_MsgStop( "Fill all fields!" )
+         RETURN .F.
+      ENDIF
+      oContainer:Add( cObjName, cType, MemoRead( cFileName ) )
+      lCntUpdated := .T.
+      hwg_EndDialog()
+      hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
+      oBrw:Refresh()
+      RETURN .T.
    }
 
    INIT DIALOG oDlg TITLE "Add binary object" ;
@@ -225,10 +322,46 @@ STATIC FUNCTION CntImport()
          n ++
       ENDIF
    NEXT
+   lCntUpdated := .T.
 
    hwg_MsgInfo( Ltrim(Str(n)) + " files added" )
 
    oBrw:Refresh()
+
+   RETURN Nil
+
+STATIC FUNCTION CntExport()
+
+   LOCAL i, j, s, nLen := Len( oContainer:aObjects ), cBuf
+   LOCAL h, fname
+
+#ifdef __GTK__
+   fname := hwg_Selectfile( "( *.prg )", "*.prg", CurDir() )
+#else
+   fname := hwg_Savefile( "*.prg", "( *.prg )", "*.prg", CurDir() )
+#endif
+
+   IF Empty( fname )
+      RETURN Nil
+   ENDIF
+
+   h := FCreate( fname )
+   FWrite( h, e"INIT PROCEDURE RESOURCES\n   __mvPublic( \x22HWG_RESO_ARR\x22 )\n   __mvPut( \x22HWG_RESO_ARR\x22, hb_hash( ;\n" )
+
+   FOR i := 1 TO nLen
+      s := '"' + oContainer:aObjects[i,OBJ_NAME] + '", { "' + ;
+         Trim(oContainer:aObjects[i,OBJ_TYPE]) + '", e"'
+      hb_gcStep()
+      cBuf := oContainer:Get( oContainer:aObjects[i,OBJ_NAME] )
+      FOR j := 1 TO Len( cBuf )
+         s += "\x" + hb_NumToHex( hb_bPeek( cBuf,j ), 2 )
+      NEXT
+      s += '" }' + Iif( i == nLen, "", "," ) + e" ;\n"
+      FWrite( h, s )
+   NEXT
+
+   FWrite( h, e"   ) )\n   RETURN\n" )
+   FClose( h )
 
    RETURN Nil
 
@@ -237,12 +370,19 @@ STATIC FUNCTION CntDel()
 
    IF hwg_MsgYesNo( "Really delete " + oContainer:aObjects[n,1] + "?" )
       oContainer:Del( oContainer:aObjects[n,1] )
+      lCntUpdated := .T.
       oBrw:Refresh()
    ENDIF
 
    RETURN Nil
 
 STATIC FUNCTION CntSave()
+
+   CntExport()
+
+   RETURN Nil
+
+STATIC FUNCTION CntSaveItem()
    LOCAL n := oBrw:nCurrent
    LOCAL fname
 
@@ -259,6 +399,10 @@ STATIC FUNCTION CntSave()
    RETURN Nil
 
 STATIC FUNCTION CntPack()
+
+   IF oContainer:type == 1
+      RETURN Nil
+   ENDIF
 
    oContainer:Pack()
    hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
@@ -310,14 +454,17 @@ STATIC FUNCTION CntInfo()
    INIT DIALOG oDlg TITLE "Info" ;
       AT 0, 0 SIZE 280, 320 FONT HWindow():GetMain():oFont
 
-   @ 20, 40 SAY "Items:" SIZE 140,26 STYLE SS_LEFT
-   @ 160, 40 SAY Ltrim(Str( oContainer:nItems )) SIZE 100,26 STYLE SS_RIGHT
+   @ 20, 40 SAY "Type:" SIZE 140,26 STYLE SS_LEFT
+   @ 160, 40 SAY Iif( oContainer:type==0, "Binary", "Prg" ) SIZE 100,26 STYLE SS_RIGHT
 
-   @ 20, 80 SAY "Content length:" SIZE 140,26 STYLE SS_LEFT
-   @ 160, 80 SAY Ltrim(Str( oContainer:nCntLen )) SIZE 100,26 STYLE SS_RIGHT
+   @ 20, 80 SAY "Items:" SIZE 140,26 STYLE SS_LEFT
+   @ 160, 80 SAY Ltrim(Str( oContainer:nItems )) SIZE 100,26 STYLE SS_RIGHT
 
-   @ 20, 120 SAY "Content blocks:" SIZE 140,26 STYLE SS_LEFT
-   @ 160, 120 SAY Ltrim(Str( oContainer:nCntBlocks )) SIZE 100,26 STYLE SS_RIGHT
+   @ 20, 120 SAY "Content length:" SIZE 140,26 STYLE SS_LEFT
+   @ 160, 120 SAY Ltrim(Str( oContainer:nCntLen )) SIZE 100,26 STYLE SS_RIGHT
+
+   @ 20, 160 SAY "Content blocks:" SIZE 140,26 STYLE SS_LEFT
+   @ 160, 160 SAY Ltrim(Str( oContainer:nCntBlocks )) SIZE 100,26 STYLE SS_RIGHT
 
    @ 60, 250 BUTTON "Close" ON CLICK {|| oDlg:Close() } SIZE 160,36
 

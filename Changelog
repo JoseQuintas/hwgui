@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-14 17:01 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/hedit.prg
+    ! Position after mouse click in empty edit box fixed
+  * source/cross/hbincnt.prg
+  * utils/bincnt/bincnt.prg
+    * Added crossplatform possibility to have resources, embedded in executable file
+
 2023-12-13 21:07 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/cross/hbincnt.prg
     * Import from folder added

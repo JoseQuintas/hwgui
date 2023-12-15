@@ -15,6 +15,23 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-15 11:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/bincnt/bincnt.prg
+    * Some enhancements
+  + utils/tutorial/tutor_res.prg
+    * Added resources prg file, created by bincnt
+  * utils/tutorial/tutor.prg
+    * Changed to work with resources
+  + utils/tutorial/tutor.hwprj
+    + Added hwbuilder project file to build tutor
+  * utils/tutorial/tutor.hbp
+    * tutor_res added
+  - utils/tutorial/bld.bat
+  - utils/tutorial/bldgtkwin.bat
+  - utils/tutorial/bldgw.bat
+  - utils/tutorial/build.sh
+  - utils/tutorial/hbmk.sh
+
 2023-12-14 17:01 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
   * source/gtk/hedit.prg

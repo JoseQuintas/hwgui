@@ -26,5 +26,6 @@
 -o./tutor
 
 tutor.prg
+tutor_res.prg
 
 # ============== EOF of tutor.hbp =============

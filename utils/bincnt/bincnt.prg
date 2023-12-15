@@ -11,12 +11,16 @@
 #include "hbclass.ch"
 #include "fileio.ch"
 
-#define APP_VERSION  "1.1"
+#define APP_VERSION  "1.2"
+
+#define MENU_CONT    1001
+#define MENU_SAVE    1002
+#define MENU_SAVEAS  1003
 
 #define OBJ_NAME      1
 #define OBJ_TYPE      2
 
-STATIC oBrw, oContainer, lCntUpdated := .F.
+STATIC oBrw, oContainer, lCntUpdated := .F., cCntFile
 STATIC cHead := "hwgbc"
 
 FUNCTION Main( cContainer )
@@ -51,9 +55,12 @@ FUNCTION Main( cContainer )
          MENUITEM "&Create" ACTION CntCreate()
          MENUITEM "&Open" ACTION CntOpen()
          SEPARATOR
+         MENUITEM "&Save" ID MENU_SAVE ACTION CntSave()
+         MENUITEM "Save &as..." ID MENU_SAVEAS ACTION CntSaveAs()
+         SEPARATOR
          MENUITEM "&Exit" ACTION oMainW:Close()
       ENDMENU
-      MENU TITLE "&Container" ID 1001
+      MENU TITLE "&Container" ID MENU_CONT
          MENUITEM "&Add item" ACTION CntAdd()
          MENUITEM "&Delete item" ACTION CntDel()
          SEPARATOR
@@ -61,7 +68,6 @@ FUNCTION Main( cContainer )
          MENUITEM "&View item" ACTION CntView()
          SEPARATOR
          MENUITEM "&Import from folder" ACTION CntImport()
-         MENUITEM "&Export to prg" ACTION CntExport()
          SEPARATOR
          MENUITEM "&Pack" ACTION CntPack()
          MENUITEM "In&fo" ACTION CntInfo()
@@ -102,7 +108,9 @@ FUNCTION Main( cContainer )
    ADD STATUS PANEL TO oMainW HEIGHT 30 FONT oMainW:oFont ;
       HSTYLE oStyle PARTS 200, 120, 0
 
-   hwg_Enablemenuitem( , 1001, .F. , .T. )
+   hwg_Enablemenuitem( , MENU_CONT, .F. , .T. )
+   hwg_Enablemenuitem( , MENU_SAVE, .F. , .T. )
+   hwg_Enablemenuitem( , MENU_SAVEAS, .F. , .T. )
 
    IF cContainer != Nil
       CntOpen( cContainer )
@@ -167,12 +175,16 @@ STATIC FUNCTION CntCreate()
          __mvPut( "HWG_RESO_ARR", hb_hash() )
          oContainer := HBinC():Create()
          oContainer:aObjects := {}
+         lCntUpdated := .T.
+         cCntFile := fname
       ENDIF
 
       IF !Empty( oContainer )
          hwg_WriteStatus( HWindow():GetMain(), 1, hb_fnameNameExt( fname ) )
          hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
-         hwg_Enablemenuitem( , 1001, .T. , .T. )
+         hwg_Enablemenuitem( , MENU_CONT, .T., .T. )
+         hwg_Enablemenuitem( , MENU_SAVE, (nChoic == 2), .T. )
+         hwg_Enablemenuitem( , MENU_SAVEAS, .T. , .T. )
          hwg_Drawmenubar( HWindow():GetMain():handle )
          oBrw:aArray := oContainer:aObjects
          oBrw:Refresh()
@@ -224,6 +236,8 @@ STATIC FUNCTION CntOpen( fname )
                   hb_hGet(h,oContainer:aObjects[n1])[1], 0, ;
                   Len( hb_hGet(h,oContainer:aObjects[n1])[2] ), 0 }
             NEXT
+            hwg_Enablemenuitem( , MENU_SAVE, .T., .T. )
+            cCntFile := fname
          ENDIF
       ELSE
          oContainer := HBinC():Open( fname, .T. )
@@ -233,7 +247,8 @@ STATIC FUNCTION CntOpen( fname )
    IF !Empty( oContainer )
       hwg_WriteStatus( HWindow():GetMain(), 1, hb_fnameNameExt( fname ) )
       hwg_WriteStatus( HWindow():GetMain(), 2, "Items: " + LTrim( Str(oContainer:nItems ) ) )
-      hwg_Enablemenuitem( , 1001, .T. , .T. )
+      hwg_Enablemenuitem( , MENU_CONT, .T., .T. )
+      hwg_Enablemenuitem( , MENU_SAVEAS, .T. , .T. )
       hwg_Drawmenubar( HWindow():GetMain():handle )
       oBrw:aArray := oContainer:aObjects
       oBrw:Refresh()
@@ -259,6 +274,7 @@ STATIC FUNCTION CntClose()
       IF __mvExist( "HWG_RESO_ARR" )
          __mvPut( "HWG_RESO_ARR", Nil )
       ENDIF
+      cCntFile := Nil
    ENDIF
 
    RETURN .T.
@@ -330,22 +346,17 @@ STATIC FUNCTION CntImport()
 
    RETURN Nil
 
-STATIC FUNCTION CntExport()
+STATIC FUNCTION CntExport2Prg( fname )
 
    LOCAL i, j, s, nLen := Len( oContainer:aObjects ), cBuf
-   LOCAL h, fname
-
-#ifdef __GTK__
-   fname := hwg_Selectfile( "( *.prg )", "*.prg", CurDir() )
-#else
-   fname := hwg_Savefile( "*.prg", "( *.prg )", "*.prg", CurDir() )
-#endif
+   LOCAL h
 
    IF Empty( fname )
       RETURN Nil
    ENDIF
 
    h := FCreate( fname )
+   FWrite( h, "// Embedded resource file, created by Bincnt " + APP_VERSION + e". Do not edit!\n\n" )
    FWrite( h, e"INIT PROCEDURE RESOURCES\n   __mvPublic( \x22HWG_RESO_ARR\x22 )\n   __mvPut( \x22HWG_RESO_ARR\x22, hb_hash( ;\n" )
 
    FOR i := 1 TO nLen
@@ -365,6 +376,18 @@ STATIC FUNCTION CntExport()
 
    RETURN Nil
 
+STATIC FUNCTION CntExport2Bin( fname )
+
+   LOCAL oCntNew := HBinC():Create( fname ), i
+
+   FOR i := 1 TO Len( oContainer:aObjects )
+      oCntNew:Add( oContainer:aObjects[i,OBJ_NAME], oContainer:aObjects[i,OBJ_TYPE], ;
+         oContainer:Get( oContainer:aObjects[i,OBJ_NAME] ) )
+   NEXT
+   oCntNew:Close()
+
+   RETURN Nil
+
 STATIC FUNCTION CntDel()
    LOCAL n := oBrw:nCurrent
 
@@ -378,9 +401,62 @@ STATIC FUNCTION CntDel()
 
 STATIC FUNCTION CntSave()
 
-   CntExport()
+   CntExport2Prg( cCntFile )
 
    RETURN Nil
+
+STATIC FUNCTION CntSaveAs()
+
+   LOCAL oDlg, oEdit, nChoic := 1, fname, lRes := .F.
+   LOCAL bFile := { ||
+#ifdef __GTK__
+      fname := hwg_Selectfile( "( *.* )", "*.*", CurDir() )
+#else
+      fname := hwg_Savefile( "*.*", "( *.* )", "*.*", CurDir() )
+#endif
+      IF !Empty( fname )
+         oEdit:value := fname
+      ENDIF
+      RETURN .T.
+   }
+   LOCAL bOk := { ||
+      IF Empty( fname := oEdit:value )
+         hwg_MsgStop( "Set file name" )
+         RETURN .F.
+      ENDIF
+      hwg_EndDialog()
+      lRes := .T.
+      RETURN .T.
+   }
+
+   INIT DIALOG oDlg TITLE "Save as..." ;
+      AT 50, 100 SIZE 310, 250 FONT HWindow():GetMain():oFont
+
+   RADIOGROUP
+   @ 10,20 RADIOBUTTON "Binary container" SIZE 180, 24 ON CLICK {||nChoic := 1}
+   @ 10,60 RADIOBUTTON "Prg file" SIZE 180, 24 ON CLICK {||nChoic := 2}
+   END RADIOGROUP SELECTED 1
+
+   @ 10, 100 EDITBOX oEdit CAPTION "" STYLE ES_AUTOHSCROLL SIZE 200, 26
+   @ 210, 100 BUTTON "Browse" SIZE 80, 26 ON CLICK bFile
+
+   @ 20, 200 BUTTON "Ok" SIZE 100, 32 ON CLICK bOk
+   @ 180, 200 BUTTON "Cancel" ID IDCANCEL  SIZE 100, 32
+
+   oDlg:Activate()
+
+   IF lRes
+      IF nChoic == 2
+         CntExport2Prg( fname )
+      ELSEIF oContainer:type == 0
+         hb_vfCopyFile( oContainer:cName, fname )
+      ELSE
+         CntExport2Bin( fname )
+      ENDIF
+   ENDIF
+
+   RETURN Nil
+
 
 STATIC FUNCTION CntSaveItem()
    LOCAL n := oBrw:nCurrent

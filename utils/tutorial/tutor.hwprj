@@ -1,0 +1,15 @@
+#
+# $Id$
+# HwBuilder project file for tutor
+# Launch it with:
+#      hwb tutor.hwprj   ( gui version )
+#   or hwbc tutor.hwprj  ( console version )
+
+{unix}cflags=-O3
+
+:project hwgrun
+hwgrun.prg
+
+:project tutor
+tutor.prg
+tutor_res.prg

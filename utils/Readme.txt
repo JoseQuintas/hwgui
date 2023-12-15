@@ -100,6 +100,11 @@
    A notepad like, plain text editor, based on HcEdit class.
 
 
+  hwbuild \
+  ==========
+
+  A hbmk like utility, which is intended to build Harbour applications, especialy - GUI applications.
+
   tutorial \
   ==========
 
@@ -132,7 +137,7 @@
    chmod 755 *.sh
    ./hbmk.sh
 
-   
+ 
   statichelp \
   ============
 

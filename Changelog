@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-15 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/Readme.txt
+  * utils/bincnt/Readme.txt
+    * readme modified
+  - utils/bincnt/Crackled_items.png
+
 2023-12-15 11:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/bincnt/bincnt.prg
     * Some enhancements

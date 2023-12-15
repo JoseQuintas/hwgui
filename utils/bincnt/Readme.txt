@@ -1,7 +1,15 @@
 
-Readme file for Binary Resource Management in HWGUI programs.
+  $Id$
 
-$Id$
+  Readme file for Binary Resource Management in HWGUI programs.
+
+  The Binary container manager (bincnt) allows to create/open/modify a set of resources
+  (graphical, text and any other files, which are used by your application) in a crossplatform way.
+  This set may be a standalone binary file, which should be distributed with executables,
+  or a Harbour source file (prg), which should be compiled and linked with your application.
+  This method is a crossplatform replacement for Windows resource files (.rc).
+
+  ------------------------------------------------------------------------------------------------
 
 Created by DF7BE, 2020-09-07.
 
@@ -95,9 +103,6 @@ Contents:
 
     It seems, that the internal GTK variables are overwritten.
 
-
-
-
 3.) Additional information for WinAPI
 
     The Windows resources in the exe file can be read by the operating sytem for displaying
@@ -121,7 +126,7 @@ Contents:
 4.) Additional bug information
 
     - Container manager
-       The exchange or removal of items (files) is buggy.
+       ??? The exchange or removal of items (files) is buggy.
        So make a backup copy of your binary container file before you begin
        to add or edit items.
       Name conflict:
@@ -132,8 +137,8 @@ Contents:
        for example:
         astro.bmp, astro2.jpg, astro3.png
        This is done in the sample program "bincnts.prg".
-      Delete item not working:
-       This bug will be fixed if we have time.  
+      ??? Delete item not working:
+      ??? This bug will be fixed if we have time.  
 
     - Converting bitmaps to icons:
        First i converted a bitmap to icons with the "Greenfish Icon Editor" (gfie64),
@@ -312,8 +317,7 @@ The batch file is "samdbf.bat" and the program is
       USE              && Close DBF binary container
       USE <dbf> ...    && Open your own database(s)
 
-    Feel free to expand the code for other binary types.
-      
+    Feel free to expand the code for other binary types.   
    
 
 * =============== EOF of Readme.txt ================================

@@ -112,7 +112,7 @@ METHOD Activate() CLASS HEdit
 METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
 
    LOCAL oParent
-   LOCAL nPos, cText
+   LOCAL nPos, i, cText
 
    // hwg_WriteLog( "Edit: "+Str(msg,10)+"|"+Str(wParam,10)+"|"+Str(lParam,10) )
 
@@ -304,7 +304,7 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                wParam -= ( GDK_KP_0 - 48 )
             ENDIF
             IF !Empty( ::oPicture )
-               nPos := hwg_edit_Getpos( ::handle )
+               nPos := i := hwg_edit_Getpos( ::handle )
                ::title := cText := hwg_edit_Gettext( ::handle )
                cText := ::oPicture:GetApplyKey( cText, @nPos, hwg_Chr(wParam), ::lFirst, Set( _SET_INSERT ) )
                ::lFirst := .F.
@@ -313,6 +313,15 @@ METHOD onEvent( msg, wParam, lParam ) CLASS HEdit
                   hwg_SetGetUpdated( Self )
                ENDIF
                hwg_edit_SetPos( ::handle, nPos )
+               IF ::cType != "N" .AND. !Set( _SET_CONFIRM ) .AND. ;
+                  i == Len(::oPicture:cPicMask) .AND. !Empty( ::bSetGet )
+                  IF !hwg_GetSkip( oParent := ::oParent, ::handle, 1 )
+                     DO WHILE oParent != Nil .AND. !__ObjHasMsg( oParent, "GETLIST" )
+                        oParent := oParent:oParent
+                     ENDDO
+                     hwg_DlgCommand( oParent, IDOK )
+                  ENDIF
+               ENDIF
                RETURN 1
             ENDIF
          ELSE

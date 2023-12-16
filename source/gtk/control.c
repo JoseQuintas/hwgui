@@ -39,6 +39,8 @@
 #define ES_PASSWORD 32
 #define ES_MULTILINE        4
 #define ES_READONLY      2048
+#define ES_CENTER           1
+#define ES_RIGHT            2
 
 #define BS_AUTO3STATE       6
 #define BS_GROUPBOX         7
@@ -292,6 +294,8 @@ HB_FUNC( HWG_CREATEEDIT )
       hCtrl = gtk_entry_new(  );
       if( ulStyle & ES_PASSWORD )
          gtk_entry_set_visibility( ( GtkEntry * ) hCtrl, FALSE );
+      if( ulStyle & ES_RIGHT )
+         gtk_entry_set_alignment( ( GtkEntry * ) hCtrl, 1 );
    }
 
    GtkFixed *box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
@@ -1442,14 +1446,18 @@ HB_FUNC( HWG_SETFGCOLOR )
 
    if( label )
    {
-      /*
-      GtkStyle * style = gtk_style_copy( gtk_widget_get_style( label ) );
-      hwg_parse_color( hColor, &(style->fg[iType]) );
-      hwg_parse_color( hColor, &(style->text[iType]) );
-      gtk_widget_set_style( label, style );
-      */
       hwg_parse_color( hColor, &color );
-      gtk_widget_modify_fg( label, iType, &color );
+      if( GTK_IS_ENTRY( hCtrl ) )
+      {
+         GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
+         hwg_parse_color( hColor, &(style->fg[GTK_STATE_NORMAL]) );
+         hwg_parse_color( hColor, &(style->text[GTK_STATE_NORMAL]) );
+         gtk_widget_set_style( hCtrl, style );
+         //gtk_widget_modify_text( label, iType, &color );
+      }
+      else
+         gtk_widget_modify_fg( label, iType, &color );
+
    }
 }
 
@@ -1459,15 +1467,17 @@ HB_FUNC( HWG_SETBGCOLOR )
    HB_ULONG hColor = hb_parnl( 2 );
    GdkColor color;
 
-   /*
-   GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
-   hwg_parse_color( hColor, &(style->bg[GTK_STATE_NORMAL]) );
-   hwg_parse_color( hColor, &(style->base[GTK_STATE_NORMAL]) );
-   gtk_widget_set_style( hCtrl, style );
-   */
    hwg_parse_color( hColor, &color );
-   gtk_widget_modify_bg( hCtrl, GTK_STATE_NORMAL, &color );
-
+   if( GTK_IS_ENTRY( hCtrl ) )
+   {
+      GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
+      hwg_parse_color( hColor, &(style->bg[GTK_STATE_NORMAL]) );
+      hwg_parse_color( hColor, &(style->base[GTK_STATE_NORMAL]) );
+      gtk_widget_set_style( hCtrl, style );
+      //gtk_widget_modify_base( hCtrl, GTK_STATE_NORMAL, &color );
+   }
+   else
+      gtk_widget_modify_bg( hCtrl, GTK_STATE_NORMAL, &color );
 }
 
 #else

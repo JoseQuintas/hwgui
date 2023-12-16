@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-16 09:20 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+  * source/gtk/hedit.prg
+    ! Fixed some incompatibilities with winapi version
+    ! Fixed problems with colors in edit widget
+
 2023-12-15 14:15 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/Readme.txt
   * utils/bincnt/Readme.txt

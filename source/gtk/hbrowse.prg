@@ -145,7 +145,7 @@ CLASS HBrowse INHERIT HControl
    DATA bHScrollPos                            // Called when user move browse through horizontal scroll bar
    DATA bEnter, bKeyDown, bUpdate, bRClick
    DATA ALIAS                                  // Alias name of browsed database
-   DATA x1, y1, x2, y2, width, height
+   DATA x1, y1, x2, y2, width, height   INIT 0
    DATA minHeight INIT 0
    DATA lEditable INIT .T.
    DATA lAppable  INIT .F.

@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-17 20:16 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/control.c
+    ! Fixed problem with tab
+  * source/gtk/drawtext.c
+    ! Fixed problem with combobox and groupbox fonts
+  * source/gtk/hbrowse.prg
+   * Minor correction
+
 2023-12-17 15:38 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawtext.c
     ! Fixed problem with editbox fonts

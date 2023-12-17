@@ -755,6 +755,7 @@ HB_FUNC( HWG_CREATETABCONTROL )
    if( box )
       gtk_fixed_put( box, hCtrl, hb_parni( 4 ), hb_parni( 5 ) );
    gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
+   gtk_notebook_set_scrollable( (GtkNotebook*) hCtrl, 1 );
 
    g_signal_connect( hCtrl, "switch-page",
                       G_CALLBACK (cb_signal_tab), NULL );

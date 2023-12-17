@@ -304,6 +304,13 @@ HB_FUNC( HWG_SETCTRLFONT )
       hCtrl = gtk_bin_get_child( GTK_BIN( hCtrl ) );
    else if( GTK_IS_EVENT_BOX( hCtrl ) )
       hCtrl = gtk_bin_get_child( GTK_BIN( hCtrl ) );
+   else if( GTK_IS_ENTRY( hCtrl ) )
+   {
+      GtkStyle * style = gtk_style_copy( gtk_widget_get_style( hCtrl ) );
+      style->font_desc = ( (PHWGUI_FONT) HB_PARHANDLE(3) )->hFont;
+      gtk_widget_set_style( hCtrl, style );
+      return;
+   }
    else if( hLabel )
       hCtrl = (GtkWidget*) hLabel;
 

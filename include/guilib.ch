@@ -517,10 +517,11 @@
             [ ON CLICK <bClick> ]      ;
             [ STYLE <nStyle> ]         ;
             [ FONT <oFont> ]           ;
+            [ IMAGE <oImg> ]           ;
             [ TOOLTIP <ctoolt> ]       ;
           => ;
     [<oBut> := ] HButton():New( <oWnd>,<nId>,<nStyle>,<x>,<y>,<width>, ;
-             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor> );
+             <height>,<caption>,<oFont>,<bInit>,<bSize>,<bDraw>,<bClick>,<ctoolt>,<color>,<bcolor>,<oImg> );
     [; hwg_SetCtrlName( <oBut>,<(oBut)> )]
 
 #xcommand REDEFINE BUTTON [ <oBut> ]   ;

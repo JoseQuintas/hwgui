@@ -409,10 +409,11 @@ HB_FUNC( HWG_GETWINDOWSDIR )
 /* experimental state of this function */
 HB_FUNC( HWG_GETKEYSTATE )
 {
-  /* Attention ! gdk_window_get_pointer() is deprecated */
+/*
   GdkModifierType keyboard_state;
   gdk_window_get_pointer(NULL,NULL,NULL,&keyboard_state);
    hb_retni( keyboard_state & hb_parni( 1 ) );
+*/
 }
 
 HB_FUNC( HWG_SHOWSCROLLBAR )

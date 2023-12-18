@@ -378,23 +378,25 @@ CLASS HButton INHERIT HControl
 
    CLASS VAR winclass   INIT "BUTTON"
 
+   DATA oImg
    DATA bClick
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-      tcolor, bColor )
+      tcolor, bColor, oImg )
    METHOD Activate()
    METHOD Redefine( oWndParent, nId, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
       tcolor, bColor, cCaption )
    METHOD Init()
    METHOD GetText()     INLINE hwg_Getwindowtext( ::handle )
    METHOD SetText( c )
+   METHOD SetImage( oImg )
 
 ENDCLASS
 
 METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       cCaption, oFont, bInit, bSize, bPaint, bClick, cTooltip, ;
-      tcolor, bColor ) CLASS HButton
+      tcolor, bColor, oImg ) CLASS HButton
 
    nStyle := Hwg_BitOr( iif( nStyle == NIL, 0, nStyle ), BS_PUSHBUTTON + WS_TABSTOP )
 
@@ -404,6 +406,7 @@ METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, ;
       oFont, bInit, bSize, bPaint, cTooltip, tcolor, bColor )
    ::bClick  := bClick
    ::title   := cCaption
+   ::oImg := oImg
    ::Activate()
 
    IF ::id != IDOK .AND. ::id != IDCANCEL
@@ -422,6 +425,9 @@ METHOD Activate() CLASS HButton
       ::handle := hwg_Createbutton( ::oParent:handle, ::id, ::style, ;
          ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
          ::title )
+      IF !Empty( ::oImg )
+         ::SetImage( ::oImg )
+      ENDIF
       ::Init()
    ENDIF
 
@@ -450,12 +456,20 @@ METHOD Init() CLASS HButton
 
    RETURN  NIL
 
- METHOD SetText( c ) CLASS HButton
+METHOD SetText( c ) CLASS HButton
 
    hwg_Setwindowtext( ::Handle, ::title := c )
    hwg_Redrawwindow( ::handle, RDW_ERASE + RDW_INVALIDATE + RDW_UPDATENOW )
 
- RETURN NIL
+   RETURN NIL
+
+METHOD SetImage( oImg ) CLASS HButton
+
+   hwg_Sendmessage( ::handle, BM_SETIMAGE, Iif( oImg:Classname() == "HICON", ;
+      IMAGE_ICON, IMAGE_BITMAP ), oImg:handle )
+   ::Refresh()
+
+   RETURN NIL
 
    //- HGroup
 

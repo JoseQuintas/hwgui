@@ -1921,6 +1921,9 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo )
    ENDIF
 
    IF .NOT. bESCkey
+      IF !Empty( oColumn:bValid ) .AND. !Eval( oColumn:bValid, oBrw:varbuf, oBrw:oGet )
+         RETURN .F.
+      ENDIF
       IF oColumn:aList != Nil
          IF ValType( oBrw:varbuf ) == 'N'
             oBrw:varbuf := nChoic

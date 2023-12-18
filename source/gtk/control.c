@@ -206,11 +206,11 @@ HB_FUNC( HWG_STATIC_GETTEXT )
 */
 HB_FUNC( HWG_CREATEBUTTON )
 {
-   GtkWidget *hCtrl, *img;
+   GtkWidget *hCtrl;
    HB_ULONG ulStyle = hb_parnl( 3 );
    const char *cTitle = ( hb_pcount(  ) > 7 ) ? hb_parc( 8 ) : "";
    GtkFixed *box;
-   PHWGUI_PIXBUF szFile =
+   PHWGUI_PIXBUF hImg =
          HB_ISPOINTER( 9 ) ? ( PHWGUI_PIXBUF ) HB_PARHANDLE( 9 ) : NULL;
    gchar *gcTitle = hwg_convert_to_utf8( cTitle );
 
@@ -228,13 +228,14 @@ HB_FUNC( HWG_CREATEBUTTON )
    else
       hCtrl = gtk_button_new_with_mnemonic( gcTitle );
 
-#if GTK_CHECK_VERSION(2,4,1)
-   if( szFile )
+//#if GTK_CHECK_VERSION(2,4,1)
+   if( hImg )
    {
-      img = gtk_image_new_from_pixbuf( szFile->handle );
-      gtk_button_set_image( GTK_BUTTON( hCtrl ), img );
+      GtkSettings *default_settings = gtk_settings_get_default();
+      g_object_set(default_settings, "gtk-button-images", TRUE, NULL);
+      gtk_button_set_image( GTK_BUTTON( hCtrl ), gtk_image_new_from_pixbuf( hImg->handle ) );
    }
-#endif
+//#endif
    g_free( gcTitle );
    box = getFixedBox( ( GObject * ) HB_PARHANDLE( 1 ) );
    if( box )
@@ -243,6 +244,21 @@ HB_FUNC( HWG_CREATEBUTTON )
 
    HB_RETHANDLE( hCtrl );
 }
+
+HB_FUNC( HWG_BUTTON_SETIMAGE )
+{
+   GtkWidget *hCtrl = ( GtkWidget * ) HB_PARHANDLE( 1 );
+   PHWGUI_PIXBUF hImg =
+         HB_ISPOINTER( 2 ) ? ( PHWGUI_PIXBUF ) HB_PARHANDLE( 2 ) : NULL;
+
+   if( hImg )
+   {
+      GtkSettings *default_settings = gtk_settings_get_default();
+      g_object_set(default_settings, "gtk-button-images", TRUE, NULL);
+      gtk_button_set_image( GTK_BUTTON( hCtrl ), gtk_image_new_from_pixbuf( hImg->handle ) );
+   }
+}
+
 
 HB_FUNC( HWG_BUTTON_SETTEXT )
 {

@@ -257,7 +257,7 @@ FUNCTION gui_TabNavigate( xDlg, oTab, aList )
 
    LOCAL nTab, nPageNext
 
-   FOR nTab = 1 TO Len( aList )
+   FOR nTab = 1 TO Len( aList ) - 1
       nPageNext  := iif( nTab == Len( aList ), 1, nTab + 1 )
       gui_TabSetLostFocus( aList[ nTab, Len( aList[ nTab ] ) ], oTab, nPageNext, aList[ nPageNext, 1 ] )
    NEXT

@@ -18,9 +18,9 @@ test.rc
 -es2
 -mt
 -gui
--gtgui
+{win}-gtgui
 
 hbct.hbc
-hbwin.hbc
+{win}hbwin.hbc
 
 

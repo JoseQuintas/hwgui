@@ -33,11 +33,16 @@ FUNCTION frm_Validate( aItem, Self )
             RETURN .F.
          ENDIF
       ENDIF
+      IF ::cSelected == "INSERT"
+         APPEND BLANK
+         FieldPut( FieldNum( aItem[ CFG_FNAME ] ), xValue )
+         SKIP 0
+      ENDIF
       ::UpdateEdit()
       gui_TextSetValue( ::oDlg, aItem[ CFG_FCONTROL ], xValue )
-   ENDIF
-   // if setup to find on another dbf
-   IF ! Empty( aItem[ CFG_VTABLE ] )
+      ::EditOn()
+   ELSEIF ! Empty( aItem[ CFG_VTABLE ] )
+      // if setup to find on another dbf
       nSelect := Select()
       SELECT ( Select( aItem[ CFG_VTABLE ] ) )
       SEEK xValue

@@ -77,7 +77,9 @@ FUNCTION frm_Edit( Self )
          { || ::Validate( aItem ) } )
       nCol += ( nLen + 3 ) * 12
       IF ::lWithTab
-         AAdd( Atail( aList ), aItem[ CFG_FCONTROL ] )
+         IF ! aItem[ CFG_ISKEY ]
+            AAdd( Atail( aList ), aItem[ CFG_FCONTROL ] )
+         ENDIF
       ENDIF
       IF ! Empty( aItem[ CFG_VTABLE ] )
          gui_LabelCreate( iif( ::lWithTab, oTab, ::oDlg ), @aItem[ CFG_VCONTROL ], ;

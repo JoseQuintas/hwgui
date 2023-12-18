@@ -17,6 +17,8 @@ PROCEDURE Main()
    SET DELETED ON
    SET EPOCH TO Year( Date() ) - 90
    SET EXCLUSIVE OFF
+   SET FILECASE LOWER
+   SET DIRCASE  LOWER
    gui_Init()
    RddSetDefault( "DBFCDX" )
    frm_DBF()

@@ -37,14 +37,15 @@ CREATE CLASS frm_Class
    METHOD ButtonSaveOn()
    METHOD ButtonSaveOff()
    METHOD UpdateEdit()
+   METHOD EditKeyOn()
    METHOD EditOn()
    METHOD EditOff()
    METHOD Print()              INLINE frm_Print( Self )
    METHOD Execute()            INLINE frm_Dialog( Self )
    METHOD View()               INLINE frm_Browse( Self, "", "", ::cFileDbf, Nil ), ::UpdateEdit()
-   METHOD Edit()               INLINE ::cSelected := "EDIT", ::EditOn()
+   METHOD Edit()               INLINE ::cSelected := "EDIT", ::EditKeyOn()
    METHOD Delete()
-   METHOD Insert()             INLINE ::cSelected := "INSERT", ::EditOn()
+   METHOD Insert()             INLINE ::cSelected := "INSERT", ::EditKeyOn()
    METHOD Exit()               INLINE gui_DialogClose( ::oDlg )
    METHOD Save()
    METHOD Cancel()             INLINE ::cSelected := "NONE", ::EditOff(), ::UpdateEdit()
@@ -119,16 +120,38 @@ METHOD ButtonSaveOff() CLASS frm_Class
 
    RETURN Nil
 
+METHOD EditKeyOn() CLASS frm_Class
+
+   LOCAL aItem, oKeyEdit, lFound := .F.
+
+   FOR EACH aItem IN ::aControlList
+      IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT .AND. ( aItem[ CFG_ISKEY ] .OR. Empty( aItem[ CFG_FNAME ] ) )
+         gui_TextEnable( ::oDlg, aItem[ CFG_FCONTROL ], .T. )
+         IF ! lFound
+            lFound := .T.
+            oKeyEdit := aItem[ CFG_FCONTROL ]
+         ENDIF
+      ENDIF
+   NEXT
+   ::ButtonSaveOn()
+   gui_SetFocus( ::oDlg, oKeyEdit )
+
+   RETURN Nil
+
 METHOD EditOn() CLASS frm_Class
 
    LOCAL aItem, oFirstEdit, lFound := .F.
 
    FOR EACH aItem IN ::aControlList
-      IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT .AND. ( ! aItem[ CFG_ISKEY ] .OR. ::cSelected == "INSERT" )
-         gui_TextEnable( ::oDlg, aItem[ CFG_FCONTROL ], .T. )
-         IF ! lFound
-            lFound := .T.
-            oFirstEdit := aItem[ CFG_FCONTROL ]
+      IF aItem[ CFG_CTLTYPE ] == TYPE_EDIT
+         IF aItem[ CFG_ISKEY ]
+            gui_TextEnable( ::oDlg, aItem[ CFG_FCONTROL ], .F. )
+         ELSE
+            gui_TextEnable( ::oDlg, aItem[ CFG_FCONTROL ], .T. )
+            IF ! lFound
+               lFound := .T.
+               oFirstEdit := aItem[ CFG_FCONTROL ]
+            ENDIF
          ENDIF
       ENDIF
    NEXT
@@ -210,15 +233,12 @@ METHOD Save() CLASS frm_Class
    LOCAL aItem
 
    ::EditOff()
-   IF ::cSelected == "INSERT"
-      APPEND BLANK
-   ENDIF
    IF RLock()
       FOR EACH aItem IN ::aControlList
          DO CASE
          CASE aItem[ CFG_CTLTYPE ] != TYPE_EDIT // not editable
          CASE Empty( aItem[ CFG_FNAME ] )       // do not have name
-         CASE ( aItem[ CFG_ISKEY ] .AND. ::cSelected != "INSERT" )  // table key
+         CASE aItem[ CFG_ISKEY ]
          OTHERWISE
             FieldPut( FieldNum( aItem[ CFG_FNAME ] ), gui_TextGetValue( ::oDlg, aItem[ CFG_FCONTROL ] ) )
          ENDCASE

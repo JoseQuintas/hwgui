@@ -425,9 +425,6 @@ METHOD Activate() CLASS HButton
       ::handle := hwg_Createbutton( ::oParent:handle, ::id, ::style, ;
          ::nLeft, ::nTop, ::nWidth, ::nHeight, ;
          ::title )
-      IF !Empty( ::oImg )
-         ::SetImage( ::oImg )
-      ENDIF
       ::Init()
    ENDIF
 
@@ -452,6 +449,9 @@ METHOD Init() CLASS HButton
    ::super:init()
    IF ::Title != NIL
       hwg_Setwindowtext( ::handle, ::title )
+   ENDIF
+   IF !Empty( ::oImg )
+      ::SetImage( ::oImg )
    ENDIF
 
    RETURN  NIL

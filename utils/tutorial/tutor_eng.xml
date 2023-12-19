@@ -445,19 +445,19 @@ Local oDlg, oPanel
 
    @ 2,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Next")} ;
        SIZE 32,26 FLAT ;
-       BITMAP "next.bmp" TRANSPARENT COLOR 12632256
+       BITMAP "next" FROM RESOURCE TRANSPARENT COLOR 12632256
 
    @ 34,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Last")} ;
        SIZE 32,26 FLAT ;
-       BITMAP "bottom.bmp" TRANSPARENT COLOR 12632256
+       BITMAP "bottom" FROM RESOURCE TRANSPARENT COLOR 12632256
 
    @ 66,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("First")} ;
        SIZE 32,26 FLAT ;
-       BITMAP "top.bmp" TRANSPARENT COLOR 12632256
+       BITMAP "top" FROM RESOURCE TRANSPARENT COLOR 12632256
 
    @ 98,3 OWNERBUTTON OF oPanel ON CLICK {||hwg_MsgInfo("Previous")} ;
        SIZE 32,26 FLAT ;
-       BITMAP "previous.bmp" TRANSPARENT COLOR 12632256
+       BITMAP "previous" FROM RESOURCE TRANSPARENT COLOR 12632256
 
    ACTIVATE DIALOG oDlg
 
@@ -1633,14 +1633,15 @@ Return Nil
     <module name="Dialog with text Gets" >
       <![CDATA[#include "hwgui.ch"
 Function DlgGet()
-Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oTimer, ed5
-Local e1 := "Dialog from prg"
-Local e2 := Date()
-Local e3 := 10320.54
-Local e4:="11222333444455"
-Local e5 := 10320.54
-Local e6 := "Max Lenght = 15"
-Local e7 := "Password"
+   Local oDlg, oFont := HFont():Add( "MS Sans Serif",0,-13 ), oTimer, ed5
+   Local oIco1 := HIcon():AddResource( "ok" ), oIco2 := HIcon():AddResource( "cancel" )
+   Local e1 := "Dialog from prg"
+   Local e2 := Date()
+   Local e3 := 10320.54
+   Local e4:="11222333444455"
+   Local e5 := 10320.54
+   Local e6 := "Max Lenght = 15"
+   Local e7 := "Password"
 
    INIT DIALOG oDlg CLIPPER NOEXIT TITLE "Get a value"  ;
          AT 210,10  SIZE 300,320 FONT oFont
@@ -1670,8 +1671,8 @@ Local e7 := "Password"
 
    @ 20,215 GET e7 PASSWORD SIZE 260, 26
 
-   @  20,250  BUTTON "Ok" SIZE 100, 32 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
-   @ 180,250 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32
+   @  20,270  BUTTON "Ok" SIZE 100, 32 IMAGE oIco1 ON CLICK {||oDlg:lResult:=.T.,hwg_EndDialog()}
+   @ 180,270 BUTTON "Cancel" ID IDCANCEL SIZE 100, 32 IMAGE oIco2
 
    ACTIVATE DIALOG oDlg
 
@@ -1685,6 +1686,8 @@ Local e7 := "Password"
                e7 + chr(10) + chr(13)         ;
                ,"Results:" )
    ENDIF
+   oIco1:Release()
+   oIco2:Release()
 
 Return Nil
       ]]>

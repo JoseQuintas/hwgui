@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-19 13:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hcontrol.prg
+    ! Small fix
+  * utils/tutorial/tutor_res.prg
+    * Images added
+  * utils/tutorial/tutor_eng.xml
+    * "Get system"/"Dialog with text Gets" - icons on buttons added
+
 2023-12-19 10:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/control.c
     * Added support for tab's TCS_BOTTOM style

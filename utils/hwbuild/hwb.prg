@@ -53,7 +53,7 @@ STATIC oPrg
 STATIC lQ := .F.
 
 STATIC cPathHrb := "", cPathHrbBin := "", cPathHrbInc := ""
-STATIC cHrbDefFlags := "-n -q"
+STATIC cHrbDefFlags := "-n -q -w"
 STATIC cGuiId := "hwgui", cPathHwgui := "", cPathHwguiInc := "", cPathHwguiLib := ""
 STATIC lPathHrb := .F., lPathHrbBin := .F., lPathHrbInc := .F.
 STATIC lPathHwgui := .F.

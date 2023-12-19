@@ -1753,9 +1753,9 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
 
 METHOD Edit( wParam, lParam ) CLASS HBrowse
 
-   LOCAL fipos, lRes, x1, y1, fif, nWidth, rowPos
+   LOCAL fipos, lRes, x1, y1, fif, nWidth, rowPos, lAppM := ::lAppMode
    LOCAL oColumn, type
-   LOCAL mvarbuff , bMemoMod , owb1 , owb2 , oModDlg , bclsbutt
+   LOCAL mvarbuff, bMemoMod, owb1, owb2, oModDlg, bclsbutt
    LOCAL lSaveMem    && DF7BE
 
    lSaveMem := .T.
@@ -1821,7 +1821,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                STYLE ES_AUTOHSCROLL           ;
                FONT ::oFont                   ;
                PICTURE oColumn:picture        ;
-               VALID { ||VldBrwEdit( Self, fipos ) }
+               VALID { ||VldBrwEdit( Self, fipos, lAppM ) }
             ::oGet:Show()
             hwg_Setfocus( ::oGet:handle )
             hwg_edit_SetPos( ::oGet:handle, 1 )
@@ -1859,7 +1859,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
              * write out edited memo field
              ::varbuf := ::oEdit:GetText()
              * Store new memo contents
-             VldBrwEdit( Self, fipos , .T. )
+             VldBrwEdit( Self, fipos, lAppM, .T. )
              // hwg_MsgInfo("Memo saved")  && Debug
             ENDIF  && lSaveMem
            ENDIF   && bMemoMod
@@ -1895,7 +1895,7 @@ STATIC FUNCTION GetEventHandler( oBrw, msg, cod )
 
    RETURN 0
 
-STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo )
+STATIC FUNCTION VldBrwEdit( oBrw, fipos, lAppM, bmemo )
 * Purpose: Store edited contents
 * Parameter oEdit only used, if memo edit is used.
 
@@ -1921,9 +1921,6 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo )
    ENDIF
 
    IF .NOT. bESCkey
-      IF !Empty( oColumn:bValid ) .AND. !Eval( oColumn:bValid, oBrw:varbuf, oBrw:oGet )
-         RETURN .F.
-      ENDIF
       IF oColumn:aList != Nil
          IF ValType( oBrw:varbuf ) == 'N'
             oBrw:varbuf := nChoic
@@ -1931,7 +1928,7 @@ STATIC FUNCTION VldBrwEdit( oBrw, fipos , bmemo )
             oBrw:varbuf := oColumn:aList[nChoic]
          ENDIF
       ENDIF
-      IF oBrw:lAppMode
+      IF lAppM
          oBrw:lAppMode := .F.
          IF oBrw:type == BRW_DATABASE
             ( oBrw:alias ) -> ( dbAppend() )

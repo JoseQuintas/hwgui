@@ -32,8 +32,6 @@
 /* Avoid warnings from GCC */
 #include "warnings.h"
 
-
-
 #define SS_CENTER           1
 #define SS_RIGHT            2
 #define ES_PASSWORD 32
@@ -45,6 +43,8 @@
 #define BS_AUTO3STATE       6
 #define BS_GROUPBOX         7
 #define BS_AUTORADIOBUTTON  9
+
+#define TCS_BOTTOM          2
 
 #define SS_OWNERDRAW        13
 
@@ -772,6 +772,8 @@ HB_FUNC( HWG_CREATETABCONTROL )
       gtk_fixed_put( box, hCtrl, hb_parni( 4 ), hb_parni( 5 ) );
    gtk_widget_set_size_request( hCtrl, hb_parni( 6 ), hb_parni( 7 ) );
    gtk_notebook_set_scrollable( (GtkNotebook*) hCtrl, 1 );
+   if( hb_parni(3) & TCS_BOTTOM )
+      gtk_notebook_set_tab_pos( (GtkNotebook*) hCtrl, GTK_POS_BOTTOM );
 
    g_signal_connect( hCtrl, "switch-page",
                       G_CALLBACK (cb_signal_tab), NULL );

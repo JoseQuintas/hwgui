@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-20 09:04 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+    ! An accidentally erased fix has been restored
+
 2023-12-19 13:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/hcontrol.prg
     ! Small fix

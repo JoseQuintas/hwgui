@@ -370,7 +370,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             ELSE
                ::PageUp()
             ENDIF
-         ELSEIF wParam == GDK_Return  // Enter
+         ELSEIF wParam == GDK_Return .OR. wParam == GDK_KP_Enter // Enter
             ::Edit()
          ELSEIF wParam == GDK_Control_L .OR. wParam == GDK_Control_R
             IF ::nCtrlPress == 0
@@ -1558,6 +1558,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
                   IF hwg_SetAdjOptions( ::hScrollV, nPos )
                      ::lSetAdj := .T.
                   ENDIF
+                  ::nScrollV := nPos
                ENDIF
             ENDIF
             res := .T.
@@ -1572,6 +1573,7 @@ METHOD ButtonDown( lParam ) CLASS HBrowse
                maxPos := hwg_getAdjValue( ::hScrollH, 1 ) - hwg_getAdjValue( ::hScrollH, 4 )
                nPos := Iif( fif == 1, 0, Iif( fif = Len(::aColumns ), maxpos, ;
                   Int( ( maxPos + 1 ) * fif/Len( ::aColumns ) ) ) )
+               ::nScrollH := nPos
                hwg_SetAdjOptions( ::hScrollH, nPos )
             ENDIF
             res := .T.
@@ -1688,7 +1690,7 @@ METHOD MouseMove( wParam, lParam ) CLASS HBrowse
    LOCAL xPos := hwg_Loword( lParam ), yPos := hwg_Hiword( lParam )
    LOCAL x := ::x1, i, res := .F. , nLen
 
-   IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil
+   IF !::active .OR. Empty( ::aColumns ) .OR. ::x1 == Nil .OR. ::oGet != Nil
       RETURN Nil
    ENDIF
 
@@ -2158,7 +2160,6 @@ FUNCTION hwg_VScrollPos( oBrw, nType, lEof, nPos )
       IF hwg_SetAdjOptions( oBrw:hScrollV, nPos )
           obrw:lSetAdj := .T.
       ENDIF
-
       oBrw:nScrollV := nPos
    ELSE
       oldRecno := Eval( oBrw:bRecnoLog, oBrw )

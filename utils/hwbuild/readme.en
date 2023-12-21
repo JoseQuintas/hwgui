@@ -22,6 +22,7 @@ Usage:
    -l<libraries>, -libs=<libraries>   a list of additionas libraries
    -sp<path>, -srcpath=<path>         a path to source files
    -o<name>, -out=<name>              a path and name of output file
+   @<file>           include file
    -i<name>, -ini=<name>              a name of ini file
 
 For more information, see:

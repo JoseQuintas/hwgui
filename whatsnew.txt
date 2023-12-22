@@ -6,6 +6,23 @@
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
+HWGUI 2.23 build 7 ( 22.12.2023 )
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[+] HwBuilder utility added to build Harbour GUI applications and libraries,
+    approppriate project files (*.hwprj) added
+[+] HDrawnArrow class added
+[+] IMAGE clause added to @ ... BUTTON command, :SetImage( oImage ) added to HButton class
+[+] @ ... GET DATESELECT command added
+[+] Two methods added to HFont class: :SaveToStr(), :LoadFromStr(s) - to make it easy
+    to keep fonts in ini files
+{*] Bincnt utility enhanced, added resoutces preview and a crossplatform possibility
+    to have resources, embedded in executable file
+[*] hwg_RunConsoleApp() - third parameter added - a variable to place the output
+[*] hwg_ActivateKeyboardLayout() returns now a current keyboard layout
+[*] HWG_USE_POINTER_ITEM isn't needed now in build scripts
+[*] Compatibility between gtk and winapi versions improved
+[!] Fixes
+
 HWGUI 2.23 build 6 ( 07.11.2023 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 [+] HDateSelect, HDrawnDate classes added - a crossplatform HDatePicker alternative

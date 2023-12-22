@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-22 09:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 build 7
+  * whatsnew.txt
+    * Updated for v2.23 build 7
+
 2023-12-21 16:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/hwbuild/hwb.prg
   * utils/hwbuild/readme.en

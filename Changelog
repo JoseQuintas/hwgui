@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2023-12-22 07:51 UTC-0200 Jose Quintas
+  * contrib/gthwg/tests/test1.prg
+    * reduce special characters need
+
 2023-12-22 09:45 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch
     * HwGUI version is changed to 2.23 build 7

@@ -9,20 +9,21 @@
  * www - http://www.kresin.ru
  */
 
+REQUEST HB_GT_HWGUI
+REQUEST HB_GT_HWGUI_DEFAULT
+
+REQUEST HB_CODEPAGE_RU866
+REQUEST HB_CODEPAGE_UTF8
+
 #include "hbgtinfo.ch"
 
 STATIC shadow1
 
 FUNCTION Main( _par1 )
 
-   LOCAL choice, frame
+   LOCAL choice, frame, nw, nh
 
-   REQUEST HB_GT_HWGUI
-   REQUEST HB_GT_HWGUI_DEFAULT
-
-   REQUEST HB_CODEPAGE_RU866
-   REQUEST HB_CODEPAGE_UTF8
-
+   ( _par1 )
    SET DATE BRITISH
    SET WRAP ON
    SET SCORE OFF
@@ -41,7 +42,7 @@ FUNCTION Main( _par1 )
 
    choice := 1
    DO WHILE choice != 3 .AND. choice != 0
-      SET COLOR TO N +/ N
+      SET COLOR TO N+/N
       @  0,  0, 29, 99 BOX frame
       @  2,  7, 2, 30 BOX shadow1
       @  1, 30 SAY Chr( 223 )
@@ -50,7 +51,7 @@ FUNCTION Main( _par1 )
       @  6,  7, 6, 30 BOX shadow1
       @  5, 30 SAY Chr( 223 )
       DO ZAGOL
-      SET COLOR TO B/W, + GR/B
+      SET COLOR TO B/W,+GR/B
       @ 01, 06 PROMPT "   GET SYSTEM DIALOG    "
       @ 03, 06 PROMPT "    SHOW SCREEN INFO    "
       @ 05, 06 PROMPT "        E X I T         "
@@ -69,23 +70,24 @@ FUNCTION Main( _par1 )
 
    gthwg_CloseWindow()
 
-   RETURN
+   RETURN Nil
 
 STATIC PROCEDURE ZAGOL
 
    DO SHADOW WITH 04, 63, 13, 94
-   SET COLOR TO + GR/B
-   @  4, 63, 13, 94 BOX "ÚÄ¿³ÙÄÀ³ "
+   SET COLOR TO +GR/B
+   @  4, 63 CLEAR TO 13, 94
+   @  4, 63 TO 13, 94
    @  5, 70 SAY "GTHWGUI DEMO PROGRAM"
    @  6, 75 SAY "Version 1.1"
-   @ 09, 64, 09, 93 BOX "ÃÄ´´´ÄÃÃÄ"
-   SET COLOR TO + RB/B
+   @ 09, 64 TO 09, 93
+   SET COLOR TO +RB/B
 
    RETURN
 
 STATIC PROCEDURE SHADOW( y1, x1, y2, x2 )
 
-   SET COLOR TO N +/ N
+   SET COLOR TO N+/N
    @ y2 + 1, x1 + 1, y2 + 1, x2 + 1 BOX shadow1
    @ y1 + 1, x2 + 1 CLEAR TO y2, x2 + 1
    @ y1, x2 + 1 SAY Chr( 223 )
@@ -95,14 +97,15 @@ STATIC PROCEDURE SHADOW( y1, x1, y2, x2 )
 STATIC PROCEDURE PGM1
 
    LOCAL bufsc := SaveScreen( 6, 10, 14, 74 )
-   LOCAL x1, x2, x3
+   LOCAL x1, x2, x3, GetList := {}
 
-   @  6, 10, 14, 74 BOX "ÚÄ¿³ÙÄÀ³ "
+   @ 6, 10 CLEAR TO 14, 74
+   @ 6, 10 TO 14,74
 
    gthwg_PaintCB( , "../../../image/hwgui.bmp" )
 
    x1 := x2 := x3 := Space( 32 )
-   @  8, 12 SAY "1:" GET x1
+   @  8, 12  SAY "1:" GET x1
    @  10, 12 SAY "2:" GET x2
    @  12, 12 SAY "3:" GET x3
    READ
@@ -116,7 +119,8 @@ STATIC PROCEDURE PGM2
 
    LOCAL bufsc := SaveScreen( 6, 20, 15, 44 )
 
-   @  6, 20, 15, 44 BOX "ÚÄ¿³ÙÄÀ³ "
+   @ 6, 20 CLEAR TO 15, 44
+   @ 6, 20 TO 15, 44
 
    @  08, 22 SAY "Rows: " + Ltrim( Str( MaxRow() ) )
    @  09, 22 SAY "Cols: " + Ltrim( Str( MaxCol() ) )

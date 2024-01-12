@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-01-12 15:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+    * hwg_sleep added
+
 2024-01-12 15:42 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor_eng.xml
     * "Progress bar" updated, "Drawn progress bar" added

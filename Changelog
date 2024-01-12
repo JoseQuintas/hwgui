@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-01-12 13:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/guilib.ch
+    * HwGUI version is changed to 2.23 dev build 8
+  * source/gtk/hbrowse.prg
+  * source/gtk/hdialog.prg
+  * source/gtk/window.c
+    ! Fixes
+  * utils/tutorial/tutor_eng.xml
+    * ::bValid added for a column to the "Browse of dbf"
+
 2023-12-22 07:51 UTC-0200 Jose Quintas
   * contrib/gthwg/tests/test1.prg
     * reduce special characters need

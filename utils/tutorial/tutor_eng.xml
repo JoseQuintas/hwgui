@@ -1184,6 +1184,9 @@ FUNCTION Test()
    oBrw:aColumns[4]:oPaintCB:Set( PAINT_LINE_ALL, bCol4 )
    oBrw:bEnter := bEnter
 
+   // Set a 'Valid' codeblock for a second column to check input
+   oBrw:aColumns[2]:bValid := {|v| (v<950) }
+
    // The special codeblock :bColorBlock of a column returns an array of colors for
    // a currently painted cell: { tColor, bColor, tColorSel, bColorSel, tColorColSel, bColorColSel }
    oBrw:aColumns[4]:bColorBlock := {|o,nRow| {CLR_BLACK,CLR_WHITE,CLR_BLUE,CLR_GRAY1,CLR_WHITE,CLR_DGRAY} }

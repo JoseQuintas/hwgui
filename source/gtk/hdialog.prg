@@ -115,7 +115,8 @@ METHOD New( lType, nStyle, x, y, width, height, cTitle, oFont, bInit, bExit, bSi
       ::nLeft := Int( ( hwg_Getdesktopwidth() - ::nWidth ) / 2 )
       ::nTop  := Int( ( hwg_Getdesktopheight() - ::nHeight ) / 2 )
    ENDIF
-   ::handle := Hwg_CreateDlg( Self )
+   ::handle := Hwg_CreateDlg( Self, Iif( !Empty(::oIcon), ::oIcon:handle, Nil ), ;
+      Iif( !Empty(::oBmp), ::oBmp:handle, Nil ) )
 
    RETURN Self
 

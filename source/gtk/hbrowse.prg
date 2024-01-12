@@ -214,7 +214,7 @@ CLASS HBrowse INHERIT HControl
    METHOD ButtonDbl( lParam )
    METHOD MouseMove( wParam, lParam )
    METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos )
-   METHOD Edit( wParam, lParam )
+   METHOD Edit( wParam )
    METHOD APPEND() INLINE ( ::Bottom( .F. ), ::LineDown() )
    METHOD RefreshLine()
    METHOD Refresh( lFull )
@@ -377,7 +377,7 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
                ::nCtrlPress := wParam
             ENDIF
          ELSEIF ::lAutoEdit .AND. wParam >= 33 .AND. wParam <= 126
-            ::Edit( wParam, lParam )
+            ::Edit( wParam )
          ENDIF
          retValue := 1
 
@@ -1753,7 +1753,7 @@ METHOD MouseWheel( nKeys, nDelta, nXPos, nYPos ) CLASS HBrowse
    hwg_Setfocus( ::area )
    RETURN Nil
 
-METHOD Edit( wParam, lParam ) CLASS HBrowse
+METHOD Edit( wParam ) CLASS HBrowse
 
    LOCAL fipos, lRes, x1, y1, fif, nWidth, rowPos, lAppM := ::lAppMode
    LOCAL oColumn, type
@@ -1761,10 +1761,6 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
    LOCAL lSaveMem    && DF7BE
 
    lSaveMem := .T.
-
-   * Parameters not used
-   HB_SYMBOL_UNUSED(wParam)
-   HB_SYMBOL_UNUSED(lParam)
 
    bclsbutt := .T.
 
@@ -1828,6 +1824,9 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
             hwg_Setfocus( ::oGet:handle )
             hwg_edit_SetPos( ::oGet:handle, 1 )
             ::oGet:bAnyEvent := { |o, msg, c| HB_SYMBOL_UNUSED(o),  GetEventHandler( Self, msg, c ) }
+            IF !Empty( wParam )
+               ::oGet:onEvent( WM_KEYDOWN, wParam, 0 )
+            ENDIF
          ELSE  // memo edit
          * ===================================== *
          * Special dialog for memo edit (DF7BE)

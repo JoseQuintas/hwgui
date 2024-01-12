@@ -236,7 +236,8 @@ HB_FUNC( HWG_INITMAINWINDOW )
 
    if (szFile)
    {
-        gtk_window_set_default_icon( szFile->handle );
+        //gtk_window_set_default_icon( szFile->handle );
+        gtk_window_set_icon(GTK_WINDOW(hWnd), szFile->handle  );
    }
    /* Set Background */
    if (szBackFile)
@@ -272,21 +273,17 @@ HB_FUNC( HWG_CREATEDLG )
    int y = hb_itemGetNI( GetObjectVar( pObject, "NTOP" ) );
    int width = hb_itemGetNI( GetObjectVar( pObject, "NWIDTH" ) );
    int height = hb_itemGetNI( GetObjectVar( pObject, "NHEIGHT" ) );
-   PHB_ITEM pIcon = GetObjectVar( pObject, "OICON" );
-   PHB_ITEM pBmp = GetObjectVar( pObject, "OBMP" );
-   PHWGUI_PIXBUF szFile = NULL;
-   PHWGUI_PIXBUF szBackFile = NULL;
+   //PHB_ITEM pIcon = GetObjectVar( pObject, "OICON" );
+   //PHB_ITEM pBmp = GetObjectVar( pObject, "OBMP" );
+   PHWGUI_PIXBUF szFile = HB_ISPOINTER(2) ? (PHWGUI_PIXBUF) HB_PARHANDLE(2): NULL;
+   PHWGUI_PIXBUF szBackFile = HB_ISPOINTER(3) ? (PHWGUI_PIXBUF) HB_PARHANDLE(3): NULL;
 
-   /* Icon */
-   if (!HB_IS_NIL(pIcon))
-   {
+/*
+   if( HB_IS_OBJECT(pIcon) )
       szFile = (PHWGUI_PIXBUF) hb_itemGetPtr( GetObjectVar(pIcon,"HANDLE") );
-   }
-   /* Background image */
-   if (!HB_IS_NIL(pBmp))
-   {
+   if( HB_IS_OBJECT(pBmp) )
       szBackFile = (PHWGUI_PIXBUF) hb_itemGetPtr( GetObjectVar(pBmp,"HANDLE") );
-   }
+*/
    /* Background style*/
    style = gtk_style_new();
    if (szBackFile)
@@ -953,12 +950,7 @@ HB_FUNC( HWG_WINDOWMINIMIZE )
 
 PHB_ITEM GetObjectVar( PHB_ITEM pObject, char* varname )
 {
-#ifdef __XHARBOUR__
    return hb_objSendMsg( pObject, varname, 0 );
-#else
-   hb_objSendMsg( pObject, varname, 0 );
-   return hb_param( -1, HB_IT_ANY );
-#endif
 }
 
 void SetObjectVar( PHB_ITEM pObject, char* varname, PHB_ITEM pValue )

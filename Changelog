@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-01-12 15:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * include/hwgextern.ch
+    * hwg_processmessage added
+
 2024-01-12 15:47 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
     * hwg_sleep added

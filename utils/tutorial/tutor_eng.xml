@@ -475,10 +475,10 @@ Local oDlg, oBar
          ON EXIT {||Iif(oBar==Nil,.T.,(oBar:Close(),.T.))}
 
    @ 20, 30 BUTTON 'Step' SIZE 80,28 ;
-         ON CLICK {|| Iif(oBar==Nil,.F.,oBar:Step() ) }
+         ON CLICK {|| Iif(oBar==Nil,hwg_MsgStop("Bar doesn't exist"),oBar:Step() ) }
    @ 120,30 BUTTON 'Create Bar' SIZE 80,28 ;
-         ON CLICK {|| oBar := HProgressBar():NewBox( "Testing ...",,,,, 10,10 ) }
-   @ 220,30 BUTTON 'Close' SIZE 80,28 ON CLICK {|| oDlg:Close() }
+         ON CLICK {|| Iif(oBar==Nil,oBar := HProgressBar():NewBox( "Testing ...",,,,, 10,10 ),.F.) }
+   @ 220,30 BUTTON 'Close' SIZE 80,28 ON CLICK {|| Iif(oBar==Nil,hwg_MsgStop("Bar doesn't exist"),oBar:Close()),oBar:=Nil }
 
    ACTIVATE DIALOG oDlg
 
@@ -2607,6 +2607,96 @@ STATIC FUNCTION FCreateDB()
 
    RETURN Nil
 ]]>
+    </module>
+    <module name="Drawn progress bar" >
+      <![CDATA[#include "hwgui.ch"
+#define CLR_WHITE    0xffffff
+#define CLR_DGRAY2   0x555555
+#define PR_START     0
+#define PR_STEP      1
+#define PR_END       2
+
+Function Test()
+Local oDlg, oBtn
+
+   INIT DIALOG oDlg TITLE "Drawn Progress Bar";
+         AT 0, 0 SIZE 320, 90 ;
+         FONT HFont():Add( "MS Sans Serif",0,-13 ) ;
+         ON EXIT {||PBar( PR_END ), .T.}
+
+   @ 20, 30 BUTTON oBtn CAPTION 'Start' SIZE 80,28 ;
+      ON CLICK {|| _Start( oDlg ), oBtn:Disable() }
+   @ 220,30 BUTTON 'Close' SIZE 80,28 ON CLICK {|| oDlg:Close() }
+
+   ACTIVATE DIALOG oDlg
+
+Return Nil
+
+STATIC FUNCTION _Start( oDlg )
+
+   LOCAL oTimer
+
+   PBar( PR_START, 20, "Progress", "Running..." )
+
+   SET TIMER oTimer OF oDlg VALUE 500 ACTION {||PBar( PR_STEP )}
+
+   RETURN Nil
+
+STATIC FUNCTION PBar( nAct, nMax, cTitle, cMess )
+
+   LOCAL oBoard, oSay, oBar
+   STATIC oDlgBar
+   STATIC bPaint := {|o,h|
+
+      hwg_Rectangle_Filled( h, o:nLeft, o:nTop, ;
+         o:nLeft+Iif( o:xValue>=o:cargo, o:nWidth, Int(o:nWidth*o:xValue/o:cargo) ), ;
+         o:nTop+o:nHeight-1, .F., o:oBrush:handle )
+      RETURN 0
+   }
+
+   IF nAct == 0
+
+      IF !Empty( oDlgBar )
+         oDlgBar:Close()
+         oDlgBar := Nil
+      ENDIF
+
+      INIT DIALOG oDlgBar TITLE cTitle AT 0, 0 SIZE 200, 100 ON EXIT {||oDlgBar:=Nil,.T.}
+
+      @ 0, 0 BOARD oBoard SIZE oDlgBar:nWidth, oDlgBar:nHeight FONT HWindow():Getmain():oFont ;
+         BACKCOLOR CLR_DGRAY2  ON SIZE {|o,x,y|o:Move( ,, x, y )}
+
+      @ 20, 20 DRAWN oSay SIZE oDlgBar:nWidth-40, 30 COLOR CLR_WHITE TEXT cMess
+
+      @ 20, 70 DRAWN oBar SIZE oDlgBar:nWidth-40, 4 BACKCOLOR CLR_WHITE
+      oBar:bPaint := bPaint
+      oBar:xValue := 0
+      oBar:cargo := nMax
+
+      ACTIVATE DIALOG oDlgBar NOMODAL CENTER
+
+   ELSEIF nAct == 1
+
+      IF oDlgBar:oBoard:oBar:cargo < oDlgBar:oBoard:oBar:xValue
+         oDlgBar:oBoard:oBar:xValue := 0
+      ELSE
+         oDlgBar:oBoard:oBar:xValue ++
+      ENDIF
+      oDlgBar:oBoard:oBar:Refresh()
+      hwg_Sleep( 1 )
+      hwg_ProcessMessage()
+
+   ELSEIF nAct == 2
+
+      IF !Empty( oDlgBar )
+         oDlgBar:Close()
+         oDlgBar := Nil
+      ENDIF
+
+   ENDIF
+
+   RETURN Nil
+      ]]>
     </module>
   </chapter>
 </init>

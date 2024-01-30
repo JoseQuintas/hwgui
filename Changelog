@@ -15,6 +15,12 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-01-30 09:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/window.c
+    ! Expose event: wParam and lParam parameters contains the updated area's coordinates now
+  * utils/tutorial/tutor_eng.xml
+    * hwg_Vscrollpos() added to "Browse of dbf"
+
 2024-01-12 15:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/hwgextern.ch
     * hwg_processmessage added

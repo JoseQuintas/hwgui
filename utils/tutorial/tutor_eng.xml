@@ -1183,6 +1183,7 @@ FUNCTION Test()
    oBrw:aColumns[4]:oPaintCB := HPaintCB():New()
    oBrw:aColumns[4]:oPaintCB:Set( PAINT_LINE_ALL, bCol4 )
    oBrw:bEnter := bEnter
+   oBrw:bScrollPos := {|o,n,lEof,nPos|hwg_VScrollPos(o,n,lEof,nPos)}
 
    // Set a 'Valid' codeblock for a second column to check input
    oBrw:aColumns[2]:bValid := {|v| (v<950) }

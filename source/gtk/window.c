@@ -53,6 +53,7 @@
 #define WM_SIZE                           5
 #define WM_SETFOCUS                       7
 #define WM_KILLFOCUS                      8
+#define WM_PAINT                         15
 #define WM_KEYDOWN                      256    // 0x0100
 #define WM_KEYUP                        257    // 0x0101
 #define WM_MOUSEMOVE                    512    // 0x0200
@@ -756,10 +757,18 @@ static gint cb_event( GtkWidget *widget, GdkEvent * event, gchar* data )
          p1 = ( ((GdkEventFocus*)event)->in )? WM_SETFOCUS : WM_KILLFOCUS;
          p2 = p3 = 0;
       }
+      else if( event->type == GDK_EXPOSE )
+      {
+         p1 = WM_PAINT;
+         p2 = ( ((GdkEventExpose*)event)->area.x & 0xffff ) |
+            ( (((GdkEventExpose*)event)->area.y << 16 ) & 0xffff0000 );
+         p3 = ( ((GdkEventExpose*)event)->area.width & 0xffff ) |
+            ( (((GdkEventExpose*)event)->area.height << 16 ) & 0xffff0000 );
+      }
       else
          sscanf( (char*)data,"%ld %ld %ld",&p1,&p2,&p3 );
 
-      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent ) );
+      hb_vmPushSymbol( hb_dynsymSymbol( pSym_onEvent  ) );
       hb_vmPush( ( PHB_ITEM ) gObject );
       hb_vmPushLong( p1 );
       hb_vmPushLong( p2 );

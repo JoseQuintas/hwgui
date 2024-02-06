@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
-      <td width="70%" align="center">Alexander S.Kresin, October 2023</td>
+      <td width="70%" align="center">Alexander S.Kresin, February 2024</td>
       <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
     </tr>
   </table>
@@ -978,7 +978,7 @@
     <p>
     Supported image formats see documentation for CLASS HBITMAP.<br>
     <br>
-    The parameters &lt;oBmp&gt; SHOW , SIZE and "OF"
+    The parameters &lt;oBmp&gt; SHOW and SIZE 
     are on GTK mandatory, otherwise the image does not appear !
     For details see sample program "bincnts.prg".<br>
     For the SIZE parameter pass the real size of the image to display.<br>
@@ -987,6 +987,13 @@
     Do not positionize a BUTTON into the image,<br>
     otherwise the ON CLICK block does not work,<br>
     for details see sample program "stretch.prg".<br>
+    <br>
+    Attention !<br>
+    The object of a bitmap for display is corrupted after first usage.<br>
+    So need to create the object variable new after usage !<br>
+    For details look into sample program<br>
+    samples/bitmapbug.prg<br>
+    and get information about handling ! 
     </p>
 
     <br><a name="icon" href="#_icon"> @ &lt;x&gt;,&lt;y&gt; ICON</a>

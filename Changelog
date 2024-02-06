@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2024-02-06 16:35 UTC+0100 Wilfried Brunken DF7BE
+  * doc/hwgdoc_commands.html
+  * image/cancel.bmp (New)
+  * samples/bitmapbug.hbp
+  * samples/bitmapbug.prg
+    ! Handle of bug in command @<x>,<y> BITMAP ... SHOW (Class HBITMAP) 
+
 2024-01-30 09:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/window.c
     ! Expose event: wParam and lParam parameters contains the updated area's coordinates now
@@ -1362,7 +1370,7 @@
   * source/gtk/drawwidg.prg
   * source/winapi/drawwidg.prg
     * ::nBmpStyle added to HStyle class, and appropriate parameter in HStyle():New() method.
-      It defines, how the bitmap is drawing, spreading, centered, or stretchedþ
+      It defines, how the bitmap is drawing, spreading, centered, or stretched\FE
 
 2023-07-27 09:00 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * include/guilib.ch

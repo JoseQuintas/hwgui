@@ -1,0 +1,27 @@
+#
+# $Id$
+#
+
+# Special parameters for LINUX/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+{win}../hwgui.hbc
+# GTK2
+{linux}../hwgui.hbc
+# GTK3: Deactivate previous line
+# and activate following line
+#{linux}../hwguiGTK3.hbc
+
+../hwgui.hbc
+
+-n
+-w
+
+-obitmapbug
+
+bitmapbug.prg
+
+# ==================== EOF of bitmapbug.hbp ===============

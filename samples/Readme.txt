@@ -163,6 +163,7 @@ For beginners:
  arraybrowse.prg     Y                        Array BROWSE avoiding crashes because of bugs (see inline comments)
  bindbf.prg 10)      Y                        Usage of images from Binary DBF container
  bincnts.prg 10) +)  Y                        Usage of images from Binary container
+ bitmapbug.prg       Y                        Handle of bug in command @<x>,<y> BITMAP ... SHOW (Class HBITMAP) 
  buildpelles.prg     N       N         Y      Build APP using Pelles C Compiler (*.bld file)
  checkbox.prg        Y                        Checkboxes and tabs
  colrbloc.prg        Y                 Y      BROWSE: arrays and DBF's with colored lines and columns

@@ -1653,7 +1653,7 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
       ::cGtLib    := cGtLib
       ::cLibsDop  := Iif( Empty( cLibsDop ) , "", cLibsDop )
       IF !Empty( cGtLib )
-         ::cLibsDop := Iif( Empty( cLibsDop ), cGtLib, cLibsDop + " " + cGtLib )
+         //::cLibsDop := Iif( Empty( cLibsDop ), cGtLib, cLibsDop + " " + cGtLib )
          ::cFlagsPrg += " -d__" + Upper( cGtLib ) + "__"
       ENDIF
       ::cLibsPath := Iif( Empty(cLibsPath), "", cLibsPath )
@@ -1873,7 +1873,7 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
    NEXT
 
    IF !Empty( ::cGtLib )
-      ::cLibsDop := Iif( Empty( ::cLibsDop ), ::cGtLib, ::cLibsDop + " " + ::cGtLib )
+      //::cLibsDop := Iif( Empty( ::cLibsDop ), ::cGtLib, ::cLibsDop + " " + ::cGtLib )
       ::cFlagsPrg += " -d__" + Upper( ::cGtLib ) + "__"
    ENDIF
 
@@ -2116,6 +2116,9 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       FOR i := 1 TO Len( aLibs )
          cLibs += " " + StrTran( ::oComp:cTmplLib, "{l}", aLibs[i] )
       NEXT
+      IF !Empty( ::cGtLib )
+         cLibs += " " + StrTran( ::oComp:cTmplLib, "{l}", ::cGtLib )
+      ENDIF
       aLibs := hb_ATokens( cLibsHrb, " " )
       FOR i := 1 TO Len( aLibs )
          cLibs += " " + StrTran( ::oComp:cTmplLib, "{l}", aLibs[i] )

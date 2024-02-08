@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-02-08 16:07 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * utils/hwbuild/hwb.prg
+    ! Small fix
+
 2024-02-07 12:40 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/hwbuild/hwb.prg
     ! Small fix

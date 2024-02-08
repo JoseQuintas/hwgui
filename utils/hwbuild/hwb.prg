@@ -68,6 +68,7 @@ STATIC aHelp := { "hwbc <files>  [options...]", ;
   " -clean            erase project obj files", ;
   " -q                shortened output", ;
   " -gt<lib>          use specified GT library", ;
+  " -L<path>          an additional path to libraries", ;
   " -{<keyword>}      a keyword-condition for a project file", ;
   " -pf<options>, -prgflags=<options>  options for Harbour compiler", ;
   " -cf<options>, -cflags=<options>    options for C compiler", ;
@@ -2049,7 +2050,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
                   EXIT
                ENDIF
                _ShowProgress( cOut, 1,, @cFullOut )
-               IF "Error" $ cOut
+               IF "Error" $ cOut .OR. "error" $ cOut
                   lErr := .T.
                   EXIT
                ENDIF

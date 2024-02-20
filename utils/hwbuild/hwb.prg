@@ -1298,6 +1298,28 @@ STATIC FUNCTION _DropBr( cLine )
 
    RETURN cLine
 
+STATIC FUNCTION _HasError( cLine )
+
+   LOCAL nPos := 1, c, l
+
+   DO WHILE ( nPos := hb_AtI( "error", cLine, nPos ) ) > 0
+
+      l := .F.
+      c := Iif( nPos == 1, 'a', Substr( cLine, nPos-1, 1 ) )
+      IF c < 'A' .OR. (c > 'Z' .AND. c < 'a') .OR. c > 'z'
+         l := .T.
+      ENDIF
+      nPos += 5
+      c := Iif( nPos > Len( cLine ), 'a', Substr( cLine, nPos, 1 ) )
+      IF c < 'A' .OR. (c > 'Z' .AND. c < 'a') .OR. c > 'z'
+         IF l
+            RETURN .T.
+         ENDIF
+      ENDIF
+   ENDDO
+
+   RETURN .F.
+
 STATIC FUNCTION _EnvVarsTran( cLine )
 
    LOCAL nPos := 1, nPos2, nLen, cVar, cValue
@@ -1658,8 +1680,8 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
          ::cFlagsPrg += " -d__" + Upper( cGtLib ) + "__"
       ENDIF
       ::cLibsPath := Iif( Empty(cLibsPath), "", cLibsPath )
-      ::cFlagsPrg := cFlagsPrg
-      ::cFlagsC   := cFlagsC
+      ::cFlagsPrg := Iif( Empty(cFlagsPrg), "", cFlagsPrg )
+      ::cFlagsC   := Iif( Empty(cFlagsC), "", cFlagsC )
       IF !Empty( cOutName )
          ::cOutName := hb_fnameNameExt( cOutName )
          IF Len( ::cOutName ) < Len( cOutName )
@@ -1737,10 +1759,10 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
                ::cDefFlagsLib := Substr( cLine, nPos + 1 )
 
             ELSEIF cTmp == "prgflags"
-               ::cFlagsPrg := Substr( cLine, nPos + 1 )
+               ::cFlagsPrg += ( Iif( Empty(::cFlagsPrg), "", " " ) + Substr( cLine, nPos + 1 ) )
 
             ELSEIF cTmp == "cflags"
-               ::cFlagsC := Substr( cLine, nPos + 1 )
+               ::cFlagsC += ( Iif( Empty(::cFlagsC), "", " " ) + Substr( cLine, nPos + 1 ) )
 
             ELSEIF cTmp == "gtlib"
                ::cGtLib := Substr( cLine, nPos + 1 )
@@ -2050,7 +2072,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
                   EXIT
                ENDIF
                _ShowProgress( cOut, 1,, @cFullOut )
-               IF "Error" $ cOut .OR. "error" $ cOut
+               IF _HasError( cOut )
                   lErr := .T.
                   EXIT
                ENDIF

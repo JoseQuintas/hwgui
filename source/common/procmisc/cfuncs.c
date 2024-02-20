@@ -1017,11 +1017,12 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    if( iOutExist == 1 )
       CloseHandle( hOut );
    else if( iOutExist == 2 )
+   {
       if( read_all > 0 )
          hb_storclen_buffer( pOut, read_all, 3 );
       else
          hb_storc( "", 3 );
-
+   }
    CloseHandle( g_hChildStd_OUT_Rd );
 
    hb_retni( ( int ) dwExitCode );

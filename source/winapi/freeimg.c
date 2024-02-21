@@ -10,7 +10,7 @@
 #include "hwingui.h"
 #include "hbapiitm.h"
 #include "hbvm.h"
-#include "freeimage.h"
+#include "hwg_freeimage.h"
 
 #include "incomp_pointer.h"
 

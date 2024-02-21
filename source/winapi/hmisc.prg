@@ -1134,10 +1134,14 @@ FUNCTION HWG_GET_TIME_SHIFT()
 
 FUNCTION hwg_Has_Win_Euro_Support()
 
+#ifdef __XHARBOUR__
+   RETURN .F.
+#else
 #if ( HB_VER_REVID - 0 ) >= 2002101634
    RETURN .T.
 #else
    RETURN .F.
+#endif
 #endif
 
 FUNCTION hwg_addextens(cfilename,cext,lcs)

@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-02-21 11:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/freeimg.c
+  * include/freeimage.h
+    * Renamed to hwg_freeimage.h for to not conflict with harbour's
+  * source/winapi/hmisc.prg
+    * Added #ifdef __XHARBOUR__ to hwg_Has_Win_Euro_Support()
+
 2024-02-21 10:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcombo.prg
   * source/winapi/hcombo.prg

@@ -141,6 +141,7 @@ CLASS HWindow INHERIT HCustomWindow, HScrollArea
 
    DATA menu, oPopup, hAccel
    DATA oIcon, oBmp
+   DATA lBmpSpread     INIT .T.
    DATA lUpdated INIT .F.     // TRUE, if any GET is changed
    DATA lClipper INIT .F.
    DATA GetList  INIT {}      // The array of GET items in the dialog
@@ -670,7 +671,12 @@ STATIC FUNCTION onEraseBk( oWnd, hDC )
    LOCAL aCoors
 
    IF oWnd:oBmp != Nil
-      hwg_Spreadbitmap( hDC, oWnd:oBmp:handle )
+      IF oWnd:lBmpSpread
+         hwg_Spreadbitmap( hDC, oWnd:oBmp:handle )
+      ELSE
+         aCoors := hwg_Getclientrect( oWnd:handle )
+         hwg_Drawbitmap( hDC, oWnd:oBmp:handle,, 0, 0, aCoors[3], aCoors[4] )
+      ENDIF
       RETURN 1
    ELSEIF oWnd:brush != Nil .AND. oWnd:type != WND_MAIN
       aCoors := hwg_Getclientrect( oWnd:handle )

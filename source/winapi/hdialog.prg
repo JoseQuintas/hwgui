@@ -335,7 +335,12 @@ STATIC FUNCTION onEraseBk( oDlg, hDC )
 
    IF __ObjHasMsg( oDlg, "OBMP" )
       IF oDlg:oBmp != Nil
-         hwg_Spreadbitmap( hDC, oDlg:oBmp:handle )
+         IF oDlg:lBmpSpread
+            hwg_Spreadbitmap( hDC, oDlg:oBmp:handle )
+         ELSE
+            aCoors := hwg_Getclientrect( oDlg:handle )
+            hwg_Drawbitmap( hDC, oDlg:oBmp:handle,, 0, 0, aCoors[3], aCoors[4] )
+         ENDIF
          RETURN 1
       ELSE
          aCoors := hwg_Getclientrect( oDlg:handle )

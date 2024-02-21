@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-02-21 14:05 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/winapi/hdialog.prg
+  * source/winapi/hwindow.prg
+    * New var added to HWindow clacc, :lBmpSpread.
+      If it is set to .T. (default), the background bitmap is spread over the window,
+      if it is set to .F., the bitmap is stretched.
+
 2024-02-21 11:25 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/winapi/freeimg.c
   * include/freeimage.h

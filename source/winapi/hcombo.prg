@@ -206,6 +206,10 @@ METHOD Refresh( xVal ) CLASS HComboBox
 
 METHOD SetItem( nPos ) CLASS HComboBox
 
+   IF nPos == 0 .OR. nPos > Len( ::aItems )
+      RETURN Nil
+   ENDIF
+
    IF ::lText
       ::xValue := iif( ValType( ::aItems[nPos] ) == "A", ::aItems[nPos,1], ::aItems[nPos] )
    ELSE

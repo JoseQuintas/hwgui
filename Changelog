@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-02-21 10:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hcombo.prg
+  * source/winapi/hcombo.prg
+    * Check for an index value added in :SetItem()
+
 2024-02-21 10:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hsayimg.prg
   * source/winapi/hsayimg.prg

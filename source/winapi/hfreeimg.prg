@@ -145,15 +145,20 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, bInit, ;
             bSize, ctooltip, cType ) CLASS HSayFImage
 
    IF Image != Nil
-      ::oImage := IIf( ValType( Image ) == "C", ;
-                       IIf( cType != Nil, HFreeImage():AddFromVar( Image, cType ), HFreeImage():AddFile( Image ) ), Image )
+      IF Valtype( Image ) == "O"
+         ::oImage := Image
+         ::lNoRelease := .T.
+      ELSEIF ValType( Image ) == "C"
+         ::oImage :=  IIf( cType != Nil, HFreeImage():AddFromVar( Image, cType ), HFreeImage():AddFile( Image ) )
+      ELSE
+         RETURN Nil
+      ENDIF
       IF nWidth == Nil
          nWidth  := ::oImage:nWidth
          nHeight := ::oImage:nHeight
       ENDIF
    ENDIF
    ::Super:New( oWndParent, nId, SS_OWNERDRAW, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip )
-   // ::classname:= "HSAYFIMAGE"
 
    ::bPaint  := { | o, lpdis | o:Paint( lpdis ) }
 
@@ -163,10 +168,15 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, bInit, ;
 
 METHOD Redefine( oWndParent, nId, Image, bInit, bSize, ctooltip ) CLASS HSayFImage
 
-   ::oImage := IIf( ValType( Image ) == "C", HFreeImage():AddFile( Image ), Image )
-
+   IF Valtype( Image ) == "O"
+      ::oImage := Image
+      ::lNoRelease := .T.
+   ELSEIF ValType( Image ) == "C"
+      ::oImage := HFreeImage():AddFile( Image )
+   ELSE
+      RETURN Nil
+   ENDIF
    ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
-   // ::classname:= "HSAYFIMAGE"
 
    ::bPaint  := { | o, lpdis | o:Paint( lpdis ) }
 
@@ -174,11 +184,16 @@ METHOD Redefine( oWndParent, nId, Image, bInit, bSize, ctooltip ) CLASS HSayFIma
 
 METHOD ReplaceImage( Image, cType )
 
-   IF ::oImage != Nil
+   IF ::oImage != Nil .AND. !::lNoRelease
       ::oImage:Release()
    ENDIF
-   ::oImage := IIf( ValType( Image ) == "C", ;
-                    IIf( cType != Nil, HFreeImage():AddFromVar( Image, cType ), HFreeImage():AddFile( Image ) ), Image )
+   IF Valtype( Image ) == "O"
+      ::oImage := Image
+      ::lNoRelease := .T.
+   ELSEIF ValType( Image ) == "C"
+      ::oImage := IIf( cType != Nil, HFreeImage():AddFromVar( Image, cType ), HFreeImage():AddFile( Image ) )
+      ::lNoRelease := .F.
+   ENDIF
 
    RETURN Nil
 

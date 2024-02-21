@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-02-21 10:10 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hsayimg.prg
+  * source/winapi/hsayimg.prg
+  * source/winapi/hfreeimg.prg
+    ! Problem fixed, reported by Wilfried Brunken.
+      Please, do not use samples/ directory to report about problems!
+
 2024-02-20 15:49 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/procmisc/cfuncs.c
     ! Warning fixed

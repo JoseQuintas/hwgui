@@ -18,11 +18,12 @@ CLASS HSayImage INHERIT HControl
    CLASS VAR winclass   INIT "STATIC"
    DATA  oImage
    DATA bClick, bDblClick
+   DATA lNoRelease      INIT .F.
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
       bSize, ctoolt, bClick, bDblClick, bColor )
    METHOD Activate()
-   METHOD END()  INLINE ( ::Super:END(), iif( ::oImage <> Nil,::oImage:Release(),::oImage := Nil ), ::oImage := Nil )
+   METHOD End()
 
 ENDCLASS
 
@@ -49,6 +50,17 @@ METHOD Activate() CLASS HSayImage
    ENDIF
 
    RETURN Nil
+
+METHOD End() CLASS HSayImage
+
+   IF !::lNoRelease
+      IF ::oImage != Nil
+         ::oImage:Release()
+         ::oImage := Nil
+      ENDIF
+   ENDIF
+
+   RETURN ::Super:End()
 
    //- HSayBmp
 
@@ -86,18 +98,22 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
    ::tColor := 0
 
    IF Image != Nil
-      IF lRes == Nil ; lRes := .F. ; ENDIF
-      ::oImage := Iif( lRes .OR. ValType( Image ) == "N",     ;
-         HBitmap():AddResource( Image ), ;
-         iif( ValType( Image ) == "C",     ;
-         HBitmap():AddFile( Image ), Image ) )
-      IF !Empty( ::oImage )
-         IF nWidth == Nil .OR. nHeight == Nil
-            ::nWidth  := ::oImage:nWidth
-            ::nHeight := ::oImage:nHeight
-         ENDIF
+      IF Valtype( Image ) == "O"
+         ::oImage := Image
+         ::lNoRelease := .T.
       ELSE
-         RETURN Nil
+         ::oImage := Iif( !Empty(lRes) .OR. ValType( Image ) == "N", ;
+            HBitmap():AddResource( Image ),   ;
+            Iif( ValType( Image ) == "C",     ;
+            HBitmap():AddFile( Image ), Nil ) )
+         IF !Empty( ::oImage )
+            IF nWidth == Nil .OR. nHeight == Nil
+               ::nWidth  := ::oImage:nWidth
+               ::nHeight := ::oImage:nHeight
+            ENDIF
+         ELSE
+            RETURN Nil
+         ENDIF
       ENDIF
    ENDIF
    ::Activate()
@@ -159,16 +175,20 @@ METHOD Paint() CLASS HSayBmp
 
 METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
 
-   IF ::oImage != Nil
+   IF ::oImage != Nil .AND. !::lNoRelease
       ::oImage:Release()
       ::oImage := Nil
    ENDIF
    IF !Empty( Image )
-      IF lRes == Nil ; lRes := .F. ; ENDIF
-      ::oImage := iif( lRes .OR. ValType( Image ) == "N",  ;
-         HBitmap():AddResource( Image ), ;
-         iif( ValType( Image ) == "C",   ;
-         HBitmap():AddFile( Image ), Image ) )
+      IF Valtype( Image ) == "O"
+         ::oImage := Image
+         ::lNoRelease := .T.
+      ELSE
+         ::oImage := Iif( !Empty(lRes) .OR. ValType( Image ) == "N",  ;
+            HBitmap():AddResource( Image ), ;
+            Iif( ValType( Image ) == "C", HBitmap():AddFile( Image ), Nil ) )
+         ::lNoRelease := .F.
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -187,11 +207,16 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    ::Super:New( oWndParent, nId, SS_ICON, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctoolt )
 
-   IF lRes == Nil ; lRes := .F. ; ENDIF
-   ::oImage := iif( lRes .OR. ValType( Image ) == "N", ;
-      HIcon():AddResource( Image , nWidth, nHeight ),  ;
-      iif( ValType( Image ) == "C",  ;
-      HIcon():AddFile( Image , nWidth, nHeight ), Image ) )
+   IF Valtype( Image ) == "O"
+      ::oImage := Image
+      ::lNoRelease := .T.
+   ELSE
+      ::oImage := Iif( !Empty(lRes) .OR. ValType( Image ) == "N", ;
+         HIcon():AddResource( Image , nWidth, nHeight ),  ;
+         Iif( ValType( Image ) == "C",  ;
+         HIcon():AddFile( Image , nWidth, nHeight ), Nil ) )
+   ENDIF
+
    ::Activate()
 
    RETURN Self

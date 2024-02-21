@@ -20,14 +20,15 @@ CLASS HSayImage INHERIT HControl
    CLASS VAR winclass   INIT "STATIC"
    DATA  oImage
    DATA bClick, bDblClick
+   DATA lNoRelease      INIT .F.
 
    METHOD New( oWndParent, nId, nStyle, nLeft, nTop, nWidth, nHeight, bInit, ;
       bSize, ctooltip, bClick, bDblClick, bColor )
    METHOD Redefine( oWndParent, nId, bInit, bSize, ctooltip )
    METHOD Activate()
-   METHOD END()  INLINE ( ::Super:END(), iif( ::oImage <> Nil, ::oImage:Release(), ::oImage := Nil ), ::oImage := Nil )
    METHOD onClick()
    METHOD onDblClick()
+   METHOD End()
 
 ENDCLASS
 
@@ -82,6 +83,17 @@ METHOD onDblClick()  CLASS HSayImage
 
    RETURN Nil
 
+METHOD End() CLASS HSayImage
+
+   IF !::lNoRelease
+      IF ::oImage != Nil
+         ::oImage:Release()
+         ::oImage := Nil
+      ENDIF
+   ENDIF
+
+   RETURN ::Super:End()
+
    //- HSayBmp
 
 CLASS HSayBmp INHERIT HSayImage
@@ -116,11 +128,15 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
    ::tColor := 0
 
    IF Image != Nil .AND. ! Empty( Image )
-      IF lRes == Nil ; lRes := .F. ; ENDIF
-      ::oImage := Iif( lRes .OR. ValType( Image ) == "N",     ;
-         HBitmap():AddResource( Image ), ;
-         iif( ValType( Image ) == "C",     ;
-         HBitmap():AddFile( Image ), Image ) )
+      IF Valtype( Image ) == "O"
+         ::oImage := Image
+         ::lNoRelease := .T.
+      ELSE
+         ::oImage := Iif( !Empty( lRes ) .OR. ValType( Image ) == "N",  ;
+            HBitmap():AddResource( Image ),   ;
+            Iif( ValType( Image ) == "C",     ;
+            HBitmap():AddFile( Image ), Nil ) )
+      ENDIF
       IF ::oImage != Nil .AND. ( nWidth == Nil .OR. nHeight == Nil )
          ::nWidth  := ::oImage:nWidth
          ::nHeight := ::oImage:nHeight
@@ -139,12 +155,17 @@ METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip, lTransp 
    ::lTransp := iif( lTransp = Nil, .F. , lTransp )
    ::nBorder := 0
    ::tColor := 0
-   IF lRes == Nil ; lRes := .F. ; ENDIF
-   ::oImage := iif( lRes .OR. ValType( xImage ) == "N",     ;
-      HBitmap():AddResource( xImage ), ;
-      iif( ValType( xImage ) == "C",     ;
-      HBitmap():AddFile( xImage ), xImage ) )
 
+   IF Valtype( xImage ) == "O"
+      ::oImage := xImage
+      ::lNoRelease := .T.
+   ELSE
+
+      ::oImage := Iif( !Empty(lRes) .OR. ValType( xImage ) == "N",     ;
+         HBitmap():AddResource( xImage ),   ;
+         iif( ValType( xImage ) == "C",     ;
+         HBitmap():AddFile( xImage ), Nil ) )
+   ENDIF
    RETURN Self
 
 METHOD Init() CLASS HSayBmp
@@ -207,16 +228,20 @@ METHOD Paint( lpdis ) CLASS HSayBmp
 
 METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
 
-   IF ::oImage != Nil
+   IF ::oImage != Nil .AND. !::lNoRelease
       ::oImage:Release()
       ::oImage := Nil
    ENDIF
    IF !Empty( Image )
-      IF lRes == Nil ; lRes := .F. ; ENDIF
-      ::oImage := iif( lRes .OR. ValType( Image ) == "N",     ;
-         HBitmap():AddResource( Image ), ;
-         iif( ValType( Image ) == "C",     ;
-         HBitmap():AddFile( Image ), Image ) )
+      IF Valtype( Image ) == "O"
+         ::oImage := Image
+         ::lNoRelease := .T.
+      ELSE
+         ::oImage := Iif( !Empty(lRes) .OR. ValType( Image ) == "N",     ;
+            HBitmap():AddResource( Image ), ;
+            Iif( ValType( Image ) == "C", HBitmap():AddFile( Image ), Nil ) )
+         ::lNoRelease := .F.
+      ENDIF
    ENDIF
 
    RETURN Nil
@@ -238,15 +263,19 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
 
    ::Super:New( oWndParent, nId, SS_ICON, nLeft, nTop, nWidth, nHeight, bInit, bSize, ctooltip, bClick, bDblClick )
 
-   IF lRes == Nil ; lRes := .F. ; ENDIF
    IF lOEM == Nil ; lOEM := .F. ; ENDIF
-   IF ::oImage == nil
+   IF ::oImage == Nil
       * Ticket #60
       // hwg_writelog( "::oImage == nil" + Str(nWidth) + "/" + str(nHeight) )
-      ::oImage := iif( lRes .OR. ValType( Image ) == "N",  ;
-         HIcon():AddResource( Image, nWidth , nHeight , , lOEM ),  ;
-         iif( ValType( Image ) == "C",    ;
-         HIcon():AddFile( Image , nWidth , nHeight  ), Image ) )
+      IF Valtype( Image ) == "O"
+         ::oImage := Image
+         ::lNoRelease := .T.
+      ELSE
+         ::oImage := Iif( !Empty(lRes) .OR. ValType( Image ) == "N",  ;
+            HIcon():AddResource( Image, nWidth , nHeight , , lOEM ),  ;
+            Iif( ValType( Image ) == "C",    ;
+            HIcon():AddFile( Image , nWidth , nHeight  ), Nil ) )
+      ENDIF
    ENDIF
    ::Activate()
 
@@ -258,12 +287,16 @@ METHOD Redefine( oWndParent, nId, xImage, lRes, bInit, bSize, ctooltip ) CLASS H
 
    ::Super:Redefine( oWndParent, nId, bInit, bSize, ctooltip )
 
-   IF lRes == Nil ; lRes := .F. ; ENDIF
-   IF ::oImage == nil
-      ::oImage := iif( lRes .OR. ValType( xImage ) == "N",   ;
-         HIcon():AddResource( xImage ), ;
-         iif( ValType( xImage ) == "C",   ;
-         HIcon():AddFile( xImage ), xImage ) )
+   IF ::oImage == Nil
+      IF Valtype( xImage ) == "O"
+         ::oImage := xImage
+         ::lNoRelease := .T.
+      ELSE
+         ::oImage := iif( !Empty(lRes) .OR. ValType( xImage ) == "N",   ;
+            HIcon():AddResource( xImage ), ;
+            iif( ValType( xImage ) == "C",   ;
+            HIcon():AddFile( xImage ), Nil ) )
+      ENDIF
    ENDIF
 
    RETURN Self

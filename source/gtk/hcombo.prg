@@ -158,12 +158,20 @@ METHOD Init() CLASS HComboBox
 
 METHOD Refresh( xVal ) CLASS HComboBox
 
-   LOCAL vari
+   LOCAL vari, i
+
+   IF Empty( ::aItems )
+      RETURN Nil
+   ENDIF
+
+   IF ::bSetGet != Nil
+      vari := Eval( ::bSetGet, , Self )
+   ENDIF
+   hwg_ComboSetArray( ::handle, ::aItems )
 
    IF xVal != Nil
       ::xValue := xVal
    ELSEIF ::bSetGet != Nil
-      vari := Eval( ::bSetGet, , Self )
       IF ::lText
          ::xValue := iif( vari == Nil .OR. ValType( vari ) != "C", "", vari )
       ELSE
@@ -171,16 +179,17 @@ METHOD Refresh( xVal ) CLASS HComboBox
       ENDIF
    ENDIF
 
-   IF !Empty( ::aItems )
-      hwg_ComboSetArray( ::handle, ::aItems )
-
-      IF ::lText
-         hwg_ComboSet( ::handle, 1 )
-      ELSE
-         hwg_ComboSet( ::handle, ::xValue )
-      ENDIF
-
+   IF ::lText
+#ifdef __XHARBOUR__
+      i := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == ::xValue } ), AScan( ::aItems, {|s|s == ::xValue } ) )
+#else
+      i := Iif( ValType( ::aItems[1] ) == "A", AScan( ::aItems, {|a|a[1] == ::xValue } ), hb_AScan( ::aItems, ::xValue,,,.T. ) )
+#endif
+      hwg_ComboSet( ::handle, i )
+   ELSE
+      hwg_ComboSet( ::handle, ::xValue )
    ENDIF
+
 
    RETURN Nil
 

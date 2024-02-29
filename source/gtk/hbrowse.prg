@@ -1110,7 +1110,7 @@ METHOD LineOut( nstroka, vybfld, hDC, lSelected, lClear ) CLASS HBrowse
                   ENDIF
 
                   IF !Empty( sviv := AllTrim( FLDSTR( Self, nCol ) ) )
-                     hwg_Drawtext( hDC, sviv, x + ::aPadding[1], y1 + ::aPadding[2], x2 + 1 + ::aPadding[3], y2 - 1 - ::aPadding[4], oColumn:nJusLin, .T. )
+                     hwg_Drawtext( hDC, sviv, x + ::aPadding[1], y1 + ::aPadding[2], x2 - 1 - ::aPadding[3], y2 - 1 - ::aPadding[4], oColumn:nJusLin, .T. )
                   ENDIF
                   //IF !Empty( aCB := hwg_getPaintCB( aCB, PAINT_LINE_ITEM ) )
                   IF !Empty( oCB ) .AND. !Empty( aCB := oCB:Get( PAINT_LINE_ITEM ) )

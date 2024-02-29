@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-02-29 19:27 UTC-0200 Jose Quintas
+  * source/cross/hdraw.prg
+     * static function PaintArrow() used on codeblock, now compiles on xharbour too
+
 2024-02-29 14:01 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/hcombo.prg
     ! Bug fixed in ::Refresh()
@@ -74,7 +78,7 @@
   * image/cancel.bmp (New)
   * samples/bitmapbug.hbp
   * samples/bitmapbug.prg
-    ! Handle of bug in command @<x>,<y> BITMAP ... SHOW (Class HBITMAP) 
+    ! Handle of bug in command @<x>,<y> BITMAP ... SHOW (Class HBITMAP)
 
 2024-01-30 09:54 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/window.c

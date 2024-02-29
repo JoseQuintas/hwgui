@@ -685,35 +685,7 @@ METHOD New( oWndParent, nLeft, nTop, nWidth, nHeight, tcolor, bColor, aStyles, ;
 
 METHOD Paint( hDC ) CLASS HDrawnArrow
 
-   STATIC bPaintItem := {|o,h|
-      LOCAL nh := Iif( Empty(o:nh), Max( 4, Int( Iif(o:nDirection==1.OR.o:nDirection==3,o:nWidth,o:nHeight)/2.4 ) ), o:nh )
-      LOCAL nw := Iif( Empty(o:nw), Int(nh/1.2), Int(o:nw/2) )
-      LOCAL nt, nl
-
-      IF o:nDirection == 1 .OR. o:nDirection == 3
-         nt := Int( o:nHeight/2 )
-         nl := Int( (o:nWidth-nh)/2 )
-         IF o:nDirection == 1
-            hwg_Triangle_Filled( h, o:nLeft+nl, o:nTop+nt, o:nLeft+nl+nh, o:nTop+nt-nw, ;
-               o:nLeft+nl+nh, o:nTop+nt+nw, .F., o:oBrushArrow:handle )
-         ELSE
-            hwg_Triangle_Filled( h, o:nLeft+o:nWidth-nl, o:nTop+nt, o:nLeft+o:nWidth-nl-nh, o:nTop+nt-nw, ;
-               o:nLeft+o:nWidth-nl-nh, o:nTop+nt+nw, .F., o:oBrushArrow:handle )
-         ENDIF
-      ELSE
-         nt := Int( o:nWidth/2 )
-         nl := Int( (o:nHeight-nh)/2 )
-         IF o:nDirection == 2
-            hwg_Triangle_Filled( h, o:nLeft+nt, o:nTop+nl, o:nLeft+nt-nw, o:nTop+nl+nh, ;
-               o:nLeft+nt+nw, o:nTop+nl+nh, .F., o:oBrushArrow:handle )
-         ELSE
-            hwg_Triangle_Filled( h, o:nLeft+nt, o:nTop+o:nHeight-nl, o:nLeft+nt-nw, o:nTop+o:nHeight-nl-nh, ;
-               o:nLeft+nt+nw, o:nTop+o:nHeight-nl-nh, .F., o:oBrushArrow:handle )
-         ENDIF
-      ENDIF
-
-      RETURN Nil
-   }
+   STATIC bPaintItem := { | o, h | PaintArrow( o, h ) }
 
    IF Empty( ::bPaintItem )
       ::bPaintItem := bPaintItem
@@ -785,5 +757,35 @@ STATIC FUNCTION ArrowTimerProc( o )
       RETURN Nil
    ENDIF
    Eval( o:bAct, o )
+
+   RETURN Nil
+
+STATIC FUNCTION PaintArrow( o, h )
+
+   LOCAL nh := Iif( Empty(o:nh), Max( 4, Int( Iif(o:nDirection==1.OR.o:nDirection==3,o:nWidth,o:nHeight)/2.4 ) ), o:nh )
+   LOCAL nw := Iif( Empty(o:nw), Int(nh/1.2), Int(o:nw/2) )
+   LOCAL nt, nl
+
+   IF o:nDirection == 1 .OR. o:nDirection == 3
+      nt := Int( o:nHeight/2 )
+      nl := Int( (o:nWidth-nh)/2 )
+      IF o:nDirection == 1
+         hwg_Triangle_Filled( h, o:nLeft+nl, o:nTop+nt, o:nLeft+nl+nh, o:nTop+nt-nw, ;
+            o:nLeft+nl+nh, o:nTop+nt+nw, .F., o:oBrushArrow:handle )
+      ELSE
+         hwg_Triangle_Filled( h, o:nLeft+o:nWidth-nl, o:nTop+nt, o:nLeft+o:nWidth-nl-nh, o:nTop+nt-nw, ;
+            o:nLeft+o:nWidth-nl-nh, o:nTop+nt+nw, .F., o:oBrushArrow:handle )
+      ENDIF
+   ELSE
+      nt := Int( o:nWidth/2 )
+      nl := Int( (o:nHeight-nh)/2 )
+      IF o:nDirection == 2
+         hwg_Triangle_Filled( h, o:nLeft+nt, o:nTop+nl, o:nLeft+nt-nw, o:nTop+nl+nh, ;
+            o:nLeft+nt+nw, o:nTop+nl+nh, .F., o:oBrushArrow:handle )
+      ELSE
+         hwg_Triangle_Filled( h, o:nLeft+nt, o:nTop+o:nHeight-nl, o:nLeft+nt-nw, o:nTop+o:nHeight-nl-nh, ;
+            o:nLeft+nt+nw, o:nTop+o:nHeight-nl-nh, .F., o:oBrushArrow:handle )
+      ENDIF
+   ENDIF
 
    RETURN Nil

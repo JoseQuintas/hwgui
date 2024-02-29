@@ -323,88 +323,91 @@ METHOD onEvent( msg, wParam, lParam )  CLASS HBrowse
             Eval( ::bLostFocus, Self )
          ENDIF
 
-      ELSEIF msg == WM_HSCROLL
-         ::DoHScroll()
-
-      ELSEIF msg == WM_VSCROLL
-         ::DoVScroll( wParam )
+      ELSEIF msg == WM_DESTROY
+         ::End()
 
       ELSEIF msg == WM_COMMAND
          hwg_DlgCommand( Self, wParam, lParam )
 
 
-      ELSEIF msg == WM_KEYUP
-         IF wParam == GDK_Control_L .OR. wParam == GDK_Control_R
-            IF wParam == ::nCtrlPress
-               ::nCtrlPress := 0
+      ELSEIF ::oGet == Nil
+
+         IF msg == WM_HSCROLL
+            ::DoHScroll()
+
+         ELSEIF msg == WM_VSCROLL
+            ::DoVScroll( wParam )
+
+         ELSEIF msg == WM_KEYUP
+            IF wParam == GDK_Control_L .OR. wParam == GDK_Control_R
+               IF wParam == ::nCtrlPress
+                  ::nCtrlPress := 0
+               ENDIF
             ENDIF
+            retValue := 1
+         ELSEIF msg == WM_KEYDOWN
+            IF ::bKeyDown != Nil
+               IF !Eval( ::bKeyDown, Self, wParam )
+                  RETURN 1
+               ENDIF
+            ENDIF
+            IF wParam == GDK_Down        // Down
+               ::LINEDOWN()
+            ELSEIF wParam == GDK_Up    // Up
+               ::LINEUP()
+            ELSEIF wParam == GDK_Right    // Right
+               LineRight( Self )
+            ELSEIF wParam == GDK_Left    // Left
+               LineLeft( Self )
+            ELSEIF wParam == GDK_Home    // Home
+               ::DoHScroll( SB_LEFT )
+            ELSEIF wParam == GDK_End    // End
+               ::DoHScroll( SB_RIGHT )
+            ELSEIF wParam == GDK_Page_Down    // PageDown
+               IF ::nCtrlPress != 0
+                  ::BOTTOM()
+               ELSE
+                  ::PageDown()
+               ENDIF
+            ELSEIF wParam == GDK_Page_Up    // PageUp
+               IF ::nCtrlPress != 0
+                  ::TOP()
+               ELSE
+                  ::PageUp()
+               ENDIF
+            ELSEIF wParam == GDK_Return .OR. wParam == GDK_KP_Enter // Enter
+               ::Edit()
+            ELSEIF wParam == GDK_Control_L .OR. wParam == GDK_Control_R
+               IF ::nCtrlPress == 0
+                  ::nCtrlPress := wParam
+               ENDIF
+            ELSEIF ::lAutoEdit .AND. wParam >= 33 .AND. wParam <= 126
+               ::Edit( wParam )
+            ENDIF
+            retValue := 1
+
+         ELSEIF msg == WM_LBUTTONDOWN
+            ::ButtonDown( lParam )
+
+         ELSEIF msg == WM_LBUTTONUP
+            ::ButtonUp( lParam )
+
+         ELSEIF msg == WM_LBUTTONDBLCLK
+            ::ButtonDbl( lParam )
+
+         ELSEIF msg == WM_RBUTTONDOWN
+            ::ButtonRDown( lParam )
+
+         ELSEIF msg == WM_MOUSEMOVE
+            ::MouseMove( wParam, lParam )
+
+         ELSEIF msg == WM_MOUSEWHEEL
+            ::MouseWheel( hwg_Loword( wParam ), ;
+               Iif( hwg_Hiword( wParam ) > 32768, ;
+               hwg_Hiword( wParam ) - 65535, hwg_Hiword( wParam ) ), ;
+               hwg_Loword( lParam ), hwg_Hiword( lParam ) )
          ENDIF
-         retValue := 1
-      ELSEIF msg == WM_KEYDOWN
-         IF ::bKeyDown != Nil
-            IF !Eval( ::bKeyDown, Self, wParam )
-               RETURN 1
-            ENDIF
-         ENDIF
-         IF wParam == GDK_Down        // Down
-            ::LINEDOWN()
-         ELSEIF wParam == GDK_Up    // Up
-            ::LINEUP()
-         ELSEIF wParam == GDK_Right    // Right
-            LineRight( Self )
-         ELSEIF wParam == GDK_Left    // Left
-            LineLeft( Self )
-         ELSEIF wParam == GDK_Home    // Home
-            ::DoHScroll( SB_LEFT )
-         ELSEIF wParam == GDK_End    // End
-            ::DoHScroll( SB_RIGHT )
-         ELSEIF wParam == GDK_Page_Down    // PageDown
-            IF ::nCtrlPress != 0
-               ::BOTTOM()
-            ELSE
-               ::PageDown()
-            ENDIF
-         ELSEIF wParam == GDK_Page_Up    // PageUp
-            IF ::nCtrlPress != 0
-               ::TOP()
-            ELSE
-               ::PageUp()
-            ENDIF
-         ELSEIF wParam == GDK_Return .OR. wParam == GDK_KP_Enter // Enter
-            ::Edit()
-         ELSEIF wParam == GDK_Control_L .OR. wParam == GDK_Control_R
-            IF ::nCtrlPress == 0
-               ::nCtrlPress := wParam
-            ENDIF
-         ELSEIF ::lAutoEdit .AND. wParam >= 33 .AND. wParam <= 126
-            ::Edit( wParam )
-         ENDIF
-         retValue := 1
-
-      ELSEIF msg == WM_LBUTTONDOWN
-         ::ButtonDown( lParam )
-
-      ELSEIF msg == WM_LBUTTONUP
-         ::ButtonUp( lParam )
-
-      ELSEIF msg == WM_LBUTTONDBLCLK
-         ::ButtonDbl( lParam )
-
-      ELSEIF msg == WM_RBUTTONDOWN
-         ::ButtonRDown( lParam )
-
-      ELSEIF msg == WM_MOUSEMOVE
-         ::MouseMove( wParam, lParam )
-
-      ELSEIF msg == WM_MOUSEWHEEL
-         ::MouseWheel( hwg_Loword( wParam ), ;
-            If( hwg_Hiword( wParam ) > 32768, ;
-            hwg_Hiword( wParam ) - 65535, hwg_Hiword( wParam ) ), ;
-            hwg_Loword( lParam ), hwg_Hiword( lParam ) )
-      ELSEIF msg == WM_DESTROY
-         ::End()
       ENDIF
-
    ENDIF
 
    RETURN retValue

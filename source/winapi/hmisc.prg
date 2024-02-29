@@ -1132,18 +1132,6 @@ FUNCTION HWG_GET_TIME_SHIFT()
 
    RETURN nhLocal - nhUTC
 
-FUNCTION hwg_Has_Win_Euro_Support()
-
-#ifdef __XHARBOUR__
-   RETURN .F.
-#else
-#if ( HB_VER_REVID - 0 ) >= 2002101634
-   RETURN .T.
-#else
-   RETURN .F.
-#endif
-#endif
-
 FUNCTION hwg_addextens(cfilename,cext,lcs)
 
    LOCAL nposi , fna , ce
@@ -1443,3 +1431,22 @@ FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper)
    ENDIF
 
    RETURN sfifullnam
+
+#pragma BEGINDUMP
+
+#include "hbapi.h"
+
+HB_FUNC( HWG_HAS_WIN_EURO_SUPPORT )
+{
+#ifdef __XHARBOUR__
+   hb_retl( 0 );
+#else
+#if ( HB_VER_REVID - 0 ) >= 2002101634
+   hb_retl( 1 );
+#else
+   hb_retl( 0 );
+#endif
+#endif
+}
+
+#pragma ENDDUMP

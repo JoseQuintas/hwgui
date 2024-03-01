@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-02-29 21:35 UTC-0200 Jose Quintas
+   * source/winapi/printdos.prg
+      * adjust to compile under -w3 -es2
+
 2024-02-29 19:27 UTC-0200 Jose Quintas
   * source/cross/hdraw.prg
      * static function PaintArrow() used on codeblock, now compiles on xharbour too

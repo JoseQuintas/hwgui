@@ -60,8 +60,8 @@ CLASS PrintDos
 
    METHOD New( oPorta ) CONSTRUCTOR
    METHOD DefaultLang()
-   METHOD Say( oProw, oCol, oTexto, oPicture )
-   METHOD SetCols( nRow, nCol )
+   METHOD Say( oProw, oPcol, oTexto, oPicture )
+   METHOD SetCols( nProw, nPcol )
    METHOD gWrite( oText )
    METHOD NewLine()
    METHOD Eject()
@@ -70,10 +70,11 @@ CLASS PrintDos
    METHOD DesCompress()
    METHOD Bold()       //Added by  por Fernando Athayde
    METHOD UnBold()     //Added by  por Fernando Athayde
-   METHOD Comando()
+   METHOD Comando( oComm1, oComm2, oComm3, oComm4, oComm5, oComm6, oComm7, ;
+                oComm8, oComm9, oComm10 )
    METHOD SetPrc( x, y )
-   METHOD PrinterFile( oFile )
-   METHOD TxttoGraphic( oFile, osize, oPreview )
+   METHOD PrinterFile( fname )
+   METHOD TxttoGraphic( fName, osize, oPreview )
    METHOD Preview( fname, cTitle )
    METHOD END()
 
@@ -381,7 +382,7 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
 
    LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
    LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
-   LOCAL oCol := 0, oPage := 1  //Added by  Por Fernando Athayde
+   LOCAL oCol := 0 //, oPage := 1  //Added by  Por Fernando Athayde
    LOCAL oPrinter
    LOCAL oFont
 
@@ -415,7 +416,7 @@ METHOD TxttoGraphic( fName, osize, oPreview ) CLASS PrintDos
          IF Left( stroka, 1 ) == Chr( 12 )
             oPrinter:EndPage()
             oPrinter:StartPage()
-            ++ oPage
+            //++ oPage
             oCol := 0  //Added by  Por Fernando Athayde
          ENDIF
 
@@ -438,7 +439,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
    LOCAL oedit1
    LOCAL strbuf := Space( 2052 ), poz := 2052, stroka
    LOCAL han := FOpen( fName, FO_READ + FO_SHARED )
-   LOCAL oCol := 10, oPage := 1, nPage := 1
+   LOCAL oPage := 1, nPage := 1 // oCol := 10
    LOCAL oFont := HFont():Add( "Courier New", 0, - 13 )
    LOCAL oText := { "" }
    LOCAL oDlg, oColor1, oColor2
@@ -460,7 +461,7 @@ METHOD Preview( fName, cTitle ) CLASS PrintDos
             AAdd( oText, "" )
             ++ oPage
          ENDIF
-         oCol := oCol + 30
+         //oCol := oCol + 30
       ENDDO
       FClose( han )
    ELSE
@@ -552,7 +553,7 @@ FUNCTION hwg_regenfile( o, new )
    LOCAL stroka
    LOCAL o1 := printdos():new( new )
    LOCAL nLine := 0
-   LOCAL nChr12 := 0
+   LOCAL nChr12 // := 0
    LOCAL i
 
    FOR i := 1 TO Len( aText )

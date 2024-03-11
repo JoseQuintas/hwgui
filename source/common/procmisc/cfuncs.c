@@ -901,6 +901,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
 }
 
 #else
+#define CMDLENGTH  4096
 
 HB_FUNC( HWG_RUNCONSOLEAPP )
 {
@@ -916,7 +917,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
 
    HANDLE hOut = NULL;
 #ifdef UNICODE
-   TCHAR wc1[256], wc2[256];
+   TCHAR wc1[CMDLENGTH], wc2[CMDLENGTH];
 #endif
 
    sa.nLength = sizeof( SECURITY_ATTRIBUTES );
@@ -950,7 +951,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    si.hStdError = g_hChildStd_OUT_Wr;
 
 #ifdef UNICODE
-   MultiByteToWideChar( GetACP(), 0, hb_parc(1), -1, wc1, 256 );
+   MultiByteToWideChar( GetACP(), 0, hb_parc(1), -1, wc1, CMDLENGTH );
    bSuccess = CreateProcess( NULL, wc1, NULL, NULL,
          TRUE, CREATE_NEW_CONSOLE, NULL, NULL, &si, &pi );
 #else
@@ -972,7 +973,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    if( !HB_ISNIL( 2 ) )
    {
 #ifdef UNICODE
-      MultiByteToWideChar( GetACP(), 0, hb_parc(2), -1, wc2, 256 );
+      MultiByteToWideChar( GetACP(), 0, hb_parc(2), -1, wc2, CMDLENGTH );
       hOut = CreateFile( wc2, GENERIC_WRITE, 0, 0,
             CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0 );
 #else

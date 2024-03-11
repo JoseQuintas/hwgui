@@ -11,7 +11,7 @@
 #endif
 #include "hbclass.ch"
 
-#define HWB_VERSION  "1.6"
+#define HWB_VERSION  "1.7"
 
 #define COMP_ID      1
 #define COMP_EXE     2
@@ -87,7 +87,7 @@ STATIC lUnix := .F.
 STATIC cExeExt := ".exe"
 STATIC cLibsHrb := "hbvm hbrtl gtgui gtwin hbcpage hblang hbrdd hbmacro hbpp rddntx rddcdx rddfpt hbsix hbcommon hbct hbcplr hbpcre hbzlib"
 #endif
-STATIC cLibsHwGUI := ""
+STATIC cLibsHwGUI := "", lGuiApp := .T.
 
 #ifndef __CONSOLE
 STATIC oFontMain, oDlgBar
@@ -183,7 +183,9 @@ FUNCTION Main( ... )
             ENDIF
          ELSEIF Left( c,4 ) == "gui="
             c := Substr( c, 5 )
-            IF ( j := Ascan( HGuilib():aList, {|o|o:id == c} ) ) > 0
+            IF Empty( c ) .OR. c == '""'
+               lGuiApp := .F.
+            ELSEIF ( j := Ascan( HGuilib():aList, {|o|o:id == c} ) ) > 0
                oGui := HGuilib():aList[j]
             ENDIF
          ELSEIF Left( c,1 ) == "{"
@@ -229,9 +231,6 @@ FUNCTION Main( ... )
    ENDIF
 #endif
 
-   IF Empty( oComp )
-      oComp := HCompiler():aList[1]
-   ENDIF
    IF !Empty( oGui )
       cGuiId := oGui:id
       cPathHwgui := _EnvVarsTran(oGui:cPath)
@@ -663,6 +662,7 @@ STATIC FUNCTION NewProject()
 
    HWindow():GetMain():oEdit:SetText( "" )
 
+   lGuiApp := .T.
    oPrg := Nil
 
    RETURN Nil
@@ -683,6 +683,7 @@ STATIC FUNCTION LoadTemplate()
 #endif
       HWindow():GetMain():oEdit:SetText( Memoread( cFullPath ) )
    ENDIF
+   lGuiApp := .T.
 
    RETURN Nil
 
@@ -703,6 +704,7 @@ STATIC FUNCTION OpenProject( cFile )
    oMain:oEdit:Open( cFile )
    oMain:SetTitle( "HwBuild: " + hb_fnameName( cFile ) )
 
+   lGuiApp := .T.
    oPrg := HwProject():Open( cFile )
 
    RETURN Nil
@@ -1672,7 +1674,7 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
 
    IF PCount() > 1
       ::aFiles := aFiles
-      ::oComp  := oComp
+      ::oComp  := Iif( Empty( oComp ), HCompiler():aList[1], oComp )
       ::cGtLib    := cGtLib
       ::cLibsDop  := Iif( Empty( cLibsDop ) , "", cLibsDop )
       IF !Empty( cGtLib )
@@ -1698,10 +1700,11 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
 METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
 
    LOCAL arr, i, j, n, l, lYes, nPos, af, ap, o, oGui
-   LOCAL cLine, cTmp, cTmp2, cSrcPath := "", lLib
+   LOCAL cLine, cTmp, cTmp2, cSrcPath := "", lLib, lCompDefault := .F.
 
    IF Empty( oComp )
       oComp := HCompiler():aList[1]
+      lCompDefault := .T.
    ENDIF
 
    IF Valtype( xSource ) == "A"
@@ -1715,6 +1718,7 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
       ::cFile := xSource
       arr := hb_Atokens( Memoread( xSource ), Chr(10) )
    ENDIF
+
    FOR i := 1 TO Len( arr )
       IF !Empty( cLine := AllTrim( StrTran( arr[i], Chr(13), "" ) ) ) .AND. !( Left( cLine, 1 ) == "#" )
          DO WHILE Left( cLine,1 ) == '{'
@@ -1791,14 +1795,18 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
             ELSEIF cTmp == "c_compiler"
                cTmp := Substr( cLine, nPos + 1 )
                IF ( j := Ascan( HCompiler():aList, {|o|o:id == cTmp} ) ) > 0
-                  ::oComp := HCompiler():aList[j]
+                  IF lCompDefault
+                     oComp := HCompiler():aList[j]
+                  ENDIF
                ELSE
                   _MsgStop( cLine, "Wrong compiler id" )
                   RETURN Nil
                ENDIF
             ELSEIF cTmp == "guilib"
                cTmp := Substr( cLine, nPos + 1 )
-               IF ( j := Ascan( HGuilib():aList, {|o|o:id == cTmp} ) ) > 0
+               IF Empty( cTmp ) .OR. cTmp == '""'
+                  lGuiApp := .F.
+               ELSEIF ( j := Ascan( HGuilib():aList, {|o|o:id == cTmp} ) ) > 0
                   oGui := HGuilib():aList[j]
                   cGuiId := oGui:id
                   cPathHwgui := _EnvVarsTran(oGui:cPath)
@@ -1922,7 +1930,7 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
 METHOD Build( lClean, lSub ) CLASS HwProject
 
    LOCAL i, cCmd, cComp, cLine, cOut, cFullOut := "", lErr := .F., to, tc
-   LOCAL cObjs := "", cFile, cBinary, cObjFile, cObjPath, lGuiApp := .T.
+   LOCAL cObjs := "", cFile, cExt, cBinary, cObjFile, cObjPath
    LOCAL aLibs, cLibs := "", a4Delete := {}, tStart := hb_DtoT( Date(), Seconds()-1 )
    LOCAL aEnv, cResFile := "", cResList := ""
    LOCAL cCompPath, cCompHrbLib
@@ -1983,7 +1991,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
 
    FOR i := 1 TO Len( ::aFiles )
       IF !( cFile := Lower( hb_fnameExt(::aFiles[i,1]) ) ) == ".prg" .AND. !( cFile == ".c" ) ;
-         .AND. !( cFile == ::oComp:cObjExt ) .AND. !( cFile == ".rc" )
+         .AND. !( cFile == ".cpp" ).AND. !( cFile == ::oComp:cObjExt ) .AND. !( cFile == ".rc" )
          _MsgStop( "Wrong source file extention", hb_fnameNameExt(::aFiles[i,1]) )
          RETURN ""
       ENDIF
@@ -2055,7 +2063,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
 
       FOR i := 1 TO Len( ::aFiles )
          cFile := _PS( ::aFiles[i,1] )
-         IF Lower( hb_fnameExt( cFile )) == ".c"
+         IF ( cExt := Lower( hb_fnameExt( cFile )) ) == ".c" .OR. cExt == ".cpp"
             cObjFile := cObjPath + hb_fnameName( cFile ) + ::oComp:cObjExt
             IF ::lMake .AND. File( cObjFile ) .AND. hb_vfTimeGet( cObjFile, @to ) .AND. ;
                hb_vfTimeGet( cFile, @tc ) .AND. to >= tc
@@ -2135,10 +2143,12 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       // Link the app
       cBinary := Iif( Empty( ::cOutName ), hb_fnameNameExt( ::aFiles[1,1] ), ::cOutName )
       cOut := Nil
-      aLibs := hb_ATokens( cLibsHwGUI, " " )
-      FOR i := 1 TO Len( aLibs )
-         cLibs += " " + StrTran( ::oComp:cTmplLib, "{l}", aLibs[i] )
-      NEXT
+      IF lGuiApp
+         aLibs := hb_ATokens( cLibsHwGUI, " " )
+         FOR i := 1 TO Len( aLibs )
+            cLibs += " " + StrTran( ::oComp:cTmplLib, "{l}", aLibs[i] )
+         NEXT
+      ENDIF
       IF !Empty( ::cGtLib )
          cLibs += " " + StrTran( ::oComp:cTmplLib, "{l}", ::cGtLib )
       ENDIF

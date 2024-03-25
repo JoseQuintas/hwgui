@@ -438,9 +438,6 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
     * Parameters not used
     HB_SYMBOL_UNUSED(lParam)
 
-     * Parameters not used
-    HB_SYMBOL_UNUSED(lParam)
-
    IF oDlg:bActivate != Nil
       b := oDlg:bActivate
       oDlg:bActivate := Nil

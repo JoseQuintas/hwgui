@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-03-25 12:50 UTC-0200 Jose Quintas
+   * source/wapi/hdialog.prg
+   * source/wapi/hwindow.prg
+     * removed not needed HB_SYMBOL_UNUSED
+   * util/designer/inspect.prg
+     ! bug fix: changed oGet:nMaxLength = 0 to MAXLENGTH 0 on GET
+
 2024-03-11 15:52 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/common/procmisc/cfuncs.c
     ! Fixes

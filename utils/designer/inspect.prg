@@ -186,10 +186,11 @@ STATIC FUNCTION Edit1()
       ELSE
          @ x1, y1 - 2 GET oGet VAR varbuf OF oBrw1  ;
             SIZE nWidth, oBrw1:height + 6        ;
+            MAXLENGTH 0 ;
             STYLE ES_AUTOHSCROLL               ;
             FONT oBrw1:oFont                   ;
             VALID { ||VldBrwGet( oGet ) }
-         oGet:nMaxLength := 0
+         //oGet:nMaxLength := 0
       ENDIF
       hwg_Setfocus( oGet:handle )
    ENDIF
@@ -655,7 +656,7 @@ FUNCTION SelectStyle( oStyle )
       IF !Empty( cColors )
          aColors := hb_ATokens( AllTrim(cColors),',' )
          Cnv_aColors( aColors )
-         IF aCorners != Nil .AND. aCorners[1] == 0 .AND. aCorners[2] == 0 .AND. aCorners[3] == 0 .AND. aCorners[4] == 0 
+         IF aCorners != Nil .AND. aCorners[1] == 0 .AND. aCorners[2] == 0 .AND. aCorners[3] == 0 .AND. aCorners[4] == 0
             aCorners := Nil
          ENDIF
          RETURN HStyle():New( aColors, nOrient, aCorners, nBorder, oDemoStyle:tColor )

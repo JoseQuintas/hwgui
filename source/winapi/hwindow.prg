@@ -72,9 +72,6 @@ STATIC FUNCTION onActivate( oDlg, wParam, lParam )
 
    LOCAL iParLow := hwg_Loword( wParam )
 
-   * Variables not used
-   * b
-
    * Parameters not used
    HB_SYMBOL_UNUSED(lParam)
 

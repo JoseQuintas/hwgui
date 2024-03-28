@@ -68,7 +68,8 @@ HB_FUNC( HWG_DRAWTEXT )
    char * cText;
    PangoRectangle rc;
    int iWidth = hb_parni(5)-hb_parni(3);
-   int bElli = (HB_ISLOG(8) && hb_parl(8))? 1 : 0;
+   // 0 - None, 1 - End, 2 - middle, 3 - Start
+   int iElli = ( HB_ISNUM(8) )? hb_parni(8) : ( (HB_ISLOG(8) )? ( ( hb_parl(8) )? 1 : 0 ) : 1 );
 
    if( hb_parclen(2) > 0 )
    {
@@ -76,8 +77,9 @@ HB_FUNC( HWG_DRAWTEXT )
       pango_layout_set_text( hDC->layout, cText, -1 );
 
       pango_layout_get_pixel_extents( hDC->layout, &rc, NULL );
-      if( bElli )
-         pango_layout_set_ellipsize( hDC->layout, PANGO_ELLIPSIZE_END );
+      if( rc.width >= iWidth && iElli > 0 )
+         pango_layout_set_ellipsize( hDC->layout, 
+            (iElli==1)? PANGO_ELLIPSIZE_END : ( (iElli==2)? PANGO_ELLIPSIZE_MIDDLE : PANGO_ELLIPSIZE_START ) );
       pango_layout_set_width( hDC->layout, iWidth*PANGO_SCALE );
       pango_layout_set_justify( hDC->layout, 1 );
       //pango_layout_set_width( hDC->layout, -1 );

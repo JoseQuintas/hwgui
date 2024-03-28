@@ -11,7 +11,7 @@
 #endif
 #include "hbclass.ch"
 
-#define HWB_VERSION  "1.7"
+#define HWB_VERSION  "1.10"
 
 #define COMP_ID      1
 #define COMP_EXE     2
@@ -97,7 +97,7 @@ STATIC cFontMain := "", lProgressOn := .T., cExtView := ""
 FUNCTION Main( ... )
 
    LOCAL aParams := hb_aParams(), i, j, c, aFiles := {}, af, cTmp
-   LOCAL lPrj, lGUI := .F., lLib := .F., lClean := .F., oComp, oGui, cLibsDop, cLibsPath, cGtLib
+   LOCAL nPrj, lGUI := .F., lLib := .F., lClean := .F., oComp, oGui, cLibsDop, cLibsPath, cGtLib
    LOCAL cSrcPath, cObjPath, cOutName, cFlagsPrg, cFlagsC, aUserPar := {}
    LOCAL cIniName := "hwbuild.ini"
 
@@ -239,14 +239,15 @@ FUNCTION Main( ... )
       cLibsHwGUI := oGui:cLibs
    ENDIF
 
-   lPrj := ( Len( aFiles ) == 1 .AND. Lower( hb_fnameExt( aFiles[1,1] ) ) == ".hwprj" )
-   IF Empty( aParams ) .OR. ( lGui .AND. lPrj )
+   nPrj := Ascan( aFiles, {|a|Lower(hb_fnameExt(a[1]))==".hwprj"} )
+   // Lower( hb_fnameExt( aFiles[1,1] ) ) == ".hwprj" )
+   IF Empty( aParams ) .OR. ( lGui .AND. nPrj > 0 .AND. Len( aFiles ) == 1  )
 #ifndef __CONSOLE
       StartGUI( Iif( Empty( aFiles ), Nil, aFiles[1,1] ) )
 #endif
    ELSEIF !Empty( aFiles )
-      IF lPrj
-         IF !Empty( oPrg := HwProject():Open( aFiles[1,1], oComp, aUserPar ) )
+      IF nPrj > 0
+         IF !Empty( oPrg := HwProject():Open( aFiles[nPrj,1], oComp, aUserPar, aFiles ) )
             oPrg:Build( lClean )
          ENDIF
       ELSE
@@ -255,7 +256,7 @@ FUNCTION Main( ... )
       ENDIF
    ELSE
 #ifndef __CONSOLE
-   _MsgStop( "No files" )
+     _MsgStop( "No files" )
 #endif
    ENDIF
 
@@ -1697,7 +1698,7 @@ METHOD New( aFiles, oComp, cGtLib, cLibsDop, cLibsPath, cFlagsPrg, cFlagsC, ;
 
    RETURN Self
 
-METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
+METHOD Open( xSource, oComp, aUserPar, aFiles ) CLASS HwProject
 
    LOCAL arr, i, j, n, l, lYes, nPos, af, ap, o, oGui
    LOCAL cLine, cTmp, cTmp2, cSrcPath := "", lLib, lCompDefault := .F.
@@ -1719,6 +1720,13 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
       arr := hb_Atokens( Memoread( xSource ), Chr(10) )
    ENDIF
 
+   IF !Empty( aFiles )
+      FOR i := 1 TO Len( aFiles )
+         IF !( Lower( hb_fnameExt( aFiles[i,1] ) ) == ".hwprj" )
+            AAdd( ::aFiles, aFiles[i] )
+         ENDIF
+      NEXT
+   ENDIF
    FOR i := 1 TO Len( arr )
       IF !Empty( cLine := AllTrim( StrTran( arr[i], Chr(13), "" ) ) ) .AND. !( Left( cLine, 1 ) == "#" )
          DO WHILE Left( cLine,1 ) == '{'
@@ -1749,8 +1757,8 @@ METHOD Open( xSource, oComp, aUserPar ) CLASS HwProject
          IF Empty( cLine )
             LOOP
          ENDIF
-         IF ( nPos := At( "=", cLine ) ) > 0
-            IF ( cTmp := Lower( Left( cLine, nPos-1 ) ) ) == "srcpath"
+         IF ( nPos := At( "=", cLine ) ) > 0 .AND. !( " " $ (cTmp := Trim( Left( cLine, nPos-1 ) )) )
+            IF ( cTmp := Lower( cTmp ) ) == "srcpath"
                cSrcPath := _DropSlash( Substr( cLine, nPos + 1 ) ) + hb_ps()
 
             ELSEIF cTmp == "def_cflags"
@@ -2023,8 +2031,8 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       NEXT
    ENDIF
    cCmd := _EnvVarsTran(cPathHrbBin) + hb_ps() + "harbour " + cHrbDefFlags + ;
-      " -i" + _EnvVarsTran(cPathHrbInc) + ;
-      " -i" + cPathHwguiInc + Iif( Empty( ::cFlagsPrg ), "", " " + ::cFlagsPrg ) + ;
+      " -i" + _EnvVarsTran(cPathHrbInc) + Iif( lGuiApp, " -i" + cPathHwguiInc, "" ) + ;
+      Iif( Empty( ::cFlagsPrg ), "", " " + ::cFlagsPrg ) + ;
       Iif( Empty( cObjPath ), "", " -o" + cObjPath )
    FOR i := 1 TO Len( ::aFiles )
       cFile := _PS( ::aFiles[i,1] )
@@ -2059,7 +2067,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
       // Compile C sources with C compiler
       cOut := Nil
       cCmd := StrTran( StrTran( StrTran( ::oComp:cCmdComp, "{hi}", _EnvVarsTran(cPathHrbInc) ), ;
-         "{gi}", cPathHwguiInc ), "{path}", cCompPath )
+         "{gi}", Iif( lGuiApp, cPathHwguiInc, "." ) ), "{path}", cCompPath )
 
       FOR i := 1 TO Len( ::aFiles )
          cFile := _PS( ::aFiles[i,1] )
@@ -2095,7 +2103,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
    ENDIF
 
 #ifndef __PLATFORM__UNIX
-   IF !lErr
+   IF lGuiApp .AND. !::lLib .AND. !lErr
       // Compile resource files
       cOut := Nil
       IF !Empty( ::oComp:cCmdRes ) .AND. Empty( ::cGtLib )
@@ -2174,7 +2182,7 @@ METHOD Build( lClean, lSub ) CLASS HwProject
              ::oComp:cCmdLinkExe, "{out}", cBinary ), "{objs}", cObjs ), "{path}", cCompPath ), ;
              "{f}", Iif( ::cDefFlagsL == Nil, Iif( lGuiApp, ::oComp:cLinkFlagsGui, ;
              ::oComp:cLinkFlagsCons ), ::cDefFlagsL ) ), ;
-             "{hL}", cCompHrbLib ), "{gL}", cPathHwguiLib ), ;
+             "{hL}", cCompHrbLib ), "{gL}", Iif( lGuiApp, cPathHwguiLib,"." ) ), ;
              "{dL}", Iif( Empty(::cLibsPath), "", Iif(::oComp:family=="msvc","/LIBPATH:","-L") + ::cLibsPath ) ), ;
              "{libs}", cLibs + " " + ::oComp:cSysLibs ), "{res}", cResList )
          IF ::oComp:family == "bcc"

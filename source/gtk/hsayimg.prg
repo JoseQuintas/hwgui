@@ -106,14 +106,13 @@ METHOD New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, ;
             HBitmap():AddResource( Image ),   ;
             Iif( ValType( Image ) == "C",     ;
             HBitmap():AddFile( Image ), Nil ) )
-         IF !Empty( ::oImage )
-            IF nWidth == Nil .OR. nHeight == Nil
-               ::nWidth  := ::oImage:nWidth
-               ::nHeight := ::oImage:nHeight
-            ENDIF
-         ELSE
+         IF Empty( ::oImage )
             RETURN Nil
          ENDIF
+      ENDIF
+      IF nWidth == Nil .OR. nHeight == Nil
+         ::nWidth  := ::oImage:nWidth
+         ::nHeight := ::oImage:nHeight
       ENDIF
    ENDIF
    ::Activate()

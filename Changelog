@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-05-16 10:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  ! source/gtk/hsayimg.prg
+    ! Bug fixed
+
 2024-03-28 10:35 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * source/gtk/drawtext.c
     * hwg_drawtext() changed to fit the text into given width

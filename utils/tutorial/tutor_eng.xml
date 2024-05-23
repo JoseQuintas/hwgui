@@ -2273,9 +2273,9 @@ FUNCTION Test
    }
 
    INIT DIALOG oDlg TITLE "Board and drawn items"  ;
-      AT 210, 10  SIZE 480, 240 FONT oFont BACKCOLOR CLR_DGRAY2
+      AT 210, 10  SIZE 500, 260 FONT oFont BACKCOLOR CLR_DGRAY2
 
-   @ 4, 4 BOARD oBoard SIZE 472, 232 BACKCOLOR CLR_BLACK ;
+   @ 4, 4 BOARD oBoard SIZE oDlg:nWidth-8, oDlg:nHeight-8 BACKCOLOR CLR_BLACK ;
       ON SIZE ANCHOR_LEFTABS+ANCHOR_RIGHTABS
 
    @ 12, 12 DRAWN oGroup SIZE 150, 100
@@ -2299,29 +2299,35 @@ FUNCTION Test
    @ 180, 68 DRAWN CHECK SIZE 20, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       HSTYLES aStyles TEXT 'X' FONT oFont
 
-   @ 204, 24 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 204, 24 DRAWN SIZE 70, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Check 1' FONT oFont
-   @ 204, 68 DRAWN SIZE 90, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 204, 68 DRAWN SIZE 70, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'Check 2' FONT oFont
 
-   @ 310, 24 DRAWN EDIT oEdit CAPTION Date() SIZE 80, 28
+   // Vertical Line
+   @ 300, 12 DRAWN SIZE 3, 100 BACKCOLOR CLR_DGRAY3
+
+   @ 330, 24 DRAWN EDIT oEdit CAPTION Date() SIZE 80, 28
    oEdit:nBorder := 2
    oEdit:nBorderColor := CLR_BLUE
    oEdit:cTooltip := "Edit control" + Chr(10) + "(HDrawnEdit)"
 
-   @ 310, 68 DRAWN EDIT "Sample Drawn Edit Control" SIZE 140, 28
+   @ 330, 68 DRAWN EDIT "Sample Drawn Edit Control" SIZE 140, 28
 
-   @ 80, 140 DRAWN oSay SIZE 100, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   // Horizontal line
+   @ 12, 136 DRAWN SIZE oDlg:nWidth-24, 3 BACKCOLOR CLR_DGRAY3
+
+   @ 80, 160 DRAWN oSay SIZE 100, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT '0.00' FONT oFont
 
-   @ 40, 168 DRAWN TRACK oTrack SIZE 180, 18 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 40, 188 DRAWN TRACK oTrack SIZE 180, 18 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       SLIDER SIZE 28 SLIDER HSTYLE HStyle():New( { 0x888888, 0xcccccc }, 3 ) AXIS
    oTrack:bChange := bChange
 
-   @ 290, 140 DRAWN oSay2 SIZE 100, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
+   @ 290, 160 DRAWN oSay2 SIZE 100, 30 COLOR CLR_WHITE BACKCOLOR CLR_BLACK ;
       TEXT 'One' FONT oFont
 
-   @ 250, 168 DRAWN LENTA oLenta SIZE 160, 28 FONT oFont ;
+   @ 250, 188 DRAWN LENTA oLenta SIZE 160, 28 FONT oFont ;
       ITEMS { "1","2","3","4","5" } ITEMSIZE 50 HSTYLES aStyleLenta ON CLICK {|o|oSay2:SetText(a2[o:Value])}
    oLenta:Value := 1
 
@@ -2678,14 +2684,16 @@ STATIC FUNCTION PBar( nAct, nMax, cTitle, cMess )
 
    ELSEIF nAct == 1
 
-      IF oDlgBar:oBoard:oBar:cargo < oDlgBar:oBoard:oBar:xValue
-         oDlgBar:oBoard:oBar:xValue := 0
-      ELSE
-         oDlgBar:oBoard:oBar:xValue ++
+      IF !Empty( oDlgBar )
+         IF oDlgBar:oBoard:oBar:cargo < oDlgBar:oBoard:oBar:xValue
+            oDlgBar:oBoard:oBar:xValue := 0
+         ELSE
+            oDlgBar:oBoard:oBar:xValue ++
+         ENDIF
+         oDlgBar:oBoard:oBar:Refresh()
+         hwg_Sleep( 1 )
+         hwg_ProcessMessage()
       ENDIF
-      oDlgBar:oBoard:oBar:Refresh()
-      hwg_Sleep( 1 )
-      hwg_ProcessMessage()
 
    ELSEIF nAct == 2
 

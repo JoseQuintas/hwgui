@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-05-23 14:28 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * source/gtk/hbrowse.prg
+    * Added support for SB_LINELEFT, SB_LINERIGHT to a browse DoHScroll() method
+
 2024-05-16 10:33 UTC+0300 Alexander Kresin <alex@belacy.ru>
   ! source/gtk/hsayimg.prg
     ! Bug fixed

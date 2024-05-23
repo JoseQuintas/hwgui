@@ -1289,7 +1289,13 @@ METHOD DoHScroll( wParam ) CLASS HBrowse
          LineRight( Self )
       ENDIF
    ELSE
-      IF wParam == SB_LEFT
+      IF wParam == SB_LINELEFT .OR. wParam == SB_PAGELEFT
+         LineLeft( Self )
+
+      ELSEIF wParam == SB_LINERIGHT .OR. wParam == SB_PAGERIGHT
+         LineRight( Self )
+
+      ELSEIF wParam == SB_LEFT
          nLeftCol := colPos := 0
          DO WHILE nLeftCol != ::nLeftCol .OR. colPos != ::colPos
             nLeftCol := ::nLeftCol

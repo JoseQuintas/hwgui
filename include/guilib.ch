@@ -921,13 +921,14 @@
             [ JUSTIFY LINE <nJusLine> ];
             [ PICTURE <cPict> ]        ;
             [ VALID <bValid> ]         ;
+            [ ON KEYDOWN <bKeyDown> ]  ;
             [ WHEN <bWhen> ]           ;
             [ ITEMS <aItem> ]          ;
             [ COLORBLOCK <bClrBlck> ]  ;
             [ BHEADCLICK <bHeadClick> ]  ;
           => ;
     <oBrw>:AddColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
-                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}> ) )
+                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bKeyDown}>, <{bWhen}>, <aItem>, <{bClrBlck}>, <{bHeadClick}> ) )
 
 #xcommand INSERT COLUMN <block> TO <oBrw> ;
             [ HEADER <cHeader> ]       ;
@@ -939,6 +940,7 @@
             [ JUSTIFY LINE <nJusLine> ];
             [ PICTURE <cPict> ]        ;
             [ VALID <bValid> ]         ;
+            [ ON KEYDOWN <bKeyDown> ]  ;
             [ WHEN <bWhen> ]           ;
             [ ITEMS <aItem> ]          ;
             [ BITMAP <oBmp> ]          ;
@@ -946,7 +948,7 @@
             INTO <nPos>                ;
           => ;
     <oBrw>:InsColumn( HColumn():New( <cHeader>,<block>,<cType>,<nLen>,<nDec>,<.lEdit.>,;
-                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bWhen}>, <aItem>, <oBmp>, <{bClrBlck}> ),<nPos> )
+                      <nJusHead>, <nJusLine>, <cPict>, <{bValid}>, <{bKeyDown}>, <{bWhen}>, <aItem>, <oBmp>, <{bClrBlck}> ),<nPos> )
 
 #xcommand @ <x>,<y> BROWSE [ <oBrw> ] FILTER ;
             [ OF <oWnd> ]              ;

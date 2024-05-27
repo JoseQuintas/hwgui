@@ -84,7 +84,7 @@ CLASS HColumn INHERIT HObject
    DATA oPaintCB                 // HPaintCB object
    DATA aBitmaps
 
-   DATA bValid, bWhen            // When and Valid codeblocks for cell editing
+   DATA bWhen, bKeyDown, bValid  // When, KeyDown, Valid codeblocks for cell editing
    DATA bEdit                    // Codeblock, which performs cell editing, if defined
    DATA Picture
 
@@ -98,11 +98,11 @@ CLASS HColumn INHERIT HObject
    //  oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
    //     {textColor, backColor, textColorRowSel, backColorRowSel, textColorColSel, backColorColSel} , ;
    //     {textColor, backColor, textColorRowSel, backColorRowSel, textColorColSel, backColorColSel} ) }
-   METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
+   METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bKeyDown, bWhen, aItem, bColorBlock, bHeadClick )
 
 ENDCLASS
 
-METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick ) CLASS HColumn
+METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bKeyDown, bWhen, aItem, bColorBlock, bHeadClick ) CLASS HColumn
 
    ::heading   := iif( cHeading == Nil, "", cHeading )
    ::block     := block
@@ -114,6 +114,7 @@ METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cP
    ::nJusLin   := iif( nJusLin  == Nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda / Justify left
    ::picture   := cPict
    ::bValid    := bValid
+   ::bKeyDown  := bKeyDown
    ::bWhen     := bWhen
    IF !Empty( aItem )
       ::aList := aItem
@@ -1956,6 +1957,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                   STYLE ES_AUTOHSCROLL           ;
                   FONT ::oFont                   ;
                   PICTURE oColumn:picture        ;
+                  ON KEYDOWN oColumn:bKeyDown    ; 
                   VALID oColumn:bValid
             ELSE
 

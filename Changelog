@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-05-27 09:42 UTC+0300 Itamar Lins <itamarlins@gmail.com>
+  * source/winapi/hbrowse.prg
+  * include/guilib.prg
+    * Added bKeyDown of method column class hbrowse.prg
+
 2024-05-23 14:56 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/tutorial/tutor_eng.xml
     ! Small fix

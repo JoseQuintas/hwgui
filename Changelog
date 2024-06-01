@@ -15,9 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-2024-05-31 22:37 UTC+0300 Itamar Lins <itamarlins@gmail.com>
- * Adjust of syntax Column GTK same Windows OS OnKeyDown(disable)
- * Becouse method OnKeyDown of Get on Linux is disable.
+2024-05-31 22:45 UTC+0300 Itamar Lins <itamarlins@gmail.com>
+ * source/gtk/hbrowse.prg
+  ! Adjust of syntax Column GTK same Windows OS OnKeyDown disable.
+  ! Becouse method OnKeyDown of class hedit.prg on Linux is disable.
 
 2024-05-27 09:42 UTC+0300 Itamar Lins <itamarlins@gmail.com>
   * source/winapi/hbrowse.prg

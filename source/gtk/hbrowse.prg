@@ -61,8 +61,8 @@ CLASS HColumn INHERIT HObject
    DATA oPaintCB                 // HPaintCB object
    DATA aBitmaps
 
-   DATA bValid, bWhen            // When and Valid codeblocks for cell editing
-   DATA bEdit                    // Codeblock, which performs cell editing, if defined
+   DATA bOnKeyDown, bValid, bWhen  // OnKeyDown, When and Valid codeblocks for cell editing
+   DATA bEdit                      // Codeblock, which performs cell editing, if defined
    DATA Picture
 
    DATA cGrid
@@ -74,23 +74,24 @@ CLASS HColumn INHERIT HObject
    //   oBrowse:aColumns[1]:bColorBlock := {|| IF (nNumber < 0, ;
    //      {textColor, backColor, textColorSel, backColorSel} , ;
    //      {textColor, backColor, textColorSel, backColorSel} ) }
-   METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick )
+   METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bOnKeyDOwn, bWhen, aItem, bColorBlock, bHeadClick )
 
 ENDCLASS
 
-METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bWhen, aItem, bColorBlock, bHeadClick ) CLASS HColumn
+METHOD New( cHeading, block, type, length, dec, lEditable, nJusHead, nJusLin, cPict, bValid, bOnKeyDOwn, bWhen, aItem, bColorBlock, bHeadClick ) CLASS HColumn
 
-   ::heading   := iif( cHeading == Nil, "", cHeading )
-   ::block     := block
-   ::type      := type
-   ::length    := length
-   ::dec       := dec
-   ::lEditable := iif( lEditable != Nil, lEditable, .F. )
-   ::nJusHead  := iif( nJusHead == Nil,  DT_LEFT , nJusHead )  // Por default      / For default
-   ::nJusLin   := iif( nJusLin  == Nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda / Justify left
-   ::picture   := cPict
-   ::bValid    := bValid
-   ::bWhen     := bWhen
+   ::heading    := iif( cHeading == Nil, "", cHeading )
+   ::block      := block
+   ::type       := type
+   ::length     := length
+   ::dec        := dec
+   ::lEditable  := iif( lEditable != Nil, lEditable, .F. )
+   ::nJusHead   := iif( nJusHead == Nil,  DT_LEFT , nJusHead )  // Por default      / For default
+   ::nJusLin    := iif( nJusLin  == Nil,  DT_LEFT , nJusLin  )  // Justif.Izquierda / Justify left
+   ::picture    := cPict
+   ::bOnKeyDown := bOnKeyDown
+   ::bValid     := bValid
+   ::bWhen      := bWhen
    IF !Empty( aItem )
       ::aList := aItem
       ::lEditable := .T.

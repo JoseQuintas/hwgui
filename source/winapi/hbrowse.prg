@@ -2026,7 +2026,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                IF ::type == BRW_DATABASE
                   ( ::alias ) -> ( dbAppend() )
                   ( ::alias ) -> ( Eval( oColumn:block,::varbuf,Self,fipos ) )
-                  UNLOCK
+                  ( ::alias ) -> ( DbUnlock() )
                ELSE
                   IF ValType( ::aArray[1] ) == "A"
                      AAdd( ::aArray, Array( Len(::aArray[1] ) ) )
@@ -2050,6 +2050,7 @@ METHOD Edit( wParam, lParam ) CLASS HBrowse
                IF ::type == BRW_DATABASE
                   IF ( ::alias ) -> ( RLock() )
                      ( ::alias ) -> ( Eval( oColumn:block,::varbuf,Self,fipos ) )
+                     ( ::alias ) -> ( DbUnlock() )
                   ELSE
                      hwg_Msgstop( ::cTextLockRec )  /* Can't lock the record! */
                   ENDIF

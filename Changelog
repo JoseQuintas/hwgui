@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-06-03 11:44 UTC+0300 Itamar Lins <itamarlins@gmail.com>
+ * source/winapi/hbrowse.prg
+  ! fix put alias and unlock while replace editing field.
+
 2024-05-31 22:45 UTC+0300 Itamar Lins <itamarlins@gmail.com>
  * source/gtk/hbrowse.prg
   ! Adjust of syntax Column GTK same Windows OS OnKeyDown disable.

@@ -129,14 +129,14 @@ METHOD Refresh() CLASS HCheckButton
 METHOD Disable() CLASS HCheckButton
 
    ::Super:Disable()
-   hwg_Sendmessage( ::handle, BM_SETCHECK, BST_INDETERMINATE, 0 )
+   //hwg_Sendmessage( ::handle, BM_SETCHECK, BST_INDETERMINATE, 0 )
 
    RETURN Nil
 
 METHOD Enable() CLASS HCheckButton
 
    ::Super:Enable()
-   hwg_Sendmessage( ::handle, BM_SETCHECK, iif( ::lValue,1,0 ), 0 )
+   //hwg_Sendmessage( ::handle, BM_SETCHECK, iif( ::lValue,1,0 ), 0 )
 
    RETURN Nil
 

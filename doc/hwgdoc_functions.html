@@ -1932,6 +1932,18 @@ See sample program "testspli.prg" for details.<br>
    correctly.<br>
    Returns .T. , if memo's are equal.<br>
    </p>
+   
+   <br><strong class="subhead">  hwg_MEMLEN(mmemo)</strong>
+   <p>
+   Returns the number of lines of a memo field "mmemo".<br>
+   Avoid following crash by usage of<br>
+   LEN(), if memo field is empty:<br>
+   Error BASE/1111  Argument error: LEN<br>
+   Called from LEN(0)<br>
+   ...<br>
+   If mmemo is NIL or empty, the function returns 0.<br>
+   So use this function to check for an empty memo.<br> 
+</p>
 
    <br><strong class="subhead"> hwg_RefreshAllGets( oDlg )</strong> 
    <br>Refresh the state of all GET-elements in a window.

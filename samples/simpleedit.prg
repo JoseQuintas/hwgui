@@ -2,7 +2,7 @@
  * $Id$
  *
  * HWGUI - Harbour GUI library source code:
- * Simple texxt editor demonstrating hwg_Memoedit() and hwg_MemoCmp()
+ * Simple texxt editor demonstrating hwg_Memoedit()
  *
  * Copyright 2002 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
@@ -55,8 +55,10 @@ FUNCTION Test()
    * Start editing
    mreturn := hwg_MemoEdit(mmemofield , , , , , ,  oFont )
    * Modified ?
-   IF hwg_MemoCmp(mmemofield , mreturn )
+   IF mmemofield == mreturn
        hwg_MsgInfo( "Nothing to save", "Memo Edit" )
+   ELSEIF mreturn == Nil
+      hwg_MsgInfo( "Anything wrong for Nil result" )
    ELSE
       * Save file
       IF MemoWrit(fname,mreturn)

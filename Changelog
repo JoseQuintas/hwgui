@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-07-17 15:02 UTC-0200 José Quintas
+   * samples/simpleedit.prg
+   * source/gtk/hmisc.prg
+   * source/winapi/hmisc.prg
+   * doc/hwgdoc_functions.html
+     ! removed hwg_memocmp() this is done using t1 == t2 without error
+     ! removed hwg_memlen(), mlcount() does it and depends on line length
+     ! default "" for hwg_memoedit() once it is used for text
+       (not sure about this, because SQL accepts NULL)
 
 2024-07-17 16:35 UTC+0200 Wilfried Brunken DF7BE
   * source/gtk/hmisc.prg
@@ -24,7 +33,7 @@
    ! if memo is empty, LEN(memo) crashes.
    ! Use new function hwg_MEMLEN() to
    ! check for empty memo.
-   ! Docu updated.  
+   ! Docu updated.
 
 2024-06-17 04:07 UTC+0200 José Quintas
    ! source/winapi/hcheck.prg

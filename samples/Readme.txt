@@ -12,12 +12,12 @@ For beginners:
 1.1.) Read the Article of Alexander Kresin
       "Harbour for Beginners",
       it is a very good introduction
-      into Harbour programming language: 
+      into Harbour programming language:
        http://www.kresin.ru/en/hrbfaq.html
       Hint for offline reading:
       Download the *.chm file with complete manual
       and extract it with 7zip. Now you can open the
-      HTML files with your preferred browser. 
+      HTML files with your preferred browser.
 
 1.2.) Compile and run the editorial in directory utils\tutorial
       Interactive - because you
@@ -31,9 +31,9 @@ For beginners:
     bld4dll.bat       Borland C, build program which uses harbour.dll
     bldmingw.bat      GCC(MinGW), 32 bit
     bldmingw64.bat    GCC(MinGW), 64 bit
-    bldgw.bat         GCC(MinGW), alternative script 
-    bldpc.bat         Pelles C Compiler 
-    bldvc.bat         Microsoft Visual C  
+    bldgw.bat         GCC(MinGW), alternative script
+    bldpc.bat         Pelles C Compiler
+    bldvc.bat         Microsoft Visual C
     hbmk.bat          Using hbmk2 utility
     sample.hbp        Sample skript for hbmk2 utility, modify to your own needs
                       (works for Windows and LINUX)
@@ -67,7 +67,7 @@ For beginners:
 
     Record Nr. 2 contains signs for codepage IBM858DE with german Umlaute (ÄÖÜäöü),
     sharp "S" (ß), Euro currency sign (€) and greek mue (µ) for SI system as prefix for
-    parts per million. Select this codepage as data CP in dbview.prg. Select 
+    parts per million. Select this codepage as data CP in dbview.prg. Select
     DEWIN or UTF-8 for Linux as Local codepage for correct display. Do this
     before opening a dbf file ! (data codepage was set at open time of dbf).
 
@@ -83,7 +83,7 @@ For beginners:
     Read the inline comments of this sample to get information of the reduced feature set.
 
     Mark "S" mentioned a "Windows only" sample program, which have a
-    multiplatform sample with available substitute(s) of the Windows only 
+    multiplatform sample with available substitute(s) of the Windows only
     function.
 
     Mark "P" (planned) means, that the port to GTK is under construction.
@@ -121,7 +121,7 @@ For beginners:
     It is strictly recommended, for new applications avoiding the usage of any resource files.
     But for complete iconification the usage of a resource compiler is necessary, more
     information see documentation "doc/hwgdoc.html", chapter "3.11. Handling resources".
- 
+
     Creating and editing forms use the HWGUI utility "Designer"
     in directory "utils/designer".
 
@@ -151,7 +151,7 @@ For beginners:
       # {linux}../hwgui.hbc
        ...
       {linux}../hwguiGTK3.hbc
-      
+
     Ignore warning at build time:
       Unknown option -e
 
@@ -163,7 +163,7 @@ For beginners:
  arraybrowse.prg     Y                        Array BROWSE avoiding crashes because of bugs (see inline comments)
  bindbf.prg 10)      Y                        Usage of images from Binary DBF container
  bincnts.prg 10) +)  Y                        Usage of images from Binary container
- bitmapbug.prg       Y                        Handle of bug in command @<x>,<y> BITMAP ... SHOW (Class HBITMAP) 
+ bitmapbug.prg       Y                        Handle of bug in command @<x>,<y> BITMAP ... SHOW (Class HBITMAP)
  buildpelles.prg     N       N         Y      Build APP using Pelles C Compiler (*.bld file)
  checkbox.prg        Y                        Checkboxes and tabs
  colrbloc.prg        Y                 Y      BROWSE: arrays and DBF's with colored lines and columns
@@ -203,7 +203,7 @@ For beginners:
  qrencode.prg 1) 2)  Y                        Encode QR code from string an convert to monochrome bitmap.
  qrencodedll.prg 1)  N       N                Encode QR code like qrencode.prg by using a DLL
  shadebtn.prg        N       N                Shade buttons
- simpleedit.prg      Y                        Simple text editor demonstrating hwg_Memoedit() and hwg_MemoCmp()
+ simpleedit.prg      Y                        Simple text editor demonstrating hwg_Memoedit()
  stretch.prg         Y  #                     Sample for resizing bitmaps (background), some bugs (as test program)
  tab.prg             Y  #              -      Sample for Tabs
  Testado.prg         N       N                Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)
@@ -211,15 +211,15 @@ For beginners:
  test_bot.prg        P                        bOther Test: Press key, after key up the scan code is displayed.
  testbrw.prg         Y  #                     Another BROWSE test (bug on GTK see docu)
  testchild.prg       N  #    N         -      Create a child windows; child window not created ! command seems to be outdated.
- testget1.prg        Y                        Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker 
+ testget1.prg        Y                        Get system: Edit field, Checkboxes, Radio buttons, Combo box, Datepicker
  testget2.prg        Y       Y                Get system: Colored edit fields, time display, Tooltip ballon, HD serial number
- testfunc.prg        Y       Y         Y      Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button. 
+ testfunc.prg        Y       Y         Y      Test and demo of standalone HWGUI (hwg_*) functions, enable/disable button.
  testhgt.prg         N       N                class HGT for combined usage of HWGUI control elements in Harbour gtwvg programs in multithread mode.
  testhmonth.prg      Y                 Y      Calendar, Datepicker, TOOLTIP
  testimage.prg       Y       Y                Displaying images and usage of FreeImage library (IMAGE, BITMAP).
  testini.prg         P                        Use INI file: create and read
  testmenubitmap.prg  P                        Menu with bitmaps
- testrtf.prg  1)     Y  #    N          -      Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin) 
+ testrtf.prg  1)     Y  #    N          -      Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin)
  testsdi.prg         Y                        Tree control
  testspli.prg        Y                        Split windows
  testtray.prg        Y                 Y      Tray Message : Be care of different behavior between WinAPI and GTK
@@ -262,7 +262,7 @@ Directories:
  1) Sample program needs extra libraries of HWGUI, build them in directory "contrib".
 
  2) Sample program needs external prerequisites.
- 
+
  3) Because recent computer systems have no printer interfaces any more, it is strictly recommended,
     to use the Winprn class for Windows and Linux/GTK for all printing actions. The Winprn class contains a good
     print preview dialog. If you have a valid printer driver for your printer model installed,
@@ -303,7 +303,7 @@ Directories:
       For editing it could be handled easier. Also an index for quick access can be used.
       Get a sample from application CLLOG:
        https://sourceforge.net/projects/cllog/
-      Look for source file "hilfew.prg" and "helpedit.prg" (Console app), also 
+      Look for source file "hilfew.prg" and "helpedit.prg" (Console app), also
       help Database "hilfe.dbf/dbt" (sub directory "hilfe").
       A big inline comment block (english and german) in "hilfew.prg"
       explains the usage of this help system.
@@ -316,7 +316,7 @@ Directories:
      They are compilable, but some functions do not work correct.
      Because this environment is not recommended for normal use on windows, this/these misfunction(s)
      is/are irrelevant. In future, we try to describe the bugs in the inline comments of the sample program.
-     
+
   9) MinGW64: Syntax error in rc file, hex values not allowed any more, must be following:
      <name> BITMAP "<file.bmp>"
 

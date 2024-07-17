@@ -482,64 +482,14 @@ FUNCTION hwg_Array_Len(ato_check)
 
    RETURN IIF(EMPTY(ato_check), 0 , LEN(ato_check)  )
 
-FUNCTION hwg_MemoCmp(mmemo1,mmemo2)
-
-   LOCAL nnum , nlen1 , nlen2 , lende
-   LOCAL nlaenge1, nlaenge2
-
-   * NIL same as LEN=0
-   IF mmemo1 == NIL
-     nlaenge1 := 0
-   ELSE
-    nlaenge1 := hwg_MEMLEN(mmemo1)
-   ENDIF 
-*  
-   IF mmemo2 == NIL
-     nlaenge2 := 0
-   ELSE
-    nlaenge2 := hwg_MEMLEN(mmemo2)
-   ENDIF
-   * Both memo's are empty, so equal
-   IF ( nlaenge1 == 0 ) .AND. ( nlaenge2 == 0 )
-    RETURN .T.
-   ENDIF 
-   * One of them empty , so not equal
-   IF ( nlaenge1 == 0 ) .OR. ( nlaenge2 == 0 )
-    RETURN .F.
-   ENDIF
-  
-* Now full compare ( original code )
-* Here no empty memo's
-   nnum := 1
-   lende := .T.
-   nlen1 := LEN(mmemo1)
-   nlen2 := LEN(mmemo2)
-   IF nlen1 != nlen2
-      RETURN .F.
-   ENDIF
-   DO WHILE ( nnum <= nlen1 ) .AND. lende
-      IF SUBSTR(mmemo1,nnum,1) != SUBSTR(mmemo2,nnum,1)
-         lende := .F.
-      ENDIF
-      nnum := nnum + 1
-   ENDDO
-
-   RETURN lende
-   
-   
-FUNCTION hwg_MEMLEN(mmemo)
-
-IF mmemo == NIL
- * NIL same as LEN=0
- RETURN 0
-ENDIF
-RETURN MLCount(mmemo, 254 )  && nLineLength ==> max 254   
-
-
 FUNCTION hwg_MemoEdit(mpmemo , cTextTitME , cTextSave ,  cTextClose , ;
    cTTSave , cTTClose , oHCfont )
 
    LOCAL mvarbuff , varbuf , oModDlg , oEdit , owb1 , owb2 , bMemoMod
+
+   IF mpmemo == Nil
+      mpmemo := ""
+   ENDIF
 
    IF cTextTitME == NIL
       cTextTitME := "Memo Edit"

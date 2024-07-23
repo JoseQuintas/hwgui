@@ -22,7 +22,10 @@
 #include <string.h>
 #include <ctype.h>
 
+#ifndef __APPLE__
 #include <malloc.h>
+#endif
+// #include <malloc.h>
 #include <time.h>
 #include <sys/stat.h>
 

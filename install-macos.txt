@@ -1,0 +1,252 @@
+
+Installation instructions HWGUI for MacOS / GTK2
+------------------------------------------------
+install-macos.txt
+
+$Id$
+
+By DF7BE 
+
+Date: 2024-07-22 (YYYY-MM-DD)
+
+Contents:
+
+1. Preface
+2. Installation steps
+3. Hints for programmers
+4. Some helpful internet links
+
+1. Preface
+----------
+
+MacOS by Apple is not official supported by the Harbour project,
+but the "xcode" development environment allows
+to run Harbour and HWGUI applications on MacOS.
+An extra set of make scripts are added to HWGUI, 
+because a selection macro for the OS like "{linux}"
+can not be set in *.hbp files for hbmk2 utility.
+
+Some little modification in the HWGUI source code is done.
+
+The MacOS kernel is derived from BSD, so LINUX scripts
+and commands are running also here.
+
+
+2. Installation steps
+---------------------
+
+Installation instructions, tested under 
+MacOS Sonama 15,
+Dual-Core Intel i3, 1.1GHz
+
+For editing text files you need a suitable text editor,
+the "TextEdit" coming with the system is only for some formats
+(Rich-Text, HTML, ...)
+For more info see chapter "2. Hints for programmers". 
+
+    1.) Launch terminal:
+        must be found in Applications/Utilities, 
+        search for "Terminal":
+        Finder, menu item "Go" (Gehe zu) and
+        "Utilities" (Dienstprogramme), 
+        key "command" + "U" 
+        Start the Terminal and
+        fix the Terminal at the dock, if running.
+        (german: "Im Dock behalten")
+
+
+    2.) Install the "xcode" development environment:
+        xcode-select --install
+        When extra window appeared, press the "Install" button
+        in this extra window.
+        Check the compiler by entering:
+        gcc --version
+
+
+    3.) Install Harbour from Source:
+        - Download the newest code snapshot as ZIP 
+        - Extract the Harbour archive,
+          most done automatically.
+        - become root user by
+          sudo su 
+          ==> Enter your password.
+        - cd into base directory of Harbour
+        - export HB_INSTALL_PREFIX=/usr/local
+        - make install
+        - leave root modus with "exit"
+        - check:
+          hbmk2 --version
+
+       Path info:
+       - All binaries are reachable by system PATH (/usr/local/bin)
+       - Library path: /usr/local/lib/harbour
+       - Include path: /usr/local/include/harbour
+
+
+    4.) Install macports:
+
+ 
+       Download package file for your OS, for example:
+       MacPorts-2.9.3-14-Sonoma.pkg
+
+      - become root with
+        sudo su
+      - installer -target / -pkg MacPorts-2.9.3-14-Sonoma.pkg
+      - leave root by "exit"
+
+
+  
+    5.) Install GTK2    
+    
+       - sudo /opt/local/bin/port install gtk2
+
+         Answer question "Continue? [Y/n]:" with "y"
+         (after display of all dependency packages to be installed)
+ 
+   
+    6.) Install pkgconfig
+
+        - sudo /opt/local/bin/port install pkgconfig   
+   
+        - Test flag display for GTK2:
+         /opt/local/bin/pkg-config --cflags gtk+-2.0
+
+
+    7.) Install XQuartz
+
+        GTK2 supports only X11, so you need to install and
+        start an X11 server:
+        Download XQuartz from [6]
+        for example XQuartz-2.8.5.pkg
+        install by typing:
+        sudo installer -target / -pkg XQuartz-2.8.5.pkg
+
+        There must be started a background process.
+        Test: 
+        start "xeyes" or "xclock" in the terminal.
+        Be shure, that the X icon is visible in the dock
+        (after every login). A running process is marked
+        with little point under the icon.
+        Adding a "&" after the program call command,
+        the program starts in background and you can enter
+        more commands.
+  
+
+    7.) Compile HWGUI
+
+        Installation destination is
+        /Users/<userid>/hwgui/hwgui
+        (at your home diectory)
+     
+        - Create directory:
+          mkdir hwgui
+          and extract archive here.
+        - rename hwgui-code-rnnnn... only to "hwgui"
+        - set execute permission by
+          chmod 755 make_macgtk2.sh
+        - Start compilation by calling
+          ./make_macgtk2.sh
+
+  
+    8.) Compile a sample program
+     
+        goto directory "samples"
+        and start compiling of arraybrowse.prg
+        hbmk2 arraybrowse_mac.hbp
+        Ignore warning:
+        ld: warning: ignoring duplicate libraries: '-lhbrdd', '-lhbrtl', '-lhbvm'
+
+        Start sample programm:
+        ./arraybrowse
+ 
+
+    9.) Compile your own application
+
+        Use the file arraybrowse_mac.hbp as a template
+        to create a hbp file for building your own application.
+  
+
+2. Hints for programmers
+------------------------
+
+- Looking for a good editor to edit program code:
+   Ask your preferred search engine entering: 
+   "macos good text editor for programmers"  
+   and you will get a lot of suggestions.
+   I prefer "CotEditor", it is like "Notepad++"
+   on Windows [4] and Open Source.
+   But for Clipper/Harbour there is no syntax file
+   available [5]. 
+
+- malloc.h is deprecated. 
+  Now stdlib.h must be used instead
+  (is not more part of ISO C99 standard).
+ 
+  Inserted in  
+   ==> source\gtk\inter.c
+   ==> source\gtk\misc.c
+
+  It depends of the Version of GCC,
+  so set compiler switch -d__NOMALLOCH__,
+  if needed.  
+   
+  #ifdef __NOMALLOCH__
+  #include <stdlib.h>
+  #else
+  #include <malloc.h>
+  #endif   
+
+- This compiler define selects automatically code for MacOS
+  #ifdef __APPLE__
+   
+- MacOS has no file like windows.h, so 
+  windows_mac.h must be included instead.
+
+  #ifdef __APPLE__
+  #include "windows_mac.h"
+  #else
+  #include <windows.h>
+  #endif  
+ 
+  also for io.h: 
+  #ifdef __APPLE__
+          #include <sys/uio.h>
+          #include <unistd.h>
+  #else
+          #include <io.h>
+  #endif 
+ 
+
+ 
+3. Some helpful internet links
+------------------------------
+
+[1] "C auf dem Mac programmieren" (german, C programming on Mac):
+    https://www.macuser.de/threads/c-auf-dem-mac-programmieren.868779/
+    (18. July 2024)
+
+[2] "How to Install Command Line Tools in Mac OS X (Without Xcode)":
+    https://osxdaily.com/2014/02/12/install-command-line-tools-mac-os-x/
+    (18. July 2024)
+
+[3] Project "CLLOG" based on Harbour and HWGUI for MS-DOS, Windows and LINUX 
+    and now MacOS:     
+    https://sourceforge.net/projects/cllog/
+
+[4] CotEditor on GitHub:
+    https://github.com/coteditor/
+    (20. July 2024)
+
+[5] Additional Syntax Styles for CotEditor
+    https://github.com/coteditor/CotEditor/wiki/Additional-Syntax-Styles
+    (18. July 2024)
+
+[6] Download X11 server "XQuatz" for MacOS 
+    https://www.xquartz.org/
+    (20. July 2024)
+
+[7] Download site for the MacPort packages 
+    https://guide.macports.org/chunked/installing.macports.html
+    (18. July 2024) 
+ 
+=============== EOF of install-macos.txt ===================

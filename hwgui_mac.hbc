@@ -1,0 +1,35 @@
+#
+# $Id$
+#
+
+# Include this file in hbmk2 command line to build an app:
+#   'hbmk2 hwgui_mac.hbc test.prg'
+
+incpaths=include
+libpaths=lib
+
+
+
+{!hblib}libs=hwgui procmisc hbxml hwgdebug
+
+
+
+ldflags+="`/opt/local/bin/pkg-config --libs gtk+-2.0`"
+
+# Change 2 lines to build HwGUI in Unicode mode
+
+#PRGFLAGS=-DUNICODE -q -m -n -es2
+#CFLAGS=-DUNICODE -DHWG_USE_POINTER_ITEM "`/opt/local/bin/pkg-config --cflags gtk+-2.0`"
+
+PRGFLAGS=-q -m -n -es2
+CFLAGS=-DHWG_USE_POINTER_ITEM "`/opt/local/bin/pkg-config --cflags gtk+-2.0`"
+
+
+
+# Activate for GCC > V8
+#-Wold-style-cast
+# Always done in "warnings.h" as PRAGMA declaration
+
+
+# =============================== EOF of hwgui_mac.hbc ====================================
+

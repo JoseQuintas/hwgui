@@ -25,7 +25,13 @@
 #include "hbfast.h"
 #endif
 
-#include <malloc.h>
+#ifdef __APPLE__
+        #include <sys/uio.h>
+        #include <unistd.h>
+#else
+        #include <sys/io.h>
+#endif
+// #include <malloc.h>
 
 /* Avoid warnings from GCC */
 #include "warnings.h"

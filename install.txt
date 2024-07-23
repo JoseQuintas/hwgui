@@ -148,6 +148,9 @@
    3) Common instructions to build samples, utils and your application
       (for all operating systems)
 
+   For MacOS you find special installation instructions in file
+   "install-macos.txt"   
+
    Easier way to build HWGUI applications is to use the "hbmk2" utility of Harbour.
    Write an *.hbp file and run for example:
    hbmk2 myapp.hbp

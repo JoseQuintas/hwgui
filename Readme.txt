@@ -14,6 +14,9 @@ Supported platforms:
 - Windows 32, runs also best on Windows 64, using WinAPI function calls.
 - LINUX with gcc and GTK V2.
   (GTK V3 is under construction)
+- MacOS with GCC and GTK2,
+  installation instructions in extra file
+  "install-macos.txt"  
 
 Not supported yet on other platforms:
 Try to make experiments, if

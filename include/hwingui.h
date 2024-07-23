@@ -16,7 +16,11 @@
     #define WINVER  0x0502
 #endif
 
+#ifdef __APPLE__
+#include "windows_mac.h"
+#else
 #include <windows.h>
+#endif
 #include "guilib.h"
 
 #if ((defined(_MSC_VER)&&(_MSC_VER<1300)&&!defined(__POCC__)) || defined(__WATCOMC__)|| defined(__DMC__))

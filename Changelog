@@ -15,6 +15,25 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-07-23 10:50 UTC+0200 Wilfried Brunken DF7BE
+ * Readme.txt
+ * hwgui_mac.hbc (New)
+ * include/hwingui.h
+ * include/windows_mac.h (New)
+ * install-macos.txt (New)
+ * install.txt
+ * make_macgtk2.sh (New)
+ * samples/arraybrowse_mac.hbp (New)
+ * source/common/procmisc/cfuncs.c
+ * source/gtk/Makefile.linux
+ * source/gtk/Makefile.mac
+ * source/gtk/inter.c
+ * source/gtk/misc.c
+    ! Port to MacOS 15 with GTK2 successfull !
+    ! The source code modifications are minimal
+    ! Makefile LINUX: Bug for target clean fixed
+    
+
 2024-07-17 15:02 UTC-0200 José Quintas
    * samples/simpleedit.prg
    * source/gtk/hmisc.prg

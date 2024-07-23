@@ -1,0 +1,25 @@
+#
+# $Id$
+#
+
+# Special parameters for LINUX/GTK
+#{linux}-lm
+#{linux}-static
+#{linux}-d__LINUX__
+#{linux}-d__GTK__
+
+#-lm
+-static
+-d__LINUX__
+-d__GTK__
+
+../hwgui_mac.hbc
+
+-n
+-w
+
+-oarraybrowse
+
+arraybrowse.prg
+
+# ==================== EOF of arraybrowse.hbp ===============

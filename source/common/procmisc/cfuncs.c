@@ -11,7 +11,14 @@
 #include <unistd.h>
 #else
 #include "hwingui.h"
-#include <io.h>
+
+#ifdef __APPLE__
+        #include <sys/uio.h>
+        #include <unistd.h>
+#else
+        #include <io.h>
+#endif
+// #include <io.h>
 #endif
 #include <stdio.h>
 #include "hbapi.h"

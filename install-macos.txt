@@ -7,7 +7,7 @@ $Id$
 
 By DF7BE 
 
-Date: 2024-07-22 (YYYY-MM-DD)
+Date: 2024-07-27 (YYYY-MM-DD)
 
 Contents:
 
@@ -36,7 +36,7 @@ and commands are running also here.
 ---------------------
 
 Installation instructions, tested under 
-MacOS Sonama 15,
+MacOS Sonoma 14.5
 Dual-Core Intel i3, 1.1GHz
 
 For editing text files you need a suitable text editor,
@@ -176,7 +176,37 @@ For more info see chapter "2. Hints for programmers".
    I prefer "CotEditor", it is like "Notepad++"
    on Windows [4] and Open Source.
    But for Clipper/Harbour there is no syntax file
-   available [5]. 
+   available [5].
+   
+- Expand PATH
+  Many of the new products are installed in another path.
+  You can extend the path of the system as follows:
+  - sudo bash 
+    vim /etc/paths
+  - Insert line at the end:
+    /opt/local/bin
+    To do this, turn on the append mode with "A",
+    and press <ENTER> for a new line.
+    After entering the new line 
+    exit insert mode with the <ESC> key  
+    and save by  
+    wq!
+  - Exit "root" mode with
+    exit
+  - Restart the computer for the change to take effect. 
+ 
+- Installing the Subversion command line client
+   sudo /opt/local/bin/port install subversion
+   Actions analogous to "7.) Install XQuartz",
+   but afterwards the "dbus-daemon" can 
+   be deactivated, because it is not needed.
+   Do this in "System settings" (Systemeinstellungen),
+   "Common" (Allgemein), "Login items" (Anmeldeobjekte)
+   Set 3 switches to "off".
+   Check with
+   svn --version
+    whether the client starts.
+    
 
 - malloc.h is deprecated. 
   Now stdlib.h must be used instead

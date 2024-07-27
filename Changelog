@@ -15,6 +15,11 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-07-27 12:40 UTC+0200 Wilfried Brunken DF7BE
+ * install-macos.txt
+   ! Little update installation instructions for MacOS 
+
+
 2024-07-23 10:50 UTC+0200 Wilfried Brunken DF7BE
  * Readme.txt
  * hwgui_mac.hbc (New)
@@ -29,7 +34,7 @@
  * source/gtk/Makefile.mac
  * source/gtk/inter.c
  * source/gtk/misc.c
-    ! Port to MacOS 15 with GTK2 successfull !
+    ! Port to MacOS 14.5 with GTK2 successfull !
     ! The source code modifications are minimal
     ! Makefile LINUX: Bug for target clean fixed
     

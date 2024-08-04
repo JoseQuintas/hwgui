@@ -15,6 +15,26 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2024-08-04 15:45 UTC+0200 Wilfried Brunken DF7BE
+ * install-macos.txt
+ * samples/arraybrowse.hbp
+ * samples/arraybrowse.prg
+ * samples/arraybrowse_mac.hbp (removed)
+ * samples/hbmk.sh (new)
+ * samples/helloworld.prg (new)
+ * samples/testfunc.hbp
+ * samples/testfunc.prg
+ ! MacOS continued:
+ ! - Install instructions updated
+ ! - testfunc.prg extended
+ ! - Trouble running Harbour Console/Terminal 
+ !   programs solved
+ ! - Hallo Jose, the accent e is not
+ !   accepted on MacOS, Sorry
+ !   (incompatible character)    
+
+
 2024-07-27 12:40 UTC+0200 Wilfried Brunken DF7BE
  * install-macos.txt
    ! Little update installation instructions for MacOS 
@@ -39,7 +59,7 @@
     ! Makefile LINUX: Bug for target clean fixed
     
 
-2024-07-17 15:02 UTC-0200 José Quintas
+2024-07-17 15:02 UTC-0200 Jose Quintas
    * samples/simpleedit.prg
    * source/gtk/hmisc.prg
    * source/winapi/hmisc.prg
@@ -59,7 +79,7 @@
    ! check for empty memo.
    ! Docu updated.
 
-2024-06-17 04:07 UTC+0200 José Quintas
+2024-06-17 04:07 UTC+0200 Jose Quintas
    ! source/winapi/hcheck.prg
       ! change check state on disable was causing wrong state on enable
 

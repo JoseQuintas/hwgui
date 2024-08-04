@@ -13,9 +13,10 @@
 */
 
     * Status:
-    *  WinAPI   :  Yes
-    *  GTK/Linux:  Yes
-    *  GTK/Win  :  Yes
+    *   WinAPI   :  Yes
+    *   GTK/Linux:  Yes
+    *   GTK/Win  :  Yes
+    *  GTK/MacOS :  Yes
 /*
   Add extensions to your own needs
 */
@@ -48,6 +49,10 @@
 
  Harbour functions:
  CurDir()
+ OS()
+
+Other functions:
+ - Build date and time (Harbour predefined macros)
 
 */
 
@@ -55,7 +60,7 @@
 #include "hwgui.ch"
 #include "common.ch"
 #ifdef __GTK__
-#include "gtk.ch"
+// #include "gtk.ch"
 #endif
 #ifdef __XHARBOUR__
    #include "ttable.ch"
@@ -70,7 +75,7 @@ FUNCTION MAIN()
    LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
    LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
    LOCAL oButton26, oButton27, oButton28, oButton29
-   LOCAL oButton30, oButton31, oButton32
+   LOCAL oButton30, oButton31, oButton32, oButton33, obutton34 
 
    LOCAL nspcbutton
 
@@ -244,7 +249,18 @@ FUNCTION MAIN()
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | Test_hwg_MsgOkCancel() }
 
+   /* Added August 2024 also for MacOS port */
+   
+    @ 25 ,nspcbutton * 14 BUTTON oButton33 CAPTION "OS()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_hb_os() }
+                
+    @ 25 ,nspcbutton * 15 BUTTON oButton34 CAPTION "Build date" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_BuildDatetime() }              
+                
 
+                
    /* Disable buttons for Windows only functions */
 #ifndef __PLATFORM__WINDOWS
    oButton8:Disable()
@@ -697,5 +713,18 @@ LOCAL oLabel9, oLabel10, oLabel11, oLabel12, oLabel13, oLabel14, oLabel15, oLabe
    ACTIVATE DIALOG oDlg
 
 RETURN NIL
+
+FUNCTION Test_hb_os()
+* On MacOS the value displayed is "Darwin"
+ hwg_Msginfo("OS() = " + OS())
+RETURN NIL
+
+FUNCTION Test_BuildDatetime()
+* Display build date by reading
+* Harbour predefined macros
+ hwg_MsgInfo("Build date = " + __DATE__ + CHR(10) + ;
+             "Build time = " + __TIME__ , "Build"  )
+RETURN NIL
+ 
 
 * ============================== EOF of testfunc.prg ==============================

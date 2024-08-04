@@ -52,7 +52,7 @@ FUNCTION Main()
    LOCAL oWinMain
 
    INIT WINDOW oWinMain MAIN  ;
-      TITLE "Sample program BROWSE arrays" AT 0, 0 SIZE 600,400;
+      TITLE "Sample program BROWSE arrays" AT 100, 100 SIZE 600,400;
       STYLE WS_DLGFRAME + WS_SYSMENU + DS_CENTER
 
    MENU OF oWinMain

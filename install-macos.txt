@@ -7,7 +7,7 @@ $Id$
 
 By DF7BE 
 
-Date: 2024-07-27 (YYYY-MM-DD)
+Date: 2024-08-04 (YYYY-MM-DD)
 
 Contents:
 
@@ -25,6 +25,8 @@ to run Harbour and HWGUI applications on MacOS.
 An extra set of make scripts are added to HWGUI, 
 because a selection macro for the OS like "{linux}"
 can not be set in *.hbp files for hbmk2 utility.
+But you can negate the existing macros like
+{!win}, details in the following chapters.
 
 Some little modification in the HWGUI source code is done.
 
@@ -136,7 +138,7 @@ For more info see chapter "2. Hints for programmers".
 
         Installation destination is
         /Users/<userid>/hwgui/hwgui
-        (at your home diectory)
+        (at your home directory)
      
         - Create directory:
           mkdir hwgui
@@ -152,7 +154,7 @@ For more info see chapter "2. Hints for programmers".
      
         goto directory "samples"
         and start compiling of arraybrowse.prg
-        hbmk2 arraybrowse_mac.hbp
+        hbmk2 arraybrowse.hbp
         Ignore warning:
         ld: warning: ignoring duplicate libraries: '-lhbrdd', '-lhbrtl', '-lhbvm'
 
@@ -162,9 +164,37 @@ For more info see chapter "2. Hints for programmers".
 
     9.) Compile your own application
 
-        Use the file arraybrowse_mac.hbp as a template
+        Use the file arraybrowse.hbp as a template
         to create a hbp file for building your own application.
-  
+        Because the HPB macro "{mac}" does not exist,
+        use following macros to divide to your used operating system:
+        - {!win} ==> for LINUX and MacOS
+        - {!win&&!linux}   ==> only MacOS
+        - {win} ==> Windows only     
+      
+       Get more samples for programming your own HWGUI application
+       in the subdirectory "samples" an at
+       [3] Project "CLLOG". 
+       
+       If you also use Harbour Console/Terminal programs,
+       solve a problem on MacOS:
+       Regularly the command
+       hbmk2 helloworld.prg
+       compiles the program on Windows and LINUX and it runs at its best.
+       Doing this on MacOS, the program is compiled
+       successful, but runnung it with
+         ./helloworld       the start is faulted with the following error message:
+      dyld[1767]: Library not loaded: libharbour.dylib
+        Referenced from: <F7B1FE28-9F46-3B03-BBF2-CCB7EC56B210> /Users/afumacbook/svnwork/
+         hwgui/hwgui-code/hwgui/samples/helloworld        
+  Reason: tried: 'libharbour.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibharbour.dylib' (no such file), 'libharbour.dylib' (no such file), '/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file), '/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file)  
+zsh: abort      ./helloworld
+     Now compile this sample by
+             ./hbmk.sh helloworld
+      and it runs now.
+      The script cab also be used on LINUX, it
+      has an OS autodetect function.          
+            
 
 2. Hints for programmers
 ------------------------
@@ -226,7 +256,7 @@ For more info see chapter "2. Hints for programmers".
   #include <malloc.h>
   #endif   
 
-- This compiler define selects automatically code for MacOS
+- This compiler define for C selects automatically code for MacOS
   #ifdef __APPLE__
    
 - MacOS has no file like windows.h, so 
@@ -246,8 +276,11 @@ For more info see chapter "2. Hints for programmers".
           #include <io.h>
   #endif 
  
-
- 
+- Detection of operating system:
+  the command uname and the Harbour function
+  OS() returns on MacOS the value
+    "Darwin".
+  
 3. Some helpful internet links
 ------------------------------
 

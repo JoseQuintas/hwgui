@@ -2,16 +2,18 @@
 # $Id$
 #
 
-# Special parameters for LINUX/GTK
-{linux}-lm
-{linux}-static
-{linux}-d__LINUX__
-{linux}-d__GTK__
+# Special parameters for LINUX/GTK and MacOS/GTK
+{!win}-lm
+{!win}-static
+{!win}-d__LINUX__
+{!win}-d__GTK__
 
 
 {win}../hwgui.hbc
 # GTK2
 {linux}../hwgui.hbc
+{!win&&!linux}../hwgui_mac.hbc
+
 # GTK3: Deactivate previous line
 # and activate following line
 #{linux}../hwguiGTK3.hbc

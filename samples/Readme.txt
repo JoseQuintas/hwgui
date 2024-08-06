@@ -192,7 +192,8 @@ For beginners:
  icons.prg           Y                        Icons and background bitmaps
  icons2.prg          Y                        Icons and bitmaps using hex values
  iesample.prg 2) 5)  N       N                Sample of ActiveX container for the IE browser object.
- menumod.prg         Y                        Handling menu items while run-time in dialogs.
+ memocmp.prg.        Y                         Edit and compare memo's an get size
+  menumod.prg         Y                        Handling menu items while run-time in dialogs.
  modtitle.prg        Y                        Sample for modifying a main window title in HWGUI
  nice.prg            N       N                Demo of NICEBUTTON
  nice2.prg           N  #    N         -      Demo of NICEBUTTON (2), starts only in background, kill with Task Manager

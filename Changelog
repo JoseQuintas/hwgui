@@ -15,6 +15,18 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-08-06 17:55 UTC+0200 Wilfried Brunken DF7BE
+ * samples/Readme.txt
+ * samples/memocmp.hbp
+ * samples/memocmp.prg
+   ! Commit  [r3463] by josequintas 2024-07-17
+   ! Hello Jose,
+   ! LEN(memo) crashes if memo is NIL.
+   ! Sample program demonstrates how to handle.
+   ! For details read comment lines of
+   ! sample program.
+   ! Also tested on MacOS 
+
 
 2024-08-04 15:45 UTC+0200 Wilfried Brunken DF7BE
  * install-macos.txt
@@ -25,14 +37,14 @@
  * samples/helloworld.prg (new)
  * samples/testfunc.hbp
  * samples/testfunc.prg
- ! MacOS continued:
- ! - Install instructions updated
- ! - testfunc.prg extended
- ! - Trouble running Harbour Console/Terminal 
- !   programs solved
- ! - Hallo Jose, the accent e is not
- !   accepted on MacOS, Sorry
- !   (incompatible character)    
+   ! MacOS continued:
+   ! - Install instructions updated
+   ! - testfunc.prg extended
+   ! - Trouble running Harbour Console/Terminal 
+   !   programs solved
+   ! - Hallo Jose, the accent e is not
+   !   accepted on MacOS, Sorry
+   !   (incompatible character)    
 
 
 2024-07-27 12:40 UTC+0200 Wilfried Brunken DF7BE

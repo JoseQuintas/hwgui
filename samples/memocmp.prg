@@ -5,7 +5,7 @@
  * $Id$
  *
  * HWGUI - Harbour Win32 GUI and GTK library source code:
- * Sample for Edit and Compare memo and get length of a memo 
+ * Sample for Edit and Compare memo and get length of a memo
  *
  * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
@@ -30,8 +30,8 @@
  Parent: [r3462]
  Child: [r3464]
  title:
- removed hwg_memocmp() and hwg_lenmem() 
- 
+ removed hwg_memocmp() and hwg_lenmem()
+
 */
 
 
@@ -52,7 +52,7 @@ FUNCTION Main()
    LOCAL oWinMain
    LOCAL mmemo1, mmemo2
 
-   SET EXACT ON   
+   SET EXACT ON
    * Init empty
    mmemo1 := ""
    mmemo2 := ""
@@ -80,67 +80,34 @@ FUNCTION Main()
 
 RETURN Nil
 
-FUNCTION Compare1(mmemo1, mmemo2)
-LOCAL nleng1, nleng2
+FUNCTION Compare1( mMemo1, mMemo2 )
 
- IF mmemo1 == NIL
-   hwg_Msginfo("Memo1 is NIL")
-//   mmemo1 := ""
- ENDIF
+   LOCAL nLines1 := 0, nLines2 := 0, nLen1 := 0, nLen2 := 0, cText := ""
 
- IF mmemo2 == NIL
-   hwg_Msginfo("Memo2 is NIL")
-//   mmemo2 := ""
- ENDIF
+   IF mMemo1 == NIL
+      cText += "Memo1 is NIL" + hb_Eol()
+   ELSE
+      nLines1 := MLCount( mMemo1, 254 )
+      nLen1   := Len( mMemo1 )
+   ENDIF
 
-/* 
- * Display length
- nleng1 := LEN(mmemo1)
- nleng2 := LEN(mmemo2) 
-   hwg_Msginfo("LEN() of memo1 = " + ALLTRIM(STR(nleng1))  + CHR(10) + ;
-   "LEN() of memo2 = " + ALLTRIM(STR(nleng2)) )
+   IF mMemo2 == NIL
+      cText += "Memo2 is NIL" + hb_Eol()
+   ELSE
+      nLines2 := MLCount( mMemo2, 254 )
+      nLen2   := Len( mMemo2 )
+   ENDIF
 
- The symptom, if memo is NIL
-Error BASE/1111  Argument error: LEN
-Called from (b)HWG_ERRSYS(20)
-Called from LEN(0)
-Called from COMPARE1(80)
-Called from (b)MAIN(56)
-Called from ONCOMMAND(643)
-Called from (b)HMAINWINDOW(300)
-Called from HMAINWINDOW:ONEVENT(406)
-Called from HWG_ACTIVATEMAINWINDOW(0)
-Called from HMAINWINDOW:ACTIVATE(395)
-Called from MAIN(61)
+   cText += "Memo1 have " + Ltrim( Str( nLines1 ) ) + " line(s) and " + ;
+      Ltrim( Str( nLen1 ) ) + " chars" + hb_Eol()
+   cText += "Memo2 have " + Ltrim( Str( nLines2 ) ) + " line(s) and " + ;
+      Ltrim( Str( nLen2 ) ) + " chars" + hb_Eol()
 
-HWGUI 2.23 dev Build 8
-Date:08/05/24
-Time:19:07:34
-*/
+   IF mMemo1 == mMemo2
+      cText += "Memos are equal"
+   ELSE
+      cText += "Memos are not equal"
+   ENDIF
+   hwg_MsgInfo( cText )
 
-* Use Function nMemolen() above to get the length of memo,
-* returns 0, if memo is NIL !
-
- nleng1 := nMemolen(mmemo1)
- nleng2 := nMemolen(mmemo2) 
-   hwg_Msginfo("LEN() of memo1 = " + ALLTRIM(STR(nleng1))  + CHR(10) + ;
-   "LEN() of memo2 = " + ALLTRIM(STR(nleng2)) ) 
-
- IF mmemo1 == mmemo2
-   hwg_MsgInfo("Memos are equal")
- ELSE
-   hwg_MsgInfo("Memos are not equal")
- ENDIF 
-RETURN NIL 
-
-
-FUNCTION nMemolen(mmemo)
-
-IF mmemo == NIL
-* NIL same as LEN=0
- RETURN 0
-ENDIF
-RETURN MLCount(mmemo, 254 )  && nLineLength ==> max 254  
-
- 
-* ==================== EOF of memocmp.prg ========================0
+   RETURN NIL

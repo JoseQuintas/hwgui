@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-08-06 17:30 UTC-0200 Jose Quintas
+   * samples/memocmp.prg
+     ! Fix sample, not sure if it is needed.
+     ! Len( aArray ) also crashes with Nil.
+     ! It is allways needed to check Nil, including memo
+
+
 2024-08-06 17:55 UTC+0200 Wilfried Brunken DF7BE
  * samples/Readme.txt
  * samples/memocmp.hbp
@@ -25,7 +32,7 @@
    ! Sample program demonstrates how to handle.
    ! For details read comment lines of
    ! sample program.
-   ! Also tested on MacOS 
+   ! Also tested on MacOS
 
 
 2024-08-04 15:45 UTC+0200 Wilfried Brunken DF7BE
@@ -40,16 +47,16 @@
    ! MacOS continued:
    ! - Install instructions updated
    ! - testfunc.prg extended
-   ! - Trouble running Harbour Console/Terminal 
+   ! - Trouble running Harbour Console/Terminal
    !   programs solved
    ! - Hallo Jose, the accent e is not
    !   accepted on MacOS, Sorry
-   !   (incompatible character)    
+   !   (incompatible character)
 
 
 2024-07-27 12:40 UTC+0200 Wilfried Brunken DF7BE
  * install-macos.txt
-   ! Little update installation instructions for MacOS 
+   ! Little update installation instructions for MacOS
 
 
 2024-07-23 10:50 UTC+0200 Wilfried Brunken DF7BE
@@ -69,7 +76,7 @@
     ! Port to MacOS 14.5 with GTK2 successfull !
     ! The source code modifications are minimal
     ! Makefile LINUX: Bug for target clean fixed
-    
+
 
 2024-07-17 15:02 UTC-0200 Jose Quintas
    * samples/simpleedit.prg

@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, October 2023</td>
+    <td width="70%" align="center">Alexander S.Kresin, August 2024</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -2549,9 +2549,27 @@ See sample program "testspli.prg" for details.<br>
      <li> cOutFile - optional parameter, a file name for program output;
      <li> Return value - (integer) program exit code.
    </ul>
+   
+    <br><strong class="subhead"> hwg_RunConsApp( cCommand )</strong> (GTK LINUX and MacOS only)
+   <br>Executes a console or GUI program in async mode.
+   <ul>
+     <li> cCommand - a command line to execute;
+     <li> Return value - (integer) program exit code.
+   </ul>
+   <p>
+   For details read instructions in sample program tststconsapp.prg,<br>
+   it demonstrates the usage of<br>
+   - hwg_RunApp() (async mode)<br>
+   - hwg_RunConsoleApp() (sync mode)<br>
+   - hwg_RunConsApp() (async mode, GTK)<br>
+   - hwg_ShellExecute() (under construction, will be added later)
+   Be pleasant, to try, what is the best for your HWGUI application.<br>
+   </p>
 
    <br><strong class="subhead"> hwg_RunApp( cCommand [, nFlag] [, lAsync] )</strong><br>
-   Runs an external program.<br>
+   Runs an external program (async mode).<br>
+   On LINUX/GTK and MacOS/GTK the are some restrictions,<br> 
+   for details read instructions in sample program tststconsapp.prg.<br>
    <br>
    <br> Parameter 1: command line (mandatory):
     <br>

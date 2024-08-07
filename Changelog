@@ -15,6 +15,29 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2024-08-07 15:05 UTC+0200 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* include/warnings.h
+* samples/Readme.txt
+* samples/tststconsapp.hbp (New)
+* samples/tststconsapp.prg (New)
+* source/gtk/misc.c
+  ! New function hwg_RunConsApp() 
+  ! avoids some restrictions of
+  ! hwg_RunConsoleApp() and
+  ! hwg_RunApp(). 
+  ! New sample program tststconsapp.prg
+  ! testing all functions to run
+  ! external GUI or console applications.
+  ! Under construction, to be continued
+  ! with hwg_ShellExecute(), need to
+  ! check and describe in function doc.
+  ! Hello Jose, function
+  ! hwg_Array_Len(aArray)
+  ! handle this case, if array is {} or NIL.
+
+
 2024-08-06 17:30 UTC-0200 Jose Quintas
    * samples/memocmp.prg
      ! Fix sample, not sure if it is needed.

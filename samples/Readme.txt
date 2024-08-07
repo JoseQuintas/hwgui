@@ -192,8 +192,8 @@ For beginners:
  icons.prg           Y                        Icons and background bitmaps
  icons2.prg          Y                        Icons and bitmaps using hex values
  iesample.prg 2) 5)  N       N                Sample of ActiveX container for the IE browser object.
- memocmp.prg.        Y                         Edit and compare memo's an get size
-  menumod.prg         Y                        Handling menu items while run-time in dialogs.
+ memocmp.prg.        Y                        Edit and compare memo's an get size
+ menumod.prg         Y                        Handling menu items while run-time in dialogs.
  modtitle.prg        Y                        Sample for modifying a main window title in HWGUI
  nice.prg            N       N                Demo of NICEBUTTON
  nice2.prg           N  #    N         -      Demo of NICEBUTTON (2), starts only in background, kill with Task Manager
@@ -231,6 +231,7 @@ For beginners:
  tstprdos.prg 3)     N       N                Print on LPT, outdated, see 3)
  tstscrlbar.prg      P                        Scrollbar (GTK: Compilable, but no scroll function)
  tstsplash.prg       P                        SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
+ tststconsapp.prg    Y                        Testing all functions to run external GUI or console applications
  TwoListbox.prg      S       S                Sample for select and move items between two listboxes.
  TwoLstSub.prg       Y                        Multi platform substitute for two listboxes by BROWSE windows.
  winprn.prg  3) 8)   Y            Y    Y      Printing via Windows GDI Interface (same sample in gtk_samples)

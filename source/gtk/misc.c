@@ -312,6 +312,79 @@ HB_FUNC( HWG_RUNAPP )
   hb_retni ( rc );
 }
 
+/* This function only for experimental usage */
+static void child_watch_cb (
+                GPid     pid,
+                gint     status,
+                gpointer user_data)
+{
+  /* At your option, a message can be written into a file for
+     debugging purposes */
+     
+     
+  
+//     g_message ("Child %" G_PID_FORMAT " exited %s", pid,
+//             g_spawn_check_wait_status (status, NULL) ? "normally" : "abnormally"); 
+     
+   /* This avoids, that the process is after end existing like a zombie process */     
+  g_spawn_close_pid (pid);
+  
+ }
+
+HB_FUNC( HWG_RUNCONSAPP )
+{
+   GError * error = NULL;
+   gint rc = 0;
+ 
+//   gint app_stdin;
+//   gint app_stdout;
+//   gint app_stderr;
+
+   gchar *argv[2];
+   GPid  * pid = NULL;
+ 
+  argv[0] = hb_parc(1);  /* Name of external program */
+  argv[1] = NULL;
+  
+//  argv[1]= external_parameter_file.ini;
+//  argv[2]= NULL;
+ 
+ g_spawn_async_with_pipes(
+  NULL,             //   gchar *working_directory
+  argv,             //   gchar **argv
+  NULL,             //   gchar **envp
+  G_SPAWN_SEARCH_PATH | G_SPAWN_CHILD_INHERITS_STDIN ,
+  NULL,             //   GSpawnChildSetupFunc child_setup
+  NULL,             //   gpointer user_data
+  pid,             //   GPid *child_pid
+  NULL,             //   gint *standard_input
+  NULL,             //   gint *standard_output
+  NULL,             //   gint *standard_error
+  &error);          //   GError **error
+  
+// G_SPAWN_DO_NOT_REAP_CHILD removed  
+  
+   if (error != NULL)
+    {
+        rc = error->code ;
+        g_error_free(error);
+        /* Immediate return, if process did not start */
+        hwg_writelog(NULL, "Programm start terminated with error");
+        hb_retni ( rc );  
+    }
+ 
+
+   /* Watch the started process */
+   /* The cast to uintptr_t avoids warning with size of cast to int */
+//   g_child_watch_add ( (uintptr_t) pid, child_watch_cb, NULL);
+   
+ 
+    hb_retni ( rc );
+  
+}
+
+
+
 HB_FUNC( HWG_SHELLEXECUTE )
 {
    const gchar * uri = hb_parc(1);

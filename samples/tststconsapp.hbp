@@ -1,0 +1,28 @@
+#
+# $Id$
+#
+
+# Special parameters for LINUX/GTK and MacOS/GTK 
+{!win}-lm
+{!win}-static
+{!win}-d__LINUX__
+{!win}-d__GTK__
+
+
+{win}../hwgui.hbc
+# GTK2
+{!linux&&!win}hwgui_mac.hbc
+{linux}../hwgui.hbc
+
+# GTK3: Deactivate previous line
+# and activate following line
+#{linux}../hwguiGTK3.hbc
+
+-n
+-w
+
+-otststconsapp
+
+tststconsapp.prg
+
+# ==================== EOF of tststconsapp.hbp ===============

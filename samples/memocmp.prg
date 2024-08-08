@@ -39,7 +39,7 @@
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
     *  GTK/Win  :  Yes
-    *  GTK/MacOS:  No
+    *  GTK/MacOS:  Yes
 
 #include "hwgui.ch"
 #include "common.ch"

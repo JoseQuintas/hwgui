@@ -16,6 +16,12 @@
 */
 
 
+2024-08-08 18:45 UTC+0200 Wilfried Brunken DF7BE
+* samples/memocmp.prg
+* samples/tststconsapp.hbp
+  ! Samples running OK on MacOS
+
+
 2024-08-07 15:05 UTC+0200 Wilfried Brunken DF7BE
 * doc/hwgdoc_functions.html
 * include/warnings.h

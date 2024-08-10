@@ -16,6 +16,21 @@
 */
 
 
+2024-08-10 10:35 UTC+0200 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* install-macos.txt
+* samples/testfunc.hbp
+* samples/testfunc.prg
+* samples/tststconsapp.hbp
+* samples/tststconsapp.prg
+* source/common/procmisc/cfuncs.c
+  ! New function hwg_ChrDir().
+  ! Handling origin for calling
+  ! Harbour console/terminal apps by
+  ! using absolute path and name.
+  ! Macro ___MACOSX___ to devide
+  ! special code for MacOS
+
 2024-08-08 18:45 UTC+0200 Wilfried Brunken DF7BE
 * samples/memocmp.prg
 * samples/tststconsapp.hbp

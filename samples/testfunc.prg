@@ -45,7 +45,9 @@
  hwg_FileModTime()
  hwg_Get_Time_Shift()
  hwg_ProcFileExt()
-
+ hwg_ChrDir()
+ 
+ 
 
  Harbour functions:
  CurDir()
@@ -53,7 +55,7 @@
 
 Other functions:
  - Build date and time (Harbour predefined macros)
-
+ - Origin path
 */
 
 
@@ -70,14 +72,41 @@ MEMVAR cDirSep , bgtk , ndefaultcsrtype
 
 FUNCTION MAIN()
 
+   LOCAL coriginp, coriginchdir
+
    LOCAL Testfunc, oFont , nheight
    LOCAL oButton1, oButton2, oButton3, oButton4, oButton5, oButton6, oButton7, oButton8, oButton9
    LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
    LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
    LOCAL oButton26, oButton27, oButton28, oButton29
-   LOCAL oButton30, oButton31, oButton32, oButton33, obutton34 
+   LOCAL oButton30, oButton31, oButton32, oButton33, obutton34, obutton35 
 
    LOCAL nspcbutton
+
+
+* === Get origin path (this were the exe file is located) ===
+*              For multi platform usage !
+*
+*    argv[0]: The argv[0] argument passed to the main()
+*    function contains the path and name of the executable file.
+*
+*    int main(int argc, char *argv[]) { 
+*        printf("Executable path: %s", argv[0]); 
+*        return 0; 
+*    }
+*    but this is reachable from Harbour and HWGUI by following sequence: 
+*  
+ * Get the origin path and name
+   coriginp := hb_argV( 0 )
+  
+ * Change to origin directory  
+  IF .NOT. EMPTY(coriginp)
+     coriginchdir := hwg_Dirname(coriginp) 
+     //ft_ChDir( coriginp )
+     hwg_CHDIR(coriginchdir)
+  ENDIF
+  
+         
 
    PUBLIC cDirSep := hwg_GetDirSep()
    PUBLIC bgtk , ndefaultcsrtype
@@ -257,8 +286,11 @@ FUNCTION MAIN()
                 
     @ 25 ,nspcbutton * 15 BUTTON oButton34 CAPTION "Build date" SIZE 140,nheight FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
-                { | | Test_BuildDatetime() }              
-                
+                { | | Test_BuildDatetime() }  
+                            
+    @ 25 ,nspcbutton * 16 BUTTON oButton35 CAPTION "Origin path" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_originpath(coriginp) }                 
 
                 
    /* Disable buttons for Windows only functions */
@@ -726,5 +758,26 @@ FUNCTION Test_BuildDatetime()
              "Build time = " + __TIME__ , "Build"  )
 RETURN NIL
  
+ 
+FUNCTION Test_originpath(coriginp)
+  hwg_MsgInfo("Origin path and name is :" + coriginp + CHR(10) + ;
+   "Changed to directory at start : " + PWD() , "Test Originpath")
+RETURN NIL   
+ 
+* ================================================================= *
+FUNCTION PWD()
+* Returns the curent directory with trailing \ or /
+* so you can add a file name after the returned value:
+* fullpath := PWD() + "FILE.EXT" 
+* ================================================================= *
+
+LOCAL oDir
+#ifdef __PLATFORM__WINDOWS
+  oDir := HB_curdrive() + ":\" + Curdir() + "\"
+#else
+  oDir := "/"+Curdir()+"/"
+#endif
+
+RETURN oDir 
 
 * ============================== EOF of testfunc.prg ==============================

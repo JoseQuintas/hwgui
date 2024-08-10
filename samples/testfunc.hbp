@@ -7,7 +7,7 @@
 {!win}-static
 {!win}-d__LINUX__
 {!win}-d__GTK__
-
+{!linux&&!win}-d___MACOSX___
 
 {win}../hwgui.hbc
 # GTK2

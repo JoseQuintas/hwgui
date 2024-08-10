@@ -12,6 +12,7 @@
 * hwg_RunApp() (async mode)
 * hwg_RunConsoleApp() (sync mode)
 * hwg_RunConsApp() (async mode, GTK) 
+* hwg_ShellExecute() <under construction>
   
 *
 * Copyright 2024 Wilfried Brunken, DF7BE
@@ -161,7 +162,11 @@ FUNCTION Main()
 //       MENUITEM "show &environment"  ACTION  START_PGM(wincmd + " /C env",,.F.,.T.,.F.)
 //        MENUITEM "&Cmd"  ACTION  START_PGM(wincmd,,.F.,.T.,.F.)
 #else
+#ifndef ___MACOSX___
+* Devide code for MacOS, here hide start of gedit, it is only LINUX   
      MENUITEM "Start &gedit"     ACTION START_PGM("/usr/bin/gedit",,.F.)
+#endif
+
 * Attention: calling program freezes after is "exit"-ed (zombie process left ?) 
 //     MENUITEM "Start s&hell"     ACTION START_PGM("/usr/bin/bash",,.F.)  && Crashes at end
 

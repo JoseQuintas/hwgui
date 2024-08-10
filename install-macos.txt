@@ -170,7 +170,15 @@ For more info see chapter "2. Hints for programmers".
         use following macros to divide to your used operating system:
         - {!win} ==> for LINUX and MacOS
         - {!win&&!linux}   ==> only MacOS
-        - {win} ==> Windows only     
+        - {win} ==> Windows only 
+        
+        To divide code for MacOS for Harbour and HWGUI we suggest to use the following 
+        define for all .prg files:
+        ___MACOSX___
+        So add the following line in your *.hbp file:
+        {!linux&&!win}-d___MACOSX___
+        So say in your .prg:
+        #ifdef ___MACOSX___    
       
        Get more samples for programming your own HWGUI application
        in the subdirectory "samples" an at
@@ -184,11 +192,16 @@ For more info see chapter "2. Hints for programmers".
        Doing this on MacOS, the program is compiled
        successful, but runnung it with
          ./helloworld       the start is faulted with the following error message:
-      dyld[1767]: Library not loaded: libharbour.dylib
+        dyld[1767]: Library not loaded: libharbour.dylib
         Referenced from: <F7B1FE28-9F46-3B03-BBF2-CCB7EC56B210> /Users/afumacbook/svnwork/
          hwgui/hwgui-code/hwgui/samples/helloworld        
-  Reason: tried: 'libharbour.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibharbour.dylib' (no such file), 'libharbour.dylib' (no such file), '/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file), '/System/Volumes/Preboot/Cryptexes/OS/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file), '/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file)  
-zsh: abort      ./helloworld
+         Reason: tried: 'libharbour.dylib' (no such file),
+         '/System/Volumes/Preboot/Cryptexes/OSlibharbour.dylib' (no such file),
+         'libharbour.dylib' (no such file),
+         '/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file),
+         '/System/Volumes/Preboot/Cryptexes/OS/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file),
+         '/Users/afumacbook/svnwork/hwgui/hwgui-code/hwgui/samples/libharbour.dylib' (no such file)
+          zsh: abort      ./helloworld
      Now compile this sample by
              ./hbmk.sh helloworld
       and it runs now.

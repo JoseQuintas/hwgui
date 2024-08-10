@@ -1655,6 +1655,42 @@ See sample program "testspli.prg" for details.<br>
    5.8.  Miscellaneous functions.</a></strong><br>
 
    <p></p>
+   <br><strong class="subhead">ft_origin()</strong>
+   <p>
+   Get origin path and name (this were the exe file is located).<br>
+   ft_origin() is only available in Harbour 3.4 and up, but<br>
+   here the solution for multi platform usage<br>
+   and Harbour 3.2 and up !<br>
+   (for both HWGUI and Harbour terminal/console applications)<br>
+   <br>
+   argv[0]: The argv[0] argument passed to the main()<br>
+   function contains the path and name of the executable file.<br>
+   <br>
+    int main(int argc, char *argv[]) {<br> 
+        printf("Executable path: %s", argv[0]);<br> 
+        return 0;<br> 
+    }<br>
+    but this is reachable from Harbour and HWGUI by following sequence:<br>
+    <br>
+    LOCAL coriginp, coriginchdir<br>
+    <br>
+    * Get the origin path and name<br>
+    coriginp := hb_argV( 0 )<br>
+    <br>
+    * Change to origin directory<br>  
+    IF .NOT. EMPTY(coriginp)<br>
+     coriginchdir := hwg_Dirname(coriginp)<br> 
+     //ft_ChDir( coriginp )<br>
+     hwg_CHDIR(coriginchdir)<br>
+    ENDIF<br>
+    ==&gt; find this sequence in sample programm "testfunc.prg"<br>
+    <br>
+    Purpose:<br>
+    Go to the origin directory before opening files and databases in this directory,<br>
+    now you can call the programm by using an absolute path !<br>
+   </p>
+
+   <p></p>
    <br><strong class="subhead">hwg_GetDirSep()</strong>
    <br>Returns the directory seperator character OS dependant.
    <ul>
@@ -2538,6 +2574,12 @@ See sample program "testspli.prg" for details.<br>
    <p></p>
 
 
+     <br><strong class="subhead"> hwg_ChrDir(cdirectory)</strong>
+     <p>Change directory:<br>
+     Harbour function ft_chdir() only available Harbour 3.4 and up,<br>
+     so this function is instead OK for all platforms <br>
+     and Harbour 3.2 and up.<br>
+     </p>
 
    <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)
    <p></p>
@@ -2562,7 +2604,7 @@ See sample program "testspli.prg" for details.<br>
    - hwg_RunApp() (async mode)<br>
    - hwg_RunConsoleApp() (sync mode)<br>
    - hwg_RunConsApp() (async mode, GTK)<br>
-   - hwg_ShellExecute() (under construction, will be added later)
+   - hwg_ShellExecute() (under construction, will be added later)<br>
    Be pleasant, to try, what is the best for your HWGUI application.<br>
    </p>
 

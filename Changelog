@@ -16,6 +16,13 @@
 */
 
 
+2024-08-14 15:40 UTC+0200 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* install-macos.txt
+  ! Little corrections for
+  ! hwg_ChDir() and MacOS
+  ! (docu only)
+
 2024-08-10 10:35 UTC+0200 Wilfried Brunken DF7BE
 * doc/hwgdoc_functions.html
 * install-macos.txt
@@ -24,7 +31,7 @@
 * samples/tststconsapp.hbp
 * samples/tststconsapp.prg
 * source/common/procmisc/cfuncs.c
-  ! New function hwg_ChrDir().
+  ! New function hwg_ChDir().
   ! Handling origin for calling
   ! Harbour console/terminal apps by
   ! using absolute path and name.

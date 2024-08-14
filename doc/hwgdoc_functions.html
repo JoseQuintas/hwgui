@@ -1683,11 +1683,16 @@ See sample program "testspli.prg" for details.<br>
      //ft_ChDir( coriginp )<br>
      hwg_CHDIR(coriginchdir)<br>
     ENDIF<br>
-    ==&gt; find this sequence in sample programm "testfunc.prg"<br>
+    ==&gt; find this sequence in sample program "testfunc.prg"<br>
     <br>
     Purpose:<br>
     Go to the origin directory before opening files and databases in this directory,<br>
     now you can call the programm by using an absolute path !<br>
+    <br>
+    This is checked on LINUX and MacOS with GCC,<br> 
+    Windows with MinGW.<br>
+    Not checked on other Compilers (BCC, Pelles C, ...)<br>
+    We will add the test results as soon as possible) <br>
    </p>
 
    <p></p>
@@ -2574,12 +2579,32 @@ See sample program "testspli.prg" for details.<br>
    <p></p>
 
 
-     <br><strong class="subhead"> hwg_ChrDir(cdirectory)</strong>
+     <br><strong class="subhead"> hwg_ChDir(cdirectory)</strong>
      <p>Change directory:<br>
      Harbour function ft_chdir() only available Harbour 3.4 and up,<br>
-     so this function is instead OK for all platforms <br>
+     so this function is instead OK for all platforms<br>
      and Harbour 3.2 and up.<br>
-     </p>
+     <br>
+     To supply a Harbour Terminal/Console application with this function,<br>
+     add following code into one of your *.prg file (inline C implementation):<br>
+     <br>
+     #pragma BEGINDUMP<br>
+     <br>
+     #include "hbapi.h"<br>
+     #include "hbapifs.h"<br>
+     <br>
+     HB_FUNC( HWG_CHDIR )<br>
+     {<br>
+       hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );<br>
+     }<br>
+     <br>
+     #pragma ENDDUMP<br>
+     <br>
+     This is checked on LINUX and MacOS with GCC,<br> 
+     Windows with MinGW.<br>
+     Not checked on other Compilers (BCC, Pelles C, ...)<br>
+     We will add the test results as soon as possible) <br>
+     </p> 
 
    <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)
    <p></p>
@@ -2618,7 +2643,13 @@ See sample program "testspli.prg" for details.<br>
     <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; We suggest to set up a command line including the full path.
     <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If the called application is in the current directory,
     <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; use the functions hwg_GetDirSep() and Curdir()
-    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for combining the recent directory + program file call.
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for combinding the recent directory + program file call.
+    <br>
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Calling a program by using a full path, we strictly recommend to use the 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ft_origin() functionality, described in this chapter at the beginnung.
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Change to directory, were the EXE file is located, and than open files and databases in this directory. 
+    <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For details read the comment line instructions of sample programs "testfunc.prg" and "tststconsapp.prg".
+    <br>
     <br>
     <br> Curdir() (a Harbour function):
     <br>

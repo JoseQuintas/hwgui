@@ -181,7 +181,7 @@ For more info see chapter "2. Hints for programmers".
         #ifdef ___MACOSX___    
       
        Get more samples for programming your own HWGUI application
-       in the subdirectory "samples" an at
+       in the subdirectory "samples" and at
        [3] Project "CLLOG". 
        
        If you also use Harbour Console/Terminal programs,
@@ -205,7 +205,7 @@ For more info see chapter "2. Hints for programmers".
      Now compile this sample by
              ./hbmk.sh helloworld
       and it runs now.
-      The script cab also be used on LINUX, it
+      The script can also be used on LINUX, it
       has an OS autodetect function.          
             
 

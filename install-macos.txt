@@ -7,7 +7,7 @@ $Id$
 
 By DF7BE 
 
-Date: 2024-08-04 (YYYY-MM-DD)
+Date: 2024-08-18 (YYYY-MM-DD)
 
 Contents:
 
@@ -23,14 +23,13 @@ MacOS by Apple is not official supported by the Harbour project,
 but the "xcode" development environment allows
 to run Harbour and HWGUI applications on MacOS.
 An extra set of make scripts are added to HWGUI, 
-because a selection macro for the OS like "{linux}"
-can not be set in *.hbp files for hbmk2 utility.
-But you can negate the existing macros like
-{!win}, details in the following chapters.
+but a selection macro for this OS is "{darwin}",
+it can  be set in *.hbp files for hbmk2 utility,
+details in the following chapters.
 
 Some little modification in the HWGUI source code is done.
 
-The MacOS kernel is derived from BSD, so LINUX scripts
+The MacOS kernel is derived from Darwin, so LINUX scripts
 and commands are running also here.
 
 
@@ -40,6 +39,8 @@ and commands are running also here.
 Installation instructions, tested under 
 MacOS Sonoma 14.5
 Dual-Core Intel i3, 1.1GHz
+
+at 2024-08-18 (YYYY-MM-DD).
 
 For editing text files you need a suitable text editor,
 the "TextEdit" coming with the system is only for some formats
@@ -169,14 +170,14 @@ For more info see chapter "2. Hints for programmers".
         Because the HPB macro "{mac}" does not exist,
         use following macros to divide to your used operating system:
         - {!win} ==> for LINUX and MacOS
-        - {!win&&!linux}   ==> only MacOS
+        - {darwin}  ==> only MacOS
         - {win} ==> Windows only 
         
         To divide code for MacOS for Harbour and HWGUI we suggest to use the following 
         define for all .prg files:
         ___MACOSX___
-        So add the following line in your *.hbp file:
-        {!linux&&!win}-d___MACOSX___
+        Add the following line in your *.hbp file:
+        {darwin}-d___MACOSX___
         So say in your .prg:
         #ifdef ___MACOSX___    
       

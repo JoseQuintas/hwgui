@@ -10,7 +10,7 @@
 
 {win}../hwgui.hbc
 {linux}../hwgui.hbc
-{!win&&!linux}../hwgui_mac.hbc
+{darwin}../hwgui_mac.hbc
 
 
 -n

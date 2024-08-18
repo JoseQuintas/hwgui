@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2024-08-18 15:30 UTC+0200 Wilfried Brunken DF7BE
+* install-macos.txt
+* samples/arraybrowse.hbp
+* samples/tststconsapp.hbp
+  ! {darwin} is the hbp macro
+  ! to activate code for MacOS
+
 2024-08-16 11:12 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * utils/hwbuild/hwb.prg
     ! Fixes and enhancements

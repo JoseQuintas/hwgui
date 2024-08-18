@@ -11,7 +11,7 @@
 
 {win}../hwgui.hbc
 # GTK2
-{!linux&&!win}../hwgui_mac.hbc
+{darwin}../hwgui_mac.hbc
 {linux}../hwgui.hbc
 
 # GTK3: Deactivate previous line

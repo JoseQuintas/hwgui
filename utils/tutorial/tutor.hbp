@@ -13,9 +13,20 @@
 {unix}-d__LINUX__
 {unix}-d__GTK__
 
+# MacOS
+# {darwin}-lm
+# {darwin}-lz
+# {darwin}-lpcre
+# {darwin}-ldl
+{darwin}-static
+{darwin}-d__LINUX__
+{darwin}-d__GTK__
+
 -L../..
 
 {win}../../hwgui.hbc
+{darwin}../../hwgui_mac.hbc
+
 # GTK2
 #{linux}../../hwgui.hbc
 # GTK3: Deactivate previous line

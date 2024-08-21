@@ -208,7 +208,65 @@ For more info see chapter "2. Hints for programmers".
       and it runs now.
       The script can also be used on LINUX, it
       has an OS autodetect function.          
-            
+  
+   10.) How to create desktop shortcuts for files and folders
+
+        The term "desktop shortcut" is a more familiar term to Windows users,
+        it is understand like an "alias" and is represented by a
+        tiny file with the same icon as the parent file it links to.
+        The parent file may be a program (EXE), a file or a folder.
+
+        In brackets, you find the equivalent item name on systems with
+        german language setting.
+
+        Select the "Finder" icon which is the leftmost icon on the dock.
+ 
+        Use the "Finder" to locate the folder,
+        file, or application you'd like to create a
+        shortcut for on the left side of the window.
+
+        Select the program, file or folder to highlight it, by single mouse click.
+
+        Go to the main menu bar, "Select File" (Ablage) ==> "Make Alias" (Alias erzeugen).
+
+        Right-click on the file and select "Make Alias" (Alias erzeugen) from the menu. 
+        Right-Click on Folder to make alias.
+        Der created alias for a file or program is named "<name> alias"
+        and is located in this directory.
+
+        Press keys Option + Command together as you drag the
+        original item to another folder or the desktop (Schreibtisch)
+        as a copy.
+        Release the shortcut first and then the Option + Command keys
+        to place the shortcut in the new location.
+        Delete (in den Papierkorb legen) the original alias in the directory created.
+
+        Select the shortcut with the "alias" suffix.
+        Press Enter to rename it by removing the "alias" suffix,
+        so the alias has the name of the file, program or directory.
+
+        Drag the alias file to the desktop if it's in any other location.
+        You can also copy and paste this to any location. 
+
+        Every shortcut has a small arrow on the bottom left corner as a marker,
+        that is not a program, a normal file or directory.
+        Be care of this fact, to verify not to delete or move the
+        orignal !
+
+        Shortcuts continue to work even if you change the location
+        of the original file or folder. To view the location,
+        right-click on the shortcut and select Show Original (Original zeigen).
+        The Finder opens a new windows with the location of the original.
+
+        The HWGUI programms using GTK2, they needs the X11-Server XQuartz
+        for run. Also the icon of your program in not displayed.
+        Start the program by double click on to the shortcut,
+        but an intermediate terminal started in the background,
+        before the HWGUI application is running.
+        After termination of the HWGUI program,
+        you must close the terminal manually. 
+
+           
 
 2. Hints for programmers
 ------------------------

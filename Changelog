@@ -15,6 +15,20 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-09-01 16:30 UTC+0200 Wilfried Brunken DF7BE
+* hwgui_mac_gtk3.hbc (New)
+* include/gtk.ch
+* install-macos.txt
+* make_macgtk3.sh (New)
+* samples/arraybrowse.hbp
+* samples/dbview.hbp
+* samples/dbview.prg
+* source/common/procmisc/cfuncs.c
+* source/gtk/Makefile3.mac (New)
+  ! MacOS:
+  ! First tries with GTK3, but some bugs found.
+  ! (to be continued)
+
 
 2024-08-21 08:20 UTC+0200 Wilfried Brunken DF7BE
 *  install-macos.txt

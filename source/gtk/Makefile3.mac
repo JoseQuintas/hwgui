@@ -1,0 +1,126 @@
+# $Id$
+# Building of libhwgui.a - Harbour MacOS (GTK3) GUI library
+
+ifeq ($(HB_ROOT),)
+HRB_BIN = /usr/local/bin
+HRB_INC = /usr/local/include/harbour
+HRB_LIB = /usr/local/lib/harbour
+else
+HRB_BIN = $(HB_ROOT)/bin/linux/gcc
+HRB_INC = $(HB_ROOT)/include
+HRB_LIB = $(HB_ROOT)/lib/linux/gcc
+endif
+
+INC_DIR = ../../include
+OBJ_DIR = ../../obj
+LIB_DIR = ../../lib
+
+PROCMISC_DIR=../common/procmisc
+XML_DIR=../common/xml
+DEBUG_DIR=../common/debug
+EDITOR_DIR=../common/editor
+CROSS_DIR=../cross
+SRC_DIR=./
+
+CFLAGS = -Wall -Wunused -Wno-deprecated-declarations -O3 -D__NOMALLOCH__
+HB_FLAGS = -d__LINUX__ -d__GTK__ -w3 -es2
+
+vpath %.a $(LIB_DIR)
+vpath %.o $(OBJ_DIR)
+vpath %.c $(OBJ_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR)
+vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR):$(CROSS_DIR)
+
+$(OBJ_DIR)/%.c : %.prg
+	$(HRB_BIN)/harbour -n -q -w -es2 $(HB_FLAGS) -I$(HRB_INC) -I$(INC_DIR) -o$@ $<
+
+%.o : %.c
+	gcc $(CFLAGS) -c -I./ -I$(INC_DIR) -I$(HRB_INC) `pkg-config --cflags gtk+-3.0` -o $@ $<
+
+$(OBJ_DIR)/%.o : %.c
+	gcc $(CFLAGS) -c -I./ -I$(INC_DIR) -I$(HRB_INC) `pkg-config --cflags gtk+-3.0` -o $@ $<
+
+
+$(LIB_DIR)/%.a ::
+	ar rc $@ $^
+
+all: \
+   $(LIB_DIR)/libhwgui.a \
+   $(LIB_DIR)/libprocmisc.a \
+   $(LIB_DIR)/libhbxml.a \
+   $(LIB_DIR)/libhwgdebug.a
+
+$(LIB_DIR)/libhwgui.a : \
+   $(OBJ_DIR)/commond.o \
+   $(OBJ_DIR)/control.o \
+   $(OBJ_DIR)/draw.o \
+   $(OBJ_DIR)/drawtext.o \
+   $(OBJ_DIR)/window.o \
+   $(OBJ_DIR)/wprint.o \
+   $(OBJ_DIR)/menu_c.o \
+   $(OBJ_DIR)/message.o \
+   $(OBJ_DIR)/misc.o \
+   $(OBJ_DIR)/hmisc.o \
+   $(OBJ_DIR)/common.o \
+   $(OBJ_DIR)/drawwidg.o \
+   $(OBJ_DIR)/herrsys.o \
+   $(OBJ_DIR)/gtkmain.o \
+   $(OBJ_DIR)/hbincnt.o \
+   $(OBJ_DIR)/hbrowse.o \
+   $(OBJ_DIR)/hcwindow.o \
+   $(OBJ_DIR)/hcheck.o \
+   $(OBJ_DIR)/hcombo.o \
+   $(OBJ_DIR)/hcontrol.o \
+   $(OBJ_DIR)/hdrawn.o \
+   $(OBJ_DIR)/hdrawnbrw.o \
+   $(OBJ_DIR)/hdrawncomb.o \
+   $(OBJ_DIR)/hdialog.o \
+   $(OBJ_DIR)/hedit.o \
+   $(OBJ_DIR)/hfrmtmpl.o \
+   $(OBJ_DIR)/hgraph.o \
+   $(OBJ_DIR)/hhyper.o \
+   $(OBJ_DIR)/hlenta.o \
+   $(OBJ_DIR)/hownbtn.o \
+   $(OBJ_DIR)/hpanel.o \
+   $(OBJ_DIR)/hprinter.o \
+   $(OBJ_DIR)/hradio.o \
+   $(OBJ_DIR)/hsayimg.o \
+   $(OBJ_DIR)/hsplit.o \
+   $(OBJ_DIR)/htab.o \
+   $(OBJ_DIR)/htimer.o \
+   $(OBJ_DIR)/htool.o \
+   $(OBJ_DIR)/htree.o \
+   $(OBJ_DIR)/hupdown.o \
+   $(OBJ_DIR)/hwindow.o \
+   $(OBJ_DIR)/hwinprn.o \
+   $(OBJ_DIR)/hprogres.o \
+   $(OBJ_DIR)/hmonthc.o \
+   $(OBJ_DIR)/htrack.o \
+   $(OBJ_DIR)/initools.o \
+   $(OBJ_DIR)/menu.o \
+   $(OBJ_DIR)/inter.o    
+
+#   $(OBJ_DIR)/listbox.o \
+#   $(OBJ_DIR)/hlistbox.o
+
+$(LIB_DIR)/libprocmisc.a : \
+   $(OBJ_DIR)/procini.o \
+   $(OBJ_DIR)/procs7.o \
+   $(OBJ_DIR)/procscri.o \
+   $(OBJ_DIR)/scrdebug.o \
+   $(OBJ_DIR)/hcedit.o \
+   $(OBJ_DIR)/hceditb.o \
+   $(OBJ_DIR)/hcedit_l.o \
+   $(OBJ_DIR)/hilight.o \
+   $(OBJ_DIR)/cfuncs.o
+
+$(LIB_DIR)/libhbxml.a : \
+   $(OBJ_DIR)/xmlparse.o \
+   $(OBJ_DIR)/hxmldoc.o
+
+$(LIB_DIR)/libhwgdebug.a : \
+   $(OBJ_DIR)/dbgdop.o \
+   $(OBJ_DIR)/debugger.o \
+   $(OBJ_DIR)/dbgconnect.o
+
+clean:
+	-(rm -fR ../../obj/ ../../lib/)

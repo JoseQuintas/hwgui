@@ -1037,12 +1037,14 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
 }
 #endif
 
+
+#ifndef __APPLE__
 HB_FUNC( HWG_CHDIR )
 {
    /* HB_BOOL hb_fsChDir( const char * pszDirName ) */
    hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );
 }
-
+#endif
 
 /* ======================== EOF of cfuncs.c ================================ */
 

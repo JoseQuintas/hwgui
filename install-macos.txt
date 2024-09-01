@@ -266,6 +266,39 @@ For more info see chapter "2. Hints for programmers".
         After termination of the HWGUI program,
         you must close the terminal manually. 
 
+
+1.2 GTK 3
+ 
+ The port to GTK3 is not completed, there is some
+ work to do.
+ The Bugs appeared on LINUX and MacOS, so
+ be patient.
+ If you found a solution, please create a ticket
+ on sourceforge.net and send us the modified code.
+ (TNX).
+ 
+ Please install all packages described in chapter above. 
+ 
+ - Install additional GTK3 by:
+        
+            sudo /opt/local/bin/port install gtk3
+            
+  - Recompile HWGUI:
+     ./clean.sh
+     ./make_macgtk3.sh
+            
+  - Check for GTK2 and GTK3:
+        /opt/local/bin/pkg-config --cflags gtk+-2.0
+        /opt/local/bin/pkg-config --cflags gtk+-3.0
+     
+   - Modify the *.hbp file of the sample program
+    or your own application and compile it.
+
+In "include/gtk.h" there a  lot of duplicate defined
+items, so lots of warnings appeared.
+Do not include it in your prg file,
+this is already done.
+
            
 
 2. Hints for programmers
@@ -352,6 +385,10 @@ For more info see chapter "2. Hints for programmers".
   the command uname and the Harbour function
   OS() returns on MacOS the value
     "Darwin".
+    
+ - The function hwg_ChDir()
+   is not available on MacOS,
+   will be added later.   
   
 3. Some helpful internet links
 ------------------------------

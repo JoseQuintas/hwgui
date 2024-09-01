@@ -8,8 +8,15 @@
 #ifndef __GTK__
    #define __GTK__
 #endif
+
+
+#ifndef __MACGTK3__
+
+
 /* Cursor types.
- */
+ */ 
+
+ 
 #define GDK_X_CURSOR            0
 #define GDK_ARROW               2
 #define GDK_BASED_ARROW_DOWN    4
@@ -97,5 +104,7 @@
 #define GTK_ICON_SIZE_BUTTON          4
 #define GTK_ICON_SIZE_DND             5
 #define GTK_ICON_SIZE_DIALOG          6
+
+#endif
 
 /* ============================= EOF of gtk.ch =========================================== */

@@ -778,6 +778,8 @@ LOCAL oDir
   oDir := "/"+Curdir()+"/"
 #endif
 
-RETURN oDir 
+RETURN oDir
+
+
 
 * ============================== EOF of testfunc.prg ==============================

@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, August 2024</td>
+    <td width="70%" align="center">Alexander S.Kresin, September 2024</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -2590,12 +2590,21 @@ See sample program "testspli.prg" for details.<br>
      <br>
      #pragma BEGINDUMP<br>
      <br>
+     #ifdef __APPLE__<br>
+     #include &lt;unistd.h&gt;<br>
+     #endif<br>
+     <br>
      #include "hbapi.h"<br>
      #include "hbapifs.h"<br>
      <br>
      HB_FUNC( HWG_CHDIR )<br>
      {<br>
+     <br>
+     #ifdef __APPLE__<br>
+        hb_retl( HB_ISCHAR( 1 ) && chdir( hb_parc( 1 ) ) );<br>
+     #else<br>
        hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );<br>
+     #endif<br>  
      }<br>
      <br>
      #pragma ENDDUMP<br>

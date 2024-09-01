@@ -258,7 +258,7 @@ For more info see chapter "2. Hints for programmers".
         right-click on the shortcut and select Show Original (Original zeigen).
         The Finder opens a new windows with the location of the original.
 
-        The HWGUI programms using GTK2, they needs the X11-Server XQuartz
+        The HWGUI programs using GTK2, they needs the X11-Server XQuartz
         for run. Also the icon of your program in not displayed.
         Start the program by double click on to the shortcut,
         but an intermediate terminal started in the background,
@@ -386,9 +386,7 @@ this is already done.
   OS() returns on MacOS the value
     "Darwin".
     
- - The function hwg_ChDir()
-   is not available on MacOS,
-   will be added later.   
+ 
   
 3. Some helpful internet links
 ------------------------------

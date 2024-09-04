@@ -26,6 +26,7 @@
 #pragma GCC diagnostic ignored "-Wstringop-truncation"
 #pragma GCC diagnostic ignored "-Wdiscarded-qualifiers"
 #pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Wunused-result"
 #endif
 
 #endif /* _COMMON_GCC_WARNINGS */

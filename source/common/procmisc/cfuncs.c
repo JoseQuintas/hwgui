@@ -25,6 +25,8 @@
 #include "hbapiitm.h"
 #include "hbapicdp.h"
 
+#include "warnings.h"
+
 /*-
  * Copyright (c) 2008 - 2010 CAS Dev Team
  *
@@ -820,6 +822,7 @@ HB_FUNC( HWG_REDIRON )
    int istd = ( HB_ISNIL( 1 ) ) ? 1 : hb_parni( 1 );
    int fd;
 
+
    fflush( ( istd == 1 ) ? stdout : stderr );
    fd = dup( fileno( ( istd == 1 ) ? stdout : stderr ) );
    freopen( hb_parc( 2 ), "w", ( istd == 1 ) ? stdout : stderr );
@@ -1042,11 +1045,16 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
 HB_FUNC( HWG_CHDIR )
 {
 
-#ifdef __APPLE__
-   hb_retl( HB_ISCHAR( 1 ) && chdir( hb_parc( 1 ) ) );
-#else
+
+
+/* #ifdef __APPLE__ */
+
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__) || defined(_WIN64)
    /* HB_BOOL hb_fsChDir( const char * pszDirName ) */
    hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );
+#else
+/* LINUX and also for MacOS */   
+   hb_retl( HB_ISCHAR( 1 ) && chdir( hb_parc( 1 ) ) );
 #endif
 }
 

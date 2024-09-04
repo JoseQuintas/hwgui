@@ -16,6 +16,13 @@
 */
 
 
+2024-09-04 19:10 UTC+0200 Wilfried Brunken DF7BE
+* include/warnings.h
+* source/common/procmisc/cfuncs.c
+  ! Warning "-Wunused-result" in cfuncs.c suppressed.
+  ! hwg_ChDir(): chdir() also for LINUX 
+
+
 2024-09-01 19:20 UTC+0200 Wilfried Brunken DF7BE
 * doc/hwgdoc_functions.html
 * install-macos.txt

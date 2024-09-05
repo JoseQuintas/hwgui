@@ -1046,16 +1046,29 @@ HB_FUNC( HWG_CHDIR )
 {
 
 
+/* 2024-09-05, DF7BE:
+   the function chdir() is part of most C compiler
+   and is multi platform.
+   If this is not running with your compiler,
+   please use the commented parts of defines
+   to select your compiler.
+   If you have success, send us your modified code (TNX).
+   The code following is tested on:
+   LINUX and MacOS with GCC,
+   Windows 11 with MinGW and BCC
+*/   
 
-/* #ifdef __APPLE__ */
-
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__) || defined(_WIN64)
+/* #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__) || defined(_WIN64)
+*/
    /* HB_BOOL hb_fsChDir( const char * pszDirName ) */
-   hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );
-#else
-/* LINUX and also for MacOS */   
+/*   hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );
+   #else */
+/* LINUX and also for MacOS and Windows */   
    hb_retl( HB_ISCHAR( 1 ) && chdir( hb_parc( 1 ) ) );
+/*
 #endif
+*/
+
 }
 
 

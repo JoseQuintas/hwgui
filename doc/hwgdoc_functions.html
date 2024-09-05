@@ -1690,8 +1690,8 @@ See sample program "testspli.prg" for details.<br>
     now you can call the programm by using an absolute path !<br>
     <br>
     This is checked on LINUX and MacOS with GCC,<br> 
-    Windows with MinGW.<br>
-    Not checked on other Compilers (BCC, Pelles C, ...)<br>
+    Windows with MinGW and BCC.<br>
+    Not checked on other Compilers (Pelles C, ...)<br>
     We will add the test results as soon as possible) <br>
    </p>
 
@@ -2599,19 +2599,14 @@ See sample program "testspli.prg" for details.<br>
      <br>
      HB_FUNC( HWG_CHDIR )<br>
      {<br>
-     <br>
-     #ifdef __APPLE__<br>
-        hb_retl( HB_ISCHAR( 1 ) && chdir( hb_parc( 1 ) ) );<br>
-     #else<br>
-       hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );<br>
-     #endif<br>  
+       hb_retl( HB_ISCHAR( 1 ) && chdir( hb_parc( 1 ) ) );<br>
      }<br>
      <br>
      #pragma ENDDUMP<br>
      <br>
      This is checked on LINUX and MacOS with GCC,<br> 
-     Windows with MinGW.<br>
-     Not checked on other Compilers (BCC, Pelles C, ...)<br>
+     Windows with MinGW and BCC.<br>
+     Not checked on other Compilers (Pelles C, ...)<br>
      We will add the test results as soon as possible) <br>
      </p> 
 

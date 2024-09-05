@@ -16,6 +16,17 @@
 */
 
 
+
+2024-09-05 15:45 UTC+0200 Wilfried Brunken DF7BE
+* source/common/procmisc/cfuncs.c
+* include/warnings.h
+* doc/hwgdoc_functions.html
+  ! hwg_ChDir(): chdir() also for Windows with MinGW and BCC.
+  ! Try to suppress warning
+  ! "HB_DEPRECATED" redefined
+  ! but until no way to solve
+  ! (will look later for a solution) 
+
 2024-09-04 19:10 UTC+0200 Wilfried Brunken DF7BE
 * include/warnings.h
 * source/common/procmisc/cfuncs.c

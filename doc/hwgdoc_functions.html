@@ -1684,6 +1684,7 @@ See sample program "testspli.prg" for details.<br>
      hwg_CHDIR(coriginchdir)<br>
     ENDIF<br>
     ==&gt; find this sequence in sample program "testfunc.prg"<br>
+    and test program "test/test_origin_cons".<br>
     <br>
     Purpose:<br>
     Go to the origin directory before opening files and databases in this directory,<br>
@@ -1691,6 +1692,8 @@ See sample program "testspli.prg" for details.<br>
     <br>
     This is checked on LINUX and MacOS with GCC,<br> 
     Windows with MinGW and BCC.<br>
+    Ignore warning with BCC:<br>
+    Call to function 'chdir' with no prototype in function HB_FUN_HWG_CHDIR<br>
     Not checked on other Compilers (Pelles C, ...)<br>
     We will add the test results as soon as possible) <br>
    </p>
@@ -2590,8 +2593,15 @@ See sample program "testspli.prg" for details.<br>
      <br>
      #pragma BEGINDUMP<br>
      <br>
+     <br>
+     #if defined(__linux__) || defined(__unix__)<br>
+     #include &lt:unistd.h&gt;<br>
+     #else<br>
      #ifdef __APPLE__<br>
      #include &lt;unistd.h&gt;<br>
+     #else<br>
+     #include &lt;io.h&gt;<br>
+     #endif<br>
      #endif<br>
      <br>
      #include "hbapi.h"<br>
@@ -2606,8 +2616,12 @@ See sample program "testspli.prg" for details.<br>
      <br>
      This is checked on LINUX and MacOS with GCC,<br> 
      Windows with MinGW and BCC.<br>
+     Ignore warning with BCC:<br>
+     Call to function 'chdir' with no prototype in function HB_FUN_HWG_CHDIR<br>     
      Not checked on other Compilers (Pelles C, ...)<br>
      We will add the test results as soon as possible) <br>
+     ==&gt; find this sequence in sample program "testfunc.prg"<br>     
+     and test program "test/test_origin_cons".<br>
      </p> 
 
    <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)

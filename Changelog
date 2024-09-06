@@ -17,6 +17,16 @@
 
 
 
+2024-09-06 19:30 UTC+0200 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* samples/testfunc.prg
+* test/hbmk.sh (New)
+* test/test_origin_cons.prg (New)
+  ! Correction hwg_ChDir() and ft_origin()
+  ! with new test program
+  ! Docu updated    
+
+
 2024-09-05 15:45 UTC+0200 Wilfried Brunken DF7BE
 * source/common/procmisc/cfuncs.c
 * include/warnings.h

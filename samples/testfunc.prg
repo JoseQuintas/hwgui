@@ -773,9 +773,10 @@ FUNCTION PWD()
 
 LOCAL oDir
 #ifdef __PLATFORM__WINDOWS
-  oDir := HB_curdrive() + ":\" + Curdir() + "\"
+  * Usage of hwg_CleanPathname() avoids C:\\
+  oDir := hwg_CleanPathname(HB_curdrive() + ":\" + Curdir() + "\")
 #else
-  oDir := "/"+Curdir()+"/"
+  oDir := hwg_CleanPathname("/"+Curdir()+"/")
 #endif
 
 RETURN oDir

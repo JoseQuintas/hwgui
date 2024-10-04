@@ -11,7 +11,7 @@
  *
  * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
- * Copyright 2020-2023 Wilfried Brunken, DF7BE
+ * Copyright 2020-2024 Wilfried Brunken, DF7BE
 */
 
 #include "hwgui.ch"
@@ -79,6 +79,7 @@ FUNCTION hwg_GetUTCDateANSI
 FUNCTION hwg_GetUTCTime
 
    * Format: HH:MM:SS
+
    RETURN SUBSTR(hwg_GetUTCTimeDate(), 12 , 8 )
 
 FUNCTION hwg_cHex2Bin (chexstr,cdebug)
@@ -162,7 +163,7 @@ FUNCTION hwg_cHex2Bin (chexstr,cdebug)
 
    RETURN cbin
 
-FUNCTION hwg_HEX_DUMP( cinfield, npmode, cpVarName )
+FUNCTION hwg_HEX_DUMP ( cinfield, npmode, cpVarName )
 
 * Hex dump from a C field (binary)
 * into C field (Character type).
@@ -337,12 +338,14 @@ FUNCTION hwg_HEX_DUMP( cinfield, npmode, cpVarName )
 
 FUNCTION hwg_NUMB2HEX (nascchar)
 
-   * Converts
-   * 0 ... 255 TO HEX 00 ... FF
-   * (2 Bytes String)
+* Converts
+* 0 ... 255 TO HEX 00 ... FF
+* (2 Bytes String)
+* ================================= *
 
    LOCAL chexchars := ;
       {"0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"}
+
    LOCAL n1, n2
 
    * Range 0 ... 255
@@ -364,18 +367,23 @@ FUNCTION hwg_EOLStyle()
 
    * Returns the "End Of Line" (EOL) character(s)
    * OS dependent.
-   * Windows: OD0A (CRLF)
+   * Windows: 0D0A (CRLF)
    * LINUX:   0A (LF)
    * This function works also on
    * GTK cross development environment.
-   * MacOS not supported yet.
-   * Must then return 0D (CR).
+   * MacOS:   0D (CR).
    * ================================= *
 
 #ifdef __PLATFORM__WINDOWS
    RETURN CHR(13) + CHR(10)
 #else
+#ifdef ___MACOSX___
+* MacOS
+   RETURN CHR(13)
+#else
+   * LINUX and other UNIX'e (Free BSD, ...) 
    RETURN CHR(10)
+#endif
 #endif
 
 FUNCTION hwg_BaseName ( pFullpath )
@@ -540,7 +548,9 @@ FUNCTION hwg_MemoEdit(mpmemo , cTextTitME , cTextSave ,  cTextClose , ;
 
    RETURN varbuf
 
+* ~~~~~~~~~~~~~~~~~~~~~~~~
 * === Unit conversions ===
+* ~~~~~~~~~~~~~~~~~~~~~~~~
 
 * ===== Temperature conversions ==============
 
@@ -855,9 +865,9 @@ FUNCTION hwg_MsgIsNIL(xpara,ctitle)
 
 FUNCTION hwg_DefaultFont()
 
-   * Returns an object with a suitable default font
-   * for Windows and LINUX
-   * =======================================================
+* Returns an object with a suitable default font
+* for Windows and LINUX
+* =======================================================
 
    LOCAL oFont
 
@@ -885,11 +895,11 @@ FUNCTION hwg_deb_is_object(oObj)
 
 FUNCTION hwg_leading0(ce)
 
-   * ce : string
-   * Returns : String
-   * Replace all leading blanks with
-   * "0".
-   * =================================
+* ce : string
+* Returns : String
+* Replace all leading blanks with
+* "0".
+* =================================
 
    LOCAL vni , e1 , crvalue, lstop
 
@@ -924,11 +934,11 @@ FUNCTION hwg_Bin2D(chex,nlen,ndec)
 
 FUNCTION hwg_checkANSIDate(cANSIDate)
 
-   * Check, if an ANSI Date is valid.
-   * cANSIDate: ANSI date as string
-   * of Format YYYYMMDD
-   *
-   * =================================
+* Check, if an ANSI Date is valid.
+* cANSIDate: ANSI date as string
+* of Format YYYYMMDD
+*
+* =================================
 
    LOCAL ddate, cdate
 
@@ -985,15 +995,15 @@ FUNCTION hwg_Date2JulianDay(dDate,nhour,nminutes,nseconds)
 
 FUNCTION hwg_JulianDay2Date(z)
 
-   * Converts julian date of mem files into
-   * String , Format YYYYMMDD (ANSI)
-   * z: double (of type N)
-   * Returns string
-   * Valid for dates from 1901 to 2099
-   * The julian is stored in Clipper
-   * and Harbour MEM files as
-   * double value.
-   * =================================
+* Converts julian date of mem files into
+* String , Format YYYYMMDD (ANSI)
+* z: double (of type N)
+* Returns string
+* Valid for dates from 1901 to 2099
+* The julian is stored in Clipper
+* and Harbour MEM files as
+* double value.
+* =================================
 
    LOCAL njoff , nRound_4 , nFour , nYear , d , d1 , i , jz  , sz ,  k ,  cYear ,  cMonth , cday
 
@@ -1115,6 +1125,8 @@ FUNCTION HWG_GET_TIME_SHIFT()
    nhLocal := VAL(SUBSTR(TIME(),1,2))
 
    RETURN nhLocal - nhUTC
+
+
 
 FUNCTION hwg_addextens(cfilename,cext,lcs)
 
@@ -1241,19 +1253,25 @@ FUNCTION hwg_ChangeCharInString(cinp,nposi,cval)
    IF cinp == NIL
       RETURN ""
    ENDIF
+
    IF cval == NIL
       RETURN cinp
    ENDIF
+
    IF LEN(cval) <> 1
       RETURN cinp
    ENDIF
+
    IF nposi == NIL
       RETURN cinp
    ENDIF
+
    IF nposi > LEN(cinp)
       RETURN cinp
    ENDIF
+
    cout := ""
+
    FOR i := 1 TO LEN(cinp)
       IF i == nposi
          cout := cout + cval
@@ -1275,22 +1293,22 @@ FUNCTION hwg_hex2binchar(cchar)
       lignore := .F.
       csingle := SUBSTR(cchar,ipos,1)
       DO CASE
-      CASE csingle == "0"; cret := cret + "0000 "
-      CASE csingle == "1"; cret := cret + "0001 "
-      CASE csingle == "2"; cret := cret + "0010 "
-      CASE csingle == "3"; cret := cret + "0011 "
-      CASE csingle == "4"; cret := cret + "0100 "
-      CASE csingle == "5"; cret := cret + "0101 "
-      CASE csingle == "6"; cret := cret + "0110 "
-      CASE csingle == "7"; cret := cret + "0111 "
-      CASE csingle == "8"; cret := cret + "1000 "
-      CASE csingle == "9"; cret := cret + "1001 "
-      CASE csingle == "A"; cret := cret + "1010 "
-      CASE csingle == "B"; cret := cret + "1011 "
-      CASE csingle == "C"; cret := cret + "1100 "
-      CASE csingle == "D"; cret := cret + "1101 "
-      CASE csingle == "E"; cret := cret + "1110 "
-      CASE csingle == "F"; cret := cret + "1111 "
+      CASE csingle == "0" ; cret := cret + "0000 "
+      CASE csingle == "1" ; cret := cret + "0001 "
+      CASE csingle == "2" ; cret := cret + "0010 "
+      CASE csingle == "3" ; cret := cret + "0011 "
+      CASE csingle == "4" ; cret := cret + "0100 "
+      CASE csingle == "5" ; cret := cret + "0101 "
+      CASE csingle == "6" ; cret := cret + "0110 "
+      CASE csingle == "7" ; cret := cret + "0111 "
+      CASE csingle == "8" ; cret := cret + "1000 "
+      CASE csingle == "9" ; cret := cret + "1001 "
+      CASE csingle == "A" ; cret := cret + "1010 "
+      CASE csingle == "B" ; cret := cret + "1011 "
+      CASE csingle == "C" ; cret := cret + "1100 "
+      CASE csingle == "D" ; cret := cret + "1101 "
+      CASE csingle == "E" ; cret := cret + "1110 "
+      CASE csingle == "F" ; cret := cret + "1111 "
       OTHERWISE
          lignore := .T.
       ENDCASE
@@ -1316,11 +1334,11 @@ FUNCTION hwg_Toggle_HalfByte( cchar )
 
 FUNCTION hwg_COUNT_CHAR(stri,such)
 
-   * Counts the appearance of string "such"
-   * in "stri".
-   * This function has a subset
-   * of parameters of the function
-   * AFTERATNUM() for better handling.
+* Counts the appearance of string "such"
+* in "stri".
+* This function has a subset
+* of parameters of the function
+* AFTERATNUM() for better handling.
 
    LOCAL l,i,c,t
 
@@ -1350,32 +1368,49 @@ FUNCTION hwg_nothing(xpara)
 
    RETURN xpara
 
-FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper)
+FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper,ctestdirsep)
 
    * Process file name extension:
    * Add file extension, if not available
    * or replace an existing extension.
-   * pFiname : The filename to be processed
+   * pFiname : The filename to be processed (optional with full path)
    * pFiext  : The new file extension
+   *           may be NIL or empty to remove a file extension 
    * lupper  : Windows only (parameter ignored on UNIX/LINUX):
    *           Set to .T. , if extension is set to upper case
    *           .F. : preserve case (default)
+   * ctestdirsep : Only for test purposes:
+   * Modify the directory separator, default
+   * is the return value of function hwg_GetDirSep(),
+   * so it is assigned correct by the used operating system   
    *
    * Sample call: hwg_ProcFileExt("TEST.TXT","PRG")
    * returns the value "TEST.PRG"
    * pFiname may contain a full path.
-   * DOS, Windows and UNIX/LINUX filenames
+   * DOS, Windows and UNIX/LINUX/MacOS filenames
    * are supported.
+   * 
 
-   LOCAL sfifullnam , sFiname , sFiext , nSlash , nPunkt
+   LOCAL sfifullnam , sFiname , sFiext , nSlash , nPunkt && , nslashr
 
 #ifndef __PLATFORM__WINDOWS
    HB_SYMBOL_UNUSED(lupper)
 #endif
 
+   IF pFiext == NIL
+     pFiext := ""
+   ENDIF
+
    IF lupper == NIL
       lupper := .F.
    ENDIF
+
+   IF ctestdirsep == NIL
+     ctestdirsep := hwg_GetDirSep()
+   ELSE
+     ctestdirsep := SUBSTR(ALLTRIM(ctestdirsep),1,1)
+   ENDIF
+   
    * Trim strings
    sFiext := ALLTRIM(pFiext)
 
@@ -1389,32 +1424,58 @@ FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper)
    * UNIX/LINUX : preserve case as passed
    * Attention !
    * Also path names may contain dots!
-   nSlash := RAT(hwg_GetDirSep(),sFiname)
+   nSlash := RAT(ctestdirsep,sFiname)
    nPunkt := RAT(".", sFiname )
+   
+  
+  * Another special case:
+  * /home/temp./test + "prg" ==> /home/temp./test.prg
+  * Bugfix of 2024-10-03 by DF7BE, case 5 in testfunc.prg:
+  * ==> /home/temp.prg
+  * Need to set another directory separator (if tested on windows)!  
+ 
    IF nPunkt == 0
       * Without extension: add extension
-      sfifullnam := sFiname + "." + sFiext
+      IF EMPTY(sFiext)
+       * Special case: no file extension to remove
+       sfifullnam := sFiname
+      ELSE
+       sfifullnam := sFiname + "." + sFiext
+      ENDIF
    ELSE
       IF nSlash > nPunkt
          * Special case:
          * Without extension, but dot in path name
-         sfifullnam := sFiname + "." + sFiext
+         IF EMPTY(sFiext)
+         * Special Case: There is no file extension to remove
+         * (avoid to add a single dot)
+           sfifullnam := sFiname
+         ELSE
+           sfifullnam := sFiname + "." + sFiext
+         ENDIF
       ELSE
          IF nPunkt == 1
             * Special : hidden file in UNIX, for example .profile
             * so add extension
             sfifullnam := sFiname + "." + sFiext
          ELSE
-            * The rest:
-            * Cut existing extension
-            sFiname := SUBSTR(sFiname,1,nPunkt - 1)
-            * Add new extension
-            sfifullnam := sFiname + "." + sFiext
+             * The rest:
+             * Cut existing extension
+             sFiname := SUBSTR(sFiname,1,nPunkt - 1)
+             * Check for removing
+             IF EMPTY(sFiext)
+               sfifullnam := sFiname
+             ELSE
+             * Add new extension
+               sfifullnam := sFiname + "." + sFiext
+             ENDIF
          ENDIF
       ENDIF
    ENDIF
 
    RETURN sfifullnam
+
+* The function hwg_HdSerial for WinAPI found in guimain.prg   
 
 #pragma BEGINDUMP
 
@@ -1434,3 +1495,6 @@ HB_FUNC( HWG_HAS_WIN_EURO_SUPPORT )
 }
 
 #pragma ENDDUMP
+
+
+* ======================= EOF of hmisc.prg ===========================

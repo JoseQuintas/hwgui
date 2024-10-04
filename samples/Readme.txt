@@ -154,7 +154,23 @@ For beginners:
 
     Ignore warning at build time:
       Unknown option -e
+      
+8.) Set the  macro's  
+    -stop={linux}
+    -stop={darwin}
+    at the beginning of the hbp file
+    to suppress building of
+    Windows only programs
+    on LINUX and macOS.      
 
+9.) MacOS
+   All samples ready for GTK may also run
+   on MacOS (tested on 14.4).
+   Use file "arraybrowse.hbp"
+   as template building your own HWGUI application.
+   The hbp macro {darwin} activate options for MacOS.
+   For details to MacOS read install instructions
+   in "install-macos.txt".
 
 
  Sample program     GTK2    GTK3  NLS MinGW64 Purpose

@@ -23,7 +23,7 @@ CROSS_DIR=../cross
 SRC_DIR=./
 
 CFLAGS = -Wall -Wunused -Wno-deprecated-declarations -O3 -D__NOMALLOCH__
-HB_FLAGS = -d__LINUX__ -d__GTK__ -w3 -es2
+HB_FLAGS = -d___MACOSX___ -d__LINUX__ -d__GTK__ -w3 -es2
 
 vpath %.a $(LIB_DIR)
 vpath %.o $(OBJ_DIR)

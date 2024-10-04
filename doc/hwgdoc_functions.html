@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, September 2024</td>
+    <td width="70%" align="center">Alexander S.Kresin, October 2024</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -51,6 +51,44 @@
    </ul>
    <br>Usually it isn't needed to call this function directly, use <code>HFont():Select( oFont )<code>
    instead.<br>
+
+  <br><strong>
+  Attention !  </strong><br>
+All file and directory selection dialogs<br> 
+execute an internal change directory<br>
+(this is, where the selected file is locacted).<br>
+After opening the selected file or database<br>
+(FCREATE(),FOPEN(),USE xxx )<br>
+you must return to the previous directory,<br>
+also in case of a cancelled selection.<br> 
+Here the sample code snippet:<br>
+<br>
+LOCAL fname, colddir, ctemp<br>
+* Get current directory as previous directory<br>
+colddir := hwg_CurDir()<br>
+#ifdef __GTK__<br>
+   &nbsp;&nbsp;&nbsp;fname := hwg_SelectFileEx(,,{{ "xBase databases( *.dbf )","*.dbf" },{ "All files" ,"*"}} )<br>
+#else<br>
+   &nbsp;&nbsp;&nbsp;fname := hwg_Selectfile("xBase databases( *.dbf )" , "*.dbf", cstartvz )<br>
+#endif<br>
+* Check for cancel<br>
+IF EMPTY( fname )<br>
+    &nbsp;&nbsp;&nbsp;* Return to previous directory<br>
+    &nbsp;&nbsp;&nbsp;hwg_ChDir(hwg_CleanPathname(colddir))<br>
+    &nbsp;&nbsp;&nbsp;RETURN NIL<br>
+ENDIF<br>
+* Open the selected DBF<br>
+ctemp := hwg_BaseName(hwg_ProcFileExt(cdbfmod,""))<br>
+SELECT 1<br>
+USE &ctemp<br>
+* Return to previous directory<br>
+hwg_ChDir(hwg_CleanPathname(colddir))<br>
+<br>
+Find this code also in "utils\devtools\dbfcompare.prg".<br>
+<br>
+
+   
+
 
    <br><strong class="subhead"> hwg_SelectFile( cDescript,cMask,[ cInitDir ], [ cTitle ] )</strong>
    <br>This function calls the standard dialog for file selecting.
@@ -2306,6 +2344,7 @@ See sample program "testspli.prg" for details.<br>
    (depends on operating system).<br>
    For handling of file and path names.<br>
    Returns the path value with reduced number of slashes or backslashes.<br>
+   Avoids for example "C:\\".
    </p>
 
 
@@ -2389,7 +2428,7 @@ See sample program "testspli.prg" for details.<br>
    </p>
 
 
-   <br><strong class="subhead"> hwg_ProcFileExt(pFiname,pFiext,lupper)</strong>
+   <br><strong class="subhead"> hwg_ProcFileExt(pFiname,pFiext,lupper,ctestdirsep)</strong>
    <p>
      Process file name extension:<br>
      Add file extension, if not available<br>
@@ -2399,6 +2438,10 @@ See sample program "testspli.prg" for details.<br>
      lupper  : Windows only (parameter ignored on UNIX/LINUX):<br>
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set to .T. , if extension is set to upper case<br>
      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .F. : preserve case (default)<br>
+     ctestdirsep : Only for test purposes:<br>
+     Modifies the directory separator, default<br>
+     is the return value of function hwg_GetDirSep(),<br>
+     so it is assigned correct by the used operating system.<br>     
      <br>
      Sample call: hwg_ProcFileExt("TEST.TXT","PRG")<br>
      returns the value "TEST.PRG"<br>

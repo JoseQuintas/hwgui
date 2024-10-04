@@ -9,7 +9,7 @@
  * Copyright 2005 Alexander S.Kresin <alex@belacy.belgorod.su>
  * www - http://kresin.belgorod.su
  *
- * Copyright 2020-2023 Wilfried Brunken, DF7BE
+ * Copyright 2020-2024 Wilfried Brunken, DF7BE
 */
 
     * Status:
@@ -46,7 +46,7 @@
  hwg_Get_Time_Shift()
  hwg_ProcFileExt()
  hwg_ChrDir()
- 
+ hwg_EOLStyle()
  
 
  Harbour functions:
@@ -79,7 +79,8 @@ FUNCTION MAIN()
    LOCAL oButton10, oButton11 , oButton12 , oButton13 , oButton14 , oButton15 , oButton16 , oButton17
    LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
    LOCAL oButton26, oButton27, oButton28, oButton29
-   LOCAL oButton30, oButton31, oButton32, oButton33, obutton34, obutton35 
+   LOCAL oButton30, oButton31, oButton32, oButton33, obutton34, obutton35
+   LOCAL obutton36   
 
    LOCAL nspcbutton
 
@@ -270,7 +271,7 @@ FUNCTION MAIN()
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | Test_hwg_HdGetSerial() }
 
-   @ 25 ,nspcbutton * 12 BUTTON oButton32 CAPTION "Test_hwg_ProcFileExt()" SIZE 140,nheight FONT oFont  ;
+   @ 25 ,nspcbutton * 12 BUTTON oButton32 CAPTION "hwg_ProcFileExt()" SIZE 140,nheight FONT oFont  ;
             STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | Test_hwg_ProcFileExt() }
 
@@ -290,7 +291,12 @@ FUNCTION MAIN()
                             
     @ 25 ,nspcbutton * 16 BUTTON oButton35 CAPTION "Origin path" SIZE 140,nheight FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
-                { | | Test_originpath(coriginp) }                 
+                { | | Test_originpath(coriginp) } 
+
+   @ 180 ,nspcbutton * 8 BUTTON obutton36 CAPTION "hwg_EOLStyle()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+                { | | Test_hwg_EOLStyle() }
+                
 
                 
    /* Disable buttons for Windows only functions */
@@ -711,34 +717,56 @@ FUNCTION Test_hwg_ProcFileExt()
 LOCAL oDlg
 LOCAL oLabel1, oLabel2, oLabel3, oLabel4, oLabel5, oLabel6, oLabel7, oLabel8
 LOCAL oLabel9, oLabel10, oLabel11, oLabel12, oLabel13, oLabel14, oLabel15, oLabel16, oButton1
+LOCAL oLabel17, oLabel18, oLabel19, oLabel20, oLabel21, oLabel22 , oLabel23, oLabel24, oLabel25
 
   INIT DIALOG oDlg TITLE "hwg_ProcFileExt()" ;
-    AT 488,108 SIZE 528,465 ;
+    AT 488,108 SIZE 528,605 ;   && Previous: SIZE 528,465
      STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
 
 
    @ 130,13 SAY oLabel16 CAPTION "Set to file extension .prg"  SIZE 271,22
+
+   * After test case number in comment line: the expected result   
+   
+   * 1 : test.prg
    @ 40,50 SAY oLabel1 CAPTION "test.txt"  SIZE 152,22
    @ 237,50 SAY oLabel2 CAPTION ">"  SIZE 29,22
    @ 338,50 SAY oLabel3 CAPTION hwg_ProcFileExt("test.txt","prg")  SIZE 162,22
-
+   * 2 C:\temp.dir\test.prg
    @ 40,100 SAY oLabel4 CAPTION "C:\temp.dir\test.txt"  SIZE 135,22
    @ 237,100 SAY oLabel5 CAPTION ">"  SIZE 29,20
-   @ 338,100 SAY oLabel6 CAPTION hwg_ProcFileExt("C:\temp.dir\test.txt","prg")  SIZE 155,22
-
+   @ 338,100 SAY oLabel6 CAPTION hwg_ProcFileExt("C:\temp.dir\test.txt","prg",,"\")  SIZE 155,22
+   * 3 C:\temp.\test.prg
    @ 40,150 SAY oLabel7 CAPTION "C:\temp.\test"  SIZE 97,22
    @ 237,150 SAY oLabel8 CAPTION ">"  SIZE 29,22
-   @ 338,150 SAY oLabel9 CAPTION hwg_ProcFileExt("C:\temp.\test","prg")  SIZE 158,22
-
+   @ 338,150 SAY oLabel9 CAPTION hwg_ProcFileExt("C:\temp.\test","prg",,"\")  SIZE 158,22
+   * 4 : /home/temp.dir/test.prg
    @ 40,200 SAY oLabel10 CAPTION "/home/temp.dir/test.txt"  SIZE 169,22
    @ 237,200 SAY oLabel11 CAPTION ">"  SIZE 29,22
-   @ 338,200 SAY oLabel12 CAPTION hwg_ProcFileExt("/home/temp.dir/test.txt","prg")  SIZE 161,22
-
+   @ 338,200 SAY oLabel12 CAPTION hwg_ProcFileExt("/home/temp.dir/test.txt","prg",,"/")  SIZE 161,22
+   * 5 : /home/temp./test.prg
    @ 40,250 SAY oLabel13 CAPTION "/home/temp./test"  SIZE 133,22
    @ 237,250 SAY oLabel14 CAPTION ">"  SIZE 29,22
-   @ 338,250 SAY oLabel15 CAPTION hwg_ProcFileExt("/home/temp./test","prg")  SIZE 157,22
-
-   @ 205,348 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
+   @ 338,250 SAY oLabel15 CAPTION hwg_ProcFileExt("/home/temp./test","prg",,"/")  SIZE 157,22
+   * 6 : /home/temp./test
+   * Remove a file extension
+   @ 40,300 SAY oLabel17 CAPTION "/home/temp./test.xyz"  SIZE 134,22
+   @ 237,300 SAY oLabel18 CAPTION ">"  SIZE 29,22
+   @ 338,300 SAY oLabel19 CAPTION hwg_ProcFileExt("/home/temp./test.xyz","",,"/")  SIZE 157,22
+   * 7 : /home/temp./test
+   * There is no file extension to remove
+   @ 40,350 SAY oLabel20 CAPTION "/home/temp./test"  SIZE 134,22
+   @ 237,350 SAY oLabel21 CAPTION ">"  SIZE 29,22
+   @ 338,350 SAY oLabel22 CAPTION hwg_ProcFileExt("/home/temp./test",,,"/")  SIZE 157,22
+   * 8 : /home/temp/test
+   * Same as 7, but no dot in directory name
+   * There is no file extension to remove
+   @ 40,400 SAY oLabel23 CAPTION "/home/temp/test"  SIZE 134,22
+   @ 237,400 SAY oLabel24 CAPTION ">"  SIZE 29,22
+   @ 338,400 SAY oLabel25 CAPTION hwg_ProcFileExt("/home/temp/test",,,"/")  SIZE 157,22   
+ 
+ 
+   @ 205,508 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK {|| oDlg:Close() }
 
@@ -781,6 +809,22 @@ LOCAL oDir
 
 RETURN oDir
 
-
+* ================================================================= *
+FUNCTION Test_hwg_EOLStyle()
+* ================================================================= *
+LOCAL ceolsty,cretuv
+ceolsty := hwg_EOLStyle()
+DO CASE
+ CASE ceolsty == CHR(13) + CHR(10)
+  cretuv := "EOLStyle = DOS/Windows 0D0A (CRLF)"
+ CASE ceolsty == CHR(10)
+  cretuv := "EOLStyle = LINUX/UNIX: 0A (LF)"
+ CASE ceolsty == CHR(13)
+  cretuv := "MacOS: 0D (CR)"
+ OTHERWISE 
+  cretuv := "EOLStyle unknown"
+ENDCASE
+hwg_MsgInfo(cretuv,"hwg_EOLStyle()")
+RETURN NIL 
 
 * ============================== EOF of testfunc.prg ==============================

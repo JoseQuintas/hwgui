@@ -16,6 +16,32 @@
 */
 
 
+2024-10-04 19:20 UTC+0200 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* samples/Readme.txt
+* samples/arraybrowse.hbp
+* samples/testfunc.prg
+* source/gtk/Makefile.mac
+* source/gtk/Makefile3.mac
+* source/gtk/hmisc.prg
+* source/winapi/hmisc.prg
+  ! hwg_ProcFileExt() enhanced,
+  ! now can also remove file extensions.
+  ! Some updates for docu:
+  ! - The file selection menues
+  !   (see chapter 5.1. Common dialogs of
+  !    function documentation)
+  !   executes an internal change directory,
+  !   this fact in mentioned.
+  ! - hwg_CleanPathname()
+  ! hmisc.prg: Versions for WinAPI and
+  ! GTK differences reduced with WinMerge
+  ! Port to MacOS,
+  ! to be continued.
+  ! Mentioned tool "dbfcompare.prg"
+  ! will be added with the next commit
+  ! (if completed). 
+
 
 2024-09-06 19:30 UTC+0200 Wilfried Brunken DF7BE
 * doc/hwgdoc_functions.html

@@ -11,7 +11,7 @@
  *
  * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
- * Copyright 2020-2023 Wilfried Brunken, DF7BE
+ * Copyright 2020-2024 Wilfried Brunken, DF7BE
 */
 
 #include "hwgui.ch"
@@ -23,8 +23,7 @@ FUNCTION hwg_IsLeapYear ( nyear )
    * returns:
    * .T. a leap year
    * ================================= *
-
-RETURN ( ( (nyear % 4)  == 0 );
+   RETURN ( ( (nyear % 4)  == 0 );
        .AND. ( ( nyear % 100 ) != 0 ) ;
        .OR.  ( ( nyear % 400 ) == 0 ) )
 
@@ -55,7 +54,7 @@ FUNCTION hwg_CreateTempfileName( cPrefix , cSuffix )
 
    RETURN hwg_CompleteFullPath( hwg_GetTempDir() ) + cPre + Ltrim(Str(Int(Seconds()*100))) + cSuff
 
-FUNCTION hwg_CurDrive
+FUNCTION hwg_CurDrive()
 
 #ifdef __PLATFORM__WINDOWS
    RETURN hb_CurDrive() + ":\"
@@ -63,7 +62,7 @@ FUNCTION hwg_CurDrive
    RETURN ""
 #endif
 
-FUNCTION hwg_CurDir
+FUNCTION hwg_CurDir()
 
 #ifdef __PLATFORM__WINDOWS
    RETURN hwg_CurDrive() + CurDir()
@@ -83,7 +82,7 @@ FUNCTION hwg_GetUTCTime
 
    RETURN SUBSTR(hwg_GetUTCTimeDate(), 12 , 8 )
 
-FUNCTION hwg_cHex2Bin(chexstr,cdebug)
+FUNCTION hwg_cHex2Bin (chexstr,cdebug)
 
    * Converts a hex string to binary
    * Returns empty string, if error
@@ -96,6 +95,7 @@ FUNCTION hwg_cHex2Bin(chexstr,cdebug)
    * cdebug : Set a string for debug.
    * The string appears at the beginning
    * of the logfile.
+   * ================================= *
 
    LOCAL cbin, ncount, chs, lpos, nvalu, nvalue , nodd
    * lpos : F = MSB , T = LSB
@@ -163,8 +163,7 @@ FUNCTION hwg_cHex2Bin(chexstr,cdebug)
 
    RETURN cbin
 
-
-FUNCTION hwg_HEX_DUMP (cinfield, npmode, cpVarName)
+FUNCTION hwg_HEX_DUMP ( cinfield, npmode, cpVarName )
 
 * Hex dump from a C field (binary)
 * into C field (Character type).
@@ -301,6 +300,7 @@ FUNCTION hwg_HEX_DUMP (cinfield, npmode, cpVarName)
          CASE nmode == 5
             coutfield := coutfield + ccchexline + hwg_EOLStyle()
          ENDCASE
+
          * ready for new line
          nlinepos := 0
          cccprline := ""
@@ -365,22 +365,28 @@ FUNCTION hwg_NUMB2HEX (nascchar)
 
 FUNCTION hwg_EOLStyle()
 
-* Returns the "End Of Line" (EOL) character(s)
-* OS dependent.
-* Windows: OD0A (CRLF)
-* LINUX:   0A (LF)
-* This function works also on
-* GTK cross development environment.
-* MacOS not supported yet.
-* Must then return 0D (CR).
+   * Returns the "End Of Line" (EOL) character(s)
+   * OS dependent.
+   * Windows: 0D0A (CRLF)
+   * LINUX:   0A (LF)
+   * This function works also on
+   * GTK cross development environment.
+   * MacOS:   0D (CR).
+   * ================================= *
 
 #ifdef __PLATFORM__WINDOWS
    RETURN CHR(13) + CHR(10)
 #else
+#ifdef ___MACOSX___
+* MacOS
+   RETURN CHR(13)
+#else
+   * LINUX and other UNIX'e (Free BSD, ...) 
    RETURN CHR(10)
 #endif
+#endif
 
-FUNCTION hwg_BaseName( pFullpath )
+FUNCTION hwg_BaseName ( pFullpath )
 
    LOCAL nPosifilna , cFilename , cseparator
 
@@ -405,7 +411,7 @@ FUNCTION hwg_BaseName( pFullpath )
 
    RETURN ALLTRIM(cFilename)
 
-FUNCTION hwg_Dirname( pFullpath )
+FUNCTION hwg_Dirname ( pFullpath )
 
    LOCAL nPosidirna , sFilePath , cseparator , sFullpath
 
@@ -448,7 +454,7 @@ FUNCTION hwg_Dirname( pFullpath )
 
    RETURN sFilePath
 
-FUNCTION hwg_CleanPathname( pSwithdbl )
+FUNCTION hwg_CleanPathname ( pSwithdbl )
 
    LOCAL sSwithdbl , bready , cseparator
 
@@ -520,7 +526,7 @@ FUNCTION hwg_MemoEdit(mpmemo , cTextTitME , cTextSave ,  cTextClose , ;
       @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240
    ELSE
       @ 10, 10 HCEDIT oEdit SIZE oModDlg:nWidth - 20, 240 ;
-       FONT  oHCfont
+         FONT  oHCfont
    ENDIF
 
    @ 10, 252  ownerbutton owb2 TEXT cTextSave size 80, 24 ;
@@ -536,8 +542,8 @@ FUNCTION hwg_MemoEdit(mpmemo , cTextTitME , cTextSave ,  cTextClose , ;
    * is modified ? (.T.)
    bMemoMod := oEdit:lUpdated
    IF bMemoMod
-      * write out edited memo field
-      varbuf := oEdit:GetText()
+   * write out edited memo field
+     varbuf := oEdit:GetText()
    ENDIF
 
    RETURN varbuf
@@ -736,7 +742,7 @@ FUNCTION hwg_KM2NML(km)
 
 FUNCTION hwg_KEYESCCLDLG (odlg)
 
-   odlg:Close()
+    odlg:Close()
 
    RETURN NIL
 
@@ -835,6 +841,7 @@ FUNCTION hwg_MsgIsNIL(xpara,ctitle)
    * Sample call:
    * hwg_MsgIsNIL(hwg_Getactivewindow() )
    * Only for debugging
+   * =======================================================
 
    LOCAL lrvalue
 
@@ -910,8 +917,8 @@ FUNCTION hwg_leading0(ce)
             lstop := .T.               && Stop search, if no blank appeared
          ENDIF
       ENDIF
-  NEXT
-  crvalue := e1
+   NEXT
+   crvalue := e1
 
    RETURN crvalue
 
@@ -985,6 +992,7 @@ FUNCTION hwg_Date2JulianDay(dDate,nhour,nminutes,nseconds)
            + INT(30.6001 * ( nmonth + 1 )) + nday + ( nhour / 24 ) ;
            + ( nminutes / 1440 ) + ( nseconds / 86400 )
 
+
 FUNCTION hwg_JulianDay2Date(z)
 
 * Converts julian date of mem files into
@@ -1040,57 +1048,57 @@ FUNCTION hwg_JulianDay2Date(z)
       * 29th February
       cMonth := "02"
       cday := "29"
-   ELSE
+    ELSE
       * All other days
       IF (d > 60) .AND. (sz == -1)
-         d := d - 1
+           d := d - 1
       ENDIF  && Correction Leap Year
       cMonth := "  "
-      IF d > 0
+      IF  d > 0
          cMonth := "01"
          k := 0
       ENDIF
-      IF d > 31
+      IF  d > 31
          cMonth := "02"
          k := 31
       ENDIF
-      IF d > 59
+      IF  d > 59
          cMonth := "03"
          k := 59
       ENDIF
-      IF d > 90
+      IF  d > 90
          cMonth := "04"
          k := 90
       ENDIF
-      IF d > 120
+      IF  d > 120
          cMonth := "05"
          k := 120
       ENDIF
-      IF d > 151
+      IF  d > 151
          cMonth := "06"
          k := 151
       ENDIF
-      IF d > 181
+      IF  d > 181
          cMonth := "07"
          k := 181
       ENDIF
-      IF d > 212
+      IF  d > 212
          cMonth := "08"
          k := 212
       ENDIF
-      IF d > 243
+      IF  d > 243
          cMonth := "09"
          k := 243
       ENDIF
-      IF d > 273
+      IF  d > 273
          cMonth := "10"
          k := 273
       ENDIF
-      if d > 304
+      IF  d > 304
          cMonth := "11"
          k := 304
       ENDIF
-      IF d > 334
+      IF  d > 334
          cMonth := "12"
          k := 334
       ENDIF
@@ -1107,6 +1115,7 @@ FUNCTION hwg_JulianDay2Date(z)
 
    RETURN cYear + cMonth + cday
 
+
 FUNCTION HWG_GET_TIME_SHIFT()
 
    LOCAL nhUTC , nhLocal
@@ -1117,13 +1126,7 @@ FUNCTION HWG_GET_TIME_SHIFT()
 
    RETURN nhLocal - nhUTC
 
-FUNCTION hwg_Has_Win_Euro_Support()
 
-#if ( HB_VER_REVID - 0 ) >= 2002101634
-   RETURN .T.
-#else
-   RETURN .F.
-#endif
 
 FUNCTION hwg_addextens(cfilename,cext,lcs)
 
@@ -1156,9 +1159,10 @@ FUNCTION hwg_addextens(cfilename,cext,lcs)
    RETURN fna
 
 FUNCTION hwg_EuroUTF8()
-* 0xE2 + 0x82 + 0xAC
-RETURN CHR(226) + CHR(130) + CHR(172)
 
+   * 0xE2 + 0x82 + 0xAC
+
+   RETURN CHR(226) + CHR(130) + CHR(172)
 
 FUNCTION hwg_ValType(xxxx)
 
@@ -1209,6 +1213,7 @@ FUNCTION hwg_xVal2C(xxx)
 FUNCTION hwg_xvalMsg(xxx,cttype,cttval,cttitle)
 
    * Starts a messagebox to display a value of xxx
+
    IF cttype == NIL
       cttype := "Type : "
    ENDIF
@@ -1358,42 +1363,54 @@ FUNCTION hwg_COUNT_CHAR(stri,such)
 
    RETURN 0
 
+
 FUNCTION hwg_nothing(xpara)
 
    RETURN xpara
 
-FUNCTION hwg_HdSerial( cDrive )
+FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper,ctestdirsep)
 
-   HB_SYMBOL_UNUSED(cDrive)
+   * Process file name extension:
+   * Add file extension, if not available
+   * or replace an existing extension.
+   * pFiname : The filename to be processed (optional with full path)
+   * pFiext  : The new file extension
+   *           may be NIL or empty to remove a file extension 
+   * lupper  : Windows only (parameter ignored on UNIX/LINUX):
+   *           Set to .T. , if extension is set to upper case
+   *           .F. : preserve case (default)
+   * ctestdirsep : Only for test purposes:
+   * Modify the directory separator, default
+   * is the return value of function hwg_GetDirSep(),
+   * so it is assigned correct by the used operating system   
+   *
+   * Sample call: hwg_ProcFileExt("TEST.TXT","PRG")
+   * returns the value "TEST.PRG"
+   * pFiname may contain a full path.
+   * DOS, Windows and UNIX/LINUX/MacOS filenames
+   * are supported.
+   * 
 
-   RETURN ""
-
-FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper)
-
-* Process file name extension:
-* Add file extension, if not available
-* or replace an existing extension.
-* pFiname : The filename to be processed
-* pFiext  : The new file extension
-* lupper  : Windows only (parameter ignored on UNIX/LINUX):
-*           Set to .T. , if extension is set to upper case
-*           .F. : preserve case (default)
-*
-* Sample call: hwg_ProcFileExt("TEST.TXT","PRG")
-* returns the value "TEST.PRG"
-* pFiname may contain a full path.
-* DOS, Windows and UNIX/LINUX filenames
-* are supported.
-
-   LOCAL sfifullnam , sFiname , sFiext , nSlash , nPunkt
+   LOCAL sfifullnam , sFiname , sFiext , nSlash , nPunkt && , nslashr
 
 #ifndef __PLATFORM__WINDOWS
    HB_SYMBOL_UNUSED(lupper)
 #endif
 
+   IF pFiext == NIL
+     pFiext := ""
+   ENDIF
+
    IF lupper == NIL
       lupper := .F.
    ENDIF
+
+   IF ctestdirsep == NIL
+     ctestdirsep := hwg_GetDirSep()
+   ELSE
+     ctestdirsep := SUBSTR(ALLTRIM(ctestdirsep),1,1)
+   ENDIF
+   
    * Trim strings
    sFiext := ALLTRIM(pFiext)
 
@@ -1407,29 +1424,72 @@ FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper)
    * UNIX/LINUX : preserve case as passed
    * Attention !
    * Also path names may contain dots!
-   nSlash := RAT(hwg_GetDirSep(),sFiname)
+   nSlash := RAT(ctestdirsep,sFiname)
    nPunkt := RAT(".", sFiname )
+   
+  
+  * Another special case:
+  * /home/temp./test + "prg" ==> /home/temp./test.prg
+  * Bugfix of 2024-10-03 by DF7BE, case 5 in testfunc.prg:
+  * ==> /home/temp.prg
+  * Need to set another directory separator (if tested on windows)!  
+ 
    IF nPunkt == 0
       * Without extension: add extension
+      IF EMPTY(sFiext)
+       * Special case: no file extension to remove
+       sfifullnam := sFiname
+      ELSE
        sfifullnam := sFiname + "." + sFiext
+      ENDIF
    ELSE
       IF nSlash > nPunkt
          * Special case:
          * Without extension, but dot in path name
-         sfifullnam := sFiname + "." + sFiext
+         IF EMPTY(sFiext)
+         * Special Case: There is no file extension to remove
+         * (avoid to add a single dot)
+           sfifullnam := sFiname
+         ELSE
+           sfifullnam := sFiname + "." + sFiext
+         ENDIF
       ELSE
          IF nPunkt == 1
             * Special : hidden file in UNIX, for example .profile
             * so add extension
             sfifullnam := sFiname + "." + sFiext
          ELSE
-            * The rest:
-            * Cut existing extension
-            sFiname := SUBSTR(sFiname,1,nPunkt - 1)
-            * Add new extension
-            sfifullnam := sFiname + "." + sFiext
+             * The rest:
+             * Cut existing extension
+             sFiname := SUBSTR(sFiname,1,nPunkt - 1)
+             * Check for removing
+             IF EMPTY(sFiext)
+               sfifullnam := sFiname
+             ELSE
+             * Add new extension
+               sfifullnam := sFiname + "." + sFiext
+             ENDIF
          ENDIF
       ENDIF
    ENDIF
 
    RETURN sfifullnam
+
+
+* This function for WinAPI found in guimain.prg   
+FUNCTION hwg_HdSerial( cDrive )
+
+   HB_SYMBOL_UNUSED(cDrive)
+
+   RETURN ""
+
+   
+FUNCTION hwg_Has_Win_Euro_Support()
+
+#if ( HB_VER_REVID - 0 ) >= 2002101634
+   RETURN .T.
+#else
+   RETURN .F.
+#endif   
+
+* ======================= EOF of hmisc.prg ===========================

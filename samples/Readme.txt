@@ -155,13 +155,17 @@ For beginners:
     Ignore warning at build time:
       Unknown option -e
       
-8.) Set the  macro's  
-    -stop={linux}
-    -stop={darwin}
+8.) Set the  macro's
+
+{linux}-stop="Windows only"
+{darwin}-stop="Windows only"    
+{unix}-stop="Windows only" 
+
     at the beginning of the hbp file
     to suppress building of
     Windows only programs
-    on LINUX and macOS.      
+    on LINUX,UNIX and macOS
+    with message "Windows only".      
 
 9.) MacOS
    All samples ready for GTK may also run

@@ -3,6 +3,11 @@
 #
 
 
+
+{linux}-stop="Windows only"
+{darwin}-stop="Windows only"    
+{unix}-stop="Windows only" 
+   
 # Only for compile of sample program
 # iesample.hbp
 # needed additional contrib library

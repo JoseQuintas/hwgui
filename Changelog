@@ -12,9 +12,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
  Old changelogs are archived in directory
  "oldlogs".
- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2024-10-05 17:25 UTC+0200 Wilfried Brunken DF7BE
+* samples/Readme.txt
+* samples/iesample.hbp
+  ! Find the right hbp macros to
+  ! suppress build of Windows only programs
+  ! on other OS'n and output message
 
 2024-10-04 19:20 UTC+0200 Wilfried Brunken DF7BE
 * doc/hwgdoc_functions.html

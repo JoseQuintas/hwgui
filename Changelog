@@ -50,6 +50,21 @@
   ! (if completed). 
 
 
+2024-10-11 19:20 UTC+0200 Wilfried Brunken DF7BE
+* utils/devtools/Readme.txt
+* utils/devtools/dbfcompare.hbp (New)
+* utils/devtools/dbfcompare.prg (New)
+* utils/devtools/sample.dbf (New)
+* utils/devtools/sample.dbt (New)
+* utils/devtools/sampleori.dbf (New)
+* utils/devtools/sampleori.dbt (New)
+  ! New utility to compare DBF's
+  ! with same structure and order.
+  ! Helpful tool for regression tests,
+  ! for details read the comment lines
+  ! of dbfcompare.prg
+
+
 2024-09-06 19:30 UTC+0200 Wilfried Brunken DF7BE
 * doc/hwgdoc_functions.html
 * samples/testfunc.prg

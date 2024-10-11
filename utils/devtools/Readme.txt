@@ -13,6 +13,7 @@
    2. Label Dump utility
    3. DBF structure dump utililty
    4. Dump some parameters of a bitmap file
+   5. Compare DBF's with dbfcompare.prg
 
 
 
@@ -188,6 +189,19 @@ End ==> any key
    Start programm passing the full name of the bitmap file with extension ".bmp":
    getbitmappars.exe ..\..\image\astro.bmp
 
+
+
+   5. Compare DBF's with dbfcompare.prg
+   ====================================
+
+   This program compares two DBF's 
+   with same structure and order
+   and writes modifications into a
+   text file.
+
+   It is a helpful tool for regression tests,
+   Detailed instructions in the comment lines
+   of dbfcompare.prg.
 
 
    References

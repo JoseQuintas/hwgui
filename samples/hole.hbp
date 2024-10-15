@@ -19,11 +19,13 @@
 # and activate following line
 #{linux}../hwguiGTK3.hbc
 
--n
--w
+xhb.hbc
 
--oa
+-n0
+-w0
 
-a.prg
+-ohole
 
-# ==================== EOF of a.hbp ===============
+hole.prg
+
+# ==================== EOF of hole.hbp ===============

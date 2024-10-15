@@ -2,6 +2,7 @@
 # $Id$
 #
 
+
 {linux}-stop="Windows only"
 {darwin}-stop="Windows only"    
 {unix}-stop="Windows only"
@@ -17,8 +18,8 @@
 -n
 -w
 
--otestchild
+-onice2
 
-testchild.prg
+nice2.prg
 
-# ==================== EOF of testchild.hbp ===============
+# ==================== EOF of nice2.hbp ===============

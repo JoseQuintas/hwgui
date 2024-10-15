@@ -3,6 +3,15 @@
  *
  * HwGUI Samples
  * testini.prg - Test to use files ini
+ *
+ * The dafault path for Windows INI files is:
+ * C:\Users\<userid>\AppData\Local\VirtualStore\Windows
+ * (Windows 11)
+ * 
+ * For multi platform usage see project CLLOG:
+ * https://sourceforge.net/p/cllog/code/HEAD/tree/trunk/src/libini.prg
+ * It is an extract of Harbour code with some modifications 
+ * and processes Windows like inifiles.
  */
 
 #include "hwgui.ch"

@@ -5,7 +5,9 @@
 
 # Harbour GTWVG is Windows only
 
--stop={linux}
+{linux}-stop="Windows only"
+{darwin}-stop="Windows only"    
+{unix}-stop="Windows only"
 
 # {linux}-static
 # {linux}-d__LINUX__
@@ -23,4 +25,4 @@ hwgui.hbc
 hbwin.hbc
 -lgtwvg
 
-# ============= EOF of test.hbp ====================
+# ============= EOF of testhgt.hbp ====================

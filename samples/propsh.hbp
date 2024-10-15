@@ -2,7 +2,9 @@
 # $Id$
 #
 
--stop={linux}
+{linux}-stop="Windows only"
+{darwin}-stop="Windows only"    
+{unix}-stop="Windows only"
 
 # Special parameters for LINUX/GTK
 {linux}-lm

@@ -13,6 +13,10 @@
  * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
  *
+ * Advice:
+ * The better way is to use "@ <x>,<y> OWNERBUTTON",
+ * instead of NICEBUTTON and with advantage
+ * of multi platform usage !!!! 
  */
 
     * Status:
@@ -22,8 +26,8 @@
 
 
 #include "hwgui.ch"
-#include "nice.h"
-REQUEST hwg_NICEBUTTPROC
+// #include "nice.h"
+// REQUEST hwg_NICEBUTTPROC
 
 #define DIALOG_1    1
 #define IDC_1     101
@@ -46,7 +50,8 @@ FUNCTION Main()
       ENDMENU
    ENDMENU
 
-   oWinMain:Activate()
+//   oWinMain:Activate()
+ACTIVATE WINDOW oWinMain
 
 RETURN Nil
 
@@ -63,12 +68,16 @@ FUNCTION _Testen()
       AT 6, 15 SIZE 161, 127 FONT oFont ;
       STYLE WS_POPUP + WS_VISIBLE + WS_CAPTION + WS_SYSMENU + WS_THICKFRAME + WS_MINIMIZEBOX + WS_MAXIMIZEBOX
 
-   @ 10 ,10 NICEBUTTON o1 CAPTION "NICEBUTT" OF odlg ID IDC_1 SIZE 40,40
+// Also bug: The caption of the nicebutton is not visible 
+//   @ 10 ,10 NICEBUTTON o1 CAPTION "NICEBUTT" OF odlg ID IDC_1 SIZE 40,40
+   @ 10 ,10 NICEBUTTON  [NICEBUTT] OF odlg ID IDC_1 SIZE 40,40  && See nice.prg
 
    * redefine nicebutton o1  caption "teste" of odlg id IDC_1 Red 125 Green 201 blue 36 ;
    *  STYLE WS_CHILD+WS_VISIBLE
 
-   ACTIVATE DIALOG odlg
+//   ACTIVATE DIALOG odlg   && ==> this causes the crash above listed,
+//   it is obscure !!!!!
+    ACTIVATE WINDOW odlg
 
 RETURN Nil
 

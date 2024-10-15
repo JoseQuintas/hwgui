@@ -1,3 +1,27 @@
+/*
+ This sample is not running and fires a runtime error
+ (seems to be outdated)
+ 
+Error TOleAuto/-1  CO_E_CLASSSTRING: TOLEAUTO:NEW
+Called from (b)HWG_ERRSYS(20)
+Called from THROW(0)
+Called from TOLEAUTO:NEW(0)
+Called from MAIN(22)
+
+HWGUI 2.23 dev Build 8
+Date:10/13/24
+
+(With MingW)
+
+Harbour options
+-n0
+-w0
+avoids build abort with
+Warning W0001  Ambiguous reference 
+ 
+*/ 
+
+
 #include "hwgui.ch"
 
 #ifdef __XHARBOUR__
@@ -123,3 +147,5 @@ EXIT PROCEDURE EXI
    oTimer:End()
 
 RETURN Nil
+
+* ======================== EOF of hole.prg ==============================

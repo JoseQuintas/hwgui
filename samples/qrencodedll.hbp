@@ -3,7 +3,9 @@
 #
 
 
--stop={linux}
+{linux}-stop="Windows only"
+{darwin}-stop="Windows only"    
+{unix}-stop="Windows only"
 
 ../hwgui.hbc
 # hbwin.hbc

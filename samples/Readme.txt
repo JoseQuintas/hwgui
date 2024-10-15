@@ -207,7 +207,7 @@ For beginners:
  helpdemo.prg 6) 7)  N       N                Context help using windows help (Shellexecute crashes)
  helpstatic.prg      Y                        Static help text
  hexbincnt.prg 11)   Y                        Handling of binary resources with hex values.
- hole.prg   2) 4)    N       N                MS Agent Control
+ hole.prg   2) 4)    N       N                MS Agent Control (not running on Windows 11)
  htrack.prg          Y                        Demo of HTRACK class as substitute for Windows only HTRACKBAR
  icons.prg           Y                        Icons and background bitmaps
  icons2.prg          Y                        Icons and bitmaps using hex values
@@ -216,18 +216,18 @@ For beginners:
  menumod.prg         Y                        Handling menu items while run-time in dialogs.
  modtitle.prg        Y                        Sample for modifying a main window title in HWGUI
  nice.prg            N       N                Demo of NICEBUTTON
- nice2.prg           N  #    N         -      Demo of NICEBUTTON (2), starts only in background, kill with Task Manager
+ nice2.prg           N  #    N         -      Demo of NICEBUTTON (2), starts only in background, kill with Task Manager (Bug!)
  night.prg           Y                        "ADD HEADER PANEL" for a night mode application
  progbars.prg  12)   Y                        Progress bar
  propsh.prg +)       N  #    N                Property sheet, freezes at hwg_PropertySheet()
  pseudocm.prg        Y                        Pseudo context menu
  qrencode.prg 1) 2)  Y                        Encode QR code from string an convert to monochrome bitmap.
- qrencodedll.prg 1)  N       N                Encode QR code like qrencode.prg by using a DLL
- shadebtn.prg        N       N                Shade buttons
+ qrencodedll.prg 1)  N       N                Encode QR code like qrencode.prg by using a DLL (for multi platform usage see contrib/qrencode)
+ shadebtn.prg        N       N                Shade buttons (for multi platform usage take OWNERBUTTON)
  simpleedit.prg      Y                        Simple text editor demonstrating hwg_Memoedit()
  stretch.prg         Y  #                     Sample for resizing bitmaps (background), some bugs (as test program)
  tab.prg             Y  #              -      Sample for Tabs
- Testado.prg         N       N                Test program sample for ADO Browse (TNX Itamar M. Lins Jr.)
+ Testado.prg         N       N                Test program sample for ADO Browse (TNX Itamar M. Lins Jr.). For multi platform use BROWSE. 
  testalert.prg       N       N                Clipper style Alert() replacement, delivered by Alex Strickland (TNX !)
  test_bot.prg        P                        bOther Test: Press key, after key up the scan code is displayed.
  testbrw.prg         Y  #                     Another BROWSE test (bug on GTK see docu)

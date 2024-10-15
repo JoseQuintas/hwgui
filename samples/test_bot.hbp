@@ -12,13 +12,15 @@
 # {linux}-d__LINUX__
 # {linux}-d__GTK__
 
+hbwin.hbc
+
 ../hwgui.hbc
 
 -n
 -w
 
--otestchild
+-otest_bot
 
-testchild.prg
+test_bot.prg
 
-# ==================== EOF of testchild.hbp ===============
+# ==================== EOF of test_bot.hbp ===============

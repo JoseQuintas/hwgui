@@ -17,8 +17,8 @@
 -n
 -w
 
--otestchild
+-ohelpdemo
 
-testchild.prg
+helpdemo.prg
 
-# ==================== EOF of testchild.hbp ===============
+# ==================== EOF of helpdemo.hbp ===============

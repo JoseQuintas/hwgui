@@ -16,6 +16,40 @@
 */
 
 
+2024-10-15 11:30 UTC+0200 Wilfried Brunken DF7BE
+* samples/Testado.hbp
+* samples/TwoListbox.hbp
+* samples/a.hbp
+* samples/buildpelles.hbp
+* samples/demohlist.hbp
+* samples/grid_1.hbp
+* samples/grid_4.hbp
+* samples/grid_5.hbp
+* samples/hello.hbp
+* samples/helpdemo.hbp (New)
+* samples/hole.hbp  (New)
+* samples/hole.prg
+* samples/nice.hbp
+* samples/nice2.hbp (New)
+* samples/nice2.prg
+* samples/propsh.hbp
+* samples/qrencodedll.hbp
+* samples/shadebtn.hbp
+* samples/test_bot.hbp (New)
+* samples/testalert.hbp
+* samples/testchild.hbp
+* samples/testhgt.hbp
+* samples/testini.hbp
+* samples/testini.prg
+* samples/testmenubitmap.hbp
+* samples/trackbar.hbp
+* samples/tstsplash.hbp
+* samples/Readme.txt
+  ! Stop sequence for all Windows only samples
+  ! for UNIX, LINUX and MacOS added.
+  ! Some info added.
+
+
 2024-10-05 17:25 UTC+0200 Wilfried Brunken DF7BE
 * samples/Readme.txt
 * samples/iesample.hbp

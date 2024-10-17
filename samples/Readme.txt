@@ -249,7 +249,7 @@ For beginners:
  trackbar.prg        P                        Trackbar demo, horizontal und vertical.
  tstcombo.prg        Y                        Test Combobox, with preset and refresh.
  tstprdos.prg 3)     N       N                Print on LPT, outdated, see 3)
- tstscrlbar.prg      P                        Scrollbar (GTK: Compilable, but no scroll function)
+ tstscrlbar.prg      P                        Scrollbar (GTK: Compilable, but no scroll function, more info in comment lines)
  tstsplash.prg       P                        SPLASH Demo, displays image at start as logo for n millisecs: OK with WinAPI, compilable for GTK, but splash window is empty.
  tststconsapp.prg    Y                        Testing all functions to run external GUI or console applications
  TwoListbox.prg      S       S                Sample for select and move items between two listboxes.

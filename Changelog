@@ -16,6 +16,15 @@
 */
 
 
+2024-10-17 16:15 UTC+0200 Wilfried Brunken DF7BE
+* samples/Readme.txt
+* samples/tstscrlbar.hbp
+* samples/tstscrlbar.prg
+  ! Added some information, because
+  ! scrollbars does not appear on GTK.
+  ! Port to MacOS,
+  ! to be continued.  
+
 2024-10-15 11:30 UTC+0200 Wilfried Brunken DF7BE
 * samples/Testado.hbp
 * samples/TwoListbox.hbp

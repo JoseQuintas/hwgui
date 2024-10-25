@@ -16,6 +16,17 @@
 */
 
 
+
+2024-10-25 10:00 UTC+0200 Wilfried Brunken DF7BE
+* source/winapi/hwindow.prg
+* test/demosaycrash.hbp (New)
+* test/demosaycrash.prg (New)
+  ! Urgent bugfix (WinAPI):
+  ! Use of GET in a main window crashes, if field
+  ! is filled to end, for details read comment lines
+  ! of test program
+
+
 2024-10-17 16:15 UTC+0200 Wilfried Brunken DF7BE
 * samples/Readme.txt
 * samples/tstscrlbar.hbp

@@ -302,6 +302,10 @@ CLASS HMainWindow INHERIT HWindow
    DATA oNotifyIcon, bNotify, oNotifyMenu
    DATA lTray INIT .F.
 
+   // DF7BE: Fix crash, if GET used in main window (for details see test/demosaycrash.prg)
+   DATA lExitOnEnter INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key
+   DATA _lResult  INIT .T.   // For __errInHandler()
+   
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId, bColor, nExclude )

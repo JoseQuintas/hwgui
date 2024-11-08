@@ -17,6 +17,16 @@
 
 
 
+2024-11-08 10:00 UTC+0100 Wilfried Brunken DF7BE
+* source/cross/common.prg
+  ! Urgent bugfix link error sample
+  ! datepicker.prg:
+  ! The function hwg_pCalendar()
+  ! was former in hmonthc.prg and there removed,
+  ! now restored in cross section, the sample
+  ! program is now running again.
+
+
 2024-10-25 10:00 UTC+0200 Wilfried Brunken DF7BE
 * source/winapi/hwindow.prg
 * test/demosaycrash.hbp (New)

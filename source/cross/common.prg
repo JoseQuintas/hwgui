@@ -223,10 +223,19 @@ METHOD KeyRight( nPos ) CLASS HPicture
       RETURN nPos + 1
    ELSE
       masklen := Len( ::cPicMask )
-      DO WHILE nPos < masklen
+      * Bugfix by DF7BE (November 2024):
+      * from former function KeyRight( oEdit, nPos )
+      * DO WHILE nPos < masklen  ==>  nPos <= masklen
+      DO WHILE nPos <= masklen   
          nPos ++
-         IF ::IsEditable( nPos )
+          IF ::IsEditable( nPos )
+            // hwg_WriteLog( "KeyRight-2 Editable=.T. : "+str(nPos) )
             RETURN nPos
+         ELSE
+          * DF7BE: 
+          * Set Cursor to position after last character or figure
+            // hwg_WriteLog( "KeyRight-2 Editable=.F. : "+str(nPos) )
+            RETURN nPos + 1
          ENDIF
       ENDDO
    ENDIF
@@ -235,7 +244,7 @@ METHOD KeyRight( nPos ) CLASS HPicture
 
    IF !Empty( ::cPicMask )
       newPos := Len( ::cPicMask )
-      IF nPos > newPos //.AND. !Empty( Trim( ::Title ) )
+      IF nPos > newPos // .AND. !Empty( Trim( ::Title ) )
          RETURN newPos
       ENDIF
    ENDIF
@@ -1081,8 +1090,6 @@ RETURN HBitmap():AddString("Datepick_Button", hwg_cHex2Bin(;
  FUNCTION hwg_pCalendar(dstartdate, cTitle , cOK, cCancel , nx , ny , wid, hei )
 * Date picker command for all platforms in the design of original
 * Windows only DATEPICKER command
-* For details see sample program datepicker.prg
-* (DF7BE)
 
    LOCAL oDlg, oMC , oFont , dolddate , dnewdate,  lcancel 
 
@@ -1423,3 +1430,5 @@ FUNCTION hwg_QRCodeGetSize( cqrcode )
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
    //   End of Functions for QR encoding
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ============================ EOF of common.prg =============================   

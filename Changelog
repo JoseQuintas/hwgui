@@ -15,7 +15,18 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-
+2024-11-10 15:10 UTC+0100 Wilfried Brunken DF7BE
+* source/cross/common.prg
+* test/get_bug.hbp (New)
+* test/get_bug.prg (New)
+  ! Port to MacOS (to be continued):
+  ! Urgent bugfix in GET:
+  ! Right arrow key does not reach the end of
+  ! input line.
+  ! Full description of this bug
+  ! with symptom, motivation, analysis and solution
+  ! (very simple) in the comment line of
+  ! the new test program.
 
 2024-11-08 10:00 UTC+0100 Wilfried Brunken DF7BE
 * source/cross/common.prg

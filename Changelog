@@ -15,6 +15,10 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-11-10 19:51 UTC-0200 Jose Quintas
+* source/cross/common.prg
+  ! fix: do not back if right arrow after end
+
 2024-11-10 15:10 UTC+0100 Wilfried Brunken DF7BE
 * source/cross/common.prg
 * test/get_bug.hbp (New)
@@ -55,7 +59,7 @@
   ! Added some information, because
   ! scrollbars does not appear on GTK.
   ! Port to MacOS,
-  ! to be continued.  
+  ! to be continued.
 
 2024-10-15 11:30 UTC+0200 Wilfried Brunken DF7BE
 * samples/Testado.hbp
@@ -122,7 +126,7 @@
   ! to be continued.
   ! Mentioned tool "dbfcompare.prg"
   ! will be added with the next commit
-  ! (if completed). 
+  ! (if completed).
 
 
 2024-10-11 19:20 UTC+0200 Wilfried Brunken DF7BE
@@ -147,7 +151,7 @@
 * test/test_origin_cons.prg (New)
   ! Correction hwg_ChDir() and ft_origin()
   ! with new test program
-  ! Docu updated    
+  ! Docu updated
 
 
 2024-09-05 15:45 UTC+0200 Wilfried Brunken DF7BE
@@ -158,13 +162,13 @@
   ! Try to suppress warning
   ! "HB_DEPRECATED" redefined
   ! but until no way to solve
-  ! (will look later for a solution) 
+  ! (will look later for a solution)
 
 2024-09-04 19:10 UTC+0200 Wilfried Brunken DF7BE
 * include/warnings.h
 * source/common/procmisc/cfuncs.c
   ! Warning "-Wunused-result" in cfuncs.c suppressed.
-  ! hwg_ChDir(): chdir() also for LINUX 
+  ! hwg_ChDir(): chdir() also for LINUX
 
 
 2024-09-01 19:20 UTC+0200 Wilfried Brunken DF7BE
@@ -200,7 +204,7 @@
 
 2024-08-19 15:05 UTC+0200 Wilfried Brunken DF7BE
 * utils/tutorial/hwgrun.hbp
-* utils/tutorial/tutor.hbp  
+* utils/tutorial/tutor.hbp
   ! MacOS:
   ! Tutor OK
   ! (to be continued)
@@ -252,10 +256,10 @@
 * samples/tststconsapp.hbp (New)
 * samples/tststconsapp.prg (New)
 * source/gtk/misc.c
-  ! New function hwg_RunConsApp() 
+  ! New function hwg_RunConsApp()
   ! avoids some restrictions of
   ! hwg_RunConsoleApp() and
-  ! hwg_RunApp(). 
+  ! hwg_RunApp().
   ! New sample program tststconsapp.prg
   ! testing all functions to run
   ! external GUI or console applications.

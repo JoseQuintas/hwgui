@@ -217,39 +217,21 @@ METHOD LastEditable() CLASS HPicture
 
 METHOD KeyRight( nPos ) CLASS HPicture
 
-   LOCAL masklen, newpos
+   LOCAL nMax
 
    IF Empty( ::cPicMask )
       RETURN nPos + 1
-   ELSE
-      masklen := Len( ::cPicMask )
-      * Bugfix by DF7BE (November 2024):
-      * from former function KeyRight( oEdit, nPos )
-      * DO WHILE nPos < masklen  ==>  nPos <= masklen
-      DO WHILE nPos <= masklen   
-         nPos ++
-          IF ::IsEditable( nPos )
-            // hwg_WriteLog( "KeyRight-2 Editable=.T. : "+str(nPos) )
-            RETURN nPos
-         ELSE
-          * DF7BE: 
-          * Set Cursor to position after last character or figure
-            // hwg_WriteLog( "KeyRight-2 Editable=.F. : "+str(nPos) )
-            RETURN nPos + 1
-         ENDIF
-      ENDDO
    ENDIF
-
-   //Added By Sandro Freire
-
-   IF !Empty( ::cPicMask )
-      newPos := Len( ::cPicMask )
-      IF nPos > newPos // .AND. !Empty( Trim( ::Title ) )
-         RETURN newPos
+   // cursor until end ( after last char )
+   nMax := Len( ::cPicMask ) + 1
+   DO WHILE nPos < nMax
+      nPos += 1
+      IF ::IsEditable( nPos )
+         RETURN nPos
       ENDIF
-   ENDIF
+   ENDDO
 
-   RETURN -1
+   RETURN Min( nPos, nMax )
 
 METHOD KeyLeft( nPos ) CLASS HPicture
 
@@ -1086,12 +1068,12 @@ RETURN HBitmap():AddString("Datepick_Button", hwg_cHex2Bin(;
    "00 00 1F 00 00 00 3F 80 00 00 00 00 00 00 00 00 " + ;
    "00 00 00 00 00 00 00 00 00 00 " ) )
 
-   
+
  FUNCTION hwg_pCalendar(dstartdate, cTitle , cOK, cCancel , nx , ny , wid, hei )
 * Date picker command for all platforms in the design of original
 * Windows only DATEPICKER command
 
-   LOCAL oDlg, oMC , oFont , dolddate , dnewdate,  lcancel 
+   LOCAL oDlg, oMC , oFont , dolddate , dnewdate,  lcancel
 
   IF cTitle == NIL
     cTitle := "Calendar"
@@ -1112,7 +1094,7 @@ RETURN HBitmap():AddString("Datepick_Button", hwg_cHex2Bin(;
   IF nx == NIL
    nx := 0  && old: 20
   ENDIF
-  
+
   IF ny == NIL
    ny := 0  && old: 20
   ENDIF
@@ -1122,7 +1104,7 @@ RETURN HBitmap():AddString("Datepick_Button", hwg_cHex2Bin(;
   ENDIF
 
   IF hei == NIL
-   hei := 160 && old: 20 
+   hei := 160 && old: 20
   ENDIF
 
   oFont := hwg_DefaultFont()
@@ -1131,30 +1113,30 @@ RETURN HBitmap():AddString("Datepick_Button", hwg_cHex2Bin(;
 
   * Remember old date
   dolddate := dstartdate
-    
+
    INIT DIALOG oDlg TITLE cTitle ;
       AT nx,ny SIZE  wid , hei + 23 && wid , hei , 22 = height of buttons
 
    @ 0,0 MONTHCALENDAR oMC ;
       SIZE wid - 1 , hei - 1 ;
-      INIT dstartdate ;   && Date(), if NIL 
-      FONT oFont 
+      INIT dstartdate ;   && Date(), if NIL
+      FONT oFont
 
    @ 0 ,hei BUTTON cOK FONT oFont ;
-    ON CLICK {|| lcancel := .F., dnewdate := oMC:Value , oDlg:Close() } SIZE 80 , 22 
+    ON CLICK {|| lcancel := .F., dnewdate := oMC:Value , oDlg:Close() } SIZE 80 , 22
    @ 81,hei BUTTON cCancel FONT oFont ;
-    ON CLICK {|| oDlg:Close() } SIZE 80, 22 
+    ON CLICK {|| oDlg:Close() } SIZE 80, 22
 
 
    ACTIVATE DIALOG oDlg
 
-   
+
    IF lcancel
     dnewdate := dolddate
    ENDIF
-     
-   RETURN dnewdate  
-   
+
+   RETURN dnewdate
+
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~
    //   Functions for QR encoding
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -1431,4 +1413,4 @@ FUNCTION hwg_QRCodeGetSize( cqrcode )
    //   End of Functions for QR encoding
    //   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-* ============================ EOF of common.prg =============================   
+* ============================ EOF of common.prg =============================

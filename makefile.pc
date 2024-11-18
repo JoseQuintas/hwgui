@@ -10,6 +10,7 @@ INCLUDE_DIR = include;$(HRB_DIR)\include
 OBJ_DIR = obj
 LIB_DIR = lib
 SRC_DIR = source\winapi
+CROSS_DIR = source\cross
 PROCMISC_DIR = source\common\procmisc
 EDITOR_DIR = source\common\editor
 XML_DIR = source\common\xml
@@ -135,6 +136,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\grid.obj  \
    $(OBJ_DIR)\hdc.obj  \
    $(OBJ_DIR)\hlenta.obj \
+   $(OBJ_DIR)\hmisccross.obj \
    $(OBJ_DIR)\hhyper.obj
 $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
    $(LIB_EXE) /out:$@ $**
@@ -625,6 +627,16 @@ $(OBJ_DIR)\dbgconnectr.obj : $(OBJ_DIR)\dbgconnect.c
 
 $(OBJ_DIR)\dbgdop.obj : $(DBG_DIR)\dbgdop.c
    $(CC_EXE) $(CFLAGS) /Fo$@ $**
+   
+# ============================
+# HWGUI.LIB/Cross Dependencies
+# ============================
+
+$(OBJ_DIR)\hmisccross.c : $(CROSS_DIR)\hmisccross..prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hmisccross.obj : $(OBJ_DIR)\hmisccross.c
+   $(CC_EXE) $(CFLAGS) /Fo$@ $**   
 
 # ================== EOF of makefile.pc =====================
 

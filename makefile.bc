@@ -185,6 +185,7 @@ HWGUI_LIB_OBJS = \
    $(HWGUI_OBJ_DIR)\tmci.obj \
    $(HWGUI_OBJ_DIR)\video.obj \
    $(HWGUI_OBJ_DIR)\hlenta.obj \
+   $(HWGUI_OBJ_DIR)\hmisccross.obj \
    $(HWGUI_OBJ_DIR)\hhyper.obj
 
 #
@@ -332,6 +333,16 @@ $(DEBUG_LIB) : $(DEBUG_LIB_OBJS)
     $(HB_CMD)
 
 {$(DEBUG_DIR)}.c{$(DEBUG_OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+#
+# CROSS dependencies
+#
+
+{$(CROSS_DIR)}.prg{$(HWGUI_LIB_OBJS)}.c:
+    $(HB_CMD)
+
+{$(CROSS_DIR)}.c{$(HWGUI_LIB_OBJS)}.obj:
    $(CC_CMD)
 
 # =================== EOF of makefile.bc =======================

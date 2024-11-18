@@ -8,6 +8,7 @@ OBJ_DIR = obj\dll
 LIB_DIR = lib
 SRC_DIR = source\winapi
 PROCMISC_DIR = source\common\procmisc
+CROSS_DIR = source\cross
 EDITOR_DIR = source\common\editor
 HBXML_DIR    = source\common\xml
 
@@ -103,6 +104,7 @@ $(LIB_DIR)\hwgui-b32.dll:   \
    $(OBJ_DIR)\procs7.obj \
    $(OBJ_DIR)\procscri.obj \
    $(OBJ_DIR)\hxmldoc.obj \
+   $(OBJ_DIR)\hmisccross.obj \   
    $(OBJ_DIR)\xmlparse.obj
 
 
@@ -147,4 +149,10 @@ $(LIB_DIR)\hwgui-b32.dll:   \
     $(HB_CMD)
 
 {$(HWGQHTM_DIR)}.c{$(OBJ_DIR)}.obj:
+   $(CC_CMD)
+
+{$(CROSS_DIR)}.prg{$(OBJ_DIR)}.c:
+    $(HB_CMD)
+
+{$(CROSS_DIR)}.c{$(OBJ_DIR)}.obj:
    $(CC_CMD)

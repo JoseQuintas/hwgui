@@ -102,6 +102,7 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\hlenta.obj \
    $(OBJ_DIR)\hhyper.obj \
    $(OBJ_DIR)\hdc.obj \
+   $(OBJ_DIR)\hmisccross.obj \
    $(OBJ_DIR)\halert.obj
   lib /out:$@ $**
 
@@ -147,7 +148,8 @@ $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\pager.obj  : $(SRC_DIR)\pager.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
-
+$(OBJ_DIR)\hmisccross.obj  : $(SRC_DIR)\hmisccross.c
+  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
 $(OBJ_DIR)\herrsys.obj : $(OBJ_DIR)\herrsys.c
@@ -206,6 +208,8 @@ $(OBJ_DIR)\hwinprn.obj  : $(OBJ_DIR)\hwinprn.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\video.obj    : $(OBJ_DIR)\video.c
 $(OBJ_DIR)\tmci.obj     : $(OBJ_DIR)\tmci.c
+$(OBJ_DIR)\hmisccross.obj     : $(OBJ_DIR)\hmisccross.c
+
 
 $(OBJ_DIR)\herrsys.c   : $(SRC_DIR)\herrsys.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
@@ -314,6 +318,8 @@ $(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
 $(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\htrack.c   : $(CROSS_DIR)\htrack.prg
+  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hmisccross.c   : $(CROSS_DIR)\hmisccross.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
   $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@

@@ -139,6 +139,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hpager.obj \
    $(OBJ_DIR)\hrebar.obj \
    $(OBJ_DIR)\hlenta.obj \
+   $(OBJ_DIR)\hmisccross.obj \   
    $(OBJ_DIR)\hhyper.obj
 
 
@@ -585,6 +586,12 @@ $(OBJ_DIR)\common.c : $(CROSS_DIR)\common.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\common.obj : $(OBJ_DIR)\common.c
+   $(CC_EXE) $(CFLAGS) -fo$@ $**
+   
+$(OBJ_DIR)\hmisccross.c : $(CROSS_DIR)\hmisccross.prg
+   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
+
+$(OBJ_DIR)\hmisccross.obj : $(OBJ_DIR)\hmisccross.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 # ========================== 

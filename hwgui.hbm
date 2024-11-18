@@ -42,6 +42,7 @@
 {win}source/cross/hgraph.prg
 {win}source/cross/hlenta.prg
 {win}source/cross/htrack.prg
+{win}source/cross/hmisccross.prg
 
 {win}source/winapi/hipedit.prg
 {win}source/winapi/drawwidg.prg
@@ -111,6 +112,7 @@
 {unix}source/cross/hgraph.prg
 {unix}source/cross/hlenta.prg
 {unix}source/cross/htrack.prg
+{unix}source/cross/hmisccross.prg
 
 {unix}source/gtk/drawwidg.prg
 {unix}source/gtk/herrsys.prg

@@ -15,6 +15,36 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2024-11-18 16:00 UTC+0100 Wilfried Brunken DF7BE
+* source/cross/hmisccross.prg (New)
+* Makefile
+* Makefile.scr
+* hwgui.hbm
+* makedll.bc
+* makefile.bc
+* makefile.gcc
+* makefile.pc
+* makefile.vc
+* makefile.wc
+* source/gtk/Makefile.linux
+* source/gtk/Makefile.mac
+* source/gtk/Makefile3.mac
+* source/gtk/hmisc.prg
+* source/winapi/hmisc
+  ! For better maintenance:
+  ! Moved all multi platform functions
+  ! of winapi/hmisc.prg and gtk/hmisc.prg
+  ! to new file cross/hmisccross.prg
+  ! Makefiles modified, but
+  ! only tested on Windows/MinGW,
+  ! LINUX/GTK and MacOS/GTK.
+  ! Test with sample program testfunc.prg. 
+  ! Port to MacOS continued.  
+  ! To all other HWGUI programmers:
+  ! check makefiles for all other compilers.
+
+
 2024-11-13 14:50 UTC+0100 Wilfried Brunken DF7BE
 * hwgui/test/image/get_bug.png (New)
   ! Hello Jose, TNX for final fix,

@@ -27,7 +27,7 @@ HB_FLAGS = -d___MACOSX___ -d__LINUX__ -d__GTK__ -w3 -es2
 
 vpath %.a $(LIB_DIR)
 vpath %.o $(OBJ_DIR)
-vpath %.c $(OBJ_DIR):$(CROSS_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR)
+vpath %.c $(OBJ_DIR):$(CROSS_DIR):$(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR):$(CROSS_DIR)
 vpath %.prg $(PROCMISC_DIR):$(XML_DIR):$(DEBUG_DIR):$(EDITOR_DIR):$(SRC_DIR):$(CROSS_DIR)
 
 $(OBJ_DIR)/%.c : %.prg

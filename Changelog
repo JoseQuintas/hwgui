@@ -16,6 +16,12 @@
 */
 
 
+2024-11-19 15:20 UTC+0100 Wilfried Brunken DF7BE
+* samples/testfunc.prg
+* source/gtk/Makefile.linux-gtk3
+* source/gtk/Makefile3.mac
+  ! Some more tests with GTK3
+
 2024-11-18 16:00 UTC+0100 Wilfried Brunken DF7BE
 * source/cross/hmisccross.prg (New)
 * Makefile

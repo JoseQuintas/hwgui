@@ -1071,6 +1071,81 @@ HB_FUNC( HWG_CHDIR )
 
 }
 
+static void reverse_char( char *beginn, char *ende )
+/*
+  Internal:
+  called by reverse_char2() 
+ */
+{
+  char zchn;
+  while( beginn < ende )
+  {
+    zchn = *beginn;
+    *beginn++ = *ende;
+    *ende-- = zchn;
+  }
+}
+
+static char *reverse_char2( char *beginn )
+/*
+  Internal:
+  called by reverse_string() 
+ */
+{
+  char *ende;
+  
+  ende = beginn;
+
+  while( (ende[1] & 0xC0) == 0x80 )
+     { 
+       ende++;
+     }  
+
+    reverse_char( beginn,ende );
+    return( ende + 1 );
+}
+
+
+static void reverse_string( char *string )
+/*
+  Internal:
+  called by hwg_strrev() 
+ */
+{
+
+  char *ende;
+  
+  ende =  string;
+    
+  while( *ende )
+  {
+    ende = reverse_char2( ende );
+  }   
+  reverse_char( string, ende - 1 );
+}  
+  
+HB_FUNC( HWG_STRREV )
+/*
+   hwg_strrev(cstring)  
+   Reverses a string. 
+   This is the equivalent strrev() function from the standard C library,
+   but extended to understand UTF-8.
+   cstring may not exceed 511 bytes, inclusive length of all
+   used UTF-8 characters.  
+*/
+{
+   const char *string;
+   char puffer[512];
+   
+   string  =  ( HB_ISCHAR(1) )? hb_parc(1):"";   
+
+   puffer[sizeof(puffer) - 1] = '\0';
+   strncpy(puffer,string,sizeof(puffer) - 1);   /* Don't overwrite final NULL */
+  
+   reverse_string(puffer);
+
+   hb_retc(puffer);
+}
 
 /* ======================== EOF of cfuncs.c ================================ */
 

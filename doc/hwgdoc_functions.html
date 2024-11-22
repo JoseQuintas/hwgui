@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, October 2024</td>
+    <td width="70%" align="center">Alexander S.Kresin, November 2024</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -1773,6 +1773,17 @@ See sample program "testspli.prg" for details.<br>
     This function works also on GTK cross development environment.<br>
     MacOS not supported yet.<br>
     Must then return 0D (CR).<br>
+
+   <p></p>
+   <br><strong class="subhead">hwg_strrev()</strong>
+   <br>
+   Reverse strings with UTF-8<br>
+   <br>
+   Reverses a string.<br> 
+   This is the equivalent strrev() function from the standard C library,<br>
+   but extended to understand UTF-8.<br>
+   cstring may not exceed 511 bytes, inclusive length of all<br>
+   used UTF-8 characters.<br>
 
    <p></p>
    <br><strong class="subhead"> hwg_GetItemByName( arr, cName )</strong>

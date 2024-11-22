@@ -15,6 +15,18 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-11-22 19:30 UTC+0100 Wilfried Brunken DF7BE
+* samples/hwmk.bat (New)
+* samples/teststrrev.hbp (New)
+* samples/teststrrev.prg (New)
+* source/common/procmisc/cfuncs.c
+* samples/Readme.txt
+  ! New function hwg_strrev()
+  ! reverses a string. 
+  ! Is equivalent to C function strrev(),
+  ! but supports UTF-8.
+  ! hwmk.bat alternative bat to build
+  ! HWGUI programs.
 
 2024-11-19 15:20 UTC+0100 Wilfried Brunken DF7BE
 * samples/testfunc.prg

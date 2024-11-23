@@ -76,7 +76,11 @@ LOCAL cstring, cneustr
    @ 40,245 SAY oLabel6 CAPTION cneustr  SIZE 865,22   
    @ 53,305 BUTTON oButton1 CAPTION "Reverse string"   SIZE 259,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
-        ON CLICK { | | cneustr := hwg_Strrev(cstring), oLabel6:SetText(cneustr) }  
+        ON CLICK { | | cneustr := hwg_Strrev(cstring) , oLabel6:SetText(ALLTRIM(cneustr)) } 
+        * Attention !
+        * On Windows the result string contains blanks
+        * from the GET field, so the result must be
+        * ALLTRIM'ed for correct display.
    @ 626,305 BUTTON oButton2 CAPTION "Exit"   SIZE 80,32 ;
         STYLE WS_TABSTOP+BS_FLAT ;
         ON CLICK { | | Strrev:Close() }

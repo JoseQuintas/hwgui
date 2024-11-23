@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2024-11-23 16:50 UTC+0100 Wilfried Brunken DF7BE
+* samples/teststrrev.prg
+  ! Bugfix in sample program:
+  ! On Windows the result string contains blanks
+  ! from the GET field, so the result must be
+  ! ALLTRIM'ed for correct display.
+
 2024-11-22 19:30 UTC+0100 Wilfried Brunken DF7BE
 * samples/hwmk.bat (New)
 * samples/teststrrev.hbp (New)

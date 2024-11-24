@@ -97,7 +97,8 @@ For beginners:
     Compile forever with
      hbmk2 <prefix>.hbp
      
-    Alternative bat is hwmk.bat <programname>
+    Alternative bat is
+    hwmk.bat <programname>
 
     Some samples could not be compiled or are crashing, hope that we can fix the bugs if we have time,
     see remarks in "Purpose" column, marked with # sign (Test with MingW, recent Harbour Code snapshot).
@@ -244,7 +245,7 @@ For beginners:
  testmenubitmap.prg  P                        Menu with bitmaps
  testrtf.prg  1)     Y  #    N          -      Create Rich text files. Need some work, the created RTFs are not compatible with newest specifications. (TO-DO for Alexander Kresin)
  testsdi.prg         Y                        Tree control
- teststrrev.prg      Y                        Function hwg_strrev() reverses a string for UTF-8
+ teststrrev.prg      Y                        Function hwg_strrev() reverses a string for UTF-8 and handle Euro currency sign with GET
  testspli.prg        Y                        Split windows
  testtray.prg        Y                 Y      Tray Message : Be care of different behavior between WinAPI and GTK
  testtree.prg        Y                        Tree view control

@@ -16,6 +16,20 @@
 */
 
 
+2024-11-24 16:20 UTC+0100 Wilfried Brunken DF7BE
+* doc/hwgdoc_commands.html
+* doc/hwgdoc_functions.html
+* doc/image/strrev_screenshot.png (New)
+* samples/Readme.txt
+* samples/teststrrev.prg
+  ! Bug handling characters only reached by
+  ! "Alt Gr" like @ or \ left, bug ticket
+  ! is following as soon as possible
+  ! (GTK only).
+  ! (to Jose)
+  ! Info for behavior of GET and handling
+  ! Euro currency sign
+
 2024-11-23 16:50 UTC+0100 Wilfried Brunken DF7BE
 * samples/teststrrev.prg
   ! Bugfix in sample program:

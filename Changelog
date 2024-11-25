@@ -15,6 +15,18 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-11-25 17:30 UTC+0100 Wilfried Brunken DF7BE
+* utils/tutorial/hwgrun.hbp
+* utils/tutorial/tutor.hbp
+  ! Bugfix compile totorial:
+  ! Reason:
+  ! Not: {linux)-lm -lz -lpcre -ldl
+  ! lz -lpcre -ldl are passed on Windows,
+  ! but use one line for every option:
+  ! {unix}-lm
+  ! {unix}-lz
+  ! {unix}-lpcre
+  ! {unix}-ldl
 
 2024-11-24 16:20 UTC+0100 Wilfried Brunken DF7BE
 * doc/hwgdoc_commands.html

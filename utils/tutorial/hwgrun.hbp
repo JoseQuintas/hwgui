@@ -1,12 +1,18 @@
 #Initial of hwgrun.hbp
 #
-# $Id: hwgrun_linux.hbp 2861 2020-07-04 10:49:11Z df7be $
+# $Id$
 #
 
 -n -w
 
 # The macro for unix has also effect on LINUX
-{unix}-lm -lz -lpcre -ldl
+# Bugfix: Do not set more than one option in one line
+#         take a new line for every option !!!! 
+ 
+{unix}-lm
+{unix}-lz
+{unix}-lpcre
+{unix}-ldl
 {unix}-static
 {unix}-d__LINUX__
 {unix}-d__GTK__
@@ -23,10 +29,10 @@
 {darwin}../../hwgui_mac.hbc
 
 # GTK2
-#{linux}../../hwgui.hbc
+{linux}../../hwgui.hbc
 # GTK3: Deactivate previous line
 # and activate following line
-{linux}../../hwguiGTK3.hbc
+# {linux}../../hwguiGTK3.hbc
 
 # -o../../bin/hwgrun
 -o./hwgrun

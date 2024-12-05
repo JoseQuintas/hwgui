@@ -5,6 +5,26 @@ $Id$
 
 Created by DF7BE
 
+Contents:
+_________
+
+1.)    Learn more about HWGUI with this sample programs.
+1.1.)  Read the Article of Alexander Kresin "Harbour for Beginners"
+1.2.)  Compile and run the editorial
+2.)    List of build scripts
+3.)    Sample Database
+4.)    List of sample programs
+5.)    Usage of resource files (*.rc) 
+6.)    Resources compiled into exe files
+7.)    GTK3
+8.)    Set the  macro's
+9.)    MacOS
+10.)   Complete list with footmarks
+11.)   Some additional instructions for writing *.hbp files
+11.1)  Correct macro usage
+
+
+
 1.) Learn more about HWGUI with this sample programs.
 
 For beginners:
@@ -100,6 +120,9 @@ For beginners:
     Alternative bat is
     hwmk.bat <programname>
 
+    For LINUX and MacOS it is
+    hwmk.sh <programname>
+
     Some samples could not be compiled or are crashing, hope that we can fix the bugs if we have time,
     see remarks in "Purpose" column, marked with # sign (Test with MingW, recent Harbour Code snapshot).
 
@@ -146,14 +169,18 @@ For beginners:
      {win}../hwgui.hbc
      # GTK2
      {linux}../hwgui.hbc
+     {darwin}../hwgui_mac.hbc
      # GTK3: Deactivate previous line
-     # and activate following line
+     # and activate following lines
      #{linux}../hwguiGTK3.hbc
+     #{darwin}../hwgui_mac_gtk3.hbc
 
     so modify to:
       # {linux}../hwgui.hbc
+      # {darwin}../hwgui_mac.hbc
        ...
       {linux}../hwguiGTK3.hbc
+      {darwin}../hwgui_mac_gtk3.hbc
 
     Ignore warning at build time:
       Unknown option -e
@@ -168,7 +195,11 @@ For beginners:
     to suppress building of
     Windows only programs
     on LINUX,UNIX and macOS
-    with message "Windows only".      
+    with message "Windows only".
+
+   At the end of this file, the chapter
+   "Some additional instructions for writing *.hbp files"
+   describes the usage of hbp macros.   
 
 9.) MacOS
    All samples ready for GTK may also run
@@ -179,6 +210,8 @@ For beginners:
    For details to MacOS read install instructions
    in "install-macos.txt".
 
+
+10.) Complete list with footmarks
 
  Sample program     GTK2    GTK3  NLS MinGW64 Purpose
  =================   ====   ====  === ======= =======
@@ -360,7 +393,33 @@ Directories:
 
  12) Little modifications for GTK needed (use compiler switch "#ifdef __GTK__").
      Extra sample program with same filename in subdirectory "gtk_samples"
+ 
+ 
+11.) Some additional instructions for writing *.hbp files
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+11.1) Correct macro usage
+-------------------------
+
+For one macro use only one option after.
+If writing all options in one line,
+insert a leading macro before every option,
+for example:
+{linux}-lm {linux}-static {linux}-d__LINUX__ {linux}-d__GTK__
+
+or write every option in an  extra line:
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+In case of 
+{linux}-lm -static -d__LINUX__ -d__GTK__
+the options "-static -d__LINUX__ -d__GTK__"
+are passed to all other OS'es, for example
+Windows and MacOS.
+Don't be confused, if compile errors appeared.
+
+The macro {unix} has also effect on LINUX.
 
 * =================== EOF of Readme.txt ========================
-
-

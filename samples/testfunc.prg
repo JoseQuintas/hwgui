@@ -83,8 +83,6 @@ FUNCTION MAIN()
    LOCAL obutton36   
 
    LOCAL nspcbutton
-   
-   LOCAL nypos
 
 
 * === Get origin path (this were the exe file is located) ===
@@ -117,13 +115,9 @@ FUNCTION MAIN()
 * Trouble with GTK3:
 * Buttons are greater than nheigth, so
 * space between them must be increased
-* The size of the main window must also
-* be increased.
 
   nspcbutton := 25   && Windows and GTK2
-  nypos := 548
 #ifdef ___GTK3___
-  nypos := 650
   nspcbutton := 35
 #endif
 
@@ -155,7 +149,7 @@ FUNCTION MAIN()
    // hwg_msginfo(Str(ndefaultcsrtype))
 
    INIT WINDOW Testfunc MAIN TITLE "Test Of Standalone HWGUI Functions" ;
-      AT 1,1 SIZE 770,nypos ;
+      AT 1,1 SIZE 770,548 ;
       STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
 
    @ 25,nspcbutton BUTTON oButton1 CAPTION "Exit" SIZE 75,nheight FONT oFont ;

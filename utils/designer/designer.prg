@@ -19,7 +19,7 @@
 #define  MAX_RECENT_FILES  5
 
 #ifdef __GTK__
-   #include "gtk.ch"
+//   #include "gtk.ch"
    #define CURS_CROSS GDK_CROSS
    #define CURS_SIZEV GDK_SIZING
    #define CURS_SIZEH GDK_HAND1

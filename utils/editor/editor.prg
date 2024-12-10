@@ -24,7 +24,7 @@
 #define MAX_RECENT_FILES    6
 
 #ifdef __GTK__
-#include "gtk.ch"
+// #include "gtk.ch"
 #define CURS_HAND GDK_HAND1
 #else
 #define CURS_HAND IDC_HAND

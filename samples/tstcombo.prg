@@ -23,9 +23,9 @@
 
 
 #include "hwgui.ch"
-#ifdef __GTK__
-#include "gtk.ch"
-#endif
+// #ifdef __GTK__
+// #include "gtk.ch"
+// #endif
 
 Static oMain,  oFont && oBar && oForm,
 

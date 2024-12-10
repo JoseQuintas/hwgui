@@ -15,6 +15,37 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2024-12-10 18:50 UTC+0100 Wilfried Brunken DF7BE  
+* contrib/hwreport/example.hbp
+* contrib/hwreport/hwreport.hbp
+* contrib/hwreport/hwreport.prg
+* contrib/hwreport/opensave.prg
+* samples/TwoLstSub.prg
+* samples/dbview.prg
+* samples/getupdown.prg
+* samples/gtk_samples/dbview.prg
+* samples/helpstatic.prg  ! 
+* samples/icons2.prg
+* samples/imageview.prg
+* samples/modtitle.prg
+* samples/stretch.prg
+* samples/tab.prg
+* samples/testimage.prg
+* samples/tstcombo.prg
+* utils/debugger/sample.hbp
+* utils/debugger/sample.prg
+* utils/designer/designer.hbp
+* utils/designer/designer.prg
+* utils/editor/editor.hbp
+* utils/editor/editor.prg
+  ! Bugfix compile GTK on LINUX:
+  ! This is not needed any more:
+  ! #ifdef __GTK__
+  !   #include "gtk.ch"
+  ! #endif
+
+
 2024-12-10 15:50 UTC+0100 Wilfried Brunken DF7BE  
 * contrib/qrencode/qrencode.hbp
 * install.txt

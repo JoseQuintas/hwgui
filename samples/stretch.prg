@@ -21,9 +21,9 @@
 * Tiled: In German "gekachelt"
 
 #include "hwgui.ch"
-#ifdef __GTK__
-#include "gtk.ch"
-#endif
+// #ifdef __GTK__
+// #include "gtk.ch"
+// #endif
 
 FUNCTION Main( lStretch )
 

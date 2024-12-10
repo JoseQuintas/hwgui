@@ -35,13 +35,13 @@
 #include "repmain.h"
 
    // #include "hwgui.ch"
-#include "common.ch"
-#ifdef __XHARBOUR__
-#include "ttable.ch"
-#endif
-#ifdef __GTK__
-#include "gtk.ch"
-#endif
+// #include "common.ch"
+// #ifdef __XHARBOUR__
+// #include "ttable.ch"
+// #endif
+//#ifdef __GTK__
+// #include "gtk.ch"
+// #endif
 
 #ifndef SB_VERT
 #define SB_VERT         1

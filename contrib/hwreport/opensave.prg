@@ -13,12 +13,12 @@
 #include "repbuild.h"
 #include "repmain.h"
 #include "fileio.ch"
-#ifdef __XHARBOUR__
-#include "ttable.ch"
-#endif
-#ifdef __GTK__
-#include "gtk.ch"
-#endif
+// #ifdef __XHARBOUR__
+// #include "ttable.ch"
+// #endif
+// #ifdef __GTK__
+// #include "gtk.ch"
+// #endif
 
    // Removed
    // #define SB_VERT         1

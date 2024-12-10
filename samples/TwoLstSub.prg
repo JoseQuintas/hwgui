@@ -25,18 +25,20 @@
 *  +------------+-------------------------+----------------------------------+
 *  + Date       ! Name and Call           ! Modification                     !
 *  +------------+-------------------------+----------------------------------+
+*  ! 10.12.2024 ! W.Brunken        DF7BE  ! Bugfix compile GTK               !
+*  +------------+-------------------------+----------------------------------+
 *  ! 27.04.2020 ! W.Brunken        DF7BE  ! first creation                   !
 *  +------------+-------------------------+----------------------------------+
 *
 
 #include "hwgui.ch"
-#include "common.ch"
-#ifdef __GTK__
-#include "gtk.ch"
-#endif
-#ifdef __XHARBOUR__
-   #include "ttable.ch"
-#endif
+// #include "common.ch"
+// #ifdef __GTK__
+// #include "gtk.ch"
+// #endif
+// #ifdef __XHARBOUR__
+//    #include "ttable.ch"
+// #endif
 
 FUNCTION Main()
 

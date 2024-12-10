@@ -5,6 +5,13 @@
  *
  * Copyright 2014 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
+ 
+ * DF7BE (2024-12-06):
+ * Fixed warnings (compile is aborted):
+ * ..\utils\bincnt\bincnt.prg(153) Warning W0001  Ambiguous reference 'ODLG'
+ * ..\utils\bincnt\bincnt.prg(220) Warning W0001  Ambiguous reference 'CKEY'
+ * ..\utils\bincnt\bincnt.prg(223) Warning W0001  Ambiguous reference 'CVAL'
+ *
  */
 
 #include "hwgui.ch"
@@ -127,6 +134,7 @@ FUNCTION Main( cContainer )
 STATIC FUNCTION CntCreate()
 
    LOCAL fname, oEdit, lRes := .F., nChoic := 1
+   LOCAL odlg
    LOCAL bFile := { ||
 #ifdef __GTK__
       fname := hwg_Selectfile( "( *.* )", "*.*", CurDir() )
@@ -199,6 +207,7 @@ STATIC FUNCTION CntCreate()
 STATIC FUNCTION CntOpen( fname )
 
    LOCAL cBuf, n1, n2, h
+   LOCAL CVAL, CKEY
 
    CntClose()
 

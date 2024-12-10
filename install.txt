@@ -19,6 +19,17 @@
    Attention !
    We recommend to build Harbour, HWGUI and your application with
    same C compiler, because generated C source by hbmk2 utility could be otherwise incompatible.
+   
+   Special instruction for Harbour compile with MinGW:
+   In the latest versions of Harbour the compile
+   of sqlite3 components must be omitted,
+   if not installed on the system.
+   Before make, set an environment variable to skip this
+   step:
+    set HB_WITH_SQLITE3=no 
+   This should prevent sqlite from building.
+   An then type
+    make
 
    You need to set the environment variable HB_PATH, which must contain a path
    to your Harbour directory. This can be done in your Windows environment or

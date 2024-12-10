@@ -11,8 +11,24 @@
 {unix}-d__LINUX__
 {unix}-d__GTK__
 
+# MacOS
+{darwin}-static
+{darwin}-d__LINUX__
+{darwin}-d__GTK__
+{darwin}-d___MACOSX___
+
+
+{win}../../hwgui.hbc
+# GTK2
+{darwin}../../hwgui_mac.hbc
+{linux}../../hwgui.hbc
+
+# GTK3: Deactivate previous line
+# and activate following line
+#{linux}../../hwguiGTK3.hbc
+#{darwin}../../hwgui_mac_gtk3.hbc
+
 -L../..
-hwgui.hbc
 
 -o../../bin/dbchw
 
@@ -22,7 +38,9 @@ modistru.prg
 move.prg
 view.prg
 procs_c.c
-{win}dbchw.rc
+
+# DF7BE: This resource file does not exist
+# {win}dbchw.rc
 
 
 # =================== EOF of dbchw.hbp ===============

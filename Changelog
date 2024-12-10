@@ -15,6 +15,86 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-12-10 15:50 UTC+0100 Wilfried Brunken DF7BE  
+* contrib/qrencode/qrencode.hbp
+* install.txt
+* samples/Readme.txt
+* samples/clean.bat (New)
+* samples/clean.sh (New)
+* samples/helloworld
+* samples/makeallsam.bat (New)
+* samples/makeallsam.sh (New)
+* utils/bincnt/bincnt.hbp
+* utils/bincnt/bincnt.prg
+* utils/dbc/dbchw.hbp  
+  ! - Port to MacOS (to be continued)
+  ! - Warning fixed:
+  !    bincnt.prg(153) Warning W0001  Ambiguous reference 'xxxx'
+  ! - Special instructions for Harbour compile with MinGW.
+  ! - Samples:
+  !    Added bat and sh alternative scripts to compile all samples
+  !    and clean.
+  ! - Compile errors in some samples on LINUX will be fixed
+  !   in the next step(s).
+
+
+2024-12-05 18:00 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrencode/qrencode.hbp
+* samples/Dialogboxes.hbp
+* samples/GetWinVers.hbp
+* samples/Readme.txt
+* samples/TwoLstSub.hbp
+* samples/bincnts.hbp
+* samples/bindbf.hbp
+* samples/bitmapbug.hbp
+* samples/checkbox.hbp
+* samples/colrbloc.hbp
+* samples/datepicker.hbp
+* samples/demodbf.hbp
+* samples/demohlistsub.hbp
+* samples/escrita.hbp
+* samples/fileselect.hbp
+* samples/getupdown.hbp
+* samples/graph.hbp
+* samples/gtk_samples/progbars.hbp
+* samples/hexbincnt.hbp
+* samples/htrack.hbp
+* samples/hwmk.sh (New)
+* samples/icons.hbp
+* samples/icons2.hbp
+* samples/memocmp.hbp
+* samples/menumod.hbp
+* samples/modtitle.hbp
+* samples/night.hbp
+* samples/progbars.hbp
+* samples/pseudocm.hbp
+* samples/qrencode.hbp
+* samples/simpleedit.hbp
+* samples/stretch.hbp
+* samples/tab.hbp
+* samples/testbrw.hbp
+* samples/testfunc.prg
+* samples/testget1.hbp
+* samples/testget2.hbp
+* samples/testhmonth.hbp
+* samples/testimage.hbp
+* samples/testrtf.hbp
+* samples/testsdi.hbp
+* samples/testspli.hbp
+* samples/testtray.hbp
+* samples/testtree.hbp
+* samples/testxml.hbp
+* samples/testxml.xml
+* samples/tstcombo.hbp
+* samples/tststconsapp.hbp
+* samples/winprn.hbp
+* samples/xmltree.hbp
+  ! Port to MacOS for all
+  ! GTK sample programs
+  ! (to be continued)
+  
+
+
 2024-11-25 17:30 UTC+0100 Wilfried Brunken DF7BE
 * utils/tutorial/hwgrun.hbp
 * utils/tutorial/tutor.hbp

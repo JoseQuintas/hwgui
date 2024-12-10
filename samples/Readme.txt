@@ -22,6 +22,7 @@ _________
 10.)   Complete list with footmarks
 11.)   Some additional instructions for writing *.hbp files
 11.1)  Correct macro usage
+12.) clean scripts
 
 
 
@@ -78,7 +79,16 @@ For beginners:
                      - Utilities (directory "utils")
                      - Sample programs (directory "samples" and "samples/gtk_samples")
 
+    Alternative scripts for
+    build all samples :
 
+    Windows:
+      makeallsam.bat
+      
+    UNIX/LINUX/MacOS:
+     chmod 755 makeallsam.sh 
+     ./makeallsam.sh 
+ 
 
 3.) Sample Database
     Contains 150 records with fields every type, open with a.prg or dbview.prg
@@ -421,5 +431,19 @@ Windows and MacOS.
 Don't be confused, if compile errors appeared.
 
 The macro {unix} has also effect on LINUX.
+
+
+12.) clean scripts
+~~~~~~~~~~~~~~~~~~
+
+Clean the sample directory:
+
+Windows:
+ clean.bat
+
+UNIX/LINUX/MacOS:
+
+ chmod 755 clean.sh
+ ./clean.sh 
 
 * =================== EOF of Readme.txt ========================

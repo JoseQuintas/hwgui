@@ -4,7 +4,9 @@ QR encode library ready for integration into HWGUI
 
 "QR-Code-generator"
 
-Date: 2022-09-07
+
+Corrections:    2024-12-12
+First creation: 2022-09-07
 
 1.) Copyright of this library
 
@@ -33,10 +35,6 @@ At this time only the following compiler are supported:
 - GTK/LINUX with gcc
 - Borland C with DLL, see extra instructions
 
-
-*) Build script only build the library, not the
-   sample and demo program. 
-
 Build scripts for other compilers are delivered 
 as soon as possible.
 
@@ -59,61 +57,75 @@ as soon as possible.
   
 - Compile Harbour and HWGUI with the desired compiler.  
 
-- Extract the archive in an temporary directory.
+- Extract the archive "QR-Code-generator-master.zip" in an temporary directory.
 
 -  Change to build directory:
   cd QR-Code-generator-master
   cd c
   
-- Copy the desired build script from HWGUI environment
-  in directory "contrib\qrencode".  
+- All Windows platforms:
+  Copy the desired build script from HWGUI environment
+  in directory "contrib\qrencode" into the temporary directory
+  above.
+  For example: Makefile.mingw
 
 - Start build process:
   
-  MinGW: make -f Makefile.mingw
+  MinGW: make -f Makefile.mingw *)
   LINUX: make (usage of the Makefile delivered by archive of QR code generator)
+  
+  *) Build script only builds  the library and the demo program in C, but not the
+   sample and demo program of HWGUI.  
 
 - Copy header file "qrcodegen.h" to contrib\qrencode\include 
   
 - copy library "libqrcodegen.a" or "libqrcodegen.lib"
   to the HWGUI "lib" directory.
-  The file extensions depends of the used compiler.
+  The file extension depends of the used compiler.
 
 - Optional: the temporary build directory is not needed any more,
   delete it.
 
 
 2.3) Steps to build HWGUI interface module:
+     - Change to HWGUI directory "contrib/qrencode"
      - hbmk2 qrencode.hbp
      - Check, that the library for the HWGUI interface module
        "libqrcodegen.<ext> "is created in the HWGUI "lib" directory.
-       <ext>: a, or lib or ?
+       <ext>: a, or lib or ? (depends of the used compiler)
 
 2.4) Test with sample program
    
      cd samples
      hbmk2 qrencode.hbp
-     qrencode.exe
-
-     Read the generated QR code with the smart phone,
-     the HWGUI porject site must be opened.
+     qrencode.exe or ./qrencode
+     Press button "Test":
+     At first, the size of the QR code image is displayed, press "OK".
+     Read the generated QR code with the smart (mobile) phone,
+     the HWGUI project site must be opened.
+     Quit by "OK", if ready.
 
     
 
 2.5) Final instructions.
 
 Be shure, that the following options are inserted in 
-your *.hbp or Makefile:
+the *.hbp file or Makefile of your application:
 
 -L../lib
 
 -lqrcodegen
 -lhbqrencode
 
+Copy also the generated libraries and the header file
+to reach the path's by compile or running task.
+
+
 2.6) Extra instructions for non C99 standard compiler.
 
     In this case, the library "contrib\qrencode\qrencode.c"
-	cannot be compiled with the desired compiler.
+	cannot be compiled with the compiler not supporting
+	the C99 standard.
 	Instead the use of a DLL (qrcodegen.dll) is the
 	only way to get a running QR code generator.
 	The ready to use DLL (compiled with MinGW32)
@@ -131,7 +143,7 @@ your *.hbp or Makefile:
    - Compile the sample qrencodedll.prg:
       hbmk2 qrencodedll.hbp
    - Copy the DLL into the sample directory	  
-     and run it.
+     and run the sample program.
    - Copy the DLL into the directory running your HWGUI application.   
  
 

@@ -15,6 +15,9 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-12-12 16:10 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrencode/Readme.txt
+  ! Corrections in Readme for qrencode utility.
 
 2024-12-10 18:50 UTC+0100 Wilfried Brunken DF7BE  
 * contrib/hwreport/example.hbp

@@ -15,6 +15,13 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2024-12-25 15:10 UTC+0100 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* samples/testfunc.prg
+  ! hwg_RunConsoleApp()
+  ! added to sample program,
+  ! function docu updated
+  
 2024-12-12 16:10 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrencode/Readme.txt
   ! Corrections in Readme for qrencode utility.

@@ -47,6 +47,8 @@
  hwg_ProcFileExt()
  hwg_ChrDir()
  hwg_EOLStyle()
+ hwg_RunConsoleApp( cCommand [, cOutFile] )
+     coutfile is fixed set to "output.txt"
  
 
  Harbour functions:
@@ -80,7 +82,7 @@ FUNCTION MAIN()
    LOCAL oButton18, oButton19 , oButton20 , oButton21 , oButton22 , oButton23 , oButton24 , oButton25
    LOCAL oButton26, oButton27, oButton28, oButton29
    LOCAL oButton30, oButton31, oButton32, oButton33, obutton34, obutton35
-   LOCAL obutton36   
+   LOCAL obutton36, obutton37   
 
    LOCAL nspcbutton
 
@@ -263,6 +265,10 @@ FUNCTION MAIN()
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
        { | | do_the_RunApp() }
 
+    @ 340 ,nspcbutton * 10 BUTTON obutton37 CAPTION "hwg_RunConsoleApp()" SIZE 140,nheight FONT oFont  ;
+        STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
+       { | | do_the_RunConsoleApp() }
+
    @ 25 ,nspcbutton * 11 BUTTON oButton30 CAPTION "hwg_HdSerial()" SIZE 140,nheight FONT oFont  ;
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | Test_hwg_HdSerial() }
@@ -297,7 +303,7 @@ FUNCTION MAIN()
         STYLE WS_TABSTOP+BS_FLAT ON CLICK ;
                 { | | Test_hwg_EOLStyle() }
                 
-
+   /* Last  obuttonxx is obutton37 */
                 
    /* Disable buttons for Windows only functions */
 #ifndef __PLATFORM__WINDOWS
@@ -583,17 +589,49 @@ DO CASE
 
 RETURN NIL
 
-FUNCTION _hwg_RunApp()
+
+FUNCTION do_the_RunConsoleApp()
+LOCAL cCmd , rc , cgt
+
+* Get command
+cCmd := _hwg_RunApp("hwg_RunConsoleApp()")
+IF EMPTY(cCmd)
+ RETURN NIL
+ENDIF
+
+rc := hwg_RunConsoleApp(cCmd,"output.txt")
+
+cgt := hwg_GUIType()
+
+DO CASE
+ CASE cgt == "WinAPI"
+  hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunConsoleApp()")
+ CASE cgt == "GTK2"
+  hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunConsoleApp()")
+//  hwg_MsgInfo("Return Code: " + ToLogical(),"Result of hwg_RunConsoleApp()")
+ CASE cgt == "GTK3"
+  hwg_MsgInfo("Return Code: " + ALLTRIM(STR(rc)),"Result of hwg_RunConsoleApp()")
+//  hwg_MsgInfo("Return Code: " + ToLogical(),"Result of hwg_RunConsoleApp()")
+ ENDCASE
+
+RETURN NIL
+
+
+FUNCTION _hwg_RunApp(cpcmd)
 
 LOCAL _hwg_RunApp_test
 LOCAL oLabel1, oEditbox1, oButton1, oButton2
 LOCAL cCmd
 
+* For header text: cpcmd (default is "hwg_RunApp()")
+  IF cpcmd == NIL
+    cpcmd := "hwg_RunApp()"
+  ENDIF
 
   cCmd := SPACE(80)
   cCmd := hwg_GET_Helper(cCmd, 80)
 
-  INIT DIALOG _hwg_RunApp_test TITLE "hwg_RunApp()" ;
+  INIT DIALOG _hwg_RunApp_test TITLE cpcmd ;
     AT 315,231 SIZE 940,239 ;
     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
 

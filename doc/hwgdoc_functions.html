@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, November 2024</td>
+    <td width="70%" align="center">Alexander S.Kresin, December 2024</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -2688,6 +2688,25 @@ See sample program "testspli.prg" for details.<br>
      <li> cOutFile - optional parameter, a file name for program output;
      <li> Return value - (integer) program exit code.
    </ul>
+   <p>
+   <br>
+   Exit codes WinAPI:<br>
+   1: Cannot create output pipe<br>
+   2: Failure of: Ensure the read handle to the pipe for STDOUT is not inherited<br>
+   3: Cannot create process<br>
+   otherwise:<br> 
+   Return code of GetExitCodeProcess() function call.<br>
+   Attention !<br>
+   Do not call internal commands of the command shell "cmd"<br>
+   (for example cmd -c "dir")
+   direct, otherwise the program freezes, so it must be terminated by.<br>
+   the Task Manager.<br>
+   <br>
+   Exit Codes UNIX/LINUX/MacOS:<br>
+   0: Success<br>
+   -1: no file to run<br>
+   <br>
+   </p>
    
     <br><strong class="subhead"> hwg_RunConsApp( cCommand )</strong> (GTK LINUX and MacOS only)
    <br>Executes a console or GUI program in async mode.

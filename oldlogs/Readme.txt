@@ -16,6 +16,7 @@
   Table of archived Changelog
   ===========================
   
+  Changelog.002    2022-02-09 to 2024-12-12
   Changelog.001    2003-11-14 to 2022-08-31
   
   

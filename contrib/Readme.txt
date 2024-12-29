@@ -118,6 +118,15 @@ hwreport:
 gthwg:
  GT library, based on HwGUI.
  
+qrdecode:
+
+ Scan and decode QR and EAN bar codes with a camera.
+ The Processing in a HWGUI programm is done by external call of
+ Zbar code reader.
+ Details in ReadMe.txt file in this directory.
+ ZBar is licensed under the GNU LGPL 2.1 to enable development of both open source and commercial projects.
+
+
 2. Build scripts
 ----------------
 

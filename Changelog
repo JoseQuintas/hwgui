@@ -16,7 +16,22 @@
 */
 
 
-2024-12-25 15:10 UTC+0100 Wilfried Brunken DF7BE
+2024-12-29 14:00 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrdecode/ReadMe.txt (new)
+* contrib/qrdecode/qrdecode.prg
+* contrib/qrdecode/qrdecode.hbp
+* contrib/Readme.txt
+* source/common/procmisc/cfuncs.c
+  ! Added qrdecode utility with
+  ! Zbar (external call).
+  ! Scan and decode QR 
+  ! and EAN bar codes.
+  ! First issue running on
+  ! Windows 11 / 10.
+  ! To be continued for
+  ! LINUX an MacOS.
+
+2024-12-29 11:00 UTC+0100 Wilfried Brunken DF7BE
 * oldlogs/Changelog.002 (archived)
 * oldlogs/Readme.txt
   ! Changelog archived

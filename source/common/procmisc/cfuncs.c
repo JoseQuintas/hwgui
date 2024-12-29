@@ -910,9 +910,12 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    hb_retni( iExitCode );
 }
 
+
 #else
+/* ==== WinAPI ==== */
 #define CMDLENGTH  4096
 
+/* hwg_RunConsoleApp( cCommand [, cOutFile] [,lshow] ) */
 HB_FUNC( HWG_RUNCONSOLEAPP )
 {
    SECURITY_ATTRIBUTES sa;
@@ -924,6 +927,7 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    int iOutExist = 0, read_all = 0, iOutFirst = 1;
    DWORD dwRead, dwWritten, dwExitCode;
    CHAR chBuf[BUFSIZE], *pOut;
+   int bshow;
 
    HANDLE hOut = NULL;
 #ifdef UNICODE
@@ -955,7 +959,18 @@ HB_FUNC( HWG_RUNCONSOLEAPP )
    // This structure specifies the STDIN and STDOUT handles for redirection.
    ZeroMemory( &si, sizeof( si ) );
    si.cb = sizeof( si );
-   si.wShowWindow = SW_HIDE;
+   
+ /* DF7BE: Running ZBar the sub window does not appear if SW_HIDE,
+    so cannot use the camera for scanning QR code */
+    bshow = ( !( HB_ISNIL( 3 ) ) && hb_parl( 3 ) ) ? TRUE : FALSE ;
+    if(bshow)
+    {
+     si.wShowWindow = SW_SHOW;
+    }
+    else
+    {
+      si.wShowWindow = SW_HIDE;
+    } 
    si.dwFlags = STARTF_USESHOWWINDOW | STARTF_USESTDHANDLES;
    si.hStdOutput = g_hChildStd_OUT_Wr;
    si.hStdError = g_hChildStd_OUT_Wr;

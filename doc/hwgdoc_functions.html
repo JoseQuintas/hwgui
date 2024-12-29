@@ -2681,7 +2681,7 @@ See sample program "testspli.prg" for details.<br>
    <br><strong class="subhead"> hwg_ProcessRun( cCommand )</strong> (Windows only)
    <p></p>
 
-   <br><strong class="subhead"> hwg_RunConsoleApp( cCommand [, cOutFile] )</strong>
+   <br><strong class="subhead"> hwg_RunConsoleApp( cCommand [, cOutFile]  [,lshow] )</strong>
    <br>Executes a console program in sync mode, waiting for result.
    <ul>
      <li> cCommand - a command line to execute;
@@ -2689,6 +2689,18 @@ See sample program "testspli.prg" for details.<br>
      <li> Return value - (integer) program exit code.
    </ul>
    <p>
+   <br>
+   lshow :<br>
+   (Windows only, this parameter ignored on other operating systems)<br>
+   Set to .T., to set STARTUPINFO.wShowWindow to SW_SHOW.<br>
+   Default is .F., set to SW_HIDE.<br>
+   SW_SHOW is needed for programs, starting in console mode,<br>
+   but opens child window(s). Otherwise they are running<br>
+   in background. For example:<br>
+   Running ZBar (QR decoder reading QR codes from camera)<br>
+   the sub window does not appear if SW_HIDE,<br>
+   so cannot use the camera for scanning QR code.<br>
+   See sample program and information.<br>
    <br>
    Exit codes WinAPI:<br>
    1: Cannot create output pipe<br>

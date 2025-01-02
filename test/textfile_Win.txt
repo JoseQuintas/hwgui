@@ -1,0 +1,14 @@
+== Text file for testing the function hwg_RdLn ==
+== Line endings here:
+ CRLF : 0x0D + 0x0A =  CHR(13) + CHR(10) (Windows/DOS)  Lines 11 and 14 are blank lines
+Line 4
+Line 5	
+Line 6
+Line 7
+Line 8
+Line 9
+Line 10
+
+Line 12
+Line 13 : EOF of textfile_Win.txt
+ 

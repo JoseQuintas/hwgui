@@ -60,7 +60,11 @@ dtueddel := CHR(34)  && "
 ccommand := dtueddel + "C:\Program Files (x86)\Zbar\bin\zbarcam.exe" + dtueddel
 
 * Start the external app
+#ifdef __PLATFORM__WINDOWS
   rc := hwg_RunConsoleApp(ccommand,outfilename,.T.)
+#else
+
+#endif
 
   * Now you can get the decoded text from output file 
 

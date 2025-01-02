@@ -15,6 +15,30 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-02 13:55 UTC+0100 Wilfried Brunken DF7BE
+* source/cross/hmisccross.prg
+* clean.sh
+* contrib/qrdecode/ReadMe.txt
+* contrib/qrdecode/qrdecode.prg
+* test/textfile_MacOS.txt (new)
+* test/textfile_UNIX.txt (new)
+* test/textfile_Win.txt (new)
+  ! QR decode: 
+  ! New functions are helpers to read
+  ! the file with the result of a QR code scan:
+  ! hwg_RdLn()
+  ! hwg_RmCr()
+  ! hwg_RmBlTabs()
+  ! hwg_Max()
+  ! hwg_Min()
+  ! with autodetect of the
+  ! OS dependant line endings.
+  ! QR scan on Windows runs OK, but LINUX
+  ! have some errors in ZBar utility.
+  ! Need to fix them.
+  ! Afterwards the port to MacOS can start.
+  ! So: to be continued !!!
+
 
 2024-12-29 14:00 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrdecode/ReadMe.txt (new)

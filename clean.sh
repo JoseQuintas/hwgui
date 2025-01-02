@@ -14,7 +14,8 @@ rm lib/libhbxml.a 2>/dev/null
 rm lib/libhwgdebug.a 2>/dev/null
 rm lib/libhwgui.a 2>/dev/null
 rm lib/libprocmisc.a 2>/dev/null
-# 
+#
+# Special
 rm -rf lib/.hbmk 2>/dev/null
 rm obj/*.o 2>/dev/null
 #
@@ -33,6 +34,7 @@ rm utils/hbpad/hbpad 2>/dev/null
 # Samples only for LINUX/GTK
 rm samples/gtk_samples/GetWinVers 2>/dev/null
 rm samples/gtk_samples/a 2>/dev/null
+rm samples/a.log 2>/dev/null
 rm samples/gtk_samples/dbview 2>/dev/null
 rm samples/gtk_samples/escrita 2>/dev/null
 rm samples/gtk_samples/example 2>/dev/null
@@ -45,6 +47,8 @@ rm samples/gtk_samples/temp_a2.ps 2>/dev/null
 #
 # Samples for multi plattform (exe)
 # and optional generated C source file
+rm samples/a 2>/dev/null
+rm samples/a.log 2>/dev/null
 rm samples/testget1 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/datepicker 2>/dev/null
@@ -86,11 +90,14 @@ rm samples/tstbrw.dbf 2>/dev/null
 rm samples/test.bmp  2>/dev/null
 
 #
-# Utils exe and logs
+# Bin exe and logs
 rm bin/bincnt 2>/dev/null
 rm bin/dbchw 2>/dev/null
 rm bin/file2hex 2>/dev/null
 rm bin/hwgdebug 2>/dev/null
+
+#
+# Utils exe and logs
 rm utils/devtools/memdump 2>/dev/null
 rm utils/devtools/test.mem 2>/dev/null
 rm utils/devtools/test.txt 2>/dev/null

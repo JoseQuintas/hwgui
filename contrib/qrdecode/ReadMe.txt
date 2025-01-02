@@ -2,10 +2,16 @@ ReadMe file for QR code and EAN bar codes decoding
  from HWGUI program by using a camera.
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
  
+History: 
+ 
+2025-01-02  DF7BE  Error on LINUX need to be fixed   
+2024-12-29  DF7BE  First creation
+
+
  
 Supported platforms:
 - Windows 10/11
-- LINUX <under construction>
+- LINUX <under construction> 
 - MacOS <under construction>  
 
 
@@ -26,20 +32,69 @@ Supported platforms:
 
 1.3  Install ZBar
 
+     Get source code from
+     https://sourceforge.net/projects/zbar
+     
+     Source code archives with bugfixes are available at Debian:
+     https://packages.debian.org/source/sid/zbar
+     (zbar_0.23.93.orig.tar.gz)
+
+     Optional these files are also available in the "Files"
+     section of the HWGUI project site.
+
      Windows:
 
      The easy way is to install the prebuild setup
      for ZBar. 
      (File name is zbar-0.10-setup.exe , tested with Windows 10 and 11)
     
-     LINUX and MacOS:
+     LINUX:
+     
+     Tested under Ubuntu 24.04.1 LTS
+     
+     Recent state
+     The zbarcam-gtk from installed package runs without error,
+     but need to redirect result into a file
+     (displayed in camera window)
+     
+     
+     At first, install following packges:
+     sudo apt-get install libv4l-utils
+     sudo apt-get install libv4l-dev
+     sudo ln -s /usr/include/libv4l1-videodev.h /usr/include/linux/videodev.h 
+     sudo apt-get install imagemagick
+     sudo apt-get install python-is-python3
+     Install optional: 
+     sudo apt-get install libzbar-dev
+     sudo apt-get install zbarcam-gtk
+     sudo apt-get install zbar-tools
+     sudo apt-get install python3-zbar
+ 
+     ~~~~ Some trouble to compile ZBar from source ~~~~
+     - Create compile directory:
+       mkdir zbar
+     - Extract the archive into 
+        $HOME/zbar/zbar-0.10
+     - Read generic installation instructions in file INSTALL
+        export CFLAGS=""
+     - ./configure --prefix=$HOME/local --without-imagemagick --without-python -without-qt
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
+     
+     
+     zbarcam-gtk runs at it best, the result is displayed in the
+     camera window. But not written in file for processing afterwards. 
+     Error:
+     zbarcam
+      WARNING: no compatible input to output format
+      ...trying again with output disabled
+      ERROR: zbar processor in zbar_processor_init():
+     unsupported request: no compatible image format
+  
+     
+       
+     MacOS:
      <under construction>
    
-     Get source code from
-     https://sourceforge.net/projects/zbar
-
-     Optional these files are also available in the "Files"
-     section of the HWGUI project site.
 
 1.4 Pre-check of Zbar
     Open a console or terminal and insert the following command:
@@ -91,12 +146,17 @@ Supported platforms:
 
     Process the result by reading the output file
     line by line in your HWGUI app to your own needs.
+    The following HWGUI function help to read
+    a text file with the result 
+    of the scan: hwg_RdLn().
+    It has as autodetect for line endings
+    for Windows/DOS, UNIX/LINUX and MacOS. 
 
 3. Output format:
 
    Every scan operation starts with a string
    "QR-Code:" or "EAN-13:".
-   QR codes may be have more than line, they are
+   QR codes may be have more than one line, they are
    delimited by the line ending of the operating system.
    For every decoded issue the ASCII character BEL = 0x07
    is appended at the end of the output file 

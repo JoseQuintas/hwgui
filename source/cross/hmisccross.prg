@@ -11,7 +11,7 @@
  *
  * Copyright 2002 Alexander S.Kresin <alex@kresin.ru>
  * www - http://www.kresin.ru
- * Copyright 2020-2024 Wilfried Brunken, DF7BE
+ * Copyright 2020-2025 Wilfried Brunken, DF7BE
  
  * All functions of this file are former found in 
  * hmisc.prg of source/winapi and source/gtk 
@@ -20,6 +20,198 @@
 
 #include "hwgui.ch"
 #include "hbclass.ch"
+
+* ================================= *
+
+FUNCTION hwg_RdLn(nhandle, lrembltab,lbEOF)
+
+ LOCAL nnumbytes , nnumbytes2 , buffer , buffer2
+ LOCAL  bEOL , xLine , bMacOS, xarray, ceoltype
+ // LOCAL lbEOF
+ 
+ * DF7BE (2025-01-02):
+ * Bug in Harbour, lbEOF is really used as return code (in array),
+ * but is fired as error !
+ * "Variable 'LBEOF' is assigned but not used in function 'HWG_RDLN(57)'"
+ * Workaround: declare lbEOF as parameter, but don't use them
+  HB_SYMBOL_UNUSED(lbEOF)    && Has no effect on LOCALs !!!
+ 
+ IF lrembltab == NIL
+   lrembltab := .F.
+ ENDIF 
+ xarray := {} 
+ nnumbytes := 1
+ nnumbytes2 := 0
+ bEOL := .F.
+ xLine := ""
+ bMacOS := .F.
+ * Buffer may not be empty, otherwise FREAD() reads nothing !
+ * Fill with SPACE(n), n is the desired size of read buffer
+ * (here 1)
+ buffer := " "
+ buffer2 := " "
+ *   lbEOF == .T. also indicates a file read error
+ // IF lbEOF == NIL
+  lbEOF := .F.
+ // ENDIF 
+ ceoltype := "U" 
+
+    DO WHILE ( nnumbytes != 0 ) .AND. ( .NOT. bEOL )
+       nnumbytes := FREAD(nhandle,@buffer,1)  && Read 1 Byte
+       * If read nothing, EOF is reached
+       IF nnumbytes < 1
+        lbEOF := .T.
+        IF .NOT. EMPTY(xLine)  
+        * Last line may be without line ending
+          xLine := hwg_RmCr(xLine)
+          * Remove SUB 0x1A = CHR(26) = EOF marker
+          xLine := STRTRAN(xLine,CHR(26),"")
+           IF lrembltab
+             * Remove blanks or tabs at end of line
+             xLine := hwg_RmBlTabs(xLine)
+           ENDIF  && lrembltab
+         RETURN {xLine,.T.,nnumbytes,ceoltype}
+        ELSE
+         RETURN {"",.T.,0,ceoltype}
+        ENDIF
+       ENDIF        
+       * Detect MacOS: First appearance of CR alone
+        IF ( .NOT. bMacOS ) .AND. ( buffer == CHR(13) )
+       * End of line reached ?
+         bEOL := .T.
+         * Pre read (2nd read sequence)
+          nnumbytes2 := FREAD(nhandle,@buffer2,1)  && Read 1 byte
+         IF nnumbytes2 < 1
+          * Optional last line with line ending
+          IF .NOT. EMPTY(xLine)
+                xLine := hwg_RmCr(xLine)
+                * Remove SUB 0x1A = CHR(26)  && EOF marker
+                xLine := STRTRAN(xLine,CHR(26),"")
+                IF lrembltab
+                   * Remove blanks or tabs at end of line
+                   xLine := hwg_RmBlTabs(xLine)
+                ENDIF
+                * Workaround Harbour bug
+                RETURN {xLine,lbEOF,nnumbytes2,ceoltype}
+          ELSE
+                RETURN {"",.T.,0,ceoltype}
+          ENDIF
+         ENDIF 
+         * Line ending for Windows: must be LF (continue reading)
+         * Before this, CR CHR(13) is read, but ignored
+          IF .NOT. ( buffer2 == CHR(10) )
+            * Windows : ignore read character
+            bMacOS := .T.
+            ceoltype := "M" 
+            * Set file pointer one byte backwards (is first character of following line)
+            FSEEK (nhandle, -1 , 1 )
+          ELSE
+           ceoltype := "W"
+          ENDIF 
+       ELSE
+         * UNIX / LINUX (only LF)
+          IF buffer == CHR(10)
+           bEOL := .T.
+           ceoltype := "L"
+           * Ignore EOL character
+           buffer := ""
+          ENDIF
+       ENDIF 
+        * Otherwise complete the line
+        xLine := xLine + buffer
+
+      * Successful read   
+
+      * Prefill buffer for next read
+       buffer := " "
+
+ENDDO
+
+    IF EMPTY(xLine)
+     RETURN {"",lbeof,0,ceoltype}
+    ENDIF
+
+    * Remove CR line ending
+    * (if the returned line ended with MacOS line ending
+    * CR , so you need to handle this)
+     xLine := hwg_RmCr(xLine)
+     * Remove SUB 0x1A = CHR(26)  && EOF marker
+     xLine := STRTRAN(xLine,CHR(26),"")
+
+     IF lrembltab
+     * Remove blanks or tabs at end of line
+       xLine := hwg_RmBlTabs(xLine)
+     ENDIF
+
+* Compose final return array
+   AADD(xarray, xLine)
+   AADD(xarray, lbeof)
+   AADD(xarray, hwg_Max(nnumbytes, nnumbytes2) )
+   AADD(xarray, ceoltype)
+RETURN xarray
+
+
+
+FUNCTION hwg_RmCr(xLine)
+
+LOCAL nllinelen , czl
+IF xLine == NIL
+ xLine := ""
+ENDIF
+czl := xLine
+nllinelen := LEN(xLine)
+IF nllinelen > 0
+ IF SUBSTR( xLine , nllinelen , 1) == CHR(13)
+    czl := SUBSTR(xLine , 1 , nllinelen - 1 )
+ ENDIF
+ENDIF
+RETURN czl
+
+
+FUNCTION hwg_RmBlTabs(xLine)
+
+LOCAL npos, lendf
+
+IF xLine == NIL
+ xLine := ""
+ENDIF 
+
+* Remove blanks
+ lendf := .F.
+ DO WHILE .NOT. lendf
+  npos := LEN(xLine)
+  IF SUBSTR(xLine,npos,1) == " "
+      xLine := SUBSTR(xLine,1,npos - 1)
+  ELSE
+   lendf := .T.
+  ENDIF
+ ENDDO
+* Remove tabs
+ lendf := .F.
+ DO WHILE .NOT. lendf
+   npos := LEN(xLine)
+  IF SUBSTR(xLine,npos,1) == CHR(26)
+   xLine := SUBSTR(xLine,1,npos - 1)
+  ELSE
+   lendf := .T.
+  ENDIF
+ ENDDO
+
+RETURN xLine 
+
+FUNCTION hwg_Max(a,b)
+IF a >= b
+ RETURN a
+ENDIF
+RETURN b
+
+
+FUNCTION hwg_Min(a,b)
+IF a <= b
+ RETURN a
+ENDIF
+RETURN b
+
 
 FUNCTION hwg_IsLeapYear ( nyear )
 

@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, December 2024</td>
+    <td width="70%" align="center">Alexander S.Kresin, January 2025</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -2781,6 +2781,115 @@ See sample program "testspli.prg" for details.<br>
     <br>
     <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return value is of type N, if function succeeds, the value is greater than 0
     <p></p>
+
+  <br><strong class="subhead"> hwg_RdLn(nhandle,lrembltab)</strong>
+  <br>
+   &nbsp; Reads a single text line from a textfile,<br>
+   &nbsp;  very comfortable usage, the line endings<br>
+   &nbsp;  are autodetected, so independant of used<br>
+   &nbsp;  operation system.<br>
+   &nbsp;  ( It is not important, if line ending<br>
+   &nbsp;    is CRLF or LF or CR.)<br>
+   &nbsp; &nbsp;   CRLF = 0x0D + 0x0A =  CHR(13) + CHR(10) (Windows/DOS)<br>
+   &nbsp; &nbsp;   CR&nbsp;&nbsp;   = 0x0D = CHR(13) (MacOS)<br>
+   &nbsp; &nbsp;   LF&nbsp;&nbsp;   = 0x0A = CHR(10) (UNIX/LINUX)<br>
+   &nbsp; (function is an equivalent to Pascal's Rdln() function )<br>
+   <br>  
+   &nbsp;  nhandle : The file handle<br>
+   <br>
+   &nbsp; rembltab: If set .T. , the blanks and tab characters are removed<br>
+   &nbsp;&nbsp; at end of line<br>
+   &nbsp;&nbsp; (default is .F.)<br>
+   <br>
+   &nbsp; returns:<br>
+   &nbsp; an array with 4 elements:<br>
+   <br>
+   &nbsp; 1. The line read<br>
+   &nbsp; &nbsp; EOF or error    : "" (empty string)<br>
+   &nbsp; 2: EOF flag, EOF = .T.<br>
+   &nbsp; &nbsp; For usage in a DO WHILE read loop<br>
+   &nbsp; 3: The number of bytes read at least<br>
+   &nbsp; &nbsp; EOF or error    : < 1<br>
+   &nbsp; 4: The type of line ending detected<br>
+   &nbsp; &nbsp; ( of type C with one character)<br>
+   &nbsp; &nbsp; (only for debugging prurposes)<br>
+   <br>
+   &nbsp; &nbsp; &nbsp; W =  Windows/DOS<br>
+   &nbsp; &nbsp; &nbsp; L =  UNIX/LINUX<br>
+   &nbsp; &nbsp; &nbsp; M =  MacOS<br>
+   &nbsp; &nbsp; &nbsp; U =  unknown (possible try read from binary file,<br>
+   &nbsp; &nbsp;&nbsp; &nbsp; error or EOF reached without line ending)<br>
+   <br>
+   &nbsp; All line endings and the EOF marker CHR(26) are removed,<br>
+   &nbsp; so the output string contains only the pure text from input line<br>
+   &nbsp; Blank lines at end after the last filled line are ignored<br>
+   &nbsp; (handled as EOF reached)<br>
+   <br>
+   <p></p>
+
+
+   &nbsp; Advice:<br>
+   &nbsp; For usage in Harbour console application<br>
+   &nbsp; copy the code of 4 functions<br>
+   &nbsp; hwg_RdLn(), hwg_RmCr(), hwg_RmBlTabs() and hwg_max()<br>
+   &nbsp; into your application.<br>
+   &nbsp; Find them in HWGUI source code file:<br>
+   &nbsp; source\cross\hmisccross.prg<br>
+   <br>
+   <p>
+   &nbsp; Here a code sample snippet to read a text file:<br>
+   &nbsp; * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   &nbsp;  LOCAL lEOF, arrrea<br>
+   &nbsp;  lEOF := .F.<br>
+   &nbsp;  arrrea := {"",.F.,0,"U"}<br>
+   &nbsp;  * Open the input text file<br>
+   &nbsp;  handle := FOPEN("textfile_Win.txt",0)<br>
+   &nbsp;    * read the input file<br>
+   &nbsp;    DO WHILE .NOT. lEOF<br>
+   &nbsp;  &nbsp;   arrrea := hwg_RdLn(handle)<br>
+   &nbsp;  &nbsp;   * Detect EOF<br>
+   &nbsp;  &nbsp;   IF arrrea[2]<br>
+   &nbsp;  &nbsp;&nbsp;    lEOF := .T.<br>
+   &nbsp;  &nbsp;   ELSE<br>
+   &nbsp;  &nbsp;&nbsp;   * Process data read delivered in arrrea[1]<br>
+   &nbsp;  &nbsp;&nbsp;   * ...<br>
+   &nbsp;  &nbsp;   ENDIF<br>
+   &nbsp;  ENDDO<br>  
+   &nbsp;  FCLOSE(handle)<br>
+   &nbsp; * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+   </p>
+   <p></p>
+
+  <br><strong class="subhead"> hwg_RmCr(xLine)</strong>
+   <br>
+   Remove MacOS line ending (CR)<br>
+   Only for internal use of hwg_RdLn()<br>
+   <br>
+   <p></p>  
+
+  <br><strong class="subhead"> hwg_RmBlTabs(xLine)</strong>
+   <br>
+   Remove not needed blanks or tabs at end of line<br>
+   Only for internal use of hwg_RdLn()<br>
+   <br>
+   <p></p>
+
+
+  <br><strong class="subhead"> hwg_Max(a,b)</strong>
+   <br>
+   Returns the maximum value of a or b.<br>
+   a and b must be numeric values or dates<br>
+   <br>
+   <p></p>
+
+  <br><strong class="subhead"> hwg_Min(a,b)</strong>
+   <br>
+   Returns the minimum value of a or b.<br>
+   a and b must be numeric values or dates<br>
+   <br>
+   <p></p>
+  
+
 
    <br><strong class="subhead"> hwg_onAnchor( oWnd, wold, hold, wnew, hnew )</strong>
    <p></p>

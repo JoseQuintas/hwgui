@@ -15,6 +15,17 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-03 19:40 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrdecode/ReadMe.txt
+* contrib/qrdecode/qrdecode
+* contrib/qrdecode/qrdecode.prg
+* contrib/qrdecode/v4l2.c (new)
+  ! Now LINUX working with patch
+  ! of Zbar code
+  ! (Patch is from
+  ! https://bugs.archlinux.org/attachments/44091/12776/v4l2.patchhttps://bugs.archlinux.org/attachments/44091/12776/v4l2.patchhttps://bugs.archlinux.org/attachments/44091/12776/v4l2.patch
+  ! To be continued with MacOS.
+
 2025-01-02 13:55 UTC+0100 Wilfried Brunken DF7BE
 * source/cross/hmisccross.prg
 * clean.sh

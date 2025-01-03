@@ -56,14 +56,14 @@ LOCAL rc, outfilename, ccommand, dtueddel
 outfilename := "output.txt"
 dtueddel := CHR(34)  && "
 
-
-ccommand := dtueddel + "C:\Program Files (x86)\Zbar\bin\zbarcam.exe" + dtueddel
-
 * Start the external app
+
 #ifdef __PLATFORM__WINDOWS
+  ccommand := dtueddel + "C:\Program Files (x86)\Zbar\bin\zbarcam.exe" + dtueddel
   rc := hwg_RunConsoleApp(ccommand,outfilename,.T.)
 #else
-
+  ccommand := "~/local/bin/zbarcam"
+  rc := hwg_RunConsoleApp(ccommand,outfilename)
 #endif
 
   * Now you can get the decoded text from output file 

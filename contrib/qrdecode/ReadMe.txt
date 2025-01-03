@@ -4,14 +4,15 @@ ReadMe file for QR code and EAN bar codes decoding
  
 History: 
  
+2025-01-03  DF7BE  LINUX now running, continue with MacOS 
 2025-01-02  DF7BE  Error on LINUX need to be fixed   
 2024-12-29  DF7BE  First creation
 
 
  
 Supported platforms:
-- Windows 10/11
-- LINUX <under construction> 
+- Windows 10/11 (32 bit)
+- LINUX 
 - MacOS <under construction>  
 
 
@@ -38,6 +39,7 @@ Supported platforms:
      Source code archives with bugfixes are available at Debian:
      https://packages.debian.org/source/sid/zbar
      (zbar_0.23.93.orig.tar.gz)
+     but the the zbarcam app crashes on LINUX (see above).
 
      Optional these files are also available in the "Files"
      section of the HWGUI project site.
@@ -51,12 +53,7 @@ Supported platforms:
      LINUX:
      
      Tested under Ubuntu 24.04.1 LTS
-     
-     Recent state
-     The zbarcam-gtk from installed package runs without error,
-     but need to redirect result into a file
-     (displayed in camera window)
-     
+
      
      At first, install following packges:
      sudo apt-get install libv4l-utils
@@ -69,29 +66,38 @@ Supported platforms:
      sudo apt-get install zbarcam-gtk
      sudo apt-get install zbar-tools
      sudo apt-get install python3-zbar
+     
+     The zbarcam-gtk from installed package runs without error,
+     but need to redirect result into a file
+     (displayed in camera window)
+     The "zbarcam" program from package crashes with
+     "Error:
+     zbarcam
+      WARNING: no compatible input to output format
+      ...trying again with output disabled
+      ERROR: zbar processor in zbar_processor_init():
+      unsupported request: no compatible image format
+      "
  
-     ~~~~ Some trouble to compile ZBar from source ~~~~
+     ~~~~ How to compile ZBar from source ~~~~
      - Create compile directory:
        mkdir zbar
      - Extract the archive into 
         $HOME/zbar/zbar-0.10
      - Read generic installation instructions in file INSTALL
-        export CFLAGS=""
+     - Copy the patched file "v4l2.c" from contrib/qrdecode to
+       "~/zbar/zbar-0.10/zbar/video". 
+     - export CFLAGS=""
      - ./configure --prefix=$HOME/local --without-imagemagick --without-python -without-qt
-     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
-     
-     
+     - make check
+     - make
+     - make install
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      
      zbarcam-gtk runs at it best, the result is displayed in the
      camera window. But not written in file for processing afterwards. 
-     Error:
-     zbarcam
-      WARNING: no compatible input to output format
-      ...trying again with output disabled
-      ERROR: zbar processor in zbar_processor_init():
-     unsupported request: no compatible image format
-  
-     
-       
+
+      
      MacOS:
      <under construction>
    
@@ -102,7 +108,8 @@ Supported platforms:
      "C:\Program Files (x86)\Zbar\bin\zbarcam.exe"
     (with "").
     LINUX and MacOS:
-      zbarcam
+      cd ~/local/bin
+     ./zbarcam
 
     First the splash window of ZBar appeared, then a window
     shows the camera image.
@@ -113,7 +120,7 @@ Supported platforms:
     Also a short beep is sounded.
     The result text is sent to the console or terminal.
     You can take more than one QR or bar code in one session (mixed).
-    If finished, close the Zbar app by clicking to the "X" field.
+    If finished, close the Zbar program by clicking to the "X" field.
     Now the output file (here STDIN, later the redirected output
     file of the hwg_RunConsoleApp() function call (2nd parameter),
     so all results can be seen or processed.

@@ -1671,5 +1671,16 @@ FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper,ctestdirsep)
 
    RETURN sfifullnam
 
+FUNCTION hwg_oBitmap2file(oBitmap ,coutfilename )
+IF oBitmap == NIL
+ RETURN NIL
+ENDIF
+
+IF coutfilename == NIL
+ coutfilename := "bitmap.bmp"
+ENDIF
+
+oBitmap:OBMP2FILE(coutfilename,oBitmap)
+RETURN NIL
 
 * ======================= EOF of hmisccross.prg ===========================

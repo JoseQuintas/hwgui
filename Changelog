@@ -15,6 +15,19 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-05 16:10 UTC+0100 Wilfried Brunken DF7BE
+* source/cross/hmisccross.prg
+* samples/qrencode.prg
+* doc/hwgdoc_functions.html
+* test/rdln_test.prg
+  ! For Harbour bug report,
+  ! Preparing rdln_test.prg for
+  ! opening a new issue.
+  ! Project QR encoding:
+  ! New function hwg_oBitmap2file(),
+  ! is under construction yet.
+  ! (to be continued)
+
 
 2025-01-04 19:30 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrdecode/qrdecode.prg

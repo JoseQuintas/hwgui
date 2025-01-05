@@ -546,7 +546,12 @@ Find this code also in "utils\devtools\dbfcompare.prg".<br>
    </ul>
 
    <br><strong class="subhead"> hwg_SaveBitmap( cName, hBitmap )</strong>
-   <p></p>
+   <p>
+   <br>
+   Function only for internal usage.<br>
+   To save a bitmap object into a file,<br>
+   use FUNCTION hwg_oBitmap2file().<br> 
+   </p>
 
    <br><strong class="subhead"> hwg_StockBitmap( cName [,nSizeType] )</strong> (GTK only)
    <br> GTK has a number of predefined stock icons, which can be used in application.
@@ -3829,6 +3834,20 @@ See sample program "testspli.prg" for details.<br>
     Converts the bitmap string after (optional)<br>
     modifications into a bitmap object.<br>
     cbmpname : String with an unique bitmap name<br>
+
+    <p></p>
+
+    <br><strong class="subhead"> hwg_oBitmap2file(oBitmap [,coutfilename]) </strong>
+    <br> Function is under construction !<br>
+    <p>
+    <br>
+    Save a bitmap in an bitmap object into a file.<br> 
+    - oBitmap : The bitmap object<br>
+    - coutfilename : The file into the bitmap saved,<br>
+    &nbsp;  &nbsp; pass complete with extension .bmp<br>
+    &nbsp;  &nbsp; (Default is bitmap.bmp)<br>
+    Returns forever NIL.<br>
+    </p>
 
     <p></p>
 

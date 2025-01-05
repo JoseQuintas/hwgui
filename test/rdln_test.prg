@@ -20,7 +20,32 @@
 * Compile with
 * hbmk2 rdln_test.prg
 *
-* By DF7BE, 2025-01-01
+* By DF7BE, 2025-01-05
+*
+/* hbmk2 rdln_test.prg -w3 -n
+
+Bug in Harbour:
+
+Compile with w3: Warnung is unjustified, because:
+- Elements of array arrrea[] are used for output with ? on for WHILE read loop
+- leof is inserted into an array, it is the return value of wg_RdLn() 
+
+hbmk2 rdln_test.prg -w3 -n
+Harbour 3.2.0dev (r2410281557)
+Copyright (c) 1999-2024, https://harbour.github.io/
+Compiling 'rdln_test.prg'...
+rdln_test.prg(91) Warning W0032  Variable 'ARRREA' is assigned but not used in function 'READ_LOOP(67)'
+rdln_test.prg(208) Warning W0032  Variable 'LEOF' is assigned but not used in function 'HWG_RDLN(118)'
+Lines 268, Functions/Procedures 7
+Generating C source output to '/tmp/hbmk_x3rqfw.dir/rdln_test.c'... Done.
+
+The desired function of this demo program is OK;
+three text files are read for display, also in ZIP file.
+(Auto detect of line endings for Windows/DOS, UNIX/LINUX and MacOS).
+
+Tested on Ubuntu LINUX 24 and Harbour code snapshot from 2025-01-05.
+
+*/
 
 FUNCTION MAIN()
 
@@ -55,10 +80,19 @@ QUIT
 
 RETURN NIL
 
+* Workaround: use the LOCAL's als "dummy" parameters:
+// FUNCTION READ_LOOP(handle,lrembltab,lEOF,arrrea) 
+
+FUNCTION READ_LOOP(handle,lrembltab)    && Normal coding, for workaround comment the 2 lines out
+LOCAL  arrrea,lEOF
+ 
+ 
+ LOCAL nlines
 
 
-FUNCTION READ_LOOP(handle,lrembltab) 
- LOCAL lEOF, cbuffer, nlines, arrrea
+ 
+ HB_SYMBOL_UNUSED(lEOF)
+ HB_SYMBOL_UNUSED(arrrea)  && Has only effect on parameters, not LOCALS's
  
  lEOF := .F.
  nlines := 0
@@ -82,14 +116,20 @@ FUNCTION READ_LOOP(handle,lrembltab)
     ENDIF
    ENDDO  
    FCLOSE(handle)
+   ? "Lines read:" , nlines
 
 RETURN nlines
 
+// Workaround 2:
+// FUNCTION hwg_RdLn(nhandle, lrembltab, lEOF)
 
-FUNCTION hwg_RdLn(nhandle, lrembltab)
+FUNCTION hwg_RdLn(nhandle, lrembltab) && Normal coding, for workaround comment the 2 lines out
+LOCAL lEOF
 
  LOCAL nnumbytes , nnumbytes2 , buffer , buffer2
- LOCAL lEOF , bEOL , xLine , bMacOS, xarray, ceoltype
+ LOCAL bEOL , xLine , bMacOS, xarray, ceoltype
+ 
+ HB_SYMBOL_UNUSED(lEOF)
  
  IF lrembltab == NIL
    lrembltab := .F.

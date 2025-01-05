@@ -9,8 +9,13 @@
  * Sample program for QR encoding and
  * converts its output to
  * monochrome bitmaps for multi platform usage.
+ * The created bitmap with the QR code is displayed in
+ * a extra windows and also written in file 
+ * "test.bmp"
+ * and under construction:
+ * "qr-code.bmp"
  *
- * Copyright 2022 Wilfried Brunken, DF7BE
+ * Copyright 2025 Wilfried Brunken, DF7BE
  * https://sourceforge.net/projects/cllog/
 
 
@@ -75,6 +80,10 @@ FUNCTION Testen()
 
    * Store to bitmap file
    MEMOWRIT( "test.bmp", cbitmap )
+   
+   * <under construction>
+   // TO-DO: extend with conversion to bitmap object.
+   // hwg_oBitmap2file(cbitmap,"qr-code.bmp")
 
    * And show the new bitmap image
    hwg_ShowBitmap( cbitmap, "test", 0, hwg_ColorC2N( "080808" ) ) // Color = 526344

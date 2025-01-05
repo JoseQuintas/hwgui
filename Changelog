@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-05 17:10 UTC+0100 Wilfried Brunken DF7BE
+* test/Ticket85.hbp
+* test/Ticket85.prg
+  ! #85 USE OF STATIC ARRAY ELEMENT IN SAY DO NOT WORK
+  ! by  domenico d'oria
+  ! For details see comment line of demo
+  ! program.
+
 2025-01-05 16:10 UTC+0100 Wilfried Brunken DF7BE
 * source/cross/hmisccross.prg
 * samples/qrencode.prg

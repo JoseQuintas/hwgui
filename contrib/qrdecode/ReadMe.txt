@@ -3,7 +3,8 @@ ReadMe file for QR code and EAN bar codes decoding
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ 
  
 History: 
- 
+
+2025-01-07 DF7BE First tries with MacOS 
 2025-01-03  DF7BE  LINUX now running, continue with MacOS 
 2025-01-02  DF7BE  Error on LINUX need to be fixed   
 2024-12-29  DF7BE  First creation
@@ -100,14 +101,16 @@ Supported platforms:
       
      MacOS:
      <under construction>
-   
+     The installation and usage on MacOS  is more complicated.
+     The reason: zbarcam is not available on MacOS, but instead you can use imagesnap and then combine it with zbarimg (from zbar package).
+     See Appendix 1 for detailed installation and usage information.   
 
 1.4 Pre-check of Zbar
     Open a console or terminal and insert the following command:
     Windows:
      "C:\Program Files (x86)\Zbar\bin\zbarcam.exe"
     (with "").
-    LINUX and MacOS:
+    LINUX: 
       cd ~/local/bin
      ./zbarcam
 
@@ -191,5 +194,121 @@ application.
 
 73 es 55 de
 DF7BE, Wilfried    
+
+Appendix:
+########
+
+Appendix 1: Installation instructions for MacOS
+--------------------------------------------------------------
+1.) Install zbar:
+ To install zbar, paste this in macOS terminal after installing macports
+https://www.macports.org/install.php
+
+The installations needs some time do get and install all dependencies.
+
+sudo port install zbar
+Password:
+Warning: port definitions are more than two weeks old, consider updating them by running 'port selfupdate'.
+--->  Computing dependencies for zbar
+The following dependencies will be installed: 
+ ImageMagick
+...
+Continue? [Y/n]: y
+...
+--->  Attempting to fetch zbar-0.23.92_1.darwin_23.x86_64.tbz2.rmd160 from https://nue.de.packages.macports.org/zbar
+--->  Installing zbar @0.23.92_1
+--->  Activating zbar @0.23.92_1
+--->  Cleaning zbar
+--->  Updating database of binaries
+--->  Scanning binaries for linking errors
+--->  No broken files found.                             
+--->  No broken ports found.
+--->  Some of the ports you installed have notes:
+  cmake has the following notes:
+    The CMake GUI and Docs are now provided as subports 'cmake-gui' and
+    'cmake-docs', respectively.
+  libheif has the following notes:
+    Support for rav1e now disabled by default; enable via +rav1e
+  libidn has the following notes:
+    GNU libidn2 is the successor of GNU libidn. It comes with IDNA 2008 and TR46
+    implementations and also provides a compatibility layer for GNU libidn.
+  libpsl has the following notes:
+    libpsl API documentation is provided by the libpsl-docs port.
+    
+   
+   
+To see what files were installed by zbar, run:
+port contents zbar 
+To later upgrade zbar, run:
+sudo port selfupdate && sudo port upgrade zbar 
+
+The needed program "zbarcam" is not installed, so compile so see:https://apple.stackexchange.com/questions/403022/is-it-possible-to-read-qr-code-on-macos-using-webcam
+The solution is:
+zbarcam is not available on MacOS, but instead you can use imagesnap and then combine it with zbarimg (from zbar package).
+
+2.) Install imagesnap
+
+Instructions from
+https://macappstore.org/imagesnap/
+
+Three steps , insert this commands by copy and paste it into terminal:
+  1.) /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  2.) echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+  3.) brew install imagesnap
+
+3.) Get snapashot and decode the QR code:
+
+3.1.) Check camera  position
+- Start a camera app, for example "FaceTime"
+- Hold the document with the QR code in front to the camera and be shure that it is complete visible and focused.
+  (don't matter about, that the image is mirrored).
+- Hold the in the realized position 
+- Terminate the camera app, so that the camera is not locked any more 
+
+3.2) Test a QR code:
+The simplest possible solution would be:
+
+imagesnap -w 1 snap.jpg
+zbarimg -1 --raw -q -Sbinary snap.jpg
+Look for message in terminal (for example):
+Capturing image from device "FaceTime HD-Kamera (integriert)"...snap.jpg
+
+Advice: the default file name of image is: snapshot.jpg
+
+Shell script (for test).
+You can automate it to wait for first successful reading:./qrdecode_mac.sh
+
+The script terminates, if the QR code is succefully read.
+
+
+TO-DO:
+Integrate this functionality into the HWGUI sample program.
+Additional information:
+------------------------------
+ 
+Ready to go script, using the same mechanism, you can find HERE.
+==> https://github.com/rynkowsg/scripts/blob/master/macos/scan-qrcode.sh
+
+At the top of the file you can find usage info:
+
+#
+# EXAMPLES:
+#
+#  Just print the QR code
+#
+#    ./scan-qrcode.sh
+#
+#  Copy QR code to clipboard
+#
+#    ./scan-qrcode.sh | pbcopy
+#
+#  Import paper secret key from QR code:
+#
+#    ./scan-qrcode.sh | paperkey --pubring public-key.asc | gpg --import
+#
+
+
+!!!!!!!!!!!!! To be continued !!!!!!!!!!!!!!!
+(integrate into sample program of HWGUI) 
 
 ================= EOF of ReadMe.txt =========================

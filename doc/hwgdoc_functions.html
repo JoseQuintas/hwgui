@@ -2506,6 +2506,37 @@ See sample program "testspli.prg" for details.<br>
    </ul>
 
    <br><strong class="subhead"> hwg_Sleep( n )</strong>
+   <br>
+   Delays a process.<br>
+   n: Sleep time in seconds<br>
+   On WInAPI, the function Sleep() is used.<br>
+   On other operating systems<br>
+   the function usleep()<br>
+   from standard C library is used<br>
+   (see also hwg_Sleep_C() ).<br>
+   An internal multiplication with 1000<br>
+   passes the value to usleep() in seconds.<br>
+   <br>
+   <p></p>
+   
+   <br><strong class="subhead"> hwg_Sleep_C(n)</strong>
+   <br>
+   Delays a process.<br>
+   n: Sleep time in milli seconds<br>
+   (see also function hwg_Sleep().<br>
+   Uses the function usleep()<br>
+   from standard C library.<br>
+   (it seems to be for more precise processing)<br>
+   Additional information:<br>
+   The n argument must be less than 1 000 000.<br>
+   If the value of useconds is 0,<br>
+   then the call has no effect.<br>
+   The function usleep() is depricated and should be<br>
+   substituded by the modern timer functions.<br> 
+   
+   <br>
+   
+   
    <p></p>
 
    <br><strong class="subhead"> hwg_SetScrollInfo( handle, nType, nRedraw, nHScrollPos , nPage, nHscrollMax )</strong> (Windows only)
@@ -2846,7 +2877,6 @@ See sample program "testspli.prg" for details.<br>
    &nbsp; * ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
    &nbsp;  LOCAL lEOF, arrrea<br>
    &nbsp;  lEOF := .F.<br>
-   &nbsp;  arrrea := {"",.F.,0,"U"}<br>
    &nbsp;  * Open the input text file<br>
    &nbsp;  handle := FOPEN("textfile_Win.txt",0)<br>
    &nbsp;    * read the input file<br>
@@ -2894,6 +2924,22 @@ See sample program "testspli.prg" for details.<br>
    <br>
    <p></p>
   
+     <br><strong class="subhead"> hwg_FBINREAD(cfilename,nbufsize)( n )</strong>
+   <br>
+   Reads a binary file "cfilename"<br>
+   and returns its contents to a type C variable.<br>
+   It is the equivalent to Harbour function<br>
+   MEMOREAD(), but it can get some trouble with<br>
+   not allowed characters, so this function is<br>
+   a safe alternative.<br>
+   The operation of this function is silent<br>
+   to avoid crash.<br>
+   In case of an error, an empty string "" is<br>
+   returned.<br>
+   Check bytes read with LEN().<br>
+   
+   <p></p>
+
 
 
    <br><strong class="subhead"> hwg_onAnchor( oWnd, wold, hold, wnew, hnew )</strong>
@@ -3906,7 +3952,7 @@ See sample program "testspli.prg" for details.<br>
 
   <p></p>
 
-  <br><strong class="subhead"> hwg_QRCodeZoom_C(cqrcode,nlen,<nzoom>)</strong><br>
+  <br><strong class="subhead"> hwg_QRCodeZoom_C(cqrcode,nlen,nzoom)</strong><br>
   <br>Only experimental status !!<br>
   <br>This is the eqivalent function to hwg_QRCodeZoom().
   <br>Detected by some tests, the code effeciency is not signficant better than

@@ -15,6 +15,23 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-10 20:00 UTC+0100 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* source/cross/hmisccross.prg
+* source/gtk/misc.c
+* test/testsleep.prg
+* test/rdln_test.prg
+  ! Project qrdecode on MacOS:
+  ! Revised sleep functions
+  ! for waitung for successful scan.
+  ! (to be continued)
+  ! Harbour workaround removed
+  ! (see Harbour issue #370)
+  ! (TNX Jose M. C. Quintas)
+  ! Revised sleep functions
+  ! (new hwg_Sleep_C() and
+  !  updated docu)  
+
 2025-01-07 16:40 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrdecode/ReadMe.txt
 * contrib/qrdecode/qrdecode_mac.sh

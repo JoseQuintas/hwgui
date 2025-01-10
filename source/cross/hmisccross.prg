@@ -23,19 +23,12 @@
 
 * ================================= *
 
-FUNCTION hwg_RdLn(nhandle, lrembltab,lbEOF)
+FUNCTION hwg_RdLn(nhandle, lrembltab)
 
  LOCAL nnumbytes , nnumbytes2 , buffer , buffer2
  LOCAL  bEOL , xLine , bMacOS, xarray, ceoltype
  // LOCAL lbEOF
- 
- * DF7BE (2025-01-02):
- * Bug in Harbour, lbEOF is really used as return code (in array),
- * but is fired as error !
- * "Variable 'LBEOF' is assigned but not used in function 'HWG_RDLN(57)'"
- * Workaround: declare lbEOF as parameter, but don't use them
-  HB_SYMBOL_UNUSED(lbEOF)    && Has no effect on LOCALs !!!
- 
+
  IF lrembltab == NIL
    lrembltab := .F.
  ENDIF 
@@ -50,17 +43,14 @@ FUNCTION hwg_RdLn(nhandle, lrembltab,lbEOF)
  * (here 1)
  buffer := " "
  buffer2 := " "
- *   lbEOF == .T. also indicates a file read error
- // IF lbEOF == NIL
-  lbEOF := .F.
- // ENDIF 
+//   lbEOF := .F.
  ceoltype := "U" 
 
     DO WHILE ( nnumbytes != 0 ) .AND. ( .NOT. bEOL )
        nnumbytes := FREAD(nhandle,@buffer,1)  && Read 1 Byte
        * If read nothing, EOF is reached
        IF nnumbytes < 1
-        lbEOF := .T.
+//        lbEOF := .T.
         IF .NOT. EMPTY(xLine)  
         * Last line may be without line ending
           xLine := hwg_RmCr(xLine)
@@ -91,8 +81,7 @@ FUNCTION hwg_RdLn(nhandle, lrembltab,lbEOF)
                    * Remove blanks or tabs at end of line
                    xLine := hwg_RmBlTabs(xLine)
                 ENDIF
-                * Workaround Harbour bug
-                RETURN {xLine,lbEOF,nnumbytes2,ceoltype}
+                RETURN {xLine,.F.,nnumbytes2,ceoltype}
           ELSE
                 RETURN {"",.T.,0,ceoltype}
           ENDIF
@@ -128,7 +117,8 @@ FUNCTION hwg_RdLn(nhandle, lrembltab,lbEOF)
 ENDDO
 
     IF EMPTY(xLine)
-     RETURN {"",lbeof,0,ceoltype}
+     RETURN {"",.T.,0,ceoltype}
+//     RETURN {"",lbeof,0,ceoltype}
     ENDIF
 
     * Remove CR line ending
@@ -145,7 +135,8 @@ ENDDO
 
 * Compose final return array
    AADD(xarray, xLine)
-   AADD(xarray, lbeof)
+   AADD(xarray, .F.)
+   //   AADD(xarray, lbeof)
    AADD(xarray, hwg_Max(nnumbytes, nnumbytes2) )
    AADD(xarray, ceoltype)
 RETURN xarray
@@ -1671,8 +1662,50 @@ FUNCTION hwg_ProcFileExt(pFiname,pFiext,lupper,ctestdirsep)
 
    RETURN sfifullnam
 
-FUNCTION hwg_oBitmap2file(oBitmap ,coutfilename )
+FUNCTION hwg_FBINREAD(cfilename,nbufsize)
+LOCAL handle, cbuffer, coutput, anzbytes, zuende
+// LOCAL nbyread   && Debug
+
+IF cfilename == NIL
+ RETURN ""
+ENDIF
+
+IF nbufsize == NIL
+ nbufsize := 4096
+ENDIF
+
+zuende  := .F.
+coutput := ""
+// nbyread := 0   && Debug 
+ 
+ handle := FOPEN(cfilename,0)  && READ_ONLY / zum Lesen
+ IF handle < 0
+  * Cannot open file
+  RETURN ""
+ ENDIF
+ 
+cbuffer := SPACE(nbufsize) 
+ 
+  DO WHILE .NOT. zuende
+  anzbytes := FREAD(handle,@cbuffer,nbufsize)
+//  nbyread := nbyread + anzbytes   && Debug
+  IF anzbytes <> nbufsize
+    zuende := .T.
+  ENDIF
+  * Collect data
+  coutput := coutput + cbuffer
+  * Clear buffer for next read
+  cbuffer := SPACE(nbufsize) 
+  ENDDO 
+ FCLOSE(handle)
+// hwg_MsgInfo("Bytes read=" +  ALLTRIM(STR(anzbytes)) )    && Debug
+RETURN coutput 
+
+
+FUNCTION hwg_oBitmap2file(oBitmap,cbmpname,coutfilename )
+
 IF oBitmap == NIL
+// hwg_MsgInfo("oBitmap is NIL cbmpname=" + cbmpname )
  RETURN NIL
 ENDIF
 
@@ -1680,7 +1713,11 @@ IF coutfilename == NIL
  coutfilename := "bitmap.bmp"
 ENDIF
 
-oBitmap:OBMP2FILE(coutfilename,oBitmap)
+IF cbmpname == NIL
+ RETURN NIL
+ENDIF 
+
+oBitmap:OBMP2FILE(coutfilename,cbmpname)
 RETURN NIL
 
 * ======================= EOF of hmisccross.prg ===========================

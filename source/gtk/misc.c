@@ -299,6 +299,12 @@ HB_FUNC( HWG_SLEEP )
       usleep( hb_parnl( 1 ) * 1000 );
 }
 
+HB_FUNC( HWG_SLEEP_C )
+{
+   if( hb_parinfo( 1 ) )
+      usleep( hb_parnl( 1 ) );
+}
+
 HB_FUNC( HWG_RUNAPP )
 {
    GError * error = NULL;

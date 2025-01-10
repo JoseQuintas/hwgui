@@ -45,6 +45,13 @@ three text files are read for display, also in ZIP file.
 
 Tested on Ubuntu LINUX 24 and Harbour code snapshot from 2025-01-05.
 
+
+Von Jose M. C. Quintas am 2025-01-06 17:21
+Compile with w3: warning is unjustified, because ... (Issue #370)
+
+Check again.
+Warning is ok.
+
 */
 
 FUNCTION MAIN()
@@ -91,12 +98,13 @@ LOCAL  arrrea,lEOF
 
 
  
- HB_SYMBOL_UNUSED(lEOF)
- HB_SYMBOL_UNUSED(arrrea)  && Has only effect on parameters, not LOCALS's
+// HB_SYMBOL_UNUSED(lEOF)
+// HB_SYMBOL_UNUSED(arrrea)  && Has only effect on parameters, not LOCALS's
  
  lEOF := .F.
  nlines := 0
- arrrea := {"",.F.,0,"U"}
+*  arrrea is assign by hwg_rdln(), previous value is not used.
+// arrrea := {"",.F.,0,"U"}
 
  * read the input file
    DO WHILE .NOT. lEOF
@@ -124,12 +132,12 @@ RETURN nlines
 // FUNCTION hwg_RdLn(nhandle, lrembltab, lEOF)
 
 FUNCTION hwg_RdLn(nhandle, lrembltab) && Normal coding, for workaround comment the 2 lines out
-LOCAL lEOF
+// LOCAL lEOF
 
  LOCAL nnumbytes , nnumbytes2 , buffer , buffer2
  LOCAL bEOL , xLine , bMacOS, xarray, ceoltype
  
- HB_SYMBOL_UNUSED(lEOF)
+// HB_SYMBOL_UNUSED(lEOF)
  
  IF lrembltab == NIL
    lrembltab := .F.
@@ -146,14 +154,17 @@ LOCAL lEOF
  buffer := " "
  buffer2 := " "
  *   lEOF == .T. also indicates a file read error 
- lEOF := .F.
+// lEOF := .F.
  ceoltype := "U" 
 
     DO WHILE ( nnumbytes != 0 ) .AND. ( .NOT. bEOL )
        nnumbytes := FREAD(nhandle,@buffer,1)  && Read 1 Byte
        * If read nothing, EOF is reached
+// LEof is created inside IF nNumBytes.
+// RETURN ends IF and RETURN ends ELSE, both ends previous IF nNumBytes.
+// lEof is not used.
        IF nnumbytes < 1
-        lEOF := .T.
+//        lEOF := .T.
         IF .NOT. EMPTY(xLine)  
         * Last line may be without line ending
           xLine := hwg_RmCr(xLine)
@@ -184,9 +195,10 @@ LOCAL lEOF
                    * Remove blanks or tabs at end of line
                    xLine := hwg_RmBlTabs(xLine)
                 ENDIF  
-                RETURN {xLine,lEOF,nnumbytes2,ceoltype}
+//                RETURN {xLine,lEOF,nnumbytes2,ceoltype}
+                RETURN {xLine,.F.,nnumbytes2,ceoltype}
           ELSE
-                RETURN {"",.T.,0,ceoltype}
+               RETURN {"",.T.,0,ceoltype}
           ENDIF
          ENDIF 
          * Line ending for Windows: must be LF (continue reading)
@@ -219,7 +231,8 @@ LOCAL lEOF
 ENDDO
 
     IF EMPTY(xLine)
-     RETURN {"",leof,0,ceoltype}
+     RETURN {"",.T.,0,ceoltype}
+//     RETURN {"",leof,0,ceoltype}
     ENDIF
 
     * Remove CR line ending
@@ -236,7 +249,8 @@ ENDDO
 
 * Compose final return array
    AADD(xarray, xLine)
-   AADD(xarray, leof)
+   AADD(xarray, .F.)
+//   AADD(xarray, leof)
    AADD(xarray, hwg_Max(nnumbytes, nnumbytes2) )
    AADD(xarray, ceoltype)
 RETURN xarray

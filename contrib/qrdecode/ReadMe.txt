@@ -4,7 +4,8 @@ ReadMe file for QR code and EAN bar codes decoding
  
 History: 
 
-2025-01-07 DF7BE First tries with MacOS 
+2025-11-13  DF7BE  Also instruction for LINUXMint
+2025-01-07  DF7BE  First tries with MacOS 
 2025-01-03  DF7BE  LINUX now running, continue with MacOS 
 2025-01-02  DF7BE  Error on LINUX need to be fixed   
 2024-12-29  DF7BE  First creation
@@ -13,7 +14,7 @@ History:
  
 Supported platforms:
 - Windows 10/11 (32 bit)
-- LINUX 
+- LINUX (Ubuntu/LINUXMint)
 - MacOS <under construction>  
 
 
@@ -31,6 +32,9 @@ Supported platforms:
      application.
      Usually, a little LED nearby the lens indicates, that
      the camera is activated.
+     On LINUXMint, the camera application must be installed by
+      sudo apt-get install cheese
+     for pre camera test.
 
 1.3  Install ZBar
 
@@ -68,6 +72,8 @@ Supported platforms:
      sudo apt-get install zbar-tools
      sudo apt-get install python3-zbar
      
+ 
+     
      The zbarcam-gtk from installed package runs without error,
      but need to redirect result into a file
      (displayed in camera window)
@@ -79,6 +85,13 @@ Supported platforms:
       ERROR: zbar processor in zbar_processor_init():
       unsupported request: no compatible image format
       "
+      So need to compile the zbarcam program with patch (all LINUX).
+      
+      On LINUXMint the following steps for prerequite are enough:
+        sudo apt-get install libv4l-dev
+        sudo ln -s /usr/include/libv4l1-videodev.h /usr/include/linux/videodev.h 
+        sudo apt-get install imagemagick      
+      
  
      ~~~~ How to compile ZBar from source ~~~~
      - Create compile directory:
@@ -102,7 +115,8 @@ Supported platforms:
      MacOS:
      <under construction>
      The installation and usage on MacOS  is more complicated.
-     The reason: zbarcam is not available on MacOS, but instead you can use imagesnap and then combine it with zbarimg (from zbar package).
+     The reason: zbarcam is not available on MacOS,
+     but instead you can use imagesnap and then combine it with zbarimg (from zbar package).
      See Appendix 1 for detailed installation and usage information.   
 
 1.4 Pre-check of Zbar
@@ -122,7 +136,8 @@ Supported platforms:
     the color of the frame is turned to green.
     Also a short beep is sounded.
     The result text is sent to the console or terminal.
-    You can take more than one QR or bar code in one session (mixed).
+    You can take more than one QR or bar code in one session
+    (mixed codes possible).
     If finished, close the Zbar program by clicking to the "X" field.
     Now the output file (here STDIN, later the redirected output
     file of the hwg_RunConsoleApp() function call (2nd parameter),
@@ -131,7 +146,7 @@ Supported platforms:
 
     Get help info by typing:
      zbarcam --help  
-    (if zbarcam is in PATH, otherwise add full path)
+    (if zbarcam is in PATH, otherwise add full path in .profile)
 
 2. HWGUI test program
 
@@ -156,9 +171,9 @@ Supported platforms:
 
     Process the result by reading the output file
     line by line in your HWGUI app to your own needs.
-    The following HWGUI function help to read
-    a text file with the result 
-    of the scan: hwg_RdLn().
+    The following HWGUI function helps to read
+    a text file with the result of the scan:
+    hwg_RdLn().
     It has as autodetect for line endings
     for Windows/DOS, UNIX/LINUX and MacOS. 
 
@@ -242,7 +257,8 @@ port contents zbar
 To later upgrade zbar, run:
 sudo port selfupdate && sudo port upgrade zbar 
 
-The needed program "zbarcam" is not installed, so compile so see:https://apple.stackexchange.com/questions/403022/is-it-possible-to-read-qr-code-on-macos-using-webcam
+The needed program "zbarcam" is not installed, so compile so see:
+https://apple.stackexchange.com/questions/403022/is-it-possible-to-read-qr-code-on-macos-using-webcam
 The solution is:
 zbarcam is not available on MacOS, but instead you can use imagesnap and then combine it with zbarimg (from zbar package).
 
@@ -276,14 +292,16 @@ Capturing image from device "FaceTime HD-Kamera (integriert)"...snap.jpg
 Advice: the default file name of image is: snapshot.jpg
 
 Shell script (for test).
-You can automate it to wait for first successful reading:./qrdecode_mac.sh
+You can automate it to wait for first successful reading:
+./qrdecode_mac.sh
 
 The script terminates, if the QR code is succefully read.
 
 
 TO-DO:
 Integrate this functionality into the HWGUI sample program.
-Additional information:
+
+Additional information:
 ------------------------------
  
 Ready to go script, using the same mechanism, you can find HERE.

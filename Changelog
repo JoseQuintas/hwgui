@@ -15,6 +15,19 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-13 18:00 UTC+0100 Wilfried Brunken DF7BE
+*  contrib/qrdecode/ReadMe.txt
+* contrib/qrdecode/qrdecode.prg
+* contrib/qrdecode/qrdecode_mac.sh
+  ! Project qrdecode:
+  ! Now running on MacOS by
+  ! HWGUI sample code.
+  ! The main coding is finished,
+  !	but TO-DO:
+  ! A new function needed to check
+  ! execute permission of the shell script
+  ! or the HWGUI program (also for LINUX)
+  ! (to be continued)
 
 2025-01-13 16:15 UTC+0100 Wilfried Brunken DF7BE
 * clean.sh

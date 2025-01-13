@@ -70,9 +70,16 @@ couttext := ""
   ccommand := dtueddel + "C:\Program Files (x86)\Zbar\bin\zbarcam.exe" + dtueddel
   rc := hwg_RunConsoleApp(ccommand,outfilename,.T.)
 #else
+#ifdef ___MACOSX___
+ lnmodal := .F.
+  ccommand := "./qrdecode_mac.sh 10"
+  rc := hwg_RunConsoleApp(ccommand,outfilename)
+#else
+* All other LINUXe
  lnmodal := .F.
   ccommand := "~/local/bin/zbarcam"
   rc := hwg_RunConsoleApp(ccommand,outfilename)
+#endif  
 #endif
 
   * Now you can get the decoded text from output file 

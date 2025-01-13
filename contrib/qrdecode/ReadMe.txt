@@ -4,7 +4,8 @@ ReadMe file for QR code and EAN bar codes decoding
  
 History: 
 
-2025-11-13  DF7BE  Also instruction for LINUXMint
+2025-01-13  DF7BE  Now running on MacOS by using shell script.
+2025-01-13  DF7BE  Also instruction for LINUXMint
 2025-01-07  DF7BE  First tries with MacOS 
 2025-01-03  DF7BE  LINUX now running, continue with MacOS 
 2025-01-02  DF7BE  Error on LINUX need to be fixed   
@@ -15,7 +16,7 @@ History:
 Supported platforms:
 - Windows 10/11 (32 bit)
 - LINUX (Ubuntu/LINUXMint)
-- MacOS <under construction>  
+- MacOS
 
 
 1. Prerequisites
@@ -113,7 +114,7 @@ Supported platforms:
 
       
      MacOS:
-     <under construction>
+  
      The installation and usage on MacOS  is more complicated.
      The reason: zbarcam is not available on MacOS,
      but instead you can use imagesnap and then combine it with zbarimg (from zbar package).
@@ -277,7 +278,7 @@ Three steps , insert this commands by copy and paste it into terminal:
 3.1.) Check camera  position
 - Start a camera app, for example "FaceTime"
 - Hold the document with the QR code in front to the camera and be shure that it is complete visible and focused.
-  (don't matter about, that the image is mirrored).
+  (don't matter about, that the image in this windows is mirrored).
 - Hold the in the realized position 
 - Terminate the camera app, so that the camera is not locked any more 
 
@@ -293,14 +294,33 @@ Advice: the default file name of image is: snapshot.jpg
 
 Shell script (for test).
 You can automate it to wait for first successful reading:
-./qrdecode_mac.sh
+./qrdecode_mac.sh <number of tries>
 
-The script terminates, if the QR code is succefully read.
+Be shure, that this script file has execute permission,
+other set with
+chmod 755 qrdecode_mac.sh
+
+Parameter <number of tries> limits the number of tries
+to read a valid QR code and to avoid an endeless loop.
+We suggest to start a test with 10 tries.
+
+The script terminates, if the QR or bar code is successfully read.
 
 
-TO-DO:
-Integrate this functionality into the HWGUI sample program.
+3.3) Compile HWGUI sample program
 
+See LINUX instructions.
+
+You can modify the number of tries in the "ccommand"
+line of the source code to your own needs.
+
+...#ifdef ___MACOSX___
+ lnmodal := .F.
+  ccommand := "./qrdecode_mac.sh 10"
+  rc := hwg_RunConsoleApp(ccommand,outfilename)
+ ... 
+  
+  
 Additional information:
 ------------------------------
  
@@ -326,7 +346,6 @@ At the top of the file you can find usage info:
 #
 
 
-!!!!!!!!!!!!! To be continued !!!!!!!!!!!!!!!
-(integrate into sample program of HWGUI) 
 
-================= EOF of ReadMe.txt =========================
+
+================= EOF of ReadMe.txt =======================

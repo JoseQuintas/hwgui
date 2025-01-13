@@ -8,6 +8,11 @@
 # outside the makefile "clean".
 # (created by "hbmk2 allhbp.hbp)
 # 
+delfi()
+{
+ rm "$1" 2>/dev/null
+} 
+
 # === Remove all HWGUI basic libraries ===
 #rm lib/*.a 2>/dev/null
 rm lib/libhbxml.a 2>/dev/null
@@ -44,6 +49,8 @@ rm samples/gtk_samples/pseudocm 2>/dev/null
 rm samples/gtk_samples/testget2 2>/dev/null
 rm samples/gtk_samples/winprn 2>/dev/null
 rm samples/gtk_samples/temp_a2.ps 2>/dev/null
+delfi samples/arraybrowse
+delfi samples/arraybrowse.c
 #
 # Samples for multi plattform (exe)
 # and optional generated C source file
@@ -53,6 +60,11 @@ rm samples/testget1 2>/dev/null
 rm samples/bincnts 2>/dev/null
 rm samples/datepicker 2>/dev/null
 rm samples/bincnts 2>/dev/null
+delfi samples/GetWinVers
+delfi samples/getupdown
+delfi samples/demodbf
+delfi samples/demohlistsub
+delfi samples/fileselect
 rm samples/stretch 2>/dev/null
 rm samples/escrita 2>/dev/null
 rm samples/night   2>/dev/null
@@ -61,6 +73,7 @@ rm samples/dbview 2>/dev/null
 rm samples/dbview.c 2>/dev/null
 rm samples/testfunc 2>/dev/null
 rm samples/winprn 2>/dev/null
+delfi samples/winprn.c
 rm samples/tstcombo.c  2>/dev/null
 rm samples/tstcombo  2>/dev/null
 rm samples/testxml 2>/dev/null
@@ -81,6 +94,12 @@ rm samples/testimage 2>/dev/null
 rm samples/tab 2>/dev/null
 rm samples/testget2.c 2>/dev/null
 rm samples/testget2 2>/dev/null
+delfi samples/Dialogboxes
+delfi samples/bitmapbug
+delfi samples/tststconsapp
+delfi samples/helloworld
+delfi samples/hello
+delfi samples/htrack
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null
@@ -102,12 +121,16 @@ rm utils/devtools/memdump 2>/dev/null
 rm utils/devtools/test.mem 2>/dev/null
 rm utils/devtools/test.txt 2>/dev/null
 rm utils/devtools/lbldump 2>/dev/null
+delfi utils/devtools/dbfcompare
 rm utils/bincnt/a.log 2>/dev/null
 rm utils/bincnt/bindbf 2>/dev/null
 rm utils/statichelp/stathlpconv 2>/dev/null
 rm utils/statichelp/stathlpsample 2>/dev/null
 rm utils/statichelp/helptxt1_en.prg 2>/dev/null
 rm utils/statichelp/helptxt2_de.prg 2>/dev/null
+delfi contrib/hwreport/example
+delfi utils/devtools/dbfcompare.log
+delfi utils/devtools/dbfstru
 
 
 
@@ -115,6 +138,9 @@ rm utils/statichelp/helptxt2_de.prg 2>/dev/null
 rm contrib/hwlabel/hwlbledt 2>/dev/null
 rm contrib/hwlabel/hwlblsample 2>/dev/null
 rm contrib/hwlabel/temp_a2.ps 2>/dev/null
+# Other files created by contrib
+delfi contrib/qrdecode/output.txt
+delfi contrib/qrdecode/qrdecode
 
 # test exe
 rm test/gtk_err93 2>/dev/null
@@ -130,11 +156,16 @@ rm test/icon 2>/dev/null
 rm test/checkbox 2>/dev/null
 rm test/Test_tab 2>/dev/null
 rm test/gtk3testvbox 2>/dev/null
+delfi test/Ticket113
+delfi test/Ticket85
+delfi test/demosaycrash
+delfi test/rdln_test
 
 # Other files created by test programs
 rm test/hexdump.txt 2>/dev/null
 rm test/test.bmp 2>/dev/null
 rm test/Test_tab 2>/dev/null
+delfi test/a.log
 
 # Find and delete all Error logs
 find . -name Error.log -exec rm -f {} \;

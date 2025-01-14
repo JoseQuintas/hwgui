@@ -4,6 +4,7 @@ ReadMe file for QR code and EAN bar codes decoding
  
 History: 
 
+2025-01-14  DF7BE  Project qrdecode completed
 2025-01-13  DF7BE  Now running on MacOS by using shell script.
 2025-01-13  DF7BE  Also instruction for LINUXMint
 2025-01-07  DF7BE  First tries with MacOS 
@@ -88,7 +89,7 @@ Supported platforms:
       "
       So need to compile the zbarcam program with patch (all LINUX).
       
-      On LINUXMint the following steps for prerequite are enough:
+      On LINUXMint the following steps for prerequites are enough:
         sudo apt-get install libv4l-dev
         sudo ln -s /usr/include/libv4l1-videodev.h /usr/include/linux/videodev.h 
         sudo apt-get install imagemagick      
@@ -181,7 +182,7 @@ Supported platforms:
 3. Output format:
 
    Every scan operation starts with a string
-   "QR-Code:" or "EAN-13:".
+   for example "QR-Code:" or "EAN-13:".
    QR codes may be have more than one line, they are
    delimited by the line ending of the operating system.
    For every decoded issue the ASCII character BEL = 0x07
@@ -299,13 +300,26 @@ You can automate it to wait for first successful reading:
 Be shure, that this script file has execute permission,
 other set with
 chmod 755 qrdecode_mac.sh
+This command is also executed in the HWGUI sample program,
+so no "permission denied" message should not be appeared.
 
 Parameter <number of tries> limits the number of tries
 to read a valid QR code and to avoid an endeless loop.
 We suggest to start a test with 10 tries.
+You can increase the number of tries in the HWGUI sample program.
 
 The script terminates, if the QR or bar code is successfully read.
 
+The difference:
+On WIndows and LINUX the decode action is closed, if the
+"X" icon is pressed. There mutliple decode actions are possible
+and the results are collected in the output file. 
+Here on MacOS, only one decode session per start by the "Scan"
+button of the sample program is possible. 
+The action stops with successfull scan.
+If you want to scan more than one OR or bar code,
+add a loop around the decoding action.
+  
 
 3.3) Compile HWGUI sample program
 
@@ -317,6 +331,8 @@ line of the source code to your own needs.
 ...#ifdef ___MACOSX___
  lnmodal := .F.
   ccommand := "./qrdecode_mac.sh 10"
+  * Set execute permission
+  hwg_RunConsoleApp("chmod 755 qrdecode_mac.sh")  
   rc := hwg_RunConsoleApp(ccommand,outfilename)
  ... 
   

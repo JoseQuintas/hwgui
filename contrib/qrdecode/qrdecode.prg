@@ -73,6 +73,8 @@ couttext := ""
 #ifdef ___MACOSX___
  lnmodal := .F.
   ccommand := "./qrdecode_mac.sh 10"
+  * Set execute permission
+  hwg_RunConsoleApp("chmod 755 qrdecode_mac.sh")
   rc := hwg_RunConsoleApp(ccommand,outfilename)
 #else
 * All other LINUXe

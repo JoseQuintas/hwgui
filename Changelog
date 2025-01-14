@@ -15,8 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2025-01-14 15:45 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrdecode/ReadMe.txt
+* contrib/qrdecode/qrdecode.prg
+  ! Project qrdecode completed.
+  ! Now running on all 3 OS's.  
+
+
 2025-01-13 18:00 UTC+0100 Wilfried Brunken DF7BE
-*  contrib/qrdecode/ReadMe.txt
+* contrib/qrdecode/ReadMe.txt
 * contrib/qrdecode/qrdecode.prg
 * contrib/qrdecode/qrdecode_mac.sh
   ! Project qrdecode:

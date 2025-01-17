@@ -5,8 +5,25 @@ QR encode library ready for integration into HWGUI
 "QR-Code-generator"
 
 
-Corrections:    2024-12-12
-First creation: 2022-09-07
+2025-01-17   DF7BE   Added sample for bat generation of QR codes
+2024-12-12   DF7BE   Corrections  
+2022-09-07   DF7BE   First creation
+
+Contents:
+
+1.)     Copyright of this library
+2.)     Installation instructions.
+2.1)    Supported compiler
+2.2)    Steps to install QR-Code-Generator
+2.3)    Steps to build HWGUI interface module
+2.4)    Test with sample program
+2.5)    Final instructions
+2.6)    Extra instructions for non C99 standard Compiler
+2.6.1)  Borland C
+3.)     Generate QR code by bat oder sh calls
+
+
+
 
 1.) Copyright of this library
 
@@ -22,6 +39,7 @@ https://www.nayuki.io/page/qr-code-generator-library
 
 https://github.com/nayuki/QR-Code-generator
 
+
 The QR code was returned as pure text and 
 it is converted to a bitmap with extra HWGUI functions.
 
@@ -32,7 +50,7 @@ it is converted to a bitmap with extra HWGUI functions.
 At this time only the following compiler are supported:
 - MinGW32
 - MinGW64 (also with Msys2 environment)
-- GTK/LINUX with gcc
+- GTK/LINUX and MacOS with gcc
 - Borland C with DLL, see extra instructions
 
 Build scripts for other compilers are delivered 
@@ -60,34 +78,34 @@ as soon as possible.
 - Extract the archive "QR-Code-generator-master.zip" in an temporary directory.
 
 -  Change to build directory:
-  cd QR-Code-generator-master
-  cd c
+    cd QR-Code-generator-master
+    cd c
   
 - All Windows platforms:
-  Copy the desired build script from HWGUI environment
-  in directory "contrib\qrencode" into the temporary directory
-  above.
-  For example: Makefile.mingw
+   Copy the desired build script from HWGUI environment
+   in directory "contrib\qrencode" into the temporary directory
+   above.
+   For example: Makefile.mingw
 
 - Start build process:
   
-  MinGW: make -f Makefile.mingw *)
-  LINUX: make (usage of the Makefile delivered by archive of QR code generator)
+   MinGW: make -f Makefile.mingw *)
+   LINUX: make (usage of the Makefile delivered by archive of QR code generator)
   
-  *) Build script only builds  the library and the demo program in C, but not the
-   sample and demo program of HWGUI.  
+   *) Build script only builds  the library and the demo program in C, but not the
+    sample and demo program of HWGUI.  
 
 - Copy header file "qrcodegen.h" to contrib\qrencode\include 
   
 - copy library "libqrcodegen.a" or "libqrcodegen.lib"
-  to the HWGUI "lib" directory.
-  The file extension depends of the used compiler.
+   to the HWGUI "lib" directory.
+   The file extension depends of the used compiler.
 
 - Optional: the temporary build directory is not needed any more,
-  delete it.
+   delete it.
 
 
-2.3) Steps to build HWGUI interface module:
+2.3) Steps to build HWGUI interface module
      - Change to HWGUI directory "contrib/qrencode"
      - hbmk2 qrencode.hbp
      - Check, that the library for the HWGUI interface module
@@ -107,7 +125,7 @@ as soon as possible.
 
     
 
-2.5) Final instructions.
+2.5) Final instructions
 
 Be shure, that the following options are inserted in 
 the *.hbp file or Makefile of your application:
@@ -121,21 +139,21 @@ Copy also the generated libraries and the header file
 to reach the path's by compile or running task.
 
 
-2.6) Extra instructions for non C99 standard compiler.
+2.6) Extra instructions for non C99 standard compiler
 
     In this case, the library "contrib\qrencode\qrencode.c"
-	cannot be compiled with the compiler not supporting
-	the C99 standard.
-	Instead the use of a DLL (qrcodegen.dll) is the
-	only way to get a running QR code generator.
-	The ready to use DLL (compiled with MinGW32)
-	can be downloaded from the files section of
-	the HWGUI project site a sourceforge.net.
-	
-	The sample program "qrencodedll.prg"
-	demonstrates the usage of the DLL.
+    cannot be compiled with the compiler not supporting
+    the C99 standard.
+    Instead the use of a DLL (qrcodegen.dll) is the
+    only way to get a running QR code generator.
+    The ready to use DLL (compiled with MinGW32)
+    can be downloaded from the files section of
+    the HWGUI project site a sourceforge.net.
+
+    The sample program "qrencodedll.prg"
+    demonstrates the usage of the DLL.
     
-2.6.1) Borland C	
+2.6.1) Borland C
 
    - Download the DLL (location see above)
    - Set environment for Borland C, for example:
@@ -145,7 +163,72 @@ to reach the path's by compile or running task.
    - Copy the DLL into the sample directory	  
      and run the sample program.
    - Copy the DLL into the directory running your HWGUI application.   
- 
 
+   
+3.) Generate QR code by bat oder sh calls
+
+The file libqrcode_hb.prg is a collection of HWGUI
+functions needed to make the QR encode feature available
+for Harbour console programs.
+
+The (sample) program hb_qrencode.prg is a full application to
+generate QR codes from command line.
+
+Steps to build the sample program:
+
+Some steps are also to do for the HWGUI program.
+
+   - Extract the archive "QR-Code-generator-master.zip" in an temporary directory.
+
+   -  Change to build directory:
+       cd QR-Code-generator-master
+       cd c
+  
+   - All Windows platforms:
+       Copy the desired build script from HWGUI environment
+       in directory "contrib\qrencode" into the temporary directory
+       above.
+       For example: Makefile.mingw
+
+   - Start build process:
+  
+       MinGW: make -f Makefile.mingw *)
+       LINUX: make (usage of the Makefile delivered by archive of QR code generator)
+  
+   - Copy header file "qrcodegen.h" to contrib\qrencode\include 
+  
+   - copy library "libqrcodegen.a" or "libqrcodegen.lib"
+       to the HWGUI "lib" directory.
+       The file extension depends of the used compiler.
+  
+  - Optional: the temporary build directory is not needed any more,
+      delete it.
+
+  Now build the sample application by typing:  
+
+   hbmk2 hb_qrencode.hbp
+  
+   Synopsis:
+   
+   hb_qrencode <text convert to QR code> , <bitmap file name with QRcode,
+     add extension ".bmp"> [,<zoom factor>]
+
+   Default value for zoom factor is 3
+ 
+   Sample calls:
+   hb_qrencode "https://sourceforge.net/projects/hwgui" hwgui_sf.bmp
+   hb_qrencode "https://www.darc.de" darc.bmp
+ 
+   Trouble with Euro currency sign:
+   (Windows only)
+   * Euro = 3f (63 dec) = ?
+   ==> Instead of the Euro sign a "?" appears.
+   It seems, that is a problem by passing the character €
+   on the command line interface.
+   The Euro sign is passed and visible, but not passed to the program.
+   See image:
+   command_with_Euro.png
+   (in subdirectory "img")
+   On LINUX, no trouble to write any UTF-8 into the QR code.
 
 =============== EOF of Readme.txt ======================== 

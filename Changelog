@@ -16,6 +16,19 @@
 */
 
 
+2025-01-17 16:25 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrencode/hb_qrencode.hbp (New)
+* contrib/qrencode/hb_qrencode.prg (New)
+* contrib/qrencode/libqrcode_hb.prg (New)
+* contrib/qrencode/img/command_with_Euro.png (New)
+* contrib/qrencode/Readme.txt
+  ! Project qrdencode extended:
+  ! Now console/terminal Harbour program to
+  ! generate QR codes from commmand line.
+  ! For creating lot's of QR codes by
+  ! batch calls.
+
+
 2025-01-14 15:45 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrdecode/ReadMe.txt
 * contrib/qrdecode/qrdecode.prg

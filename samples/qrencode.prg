@@ -23,10 +23,11 @@
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
     *  GTK/Win  :  No
+    *  MacOS:Yes    
 
-* <under construction>
 
 #include "hwgui.ch"
+#include "hbextcdp.ch"
 
 FUNCTION Main()
 
@@ -52,6 +53,17 @@ RETURN Nil
 * Store the QR code to bitmap file "test.bmp
 
 FUNCTION Testen()
+
+*
+* All steps of generating a QR code from string
+* are collected in one function:
+*   HB_QRENDCODE(ctext,cbitmapfile,nzoomf)
+* 
+* Copy it from
+*  contrib\qrencode\libqrcode_hb.prg
+* and insert into your HWGUI program.
+* In the comment lines the parameters are there described, too.
+*  
 
    LOCAL cqrc, cbitmap , narrsize
 

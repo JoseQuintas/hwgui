@@ -16,6 +16,23 @@
 */
 
 
+2025-01-19 13:00 UTC+0100 Wilfried Brunken DF7BE
+* doc/image/hwgui_sf.bmp (New)
+* contrib/qrencode/hb_qrencode.prg
+* contrib/qrencode/libqrcode_hb.prg
+* samples/qrencode.prg
+* doc/hwgdoc_functions.html
+* source/cross/hmisccross.prg
+  ! Project qrencode:
+  ! Some modifications for
+  ! better handling, also
+  ! docu updated.
+  ! TO-DO:
+  ! After calling hwg_QRCodetxt2BPM() the 
+  ! size getting with hwg_QRCodeGetSize() returns 0,0
+  ! (To be continued)
+ 
+
 2025-01-17 16:25 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrencode/hb_qrencode.hbp (New)
 * contrib/qrencode/hb_qrencode.prg (New)

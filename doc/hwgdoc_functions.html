@@ -3902,7 +3902,17 @@ See sample program "testspli.prg" for details.<br>
     End of Functions for raw bitmap support<br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
 
-    <br>QR code functions &lt;for decode under contruction&gt; !<br>
+    <strong><br>QR code functions<br></strong>
+    <br>
+    Advice:<br>
+    QR codes are mainly standisized by  JIS X 0510 (Japanese Industrial Standard)<br>
+    and ISO/IEC 18004:2006.<br>
+    More non standard QR codes are existing. They are not supported.<br>
+    <br>
+    <br>
+    Here an example for a standard QR code with the URL to the HWGUI project site:<br>
+    <img src="./image/hwgui_sf.bmp" align=center wborder=0 alt="Sample QR code"><br>
+    <br>
     <br>
     All functions start with prefix "hwg_QR".<br>
     <br>
@@ -3912,6 +3922,48 @@ See sample program "testspli.prg" for details.<br>
     integrate into HWGUI see file contrib\qrencode\Readme.txt.<br>
     Please respect the copyright notes of external libraries.<br>
     <br>
+    <strong>QR code decoding</strong><br>
+    <br>
+    The encode functions need an external library, instructions to<br>
+    integrate into HWGUI see file contrib\qredcode\Readme.txt.<br>
+    Please respect the copyright notes of external libraries.<br>
+    <br>
+    For decoding QR codes from camera, you need on all platforms the<br>
+    Open Source package "ZBar".<br>
+    The version 0.10 is available on the HWGUI project site in the "Files" section<br>
+    under: contrib/qrdecode/<br>
+    It works at it's best and can also decode many bar codes.<br>
+    For Windows, a ready to install setup archive is there available.<br>
+    On MacOS, an additional shell script and another program "imagesnap" is needed,<br>
+    so look into the ReadMe.txt file for detailed instructions.<br>
+    To compile the ZBar package from source, a code patch is needed.<br>
+    <br>
+    
+    <br><strong class="subhead"> HWG_QRENCODE(ctext, nzoomf)</strong>
+    <br>
+    Creates the QR code and convert it to bitmap binary image of type C.<br>
+    Function to call from main or other functions starting the encode action.<br>
+    It is the "user interface".<br>
+    Returns the bitmap binary image of type C.<br>
+    Not to be used with DLL (for example Borland C).<br>
+    <br>
+    ctext      &nbsp;&nbsp;&nbsp;  : &nbsp;&nbsp; The text to convert to QR code<br>
+    nzoomf     &nbsp;&nbsp;        : &nbsp;&nbsp; The zoom factor, default is 3<br>
+    
+    <p></p>
+    
+    <br><strong class="subhead"> hwg_CBmp2file(cbitmap,cbitmapfile)</strong>
+    <br>
+    Write the bitmap binary image of type C to file,<br>
+    for example returned by HWG_QRENCODE().<br>
+    <br>
+    cbitmapfile  : The bitmap file name containing the QR code, with extension ".bmp"<br>
+    <br>
+    For compatibilty with UNIX/LINUX and MacOS,<br>
+    use file name always in lower case.<br>
+    
+    <p></p>
+    
     <br><strong class="subhead"> hwg_QRCodeTxtGen(ctext,&lt;border&gt;)</strong><br>
     Converts a string ctext into a<br>
     QR code text string,<br>

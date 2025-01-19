@@ -16,7 +16,7 @@
 
 FUNCTION MAIN(ctext,cbitmapfile,czoomf)
 
-LOCAL nzoomf
+LOCAL nzoomf, cbmp
 
 * Set "_DE858" to your language setting on Windows
 // REQUEST HB_CODEPAGE_DEWIN
@@ -41,7 +41,13 @@ REQUEST HB_CODEPAGE_UTF8EX
    nzoomf := VAL(czoomf)
   ENDIF 
  
-  HB_QRENDCODE(ctext,cbitmapfile,nzoomf)
+  // ? "Zoom factor is " , nzoomf
+ 
+  * Convert text to bitmap binary image as type C
+  cbmp := HWG_QRENCODE(ctext,nzoomf)
+  
+  * Store to bitmap file
+  hwg_CBmp2file(cbmp,cbitmapfile)
 
  QUIT
 

@@ -23,7 +23,7 @@
     *  WinAPI   :  Yes
     *  GTK/Linux:  Yes
     *  GTK/Win  :  No
-    *  MacOS:Yes    
+    *  MacOS    :  Yes    
 
 
 #include "hwgui.ch"
@@ -57,41 +57,22 @@ FUNCTION Testen()
 *
 * All steps of generating a QR code from string
 * are collected in one function:
-*   HB_QRENDCODE(ctext,cbitmapfile,nzoomf)
-* 
-* Copy it from
-*  contrib\qrencode\libqrcode_hb.prg
-* and insert into your HWGUI program.
-* In the comment lines the parameters are there described, too.
-*  
-
-   LOCAL cqrc, cbitmap , narrsize
-
-   // cqrc := hwg_QRCodeTxtGen("https://www.darc.de",1)
-
-   cqrc := hwg_QRCodeTxtGen( "https://sourceforge.net/projects/hwgui", 1 )
+*   HWG_QRENCODE(ctext,nzoomf)
 
 
-   cqrc := hwg_QRCodeZoom( cqrc, 3 )
+   LOCAL  cbitmap, narrsize 
 
-   // cqrc := hwg_QRCodeZoom_C(cqrc,LEN(cqrc),3)
-  
-  
-   * Add border 10 pixels
-   cqrc := hwg_QRCodeAddBorder(cqrc,10)
+    
+   cbitmap  := HWG_QRENCODE("https://sourceforge.net/projects/hwgui/")
    
-   * Get size of QR code and display it
-   narrsize := hwg_QRCodeGetSize(cqrc)
-
-   hwg_MsgInfo("x=" + ALLTRIM(STR(narrsize[1])) + " y=" +  ;
-   ALLTRIM(STR(narrsize[2])),"Size of QR code")
-
-   hwg_WriteLog( cqrc )
-
-   cbitmap := hwg_QRCodetxt2BPM( cqrc )
-
-   * Store to bitmap file
-   MEMOWRIT( "test.bmp", cbitmap )
+   QR_Size_Disp(cbitmap)
+   
+   // hwg_WriteLog( cbitmap )
+   // cqrc := hwg_QRCodeZoom_C(cqrc,LEN(cqrc),3)
+   
+  * Store to bitmap file
+   // MEMOWRIT( "test.bmp", cbitmap )
+   hwg_CBmp2file(cbitmap,"test.bmp")
    
    * <under construction>
    // TO-DO: extend with conversion to bitmap object.
@@ -102,6 +83,15 @@ FUNCTION Testen()
 
 RETURN Nil
 
+ FUNCTION QR_Size_Disp(cbitmap)
+   * Get size of QR code and display it
  
+   LOCAL narrsize
+ 
+   narrsize := hwg_QRCodeGetSize(cbitmap)
+
+   hwg_MsgInfo("x=" + ALLTRIM(STR(narrsize[1])) + " y=" +  ;
+   ALLTRIM(STR(narrsize[2])),"Size of QR code")
+RETURN NIL   
 
 *  ================== EOF of qrencode.prg ======================

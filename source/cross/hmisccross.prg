@@ -1701,6 +1701,73 @@ cbuffer := SPACE(nbufsize)
 // hwg_MsgInfo("Bytes read=" +  ALLTRIM(STR(anzbytes)) )    && Debug
 RETURN coutput 
 
+FUNCTION HWG_QRENCODE(ctext,nzoomf)
+
+   LOCAL cqrc
+   LOCAL cbitmap 
+//   LOCAL narrsize      && For debug
+
+  IF ( ctext == NIL )
+   * nothing to do
+    RETURN NIL
+  ENDIF 
+  
+  IF nzoomf == NIL
+     nzoomf := 3
+  ENDIF
+  
+#ifdef __PLATFORM__WINDOWS
+   * Convert to UTF-8
+   * Set "DE858" to your language setting on Windows
+//   MEMOWRIT("testout1.txt",ctext)   && Debug   
+   ctext := HB_TRANSLATE(ctext, "DE858" , "UTF8")
+//   MEMOWRIT("testout2.txt",ctext)   && Debug
+#endif
+
+
+   // cqrc := hwg_QRCodeTxtGen("https://www.darc.de",1)
+
+   cqrc := hwg_QRCodeTxtGen( ctext, 1 )
+
+
+   cqrc := hwg_QRCodeZoom( cqrc, nzoomf )
+
+
+   
+   * Add border 10 pixels
+   cqrc := hwg_QRCodeAddBorder(cqrc,10)
+   
+//   narrsize := hwg_QRCodeGetSize(cqrc)
+//   hwg_MsgInfo("x=" + ALLTRIM(STR(narrsize[1])) + " y=" +  ;
+//   ALLTRIM(STR(narrsize[2])),"Size of QR code")
+  
+
+   * Final creating of bitmap with QR code 
+   cbitmap := hwg_QRCodetxt2BPM( cqrc )
+   
+* DF7BE:
+* Here TO-DO:
+* After calling hwg_QRCodetxt2BPM() the 
+* size getting with hwg_QRCodeGetSize() returns 0,0
+
+// RETURN cqrc
+RETURN cbitmap
+
+
+FUNCTION hwg_CBmp2file(cbitmap,cbitmapfile)
+
+IF cbitmap == NIL
+ RETURN NIL
+ENDIF
+
+IF cbitmapfile == NIL
+ cbitmapfile := "bitmap.bmp"
+ENDIF 
+
+   MEMOWRIT( cbitmapfile, cbitmap )
+RETURN NIL
+
+
 
 FUNCTION hwg_oBitmap2file(oBitmap,cbmpname,coutfilename )
 

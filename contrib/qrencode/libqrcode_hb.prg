@@ -26,14 +26,20 @@
 *
 * Function list:
 *
-* HB_QRENDCODE(ctext,cbitmapfile,nzoomf)   && Function to call from main.
+* HWG_QRENCODE(ctext,cbitmapfile,nzoomf)   && Function to call from main.
 *                                          && Creates the QR code and write to bitmap file.
-*                                          && Is is the "user interface".
+*                                          && It is the "user interface".
+*                                          && Returns the bitmap binary image of type C.
+*                                          && Do not use for DLL.
 *
-*  ctext        : The text to convert to QR code
-*  cbitmapfile  : The bitmap file name containing the QR code, with extension ".bmp"
-*                 For compatibilty with UNIX/LINUX and MacOS, use file name always in lower case.
-*  nzoomf       : The zoom factor, default is 3
+*                                          && ctext        : The text to convert to QR code
+*                                          && nzoomf       : The zoom factor, default is 3
+*
+*  hwg_CBmp2file(cbitmap,cbitmapfile)      && Write the bitmap binary image of type C to file.
+*                                          && cbitmapfile  : The bitmap file name
+*                                          && containing the QR code, with extension ".bmp"
+*                                          && For compatibilty with UNIX/LINUX and MacOS,
+*                                          && use file name always in lower case.
 *
 *
 * hwg_QRCodeTxtGen() found in qrencode.c
@@ -81,11 +87,11 @@
 
 #include "hbextcdp.ch"
 
-FUNCTION HB_QRENDCODE(ctext,cbitmapfile,nzoomf)
+FUNCTION HWG_QRENCODE(ctext,nzoomf)
 
-   LOCAL cqrc, cbitmap , narrsize
+   LOCAL cqrc, cbitmap
 
-  IF ( ctext == NIL ) .OR.  (cbitmapfile == NIL)
+  IF ( ctext == NIL )
    * nothing to do
     RETURN NIL
   ENDIF 
@@ -117,11 +123,21 @@ FUNCTION HB_QRENDCODE(ctext,cbitmapfile,nzoomf)
    * Final crrating of bitmap with QR code 
    cbitmap := hwg_QRCodetxt2BPM( cqrc )
 
-   * Store to bitmap file
-   MEMOWRIT( cbitmapfile, cbitmap )
-   
- 
 
+RETURN cbitmap
+
+
+FUNCTION hwg_CBmp2file(cbitmap,cbitmapfile)
+
+IF cbitmap == NIL
+ RETURN NIL
+ENDIF
+
+IF cbitmapfile == NIL
+ cbitmapfile := "bitmap.bmp"
+ENDIF 
+
+   MEMOWRIT( cbitmapfile, cbitmap )
 RETURN NIL
 
 

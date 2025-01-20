@@ -3938,8 +3938,18 @@ See sample program "testspli.prg" for details.<br>
     so look into the ReadMe.txt file for detailed instructions.<br>
     To compile the ZBar package from source, a code patch is needed.<br>
     <br>
+    <strong>Format description</strong><br>
+    <br>
+    The encoding function hwg_QRCodeTxtGen() returns a pure text image,<br>
+    where a blank " " represents a white pixel and the "#" a black pixel.<br>
+    The lines ends with a UNIX/LINUX line ending.<br>
+    For example:<br>
+    <img src="./image/qr_darc_text.bmp" align=center wborder=0 alt="Sample QR code"><br>
+    In this state, the image can be processes with the hwg_QR... functions.<br> 
+    Finally, the QR code text image must be converted to a binary bimap image by<br>
+    calling the function hwg_QRCodetxt2BPM().<br>
     
-    <br><strong class="subhead"> HWG_QRENCODE(ctext, nzoomf)</strong>
+    <br><strong class="subhead"> HWG_QRENCODE(ctext [, nzoomf] [,nboarder] )</strong>
     <br>
     Creates the QR code and convert it to bitmap binary image of type C.<br>
     Function to call from main or other functions starting the encode action.<br>
@@ -3947,8 +3957,11 @@ See sample program "testspli.prg" for details.<br>
     Returns the bitmap binary image of type C.<br>
     Not to be used with DLL (for example Borland C).<br>
     <br>
-    ctext      &nbsp;&nbsp;&nbsp;  : &nbsp;&nbsp; The text to convert to QR code<br>
-    nzoomf     &nbsp;&nbsp;        : &nbsp;&nbsp; The zoom factor, default is 3<br>
+    ctext      &nbsp;&nbsp;&nbsp;&nbsp;  : &nbsp;&nbsp; The text to convert to QR code<br>
+    nzoomf     &nbsp;&nbsp;&nbsp;        : &nbsp;&nbsp; The zoom factor, default is 3<br>
+    nboarder   &nbsp;              : &nbsp;&nbsp; The boarder in pixels, default is 10.<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+     This value is strictly recommended for successfull scans.<br> 
     
     <p></p>
     

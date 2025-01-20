@@ -1701,7 +1701,7 @@ cbuffer := SPACE(nbufsize)
 // hwg_MsgInfo("Bytes read=" +  ALLTRIM(STR(anzbytes)) )    && Debug
 RETURN coutput 
 
-FUNCTION HWG_QRENCODE(ctext,nzoomf)
+FUNCTION HWG_QRENCODE(ctext,nzoomf,nboarder)
 
    LOCAL cqrc
    LOCAL cbitmap 
@@ -1715,6 +1715,10 @@ FUNCTION HWG_QRENCODE(ctext,nzoomf)
   IF nzoomf == NIL
      nzoomf := 3
   ENDIF
+  
+  IF nboarder == NIL
+    nboarder := 10
+  ENDIF  
   
 #ifdef __PLATFORM__WINDOWS
    * Convert to UTF-8
@@ -1735,7 +1739,7 @@ FUNCTION HWG_QRENCODE(ctext,nzoomf)
 
    
    * Add border 10 pixels
-   cqrc := hwg_QRCodeAddBorder(cqrc,10)
+   cqrc := hwg_QRCodeAddBorder(cqrc,nboarder)
    
 //   narrsize := hwg_QRCodeGetSize(cqrc)
 //   hwg_MsgInfo("x=" + ALLTRIM(STR(narrsize[1])) + " y=" +  ;
@@ -1744,13 +1748,7 @@ FUNCTION HWG_QRENCODE(ctext,nzoomf)
 
    * Final creating of bitmap with QR code 
    cbitmap := hwg_QRCodetxt2BPM( cqrc )
-   
-* DF7BE:
-* Here TO-DO:
-* After calling hwg_QRCodetxt2BPM() the 
-* size getting with hwg_QRCodeGetSize() returns 0,0
 
-// RETURN cqrc
 RETURN cbitmap
 
 

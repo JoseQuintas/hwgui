@@ -16,6 +16,19 @@
 */
 
 
+2025-01-20 16:30 UTC+0100 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* doc/image/qr_darc_text.bmp (New)
+* samples/qrencode.prg
+* source/cross/hmisccross.prg
+  ! Project qrencode:
+  ! New parameter nboarder for HWG_QRENCODE().
+  ! Format description for
+  ! bitmap images added in
+  ! HWGUI function docu.
+  ! (to be continued)
+
+
 2025-01-19 13:00 UTC+0100 Wilfried Brunken DF7BE
 * doc/image/hwgui_sf.bmp (New)
 * contrib/qrencode/hb_qrencode.prg

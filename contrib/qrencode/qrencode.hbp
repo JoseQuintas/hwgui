@@ -28,6 +28,7 @@
 #-cflag=-DUNICODE
 
 #-cflag=-DHWG_USE_POINTER_ITEM
+libqrencode.prg
 qrencode.c
 
 # ============================ EOF of qrencode.hbp ======================================

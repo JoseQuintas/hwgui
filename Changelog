@@ -15,6 +15,14 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-21 19:20 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrencode/libqrencode.prg (New)
+* contrib/qrencode/qrencode.hbp
+* source/cross/hmisccross.prg
+  ! Project qrencode:
+  ! Urgent fix compile
+  ! (to be continued)
+
 2025-01-21 16:20 UTC+0100 Wilfried Brunken DF7BE
 * doc/hwgdoc_functions.html
 * samples/qrencode.prg

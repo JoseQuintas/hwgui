@@ -1766,6 +1766,53 @@ ENDIF
 RETURN NIL
 
 
+// Removes the EOF marker from a C string
+// EOF marker 0x1a = CHR(26)
+
+FUNCTION hwg_delEOFMarker(CBinrec)
+
+LOCAL nlaenge
+  IF CBinrec == NIL 
+    RETURN ""
+  ENDIF
+  nlaenge := LEN(CBinrec)
+  IF nlaenge > 0
+   IF SUBSTR(CBinrec,nlaenge,1) == CHR(26)
+     * Remove the EOF marker
+     CBinrec := SUBSTR(CBinrec,1,nlaenge - 1)
+   ENDIF
+  ENDIF
+  RETURN CBinrec
+  
+FUNCTION hwg_BMPxyfromBinary(cbpm)
+
+* BITMAPFILEHEADER (14 Byte) + BITMAPINFOHEADER (40 Byte) = 54 (0x36)
+* 18 0x12 LONG int32_t 4 Bytes Width   x  
+* 22 0x16 LONG int32_t 4 Bytes Height  y  
+* Add 1, because index starts with 0 in C, so xpos= 19, ypos= 23
+
+LOCAL nx, ny
+
+IF cbpm == NIL
+ RETURN {0,0}
+ENDIF
+* Check for header sizes
+IF LEN(cbpm) < 54
+ RETURN {0,0}
+ENDIF
+* Check for bitmap magic
+IF .NOT. ( SUBSTR(cbpm,1,2) == "BM")
+ RETURN {0,0}
+ENDIF
+* Get the values from header structure 
+nx := Bin2L(SUBSTR(cbpm,19,4))
+ny := Bin2L(SUBSTR(cbpm,23,4))
+* nx and ny may be negative, this is a "top-down" bitmap,
+* the usual case is the bottom-up bitmap.
+
+* Now return result array
+RETURN { nx,ny }   
+
 
 FUNCTION hwg_oBitmap2file(oBitmap,cbmpname,coutfilename )
 

@@ -143,6 +143,9 @@ FUNCTION SECOND_RUN()
    * The MEMOWRIT() function add an EOF marker at end of file
    * 0x1a = CHR(26)
    
+   * Display also the size (x,y) of bitamp vom binary image as type C
+   QR_Size_Disp_Bin(cbitmap)
+   
    * <under construction>
    // TO-DO: extend with conversion to bitmap object.
    // hwg_oBitmap2file(cbitmap,"qr-code.bmp")
@@ -153,10 +156,18 @@ FUNCTION SECOND_RUN()
 
 RETURN NIL
 
-* DF7BE:
-* Here DO:
-* After calling hwg_QRCodetxt2BPM() the 
-* size getting with hwg_QRCodeGetSize() returns 0,0
-* (is now binary format of bitmap)
+FUNCTION QR_Size_Disp_Bin(cbitmap)
+   * Get size of QR code and display it
+   * from binary image
+   LOCAL narrsize
+ 
+   narrsize := hwg_BMPxyfromBinary(cbitmap)
+
+   hwg_MsgInfo("x=" + ALLTRIM(STR(narrsize[1])) + " y=" +  ;
+   ALLTRIM(STR(narrsize[2])),"Size of QR code")
+
+RETURN NIL 
+
+
 
 *  ================== EOF of qrencode.prg ======================

@@ -3682,10 +3682,25 @@ See sample program "testspli.prg" for details.<br>
    This function regards daylight saving<br>
    time.<br>
    <p></p>
+   
+    <br><strong class="subhead"> hwg_delEOFMarker(CBinrec)</strong><br>
+    <br>
+    Removes the EOF marker from a type C string.<br>
+    EOF marker 0x1a = CHR(26).<br>
+    Purpose:<br>
+    After writing a binary or text image into a file with MEMOWRIT(),<br>
+    an EOF marker is added automatically.<br>
+    Reading this file with MEMOREAD() or hwg_FBINREAD(),<br>
+    the EOF marker is also read, this can cause some trouble
+    with processing  after it.<br>
+    
+    <p></p>
 
    <br><strong class="subhead"><a name="Functions83" href="hwgdoc_functions.html#_Functions83">
    5.8.3 Raw bitmap support and QR code.</a></strong><br>
    <p></p>
+   
+ 
 
    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
    Functions for raw bitmap support<br>
@@ -3897,6 +3912,18 @@ See sample program "testspli.prg" for details.<br>
 
     <p></p>
 
+     <br><strong class="subhead"> hwg_BMPxyfromBinary(cbpm)</strong><br>
+     <br>
+     Returns the x and y size of a bitmap<br>
+     (out of the usage of class HBITMAP)<br>
+     This is the equivalent to hwg_Getbitmapsize(handle)<br>
+     cbpm : The binary format of bitmap of Type C<br>
+     Returns an array with 2 elements of numerical values (N) <br>
+     [1]:   Width<br>
+     [2]:   Height<br>
+     
+    <p></p>
+   
     <br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
     End of Functions for raw bitmap support<br>

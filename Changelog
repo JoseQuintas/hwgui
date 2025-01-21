@@ -15,6 +15,23 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-21 16:20 UTC+0100 Wilfried Brunken DF7BE
+* doc/hwgdoc_functions.html
+* samples/qrencode.prg
+* source/cross/hmisccross.prg
+  ! Project qrencode:
+  ! New functions:
+  ! hwg_BMPxyfromBinary()
+  ! hwg_delEOFMarker()
+  ! Done:
+  ! After calling hwg_QRCodetxt2BPM() the 
+  ! size getting with hwg_QRCodeGetSize() returns 0,0
+  ! (is now binary format of bitmap)
+  ! So the new function
+  ! hwg_BMPxyfromBinary() will
+  ! do this for you.
+  ! (to be continued) 
+
 
 2025-01-20 16:30 UTC+0100 Wilfried Brunken DF7BE
 * doc/hwgdoc_functions.html

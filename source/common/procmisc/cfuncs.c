@@ -1079,7 +1079,9 @@ HB_FUNC( HWG_CHDIR )
 /*   hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );
    #else */
 /* LINUX and also for MacOS and Windows */   
+#if !defined( _MSC_VER )
    hb_retl( HB_ISCHAR( 1 ) && chdir( hb_parc( 1 ) ) );
+#endif
 /*
 #endif
 */

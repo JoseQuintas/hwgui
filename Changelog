@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-23 15:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * image/WindowsXP.Manifest
+    * Small correction for 64-bit applications
+  * source/common/procmisc/cfuncs.c
+    * Changed the hwg_chdir() for to not compile under msvc.
+      BTW, I still don't understand, why we need this function,
+        since we have a standard Clipper/Harbour's DirChange().
+  * utils/hwbuild/hwb.prg
+    ! Fixes and enhancements
+
 2025-01-21 19:20 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrencode/libqrencode.prg (New)
 * contrib/qrencode/qrencode.hbp

@@ -93,7 +93,7 @@ FUNCTION Main()
 #ifdef __XHARBOUR__
          MENUITEM "&Version HwGUI and Compilator" ACTION hwg_Msginfo( HwG_Version() + Chr(10) + Chr(13) + version() )
 #else
-         MENUITEM "&Version HwGUI and Compilator" ACTION hwg_Msginfo( HwG_Version() + Chr(10) + Chr(13) + hb_version() )
+         MENUITEM "&Version HwGUI and Compilator" ACTION hwg_Msginfo( HwG_Version() + Chr(10) + Chr(13) + hb_version()+Chr(10)+Chr(13)+hb_version(1) )
 #endif
          MENUITEM "&Version HwGUI" ACTION hwg_Msginfo( HwG_Version() )
          MENUITEM "&Current dir" ACTION hwg_Msginfo( hwg_Getcurrentdir() )

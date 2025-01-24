@@ -15,6 +15,15 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-01-24 10:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
+  * contrib/gthwg/gt_hwgui_w.c
+    ! Fixes for msvc compiler
+  * contrib/contrib.hwprj
+  * hwgui.hwprj
+    * Now it puts libraries according to compiler used: lib/bcc, lib/mingw, lib/mingw64...
+  * samples/a.prg
+    * Added C compiler info to Help window
+
 2025-01-23 15:50 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * image/WindowsXP.Manifest
     * Small correction for 64-bit applications

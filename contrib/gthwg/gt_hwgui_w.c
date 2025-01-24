@@ -256,7 +256,6 @@ static HFONT gthwg_GetFont( LPCTSTR lpFace, int iHeight, int iWidth, int iWeight
 
 static int gthwg_PaintCB( HDC hdc )
 {
-
    if( hb_dynsymIsFunction( s_pSymTest_paint ) )
    {
       hb_vmPushDynSym( s_pSymTest_paint );
@@ -1136,6 +1135,13 @@ static void gthwg_PaintText( PHB_GTHWG pHWG )
             len = 0;
          }
          pHWG->TextLine[ len++ ] = ( TCHAR ) usChar;
+         /*
+         if( usChar != 32 )
+         {
+            hwg_writelog( NULL, "char: %d %u %u\r\n", usChar,
+               ((unsigned char*)pHWG->TextLine)[0], ((unsigned char*)pHWG->TextLine)[1] );
+         }
+         */
 #else
          HB_UCHAR uc;
          if( ! HB_GTSELF_GETSCRUC( pHWG->pGT, iRow, iCol, &iColor, &bAttr, &uc, HB_TRUE ) )
@@ -1267,14 +1273,14 @@ HB_FUNC( GTHWG_SETWINDOW )
 {
    HMENU hSysMenu;
 
-   hWndMain = hb_parptr( 1 );
+   hWndMain = (HWND)hb_parptr( 1 );
    if( HB_ISNIL( 2 ) )
    {
       if( pHWGMain )
          hFontMain = gthwg_GetFont( pHWGMain->fontFace, pHWGMain->fontHeight, pHWGMain->fontWidth, pHWGMain->fontWeight, pHWGMain->fontQuality, pHWGMain->CodePage );
    }
    else
-      hFontMain = hb_parptr( 2 );
+      hFontMain = (HFONT)hb_parptr( 2 );
 
    //hwg_writelog( NULL, "_setwindow-1 %d\r\n", ((hWndMain)? 1:0) );
    if( pHWGMain )
@@ -1326,7 +1332,7 @@ HB_FUNC( GTHWG_SETPANEL )
       }
    }
    else
-      hFontMain = hb_parptr( 3 );
+      hFontMain = (HFONT)hb_parptr( 3 );
 
    //hwg_writelog( NULL, "_setpanel-1\r\n" );
    wpOrigWndProc = ( WNDPROC ) SetWindowLongPtr( hPaneMain, GWLP_WNDPROC, ( LONG_PTR ) gthwg_WinProc );

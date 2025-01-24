@@ -8,7 +8,7 @@
 
 makemode=on
 objpath=../obj
-outpath=../lib
+outpath=../lib/$COMPILER
 {win}{uni}objpath=../obj_uni
 {win}{uni}outpath=../lib_uni
 {win}{uni}prgflags=-dUNICODE

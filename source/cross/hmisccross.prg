@@ -23,6 +23,8 @@
 
 * ================================= *
 
+STATIC nuniquenr
+
 FUNCTION hwg_RdLn(nhandle, lrembltab)
 
  LOCAL nnumbytes , nnumbytes2 , buffer , buffer2
@@ -1766,6 +1768,16 @@ ny := Bin2L(SUBSTR(cbpm,23,4))
 * Now return result array
 RETURN { nx,ny }   
 
+
+FUNCTION hwg_BMPuniquename(cprefix)
+ IF nuniquenr == NIL
+   nuniquenr := 0
+ ENDIF  
+ IF cprefix == NIL
+   cprefix := "name"
+ ENDIF
+ nuniquenr := nuniquenr + 1  
+RETURN cprefix + ALLTRIM(STR(nuniquenr))   
 
 FUNCTION hwg_oBitmap2file(oBitmap,cbmpname,coutfilename )
 

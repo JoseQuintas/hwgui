@@ -39,6 +39,11 @@ https://www.nayuki.io/page/qr-code-generator-library
 
 https://github.com/nayuki/QR-Code-generator
 
+For file:
+ stdbool.h
+    Author    - Bill Chatfield
+    Copyright - You are free to use for any purpose except illegal acts
+    
 
 The QR code was returned as pure text and 
 it is converted to a bitmap with extra HWGUI functions.

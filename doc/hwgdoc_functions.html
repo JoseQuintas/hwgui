@@ -3877,6 +3877,33 @@ See sample program "testspli.prg" for details.<br>
     &nbsp;&nbsp;cdirsep := hwg_GetDirSep()<br>
     &nbsp;&nbsp;CBMP2 := MEMOREAD(".." + cdirsep + "image" + cdirsep + "astro.bmp")<br>
     &nbsp;&nbsp;hwg_ShowBitmap(CBMP2,"astro")<br>
+    <br>
+    <br>
+    Important !<br>
+    The bitmap name (parameter "cbmpname") must be unique<br>
+    for every single bitmap (for example above "astro").<br>
+    It seems, that on Windows systems a cache exists,<br>
+    containing the first bitmap loaded.<br>
+    Overwriting it with a new bitmap, the old bitmap<br>
+    is hold in the bitmap object created in the<br>
+    function and displayed.<br>
+    For example:<br>
+    <br>
+    hwg_ShowBitmap(cbitmap1,"test")<br>
+    hwg_ShowBitmap(cbitmap2,"test")<br>
+    <br>
+    So at second function call the old bitmap cbitmap1<br>
+    is displayed instead of cbitmap2.<br>
+    <br>
+    So say:<br>
+    hwg_ShowBitmap(cbitmap1,"bitmap1")<br>
+    hwg_ShowBitmap(cbitmap2,"bitmap2")<br>
+    <br>
+    The value for the bitmap name is valid<br>
+    during a single program run.<br>
+    We recommend, to write the bitmap names in lower case.<br> 
+    A little helper for generating unique names is function<br> 
+    hwg_BMPuniquename().<br>
 
     <p></p>
 
@@ -3922,7 +3949,30 @@ See sample program "testspli.prg" for details.<br>
      [1]:   Width<br>
      [2]:   Height<br>
      
-    <p></p>
+     <p></p>
+    
+     <br><strong class="subhead"> hwg_BMPuniquename(cprefix)</strong><br>
+     <br>
+      Returns a unique name following by a number<br>
+      cprefix : A prefix before the number<br>
+                &nbsp;(format is <prefix>nnn)<br>
+                &nbsp;Default is "name"<br>
+      nnn starts with 1 from program start.<br>
+      This function may have a little more<br>
+      performance than a random generating <br>
+      function.<br>
+     Use it for creating masses of bitmaps,<br>
+      like lot's of QR codes.<br>
+      Some more alternative usages:<br>
+      - If cprefix is passed with an empty string "",<br> 
+        &nbsp;&nbsp;&nbsp;  you can realize a simple counter, starting<br>
+        &nbsp;&nbsp;&nbsp;  with 1 at program start.<br>
+      - For debug purposes, count how often a function is called.<br>
+      For usage see test program<br>
+       &nbsp;&nbsp;&nbsp; test\testunique.prg<br>
+      <br>
+    
+     <p></p>
    
     <br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
@@ -3934,6 +3984,35 @@ See sample program "testspli.prg" for details.<br>
     Advice:<br>
     QR codes are mainly standisized by  JIS X 0510 (Japanese Industrial Standard)<br>
     and ISO/IEC 18004:2006.<br>
+    
+    QR codes are operating with UTF-8 charset.<br>
+    On Windows, which not origin supports UTF-8,<br>
+    use compiler switch to insert the translation <br>
+    sequence following this example:<br>
+    <br>
+    #ifdef __PLATFORM__WINDOWS<br>
+       &nbsp;&nbsp; * Convert to UTF-8<br>
+       &nbsp;&nbsp; * Set "DEWIN" to your language setting on Windows<br>
+       &nbsp;&nbsp; ctext := HB_TRANSLATE(ctext, "DEWIN" , "UTF8")<br>
+    #endif<br>
+    <br>
+    Also you need to request the needed codepages<br>
+    in the MAIN section, corresponding the code sample above:<br>
+    <br>
+    * Windows codepage<br>
+    REQUEST HB_CODEPAGE_DEWIN<br>
+    * Forever needed<br>
+    REQUEST HB_CODEPAGE_UTF8<br>
+    <br>
+    #ifndef __PLATFORM__WINDOWS<br>
+    REQUEST HB_CODEPAGE_UTF8EX<br>
+    #endif<br>
+    <br>
+    The reverse translation is needed for the<br>
+    QR code decoding sequence.<br>
+    <br>
+
+    <br>
     More non standard QR codes are existing. They are not supported.<br>
     <br>
     <br>
@@ -3988,7 +4067,12 @@ See sample program "testspli.prg" for details.<br>
     nzoomf     &nbsp;&nbsp;&nbsp;        : &nbsp;&nbsp; The zoom factor, default is 3<br>
     nboarder   &nbsp;              : &nbsp;&nbsp; The boarder in pixels, default is 10.<br>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-     This value is strictly recommended for successfull scans.<br> 
+     This value is strictly recommended for successfull scans.<br>
+     <br>
+     This function is not included in the main HWGUI source,<br>
+     find it in<br> 
+     contrib\qrencode\libqrencode.prg<br>
+     <br>
     
     <p></p>
     
@@ -4019,7 +4103,7 @@ See sample program "testspli.prg" for details.<br>
     This function is part of the interface module, all<br>
     other functions for QR encoding are part of the HWGUI base libraries.<br>
 
-  <p></p>
+    <p></p>
 
 
     <br><strong class="subhead"> hwg_QRCodetxt2BPM(cqrcode)</strong><br>
@@ -4055,8 +4139,8 @@ See sample program "testspli.prg" for details.<br>
   nlen    : Pass LEN(cqrcode)<br>
   nzoom   : The zoom factor 1 ... n, the default is 1 (no zoom)<br>
   There are some limitations caused by the buffer size of the internal
-  string buffer (16 kByte).
-  A NULL byte at end of every line do not cause trouble creating the bitmap
+  string buffer (16 kByte).<br>
+  A NULL byte at end of every line do not cause trouble creating the bitmap<br>
   with hwg_QRCodetxt2BPM().
 
   <p></p>

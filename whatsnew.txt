@@ -5,6 +5,18 @@
                        What's new in the last version
                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+HWGUI code snapshot
+~~~~~~~~~~~~~~~~~~~
+(Should be added in next release)
+
+[+] Port to MacOS
+[+] Support QR codes encoding and decoding (with camera scan)
+[*] The qrcodegenerator by "Project Nayuki" will be ready for
+    non C99 standard compilers like Borland C. 
+[+] Enhanced bitmap support.
+[!] Fixes
+
+
 
 HWGUI 2.23 build 7 ( 22.12.2023 )
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

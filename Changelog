@@ -15,6 +15,41 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2025-01-30 16:20 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrencode/Readme.txt
+* contrib/qrencode/libqrcode_hb.prg
+* doc/hwgdoc_classes.html
+* doc/hwgdoc_functions.html
+* contrib/qrencode/include/stdbool.h (New)
+* contrib/qrencode/include/empty.txt (Deleted)
+* samples/qrencode.prg
+* source/cross/hmisccross.prg
+* test/testunique.hbp (New)
+* test/testunique.prg (New)
+  ! Project qrencode:
+  ! Some important advices to
+  ! handle the cache for
+  ! bitmap display,
+  ! the bitmap name (not the file name)
+  ! must be unique, otherwise an old
+  ! bitmap image is displayed.
+  ! New function hwg_BMPuniquename()
+  ! helps to create unique bitmap names.
+  ! Easy for creating masses of bitmaps
+  ! (or QR codes).
+  ! Advice, that HWG_QRENCODE()
+  ! is in "contrib", not in HWGUI
+  ! code.
+  ! Started project: 
+  ! Modify the qrcodegenerator so
+  ! to be ready for non C99 standard compilers
+  ! like Borland C.
+  ! Include file "stdbool.h" is a substitute
+  ! for missing BOOL declarations in C99 standard.
+  ! (to be continued)
+
+
 2025-01-24 10:18 UTC+0300 Alexander Kresin <alex@belacy.ru>
   * contrib/gthwg/gt_hwgui_w.c
     ! Fixes for msvc compiler

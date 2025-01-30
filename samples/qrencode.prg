@@ -77,6 +77,8 @@ FUNCTION FIRST_RUN()
 
     
    cbitmap  := HWG_QRENCODE("https://sourceforge.net/projects/hwgui/")
+
+  hwg_msgInfo(STR(LEN(cbitmap)))
    
    // QR_Size_Disp(cbitmap)  && here 0,0
    
@@ -92,7 +94,7 @@ FUNCTION FIRST_RUN()
    // hwg_oBitmap2file(cbitmap,"qr-code.bmp")
 
    * And show the new bitmap image
-   hwg_ShowBitmap( cbitmap, "test", 0, hwg_ColorC2N( "080808" ) ) // Color = 526344
+   hwg_ShowBitmap( cbitmap, "hwgui", 0, hwg_ColorC2N( "080808" ) ) // Color = 526344
 
 RETURN Nil
 
@@ -114,8 +116,11 @@ FUNCTION SECOND_RUN()
 
    // cqrc := hwg_QRCodeTxtGen("https://www.darc.de",1)
 
-   cqrc := hwg_QRCodeTxtGen( "https://sourceforge.net/projects/hwgui", 1 )
+//   cqrc := hwg_QRCodeTxtGen( "https://sourceforge.net/projects/hwgui", 1 )
 
+   cqrc := hwg_QRCodeTxtGen( "https://github.com/harbour/core")
+   
+   hwg_msgInfo(STR(LEN(cqrc)))
 
    cqrc := hwg_QRCodeZoom( cqrc, 3 )
 
@@ -138,7 +143,7 @@ FUNCTION SECOND_RUN()
    cbitmap := hwg_QRCodetxt2BPM( cqrc )
 
    * Store to bitmap file
-   MEMOWRIT( "test.bmp", cbitmap )
+   MEMOWRIT( "secondrun.bmp", cbitmap )
    * Attention !
    * The MEMOWRIT() function add an EOF marker at end of file
    * 0x1a = CHR(26)
@@ -151,9 +156,11 @@ FUNCTION SECOND_RUN()
    // hwg_oBitmap2file(cbitmap,"qr-code.bmp")
 
    * And show the new bitmap image
-   hwg_ShowBitmap( cbitmap, "test", 0, hwg_ColorC2N( "080808" ) ) // Color = 526344
+   hwg_ShowBitmap( cbitmap, "harbour", 0, hwg_ColorC2N( "080808" ) ) // Color = 526344
 
 
+//     hwg_CBmp2file(cbitmap,"secondrun.bmp")
+   
 RETURN NIL
 
 FUNCTION QR_Size_Disp_Bin(cbitmap)

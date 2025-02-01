@@ -16,6 +16,29 @@
 */
 
 
+2025-02-01 18:10 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrencode/Readme.txt
+* contrib/qrencode/build.bat (New)
+* contrib/qrencode/build.sh (New)
+* contrib/qrencode/hb_qrencode.prg
+* contrib/qrencode/include/qrcodegen.h (New)
+* contrib/qrencode/libqrcode_hb.prg
+* contrib/qrencode/libqrencode.prg
+* contrib/qrencode/qrcodegenerator.c (New)
+* contrib/qrencode/qrcodegenerator.hbp (New)
+  ! Project qrencode:
+  ! Continued development:
+  ! UTF-8 check ok.
+  ! Now all needed files from original
+  ! QR code generator archive inserted.
+  ! Build scripts for easier
+  ! handling added.
+  ! TO-DO:
+  ! Check for Borland C, Watcom C
+  ! and Pelles C.
+  ! (to be continued)
+
+
 2025-01-30 16:20 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrencode/Readme.txt
 * contrib/qrencode/libqrcode_hb.prg

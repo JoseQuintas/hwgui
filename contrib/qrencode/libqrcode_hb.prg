@@ -41,7 +41,6 @@
 *                                          && For compatibilty with UNIX/LINUX and MacOS,
 *                                          && use file name always in lower case.
 *
-* hwg_BMPuniquename(cprefix)               && Returns a unique name following by a number
 *
 * hwg_QRCodeTxtGen() found in qrencode.c
 *
@@ -88,8 +87,6 @@
 
 #include "hbextcdp.ch"
 
-STATIC nuniquenr
-
 FUNCTION HWG_QRENCODE(ctext,nzoomf)
 
    LOCAL cqrc, cbitmap
@@ -102,14 +99,6 @@ FUNCTION HWG_QRENCODE(ctext,nzoomf)
   IF nzoomf == NIL
      nzoomf := 3
   ENDIF
-  
-#ifdef __PLATFORM__WINDOWS
-   * Convert to UTF-8
-   * Set "DE858" to your language setting on Windows
-//   MEMOWRIT("testout1.txt",ctext)   && Debug   
-   ctext := HB_TRANSLATE(ctext, "DE858" , "UTF8")
-//   MEMOWRIT("testout2.txt",ctext)   && Debug
-#endif
 
 
    // cqrc := hwg_QRCodeTxtGen("https://www.darc.de",1)
@@ -1069,15 +1058,6 @@ HB_FUNC( HWG_BMPCALCOFFSPAL )
 }
 
 
-FUNCTION hwg_BMPuniquename(cprefix)
- IF nuniquenr == NIL
-   nuniquenr := 0
- ENDIF  
- IF cprefix == NIL
-   cprefix := "name"
- ENDIF
- nuniquenr := nuniquenr + 1  
-RETURN cprefix + ALLTRIM(STR(nuniquenr))   
 
 
 #pragma ENDDUMP

@@ -27,6 +27,8 @@
 *
 
 FUNCTION HWG_QRENCODE(ctext,nzoomf,nboarder)
+* Important !
+* ctext must be coded in UTF-8.
 
    LOCAL cqrc
    LOCAL cbitmap 
@@ -45,14 +47,6 @@ FUNCTION HWG_QRENCODE(ctext,nzoomf,nboarder)
     nboarder := 10
   ENDIF  
   
-#ifdef __PLATFORM__WINDOWS
-   * Convert to UTF-8
-   * Set "DE858" to your language setting on Windows
-//   MEMOWRIT("testout1.txt",ctext)   && Debug   
-   ctext := HB_TRANSLATE(ctext, "DE858" , "UTF8")
-//   MEMOWRIT("testout2.txt",ctext)   && Debug
-#endif
-
 
    // cqrc := hwg_QRCodeTxtGen("https://www.darc.de",1)
 

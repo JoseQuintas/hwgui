@@ -18,14 +18,15 @@ FUNCTION MAIN(ctext,cbitmapfile,czoomf)
 
 LOCAL nzoomf, cbmp
 
-* Set "_DE858" to your language setting on Windows
-// REQUEST HB_CODEPAGE_DEWIN
-// REQUEST HB_CODEPAGE_CP1251
+* Set "_DE858" to your language setting on Windows command line
+
+REQUEST HB_CODEPAGE_DEWIN
+
 REQUEST HB_CODEPAGE_DE858
 REQUEST HB_CODEPAGE_UTF8
-#ifndef __PLATFORM__WINDOWS
+
 REQUEST HB_CODEPAGE_UTF8EX
-#endif 
+
 
   IF ( ctext == NIL ) .OR.  (cbitmapfile == NIL)
     ? "Usage: hb_qrencode <text convert to QR code> , "  + ;
@@ -42,6 +43,15 @@ REQUEST HB_CODEPAGE_UTF8EX
   ENDIF 
  
   // ? "Zoom factor is " , nzoomf
+
+#ifdef __PLATFORM__WINDOWS
+   * Convert to UTF-8
+   * Set "DE858" to your language setting on Windows
+//   MEMOWRIT("testout1.txt",ctext)   && Debug   
+   ctext := HB_TRANSLATE(ctext, "DE858" , "UTF8")
+//   MEMOWRIT("testout2.txt",ctext)   && Debug
+#endif
+ 
  
   * Convert text to bitmap binary image as type C
   cbmp := HWG_QRENCODE(ctext,nzoomf)

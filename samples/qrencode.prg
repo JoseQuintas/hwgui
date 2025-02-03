@@ -31,9 +31,17 @@
 
 FUNCTION Main()
 
-   LOCAL oMainWindow, oButton1, oButton2
+   LOCAL oMainWindow, oButton1, oButton2, oButton3
+   
 
-   INIT WINDOW oMainWindow MAIN TITLE "Creating QR code" AT 168,50 SIZE 250,150
+REQUEST HB_CODEPAGE_UTF8
+REQUEST HB_CODEPAGE_UTF8EX  
+
+* Modify to your language setting on Windows
+REQUEST HB_CODEPAGE_DEWIN 
+   
+
+   INIT WINDOW oMainWindow MAIN TITLE "Creating QR code" AT 168,50 SIZE 350,150
 
 
   * First run
@@ -43,8 +51,13 @@ FUNCTION Main()
    @ 20,50 BUTTON oButton1 CAPTION "Test" ;
       ON CLICK { || Testen() } ;
       SIZE 80,32
+  
+     
+   @ 120,50 BUTTON oButton2 CAPTION "Enter Text" ;
+      ON CLICK { || TextEnter() } ;
+      SIZE 80,32
 
-   @ 120,50 BUTTON oButton2 CAPTION "Quit";
+   @ 220,50 BUTTON oButton3 CAPTION "Quit";
       ON CLICK { || oMainWindow:Close } ;
       SIZE 80,32
 
@@ -60,7 +73,7 @@ RETURN Nil
 
 
 FUNCTION Testen()
-* First run
+
 FIRST_RUN()
 SECOND_RUN()
 RETURN NIL
@@ -174,6 +187,87 @@ FUNCTION QR_Size_Disp_Bin(cbitmap)
    ALLTRIM(STR(narrsize[2])),"Size of QR code")
 
 RETURN NIL 
+
+FUNCTION TextEnter()
+* Query text to convert to QR code
+* Create QR code, display it and write bitmap to file. 
+LOCAL cqrcstri,cuniq
+
+cuniq := hwg_BMPuniquename("freeqrcode")
+cqrcstri := Enterlongstr()
+IF EMPTY(cqrcstri)   && Cancel button pressed
+ RETURN NIL
+ENDIF
+
+#ifdef __PLATFORM__WINDOWS
+  * Comes in as WIN charset, need to convert to UTF8
+    cqrcstri := HB_TRANSLATE(cqrcstri, "DEWIN" , "UTF8EX")
+#endif
+* On LINUX and MacOS UTF-8 supported by OS
+ 
+QRENCODESHOW(cqrcstri,cuniq) 
+
+RETURN NIL
+
+
+FUNCTION QRENCODESHOW(ctextqr,cbmpname)
+* Encode passed text to QR code and display it
+* with standard HWGUI function
+* and write to bitmap file (fixed file name)
+
+LOCAL cqr
+  
+cqr := HWG_QRENCODE(ctextqr)
+
+hwg_ShowBitmap( cqr, cbmpname, 0 )
+MEMOWRIT("qrcode.bmp",cqr)
+hwg_MsgInfo("Generated QR code written to file qrcode.bmp","QR Code" )
+RETURN NIL
+
+FUNCTION Enterlongstr() 
+* Dialog enter long string
+
+LOCAL frm_enterlongstr
+
+LOCAL oLabel1, oLabel2, oEditbox1, oButton1, oButton2
+LOCAL oLabel3
+LOCAL cprevstr , lAbbruch, nlaeng
+
+lAbbruch := .T.
+nlaeng := 60  && Max length to enter
+
+ 
+ cprevstr := hwg_GET_Helper(SPACE(nlaeng),nlaeng)
+
+  INIT DIALOG frm_enterlongstr TITLE "Enter Text for QR code" ;
+    AT 250,166 SIZE 1104,288 NOEXIT;
+     STYLE WS_SYSMENU+WS_SIZEBOX+WS_VISIBLE
+
+
+   @ 25,11 SAY oLabel1 CAPTION "Enter text for creating QR code"  SIZE 763,22   
+   @ 25,50 SAY oLabel2 CAPTION "Maximal " + ALLTRIM(STR(nlaeng)) + " characters: "  SIZE 763,22
+   * Optional 3rd line   
+   // @ 25,90 SAY oLabel3 CAPTION "xxxx"  SIZE 763,22
+
+   @ 25,129 GET oEditbox1 VAR cprevstr  SIZE 1032,24 ;
+          STYLE WS_BORDER   
+ 
+   @ 30,170 BUTTON oButton1 CAPTION "OK"   SIZE 80,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+        ON CLICK {|| lAbbruch := .F. , frm_enterlongstr:Close() }
+   @ 165,170 BUTTON oButton2 CAPTION "Cancel" SIZE 110,32 ;
+        STYLE WS_TABSTOP+BS_FLAT ;
+       ON CLICK {|| frm_enterlongstr:Close() }
+ 
+
+   ACTIVATE DIALOG frm_enterlongstr
+   
+   IF  lAbbruch
+     cprevstr := ""
+   ENDIF
+
+ 
+RETURN cprevstr
 
 
 

@@ -16,6 +16,18 @@
 */
 
 
+2025-02-03 15:45 UTC+0100 Wilfried Brunken DF7BE
+* samples/qrencode.prg
+  ! Project qrencode:
+  ! Sample program extended
+  ! with dialog to enter a
+  ! text for creating a
+  ! QR code. 
+  ! Helpful for following
+  ! test procedures.
+  ! (to be continued)
+
+
 2025-02-01 18:10 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrencode/Readme.txt
 * contrib/qrencode/build.bat (New)

@@ -6,15 +6,15 @@
 # Building of hwgui.lib - Harbour Win32 GUI library
 
 HRB_DIR = $(HB_PATH)
-INCLUDE_DIR = include;$(HRB_DIR)\include
-OBJ_DIR = obj
-LIB_DIR = lib
-SRC_DIR = source\winapi
-CROSS_DIR = source\cross
-PROCMISC_DIR = source\common\procmisc
-EDITOR_DIR = source\common\editor
-XML_DIR = source\common\xml
-DEBUG_DIR = source\common\debug
+INCLUDE_DIR = .\include;$(HRB_DIR)\include
+OBJ_DIR = .\obj
+LIB_DIR = .\lib
+SRC_DIR = .\source\winapi
+CROSS_DIR = .\source\cross
+PROCMISC_DIR = .\source\common\procmisc
+EDITOR_DIR = .\source\common\editor
+XML_DIR = .\source\common\xml
+DEBUG_DIR = .\source\common\debug
 
 HARBOUR_EXE = $(HB_PATH)\bin\win\watcom\harbour.exe
 CC_EXE = WCC386
@@ -127,8 +127,8 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hsplash.obj \
    $(OBJ_DIR)\hmonthc.obj \
    $(OBJ_DIR)\hgrid.obj \
+   $(OBJ_DIR)\htrackbr.obj \   
    $(OBJ_DIR)\htrack.obj \
-   $(OBJ_DIR)\htrackbr.obj \
    $(OBJ_DIR)\animat.obj \
    $(OBJ_DIR)\hanimat.obj \
    $(OBJ_DIR)\hnice.obj \
@@ -141,6 +141,7 @@ HWGUI_LIB_OBJS = \
    $(OBJ_DIR)\hlenta.obj \
    $(OBJ_DIR)\hmisccross.obj \   
    $(OBJ_DIR)\hhyper.obj
+
 
 
 $(HWGUI_LIB) : $(HWGUI_LIB_OBJS)
@@ -310,12 +311,6 @@ $(OBJ_DIR)\hgrid.c : $(SRC_DIR)\hgrid.prg
    $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
 
 $(OBJ_DIR)\hgrid.obj : $(OBJ_DIR)\hgrid.c
-   $(CC_EXE) $(CFLAGS) -fo$@ $**
-
-$(OBJ_DIR)\htrackbr.c : $(CROSS_DIR)\htrack.prg
-   $(HARBOUR_EXE) $(HARBOURFLAGS) $** -o$@
-
-$(OBJ_DIR)\htrackbr.obj : $(OBJ_DIR)\htrack.c
    $(CC_EXE) $(CFLAGS) -fo$@ $**
 
 $(OBJ_DIR)\htrackbr.c : $(SRC_DIR)\htrackbr.prg

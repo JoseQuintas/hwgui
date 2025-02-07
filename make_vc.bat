@@ -7,6 +7,7 @@ if not exist obj md obj
 
 :BUILD
 
+REM Add /D to get more debug information
    nmake /Fmakefile.vc %1 %2 %3 > make_vc.log
    if errorlevel 1 goto BUILD_ERR
 
@@ -16,7 +17,8 @@ if not exist obj md obj
 
 :BUILD_ERR
 
-   notepad make_vc.log
+REM    notepad make_vc.log
+   type make_vc.log 
    goto EXIT
 
 :CLEAN

@@ -20,10 +20,15 @@
  *   out of or in connection with the Software or the use or other dealings in the
  *   Software.
  */
+ 
+ /*
+   This version of qrcodegen.h is modified to use also with non C99 standard compilers
+   by DF7BE
+ */
 
 #pragma once
 
-#include <stdbool.h>
+#include <stdbool.h>  /* only C99 standard */
 #include <stddef.h>
 #include <stdint.h>
 
@@ -57,6 +62,7 @@ extern "C" {
 enum qrcodegen_Ecc {
 	// Must be declared in ascending order of error protection
 	// so that an internal qrcodegen function works properly
+	// Type = int
 	qrcodegen_Ecc_LOW = 0 ,  // The QR Code can tolerate about  7% erroneous codewords
 	qrcodegen_Ecc_MEDIUM  ,  // The QR Code can tolerate about 15% erroneous codewords
 	qrcodegen_Ecc_QUARTILE,  // The QR Code can tolerate about 25% erroneous codewords
@@ -66,6 +72,7 @@ enum qrcodegen_Ecc {
 
 /* 
  * The mask pattern used in a QR Code symbol.
+ * Type = int
  */
 enum qrcodegen_Mask {
 	// A special value to tell the QR Code encoder to
@@ -85,6 +92,7 @@ enum qrcodegen_Mask {
 
 /* 
  * Describes how a segment's data bits are interpreted.
+ * Type = int
  */
 enum qrcodegen_Mode {
 	qrcodegen_Mode_NUMERIC      = 0x1,
@@ -108,8 +116,10 @@ enum qrcodegen_Mode {
  */
 struct qrcodegen_Segment {
 	// The mode indicator of this segment.
-	enum qrcodegen_Mode mode;
-	
+
+	// enum qrcodegen_Mode mode;
+	int mode;
+
 	// The length of this segment's unencoded data. Measured in characters for
 	// numeric/alphanumeric/kanji mode, bytes for byte mode, and 0 for ECI mode.
 	// Always zero or positive. Not the same as the data's bit length.
@@ -184,9 +194,15 @@ struct qrcodegen_Segment {
  * Please consult the QR Code specification for information on
  * data capacities per version, ECC level, and text encoding mode.
  */
+ 
+ 
+// #ifdef __BORLANDC__
 bool qrcodegen_encodeText(const char *text, uint8_t tempBuffer[], uint8_t qrcode[],
-	enum qrcodegen_Ecc ecl, int minVersion, int maxVersion, enum qrcodegen_Mask mask, bool boostEcl);
-
+	 int ecl, int minVersion, int maxVersion, int mask, bool boostEcl);
+// #else 
+// bool qrcodegen_encodeText(const char *text, uint8_t tempBuffer[], uint8_t qrcode[],
+//	enum qrcodegen_Ecc ecl, int minVersion, int maxVersion, enum qrcodegen_Mask mask, bool boostEcl);
+// #endif
 
 /* 
  * Encodes the given binary data to a QR Code, returning true if successful.
@@ -223,8 +239,13 @@ bool qrcodegen_encodeText(const char *text, uint8_t tempBuffer[], uint8_t qrcode
  * Please consult the QR Code specification for information on
  * data capacities per version, ECC level, and text encoding mode.
  */
+ 
 bool qrcodegen_encodeBinary(uint8_t dataAndTemp[], size_t dataLen, uint8_t qrcode[],
-	enum qrcodegen_Ecc ecl, int minVersion, int maxVersion, enum qrcodegen_Mask mask, bool boostEcl);
+	int ecl, int minVersion, int maxVersion, int mask, bool boostEcl);
+	
+ 
+// bool qrcodegen_encodeBinary(uint8_t dataAndTemp[], size_t dataLen, uint8_t qrcode[],
+//    enum qrcodegen_Ecc ecl, int minVersion, int maxVersion, enum qrcodegen_Mask mask, bool boostEcl);
 
 
 /*---- Functions (low level) to generate QR Codes ----*/
@@ -260,8 +281,15 @@ bool qrcodegen_encodeBinary(uint8_t dataAndTemp[], size_t dataLen, uint8_t qrcod
  * between modes (such as alphanumeric and byte) to encode text in less space.
  * This is a low-level API; the high-level API is qrcodegen_encodeText() and qrcodegen_encodeBinary().
  */
-bool qrcodegen_encodeSegments(const struct qrcodegen_Segment segs[], size_t len,
-	enum qrcodegen_Ecc ecl, uint8_t tempBuffer[], uint8_t qrcode[]);
+ 
+ /* For not C99 :  const struct qrcodegen_Segment ==> struct qrcodegen_Segment */ 
+ 
+ 
+bool qrcodegen_encodeSegments(struct qrcodegen_Segment segs[], size_t len,
+	int ecl, uint8_t tempBuffer[], uint8_t qrcode[]); 
+ 
+// bool qrcodegen_encodeSegments(struct qrcodegen_Segment segs[], size_t len,
+//      enum qrcodegen_Ecc ecl, uint8_t tempBuffer[], uint8_t qrcode[]);
 
 
 /* 
@@ -299,8 +327,15 @@ bool qrcodegen_encodeSegments(const struct qrcodegen_Segment segs[], size_t len,
  * between modes (such as alphanumeric and byte) to encode text in less space.
  * This is a low-level API; the high-level API is qrcodegen_encodeText() and qrcodegen_encodeBinary().
  */
-bool qrcodegen_encodeSegmentsAdvanced(const struct qrcodegen_Segment segs[], size_t len, enum qrcodegen_Ecc ecl,
-	int minVersion, int maxVersion, enum qrcodegen_Mask mask, bool boostEcl, uint8_t tempBuffer[], uint8_t qrcode[]);
+ 
+/* For not C99 :  const struct qrcodegen_Segment ==> struct qrcodegen_Segment */  
+ 
+bool qrcodegen_encodeSegmentsAdvanced(struct qrcodegen_Segment segs[], size_t len, int ecl,
+	int minVersion, int maxVersion, int mask, bool boostEcl, uint8_t tempBuffer[], uint8_t qrcode[]);
+
+// bool qrcodegen_encodeSegmentsAdvanced(struct qrcodegen_Segment segs[], size_t len, enum qrcodegen_Ecc ecl,
+//     int minVersion, int maxVersion, enum qrcodegen_Mask mask, bool boostEcl, uint8_t tempBuffer[], uint8_t qrcode[]);
+
 
 
 /* 
@@ -329,7 +364,9 @@ bool qrcodegen_isAlphanumeric(const char *text);
  * - For ECI mode, numChars must be 0, and the worst-case number of bytes is returned.
  *   An actual ECI segment can have shorter data. For non-ECI modes, the result is exact.
  */
-size_t qrcodegen_calcSegmentBufferSize(enum qrcodegen_Mode mode, size_t numChars);
+size_t qrcodegen_calcSegmentBufferSize(int mode, size_t numChars); 
+ 
+// size_t qrcodegen_calcSegmentBufferSize(enum qrcodegen_Mode mode, size_t numChars);
 
 
 /* 

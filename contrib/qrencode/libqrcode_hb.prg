@@ -855,7 +855,12 @@ void * hwg_BMPNewImageC(
      */
 
     /* Move pointer to end of block : start position of pixel data */
-    bmp_locpointer = bmp_fileimg + fileoffset_to_pixelarray;
+ 
+ #if defined( _MSC_VER )
+    bmp_locpointer = (char *) bmp_fileimg + fileoffset_to_pixelarray;
+ #else
+     bmp_locpointer = bmp_fileimg + fileoffset_to_pixelarray;
+ #endif
 
     /* Process initialization of  pixel data */
 

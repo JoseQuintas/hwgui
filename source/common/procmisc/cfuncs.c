@@ -25,6 +25,10 @@
 #include "hbapiitm.h"
 #include "hbapicdp.h"
 
+#if defined( _MSC_VER )
+#include <direct.h>
+#endif
+
 #include "warnings.h"
 
 /*-
@@ -1071,6 +1075,8 @@ HB_FUNC( HWG_CHDIR )
    The code following is tested on:
    LINUX and MacOS with GCC,
    Windows 11 with MinGW and BCC
+   
+   The <direct.h>
 */   
 
 /* #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__) || defined(__NT__) || defined(_WIN64)
@@ -1079,7 +1085,9 @@ HB_FUNC( HWG_CHDIR )
 /*   hb_retl( HB_ISCHAR( 1 ) && hb_fsChDir( hb_parc( 1 ) ) );
    #else */
 /* LINUX and also for MacOS and Windows */   
-#if !defined( _MSC_VER )
+#if defined( _MSC_VER )
+   hb_retl( HB_ISCHAR( 1 ) && _chdir( hb_parc( 1 ) ) );
+#else
    hb_retl( HB_ISCHAR( 1 ) && chdir( hb_parc( 1 ) ) );
 #endif
 /*

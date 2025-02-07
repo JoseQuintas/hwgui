@@ -42,7 +42,7 @@ if not exist obj md obj
 
 :BUILD_ERR
 
-   rem notepad make_b32.log
+   rem notepad make_w32.log
    goto EXIT
 
 :CLEAN

@@ -16,6 +16,46 @@
 */
 
 
+2025-02-07 19:00 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrencode/Readme.txt
+* contrib/qrencode/libqrcode_hb.prg
+* contrib/qrencode/qrcodegenerator.c
+* contrib/qrencode/include/qrcodegen.h
+* doc/hwgdoc_functions.html
+* install.txt
+* make_vc.bat
+* make_w32.bat
+* makefile.vc
+* makefile.wc
+* samples/dev/env/pfad_msc.bat
+* samples/dev/env/pfad_pc.bat
+* source/common/procmisc/cfuncs.c 
+  ! Project qrencode:
+  ! After a long time the
+  ! project is now finished.
+  ! Have fun, to create lot's
+  ! of QR codes in a HWGUI application.
+  ! Compiler check:
+  ! MSVC now ok:
+  ! The chdir() is under
+  ! MSVC _chdir().
+  ! (to Alexander)
+  !
+  ! Bugix in makefiles and scripts done.
+  !
+  ! Open Watcom C, 
+  ! Pelles C and Digital Mars C:
+  ! No chance to compile Harbour
+  ! at this time,
+  ! so no possibility to build
+  ! HWGUI afterwards.
+  ! The environmwent scripts are prepared
+  ! for next tries, for example to handle
+  ! path names with blanks like
+  ! C:\Windows\Program Files
+  ! Installation instructions 
+  ! and other docu updated.
+
 2025-02-03 15:45 UTC+0100 Wilfried Brunken DF7BE
 * samples/qrencode.prg
   ! Project qrencode:

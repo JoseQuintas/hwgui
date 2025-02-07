@@ -1,6 +1,32 @@
                       HWGUI - Harbour GUI library
 
-   1) Windows
+Installation instructions
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Contents:
+=========
+
+1.)   Windows
+1.1)  Special instructions for MinGW64 (x86_64)
+1.2)  Helpful tools for HWGUI developer
+1.3)  Special instructions for Microsoft Visual C, Edition 2022
+2.)   Linux
+3.)   Resources
+4.)   Special build instructions
+4.1)  For Borland C (BCC) on Windows
+5. )  Additional instructions for Windows 11
+
+Appendix 1: List of packages for Ubuntu Linux and LinuxMINT
+Appendix 2: Additional instructions and information for other LINUX distributions.
+Appendix 3: Information for port to GTK3
+
+
+History:
+
+
+ 
+ 
+   1.) Windows
 
    Installation procedure is very simple.
 
@@ -37,7 +63,11 @@
 
       SET HB_PATH=c:\harbour
 
-   You find some sample bat files for setting environment variable in directory "samples\dev\env".
+   You find some sample bat files for setting environment variable
+   in directory "samples\dev\env".
+   
+   Harbour install instruction are found in "README.md" in the
+   Harbour main directory.
 
    Then run the selected bat file and you'll get hwgui.lib, hwguimt.lib ( hwgui.lib for
    multithread mode ),  procmisc.lib, hbxml.lib and hwgdebug.lib in lib/ directory.
@@ -50,10 +80,10 @@
    and hwg_extctrl libraries.
 
        To build samples you need to run appropriate .bat files, fixing environment
-   variables there.
+       variables there.
        Bld.bat should be executed with prg file name as a parameter:
 
-   bld a
+       bld a
 
 
     Cross develop environment on Windows for GTK:
@@ -66,6 +96,10 @@
       samples\dev\MingW-GTK\Readme.txt
      Be care of the Warning mentioned in this file
      and dependent source files.
+
+
+    For MacOS, special installation instructions in extra file
+    "install-macos.txt". 
 
 
    1.1) Special instructions for MinGW64 (x86_64):
@@ -108,8 +142,40 @@
         - Greenfish icon editor
            http://greenfishsoftware.org/gfie.php  (also for LINUX) 
 
+   
+   1.3) Special instructions for Microsoft Visual C, Edition 2022
+        (installed with setup program) 
+   
+        Harbour compile:
+        My default installation location is:
+        C:\harbour-msc\core-master
+        (for extracting the Harbour archive)
+        
+        Open a command windows "cmd.exe" an change to 
+        the directory above:
+  
+        Set the environment by:
+        "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Auxiliary\Build\vcvarsall.bat" x86
+        Output:
+        [vcvarsall.bat] Environment initialized for: 'x86'
+        Start build process by:
+        win-make 
+      
+      
 
-   2) Linux
+   1.4) Not supported windows compiler:
+ 
+       At this time the Harbour build fails using the
+       the compiler in this list, so no HWGUI can be build afterwards.
+       Please be patient, if the compiler are supported
+       by the Harbour community.
+
+       - Open Whatcom Common
+       - Pelles C
+       - Digital Mars C   
+
+
+   2.) Linux
 
    For installation on Linux you need some prerequisites,
    they are listed at the bottom of these instructions.
@@ -187,7 +253,7 @@
     - Sample programs (directory "samples" and "samples/gtk_samples", depends on OS)
 
 
-   3.1) Resources
+   3.) Resources
    Resources means forms, images and icons in GUI applications.
    They could be loaded directly from an single image or resource file (*.rc)
    and compiled directly into the exe file.
@@ -205,7 +271,7 @@
    Creating and editing forms use the HWGUI utility "Designer"
    in directory "utils/designer".
 
-   4) Special build instructions
+   4.) Special build instructions
 
    4.1) For Borland C (BCC) on Windows
 

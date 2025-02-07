@@ -2,20 +2,25 @@
 # makefile for Visual C++ 32 bits
 # Building of hwgui.lib - Harbour Win32 GUI library
 
+# Attention : Beware of blanks or TAB's before LF, remove them
+
 #.SUFFIXESS: .prg .lib .c .obj
 
 !IFNDEF HRB_DIR
-HRB_DIR = \harbour
+# Modify to your own needs
+HRB_DIR = \harbour-msc\core-master
+# HRB_DIR = \harbour
 !ENDIF
+HARBOUR_EXE = $(HRB_DIR)\bin\win\msvc\harbour.exe
 INC_DIR = include
-OBJ_DIR = obj/vc
-LIB_DIR = lib/vc
-SRC_DIR = source/winapi
-CROSS_DIR = source/cross
-PROCMISC_DIR = source/common/procmisc
-EDITOR_DIR = source/common/editor
-XML_DIR = source/common/xml
-DEBUG_DIR = source/common/debug
+OBJ_DIR = obj
+LIB_DIR = lib
+SRC_DIR = source\winapi
+CROSS_DIR = source\cross
+PROCMISC_DIR = source\common\procmisc
+EDITOR_DIR = source\common\editor
+XML_DIR = source\common\xml
+DEBUG_DIR = source\common\debug
 CFLAGS = /TP /W3 /nologo
 
 all: \
@@ -106,6 +111,8 @@ $(LIB_DIR)\hwgui.lib :   \
    $(OBJ_DIR)\halert.obj
   lib /out:$@ $**
 
+# C modules  
+
 $(OBJ_DIR)\control.obj  : $(SRC_DIR)\control.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\commond.obj  : $(SRC_DIR)\commond.c
@@ -148,9 +155,129 @@ $(OBJ_DIR)\wprint.obj   : $(SRC_DIR)\wprint.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 $(OBJ_DIR)\pager.obj  : $(SRC_DIR)\pager.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
-$(OBJ_DIR)\hmisccross.obj  : $(SRC_DIR)\hmisccross.c
-  cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
+
+# All prg sources in winapi
+
+$(OBJ_DIR)\herrsys.c   : $(SRC_DIR)\herrsys.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\common.c    : $(CROSS_DIR)\common.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hdrawn.c    : $(CROSS_DIR)\hdrawn.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hdrawnbrw.c    : $(CROSS_DIR)\hdrawnbrw.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hdrawncomb.c    : $(CROSS_DIR)\hdrawncomb.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hdialog.c    : $(SRC_DIR)\hdialog.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hlenta.c    : $(CROSS_DIR)\hlenta.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hhyper.c    : $(SRC_DIR)\hhyper.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hdc.c    : $(SRC_DIR)\hdc.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\halert.c    : $(SRC_DIR)\halert.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hwinprn.c    : $(SRC_DIR)\hwinprn.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hcontrol.c   : $(SRC_DIR)\hcontrol.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hcwindow.c   : $(SRC_DIR)\hcwindow.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hedit.c      : $(SRC_DIR)\hedit.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hcheck.c     : $(SRC_DIR)\hcheck.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hradio.c     : $(SRC_DIR)\hradio.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hcombo.c     : $(SRC_DIR)\hcombo.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hdatepic.c   : $(SRC_DIR)\hdatepic.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hsayimg.c    : $(SRC_DIR)\hsayimg.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hshbtn.c     : $(SRC_DIR)\hshbtn.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\htool.c       : $(SRC_DIR)\htool.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hrect.c      : $(SRC_DIR)\hrect.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\guimain.c    : $(SRC_DIR)\guimain.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\barcode.c    : $(SRC_DIR)\barcode.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\tmci.c       : $(SRC_DIR)\tmci.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\video.c       : $(SRC_DIR)\video.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hbincnt.c    : $(CROSS_DIR)\hbincnt.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hbrowse.c    : $(SRC_DIR)\hbrowse.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hbrwflt.c    : $(SRC_DIR)\hbrwflt.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hownbtn.c    : $(SRC_DIR)\hownbtn.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hpanel.c     : $(SRC_DIR)\hpanel.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hpager.c     : $(SRC_DIR)\hpager.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hrebar.c     : $(SRC_DIR)\hrebar.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+
+$(OBJ_DIR)\hprinter.c   : $(SRC_DIR)\hprinter.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hprogres.c   : $(SRC_DIR)\hprogres.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\drawwidg.c   : $(SRC_DIR)\drawwidg.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hfreeimg.c   : $(SRC_DIR)\hfreeimg.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hfrmtmpl.c   : $(CROSS_DIR)\hfrmtmpl.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hgraph.c     : $(CROSS_DIR)\hgraph.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hipedit.c    : $(SRC_DIR)\hipedit.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\htrack.c   : $(CROSS_DIR)\htrack.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hanimat.c    : $(SRC_DIR)\hanimat.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hnice.c      : $(SRC_DIR)\hnice.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hmisc.c      : $(SRC_DIR)\hmisc.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+$(OBJ_DIR)\hmisccross.c   : $(CROSS_DIR)\hmisccross.prg
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+
+  
 $(OBJ_DIR)\drawwidg.obj : $(OBJ_DIR)\drawwidg.c
 $(OBJ_DIR)\herrsys.obj : $(OBJ_DIR)\herrsys.c
 $(OBJ_DIR)\common.obj   : $(OBJ_DIR)\common.c
@@ -208,128 +335,7 @@ $(OBJ_DIR)\hwinprn.obj  : $(OBJ_DIR)\hwinprn.c
 $(OBJ_DIR)\menu.obj     : $(OBJ_DIR)\menu.c
 $(OBJ_DIR)\video.obj    : $(OBJ_DIR)\video.c
 $(OBJ_DIR)\tmci.obj     : $(OBJ_DIR)\tmci.c
-$(OBJ_DIR)\hmisccross.obj     : $(OBJ_DIR)\hmisccross.c
-
-
-$(OBJ_DIR)\herrsys.c   : $(SRC_DIR)\herrsys.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\common.c    : $(CROSS_DIR)\common.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hdrawn.c    : $(CROSS_DIR)\hdrawn.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hdrawnbrw.c    : $(CROSS_DIR)\hdrawnbrw.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hdrawncomb.c    : $(CROSS_DIR)\hdrawncomb.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hdialog.c    : $(SRC_DIR)\hdialog.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hwindow.c    : $(SRC_DIR)\hwindow.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hlenta.c    : $(CROSS_DIR)\hlenta.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hhyper.c    : $(SRC_DIR)\hhyper.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hdc.c    : $(SRC_DIR)\hdc.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\halert.c    : $(SRC_DIR)\halert.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-
-$(OBJ_DIR)\hwinprn.c    : $(SRC_DIR)\hwinprn.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hcontrol.c   : $(SRC_DIR)\hcontrol.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hcwindow.c   : $(SRC_DIR)\hcwindow.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hedit.c      : $(SRC_DIR)\hedit.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hcheck.c     : $(SRC_DIR)\hcheck.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hradio.c     : $(SRC_DIR)\hradio.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hcombo.c     : $(SRC_DIR)\hcombo.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hdatepic.c   : $(SRC_DIR)\hdatepic.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hupdown.c    : $(SRC_DIR)\hupdown.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hsayimg.c    : $(SRC_DIR)\hsayimg.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hshbtn.c     : $(SRC_DIR)\hshbtn.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hsplash.c    : $(SRC_DIR)\hsplash.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hsplit.c     : $(SRC_DIR)\hsplit.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\htab.c       : $(SRC_DIR)\htab.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\htool.c       : $(SRC_DIR)\htool.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\htimer.c     : $(SRC_DIR)\htimer.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\htree.c      : $(SRC_DIR)\htree.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hrect.c      : $(SRC_DIR)\hrect.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hriched.c    : $(SRC_DIR)\hriched.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\guimain.c    : $(SRC_DIR)\guimain.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\barcode.c    : $(SRC_DIR)\barcode.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\menu.c       : $(SRC_DIR)\menu.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\tmci.c       : $(SRC_DIR)\tmci.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\video.c       : $(SRC_DIR)\video.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hbincnt.c    : $(CROSS_DIR)\hbincnt.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hbrowse.c    : $(SRC_DIR)\hbrowse.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hbrwflt.c    : $(SRC_DIR)\hbrwflt.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hownbtn.c    : $(SRC_DIR)\hownbtn.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hpanel.c     : $(SRC_DIR)\hpanel.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hpager.c     : $(SRC_DIR)\hpager.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hrebar.c     : $(SRC_DIR)\hrebar.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-
-$(OBJ_DIR)\hprinter.c   : $(SRC_DIR)\hprinter.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hprogres.c   : $(SRC_DIR)\hprogres.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\drawwidg.c   : $(SRC_DIR)\drawwidg.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hfreeimg.c   : $(SRC_DIR)\hfreeimg.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hfrmtmpl.c   : $(CROSS_DIR)\hfrmtmpl.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hgraph.c     : $(CROSS_DIR)\hgraph.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hgrid.c      : $(SRC_DIR)\hgrid.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hipedit.c    : $(SRC_DIR)\hipedit.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hlistbox.c   : $(SRC_DIR)\hlistbox.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hmonthc.c    : $(SRC_DIR)\hmonthc.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\htrack.c   : $(CROSS_DIR)\htrack.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hmisccross.c   : $(CROSS_DIR)\hmisccross.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\htrackbr.c   : $(SRC_DIR)\htrackbr.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hanimat.c    : $(SRC_DIR)\hanimat.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hnice.c      : $(SRC_DIR)\hnice.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-$(OBJ_DIR)\hmisc.c      : $(SRC_DIR)\hmisc.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
-
+$(OBJ_DIR)\hmisccross.obj   : $(OBJ_DIR)\hmisccross.c
 
 $(LIB_DIR)\procmisc.lib : \
    $(OBJ_DIR)\procini.obj \
@@ -344,19 +350,19 @@ $(LIB_DIR)\procmisc.lib : \
   lib /out:$@ $**
 
 $(OBJ_DIR)\procini.c    : $(PROCMISC_DIR)\procini.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\procs7.c     : $(PROCMISC_DIR)\procs7.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\procscri.c   : $(PROCMISC_DIR)\procscri.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\scrdebug.c   : $(PROCMISC_DIR)\scrdebug.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hcedit.c    : $(EDITOR_DIR)\hcedit.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hceditb.c    : $(EDITOR_DIR)\hceditb.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 $(OBJ_DIR)\hilight.c    : $(EDITOR_DIR)\hilight.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 $(OBJ_DIR)\hcedit_w.obj  : $(EDITOR_DIR)\hcedit_w.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
@@ -378,7 +384,7 @@ $(LIB_DIR)\hbxml.lib : \
    lib /out:$@ $**
 
 $(OBJ_DIR)\hxmldoc.c    : $(XML_DIR)\hxmldoc.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 $(OBJ_DIR)\hxmldoc.obj  : $(OBJ_DIR)\hxmldoc.c
 $(OBJ_DIR)\xmlparse.obj  : $(XML_DIR)\xmlparse.c
@@ -391,10 +397,10 @@ $(LIB_DIR)\hwgdebug.lib : \
   lib /out:$@ $**
 
 $(OBJ_DIR)\debugger.c    : $(DEBUG_DIR)\debugger.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 $(OBJ_DIR)\dbgconnect.c    : $(DEBUG_DIR)\dbgconnect.prg
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 $(OBJ_DIR)\debugger.obj  : $(OBJ_DIR)\debugger.c
 $(OBJ_DIR)\dbgconnect.obj  : $(OBJ_DIR)\dbgconnect.c
@@ -402,8 +408,9 @@ $(OBJ_DIR)\dbgdop.obj  : $(DEBUG_DIR)\dbgdop.c
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
 .prg.c:
-  $(HRB_DIR)\bin\harbour.exe $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
+  $(HARBOUR_EXE) $** -n -w -i$(HRB_DIR)\include -i$(INC_DIR) -d__WINDOWS__ -o$@
 
 .c.obj:
   cl $(CFLAGS) /c /I$(INC_DIR) /I$(HRB_DIR)\include /Fo$@ $**
 
+# =================== EOF of makefile.vc =======================

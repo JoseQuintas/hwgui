@@ -5,6 +5,7 @@ QR encode library ready for integration into HWGUI
 "QR-Code-generator"
 
 
+2025-02-07   DF7BE   Project "qrencode" now finished.
 2025-02-01   DF7BE   Port of qrcodegenerator.c for non C99 standard compiler started.
                      The committed version is only ready for C99, be patient,
                      if the project "qrencode" is finished.  
@@ -23,6 +24,7 @@ Contents:
 2.5)    Final instructions
 2.6)    Extra instructions for non C99 standard Compiler
 2.6.1)  Borland C
+2.7)    Integration of qrencode as static link into exe of your HWGUI application
 3.)     Generate QR code by bat oder sh calls
 4.)     File list
 5.)     Further instructions
@@ -73,7 +75,8 @@ At this time only the following compiler are supported:
 - GTK/LINUX and MacOS with gcc
 - Borland C, Watcom C and Pelles C under construction. 
 - Borland C with DLL, see extra instructions
-  (may be run with other Windows C compiler)
+  (may be run with other Windows C compiler, optional)
+- Microsoft Visual C, tested with 2022 release.  
 
 
 Build scripts for other compilers are delivered 
@@ -83,7 +86,7 @@ as soon as possible.
 2.2) Steps to install QR-Code-generator
  
 - On Windows, start path script concerning the used compiler,
-  for example:
+  for example (for MingW 32):
   pfad.bat
  
 - make command reachable ?
@@ -121,6 +124,9 @@ as soon as possible.
      the HWGUI project site must be opened.
      Quit by "OK", if ready.
      A second run with another QR code follows.
+     The "Enter Text" allows to enter a text for generation of
+     a QR code.
+     On Windows, the non ASCII characters are translated to UTF-8.
 
     
 
@@ -129,7 +135,7 @@ as soon as possible.
 Be shure, that the following options are inserted in 
 the *.hbp file or Makefile of your application:
 
--L../lib
+-L../lib (or path to HWGUI library directory)
 
 -lqrcodegen
 -lhbqrencode
@@ -140,24 +146,29 @@ to reach the path's by compile or running task.
 
 2.6) Extra instructions for non C99 standard compiler
 
-    In this case, the library "contrib\qrencode\qrencode.c"
+    In this case, the library "contrib\qrencode\qrcodegenerator.c"
+    of the original archive
     cannot be compiled with the compiler not supporting
     the C99 standard.
-    Instead the use of a DLL (qrcodegen.dll) is the
-    only way to get a running QR code generator.
+    In the HWGUI repository, qrencode.c and qrencode.h
+    are modified and tested with non C99 C compilers.
+
+    Alternative method is the the usage of a DLL (qrcodegen.dll)
+    is another way to get a running QR code generator.
     The ready to use DLL (compiled with MinGW32)
     can be downloaded from the files section of
     the HWGUI project site a sourceforge.net.
 
     The sample program "qrencodedll.prg"
     demonstrates the usage of the DLL.
+
     
 2.6.1) Borland C
 
-   If the port of "qrcodegenerator.c" is done,
+   After the port of "qrcodegenerator.c" is done,
    you can compile it also with Borland C.
    
-   Nevertheless if you want to use an external DLL,
+   Nevertheless, if you want to use an external DLL,
    follow these instructions:   
 
    - Download the DLL (location see above)
@@ -167,7 +178,119 @@ to reach the path's by compile or running task.
       hbmk2 qrencodedll.hbp
    - Copy the DLL into the sample directory	  
      and run the sample program.
-   - Copy the DLL into the directory running your HWGUI application.   
+   - Copy the DLL into the directory running your HWGUI application.
+
+
+Some restrictions of Borland C:
+
+Set variable declarations only at begin of a function:
+
+ void xyz()
+ {
+   char c;
+   int i,j;
+   ...
+   <code>
+   i = 0
+   j = 1
+   c = 0   
+   ...
+ }
+
+Not allowed:
+  
+ Variable declaration within a for statement: 
+ for (int i = 0; i < textLen; i++)
+ 
+ so say:
+ 
+ int i;
+ 
+ for (i = 0; i < textLen; i++)
+
+Enumerations are not allowed as function parameters:
+(simple example)
+
+enum Ex{
+  VAL_1 = 0,
+  VAL_2,
+  VAL_3
+};
+
+void foo(Ex e){   /* or "enum Ex e" */
+  switch(e){
+  case VAL_1: ... break;
+  case VAL_2: ... break;
+  case VAL_3: ... break;
+  }
+}
+
+int main(){
+  foo(VAL_2);
+}
+
+fires 2 error messages:
+Error E2238 ..\include\qrcodegen.h 62: Multiple declaration for 'qrcodegen_Ecc'
+Error E2344 ..\include\qrcodegen.h 62: Earlier declaration of 'qrcodegen_Ecc'
+
+bool qrcodegen_encodeText(const char *text, uint8_t tempBuffer[], uint8_t qrcode[],
+     enum qrcodegen_Ecc ecl, int minVersion, int maxVersion, enum qrcodegen_Mask mask,
+     bool boostEcl);
+
+Solution:
+ 
+Check for type of enumeration (here: int)
+
+and say very simple:
+
+bool qrcodegen_encodeText(const char *text, uint8_t tempBuffer[], uint8_t qrcode[],
+     int ecl, int minVersion, int maxVersion, int mask, bool boostEcl);
+
+Ignore warning:
+Warning W8084 yyy nnn: Suggest parentheses to clarify precedence in function xxx
+ 
+All the modifications are also tested with other compilers
+(see prerequisites) 
+
+2.7) Integration of qrencode as static link into exe of your HWGUI application
+
+
+As alternative methode for linking with the libraries compiled in
+contrib/qrencode, you can copy and compile the source code
+together with your HWGUI program (as inline C compile by Harbour). 
+Follow these instructions:
+
+- Copy qrcodegen.h and "stdbool.h" into your local include directory.
+  Be shure, that they are reachable by -I compiler option
+- Copy files
+    qrcodegenerator.c
+    libqrencode.prg
+    qrencode.c
+  into your local source directory
+- Rename it to qrcodegenerator.prg
+- Insert at beginning of qrcodegenerator.prg:
+  #pragma BEGINDUMP
+  and at end:
+  #pragma ENDDUMP
+- Rename qrencode.c to qrencode.prg and insert the #pragma
+  statements also here.  
+- Insert qrcodegenerator.prg and qrencode.prg in your local hbp file.
+  Here the -I compiler option must be inserted for
+  qrcodegen.h.
+- Look into sample program samples\qrencode.prg for how to insert the
+  function calls into your application. 
+  The main function is here HWG_QRENCODE().
+  At your option, use HB_TRANSLATE() on Windows
+  to convert the Windows charset to UTF-8.
+  Not necessary, if the text to be converted into
+  QR code is pure ASCII.  
+ 
+Important:
+Don't forget to add the Copyright notice of
+the QR code generator into 
+your program documentation
+and respect the copyright conditions.
+
 
    
 3.) Generate QR code by bat oder sh calls
@@ -233,15 +356,20 @@ to reach the path's by compile or running task.
  Readme.txt                 This file containing installation instructions and more descriptions.
 
  
+ 
 5.) Further instructions
 
 ===================================================================
 Important !
-Now the QR-Code-Generator is now part of the HWGUI contrib source.
+Now the QR-Code-Generator is part of the HWGUI contrib source.
 Need not to extract it from the original archive, because it is
 modified for all compilers supporting HWGUI.
-But if a new release is published, feel free to compile it with
-a C99 standard compiler. 
+A lot of modification are needed for old Windows compiler like
+Borland C, but the GCC or MinGW have not problems to understand
+the modified code.
+But if a new release of the QR code generator is published, feel free to compile it with
+a C99 standard compiler.
+If we have time, we insert all new code differences into the existing files. 
 
  Extract the archive "QR-Code-generator-master.zip" in an temporary directory.
 

@@ -16,6 +16,15 @@
 */
 
 
+
+2025-02-08 15:05 UTC+0100 Wilfried Brunken DF7BE
+* contrib/qrencode/include/empty.txt (Deleted)
+* contrib/qrencode/libqrcode_hb.prg
+  ! Project qrencode:
+  ! At least, a little correction
+  ! for Borland C and MSVC
+  
+
 2025-02-07 19:00 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrencode/Readme.txt
 * contrib/qrencode/libqrcode_hb.prg

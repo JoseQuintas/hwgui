@@ -2,6 +2,19 @@
 # $Id$
 #
 
+
+# Special parameters for LINUX/GTK and MacOS/GTK
+{linux}-lm
+{linux}-static
+{linux}-d__LINUX__
+{linux}-d__GTK__
+
+# MacOS
+{darwin}-static
+{darwin}-d__LINUX__
+{darwin}-d__GTK__
+{darwin}-d___MACOSX___
+
 -inc
 
 -hblib
@@ -15,4 +28,7 @@
 
 gthwg/gt_hwg.prg
 {unix}gthwg/gt_hwgui_l.c
+{darwin}gthwg/gt_hwgui_l.c
 {win}gthwg/gt_hwgui_w.c
+
+# ====================== EOF of gthwg.hbp ========================

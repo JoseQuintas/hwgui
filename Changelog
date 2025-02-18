@@ -15,6 +15,16 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-02-18 12:00 UTC+0100 Wilfried Brunken DF7BE
+* contrib/gthwg/tests/test1.hbp
+* contrib/gthwg.hbp
+* contrib/gthwg/tests/gthwtest.png (New)
+  ! Bug Ticket #199
+  ! Error when building gthwg/test1
+  ! Modified HBP files and
+  ! screenshot with running
+  ! test program added.
+  ! For details see post to bug ticket.
 
 
 2025-02-08 15:05 UTC+0100 Wilfried Brunken DF7BE

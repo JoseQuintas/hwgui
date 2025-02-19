@@ -15,6 +15,19 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2025-02-19 15:35 UTC+0100 Wilfried Brunken DF7BE
+* source/winapi/draw.c
+* include/warnings.h
+  ! Added 
+  ! Warning suppressed: "maybe-uninitialized"
+  ! The other modifications are only 
+  ! comment lines without any function
+  ! modifications 
+  ! (used as know how store)
+  ! Ticket handling continued.
+
+
 2025-02-18 12:00 UTC+0100 Wilfried Brunken DF7BE
 * contrib/gthwg/tests/test1.hbp
 * contrib/gthwg.hbp

@@ -920,6 +920,16 @@ HB_FUNC( HWG_DRAWBITMAP )
    }
 
    DeleteDC( hDCmem );
+   
+      /* DF7BE 2025-02-18: See bug report #195:
+       Found this function call 
+       in a program sample deleting
+       a drawn bitmap.
+       But it has severe side effects,
+       so it is not recommended to
+       activate this function call   
+     */
+     /* DeleteObject((HBITMAP)hBitmap); */
 }
 
 /*

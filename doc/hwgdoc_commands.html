@@ -14,7 +14,7 @@
     </tr>
     <tr>
       <td width="15%" align="left"><a href="hwgdoc.html">prev</a></td>
-      <td width="70%" align="center">Alexander S.Kresin, November 2024</td>
+      <td width="70%" align="center">Alexander S.Kresin, February 2025</td>
       <td width="15%" align="right"><a href="hwgdoc_functions.html">next</a></td>
     </tr>
   </table>
@@ -154,8 +154,40 @@
     </pre>
     <p>All clauses has the same meaning as in <A href="#initwindow">INIT WINDOW</a> command,
      there is only two specific clause:<br>
+     <br>
      <b>CLIPPER</b> - to force the Clipper like behavior - the Enter key is used for moving between GET's;<br>
+     &nbsp;&nbsp;&nbsp;Important:<br>
+     &nbsp;&nbsp;&nbsp;The CLIPPER option has no effect on EDITBOX,<br>
+     &nbsp;&nbsp;&nbsp;because it is an HWGUI extension for multi line editing.<br>
+     &nbsp;&nbsp;&nbsp;So ENTER means LINE FEED.<br>
+     <br>
      <b>NOEXIT</b> - the Enter key doesn't cause closing of a dialog box.<br>
+     On GTK, this option is forever active.<br>
+     <br>
+     A little sample to handle the ESC key in a dialog for GTK:<br>
+     (but also OK for Windows)<br>
+     <br>
+     &nbsp;&nbsp;&nbsp;#define GDK_Escape &nbsp;&nbsp;&nbsp;         0xFF1B<br>
+     &nbsp;&nbsp;&nbsp;#define  VK_ESCAPE    &nbsp;&nbsp;&nbsp;      GDK_Escape<br>
+     <br>
+     &nbsp;&nbsp;&nbsp;INIT DIALOG oDlg... NOEXIT<br>
+     &nbsp;&nbsp;&nbsp;...<br>
+     &nbsp;&nbsp;&nbsp;#ifdef __GTK__<br>
+     &nbsp;&nbsp;&nbsp;SET KEY 0,VK_ESCAPE TO EDMSK_KEYESC(oDlg)<br>
+     &nbsp;&nbsp;&nbsp;#endif<br> 
+     &nbsp;&nbsp;&nbsp;...  * Your dialog<br>
+     &nbsp;&nbsp;&nbsp;ACTIVATE DIALOG ...<br>
+     &nbsp;&nbsp;&nbsp;#ifdef __GTK__ <br>
+     &nbsp;&nbsp;&nbsp;SET KEY 0,VK_ESCAPE TO<br> 
+     &nbsp;&nbsp;&nbsp;#endif<br>
+     <br>
+     <br>
+     &nbsp;&nbsp;&nbsp;FUNCTION EDMSK_KEYESC(odlg)<br>
+     &nbsp;&nbsp;&nbsp;* Closes edit dialog at ESC key<br>
+     &nbsp;&nbsp;&nbsp;* hwg_MsgInfo("ESC key pressed")  && Debug<br>
+     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;odlg:Close()<br>
+     &nbsp;&nbsp;&nbsp;RETURN NIL<br>
+     <br>
     </p>
 
     <br><a name="actwindow" href="#_actwindow"> ACTIVATE WINDOW</a>

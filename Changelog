@@ -16,6 +16,21 @@
 */
 
 
+2025-02-22 13:35 UTC+0100 Wilfried Brunken DF7BE
+* test/ticket188.hbp (New)
+* test/ticket188.prg (New)
+* doc/hwgdoc_commands.html
+* doc/hwgdoc_functions.html
+  ! Bug ticket #188:
+  ! Sample extracted from tutorial and
+  ! EDITBOX changed to GET.
+  ! Docu updated.
+  ! For details, see comment line of
+  ! test program and post of ticket.
+  ! Advice, that inverted (negative)
+  ! QR codes are not recognized
+
+
 2025-02-19 15:35 UTC+0100 Wilfried Brunken DF7BE
 * source/winapi/draw.c
 * include/warnings.h

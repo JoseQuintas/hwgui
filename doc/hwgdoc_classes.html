@@ -29,7 +29,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_functions.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, October 2023</td>
+    <td width="70%" align="center">Alexander S.Kresin, February 2025</td>
     <td width="15%" align="right"><a href="hwgdoc_misc.html">next</a></td>
   </tr>
 </table>
@@ -958,10 +958,26 @@
      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, 
         bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor )
      ReplaceBitmap( Image, lRes )
+     ReplMsg()
      Refresh()
   Internal:
      Paint( lpdis )
    </pre>
+   <p>
+   <br>
+   ReplaceBitmap( Image, lRes ):<br>
+   If lRes is set to .T., the image if from resources.<br>
+   Default is .F.<br>
+   <br>
+   Important !<br>
+   The call of ReplaceBitmap() does not change the displayed image immediately.<br>
+   Call after this the METHOD ReplMsg()<br>
+   and the displayed image is also replaced<br>
+   in the display.<br>
+   This case was handled in closed bug ticket<br>
+   #195 Bug of @ Image in a tab<br>
+   
+   </p>
 
    <br><strong class="subhead"><a name="hsayicon" href="#_hsayicon">
    HSayIcon</a></strong> 

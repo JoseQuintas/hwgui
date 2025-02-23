@@ -16,6 +16,17 @@
 */
 
 
+2025-02-23 13:40 UTC+0100 Wilfried Brunken DF7BE
+* source/gtk/hsayimg.prg
+* source/winapi/hsayimg.prg
+* doc/hwgdoc_classes.html
+* doc/hwgdoc_functions.html
+  ! Bug ticket #195 Bug of @ Image in a tab
+  ! solved. For details see post to ticket.
+  ! METHOD ReplMsg() added to HSayBmp class
+  ! Docu hwg_GetDirSep() also for MacOS. 
+
+
 2025-02-22 13:35 UTC+0100 Wilfried Brunken DF7BE
 * test/ticket188.hbp (New)
 * test/ticket188.prg (New)

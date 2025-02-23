@@ -79,6 +79,7 @@ CLASS HSayBmp INHERIT HSayImage
    METHOD onEvent( msg, wParam, lParam )
    METHOD Paint()
    METHOD ReplaceBitmap( Image, lRes )
+   METHOD ReplMsg()
    METHOD Refresh() INLINE hwg_Redrawwindow( ::handle )
 
 ENDCLASS
@@ -192,6 +193,19 @@ METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
 
    RETURN Nil
 
+* Send message, that bitmap is replaced    
+METHOD ReplMsg() CLASS HSayBmp  
+      IF ::oImage != Nil .AND. !Empty( ::oImage:Handle )
+         hwg_writelog("ReplMsg")
+        hwg_Redrawwindow( ::handle )
+//         hwg_Sendmessage( ::handle, STM_SETIMAGE, IMAGE_BITMAP, ::oImage:handle )
+        * Call InvalidateRect() to force the control to repaint.
+        * ::InvalidateRect(hStatic, NULL, FALSE);
+        *                  ^  first parameter of sendmessage
+        hwg_Invalidaterect( ::handle, 0 )
+      ENDIF
+    RETURN NIL
+ 
    //- HSayIcon
 
 CLASS HSayIcon INHERIT HSayImage

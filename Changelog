@@ -16,6 +16,16 @@
 */
 
 
+2025-02-23 18:40 UTC+0100 Wilfried Brunken DF7BE   
+* source/gtk/hsayimg.prg
+* source/winapi/hsayimg.prg
+* doc/hwgdoc_classes.html
+ ! Bug ticket #195 Bug of @ Image in a tab
+ ! METHOD ReplMsg() removed.
+ ! Test on Windows and LINUX
+ ! OK.
+ ! Docu updated (Now call Refresh() instead)
+
 2025-02-23 14:40 UTC+0100 Wilfried Brunken DF7BE
 * source/gtk/hsayimg.prg
   ! Forgotten to deactivate debug call of

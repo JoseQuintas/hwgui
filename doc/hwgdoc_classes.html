@@ -958,7 +958,6 @@
      New( oWndParent, nId, nLeft, nTop, nWidth, nHeight, Image, lRes, bInit, 
         bSize, ctoolt, bClick, bDblClick, lTransp, nStretch, trcolor )
      ReplaceBitmap( Image, lRes )
-     ReplMsg()
      Refresh()
   Internal:
      Paint( lpdis )
@@ -971,7 +970,7 @@
    <br>
    Important !<br>
    The call of ReplaceBitmap() does not change the displayed image immediately.<br>
-   Call after this the METHOD ReplMsg()<br>
+   Call after this the METHOD Refresh()<br>
    and the displayed image is also replaced<br>
    in the display.<br>
    This case was handled in closed bug ticket<br>

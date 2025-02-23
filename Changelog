@@ -16,6 +16,11 @@
 */
 
 
+2025-02-23 14:40 UTC+0100 Wilfried Brunken DF7BE
+* source/gtk/hsayimg.prg
+  ! Forgotten to deactivate debug call of
+  ! hwg_writelog("ReplMsg")
+
 2025-02-23 13:40 UTC+0100 Wilfried Brunken DF7BE
 * source/gtk/hsayimg.prg
 * source/winapi/hsayimg.prg

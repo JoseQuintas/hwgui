@@ -196,7 +196,7 @@ METHOD ReplaceBitmap( Image, lRes ) CLASS HSayBmp
 * Send message, that bitmap is replaced    
 METHOD ReplMsg() CLASS HSayBmp  
       IF ::oImage != Nil .AND. !Empty( ::oImage:Handle )
-         hwg_writelog("ReplMsg")
+//         hwg_writelog("ReplMsg")
         hwg_Redrawwindow( ::handle )
 //         hwg_Sendmessage( ::handle, STM_SETIMAGE, IMAGE_BITMAP, ::oImage:handle )
         * Call InvalidateRect() to force the control to repaint.

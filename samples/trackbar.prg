@@ -40,7 +40,7 @@ RETURN Nil
 
 FUNCTION UpdateSay()
 
-   oSay:SetText( str( oTB:Value ) )
+   oSay:SetText( ALLTRIM(str( oTB:Value )) )
 
 RETURN Nil
 
@@ -67,7 +67,7 @@ RETURN Nil
 
 FUNCTION UpdateSayDlg1()
 
-   oSayDlg1:SetText( str( oTB1:Value ) )
+   oSayDlg1:SetText( ALLTRIM(str( oTB1:Value )) )
 
 RETURN Nil
 
@@ -95,6 +95,8 @@ RETURN Nil
 
 FUNCTION UpdateSayDlg2()
 
-   oSayDlg2:SetText( str( oTB2:Value ) )
+   oSayDlg2:SetText( ALLTRIM(str( oTB2:Value )) ) 
 
 RETURN Nil
+
+* ======================= EOF of trackbar.prg =====================

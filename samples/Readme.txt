@@ -273,6 +273,7 @@ For beginners:
  simpleedit.prg      Y                        Simple text editor demonstrating hwg_Memoedit()
  stretch.prg         Y  #                     Sample for resizing bitmaps (background), some bugs (as test program)
  tab.prg             Y  #              -      Sample for Tabs
+ tabs_toolt          Y                        Sample for tabs with tooltips (TNX Alain Aupeix)
  Testado.prg         N       N                Test program sample for ADO Browse (TNX Itamar M. Lins Jr.). For multi platform use BROWSE. 
  testalert.prg       N       N                Clipper style Alert() replacement, delivered by Alex Strickland (TNX !)
  test_bot.prg        P                        bOther Test: Press key, after key up the scan code is displayed.

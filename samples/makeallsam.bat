@@ -68,6 +68,7 @@ hbmk2 shadebtn.hbp
 hbmk2 simpleedit.hbp
 hbmk2 stretch.hbp
 hbmk2 tab.hbp
+hbmk2 tabs_toolt.hbp
 hbmk2 Testado.hbp
 hbmk2 testalert.hbp
 hbmk2 testbmpcr.hbp

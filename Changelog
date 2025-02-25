@@ -16,6 +16,23 @@
 */
 
 
+2025-02-25 16:00 UTC+0100 Wilfried Brunken DF7BE   
+* doc/hwgdoc_commands.html
+* samples/Readme.txt
+* samples/makeallsam.bat
+* samples/makeallsam.sh
+* samples/tabs_toolt.hbp (New)
+* samples/tabs_toolt.prg (New)
+ ! Support ticket #54 "Tooltip for tabs ?"
+ ! Now ready for close.
+ ! Sample program added,
+ ! docu updated.
+ ! (special behavior of mouse cursor)
+ ! For more details see post to
+ ! (closed) ticket.
+ ! TNX Alain Aupeix.
+
+
 2025-02-24 16:45 UTC+0100 Wilfried Brunken DF7BE   
 * samples/trackbar.prg
  ! Bug ticket #71 : say position

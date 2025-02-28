@@ -17,6 +17,15 @@
 
 
 2025-02-25 16:00 UTC+0100 Wilfried Brunken DF7BE   
+* samples/stretch.prg
+ ! Support ticket #86:
+ ! Option for sized backgroud bitmap on window main.
+ ! Analysis started, need to fix
+ ! resize in methods AddString()
+ ! and AddFile() of HBitmap class.
+ ! For details, see post to ticket.
+
+2025-02-25 16:00 UTC+0100 Wilfried Brunken DF7BE   
 * doc/hwgdoc_commands.html
 * samples/Readme.txt
 * samples/makeallsam.bat

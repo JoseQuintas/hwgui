@@ -16,6 +16,27 @@
 */
 
 
+2025-03-01 16:40 UTC+0100 Wilfried Brunken DF7BE   
+* source/gtk/draw.c
+* source/gtk/drawwidg.prg
+* samples/stretch.prg
+ ! Support ticket #86:
+ ! Now Method Addfile() of class HBitmap for GTK
+ ! has now size parameters.
+ ! (like same method of WinAPI)
+ ! If one of them is less than 1,
+ ! (or NIL)
+ ! the resize is not done, so
+ ! the previous behavior is preserved.
+ ! draw.c:
+ ! gdk_pixbuf_new_from_file_at_scale() is
+ ! the same as 
+ ! gdk_pixbuf_new_from_file(), 
+ ! but with size parameters.
+ ! To be continued with AddString()
+ ! method.
+
+
 2025-02-25 16:00 UTC+0100 Wilfried Brunken DF7BE   
 * samples/stretch.prg
  ! Support ticket #86:

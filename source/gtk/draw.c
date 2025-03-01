@@ -981,8 +981,8 @@ HB_FUNC( HWG_SAVEBITMAP )
 #endif
 }
 
-/* hwg_Openimage( name , ltype )
-  ltype : .F. : from image file
+/* hwg_Openimage( name , ltype , width, height )
+  ltype : .F. : from image file (default)
           .T. : from GDK pixbuffer
   returns handle to pixbuffer
   */
@@ -991,6 +991,8 @@ HB_FUNC( HWG_OPENIMAGE )
    PHWGUI_PIXBUF hpix;
    short int iString = ( HB_ISNIL( 2 ) ) ? 0 : hb_parl( 2 );
    GdkPixbuf * handle = NULL;
+   int width = ( HB_ISNIL( 3 ) ) ? 0 : hb_parni( 3 );
+   int height = ( HB_ISNIL( 4 ) ) ? 0 : hb_parni( 4 );
 
    if( iString )
    {
@@ -999,23 +1001,59 @@ HB_FUNC( HWG_OPENIMAGE )
       GdkPixbufLoader *loader = gdk_pixbuf_loader_new();
       short int iOk;
 
+/*
+For next step to resize from string:
+void
+gdk_pixbuf_loader_set_size (
+  GdkPixbufLoader* loader,
+  int width,
+  int height
+)
+*/
+
       iOk = gdk_pixbuf_loader_write( loader, buf, hb_parclen(1), NULL );
       gdk_pixbuf_loader_close( loader, NULL );
       if( iOk )
          handle = gdk_pixbuf_loader_get_pixbuf( loader );
    }
    else
-   /* Load image from file */
-      handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
-
-   if( handle )
    {
-      hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
-      hpix->type = HWGUI_OBJECT_PIXBUF;
-      hpix->handle = handle;
-      hpix->trcolor = -1;
-      HB_RETHANDLE( hpix );
-   }
+     /* Load image from file */
+ 
+     /* Both size parameters must have a value greater 0 */
+     if ( (width > 0 ) &&  ( height > 0) )
+     {
+     
+      /* with size parameters
+       DF7BE 2025-03-01 :
+       GdkPixbuf*
+       gdk_pixbuf_new_from_file_at_scale (
+       const char* filename,
+       int width,
+       int height,
+       gboolean preserve_aspect_ratio,
+       GError** error
+       )
+       Return value: Type=GdkPixbuf A newly-created pixbuf.
+       height, width: -1 to not constrain the width or height.
+       preserve_aspect_ratio: Type: gboolean  TRUE to preserve the image’s aspect ratio.
+      */
+
+       handle = gdk_pixbuf_new_from_file_at_scale( hb_parc(1), width, height, TRUE , NULL );
+     }
+     else
+     {
+       handle = gdk_pixbuf_new_from_file( hb_parc(1), NULL );
+     }  /* Size parameters */
+     if( handle )
+     {
+        hpix = (PHWGUI_PIXBUF) hb_xgrab( sizeof(HWGUI_PIXBUF) );
+        hpix->type = HWGUI_OBJECT_PIXBUF;
+        hpix->handle = handle;
+        hpix->trcolor = -1;
+        HB_RETHANDLE( hpix );
+     }  /* if handle */
+   } /* if String/file */
 }
 
 HB_FUNC( HWG_DRAWICON )

@@ -417,9 +417,17 @@ METHOD AddFile( name, HDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
    // Parameters not used
    HB_SYMBOL_UNUSED( HDC )
    HB_SYMBOL_UNUSED( lTransparent )
-   HB_SYMBOL_UNUSED( nWidth )
-   HB_SYMBOL_UNUSED( nHeight )
+//   HB_SYMBOL_UNUSED( nWidth )
+//   HB_SYMBOL_UNUSED( nHeight )
+   
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
 
+   * Check for existing bitmap
    FOR EACH i IN ::aBitmaps
       IF i:name == name
          i:nCounter ++
@@ -428,7 +436,8 @@ METHOD AddFile( name, HDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
    NEXT
 
    name := AddPath( name, ::cPath )
-   ::handle := hwg_Openimage( name )
+   *  hwg_Openimage( name , ltype , width, height ) ltype : .F. : from image file, .T. : from GDK pixbuffer
+   ::handle := hwg_Openimage( name , .F. , nWidth , nHeight )
    IF !Empty( ::handle )
       ::name := name
       aBmpSize  := hwg_Getbitmapsize( ::handle )

@@ -76,7 +76,7 @@ FUNCTION Main( lStretch )
    * From file
    * Strech it  
    oBmp := HBitmap():AddFile(cImageMain,,.F.,hwg_Getdesktopwidth(),hwg_Getdesktopheight()-21)
-   * Original size
+   * Original size / tiled
    // oBmp := HBitmap():AddFile( cImageMain,, .F., 301, 160 )
    
    * From hex dump   

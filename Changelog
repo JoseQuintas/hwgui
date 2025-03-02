@@ -16,6 +16,24 @@
 */
 
 
+2025-03-02 17:55 UTC+0100 Wilfried Brunken DF7BE   
+* doc/hwgdoc_classes.html
+* samples/stretch.prg
+* source/gtk/draw.c
+* source/gtk/drawwidg.prg
+ ! Support ticket #86:
+ ! Now Method Addfile() of class HBitmap for GTK
+ ! has now size parameters.
+ ! Checked with sample program
+ ! stretch.prg and CLLOG on
+ ! Ubuntu.
+ ! To be continued for
+ ! AddString() on WinAPI.
+ ! For details, read
+ ! comment line of sample program
+ ! and posts to ticket.
+
+
 2025-03-01 16:40 UTC+0100 Wilfried Brunken DF7BE   
 * source/gtk/draw.c
 * source/gtk/drawwidg.prg

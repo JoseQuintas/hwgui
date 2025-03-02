@@ -355,7 +355,7 @@ CLASS HBitmap INHERIT HObject
 
    METHOD AddResource( name )
    METHOD AddFile( name, HDC , lTransparent, nWidth, nHeight )
-   METHOD AddString( name, cVal )
+   METHOD AddString( name, cVal, nWidth, nHeight )
    METHOD AddStandard( cId, nSize )
    METHOD AddWindow( oWnd, x1, y1, width, height )
    METHOD Draw( hDC, x1, y1, width, height )
@@ -450,7 +450,7 @@ METHOD AddFile( name, HDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
 
    RETURN Self
 
-METHOD AddString( name, cVal ) CLASS HBitmap
+METHOD AddString( name, cVal, nWidth, nHeight ) CLASS HBitmap
 
 /*
   Add name to resource container (array ::aBitmaps)
@@ -460,6 +460,14 @@ METHOD AddString( name, cVal ) CLASS HBitmap
 */
 
    LOCAL oBmp, aBmpSize, cTmp
+   
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
+   
 
    FOR EACH oBmp IN ::aBitmaps
       IF oBmp:name == name
@@ -469,19 +477,29 @@ METHOD AddString( name, cVal ) CLASS HBitmap
       ENDIF
    NEXT
 
-   ::handle := hwg_Openimage( cVal, .T.  )
+
+   * Now with size parameters
+   * From pixbuff
+   ::handle := hwg_Openimage( cVal, .T. , nWidth , nHeight )
+  
    IF Empty( ::handle )
       /* Try to load image from file */
+      // DF7BE:
+      // Write contents into temporary file     
       hb_memowrit( cTmp := hwg_CreateTempfileName(), cVal )
-      ::handle := hwg_Openimage( cTmp )
+      ::handle := hwg_Openimage( cTmp , .F. , nWidth , nHeight)
       FErase( cTmp )
    ENDIF
+   
    IF !Empty( ::handle )
       ::name := name
       aBmpSize  := hwg_Getbitmapsize( ::handle )
       ::nWidth  := aBmpSize[1]
       ::nHeight := aBmpSize[2]
       AAdd( ::aBitmaps, Self )
+      * Display BmpSizes && For Debug in a.log
+      //   hwg_Writelog("AddString() of HBitmap: Width=" + ALLTRIM(STR(::nWidth)) + ;
+      //  " Height=" +  + ALLTRIM(STR(::nHeight)) )
    ELSE
       RETURN Nil
    ENDIF
@@ -676,11 +694,12 @@ METHOD AddString( name, cVal, nWidth, nHeight ) CLASS HIcon
       IF i:name == name
          i:nCounter ++
          // resource always existing, nothing to do
+         // hwg_Writelog("AddString: Resource always existing")
          RETURN i
       ENDIF
    NEXT
 
-   ::handle := hwg_Openimage( cVal, .T.  )
+   ::handle := hwg_Openimage( cVal, .T. , nWidth, nHeight )
    IF Empty( ::handle )
       // DF7BE:
       // Write contents into temporary file
@@ -688,6 +707,10 @@ METHOD AddString( name, cVal, nWidth, nHeight ) CLASS HIcon
       ::handle := hwg_OpenImage( cTmp )
       FErase( cTmp )
    ENDIF
+   
+   // IF Empty( ::handle )
+   //  hwg_Writelog("Handle is empty")
+   // ENDIF  
 
    IF !Empty( ::handle )
       ::name := name
@@ -896,3 +919,5 @@ FUNCTION hwg_LoadCursorFromString( cVal, nx , ny )
 
    RETURN hCursor
 
+
+* ========================== EOF of drawwidg.prg =================================

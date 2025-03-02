@@ -7,7 +7,7 @@
  *
  * Sample for resizing bitmaps (background) and normal resize.
  *
- * Copyright 2020 Wilfried Brunken, DF7BE
+ * Copyright 2025 Wilfried Brunken, DF7BE
  * https://sourceforge.net/projects/cllog/
  *
  * TNX to Itamar M. Lins Jr.
@@ -26,17 +26,19 @@
 * Summary of behavior:
 * This call activates the BIPMAP option in INIT WINDOW .. MAIN
 * stretch.exe X  or LINUX ./stretch X
-* WinAPI:
+* WinAPI and LINUX:
 *  - If size of bitmap is less than the size of the main window,
 *    the image is tiled.
-* LINUX:
-*  - Like WinAPI, if size of bitmap is less than the size of the main window,
-*    the image is tiled.  
-
-* Need to bugfix: resize of bitmap object in method AddString() of class HBitmap.
-* Following this sample, AddFile()
-* resizes correct, here also bugfix for GTK needed.
 * 
+
+* Need to bugfix: resize of bitmap object in method AddString() of class HBitmap
+* Now only bugfix for WinAPI needed.
+* For GTK now fixed:
+*
+* The workaroud solution:
+* (because dk_pixbuf_loader_set_size() has no effect , bug in GTK ?)
+* Store the image string with MEMOWRIT() in a temporary file
+* and reload it. While loading a file, the image is resized as desired.
 
 * @ 110,0 BITMAP oBitmap  SHOW oBmp .. works correct an both OS's 
 
@@ -75,26 +77,25 @@ FUNCTION Main( lStretch )
 
    * From file
    * Strech it  
-   oBmp := HBitmap():AddFile(cImageMain,,.F.,hwg_Getdesktopwidth(),hwg_Getdesktopheight()-21)
+   // oBmp := HBitmap():AddFile(cImageMain,,.F.,hwg_Getdesktopwidth(),hwg_Getdesktopheight()-21)
    * Original size / tiled
    // oBmp := HBitmap():AddFile( cImageMain,, .F., 301, 160 )
    
-   * From hex dump   
-   * By original size
-//   oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()) )
+   * From hex dump 
+   * AddString( name, cVal , nWidth, nHeight )  && source code in drawwidg.prg
    
-   * Resize it
-   // AddString( name, cVal , nWidth, nHeight ) , source code in drawwidg.prg
-   // Bug in this method: no resize !!!!
-   // oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()), nPosX , nPosY )
- 
+   * By original size / tiled
+   //  oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()) )
+   
+   * Strech it 
+    oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()), nPosX , nPosY )
+    
+   * 301 x 160 is the original size of the bitmap image "hwgui.bmp"
 
-   
-   * 301 x 160 is the original size of the bitmap image.
-   * or strech it
-
-   // hwg_deb_is_object(oBmp) && Debug
-   
+    // IF .NOT. hwg_deb_is_object(oBmp) && Debug
+    //  hwg_MsgStop("oBmp is not an object!","Error")
+    // ENDIF  
+  
    
    lStretch := IIF( lStretch == NIL, lStretch := .T.,lStretch := .F.)
 
@@ -143,6 +144,8 @@ FUNCTION CHECK_FILE ( cfi )
    ENDIF
 
 RETURN Nil
+
+
 
 FUNCTION ini_hwgui_bmp()
 RETURN "42 4D 36 C2 00 00 00 00 00 00 36 04 00 00 28 00 " + ;

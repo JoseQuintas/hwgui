@@ -114,19 +114,15 @@ FUNCTION Main( lStretch )
     * Background image
     * By original size / tiled 
     //  oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()) )
-    
-        #ifdef __PLATFORM__WINDOWS
-       // This function runs only on WinAPI,
-       // but should be later extended for GTK.
+ 
     * Strech it by hwg_Stretch_BMP_i()
     * Returns a bitmap binary string image and must be converted to a bitmap
     * object
      cBmp := hwg_Stretch_BMP_i( hwg_cHex2Bin(ini_hwgui_bmp()), "hwgui" ,nPosX, nPosY)
      oBmp := HBitmap():AddString("hwgui",cBmp)  && Write streched bmp to object variable 
      
-     #else
-      * LINUX: Strech by GTK function 
-      oBmp := HBitmap():AddString( "hwgui", hwg_cHex2Bin(ini_hwgui_bmp()) , nPosX, nPosY ) 
+      * ALternative method on : LINUX: Stretch by GTK function 
+//      oBmp := HBitmap():AddString( "hwgui", hwg_cHex2Bin(ini_hwgui_bmp()) , nPosX, nPosY ) 
       && source code in drawwidg.prg
      #endif
 

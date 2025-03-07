@@ -16,6 +16,15 @@
 */
 
 
+2025-03-07 17:30 UTC+0100 Wilfried Brunken DF7BE   
+* samples/stretch.prg
+* source/cross/hmisccross.prg
+ ! Function hwg_Stretch_BMP_i()
+ !  now for all platforms.
+ ! "\" in bitmap names 
+ ! cause trouble on WinAPI.
+ 
+
 2025-03-07 10:15 UTC+0100 Wilfried Brunken DF7BE   
 * doc/hwgdoc_classes.html
 * doc/hwgdoc_functions.html

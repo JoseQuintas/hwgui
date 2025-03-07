@@ -1825,7 +1825,9 @@ RETURN cBitmap
 FUNCTION hwg_Stretch_BMP_i(cbmp, clocname, nWidth, nHeight )
 
 LOCAL cTmp, oBmp
-LOCAL ctempfilename
+#ifdef __PLATFORM__WINDOWS
+ LOCAL ctempfilename
+#endif 
 
    IF cbmp == NIL
     RETURN ""
@@ -1852,7 +1854,10 @@ LOCAL ctempfilename
   cTmp := hwg_CreateTempfileName() + ".bmp"
   * The pure filename of the temporary file is stored as bitmap name,
   * so remove the directory path !
+  * ==> not needed !
+#ifdef __PLATFORM__WINDOWS  
   ctempfilename := hwg_BaseName(cTmp)
+#endif
   IF .NOT. MEMOWRIT(cTmp,cbmp)
   * Returns .T., if success
    RETURN ""
@@ -1861,13 +1866,24 @@ LOCAL ctempfilename
   * Create bitmap object by read the temporary file and resize it at loading
   *  AddFile( name, hDC, lTransparent, nWidth, nHeight )
   *  (hDC is not needed here, lTransparent is not avaialable on GTK )
+
   oBmp := HBitmap():AddFile(cTmp,,.F.,nWidth,nHeight)
   FErase( cTmp )
 
+   
+  // hwg_Writelog("clocname=" + clocname + " ctempfilename=" + ctempfilename)
+  // BMPTOC2Logfile(oBmp)
+  
   
   * Rename from temporary to previous name
+#ifdef __PLATFORM__WINDOWS
   oBmp := hwg_BMPRename(oBmp,ctempfilename,clocname)
+#else
+  oBmp := hwg_BMPRename(oBmp,cTmp,clocname)
+#endif  
   
+  // BMPTOC2Logfile(oBmp)
+ 
   * Extract string from bitmap
    cbmp := hwg_bpmObj2String(oBmp,clocname)
 

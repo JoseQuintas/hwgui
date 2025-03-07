@@ -16,6 +16,36 @@
 */
 
 
+2025-03-07 10:15 UTC+0100 Wilfried Brunken DF7BE   
+* doc/hwgdoc_classes.html
+* doc/hwgdoc_functions.html
+* samples/stretch.prg
+* source/cross/hmisccross.prg
+* source/winapi/draw.c
+* source/winapi/drawwidg.prg
+* whatsnew.txt
+ ! Support ticket #86:
+ ! (Continued)
+ ! Here the solution for WinAPI.
+ ! List of new functions:
+ ! hwg_Stretch_BMP_i()
+ ! hwg_bpmObj2String()
+ ! hwg_BMPRename()
+ !
+ ! Debug helpers for bitmaps:
+ ! BMPSize2Logfile()
+ ! hwg_bitmapTOC()
+ ! hwg_Debug_logarrayC()
+ ! BMPSize2Logfile()
+ ! hwg_bitmapTOC()
+ ! hwg_is_object()
+ !
+ ! Docu updated.
+ ! Next step to do:
+ ! hwg_Stretch_BMP_i()
+ ! enhanced for LINUX.
+ 
+
 2025-03-02 17:55 UTC+0100 Wilfried Brunken DF7BE   
 * doc/hwgdoc_classes.html
 * samples/stretch.prg

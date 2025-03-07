@@ -1858,7 +1858,8 @@
       AddResource( name, nFlags, lOEM, nWidth, nHeight )
       AddStandard( nId )
       AddFile( name, hDC, lTransparent, nWidth, nHeight )
-      AddString( name, cVal , nWidth, nHeight)
+      AddString( name, cVal , nWidth, nHeight) (GTK)
+      AddString( name, cVal )  (WinAPI)
       AddWindow( oWnd, x1, y1, width, height )  - Creates a bitmap from a given window.
       Draw( hDC, x1, y1, width, height )
       Release()
@@ -1886,6 +1887,9 @@
    See also function documentation for<br>  
    hwg_ShowBitmap(), corresponding parameter "cbmpname"<br>
    for more details.<br>
+   Resizing of bitmaps (stretching):<br>
+   Many details for this item see comment lines of<br>
+   sample program "stretch.prg and
    <br>
    
    </p>

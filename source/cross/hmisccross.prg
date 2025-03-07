@@ -1081,6 +1081,74 @@ FUNCTION hwg_deb_is_object(oObj)
    ENDIF
 
    RETURN lret
+   
+* Returns .T:, if oObj is a valid object
+FUNCTION hwg_is_object(oObj)
+LOCAL lret
+  IF oObj == NIL
+   RETURN .F.
+  ENDIF 
+  lret := .F.
+  IF Valtype(oObj) == "O" 
+     lret := .T.
+  ENDIF
+RETURN lret 
+
+* Returns a table of contents (TOC) of a bitmap object (name's)
+FUNCTION hwg_bitmapTOC(oBitmap)
+
+   LOCAL oBmp, aretu
+   
+   IF .NOT. hwg_is_object(oBitmap)
+    RETURN {}
+   ENDIF
+   
+   aretu := {}
+   
+   FOR EACH oBmp IN oBitmap:aBitmaps
+      AADD(aretu,oBmp:name)
+   NEXT
+ 
+ RETURN aretu  
+ 
+FUNCTION BMPSize2Logfile(oBitmap,name)
+LOCAL bhandle , aBmpSize, nWidth, nHeight, bmpnam, i
+
+  IF .NOT. hwg_is_object(oBitmap)
+    hwg_WriteLog("oBitmap is not an object")
+    RETURN NIL
+  ENDIF
+
+  bhandle := NIL
+  bmpnam  := "<none>"
+  FOR EACH i  IN  oBitmap:aBitmaps
+      IF i:name == name
+         bhandle := i:handle
+         bmpnam  := i:name
+      ENDIF
+   NEXT
+
+   aBmpSize  := hwg_Getbitmapsize( bhandle )
+   nWidth  := aBmpSize[ 1 ]
+   nHeight := aBmpSize[ 2 ]
+   
+   hwg_WriteLog("name=" + bmpnam + " nWidth= " + ALLTRIM(STR(nWidth)) + ;
+    " nHeight=" +  ALLTRIM(STR(nHeight)) )
+ 
+ RETURN NIL
+
+  * Only for debug purposes:
+  * Write a single dimension array with c values into logfile
+  FUNCTION hwg_Debug_logarrayC(acarray)
+     LOCAL  nindiz
+      FOR nindiz := 1 TO hwg_Array_Len(acarray)
+        IF VALTYPE(acarray[nindiz]) == "C"
+          hwg_WriteLog(ALLTRIM(STR(nindiz)) + ": " + acarray[nindiz] )
+        ELSE
+          hwg_WriteLog(ALLTRIM(STR(nindiz)) + ": " + "Element not of type C")
+        ENDIF
+      NEXT
+   RETURN NIL 
 
 FUNCTION hwg_leading0(ce)
 
@@ -1709,16 +1777,130 @@ RETURN coutput
 
 FUNCTION hwg_CBmp2file(cbitmap,cbitmapfile)
 
-IF cbitmap == NIL
+  IF cbitmap == NIL
+   RETURN NIL
+  ENDIF
+
+  IF cbitmapfile == NIL
+   cbitmapfile := "bitmap.bmp"
+  ENDIF 
+
+   MEMOWRIT( cbitmapfile, cbitmap )
+   
+RETURN NIL
+
+
+
+FUNCTION hwg_bpmObj2String(obmp,cname)
+LOCAL  cBitmap , cTmp
+
+IF obmp == NIL
+  RETURN NIL
+ENDIF
+
+IF cname == NIL
  RETURN NIL
 ENDIF
 
-IF cbitmapfile == NIL
- cbitmapfile := "bitmap.bmp"
-ENDIF 
+* Processing steps:
+* Save bitmap in a temporary file (extracted for bitmap object)
+* and read it afterwards for return value
+* 
 
-   MEMOWRIT( cbitmapfile, cbitmap )
-RETURN NIL
+  cTmp := hwg_CreateTempfileName() + ".bmp"
+  
+  // hwg_Msginfo(cTmp)
+  
+  obmp:OBMP2FILE(cTmp,cname) 
+
+  cBitmap := MEMOREAD(cTmp)
+
+  * And remove the EOF marker
+   cBitmap := hwg_delEOFMarker(cBitmap) 
+  
+RETURN cBitmap 
+
+
+
+FUNCTION hwg_Stretch_BMP_i(cbmp, clocname, nWidth, nHeight )
+
+LOCAL cTmp, oBmp
+LOCAL ctempfilename
+
+   IF cbmp == NIL
+    RETURN ""
+   ENDIF
+
+   IF nWidth == nil
+      nWidth := 0
+   ENDIF
+   IF nHeight == nil
+      nHeight := 0
+   ENDIF
+   
+   IF clocname == NIL
+     clocname := ""
+   ENDIF
+
+
+   * Do not resize, return original 
+   IF  (nWidth < 1) .OR. (nHeight) < 1 
+    RETURN cbmp
+   ENDIF
+   
+* First write bitmap string into a temporary file
+  cTmp := hwg_CreateTempfileName() + ".bmp"
+  * The pure filename of the temporary file is stored as bitmap name,
+  * so remove the directory path !
+  ctempfilename := hwg_BaseName(cTmp)
+  IF .NOT. MEMOWRIT(cTmp,cbmp)
+  * Returns .T., if success
+   RETURN ""
+  ENDIF 
+  
+  * Create bitmap object by read the temporary file and resize it at loading
+  *  AddFile( name, hDC, lTransparent, nWidth, nHeight )
+  *  (hDC is not needed here, lTransparent is not avaialable on GTK )
+  oBmp := HBitmap():AddFile(cTmp,,.F.,nWidth,nHeight)
+  FErase( cTmp )
+
+  
+  * Rename from temporary to previous name
+  oBmp := hwg_BMPRename(oBmp,ctempfilename,clocname)
+  
+  * Extract string from bitmap
+   cbmp := hwg_bpmObj2String(oBmp,clocname)
+
+RETURN cbmp
+  
+
+* ================================================================================ 
+
+
+FUNCTION hwg_BMPRename(oBitmap,cnamold,cnamnew)
+
+ LOCAL  i
+ 
+ IF oBitmap == NIL
+  RETURN NIL
+ ENDIF 
+  
+ IF cnamold == NIL
+   RETURN NIL
+ ENDIF
+ 
+ IF cnamnew == NIL
+   RETURN NIL
+ ENDIF
+
+  // Search for bitmap with old name in object
+   FOR EACH i IN oBitmap:aBitmaps
+      IF i:name == cnamold
+        * Rename
+        i:name := cnamnew
+      ENDIF
+   NEXT
+ RETURN oBitmap
 
 
 // Removes the EOF marker from a C string
@@ -1791,7 +1973,7 @@ IF coutfilename == NIL
 ENDIF
 
 IF cbmpname == NIL
- RETURN NIL
+ cbmpname := ""
 ENDIF 
 
 oBitmap:OBMP2FILE(coutfilename,cbmpname)

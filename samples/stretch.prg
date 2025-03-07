@@ -29,11 +29,11 @@
 * WinAPI and LINUX:
 *  - If size of bitmap is less than the size of the main window,
 *    the image is tiled.
+* To get a real background image call by
+*  stretch.exe x
+* To use BITMAP ...  SHOW command call by
+*  stretch.exe
 * 
-
-* Need to bugfix: resize of bitmap object in method AddString() of class HBitmap
-* Now only bugfix for WinAPI needed.
-* For GTK now fixed:
 *
 * The workaroud solution:
 * (because dk_pixbuf_loader_set_size() has no effect , bug in GTK ?)
@@ -42,6 +42,12 @@
 
 * @ 110,0 BITMAP oBitmap  SHOW oBmp .. works correct an both OS's 
 
+* Comment this define out for reading bitmap from file
+* The new functions are ready for WinAPI and GTK
+
+
+
+#define BYHEXDUMP
 
 #include "hwgui.ch"
 // #ifdef __GTK__
@@ -55,51 +61,95 @@ FUNCTION Main( lStretch )
    LOCAL nPosY
    LOCAL oQuitButton
    LOCAL oBitmap
-   LOCAL oBmp
+   LOCAL oBmp, cBmp
 
    LOCAL cDirSep := hb_PS() //PATH SEPARATOR
    LOCAL cImagePath := ".." + cDirSep + "image" + cDirSep
    LOCAL cImageMain := cImagePath + "hwgui.bmp"
    
+   
    LOCAL c
 
-* Comment this line out, if image is read from hexdump 
-   CHECK_FILE( cImageMain )
-
+ 
 
    // Here default is resized image
    // But works only with WinAPI, not GTK.
 
    nPosX := hwg_Getdesktopwidth()
    nPosY := hwg_Getdesktopheight()
+   
+   lStretch := IIF( lStretch == NIL, lStretch := .T.,lStretch := .F.)  
 
 * Several ways for access to bitmap
+* Activate one of this features by comment them out
+* 301 x 160 is the original size of the bitmap image "hwgui.bmp"
 
+   * ===========
    * From file
-   * Strech it  
-   // oBmp := HBitmap():AddFile(cImageMain,,.F.,hwg_Getdesktopwidth(),hwg_Getdesktopheight()-21)
+   * ===========
+#ifndef BYHEXDUMP
+
+   CHECK_FILE( cImageMain )
+   
+   * Strech it
+   IF lStretch    
+     oBmp := HBitmap():AddFile(cImageMain,,.F.,hwg_Getdesktopwidth() - 100 ,hwg_Getdesktopheight()-21)
+   ELSE
    * Original size / tiled
-   // oBmp := HBitmap():AddFile( cImageMain,, .F., 301, 160 )
+     oBmp := HBitmap():AddFile( cImageMain,, .F., 301, 160 )
+   ENDIF
+
+#else
+   * ==============   
+   * From hex dump
+   * ==============
    
-   * From hex dump 
-   * AddString( name, cVal , nWidth, nHeight )  && source code in drawwidg.prg
-   
-   * By original size / tiled
-   //  oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()) )
-   
-   * Strech it 
-    oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()), nPosX , nPosY )
+ 
+  IF lStretch 
+   * By original size / tiled 
+   * and resized by BITMAP ... SHOW command
+     oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()) )
+   ELSE
+    *
+    * Background image
+    * By original size / tiled 
+    //  oBmp := HBitmap():AddString("hwgui",hwg_cHex2Bin(ini_hwgui_bmp()) )
     
-   * 301 x 160 is the original size of the bitmap image "hwgui.bmp"
+        #ifdef __PLATFORM__WINDOWS
+       // This function runs only on WinAPI,
+       // but should be later extended for GTK.
+    * Strech it by hwg_Stretch_BMP_i()
+    * Returns a bitmap binary string image and must be converted to a bitmap
+    * object
+     cBmp := hwg_Stretch_BMP_i( hwg_cHex2Bin(ini_hwgui_bmp()), "hwgui" ,nPosX, nPosY)
+     oBmp := HBitmap():AddString("hwgui",cBmp)  && Write streched bmp to object variable 
+     
+     #else
+      * LINUX: Strech by GTK function 
+      oBmp := HBitmap():AddString( "hwgui", hwg_cHex2Bin(ini_hwgui_bmp()) , nPosX, nPosY ) 
+      && source code in drawwidg.prg
+     #endif
 
-    // IF .NOT. hwg_deb_is_object(oBmp) && Debug
-    //  hwg_MsgStop("oBmp is not an object!","Error")
-    // ENDIF  
+    ENDIF
   
-   
-   lStretch := IIF( lStretch == NIL, lStretch := .T.,lStretch := .F.)
+ 
+ 
+    * ===========
+    * Debug tests
+    * ===========
 
-   * Display size of recent desktop, it is equal to the size of screen.
+     // IF .NOT. hwg_is_object(oBmp)
+     // hwg_MsgStop("oBmp is not an object!","Error")
+     // ENDIF
+ 
+    
+    // Write TOC of bitmap to logfile
+    //  BMPTOC2Logfile(oBmp)
+
+
+
+  
+     * Display size of recent desktop, it is equal to the size of screen.
    hwg_msginfo("X=" + STR(nPosX) + CHR(10) + "Y=" + STR(nPosY) + CHR(10) + ;
       "lStretch=" + IIF(lStretch,"True","False") )
 
@@ -145,7 +195,16 @@ FUNCTION CHECK_FILE ( cfi )
 
 RETURN Nil
 
+FUNCTION BMPTOC2Logfile(oBitmap)
+     LOCAL atoc
+     atoc :=  hwg_bitmapTOC(oBitmap)
+     hwg_Debug_logarrayC(atoc)
+RETURN NIL
 
+
+
+
+ 
 
 FUNCTION ini_hwgui_bmp()
 RETURN "42 4D 36 C2 00 00 00 00 00 00 36 04 00 00 28 00 " + ;

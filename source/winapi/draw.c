@@ -1525,6 +1525,7 @@ HB_FUNC( HWG_OPENIMAGE )
    HGLOBAL hG;
 
    if( bString )
+   /* From string (pixbuffer) */
    {
       iFileSize = hb_parclen( 1 );
       hG = GlobalAlloc( GPTR, iFileSize );
@@ -1536,6 +1537,7 @@ HB_FUNC( HWG_OPENIMAGE )
       memcpy( ( void * ) hG, ( void * ) cFileName, iFileSize );
    }
    else
+   /* From file */
    {
       fp = fopen( cFileName, "rb" );
       if( !fp )

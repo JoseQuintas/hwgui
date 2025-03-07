@@ -14,7 +14,7 @@ HWGUI code snapshot
 [*] The qrcodegenerator by "Project Nayuki" will be ready for
     non C99 standard compilers like Borland C. 
 [+] Enhanced bitmap support.
-[!] Fixes
+[!] Fixes (lots of bugs tickets closed)
 
 
 

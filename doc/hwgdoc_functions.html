@@ -14,7 +14,7 @@
   </tr>
   <tr>
     <td width="15%" align="left"><a href="hwgdoc_commands.html">prev</a></td>
-    <td width="70%" align="center">Alexander S.Kresin, February 2025</td>
+    <td width="70%" align="center">Alexander S.Kresin, March 2025</td>
     <td width="15%" align="right"><a href="hwgdoc_classes.html">next</a></td>
   </tr>
 </table>
@@ -3695,6 +3695,13 @@ See sample program "testspli.prg" for details.<br>
     with processing  after it.<br>
     
     <p></p>
+    
+    <br><strong class="subhead"> hwg_is_object(oObj)</strong>
+    <br>
+    Returns .T., if oObj is a valid object<br>
+    
+    <p></p>
+        
 
    <br><strong class="subhead"><a name="Functions83" href="hwgdoc_functions.html#_Functions83">
    5.8.3 Raw bitmap support and QR code.</a></strong><br>
@@ -3717,7 +3724,7 @@ See sample program "testspli.prg" for details.<br>
    function for all platforms into HWGUI.<br>
    <br>
    These functions are implemented in source code files<br>
-   drawwidg.prg and draw.c .<br>
+   drawwidg.prg, hmisccross.prg and draw.c .<br>
    Some more functions for bitmap support<br>
    (for example painting and stretching of bitmap images)<br>
    are implemented in source code file "cxshade.c".<br>
@@ -3747,6 +3754,11 @@ See sample program "testspli.prg" for details.<br>
    #ifdef __WATCOMC__<br>
    <br>
    For Details see inline comments of sample program "samples\testbmpcr.prg".<br>
+   <p></p>
+   
+   Binary string image of a bitmap may contain NULL bytes (0x00),<br>
+   for Harbour string variables no problem.<br>
+   
    <p></p>
 
    <br><strong class="subhead">hwg_BPMinches_per_meter()</strong>
@@ -3925,13 +3937,17 @@ See sample program "testspli.prg" for details.<br>
 
     <p></p>
 
-    <br><strong class="subhead"> hwg_oBitmap2file(oBitmap [,coutfilename]) </strong>
-    <br> Function is under construction !<br>
+    <br><strong class="subhead"> hwg_oBitmap2file(oBitmap,cbmpname,[outfilename]) </strong>
     <p>
     <br>
     Save a bitmap in an bitmap object into a file.<br> 
     - oBitmap : The bitmap object<br>
     - coutfilename : The file into the bitmap saved,<br>
+    cbmpname is the unique name of the bitmap written to file,<br>
+    Is mandatory, otherwise the bitmap is not processed.<br> 
+    Also the cbmpname is case sensitive.<br>
+    We stricly recommend to use only pure ASCII charset and<br>
+    lower case (UNIX/LINUX) for the cbmpname.<br>
     &nbsp;  &nbsp; pass complete with extension .bmp<br>
     &nbsp;  &nbsp; (Default is bitmap.bmp)<br>
     Returns forever NIL.<br>
@@ -3961,7 +3977,7 @@ See sample program "testspli.prg" for details.<br>
       This function may have a little more<br>
       performance than a random generating <br>
       function.<br>
-     Use it for creating masses of bitmaps,<br>
+      Use it for creating masses of bitmaps,<br>
       like lot's of QR codes.<br>
       Some more alternative usages:<br>
       - If cprefix is passed with an empty string "",<br> 
@@ -3973,8 +3989,121 @@ See sample program "testspli.prg" for details.<br>
       <br>
     
      <p></p>
-   
+     <br><strong class="subhead"> hwg_Stretch_BMP_i(cbmp, clocname, nWidth, nHeight )</strong>
     <br>
+    (Windows only, but port to GTK is under construction)
+    Stretch a bitmap from binary string image<br>
+    (independant, without needing a device context)<br>
+    <br>
+    cbmp   : The binary image of a bitmap as string<br>
+    clocname : The name of the bitmap ( of cbmp )<br>
+    nWidth, nHeight : The size parameters.<br>
+    To Respect the size ratio use focus values (nfocus).<br>
+    for example :<br>
+    nWidth := nfocus * nWidth<br>
+    nHeight := nfocus * nHeight<br>
+    <br>
+    Returns the resized bitmap as string,<br>
+    If error, empty string "" is returned.<br>
+    nWidth and nHeight both must be > 0,<br>
+    otherwise the original bitmap is returned.<br>
+    This function is important for WinAPI,<br>
+    but works also with GTK.<br>
+    For GTK use for better performance the resizing feature<br>
+    of GTK, for example<br>
+    METHOD AddString()<br>
+    (but has no resizing feature on WinAPI,<br>
+    see HWGUI class documentation of HBITMAP.<br>
+    <br>
+    long cxdib_Stretch( PCXDIB pdib, HDC pDC, long xoffset, long yoffset, long xsize, long ysize )<br>
+    of cxshade.c (WinAPI) needs a device context,<br>
+    so it is not useful for pure resizing of a bitmap.<br>
+    <br>
+    For lot's of details about resizing (stretching) of bitmaps,<br>
+    read the comment lines in sample program "stretch.prg". 
+    <br>
+    
+    <p></p>    
+
+    <br><strong class="subhead"> hwg_bpmObj2String(obmp,cname)</strong>
+    <br>
+    extract the a bitmap string from an<br>
+    bitmap object.<br>
+    (for example to display it)<br>
+    obmp :  The bitmap object<br>
+    cname : The bitmap name<br>
+    Returns the string image,<br>
+    in case of error an empty<br>
+    string (check for success by for example)<br>
+    EMPTY(cBitmap)<br>
+    <br>
+    
+    <p></p>
+     
+    <br><strong class="subhead"> hwg_BMPRename(oBitmap,cnamold,cnamnew)</strong>
+    <br>
+    Renames a bitmap in an bitmap object<br>
+    oBitmap : The bitmap object<br>
+    cnamold : The old bitmap name<br>
+    cnamnew : The new bitmap name<br>
+    Returns the new bitmap object with<br>
+    the renamed bitmap.<br>
+    <br>
+    This function is useful, if<br>
+    a bitmap is stored in a tempory file<br>
+    and must be read after resizing,<br>
+    so it becomes the previous name.<br>
+    For details see sample program<br>
+    "stretch.prg"<br>
+    with lots of comments.<br>
+    <br>    
+
+    <p></p>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+    Some debug helpers for bitmap programming<br>
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
+    
+     <p></p>
+     
+   
+     <br><strong class="subhead">  hwg_bitmapTOC(oBitmap)</strong>
+    <br>
+    Returns a table of contents (TOC) of a bitmap object (name's) in an array<br>
+    <br>
+    <p></p>
+    
+    <br><strong class="subhead"> BMPSize2Logfile(oBitmap,name</strong>)
+    <br>
+    Write the bmp size (height and width)in the log file a.log .<br>
+    oBitmap : The bitmap object<br>
+    name    : The bitmap name<br>
+    <br>
+    
+    <p></p>
+        
+     <br><strong class="subhead"> hwg_Debug_logarrayC(acarray)</strong>
+    <br>
+    Only for debug purposes:<br>
+    Write a single dimension array with c values into logfile.<br>      
+ 
+    <p></p>
+    
+    2.) Add this sample function code into your HWGUI application code:<br>
+    <br>
+    Write TOC of bitmap to logfile:<br>
+    <br>
+    FUNCTION BMPTOC2Logfile(oBitmap)<br>
+    LOCAL atoc<br>
+     atoc :=  hwg_bitmapTOC(oBitmap)<br>
+     hwg_Debug_logarrayC(atoc)<br>
+    RETURN NIL<br>
+    IF .NOT. hwg_is_object(oBmp)<br>
+      hwg_MsgStop("oBmp is not an object!","Error")<br>
+     ENDIF<br>
+    <br>
+    
+    <p></p>
+    
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>
     End of Functions for raw bitmap support<br>
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~<br>

@@ -395,7 +395,8 @@ ENDCLASS
 METHOD OBMP2FILE( cfilename , name ) CLASS HBitmap
 
    LOCAL i , hbmp
-
+   // LOCAL j, ncoun  && Debug
+ 
    hbmp := NIL
    // Search for bitmap in object
    FOR EACH i IN ::aBitmaps
@@ -403,10 +404,17 @@ METHOD OBMP2FILE( cfilename , name ) CLASS HBitmap
          hbmp := i:handle
       ELSE
          // not found
+//         hwg_writelog("Bitmap " + name + "not found")
+//         ncoun := 0
+//         * Write out table of contents (TOC)
+//         FOR EACH j IN ::aBitmaps
+//          ncoun := ncoun  + 1 
+//          hwg_writelog(ALLTRIM(STR(ncoun)) + ": " + ::name)
+//         NEXT
          RETURN NIL
       ENDIF
    NEXT
-
+   
    hwg_SaveBitMap( cfilename, hbmp )
 
    RETURN NIL
@@ -490,7 +498,7 @@ METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
    ENDIF
 
    FOR EACH i IN ::aBitmaps
-      IF i:name == cname .AND. ( nWidth == Nil .OR. nHeight == Nil )
+      IF i:name == cname && .AND. ( nWidth == Nil .OR. nHeight == Nil )
          i:nCounter ++
          RETURN i
       ENDIF
@@ -527,6 +535,11 @@ METHOD AddFile( name, hDC, lTransparent, nWidth, nHeight ) CLASS HBitmap
    ::nWidth  := aBmpSize[ 1 ]
    ::nHeight := aBmpSize[ 2 ]
    AAdd( ::aBitmaps, Self )
+   
+   // ::name is here the filename
+   // hwg_Writelog("nWidth=" + ALLTRIM(STR(:: nWidth)) + ;
+   //            " nHeight="  + ALLTRIM(STR(::nHeight)) + ;
+   //            " name=" +  ::name )  
 
    RETURN Self
 

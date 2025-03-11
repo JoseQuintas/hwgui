@@ -1810,6 +1810,7 @@ ENDIF
   cTmp := hwg_CreateTempfileName() + ".bmp"
   
   // hwg_Msginfo(cTmp)
+  // hwg_Msginfo(cname)
   
   obmp:OBMP2FILE(cTmp,cname) 
 
@@ -1854,7 +1855,7 @@ LOCAL cTmp, oBmp
   cTmp := hwg_CreateTempfileName() + ".bmp"
   * The pure filename of the temporary file is stored as bitmap name,
   * so remove the directory path !
-  * ==> not needed !
+  * ==> not needed for LINUX !
 #ifdef __PLATFORM__WINDOWS  
   ctempfilename := hwg_BaseName(cTmp)
 #endif
@@ -1865,14 +1866,16 @@ LOCAL cTmp, oBmp
   
   * Create bitmap object by read the temporary file and resize it at loading
   *  AddFile( name, hDC, lTransparent, nWidth, nHeight )
-  *  (hDC is not needed here, lTransparent is not avaialable on GTK )
+  *  (hDC is not needed here, lTransparent is not available on GTK )
+  * Some trouble in winprn.prg.
+  * (See comment later)
 
   oBmp := HBitmap():AddFile(cTmp,,.F.,nWidth,nHeight)
   FErase( cTmp )
 
    
   // hwg_Writelog("clocname=" + clocname + " ctempfilename=" + ctempfilename)
-  // BMPTOC2Logfile(oBmp)
+  // hwg_BMPTOC2Logfile(oBmp)
   
   
   * Rename from temporary to previous name
@@ -1882,9 +1885,17 @@ LOCAL cTmp, oBmp
   oBmp := hwg_BMPRename(oBmp,cTmp,clocname)
 #endif  
   
-  // BMPTOC2Logfile(oBmp)
+  // hwg_BMPTOC2Logfile(oBmp)
  
   * Extract string from bitmap
+  * Bitmap object may contain more than one bitmap !
+  * See sample program winprn.prg (compiled with QR code option):
+  * 1: astro
+  * 2: e4889615.tmp.bmp
+  * After renaming:
+  * 1: astro
+  * 2: qrcode
+  
    cbmp := hwg_bpmObj2String(oBmp,clocname)
 
 RETURN cbmp
@@ -1993,6 +2004,20 @@ IF cbmpname == NIL
 ENDIF 
 
 oBitmap:OBMP2FILE(coutfilename,cbmpname)
+RETURN NIL
+
+/*
+Windows BITMAPINFOHEADER
+
+Offset (hex)    Offset (dec)    Size (bytes) 
+12              18              4              the bitmap width in pixels (signed integer)
+16              22              4              the bitmap height in pixels (signed integer)
+*/
+
+FUNCTION hwg_BMPTOC2Logfile(oBitmap)
+     LOCAL atoc
+     atoc :=  hwg_bitmapTOC(oBitmap)
+     hwg_Debug_logarrayC(atoc)
 RETURN NIL
 
 * ======================= EOF of hmisccross.prg ===========================

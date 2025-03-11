@@ -15,6 +15,26 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+2025-03-11 15:40 UTC+0100 Wilfried Brunken DF7BE   
+* temp (New directory)
+* temp/empty.txt (New)
+* doc/hwgdoc_commands.html
+* samples/stretch.prg
+* source/cross/hmisccross.prg
+
+ ! Added a temporary directory,
+ ! may be useful, if temporary created
+ ! pathnames by the system are to long, or for debugging,
+ ! to find a temporary file with short name
+ ! easier (for bitmap programming debugging).
+ ! Don't forget:
+ ! Needed to delete the file after usage !
+ ! Sample stretch.prg added with
+ ! transparent bitmap display, needed to fix
+ ! bug on LINUX (WinAPI runs OK)
+ ! (if i have time).
+ ! Added some instructions in command doc.
+ 
 
 2025-03-07 17:30 UTC+0100 Wilfried Brunken DF7BE   
 * samples/stretch.prg

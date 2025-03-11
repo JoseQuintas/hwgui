@@ -1034,7 +1034,18 @@
     So need to create the object variable new after usage !<br>
     For details look into sample program<br>
     samples/bitmapbug.prg<br>
-    and get information about handling ! 
+    and get information about handling !<br> 
+    <br>
+    TRANSPARENT:<br>
+    Is yet not usable on GTK !<br>
+    (bugfix will coming soon).<br>
+    The parameter can be set, but it is ignored there.<br>
+    <br>
+    For correct display, a color must be defined for switch to tranparency.<br>
+    It is strictly recommended, to add the COLOR option.<br>
+    Default on WinAPI is 0x00FFF, on GTK 0xFFFFFF after bugfix.<br>
+    A sample program with one transparent bitmap is:<br>
+    samples\stretch.prg<br>
     </p>
 
     <br><a name="icon" href="#_icon"> @ &lt;x&gt;,&lt;y&gt; ICON</a>

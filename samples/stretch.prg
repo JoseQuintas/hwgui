@@ -45,6 +45,12 @@
 * Comment this define out for reading bitmap from file
 * The new functions are ready for WinAPI and GTK
 
+* Added 2025-03-10:
+* A transparent bitmap.
+* Attention !
+* Need to declare a colour defined as
+* transparent.
+
 
 
 #define BYHEXDUMP
@@ -62,6 +68,7 @@ FUNCTION Main( lStretch )
    LOCAL oQuitButton
    LOCAL oBitmap
    LOCAL oBmp, cBmp
+   LOCAL oBitmtrsp
 
    LOCAL cDirSep := hb_PS() //PATH SEPARATOR
    LOCAL cImagePath := ".." + cDirSep + "image" + cDirSep
@@ -129,6 +136,11 @@ FUNCTION Main( lStretch )
     ENDIF
   
  
+    * Check for transparent
+    * Color white (FFFFFF = 16777215) handled as transparent color,
+    * Default is 00FFF.
+     CHECK_FILE( cImagePath + "cancel.bmp" )
+     oBitmtrsp := HBitmap():AddFile(cImagePath + "cancel.bmp",,.F.)
  
     * ===========
     * Debug tests
@@ -156,6 +168,11 @@ FUNCTION Main( lStretch )
          SIZE nPosX - 10, nPosY - 100 // Here resize of background image (stretch)
          // 301, 160
 
+ 
+      * Transparent test
+      @ 110,100 BITMAP oBitmtrsp  OF oFormMain ;
+         TRANSPARENT COLOR 16777215
+
       // Attention !
       // The button may not positioned into the image, otherwise
       // the ON CLICK block does not work.
@@ -171,6 +188,11 @@ FUNCTION Main( lStretch )
       // Tiled: Side by side, not stretch
       // If the Button is here inside the background image, the
       // ON CLICK block works fine.
+
+      * Transparent test
+      @ 110,100 BITMAP oBitmtrsp  OF oFormMain ;
+         TRANSPARENT COLOR 16777215
+      
 
       @ 25,25 BUTTON oQuitButton CAPTION "Exit" SIZE 75,32 ;
       ON CLICK { | | oFormMain:Close() }
@@ -199,8 +221,6 @@ RETURN NIL
 
 
 
-
- 
 
 FUNCTION ini_hwgui_bmp()
 RETURN "42 4D 36 C2 00 00 00 00 00 00 36 04 00 00 28 00 " + ;

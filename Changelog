@@ -15,13 +15,56 @@
  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+
+2025-03-14 18:30 UTC+0100 Wilfried Brunken DF7BE
+* samples/progressbar (New directory)
+* samples/progressbar/Readme.txt (New)
+* samples/progressbar/progress.prg (New)
+* samples/progressbar/loadhex.prg (New)
+* samples/progressbar/icon.png (New)
+* samples/progressbar/demo_progres.prg (New)
+* samples/progressbar/progress.hbp (New)
+* samples/progressbar/demo_progres.hbp (New)
+* samples/progressbar/memvar.prg (New)
+* samples/progressbar/inithex.prg (New)
+* samples/progressbar/test (New directory)
+* samples/progressbar/test/crwhat.prg (New)
+* samples/progressbar/objects.prg (New)
+* samples/progressbar/icon.ico (New)
+* test/tickets (New directory)
+* test/tickets/Ticket170.prg (New)
+* test/tickets/ticket170.hbp (New)
+* source/gtk/hprogres.prg
+* source/winapi/hprogres.prg
+  ! Bug Ticket #52:
+  ! Progbars doesn't work under Linux.
+  ! Code delivered by Alain Aupaix (TNX)
+  ! for LINUX. Added code for WinAPI.
+  ! Docu updated.
+  ! To be continued:
+  ! Trouble to kill the sub process
+  ! on MacOS.
+  ! For details read the installation instructions
+  ! and the posts to ticket.
+  ! Common:
+  ! New sub directory "tickets" will
+  ! contain demonstration programs
+  ! while added during ticket handling
+  ! Bug Ticket 
+  ! Access violation in old
+  ! progressbar samples seemed to be fixed.
+  ! Bug Ticket #170:
+  ! ComboBox Linux Bound error: array access.
+  ! This was fixed by Alexander Kresin a long time ago.
+  ! Checked on Windows 11 and LINUX, so ticket now closed.
+
+
 2025-03-11 15:40 UTC+0100 Wilfried Brunken DF7BE   
 * temp (New directory)
 * temp/empty.txt (New)
 * doc/hwgdoc_commands.html
 * samples/stretch.prg
 * source/cross/hmisccross.prg
-
  ! Added a temporary directory,
  ! may be useful, if temporary created
  ! pathnames by the system are to long, or for debugging,

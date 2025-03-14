@@ -100,6 +100,8 @@ delfi samples/tststconsapp
 delfi samples/helloworld
 delfi samples/hello
 delfi samples/htrack
+delfi samples/progressbar/progress
+delfi samples/progressbar/demo_progres
 #
 # created files from sample programs
 rm samples/a.log 2>/dev/null

@@ -22,7 +22,9 @@ _________
 10.)   Complete list with footmarks
 11.)   Some additional instructions for writing *.hbp files
 11.1)  Correct macro usage
-12.) clean scripts
+12.)   clean scripts
+13.)   Special samples:
+13.1)  Progress bars
 
 
 
@@ -404,6 +406,9 @@ Directories:
 
  12) Little modifications for GTK needed (use compiler switch "#ifdef __GTK__").
      Extra sample program with same filename in subdirectory "gtk_samples"
+     This sample has bugs.
+     A running multi platform sample is listed in chapter:
+     13.1)  Progress bars
  
  
 11.) Some additional instructions for writing *.hbp files
@@ -446,5 +451,17 @@ UNIX/LINUX/MacOS:
 
  chmod 755 clean.sh
  ./clean.sh 
+ 
+ 13.) Special samples:
+ 
+ 13.1) Progress bars
+ 
+    Direct support for progressbar is WinAPI only.
+    For LINUX and MacOS an external tool "wmctrl" is needed to
+    draw progress bars, while program is busy running FOR ... NEXT or
+    DO WHILE ... ENDDO loops.
+    A multi platform sample program see directory
+    samples/progressbar
+    (TNX to Alain Aupaix)
 
 * =================== EOF of Readme.txt ========================

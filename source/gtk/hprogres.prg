@@ -96,7 +96,7 @@ METHOD Activate() CLASS HProgressBar
 
    RETURN Nil
 
-METHOD Step()
+METHOD Step() CLASS HProgressBar
 
    ::nCount ++
    IF ::nCount == ::nLimit
@@ -138,7 +138,7 @@ METHOD RESET() CLASS HProgressBar
 
    RETURN NIL
 
-METHOD CLOSE()
+METHOD CLOSE() CLASS HProgressBar
 
    HWG_DestroyWindow( ::handle )
    IF ::lNewBox
@@ -146,3 +146,5 @@ METHOD CLOSE()
    ENDIF
 
    RETURN Nil
+
+   * =================== EOF of hprogres.prg ===========================

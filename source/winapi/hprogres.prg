@@ -138,7 +138,7 @@ METHOD Init()  CLASS HProgressBar
 
    RETURN Nil
 
-METHOD STEP( cTitle )
+METHOD STEP( cTitle ) CLASS HProgressBar
 
    ::nCount ++
    IF ::nCount == ::nLimit
@@ -154,7 +154,7 @@ METHOD STEP( cTitle )
    RETURN Nil
 
 * Added by DF7BE
-METHOD RESET( cTitle )
+METHOD RESET( cTitle ) CLASS HProgressBar
 
    IF cTitle != Nil
       hwg_Setwindowtext( ::oParent:handle, cTitle )
@@ -182,7 +182,7 @@ METHOD SetLabel( cCaption ) CLASS HProgressBar
 
    RETURN Nil
 
-METHOD CLOSE()
+METHOD CLOSE() CLASS HProgressBar
 
    hwg_Destroywindow( ::handle )
    IF ::lNewBox
@@ -190,3 +190,5 @@ METHOD CLOSE()
    ENDIF
 
    RETURN Nil
+
+* ====================== EOF of hprogres.prg ==============================

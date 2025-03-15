@@ -26,7 +26,7 @@
 	You must have install the tool wmctrl
         sudo apt install wmctrl
 
-	MacOS: <under construction yet>
+	MacOS: 
 	(install from mac ports):
 	Command for installing "wmctrl" is:
     sudo port install wmctrl

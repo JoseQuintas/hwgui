@@ -135,8 +135,8 @@ CloseBar(oBar)
 
 #else
 * LINUX/MacOS calling external tool "wmctrl"
-local cStdOut:=""
-local cmd
+// local cStdOut:=""
+// local cmd
 
 for rg=1 to len(tabfiles)
     if !lprogress
@@ -146,27 +146,16 @@ for rg=1 to len(tabfiles)
     hb_memowrit("/tmp/what","       Treating image file "+ltrim(str(rg))+" / "+ltrim(str(len(tabfiles)))+"#!"+space(30-len(tabfiles[rg]))+tabfiles[rg]+chr(10)+"Treating files")
     hwg_sleep(SLEEP_LINUX)
 next
-cmd="ps -ef|grep progress|grep -v grep"
-hb_processrun("sh -c '"+cmd+"'",,@cStdOut)
-qout(cStdOut)
-cStdOut=left(ltrim(substr(cStdOut,10)),at(" ",cStdOut)-1)
-#endif
 
+// cmd="ps -ef|grep progress|grep -v grep"
+// hb_processrun("sh -c '"+cmd+"'",,@cStdOut)
+// qout(cStdOut)
 
-* The kill command on MacOS has another syntax
-#ifdef ___MACOSX___
-  hb_run("kill -s KILL "+cStdOut)
-#else
-#ifndef __PLATFORM__WINDOWS
-  * Here LINUX
-  hb_run("kill -9 "+cStdOut)
-#endif
+// kill -9 `ps aux | grep progress | awk '{print $2}'`
+// hb_run("kill -9 "+cStdOut)
+  
+  hb_run( "kill -9 `ps -ef | grep progress | grep -v grep | grep -v demo | awk '{print $2}'`" )
 
-#endif
-
-
-
-#ifndef __PLATFORM__WINDOWS
 lprogress=.f.
 hb_run("rm /tmp/what")
 #endif

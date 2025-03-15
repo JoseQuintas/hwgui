@@ -16,6 +16,19 @@
 */
 
 
+2025-03-15 16:40 UTC+0100 Wilfried Brunken DF7BE
+* doc/hwgdoc_classes.html
+* install-macos.txt
+* samples/progressbar/Readme.txt
+* samples/progressbar/demo_progres.prg
+  ! Bug Ticket #52:
+  ! Progbars doesn't work under Linux.
+  ! Now code for both LINUX and MacOS added,
+  ! for details see post to ticket.
+  ! Now the ticket may be ready to close.
+  ! Docu updated.
+
+
 2025-03-14 18:30 UTC+0100 Wilfried Brunken DF7BE
 * samples/progressbar (New directory)
 * samples/progressbar/Readme.txt (New)

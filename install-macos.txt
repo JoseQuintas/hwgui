@@ -7,7 +7,11 @@ $Id$
 
 By DF7BE 
 
-Date: 2024-08-18 (YYYY-MM-DD)
+History:
+(Date format is YYYY-MM-DD)
+
+2025-03-15   DF7BE   Install "wmctrl" needed for progress bars
+2024-08-18   DF7BE   First creation
 
 Contents:
 
@@ -134,8 +138,22 @@ For more info see chapter "2. Hints for programmers".
         the program starts in background and you can enter
         more commands.
   
+    8.) Install "wmctrl" (Needed for PROGRESSBAR)
 
-    7.) Compile HWGUI
+      Direct support for progressbar is WinAPI only.
+      For LINUX and MacOS an external tool "wmctrl" is needed to
+      draw progress bars, while program is busy running FOR ... NEXT or
+      DO WHILE ... ENDDO loops.
+      A multi platform sample program see directory
+      samples/progressbar
+      (TNX to Alain Aupaix).
+
+      Command for installing "wmctrl" is:
+          sudo port install wmctrl
+      (installed from mac ports)
+
+
+    9.) Compile HWGUI
 
         Installation destination is
         /Users/<userid>/hwgui/hwgui
@@ -151,7 +169,7 @@ For more info see chapter "2. Hints for programmers".
           ./make_macgtk2.sh
 
   
-    8.) Compile a sample program
+    10.) Compile a sample program
      
         goto directory "samples"
         and start compiling of arraybrowse.prg
@@ -163,7 +181,7 @@ For more info see chapter "2. Hints for programmers".
         ./arraybrowse
  
 
-    9.) Compile your own application
+    11.) Compile your own application
 
         Use the file arraybrowse.hbp as a template
         to create a hbp file for building your own application.
@@ -209,7 +227,7 @@ For more info see chapter "2. Hints for programmers".
       The script can also be used on LINUX, it
       has an OS autodetect function.          
   
-   10.) How to create desktop shortcuts for files and folders
+   12.) How to create desktop shortcuts for files and folders
 
         The term "desktop shortcut" is a more familiar term to Windows users,
         it is understand like an "alias" and is represented by a

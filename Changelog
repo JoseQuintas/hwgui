@@ -16,6 +16,18 @@
 */
 
 
+2025-03-17 14:50 UTC+0100 Wilfried Brunken DF7BE
+* test/tickets/ticket165.hbp (New)
+* test/tickets/ticket165.prg(New)
+  ! Bug ticket #165:
+  ! "Progress Bar 'G_IS_OBJECT (object)' failed (GTK)"
+  ! With reference to closed Bug ticket #52:
+  ! "Progbars doesn't work under Linux",
+  ! with new sample program in
+  ! samples/progressbar.
+  ! It is obsolete, so closed today
+
+
 2025-03-15 16:40 UTC+0100 Wilfried Brunken DF7BE
 * doc/hwgdoc_classes.html
 * install-macos.txt

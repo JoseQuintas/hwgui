@@ -17,7 +17,7 @@
 #define  ID_NOTIFYICON           1
 #define SIZE_MINIMIZED           1
 
-#ifdef MT_EXPERIMENTAL
+#ifdef HB_GUI_MT_EXPERIMENTAL
 THREAD STATIC aWindows := {}
 
 FUNCTION aWindows()
@@ -128,7 +128,7 @@ FUNCTION hwg_onDestroy( oWnd )
 
 CLASS HWindow INHERIT HCustomWindow, HScrollArea
 
-#ifdef MT_EXPERIMENTAL
+#ifdef HB_GUI_MT_EXPERIMENTAL
    METHOD aWindows       INLINE aWindows()
 #else
    CLASS VAR aWindows    SHARED INIT {}
@@ -305,7 +305,7 @@ CLASS HMainWindow INHERIT HWindow
    // DF7BE: Fix crash, if GET used in main window (for details see test/demosaycrash.prg)
    DATA lExitOnEnter INIT .T. // Set it to False, if dialog shouldn't be ended after pressing ENTER key
    DATA _lResult  INIT .T.   // For __errInHandler()
-   
+
    METHOD New( lType, oIcon, clr, nStyle, x, y, width, height, cTitle, cMenu, nPos,   ;
       oFont, bInit, bExit, bSize, bPaint, bGfocus, bLfocus, bOther, ;
       cAppName, oBmp, cHelp, nHelpId, bColor, nExclude )

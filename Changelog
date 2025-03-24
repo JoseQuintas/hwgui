@@ -16,6 +16,14 @@
 */
 
 
+2025-03-23 20{57 UTC-0200 Jose Quintas jmcquintas-gmail.com
+* source/winapi/hdialog.prg
+* source/winapi/hwindow.prg
+  ! change test variable to HB_GUI_MT_EXPERIMENTAL
+  ! update github workflows
+  ! to-do: MT sample(s) and test on linux/MacOS
+
+
 2025-03-17 14:50 UTC+0100 Wilfried Brunken DF7BE
 * test/tickets/ticket165.hbp (New)
 * test/tickets/ticket165.prg(New)
@@ -75,7 +83,7 @@
   ! New sub directory "tickets" will
   ! contain demonstration programs
   ! while added during ticket handling
-  ! Bug Ticket 
+  ! Bug Ticket
   ! Access violation in old
   ! progressbar samples seemed to be fixed.
   ! Bug Ticket #170:
@@ -84,7 +92,7 @@
   ! Checked on Windows 11 and LINUX, so ticket now closed.
 
 
-2025-03-11 15:40 UTC+0100 Wilfried Brunken DF7BE   
+2025-03-11 15:40 UTC+0100 Wilfried Brunken DF7BE
 * temp (New directory)
 * temp/empty.txt (New)
 * doc/hwgdoc_commands.html
@@ -102,18 +110,18 @@
  ! bug on LINUX (WinAPI runs OK)
  ! (if i have time).
  ! Added some instructions in command doc.
- 
 
-2025-03-07 17:30 UTC+0100 Wilfried Brunken DF7BE   
+
+2025-03-07 17:30 UTC+0100 Wilfried Brunken DF7BE
 * samples/stretch.prg
 * source/cross/hmisccross.prg
  ! Function hwg_Stretch_BMP_i()
  !  now for all platforms.
- ! "\" in bitmap names 
+ ! "\" in bitmap names
  ! cause trouble on WinAPI.
- 
 
-2025-03-07 10:15 UTC+0100 Wilfried Brunken DF7BE   
+
+2025-03-07 10:15 UTC+0100 Wilfried Brunken DF7BE
 * doc/hwgdoc_classes.html
 * doc/hwgdoc_functions.html
 * samples/stretch.prg
@@ -141,9 +149,9 @@
  ! Next step to do:
  ! hwg_Stretch_BMP_i()
  ! enhanced for LINUX.
- 
 
-2025-03-02 17:55 UTC+0100 Wilfried Brunken DF7BE   
+
+2025-03-02 17:55 UTC+0100 Wilfried Brunken DF7BE
 * doc/hwgdoc_classes.html
 * samples/stretch.prg
 * source/gtk/draw.c
@@ -161,7 +169,7 @@
  ! and posts to ticket.
 
 
-2025-03-01 16:40 UTC+0100 Wilfried Brunken DF7BE   
+2025-03-01 16:40 UTC+0100 Wilfried Brunken DF7BE
 * source/gtk/draw.c
 * source/gtk/drawwidg.prg
 * samples/stretch.prg
@@ -175,14 +183,14 @@
  ! the previous behavior is preserved.
  ! draw.c:
  ! gdk_pixbuf_new_from_file_at_scale() is
- ! the same as 
- ! gdk_pixbuf_new_from_file(), 
+ ! the same as
+ ! gdk_pixbuf_new_from_file(),
  ! but with size parameters.
  ! To be continued with AddString()
  ! method.
 
 
-2025-02-25 16:00 UTC+0100 Wilfried Brunken DF7BE   
+2025-02-25 16:00 UTC+0100 Wilfried Brunken DF7BE
 * samples/stretch.prg
  ! Support ticket #86:
  ! Option for sized backgroud bitmap on window main.
@@ -191,7 +199,7 @@
  ! and AddFile() of HBitmap class.
  ! For details, see post to ticket.
 
-2025-02-25 16:00 UTC+0100 Wilfried Brunken DF7BE   
+2025-02-25 16:00 UTC+0100 Wilfried Brunken DF7BE
 * doc/hwgdoc_commands.html
 * samples/Readme.txt
 * samples/makeallsam.bat
@@ -208,7 +216,7 @@
  ! TNX Alain Aupeix.
 
 
-2025-02-24 16:45 UTC+0100 Wilfried Brunken DF7BE   
+2025-02-24 16:45 UTC+0100 Wilfried Brunken DF7BE
 * samples/trackbar.prg
  ! Bug ticket #71 : say position
  ! Sample program fixed.
@@ -217,7 +225,7 @@
  ! TNX Jose M. C. Quintas
 
 
-2025-02-23 18:40 UTC+0100 Wilfried Brunken DF7BE   
+2025-02-23 18:40 UTC+0100 Wilfried Brunken DF7BE
 * source/gtk/hsayimg.prg
 * source/winapi/hsayimg.prg
 * doc/hwgdoc_classes.html
@@ -240,7 +248,7 @@
   ! Bug ticket #195 Bug of @ Image in a tab
   ! solved. For details see post to ticket.
   ! METHOD ReplMsg() added to HSayBmp class
-  ! Docu hwg_GetDirSep() also for MacOS. 
+  ! Docu hwg_GetDirSep() also for MacOS.
 
 
 2025-02-22 13:35 UTC+0100 Wilfried Brunken DF7BE
@@ -261,11 +269,11 @@
 2025-02-19 15:35 UTC+0100 Wilfried Brunken DF7BE
 * source/winapi/draw.c
 * include/warnings.h
-  ! Added 
+  ! Added
   ! Warning suppressed: "maybe-uninitialized"
-  ! The other modifications are only 
+  ! The other modifications are only
   ! comment lines without any function
-  ! modifications 
+  ! modifications
   ! (used as know how store)
   ! Ticket handling continued.
 
@@ -288,7 +296,7 @@
   ! Project qrencode:
   ! At least, a little correction
   ! for Borland C and MSVC
-  
+
 
 2025-02-07 19:00 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrencode/Readme.txt
@@ -303,7 +311,7 @@
 * makefile.wc
 * samples/dev/env/pfad_msc.bat
 * samples/dev/env/pfad_pc.bat
-* source/common/procmisc/cfuncs.c 
+* source/common/procmisc/cfuncs.c
   ! Project qrencode:
   ! After a long time the
   ! project is now finished.
@@ -317,7 +325,7 @@
   !
   ! Bugix in makefiles and scripts done.
   !
-  ! Open Watcom C, 
+  ! Open Watcom C,
   ! Pelles C and Digital Mars C:
   ! No chance to compile Harbour
   ! at this time,
@@ -327,7 +335,7 @@
   ! for next tries, for example to handle
   ! path names with blanks like
   ! C:\Windows\Program Files
-  ! Installation instructions 
+  ! Installation instructions
   ! and other docu updated.
 
 2025-02-03 15:45 UTC+0100 Wilfried Brunken DF7BE
@@ -336,7 +344,7 @@
   ! Sample program extended
   ! with dialog to enter a
   ! text for creating a
-  ! QR code. 
+  ! QR code.
   ! Helpful for following
   ! test procedures.
   ! (to be continued)
@@ -390,7 +398,7 @@
   ! Advice, that HWG_QRENCODE()
   ! is in "contrib", not in HWGUI
   ! code.
-  ! Started project: 
+  ! Started project:
   ! Modify the qrcodegenerator so
   ! to be ready for non C99 standard compilers
   ! like Borland C.
@@ -435,13 +443,13 @@
   ! hwg_BMPxyfromBinary()
   ! hwg_delEOFMarker()
   ! Done:
-  ! After calling hwg_QRCodetxt2BPM() the 
+  ! After calling hwg_QRCodetxt2BPM() the
   ! size getting with hwg_QRCodeGetSize() returns 0,0
   ! (is now binary format of bitmap)
   ! So the new function
   ! hwg_BMPxyfromBinary() will
   ! do this for you.
-  ! (to be continued) 
+  ! (to be continued)
 
 
 2025-01-20 16:30 UTC+0100 Wilfried Brunken DF7BE
@@ -469,10 +477,10 @@
   ! better handling, also
   ! docu updated.
   ! TO-DO:
-  ! After calling hwg_QRCodetxt2BPM() the 
+  ! After calling hwg_QRCodetxt2BPM() the
   ! size getting with hwg_QRCodeGetSize() returns 0,0
   ! (To be continued)
- 
+
 
 2025-01-17 16:25 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrencode/hb_qrencode.hbp (New)
@@ -491,7 +499,7 @@
 * contrib/qrdecode/ReadMe.txt
 * contrib/qrdecode/qrdecode.prg
   ! Project qrdecode completed.
-  ! Now running on all 3 OS's.  
+  ! Now running on all 3 OS's.
 
 
 2025-01-13 18:00 UTC+0100 Wilfried Brunken DF7BE
@@ -517,7 +525,7 @@
 * contrib/qrdecode/ReadMe.txt
   ! Project qrdecode:
   ! Instructions for LINUXMint added.
-  ! (to be continued with MacOS) 
+  ! (to be continued with MacOS)
 
 
 2025-01-10 20:00 UTC+0100 Wilfried Brunken DF7BE
@@ -535,7 +543,7 @@
   ! (TNX Jose M. C. Quintas)
   ! Revised sleep functions
   ! (new hwg_Sleep_C() and
-  !  updated docu)  
+  !  updated docu)
 
 2025-01-07 16:40 UTC+0100 Wilfried Brunken DF7BE
 * contrib/qrdecode/ReadMe.txt
@@ -544,7 +552,7 @@
   ! First steps are successful, QR code
   ! from camera can be decoded in shell script
   ! (to be continued)
-  ! TO-DO:    
+  ! TO-DO:
   ! Integrate the functionality of the shell script
   ! into the HWGUI sample program.
 
@@ -602,7 +610,7 @@
 * test/textfile_MacOS.txt (new)
 * test/textfile_UNIX.txt (new)
 * test/textfile_Win.txt (new)
-  ! QR decode: 
+  ! QR decode:
   ! New functions are helpers to read
   ! the file with the result of a QR code scan:
   ! hwg_RdLn()
@@ -627,7 +635,7 @@
 * source/common/procmisc/cfuncs.c
   ! Added qrdecode utility with
   ! Zbar (external call).
-  ! Scan and decode QR 
+  ! Scan and decode QR
   ! and EAN bar codes.
   ! First issue running on
   ! Windows 11 / 10.

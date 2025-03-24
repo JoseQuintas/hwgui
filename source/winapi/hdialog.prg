@@ -26,7 +26,7 @@ STATIC aMessModalDlg := { ;
       { WM_DESTROY, { |o|hwg_onDestroy( o ) } }               ;
       }
 
-#ifdef MT_EXPERIMENTAL
+#ifdef HB_GUI_MT_EXPERIMENTAL
 THREAD STATIC aDialogs := {}
 THREAD STATIC aModalDialogs := {}
 
@@ -43,7 +43,7 @@ FUNCTION aModalDialogs()
 
 CLASS HDialog INHERIT HWindow
 
-#ifdef MT_EXPERIMENTAL
+#ifdef HB_GUI_MT_EXPERIMENTAL
    METHOD aDialogs          INLINE aDialogs()
    METHOD aModalDialogs     INLINE aModalDialogs()
 #else
